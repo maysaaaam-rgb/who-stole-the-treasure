@@ -1,0 +1,183 @@
+/* ==========================================================================
+   THE LAST EXPEDITION: A GRADE 4 CLIL PREDICTION & PROBLEM-SOLVING GAME
+   Styles for 10-scene loop, 30s discussion timer, storm countdown pill,
+   CLIL science diagrams, explorer cards, and prediction arenas.
+   ========================================================================== */
+
+.expedition-master-viewport {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Storm Countdown Ribbon */
+.expedition-status-bar {
+  background: #fff;
+  border: 4px solid #0284c7;
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.storm-timer-pill {
+  background: #fee2e2;
+  border: 3px solid #ef4444;
+  color: #991b1b;
+  font-family: 'Bungee', cursive;
+  font-size: 1.15rem;
+  padding: 6px 18px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: storm-pulse 1.2s infinite;
+}
+
+@keyframes storm-pulse {
+  0% { transform: scale(0.98); border-color: #ef4444; }
+  50% { transform: scale(1.02); border-color: #dc2626; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+  100% { transform: scale(0.98); border-color: #ef4444; }
+}
+
+/* Explorers Team Strip */
+.explorers-strip-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.explorer-mini-card {
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.explorer-mini-name {
+  font-family: 'Bungee', cursive;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.explorer-mini-role {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+}
+
+/* Discussion Spotlight Box (30-second timer) */
+.discussion-timer-box {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 4px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 14px;
+}
+
+.discussion-countdown-pill {
+  background: #b45309;
+  color: #fff;
+  font-family: 'Bungee', cursive;
+  font-size: 1.2rem;
+  padding: 4px 16px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* Sentence Frame Display */
+.expedition-frame-card {
+  background: #fff;
+  border: 3px dashed #3b82f6;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 10px;
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+/* Prediction Option Choices */
+.prediction-choices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.prediction-choice-card {
+  background: #fff;
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.prediction-choice-card:hover {
+  transform: translateY(-4px);
+  border-color: #f59e0b;
+  box-shadow: var(--shadow-md);
+}
+
+.prediction-choice-card.selected-prediction {
+  border-color: #10b981;
+  background: #ecfdf5;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+/* CLIL Science Highlight Banner */
+.clil-concept-banner {
+  background: #f0fdf4;
+  border: 3px solid #22c55e;
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: 14px 0;
+}
+
+.clil-badge-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .explorers-strip-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .explorers-strip-row {
+    grid-template-columns: 1fr;
+  }
+  .expedition-status-bar {
+    flex-direction: column;
+  }
+}

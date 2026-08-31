@@ -93,6 +93,13 @@ class UIController {
         }
         break;
 
+      // 4TH GRADE: THE LAST EXPEDITION
+      case "expedition":
+        if (window.expeditionUI) {
+          window.expeditionUI.showScene(window.expeditionEngine.currentSceneIndex || 0);
+        }
+        break;
+
       // TREASURE INVESTIGATION SCREENS
       case "intro":
         this.renderIntro();
@@ -145,7 +152,7 @@ class UIController {
         <p class="sub-heading">Choose an interactive lesson game for your classroom:</p>
       </div>
 
-      <div class="hub-modes-grid-4">
+      <div class="hub-modes-grid-5">
         <!-- MODE 1: 3RD GRADE DETECTIVE PREPARATION -->
         <div class="hub-mode-card card-prep" onclick="uiController.showScreen('prep-intro')">
           <div class="mode-badge-pill" style="background: #e0e7ff; color: #3730a3;">🎒 3RD GRADE • 7–10 MIN</div>
@@ -160,14 +167,14 @@ class UIController {
             <li>🧠 <strong>5s Memory:</strong> Seating memory</li>
             <li>📋 <strong>Live Activity:</strong> Bag guide</li>
           </ul>
-          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 0.95rem; padding: 10px 12px; margin-top: auto;">
             START PREP ➔
           </button>
         </div>
 
         <!-- MODE 2: 3RD GRADE WHO STOLE THE TREASURE? -->
         <div class="hub-mode-card card-treasure" onclick="uiController.showScreen('intro')">
-          <div class="mode-badge-pill" style="background: #fef3c7; color: #92400e;">🏆 3RD GRADE • FULL MYSTERY</div>
+          <div class="mode-badge-pill" style="background: #fef3c7; color: #92400e;">🏆 3RD GRADE • MYSTERY</div>
           <div class="mode-icon-hero">🏴‍☠️ 💰 🔐</div>
           <h2 class="mode-title">2. TREASURE MYSTERY</h2>
           <p class="mode-desc">
@@ -179,7 +186,7 @@ class UIController {
             <li>👥 <strong>8 Suspects:</strong> Dossiers & meeting</li>
             <li>🚨 <strong>Accusation:</strong> 2-proof spoken claim</li>
           </ul>
-          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 0.95rem; padding: 10px 12px; margin-top: auto;">
             PLAY TREASURE ➔
           </button>
         </div>
@@ -190,15 +197,15 @@ class UIController {
           <div class="mode-icon-hero">🏠 🧸 🔑</div>
           <h2 class="mode-title">3. ROOM RESCUE</h2>
           <p class="mode-desc">
-            Interactive visual room! Prepositions (in, on, under, behind), drag-and-drop & lost objects!
+            Interactive room! Prepositions (in, on, under, behind), drag-and-drop & lost items!
           </p>
           <ul class="mode-features-list">
             <li>🎧 <strong>Listen & Move:</strong> Audio directions</li>
-            <li>📖 <strong>Read & Clean:</strong> Object drag-and-drop</li>
+            <li>📖 <strong>Read & Clean:</strong> Vector drag-and-drop</li>
             <li>🔎 <strong>Lost Objects:</strong> Open drawer & box</li>
-            <li>🔢 <strong>Sequencing:</strong> Action picture cards</li>
+            <li>🔢 <strong>Sequencing:</strong> Picture sequence cards</li>
           </ul>
-          <button class="jumbo-btn btn-emerald" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+          <button class="jumbo-btn btn-emerald" style="width: 100%; font-size: 0.95rem; padding: 10px 12px; margin-top: auto;">
             START RESCUE ➔
           </button>
         </div>
@@ -209,16 +216,35 @@ class UIController {
           <div class="mode-icon-hero">🔴 🔵 🟢 🟡</div>
           <h2 class="mode-title">4. CLIL CRIME LAB</h2>
           <p class="mode-desc">
-            Four completely distinct mystery cases for 4 teams! Sports, Science, Art & Geography!
+            Four distinct mystery cases for 4 teams! Sports, Science, Art & Geography!
           </p>
           <ul class="mode-features-list">
             <li>🔴 <strong>Case 1 (Sports):</strong> Time & Past Simple</li>
             <li>🔵 <strong>Case 2 (Science):</strong> States of Matter</li>
             <li>🟢 <strong>Case 3 (Art):</strong> Color Mixing</li>
-            <li>🟡 <strong>Case 4 (Geography):</strong> Map & Directions</li>
+            <li>🟡 <strong>Case 4 (Geography):</strong> Compass & Map</li>
           </ul>
-          <button class="jumbo-btn btn-ruby" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+          <button class="jumbo-btn btn-ruby" style="width: 100%; font-size: 0.95rem; padding: 10px 12px; margin-top: auto;">
             ENTER CRIME LAB ➔
+          </button>
+        </div>
+
+        <!-- MODE 5: 4TH GRADE THE LAST EXPEDITION -->
+        <div class="hub-mode-card card-expedition" onclick="uiController.showScreen('expedition')">
+          <div class="mode-badge-pill" style="background: #e0f2fe; color: #0369a1;">🧭 4TH GRADE • 30–40 MIN</div>
+          <div class="mode-icon-hero">🌋 🌧️ 🧭</div>
+          <h2 class="mode-title">5. THE LAST EXPEDITION</h2>
+          <p class="mode-desc">
+            CLIL prediction & problem-solving mission! Reach Station Alpha before the storm!
+          </p>
+          <ul class="mode-features-list">
+            <li>🔮 <strong>Will / Might:</strong> Evidence predictions</li>
+            <li>💬 <strong>Because / So:</strong> Cause & effect</li>
+            <li>🌋 <strong>Earth Science:</strong> Volcano & flood hydrology</li>
+            <li>🏛️ <strong>Station Alpha:</strong> 10-scene story loop</li>
+          </ul>
+          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 0.95rem; padding: 10px 12px; margin-top: auto;">
+            START EXPEDITION ➔
           </button>
         </div>
       </div>
