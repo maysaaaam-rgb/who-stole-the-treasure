@@ -1,13 +1,13 @@
 /**
- * THE LAST EXPEDITION: UI CONTROLLER (SIMPLIFIED & HIGH VISUAL)
- * 70%+ Visual presentation, short English sentences, big picture cards,
- * permanent sentence starter chips, and visual science diagrams.
+ * THE LAST EXPEDITION: UI CONTROLLER
+ * Section 0: Expedition Training (7 Mini-Games)
+ * + 10 Sequential Main Story Scenes with High-Visual Simple English.
  */
 
 class ExpeditionUIController {
   constructor() {
     this.selectedChoiceId = null;
-    this.selectedEvidenceId = null;
+    this.memoryTimerInterval = null;
   }
 
   updateHeader() {
@@ -16,21 +16,838 @@ class ExpeditionUIController {
     if (scoreEl) scoreEl.textContent = scores.total;
 
     const stormEl = document.getElementById("storm-time-val");
-    if (stormEl) stormEl.textContent = `${window.expeditionEngine.stormMinutesLeft} MIN`;
+    if (stormEl) {
+      if (window.expeditionEngine.mode === "training") {
+        stormEl.textContent = "TRAINING 🎒";
+      } else {
+        stormEl.textContent = `${window.expeditionEngine.stormMinutesLeft} MIN`;
+      }
+    }
   }
 
   // =========================================================================
-  // MAIN VIEWPORT RENDERER
+  // SECTION 0: EXPEDITION TRAINING RENDERERS
+  // =========================================================================
+
+  showTrainingIntro() {
+    window.expeditionEngine.mode = "training";
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    const intro = EXPEDITION_TRAINING_DATA.intro;
+    const explorers = EXPEDITION_DATA.explorers;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        <!-- Top Status Bar -->
+        <div class="expedition-status-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="jumbo-btn btn-ocean" style="padding: 6px 14px; font-size: 0.85rem;" onclick="uiController.showScreen('hub')">
+              🏠 MAIN MENU
+            </button>
+            <div style="font-family: 'Bungee', cursive; font-size: 1.1rem; color: #1e293b;">
+              🎒 SECTION 0: EXPEDITION TRAINING
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="storm-timer-pill" style="background: #e0f2fe; border-color: #0284c7; color: #0369a1;">
+              <span>🎒</span> <strong>TRAINING READY</strong>
+            </div>
+            <div style="font-family: 'Bungee', cursive; color: #d97706; font-size: 1.15rem;">
+              ⭐ <span id="expedition-score-val">${window.expeditionEngine.scores.total}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Training Banner -->
+        <div class="adventure-card" style="max-width: 1000px; padding: 24px; text-align: center;">
+          <div class="card-header-banner">
+            <span class="card-tag" style="background: #e0f2fe; color: #0369a1;">🎒 7-10 MIN WARM-UP</span>
+            <h1 class="main-heading" style="color: #0284c7; font-size: 2.4rem;">${intro.title}</h1>
+            <p class="sub-heading" style="font-size: 1.3rem;">“${intro.tagline}”</p>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${intro.spoken}')" style="margin-top: 6px;">🔊 Listen</button>
+          </div>
+
+          <!-- 4 Explorers with Backpacks -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0;">
+            ${explorers.map(exp => `
+              <div class="explorer-mini-card" style="flex-direction: column; text-align: center; padding: 14px 10px;">
+                ${EXPEDITION_SVG.getExplorerAvatarSvg(exp.avatarClass, 60)}
+                <div class="explorer-mini-name" style="margin-top: 8px;">${exp.name}</div>
+                <div class="explorer-mini-role">🎒 Backpack Ready</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <!-- Target Words Preview -->
+          <div style="background: #f8fafc; border: 3px solid #cbd5e1; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px;">
+            <h3 style="font-family: 'Bungee', cursive; color: #1e293b; font-size: 1.1rem; margin-bottom: 12px;">
+              🌟 12 EXPLORER WORDS TO LEARN:
+            </h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+              ${EXPEDITION_TRAINING_DATA.targetWords.map(w => `
+                <span class="starter-chip" style="font-size: 0.95rem; cursor: default;">
+                  ${w.icon} ${w.word}
+                </span>
+              `).join("")}
+            </div>
+          </div>
+
+          <button class="jumbo-btn btn-gold" style="font-size: 1.4rem; padding: 16px 42px;" onclick="expeditionUI.startTraining()">
+            START EXPEDITION TRAINING 🎮 ➔
+          </button>
+        </div>
+      </div>
+    `;
+
+    this.updateHeader();
+  }
+
+  startTraining() {
+    window.expeditionEngine.trainingGameIndex = 0;
+    this.renderTrainingGame();
+  }
+
+  renderTrainingGame() {
+    const gameIdx = window.expeditionEngine.trainingGameIndex;
+    switch (gameIdx) {
+      case 0: this.renderGame1_LookFind(); break;
+      case 1: this.renderGame2_MatchWord(); break;
+      case 2: this.renderGame3_WhatAmI(); break;
+      case 3: this.renderGame4_VisualMemory(); break;
+      case 4: this.renderGame5_Backpack(); break;
+      case 5: this.renderGame6_WhichOne(); break;
+      case 6: this.renderGame7_UseTheWord(); break;
+      default: this.showTrainingReady(); break;
+    }
+  }
+
+  renderTrainingNav(activeIdx) {
+    return `
+      <div class="training-nav-pill-row">
+        ${[1, 2, 3, 4, 5, 6, 7].map((num, i) => `
+          <div class="training-step-dot ${i === activeIdx ? 'active-step' : (i < activeIdx ? 'completed-step' : '')}"
+               onclick="expeditionUI.jumpToTrainingGame(${i})">
+            ${i < activeIdx ? '✓' : num}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  jumpToTrainingGame(idx) {
+    window.expeditionEngine.trainingGameIndex = idx;
+    this.renderTrainingGame();
+  }
+
+  // =========================================================================
+  // MINI-GAME 1: LOOK & FIND
+  // =========================================================================
+  renderGame1_LookFind() {
+    const data = EXPEDITION_TRAINING_DATA.lookAndFind;
+    const targetIdx = window.expeditionEngine.lookFindIndex;
+    const target = data.targets[targetIdx];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(0)}
+
+        <div class="adventure-card" style="max-width: 1000px; padding: 18px; text-align: center;">
+          <!-- Target Prompt Banner -->
+          <div class="alarm-banner" style="background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; max-width: 800px; margin: 0 auto 14px;">
+            <span style="font-size: 2rem;">🔎</span>
+            <span style="font-family: 'Bungee', cursive; font-size: 1.4rem;">
+              FIND THE <span style="color: #dc2626;">${target.label}</span> ON THE MAP!
+            </span>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${target.spoken}')">🔊</button>
+          </div>
+
+          <!-- Interactive Island Map with Clickable Hot Zones -->
+          <div style="width: 100%; max-width: 900px; height: 360px; margin: 0 auto; border-radius: 14px; overflow: hidden; border: 4px solid #1e293b;">
+            ${EXPEDITION_SVG.getTrainingIslandSvg()}
+          </div>
+
+          <div id="training-feedback-area" style="margin-top: 14px;"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine) window.soundEngine.speak(target.spoken);
+  }
+
+  handleTrainingIslandClick(clickedId) {
+    const data = EXPEDITION_TRAINING_DATA.lookAndFind;
+    const targetIdx = window.expeditionEngine.lookFindIndex;
+    const target = data.targets[targetIdx];
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (clickedId === target.id) {
+      window.expeditionEngine.addScore("training", 1);
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(`Correct! ${target.label}!`);
+      }
+
+      if (targetIdx < data.targets.length - 1) {
+        window.expeditionEngine.lookFindIndex++;
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 CORRECT! ${target.label} (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 8px 18px; font-size: 1rem;" onclick="expeditionUI.renderGame1_LookFind()">
+              NEXT TARGET ➔
+            </button>
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 GAME 1 COMPLETE! You found all landmarks! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(1)">
+              GAME 2: MATCH THE WORD ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Look again for ${target.label}!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 2: MATCH THE WORD
+  // =========================================================================
+  renderGame2_MatchWord() {
+    const data = EXPEDITION_TRAINING_DATA.matchWord;
+    const roundIdx = window.expeditionEngine.matchWordIndex;
+    const round = data.rounds[roundIdx];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(1)}
+
+        <div class="adventure-card" style="max-width: 900px; padding: 20px; text-align: center;">
+          <div style="font-size: 1.1rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">ROUND ${roundIdx + 1} OF ${data.rounds.length}</div>
+          <div class="question-spotlight-box" style="margin-bottom: 18px;">
+            <span class="card-tag">MATCH THE WORD</span>
+            <div class="spotlight-question-text" style="font-size: 2.2rem; color: #1e3a8a;">
+              ${round.word}
+            </div>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${round.spoken}')">🔊</button>
+          </div>
+
+          <div class="visual-choices-grid" style="margin: 0 auto 16px;">
+            ${round.options.map(opt => `
+              <div class="visual-choice-card" id="match-opt-${opt.id}" onclick="expeditionUI.handleMatchWordChoice('${opt.id}')">
+                <div class="choice-icon-hero">${opt.icon}</div>
+                <div class="choice-label-main">${opt.text}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div id="training-feedback-area"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine) window.soundEngine.speak(round.spoken);
+  }
+
+  handleMatchWordChoice(chosenId) {
+    const data = EXPEDITION_TRAINING_DATA.matchWord;
+    const roundIdx = window.expeditionEngine.matchWordIndex;
+    const round = data.rounds[roundIdx];
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (chosenId === round.correctId) {
+      window.expeditionEngine.addScore("training", 1);
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(`Great match! ${round.word}`);
+      }
+
+      if (roundIdx < data.rounds.length - 1) {
+        window.expeditionEngine.matchWordIndex++;
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 CORRECT! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 8px 18px; font-size: 1rem;" onclick="expeditionUI.renderGame2_MatchWord()">
+              NEXT WORD ➔
+            </button>
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 GAME 2 COMPLETE! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(2)">
+              GAME 3: WHAT AM I? ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Try again! Look at the word ${round.word}!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 3: WHAT AM I? (SHORT RIDDLES)
+  // =========================================================================
+  renderGame3_WhatAmI() {
+    const data = EXPEDITION_TRAINING_DATA.whatAmI;
+    const idx = window.expeditionEngine.whatAmIIndex;
+    const item = data.riddles[idx];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(2)}
+
+        <div class="adventure-card" style="max-width: 900px; padding: 20px; text-align: center;">
+          <div style="font-size: 1.1rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">RIDDLE ${idx + 1} OF ${data.riddles.length}</div>
+          <div class="question-spotlight-box" style="margin-bottom: 18px;">
+            <span class="card-tag">WHAT AM I?</span>
+            <div class="spotlight-question-text" style="font-size: 1.6rem; color: #1e293b;">
+              “${item.clue}”
+            </div>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${item.spoken}')">🔊</button>
+          </div>
+
+          <div class="visual-choices-grid" style="margin: 0 auto 16px;">
+            ${item.options.map(opt => `
+              <div class="visual-choice-card" id="riddle-opt-${opt.id}" onclick="expeditionUI.handleWhatAmIChoice('${opt.id}')">
+                <div class="choice-icon-hero">${opt.icon}</div>
+                <div class="choice-label-main">${opt.text}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div id="training-feedback-area"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine) window.soundEngine.speak(item.spoken);
+  }
+
+  handleWhatAmIChoice(chosenId) {
+    const data = EXPEDITION_TRAINING_DATA.whatAmI;
+    const idx = window.expeditionEngine.whatAmIIndex;
+    const item = data.riddles[idx];
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (chosenId === item.correct) {
+      window.expeditionEngine.addScore("training", 1);
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(`Yes! That is right!`);
+      }
+
+      if (idx < data.riddles.length - 1) {
+        window.expeditionEngine.whatAmIIndex++;
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 CORRECT! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 8px 18px; font-size: 1rem;" onclick="expeditionUI.renderGame3_WhatAmI()">
+              NEXT RIDDLE ➔
+            </button>
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 GAME 3 COMPLETE! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(3)">
+              GAME 4: 8-SECOND MEMORY ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Try again! Read the clue carefully!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 4: 8-SECOND VISUAL MEMORY
+  // =========================================================================
+  renderGame4_VisualMemory() {
+    const data = EXPEDITION_TRAINING_DATA.visualMemory;
+    window.expeditionEngine.memoryState = "countdown";
+    window.expeditionEngine.selectedMemoryItems = [];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(3)}
+
+        <div class="adventure-card" style="max-width: 900px; padding: 20px; text-align: center;" id="memory-stage-box">
+          <div class="training-memory-timer" id="mem-countdown-pill">
+            ⏱️ REMEMBER THE 6 OBJECTS: <span id="mem-sec-left">8</span>s
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0;" id="mem-cards-grid">
+            ${data.targetItems.map(item => `
+              <div class="visual-choice-card" style="cursor: default;">
+                <div class="choice-icon-hero">${item.icon}</div>
+                <div class="choice-label-main">${item.text}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+
+    let seconds = data.displayTime;
+    if (this.memoryTimerInterval) clearInterval(this.memoryTimerInterval);
+
+    this.memoryTimerInterval = setInterval(() => {
+      seconds--;
+      const secEl = document.getElementById("mem-sec-left");
+      if (secEl) secEl.textContent = seconds;
+
+      if (seconds <= 0) {
+        clearInterval(this.memoryTimerInterval);
+        this.renderGame4_MemoryQuestion();
+      }
+    }, 1000);
+  }
+
+  renderGame4_MemoryQuestion() {
+    const data = EXPEDITION_TRAINING_DATA.visualMemory;
+    window.expeditionEngine.memoryState = "guessing";
+    const stage = document.getElementById("memory-stage-box");
+    if (!stage) return;
+
+    if (window.soundEngine) window.soundEngine.speak("What did you see? Click the six objects you remember!");
+
+    stage.innerHTML = `
+      <div class="alarm-banner" style="background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; margin-bottom: 14px;">
+        <span style="font-size: 2rem;">🧠</span>
+        <span style="font-family: 'Bungee', cursive; font-size: 1.3rem;">WHAT DID YOU SEE? SELECT THE 6 OBJECTS!</span>
+      </div>
+
+      <div class="visual-choices-grid" style="grid-template-columns: repeat(4, 1fr); gap: 10px;">
+        ${data.allItems.map(item => `
+          <div class="visual-choice-card" id="mem-guess-${item.id}" onclick="expeditionUI.handleMemoryGuess('${item.id}')">
+            <div class="choice-icon-hero" style="font-size: 2.8rem;">${item.icon}</div>
+            <div class="choice-label-main" style="font-size: 1rem;">${item.text}</div>
+          </div>
+        `).join("")}
+      </div>
+
+      <div id="training-feedback-area" style="margin-top: 14px;"></div>
+    `;
+  }
+
+  handleMemoryGuess(itemId) {
+    const data = EXPEDITION_TRAINING_DATA.visualMemory;
+    const item = data.allItems.find(i => i.id === itemId);
+    const sel = window.expeditionEngine.selectedMemoryItems;
+    const card = document.getElementById(`mem-guess-${itemId}`);
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (sel.includes(itemId)) return;
+
+    if (item.isTarget) {
+      sel.push(itemId);
+      if (card) card.classList.add("selected-choice");
+      if (window.soundEngine) window.soundEngine.playCorrect();
+
+      if (sel.length === 6) {
+        window.expeditionEngine.addScore("training", 2);
+        if (window.soundEngine) {
+          window.soundEngine.playFanfare();
+          window.soundEngine.speak("Great memory! You remembered all six objects!");
+        }
+
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 EXCELLENT MEMORY! (+2 Stars ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(4)">
+              GAME 5: PACK THE BACKPACK ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Oops! ${item.text} was not in the 6 objects!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 5: THE EXPLORER'S BACKPACK
+  // =========================================================================
+  renderGame5_Backpack() {
+    const data = EXPEDITION_TRAINING_DATA.backpack;
+    const packed = window.expeditionEngine.packedItems;
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    const packedIcons = packed.map(id => {
+      const it = data.items.find(i => i.id === id);
+      return it ? it.icon : "";
+    });
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(4)}
+
+        <div class="adventure-card" style="max-width: 1000px; padding: 20px; text-align: center;">
+          <div class="alarm-banner" style="background: #fef3c7; border-color: #f59e0b; color: #78350f; margin-bottom: 14px;">
+            <span style="font-size: 2rem;">🎒</span>
+            <span style="font-family: 'Bungee', cursive; font-size: 1.25rem;">
+              WHAT DOES AN EXPLORER NEED? PACK 4 USEFUL ITEMS (${packed.length}/4)!
+            </span>
+          </div>
+
+          <div class="backpack-stage-container">
+            <!-- Backpack Visual Graphic -->
+            <div>
+              ${EXPEDITION_SVG.getBackpackSvg(packedIcons)}
+            </div>
+
+            <!-- Items Choice Grid -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; flex: 1;">
+              ${data.items.map(it => {
+                const isPacked = packed.includes(it.id);
+                return `
+                  <div class="visual-choice-card ${isPacked ? 'packed-item' : ''}" onclick="expeditionUI.handlePackItem('${it.id}')">
+                    <div class="choice-icon-hero" style="font-size: 2.8rem;">${it.icon}</div>
+                    <div class="choice-label-main" style="font-size: 0.95rem;">${it.text}</div>
+                    <div style="font-size: 0.8rem; font-weight: 800; color: ${isPacked ? '#059669' : '#64748b'};">
+                      ${isPacked ? 'PACKED ✅' : '+ PACK'}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <div id="training-feedback-area"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine && packed.length === 0) window.soundEngine.speak(data.spoken);
+  }
+
+  handlePackItem(itemId) {
+    const data = EXPEDITION_TRAINING_DATA.backpack;
+    const item = data.items.find(i => i.id === itemId);
+    const packed = window.expeditionEngine.packedItems;
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (packed.includes(itemId)) {
+      window.expeditionEngine.packedItems = packed.filter(id => id !== itemId);
+      this.renderGame5_Backpack();
+      return;
+    }
+
+    if (!item.isNeeded) {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">${item.text}: ${item.reason}</div></div>`;
+      return;
+    }
+
+    if (packed.length < 4) {
+      packed.push(itemId);
+      if (window.soundEngine) window.soundEngine.playCorrect();
+      this.renderGame5_Backpack();
+
+      if (packed.length === 4) {
+        window.expeditionEngine.addScore("training", 2);
+        if (window.soundEngine) {
+          window.soundEngine.playFanfare();
+          window.soundEngine.speak("Backpack packed! You have Compass, Map, Flashlight, and Water!");
+        }
+
+        const fb = document.getElementById("training-feedback-area");
+        if (fb) {
+          fb.innerHTML = `
+            <div class="feedback-box">
+              <div class="feedback-text">🎒 BACKPACK PACKED! (+2 Stars ⭐)</div>
+              <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(5)">
+                GAME 6: WHICH ONE? ➔
+              </button>
+            </div>
+          `;
+        }
+      }
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 6: WHICH ONE?
+  // =========================================================================
+  renderGame6_WhichOne() {
+    const data = EXPEDITION_TRAINING_DATA.whichOne;
+    const qIdx = window.expeditionEngine.whichOneIndex;
+    const q = data.questions[qIdx];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(5)}
+
+        <div class="adventure-card" style="max-width: 900px; padding: 20px; text-align: center;">
+          <div style="font-size: 1.1rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">QUESTION ${qIdx + 1} OF ${data.questions.length}</div>
+          <div class="question-spotlight-box" style="margin-bottom: 18px;">
+            <span class="card-tag">WHICH ONE?</span>
+            <div class="spotlight-question-text" style="font-size: 1.8rem; color: #1e3a8a;">
+              ${q.prompt}
+            </div>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${q.spoken}')">🔊</button>
+          </div>
+
+          <div class="visual-choices-grid" style="margin: 0 auto 16px;">
+            ${q.options.map(opt => `
+              <div class="visual-choice-card" id="which-opt-${opt.id}" onclick="expeditionUI.handleWhichOneChoice('${opt.id}')">
+                <div class="choice-icon-hero">${opt.icon}</div>
+                <div class="choice-label-main">${opt.text}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div id="training-feedback-area"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine) window.soundEngine.speak(q.spoken);
+  }
+
+  handleWhichOneChoice(chosenId) {
+    const data = EXPEDITION_TRAINING_DATA.whichOne;
+    const qIdx = window.expeditionEngine.whichOneIndex;
+    const q = data.questions[qIdx];
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (chosenId === q.correctId) {
+      window.expeditionEngine.addScore("training", 1);
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak("Correct visual identification!");
+      }
+
+      if (qIdx < data.questions.length - 1) {
+        window.expeditionEngine.whichOneIndex++;
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 CORRECT! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 8px 18px; font-size: 1rem;" onclick="expeditionUI.renderGame6_WhichOne()">
+              NEXT QUESTION ➔
+            </button>
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 GAME 6 COMPLETE! (+1 Star ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.1rem;" onclick="expeditionUI.jumpToTrainingGame(6)">
+              GAME 7: USE THE WORD ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Look closely at the pictures!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // MINI-GAME 7: USE THE WORD & PREDICT
+  // =========================================================================
+  renderGame7_UseTheWord() {
+    const data = EXPEDITION_TRAINING_DATA.useTheWord;
+    const cIdx = window.expeditionEngine.useWordIndex;
+    const ch = data.challenges[cIdx];
+
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        ${this.renderTrainingHeader(data.title)}
+        ${this.renderTrainingNav(6)}
+
+        <div class="adventure-card" style="max-width: 900px; padding: 20px; text-align: center;">
+          <div style="font-size: 1.1rem; font-weight: 800; color: #64748b; margin-bottom: 6px;">PREDICTION ${cIdx + 1} OF ${data.challenges.length}</div>
+          <div class="question-spotlight-box" style="margin-bottom: 18px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">${ch.icons}</div>
+            <span class="card-tag">CAUSE & EFFECT PREDICTION</span>
+            <div class="spotlight-question-text" style="font-size: 1.6rem; color: #1e3a8a;">
+              “${ch.prompt}”
+            </div>
+            <button class="speak-icon-btn" onclick="soundEngine.speak('${ch.spoken}')">🔊</button>
+          </div>
+
+          <div class="visual-choices-grid" style="margin: 0 auto 16px;">
+            ${ch.options.map(opt => `
+              <div class="visual-choice-card" id="use-opt-${opt.id}" onclick="expeditionUI.handleUseWordChoice('${opt.id}')">
+                <div class="choice-icon-hero">${opt.icon}</div>
+                <div class="choice-label-main">${opt.text}</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div id="training-feedback-area"></div>
+        </div>
+      </div>
+    `;
+
+    if (window.soundEngine) window.soundEngine.speak(ch.spoken);
+  }
+
+  handleUseWordChoice(chosenId) {
+    const data = EXPEDITION_TRAINING_DATA.useTheWord;
+    const cIdx = window.expeditionEngine.useWordIndex;
+    const ch = data.challenges[cIdx];
+    const feedback = document.getElementById("training-feedback-area");
+
+    if (chosenId === ch.correctId) {
+      window.expeditionEngine.addScore("training", 2);
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak("Great reasoning and prediction!");
+      }
+
+      if (cIdx < data.challenges.length - 1) {
+        window.expeditionEngine.useWordIndex++;
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 PREDICTION CORRECT! (+2 Stars ⭐)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 8px 18px; font-size: 1rem;" onclick="expeditionUI.renderGame7_UseTheWord()">
+              NEXT PREDICTION ➔
+            </button>
+          </div>
+        `;
+      } else {
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 ALL 7 TRAINING MINI-GAMES COMPLETE! (+2 Stars ⭐)</div>
+            <button class="jumbo-btn btn-gold" style="padding: 10px 22px; font-size: 1.15rem;" onclick="expeditionUI.showTrainingReady()">
+              EXPEDITION READY 🎒 ➔
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      feedback.innerHTML = `<div class="feedback-box error-mode"><div class="feedback-text" style="color: #b91c1c;">Think about cause and effect!</div></div>`;
+    }
+  }
+
+  // =========================================================================
+  // TRANSITION: EXPEDITION READY!
+  // =========================================================================
+  showTrainingReady() {
+    const container = document.getElementById("expedition-main-view");
+    if (!container) return;
+
+    if (window.uiController) window.uiController.triggerConfetti(4000);
+    if (window.soundEngine) {
+      window.soundEngine.playFanfare();
+      window.soundEngine.speak("Expedition Ready! You know the words. You know the map. Now let's begin the expedition!");
+    }
+
+    container.innerHTML = `
+      <div class="expedition-master-viewport">
+        <div class="adventure-card" style="max-width: 1000px; padding: 26px; text-align: center;">
+          <div class="card-header-banner">
+            <span class="card-tag" style="background: #fef08a; color: #854d0e;">✨ TRAINING COMPLETE</span>
+            <h1 class="main-heading" style="color: #059669; font-size: 2.6rem;">🎒 EXPEDITION READY!</h1>
+            <p class="sub-heading" style="font-size: 1.35rem;">
+              You know the words. You know the map. Now let's begin the mission!
+            </p>
+          </div>
+
+          <div style="font-size: 5rem; margin: 18px 0; animation: bounce-success 1s infinite alternate;">
+            🧭 🗺️ 🔦 🧃 🌋 🌧️
+          </div>
+
+          <div style="background: #ecfdf5; border: 3px solid #10b981; border-radius: var(--radius-lg); padding: 16px; max-width: 700px; margin: 0 auto 24px;">
+            <div style="font-family: 'Bungee', cursive; color: #065f46; font-size: 1.2rem; margin-bottom: 8px;">
+              🎯 MISSION: REACH STATION ALPHA BEFORE THE STORM!
+            </div>
+            <p style="font-weight: 800; color: #047857; font-size: 1.1rem;">
+              Use what you learned in training to make good predictions with evidence!
+            </p>
+          </div>
+
+          <button class="jumbo-btn btn-gold" style="font-size: 1.5rem; padding: 18px 48px;" onclick="expeditionUI.startMainStory()">
+            START THE LAST EXPEDITION 🧭 ➔
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  startMainStory() {
+    window.expeditionEngine.startMainStory();
+    this.showScene(0);
+  }
+
+  renderTrainingHeader(title) {
+    return `
+      <div class="expedition-status-bar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="jumbo-btn btn-ocean" style="padding: 6px 14px; font-size: 0.85rem;" onclick="expeditionUI.showTrainingIntro()">
+            🎒 TRAINING MENU
+          </button>
+          <div style="font-family: 'Bungee', cursive; font-size: 1.1rem; color: #1e293b;">
+            ${title}
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="storm-timer-pill" style="background: #e0f2fe; border-color: #0284c7; color: #0369a1;">
+            <span>🎒</span> <strong>TRAINING</strong>
+          </div>
+          <div style="font-family: 'Bungee', cursive; color: #d97706; font-size: 1.15rem;">
+            ⭐ <span id="expedition-score-val">${window.expeditionEngine.scores.total}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // MAIN STORY SCENES RENDERER (10 SEQUENTIAL SCENES)
   // =========================================================================
 
   showScene(sceneIndex = null) {
     if (sceneIndex !== null) {
       window.expeditionEngine.currentSceneIndex = sceneIndex;
     }
+    window.expeditionEngine.mode = "story";
 
     this.selectedChoiceId = null;
-    this.selectedEvidenceId = null;
-
     const container = document.getElementById("expedition-main-view");
     if (!container) return;
 
@@ -61,7 +878,7 @@ class ExpeditionUIController {
           </div>
         </div>
 
-        <!-- Permanent Sentence Starters Bar (Click to Speak) -->
+        <!-- Permanent Sentence Starters Bar -->
         <div class="sentence-starters-bar">
           <button class="starter-chip" onclick="soundEngine.speak('I think...')">💭 I think...</button>
           <button class="starter-chip" onclick="soundEngine.speak('...will...')">🔮 ...will...</button>
@@ -96,10 +913,6 @@ class ExpeditionUIController {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // =========================================================================
-  // SCENE BODY RENDERERS
-  // =========================================================================
-
   renderSceneBody(scene) {
     switch (scene.sceneNum) {
       case 1: return this.renderScene1(scene);
@@ -120,7 +933,6 @@ class ExpeditionUIController {
   renderScene1(scene) {
     return `
       <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
-        <!-- Visual Story Lines -->
         <div class="visual-story-box">
           ${scene.shortLines.map(line => `
             <div class="story-line-item">
@@ -130,12 +942,10 @@ class ExpeditionUIController {
           `).join("")}
         </div>
 
-        <!-- Big Island Map Canvas -->
         <div style="width: 100%; max-width: 900px; height: 320px; border-radius: 14px; overflow: hidden; border: 4px solid #1e293b;">
           ${EXPEDITION_SVG.getIslandMapSvg(1)}
         </div>
 
-        <!-- Sentence Frame Banner -->
         <div class="discussion-simple-banner">
           <div style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: #78350f;">
             🔮 WHAT WILL HAPPEN NEXT?
@@ -145,7 +955,6 @@ class ExpeditionUIController {
           </div>
         </div>
 
-        <!-- Big Picture Choices -->
         <div class="visual-choices-grid">
           ${scene.predictionOptions.map(opt => `
             <div class="visual-choice-card" id="opt-pred-${opt.id}" onclick="expeditionUI.selectChoice('${opt.id}')">
@@ -231,7 +1040,6 @@ class ExpeditionUIController {
           `).join("")}
         </div>
 
-        <!-- Big Visual Riddle Card -->
         <div class="question-spotlight-box" style="width: 100%; border-color: #eab308; text-align: center;">
           <span class="card-tag" style="background: #ca8a04; color: #fff;">SHORT RIDDLE</span>
           <div class="spotlight-question-text" style="font-size: 1.6rem; white-space: pre-line; margin: 10px 0;">
@@ -240,7 +1048,6 @@ class ExpeditionUIController {
           <button class="speak-icon-btn" onclick="soundEngine.speak('${scene.riddle.spoken}')">🔊 Listen</button>
         </div>
 
-        <!-- Visual Choices for Riddle -->
         <div class="visual-choices-grid" style="width: 100%;">
           <div class="visual-choice-card" id="riddle-opt-compass" onclick="expeditionUI.selectRiddleChoice('compass')">
             <div class="choice-icon-hero">🧭</div>
@@ -281,7 +1088,6 @@ class ExpeditionUIController {
           `).join("")}
         </div>
 
-        <!-- Big Visual Hydrology Diagram -->
         <div style="width: 100%;">
           ${EXPEDITION_SVG.getHydrologyDiagramSvg()}
         </div>
@@ -464,7 +1270,6 @@ class ExpeditionUIController {
           `).join("")}
         </div>
 
-        <!-- Big Volcano Cross-Section Diagram -->
         <div style="width: 100%;">
           ${EXPEDITION_SVG.getVolcanoCrossSectionSvg()}
         </div>
@@ -561,7 +1366,6 @@ class ExpeditionUIController {
           `).join("")}
         </div>
 
-        <!-- 4 Clues Keys Grid -->
         <div style="width: 100%; background: #fff; border: 4px solid #1e293b; border-radius: var(--radius-lg); padding: 18px;">
           <h3 style="font-family: 'Bungee', cursive; color: #0284c7; font-size: 1.3rem; margin-bottom: 12px; text-align: center;">
             🔐 STATION ALPHA: 4 CLUE KEYS
@@ -588,7 +1392,7 @@ class ExpeditionUIController {
   }
 
   // =========================================================================
-  // USER ACTIONS & HANDLERS
+  // STORY ACTIONS & HANDLERS
   // =========================================================================
 
   selectChoice(choiceId) {
@@ -867,22 +1671,26 @@ class ExpeditionUIController {
         </div>
 
         <!-- Score Category Breakdown -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0;">
-          <div style="background: #eff6ff; border: 3px solid #3b82f6; border-radius: 12px; padding: 14px; text-align: center;">
-            <div style="font-family: 'Bungee', cursive; color: #1d4ed8; font-size: 0.9rem;">PREDICTIONS</div>
-            <strong style="font-size: 1.5rem; color: #1e40af;">${scores.predictions} ⭐</strong>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0;">
+          <div style="background: #e0f2fe; border: 3px solid #0284c7; border-radius: 12px; padding: 12px; text-align: center;">
+            <div style="font-family: 'Bungee', cursive; color: #0369a1; font-size: 0.85rem;">TRAINING</div>
+            <strong style="font-size: 1.4rem; color: #0284c7;">${scores.training} ⭐</strong>
           </div>
-          <div style="background: #ecfdf5; border: 3px solid #10b981; border-radius: 12px; padding: 14px; text-align: center;">
-            <div style="font-family: 'Bungee', cursive; color: #047857; font-size: 0.9rem;">EVIDENCE USE</div>
-            <strong style="font-size: 1.5rem; color: #065f46;">${scores.evidence} ⭐</strong>
+          <div style="background: #eff6ff; border: 3px solid #3b82f6; border-radius: 12px; padding: 12px; text-align: center;">
+            <div style="font-family: 'Bungee', cursive; color: #1d4ed8; font-size: 0.85rem;">PREDICTIONS</div>
+            <strong style="font-size: 1.4rem; color: #1e40af;">${scores.predictions} ⭐</strong>
           </div>
-          <div style="background: #fefce8; border: 3px solid #ca8a04; border-radius: 12px; padding: 14px; text-align: center;">
-            <div style="font-family: 'Bungee', cursive; color: #854d0e; font-size: 0.9rem;">CLIL SCIENCE</div>
-            <strong style="font-size: 1.5rem; color: #a16207;">${scores.clil} ⭐</strong>
+          <div style="background: #ecfdf5; border: 3px solid #10b981; border-radius: 12px; padding: 12px; text-align: center;">
+            <div style="font-family: 'Bungee', cursive; color: #047857; font-size: 0.85rem;">EVIDENCE</div>
+            <strong style="font-size: 1.4rem; color: #065f46;">${scores.evidence} ⭐</strong>
           </div>
-          <div style="background: #fdf2f8; border: 3px solid #db2777; border-radius: 12px; padding: 14px; text-align: center;">
-            <div style="font-family: 'Bungee', cursive; color: #9d174d; font-size: 0.9rem;">REASONING</div>
-            <strong style="font-size: 1.5rem; color: #be185d;">${scores.reasoning} ⭐</strong>
+          <div style="background: #fefce8; border: 3px solid #ca8a04; border-radius: 12px; padding: 12px; text-align: center;">
+            <div style="font-family: 'Bungee', cursive; color: #854d0e; font-size: 0.85rem;">CLIL SCIENCE</div>
+            <strong style="font-size: 1.4rem; color: #a16207;">${scores.clil} ⭐</strong>
+          </div>
+          <div style="background: #fdf2f8; border: 3px solid #db2777; border-radius: 12px; padding: 12px; text-align: center;">
+            <div style="font-family: 'Bungee', cursive; color: #9d174d; font-size: 0.85rem;">REASONING</div>
+            <strong style="font-size: 1.4rem; color: #be185d;">${scores.reasoning} ⭐</strong>
           </div>
         </div>
 
@@ -891,7 +1699,7 @@ class ExpeditionUIController {
           <div class="award-icon">🏆</div>
           <div class="award-title" style="color: #0369a1; font-size: 1.4rem;">GOLDEN EXPLORER COMPASS AWARD</div>
           <p style="font-weight: 800; color: #075985; margin-top: 6px;">
-            For predicting weather, flood water, magma vs lava, and finding North!
+            For training vocabulary, predicting weather, understanding flood water, magma vs lava, and finding North!
           </p>
         </div>
 
@@ -915,7 +1723,7 @@ class ExpeditionUIController {
 
   restartExpedition() {
     window.expeditionEngine.resetAll();
-    this.showScene(0);
+    this.showTrainingIntro();
   }
 }
 

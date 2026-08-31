@@ -1,7 +1,276 @@
 /**
  * THE LAST EXPEDITION: A Grade 4 CLIL Prediction & Problem-Solving Game
- * Simplified English + Rich Visual Symbols + Core CLIL Concepts
+ * Section 0: Expedition Training (7-10 Min Vocabulary Mini-Games)
+ * + 10 Sequential Main Expedition Scenes
  */
+
+const EXPEDITION_TRAINING_DATA = {
+  intro: {
+    title: "🎒 EXPEDITION TRAINING",
+    subtitle: "Learn Explorer Words Before We Start!",
+    tagline: "Before we start, we need to learn some explorer words! Learn the words. You will need them later!",
+    spoken: "Before we start, we need to learn some explorer words! Look at the pictures and learn the words."
+  },
+
+  // 12 Target Words
+  targetWords: [
+    { word: "VOLCANO", icon: "🌋", def: "A hot mountain with smoke and fire." },
+    { word: "ROCK", icon: "🪨", def: "Hard stone on the ground." },
+    { word: "CAVE", icon: "🕳️", def: "A dry stone room inside a mountain." },
+    { word: "RIVER", icon: "🌊", def: "Flowing freshwater." },
+    { word: "BRIDGE", icon: "🌉", def: "Path to cross over a river." },
+    { word: "COMPASS", icon: "🧭", def: "Points North, South, East, West." },
+    { word: "MAP", icon: "🗺️", def: "Drawing showing roads and places." },
+    { word: "STORM", icon: "🌧️", def: "Heavy rain and strong wind." },
+    { word: "TRACKS", icon: "🐾", def: "Animal footprints in the mud." },
+    { word: "TEMPERATURE", icon: "🌡️", def: "Shows how hot or cold it is." },
+    { word: "SHELTER", icon: "🏕️", def: "A safe place to stay dry." },
+    { word: "ROUTE", icon: "🛤️", def: "The path or way you travel." }
+  ],
+
+  // Mini-Game 1: Look & Find
+  lookAndFind: {
+    title: "🎮 GAME 1: LOOK & FIND",
+    instruction: "Listen and click the correct object on the island!",
+    targets: [
+      { id: "volcano", label: "VOLCANO 🌋", spoken: "Find the volcano!", icon: "🌋", x: 730, y: 195, r: 45 },
+      { id: "cave", label: "CAVE 🕳️", spoken: "Find the cave!", icon: "🕳️", x: 325, y: 255, r: 40 },
+      { id: "river", label: "RIVER 🌊", spoken: "Find the river!", icon: "🌊", x: 425, y: 310, r: 40 },
+      { id: "bridge", label: "BRIDGE 🌉", spoken: "Find the bridge!", icon: "🌉", x: 425, y: 245, r: 35 },
+      { id: "shelter", label: "SHELTER 🏕️", spoken: "Find the camp shelter!", icon: "🏕️", x: 195, y: 305, r: 35 },
+      { id: "station", label: "STATION 🏛️", spoken: "Find the research station!", icon: "🏛️", x: 470, y: 70, r: 45 }
+    ]
+  },
+
+  // Mini-Game 2: Match the Word
+  matchWord: {
+    title: "🎮 GAME 2: MATCH THE WORD",
+    rounds: [
+      {
+        word: "CAVE 🕳️",
+        spoken: "Match the word: CAVE",
+        correctId: "cave",
+        options: [
+          { id: "volcano", icon: "🌋", text: "VOLCANO" },
+          { id: "cave", icon: "🕳️", text: "CAVE" },
+          { id: "river", icon: "🌊", text: "RIVER" }
+        ]
+      },
+      {
+        word: "COMPASS 🧭",
+        spoken: "Match the word: COMPASS",
+        correctId: "compass",
+        options: [
+          { id: "compass", icon: "🧭", text: "COMPASS" },
+          { id: "map", icon: "🗺️", text: "MAP" },
+          { id: "temp", icon: "🌡️", text: "TEMPERATURE" }
+        ]
+      },
+      {
+        word: "BRIDGE 🌉",
+        spoken: "Match the word: BRIDGE",
+        correctId: "bridge",
+        options: [
+          { id: "tree", icon: "🌲", text: "FOREST" },
+          { id: "bridge", icon: "🌉", text: "BRIDGE" },
+          { id: "cave", icon: "🕳️", text: "CAVE" }
+        ]
+      },
+      {
+        word: "STORM 🌧️",
+        spoken: "Match the word: STORM",
+        correctId: "storm",
+        options: [
+          { id: "sun", icon: "☀️", text: "SUNNY" },
+          { id: "storm", icon: "🌧️", text: "STORM" },
+          { id: "rainbow", icon: "🌈", text: "RAINBOW" }
+        ]
+      },
+      {
+        word: "TRACKS 🐾",
+        spoken: "Match the word: TRACKS",
+        correctId: "tracks",
+        options: [
+          { id: "tracks", icon: "🐾", text: "TRACKS" },
+          { id: "plant", icon: "🌱", text: "PLANT" },
+          { id: "rock", icon: "🪨", text: "ROCK" }
+        ]
+      },
+      {
+        word: "SHELTER 🏕️",
+        spoken: "Match the word: SHELTER",
+        correctId: "shelter",
+        options: [
+          { id: "water", icon: "🌊", text: "RIVER" },
+          { id: "shelter", icon: "🏕️", text: "SHELTER" },
+          { id: "fire", icon: "🔥", text: "FIRE" }
+        ]
+      }
+    ]
+  },
+
+  // Mini-Game 3: What Am I? (Short Visual Riddles)
+  whatAmI: {
+    title: "🎮 GAME 3: WHAT AM I?",
+    riddles: [
+      {
+        clue: "I help you find North, South, East, and West.",
+        spoken: "I help you find North, South, East, and West. What am I?",
+        correct: "compass",
+        options: [
+          { id: "compass", icon: "🧭", text: "COMPASS" },
+          { id: "shoe", icon: "👟", text: "SHOE" },
+          { id: "apple", icon: "🍎", text: "APPLE" }
+        ]
+      },
+      {
+        clue: "You cross me to go over a river.",
+        spoken: "You cross me to go over a river. What am I?",
+        correct: "bridge",
+        options: [
+          { id: "tree", icon: "🌲", text: "TREE" },
+          { id: "bridge", icon: "🌉", text: "BRIDGE" },
+          { id: "box", icon: "📦", text: "BOX" }
+        ]
+      },
+      {
+        clue: "You can stay inside me and be safe from the rain.",
+        spoken: "You can stay inside me and be safe from the rain. What am I?",
+        correct: "shelter",
+        options: [
+          { id: "shelter", icon: "🏕️", text: "SHELTER" },
+          { id: "river", icon: "🌊", text: "RIVER" },
+          { id: "cloud", icon: "☁️", text: "CLOUD" }
+        ]
+      },
+      {
+        clue: "Animals leave me in the mud when they walk.",
+        spoken: "Animals leave me in the mud when they walk. What am I?",
+        correct: "tracks",
+        options: [
+          { id: "tracks", icon: "🐾", text: "TRACKS" },
+          { id: "book", icon: "📚", text: "BOOK" },
+          { id: "car", icon: "🚗", text: "CAR" }
+        ]
+      }
+    ]
+  },
+
+  // Mini-Game 4: Visual Memory (8s flash)
+  visualMemory: {
+    title: "🎮 GAME 4: 8-SECOND MEMORY",
+    instruction: "Look at the 6 objects for 8 seconds. Remember them!",
+    displayTime: 8,
+    targetItems: [
+      { id: "compass", icon: "🧭", text: "COMPASS" },
+      { id: "volcano", icon: "🌋", text: "VOLCANO" },
+      { id: "river", icon: "🌊", text: "RIVER" },
+      { id: "cave", icon: "🕳️", text: "CAVE" },
+      { id: "bridge", icon: "🌉", text: "BRIDGE" },
+      { id: "tracks", icon: "🐾", text: "TRACKS" }
+    ],
+    allItems: [
+      { id: "compass", icon: "🧭", text: "COMPASS", isTarget: true },
+      { id: "volcano", icon: "🌋", text: "VOLCANO", isTarget: true },
+      { id: "river", icon: "🌊", text: "RIVER", isTarget: true },
+      { id: "cave", icon: "🕳️", text: "CAVE", isTarget: true },
+      { id: "bridge", icon: "🌉", text: "BRIDGE", isTarget: true },
+      { id: "tracks", icon: "🐾", text: "TRACKS", isTarget: true },
+      { id: "tree", icon: "🌳", text: "TREE", isTarget: false },
+      { id: "fish", icon: "🐟", text: "FISH", isTarget: false }
+    ]
+  },
+
+  // Mini-Game 5: Explorer's Backpack
+  backpack: {
+    title: "🎮 GAME 5: PACK THE BACKPACK",
+    instruction: "What does an explorer need? Choose 4 items!",
+    spoken: "What does an explorer need? Choose four useful items for the backpack.",
+    items: [
+      { id: "compass", icon: "🧭", text: "COMPASS", isNeeded: true, reason: "Finds directions!" },
+      { id: "map", icon: "🗺️", text: "MAP", isNeeded: true, reason: "Shows the paths!" },
+      { id: "flashlight", icon: "🔦", text: "FLASHLIGHT", isNeeded: true, reason: "Lights dark caves!" },
+      { id: "water", icon: "🧃", text: "WATER", isNeeded: true, reason: "Keeps explorers healthy!" },
+      { id: "teddy", icon: "🧸", text: "TEDDY BEAR", isNeeded: false, reason: "Too heavy and not needed on a mission!" },
+      { id: "pan", icon: "🍳", text: "FRYING PAN", isNeeded: false, reason: "Too heavy to carry across mountains!" },
+      { id: "book", icon: "📚", text: "HEAVY BOOK", isNeeded: false, reason: "Too heavy for hiking!" }
+    ]
+  },
+
+  // Mini-Game 6: Which One?
+  whichOne: {
+    title: "🎮 GAME 6: WHICH ONE?",
+    questions: [
+      {
+        prompt: "Which picture shows a STORM? ⛈️",
+        spoken: "Which picture shows a storm?",
+        correctId: "storm",
+        options: [
+          { id: "sun", icon: "☀️", text: "Sunny Day" },
+          { id: "storm", icon: "🌧️ ⚡", text: "Heavy Storm" },
+          { id: "rainbow", icon: "🌈", text: "Rainbow" }
+        ]
+      },
+      {
+        prompt: "Which picture shows a ROUTE? 🛤️",
+        spoken: "Which picture shows a route on a map?",
+        correctId: "route",
+        options: [
+          { id: "route", icon: "🗺️ ➔ ➔", text: "Trail Route" },
+          { id: "blank", icon: "📄", text: "Blank Paper" },
+          { id: "house", icon: "🏠", text: "House" }
+        ]
+      },
+      {
+        prompt: "Which picture shows ANIMAL TRACKS? 🐾",
+        spoken: "Which picture shows animal tracks in the mud?",
+        correctId: "tracks",
+        options: [
+          { id: "tracks", icon: "🐾 🐾", text: "Paw Tracks" },
+          { id: "plants", icon: "🌱", text: "Green Plant" },
+          { id: "rocks", icon: "🪨", text: "Rock" }
+        ]
+      }
+    ]
+  },
+
+  // Mini-Game 7: Use the Word (Mini Predictions)
+  useTheWord: {
+    title: "🎮 GAME 7: USE THE WORD & PREDICT",
+    challenges: [
+      {
+        icons: "🌧️ ➔ 🌊",
+        prompt: "The rain is heavy. What will happen to the river?",
+        spoken: "The rain is heavy. What will happen to the river?",
+        correctId: "rise",
+        options: [
+          { id: "rise", icon: "🌊 ⬆️", text: "The river will rise." },
+          { id: "dry", icon: "🏖️", text: "The river will dry up." }
+        ]
+      },
+      {
+        icons: "🌋 ➔ 🌡️ ↑",
+        prompt: "The ground temperature is high. What might happen?",
+        spoken: "The ground temperature is high. What might happen?",
+        correctId: "active",
+        options: [
+          { id: "active", icon: "🌋 💨", text: "The volcano might become active." },
+          { id: "ice", icon: "🧊", text: "It will freeze into ice." }
+        ]
+      },
+      {
+        icons: "🌊 ➔ 🌉 ❌",
+        prompt: "The river is high and the bridge is broken. What should they do?",
+        spoken: "The river is high and the bridge is broken. What should they do?",
+        correctId: "route",
+        options: [
+          { id: "route", icon: "🛤️ 🌲", text: "Find another route." },
+          { id: "swim", icon: "🏊 ❌", text: "Swim across the deep flood." }
+        ]
+      }
+    ]
+  }
+};
 
 const EXPEDITION_DATA = {
   mission: {
@@ -308,5 +577,5 @@ const EXPEDITION_DATA = {
 };
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = EXPEDITION_DATA;
+  module.exports = { EXPEDITION_TRAINING_DATA, EXPEDITION_DATA };
 }

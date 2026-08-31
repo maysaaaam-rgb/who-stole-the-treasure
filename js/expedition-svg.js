@@ -218,6 +218,94 @@ const EXPEDITION_SVG = {
         <ellipse cx="50" cy="30" rx="34" ry="6" fill="${hatColor}" stroke="#78350f" stroke-width="2"/>
       </svg>
     `;
+  },
+
+  // 5. Training Look & Find Interactive Island SVG with Clickable Regions
+  getTrainingIslandSvg() {
+    return `
+      <svg width="100%" height="100%" viewBox="0 0 920 440" fill="none" xmlns="http://www.w3.org/2000/svg" class="expedition-scene-svg">
+        <rect x="0" y="0" width="920" height="440" fill="#38bdf8"/>
+        <!-- Main Island Terrain -->
+        <path d="M90 350 C110 180 230 80 470 70 C690 60 830 190 810 350 C790 430 190 430 90 350 Z" fill="#86efac" stroke="#16a34a" stroke-width="6"/>
+        <path d="M110 340 C130 190 240 90 470 80 C670 70 790 200 770 340 C750 410 210 410 110 340 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+        <path d="M150 320 C170 210 270 110 470 100 C650 90 750 210 730 320 C710 380 230 380 150 320 Z" fill="#4ade80"/>
+
+        <!-- 1. Beach Shelter (Clickable) -->
+        <g transform="translate(170, 320)" onclick="expeditionUI.handleTrainingIslandClick('shelter')" style="cursor: pointer;" class="training-clickable-zone" id="zone-shelter">
+          <circle cx="25" cy="-10" r="45" fill="#f97316" fill-opacity="0.15" stroke="#f97316" stroke-width="3" stroke-dasharray="6 4"/>
+          <polygon points="0,0 25,-30 50,0" fill="#f97316" stroke="#c2410c" stroke-width="3"/>
+          <text x="25" y="16" font-family="'Bungee', cursive" font-size="12" fill="#7c2d12" text-anchor="middle">SHELTER 🏕️</text>
+        </g>
+
+        <!-- 2. Stone Cave (Clickable) -->
+        <g transform="translate(290, 240)" onclick="expeditionUI.handleTrainingIslandClick('cave')" style="cursor: pointer;" class="training-clickable-zone" id="zone-cave">
+          <circle cx="35" cy="20" r="45" fill="#64748b" fill-opacity="0.15" stroke="#334155" stroke-width="3" stroke-dasharray="6 4"/>
+          <path d="M0,25 C10,-25 60,-25 70,25 Z" fill="#64748b" stroke="#334155" stroke-width="4"/>
+          <ellipse cx="35" cy="22" rx="18" ry="14" fill="#0f172a"/>
+          <text x="35" y="44" font-family="'Bungee', cursive" font-size="12" fill="#1e293b" text-anchor="middle">CAVE 🕳️</text>
+        </g>
+
+        <!-- 3. River & Broken Bridge (Clickable River & Bridge) -->
+        <path d="M470 100 Q430 220 410 380" stroke="#0284c7" stroke-width="30" stroke-linecap="round" fill="none"
+              onclick="expeditionUI.handleTrainingIslandClick('river')" style="cursor: pointer;"/>
+        <g transform="translate(410, 310)" onclick="expeditionUI.handleTrainingIslandClick('river')" style="cursor: pointer;" class="training-clickable-zone" id="zone-river">
+          <circle cx="0" cy="0" r="35" fill="#0284c7" fill-opacity="0.2" stroke="#0284c7" stroke-width="3" stroke-dasharray="6 4"/>
+          <text x="0" y="5" font-family="'Bungee', cursive" font-size="11" fill="#0369a1" text-anchor="middle">RIVER 🌊</text>
+        </g>
+
+        <g transform="translate(410, 240)" onclick="expeditionUI.handleTrainingIslandClick('bridge')" style="cursor: pointer;" class="training-clickable-zone" id="zone-bridge">
+          <circle cx="14" cy="5" r="35" fill="#b45309" fill-opacity="0.2" stroke="#b45309" stroke-width="3" stroke-dasharray="6 4"/>
+          <rect x="-14" y="0" width="18" height="10" fill="#78350f"/>
+          <rect x="25" y="0" width="18" height="10" fill="#78350f"/>
+          <text x="14" y="10" font-size="18" text-anchor="middle" fill="#ef4444">❌</text>
+          <text x="14" y="28" font-family="'Bungee', cursive" font-size="11" fill="#78350f" text-anchor="middle">BRIDGE 🌉</text>
+        </g>
+
+        <!-- 4. Active Volcano (Clickable) -->
+        <g transform="translate(680, 160)" onclick="expeditionUI.handleTrainingIslandClick('volcano')" style="cursor: pointer;" class="training-clickable-zone" id="zone-volcano">
+          <circle cx="50" cy="30" r="55" fill="#dc2626" fill-opacity="0.15" stroke="#dc2626" stroke-width="3" stroke-dasharray="6 4"/>
+          <polygon points="0,70 50,-20 100,70" fill="#78350f" stroke="#451a03" stroke-width="4"/>
+          <polygon points="40,-2 50,-20 60,-2" fill="#dc2626"/>
+          <circle cx="50" cy="-35" r="16" fill="#94a3b8" fill-opacity="0.8"/>
+          <circle cx="62" cy="-58" r="20" fill="#64748b" fill-opacity="0.9"/>
+          <text x="50" y="90" font-family="'Bungee', cursive" font-size="12" fill="#451a03" text-anchor="middle">VOLCANO 🌋</text>
+        </g>
+
+        <!-- 5. Research Station Alpha (Clickable) -->
+        <g transform="translate(470, 75)" onclick="expeditionUI.handleTrainingIslandClick('station')" style="cursor: pointer;" class="training-clickable-zone" id="zone-station">
+          <circle cx="0" cy="0" r="45" fill="#2563eb" fill-opacity="0.15" stroke="#2563eb" stroke-width="3" stroke-dasharray="6 4"/>
+          <rect x="-35" y="-20" width="70" height="38" rx="8" fill="#f8fafc" stroke="#1e293b" stroke-width="4"/>
+          <polygon points="-35,-20 0,-42 35,-20" fill="#3b82f6" stroke="#1e3a8a" stroke-width="3"/>
+          <circle cx="0" cy="-4" r="7" fill="#facc15"/>
+          <text x="0" y="32" font-family="'Bungee', cursive" font-size="12" fill="#1e3a8a" text-anchor="middle">STATION 🏛️</text>
+        </g>
+      </svg>
+    `;
+  },
+
+  // 6. Explorer's Open Backpack SVG
+  getBackpackSvg(packedItemIcons = []) {
+    return `
+      <svg width="220" height="240" viewBox="0 0 220 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="backpack-svg">
+        <!-- Backpack Body -->
+        <rect x="25" y="50" width="170" height="175" rx="30" fill="#b45309" stroke="#78350f" stroke-width="6"/>
+        <!-- Top Pocket Flap -->
+        <path d="M25 90 C25 60 70 40 110 40 C150 40 195 60 195 90 Z" fill="#d97706" stroke="#78350f" stroke-width="5"/>
+        <!-- Straps and Buckles -->
+        <rect x="60" y="60" width="16" height="130" rx="6" fill="#92400e"/>
+        <rect x="144" y="60" width="16" height="130" rx="6" fill="#92400e"/>
+        <circle cx="68" cy="120" r="8" fill="#facc15" stroke="#78350f" stroke-width="2"/>
+        <circle cx="152" cy="120" r="8" fill="#facc15" stroke="#78350f" stroke-width="2"/>
+        
+        <!-- Open Center Pouch Area -->
+        <rect x="50" y="110" width="120" height="95" rx="14" fill="#fef3c7" stroke="#ca8a04" stroke-width="3"/>
+        <text x="110" y="130" font-family="'Bungee', cursive" font-size="11" fill="#854d0e" text-anchor="middle">BACKPACK</text>
+        
+        <!-- Packed Item Emojis Display -->
+        <text x="110" y="165" font-size="24" text-anchor="middle">${packedItemIcons.slice(0, 2).join(" ")}</text>
+        <text x="110" y="195" font-size="24" text-anchor="middle">${packedItemIcons.slice(2, 4).join(" ")}</text>
+      </svg>
+    `;
   }
 };
 

@@ -1,16 +1,31 @@
 /**
  * THE LAST EXPEDITION: GAME ENGINE
- * Manages 10 sequential narrative scenes, storm countdown timer,
- * prediction evaluation, reasoning bonus points, CLIL science checks, and expedition logs.
+ * Manages Section 0: Expedition Training (7 Mini-Games)
+ * + 10 Sequential Story Scenes, Storm Countdown, and composite scoring.
  */
 
 class ExpeditionGameEngine {
   constructor() {
+    this.mode = "training"; // 'training' or 'story'
+    this.trainingGameIndex = 0; // 0 to 6 (Games 1 to 7)
+
+    // Training sub-state
+    this.lookFindIndex = 0;
+    this.matchWordIndex = 0;
+    this.whatAmIIndex = 0;
+    this.memoryState = "countdown"; // 'countdown', 'guessing', 'done'
+    this.selectedMemoryItems = [];
+    this.packedItems = [];
+    this.whichOneIndex = 0;
+    this.useWordIndex = 0;
+
+    // Main Story state
     this.currentSceneIndex = 0; // 0 to 9 (Scene 1 to 10)
     this.stormMinutesLeft = 60;
     
-    // Detailed Score Categories
+    // Scores
     this.scores = {
+      training: 0,
       predictions: 0,
       evidence: 0,
       clil: 0,
@@ -20,9 +35,6 @@ class ExpeditionGameEngine {
 
     // Expedition Log History
     this.history = [];
-
-    // State of Current Scene
-    this.sceneState = "observe"; // 'observe', 'discuss', 'predict', 'reveal', 'solve'
   }
 
   getCurrentScene() {
@@ -31,11 +43,11 @@ class ExpeditionGameEngine {
 
   addScore(category, points) {
     this.scores[category] = (this.scores[category] || 0) + points;
-    this.scores.total = this.scores.predictions + this.scores.evidence + this.scores.clil + this.scores.reasoning;
+    this.scores.total = this.scores.training + this.scores.predictions + this.scores.evidence + this.scores.clil + this.scores.reasoning;
     if (window.expeditionUI) window.expeditionUI.updateHeader();
   }
 
-  // Record a team prediction
+  // Record a team prediction in Main Story
   recordPrediction(predictionId, selectedReasonText = "") {
     const scene = this.getCurrentScene();
     const opt = (scene.predictionOptions || scene.decisionOptions || []).find(o => o.id === predictionId);
@@ -46,11 +58,10 @@ class ExpeditionGameEngine {
         earnedPts += 3;
         this.addScore("predictions", 3);
       } else {
-        earnedPts += 1; // Partial credit for reasoning
+        earnedPts += 1;
         this.addScore("predictions", 1);
       }
 
-      // Bonus point if student provided verbal/selected reasoning
       if (selectedReasonText) {
         earnedPts += 2;
         this.addScore("reasoning", 2);
@@ -69,7 +80,7 @@ class ExpeditionGameEngine {
     return { success: false };
   }
 
-  // Check Riddle
+  // Check Riddle in Story
   checkRiddle(input) {
     const scene = this.getCurrentScene();
     if (!scene.riddle) return { success: false };
@@ -84,24 +95,28 @@ class ExpeditionGameEngine {
     return { success: false };
   }
 
-  // Advance to next scene
-  nextScene() {
-    if (this.currentSceneIndex < EXPEDITION_DATA.scenes.length - 1) {
-      this.currentSceneIndex++;
-      const nextSc = this.getCurrentScene();
-      this.stormMinutesLeft = nextSc.stormMinutesLeft;
-      this.sceneState = "observe";
-      return true;
-    }
-    return false; // Reached end
+  startMainStory() {
+    this.mode = "story";
+    this.currentSceneIndex = 0;
+    this.stormMinutesLeft = 60;
   }
 
   resetAll() {
+    this.mode = "training";
+    this.trainingGameIndex = 0;
+    this.lookFindIndex = 0;
+    this.matchWordIndex = 0;
+    this.whatAmIIndex = 0;
+    this.memoryState = "countdown";
+    this.selectedMemoryItems = [];
+    this.packedItems = [];
+    this.whichOneIndex = 0;
+    this.useWordIndex = 0;
+
     this.currentSceneIndex = 0;
     this.stormMinutesLeft = 60;
-    this.scores = { predictions: 0, evidence: 0, clil: 0, reasoning: 0, total: 0 };
+    this.scores = { training: 0, predictions: 0, evidence: 0, clil: 0, reasoning: 0, total: 0 };
     this.history = [];
-    this.sceneState = "observe";
   }
 }
 

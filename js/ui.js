@@ -96,7 +96,11 @@ class UIController {
       // 4TH GRADE: THE LAST EXPEDITION
       case "expedition":
         if (window.expeditionUI) {
-          window.expeditionUI.showScene(window.expeditionEngine.currentSceneIndex || 0);
+          if (window.expeditionEngine.mode === "training") {
+            window.expeditionUI.showTrainingIntro();
+          } else {
+            window.expeditionUI.showScene(window.expeditionEngine.currentSceneIndex || 0);
+          }
         }
         break;
 
