@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🕵️ Who Stole the Treasure? - 3rd Grade English Revision Game</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️</text></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       TOP PERSISTENT WHITEBOARD HEADER
+       ========================================================================= -->
+  <header id="game-header">
+    <div class="header-left">
+      <div class="game-title-badge" id="home-menu-btn" title="Click for Menu & Sections">
+        <span>🕵️</span>
+        <span>WHO STOLE THE TREASURE?</span>
+      </div>
+
+      <!-- Active Team Turn Indicator -->
+      <div id="active-turn-pill" class="turn-pill turn-red">
+        🔴 <span>TURN: TEAM RED</span>
+      </div>
+
+      <button id="next-turn-btn" class="next-turn-btn" title="Pass turn to the next team">
+        <span>NEXT TEAM</span> ➔
+      </button>
+    </div>
+
+    <!-- 4-Team Dynamic Scoreboard -->
+    <div class="scoreboard-container">
+      <div class="team-score-card card-red" id="team-card-red" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🔴 RED</span>
+        <div class="team-star-count"><span id="score-val-red">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-blue" id="team-card-blue" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🔵 BLUE</span>
+        <div class="team-star-count"><span id="score-val-blue">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-green" id="team-card-green" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🟢 GREEN</span>
+        <div class="team-star-count"><span id="score-val-green">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-yellow" id="team-card-yellow" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🟡 YELLOW</span>
+        <div class="team-star-count"><span id="score-val-yellow">0</span> ⭐</div>
+      </div>
+    </div>
+
+    <!-- Teacher & System Controls -->
+    <div class="header-actions">
+      <button class="icon-btn active-btn" id="sfx-toggle-btn" title="Toggle Sound Effects">🔊</button>
+      <button class="icon-btn active-btn" id="tts-toggle-btn" title="Toggle English Voice TTS">🗣️</button>
+      <button class="icon-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
+      <button class="teacher-hub-btn" id="teacher-hub-btn">
+        <span>🧑‍🏫 TEACHER</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN GAME VIEWPORT
+       ========================================================================= -->
+  <main id="game-viewport">
+
+    <!-- 1. SCREEN: INTRO & STORY -->
+    <section class="screen-view active" id="screen-intro">
+      <div class="adventure-card">
+        <div class="card-header-banner">
+          <span class="card-tag">🏴‍☠️ FIRST WEEK OF SCHOOL ENGLISH ADVENTURE</span>
+          <h1 class="main-heading">🕵️ WHO STOLE THE TREASURE?</h1>
+          <p class="sub-heading">A classroom mystery for 4 Detective Teams!</p>
+        </div>
+
+        <div class="intro-chest-container">
+          <div class="chest-animation-box">💰 🏴‍☠️ 🔐</div>
+          <div class="alarm-banner">
+            🚨 OH NO! THE GOLDEN TREASURE IS GONE! 🚨
+          </div>
+          <p style="font-size: 1.35rem; font-weight: 800; color: #334155; text-align: center; max-width: 750px;">
+            Someone in town took the pirate treasure chest! The local sheriff needs <strong>4 teams of super detectives</strong> to find the thief!
+          </p>
+        </div>
+
+        <!-- Suspects Preview Strip -->
+        <div style="margin: 20px 0; text-align: center;">
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: #1e293b; margin-bottom: 8px;">
+            🔍 THE 6 SUSPECTS UNDER INVESTIGATION:
+          </h3>
+          <div class="suspects-preview-row" id="intro-suspects-preview">
+            <!-- Rendered by UI -->
+          </div>
+        </div>
+
+        <!-- 4 Step Mission Roadmap -->
+        <div class="mission-brief-steps">
+          <div class="step-card">
+            <div class="step-icon">🧠</div>
+            <div class="step-text">1. Training Missions</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Learn secret grammar & question skills</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🔐</div>
+            <div class="step-text">2. Unlock the Vault</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Crack the 5-key combination lock</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🧩</div>
+            <div class="step-text">3. Collect Clues</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Interrogate suspects & eliminate innocents</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🚨</div>
+            <div class="step-text">4. Catch the Thief</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Make the accusation & win the trophy!</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="jumbo-btn btn-gold" style="font-size: 1.6rem; padding: 20px 48px;" onclick="uiController.showScreen('mg1')">
+            🚀 START DETECTIVE MISSION ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SCREEN: MINI-GAME 1 - QUESTION MATCH -->
+    <section class="screen-view" id="screen-mg1">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg1-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SCREEN: MINI-GAME 2 - WHO AM I? -->
+    <section class="screen-view" id="screen-mg2">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg2-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SCREEN: MINI-GAME 3 - CAN / CAN'T CHALLENGE -->
+    <section class="screen-view" id="screen-mg3">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg3-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SCREEN: MINI-GAME 4 - DO YOU LIKE / DOES HE/SHE LIKE? -->
+    <section class="screen-view" id="screen-mg4">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg4-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. SCREEN: MINI-GAME 5 - HAVE GOT -->
+    <section class="screen-view" id="screen-mg5">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg5-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. SCREEN: BOSS LOCK - TREASURE MASTER VAULT -->
+    <section class="screen-view" id="screen-boss">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="boss-lock-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. SCREEN: PART 2 - REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD -->
+    <section class="screen-view" id="screen-investigation">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="investigation-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. SCREEN: FINAL ACCUSATION & REVEAL CEREMONY -->
+    <section class="screen-view" id="screen-accusation">
+      <div class="adventure-card">
+        <div class="accusation-arena" id="accusation-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. SCREEN: FINAL SCORE & DETECTIVE AWARDS -->
+    <section class="screen-view" id="screen-victory">
+      <div class="adventure-card">
+        <div id="victory-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS: INVESTIGATION DOSSIER & TEACHER HUB
+       ========================================================================= -->
+
+  <!-- Suspect Interrogation Dossier Modal -->
+  <div class="modal-overlay" id="dossier-modal">
+    <div class="dossier-card">
+      <button class="modal-close-btn" onclick="uiController.closeDossier()">✕</button>
+      <div id="dossier-modal-body">
+        <!-- Interrogation Dossier Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Control Center Modal -->
+  <div class="modal-overlay" id="teacher-modal">
+    <div class="teacher-modal-box">
+      <div id="teacher-modal-body">
+        <!-- Teacher Hub Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
