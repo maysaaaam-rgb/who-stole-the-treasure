@@ -1,114 +1,107 @@
 /**
  * Room Rescue: The Lost Things Mission (4th Grade English Revision Game)
- * Data structures for interactive room, furniture drop-zones, audio clues,
- * hidden objects, and multi-level challenges.
+ * Data structures for visual room coordinates, interactive furniture drop zones,
+ * container states, and levels 1-9.
  */
 
 const ROOM_DATA = {
-  // Furniture & Drop Zones in the Room
+  // Furniture Target Drop Zones in the Visual Room
   furniture: [
-    { id: "shelf", name: "Bookshelf", icon: "📚", label: "On the Shelf", x: 10, y: 15, w: 18, h: 42, preposition: "on the shelf" },
-    { id: "window", name: "Window", icon: "🪟", label: "Near the Window", x: 32, y: 8, w: 18, h: 28, preposition: "near the window" },
-    { id: "picture", name: "Picture", icon: "🖼️", label: "Behind the Picture", x: 55, y: 10, w: 14, h: 20, preposition: "behind the picture" },
-    { id: "wardrobe", name: "Wardrobe", icon: "🚪", label: "Inside the Cupboard", x: 74, y: 12, w: 20, h: 50, preposition: "inside the cupboard" },
-    { id: "bed", name: "Bed", icon: "🛏️", label: "On the Bed", x: 8, y: 60, w: 32, h: 32, preposition: "on the bed" },
-    { id: "under_bed", name: "Under the Bed", icon: "🕳️", label: "Under the Bed", x: 10, y: 86, w: 28, h: 10, preposition: "under the bed" },
-    { id: "desk", name: "Desk", icon: "🖥️", label: "On the Desk", x: 44, y: 48, w: 26, h: 32, preposition: "on the desk" },
-    { id: "under_desk", name: "Under the Desk", icon: "📦", label: "Under the Desk", x: 46, y: 78, w: 22, h: 14, preposition: "under the desk" },
-    { id: "drawer", name: "Desk Drawer", icon: "🗄️", label: "In the Drawer", x: 62, y: 56, w: 8, h: 18, preposition: "in the drawer" },
-    { id: "pencil_case", name: "Pencil Case", icon: "✏️", label: "In the Pencil Case", x: 46, y: 44, w: 10, h: 8, preposition: "in the pencil case" },
-    { id: "chair", name: "Chair", icon: "🪑", label: "On the Chair", x: 48, y: 64, w: 14, h: 22, preposition: "on the chair" },
-    { id: "under_chair", name: "Under the Chair", icon: "🪑", label: "Under the Chair", x: 49, y: 82, w: 12, h: 8, preposition: "under the chair" },
-    { id: "behind_chair", name: "Behind the Chair", icon: "🪑", label: "Behind the Chair", x: 44, y: 60, w: 10, h: 20, preposition: "behind the chair" },
-    { id: "door", name: "Door", icon: "🚪", label: "Near the Door", x: 84, y: 50, w: 14, h: 42, preposition: "near the door" },
-    { id: "box", name: "Toy Box", icon: "📦", label: "Inside the Box", x: 74, y: 72, w: 14, h: 18, preposition: "inside the box" },
-    { id: "basket", name: "Clothes Basket", icon: "🧺", label: "In the Basket", x: 86, y: 76, w: 10, h: 16, preposition: "in the basket" }
+    { id: "shelf", name: "Bookshelf", icon: "📚", label: "On the Shelf", x: 4, y: 12, w: 16, h: 42, preposition: "on the shelf" },
+    { id: "window", name: "Window", icon: "🪟", label: "Near the Window", x: 36, y: 5, w: 18, h: 26, preposition: "near the window" },
+    { id: "picture", name: "Picture", icon: "🖼️", label: "Behind the Picture", x: 58, y: 6, w: 12, h: 18, preposition: "behind the picture" },
+    { id: "wardrobe", name: "Wardrobe", icon: "🚪", label: "Inside the Cupboard", x: 74, y: 8, w: 16, h: 48, preposition: "inside the cupboard" },
+    { id: "bed", name: "Bed", icon: "🛏️", label: "On the Bed", x: 4, y: 56, w: 26, h: 36, preposition: "on the bed" },
+    { id: "under_bed", name: "Under the Bed", icon: "🕳️", label: "Under the Bed", x: 5, y: 88, w: 24, h: 10, preposition: "under the bed" },
+    { id: "desk", name: "Desk Surface", icon: "🖥️", label: "On the Desk", x: 42, y: 45, w: 24, h: 34, preposition: "on the desk" },
+    { id: "under_desk", name: "Under the Desk", icon: "📦", label: "Under the Desk", x: 43, y: 76, w: 12, h: 18, preposition: "under the desk" },
+    { id: "drawer", name: "Desk Drawer", icon: "🗄️", label: "In the Drawer", x: 55, y: 56, w: 10, h: 16, preposition: "in the drawer" },
+    { id: "pencil_case", name: "Pencil Case", icon: "✏️", label: "In the Pencil Case", x: 44, y: 44, w: 9, h: 8, preposition: "in the pencil case" },
+    { id: "chair", name: "Chair", icon: "🪑", label: "On the Chair", x: 46, y: 65, w: 9, h: 24, preposition: "on the chair" },
+    { id: "under_chair", name: "Under the Chair", icon: "🪑", label: "Under the Chair", x: 46, y: 84, w: 9, h: 10, preposition: "under the chair" },
+    { id: "behind_chair", name: "Behind the Chair", icon: "🪑", label: "Behind the Chair", x: 42, y: 64, w: 8, h: 20, preposition: "behind the chair" },
+    { id: "door", name: "Door", icon: "🚪", label: "Near the Door", x: 86, y: 40, w: 12, h: 54, preposition: "near the door" },
+    { id: "box", name: "Toy Box", icon: "📦", label: "Inside the Box", x: 70, y: 72, w: 12, h: 18, preposition: "inside the box" },
+    { id: "basket", name: "Clothes Basket", icon: "🧺", label: "In the Basket", x: 85, y: 74, w: 10, h: 18, preposition: "in the basket" }
   ],
 
-  // Objects in the Messy Room
-  items: [
-    { id: "books", name: "Books", icon: "📚", category: "school", color: "#3b82f6" },
-    { id: "shoes", name: "Shoes", icon: "👟", category: "clothes", color: "#f59e0b" },
-    { id: "bag", name: "School Bag", icon: "🎒", category: "school", color: "#ef4444" },
-    { id: "blue_pencil", name: "Blue Pencil", icon: "✏️", category: "school", color: "#0284c7" },
-    { id: "teddy", name: "Teddy Bear", icon: "🧸", category: "toy", color: "#b45309" },
-    { id: "clothes", name: "T-Shirt & Clothes", icon: "👕", category: "clothes", color: "#10b981" },
-    { id: "toy_car", name: "Toy Car", icon: "🚗", category: "toy", color: "#dc2626" },
-    { id: "red_notebook", name: "Red Notebook", icon: "📓", category: "lost", color: "#b91c1c" },
-    { id: "key", name: "Golden Key", icon: "🔑", category: "lost", color: "#eab308" },
-    { id: "blue_hat", name: "Blue Hat", icon: "🧢", category: "lost", color: "#2563eb" },
-    { id: "missing_book", name: "English Storybook", icon: "📖", category: "lost", color: "#8b5cf6" }
+  // Initial Messy Positions of Visual Items on the Floor
+  initialItems: [
+    { id: "books", name: "Stack of Books", icon: "📚", artClass: "item-art-books", initX: 28, initY: 76, targetZone: "shelf", targetLabel: "Bookshelf" },
+    { id: "shoes", name: "Sneakers", icon: "👟", artClass: "item-art-shoes", initX: 62, initY: 82, targetZone: "under_bed", targetLabel: "Under the Bed" },
+    { id: "bag", name: "School Bag", icon: "🎒", artClass: "item-art-bag", initX: 47, initY: 66, targetZone: "under_desk", targetLabel: "Under the Desk" },
+    { id: "blue_pencil", name: "Blue Pencil", icon: "✏️", artClass: "item-art-pencil", initX: 34, initY: 60, targetZone: "pencil_case", targetLabel: "Pencil Case" },
+    { id: "teddy", name: "Teddy Bear", icon: "🧸", artClass: "item-art-teddy", initX: 72, initY: 60, targetZone: "bed", targetLabel: "On the Bed" },
+    { id: "clothes", name: "Clothes", icon: "👕", artClass: "item-art-clothes", initX: 30, initY: 84, targetZone: "basket", targetLabel: "In the Basket" }
+  ],
+
+  // Hidden Objects mapped to containers / secret spots
+  hiddenItems: [
+    { id: "key", name: "Golden Key", icon: "🔑", artClass: "item-art-key", containerId: "drawer", zoneId: "drawer", clue: "The key is inside the desk drawer. Pull the drawer open!", spoken: "The key is inside the desk drawer. Pull the drawer open!" },
+    { id: "blue_hat", name: "Blue Hat", icon: "🧢", artClass: "item-art-hat", containerId: "box", zoneId: "box", clue: "The hat is inside the pink toy box. Click the lid to open!", spoken: "The hat is inside the pink toy box. Click the lid to open!" },
+    { id: "red_notebook", name: "Red Notebook", icon: "📓", artClass: "item-art-notebook", containerId: "shelf", zoneId: "shelf", clue: "The notebook is behind the books on the shelf!", spoken: "The notebook is behind the books on the shelf!" },
+    { id: "missing_book", name: "Storybook", icon: "📖", artClass: "item-art-books", containerId: "under_desk", zoneId: "under_desk", clue: "The storybook is inside the box under the desk!", spoken: "The storybook is inside the box under the desk!" }
   ],
 
   // =========================================================================
-  // LEVEL 1: LISTEN & MOVE (AUDIO INSTRUCTIONS FIRST)
+  // LEVEL 1: LISTEN & MOVE (AUDIO INSTRUCTIONS -> DRAG OBJECTS)
   // =========================================================================
   level1: {
-    title: "LEVEL 1 — LISTEN & MOVE",
-    subtitle: "Listen carefully to the English instruction and drag the object to the correct place!",
+    title: "LEVEL 1 — LISTEN & DRAG",
+    subtitle: "Listen to the English instruction, grab the visual object, and drag it to the correct place in the room!",
     tasks: [
       {
         itemId: "books",
         targetZoneId: "shelf",
         spoken: "Put the books on the shelf.",
-        written: "Put the books on the shelf.",
-        hint: "Where do books go? 📚 ➔ On the shelf!",
-        points: 1
+        written: "Put the books on the shelf. (Drag 📚 ➔ Bookshelf)",
+        hint: "Grab the books from the floor and drag them to the bookshelf!"
       },
       {
         itemId: "shoes",
         targetZoneId: "under_bed",
         spoken: "Put the shoes under the bed.",
-        written: "Put the shoes under the bed.",
-        hint: "Where do shoes go? 👟 ➔ Under the bed!",
-        points: 1
+        written: "Put the shoes under the bed. (Drag 👟 ➔ Under the Bed)",
+        hint: "Grab the shoes from the floor and drag them under the bed!"
       },
       {
         itemId: "bag",
         targetZoneId: "under_desk",
-        spoken: "Put the school bag next to the desk.",
-        written: "Put the school bag under the desk.",
-        hint: "Where does the bag go? 🎒 ➔ Under or next to the desk!",
-        points: 1
+        spoken: "Put the school bag under the desk.",
+        written: "Put the school bag under the desk. (Drag 🎒 ➔ Under the Desk)",
+        hint: "Grab the school bag and drag it under the desk!"
       },
       {
         itemId: "blue_pencil",
         targetZoneId: "pencil_case",
         spoken: "Put the blue pencil in the pencil case.",
-        written: "Put the blue pencil in the pencil case.",
-        hint: "Where does the pencil go? ✏️ ➔ In the pencil case!",
-        points: 1
+        written: "Put the blue pencil in the pencil case. (Drag ✏️ ➔ Pencil Case)",
+        hint: "Grab the blue pencil and drag it onto the pencil case on the desk!"
       }
     ]
   },
 
   // =========================================================================
-  // LEVEL 2: READ & ORGANIZE (WRITTEN INSTRUCTIONS)
+  // LEVEL 2: READ & ORGANIZE (WRITTEN CHECKLIST -> PHYSICAL DRAG)
   // =========================================================================
   level2: {
     title: "LEVEL 2 — READ & ORGANIZE",
-    subtitle: "Read the written instructions and organize the messy room!",
+    subtitle: "Read the written instructions and physically drag each object into place!",
     instructions: [
-      { itemId: "teddy", targetZoneId: "bed", text: "Put the teddy bear on the bed. 🧸 ➔ 🛏️" },
-      { itemId: "shoes", targetZoneId: "door", text: "Put the shoes near the door. 👟 ➔ 🚪" },
-      { itemId: "books", targetZoneId: "shelf", text: "Put the books on the shelf. 📚 ➔ 📚" },
-      { itemId: "bag", targetZoneId: "under_desk", text: "Put the bag under the desk. 🎒 ➔ 🖥️" }
+      { itemId: "teddy", targetZoneId: "bed", text: "Put the teddy bear on the bed.", spoken: "Put the teddy bear on the bed." },
+      { itemId: "shoes", targetZoneId: "door", text: "Put the shoes near the door.", spoken: "Put the shoes near the door." },
+      { itemId: "clothes", targetZoneId: "basket", text: "Put the clothes in the laundry basket.", spoken: "Put the clothes in the laundry basket." },
+      { itemId: "bag", targetZoneId: "under_desk", text: "Put the bag under the desk.", spoken: "Put the bag under the desk." }
     ]
   },
 
   // =========================================================================
-  // LEVEL 3: REMEMBER (SPATIAL MEMORY CHALLENGE)
+  // LEVEL 3: SPATIAL MEMORY
   // =========================================================================
   level3: {
     title: "LEVEL 3 — SPATIAL MEMORY",
-    subtitle: "Look at the tidy room for 8 seconds! Then answer where the objects are!",
+    subtitle: "Look at the tidy room for 8 seconds! Then answer from memory where objects are!",
     timeLimit: 8,
-    roomLayout: [
-      { itemId: "teddy", locationName: "On the bed", preposition: "on the bed", icon: "🧸 🛏️" },
-      { itemId: "shoes", locationName: "Near the door", preposition: "near the door", icon: "👟 🚪" },
-      { itemId: "bag", locationName: "Under the desk", preposition: "under the desk", icon: "🎒 🖥️" },
-      { itemId: "books", locationName: "On the shelf", preposition: "on the shelf", icon: "📚 🗄️" }
-    ],
     questions: [
       {
         question: "Where is the teddy bear?",
@@ -154,53 +147,52 @@ const ROOM_DATA = {
   },
 
   // =========================================================================
-  // LEVEL 4: FIND THE LOST OBJECTS (SEARCH MECHANIC)
+  // LEVEL 4: FIND THE LOST OBJECTS (REAL CONTAINER & HIDING SEARCH)
   // =========================================================================
   level4: {
     title: "LEVEL 4 — FIND THE LOST OBJECTS",
-    subtitle: "Read the clues to find 3 lost items! You have 5 search tokens — don't guess randomly!",
+    subtitle: "Read the clues and interact with the room (open drawers, open boxes, move items) to find 3 lost treasures!",
     maxSearches: 5,
     lostItems: [
       {
         id: "key",
         name: "Golden Key",
         icon: "🔑",
-        clue: "The key is under something you sit on.",
-        spokenClue: "The key is under something you sit on.",
-        correctZoneId: "under_chair",
-        foundText: "🎉 You found the Key under the chair!",
-        spokenFound: "You found the key under the chair!"
+        clue: "The key is inside the desk drawer. Pull the drawer to open it!",
+        spokenClue: "The key is inside the desk drawer. Pull the drawer open!",
+        correctZoneId: "drawer",
+        interactionType: "open_drawer",
+        foundText: "🎉 You pulled the drawer open and found the Golden Key! 🔑"
       },
       {
         id: "blue_hat",
         name: "Blue Hat",
         icon: "🧢",
-        clue: "The hat is inside something made of cardboard for storing toys.",
-        spokenClue: "The hat is inside something made of cardboard for storing toys.",
+        clue: "The hat is inside the pink toy box. Click the lid to open!",
+        spokenClue: "The hat is inside the pink toy box. Click the lid to open!",
         correctZoneId: "box",
-        foundText: "🎉 You found the Blue Hat inside the toy box!",
-        spokenFound: "You found the blue hat inside the toy box!"
+        interactionType: "open_box",
+        foundText: "🎉 You opened the toy box lid and found the Blue Hat! 🧢"
       },
       {
         id: "red_notebook",
         name: "Red Notebook",
         icon: "📓",
-        clue: "The notebook is behind the books on the shelf. (Move the books first!)",
-        spokenClue: "The notebook is behind the books on the shelf.",
+        clue: "The notebook is behind the books on the shelf. Drag the books onto the shelf to reveal it!",
+        spokenClue: "The notebook is behind the books on the shelf. Move the books to reveal it!",
         correctZoneId: "shelf",
-        blockingItemId: "books",
-        foundText: "🎉 You moved the books and found the Red Notebook!",
-        spokenFound: "You moved the books and found the red notebook!"
+        interactionType: "move_books",
+        foundText: "🎉 You placed the books on the shelf and discovered the hidden Red Notebook! 📓"
       }
     ]
   },
 
   // =========================================================================
-  // LEVEL 5: MULTI-STEP CLUES (3-STEP DEDUCTION SEARCH)
+  // LEVEL 5: MULTI-STEP CLUES (3-STEP DEDUCTION)
   // =========================================================================
   level5: {
     title: "LEVEL 5 — MULTI-STEP CLUES",
-    subtitle: "Combine 3 clues to locate the missing Red Notebook!",
+    subtitle: "Follow all 3 clues to discover the secret hiding place!",
     targetItem: { id: "red_notebook", name: "Red Notebook", icon: "📓" },
     maxSearches: 4,
     correctZoneId: "shelf",
@@ -208,16 +200,15 @@ const ROOM_DATA = {
       { step: 1, text: "Clue 1: The notebook is NOT on the floor.", spoken: "Clue 1: The notebook is not on the floor." },
       { step: 2, text: "Clue 2: It is near something you use for reading.", spoken: "Clue 2: It is near something you use for reading." },
       { step: 3, text: "Clue 3: Look behind the books on the shelf!", spoken: "Clue 3: Look behind the books on the shelf!" }
-    ],
-    foundMessage: "🎉 AMAZING DEDUCTION! You used all 3 clues to find the Red Notebook behind the books!"
+    ]
   },
 
   // =========================================================================
-  // LEVEL 6: LISTENING SEARCH (AUDIO FIRST)
+  // LEVEL 6: LISTENING SEARCH (AUDIO CLUES)
   // =========================================================================
   level6: {
     title: "LEVEL 6 — LISTENING SEARCH",
-    subtitle: "Listen to the audio clue! Decide which container or place to search!",
+    subtitle: "Listen carefully to the audio clue and click/search the exact container!",
     maxSearches: 4,
     challenges: [
       {
@@ -242,7 +233,7 @@ const ROOM_DATA = {
   // =========================================================================
   level7: {
     title: "LEVEL 7 — READING SEARCH",
-    subtitle: "Read complex multi-preposition instructions to find the hidden objects!",
+    subtitle: "Process multi-preposition instructions to search complex locations!",
     maxSearches: 4,
     challenges: [
       {
@@ -263,17 +254,17 @@ const ROOM_DATA = {
   },
 
   // =========================================================================
-  // LEVEL 8: SEQUENCE THE CLEAN-UP
+  // LEVEL 8: SEQUENCE THE CLEAN-UP (PICTURE CARDS)
   // =========================================================================
   level8: {
     title: "LEVEL 8 — SEQUENCE THE CLEAN-UP",
-    subtitle: "Drag the 5 clean-up actions into the correct logical order: First ➔ Then ➔ Next ➔ After that ➔ Finally!",
+    subtitle: "Drag the 5 illustrated action cards into the correct sequence: First ➔ Then ➔ Next ➔ After that ➔ Finally!",
     cards: [
-      { id: "seq_1", step: 1, seqWord: "First", text: "Put the toys in the box.", icon: "🧸 ➔ 📦", spoken: "First, put the toys in the box." },
-      { id: "seq_2", step: 2, seqWord: "Then", text: "Put the books on the shelf.", icon: "📚 ➔ 📚", spoken: "Then, put the books on the shelf." },
-      { id: "seq_3", step: 3, seqWord: "Next", text: "Put the clothes in the basket.", icon: "👕 ➔ 🧺", spoken: "Next, put the clothes in the basket." },
-      { id: "seq_4", step: 4, seqWord: "After that", text: "Put the shoes near the door.", icon: "👟 ➔ 🚪", spoken: "After that, put the shoes near the door." },
-      { id: "seq_5", step: 5, seqWord: "Finally", text: "Clean the floor with the broom.", icon: "🧹 ✨", spoken: "Finally, clean the floor." }
+      { id: "seq_1", step: 1, seqWord: "First", text: "Put the toys in the box.", icon: "🧸 ➔ 📦", caption: "Toys in box", spoken: "First, put the toys in the box." },
+      { id: "seq_2", step: 2, seqWord: "Then", text: "Put the books on the shelf.", icon: "📚 ➔ 🗄️", caption: "Books on shelf", spoken: "Then, put the books on the shelf." },
+      { id: "seq_3", step: 3, seqWord: "Next", text: "Put the clothes in the basket.", icon: "👕 ➔ 🧺", caption: "Clothes in basket", spoken: "Next, put the clothes in the basket." },
+      { id: "seq_4", step: 4, seqWord: "After that", text: "Put the shoes near the door.", icon: "👟 ➔ 🚪", caption: "Shoes near door", spoken: "After that, put the shoes near the door." },
+      { id: "seq_5", step: 5, seqWord: "Finally", text: "Clean the floor with the broom.", icon: "🧹 ✨", caption: "Clean the floor", spoken: "Finally, clean the floor." }
     ]
   },
 
@@ -282,12 +273,12 @@ const ROOM_DATA = {
   // =========================================================================
   level9: {
     title: "LEVEL 9 — THE EFFICIENT ROOM",
-    subtitle: "“It's tidy... but difficult to use!” Move items to their most convenient spots!",
+    subtitle: "“It's tidy... but difficult to use!” Drag items to their most convenient everyday spots!",
     tasks: [
-      { itemId: "books", currentZone: "door", targetZoneId: "desk", text: "Put the books near the desk for studying. 📚 ➔ 🖥️", spoken: "Put the books near the desk." },
-      { itemId: "shoes", currentZone: "bed", targetZoneId: "door", text: "Put the shoes near the door for going outside. 👟 ➔ 🚪", spoken: "Put the shoes near the door." },
-      { itemId: "blue_pencil", currentZone: "shelf", targetZoneId: "pencil_case", text: "Put the pencils on the desk. ✏️ ➔ 🖥️", spoken: "Put the pencils on the desk." },
-      { itemId: "bag", currentZone: "chair", targetZoneId: "under_desk", text: "Put the bag under the desk so the chair is free. 🎒 ➔ 🖥️", spoken: "Put the bag under the desk." }
+      { itemId: "books", currentZone: "door", targetZoneId: "desk", text: "Put the books near the desk for studying. (Drag 📚 ➔ Desk)", spoken: "Put the books near the desk." },
+      { itemId: "shoes", currentZone: "bed", targetZoneId: "door", text: "Put the shoes near the door for going outside. (Drag 👟 ➔ Door)", spoken: "Put the shoes near the door." },
+      { itemId: "blue_pencil", currentZone: "shelf", targetZoneId: "pencil_case", text: "Put the pencils on the desk. (Drag ✏️ ➔ Desk)", spoken: "Put the pencils on the desk." },
+      { itemId: "bag", currentZone: "chair", targetZoneId: "under_desk", text: "Put the bag under the desk so the chair is free. (Drag 🎒 ➔ Under Desk)", spoken: "Put the bag under the desk." }
     ]
   },
 
@@ -296,45 +287,45 @@ const ROOM_DATA = {
   // =========================================================================
   finalMission: {
     title: "🔥 FINAL MISSION — ROOM RESCUE",
-    subtitle: "Complete the ultimate multi-step clean-up & find all lost treasures to transform the room!",
+    subtitle: "Perform the multi-step sequence, open containers, and rescue the room!",
     steps: [
       {
         stepNum: 1,
         type: "move",
-        instruction: "First, put the books on the shelf.",
-        spoken: "First, put the books on the shelf.",
+        instruction: "First, drag the books onto the bookshelf.",
+        spoken: "First, drag the books onto the bookshelf.",
         itemId: "books",
         targetZoneId: "shelf"
       },
       {
         stepNum: 2,
         type: "move",
-        instruction: "Next, put the shoes near the door.",
-        spoken: "Next, put the shoes near the door.",
+        instruction: "Next, drag the shoes beside the door.",
+        spoken: "Next, drag the shoes beside the door.",
         itemId: "shoes",
         targetZoneId: "door"
       },
       {
         stepNum: 3,
         type: "search",
-        instruction: "Now find the Blue Hat! (Clue: It is inside something under the window).",
-        spoken: "Now find the Blue Hat. It is inside something under the window.",
+        instruction: "Now find the Blue Hat! (Clue: It is inside the toy box under the window. Open the box!)",
+        spoken: "Now find the Blue Hat. It is inside the toy box under the window.",
         targetItem: { id: "blue_hat", name: "Blue Hat", icon: "🧢" },
         correctZoneId: "box"
       },
       {
         stepNum: 4,
         type: "search",
-        instruction: "Find the Red Notebook! (Clue: It is not on the floor. It is near something you use for writing).",
-        spoken: "Find the Red Notebook. It is near something you use for writing.",
+        instruction: "Find the Red Notebook! (Clue: Pull the desk drawer open!).",
+        spoken: "Find the Red Notebook. Pull the desk drawer open!",
         targetItem: { id: "red_notebook", name: "Red Notebook", icon: "📓" },
         correctZoneId: "drawer"
       },
       {
         stepNum: 5,
         type: "move",
-        instruction: "Finally, put the school bag under the desk.",
-        spoken: "Finally, put the school bag under the desk.",
+        instruction: "Finally, drag the school bag under the desk.",
+        spoken: "Finally, drag the school bag under the desk.",
         itemId: "bag",
         targetZoneId: "under_desk"
       }

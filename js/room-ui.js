@@ -1,30 +1,40 @@
 /**
- * Room Rescue: UI & Interactive Controller
- * Handles interactive cartoon room rendering, drag-and-drop / tap-to-place mechanics,
- * audio clues, search zones, sequencing, and teacher controls.
+ * Room Rescue: UI & Real Drag-and-Drop Controller
+ * Features:
+ * - Real PointerEvents-based Drag & Drop (PointerDown -> PointerMove -> PointerUp)
+ * - Furniture Hit-Testing with dynamic drop-target glowing halos
+ * - Openable Drawers, Toy Boxes, Wardrobes, and Bed Blankets
+ * - Physical Object Movement with snap-to-target & spring-back physics
+ * - Interactive Picture Sequence Drag-and-Drop
  */
 
 class RoomUIController {
   constructor() {
-    this.selectedItemForMove = null;
+    this.isDragging = false;
+    this.draggedItemEl = null;
+    this.draggedItemId = null;
+    this.dragStartPos = { x: 0, y: 0 };
+    this.dragItemOffset = { x: 0, y: 0 };
+    this.currentHoverZoneId = null;
+
+    // Container states
+    this.drawerOpen = false;
+    this.boxOpen = false;
+    this.blanketLifted = false;
+    this.wardrobeOpen = false;
+
+    // Memory Timer
     this.memoryTimer = null;
     this.memorySecondsLeft = 8;
   }
 
   init() {
-    this.bindEvents();
+    // Initialized globally
   }
 
-  bindEvents() {
-    // Teacher panel shortcut or button
-  }
-
-  // Update header progress & score for Room Rescue
   updateHeader() {
     const scoreEl = document.getElementById("room-score-val");
-    if (scoreEl) {
-      scoreEl.textContent = window.roomGameEngine.score;
-    }
+    if (scoreEl) scoreEl.textContent = window.roomGameEngine.score;
 
     const progressEl = document.getElementById("room-progress-bar");
     const progressTextEl = document.getElementById("room-progress-text");
@@ -33,66 +43,543 @@ class RoomUIController {
     if (progressTextEl) progressTextEl.textContent = `🧹 ROOM RESCUE: ${pct}%`;
   }
 
-  // Render the interactive 2D cartoon room canvas/DOM
-  getRoomHtml(options = {}) {
+  // =========================================================================
+  // CARTOON ROOM RENDERING (SCENE GRAPH)
+  // =========================================================================
+
+  renderRoomStage(options = {}) {
     const {
-      interactiveMode = "move", // "move", "search", "view", "tidy"
-      highlightZoneId = null,
+      mode = "move", // "move", "search", "view", "tidy"
       activeItemId = null,
       showClean = false
     } = options;
 
-    const furniture = ROOM_DATA.furniture;
-    const items = ROOM_DATA.items;
     const engine = window.roomGameEngine;
+    const initialItems = ROOM_DATA.initialItems;
 
     return `
-      <div class="cartoon-room-canvas ${showClean ? 'room-sparkle-clean' : ''}" id="cartoon-room-stage">
-        <!-- Room Wall & Floor Graphic Elements -->
-        <div class="room-wall-bg">
-          <div class="room-window-art">🪟 ☀️</div>
-          <div class="room-picture-art">🖼️ 🏔️</div>
+      <div class="cartoon-room-stage ${showClean ? 'room-sparkle-clean' : ''}" id="cartoon-room-stage">
+        <!-- Room Walls & Floor -->
+        <div class="room-wall-panel">
+          <div class="room-window-frame">🪟 ☀️</div>
+          <div class="room-picture-frame" onclick="roomUI.togglePictureSearch()">🖼️ 🏔️</div>
         </div>
-        <div class="room-floor-bg"></div>
+        <div class="room-floor-panel"></div>
 
-        <!-- Furniture & Drop / Search Targets -->
-        ${furniture.map(f => `
-          <div class="furniture-zone zone-${f.id} ${highlightZoneId === f.id ? 'highlight-target' : ''}" 
-               data-zone-id="${f.id}" 
-               onclick="roomUI.handleZoneClick('${f.id}', '${interactiveMode}')"
-               style="left: ${f.x}%; top: ${f.y}%; width: ${f.w}%; height: ${f.h}%;">
-            <div class="zone-icon-art">${f.icon}</div>
-            <div class="zone-label-tag">${f.label}</div>
-            ${interactiveMode === 'search' ? '<div class="search-magnifier-badge">🔎 SEARCH</div>' : ''}
+        <!-- 1. Bookshelf -->
+        <div class="furniture-piece furniture-bookshelf" id="zone-shelf" data-zone-id="shelf">
+          <div class="shelf-slot-zone" id="shelf-slot-top">
+            <span class="zone-label-tag">BOOKSHELF</span>
           </div>
-        `).join("")}
+          <div class="shelf-plank"></div>
+          <div class="shelf-slot-zone" id="shelf-slot-mid">
+            <!-- Red Notebook hidden behind books -->
+            <div class="room-visual-item room-hidden-item ${engine.hiddenFoundMap.red_notebook ? 'is-revealed' : ''}" 
+                 id="item-red_notebook" style="position: relative;" onclick="roomUI.collectHiddenItem('red_notebook')">
+              <span class="item-art-notebook">📓</span>
+            </div>
+          </div>
+          <div class="shelf-plank"></div>
+        </div>
 
-        <!-- Active Movable Objects in Room -->
-        ${interactiveMode === 'move' || interactiveMode === 'tidy' ? `
-          <div class="room-floor-items-tray">
-            ${activeItemId ? `
-              <div class="draggable-item-chip active-selection" id="drag-item-${activeItemId}">
-                <span style="font-size: 2.2rem;">${items.find(i => i.id === activeItemId)?.icon || '📦'}</span>
-                <strong>${items.find(i => i.id === activeItemId)?.name}</strong>
-                <span style="font-size: 0.75rem; color: #64748b;">(Click a furniture target!)</span>
-              </div>
-            ` : ''}
+        <!-- 2. Bed with Layered Blanket -->
+        <div class="furniture-piece furniture-bed" id="zone-bed" data-zone-id="bed">
+          <div class="bed-pillow"></div>
+          <div class="bed-blanket ${this.blanketLifted ? 'blanket-lifted' : ''}" id="bed-blanket-el" onclick="roomUI.toggleBlanket()"></div>
+          <div class="under-bed-zone" id="zone-under_bed" data-zone-id="under_bed">
+            <span class="zone-label-tag" style="background: rgba(0,0,0,0.6); color: #fff;">UNDER THE BED</span>
           </div>
-        ` : ''}
+        </div>
+
+        <!-- 3. Desk with Openable Drawer & Pencil Case -->
+        <div class="furniture-piece furniture-desk" id="zone-desk" data-zone-id="desk">
+          <div class="desk-surface">
+            <span class="zone-label-tag">ON THE DESK</span>
+            <div class="furniture-pencilcase" id="zone-pencil_case" data-zone-id="pencil_case" title="Pencil Case">
+              <span style="font-size: 1.4rem;">✏️</span>
+            </div>
+          </div>
+          <div class="desk-drawer-box ${this.drawerOpen ? 'drawer-pulled-open' : ''}" id="desk-drawer-el" onclick="roomUI.toggleDrawer()">
+            <div class="desk-drawer-handle"></div>
+            <!-- Key hidden inside drawer -->
+            <div class="room-visual-item room-hidden-item ${engine.hiddenFoundMap.key ? 'is-revealed' : ''}" 
+                 id="item-key" style="position: relative;" onclick="roomUI.collectHiddenItem('key')">
+              <span class="item-art-key">🔑</span>
+            </div>
+          </div>
+          <div class="under-desk-zone" id="zone-under_desk" data-zone-id="under_desk">
+            <span class="zone-label-tag" style="background: rgba(0,0,0,0.6); color: #fff;">UNDER DESK</span>
+          </div>
+        </div>
+
+        <!-- 4. Chair -->
+        <div class="furniture-piece furniture-chair" id="zone-chair" data-zone-id="chair">
+          <div class="chair-backrest"></div>
+          <div class="chair-seat"></div>
+          <div class="chair-legs"></div>
+        </div>
+
+        <!-- 5. Wardrobe -->
+        <div class="furniture-piece furniture-wardrobe ${this.wardrobeOpen ? 'wardrobe-open' : ''}" id="zone-wardrobe" data-zone-id="wardrobe" onclick="roomUI.toggleWardrobe()">
+          <div class="wardrobe-doors">
+            <div class="wardrobe-door-left"></div>
+            <div class="wardrobe-door-right"></div>
+          </div>
+        </div>
+
+        <!-- 6. Door -->
+        <div class="furniture-piece furniture-door" id="zone-door" data-zone-id="door">
+          <div class="door-knob"></div>
+          <span class="zone-label-tag" style="position: absolute; bottom: 12px; left: 10px;">DOOR</span>
+        </div>
+
+        <!-- 7. Toy Box with Openable Lid -->
+        <div class="furniture-piece furniture-toybox ${this.boxOpen ? 'toybox-open' : ''}" id="zone-box" data-zone-id="box" onclick="roomUI.toggleToybox()">
+          <div class="toybox-lid"></div>
+          <div class="toybox-body">
+            TOYS
+            <!-- Blue Hat hidden inside box -->
+            <div class="room-visual-item room-hidden-item ${engine.hiddenFoundMap.blue_hat ? 'is-revealed' : ''}" 
+                 id="item-blue_hat" style="position: relative;" onclick="roomUI.collectHiddenItem('blue_hat')">
+              <span class="item-art-hat">🧢</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Laundry Clothes Basket -->
+        <div class="furniture-piece furniture-basket" id="zone-basket" data-zone-id="basket">
+          <span class="zone-label-tag" style="position: absolute; bottom: -8px;">BASKET</span>
+        </div>
+
+        <!-- ===================================================================
+             ACTUAL VISUAL DRAGGABLE OBJECTS
+             =================================================================== -->
+        ${initialItems.map(item => {
+          const loc = engine.itemLocations[item.id] || "floor";
+          let posStyle = `left: ${item.initX}%; top: ${item.initY}%;`;
+
+          // If placed on furniture, adjust position
+          if (loc === "shelf") posStyle = "left: 6%; top: 18%;";
+          else if (loc === "under_bed") posStyle = "left: 8%; top: 88%;";
+          else if (loc === "under_desk") posStyle = "left: 45%; top: 78%;";
+          else if (loc === "pencil_case") posStyle = "left: 56%; top: 44%;";
+          else if (loc === "bed") posStyle = "left: 12%; top: 60%;";
+          else if (loc === "door") posStyle = "left: 86%; top: 78%;";
+          else if (loc === "basket") posStyle = "left: 86%; top: 76%;";
+          else if (loc === "desk") posStyle = "left: 46%; top: 48%;";
+
+          const isHighlightActive = activeItemId === item.id;
+
+          return `
+            <div class="room-visual-item ${item.artClass} ${isHighlightActive ? 'active-target-item' : ''}" 
+                 id="drag-${item.id}" 
+                 data-item-id="${item.id}"
+                 style="${posStyle}"
+                 onpointerdown="roomUI.handleItemPointerDown(event, '${item.id}')"
+                 title="Drag me!">
+              <span>${item.icon}</span>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
   }
 
-  handleZoneClick(zoneId, mode) {
-    if (mode === "move" && this.selectedItemForMove) {
-      this.executeMove(this.selectedItemForMove, zoneId);
-    } else if (mode === "search") {
-      this.executeSearch(zoneId);
+  // =========================================================================
+  // REAL POINTER-BASED DRAG AND DROP ENGINE
+  // =========================================================================
+
+  handleItemPointerDown(event, itemId) {
+    event.preventDefault();
+    const stage = document.getElementById("cartoon-room-stage");
+    const itemEl = document.getElementById(`drag-${itemId}`);
+    if (!stage || !itemEl) return;
+
+    this.isDragging = true;
+    this.draggedItemId = itemId;
+    this.draggedItemEl = itemEl;
+
+    // Capture pointer
+    itemEl.setPointerCapture(event.pointerId);
+
+    const stageRect = stage.getBoundingClientRect();
+    const itemRect = itemEl.getBoundingClientRect();
+
+    // Store offset from item top-left to pointer position
+    this.dragItemOffset = {
+      x: event.clientX - itemRect.left,
+      y: event.clientY - itemRect.top
+    };
+
+    // Store initial CSS position for spring-back if dropped incorrectly
+    this.dragStartPos = {
+      left: itemEl.style.left,
+      top: itemEl.style.top
+    };
+
+    itemEl.classList.add("is-dragging");
+    if (window.soundEngine) window.soundEngine.playClick();
+
+    // Bind pointer move & up handlers
+    const onPointerMove = (e) => this.handleItemPointerMove(e, stageRect);
+    const onPointerUp = (e) => {
+      itemEl.removeEventListener("pointermove", onPointerMove);
+      itemEl.removeEventListener("pointerup", onPointerUp);
+      itemEl.removeEventListener("pointercancel", onPointerUp);
+      this.handleItemPointerUp(e, stageRect);
+    };
+
+    itemEl.addEventListener("pointermove", onPointerMove);
+    itemEl.addEventListener("pointerup", onPointerUp);
+    itemEl.addEventListener("pointercancel", onPointerUp);
+  }
+
+  handleItemPointerMove(event, stageRect) {
+    if (!this.isDragging || !this.draggedItemEl) return;
+
+    // Calculate position relative to cartoon room container
+    const x = event.clientX - stageRect.left - this.dragItemOffset.x;
+    const y = event.clientY - stageRect.top - this.dragItemOffset.y;
+
+    this.draggedItemEl.style.left = `${x}px`;
+    this.draggedItemEl.style.top = `${y}px`;
+
+    // Real-time hit-testing for drop zones underneath pointer
+    this.checkHoverDropZones(event.clientX, event.clientY);
+  }
+
+  checkHoverDropZones(clientX, clientY) {
+    // Hide dragged item momentarily to hit-test underneath
+    this.draggedItemEl.style.display = "none";
+    const elemUnder = document.elementFromPoint(clientX, clientY);
+    this.draggedItemEl.style.display = "";
+
+    // Clear previous halos
+    document.querySelectorAll(".furniture-piece, .under-bed-zone, .under-desk-zone, .furniture-pencilcase").forEach(el => {
+      el.classList.remove("drop-target-active");
+    });
+
+    if (elemUnder) {
+      const zoneEl = elemUnder.closest("[data-zone-id]");
+      if (zoneEl) {
+        zoneEl.classList.add("drop-target-active");
+        this.currentHoverZoneId = zoneEl.getAttribute("data-zone-id");
+        return;
+      }
+    }
+    this.currentHoverZoneId = null;
+  }
+
+  handleItemPointerUp(event, stageRect) {
+    if (!this.isDragging || !this.draggedItemEl) return;
+    this.isDragging = false;
+
+    const itemId = this.draggedItemId;
+    const itemEl = this.draggedItemEl;
+    const dropZoneId = this.currentHoverZoneId;
+
+    itemEl.classList.remove("is-dragging");
+
+    // Clear all target glow halos
+    document.querySelectorAll(".drop-target-active").forEach(el => el.classList.remove("drop-target-active"));
+
+    if (dropZoneId) {
+      // Evaluate drop accuracy against current level rules
+      this.evaluateItemDrop(itemId, dropZoneId, itemEl);
+    } else {
+      // Released over empty floor -> spring back to start
+      this.springBack(itemEl);
+    }
+
+    this.draggedItemEl = null;
+    this.draggedItemId = null;
+  }
+
+  springBack(itemEl) {
+    if (window.soundEngine) window.soundEngine.playWrong();
+    itemEl.style.transition = "left 0.3s ease-out, top 0.3s ease-out";
+    itemEl.style.left = this.dragStartPos.left;
+    itemEl.style.top = this.dragStartPos.top;
+    setTimeout(() => {
+      itemEl.style.transition = "";
+    }, 300);
+  }
+
+  // =========================================================================
+  // LEVEL EVALUATION ON DROP
+  // =========================================================================
+
+  evaluateItemDrop(itemId, dropZoneId, itemEl) {
+    const currentLvl = window.roomGameEngine.currentLevel;
+
+    if (currentLvl === 1) {
+      const task = ROOM_DATA.level1.tasks[window.roomGameEngine.level1TaskIndex];
+      if (task.itemId === itemId && task.targetZoneId === dropZoneId) {
+        this.snapSuccess(itemEl, dropZoneId, itemId);
+        window.roomGameEngine.itemLocations[itemId] = dropZoneId;
+        window.roomGameEngine.addScore(1);
+        this.updateHeader();
+
+        if (window.soundEngine) {
+          window.soundEngine.playCorrect();
+          window.soundEngine.speak(`Great job! ${task.written}`);
+        }
+
+        const feedback = document.getElementById("level1-feedback-area");
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div>
+              <div class="feedback-text">⭐ PERFECT PLACEMENT! (+1 Star)</div>
+              <div style="font-weight: 800; color: #065f46; margin-top: 4px;">"${task.written}"</div>
+            </div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.nextLevel1Task()">
+              ${window.roomGameEngine.level1TaskIndex + 1 < ROOM_DATA.level1.tasks.length ? 'NEXT OBJECT ➔' : 'COMPLETE LEVEL 1 ➔'}
+            </button>
+          </div>
+        `;
+      } else {
+        this.springBack(itemEl);
+        if (window.soundEngine) window.soundEngine.speak("Hmm... listen again!");
+      }
+    } else if (currentLvl === 2) {
+      const instruction = ROOM_DATA.level2.instructions.find(i => i.itemId === itemId && i.targetZoneId === dropZoneId);
+      if (instruction) {
+        this.snapSuccess(itemEl, dropZoneId, itemId);
+        window.roomGameEngine.level2CompletedItems.add(itemId);
+        window.roomGameEngine.itemLocations[itemId] = dropZoneId;
+        window.roomGameEngine.addScore(1);
+        this.updateHeader();
+
+        if (window.soundEngine) window.soundEngine.playCorrect();
+
+        const total = ROOM_DATA.level2.instructions.length;
+        const done = window.roomGameEngine.level2CompletedItems.size;
+
+        const feedback = document.getElementById("level2-feedback-area");
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">⭐ ITEM ORGANIZED! (+1 Star)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(2)">
+              ${done < total ? 'NEXT ITEM ➔' : 'GO TO SPATIAL MEMORY ➔'}
+            </button>
+          </div>
+        `;
+      } else {
+        this.springBack(itemEl);
+        if (window.soundEngine) window.soundEngine.speak("Read the instruction carefully!");
+      }
+    } else if (currentLvl === 9) {
+      const task = ROOM_DATA.level9.tasks.find(t => t.itemId === itemId && t.targetZoneId === dropZoneId);
+      if (task) {
+        this.snapSuccess(itemEl, dropZoneId, itemId);
+        window.roomGameEngine.level9CompletedItems.add(itemId);
+        window.roomGameEngine.itemLocations[itemId] = dropZoneId;
+        window.roomGameEngine.addScore(2);
+        this.updateHeader();
+
+        if (window.soundEngine) window.soundEngine.playCorrect();
+
+        const feedback = document.getElementById("level9-feedback-area");
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">⭐ OPTIMIZATION COMPLETE! (+2 Stars)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(9)">
+              ${window.roomGameEngine.level9CompletedItems.size < ROOM_DATA.level9.tasks.length ? 'NEXT OPTIMIZATION ➔' : 'GO TO GRAND FINAL MISSION 🔥 ➔'}
+            </button>
+          </div>
+        `;
+      } else {
+        this.springBack(itemEl);
+      }
+    } else if (currentLvl === "final") {
+      const step = ROOM_DATA.finalMission.steps[window.roomGameEngine.finalMissionStepIndex];
+      if (step && step.type === "move" && step.itemId === itemId && step.targetZoneId === dropZoneId) {
+        this.snapSuccess(itemEl, dropZoneId, itemId);
+        window.roomGameEngine.itemLocations[itemId] = dropZoneId;
+        window.roomGameEngine.addScore(3);
+        window.roomGameEngine.finalMissionStepIndex++;
+        this.updateHeader();
+
+        if (window.soundEngine) window.soundEngine.playCorrect();
+
+        const feedback = document.getElementById("final-feedback-area");
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 STEP COMPLETE! (+3 Stars)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel('final')">
+              NEXT FINAL STEP ➔
+            </button>
+          </div>
+        `;
+      } else {
+        this.springBack(itemEl);
+      }
+    }
+  }
+
+  snapSuccess(itemEl, zoneId, itemId) {
+    const targetZoneEl = document.getElementById(`zone-${zoneId}`);
+    if (targetZoneEl) {
+      targetZoneEl.classList.add("drop-target-correct");
+      setTimeout(() => targetZoneEl.classList.remove("drop-target-correct"), 600);
     }
   }
 
   // =========================================================================
-  // LEVEL NAVIGATION
+  // CONTAINER & HIDDEN OBJECT INTERACTIONS
+  // =========================================================================
+
+  toggleDrawer() {
+    this.drawerOpen = !this.drawerOpen;
+    const drawerEl = document.getElementById("desk-drawer-el");
+    if (drawerEl) {
+      drawerEl.classList.toggle("drawer-pulled-open", this.drawerOpen);
+      if (window.soundEngine) window.soundEngine.playLockClick();
+    }
+
+    if (this.drawerOpen) {
+      // Reveal key if hidden inside
+      const keyEl = document.getElementById("item-key");
+      if (keyEl) keyEl.classList.add("is-revealed");
+      this.checkSearchSuccess("drawer");
+    }
+  }
+
+  toggleToybox() {
+    this.boxOpen = !this.boxOpen;
+    const boxEl = document.getElementById("zone-box");
+    if (boxEl) {
+      boxEl.classList.toggle("toybox-open", this.boxOpen);
+      if (window.soundEngine) window.soundEngine.playLockClick();
+    }
+
+    if (this.boxOpen) {
+      const hatEl = document.getElementById("item-blue_hat");
+      if (hatEl) hatEl.classList.add("is-revealed");
+      this.checkSearchSuccess("box");
+    }
+  }
+
+  toggleBlanket() {
+    this.blanketLifted = !this.blanketLifted;
+    const blanketEl = document.getElementById("bed-blanket-el");
+    if (blanketEl) {
+      blanketEl.classList.toggle("blanket-lifted", this.blanketLifted);
+      if (window.soundEngine) window.soundEngine.playClick();
+    }
+  }
+
+  toggleWardrobe() {
+    this.wardrobeOpen = !this.wardrobeOpen;
+    const wardrobeEl = document.getElementById("zone-wardrobe");
+    if (wardrobeEl) {
+      wardrobeEl.classList.toggle("wardrobe-open", this.wardrobeOpen);
+      if (window.soundEngine) window.soundEngine.playLockClick();
+    }
+    if (this.wardrobeOpen) {
+      this.checkSearchSuccess("wardrobe");
+    }
+  }
+
+  togglePictureSearch() {
+    if (window.soundEngine) window.soundEngine.playClick();
+    this.checkSearchSuccess("picture");
+  }
+
+  collectHiddenItem(itemId) {
+    window.roomGameEngine.hiddenFoundMap[itemId] = true;
+    if (window.soundEngine) {
+      window.soundEngine.playFanfare();
+    }
+  }
+
+  checkSearchSuccess(zoneId) {
+    const currentLvl = window.roomGameEngine.currentLevel;
+
+    if (currentLvl === 4) {
+      const result = window.roomGameEngine.checkLevel4Search(zoneId);
+      const feedback = document.getElementById("level4-feedback-area");
+      if (result.success) {
+        if (window.soundEngine) {
+          window.soundEngine.playFanfare();
+          window.soundEngine.speak(result.item.spokenFound);
+        }
+        window.roomGameEngine.addScore(2);
+        this.updateHeader();
+
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div>
+              <div class="feedback-text">🎉 FOUND! (+2 Stars)</div>
+              <div style="font-weight: 800; color: #065f46; margin-top: 4px;">${result.item.foundText}</div>
+            </div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(4)">
+              ${window.roomGameEngine.level4FoundItems.size < 3 ? 'FIND NEXT ITEM ➔' : 'GO TO MULTI-STEP CLUES ➔'}
+            </button>
+          </div>
+        `;
+      }
+    } else if (currentLvl === 5) {
+      if (zoneId === "shelf") {
+        const nbEl = document.getElementById("item-red_notebook");
+        if (nbEl) nbEl.classList.add("is-revealed");
+        window.roomGameEngine.addScore(3);
+        this.updateHeader();
+        if (window.soundEngine) {
+          window.soundEngine.playFanfare();
+          window.soundEngine.speak("You found the red notebook behind the books on the shelf!");
+        }
+        const feedback = document.getElementById("level5-feedback-area");
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 3-STEP DEDUCTION COMPLETE! (+3 Stars)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(6)">
+              GO TO LISTENING SEARCH ➔
+            </button>
+          </div>
+        `;
+      }
+    } else if (currentLvl === 6) {
+      const result = window.roomGameEngine.checkLevel6Search(zoneId);
+      const feedback = document.getElementById("level6-feedback-area");
+      if (result.success) {
+        if (window.soundEngine) {
+          window.soundEngine.playCorrect();
+          window.soundEngine.speak(result.challenge.explanation);
+        }
+        window.roomGameEngine.addScore(2);
+        this.updateHeader();
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 FOUND! (+2 Stars)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.nextLevel6()">
+              ${window.roomGameEngine.level6ChallengeIndex + 1 < ROOM_DATA.level6.challenges.length ? 'NEXT AUDIO CLUE ➔' : 'GO TO READING SEARCH ➔'}
+            </button>
+          </div>
+        `;
+      }
+    } else if (currentLvl === "final") {
+      const isCorrect = window.roomGameEngine.checkFinalMissionAction("search", zoneId);
+      const feedback = document.getElementById("final-feedback-area");
+      if (isCorrect) {
+        if (window.soundEngine) window.soundEngine.playCorrect();
+        window.roomGameEngine.addScore(3);
+        window.roomGameEngine.finalMissionStepIndex++;
+        this.updateHeader();
+        feedback.innerHTML = `
+          <div class="feedback-box">
+            <div class="feedback-text">🎉 FINAL STEP COMPLETE! (+3 Stars)</div>
+            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel('final')">
+              NEXT STEP ➔
+            </button>
+          </div>
+        `;
+      }
+    }
+  }
+
+  // =========================================================================
+  // LEVEL RENDERING METHODS
   // =========================================================================
 
   showLevel(levelKey) {
@@ -150,10 +637,6 @@ class RoomUIController {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // =========================================================================
-  // INTRO / STORY SCREEN
-  // =========================================================================
-
   renderIntro(container) {
     container.innerHTML = `
       <div class="adventure-card" style="max-width: 1100px;">
@@ -169,25 +652,25 @@ class RoomUIController {
             “Oh no! My room is a mess! I can't find my things! Can you help me?”
           </div>
           <p style="font-size: 1.3rem; font-weight: 800; color: #334155; text-align: center; max-width: 750px; margin: 14px 0;">
-            Help organize the room, follow preposition instructions, and search for lost objects!
+            Grab and physically drag objects to clean the room, follow preposition clues, open drawers and boxes, and rescue the room!
           </p>
         </div>
 
         <div class="mission-brief-steps">
           <div class="step-card">
-            <div class="step-icon">🧹</div>
-            <div class="step-text">1. Make Room Tidy</div>
-            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Listen & read preposition directions</p>
+            <div class="step-icon">🖱️</div>
+            <div class="step-text">1. Grab & Drag</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Physically move objects to shelf, bed & desk</p>
           </div>
           <div class="step-card">
-            <div class="step-icon">🔎</div>
-            <div class="step-text">2. Find Lost Things</div>
-            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Search under, in, on & behind furniture</p>
+            <div class="step-icon">📦</div>
+            <div class="step-text">2. Open & Search</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Pull open drawers & boxes to find lost items</p>
           </div>
           <div class="step-card">
             <div class="step-icon">🔢</div>
-            <div class="step-text">3. Sequence & Solve</div>
-            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Order steps: First, Then, Next, Finally</p>
+            <div class="step-text">3. Sequence & Rescue</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Order action picture cards: First ➔ Finally</p>
           </div>
         </div>
 
@@ -204,35 +687,29 @@ class RoomUIController {
 
     setTimeout(() => {
       if (window.soundEngine) {
-        window.soundEngine.speak("Oh no! My room is a mess! I can't find my things! Can you help me make the room tidy and find the lost things?");
+        window.soundEngine.speak("Oh no! My room is a mess! Can you help me make the room tidy and find the lost things?");
       }
     }, 400);
   }
 
-  // =========================================================================
-  // LEVEL 1: LISTEN & MOVE
-  // =========================================================================
-
+  // Level 1: Listen & Move
   renderLevel1(container) {
     const taskIdx = window.roomGameEngine.level1TaskIndex;
-    const total = ROOM_DATA.level1.tasks.length;
     const task = ROOM_DATA.level1.tasks[taskIdx];
-    this.selectedItemForMove = task.itemId;
 
     container.innerHTML = `
       <div class="adventure-card" style="max-width: 1250px;">
         <div class="card-header-banner">
-          <span class="card-tag">LEVEL 1: LISTEN & MOVE (${taskIdx + 1}/${total})</span>
-          <h2 class="main-heading">🎧 Listen to the Direction</h2>
-          <p class="sub-heading">Click 🔊 to hear the audio, then click the correct furniture target in the room!</p>
+          <span class="card-tag">LEVEL 1: LISTEN & DRAG (${taskIdx + 1}/${ROOM_DATA.level1.tasks.length})</span>
+          <h2 class="main-heading">🎧 Listen & Physically Drag the Object</h2>
+          <p class="sub-heading">Click 🔊 to hear the audio instruction, then grab the visual object in the room and drag it!</p>
         </div>
 
-        <!-- Audio Instruction Box (Written text hidden initially) -->
-        <div class="audio-instruction-box">
+        <div class="room-control-ribbon">
           <button class="jumbo-btn btn-ocean" onclick="soundEngine.speak('${task.spoken}')" style="font-size: 1.1rem; padding: 10px 20px;">
             🔊 PLAY AUDIO
           </button>
-          <div id="level1-written-text" style="display: none; font-size: 1.5rem; font-family: 'Bungee', cursive; color: #1e293b;">
+          <div id="level1-written-text" style="display: none; font-size: 1.4rem; font-family: 'Bungee', cursive; color: #1e293b;">
             "${task.written}"
           </div>
           <button class="teacher-small-btn" onclick="document.getElementById('level1-written-text').style.display = 'block'">
@@ -240,12 +717,9 @@ class RoomUIController {
           </button>
         </div>
 
-        <div class="speaking-prompt-bar">
-          🗣️ <strong>SAY IT ALOUD:</strong> "[Team] says: '${task.written}'"
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ activeItemId: task.itemId })}
         </div>
-
-        <!-- Interactive Cartoon Room -->
-        ${this.getRoomHtml({ interactiveMode: "move", activeItemId: task.itemId })}
 
         <div id="level1-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
@@ -254,51 +728,6 @@ class RoomUIController {
     setTimeout(() => {
       if (window.soundEngine) window.soundEngine.speak(task.spoken);
     }, 400);
-  }
-
-  executeMove(itemId, targetZoneId) {
-    const currentLvl = window.roomGameEngine.currentLevel;
-
-    if (currentLvl === 1) {
-      const isCorrect = window.roomGameEngine.checkLevel1Move(targetZoneId);
-      const feedback = document.getElementById("level1-feedback-area");
-      const task = ROOM_DATA.level1.tasks[window.roomGameEngine.level1TaskIndex];
-
-      if (isCorrect) {
-        if (window.soundEngine) {
-          window.soundEngine.playCorrect();
-          window.soundEngine.speak(`Great job! ${task.written}`);
-        }
-        window.roomGameEngine.addScore(1);
-        this.updateHeader();
-
-        feedback.innerHTML = `
-          <div class="feedback-box">
-            <div>
-              <div class="feedback-text">⭐ PERFECT PLACEMENT! (+1 Star)</div>
-              <div style="font-weight: 800; color: #065f46; margin-top: 4px;">"${task.written}"</div>
-            </div>
-            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.nextLevel1Task()">
-              ${window.roomGameEngine.level1TaskIndex + 1 < ROOM_DATA.level1.tasks.length ? 'NEXT OBJECT ➔' : 'COMPLETE LEVEL 1 ➔'}
-            </button>
-          </div>
-        `;
-      } else {
-        if (window.soundEngine) {
-          window.soundEngine.playWrong();
-          window.soundEngine.speak("Hmm... listen again!");
-        }
-        feedback.innerHTML = `
-          <div class="feedback-box error-mode">
-            <div class="feedback-text" style="color: #b91c1c;">🤔 Hmm... listen again! Where does it belong?</div>
-          </div>
-        `;
-      }
-    } else if (currentLvl === 2) {
-      this.executeLevel2Move(itemId, targetZoneId);
-    } else if (currentLvl === 9) {
-      this.executeLevel9Move(itemId, targetZoneId);
-    }
   }
 
   nextLevel1Task() {
@@ -310,28 +739,23 @@ class RoomUIController {
     }
   }
 
-  // =========================================================================
-  // LEVEL 2: READ & ORGANIZE
-  // =========================================================================
-
+  // Level 2: Read & Organize
   renderLevel2(container) {
     const instructions = ROOM_DATA.level2.instructions;
     const completed = window.roomGameEngine.level2CompletedItems;
-
-    // Pick first uncompleted item
     const nextItem = instructions.find(i => !completed.has(i.itemId));
+
     if (!nextItem) {
       this.showLevel(3);
       return;
     }
-    this.selectedItemForMove = nextItem.itemId;
 
     container.innerHTML = `
       <div class="adventure-card" style="max-width: 1250px;">
         <div class="card-header-banner">
-          <span class="card-tag">LEVEL 2: READ & ORGANIZE (${completed.size} / ${instructions.length} Done)</span>
-          <h2 class="main-heading">📖 Read & Clean the Room</h2>
-          <p class="sub-heading">Read the checklist, then click the correct place for each object!</p>
+          <span class="card-tag">LEVEL 2: READ & ORGANIZE (${completed.size}/${instructions.length} Done)</span>
+          <h2 class="main-heading">📖 Read Checklist & Drag Objects</h2>
+          <p class="sub-heading">Read the instruction and physically drag the object to its correct place!</p>
         </div>
 
         <div class="checklist-tasks-grid">
@@ -343,53 +767,16 @@ class RoomUIController {
           `).join("")}
         </div>
 
-        <!-- Interactive Room -->
-        ${this.getRoomHtml({ interactiveMode: "move", activeItemId: nextItem.itemId })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ activeItemId: nextItem.itemId })}
+        </div>
 
         <div id="level2-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
     `;
   }
 
-  executeLevel2Move(itemId, targetZoneId) {
-    const isCorrect = window.roomGameEngine.checkLevel2Move(itemId, targetZoneId);
-    const feedback = document.getElementById("level2-feedback-area");
-
-    if (isCorrect) {
-      if (window.soundEngine) {
-        window.soundEngine.playCorrect();
-      }
-      window.roomGameEngine.addScore(1);
-      this.updateHeader();
-
-      const total = ROOM_DATA.level2.instructions.length;
-      const done = window.roomGameEngine.level2CompletedItems.size;
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div class="feedback-text">⭐ ITEM ORGANIZED! (+1 Star)</div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(2)">
-            ${done < total ? 'NEXT ITEM ➔' : 'GO TO MEMORY CHALLENGE ➔'}
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Read the instruction carefully!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">🤔 Look at the written checklist. Try placing it again!</div>
-        </div>
-      `;
-    }
-  }
-
-  // =========================================================================
-  // LEVEL 3: SPATIAL MEMORY
-  // =========================================================================
-
+  // Level 3: Spatial Memory
   renderLevel3(container) {
     const qIdx = window.roomGameEngine.level3QuestionIndex;
     const questions = ROOM_DATA.level3.questions;
@@ -411,12 +798,10 @@ class RoomUIController {
           </div>
         </div>
 
-        <!-- Tidy Room Display -->
-        <div id="room-memory-stage-view">
-          ${this.getRoomHtml({ interactiveMode: "view", showClean: true })}
+        <div id="room-memory-stage-view" class="room-scene-viewport">
+          ${this.renderRoomStage({ showClean: true })}
         </div>
 
-        <!-- Question View (Hidden initially) -->
         <div id="room-memory-question-view" style="display: none; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
           <div class="question-spotlight-box" style="text-align: center; justify-content: center; flex-direction: column;">
             <span class="card-tag" style="background: #fee2e2; color: #b91c1c;">ROOM HIDDEN!</span>
@@ -521,16 +906,11 @@ class RoomUIController {
     }
   }
 
-  // =========================================================================
-  // LEVEL 4: FIND THE LOST OBJECTS
-  // =========================================================================
-
+  // Level 4: Find the Lost Objects
   renderLevel4(container) {
     const lostItems = ROOM_DATA.level4.lostItems;
     const foundSet = window.roomGameEngine.level4FoundItems;
     const searches = window.roomGameEngine.searchesLeft;
-
-    // Active lost item to find
     const activeTarget = lostItems.find(i => !foundSet.has(i.id));
 
     if (!activeTarget) {
@@ -542,8 +922,8 @@ class RoomUIController {
       <div class="adventure-card" style="max-width: 1250px;">
         <div class="card-header-banner">
           <span class="card-tag">LEVEL 4: FIND THE LOST OBJECTS (${foundSet.size}/3 Found)</span>
-          <h2 class="main-heading">🔎 Find the Lost Items!</h2>
-          <p class="sub-heading">Read the clue and search the correct spot in the room!</p>
+          <h2 class="main-heading">🔎 Find the Hidden Treasures!</h2>
+          <p class="sub-heading">Read the clue! Click to open drawers, open toy boxes, or move books to find the lost items!</p>
         </div>
 
         <div class="search-clue-ribbon">
@@ -556,13 +936,14 @@ class RoomUIController {
             <button class="speak-icon-btn" onclick="soundEngine.speak('${activeTarget.spokenClue}')">🔊</button>
           </div>
           <div class="searches-counter-pill ${searches <= 2 ? 'low-searches' : ''}">
-            <span>🔎 SEARCHES LEFT:</span>
+            <span>🔎 SEARCHES:</span>
             <strong>${searches}</strong>
           </div>
         </div>
 
-        <!-- Interactive Search Room -->
-        ${this.getRoomHtml({ interactiveMode: "search" })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ mode: "search" })}
+        </div>
 
         <div id="level4-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
@@ -573,65 +954,7 @@ class RoomUIController {
     }, 400);
   }
 
-  executeSearch(zoneId) {
-    const currentLvl = window.roomGameEngine.currentLevel;
-
-    if (currentLvl === 4) {
-      if (window.roomGameEngine.searchesLeft <= 0) {
-        alert("Out of searches! Teacher can grant extra searches in the Teacher panel.");
-        return;
-      }
-      window.roomGameEngine.useSearch();
-      this.updateHeader();
-
-      const result = window.roomGameEngine.checkLevel4Search(zoneId);
-      const feedback = document.getElementById("level4-feedback-area");
-
-      if (result.success) {
-        if (window.soundEngine) {
-          window.soundEngine.playFanfare();
-          window.soundEngine.speak(result.item.spokenFound);
-        }
-        window.roomGameEngine.addScore(2);
-        this.updateHeader();
-
-        feedback.innerHTML = `
-          <div class="feedback-box">
-            <div>
-              <div class="feedback-text">🎉 FOUND! (+2 Stars)</div>
-              <div style="font-weight: 800; color: #065f46; margin-top: 4px;">${result.item.foundText}</div>
-            </div>
-            <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(4)">
-              ${window.roomGameEngine.level4FoundItems.size < 3 ? 'FIND NEXT ITEM ➔' : 'GO TO MULTI-STEP CLUES ➔'}
-            </button>
-          </div>
-        `;
-      } else {
-        if (window.soundEngine) {
-          window.soundEngine.playWrong();
-          window.soundEngine.speak("Nothing here! Read the clue again.");
-        }
-        feedback.innerHTML = `
-          <div class="feedback-box error-mode">
-            <div class="feedback-text" style="color: #b91c1c;">❌ Nothing here! Understand the clue before searching! (${window.roomGameEngine.searchesLeft} searches left)</div>
-          </div>
-        `;
-      }
-    } else if (currentLvl === 5) {
-      this.executeLevel5Search(zoneId);
-    } else if (currentLvl === 6) {
-      this.executeLevel6Search(zoneId);
-    } else if (currentLvl === 7) {
-      this.executeLevel7Search(zoneId);
-    } else if (currentLvl === "final") {
-      this.executeFinalMissionSearch(zoneId);
-    }
-  }
-
-  // =========================================================================
-  // LEVEL 5: MULTI-STEP CLUES
-  // =========================================================================
-
+  // Level 5: Multi-Step Clues
   renderLevel5(container) {
     const clues = ROOM_DATA.level5.clues;
     const currentStep = window.roomGameEngine.level5CurrentStep;
@@ -641,7 +964,7 @@ class RoomUIController {
         <div class="card-header-banner">
           <span class="card-tag">LEVEL 5: MULTI-STEP DEDUCTION</span>
           <h2 class="main-heading">🔴 Find the Red Notebook</h2>
-          <p class="sub-heading">Follow the 3 sequential clues to locate the missing notebook!</p>
+          <p class="sub-heading">Follow the 3 clues! Interact with the bookshelf to discover the hidden notebook!</p>
         </div>
 
         <div class="multi-step-clues-box">
@@ -662,8 +985,9 @@ class RoomUIController {
           </div>
         ` : ''}
 
-        <!-- Interactive Search Room -->
-        ${this.getRoomHtml({ interactiveMode: "search" })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ mode: "search" })}
+        </div>
 
         <div id="level5-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
@@ -682,46 +1006,7 @@ class RoomUIController {
     }
   }
 
-  executeLevel5Search(zoneId) {
-    const isCorrect = window.roomGameEngine.checkLevel5Search(zoneId);
-    const feedback = document.getElementById("level5-feedback-area");
-
-    if (isCorrect) {
-      if (window.soundEngine) {
-        window.soundEngine.playFanfare();
-        window.soundEngine.speak("Amazing deduction! You found the red notebook behind the books!");
-      }
-      window.roomGameEngine.addScore(3);
-      this.updateHeader();
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div>
-            <div class="feedback-text">🎉 3-STEP DEDUCTION SOLVED! (+3 Stars)</div>
-            <div style="font-weight: 800; color: #065f46; margin-top: 4px;">${ROOM_DATA.level5.foundMessage}</div>
-          </div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(6)">
-            GO TO LISTENING SEARCH ➔
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Think about all 3 clues! Not on floor, near books!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">❌ Not there! Remember: not on the floor, near reading books!</div>
-        </div>
-      `;
-    }
-  }
-
-  // =========================================================================
-  // LEVEL 6: LISTENING SEARCH
-  // =========================================================================
-
+  // Level 6: Listening Search
   renderLevel6(container) {
     const chIdx = window.roomGameEngine.level6ChallengeIndex;
     const challenge = ROOM_DATA.level6.challenges[chIdx];
@@ -731,10 +1016,10 @@ class RoomUIController {
         <div class="card-header-banner">
           <span class="card-tag">LEVEL 6: LISTENING SEARCH (${chIdx + 1}/${ROOM_DATA.level6.challenges.length})</span>
           <h2 class="main-heading">🎧 Audio Clue Investigation</h2>
-          <p class="sub-heading">Listen to the audio clue and search the correct container or place!</p>
+          <p class="sub-heading">Listen to the audio clue and interact with the correct container in the room!</p>
         </div>
 
-        <div class="audio-instruction-box">
+        <div class="room-control-ribbon">
           <button class="jumbo-btn btn-ocean" onclick="soundEngine.speak('${challenge.spokenClue}')" style="font-size: 1.1rem; padding: 10px 20px;">
             🔊 PLAY AUDIO CLUE
           </button>
@@ -746,8 +1031,9 @@ class RoomUIController {
           </button>
         </div>
 
-        <!-- Interactive Search Room -->
-        ${this.getRoomHtml({ interactiveMode: "search" })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ mode: "search" })}
+        </div>
 
         <div id="level6-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
@@ -756,39 +1042,6 @@ class RoomUIController {
     setTimeout(() => {
       if (window.soundEngine) window.soundEngine.speak(challenge.spokenClue);
     }, 400);
-  }
-
-  executeLevel6Search(zoneId) {
-    const result = window.roomGameEngine.checkLevel6Search(zoneId);
-    const feedback = document.getElementById("level6-feedback-area");
-
-    if (result.success) {
-      if (window.soundEngine) {
-        window.soundEngine.playCorrect();
-        window.soundEngine.speak(`Found! ${result.challenge.explanation}`);
-      }
-      window.roomGameEngine.addScore(2);
-      this.updateHeader();
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div class="feedback-text">🎉 CORRECT SEARCH! (+2 Stars)</div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.nextLevel6()">
-            ${window.roomGameEngine.level6ChallengeIndex + 1 < ROOM_DATA.level6.challenges.length ? 'NEXT AUDIO CLUE ➔' : 'GO TO READING SEARCH ➔'}
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Listen carefully to the audio clue!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">❌ Not in that container! Listen to the clue again!</div>
-        </div>
-      `;
-    }
   }
 
   nextLevel6() {
@@ -800,10 +1053,7 @@ class RoomUIController {
     }
   }
 
-  // =========================================================================
-  // LEVEL 7: READING SEARCH (COMPLEX PREPOSITIONS)
-  // =========================================================================
-
+  // Level 7: Reading Search
   renderLevel7(container) {
     const chIdx = window.roomGameEngine.level7ChallengeIndex;
     const challenge = ROOM_DATA.level7.challenges[chIdx];
@@ -813,7 +1063,7 @@ class RoomUIController {
         <div class="card-header-banner">
           <span class="card-tag">LEVEL 7: COMPLEX PREPOSITIONS (${chIdx + 1}/${ROOM_DATA.level7.challenges.length})</span>
           <h2 class="main-heading">📖 Complex Preposition Search</h2>
-          <p class="sub-heading">Read the detailed clue and click the exact spot!</p>
+          <p class="sub-heading">Read the detailed clue and search the exact spot in the room!</p>
         </div>
 
         <div class="search-clue-ribbon">
@@ -827,45 +1077,13 @@ class RoomUIController {
           </div>
         </div>
 
-        <!-- Interactive Search Room -->
-        ${this.getRoomHtml({ interactiveMode: "search" })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ mode: "search" })}
+        </div>
 
         <div id="level7-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
     `;
-  }
-
-  executeLevel7Search(zoneId) {
-    const result = window.roomGameEngine.checkLevel7Search(zoneId);
-    const feedback = document.getElementById("level7-feedback-area");
-
-    if (result.success) {
-      if (window.soundEngine) {
-        window.soundEngine.playCorrect();
-        window.soundEngine.speak(result.challenge.explanation);
-      }
-      window.roomGameEngine.addScore(2);
-      this.updateHeader();
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div class="feedback-text">⭐ COMPLEX PREPOSITIONS SOLVED! (+2 Stars)</div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.nextLevel7()">
-            ${window.roomGameEngine.level7ChallengeIndex + 1 < ROOM_DATA.level7.challenges.length ? 'NEXT SEARCH ➔' : 'GO TO CLEAN-UP SEQUENCING ➔'}
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Check both prepositions in the sentence!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">❌ Read all prepositions carefully! (e.g. inside + box + under desk)</div>
-        </div>
-      `;
-    }
   }
 
   nextLevel7() {
@@ -877,47 +1095,41 @@ class RoomUIController {
     }
   }
 
-  // =========================================================================
-  // LEVEL 8: SEQUENCE THE CLEAN-UP
-  // =========================================================================
-
+  // Level 8: Sequence Clean-Up with Visual Picture Cards
   renderLevel8(container) {
     const cards = [...ROOM_DATA.level8.cards];
-    // Shuffle cards for challenge if empty
     if (window.roomGameEngine.level8UserOrder.length === 0) {
       window.roomGameEngine.level8UserOrder = cards.map(c => c.id).sort(() => Math.random() - 0.5);
     }
     const currentOrder = window.roomGameEngine.level8UserOrder;
 
     container.innerHTML = `
-      <div class="adventure-card" style="max-width: 1100px;">
+      <div class="adventure-card" style="max-width: 1200px;">
         <div class="card-header-banner">
-          <span class="card-tag">LEVEL 8: SEQUENCING</span>
-          <h2 class="main-heading">🔢 Sequence the Clean-Up!</h2>
-          <p class="sub-heading">Arrange the 5 steps into the correct order: First ➔ Then ➔ Next ➔ After that ➔ Finally!</p>
+          <span class="card-tag">LEVEL 8: VISUAL SEQUENCING</span>
+          <h2 class="main-heading">🔢 Sequence the Clean-Up Picture Cards!</h2>
+          <p class="sub-heading">Arrange the 5 illustrated action cards into order: First ➔ Then ➔ Next ➔ After that ➔ Finally!</p>
         </div>
 
-        <div class="sequence-cards-container" id="sequence-slots-list">
+        <div class="sequence-visual-track">
           ${currentOrder.map((cardId, idx) => {
             const card = cards.find(c => c.id === cardId);
             return `
-              <div class="sequence-step-card" draggable="true" data-card-id="${card.id}">
-                <div class="sequence-number-badge">${idx + 1}</div>
-                <div style="font-size: 2rem;">${card.icon}</div>
-                <div style="flex: 1;">
-                  <strong style="font-family: 'Bungee', cursive; color: #4338ca; font-size: 1.1rem;">${card.seqWord}:</strong>
-                  <span style="font-size: 1.15rem; font-weight: 800; color: #1e293b;">${card.text}</span>
-                </div>
-                <div style="display: flex; gap: 4px;">
-                  ${idx > 0 ? `<button class="teacher-small-btn" onclick="roomUI.moveSeqCard(${idx}, -1)">⬆️ UP</button>` : ''}
-                  ${idx < currentOrder.length - 1 ? `<button class="teacher-small-btn" onclick="roomUI.moveSeqCard(${idx}, 1)">⬇️ DOWN</button>` : ''}
+              <div class="seq-picture-card" id="seq-card-${card.id}">
+                <div class="seq-card-order-badge">${idx + 1}</div>
+                <div class="seq-card-image">${card.icon}</div>
+                <strong style="font-family: 'Bungee', cursive; color: #4338ca; font-size: 1rem;">${card.seqWord}</strong>
+                <div class="seq-card-caption">${card.caption}</div>
+                <div style="display: flex; gap: 4px; margin-top: 10px;">
+                  ${idx > 0 ? `<button class="teacher-small-btn" onclick="roomUI.moveSeqCard(${idx}, -1)">⬅️</button>` : ''}
+                  ${idx < currentOrder.length - 1 ? `<button class="teacher-small-btn" onclick="roomUI.moveSeqCard(${idx}, 1)">➡️</button>` : ''}
                 </div>
               </div>
             `;
           }).join("")}
         </div>
 
-        <div style="text-align: center; margin-top: 24px;">
+        <div style="text-align: center; margin-top: 20px;">
           <button class="jumbo-btn btn-gold" style="font-size: 1.4rem; padding: 16px 36px;" onclick="roomUI.checkLevel8Sequence()">
             ✅ CHECK SEQUENCE ➔
           </button>
@@ -977,10 +1189,7 @@ class RoomUIController {
     }
   }
 
-  // =========================================================================
-  // LEVEL 9: THE EFFICIENT ROOM
-  // =========================================================================
-
+  // Level 9: The Efficient Room
   renderLevel9(container) {
     const tasks = ROOM_DATA.level9.tasks;
     const completed = window.roomGameEngine.level9CompletedItems;
@@ -990,14 +1199,13 @@ class RoomUIController {
       this.showLevel("final");
       return;
     }
-    this.selectedItemForMove = nextTask.itemId;
 
     container.innerHTML = `
       <div class="adventure-card" style="max-width: 1250px;">
         <div class="card-header-banner">
           <span class="card-tag">LEVEL 9: SPATIAL OPTIMIZATION (${completed.size}/${tasks.length} Done)</span>
           <h2 class="main-heading">🧠 The Efficient Room</h2>
-          <p class="sub-heading">“It's tidy... but difficult to use!” Move items to their most practical locations!</p>
+          <p class="sub-heading">“It's tidy... but difficult to use!” Drag items to their most practical locations!</p>
         </div>
 
         <div class="search-clue-ribbon" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f;">
@@ -1011,50 +1219,16 @@ class RoomUIController {
           </div>
         </div>
 
-        <!-- Interactive Room -->
-        ${this.getRoomHtml({ interactiveMode: "tidy", activeItemId: nextTask.itemId })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ activeItemId: nextTask.itemId })}
+        </div>
 
         <div id="level9-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
     `;
   }
 
-  executeLevel9Move(itemId, targetZoneId) {
-    const isCorrect = window.roomGameEngine.checkLevel9Move(itemId, targetZoneId);
-    const feedback = document.getElementById("level9-feedback-area");
-
-    if (isCorrect) {
-      if (window.soundEngine) {
-        window.soundEngine.playCorrect();
-      }
-      window.roomGameEngine.addScore(2);
-      this.updateHeader();
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div class="feedback-text">⭐ OPTIMIZATION COMPLETE! (+2 Stars)</div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel(9)">
-            ${window.roomGameEngine.level9CompletedItems.size < ROOM_DATA.level9.tasks.length ? 'NEXT OPTIMIZATION ➔' : 'GO TO GRAND FINAL MISSION 🔥 ➔'}
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Move it to the convenient spot near the desk or door!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">🤔 Where makes the most sense? Check the instruction!</div>
-        </div>
-      `;
-    }
-  }
-
-  // =========================================================================
-  // FINAL MISSION: GRAND ROOM RESCUE
-  // =========================================================================
-
+  // Final Mission: Grand Room Rescue
   renderFinalMission(container) {
     const stepIdx = window.roomGameEngine.finalMissionStepIndex;
     const step = ROOM_DATA.finalMission.steps[stepIdx];
@@ -1062,10 +1236,6 @@ class RoomUIController {
     if (!step) {
       this.showLevel("victory");
       return;
-    }
-
-    if (step.type === "move") {
-      this.selectedItemForMove = step.itemId;
     }
 
     container.innerHTML = `
@@ -1089,11 +1259,9 @@ class RoomUIController {
           </div>
         </div>
 
-        <!-- Interactive Final Room -->
-        ${this.getRoomHtml({ 
-          interactiveMode: step.type === 'move' ? 'move' : 'search', 
-          activeItemId: step.itemId 
-        })}
+        <div class="room-scene-viewport">
+          ${this.renderRoomStage({ activeItemId: step.itemId })}
+        </div>
 
         <div id="final-feedback-area" style="width: 100%; max-width: 850px; margin: 16px auto 0;"></div>
       </div>
@@ -1104,43 +1272,7 @@ class RoomUIController {
     }, 400);
   }
 
-  executeFinalMissionSearch(zoneId) {
-    const isCorrect = window.roomGameEngine.checkFinalMissionAction("search", zoneId);
-    const feedback = document.getElementById("final-feedback-area");
-
-    if (isCorrect) {
-      if (window.soundEngine) {
-        window.soundEngine.playCorrect();
-      }
-      window.roomGameEngine.addScore(3);
-      window.roomGameEngine.finalMissionStepIndex++;
-      this.updateHeader();
-
-      feedback.innerHTML = `
-        <div class="feedback-box">
-          <div class="feedback-text">🎉 STEP COMPLETE! (+3 Stars)</div>
-          <button class="jumbo-btn btn-emerald" style="padding: 10px 20px; font-size: 1rem;" onclick="roomUI.showLevel('final')">
-            NEXT FINAL STEP ➔
-          </button>
-        </div>
-      `;
-    } else {
-      if (window.soundEngine) {
-        window.soundEngine.playWrong();
-        window.soundEngine.speak("Read the final clue carefully!");
-      }
-      feedback.innerHTML = `
-        <div class="feedback-box error-mode">
-          <div class="feedback-text" style="color: #b91c1c;">❌ Not there! Check the final clue!</div>
-        </div>
-      `;
-    }
-  }
-
-  // =========================================================================
-  // VICTORY CEREMONY
-  // =========================================================================
-
+  // Victory
   renderVictory(container) {
     container.innerHTML = `
       <div class="adventure-card" style="max-width: 1100px;">
@@ -1173,7 +1305,7 @@ class RoomUIController {
             🏠 MAIN MENU
           </button>
           <button class="jumbo-btn btn-gold" style="font-size: 1.2rem; padding: 14px 28px;" onclick="roomUI.restartGame()">
-            🔄 PLAY AGAIN (New Variations)
+            🔄 PLAY AGAIN
           </button>
         </div>
       </div>
@@ -1188,12 +1320,12 @@ class RoomUIController {
 
   restartGame() {
     window.roomGameEngine.resetAll();
+    this.drawerOpen = false;
+    this.boxOpen = false;
+    this.blanketLifted = false;
+    this.wardrobeOpen = false;
     this.showLevel("intro");
   }
-
-  // =========================================================================
-  // ROOM TEACHER HUB
-  // =========================================================================
 
   openTeacherPanel() {
     const modal = document.getElementById("room-teacher-modal");
@@ -1211,7 +1343,7 @@ class RoomUIController {
           <h4>🚀 Jump to Level</h4>
           <div class="teacher-actions-row">
             <button class="teacher-small-btn" onclick="roomUI.showLevel('intro'); roomUI.closeTeacherPanel();">Intro</button>
-            <button class="teacher-small-btn" onclick="roomUI.showLevel(1); roomUI.closeTeacherPanel();">L1: Listen & Move</button>
+            <button class="teacher-small-btn" onclick="roomUI.showLevel(1); roomUI.closeTeacherPanel();">L1: Listen & Drag</button>
             <button class="teacher-small-btn" onclick="roomUI.showLevel(2); roomUI.closeTeacherPanel();">L2: Read & Organize</button>
             <button class="teacher-small-btn" onclick="roomUI.showLevel(3); roomUI.closeTeacherPanel();">L3: Spatial Memory</button>
             <button class="teacher-small-btn" onclick="roomUI.showLevel(4); roomUI.closeTeacherPanel();">L4: Lost Objects</button>
