@@ -79,6 +79,13 @@ class UIController {
         this.renderPrepClassroomGuide();
         break;
 
+      // 4TH GRADE: ROOM RESCUE
+      case "room-rescue":
+        if (window.roomUI) {
+          window.roomUI.showLevel(window.roomGameEngine.currentLevel || "intro");
+        }
+        break;
+
       // TREASURE INVESTIGATION SCREENS
       case "intro":
         this.renderIntro();
@@ -126,54 +133,76 @@ class UIController {
 
     container.innerHTML = `
       <div class="card-header-banner">
-        <span class="card-tag" style="background: #fef08a; color: #854d0e;">3RD GRADE ENGLISH CLASSROOM GAMES</span>
-        <h1 class="main-heading" style="font-size: 2.6rem;">🕵️ DETECTIVE ENGLISH ACADEMY</h1>
-        <p class="sub-heading">Choose an activity for your classroom:</p>
+        <span class="card-tag" style="background: #fef08a; color: #854d0e;">3RD & 4TH GRADE ENGLISH CLASSROOM GAMES</span>
+        <h1 class="main-heading" style="font-size: 2.6rem;">🎓 ENGLISH ADVENTURE ACADEMY</h1>
+        <p class="sub-heading">Choose an interactive lesson game for your classroom:</p>
       </div>
 
-      <div class="hub-modes-grid">
-        <!-- MODE 1: DETECTIVE PREPARATION -->
+      <div class="hub-modes-grid-3">
+        <!-- MODE 1: 3RD GRADE DETECTIVE PREPARATION -->
         <div class="hub-mode-card card-prep" onclick="uiController.showScreen('prep-intro')">
-          <div class="mode-badge-pill" style="background: #e0e7ff; color: #3730a3;">⏱️ 7–10 MIN WARM-UP</div>
-          <div class="mode-icon-hero">🎒 🔎 👤</div>
-          <h2 class="mode-title">1. DETECTIVE PREPARATION</h2>
+          <div class="mode-badge-pill" style="background: #e0e7ff; color: #3730a3;">🎒 3RD GRADE • 7–10 MIN</div>
+          <div class="mode-icon-hero">🔎 👤 🪟</div>
+          <h2 class="mode-title">1. DETECTIVE PREP</h2>
           <p class="mode-desc">
-            Practice asking simple questions about a person's appearance and classroom seating location before the investigation!
+            Warm-up practice for asking simple questions about a person's appearance and classroom seating location!
           </p>
           <ul class="mode-features-list">
-            <li>🎯 <strong>Question Practice:</strong> Match visual targets to English questions</li>
-            <li>👤 <strong>Ask About The Person:</strong> Who, Hair, Looks & Classroom Location</li>
-            <li>🧠 <strong>5-Second Memory Challenge:</strong> Remember classroom positions</li>
-            <li>📌 <strong>Large Detective Question Board:</strong> Keep open on screen</li>
+            <li>🎯 <strong>Target Match:</strong> Visual badges to questions</li>
+            <li>👤 <strong>Ask Person:</strong> Who, Hair, Looks & Place</li>
+            <li>🧠 <strong>5s Memory:</strong> Quick classroom seating</li>
+            <li>📋 <strong>Live Bag Activity:</strong> Teacher classroom guide</li>
           </ul>
-          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1.2rem; padding: 14px 20px; margin-top: auto;">
-            START DETECTIVE PREPARATION ➔
+          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
+            START PREPARATION ➔
           </button>
         </div>
 
-        <!-- MODE 2: WHO STOLE THE TREASURE? -->
+        <!-- MODE 2: 3RD GRADE WHO STOLE THE TREASURE? -->
         <div class="hub-mode-card card-treasure" onclick="uiController.showScreen('intro')">
-          <div class="mode-badge-pill" style="background: #fef3c7; color: #92400e;">🏆 FULL 4-TEAM MYSTERY</div>
+          <div class="mode-badge-pill" style="background: #fef3c7; color: #92400e;">🏆 3RD GRADE • FULL MYSTERY</div>
           <div class="mode-icon-hero">🏴‍☠️ 💰 🔐</div>
           <h2 class="mode-title">2. WHO STOLE THE TREASURE?</h2>
           <p class="mode-desc">
-            The complete 4-team detective adventure! Complete training missions, crack the vault, interrogate 8 suspects, and deduce the thief!
+            Complete 4-team mystery adventure! 5 grammar missions, 5-key vault lock, 8 hidden suspects & deduction meeting!
           </p>
           <ul class="mode-features-list">
-            <li>🎮 <strong>5 Training Missions:</strong> Question Match, Profiles, Can/Can't, Likes, Have Got</li>
-            <li>🔐 <strong>5-Key Boss Vault Lock:</strong> Crack the secret combination</li>
-            <li>👥 <strong>8 Hidden Suspects & Notebooks:</strong> Independent team dossiers</li>
-            <li>🧩 <strong>Indirect Clues & Meeting:</strong> Real deduction & speaking practice</li>
+            <li>🎮 <strong>5 Grammar Missions:</strong> Match, Can, Likes, Have</li>
+            <li>🔐 <strong>Boss Lock:</strong> 5-digit code vault</li>
+            <li>👥 <strong>8 Suspects:</strong> Disparity dossiers & meeting</li>
+            <li>🚨 <strong>Deduction:</strong> 2-proof spoken accusation</li>
           </ul>
-          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1.2rem; padding: 14px 20px; margin-top: auto;">
-            PLAY WHO STOLE THE TREASURE? ➔
+          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
+            PLAY TREASURE GAME ➔
+          </button>
+        </div>
+
+        <!-- MODE 3: 4TH GRADE ROOM RESCUE -->
+        <div class="hub-mode-card card-room" onclick="uiController.showScreen('room-rescue')">
+          <div class="mode-badge-pill" style="background: #d1fae5; color: #065f46;">🏠 4TH GRADE • 25–35 MIN</div>
+          <div class="mode-icon-hero">🏠 🧸 🔑</div>
+          <h2 class="mode-title">3. ROOM RESCUE</h2>
+          <p class="mode-desc">
+            Help clean a messy room, follow prepositions (in, on, under, behind, next to), sequence clean-up steps, and search for lost objects!
+          </p>
+          <ul class="mode-features-list">
+            <li>🎧 <strong>Listen & Move:</strong> Audio preposition directions</li>
+            <li>📖 <strong>Read & Clean:</strong> Interactive room organization</li>
+            <li>🔎 <strong>Lost Objects:</strong> Search under, in, behind furniture</li>
+            <li>🔢 <strong>Sequencing:</strong> First, Then, Next, Finally</li>
+          </ul>
+          <button class="jumbo-btn btn-emerald" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
+            START ROOM RESCUE ➔
           </button>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 24px;">
+      <div style="display: flex; justify-content: center; gap: 14px; margin-top: 24px; flex-wrap: wrap;">
         <button class="jumbo-btn btn-purple" style="font-size: 1.1rem; padding: 12px 28px;" onclick="uiController.openStickyQuestionBoard()">
-          📌 OPEN DETECTIVE QUESTION BOARD (REFERENCE)
+          📌 DETECTIVE QUESTION BOARD (REFERENCE)
+        </button>
+        <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 12px 28px;" onclick="roomUI.openTeacherPanel()">
+          🧑‍🏫 ROOM RESCUE TEACHER CONTROLS
         </button>
       </div>
     `;

@@ -1,0 +1,336 @@
+/* ==========================================================================
+   🏠 ROOM RESCUE: THE LOST THINGS MISSION (4TH GRADE STYLES)
+   ========================================================================== */
+
+.cartoon-room-canvas {
+  width: 100%;
+  max-width: 1000px;
+  height: 480px;
+  background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 55%, #fde68a 55%, #d97706 100%);
+  border: 6px solid #78350f;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), inset 0 0 40px rgba(0,0,0,0.15);
+  margin: 16px auto;
+}
+
+.cartoon-room-canvas.room-sparkle-clean {
+  box-shadow: 0 0 35px rgba(52, 211, 153, 0.6), var(--shadow-lg);
+  border-color: #059669;
+}
+
+/* Wall & Floor Art */
+.room-wall-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: repeating-linear-gradient(90deg, #dbeafe, #dbeafe 40px, #e0f2fe 40px, #e0f2fe 80px);
+  border-bottom: 8px solid #94a3b8;
+}
+
+.room-window-art {
+  position: absolute;
+  top: 15px;
+  left: 35%;
+  font-size: 3.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 4px solid #64748b;
+  border-radius: var(--radius-md);
+  padding: 4px 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.room-picture-art {
+  position: absolute;
+  top: 20px;
+  left: 56%;
+  font-size: 2.6rem;
+  background: #fef08a;
+  border: 3px solid #b45309;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+}
+
+.room-floor-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: repeating-linear-gradient(0deg, #d97706, #d97706 20px, #b45309 20px, #b45309 40px);
+}
+
+/* Interactive Furniture Zones */
+.furniture-zone {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border: 3px dashed #64748b;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  text-align: center;
+}
+
+.furniture-zone:hover {
+  background: rgba(254, 240, 138, 0.95);
+  border-color: #d97706;
+  transform: scale(1.05);
+  z-index: 20;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+}
+
+.furniture-zone.highlight-target {
+  background: rgba(187, 247, 208, 0.95);
+  border-color: #059669;
+  animation: pulse-border 1.5s infinite;
+}
+
+.zone-icon-art {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.zone-label-tag {
+  font-family: 'Bungee', cursive;
+  font-size: 0.75rem;
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-top: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.search-magnifier-badge {
+  position: absolute;
+  bottom: -8px;
+  background: #2563eb;
+  color: #fff;
+  font-family: 'Bungee', cursive;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Floor Items Tray */
+.room-floor-items-tray {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 30;
+}
+
+.draggable-item-chip {
+  background: #fff;
+  border: 3px solid #2563eb;
+  border-radius: var(--radius-lg);
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-lg);
+  animation: bounce-success 1.5s infinite alternate;
+}
+
+.draggable-item-chip.active-selection {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+/* Audio Instruction Box */
+.audio-instruction-box {
+  background: #fff;
+  border: 4px solid #38bdf8;
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  margin: 12px auto;
+  max-width: 900px;
+  width: 100%;
+}
+
+.speaking-prompt-bar {
+  background: #fdf4ff;
+  border: 2px dashed #c084fc;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  color: #6b21a8;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 10px auto;
+  max-width: 900px;
+}
+
+/* Checklist Grid */
+.checklist-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 900px;
+  margin: 12px auto;
+}
+
+.checklist-item-card {
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.checklist-item-card.item-active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.checklist-item-card.item-done {
+  background: #ecfdf5;
+  border-color: #10b981;
+  opacity: 0.7;
+}
+
+/* Search Clue Ribbon */
+.search-clue-ribbon {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 4px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  margin: 12px auto;
+  max-width: 950px;
+  width: 100%;
+}
+
+.searches-counter-pill {
+  background: #1e293b;
+  color: #fde047;
+  border: 2px solid #f59e0b;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-family: 'Bungee', cursive;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.searches-counter-pill.low-searches {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #ef4444;
+}
+
+/* Multi-Step Clues */
+.multi-step-clues-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 900px;
+  margin: 12px auto;
+}
+
+.clue-step-card {
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.clue-step-card.step-unlocked {
+  background: #f0fdf4;
+  border-color: #34d399;
+}
+
+.clue-step-card.step-locked {
+  background: #f8fafc;
+  opacity: 0.5;
+}
+
+.step-pill {
+  background: #6366f1;
+  color: #fff;
+  font-family: 'Bungee', cursive;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+/* Sequence Cards */
+.sequence-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 750px;
+  margin: 16px auto;
+}
+
+.sequence-step-card {
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.15s;
+}
+
+.sequence-number-badge {
+  background: #4338ca;
+  color: #fff;
+  font-family: 'Bungee', cursive;
+  font-size: 1.4rem;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 850px) {
+  .cartoon-room-canvas {
+    height: 400px;
+  }
+  .checklist-tasks-grid {
+    grid-template-columns: 1fr;
+  }
+  .search-clue-ribbon {
+    flex-direction: column;
+  }
+}

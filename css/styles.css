@@ -343,11 +343,19 @@ body {
   margin: 16px 0;
 }
 
+.hub-modes-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin: 16px 0;
+}
+
 .hub-mode-card {
   background: #fff;
   border: 5px solid #cbd5e1;
   border-radius: var(--radius-lg);
-  padding: 30px 24px;
+  padding: 24px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -369,6 +377,10 @@ body {
 
 .hub-mode-card.card-treasure:hover {
   border-color: var(--primary-gold);
+}
+
+.hub-mode-card.card-room:hover {
+  border-color: #10b981;
 }
 
 .mode-badge-pill {
@@ -1538,7 +1550,7 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 1100px) {
-  .hub-modes-grid {
+  .hub-modes-grid, .hub-modes-grid-3 {
     grid-template-columns: 1fr;
   }
   .prep-categories-grid {

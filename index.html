@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🕵️ Detective English Academy & Who Stole the Treasure?</title>
+  <title>🎓 English Adventure Academy: Treasure Mystery & Room Rescue</title>
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️</text></svg>">
+  <link rel="stylesheet" href="css/room-styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
 </head>
 <body>
 
@@ -19,7 +20,7 @@
         <span>MAIN MENU</span>
       </div>
 
-      <!-- Active Team Turn Indicator -->
+      <!-- Active Team Turn Indicator (For 3rd Grade Treasure Game) -->
       <div id="active-turn-pill" class="turn-pill turn-red">
         🔴 <span>TURN: TEAM RED</span>
       </div>
@@ -52,7 +53,7 @@
       </div>
     </div>
 
-    <!-- Teacher & Persistent Controls -->
+    <!-- Persistent Header Actions -->
     <div class="header-actions">
       <button class="icon-btn" id="qboard-toggle-btn" title="Open Persistent Question Board" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border-color: #a78bfa; font-weight: 800; font-size: 0.9rem; padding: 8px 12px;">
         📌 QUESTION BOARD
@@ -73,7 +74,7 @@
 
     <!-- 0. SCREEN: MAIN HUB (CHOOSE MODE) -->
     <section class="screen-view active" id="screen-hub">
-      <div class="adventure-card" style="max-width: 1250px;">
+      <div class="adventure-card" style="max-width: 1300px;">
         <div id="hub-content">
           <!-- Hub Content -->
         </div>
@@ -81,7 +82,7 @@
     </section>
 
     <!-- =======================================================================
-         SECTION 1: 🕵️ DETECTIVE PREPARATION (WARM-UP SCREENS)
+         SECTION 1: 🕵️ 3RD GRADE DETECTIVE PREPARATION (WARM-UP SCREENS)
          ======================================================================= -->
 
     <!-- PREP SCREEN 0: INTRO -->
@@ -148,7 +149,7 @@
     </section>
 
     <!-- =======================================================================
-         SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? (FULL INVESTIGATION GAME)
+         SECTION 2: 🏴‍☠️ 3RD GRADE WHO STOLE THE TREASURE? (FULL INVESTIGATION)
          ======================================================================= -->
 
     <!-- TREASURE SCREEN 1: INTRO & STORY -->
@@ -296,10 +297,19 @@
       </div>
     </section>
 
+    <!-- =======================================================================
+         SECTION 3: 🏠 4TH GRADE ROOM RESCUE (THE LOST THINGS MISSION)
+         ======================================================================= -->
+    <section class="screen-view" id="screen-room-rescue">
+      <div id="room-main-view" style="width: 100%; display: flex; justify-content: center;">
+        <!-- Rendered by roomUI -->
+      </div>
+    </section>
+
   </main>
 
   <!-- =========================================================================
-       MODALS: DOSSIER, STICKY QUESTION BOARD & TEACHER HUB
+       MODALS: DOSSIER, STICKY QUESTION BOARD, ROOM TEACHER & MAIN TEACHER HUB
        ========================================================================= -->
 
   <!-- Suspect Interrogation Dossier / Meeting Modal -->
@@ -321,7 +331,16 @@
     </div>
   </div>
 
-  <!-- Teacher Control Center Modal -->
+  <!-- Room Rescue Teacher Control Modal -->
+  <div class="modal-overlay" id="room-teacher-modal">
+    <div class="teacher-modal-box">
+      <div id="room-teacher-body">
+        <!-- Room Teacher Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Teacher Control Center Modal -->
   <div class="modal-overlay" id="teacher-modal">
     <div class="teacher-modal-box">
       <div id="teacher-modal-body">
@@ -335,8 +354,11 @@
 
   <!-- Scripts -->
   <script src="js/data.js"></script>
+  <script src="js/room-data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/room-game.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/room-ui.js"></script>
 </body>
 </html>
