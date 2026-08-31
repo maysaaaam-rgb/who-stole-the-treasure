@@ -1,13 +1,10 @@
 /**
- * Game Data for "Who Stole the Treasure?"
- * Designed for 3rd Grade English Revision (First Week of School)
- *
- * All suspect characteristics are HIDDEN from the cards.
- * Students must discover them exclusively through verbal English interviews.
+ * Game Data for "Who Stole the Treasure?" - HARD MODE DETECTIVE INVESTIGATION
+ * 8 Suspects Matrix with complete attribute overlap, relational clues, and alibis.
  */
 
 const GAME_DATA = {
-  // 6 Cartoon Suspects with balanced overlapping traits (Hidden from cards!)
+  // 8 Suspects with balanced, overlapping attributes
   suspects: [
     {
       id: "alex",
@@ -28,8 +25,9 @@ const GAME_DATA = {
       hasDesc: "Has a sister",
       favColor: "blue",
       favColorDesc: "Blue",
-      bio: "Alex loves outdoor games and spending time with his pets.",
-      alibi: "I was at the swimming pool feeding my cat!"
+      alibi: "I was at the park playing with my ball.",
+      alibiLocation: "park",
+      bio: "Alex is 9 years old with brown hair. He loves cats and swimming in the pool."
     },
     {
       id: "emma",
@@ -38,8 +36,8 @@ const GAME_DATA = {
       pronoun: "she",
       possessive: "her",
       avatar: "👧",
-      hairColor: "blonde",
-      hairDesc: "Blonde hair",
+      hairColor: "brown",
+      hairDesc: "Brown hair",
       age: 9,
       ageDesc: "9 years old",
       likes: "dogs",
@@ -50,8 +48,9 @@ const GAME_DATA = {
       hasDesc: "Has a brother",
       favColor: "pink",
       favColorDesc: "Pink",
-      bio: "Emma is cheerful and loves animals and sports.",
-      alibi: "I was playing fetch with my puppy and my brother!"
+      alibi: "I was at home baking cookies.",
+      alibiLocation: "home",
+      bio: "Emma is 9 years old with brown hair. She loves puppies and has a brother named Jack."
     },
     {
       id: "leo",
@@ -72,8 +71,9 @@ const GAME_DATA = {
       hasDesc: "Has a sister",
       favColor: "green",
       favColorDesc: "Green",
-      bio: "Leo is active, fast, and loves sports and family games.",
-      alibi: "I was running around the sports field with my sister!"
+      alibi: "I was at the swimming pool watching the swimmers.",
+      alibiLocation: "swimming pool",
+      bio: "Leo is 10 years old with black hair. He can run like lightning, loves cats, and has a sister."
     },
     {
       id: "mia",
@@ -86,16 +86,17 @@ const GAME_DATA = {
       hairDesc: "Brown hair",
       age: 10,
       ageDesc: "10 years old",
-      likes: "dogs",
-      likesDesc: "Likes dogs",
+      likes: "cats",
+      likesDesc: "Likes cats",
       can: "swim",
       canDesc: "Can swim",
       has: "sister",
       hasDesc: "Has a sister",
       favColor: "purple",
       favColorDesc: "Purple",
-      bio: "Mia loves reading storybooks and going swimming.",
-      alibi: "I was swimming at the beach with my dog and sister!"
+      alibi: "I was at the park reading a storybook.",
+      alibiLocation: "park",
+      bio: "Mia is 10 years old with brown hair. She loves cats and swimming in the lake."
     },
     {
       id: "tom",
@@ -108,16 +109,17 @@ const GAME_DATA = {
       hairDesc: "Brown hair",
       age: 8,
       ageDesc: "8 years old",
-      likes: "cats",
-      likesDesc: "Likes cats",
+      likes: "dogs",
+      likesDesc: "Likes dogs",
       can: "run",
       canDesc: "Can run fast",
-      has: "brother",
-      hasDesc: "Has a brother",
+      has: "sister",
+      hasDesc: "Has a sister",
       favColor: "orange",
       favColorDesc: "Orange",
-      bio: "Tom loves drawing pictures, playing games, and running.",
-      alibi: "I was playing race cars in the garden with my brother!"
+      alibi: "I was at the library studying English.",
+      alibiLocation: "library",
+      bio: "Tom is 8 years old with brown hair. He can run super fast, loves dogs, and has a sister."
     },
     {
       id: "sara",
@@ -130,18 +132,73 @@ const GAME_DATA = {
       hairDesc: "Black hair",
       age: 9,
       ageDesc: "9 years old",
+      likes: "cats",
+      likesDesc: "Likes cats",
+      can: "swim",
+      canDesc: "Can swim",
+      has: "brother",
+      hasDesc: "Has a brother",
+      favColor: "yellow",
+      favColorDesc: "Yellow",
+      alibi: "I was at the swimming pool doing laps.",
+      alibiLocation: "swimming pool",
+      bio: "Sara is 9 years old with black hair. She loves cats, can swim very well, and has a brother."
+    },
+    {
+      id: "jack",
+      name: "Jack",
+      gender: "boy",
+      pronoun: "he",
+      possessive: "his",
+      avatar: "🧑‍🦱",
+      hairColor: "black",
+      hairDesc: "Black hair",
+      age: 10,
+      ageDesc: "10 years old",
       likes: "dogs",
       likesDesc: "Likes dogs",
       can: "swim",
       canDesc: "Can swim",
       has: "sister",
       hasDesc: "Has a sister",
-      favColor: "yellow",
-      favColorDesc: "Yellow",
-      bio: "Sara loves colorful drawings, sunny days, and swimming.",
-      alibi: "I was drawing yellow puppy pictures with my sister!"
+      favColor: "red",
+      favColorDesc: "Red",
+      alibi: "I was at the park riding my bicycle.",
+      alibiLocation: "park",
+      bio: "Jack is 10 years old with black hair. He can swim, loves dogs, and has a sister."
+    },
+    {
+      id: "lily",
+      name: "Lily",
+      gender: "girl",
+      pronoun: "she",
+      possessive: "her",
+      avatar: "👧",
+      hairColor: "brown",
+      hairDesc: "Brown hair",
+      age: 8,
+      ageDesc: "8 years old",
+      likes: "cats",
+      likesDesc: "Likes cats",
+      can: "run",
+      canDesc: "Can run fast",
+      has: "brother",
+      hasDesc: "Has a brother",
+      favColor: "mint",
+      favColorDesc: "Mint",
+      alibi: "I was at home playing computer games.",
+      alibiLocation: "home",
+      bio: "Lily is 8 years old with brown hair. She loves cats, can run fast, and has a brother."
     }
   ],
+
+  // 4 Teams Initial Assignments (Information Disparity!)
+  teamAssignments: {
+    red: ["alex", "emma"],
+    blue: ["leo", "mia"],
+    green: ["tom", "sara"],
+    yellow: ["jack", "lily"]
+  },
 
   // 4 Teams Configuration
   teams: [
@@ -151,7 +208,119 @@ const GAME_DATA = {
     { id: "yellow", name: "Team Yellow", emoji: "🟡", color: "#d4a373", border: "#f4a261", bg: "#fef8e7" }
   ],
 
-  // Mini-Game 1: Detective Question Match
+  // Interrogation Questions with Token Costs (1, 2, or 3 Tokens)
+  interrogationQuestions: [
+    {
+      id: "age",
+      text: "How old are you?",
+      speechText: "How old are you?",
+      cost: 1,
+      costLabel: "🟢 1 Token",
+      fieldKey: "age",
+      fieldLabel: "Age",
+      getAnswer: (s) => `I'm ${s.age} years old. 🎂`,
+      getSpoken: (s) => `I am ${s.age} years old.`,
+      getNotebookValue: (s) => `${s.age} yo`
+    },
+    {
+      id: "alibi",
+      text: "Where were you when the treasure disappeared?",
+      speechText: "Where were you when the treasure disappeared?",
+      cost: 1,
+      costLabel: "🟢 1 Token",
+      fieldKey: "alibi",
+      fieldLabel: "Alibi",
+      getAnswer: (s) => `${s.alibi} 🕒`,
+      getSpoken: (s) => `${s.alibi}`,
+      getNotebookValue: (s) => s.alibiLocation
+    },
+    {
+      id: "canSwim",
+      text: "Can you swim?",
+      speechText: "Can you swim?",
+      cost: 2,
+      costLabel: "🟡 2 Tokens",
+      fieldKey: "canSwim",
+      fieldLabel: "Can Swim",
+      getAnswer: (s) => s.can === "swim" ? `Yes, I can! I can swim very well! 🏊` : `No, I can't swim, but I can run fast! 🏃`,
+      getSpoken: (s) => s.can === "swim" ? `Yes, I can swim very well.` : `No, I cannot swim, but I can run fast.`,
+      getNotebookValue: (s) => s.can === "swim" ? "Yes ✅" : "No ❌"
+    },
+    {
+      id: "canRun",
+      text: "Can you run fast?",
+      speechText: "Can you run fast?",
+      cost: 2,
+      costLabel: "🟡 2 Tokens",
+      fieldKey: "canRun",
+      fieldLabel: "Can Run",
+      getAnswer: (s) => s.can === "run" ? `Yes, I can! I can run very fast! 🏃` : `No, I can't run fast, but I can swim! 🏊`,
+      getSpoken: (s) => s.can === "run" ? `Yes, I can run very fast.` : `No, I cannot run fast, but I can swim.`,
+      getNotebookValue: (s) => s.can === "run" ? "Yes ✅" : "No ❌"
+    },
+    {
+      id: "likesCats",
+      text: "Do you like cats?",
+      speechText: "Do you like cats?",
+      cost: 2,
+      costLabel: "🟡 2 Tokens",
+      fieldKey: "likesCats",
+      fieldLabel: "Likes Cats",
+      getAnswer: (s) => s.likes === "cats" ? `Yes, I do! I love cats! 🐱` : `No, I don't. I like dogs! 🐶`,
+      getSpoken: (s) => s.likes === "cats" ? `Yes, I do! I love cats.` : `No, I don't. I like dogs.`,
+      getNotebookValue: (s) => s.likes === "cats" ? "Yes ✅" : "No ❌"
+    },
+    {
+      id: "likesDogs",
+      text: "Do you like dogs?",
+      speechText: "Do you like dogs?",
+      cost: 2,
+      costLabel: "🟡 2 Tokens",
+      fieldKey: "likesDogs",
+      fieldLabel: "Likes Dogs",
+      getAnswer: (s) => s.likes === "dogs" ? `Yes, I do! I love dogs! 🐶` : `No, I don't. I like cats! 🐱`,
+      getSpoken: (s) => s.likes === "dogs" ? `Yes, I do! I love dogs.` : `No, I don't. I like cats.`,
+      getNotebookValue: (s) => s.likes === "dogs" ? "Yes ✅" : "No ❌"
+    },
+    {
+      id: "hasSister",
+      text: "Have you got a sister?",
+      speechText: "Have you got a sister?",
+      cost: 3,
+      costLabel: "🔴 3 Tokens",
+      fieldKey: "hasSister",
+      fieldLabel: "Has Sister",
+      getAnswer: (s) => s.has === "sister" ? `Yes, I have! I have a sister. 👧` : `No, I haven't. I have a brother! 👦`,
+      getSpoken: (s) => s.has === "sister" ? `Yes, I have a sister.` : `No, I haven't. I have a brother.`,
+      getNotebookValue: (s) => s.has === "sister" ? "Yes 👧" : "No ❌"
+    },
+    {
+      id: "hasBrother",
+      text: "Have you got a brother?",
+      speechText: "Have you got a brother?",
+      cost: 3,
+      costLabel: "🔴 3 Tokens",
+      fieldKey: "hasBrother",
+      fieldLabel: "Has Brother",
+      getAnswer: (s) => s.has === "brother" ? `Yes, I have! I have a brother. 👦` : `No, I haven't. I have a sister! 👧`,
+      getSpoken: (s) => s.has === "brother" ? `Yes, I have a brother.` : `No, I haven't. I have a sister.`,
+      getNotebookValue: (s) => s.has === "brother" ? "Yes 👦" : "No ❌"
+    },
+    {
+      id: "favColor",
+      text: "What's your favorite color?",
+      speechText: "What is your favorite color?",
+      cost: 2,
+      costLabel: "🟡 2 Tokens",
+      fieldKey: "favColor",
+      fieldLabel: "Fav Color",
+      getAnswer: (s) => `My favorite color is ${s.favColor}!`,
+      getSpoken: (s) => `My favorite color is ${s.favColor}.`,
+      getNotebookValue: (s) => s.favColor.toUpperCase()
+    }
+  ],
+
+  // Mini-Games 1-5 & Boss Lock Data
   miniGame1: [
     {
       character: "👦 Alex",
@@ -216,10 +385,10 @@ const GAME_DATA = {
     {
       character: "👧 Sara",
       characterImg: "👧",
-      question: "Have you got a sister?",
-      speechQuestion: "Have you got a sister?",
+      question: "Have you got a brother?",
+      speechQuestion: "Have you got a brother?",
       options: [
-        { text: "Yes, I have.", isCorrect: true, emoji: "👧", speech: "Yes, I have." },
+        { text: "Yes, I have.", isCorrect: true, emoji: "👦", speech: "Yes, I have." },
         { text: "Yes, I can.", isCorrect: false, emoji: "🏊", speech: "Yes, I can." },
         { text: "I am nine.", isCorrect: false, emoji: "🎂", speech: "I am nine." }
       ],
@@ -227,7 +396,6 @@ const GAME_DATA = {
     }
   ],
 
-  // Mini-Game 2: Who Am I? (Visual Profile Match)
   miniGame2: [
     {
       avatar: "👧",
@@ -235,18 +403,18 @@ const GAME_DATA = {
       clues: [
         { icon: "🎂", label: "9 years old" },
         { icon: "❤️", label: "Likes 🐶 Dogs" },
-        { icon: "💇", label: "Blonde hair" },
+        { icon: "💇", label: "Brown hair" },
         { icon: "🏊‍♀️", label: "Can swim ✅" },
         { icon: "👦", label: "Has a brother" }
       ],
       question: "Look at the profile! Which sentence is TRUE about Emma?",
       speechQuestion: "Look at the profile. Which sentence is true about Emma?",
       options: [
-        { text: "She likes dogs and has blonde hair. ✅", isCorrect: true, speech: "She likes dogs and has blonde hair." },
+        { text: "She likes dogs and has brown hair. ✅", isCorrect: true, speech: "She likes dogs and has brown hair." },
         { text: "She is 8 years old.", isCorrect: false, speech: "She is eight years old." },
         { text: "She can't swim.", isCorrect: false, speech: "She cannot swim." }
       ],
-      sayItSentence: "Emma is 9. She has blonde hair and likes dogs!"
+      sayItSentence: "Emma is 9. She has brown hair and likes dogs!"
     },
     {
       avatar: "👦",
@@ -272,7 +440,7 @@ const GAME_DATA = {
       name: "Mia",
       clues: [
         { icon: "🎂", label: "10 years old" },
-        { icon: "❤️", label: "Likes 🐶 Dogs" },
+        { icon: "❤️", label: "Likes 🐱 Cats" },
         { icon: "💇", label: "Brown hair" },
         { icon: "🏊‍♀️", label: "Can swim ✅" },
         { icon: "🟣", label: "Fav Color: Purple" }
@@ -291,23 +459,22 @@ const GAME_DATA = {
       name: "Tom",
       clues: [
         { icon: "🎂", label: "8 years old" },
-        { icon: "❤️", label: "Likes 🐱 Cats" },
+        { icon: "❤️", label: "Likes 🐶 Dogs" },
         { icon: "💇", label: "Brown hair" },
         { icon: "🏃‍♂️", label: "Can run fast" },
-        { icon: "👦", label: "Has a brother" }
+        { icon: "👧", label: "Has a sister" }
       ],
-      question: "Does Tom like cats?",
-      speechQuestion: "Does Tom like cats?",
+      question: "Does Tom like dogs?",
+      speechQuestion: "Does Tom like dogs?",
       options: [
         { text: "Yes, he does. ✅", isCorrect: true, speech: "Yes, he does." },
         { text: "No, he doesn't. ❌", isCorrect: false, speech: "No, he doesn't." },
         { text: "Yes, she does. 🤷‍♀️", isCorrect: false, speech: "Yes, she does." }
       ],
-      sayItSentence: "Tom has brown hair and he likes cats!"
+      sayItSentence: "Tom has brown hair and he likes dogs!"
     }
   ],
 
-  // Mini-Game 3: Can / Can't Challenge
   miniGame3: [
     {
       subject: "A fish",
@@ -361,7 +528,6 @@ const GAME_DATA = {
     }
   ],
 
-  // Mini-Game 4: Do You Like & Does He/She Like?
   miniGame4: [
     {
       type: "direct",
@@ -421,10 +587,10 @@ const GAME_DATA = {
       type: "detective",
       suspectName: "Sara",
       suspectEmoji: "👧",
-      likesText: "Profile Fact: Sara loves 🐶 dogs!",
-      itemEmoji: "🐶",
-      question: "Does Sara like dogs?",
-      speechQuestion: "Does Sara like dogs?",
+      likesText: "Profile Fact: Sara loves 🐱 cats!",
+      itemEmoji: "🐱",
+      question: "Does Sara like cats?",
+      speechQuestion: "Does Sara like cats?",
       options: [
         { text: "Yes, she does. ✅", isCorrect: true, speech: "Yes, she does." },
         { text: "No, she doesn't. ❌", isCorrect: false, speech: "No, she doesn't." },
@@ -434,7 +600,6 @@ const GAME_DATA = {
     }
   ],
 
-  // Mini-Game 5: Have Got (Family & Pets)
   miniGame5: [
     {
       character: "Alex",
@@ -494,7 +659,6 @@ const GAME_DATA = {
     }
   ],
 
-  // Boss Lock Questions (Unlocks the 5 combination digits/keys)
   bossLockQuestions: [
     {
       question: "Can a bird fly?",
@@ -548,97 +712,22 @@ const GAME_DATA = {
     }
   ],
 
-  // Comprehensive Interrogation Questions for the 🕵️ Interview Room
-  interrogationQuestions: [
+  // Final Unscramble Bonus Challenge
+  finalBonusChallenges: [
     {
-      id: "name",
-      text: "What's your name?",
-      speechText: "What is your name?",
-      fieldKey: "name",
-      fieldLabel: "Name",
-      getAnswer: (s) => `My name is ${s.name}.`,
-      getSpoken: (s) => `My name is ${s.name}.`,
-      getNotebookValue: (s) => s.name
+      prompt: "Arrange the words to make the final question:",
+      scrambled: ["swim", "Can", "she", "?"],
+      correctOrder: ["Can", "she", "swim", "?"],
+      speechText: "Can she swim?"
     },
     {
-      id: "age",
-      text: "How old are you?",
-      speechText: "How old are you?",
-      fieldKey: "age",
-      fieldLabel: "Age",
-      getAnswer: (s) => `I'm ${s.age} years old. 🎂`,
-      getSpoken: (s) => `I am ${s.age} years old.`,
-      getNotebookValue: (s) => `${s.age} years old`
-    },
-    {
-      id: "favColor",
-      text: "What's your favorite color?",
-      speechText: "What is your favorite color?",
-      fieldKey: "favColor",
-      fieldLabel: "Fav Color",
-      getAnswer: (s) => `My favorite color is ${s.favColor}!`,
-      getSpoken: (s) => `My favorite color is ${s.favColor}.`,
-      getNotebookValue: (s) => s.favColor.toUpperCase()
-    },
-    {
-      id: "likesCats",
-      text: "Do you like cats?",
-      speechText: "Do you like cats?",
-      fieldKey: "likesCats",
-      fieldLabel: "Likes Cats",
-      getAnswer: (s) => s.likes === "cats" ? `Yes, I do! I love cats! 🐱` : `No, I don't. I like dogs! 🐶`,
-      getSpoken: (s) => s.likes === "cats" ? `Yes, I do! I love cats.` : `No, I don't. I like dogs.`,
-      getNotebookValue: (s) => s.likes === "cats" ? "Yes ✅" : "No ❌"
-    },
-    {
-      id: "likesDogs",
-      text: "Do you like dogs?",
-      speechText: "Do you like dogs?",
-      fieldKey: "likesDogs",
-      fieldLabel: "Likes Dogs",
-      getAnswer: (s) => s.likes === "dogs" ? `Yes, I do! I love dogs! 🐶` : `No, I don't. I like cats! 🐱`,
-      getSpoken: (s) => s.likes === "dogs" ? `Yes, I do! I love dogs.` : `No, I don't. I like cats.`,
-      getNotebookValue: (s) => s.likes === "dogs" ? "Yes ✅" : "No ❌"
-    },
-    {
-      id: "canSwim",
-      text: "Can you swim?",
-      speechText: "Can you swim?",
-      fieldKey: "canSwim",
-      fieldLabel: "Can Swim",
-      getAnswer: (s) => s.can === "swim" ? `Yes, I can! I can swim very well! 🏊` : `No, I can't swim, but I can run fast! 🏃`,
-      getSpoken: (s) => s.can === "swim" ? `Yes, I can swim very well.` : `No, I cannot swim, but I can run fast.`,
-      getNotebookValue: (s) => s.can === "swim" ? "Yes ✅" : "No ❌"
-    },
-    {
-      id: "canRun",
-      text: "Can you run fast?",
-      speechText: "Can you run fast?",
-      fieldKey: "canRun",
-      fieldLabel: "Can Run Fast",
-      getAnswer: (s) => s.can === "run" ? `Yes, I can! I can run very fast! 🏃` : `No, I can't run fast, but I can swim! 🏊`,
-      getSpoken: (s) => s.can === "run" ? `Yes, I can run very fast.` : `No, I cannot run fast, but I can swim.`,
-      getNotebookValue: (s) => s.can === "run" ? "Yes ✅" : "No ❌"
-    },
-    {
-      id: "hasBrother",
-      text: "Have you got a brother?",
-      speechText: "Have you got a brother?",
-      fieldKey: "hasBrother",
-      fieldLabel: "Has Brother",
-      getAnswer: (s) => s.has === "brother" ? `Yes, I have! I have a brother. 👦` : `No, I haven't. I have a sister! 👧`,
-      getSpoken: (s) => s.has === "brother" ? `Yes, I have a brother.` : `No, I haven't. I have a sister.`,
-      getNotebookValue: (s) => s.has === "brother" ? "Yes 👦" : "No ❌"
-    },
-    {
-      id: "hasSister",
-      text: "Have you got a sister?",
-      speechText: "Have you got a sister?",
-      fieldKey: "hasSister",
-      fieldLabel: "Has Sister",
-      getAnswer: (s) => s.has === "sister" ? `Yes, I have! I have a sister. 👧` : `No, I haven't. I have a brother! 👦`,
-      getSpoken: (s) => s.has === "sister" ? `Yes, I have a sister.` : `No, I haven't. I have a brother.`,
-      getNotebookValue: (s) => s.has === "sister" ? "Yes 👧" : "No ❌"
+      prompt: "Match the correct answer to unlock:",
+      question: "Do you like cats?",
+      options: [
+        { text: "Yes, I do. 🐱", isCorrect: true, speech: "Yes, I do." },
+        { text: "No, I am not.", isCorrect: false },
+        { text: "Yes, I have.", isCorrect: false }
+      ]
     }
   ]
 };

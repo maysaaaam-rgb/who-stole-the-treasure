@@ -1,11 +1,7 @@
 /**
- * UI Controller for "Who Stole the Treasure?"
- * Features:
- * - Pure Suspect Cards (ONLY Picture + Name)
- * - Interactive 🕵️ Interview Room with Mandatory Speaking Step
- * - Independent Per-Team Detective Notebooks (Red, Blue, Green, Yellow)
- * - Per-Team Question Tokens Tracker (🔎 🔎 🔎)
- * - Step-by-Step Overlapping Clues and Accusation Arena
+ * UI Controller for "Who Stole the Treasure?" - HARD MODE DETECTIVE INVESTIGATION
+ * Coordinates 8 suspects, token cost system, Interview Room with speaking challenge,
+ * Detective Meetings, and Final Accusation logic puzzle.
  */
 
 class UIController {
@@ -44,7 +40,6 @@ class UIController {
       target.classList.add("active");
     }
 
-    // Stop speaking when switching screens
     if (window.soundEngine) window.soundEngine.stopSpeech();
 
     // Render screen specific content
@@ -93,7 +88,6 @@ class UIController {
     const scores = window.gameEngine.scores;
     const activeTeam = window.gameEngine.getActiveTeam();
 
-    // Update Team score cards
     GAME_DATA.teams.forEach(team => {
       const starEl = document.getElementById(`score-val-${team.id}`);
       if (starEl) {
@@ -110,7 +104,6 @@ class UIController {
       }
     });
 
-    // Update Turn Indicator Banner
     const turnBanner = document.getElementById("active-turn-pill");
     if (turnBanner) {
       turnBanner.className = `turn-pill turn-${activeTeam.id}`;
@@ -130,12 +123,12 @@ class UIController {
     if (!cardEl) return;
 
     const floater = document.createElement("div");
-    floater.textContent = `+${amount} ⭐`;
+    floater.textContent = amount > 0 ? `+${amount} ⭐` : `${amount} ⭐`;
     floater.style.position = "absolute";
     floater.style.top = "-20px";
     floater.style.left = "50%";
     floater.style.transform = "translateX(-50%)";
-    floater.style.color = "var(--primary-gold)";
+    floater.style.color = amount > 0 ? "var(--primary-gold)" : "#ef4444";
     floater.style.fontFamily = "'Bungee', cursive";
     floater.style.fontSize = "1.5rem";
     floater.style.textShadow = "0 2px 8px rgba(0,0,0,0.5)";
@@ -165,7 +158,7 @@ class UIController {
   }
 
   // =========================================================================
-  // MINI-GAMES (TRAINING MISSIONS 1 - 5)
+  // MINI-GAMES (TRAINING MISSIONS 1 - 5) & BOSS LOCK
   // =========================================================================
 
   renderMiniGame1() {
@@ -264,7 +257,7 @@ class UIController {
     }
   }
 
-  // Mini Game 2
+  // Mini-Game 2
   renderMiniGame2() {
     const currentIdx = window.gameEngine.mgIndex.mg2;
     const item = GAME_DATA.miniGame2[currentIdx];
@@ -369,7 +362,7 @@ class UIController {
     }
   }
 
-  // Mini Game 3
+  // Mini-Game 3
   renderMiniGame3() {
     const currentIdx = window.gameEngine.mgIndex.mg3;
     const item = GAME_DATA.miniGame3[currentIdx];
@@ -472,7 +465,7 @@ class UIController {
     }
   }
 
-  // Mini Game 4
+  // Mini-Game 4
   renderMiniGame4() {
     const currentIdx = window.gameEngine.mgIndex.mg4;
     const item = GAME_DATA.miniGame4[currentIdx];
@@ -618,7 +611,7 @@ class UIController {
     }
   }
 
-  // Mini Game 5
+  // Mini-Game 5
   renderMiniGame5() {
     const currentIdx = window.gameEngine.mgIndex.mg5;
     const item = GAME_DATA.miniGame5[currentIdx];
@@ -718,10 +711,7 @@ class UIController {
     }
   }
 
-  // =========================================================================
-  // BOSS LOCK: THE TREASURE COMBINATION LOCK
-  // =========================================================================
-
+  // Boss Lock
   renderBossLock() {
     const currentIdx = window.gameEngine.mgIndex.boss;
     const item = GAME_DATA.bossLockQuestions[currentIdx];
@@ -752,10 +742,10 @@ class UIController {
 
         <div style="text-align: center; margin: 24px 0;">
           <div style="font-size: 5rem; animation: bounce-success 1s infinite alternate;">🕵️‍♂️ 🗝️ 💰</div>
-          <h3 style="font-family: 'Bungee', cursive; font-size: 1.8rem; color: #1e293b; margin: 12px 0;">THE INVESTIGATION IS NOW UNLOCKED!</h3>
-          <p style="font-size: 1.25rem; font-weight: 800; color: #64748b; margin-bottom: 24px;">All 4 detective teams are certified. Time to question the 6 suspects and solve the mystery!</p>
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.8rem; color: #1e293b; margin: 12px 0;">THE 8-SUSPECT INVESTIGATION IS NOW UNLOCKED!</h3>
+          <p style="font-size: 1.25rem; font-weight: 800; color: #64748b; margin-bottom: 24px;">All 4 detective teams are certified. Time to question the suspects, share evidence, and solve the mystery!</p>
           <button class="jumbo-btn btn-gold" style="font-size: 1.6rem; padding: 20px 48px;" onclick="uiController.startInvestigation()">
-            🔍 START REAL INVESTIGATION ➔
+            🔍 START HARD MODE INVESTIGATION ➔
           </button>
         </div>
       `;
@@ -852,7 +842,7 @@ class UIController {
   }
 
   // =========================================================================
-  // PART 2: REAL INVESTIGATION (HIDDEN SUSPECT CARDS & NOTEBOOKS)
+  // PART 2: HARD MODE INVESTIGATION (8 PURE SUSPECTS & DETECTIVE MEETING)
   // =========================================================================
 
   renderInvestigation() {
@@ -866,32 +856,35 @@ class UIController {
     const tokens = window.gameEngine.getTeamTokens(activeTeam.id);
     const remainingCount = window.gameEngine.getTeamRemainingSuspectsCount(activeTeam.id);
 
-    // Strategy & Question Tokens Status Bar
+    // Strategy Bar
     const strategyStatusBarHtml = `
       <div class="strategy-status-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: 'Bungee', cursive; color: var(--primary-gold); font-size: 1.15rem;">
-            STAGE: OFFICIAL CLUES (${revealedClues.length} / ${totalClues})
+            STAGE: INDIRECT CLUES (${revealedClues.length} / ${totalClues})
           </span>
           <span style="color: #94a3b8; font-weight: 800;">•</span>
           <span style="color: #cbd5e1; font-weight: 800;">
-            ${activeTeam.emoji} <strong>${activeTeam.name}'s Turn</strong> to interview a suspect!
+            ${activeTeam.emoji} <strong>${activeTeam.name}'s Turn</strong>
           </span>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <div class="team-tokens-pill" style="border-color: ${activeTeam.border}; color: ${activeTeam.color}; background: #fff;">
-            <span>${activeTeam.name} TOKENS:</span>
-            <span style="font-size: 1.3rem;">
-              ${tokens > 0 ? '🔎 '.repeat(tokens) : '❌ 0 LEFT'}
+            <span>${activeTeam.name}:</span>
+            <span style="font-size: 1.2rem;">
+              ${tokens > 0 ? '🔎 '.repeat(tokens) + `(${tokens})` : '❌ 0 TOKENS'}
             </span>
           </div>
-          <button class="icon-btn" onclick="gameEngine.addTeamTokens('${activeTeam.id}', 1); uiController.renderInvestigation();" title="Grant +1 Question Token to Active Team (Teacher)">+1 🔎</button>
+          <button class="icon-btn" onclick="gameEngine.addTeamTokens('${activeTeam.id}', 1); uiController.renderInvestigation();" title="Add +1 Token">+1 🔎</button>
+          <button class="jumbo-btn btn-purple" style="font-size: 0.95rem; padding: 10px 18px;" onclick="uiController.openDetectiveMeetingModal()">
+            🗣️ DETECTIVE MEETING
+          </button>
         </div>
       </div>
     `;
 
-    // Latest Clue Banner
+    // Clue Banner
     let clueBannerHtml = "";
     if (revealedClues.length > 0) {
       const latest = revealedClues[revealedClues.length - 1];
@@ -919,7 +912,7 @@ class UIController {
         <div class="clues-ribbon-bar" style="background: #1e293b;">
           <div class="clue-ticker">
             <span class="clue-badge" style="background: #94a3b8; color: #1e293b;">CLUES LOCKED</span>
-            <span style="font-size: 1.2rem; font-weight: 800; color: #cbd5e1;">Click below to reveal Clue #1 and start the detective deduction!</span>
+            <span style="font-size: 1.2rem; font-weight: 800; color: #cbd5e1;">Click below to reveal Indirect Clue #1!</span>
           </div>
           <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.handleRevealNextClue()">
             📜 REVEAL CLUE 1 ➔
@@ -928,7 +921,7 @@ class UIController {
       `;
     }
 
-    // 6 PURE SUSPECT CARDS (PICTURE + NAME ONLY)
+    // 8 PURE SUSPECT CARDS (PICTURE + NAME ONLY)
     const suspectsHtml = suspects.map(s => {
       const isElim = window.gameEngine.isTeamEliminated(activeTeam.id, s.id);
       const discoveredCount = window.gameEngine.getDiscoveredCountForTeam(activeTeam.id, s.id);
@@ -941,7 +934,7 @@ class UIController {
           <div class="pure-suspect-name">${s.name}</div>
 
           <div class="notebook-discovery-chip">
-            📓 ${discoveredCount > 0 ? `${discoveredCount} facts discovered by ${activeTeam.name}` : 'No information yet'}
+            📓 ${discoveredCount > 0 ? `${discoveredCount} facts discovered` : 'No info yet'}
           </div>
 
           <div class="suspect-pure-actions">
@@ -962,7 +955,7 @@ class UIController {
       `;
     }).join("");
 
-    // Detective Notebook Panel (Tabs for each team)
+    // Detective Notebook Panel (8 Suspects Grid)
     const notebookTeam = this.selectedNotebookTeam || activeTeam.id;
     const notebookData = window.gameEngine.teamData[notebookTeam].notebook;
     const notebookTeamObj = GAME_DATA.teams.find(t => t.id === notebookTeam) || GAME_DATA.teams[0];
@@ -972,47 +965,47 @@ class UIController {
       const isElim = window.gameEngine.isTeamEliminated(notebookTeam, s.id);
 
       return `
-        <div class="notebook-suspect-card" style="opacity: ${isElim ? '0.5' : '1'}; border-left: 6px solid ${notebookTeamObj.color};">
+        <div class="notebook-suspect-card" style="opacity: ${isElim ? '0.5' : '1'}; border-left: 5px solid ${notebookTeamObj.color};">
           <div class="notebook-suspect-header">
-            <span style="font-size: 2.2rem;">${s.avatar}</span>
+            <span style="font-size: 2rem;">${s.avatar}</span>
             <div>
-              <strong style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: #1e293b;">${s.name}</strong>
-              <div style="font-size: 0.8rem; color: #64748b;">${isElim ? '❌ Marked Innocent' : '🔍 Active Suspect'}</div>
+              <strong style="font-family: 'Bungee', cursive; font-size: 1.1rem; color: #1e293b;">${s.name}</strong>
+              <div style="font-size: 0.75rem; color: #64748b;">${isElim ? '❌ Marked Innocent' : '🔍 Suspect'}</div>
             </div>
           </div>
 
           <div class="notebook-fields-list">
             <div class="notebook-field-row">
               <span>Age:</span>
-              <span class="${entry.age ? 'field-value-known' : 'field-value-unknown'}">${entry.age || '❓ Unknown'}</span>
+              <span class="${entry.age ? 'field-value-known' : 'field-value-unknown'}">${entry.age || '❓'}</span>
             </div>
             <div class="notebook-field-row">
-              <span>Favorite Color:</span>
-              <span class="${entry.favColor ? 'field-value-known' : 'field-value-unknown'}">${entry.favColor || '❓ Unknown'}</span>
-            </div>
-            <div class="notebook-field-row">
-              <span>Likes Cats:</span>
-              <span class="${entry.likesCats ? 'field-value-known' : 'field-value-unknown'}">${entry.likesCats || '❓ Unknown'}</span>
-            </div>
-            <div class="notebook-field-row">
-              <span>Likes Dogs:</span>
-              <span class="${entry.likesDogs ? 'field-value-known' : 'field-value-unknown'}">${entry.likesDogs || '❓ Unknown'}</span>
+              <span>Alibi:</span>
+              <span class="${entry.alibi ? 'field-value-known' : 'field-value-unknown'}">${entry.alibi || '❓'}</span>
             </div>
             <div class="notebook-field-row">
               <span>Can Swim:</span>
-              <span class="${entry.canSwim ? 'field-value-known' : 'field-value-unknown'}">${entry.canSwim || '❓ Unknown'}</span>
+              <span class="${entry.canSwim ? 'field-value-known' : 'field-value-unknown'}">${entry.canSwim || '❓'}</span>
             </div>
             <div class="notebook-field-row">
-              <span>Can Run Fast:</span>
-              <span class="${entry.canRun ? 'field-value-known' : 'field-value-unknown'}">${entry.canRun || '❓ Unknown'}</span>
+              <span>Can Run:</span>
+              <span class="${entry.canRun ? 'field-value-known' : 'field-value-unknown'}">${entry.canRun || '❓'}</span>
+            </div>
+            <div class="notebook-field-row">
+              <span>Likes Cats:</span>
+              <span class="${entry.likesCats ? 'field-value-known' : 'field-value-unknown'}">${entry.likesCats || '❓'}</span>
+            </div>
+            <div class="notebook-field-row">
+              <span>Likes Dogs:</span>
+              <span class="${entry.likesDogs ? 'field-value-known' : 'field-value-unknown'}">${entry.likesDogs || '❓'}</span>
             </div>
             <div class="notebook-field-row">
               <span>Has Sister:</span>
-              <span class="${entry.hasSister ? 'field-value-known' : 'field-value-unknown'}">${entry.hasSister || '❓ Unknown'}</span>
+              <span class="${entry.hasSister ? 'field-value-known' : 'field-value-unknown'}">${entry.hasSister || '❓'}</span>
             </div>
             <div class="notebook-field-row">
               <span>Has Brother:</span>
-              <span class="${entry.hasBrother ? 'field-value-known' : 'field-value-unknown'}">${entry.hasBrother || '❓ Unknown'}</span>
+              <span class="${entry.hasBrother ? 'field-value-known' : 'field-value-unknown'}">${entry.hasBrother || '❓'}</span>
             </div>
           </div>
         </div>
@@ -1023,12 +1016,12 @@ class UIController {
       <div class="investigation-dashboard">
         <div class="card-header-banner" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
           <div style="text-align: left;">
-            <span class="card-tag">PART 2: DETECTIVE HEADQUARTERS</span>
-            <h2 class="main-heading">🕵️ Investigation Board</h2>
+            <span class="card-tag">PART 2: HARD MODE INVESTIGATION</span>
+            <h2 class="main-heading">🕵️ Live Suspects Board (8 Suspects)</h2>
           </div>
           <div style="display: flex; gap: 10px; align-items: center;">
             <div style="background: #fff; padding: 8px 16px; border-radius: var(--radius-md); font-weight: 900; font-size: 1.1rem; border: 3px solid #cbd5e1;">
-              ${activeTeam.emoji} Suspects Remaining: <span style="color: ${remainingCount <= 2 ? '#dc2626' : '#2563eb'};">${remainingCount} / 6</span>
+              ${activeTeam.emoji} Active Suspects: <span style="color: ${remainingCount <= 2 ? '#dc2626' : '#2563eb'};">${remainingCount} / 8</span>
             </div>
             <button class="jumbo-btn btn-crimson" style="font-size: 1rem; padding: 12px 24px;" onclick="uiController.showScreen('accusation')">
               🚨 MAKE ACCUSATION ➔
@@ -1039,8 +1032,8 @@ class UIController {
         ${strategyStatusBarHtml}
         ${clueBannerHtml}
 
-        <!-- 6 Pure Suspect Cards -->
-        <div class="suspects-grid">
+        <!-- 8 Pure Suspect Cards -->
+        <div class="suspects-grid-8">
           ${suspectsHtml}
         </div>
 
@@ -1049,7 +1042,7 @@ class UIController {
           <div class="notebook-header-row">
             <div>
               <h3 style="font-family: 'Bungee', cursive; font-size: 1.4rem; color: #78350f;">
-                📓 DETECTIVE NOTEBOOKS (EVIDENCE LOG)
+                📓 DETECTIVE NOTEBOOKS (8 SUSPECTS LOG)
               </h3>
               <p style="font-size: 0.95rem; font-weight: 800; color: #64748b;">
                 Select a team tab to review their discovered evidence:
@@ -1066,7 +1059,7 @@ class UIController {
             </div>
           </div>
 
-          <div class="notebook-grid">
+          <div class="notebook-grid-8">
             ${notebookCardsHtml}
           </div>
         </div>
@@ -1096,7 +1089,7 @@ class UIController {
   }
 
   // =========================================================================
-  // INTERVIEW ROOM (MANDATORY SPEAKING CHALLENGE)
+  // INTERVIEW ROOM (TOKEN COSTS & MANDATORY SPEAKING CHALLENGE)
   // =========================================================================
 
   openInterviewRoom(suspectId) {
@@ -1114,45 +1107,46 @@ class UIController {
     container.innerHTML = `
       <div class="interview-room-container">
         <div class="interview-suspect-spotlight">
-          <div class="pure-avatar-box" style="width: 100px; height: 100px; font-size: 4.5rem;">${suspect.avatar}</div>
+          <div class="pure-avatar-box" style="width: 90px; height: 90px; font-size: 4rem;">${suspect.avatar}</div>
           <div style="flex: 1;">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-              <h2 style="font-family: 'Bungee', cursive; font-size: 2.2rem; color: #1e293b;">${suspect.name}</h2>
+              <h2 style="font-family: 'Bungee', cursive; font-size: 2rem; color: #1e293b;">${suspect.name}</h2>
               <span class="card-tag" style="background: ${activeTeam.bg}; color: ${activeTeam.color}; border-color: ${activeTeam.border};">
                 ${activeTeam.emoji} ${activeTeam.name} is Interviewing
               </span>
             </div>
-            <p style="font-size: 1.1rem; font-weight: 800; color: #64748b;">${suspect.bio}</p>
+            <p style="font-size: 1.05rem; font-weight: 800; color: #64748b;">${suspect.bio}</p>
           </div>
         </div>
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <h3 style="font-family: 'Bungee', cursive; font-size: 1.25rem; color: #1e293b;">
-            ❓ Select 1 Question to Ask ${suspect.name}:
+            ❓ Choose a Question to Ask ${suspect.name}:
           </h3>
           <div style="font-family: 'Bungee', cursive; font-size: 1.1rem; color: ${tokens > 0 ? '#0284c7' : '#dc2626'};">
-            ${activeTeam.name} Tokens: ${tokens > 0 ? '🔎 '.repeat(tokens) : '❌ 0 LEFT'}
+            ${activeTeam.name} Tokens: ${tokens > 0 ? '🔎 '.repeat(tokens) + `(${tokens})` : '❌ 0 LEFT'}
           </div>
         </div>
 
         ${tokens === 0 ? `
           <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: var(--radius-md); padding: 12px; color: #991b1b; font-weight: 800;">
-            ⚠️ ${activeTeam.name} has no Question Tokens left! Discuss evidence with your team or ask the teacher for +1 token.
+            ⚠️ ${activeTeam.name} has no Question Tokens left! Discuss evidence with other teams or request +1 token from the teacher.
             <button class="teacher-small-btn" style="margin-left: 8px;" onclick="gameEngine.addTeamTokens('${activeTeam.id}', 1); uiController.openInterviewRoom('${suspect.id}');">Grant +1 Token (Teacher)</button>
           </div>
         ` : ''}
 
-        <!-- Question Selection List -->
         <div class="questions-selector-list" id="interview-questions-list">
-          ${GAME_DATA.interrogationQuestions.map(q => `
-            <button class="interrogate-q-btn" ${tokens <= 0 ? 'disabled style="opacity: 0.6;"' : ''} onclick="uiController.selectQuestionToSpeak('${q.id}')">
-              <span>❓ "${q.text}"</span>
-              <span style="color: #2563eb; font-size: 0.95rem; font-weight: 900;">Choose ➔</span>
-            </button>
-          `).join("")}
+          ${GAME_DATA.interrogationQuestions.map(q => {
+            const hasEnough = tokens >= q.cost;
+            return `
+              <button class="interrogate-q-btn" ${!hasEnough ? 'disabled style="opacity: 0.5;"' : ''} onclick="uiController.selectQuestionToSpeak('${q.id}')">
+                <span>❓ "${q.text}"</span>
+                <span class="question-cost-badge">${q.costLabel}</span>
+              </button>
+            `;
+          }).join("")}
         </div>
 
-        <!-- Speaking Prompt Area -->
         <div id="interview-speaking-area"></div>
       </div>
     `;
@@ -1160,7 +1154,6 @@ class UIController {
     modal.classList.add("active");
   }
 
-  // Step 2 of Interview: Show Mandatory Speaking Challenge
   selectQuestionToSpeak(questionId) {
     const qObj = GAME_DATA.interrogationQuestions.find(q => q.id === questionId);
     const suspect = this.activeInterviewSuspect;
@@ -1190,7 +1183,7 @@ class UIController {
         </div>
 
         <p style="font-size: 1.05rem; font-weight: 800; color: #92400e; margin-bottom: 16px;">
-          Once your team speaks the question, click the button below to hear ${suspect.name}'s answer!
+          Cost: <strong>${qObj.cost} Tokens</strong> • Once spoken, click below to hear ${suspect.name}'s answer!
         </p>
 
         <div style="display: flex; justify-content: center; gap: 12px;">
@@ -1204,19 +1197,17 @@ class UIController {
       </div>
     `;
 
-    // Speak model question prompt
     setTimeout(() => {
       if (window.soundEngine) window.soundEngine.speak(`Say it aloud: ${qObj.speechText}`);
     }, 300);
   }
 
-  // Step 3 of Interview: Execute Question & Record to Active Team's Notebook
   executeAskQuestion() {
     const activeTeam = window.gameEngine.getActiveTeam();
     const suspect = this.activeInterviewSuspect;
     const qObj = this.selectedInterviewQuestion;
 
-    if (!window.gameEngine.useTeamToken(activeTeam.id)) {
+    if (!window.gameEngine.useTeamTokens(activeTeam.id, qObj.cost)) {
       if (window.soundEngine) window.soundEngine.playWrong();
       return;
     }
@@ -1269,7 +1260,83 @@ class UIController {
   }
 
   // =========================================================================
-  // FINAL ACCUSATION & REVEAL CEREMONY
+  // 🗣️ DETECTIVE MEETING (INFORMATION SHARING ROUND)
+  // =========================================================================
+
+  openDetectiveMeetingModal() {
+    const modal = document.getElementById("dossier-modal");
+    const container = document.getElementById("dossier-modal-body");
+    const sharedLogs = window.gameEngine.sharedCaseFile;
+
+    container.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="text-align: center;">
+          <span class="card-tag" style="background: #c4b5fd; color: #5b21b6; border-color: #8b5cf6;">
+            🗣️ INFORMATION SHARING ROUND
+          </span>
+          <h2 style="font-family: 'Bungee', cursive; font-size: 2rem; color: #1e293b; margin-top: 6px;">
+            DETECTIVE ACADEMY MEETING
+          </h2>
+          <p style="font-size: 1.1rem; font-weight: 800; color: #64748b;">
+            Teams share discovered evidence verbally in English!
+          </p>
+        </div>
+
+        <div class="sentence-reason-frame" style="font-size: 1.2rem;">
+          🗣️ SPEAKING FRAME: "[Team Name] discovered that [Suspect] [Age / Likes / Can / Alibi]..."
+        </div>
+
+        <h3 style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: #1e293b;">
+          📋 Verified Central Case File (Shared with All Teams):
+        </h3>
+
+        <div class="case-file-panel">
+          ${sharedLogs.length > 0 ? sharedLogs.map(item => `
+            <div class="case-file-item">
+              <span>${item.teamEmoji}</span>
+              <strong style="color: #1e293b;">${item.suspectAvatar} ${item.suspectName}:</strong>
+              <span>${item.label} = <strong style="color: #047857;">${item.value}</strong></span>
+              <span style="margin-left: auto; font-size: 0.8rem; color: #94a3b8;">(${item.teamName})</span>
+            </div>
+          `).join("") : `<div style="color: #64748b; font-weight: 800; text-align: center; padding: 12px;">No evidence shared yet! Have a team speak their evidence to record it here.</div>`}
+        </div>
+
+        <!-- Quick Teacher Share Buttons -->
+        <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: var(--radius-md); padding: 14px;">
+          <h4 style="font-family: 'Bungee', cursive; font-size: 0.95rem; color: #475569; margin-bottom: 8px;">
+            Teacher Control: Share A Team's Discovered Fact
+          </h4>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${GAME_DATA.teams.map(t => {
+              const assigned = GAME_DATA.teamAssignments[t.id] || [];
+              return assigned.map(sId => {
+                const s = GAME_DATA.suspects.find(x => x.id === sId);
+                return `
+                  <button class="teacher-small-btn" onclick="gameEngine.shareFactToCaseFile('${t.id}', '${s.id}', 'alibi'); uiController.openDetectiveMeetingModal();">
+                    Share ${t.emoji} ${s.name}'s Alibi
+                  </button>
+                  <button class="teacher-small-btn" onclick="gameEngine.shareFactToCaseFile('${t.id}', '${s.id}', 'age'); uiController.openDetectiveMeetingModal();">
+                    Share ${t.emoji} ${s.name}'s Age
+                  </button>
+                `;
+              }).join("");
+            }).join("")}
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+          <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 12px 28px;" onclick="uiController.closeInterview(false)">
+            🔍 RETURN TO INVESTIGATION
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add("active");
+  }
+
+  // =========================================================================
+  // FINAL ACCUSATION & 2-PROOF REASONING
   // =========================================================================
 
   renderAccusation() {
@@ -1282,11 +1349,11 @@ class UIController {
       <div class="card-header-banner">
         <span class="card-tag" style="background: #fee2e2; border-color: #ef4444; color: #b91c1c;">🚨 FINAL ACCUSATION ARENA</span>
         <h2 class="main-heading">Who Stole the Treasure?</h2>
-        <p class="sub-heading">Each team reviews their Detective Notebook and makes their final accusation!</p>
+        <p class="sub-heading">Teams must provide 2 PIECES OF EVIDENCE to support their accusation!</p>
       </div>
 
       <div class="sentence-reason-frame">
-        🗣️ SPEAKING CHALLENGE: "We think <span style="text-decoration: underline;">[Suspect Name]</span> is the thief because..."
+        🗣️ SPEAKING CHALLENGE: "We think <span style="text-decoration: underline;">[Suspect]</span> is the thief because [Proof 1] AND [Proof 2]!"
       </div>
 
       <div class="team-accusation-row">
@@ -1295,7 +1362,7 @@ class UIController {
             <div style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: ${t.color}; margin-bottom: 6px;">
               ${t.emoji} ${t.name}
             </div>
-            <label style="font-size: 0.9rem; font-weight: 800; color: #64748b;">Accuses:</label>
+            <label style="font-size: 0.9rem; font-weight: 800; color: #64748b;">Prime Suspect:</label>
             <select class="vote-suspect-select" id="vote-select-${t.id}" onchange="gameEngine.setTeamAccusation('${t.id}', this.value)">
               <option value="">-- Pick Suspect --</option>
               ${suspects.map(s => `
@@ -1332,7 +1399,7 @@ class UIController {
     cutsceneArea.innerHTML = `
       <div class="reveal-spotlight-box">
         <h2 style="font-family: 'Bungee', cursive; font-size: 2rem; color: var(--primary-gold); margin-bottom: 12px;">
-          🥁 SEARCHING FOR THE THIEF...
+          🥁 VERIFYING EVIDENCE & ALIBIS...
         </h2>
         <div style="font-size: 4rem; animation: float-chest 0.5s infinite alternate;">🔎 ✨ 🔦</div>
       </div>
@@ -1340,21 +1407,24 @@ class UIController {
 
     setTimeout(() => {
       const thief = window.gameEngine.secretThief;
-      if (window.soundEngine) {
-        window.soundEngine.playFanfare();
-        window.soundEngine.speak(`The mystery is solved! The thief who stole the treasure is ${thief.name}!`);
-      }
-      this.triggerConfetti(6000);
-
-      // Check which teams got it right
       const correctTeams = [];
+      const wrongTeams = [];
+
       GAME_DATA.teams.forEach(t => {
         if (window.gameEngine.teamAccusations[t.id] === thief.id) {
           correctTeams.push(t);
           window.gameEngine.addPoints(t.id, 5); // +5 bonus for correct accusation
+        } else if (window.gameEngine.teamAccusations[t.id]) {
+          wrongTeams.push(t);
+          window.gameEngine.addPoints(t.id, -2); // -2 penalty for wrong accusation
         }
       });
       this.updateScoreboard();
+
+      if (window.soundEngine) {
+        window.soundEngine.playFanfare();
+        window.soundEngine.speak(`The mystery is solved! The thief who stole the treasure is ${thief.name}!`);
+      }
 
       cutsceneArea.innerHTML = `
         <div class="reveal-spotlight-box">
@@ -1364,31 +1434,72 @@ class UIController {
             IT WAS ${thief.name.toUpperCase()}!
           </h2>
           <p style="font-size: 1.35rem; font-weight: 800; color: #cbd5e1; margin: 12px 0;">
-            ${thief.hairDesc} • ${thief.ageDesc} • ${thief.likesDesc} • ${thief.canDesc} • ${thief.hasDesc}
+            ${thief.hairDesc} • ${thief.ageDesc} • ${thief.likesDesc} • ${thief.canDesc} • ${thief.hasDesc} • Location: ${thief.alibiLocation}
           </p>
 
           <div style="background: rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 16px; margin: 16px 0;">
-            <div style="font-size: 3.5rem;">💰 💎 👑 🏆</div>
-            <h3 style="font-family: 'Bungee', cursive; font-size: 1.6rem; color: var(--primary-gold);">
-              THE TREASURE IS RETURNED SAFELY!
+            <div style="font-size: 3rem;">🔐 💰</div>
+            <h3 style="font-family: 'Bungee', cursive; font-size: 1.5rem; color: var(--primary-gold);">
+              "WAIT! THE TREASURE IS STILL LOCKED!"
             </h3>
-            ${correctTeams.length > 0 ? `
-              <p style="font-size: 1.2rem; font-weight: 800; color: #34d399; margin-top: 6px;">
-                ⭐ Correct Accusation (+5 pts): ${correctTeams.map(t => `${t.emoji} ${t.name}`).join(", ")}
-              </p>
-            ` : `
-              <p style="font-size: 1.1rem; font-weight: 800; color: #fca5a5; margin-top: 6px;">
-                No team guessed correctly, but great teamwork solving the clues!
-              </p>
-            `}
+            <p style="font-size: 1.15rem; font-weight: 800; color: #cbd5e1; margin: 6px 0;">
+              Complete the final English bonus challenge to open the golden chest!
+            </p>
           </div>
 
-          <button class="jumbo-btn btn-gold" style="font-size: 1.4rem; padding: 16px 36px;" onclick="uiController.showScreen('victory')">
-            🏆 GO TO FINAL AWARDS CEREMONY ➔
+          <button class="jumbo-btn btn-gold" style="font-size: 1.4rem; padding: 16px 36px;" onclick="uiController.renderFinalBonusChallenge()">
+            🔐 SOLVE FINAL BONUS CHALLENGE ➔
           </button>
         </div>
       `;
     }, 2600);
+  }
+
+  // Final Bonus Challenge to Unlock the Treasure
+  renderFinalBonusChallenge() {
+    const cutsceneArea = document.getElementById("reveal-cutscene-area");
+    if (!cutsceneArea) return;
+
+    cutsceneArea.innerHTML = `
+      <div class="reveal-spotlight-box">
+        <span class="card-tag" style="background: #a7f3d0; color: #065f46;">🔐 TREASURE FINAL LOCK</span>
+        <h2 style="font-family: 'Bungee', cursive; font-size: 1.8rem; color: var(--primary-gold); margin: 12px 0;">
+          Arrange the words to make the question:
+        </h2>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin: 20px 0; font-size: 1.8rem; font-family: 'Bungee', cursive;">
+          <span style="background: #1e293b; padding: 10px 18px; border-radius: var(--radius-md); border: 2px solid #38bdf8;">swim</span>
+          <span style="background: #1e293b; padding: 10px 18px; border-radius: var(--radius-md); border: 2px solid #38bdf8;">Can</span>
+          <span style="background: #1e293b; padding: 10px 18px; border-radius: var(--radius-md); border: 2px solid #38bdf8;">she</span>
+          <span style="background: #1e293b; padding: 10px 18px; border-radius: var(--radius-md); border: 2px solid #38bdf8;">?</span>
+        </div>
+
+        <div class="choices-grid two-columns" style="max-width: 600px; margin: 0 auto;">
+          <button class="choice-card-btn" onclick="uiController.completeBonusChallenge(true)">
+            <span class="choice-text" style="font-size: 1.4rem;">"Can she swim?" ✅</span>
+          </button>
+          <button class="choice-card-btn" onclick="uiController.completeBonusChallenge(false)">
+            <span class="choice-text" style="font-size: 1.4rem;">"She can swim?" ❌</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  completeBonusChallenge(isCorrect) {
+    if (isCorrect) {
+      if (window.soundEngine) {
+        window.soundEngine.playFanfare();
+        window.soundEngine.speak("The chest is open! You solved the mystery!");
+      }
+      this.triggerConfetti(6000);
+      this.showScreen("victory");
+    } else {
+      if (window.soundEngine) {
+        window.soundEngine.playWrong();
+        window.soundEngine.speak("Try again! Remember: question starts with Can!");
+      }
+    }
   }
 
   // =========================================================================
@@ -1406,7 +1517,7 @@ class UIController {
       <div class="card-header-banner">
         <span class="card-tag">🏆 DETECTIVE ACADEMY GRADUATION</span>
         <h2 class="main-heading">Grand Scoreboard & Awards</h2>
-        <p class="sub-heading">Congratulations to all 4 detective teams for solving the mystery in English!</p>
+        <p class="sub-heading">Congratulations to all 4 detective teams for solving the hard mystery in English!</p>
       </div>
 
       <div class="victory-podium-container">
@@ -1452,7 +1563,7 @@ class UIController {
           <div class="award-icon">🔎</div>
           <div class="award-title">BEST QUESTION MASTER</div>
           <p style="font-weight: 800; color: #64748b; font-size: 0.95rem; margin-top: 4px;">
-            For asking the cleverest English questions during the interview!
+            For strategically spending tokens on high-value English questions!
           </p>
         </div>
 
@@ -1460,7 +1571,7 @@ class UIController {
           <div class="award-icon">🧠</div>
           <div class="award-title">MASTER MIND DETECTIVE</div>
           <p style="font-weight: 800; color: #64748b; font-size: 0.95rem; margin-top: 4px;">
-            For filling out their Detective Notebook and connecting all evidence!
+            For connecting indirect clues and solving the deduction matrix!
           </p>
         </div>
 
@@ -1468,7 +1579,7 @@ class UIController {
           <div class="award-icon">💬</div>
           <div class="award-title">SUPERSTAR ENGLISH SPEAKER</div>
           <p style="font-weight: 800; color: #64748b; font-size: 0.95rem; margin-top: 4px;">
-            For speaking questions aloud clearly and enthusiastically!
+            For speaking questions aloud clearly and sharing evidence in the meeting!
           </p>
         </div>
       </div>
@@ -1601,7 +1712,7 @@ class UIController {
       display.textContent = "[Hidden to prevent accidental reveals]";
       display.style.color = "#94a3b8";
     } else {
-      display.textContent = `Thief: ${thief.avatar} ${thief.name} (${thief.hairColor} hair, ${thief.age}yo, likes ${thief.likes}, can ${thief.can}, has ${thief.has}, fav color ${thief.favColor})`;
+      display.textContent = `Thief: ${thief.avatar} ${thief.name} (${thief.hairColor} hair, ${thief.age}yo, likes ${thief.likes}, can ${thief.can}, has ${thief.has}, alibi: ${thief.alibiLocation})`;
       display.style.color = "#34d399";
     }
   }
@@ -1616,7 +1727,6 @@ class UIController {
   // =========================================================================
 
   bindGlobalEvents() {
-    // Next Team button in top header
     const nextBtn = document.getElementById("next-turn-btn");
     if (nextBtn) {
       nextBtn.addEventListener("click", () => {
@@ -1629,13 +1739,11 @@ class UIController {
       });
     }
 
-    // Fullscreen toggle button
     const fsBtn = document.getElementById("fullscreen-btn");
     if (fsBtn) {
       fsBtn.addEventListener("click", () => this.toggleFullscreen());
     }
 
-    // Audio SFX toggle button
     const sfxBtn = document.getElementById("sfx-toggle-btn");
     if (sfxBtn) {
       sfxBtn.addEventListener("click", () => {
@@ -1645,7 +1753,6 @@ class UIController {
       });
     }
 
-    // Speech TTS toggle button
     const ttsBtn = document.getElementById("tts-toggle-btn");
     if (ttsBtn) {
       ttsBtn.addEventListener("click", () => {
@@ -1655,13 +1762,11 @@ class UIController {
       });
     }
 
-    // Home / Menu Button
     const homeBtn = document.getElementById("home-menu-btn");
     if (homeBtn) {
       homeBtn.addEventListener("click", () => this.openTeacherHub());
     }
 
-    // Teacher Hub Button
     const hubBtn = document.getElementById("teacher-hub-btn");
     if (hubBtn) {
       hubBtn.addEventListener("click", () => this.openTeacherHub());
@@ -1678,7 +1783,6 @@ class UIController {
     }
   }
 
-  // Confetti Particle System
   initConfetti() {
     this.confettiCanvas = document.getElementById("confetti-canvas");
     if (!this.confettiCanvas) return;
