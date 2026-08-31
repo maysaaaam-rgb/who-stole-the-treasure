@@ -1,6 +1,6 @@
 /* ==========================================================================
    🕵️ WHO STOLE THE TREASURE? - 3rd Grade Interactive Whiteboard Revision Game
-   Design: Child-Friendly Detective & Pirate Adventure (Deductive Investigation)
+   Design: Child-Friendly Detective Adventure (Hidden Profiles & Interview Room)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;600;700&family=Nunito:wght@700;800;900&display=swap');
@@ -758,7 +758,7 @@ body {
 }
 
 /* ==========================================================================
-   PART 2 — REAL INVESTIGATION & SUSPECTS BOARD
+   PART 2 — REDESIGNED INVESTIGATION (HIDDEN SUSPECT CARDS & INTERVIEW ROOM)
    ========================================================================== */
 
 .investigation-dashboard {
@@ -768,7 +768,7 @@ body {
   width: 100%;
 }
 
-/* Strategy Banner & Question Token Bar */
+/* Strategy Bar with Per-Team Question Tokens */
 .strategy-status-bar {
   background: #1e293b;
   border: 3px solid #475569;
@@ -783,17 +783,16 @@ body {
   flex-wrap: wrap;
 }
 
-.question-tokens-badge {
+.team-tokens-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: #0f172a;
-  border: 2px solid var(--accent-cyan);
+  border: 2px solid var(--primary-gold);
   padding: 8px 16px;
   border-radius: var(--radius-full);
   font-family: 'Bungee', cursive;
-  font-size: 1.05rem;
-  color: #38bdf8;
+  font-size: 1.1rem;
 }
 
 .clues-ribbon-bar {
@@ -832,7 +831,7 @@ body {
   color: #fef08a;
 }
 
-/* Suspects 6-Grid */
+/* PURE SUSPECT CARDS (PICTURE + NAME ONLY) */
 .suspects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -840,34 +839,36 @@ body {
   width: 100%;
 }
 
-.suspect-card {
+.suspect-card-pure {
   background: #fff;
   border: 5px solid #cbd5e1;
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 24px 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
   position: relative;
   box-shadow: var(--shadow-md);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  text-align: center;
 }
 
-.suspect-card:hover {
+.suspect-card-pure:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
   border-color: var(--primary-gold);
 }
 
-.suspect-card.eliminated {
+.suspect-card-pure.eliminated {
   opacity: 0.45;
   filter: grayscale(85%);
   border-color: #ef4444;
   background: #f8fafc;
 }
 
-.eliminated-stamp {
+.suspect-card-pure .eliminated-stamp {
   display: none;
   position: absolute;
   top: 40%;
@@ -886,80 +887,63 @@ body {
   pointer-events: none;
 }
 
-.suspect-card.eliminated .eliminated-stamp {
+.suspect-card-pure.eliminated .eliminated-stamp {
   display: block;
 }
 
-.suspect-card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.suspect-avatar-large {
-  font-size: 3.2rem;
-  background: #f1f5f9;
-  border: 3px solid #cbd5e1;
+.pure-avatar-box {
+  font-size: 4.8rem;
+  background: #f8fafc;
+  border: 4px solid #e2e8f0;
   border-radius: var(--radius-full);
-  width: 72px;
-  height: 72px;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
 
-.suspect-name-title {
+.pure-suspect-name {
   font-family: 'Bungee', cursive;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   color: #1e293b;
+  letter-spacing: 1px;
 }
 
-.suspect-age-tag {
+.notebook-discovery-chip {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #cbd5e1;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
   font-weight: 800;
-  font-size: 0.95rem;
-  color: #64748b;
+  font-size: 0.9rem;
 }
 
-.suspect-traits-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  font-size: 0.95rem;
-  font-weight: 800;
-}
-
-.trait-item {
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: var(--radius-sm);
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.suspect-card-actions {
+.suspect-pure-actions {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  width: 100%;
+  margin-top: 4px;
 }
 
 .card-action-btn {
   flex: 1;
-  padding: 10px 8px;
+  padding: 12px 10px;
   border-radius: var(--radius-md);
   font-weight: 900;
-  font-size: 0.95rem;
+  font-size: 1rem;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   transition: all 0.1s;
 }
 
-.btn-investigate {
+.btn-interview {
   background: linear-gradient(180deg, #38bdf8, #0284c7);
   color: #fff;
   box-shadow: 0 4px 0 #0369a1;
@@ -977,170 +961,157 @@ body {
   box-shadow: 0 4px 0 #065f46;
 }
 
-/* Evidence Pinboard Area */
-.evidence-board-panel {
-  background: var(--corkboard);
-  background-image: radial-gradient(#c59b48 15%, transparent 16%);
-  background-size: 16px 16px;
-  border: 6px solid var(--wood-border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-}
-
-.evidence-board-title {
-  font-family: 'Bungee', cursive;
-  font-size: 1.3rem;
-  color: #78350f;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.evidence-notes-grid {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.evidence-sticky-note {
-  background: #fef08a;
-  border: 1px solid #facc15;
-  box-shadow: var(--shadow-md);
-  padding: 12px 14px;
-  border-radius: 4px;
-  width: 220px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: #713f12;
-  position: relative;
-  transform: rotate(-1deg);
-}
-
-.evidence-sticky-note.team-note {
-  background: #e0f2fe;
-  border-color: #7dd3fc;
-  color: #0369a1;
-  transform: rotate(1deg);
-}
-
-.evidence-sticky-note::before {
-  content: '📌';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.2rem;
-}
-
 /* ==========================================================================
-   INVESTIGATION DOSSIER MODAL
+   DETECTIVE NOTEBOOK TABS & PARCHMENT VIEW
    ========================================================================== */
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(6px);
-  z-index: 1000;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.active {
-  display: flex;
-}
-
-.dossier-card {
-  background: var(--parchment-card);
+.notebook-panel-wrapper {
+  background: var(--parchment-bg);
   border: 6px solid var(--wood-border);
   border-radius: var(--radius-lg);
-  max-width: 800px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 28px;
+  padding: 24px;
   box-shadow: var(--shadow-lg);
-  position: relative;
+  margin-top: 20px;
+  width: 100%;
 }
 
-.modal-close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #e2e8f0;
-  border: none;
-  border-radius: var(--radius-full);
-  width: 42px;
-  height: 42px;
-  font-size: 1.5rem;
-  font-weight: 900;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dossier-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 3px dashed #cbd5e1;
-  padding-bottom: 16px;
-  margin-bottom: 20px;
-}
-
-.questions-selector-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 16px 0;
-}
-
-.interrogate-q-btn {
-  background: #fff;
-  border: 3px solid #cbd5e1;
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
-  font-size: 1.2rem;
-  font-weight: 800;
-  text-align: left;
-  cursor: pointer;
+.notebook-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--shadow-sm);
+  border-bottom: 3px dashed #cbd5e1;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.notebook-tabs-container {
+  display: flex;
+  gap: 8px;
+}
+
+.notebook-tab-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  font-weight: 900;
+  font-size: 1rem;
+  border: 3px solid transparent;
+  cursor: pointer;
+  background: #e2e8f0;
+  color: #64748b;
   transition: all 0.15s;
 }
 
-.interrogate-q-btn:hover {
-  border-color: var(--accent-cyan);
-  background: #f0f9ff;
-  transform: translateX(4px);
+.notebook-tab-btn.active-tab-red { background: var(--team-red); color: #fff; border-color: var(--team-red); }
+.notebook-tab-btn.active-tab-blue { background: var(--team-blue); color: #fff; border-color: var(--team-blue); }
+.notebook-tab-btn.active-tab-green { background: var(--team-green); color: #fff; border-color: var(--team-green); }
+.notebook-tab-btn.active-tab-yellow { background: var(--team-yellow); color: #78350f; border-color: var(--team-yellow); }
+
+.notebook-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.notebook-suspect-card {
+  background: #fff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.notebook-suspect-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.notebook-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.notebook-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 6px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+}
+
+.field-value-unknown {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.field-value-known {
+  color: #047857;
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   INTERVIEW ROOM MODAL & MANDATORY SPEAKING CHALLENGE
+   ========================================================================== */
+
+.interview-room-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.interview-suspect-spotlight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #f8fafc, #edf2f7);
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.speaking-mandatory-box {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 4px dashed #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  animation: fadeIn 0.3s;
+}
+
+.speaking-target-phrase {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #78350f;
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
 .answer-speech-bubble {
   background: #ecfdf5;
-  border: 3px solid #10b981;
+  border: 4px solid #10b981;
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 24px;
   margin-top: 18px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   animation: fadeIn 0.3s;
 }
 
 .answer-text-large {
-  font-size: 1.45rem;
+  font-size: 1.8rem;
   font-weight: 900;
   color: #065f46;
 }
@@ -1304,7 +1275,7 @@ body {
 }
 
 /* ==========================================================================
-   TEACHER CONTROL HUB (COLLAPSIBLE DRAWER / MODAL)
+   TEACHER CONTROL HUB
    ========================================================================== */
 
 .teacher-modal-box {
@@ -1363,7 +1334,6 @@ body {
   background: #8b5cf6;
 }
 
-/* Secret Thief Peek Card */
 .secret-peek-box {
   background: #0f172a;
   border: 2px dashed #f59e0b;
@@ -1391,10 +1361,10 @@ body {
   .suspects-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .choices-grid {
+  .notebook-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .mission-brief-steps {
+  .choices-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1407,10 +1377,13 @@ body {
   .suspects-grid {
     grid-template-columns: 1fr;
   }
+  .notebook-grid {
+    grid-template-columns: 1fr;
+  }
   .choices-grid {
     grid-template-columns: 1fr;
   }
-  .awards-cards-grid {
+  .team-accusation-row {
     grid-template-columns: 1fr;
   }
 }

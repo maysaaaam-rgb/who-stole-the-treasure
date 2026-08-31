@@ -1,7 +1,11 @@
 /**
  * Core Game Engine for "Who Stole the Treasure?"
- * Manages 4-team state, mini-game progression, mystery engine, dynamic clue synthesis,
- * deductive clue sequencing, question token budgets, and suspect interrogation.
+ * Features:
+ * - Completely HIDDEN suspect cards (discoverable ONLY via interviews)
+ * - Independent Per-Team Investigation Notebooks (🔴 Red, 🔵 Blue, 🟢 Green, 🟡 Yellow)
+ * - Per-Team Question Limit (3 🔎 Tokens Each, with teacher refill)
+ * - Overlapping multi-clue mystery logic
+ * - Step-by-step interview interrogation with mandatory speaking checks
  */
 
 class GameEngine {
@@ -29,13 +33,11 @@ class GameEngine {
     this.secretThief = null;
     this.clues = [];
     this.revealedClueCount = 0;
-    this.eliminatedSuspects = new Set();
-    this.investigationLog = {}; // suspectId -> array of { questionText, answerText, teamId }
-    this.teamAccusations = { red: null, blue: null, green: null, yellow: null };
 
-    // Limited Question Token Budget for Interrogation Strategy
-    this.questionTokens = 4;
-    this.maxQuestionTokens = 4;
+    // Per-Team Notebooks & Tokens & Eliminations
+    this.teamData = {};
+
+    this.teamAccusations = { red: null, blue: null, green: null, yellow: null };
 
     this.init();
   }
@@ -44,7 +46,36 @@ class GameEngine {
     this.setupMystery();
   }
 
-  // Setup the mystery with curated overlapping & deductive clue sequences
+  // Initialize or reset the per-team investigation notebooks
+  initTeamData() {
+    this.teamData = {};
+    const suspects = GAME_DATA.suspects;
+
+    this.teamOrder.forEach(teamId => {
+      const notebook = {};
+      suspects.forEach(s => {
+        notebook[s.id] = {
+          name: s.name,
+          age: null,
+          favColor: null,
+          likesCats: null,
+          likesDogs: null,
+          canSwim: null,
+          canRun: null,
+          hasBrother: null,
+          hasSister: null
+        };
+      });
+
+      this.teamData[teamId] = {
+        tokens: 3, // Each team starts with 3 Question Tokens
+        eliminated: new Set(),
+        notebook: notebook
+      };
+    });
+  }
+
+  // Setup the mystery with overlapping clues
   setupMystery(selectedThiefId = null) {
     const suspects = GAME_DATA.suspects;
 
@@ -57,346 +88,58 @@ class GameEngine {
     }
 
     // Build curated multi-step deductive clues for the specific thief
-    this.clues = this.generateDeductiveClues(this.secretThief);
+    this.clues = this.generateOverlappingClues(this.secretThief);
 
     this.revealedClueCount = 0;
-    this.questionTokens = 4;
-    this.eliminatedSuspects.clear();
-    this.investigationLog = {};
-    suspects.forEach(s => {
-      this.investigationLog[s.id] = [];
-    });
+    this.initTeamData();
     this.teamAccusations = { red: null, blue: null, green: null, yellow: null };
   }
 
-  // Curated 5-Step Deductive Clue Sequences (Combining positive, negative, and red-herring evidence)
-  generateDeductiveClues(thief) {
-    switch (thief.id) {
-      case "alex": // Brown, 9yo, Cats, Swim, Sister
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Hair Color",
-            icon: "🟤",
-            text: "The thief has brown hair.",
-            spoken: "Clue number one: The thief has brown hair.",
-            type: "filter",
-            matchingIds: ["alex", "mia", "tom"],
-            note: "Narrows suspects to 3 (Alex, Mia, Tom)!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Age Deduction",
-            icon: "🎂",
-            text: "The thief is NOT 8 years old.",
-            spoken: "Clue number two: The thief is not eight years old.",
-            type: "negative",
-            matchingIds: ["alex", "mia"],
-            note: "Tom is 8, so Tom is eliminated! (Alex & Mia remain)"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Ability (Red Herring!)",
-            icon: "🏊‍♂️",
-            text: "The thief can swim.",
-            spoken: "Clue number three: The thief can swim.",
-            type: "red-herring",
-            matchingIds: ["alex", "mia"],
-            note: "Both Alex and Mia can swim! Need more evidence!"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Favorite Animal",
-            icon: "🐱",
-            text: "The thief likes cats (does NOT like dogs).",
-            spoken: "Clue number four: The thief likes cats and does not like dogs.",
-            type: "filter",
-            matchingIds: ["alex"],
-            note: "Alex likes cats, Mia likes dogs! Alex is the prime suspect!"
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Family Verification",
-            icon: "👧",
-            text: "The thief has a sister.",
-            spoken: "Clue number five: The thief has a sister.",
-            type: "confirm",
-            matchingIds: ["alex"],
-            note: "Final confirmation: Alex has a sister!"
-          }
-        ];
-
-      case "emma": // Blonde, 9yo, Dogs, Swim, Brother
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Ability Clue",
-            icon: "🏊‍♀️",
-            text: "The thief can swim.",
-            spoken: "Clue number one: The thief can swim.",
-            type: "filter",
-            matchingIds: ["alex", "emma", "mia", "sara"],
-            note: "4 suspects can swim (Alex, Emma, Mia, Sara)!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Favorite Animal",
-            icon: "🐶",
-            text: "The thief likes dogs (does NOT like cats).",
-            spoken: "Clue number two: The thief likes dogs.",
-            type: "filter",
-            matchingIds: ["emma", "mia", "sara"],
-            note: "Alex likes cats, so Alex is eliminated! (Emma, Mia, Sara remain)"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Family Clue",
-            icon: "👦",
-            text: "The thief has a brother (does NOT have a sister).",
-            spoken: "Clue number three: The thief has a brother and does not have a sister.",
-            type: "filter",
-            matchingIds: ["emma"],
-            note: "Mia and Sara have sisters, Emma has a brother! Emma matches!"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Age Verification",
-            icon: "🎂",
-            text: "The thief is 9 years old.",
-            spoken: "Clue number four: The thief is nine years old.",
-            type: "confirm",
-            matchingIds: ["emma"],
-            note: "Emma is 9 years old."
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Hair Confirmation",
-            icon: "👱‍♀️",
-            text: "The thief has blonde hair.",
-            spoken: "Clue number five: The thief has blonde hair.",
-            type: "confirm",
-            matchingIds: ["emma"],
-            note: "100% confirmed: Emma!"
-          }
-        ];
-
-      case "leo": // Black, 10yo, Cats, Run, Sister
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Hair Color",
-            icon: "⚫",
-            text: "The thief has black hair.",
-            spoken: "Clue number one: The thief has black hair.",
-            type: "filter",
-            matchingIds: ["leo", "sara"],
-            note: "Narrows suspects to Leo and Sara!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Family (Red Herring!)",
-            icon: "👧",
-            text: "The thief has a sister.",
-            spoken: "Clue number two: The thief has a sister.",
-            type: "red-herring",
-            matchingIds: ["leo", "sara"],
-            note: "Both Leo and Sara have a sister! Still tied!"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Age Deduction",
-            icon: "🎂",
-            text: "The thief is NOT 9 years old (The thief is 10).",
-            spoken: "Clue number three: The thief is not nine years old.",
-            type: "filter",
-            matchingIds: ["leo"],
-            note: "Sara is 9, so Sara is eliminated! Leo is 10!"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Ability Clue",
-            icon: "🏃‍♂️",
-            text: "The thief can run fast (the thief CANNOT swim).",
-            spoken: "Clue number four: The thief can run fast, but cannot swim.",
-            type: "confirm",
-            matchingIds: ["leo"],
-            note: "Leo runs fast and cannot swim."
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Pet Clue",
-            icon: "🐱",
-            text: "The thief likes cats.",
-            spoken: "Clue number five: The thief likes cats.",
-            type: "confirm",
-            matchingIds: ["leo"],
-            note: "Leo loves cats!"
-          }
-        ];
-
-      case "mia": // Brown, 10yo, Dogs, Swim, Sister
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Hair Color",
-            icon: "🟤",
-            text: "The thief has brown hair.",
-            spoken: "Clue number one: The thief has brown hair.",
-            type: "filter",
-            matchingIds: ["alex", "mia", "tom"],
-            note: "Narrows suspects to Alex, Mia, and Tom!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Ability Clue",
-            icon: "🏊‍♀️",
-            text: "The thief can swim.",
-            spoken: "Clue number two: The thief can swim.",
-            type: "filter",
-            matchingIds: ["alex", "mia"],
-            note: "Tom cannot swim, so Tom is eliminated! (Alex & Mia remain)"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Family (Red Herring!)",
-            icon: "👧",
-            text: "The thief has a sister.",
-            spoken: "Clue number three: The thief has a sister.",
-            type: "red-herring",
-            matchingIds: ["alex", "mia"],
-            note: "Both Alex and Mia have a sister! Still tied!"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Favorite Animal",
-            icon: "🐶",
-            text: "The thief likes dogs (does NOT like cats).",
-            spoken: "Clue number four: The thief likes dogs and does not like cats.",
-            type: "filter",
-            matchingIds: ["mia"],
-            note: "Mia likes dogs, Alex likes cats! Mia is isolated!"
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Age Verification",
-            icon: "🎂",
-            text: "The thief is 10 years old.",
-            spoken: "Clue number five: The thief is ten years old.",
-            type: "confirm",
-            matchingIds: ["mia"],
-            note: "Confirmed: Mia is 10!"
-          }
-        ];
-
-      case "tom": // Brown, 8yo, Cats, Run, Brother
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Hair Color",
-            icon: "🟤",
-            text: "The thief has brown hair.",
-            spoken: "Clue number one: The thief has brown hair.",
-            type: "filter",
-            matchingIds: ["alex", "mia", "tom"],
-            note: "Narrows suspects to Alex, Mia, and Tom!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Favorite Animal",
-            icon: "🐱",
-            text: "The thief likes cats.",
-            spoken: "Clue number two: The thief likes cats.",
-            type: "filter",
-            matchingIds: ["alex", "tom"],
-            note: "Mia likes dogs, so Mia is eliminated! (Alex & Tom remain)"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Ability Deduction",
-            icon: "🏃‍♂️",
-            text: "The thief CANNOT swim (The thief can run fast).",
-            spoken: "Clue number three: The thief cannot swim. The thief can run fast.",
-            type: "filter",
-            matchingIds: ["tom"],
-            note: "Alex can swim, Tom cannot! Tom is the thief!"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Family Clue",
-            icon: "👦",
-            text: "The thief has a brother (does NOT have a sister).",
-            spoken: "Clue number four: The thief has a brother.",
-            type: "confirm",
-            matchingIds: ["tom"],
-            note: "Tom has a brother named Ben."
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Age Confirmation",
-            icon: "🎂",
-            text: "The thief is 8 years old.",
-            spoken: "Clue number five: The thief is eight years old.",
-            type: "confirm",
-            matchingIds: ["tom"],
-            note: "Tom is 8 years old."
-          }
-        ];
-
-      case "sara": // Black, 9yo, Dogs, Swim, Sister
-      default:
-        return [
-          {
-            num: 1,
-            title: "CLUE 1: Ability Clue",
-            icon: "🏊‍♀️",
-            text: "The thief can swim.",
-            spoken: "Clue number one: The thief can swim.",
-            type: "filter",
-            matchingIds: ["alex", "emma", "mia", "sara"],
-            note: "4 suspects can swim (Alex, Emma, Mia, Sara)!"
-          },
-          {
-            num: 2,
-            title: "CLUE 2: Family Clue",
-            icon: "👧",
-            text: "The thief has a sister.",
-            spoken: "Clue number two: The thief has a sister.",
-            type: "filter",
-            matchingIds: ["alex", "mia", "sara"],
-            note: "Emma has a brother, so Emma is eliminated! (Alex, Mia, Sara remain)"
-          },
-          {
-            num: 3,
-            title: "CLUE 3: Age Deduction",
-            icon: "🎂",
-            text: "The thief is 9 years old (NOT 10).",
-            spoken: "Clue number three: The thief is nine years old.",
-            type: "filter",
-            matchingIds: ["alex", "sara"],
-            note: "Mia is 10, so Mia is eliminated! (Alex & Sara remain)"
-          },
-          {
-            num: 4,
-            title: "CLUE 4: Hair Color",
-            icon: "⚫",
-            text: "The thief has black hair (does NOT have brown hair).",
-            spoken: "Clue number four: The thief has black hair.",
-            type: "filter",
-            matchingIds: ["sara"],
-            note: "Alex has brown hair, Sara has black hair! Sara matches!"
-          },
-          {
-            num: 5,
-            title: "CLUE 5: Favorite Pet",
-            icon: "🐶",
-            text: "The thief likes dogs.",
-            spoken: "Clue number five: The thief likes dogs.",
-            type: "confirm",
-            matchingIds: ["sara"],
-            note: "Confirmed: Sara loves dogs!"
-          }
-        ];
-    }
+  // 5 Overlapping Clues that require combining evidence and interviews
+  generateOverlappingClues(thief) {
+    const s = thief;
+    return [
+      {
+        num: 1,
+        title: "OFFICIAL CLUE 1: Special Ability",
+        icon: s.can === "swim" ? "🏊" : "🏃",
+        text: `The thief can ${s.can === "swim" ? "swim" : "run fast"}.`,
+        spoken: `Official Clue number one: The thief can ${s.can === "swim" ? "swim" : "run fast"}.`,
+        hint: `Interview suspects to find out who can ${s.can}!`
+      },
+      {
+        num: 2,
+        title: "OFFICIAL CLUE 2: Favorite Pet",
+        icon: s.likes === "cats" ? "🐱" : "🐶",
+        text: `The thief likes ${s.likes}.`,
+        spoken: `Official Clue number two: The thief likes ${s.likes}.`,
+        hint: `Ask suspects: "Do you like ${s.likes}?"`
+      },
+      {
+        num: 3,
+        title: "OFFICIAL CLUE 3: Family Member",
+        icon: s.has === "sister" ? "👧" : "👦",
+        text: `The thief has a ${s.has}.`,
+        spoken: `Official Clue number three: The thief has a ${s.has}.`,
+        hint: `Ask suspects: "Have you got a ${s.has}?"`
+      },
+      {
+        num: 4,
+        title: "OFFICIAL CLUE 4: Age Clue",
+        icon: "🎂",
+        text: `The thief is ${s.age} years old.`,
+        spoken: `Official Clue number four: The thief is ${s.age} years old.`,
+        hint: `Ask suspects: "How old are you?"`
+      },
+      {
+        num: 5,
+        title: "OFFICIAL CLUE 5: Favorite Color",
+        icon: "🎨",
+        text: `The thief's favorite color is ${s.favColor}.`,
+        spoken: `Official Clue number five: The thief's favorite color is ${s.favColor}.`,
+        hint: `Final verification! Ask: "What's your favorite color?"`
+      }
+    ];
   }
 
   // --- Team Management & Scoring ---
@@ -434,18 +177,24 @@ class GameEngine {
     }
   }
 
-  // --- Question Token Budget Management ---
+  // --- Per-Team Token Management ---
 
-  useQuestionToken() {
-    if (this.questionTokens > 0) {
-      this.questionTokens--;
+  getTeamTokens(teamId) {
+    return this.teamData[teamId] ? this.teamData[teamId].tokens : 0;
+  }
+
+  useTeamToken(teamId) {
+    if (this.teamData[teamId] && this.teamData[teamId].tokens > 0) {
+      this.teamData[teamId].tokens--;
       return true;
     }
     return false;
   }
 
-  addQuestionTokens(amount = 1) {
-    this.questionTokens = Math.max(0, this.questionTokens + amount);
+  addTeamTokens(teamId, amount = 1) {
+    if (this.teamData[teamId]) {
+      this.teamData[teamId].tokens = Math.max(0, this.teamData[teamId].tokens + amount);
+    }
   }
 
   // --- Clue Operations ---
@@ -469,71 +218,68 @@ class GameEngine {
     return this.clues.slice(0, this.revealedClueCount);
   }
 
-  // Get list of suspects currently fitting all revealed clues
-  getMatchingSuspectsFromClues() {
-    const revealed = this.getRevealedClues();
-    if (revealed.length === 0) {
-      return GAME_DATA.suspects.map(s => s.id);
-    }
-    const latest = revealed[revealed.length - 1];
-    return latest.matchingIds || GAME_DATA.suspects.map(s => s.id);
-  }
+  // --- Per-Team Suspect Elimination ---
 
-  // --- Suspect Elimination ---
+  toggleTeamElimination(teamId, suspectId) {
+    if (!this.teamData[teamId]) return false;
+    const elimSet = this.teamData[teamId].eliminated;
 
-  toggleElimination(suspectId) {
-    if (this.eliminatedSuspects.has(suspectId)) {
-      this.eliminatedSuspects.delete(suspectId);
+    if (elimSet.has(suspectId)) {
+      elimSet.delete(suspectId);
       if (window.soundEngine) window.soundEngine.playClick();
-      return false; // Not eliminated now
+      return false; // Restored
     } else {
-      this.eliminatedSuspects.add(suspectId);
+      elimSet.add(suspectId);
       if (window.soundEngine) window.soundEngine.playEliminate();
-      return true; // Eliminated now
+      return true; // Eliminated
     }
   }
 
-  isEliminated(suspectId) {
-    return this.eliminatedSuspects.has(suspectId);
+  isTeamEliminated(teamId, suspectId) {
+    return this.teamData[teamId] ? this.teamData[teamId].eliminated.has(suspectId) : false;
   }
 
-  getRemainingSuspectsCount() {
-    return GAME_DATA.suspects.length - this.eliminatedSuspects.size;
+  getTeamRemainingSuspectsCount(teamId) {
+    if (!this.teamData[teamId]) return GAME_DATA.suspects.length;
+    return GAME_DATA.suspects.length - this.teamData[teamId].eliminated.size;
   }
 
-  // --- Investigation Dossier ---
+  // --- Detective Notebook Records & Interrogation ---
 
-  askQuestion(suspectId, questionId) {
+  askQuestionForTeam(teamId, suspectId, questionId) {
     const suspect = GAME_DATA.suspects.find(s => s.id === suspectId);
     const qObj = GAME_DATA.interrogationQuestions.find(q => q.id === questionId);
-    const activeTeam = this.getActiveTeam();
+    const teamObj = GAME_DATA.teams.find(t => t.id === teamId);
 
-    if (!suspect || !qObj) return null;
+    if (!suspect || !qObj || !this.teamData[teamId]) return null;
 
     const answer = qObj.getAnswer(suspect);
     const spoken = qObj.getSpoken(suspect);
+    const notebookValue = qObj.getNotebookValue(suspect);
 
-    const record = {
-      qId: questionId,
-      question: qObj.text,
-      answer: answer,
-      spoken: spoken,
-      teamId: activeTeam.id,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    if (!this.investigationLog[suspectId]) {
-      this.investigationLog[suspectId] = [];
+    // Record in that specific team's notebook
+    if (this.teamData[teamId].notebook[suspectId]) {
+      this.teamData[teamId].notebook[suspectId][qObj.fieldKey] = notebookValue;
     }
 
-    // Add record to investigation log
-    this.investigationLog[suspectId].push(record);
-
-    return { suspect, question: qObj, answer, spoken, team: activeTeam };
+    return { suspect, question: qObj, answer, spoken, team: teamObj, notebookValue };
   }
 
-  getSuspectEvidence(suspectId) {
-    return this.investigationLog[suspectId] || [];
+  getTeamNotebook(teamId, suspectId) {
+    if (this.teamData[teamId] && this.teamData[teamId].notebook[suspectId]) {
+      return this.teamData[teamId].notebook[suspectId];
+    }
+    return null;
+  }
+
+  getDiscoveredCountForTeam(teamId, suspectId) {
+    const nb = this.getTeamNotebook(teamId, suspectId);
+    if (!nb) return 0;
+    let count = 0;
+    Object.keys(nb).forEach(k => {
+      if (k !== 'name' && nb[k] !== null) count++;
+    });
+    return count;
   }
 
   // --- Boss Lock Progression ---
@@ -570,7 +316,6 @@ class GameEngine {
     this.currentSection = "intro";
     this.mgIndex = { mg1: 0, mg2: 0, mg3: 0, mg4: 0, mg5: 0, boss: 0 };
     this.bossUnlockedKeys = [false, false, false, false, false];
-    this.questionTokens = 4;
     this.setupMystery();
   }
 }
