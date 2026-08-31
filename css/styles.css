@@ -1,6 +1,6 @@
 /* ==========================================================================
    🕵️ WHO STOLE THE TREASURE? - 3rd Grade Interactive Whiteboard Revision Game
-   Design: Child-Friendly Detective & Pirate Adventure
+   Design: Child-Friendly Detective & Pirate Adventure (Deductive Investigation)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;600;700&family=Nunito:wght@700;800;900&display=swap');
@@ -768,6 +768,34 @@ body {
   width: 100%;
 }
 
+/* Strategy Banner & Question Token Bar */
+.strategy-status-bar {
+  background: #1e293b;
+  border: 3px solid #475569;
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.question-tokens-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f172a;
+  border: 2px solid var(--accent-cyan);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-family: 'Bungee', cursive;
+  font-size: 1.05rem;
+  color: #38bdf8;
+}
+
 .clues-ribbon-bar {
   background: linear-gradient(135deg, #334155, #1e293b);
   border: 3px solid var(--primary-gold);
@@ -779,6 +807,7 @@ body {
   gap: 16px;
   color: #fff;
   box-shadow: var(--shadow-md);
+  flex-wrap: wrap;
 }
 
 .clue-ticker {
@@ -989,6 +1018,13 @@ body {
   color: #713f12;
   position: relative;
   transform: rotate(-1deg);
+}
+
+.evidence-sticky-note.team-note {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0369a1;
+  transform: rotate(1deg);
 }
 
 .evidence-sticky-note::before {

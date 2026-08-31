@@ -1,10 +1,18 @@
 /**
  * Game Data for "Who Stole the Treasure?"
  * Designed for 3rd Grade English Revision (First Week of School)
+ *
+ * ATTRIBUTE MATRIX (Strategically Overlapping - No single unique giveaways!):
+ * - Hair: Brown (Alex, Mia, Tom = 3), Black (Leo, Sara = 2), Blonde (Emma = 1)
+ * - Age: 9 (Alex, Emma, Sara = 3), 10 (Leo, Mia = 2), 8 (Tom = 1)
+ * - Likes: Cats (Alex, Leo, Tom = 3), Dogs (Emma, Mia, Sara = 3)
+ * - Ability: Swim (Alex, Emma, Mia, Sara = 4), Run (Leo, Tom = 2)
+ * - Family: Sister (Alex, Leo, Mia, Sara = 4), Brother (Emma, Tom = 2)
+ * - Gender: Boy (Alex, Leo, Tom = 3), Girl (Emma, Mia, Sara = 3)
  */
 
 const GAME_DATA = {
-  // 6 Cartoon Suspects
+  // 6 Cartoon Suspects with balanced overlapping traits
   suspects: [
     {
       id: "alex",
@@ -13,7 +21,6 @@ const GAME_DATA = {
       pronoun: "he",
       possessive: "his",
       avatar: "👦",
-      avatarSvg: "boy-brown",
       hairColor: "brown",
       hairDesc: "Brown hair",
       hairEmoji: "🟤",
@@ -25,15 +32,15 @@ const GAME_DATA = {
       can: "swim",
       canDesc: "Can swim",
       canEmoji: "🏊‍♂️",
-      cannot: "fly",
+      cannot: "run fast",
       has: "sister",
       hasDesc: "Has a sister",
       hasEmoji: "👧",
       favColor: "blue",
       favColorDesc: "Favorite color is blue",
       favColorEmoji: "🔵",
-      bio: "Alex loves swimming in the pool and playing with his ginger cat!",
-      alibi: "I was feeding my cat at home!"
+      bio: "Alex is 9 years old with brown hair. He loves cats and is great at swimming.",
+      alibi: "I was at the swimming pool feeding my ginger cat!"
     },
     {
       id: "emma",
@@ -42,27 +49,26 @@ const GAME_DATA = {
       pronoun: "she",
       possessive: "her",
       avatar: "👧",
-      avatarSvg: "girl-blonde",
       hairColor: "blonde",
       hairDesc: "Blonde hair",
       hairEmoji: "👱‍♀️",
-      age: 8,
-      ageDesc: "8 years old",
+      age: 9,
+      ageDesc: "9 years old",
       likes: "dogs",
       likesDesc: "Likes dogs",
       likesEmoji: "🐶",
-      can: "run",
-      canDesc: "Can run fast",
-      canEmoji: "🏃‍♀️",
-      cannot: "swim",
+      can: "swim",
+      canDesc: "Can swim",
+      canEmoji: "🏊‍♀️",
+      cannot: "run fast",
       has: "brother",
       hasDesc: "Has a brother",
       hasEmoji: "👦",
       favColor: "pink",
       favColorDesc: "Favorite color is pink",
       favColorEmoji: "🌸",
-      bio: "Emma is the fastest runner in class and loves walking her golden puppy.",
-      alibi: "I was running in the park with my brother!"
+      bio: "Emma is 9 years old with blonde hair. She loves puppies and has a brother named Jack.",
+      alibi: "I was playing fetch with my golden puppy and my brother!"
     },
     {
       id: "leo",
@@ -71,27 +77,26 @@ const GAME_DATA = {
       pronoun: "he",
       possessive: "his",
       avatar: "🧑",
-      avatarSvg: "boy-black",
       hairColor: "black",
       hairDesc: "Black hair",
       hairEmoji: "⚫",
-      age: 9,
-      ageDesc: "9 years old",
+      age: 10,
+      ageDesc: "10 years old",
       likes: "cats",
       likesDesc: "Likes cats",
       likesEmoji: "🐱",
-      can: "swim",
-      canDesc: "Can swim",
-      canEmoji: "🏊‍♂️",
-      cannot: "fly",
-      has: "brother",
-      hasDesc: "Has a brother",
-      hasEmoji: "👦",
+      can: "run",
+      canDesc: "Can run fast",
+      canEmoji: "🏃‍♂️",
+      cannot: "swim",
+      has: "sister",
+      hasDesc: "Has a sister",
+      hasEmoji: "👧",
       favColor: "green",
       favColorDesc: "Favorite color is green",
       favColorEmoji: "🟢",
-      bio: "Leo is nine, has sleek black hair, and loves green apples and kittens.",
-      alibi: "I was practicing swimming at the sports club!"
+      bio: "Leo is 10 years old with black hair. He can run like lightning, loves cats, and has a sister.",
+      alibi: "I was running around the track with my sister!"
     },
     {
       id: "mia",
@@ -100,7 +105,6 @@ const GAME_DATA = {
       pronoun: "she",
       possessive: "her",
       avatar: "👩",
-      avatarSvg: "girl-brown",
       hairColor: "brown",
       hairDesc: "Brown hair",
       hairEmoji: "🟤",
@@ -112,15 +116,15 @@ const GAME_DATA = {
       can: "swim",
       canDesc: "Can swim",
       canEmoji: "🏊‍♀️",
-      cannot: "fly",
+      cannot: "run fast",
       has: "sister",
       hasDesc: "Has a sister",
       hasEmoji: "👧",
       favColor: "purple",
       favColorDesc: "Favorite color is purple",
       favColorEmoji: "🟣",
-      bio: "Mia is ten years old with brown hair. She loves swimming and big dogs.",
-      alibi: "I was reading a storybook with my sister!"
+      bio: "Mia is 10 years old with brown hair. She loves big dogs and swimming in the lake with her sister.",
+      alibi: "I was swimming at the beach with my big dog and sister!"
     },
     {
       id: "tom",
@@ -129,10 +133,9 @@ const GAME_DATA = {
       pronoun: "he",
       possessive: "his",
       avatar: "🧒",
-      avatarSvg: "boy-red",
-      hairColor: "red",
-      hairDesc: "Red hair",
-      hairEmoji: "🔴",
+      hairColor: "brown",
+      hairDesc: "Brown hair",
+      hairEmoji: "🟤",
       age: 8,
       ageDesc: "8 years old",
       likes: "cats",
@@ -142,14 +145,14 @@ const GAME_DATA = {
       canDesc: "Can run fast",
       canEmoji: "🏃‍♂️",
       cannot: "swim",
-      has: "sister",
-      hasDesc: "Has a sister",
-      hasEmoji: "👧",
+      has: "brother",
+      hasDesc: "Has a brother",
+      hasEmoji: "👦",
       favColor: "orange",
       favColorDesc: "Favorite color is orange",
       favColorEmoji: "🟠",
-      bio: "Tom has bright red hair, runs like the wind, and loves playing with cats.",
-      alibi: "I was drawing an orange rocket with my sister!"
+      bio: "Tom is 8 years old with brown hair. He can run super fast, loves cats, and has a brother.",
+      alibi: "I was playing race cars in the garden with my brother!"
     },
     {
       id: "sara",
@@ -158,27 +161,26 @@ const GAME_DATA = {
       pronoun: "she",
       possessive: "her",
       avatar: "👧",
-      avatarSvg: "girl-black",
       hairColor: "black",
       hairDesc: "Black hair",
       hairEmoji: "⚫",
       age: 9,
       ageDesc: "9 years old",
-      likes: "birds",
-      likesDesc: "Likes birds",
-      likesEmoji: "🦜",
+      likes: "dogs",
+      likesDesc: "Likes dogs",
+      likesEmoji: "🐶",
       can: "swim",
       canDesc: "Can swim",
       canEmoji: "🏊‍♀️",
-      cannot: "fly",
-      has: "brother",
-      hasDesc: "Has a brother",
-      hasEmoji: "👦",
+      cannot: "run fast",
+      has: "sister",
+      hasDesc: "Has a sister",
+      hasEmoji: "👧",
       favColor: "yellow",
       favColorDesc: "Favorite color is yellow",
       favColorEmoji: "🟡",
-      bio: "Sara loves colorful yellow parrots, has black hair, and can swim very well.",
-      alibi: "I was teaching my pet parrot new words!"
+      bio: "Sara is 9 years old with black hair. She loves dogs, can swim very well, and has a sister.",
+      alibi: "I was drawing yellow puppy pictures with my sister!"
     }
   ],
 
@@ -212,7 +214,7 @@ const GAME_DATA = {
       options: [
         { text: "I have a dog.", isCorrect: false, emoji: "🐶", speech: "I have a dog." },
         { text: "My name is Emma.", isCorrect: true, emoji: "🏷️", speech: "My name is Emma." },
-        { text: "I am eight.", isCorrect: false, emoji: "8️⃣", speech: "I am eight." }
+        { text: "I am nine.", isCorrect: false, emoji: "9️⃣", speech: "I am nine." }
       ],
       grammarNote: "👉 We answer name with 'My name is...' or 'I'm...'!"
     },
@@ -223,7 +225,7 @@ const GAME_DATA = {
       speechQuestion: "What is your favorite color?",
       options: [
         { text: "Yes, I do.", isCorrect: false, emoji: "👍", speech: "Yes, I do." },
-        { text: "I'm nine.", isCorrect: false, emoji: "🎂", speech: "I'm nine." },
+        { text: "I'm ten.", isCorrect: false, emoji: "🎂", speech: "I'm ten." },
         { text: "My favorite color is green.", isCorrect: true, emoji: "🟢", speech: "My favorite color is green." }
       ],
       grammarNote: "👉 We say: 'My favorite color is [color]'!"
@@ -255,10 +257,10 @@ const GAME_DATA = {
     {
       character: "👧 Sara",
       characterImg: "👧",
-      question: "Have you got a brother?",
-      speechQuestion: "Have you got a brother?",
+      question: "Have you got a sister?",
+      speechQuestion: "Have you got a sister?",
       options: [
-        { text: "Yes, I have.", isCorrect: true, emoji: "👦", speech: "Yes, I have." },
+        { text: "Yes, I have.", isCorrect: true, emoji: "👧", speech: "Yes, I have." },
         { text: "Yes, I can.", isCorrect: false, emoji: "🏊", speech: "Yes, I can." },
         { text: "I am nine.", isCorrect: false, emoji: "🎂", speech: "I am nine." }
       ],
@@ -272,20 +274,20 @@ const GAME_DATA = {
       avatar: "👧",
       name: "Emma",
       clues: [
-        { icon: "🎂", label: "8 years old" },
+        { icon: "🎂", label: "9 years old" },
         { icon: "❤️", label: "Likes 🐶 Dogs" },
         { icon: "💇", label: "Blonde hair" },
-        { icon: "🏃‍♀️", label: "Can run fast" },
-        { icon: "🏊‍♀️", label: "Can't swim ❌" }
+        { icon: "🏊‍♀️", label: "Can swim ✅" },
+        { icon: "👦", label: "Has a brother" }
       ],
       question: "Look at the profile! Which sentence is TRUE about Emma?",
       speechQuestion: "Look at the profile. Which sentence is true about Emma?",
       options: [
         { text: "She likes dogs and has blonde hair. ✅", isCorrect: true, speech: "She likes dogs and has blonde hair." },
-        { text: "She is 10 years old.", isCorrect: false, speech: "She is 10 years old." },
-        { text: "She can swim very well.", isCorrect: false, speech: "She can swim very well." }
+        { text: "She is 8 years old.", isCorrect: false, speech: "She is eight years old." },
+        { text: "She can't swim.", isCorrect: false, speech: "She cannot swim." }
       ],
-      sayItSentence: "Emma is 8. She has blonde hair and likes dogs!"
+      sayItSentence: "Emma is 9. She has blonde hair and likes dogs!"
     },
     {
       avatar: "👦",
@@ -331,9 +333,9 @@ const GAME_DATA = {
       clues: [
         { icon: "🎂", label: "8 years old" },
         { icon: "❤️", label: "Likes 🐱 Cats" },
-        { icon: "💇", label: "Red hair" },
+        { icon: "💇", label: "Brown hair" },
         { icon: "🏃‍♂️", label: "Can run fast" },
-        { icon: "👧", label: "Has a sister" }
+        { icon: "👦", label: "Has a brother" }
       ],
       question: "Does Tom like cats?",
       speechQuestion: "Does Tom like cats?",
@@ -342,7 +344,7 @@ const GAME_DATA = {
         { text: "No, he doesn't. ❌", isCorrect: false, speech: "No, he doesn't." },
         { text: "Yes, she does. 🤷‍♀️", isCorrect: false, speech: "Yes, she does." }
       ],
-      sayItSentence: "Tom has red hair and he likes cats!"
+      sayItSentence: "Tom has brown hair and he likes cats!"
     }
   ],
 
@@ -460,10 +462,10 @@ const GAME_DATA = {
       type: "detective",
       suspectName: "Sara",
       suspectEmoji: "👧",
-      likesText: "Profile Fact: Sara loves 🦜 colorful birds!",
-      itemEmoji: "🦜",
-      question: "Does Sara like birds?",
-      speechQuestion: "Does Sara like birds?",
+      likesText: "Profile Fact: Sara loves 🐶 dogs!",
+      itemEmoji: "🐶",
+      question: "Does Sara like dogs?",
+      speechQuestion: "Does Sara like dogs?",
       options: [
         { text: "Yes, she does. ✅", isCorrect: true, speech: "Yes, she does." },
         { text: "No, she doesn't. ❌", isCorrect: false, speech: "No, she doesn't." },
@@ -506,16 +508,16 @@ const GAME_DATA = {
     {
       character: "Leo",
       characterEmoji: "🧑",
-      familyImg: "🧑 + 👦",
-      familyDesc: "Leo has a brother, but NO sister.",
-      question: "Has Leo got a sister?",
-      speechQuestion: "Has Leo got a sister?",
+      familyImg: "🧑 + 👧",
+      familyDesc: "Leo has a sister, but NO brother.",
+      question: "Has Leo got a brother?",
+      speechQuestion: "Has Leo got a brother?",
       options: [
         { text: "No, he hasn't. ✅", isCorrect: true, speech: "No, he hasn't." },
         { text: "Yes, he has. ❌", isCorrect: false, speech: "Yes, he has." },
         { text: "No, she hasn't. 🤷", isCorrect: false, speech: "No, she hasn't." }
       ],
-      sentenceDisplay: "No, he hasn't. Leo has got a brother! 👦"
+      sentenceDisplay: "No, he hasn't. Leo has got a sister! 👧"
     },
     {
       character: "Mia",
@@ -628,7 +630,7 @@ const GAME_DATA = {
       id: "canSwim",
       text: "Can you swim?",
       speechText: "Can you swim?",
-      getAnswer: (s) => s.can === "swim" ? `Yes, I can! I can swim very well! 🏊‍♂️` : `No, I can't swim, but I can run very fast! 🏃‍♀️`,
+      getAnswer: (s) => s.can === "swim" ? `Yes, I can! I can swim very well! 🏊‍♂️` : `No, I can't swim, but I can run very fast! 🏃‍♂️`,
       getSpoken: (s) => s.can === "swim" ? `Yes, I can swim very well.` : `No, I cannot swim, but I can run very fast.`
     },
     {

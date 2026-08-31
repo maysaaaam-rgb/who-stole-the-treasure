@@ -1,6 +1,7 @@
 /**
  * UI Controller for "Who Stole the Treasure?"
- * Coordinates screen transitions, whiteboard interactions, touch feedback, modal dialogues, animations & confetti.
+ * Coordinates screen transitions, whiteboard interactions, touch feedback, modal dialogues, animations,
+ * question token budget, deductive investigation tracking, & confetti.
  */
 
 class UIController {
@@ -152,7 +153,7 @@ class UIController {
     if (!container) return;
 
     container.innerHTML = GAME_DATA.suspects
-      .map(s => `<div class="suspect-mini-chip">${s.avatar} ${s.name}</div>`)
+      .map(s => `<div class="suspect-mini-chip">${s.avatar} ${s.name} (${s.hairColor} hair)</div>`)
       .join("");
   }
 
@@ -860,7 +861,7 @@ class UIController {
   }
 
   // =========================================================================
-  // PART 2: REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD
+  // PART 2: REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD (DEDUCTIVE & STRATEGIC)
   // =========================================================================
 
   renderInvestigation() {
@@ -871,6 +872,34 @@ class UIController {
     const revealedClues = window.gameEngine.getRevealedClues();
     const totalClues = window.gameEngine.clues.length;
     const remainingCount = window.gameEngine.getRemainingSuspectsCount();
+    const tokens = window.gameEngine.questionTokens;
+    const activeTeam = window.gameEngine.getActiveTeam();
+    const matchingIds = window.gameEngine.getMatchingSuspectsFromClues();
+
+    // Strategy & Question Tokens Status Bar
+    const strategyStatusBarHtml = `
+      <div class="strategy-status-bar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-family: 'Bungee', cursive; color: var(--primary-gold); font-size: 1.1rem;">
+            STAGE: ROUND ${Math.min(revealedClues.length + 1, totalClues)} OF ${totalClues}
+          </span>
+          <span style="color: #94a3b8; font-weight: 800;">•</span>
+          <span style="color: #cbd5e1; font-weight: 800;">
+            ${activeTeam.emoji} <strong>${activeTeam.name}'s Turn</strong> to strategize or question!
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="question-tokens-badge">
+            <span>🔎 QUESTION TOKENS:</span>
+            <span style="color: ${tokens > 0 ? '#38bdf8' : '#f87171'}; font-size: 1.3rem;">
+              ${'🔍 '.repeat(tokens)}${tokens === 0 ? '0 LEFT' : `(${tokens} left)`}
+            </span>
+          </div>
+          <button class="icon-btn" onclick="gameEngine.addQuestionTokens(1); uiController.renderInvestigation();" title="Grant +1 Question Token (Teacher)">+1 🔎</button>
+        </div>
+      </div>
+    `;
 
     // Latest Clue Banner
     let clueBannerHtml = "";
@@ -879,18 +908,18 @@ class UIController {
       clueBannerHtml = `
         <div class="clues-ribbon-bar">
           <div class="clue-ticker">
-            <span class="clue-badge">CLUE #${latest.num}</span>
+            <span class="clue-badge">${latest.title}</span>
             <span style="font-size: 1.8rem;">${latest.icon}</span>
             <span class="clue-active-text">"${latest.text}"</span>
             <button class="speak-icon-btn" onclick="soundEngine.speak('${latest.spoken}')" style="background: #475569; color: #fff;">🔊</button>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
             ${revealedClues.length < totalClues ? `
               <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.handleRevealNextClue()">
-                🧩 REVEAL NEXT CLUE (${revealedClues.length}/${totalClues})
+                🧩 REVEAL NEXT CLUE (${revealedClues.length + 1}/${totalClues})
               </button>
             ` : `
-              <span style="color: #34d399; font-weight: 900; display: flex; align-items: center; gap: 4px;">✅ ALL CLUES REVEALED</span>
+              <span style="color: #34d399; font-weight: 900; display: flex; align-items: center; gap: 4px;">✅ ALL 5 CLUES REVEALED</span>
             `}
           </div>
         </div>
@@ -900,7 +929,7 @@ class UIController {
         <div class="clues-ribbon-bar" style="background: #1e293b;">
           <div class="clue-ticker">
             <span class="clue-badge" style="background: #94a3b8; color: #1e293b;">CLUES LOCKED</span>
-            <span style="font-size: 1.2rem; font-weight: 800; color: #cbd5e1;">Click below to reveal the first detective clue!</span>
+            <span style="font-size: 1.2rem; font-weight: 800; color: #cbd5e1;">Click to reveal Clue #1 and start the detective deduction!</span>
           </div>
           <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.handleRevealNextClue()">
             🧩 REVEAL CLUE 1 ➔
@@ -913,6 +942,7 @@ class UIController {
     const suspectsHtml = suspects.map(s => {
       const isElim = window.gameEngine.isEliminated(s.id);
       const evidenceList = window.gameEngine.getSuspectEvidence(s.id);
+      const matchesClues = matchingIds.includes(s.id);
 
       return `
         <div class="suspect-card ${isElim ? 'eliminated' : ''}" id="suspect-card-${s.id}">
@@ -933,15 +963,24 @@ class UIController {
             <div class="trait-item">🎨 ${s.favColorEmoji} ${s.favColor}</div>
           </div>
 
+          ${revealedClues.length > 0 ? `
+            <div style="font-size: 0.85rem; font-weight: 800; border-radius: var(--radius-sm); padding: 4px 8px; text-align: center;
+              background: ${matchesClues ? '#ecfdf5' : '#fff1f2'};
+              color: ${matchesClues ? '#065f46' : '#991b1b'};
+              border: 1.5px solid ${matchesClues ? '#a7f3d0' : '#fecdd3'};">
+              ${matchesClues ? '🔎 FITS REVEALED CLUES' : '❌ CLUE CONTRADICTION'}
+            </div>
+          ` : ''}
+
           ${evidenceList.length > 0 ? `
             <div style="background: #f1f5f9; border-radius: var(--radius-sm); padding: 6px 10px; font-size: 0.85rem; font-weight: 800; color: #475569;">
-              📝 Evidence Logged: ${evidenceList.length} facts
+              📝 Interrogation Notes: ${evidenceList.length} asked
             </div>
           ` : ''}
 
           <div class="suspect-card-actions">
             <button class="card-action-btn btn-investigate" onclick="uiController.openDossier('${s.id}')">
-              🔍 QUESTION
+              🔍 QUESTION ${tokens > 0 ? `(${tokens} 🔎)` : '(0 🔎)'}
             </button>
             ${isElim ? `
               <button class="card-action-btn btn-restore" onclick="uiController.handleToggleElimination('${s.id}')">
@@ -961,25 +1000,28 @@ class UIController {
     const allEvidenceNotes = [];
     revealedClues.forEach(c => {
       allEvidenceNotes.push({
-        title: `CLUE #${c.num}`,
+        title: c.title,
         icon: c.icon,
-        text: c.text
+        text: `"${c.text}"`,
+        isClue: true
       });
     });
 
     suspects.forEach(s => {
       const logs = window.gameEngine.getSuspectEvidence(s.id);
       logs.forEach(log => {
+        const teamObj = GAME_DATA.teams.find(t => t.id === log.teamId) || GAME_DATA.teams[0];
         allEvidenceNotes.push({
-          title: `NOTE: ${s.name}`,
-          icon: s.avatar,
-          text: `"${log.question}" ➔ ${log.answer}`
+          title: `INTERROGATION: ${s.name}`,
+          icon: `${s.avatar} ${teamObj.emoji}`,
+          text: `"${log.question}" ➔ "${log.answer}" (${teamObj.name})`,
+          isClue: false
         });
       });
     });
 
     const evidenceNotesHtml = allEvidenceNotes.length > 0 ? allEvidenceNotes.map(n => `
-      <div class="evidence-sticky-note">
+      <div class="evidence-sticky-note ${n.isClue ? '' : 'team-note'}">
         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; border-bottom: 1px dashed rgba(0,0,0,0.2); padding-bottom: 2px;">
           <span>${n.icon}</span>
           <span style="font-family: 'Bungee', cursive; font-size: 0.8rem;">${n.title}</span>
@@ -1005,6 +1047,7 @@ class UIController {
           </div>
         </div>
 
+        ${strategyStatusBarHtml}
         ${clueBannerHtml}
 
         <div class="suspects-grid">
@@ -1048,26 +1091,45 @@ class UIController {
 
     const modal = document.getElementById("dossier-modal");
     const container = document.getElementById("dossier-modal-body");
+    const activeTeam = window.gameEngine.getActiveTeam();
+    const tokens = window.gameEngine.questionTokens;
 
     container.innerHTML = `
       <div class="dossier-profile-header">
         <div class="suspect-avatar-large" style="width: 88px; height: 88px; font-size: 4rem;">${suspect.avatar}</div>
         <div>
-          <h2 style="font-family: 'Bungee', cursive; font-size: 2rem; color: #1e293b;">${suspect.name}</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 style="font-family: 'Bungee', cursive; font-size: 2rem; color: #1e293b;">${suspect.name}</h2>
+            <span class="card-tag" style="background: ${activeTeam.bg}; color: ${activeTeam.color}; border-color: ${activeTeam.border};">
+              ${activeTeam.emoji} ${activeTeam.name} is Questioning
+            </span>
+          </div>
           <p style="font-size: 1.15rem; font-weight: 800; color: #64748b;">${suspect.bio}</p>
           <div style="margin-top: 6px; font-weight: 800; color: #d97706;">🕒 Alibi: "${suspect.alibi}"</div>
         </div>
       </div>
 
-      <h3 style="font-family: 'Bungee', cursive; font-size: 1.25rem; color: #1e293b; margin-bottom: 8px;">
-        🗣️ Choose a Question for the Active Team to Ask:
-      </h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 style="font-family: 'Bungee', cursive; font-size: 1.25rem; color: #1e293b;">
+          🗣️ Choose 1 Question to Ask ${suspect.name}:
+        </h3>
+        <div style="font-family: 'Bungee', cursive; font-size: 1rem; color: ${tokens > 0 ? '#0284c7' : '#dc2626'};">
+          🔎 Tokens Remaining: ${tokens}
+        </div>
+      </div>
+
+      ${tokens === 0 ? `
+        <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: var(--radius-md); padding: 12px; margin-bottom: 12px; color: #991b1b; font-weight: 800;">
+          ⚠️ No Question Tokens remaining! The teacher can grant +1 token, or use the next official clue!
+          <button class="teacher-small-btn" style="margin-left: 8px;" onclick="gameEngine.addQuestionTokens(1); uiController.openDossier('${suspect.id}');">Grant +1 Token (Teacher)</button>
+        </div>
+      ` : ''}
 
       <div class="questions-selector-list">
         ${GAME_DATA.interrogationQuestions.map(q => `
-          <button class="interrogate-q-btn" onclick="uiController.handleAskQuestion('${suspect.id}', '${q.id}')">
+          <button class="interrogate-q-btn" ${tokens <= 0 ? 'disabled style="opacity: 0.6;"' : ''} onclick="uiController.handleAskQuestion('${suspect.id}', '${q.id}')">
             <span>❓ "${q.text}"</span>
-            <span style="color: #2563eb; font-size: 0.95rem;">Ask ➔</span>
+            <span style="color: #2563eb; font-size: 0.95rem;">Ask (Cost 1 🔎) ➔</span>
           </button>
         `).join("")}
       </div>
@@ -1079,6 +1141,14 @@ class UIController {
   }
 
   handleAskQuestion(suspectId, questionId) {
+    if (window.gameEngine.questionTokens <= 0) {
+      if (window.soundEngine) window.soundEngine.playWrong();
+      return;
+    }
+
+    // Deduct 1 token
+    window.gameEngine.useQuestionToken();
+
     const result = window.gameEngine.askQuestion(suspectId, questionId);
     if (!result) return;
 
@@ -1095,7 +1165,7 @@ class UIController {
         <div style="font-size: 3rem;">${result.suspect.avatar}</div>
         <div style="flex: 1;">
           <div style="font-weight: 800; font-size: 1rem; color: #047857; text-transform: uppercase;">
-            ${result.suspect.name} answers:
+            ${result.suspect.name} answers to ${result.team.name}:
           </div>
           <div class="answer-text-large">"${result.answer}"</div>
         </div>
@@ -1106,16 +1176,20 @@ class UIController {
         <button class="jumbo-btn btn-gold" style="font-size: 1rem; padding: 10px 20px;" onclick="uiController.awardPointsToActive(2)">
           +2 ⭐ Points (Great Question!)
         </button>
-        <button class="jumbo-btn btn-emerald" style="font-size: 1rem; padding: 10px 20px;" onclick="uiController.closeDossier()">
-          📌 PIN TO EVIDENCE BOARD ➔
+        <button class="jumbo-btn btn-emerald" style="font-size: 1rem; padding: 10px 20px;" onclick="uiController.closeDossier(true)">
+          📌 PIN EVIDENCE & PASS TURN ➔
         </button>
       </div>
     `;
   }
 
-  closeDossier() {
+  closeDossier(advanceTeam = false) {
     const modal = document.getElementById("dossier-modal");
     if (modal) modal.classList.remove("active");
+    if (advanceTeam) {
+      window.gameEngine.nextTeam();
+      this.updateScoreboard();
+    }
     this.renderInvestigation();
   }
 
@@ -1398,7 +1472,7 @@ class UIController {
           </div>
         </div>
 
-        <!-- Active Turn Override -->
+        <!-- Active Turn Selection -->
         <div class="teacher-card-mini">
           <h4>🎯 Active Turn Selection</h4>
           <div class="teacher-actions-row">
@@ -1413,9 +1487,10 @@ class UIController {
 
         <!-- Clue & Investigation Controls -->
         <div class="teacher-card-mini">
-          <h4>🧩 Mystery Controls</h4>
+          <h4>🧩 Mystery & Tokens</h4>
           <div class="teacher-actions-row">
             <button class="teacher-small-btn" onclick="uiController.handleRevealNextClue(); uiController.openTeacherHub();">Reveal Next Clue</button>
+            <button class="teacher-small-btn" onclick="gameEngine.addQuestionTokens(1); uiController.renderInvestigation(); uiController.openTeacherHub();">+1 Question Token</button>
             <button class="teacher-small-btn" onclick="gameEngine.resetClues(); uiController.renderInvestigation(); uiController.openTeacherHub();">Reset Clues</button>
             <button class="teacher-small-btn" onclick="gameEngine.eliminatedSuspects.clear(); uiController.renderInvestigation(); uiController.openTeacherHub();">Restore All Suspects</button>
           </div>
@@ -1470,6 +1545,9 @@ class UIController {
       nextBtn.addEventListener("click", () => {
         window.gameEngine.nextTeam();
         this.updateScoreboard();
+        if (this.currentView === "investigation") {
+          this.renderInvestigation();
+        }
         if (window.soundEngine) window.soundEngine.playClick();
       });
     }
