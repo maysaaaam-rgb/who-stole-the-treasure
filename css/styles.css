@@ -351,6 +351,14 @@ body {
   margin: 16px 0;
 }
 
+.hub-modes-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin: 16px 0;
+}
+
 .hub-mode-card {
   background: #fff;
   border: 5px solid #cbd5e1;
@@ -381,6 +389,10 @@ body {
 
 .hub-mode-card.card-room:hover {
   border-color: #10b981;
+}
+
+.hub-mode-card.card-clil:hover {
+  border-color: #dc2626;
 }
 
 .mode-badge-pill {

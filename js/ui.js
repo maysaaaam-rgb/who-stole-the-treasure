@@ -86,6 +86,13 @@ class UIController {
         }
         break;
 
+      // 4TH GRADE: CLIL CRIME LAB (4 MYSTERY CASES)
+      case "clil-lab":
+        if (window.clilUI) {
+          window.clilUI.showMainHub();
+        }
+        break;
+
       // TREASURE INVESTIGATION SCREENS
       case "intro":
         this.renderIntro();
@@ -138,23 +145,23 @@ class UIController {
         <p class="sub-heading">Choose an interactive lesson game for your classroom:</p>
       </div>
 
-      <div class="hub-modes-grid-3">
+      <div class="hub-modes-grid-4">
         <!-- MODE 1: 3RD GRADE DETECTIVE PREPARATION -->
         <div class="hub-mode-card card-prep" onclick="uiController.showScreen('prep-intro')">
           <div class="mode-badge-pill" style="background: #e0e7ff; color: #3730a3;">🎒 3RD GRADE • 7–10 MIN</div>
           <div class="mode-icon-hero">🔎 👤 🪟</div>
           <h2 class="mode-title">1. DETECTIVE PREP</h2>
           <p class="mode-desc">
-            Warm-up practice for asking simple questions about a person's appearance and classroom seating location!
+            Warm-up practice for asking simple questions about appearance & seating!
           </p>
           <ul class="mode-features-list">
-            <li>🎯 <strong>Target Match:</strong> Visual badges to questions</li>
-            <li>👤 <strong>Ask Person:</strong> Who, Hair, Looks & Place</li>
-            <li>🧠 <strong>5s Memory:</strong> Quick classroom seating</li>
-            <li>📋 <strong>Live Bag Activity:</strong> Teacher classroom guide</li>
+            <li>🎯 <strong>Target Match:</strong> Question badges</li>
+            <li>👤 <strong>Ask Person:</strong> Who, Hair, Place</li>
+            <li>🧠 <strong>5s Memory:</strong> Seating memory</li>
+            <li>📋 <strong>Live Activity:</strong> Bag guide</li>
           </ul>
-          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
-            START PREPARATION ➔
+          <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+            START PREP ➔
           </button>
         </div>
 
@@ -162,18 +169,18 @@ class UIController {
         <div class="hub-mode-card card-treasure" onclick="uiController.showScreen('intro')">
           <div class="mode-badge-pill" style="background: #fef3c7; color: #92400e;">🏆 3RD GRADE • FULL MYSTERY</div>
           <div class="mode-icon-hero">🏴‍☠️ 💰 🔐</div>
-          <h2 class="mode-title">2. WHO STOLE THE TREASURE?</h2>
+          <h2 class="mode-title">2. TREASURE MYSTERY</h2>
           <p class="mode-desc">
-            Complete 4-team mystery adventure! 5 grammar missions, 5-key vault lock, 8 hidden suspects & deduction meeting!
+            4-team mystery adventure! 5 grammar missions, 5-key vault lock & suspects meeting!
           </p>
           <ul class="mode-features-list">
-            <li>🎮 <strong>5 Grammar Missions:</strong> Match, Can, Likes, Have</li>
+            <li>🎮 <strong>5 Grammar Missions:</strong> Can, Likes, Have</li>
             <li>🔐 <strong>Boss Lock:</strong> 5-digit code vault</li>
-            <li>👥 <strong>8 Suspects:</strong> Disparity dossiers & meeting</li>
-            <li>🚨 <strong>Deduction:</strong> 2-proof spoken accusation</li>
+            <li>👥 <strong>8 Suspects:</strong> Dossiers & meeting</li>
+            <li>🚨 <strong>Accusation:</strong> 2-proof spoken claim</li>
           </ul>
-          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
-            PLAY TREASURE GAME ➔
+          <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+            PLAY TREASURE ➔
           </button>
         </div>
 
@@ -183,16 +190,35 @@ class UIController {
           <div class="mode-icon-hero">🏠 🧸 🔑</div>
           <h2 class="mode-title">3. ROOM RESCUE</h2>
           <p class="mode-desc">
-            Help clean a messy room, follow prepositions (in, on, under, behind, next to), sequence clean-up steps, and search for lost objects!
+            Interactive visual room! Prepositions (in, on, under, behind), drag-and-drop & lost objects!
           </p>
           <ul class="mode-features-list">
-            <li>🎧 <strong>Listen & Move:</strong> Audio preposition directions</li>
-            <li>📖 <strong>Read & Clean:</strong> Interactive room organization</li>
-            <li>🔎 <strong>Lost Objects:</strong> Search under, in, behind furniture</li>
-            <li>🔢 <strong>Sequencing:</strong> First, Then, Next, Finally</li>
+            <li>🎧 <strong>Listen & Move:</strong> Audio directions</li>
+            <li>📖 <strong>Read & Clean:</strong> Object drag-and-drop</li>
+            <li>🔎 <strong>Lost Objects:</strong> Open drawer & box</li>
+            <li>🔢 <strong>Sequencing:</strong> Action picture cards</li>
           </ul>
-          <button class="jumbo-btn btn-emerald" style="width: 100%; font-size: 1.1rem; padding: 12px 18px; margin-top: auto;">
-            START ROOM RESCUE ➔
+          <button class="jumbo-btn btn-emerald" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+            START RESCUE ➔
+          </button>
+        </div>
+
+        <!-- MODE 4: 4TH GRADE CLIL CRIME LAB -->
+        <div class="hub-mode-card card-clil" onclick="uiController.showScreen('clil-lab')">
+          <div class="mode-badge-pill" style="background: #fee2e2; color: #991b1b;">🕵️ 4TH GRADE • 4 TEAMS</div>
+          <div class="mode-icon-hero">🔴 🔵 🟢 🟡</div>
+          <h2 class="mode-title">4. CLIL CRIME LAB</h2>
+          <p class="mode-desc">
+            Four completely distinct mystery cases for 4 teams! Sports, Science, Art & Geography!
+          </p>
+          <ul class="mode-features-list">
+            <li>🔴 <strong>Case 1 (Sports):</strong> Time & Past Simple</li>
+            <li>🔵 <strong>Case 2 (Science):</strong> States of Matter</li>
+            <li>🟢 <strong>Case 3 (Art):</strong> Color Mixing</li>
+            <li>🟡 <strong>Case 4 (Geography):</strong> Map & Directions</li>
+          </ul>
+          <button class="jumbo-btn btn-ruby" style="width: 100%; font-size: 1rem; padding: 10px 14px; margin-top: auto;">
+            ENTER CRIME LAB ➔
           </button>
         </div>
       </div>
