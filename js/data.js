@@ -1,252 +1,255 @@
 /**
- * Game Data for "Who Stole the Treasure?" - HARD MODE DETECTIVE INVESTIGATION
- * Includes:
- * 1. 🕵️ DETECTIVE PREPARATION (7-10 minute classroom warm-up activity)
- * 2. 🏴‍☠️ WHO STOLE THE TREASURE (8-suspect deduction mystery)
+ * Game Data for "Who Stole the Treasure?" & "Detective Preparation"
+ * Contains:
+ * 1. 🕵️ DETECTIVE PREPARATION (Warm-Up Activities & Live Classroom Game)
+ * 2. 🏴‍☠️ WHO STOLE THE TREASURE? (Full 8-Suspect Investigation Game)
  */
 
 const GAME_DATA = {
   // =========================================================================
-  // SECTION 1: 🕵️ DETECTIVE PREPARATION DATA (WARM-UP FOR CLASSROOM & MYSTERY)
+  // SECTION 1: 🕵️ DETECTIVE PREPARATION (WARM-UP ACTIVITIES)
   // =========================================================================
-  prepData: {
-    // Prep Mini-Game 1: Question Practice (Matching visual target to question)
+  prepGame: {
+    // Mini-Game 1: Question Practice (Target ➔ Match Question)
     mg1: [
       {
         targetIcon: "💇‍♂️",
         targetTitle: "BLACK HAIR",
         characterImg: "👦",
-        characterName: "Leo",
+        prompt: "Choose the question to ask about this visual target:",
+        speechPrompt: "Choose the question for black hair.",
         options: [
           { text: "Does he have black hair?", isCorrect: true, speech: "Does he have black hair?" },
           { text: "Does he sit near the door?", isCorrect: false, speech: "Does he sit near the door?" },
           { text: "Is it a girl?", isCorrect: false, speech: "Is it a girl?" }
-        ],
-        hint: "Look at his hair color!"
+        ]
       },
       {
         targetIcon: "📍 🪟",
         targetTitle: "NEAR THE WINDOW",
         characterImg: "👧",
-        characterName: "Emma",
+        prompt: "Choose the question to ask about their seating position:",
+        speechPrompt: "Choose the question for sitting near the window.",
         options: [
           { text: "Does she wear glasses?", isCorrect: false, speech: "Does she wear glasses?" },
           { text: "Does she sit near the window?", isCorrect: true, speech: "Does she sit near the window?" },
           { text: "Does she have long hair?", isCorrect: false, speech: "Does she have long hair?" }
-        ],
-        hint: "Look at where she sits!"
+        ]
       },
       {
         targetIcon: "👓",
-        targetTitle: "WEARING GLASSES",
-        characterImg: "🧑‍🦱",
-        characterName: "Jack",
+        targetTitle: "GLASSES",
+        characterImg: "🧑‍🏫",
+        prompt: "Choose the question to ask about their glasses:",
+        speechPrompt: "Choose the question for wearing glasses.",
+        options: [
+          { text: "Does he/she wear glasses?", isCorrect: true, speech: "Does he or she wear glasses?" },
+          { text: "Is it a boy?", isCorrect: false, speech: "Is it a boy?" },
+          { text: "Does he/she sit on the left?", isCorrect: false, speech: "Does he or she sit on the left?" }
+        ]
+      },
+      {
+        targetIcon: "🚪",
+        targetTitle: "NEAR THE DOOR",
+        characterImg: "🧒",
+        prompt: "Choose the question for someone near the classroom door:",
+        speechPrompt: "Choose the question for sitting near the door.",
         options: [
           { text: "Is he wearing a hat?", isCorrect: false, speech: "Is he wearing a hat?" },
-          { text: "Does he wear glasses?", isCorrect: true, speech: "Does he wear glasses?" },
-          { text: "Does he sit on the left?", isCorrect: false, speech: "Does he sit on the left?" }
-        ],
-        hint: "Look at his eyes!"
+          { text: "Does he have brown hair?", isCorrect: false, speech: "Does he have brown hair?" },
+          { text: "Does he sit near the door?", isCorrect: true, speech: "Does he sit near the door?" }
+        ]
       },
       {
         targetIcon: "👕 🔵",
         targetTitle: "WEARING BLUE",
-        characterImg: "👦",
-        characterName: "Alex",
-        options: [
-          { text: "Is he wearing blue?", isCorrect: true, speech: "Is he wearing blue?" },
-          { text: "Does he have brown hair?", isCorrect: false, speech: "Does he have brown hair?" },
-          { text: "Does he sit in the back?", isCorrect: false, speech: "Does he sit in the back?" }
-        ],
-        hint: "Look at the color of his shirt!"
-      },
-      {
-        targetIcon: "👧",
-        targetTitle: "GIRL OR BOY?",
         characterImg: "👧",
-        characterName: "Sara",
+        prompt: "Choose the question to ask about their clothes color:",
+        speechPrompt: "Choose the question for wearing blue.",
         options: [
-          { text: "Does she sit near the door?", isCorrect: false, speech: "Does she sit near the door?" },
-          { text: "Is it a girl?", isCorrect: true, speech: "Is it a girl?" },
-          { text: "Does she wear glasses?", isCorrect: false, speech: "Does she wear glasses?" }
-        ],
-        hint: "Ask about the person!"
+          { text: "Is she wearing blue?", isCorrect: true, speech: "Is she wearing blue?" },
+          { text: "Does she sit in the back?", isCorrect: false, speech: "Does she sit in the back?" },
+          { text: "Does she like dogs?", isCorrect: false, speech: "Does she like dogs?" }
+        ]
       }
     ],
 
-    // Prep Mini-Game 2: Ask About The Person (Categorized interactive question board)
+    // Mini-Game 2: Ask About The Person (Categorized Questions & Answers)
     mg2Characters: [
+      {
+        id: "lucas",
+        name: "Lucas",
+        avatar: "👦",
+        gender: "boy",
+        hair: "black",
+        hairLength: "short",
+        glasses: false,
+        clothesColor: "blue",
+        hat: true,
+        location: "near the window",
+        side: "left",
+        row: "front",
+        description: "Lucas is a boy with black hair, wearing a hat and blue shirt. He sits near the window in the front on the left!"
+      },
       {
         id: "maya",
         name: "Maya",
         avatar: "👧",
         gender: "girl",
-        hairColor: "black",
+        hair: "brown",
         hairLength: "long",
         glasses: true,
-        wearingColor: "blue",
-        wearingHat: false,
-        seatLocation: "window",
-        seatSide: "left",
-        seatRow: "front",
-        description: "Maya is a girl with long black hair and glasses. She sits near the window on the left in the front."
-      },
-      {
-        id: "sam",
-        name: "Sam",
-        avatar: "👦",
-        gender: "boy",
-        hairColor: "brown",
-        hairLength: "short",
-        glasses: false,
-        wearingColor: "green",
-        wearingHat: true,
-        seatLocation: "door",
-        seatSide: "right",
-        seatRow: "back",
-        description: "Sam is a boy with brown hair wearing a hat. He sits near the door on the right in the back."
+        clothesColor: "red",
+        hat: false,
+        location: "near the door",
+        side: "right",
+        row: "back",
+        description: "Maya is a girl with long brown hair and glasses. She sits near the door in the back on the right!"
       }
     ],
 
-    // Prep Mini-Game 3: Which Question Do We Need? (Goal matching)
-    mg3: [
-      {
-        goalIcon: "💇",
-        goalText: "We need to know the person's HAIR COLOR.",
-        speechGoal: "We need to know the person's hair color.",
-        options: [
-          { text: "Is it a girl?", isCorrect: false },
-          { text: "Does he/she have black hair? ✅", isCorrect: true, speech: "Does he or she have black hair?" },
-          { text: "Does he/she sit near the door?", isCorrect: false }
-        ]
-      },
-      {
-        goalIcon: "📍",
-        goalText: "We need to know WHERE the person sits.",
-        speechGoal: "We need to know where the person sits.",
-        options: [
-          { text: "Does he/she sit near the window? ✅", isCorrect: true, speech: "Does he or she sit near the window?" },
-          { text: "Does he/she wear glasses?", isCorrect: false },
-          { text: "Is he/she wearing blue?", isCorrect: false }
-        ]
-      },
-      {
-        goalIcon: "👓",
-        goalText: "We need to know if the person WEARS GLASSES.",
-        speechGoal: "We need to know if the person wears glasses.",
-        options: [
-          { text: "Is it a boy?", isCorrect: false },
-          { text: "Does he/she have long hair?", isCorrect: false },
-          { text: "Does he/she wear glasses? ✅", isCorrect: true, speech: "Does he or she wear glasses?" }
-        ]
-      },
-      {
-        goalIcon: "👤",
-        goalText: "We need to know if the person is a GIRL.",
-        speechGoal: "We need to know if the person is a girl.",
-        options: [
-          { text: "Is it a girl? ✅", isCorrect: true, speech: "Is it a girl?" },
-          { text: "Does she sit on the left?", isCorrect: false },
-          { text: "Does she have brown hair?", isCorrect: false }
-        ]
-      },
-      {
-        goalIcon: "👕",
-        goalText: "We need to know if the person is WEARING BLUE.",
-        speechGoal: "We need to know if the person is wearing blue.",
-        options: [
-          { text: "Does he/she sit in the front?", isCorrect: false },
-          { text: "Is he/she wearing blue? ✅", isCorrect: true, speech: "Is he or she wearing blue?" },
-          { text: "Does he/she have black hair?", isCorrect: false }
-        ]
-      },
-      {
-        goalIcon: "🧢",
-        goalText: "We need to know if the person is WEARING A HAT.",
-        speechGoal: "We need to know if the person is wearing a hat.",
-        options: [
-          { text: "Is he/she wearing a hat? ✅", isCorrect: true, speech: "Is he or she wearing a hat?" },
-          { text: "Is it a boy?", isCorrect: false },
-          { text: "Does he/she sit near the door?", isCorrect: false }
-        ]
-      }
-    ],
-
-    // Prep Mini-Game 4: Quick Memory Challenge (5-second classroom flashcard)
-    mg4Scene: {
-      students: [
-        { id: "s1", name: "Lucas", avatar: "👦", hair: "black", glasses: false, shirt: "blue", pos: "Near the Window 🪟 (Left, Front)" },
-        { id: "s2", name: "Chloe", avatar: "👧", hair: "brown", glasses: true, shirt: "pink", pos: "Near the Door 🚪 (Right, Front)" },
-        { id: "s3", name: "Noah", avatar: "🧑", hair: "black", glasses: true, shirt: "green", pos: "In the Back (Left)" },
-        { id: "s4", name: "Zoe", avatar: "👧", hair: "brown", glasses: false, shirt: "yellow", pos: "In the Back (Right)" }
-      ],
-      questions: [
-        {
-          question: "Who sits near the window? 🪟",
-          speechQuestion: "Who sits near the window?",
-          correctId: "s1",
-          correctName: "Lucas 👦"
-        },
-        {
-          question: "Who wears glasses near the door? 👓 🚪",
-          speechQuestion: "Who wears glasses near the door?",
-          correctId: "s2",
-          correctName: "Chloe 👧"
-        },
-        {
-          question: "Who sits in the back wearing green? 🟢",
-          speechQuestion: "Who sits in the back wearing green?",
-          correctId: "s3",
-          correctName: "Noah 🧑"
-        }
-      ]
-    },
-
-    // Permanent Detective Question Board Data
-    questionBoardCategories: [
+    // Categorized Question Bank for Mini-Game 2 & Question Board
+    questionCategories: [
       {
         category: "👤 PERSON",
-        color: "#3b82f6",
+        categorySpeech: "Person questions",
         questions: [
-          { q: "Is it a boy?", speech: "Is it a boy?" },
-          { q: "Is it a girl?", speech: "Is it a girl?" }
+          { id: "is_boy", text: "Is it a boy?", speech: "Is it a boy?", check: (c) => c.gender === "boy" },
+          { id: "is_girl", text: "Is it a girl?", speech: "Is it a girl?", check: (c) => c.gender === "girl" }
         ]
       },
       {
         category: "💇 HAIR",
-        color: "#8b5cf6",
+        categorySpeech: "Hair questions",
         questions: [
-          { q: "Does he/she have black hair?", speech: "Does he or she have black hair?" },
-          { q: "Does he/she have brown hair?", speech: "Does he or she have brown hair?" },
-          { q: "Does he/she have long hair?", speech: "Does he or she have long hair?" }
+          { id: "hair_black", text: "Does he/she have black hair?", speech: "Does he or she have black hair?", check: (c) => c.hair === "black" },
+          { id: "hair_brown", text: "Does he/she have brown hair?", speech: "Does he or she have brown hair?", check: (c) => c.hair === "brown" },
+          { id: "hair_long", text: "Does he/she have long hair?", speech: "Does he or she have long hair?", check: (c) => c.hairLength === "long" }
         ]
       },
       {
         category: "👓 LOOKS",
-        color: "#ec4899",
+        categorySpeech: "Looks questions",
         questions: [
-          { q: "Does he/she wear glasses?", speech: "Does he or she wear glasses?" },
-          { q: "Is he/she wearing blue?", speech: "Is he or she wearing blue?" },
-          { q: "Is he/she wearing a hat?", speech: "Is he or she wearing a hat?" }
+          { id: "wear_glasses", text: "Does he/she wear glasses?", speech: "Does he or she wear glasses?", check: (c) => c.glasses === true },
+          { id: "wear_blue", text: "Is he/she wearing blue?", speech: "Is he or she wearing blue?", check: (c) => c.clothesColor === "blue" },
+          { id: "wear_hat", text: "Is he/she wearing a hat?", speech: "Is he or she wearing a hat?", check: (c) => c.hat === true }
         ]
       },
       {
-        category: "📍 PLACE",
-        color: "#10b981",
+        category: "📍 LOCATION & PLACE",
+        categorySpeech: "Location questions",
         questions: [
-          { q: "Does he/she sit near the window?", speech: "Does he or she sit near the window?" },
-          { q: "Does he/she sit near the door?", speech: "Does he or she sit near the door?" },
-          { q: "Does he/she sit on the left?", speech: "Does he or she sit on the left?" },
-          { q: "Does he/she sit on the right?", speech: "Does he or she sit on the right?" },
-          { q: "Does he/she sit in the front?", speech: "Does he or she sit in the front?" },
-          { q: "Does he/she sit in the back?", speech: "Does he or she sit in the back?" }
+          { id: "loc_window", text: "Does he/she sit near the window?", speech: "Does he or she sit near the window?", check: (c) => c.location === "near the window" },
+          { id: "loc_door", text: "Does he/she sit near the door?", speech: "Does he or she sit near the door?", check: (c) => c.location === "near the door" },
+          { id: "loc_left", text: "Does he/she sit on the left?", speech: "Does he or she sit on the left?", check: (c) => c.side === "left" },
+          { id: "loc_right", text: "Does he/she sit on the right?", speech: "Does he or she sit on the right?", check: (c) => c.side === "right" },
+          { id: "loc_front", text: "Does he/she sit in the front?", speech: "Does he or she sit in the front?", check: (c) => c.row === "front" },
+          { id: "loc_back", text: "Does he/she sit in the back?", speech: "Does he or she sit in the back?", check: (c) => c.row === "back" }
+        ]
+      }
+    ],
+
+    // Mini-Game 3: Which Question Do We Need? (Detective Goal Matching)
+    mg3: [
+      {
+        goal: "We need to know the person's hair color.",
+        goalSpeech: "We need to know the person's hair color.",
+        icon: "💇",
+        options: [
+          { text: "Is it a girl?", isCorrect: false },
+          { text: "Does he/she have black hair?", isCorrect: true },
+          { text: "Does he/she sit near the door?", isCorrect: false }
+        ]
+      },
+      {
+        goal: "We need to know where the person sits.",
+        goalSpeech: "We need to know where the person sits.",
+        icon: "📍",
+        options: [
+          { text: "Does he/she wear glasses?", isCorrect: false },
+          { text: "Does he/she sit near the window?", isCorrect: true },
+          { text: "Does he/she have brown hair?", isCorrect: false }
+        ]
+      },
+      {
+        goal: "We need to know if the person wears glasses.",
+        goalSpeech: "We need to know if the person wears glasses.",
+        icon: "👓",
+        options: [
+          { text: "Does he/she wear glasses?", isCorrect: true },
+          { text: "Is he/she wearing a hat?", isCorrect: false },
+          { text: "Is it a boy?", isCorrect: false }
+        ]
+      },
+      {
+        goal: "We need to know if the person is a girl.",
+        goalSpeech: "We need to know if the person is a girl.",
+        icon: "👧",
+        options: [
+          { text: "Does she sit in the front?", isCorrect: false },
+          { text: "Is it a girl?", isCorrect: true },
+          { text: "Does she have black hair?", isCorrect: false }
+        ]
+      },
+      {
+        goal: "We need to know if the person is wearing blue.",
+        goalSpeech: "We need to know if the person is wearing blue.",
+        icon: "👕 🔵",
+        options: [
+          { text: "Is he/she wearing blue?", isCorrect: true },
+          { text: "Does he/she sit on the left?", isCorrect: false },
+          { text: "Does he/she wear glasses?", isCorrect: false }
+        ]
+      },
+      {
+        goal: "We need to know if the person sits in the front or back.",
+        goalSpeech: "We need to know if the person sits in the front or back.",
+        icon: "🪑",
+        options: [
+          { text: "Does he/she have long hair?", isCorrect: false },
+          { text: "Does he/she sit in the front?", isCorrect: true },
+          { text: "Is it a boy?", isCorrect: false }
+        ]
+      }
+    ],
+
+    // Mini-Game 4: Quick Memory Challenge (5-Second Scene)
+    mg4Scenes: [
+      {
+        sceneTitle: "Classroom 3-B Scene",
+        students: [
+          { name: "Lucas", avatar: "👦", position: "Near the Window (Left Front)", hair: "Black hair", glasses: false, hat: true, isWindow: true, isBlackHair: true, isGlasses: false, isDoor: false },
+          { name: "Maya", avatar: "👧", position: "Near the Door (Right Back)", hair: "Brown hair", glasses: true, hat: false, isWindow: false, isBlackHair: false, isGlasses: true, isDoor: true },
+          { name: "Noah", avatar: "🧒", position: "Middle Front", hair: "Brown hair", glasses: false, hat: false, isWindow: false, isBlackHair: false, isGlasses: false, isDoor: false },
+          { name: "Chloe", avatar: "👧", position: "Middle Back", hair: "Black hair", glasses: true, hat: false, isWindow: false, isBlackHair: true, isGlasses: true, isDoor: false }
+        ],
+        questions: [
+          {
+            question: "Who sits near the window?",
+            speechQuestion: "Who sits near the window?",
+            correctStudent: "Lucas",
+            explanation: "Lucas was sitting near the window on the left!"
+          },
+          {
+            question: "Who wears glasses in the back row?",
+            speechQuestion: "Who wears glasses in the back row?",
+            correctStudent: "Maya",
+            explanation: "Maya was wearing glasses near the door in the back!"
+          },
+          {
+            question: "Who sits near the door?",
+            speechQuestion: "Who sits near the door?",
+            correctStudent: "Maya",
+            explanation: "Maya was sitting right by the door on the right!"
+          }
         ]
       }
     ]
   },
 
   // =========================================================================
-  // SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? (8 SUSPECTS MATRIX & MINI-GAMES)
+  // SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? (EXISTING HARD MODE INVESTIGATION)
   // =========================================================================
   suspects: [
     {
@@ -563,7 +566,7 @@ const GAME_DATA = {
     }
   ],
 
-  // Mini-Games 1-5 & Boss Lock Data
+  // Mini-Games 1-5 & Boss Lock Data for Who Stole the Treasure
   miniGame1: [
     {
       character: "👦 Alex",

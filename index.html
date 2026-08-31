@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🕵️ Detective Academy & Who Stole the Treasure? - 3rd Grade English</title>
+  <title>🕵️ Detective English Academy & Who Stole the Treasure?</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️</text></svg>">
 </head>
@@ -14,28 +14,17 @@
        ========================================================================= -->
   <header id="game-header">
     <div class="header-left">
-      <div class="game-title-badge" id="home-menu-btn" title="Click for Main Menu & Mode Selection">
-        <span>🕵️</span>
-        <span id="header-title-text">MAIN MENU</span>
+      <div class="game-title-badge" id="home-menu-btn" title="Click for Main Menu">
+        <span>🏠</span>
+        <span>MAIN MENU</span>
       </div>
-
-      <!-- Quick Section Switcher Buttons -->
-      <button class="nav-pill-btn" onclick="uiController.showScreen('mode-select')" title="Go to Main Mode Select">
-        🏠 MENU
-      </button>
-      <button class="nav-pill-btn" id="header-btn-prep" onclick="uiController.showScreen('prep-intro')" title="Start Detective Preparation">
-        🎓 PREPARATION
-      </button>
-      <button class="nav-pill-btn" id="header-btn-treasure" onclick="uiController.showScreen('intro')" title="Start Treasure Investigation">
-        🏴‍☠️ TREASURE GAME
-      </button>
 
       <!-- Active Team Turn Indicator -->
       <div id="active-turn-pill" class="turn-pill turn-red">
         🔴 <span>TURN: TEAM RED</span>
       </div>
 
-      <button id="next-turn-btn" class="next-turn-btn" title="Pass turn to the next team">
+      <button id="next-turn-btn" class="next-turn-btn" title="Pass turn to next team">
         <span>NEXT TEAM</span> ➔
       </button>
     </div>
@@ -63,9 +52,11 @@
       </div>
     </div>
 
-    <!-- Header Tools & Question Board Quick Pin -->
+    <!-- Teacher & Persistent Controls -->
     <div class="header-actions">
-      <button class="icon-btn" id="pin-board-btn" onclick="uiController.toggleFloatingQuestionBoard()" title="Keep Question Board Visible">📌 QUESTION BOARD</button>
+      <button class="icon-btn" id="qboard-toggle-btn" title="Open Persistent Question Board" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border-color: #a78bfa; font-weight: 800; font-size: 0.9rem; padding: 8px 12px;">
+        📌 QUESTION BOARD
+      </button>
       <button class="icon-btn active-btn" id="sfx-toggle-btn" title="Toggle Sound Effects">🔊</button>
       <button class="icon-btn active-btn" id="tts-toggle-btn" title="Toggle English Voice TTS">🗣️</button>
       <button class="icon-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
@@ -80,150 +71,87 @@
        ========================================================================= -->
   <main id="game-viewport">
 
-    <!-- 0. SCREEN: MAIN MENU / MODE SELECTOR -->
-    <section class="screen-view active" id="screen-mode-select">
-      <div class="adventure-card" style="max-width: 1100px;">
-        <div class="card-header-banner">
-          <span class="card-tag">⭐ 3RD GRADE ENGLISH CLASSROOM ADVENTURE ⭐</span>
-          <h1 class="main-heading">🕵️ DETECTIVE ENGLISH ACADEMY</h1>
-          <p class="sub-heading">Choose a classroom activity for today's lesson:</p>
-        </div>
-
-        <div class="mode-select-grid">
-          <!-- Mode 1: Detective Preparation -->
-          <div class="mode-select-card card-prep" onclick="uiController.showScreen('prep-intro')">
-            <div class="mode-badge">⚡ 7–10 MIN WARM-UP</div>
-            <div class="mode-card-icon">🔎 🎒 👤</div>
-            <h2 class="mode-card-title">🕵️ DETECTIVE PREPARATION</h2>
-            <p class="mode-card-desc">
-              Prepare Grade 3 students to ask simple questions about a person's appearance and location before a live classroom bag investigation.
-            </p>
-            <div class="mode-feature-list">
-              <span>✓ Question Practice (Hair & Location)</span>
-              <span>✓ Who, Looks & Seating Placement</span>
-              <span>✓ Quick 5-Second Memory Challenge</span>
-              <span>✓ Permanent Question Reference Board</span>
-            </div>
-            <button class="jumbo-btn btn-ocean" style="width: 100%; font-size: 1.15rem; margin-top: 16px;">
-              START PREPARATION ➔
-            </button>
-          </div>
-
-          <!-- Mode 2: Who Stole The Treasure -->
-          <div class="mode-select-card card-treasure" onclick="uiController.showScreen('intro')">
-            <div class="mode-badge" style="background: #fef08a; color: #854d0e;">🏆 FULL MYSTERY GAME</div>
-            <div class="mode-card-icon">🏴‍☠️ 💰 🔐</div>
-            <h2 class="mode-card-title">🏴‍☠️ WHO STOLE THE TREASURE?</h2>
-            <p class="mode-card-desc">
-              The full 8-suspect deduction game! Train your grammar keys, collect indirect clues, interview suspects in the room, and catch the thief!
-            </p>
-            <div class="mode-feature-list">
-              <span>✓ 5 Training Missions & 5-Key Vault</span>
-              <span>✓ 8 Suspects Hidden Attribute Matrix</span>
-              <span>✓ 4 Team Notebooks & Interrogations</span>
-              <span>✓ Detective Meeting & Grand Ceremony</span>
-            </div>
-            <button class="jumbo-btn btn-gold" style="width: 100%; font-size: 1.15rem; margin-top: 16px;">
-              PLAY TREASURE MYSTERY ➔
-            </button>
-          </div>
+    <!-- 0. SCREEN: MAIN HUB (CHOOSE MODE) -->
+    <section class="screen-view active" id="screen-hub">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="hub-content">
+          <!-- Hub Content -->
         </div>
       </div>
     </section>
 
     <!-- =======================================================================
-         SECTION 1: 🕵️ DETECTIVE PREPARATION SCREENS
+         SECTION 1: 🕵️ DETECTIVE PREPARATION (WARM-UP SCREENS)
          ======================================================================= -->
 
-    <!-- PREP 1. INTRO -->
+    <!-- PREP SCREEN 0: INTRO -->
     <section class="screen-view" id="screen-prep-intro">
       <div class="adventure-card">
-        <div class="card-header-banner">
-          <span class="card-tag">⚡ DETECTIVE WARM-UP (PART 1)</span>
-          <h1 class="main-heading">🔎 Detectives Need QUESTIONS!</h1>
-          <p class="sub-heading">"Let's practice asking questions before the investigation."</p>
-        </div>
-
-        <div class="intro-chest-container">
-          <div style="font-size: 6rem; animation: float-chest 2s infinite alternate;">🔎 🕵️ 🎒</div>
-          <div class="say-it-banner" style="justify-content: center; font-size: 1.5rem; max-width: 700px; margin: 18px 0;">
-            🗣️ "Good detectives ask smart questions to find the secret person!"
-          </div>
-          <p style="font-size: 1.25rem; font-weight: 800; color: #475569; text-align: center; max-width: 650px;">
-            In this warm-up, students practice asking questions about <strong>hair, appearance, glasses, clothes, and seating position</strong>.
-          </p>
-        </div>
-
-        <div style="display: flex; justify-content: center; gap: 14px; margin-top: 24px;">
-          <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 14px 28px;" onclick="uiController.showScreen('mode-select')">
-            ↩️ BACK TO MENU
-          </button>
-          <button class="jumbo-btn btn-gold" style="font-size: 1.5rem; padding: 18px 42px;" onclick="uiController.showScreen('prep-mg1')">
-            🚀 START TRAINING ➔
-          </button>
+        <div id="prep-intro-content">
+          <!-- Prep Intro -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 2. MINI-GAME 1 - QUESTION PRACTICE -->
+    <!-- PREP SCREEN 1: QUESTION PRACTICE -->
     <section class="screen-view" id="screen-prep-mg1">
       <div class="adventure-card">
         <div class="game-stage-container" id="prep-mg1-content">
-          <!-- Dynamic Content -->
+          <!-- Prep MG1 -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 3. MINI-GAME 2 - ASK ABOUT THE PERSON -->
+    <!-- PREP SCREEN 2: ASK ABOUT THE PERSON -->
     <section class="screen-view" id="screen-prep-mg2">
-      <div class="adventure-card">
+      <div class="adventure-card" style="max-width: 1200px;">
         <div class="game-stage-container" id="prep-mg2-content">
-          <!-- Dynamic Content -->
+          <!-- Prep MG2 -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 4. MINI-GAME 3 - WHICH QUESTION DO WE NEED? -->
+    <!-- PREP SCREEN 3: WHICH QUESTION DO WE NEED? -->
     <section class="screen-view" id="screen-prep-mg3">
       <div class="adventure-card">
         <div class="game-stage-container" id="prep-mg3-content">
-          <!-- Dynamic Content -->
+          <!-- Prep MG3 -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 5. MINI-GAME 4 - QUICK MEMORY CHALLENGE -->
+    <!-- PREP SCREEN 4: 5-SECOND QUICK MEMORY -->
     <section class="screen-view" id="screen-prep-mg4">
-      <div class="adventure-card">
+      <div class="adventure-card" style="max-width: 1100px;">
         <div class="game-stage-container" id="prep-mg4-content">
-          <!-- Dynamic Content -->
+          <!-- Prep MG4 -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 6. PERMANENT QUESTION BOARD SCREEN -->
+    <!-- PREP SCREEN 5: PERMANENT QUESTION BOARD -->
     <section class="screen-view" id="screen-prep-board">
       <div class="adventure-card" style="max-width: 1250px;">
         <div id="prep-board-content">
-          <!-- Dynamic Content -->
+          <!-- Prep Question Board -->
         </div>
       </div>
     </section>
 
-    <!-- PREP 7. CLASSROOM INVESTIGATION TEACHER GUIDE SCREEN -->
-    <section class="screen-view" id="screen-prep-classroom-guide">
-      <div class="adventure-card" style="max-width: 1100px;">
-        <div id="prep-classroom-guide-content">
-          <!-- Dynamic Content -->
+    <!-- PREP SCREEN 6: CLASSROOM INVESTIGATION GUIDE -->
+    <section class="screen-view" id="screen-prep-classroom">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="prep-classroom-content">
+          <!-- Classroom Guide -->
         </div>
       </div>
     </section>
 
     <!-- =======================================================================
-         SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? SCREENS
+         SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? (FULL INVESTIGATION GAME)
          ======================================================================= -->
 
-    <!-- 1. SCREEN: TREASURE INTRO & STORY -->
+    <!-- TREASURE SCREEN 1: INTRO & STORY -->
     <section class="screen-view" id="screen-intro">
       <div class="adventure-card">
         <div class="card-header-banner">
@@ -238,7 +166,7 @@
             🚨 OH NO! THE GOLDEN TREASURE IS GONE! 🚨
           </div>
           <p style="font-size: 1.35rem; font-weight: 800; color: #334155; text-align: center; max-width: 750px;">
-            Someone in town took the pirate treasure chest! The sheriff needs <strong>4 teams of super detectives</strong> to find the thief!
+            Someone took the golden treasure chest! We need <strong>4 teams of super detectives</strong> to find the thief!
           </p>
         </div>
 
@@ -277,17 +205,17 @@
         </div>
 
         <div style="display: flex; justify-content: center; gap: 14px; margin-top: 24px;">
-          <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 14px 28px;" onclick="uiController.showScreen('mode-select')">
-            ↩️ MAIN MENU
+          <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 14px 28px;" onclick="uiController.showScreen('hub')">
+            🏠 MAIN MENU
           </button>
           <button class="jumbo-btn btn-gold" style="font-size: 1.5rem; padding: 18px 42px;" onclick="uiController.showScreen('mg1')">
-            🚀 START DETECTIVE MISSION ➔
+            🚀 START DETECTIVE MISSIONS ➔
           </button>
         </div>
       </div>
     </section>
 
-    <!-- 2. SCREEN: MINI-GAME 1 - QUESTION MATCH -->
+    <!-- TREASURE SCREEN 2: MINI-GAME 1 - QUESTION MATCH -->
     <section class="screen-view" id="screen-mg1">
       <div class="adventure-card">
         <div class="game-stage-container" id="mg1-content">
@@ -296,7 +224,7 @@
       </div>
     </section>
 
-    <!-- 3. SCREEN: MINI-GAME 2 - WHO AM I? -->
+    <!-- TREASURE SCREEN 3: MINI-GAME 2 - WHO AM I? -->
     <section class="screen-view" id="screen-mg2">
       <div class="adventure-card">
         <div class="game-stage-container" id="mg2-content">
@@ -305,7 +233,7 @@
       </div>
     </section>
 
-    <!-- 4. SCREEN: MINI-GAME 3 - CAN / CAN'T CHALLENGE -->
+    <!-- TREASURE SCREEN 4: MINI-GAME 3 - CAN / CAN'T CHALLENGE -->
     <section class="screen-view" id="screen-mg3">
       <div class="adventure-card">
         <div class="game-stage-container" id="mg3-content">
@@ -314,7 +242,7 @@
       </div>
     </section>
 
-    <!-- 5. SCREEN: MINI-GAME 4 - DO YOU LIKE / DOES HE/SHE LIKE? -->
+    <!-- TREASURE SCREEN 5: MINI-GAME 4 - DO YOU LIKE / DOES HE/SHE LIKE? -->
     <section class="screen-view" id="screen-mg4">
       <div class="adventure-card">
         <div class="game-stage-container" id="mg4-content">
@@ -323,7 +251,7 @@
       </div>
     </section>
 
-    <!-- 6. SCREEN: MINI-GAME 5 - HAVE GOT -->
+    <!-- TREASURE SCREEN 6: MINI-GAME 5 - HAVE GOT -->
     <section class="screen-view" id="screen-mg5">
       <div class="adventure-card">
         <div class="game-stage-container" id="mg5-content">
@@ -332,7 +260,7 @@
       </div>
     </section>
 
-    <!-- 7. SCREEN: BOSS LOCK - TREASURE MASTER VAULT -->
+    <!-- TREASURE SCREEN 7: BOSS LOCK - TREASURE MASTER VAULT -->
     <section class="screen-view" id="screen-boss">
       <div class="adventure-card">
         <div class="game-stage-container" id="boss-lock-content">
@@ -341,7 +269,7 @@
       </div>
     </section>
 
-    <!-- 8. SCREEN: PART 2 - REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD -->
+    <!-- TREASURE SCREEN 8: PART 2 - REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD -->
     <section class="screen-view" id="screen-investigation">
       <div class="adventure-card" style="max-width: 1250px;">
         <div id="investigation-content">
@@ -350,7 +278,7 @@
       </div>
     </section>
 
-    <!-- 9. SCREEN: FINAL ACCUSATION & REVEAL CEREMONY -->
+    <!-- TREASURE SCREEN 9: FINAL ACCUSATION & REVEAL CEREMONY -->
     <section class="screen-view" id="screen-accusation">
       <div class="adventure-card">
         <div class="accusation-arena" id="accusation-content">
@@ -359,7 +287,7 @@
       </div>
     </section>
 
-    <!-- 10. SCREEN: FINAL SCORE & DETECTIVE AWARDS -->
+    <!-- TREASURE SCREEN 10: FINAL SCORE & DETECTIVE AWARDS -->
     <section class="screen-view" id="screen-victory">
       <div class="adventure-card">
         <div id="victory-content">
@@ -371,15 +299,24 @@
   </main>
 
   <!-- =========================================================================
-       MODALS: INVESTIGATION DOSSIER, TEACHER HUB & FLOATING QUESTION BOARD
+       MODALS: DOSSIER, STICKY QUESTION BOARD & TEACHER HUB
        ========================================================================= -->
 
-  <!-- Suspect Interrogation Dossier Modal -->
+  <!-- Suspect Interrogation Dossier / Meeting Modal -->
   <div class="modal-overlay" id="dossier-modal">
     <div class="dossier-card">
-      <button class="modal-close-btn" onclick="uiController.closeDossier()">✕</button>
+      <button class="modal-close-btn" onclick="uiController.closeInterview(false)">✕</button>
       <div id="dossier-modal-body">
         <!-- Interrogation Dossier Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent Sticky Question Board Modal (Floating / Popup) -->
+  <div class="modal-overlay" id="sticky-question-board-modal">
+    <div class="dossier-card" style="max-width: 1100px;">
+      <div id="sticky-question-board-body">
+        <!-- Sticky Question Board -->
       </div>
     </div>
   </div>
@@ -389,22 +326,6 @@
     <div class="teacher-modal-box">
       <div id="teacher-modal-body">
         <!-- Teacher Hub Body -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Dedicated Floating Question Board Modal (Can stay open during classroom activities) -->
-  <div class="floating-board-overlay" id="floating-question-board-modal">
-    <div class="floating-board-card">
-      <div class="floating-board-header">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.4rem;">📌</span>
-          <span style="font-family: 'Bungee', cursive; font-size: 1.1rem; color: #78350f;">CLASSROOM QUESTION BOARD REFERENCE</span>
-        </div>
-        <button class="icon-btn" style="padding: 4px 10px; font-size: 0.9rem;" onclick="uiController.toggleFloatingQuestionBoard()">✕ CLOSE</button>
-      </div>
-      <div id="floating-board-body">
-        <!-- Rendered by UI -->
       </div>
     </div>
   </div>
