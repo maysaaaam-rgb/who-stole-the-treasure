@@ -1,13 +1,8 @@
 /**
- * Core Game Engine for "Who Stole the Treasure?" - HARD MODE DETECTIVE INVESTIGATION
- * Features:
- * - 8 Suspects with Hidden Attribute Matrix
- * - Information Disparity (Teams receive private initial evidence)
- * - Indirect & Relational Clues (e.g. "older than Tom", "likes same animal as Alex")
- * - Phased Question Token Budget (1, 2, 3 Token costs)
- * - 🗣️ "Detective Meeting" Information Sharing Round
- * - Penalty for Wrong Accusations (-2 Points)
- * - Final Treasure Unlock Bonus English Challenge
+ * Core Game Engine for "Who Stole the Treasure?" & "Detective Preparation"
+ * Supports:
+ * 1. 🕵️ DETECTIVE PREPARATION (Warm-up for Classroom Bag Investigation)
+ * 2. 🏴‍☠️ WHO STOLE THE TREASURE (8-Suspect Hard Mode Mystery)
  */
 
 class GameEngine {
@@ -16,9 +11,21 @@ class GameEngine {
     this.teamOrder = ["red", "blue", "green", "yellow"];
     this.activeTeamIndex = 0;
 
-    this.currentSection = "intro"; // intro, mg1, mg2, mg3, mg4, mg5, boss, investigation, accusation, victory
+    // Current Active Section
+    // Options: 'mode-select', 'prep-intro', 'prep-mg1', 'prep-mg2', 'prep-mg3', 'prep-mg4', 'prep-board', 'prep-classroom-guide',
+    //          'intro', 'mg1', 'mg2', 'mg3', 'mg4', 'mg5', 'boss', 'investigation', 'accusation', 'victory'
+    this.currentSection = "mode-select";
 
-    // Mini-game progression pointers
+    // Detective Preparation State
+    this.prepIndex = {
+      mg1: 0,
+      mg2: 0,
+      mg3: 0,
+      mg4: 0
+    };
+    this.isQuestionBoardFloating = false;
+
+    // Treasure Mini-game progression pointers
     this.mgIndex = {
       mg1: 0,
       mg2: 0,
@@ -334,7 +341,6 @@ class GameEngine {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    // Update all other teams' notebooks with this shared fact!
     this.teamOrder.forEach(tId => {
       this.teamData[tId].notebook[suspectId][fieldKey] = val;
     });
@@ -353,6 +359,20 @@ class GameEngine {
     return this.secretThief && this.secretThief.id === suspectId;
   }
 
+  // --- Boss Lock Progression ---
+
+  unlockBossKey(index) {
+    if (index >= 0 && index < this.bossUnlockedKeys.length) {
+      this.bossUnlockedKeys[index] = true;
+      if (window.soundEngine) window.soundEngine.playLockClick();
+    }
+    return this.isBossLockComplete();
+  }
+
+  isBossLockComplete() {
+    return this.bossUnlockedKeys.every(k => k === true);
+  }
+
   // --- Resetting & Restoring ---
 
   resetFullGame(keepScores = false) {
@@ -360,7 +380,8 @@ class GameEngine {
       this.scores = { red: 0, blue: 0, green: 0, yellow: 0 };
     }
     this.activeTeamIndex = 0;
-    this.currentSection = "intro";
+    this.currentSection = "mode-select";
+    this.prepIndex = { mg1: 0, mg2: 0, mg3: 0, mg4: 0 };
     this.mgIndex = { mg1: 0, mg2: 0, mg3: 0, mg4: 0, mg5: 0, boss: 0 };
     this.bossUnlockedKeys = [false, false, false, false, false];
     this.setupMystery();

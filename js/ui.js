@@ -1,15 +1,22 @@
 /**
- * UI Controller for "Who Stole the Treasure?" - HARD MODE DETECTIVE INVESTIGATION
- * Coordinates 8 suspects, token cost system, Interview Room with speaking challenge,
- * Detective Meetings, and Final Accusation logic puzzle.
+ * UI Controller for "Detective English Academy"
+ * Coordinates:
+ * 1. Mode Selector (Main Hub)
+ * 2. 🕵️ Detective Preparation (7-10 Min Warm-up)
+ * 3. 🏴‍☠️ Who Stole the Treasure? (8-Suspect Hard Mode Mystery)
+ * 4. Floating Question Board Overlay & Teacher Control Hub
  */
 
 class UIController {
   constructor() {
-    this.currentView = "intro";
+    this.currentView = "mode-select";
     this.selectedNotebookTeam = "red";
     this.activeInterviewSuspect = null;
     this.selectedInterviewQuestion = null;
+    this.prepMG2Tab = "who"; // who, hair, looks, location
+    this.prepMG2CharIdx = 0;
+    this.memoryTimer = null;
+    this.memoryRevealed = true;
     this.confettiRunning = false;
     this.confettiParticles = [];
     this.confettiCanvas = null;
@@ -20,7 +27,8 @@ class UIController {
     this.initConfetti();
     this.bindGlobalEvents();
     this.updateScoreboard();
-    this.showScreen("intro");
+    this.renderFloatingQuestionBoardContent();
+    this.showScreen("mode-select");
   }
 
   // =========================================================================
@@ -30,6 +38,26 @@ class UIController {
   showScreen(screenId) {
     this.currentView = screenId;
     window.gameEngine.currentSection = screenId;
+
+    // Update Header Pill Buttons State
+    const btnPrep = document.getElementById("header-btn-prep");
+    const btnTreasure = document.getElementById("header-btn-treasure");
+    const titleText = document.getElementById("header-title-text");
+
+    if (btnPrep && btnTreasure) {
+      btnPrep.classList.toggle("active-nav", screenId.startsWith("prep-"));
+      btnTreasure.classList.toggle("active-nav", !screenId.startsWith("prep-") && screenId !== "mode-select");
+    }
+
+    if (titleText) {
+      if (screenId.startsWith("prep-")) {
+        titleText.textContent = "🕵️ PREPARATION";
+      } else if (screenId === "mode-select") {
+        titleText.textContent = "MAIN MENU";
+      } else {
+        titleText.textContent = "🏴‍☠️ TREASURE MYSTERY";
+      }
+    }
 
     // Hide all screens
     document.querySelectorAll(".screen-view").forEach(el => el.classList.remove("active"));
@@ -42,8 +70,40 @@ class UIController {
 
     if (window.soundEngine) window.soundEngine.stopSpeech();
 
+    // Clear any running memory timers
+    if (this.memoryTimer) {
+      clearInterval(this.memoryTimer);
+      this.memoryTimer = null;
+    }
+
     // Render screen specific content
     switch (screenId) {
+      case "mode-select":
+        break;
+
+      // Detective Preparation Screens
+      case "prep-intro":
+        break;
+      case "prep-mg1":
+        this.renderPrepMG1();
+        break;
+      case "prep-mg2":
+        this.renderPrepMG2();
+        break;
+      case "prep-mg3":
+        this.renderPrepMG3();
+        break;
+      case "prep-mg4":
+        this.renderPrepMG4();
+        break;
+      case "prep-board":
+        this.renderPrepBoard();
+        break;
+      case "prep-classroom-guide":
+        this.renderClassroomGuide();
+        break;
+
+      // Who Stole The Treasure Screens
       case "intro":
         this.renderIntro();
         break;
@@ -145,7 +205,660 @@ class UIController {
   }
 
   // =========================================================================
-  // INTRO SCREEN
+  // SECTION 1: 🕵️ DETECTIVE PREPARATION RENDERERS
+  // =========================================================================
+
+  // Prep Mini-Game 1: Question Practice
+  renderPrepMG1() {
+    const currentIdx = window.gameEngine.prepIndex.mg1;
+    const item = GAME_DATA.prepData.mg1[currentIdx];
+    const total = GAME_DATA.prepData.mg1.length;
+    const container = document.getElementById("prep-mg1-content");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">WARM-UP 1: QUESTION PRACTICE (Round ${currentIdx + 1}/${total})</span>
+        <h2 class="main-heading">❓ What Question Do We Ask?</h2>
+        <p class="sub-heading">Look at the visual target and choose the correct English question!</p>
+      </div>
+
+      <div class="prep-target-spotlight">
+        <div class="prep-target-icon">${item.targetIcon}</div>
+        <div class="prep-target-text">${item.targetTitle}</div>
+      </div>
+
+      <div class="question-spotlight-box" style="margin-top: 10px;">
+        <div class="spotlight-avatar">${item.characterImg}</div>
+        <div class="spotlight-content">
+          <div class="spotlight-character-name">${item.characterName}</div>
+          <div style="font-weight: 800; color: #475569; font-size: 1.1rem;">${item.hint}</div>
+        </div>
+      </div>
+
+      <div class="choices-grid" style="max-width: 850px;">
+        ${item.options.map((opt, i) => `
+          <button class="choice-card-btn" id="prep-mg1-opt-${i}" onclick="uiController.handlePrepMG1Answer(${i})">
+            <span class="choice-text" style="font-size: 1.25rem;">"${opt.text}"</span>
+          </button>
+        `).join("")}
+      </div>
+
+      <div id="prep-mg1-feedback-area" style="width: 100%; max-width: 850px;"></div>
+    `;
+  }
+
+  handlePrepMG1Answer(choiceIdx) {
+    const currentIdx = window.gameEngine.prepIndex.mg1;
+    const item = GAME_DATA.prepData.mg1[currentIdx];
+    const selected = item.options[choiceIdx];
+    const total = GAME_DATA.prepData.mg1.length;
+    const feedbackArea = document.getElementById("prep-mg1-feedback-area");
+    const btn = document.getElementById(`prep-mg1-opt-${choiceIdx}`);
+
+    if (selected.isCorrect) {
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(selected.speech);
+      }
+      btn.classList.add("correct-choice");
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box">
+          <div>
+            <div class="feedback-text">🎉 CORRECT QUESTION!</div>
+            <div class="say-it-banner" style="margin-top: 8px;">
+              <span>🗣️ SAY IT WITH YOUR CLASS:</span>
+              <strong style="color: #78350f;">"${selected.text}"</strong>
+              <button class="speak-icon-btn" onclick="soundEngine.speak('${selected.speech}')" style="width: 36px; height: 36px;">🔊</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.awardPointsToActive(1)">+1 ⭐ Point</button>
+            <button class="jumbo-btn btn-ocean" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.nextPrepMG1Question()">
+              ${currentIdx + 1 < total ? 'NEXT QUESTION ➔' : 'GO TO WARM-UP 2 ➔'}
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      if (window.soundEngine) {
+        window.soundEngine.playWrong();
+        window.soundEngine.speak("Try again!");
+      }
+      btn.classList.add("wrong-choice");
+      setTimeout(() => btn.classList.remove("wrong-choice"), 600);
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box error-mode">
+          <div class="feedback-text" style="color: #b91c1c;">🤔 Look at the target icon again! Try again!</div>
+        </div>
+      `;
+    }
+  }
+
+  nextPrepMG1Question() {
+    const total = GAME_DATA.prepData.mg1.length;
+    if (window.gameEngine.prepIndex.mg1 + 1 < total) {
+      window.gameEngine.prepIndex.mg1++;
+      window.gameEngine.nextTeam();
+      this.renderPrepMG1();
+    } else {
+      this.showScreen("prep-mg2");
+    }
+  }
+
+  // Prep Mini-Game 2: Ask About The Person
+  renderPrepMG2() {
+    const char = GAME_DATA.prepData.mg2Characters[this.prepMG2CharIdx];
+    const container = document.getElementById("prep-mg2-content");
+    if (!container) return;
+
+    let questionsHtml = "";
+
+    if (this.prepMG2Tab === "who") {
+      questionsHtml = `
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Is it a boy?', ${char.gender === 'boy'})">
+          <span>👤 "Is it a boy?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Is it a girl?', ${char.gender === 'girl'})">
+          <span>👤 "Is it a girl?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+      `;
+    } else if (this.prepMG2Tab === "hair") {
+      questionsHtml = `
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she have black hair?', ${char.hairColor === 'black'})">
+          <span>💇 "Does he/she have black hair?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she have brown hair?', ${char.hairColor === 'brown'})">
+          <span>💇 "Does he/she have brown hair?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she have long hair?', ${char.hairLength === 'long'})">
+          <span>💇 "Does he/she have long hair?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+      `;
+    } else if (this.prepMG2Tab === "looks") {
+      questionsHtml = `
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she wear glasses?', ${char.glasses === true})">
+          <span>👓 "Does he/she wear glasses?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Is he/she wearing blue?', ${char.wearingColor === 'blue'})">
+          <span>👕 "Is he/she wearing blue?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Is he/she wearing a hat?', ${char.wearingHat === true})">
+          <span>🧢 "Is he/she wearing a hat?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+      `;
+    } else if (this.prepMG2Tab === "location") {
+      questionsHtml = `
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she sit near the window?', ${char.seatLocation === 'window'})">
+          <span>🪟 "Does he/she sit near the window?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she sit near the door?', ${char.seatLocation === 'door'})">
+          <span>🚪 "Does he/she sit near the door?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she sit in the front?', ${char.seatRow === 'front'})">
+          <span>📍 "Does he/she sit in the front?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+        <button class="interrogate-q-btn" onclick="uiController.handlePrepMG2Ask('Does he/she sit in the back?', ${char.seatRow === 'back'})">
+          <span>📍 "Does he/she sit in the back?"</span>
+          <span style="font-size: 0.9rem; color: #2563eb;">Ask ➔</span>
+        </button>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">WARM-UP 2: ASK ABOUT THE PERSON</span>
+        <h2 class="main-heading">🗣️ Practice Asking About ${char.name}</h2>
+        <p class="sub-heading">Choose a question category, ask aloud, and see the answer!</p>
+      </div>
+
+      <div class="question-spotlight-box">
+        <div class="spotlight-avatar" style="width: 90px; height: 90px; font-size: 4rem;">${char.avatar}</div>
+        <div class="spotlight-content">
+          <div class="spotlight-character-name">${char.name}</div>
+          <div style="font-weight: 800; color: #334155; font-size: 1.1rem;">${char.description}</div>
+        </div>
+      </div>
+
+      <!-- 4 Category Tabs -->
+      <div class="prep-category-tabs">
+        <button class="prep-tab-btn ${this.prepMG2Tab === 'who' ? 'active-prep-tab' : ''}" onclick="uiController.switchPrepMG2Tab('who')">
+          👤 1. WHO?
+        </button>
+        <button class="prep-tab-btn ${this.prepMG2Tab === 'hair' ? 'active-prep-tab' : ''}" onclick="uiController.switchPrepMG2Tab('hair')">
+          💇 2. HAIR
+        </button>
+        <button class="prep-tab-btn ${this.prepMG2Tab === 'looks' ? 'active-prep-tab' : ''}" onclick="uiController.switchPrepMG2Tab('looks')">
+          👓 3. LOOKS
+        </button>
+        <button class="prep-tab-btn ${this.prepMG2Tab === 'location' ? 'active-prep-tab' : ''}" onclick="uiController.switchPrepMG2Tab('location')">
+          📍 4. LOCATION
+        </button>
+      </div>
+
+      <!-- Question List for Category -->
+      <div class="questions-selector-list" style="max-width: 850px; width: 100%;">
+        ${questionsHtml}
+      </div>
+
+      <div id="prep-mg2-answer-area" style="width: 100%; max-width: 850px;"></div>
+
+      <div style="display: flex; justify-content: space-between; width: 100%; max-width: 850px; margin-top: 16px;">
+        <button class="jumbo-btn btn-ocean" style="font-size: 0.95rem; padding: 10px 18px;" onclick="uiController.switchPrepMG2Char()">
+          🔄 SWITCH CHARACTER (${this.prepMG2CharIdx === 0 ? 'Try Sam 👦' : 'Try Maya 👧'})
+        </button>
+        <button class="jumbo-btn btn-emerald" style="font-size: 1.1rem; padding: 12px 24px;" onclick="uiController.showScreen('prep-mg3')">
+          GO TO WARM-UP 3 ➔
+        </button>
+      </div>
+    `;
+  }
+
+  switchPrepMG2Tab(tab) {
+    this.prepMG2Tab = tab;
+    this.renderPrepMG2();
+  }
+
+  switchPrepMG2Char() {
+    this.prepMG2CharIdx = (this.prepMG2CharIdx + 1) % GAME_DATA.prepData.mg2Characters.length;
+    this.renderPrepMG2();
+  }
+
+  handlePrepMG2Ask(questionText, isYes) {
+    const char = GAME_DATA.prepData.mg2Characters[this.prepMG2CharIdx];
+    const answerArea = document.getElementById("prep-mg2-answer-area");
+    if (!answerArea) return;
+
+    const answerText = isYes ? "YES, YES I DO! ✅" : "NO, NO I DON'T! ❌";
+    const spoken = isYes ? "Yes, that is correct!" : "No, that is not correct.";
+
+    if (window.soundEngine) {
+      window.soundEngine.playCorrect();
+      window.soundEngine.speak(`${questionText} ... ${spoken}`);
+    }
+
+    answerArea.innerHTML = `
+      <div class="answer-speech-bubble" style="margin-top: 12px;">
+        <div style="font-size: 3rem;">${char.avatar}</div>
+        <div style="flex: 1;">
+          <div style="font-size: 0.9rem; font-weight: 800; color: #047857; text-transform: uppercase;">
+            Question: "${questionText}"
+          </div>
+          <div class="answer-text-large">${answerText}</div>
+        </div>
+        <button class="jumbo-btn btn-gold" style="font-size: 0.9rem; padding: 8px 14px;" onclick="uiController.awardPointsToActive(1)">+1 ⭐ Point</button>
+      </div>
+    `;
+  }
+
+  // Prep Mini-Game 3: Which Question Do We Need?
+  renderPrepMG3() {
+    const currentIdx = window.gameEngine.prepIndex.mg3;
+    const item = GAME_DATA.prepData.mg3[currentIdx];
+    const total = GAME_DATA.prepData.mg3.length;
+    const container = document.getElementById("prep-mg3-content");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">WARM-UP 3: WHICH QUESTION DO WE NEED? (Round ${currentIdx + 1}/${total})</span>
+        <h2 class="main-heading">🎯 Match the Detective Goal!</h2>
+        <p class="sub-heading">Read the detective goal and choose the useful English question:</p>
+      </div>
+
+      <div class="speaking-mandatory-box" style="max-width: 850px; width: 100%;">
+        <div style="font-size: 3rem; margin-bottom: 6px;">${item.goalIcon}</div>
+        <h3 style="font-family: 'Bungee', cursive; font-size: 1.6rem; color: #78350f;">
+          "${item.goalText}"
+        </h3>
+        <button class="speak-icon-btn" onclick="soundEngine.speak('${item.speechGoal}')" style="margin-top: 6px;">🔊</button>
+      </div>
+
+      <div class="choices-grid" style="max-width: 850px;">
+        ${item.options.map((opt, i) => `
+          <button class="choice-card-btn" id="prep-mg3-opt-${i}" onclick="uiController.handlePrepMG3Answer(${i})">
+            <span class="choice-text" style="font-size: 1.25rem;">"${opt.text}"</span>
+          </button>
+        `).join("")}
+      </div>
+
+      <div id="prep-mg3-feedback-area" style="width: 100%; max-width: 850px;"></div>
+    `;
+
+    setTimeout(() => {
+      if (window.soundEngine) window.soundEngine.speak(item.speechGoal);
+    }, 300);
+  }
+
+  handlePrepMG3Answer(choiceIdx) {
+    const currentIdx = window.gameEngine.prepIndex.mg3;
+    const item = GAME_DATA.prepData.mg3[currentIdx];
+    const selected = item.options[choiceIdx];
+    const total = GAME_DATA.prepData.mg3.length;
+    const feedbackArea = document.getElementById("prep-mg3-feedback-area");
+    const btn = document.getElementById(`prep-mg3-opt-${choiceIdx}`);
+
+    if (selected.isCorrect) {
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(selected.speech || selected.text);
+      }
+      btn.classList.add("correct-choice");
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box">
+          <div class="feedback-text">⭐ PERFECT QUESTION MATCH! (+1 Point)</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.awardPointsToActive(1)">+1 ⭐ Point</button>
+            <button class="jumbo-btn btn-ocean" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.nextPrepMG3Question()">
+              ${currentIdx + 1 < total ? 'NEXT GOAL ➔' : 'GO TO QUICK MEMORY 🧠 ➔'}
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      if (window.soundEngine) {
+        window.soundEngine.playWrong();
+        window.soundEngine.speak("Try again!");
+      }
+      btn.classList.add("wrong-choice");
+      setTimeout(() => btn.classList.remove("wrong-choice"), 600);
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box error-mode">
+          <div class="feedback-text" style="color: #b91c1c;">🤔 Check what information the goal is looking for! Try again!</div>
+        </div>
+      `;
+    }
+  }
+
+  nextPrepMG3Question() {
+    const total = GAME_DATA.prepData.mg3.length;
+    if (window.gameEngine.prepIndex.mg3 + 1 < total) {
+      window.gameEngine.prepIndex.mg3++;
+      window.gameEngine.nextTeam();
+      this.renderPrepMG3();
+    } else {
+      this.showScreen("prep-mg4");
+    }
+  }
+
+  // Prep Mini-Game 4: Quick Memory Challenge
+  renderPrepMG4() {
+    const scene = GAME_DATA.prepData.mg4Scene;
+    const qIdx = window.gameEngine.prepIndex.mg4;
+    const qItem = scene.questions[qIdx];
+    const totalQ = scene.questions.length;
+    const container = document.getElementById("prep-mg4-content");
+    if (!container) return;
+
+    this.memoryRevealed = true;
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">WARM-UP 4: QUICK MEMORY (Challenge ${qIdx + 1}/${totalQ})</span>
+        <h2 class="main-heading">🧠 5-Second Classroom Memory!</h2>
+        <p class="sub-heading">Look at where students sit and what they look like for 5 seconds!</p>
+      </div>
+
+      <div class="memory-scene-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="color: #78350f; font-family: 'Bungee', cursive;">CLASSROOM SEATING MAP</strong>
+          <span id="memory-countdown-badge" style="font-weight: 900; color: #dc2626; font-size: 1.2rem;">⏱️ 5 SECONDS</span>
+        </div>
+
+        <div class="memory-timer-bar-container">
+          <div class="memory-timer-fill" id="memory-timer-bar"></div>
+        </div>
+
+        <div class="classroom-desks-grid" id="classroom-desks-grid">
+          ${scene.students.map(s => `
+            <div class="desk-slot-card">
+              <div class="desk-avatar">${s.avatar}</div>
+              <div class="desk-details">
+                <strong style="font-size: 1.2rem; color: #1e293b;">${s.name}</strong>
+                <span style="color: #475569;">Hair: <strong>${s.hair}</strong> • ${s.glasses ? '👓 Glasses' : 'No glasses'}</span>
+                <span style="color: #0369a1;">📍 ${s.pos}</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div id="memory-question-prompt-area" style="margin-top: 18px; display: none;"></div>
+      </div>
+    `;
+
+    // Start 5 second timer animation
+    setTimeout(() => {
+      const bar = document.getElementById("memory-timer-bar");
+      if (bar) bar.style.width = "0%";
+    }, 100);
+
+    let timeLeft = 5;
+    this.memoryTimer = setInterval(() => {
+      timeLeft--;
+      const badge = document.getElementById("memory-countdown-badge");
+      if (badge) badge.textContent = `⏱️ ${timeLeft} SECONDS`;
+
+      if (timeLeft <= 0) {
+        clearInterval(this.memoryTimer);
+        this.memoryTimer = null;
+        this.hideMemorySceneAndAskQuestion();
+      }
+    }, 1000);
+  }
+
+  hideMemorySceneAndAskQuestion() {
+    this.memoryRevealed = false;
+    const scene = GAME_DATA.prepData.mg4Scene;
+    const qIdx = window.gameEngine.prepIndex.mg4;
+    const qItem = scene.questions[qIdx];
+    const totalQ = scene.questions.length;
+
+    const grid = document.getElementById("classroom-desks-grid");
+    const promptArea = document.getElementById("memory-question-prompt-area");
+    const badge = document.getElementById("memory-countdown-badge");
+
+    if (badge) badge.textContent = "🔒 TIME'S UP!";
+
+    if (grid) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; background: #1e293b; color: #f8fafc; border-radius: var(--radius-md); padding: 36px; text-align: center;">
+          <div style="font-size: 4rem;">🙈 🔒 ❓</div>
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.6rem; color: var(--primary-gold); margin: 8px 0;">
+            THE DESKS ARE HIDDEN!
+          </h3>
+          <p style="font-weight: 800; font-size: 1.1rem; color: #cbd5e1;">Answer the detective memory question below:</p>
+        </div>
+      `;
+    }
+
+    if (promptArea) {
+      promptArea.style.display = "block";
+      promptArea.innerHTML = `
+        <div class="speaking-mandatory-box" style="margin-bottom: 16px;">
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.6rem; color: #78350f;">
+            "${qItem.question}"
+          </h3>
+          <button class="speak-icon-btn" onclick="soundEngine.speak('${qItem.speechQuestion}')" style="margin-top: 6px;">🔊</button>
+        </div>
+
+        <div class="choices-grid" style="grid-template-columns: repeat(4, 1fr);">
+          ${scene.students.map(s => `
+            <button class="choice-card-btn" id="mem-choice-${s.id}" onclick="uiController.handlePrepMG4Answer('${s.id}')">
+              <span class="choice-emoji">${s.avatar}</span>
+              <span class="choice-text" style="font-size: 1.2rem;">${s.name}</span>
+            </button>
+          `).join("")}
+        </div>
+
+        <div id="prep-mg4-feedback-area" style="margin-top: 14px;"></div>
+      `;
+    }
+
+    if (window.soundEngine) window.soundEngine.speak(qItem.speechQuestion);
+  }
+
+  handlePrepMG4Answer(selectedId) {
+    const scene = GAME_DATA.prepData.mg4Scene;
+    const qIdx = window.gameEngine.prepIndex.mg4;
+    const qItem = scene.questions[qIdx];
+    const totalQ = scene.questions.length;
+    const feedbackArea = document.getElementById("prep-mg4-feedback-area");
+    const btn = document.getElementById(`mem-choice-${selectedId}`);
+
+    if (selectedId === qItem.correctId) {
+      if (window.soundEngine) {
+        window.soundEngine.playCorrect();
+        window.soundEngine.speak(`Correct! It was ${qItem.correctName}!`);
+      }
+      if (btn) btn.classList.add("correct-choice");
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box">
+          <div class="feedback-text">🎉 GREAT MEMORY! It was ${qItem.correctName}! (+2 Points)</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="jumbo-btn btn-gold" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.awardPointsToActive(2)">+2 ⭐ Points</button>
+            <button class="jumbo-btn btn-ocean" style="padding: 10px 18px; font-size: 0.95rem;" onclick="uiController.nextPrepMG4Question()">
+              ${qIdx + 1 < totalQ ? 'NEXT MEMORY QUESTION ➔' : 'VIEW QUESTION BOARD 📋 ➔'}
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      if (window.soundEngine) {
+        window.soundEngine.playWrong();
+        window.soundEngine.speak("Try again!");
+      }
+      if (btn) {
+        btn.classList.add("wrong-choice");
+        setTimeout(() => btn.classList.remove("wrong-choice"), 600);
+      }
+
+      feedbackArea.innerHTML = `
+        <div class="feedback-box error-mode">
+          <div class="feedback-text" style="color: #b91c1c;">🤔 Think about where they were sitting! Try again!</div>
+        </div>
+      `;
+    }
+  }
+
+  nextPrepMG4Question() {
+    const totalQ = GAME_DATA.prepData.mg4Scene.questions.length;
+    if (window.gameEngine.prepIndex.mg4 + 1 < totalQ) {
+      window.gameEngine.prepIndex.mg4++;
+      window.gameEngine.nextTeam();
+      this.renderPrepMG4();
+    } else {
+      this.showScreen("prep-board");
+    }
+  }
+
+  // Permanent Detective Question Board Screen
+  renderPrepBoard() {
+    const container = document.getElementById("prep-board-content");
+    if (!container) return;
+
+    const cats = GAME_DATA.prepData.questionBoardCategories;
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">📋 PERMANENT CLASSROOM REFERENCE</span>
+        <h2 class="main-heading">🔎 Detective Question Board</h2>
+        <p class="sub-heading">Use these questions during your live investigation!</p>
+      </div>
+
+      <div class="question-board-master">
+        <div class="question-board-columns-grid">
+          ${cats.map(cat => `
+            <div class="qb-column-box" style="border-top: 6px solid ${cat.color};">
+              <div class="qb-col-title" style="color: ${cat.color};">${cat.category}</div>
+              ${cat.questions.map(q => `
+                <div class="qb-question-item" onclick="soundEngine.speak('${q.speech}')">
+                  <span>"${q.q}"</span>
+                  <span style="font-size: 0.9rem;">🔊</span>
+                </div>
+              `).join("")}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 12px;">
+        <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 14px 28px;" onclick="uiController.toggleFloatingQuestionBoard()">
+          📌 KEEP QUESTION BOARD OPEN (FLOATING)
+        </button>
+        <button class="jumbo-btn btn-gold" style="font-size: 1.3rem; padding: 16px 36px;" onclick="uiController.showScreen('prep-classroom-guide')">
+          🏫 CLASSROOM TRANSITION ➔
+        </button>
+      </div>
+    `;
+  }
+
+  // Floating Question Board Modal Renderer
+  renderFloatingQuestionBoardContent() {
+    const body = document.getElementById("floating-board-body");
+    if (!body) return;
+
+    const cats = GAME_DATA.prepData.questionBoardCategories;
+
+    body.innerHTML = `
+      <div class="question-board-columns-grid" style="margin: 8px 0;">
+        ${cats.map(cat => `
+          <div class="qb-column-box" style="border-top: 5px solid ${cat.color}; padding: 10px;">
+            <div class="qb-col-title" style="color: ${cat.color}; font-size: 1.05rem;">${cat.category}</div>
+            ${cat.questions.map(q => `
+              <div class="qb-question-item" style="font-size: 0.95rem; padding: 6px 8px;" onclick="soundEngine.speak('${q.speech}')">
+                <span>"${q.q}"</span>
+                <span>🔊</span>
+              </div>
+            `).join("")}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  toggleFloatingQuestionBoard() {
+    const modal = document.getElementById("floating-question-board-modal");
+    if (modal) {
+      modal.classList.toggle("active");
+    }
+  }
+
+  // Classroom Investigation Teacher Guide
+  renderClassroomGuide() {
+    const container = document.getElementById("prep-classroom-guide-content");
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="card-header-banner">
+        <span class="card-tag">🎉 DETECTIVE TRAINING COMPLETE!</span>
+        <h2 class="main-heading">🕵️ Now Start A Real Investigation!</h2>
+        <p class="sub-heading">Choose which activity to play next with your class:</p>
+      </div>
+
+      <div class="bag-mystery-guide-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px;">
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.4rem; color: #0369a1;">
+            🎒 Live Classroom Bag Investigation Guide
+          </h3>
+          <button class="jumbo-btn btn-ocean" style="font-size: 0.9rem; padding: 8px 16px;" onclick="uiController.toggleFloatingQuestionBoard()">
+            📌 OPEN QUESTION BOARD
+          </button>
+        </div>
+
+        <div class="guide-step-row">
+          <div class="guide-step-num">1</div>
+          <div><strong>Hide one object</strong> in ONE student's school bag secretly.</div>
+        </div>
+        <div class="guide-step-row">
+          <div class="guide-step-num">2</div>
+          <div><strong>Choose 5–8 questions</strong> from the Question Board to ask.</div>
+        </div>
+        <div class="guide-step-row">
+          <div class="guide-step-num">3</div>
+          <div><strong>Students investigate</strong> by asking the teacher questions aloud in English.</div>
+        </div>
+        <div class="guide-step-row">
+          <div class="guide-step-num">4</div>
+          <div><strong>Students eliminate possibilities</strong> (e.g. boys, people without glasses).</div>
+        </div>
+        <div class="guide-step-row">
+          <div class="guide-step-num">5</div>
+          <div><strong>Teams make their final guess</strong> with reasoning to find the hidden bag!</div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 20px; margin-top: 24px; flex-wrap: wrap;">
+        <button class="jumbo-btn btn-ocean" style="font-size: 1.25rem; padding: 18px 36px;" onclick="uiController.showScreen('prep-board')">
+          📋 KEEP QUESTION BOARD OPEN
+        </button>
+        <button class="jumbo-btn btn-gold" style="font-size: 1.35rem; padding: 18px 42px;" onclick="uiController.showScreen('intro')">
+          🏴‍☠️ PLAY "WHO STOLE THE TREASURE?" ➔
+        </button>
+      </div>
+    `;
+
+    this.triggerConfetti(3500);
+    if (window.soundEngine) window.soundEngine.playFanfare();
+  }
+
+  // =========================================================================
+  // SECTION 2: 🏴‍☠️ WHO STOLE THE TREASURE? RENDERERS (FULL EXISTING GAME)
   // =========================================================================
 
   renderIntro() {
@@ -157,10 +870,7 @@ class UIController {
       .join("");
   }
 
-  // =========================================================================
-  // MINI-GAMES (TRAINING MISSIONS 1 - 5) & BOSS LOCK
-  // =========================================================================
-
+  // Mini-Game 1
   renderMiniGame1() {
     const currentIdx = window.gameEngine.mgIndex.mg1;
     const item = GAME_DATA.miniGame1[currentIdx];
@@ -841,10 +1551,7 @@ class UIController {
     this.showScreen("investigation");
   }
 
-  // =========================================================================
-  // PART 2: HARD MODE INVESTIGATION (8 PURE SUSPECTS & DETECTIVE MEETING)
-  // =========================================================================
-
+  // Investigation Board (8 Pure Suspects)
   renderInvestigation() {
     const container = document.getElementById("investigation-content");
     if (!container) return;
@@ -856,7 +1563,6 @@ class UIController {
     const tokens = window.gameEngine.getTeamTokens(activeTeam.id);
     const remainingCount = window.gameEngine.getTeamRemainingSuspectsCount(activeTeam.id);
 
-    // Strategy Bar
     const strategyStatusBarHtml = `
       <div class="strategy-status-bar">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -884,7 +1590,6 @@ class UIController {
       </div>
     `;
 
-    // Clue Banner
     let clueBannerHtml = "";
     if (revealedClues.length > 0) {
       const latest = revealedClues[revealedClues.length - 1];
@@ -921,7 +1626,6 @@ class UIController {
       `;
     }
 
-    // 8 PURE SUSPECT CARDS (PICTURE + NAME ONLY)
     const suspectsHtml = suspects.map(s => {
       const isElim = window.gameEngine.isTeamEliminated(activeTeam.id, s.id);
       const discoveredCount = window.gameEngine.getDiscoveredCountForTeam(activeTeam.id, s.id);
@@ -955,7 +1659,6 @@ class UIController {
       `;
     }).join("");
 
-    // Detective Notebook Panel (8 Suspects Grid)
     const notebookTeam = this.selectedNotebookTeam || activeTeam.id;
     const notebookData = window.gameEngine.teamData[notebookTeam].notebook;
     const notebookTeamObj = GAME_DATA.teams.find(t => t.id === notebookTeam) || GAME_DATA.teams[0];
@@ -1032,12 +1735,10 @@ class UIController {
         ${strategyStatusBarHtml}
         ${clueBannerHtml}
 
-        <!-- 8 Pure Suspect Cards -->
         <div class="suspects-grid-8">
           ${suspectsHtml}
         </div>
 
-        <!-- Detective Notebook Panel -->
         <div class="notebook-panel-wrapper">
           <div class="notebook-header-row">
             <div>
@@ -1088,10 +1789,7 @@ class UIController {
     this.renderInvestigation();
   }
 
-  // =========================================================================
-  // INTERVIEW ROOM (TOKEN COSTS & MANDATORY SPEAKING CHALLENGE)
-  // =========================================================================
-
+  // Interview Room
   openInterviewRoom(suspectId) {
     const suspect = GAME_DATA.suspects.find(s => s.id === suspectId);
     if (!suspect) return;
@@ -1259,10 +1957,11 @@ class UIController {
     this.renderInvestigation();
   }
 
-  // =========================================================================
-  // 🗣️ DETECTIVE MEETING (INFORMATION SHARING ROUND)
-  // =========================================================================
+  closeDossier() {
+    this.closeInterview(false);
+  }
 
+  // Detective Meeting Modal
   openDetectiveMeetingModal() {
     const modal = document.getElementById("dossier-modal");
     const container = document.getElementById("dossier-modal-body");
@@ -1301,7 +2000,6 @@ class UIController {
           `).join("") : `<div style="color: #64748b; font-weight: 800; text-align: center; padding: 12px;">No evidence shared yet! Have a team speak their evidence to record it here.</div>`}
         </div>
 
-        <!-- Quick Teacher Share Buttons -->
         <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: var(--radius-md); padding: 14px;">
           <h4 style="font-family: 'Bungee', cursive; font-size: 0.95rem; color: #475569; margin-bottom: 8px;">
             Teacher Control: Share A Team's Discovered Fact
@@ -1335,10 +2033,7 @@ class UIController {
     modal.classList.add("active");
   }
 
-  // =========================================================================
-  // FINAL ACCUSATION & 2-PROOF REASONING
-  // =========================================================================
-
+  // Accusation Arena
   renderAccusation() {
     const container = document.getElementById("accusation-content");
     if (!container) return;
@@ -1413,10 +2108,10 @@ class UIController {
       GAME_DATA.teams.forEach(t => {
         if (window.gameEngine.teamAccusations[t.id] === thief.id) {
           correctTeams.push(t);
-          window.gameEngine.addPoints(t.id, 5); // +5 bonus for correct accusation
+          window.gameEngine.addPoints(t.id, 5);
         } else if (window.gameEngine.teamAccusations[t.id]) {
           wrongTeams.push(t);
-          window.gameEngine.addPoints(t.id, -2); // -2 penalty for wrong accusation
+          window.gameEngine.addPoints(t.id, -2);
         }
       });
       this.updateScoreboard();
@@ -1455,7 +2150,6 @@ class UIController {
     }, 2600);
   }
 
-  // Final Bonus Challenge to Unlock the Treasure
   renderFinalBonusChallenge() {
     const cutsceneArea = document.getElementById("reveal-cutscene-area");
     if (!cutsceneArea) return;
@@ -1502,10 +2196,7 @@ class UIController {
     }
   }
 
-  // =========================================================================
-  // FINAL SCORE & DETECTIVE AWARDS CEREMONY
-  // =========================================================================
-
+  // Victory Awards Ceremony
   renderVictory() {
     const container = document.getElementById("victory-content");
     if (!container) return;
@@ -1588,8 +2279,8 @@ class UIController {
         <button class="jumbo-btn btn-gold" style="font-size: 1.2rem; padding: 14px 28px;" onclick="uiController.handlePlayAgain(true)">
           🔄 PLAY AGAIN (Keep Scores)
         </button>
-        <button class="jumbo-btn btn-ocean" style="font-size: 1.2rem; padding: 14px 28px;" onclick="uiController.handlePlayAgain(false)">
-          ✨ NEW GAME (Reset All)
+        <button class="jumbo-btn btn-ocean" style="font-size: 1.2rem; padding: 14px 28px;" onclick="uiController.showScreen('mode-select')">
+          🏠 MAIN MENU
         </button>
       </div>
     `;
@@ -1601,7 +2292,7 @@ class UIController {
   handlePlayAgain(keepScores = true) {
     window.gameEngine.resetFullGame(keepScores);
     this.updateScoreboard();
-    this.showScreen("intro");
+    this.showScreen("mode-select");
   }
 
   // =========================================================================
@@ -1625,16 +2316,16 @@ class UIController {
         <div class="teacher-card-mini">
           <h4>🚀 Jump to Section</h4>
           <div class="teacher-actions-row">
-            <button class="teacher-small-btn" onclick="uiController.showScreen('intro'); uiController.closeTeacherHub();">🏴‍☠️ Intro</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('mg1'); uiController.closeTeacherHub();">Mission 1 (Q&A)</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('mg2'); uiController.closeTeacherHub();">Mission 2 (Who Am I)</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('mg3'); uiController.closeTeacherHub();">Mission 3 (Can/Can't)</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('mg4'); uiController.closeTeacherHub();">Mission 4 (Likes)</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('mg5'); uiController.closeTeacherHub();">Mission 5 (Have Got)</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('mode-select'); uiController.closeTeacherHub();">🏠 Menu</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('prep-intro'); uiController.closeTeacherHub();">🎓 Prep Warm-up</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('prep-board'); uiController.closeTeacherHub();">📌 Question Board</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('prep-classroom-guide'); uiController.closeTeacherHub();">🎒 Bag Mystery</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('intro'); uiController.closeTeacherHub();">🏴‍☠️ Treasure Intro</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('mg1'); uiController.closeTeacherHub();">Mission 1</button>
             <button class="teacher-small-btn" onclick="uiController.showScreen('boss'); uiController.closeTeacherHub();">🔐 Boss Lock</button>
             <button class="teacher-small-btn" onclick="uiController.showScreen('investigation'); uiController.closeTeacherHub();">🕵️ Investigation</button>
             <button class="teacher-small-btn" onclick="uiController.showScreen('accusation'); uiController.closeTeacherHub();">🚨 Accusation</button>
-            <button class="teacher-small-btn" onclick="uiController.showScreen('victory'); uiController.closeTeacherHub();">🏆 Grand Victory</button>
+            <button class="teacher-small-btn" onclick="uiController.showScreen('victory'); uiController.closeTeacherHub();">🏆 Victory</button>
           </div>
         </div>
 
@@ -1764,7 +2455,7 @@ class UIController {
 
     const homeBtn = document.getElementById("home-menu-btn");
     if (homeBtn) {
-      homeBtn.addEventListener("click", () => this.openTeacherHub());
+      homeBtn.addEventListener("click", () => this.showScreen("mode-select"));
     }
 
     const hubBtn = document.getElementById("teacher-hub-btn");
