@@ -204,7 +204,7 @@
 
             <!-- 2. STAGE: FACE (Eyes, Ears, Horns, Nose, Mouth, Teeth) -->
             <div class="creator-stage-panel" id="stage-face">
-              <!-- Eyes -->
+              <!-- Eyes Count -->
               <div class="panel-section">
                 <div class="panel-section-title"><span>👁️</span> How Many Eyes?</div>
                 <div class="option-button-grid">
@@ -215,6 +215,8 @@
                   <button class="opt-btn" data-eyes-count="many"><span class="opt-btn-icon">✨</span> MANY</button>
                 </div>
               </div>
+
+              <!-- Eye Size & Style -->
               <div class="panel-section">
                 <div class="panel-section-title"><span>🔍</span> Eye Size & Style:</div>
                 <div class="option-button-grid">
@@ -231,6 +233,7 @@
                   <button class="opt-btn" data-eyes-style="happy">😄 HAPPY</button>
                   <button class="opt-btn" data-eyes-style="angry">😠 ANGRY</button>
                   <button class="opt-btn" data-eyes-style="surprised">😲 SURPRISED</button>
+                  <button class="opt-btn" data-eyes-style="funny">🤪 FUNNY</button>
                 </div>
               </div>
 
@@ -244,6 +247,7 @@
                   <button class="opt-btn" data-horns-count="4">4 HORNS</button>
                 </div>
                 <div class="option-button-grid" style="margin-top: 8px;">
+                  <button class="opt-btn" data-horns-style="tiny">🔹 TINY</button>
                   <button class="opt-btn active" data-horns-style="curly">🌀 CURLY</button>
                   <button class="opt-btn" data-horns-style="pointy">🔺 POINTY</button>
                   <button class="opt-btn" data-horns-style="spiral">🦄 SPIRAL</button>
@@ -261,10 +265,13 @@
                   <button class="opt-btn" data-ears-count="4">4 EARS</button>
                 </div>
                 <div class="option-button-grid" style="margin-top: 8px;">
+                  <button class="opt-btn" data-ears-style="tiny">🔹 TINY</button>
+                  <button class="opt-btn" data-ears-style="small">🔸 SMALL</button>
                   <button class="opt-btn active" data-ears-style="long">🐰 LONG</button>
-                  <button class="opt-btn" data-ears-style="round">🐻 ROUND</button>
-                  <button class="opt-btn" data-ears-style="pointy">🧝 POINTY</button>
                   <button class="opt-btn" data-ears-style="floppy">🐶 FLOPPY</button>
+                  <button class="opt-btn" data-ears-style="pointy">🧝 POINTY</button>
+                  <button class="opt-btn" data-ears-style="round">🐻 ROUND</button>
+                  <button class="opt-btn" data-ears-style="animal">🦊 ANIMAL</button>
                 </div>
               </div>
 
@@ -273,23 +280,32 @@
                 <div class="panel-section-title"><span>👃</span> Nose:</div>
                 <div class="option-button-grid">
                   <button class="opt-btn" data-nose-style="none">NO NOSE</button>
+                  <button class="opt-btn" data-nose-style="tiny">TINY</button>
                   <button class="opt-btn active" data-nose-style="small">SMALL</button>
                   <button class="opt-btn" data-nose-style="big">BIG</button>
                   <button class="opt-btn" data-nose-style="long">LONG</button>
+                  <button class="opt-btn" data-nose-style="round">ROUND</button>
                   <button class="opt-btn" data-nose-style="funny">🔴 FUNNY</button>
                 </div>
               </div>
 
               <!-- Mouth & Teeth -->
               <div class="panel-section">
-                <div class="panel-section-title"><span>👄</span> Mouth & Teeth:</div>
+                <div class="panel-section-title"><span>👄</span> Mouth Style:</div>
                 <div class="option-button-grid">
+                  <button class="opt-btn" data-mouth-type="tiny">🙂 TINY</button>
+                  <button class="opt-btn" data-mouth-type="small">😊 SMALL</button>
                   <button class="opt-btn active" data-mouth-type="big">😃 BIG</button>
-                  <button class="opt-btn" data-mouth-type="small">🙂 SMALL</button>
                   <button class="opt-btn" data-mouth-type="huge">😄 HUGE</button>
+                  <button class="opt-btn" data-mouth-type="smiling">😁 SMILING</button>
+                  <button class="opt-btn" data-mouth-type="happy">🥰 HAPPY</button>
+                  <button class="opt-btn" data-mouth-type="surprised">😲 SURPRISED</button>
                   <button class="opt-btn" data-mouth-type="scary">😈 SCARY</button>
                 </div>
-                <div class="option-button-grid" style="margin-top: 8px;">
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🦷</span> Teeth:</div>
+                <div class="option-button-grid">
                   <button class="opt-btn" data-teeth-type="none">NO TEETH</button>
                   <button class="opt-btn" data-teeth-type="small">SMALL</button>
                   <button class="opt-btn" data-teeth-type="big">BIG</button>
@@ -309,6 +325,7 @@
                   <button class="opt-btn" data-arms-count="1">1 ONE</button>
                   <button class="opt-btn active" data-arms-count="2">2 TWO</button>
                   <button class="opt-btn" data-arms-count="3">3 THREE</button>
+                  <button class="opt-btn" data-arms-count="4">4 FOUR</button>
                   <button class="opt-btn" data-arms-count="many">🐙 MANY</button>
                 </div>
               </div>
@@ -317,6 +334,7 @@
                 <div class="option-button-grid">
                   <button class="opt-btn" data-arms-length="tiny">TINY</button>
                   <button class="opt-btn active" data-arms-length="short">SHORT</button>
+                  <button class="opt-btn" data-arms-length="normal">NORMAL</button>
                   <button class="opt-btn" data-arms-length="long">LONG</button>
                   <button class="opt-btn" data-arms-length="super_long">SUPER LONG</button>
                 </div>
@@ -325,9 +343,11 @@
                 <div class="panel-section-title"><span>🖐️</span> Hands:</div>
                 <div class="option-button-grid">
                   <button class="opt-btn active" data-hands-style="normal">NORMAL</button>
-                  <button class="opt-btn" data-hands-style="claws">🦅 CLAWS</button>
+                  <button class="opt-btn" data-hands-style="tiny">TINY</button>
                   <button class="opt-btn" data-hands-style="giant">🥊 GIANT</button>
+                  <button class="opt-btn" data-hands-style="claws">🦅 CLAWS</button>
                   <button class="opt-btn" data-hands-style="three_fingers">3 FINGERS</button>
+                  <button class="opt-btn" data-hands-style="four_fingers">4 FINGERS</button>
                 </div>
               </div>
             </div>
@@ -342,12 +362,16 @@
                   <button class="opt-btn active" data-legs-count="2">2 TWO</button>
                   <button class="opt-btn" data-legs-count="3">3 THREE</button>
                   <button class="opt-btn" data-legs-count="4">4 FOUR</button>
+                  <button class="opt-btn" data-legs-count="many">🐾 MANY</button>
                 </div>
               </div>
               <div class="panel-section">
                 <div class="panel-section-title"><span>🐾</span> Feet Style:</div>
                 <div class="option-button-grid">
+                  <button class="opt-btn" data-feet-style="tiny">TINY</button>
                   <button class="opt-btn active" data-feet-style="normal">NORMAL</button>
+                  <button class="opt-btn" data-feet-style="big">BIG</button>
+                  <button class="opt-btn" data-feet-style="giant">GIANT</button>
                   <button class="opt-btn" data-feet-style="claws">🦅 CLAWS</button>
                   <button class="opt-btn" data-feet-style="bird">🐓 BIRD FEET</button>
                   <button class="opt-btn" data-feet-style="monster">🐾 MONSTER</button>
@@ -382,6 +406,8 @@
                 <div class="option-button-grid">
                   <button class="opt-btn" data-special-extra="spikes">🌵 SPIKES</button>
                   <button class="opt-btn" data-special-extra="fins">🐬 FINS</button>
+                  <button class="opt-btn" data-special-extra="tentacles">🐙 TENTACLES</button>
+                  <button class="opt-btn" data-special-extra="shell">🐢 SHELL</button>
                 </div>
               </div>
             </div>
@@ -411,6 +437,9 @@
                   <button class="color-swatch-btn swatch-blue" data-secondary-color="blue" title="Blue"></button>
                   <button class="color-swatch-btn swatch-red" data-secondary-color="red" title="Red"></button>
                   <button class="color-swatch-btn swatch-pink" data-secondary-color="pink" title="Pink"></button>
+                  <button class="color-swatch-btn swatch-orange" data-secondary-color="orange" title="Orange"></button>
+                  <button class="color-swatch-btn swatch-black" data-secondary-color="black" title="Black"></button>
+                  <button class="color-swatch-btn swatch-white" data-secondary-color="white" title="White"></button>
                 </div>
               </div>
               <div class="panel-section">
@@ -450,6 +479,7 @@
                   <button class="opt-btn" data-cloth-top="shirt">👔 SHIRT</button>
                   <button class="opt-btn" data-cloth-top="jacket">🧥 JACKET</button>
                   <button class="opt-btn" data-cloth-top="hoodie">🧤 HOODIE</button>
+                  <button class="opt-btn" data-cloth-top="sweater">🧶 SWEATER</button>
                 </div>
               </div>
               <div class="panel-section">
@@ -459,6 +489,7 @@
                   <button class="opt-btn" data-cloth-bottom="trousers">👖 TROUSERS</button>
                   <button class="opt-btn" data-cloth-bottom="shorts">🩳 SHORTS</button>
                   <button class="opt-btn" data-cloth-bottom="skirt">👗 SKIRT</button>
+                  <button class="opt-btn" data-cloth-bottom="dress">💃 DRESS</button>
                 </div>
               </div>
               <div class="panel-section">
@@ -468,6 +499,7 @@
                   <button class="opt-btn" data-cloth-shoes="boots">🥾 BOOTS</button>
                   <button class="opt-btn" data-cloth-shoes="sneakers">👟 SNEAKERS</button>
                   <button class="opt-btn" data-cloth-shoes="clown_shoes">🤡 CLOWN SHOES</button>
+                  <button class="opt-btn" data-cloth-shoes="monster_feet">🐾 MONSTER BOOTS</button>
                 </div>
               </div>
               <div class="panel-section">
@@ -485,6 +517,7 @@
                   <button class="opt-btn" data-accessory="bow">🎀 BOW</button>
                   <button class="opt-btn" data-accessory="necklace">📿 NECKLACE</button>
                   <button class="opt-btn" data-accessory="backpack">🎒 BACKPACK</button>
+                  <button class="opt-btn" data-accessory="earrings">✨ EARRINGS</button>
                 </div>
               </div>
             </div>

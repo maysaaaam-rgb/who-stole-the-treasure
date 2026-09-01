@@ -1,8 +1,10 @@
 /**
  * monsterRenderer.js - High-Fidelity Procedural Vector SVG Engine
  * "Build Your Own Monster!"
- * Supports 10 Body Shapes, Wings, Tails, Horns, 8 Eye Styles, Patterns,
- * Clothes, Accessories, Powers, and Anatomically Integrated Layering.
+ * Supports 10 Body Shapes, 8 Eye Styles, 7 Ear Styles, 5 Horn Styles, 7 Nose Styles,
+ * 8 Mouth Styles, 6 Teeth Styles, 6 Arm Counts, 5 Arm Lengths, 6 Hand Styles,
+ * 6 Leg Counts, 7 Feet Styles, Wings, Tails, Extras (Spikes, Fins, Tentacles, Shell),
+ * 8 Patterns, 9 Colors, Outfits, Clothes, Shoes, 13 Accessories, and Power Effects.
  */
 
 class MonsterRenderer {
@@ -47,10 +49,15 @@ class MonsterRenderer {
     const width = options.width || 400;
     const height = options.height || 480;
 
+    const isInvisible = monster.powers && monster.powers.includes('invisible');
+    const opacityVal = isInvisible ? 0.55 : 1.0;
+
     const layers = [
       this.renderBackdropShadow(monster),
       this.renderSpecialWings(monster),
       this.renderSpecialTail(monster, pal),
+      (monster.specialParts && monster.specialParts.includes('shell')) ? this.renderShellBack(monster) : '',
+      (monster.specialParts && monster.specialParts.includes('tentacles')) ? this.renderTentaclesBack(monster, pal) : '',
       monster.specialCape ? this.renderCapeBack(monster) : '',
       (monster.accessories && monster.accessories.includes('backpack')) ? this.renderBackpackBack(monster) : '',
       this.renderSpecialExtrasBack(monster, pal),
@@ -78,6 +85,7 @@ class MonsterRenderer {
            viewBox="0 0 400 480" 
            width="${width}" 
            height="${height}" 
+           style="opacity: ${opacityVal}; transition: opacity 0.3s ease;"
            xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="mShadow" x="-10%" y="-10%" width="120%" height="130%">
@@ -101,11 +109,6 @@ class MonsterRenderer {
             <stop offset="0%" stop-color="#f43f5e"/>
             <stop offset="100%" stop-color="#9f1239"/>
           </linearGradient>
-          <radialGradient id="powerGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
-            <stop offset="60%" stop-color="#818cf8" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#c084fc" stop-opacity="0"/>
-          </radialGradient>
         </defs>
         ${layers.join('\n')}
       </svg>
@@ -128,11 +131,9 @@ class MonsterRenderer {
     if (wings === 'dragon') {
       return `
         <g class="monster-wings-group dragon-wings">
-          <!-- Left Dragon Wing -->
           <path d="M 140,190 Q 60,110 30,150 Q 80,190 40,240 Q 110,230 145,225 Z" 
                 fill="#f97316" stroke="#c2410c" stroke-width="4.5" stroke-linejoin="round"/>
           <path d="M 140,190 L 30,150 M 140,205 L 40,240" stroke="#7c2d12" stroke-width="3"/>
-          <!-- Right Dragon Wing -->
           <path d="M 260,190 Q 340,110 370,150 Q 320,190 360,240 Q 290,230 255,225 Z" 
                 fill="#f97316" stroke="#c2410c" stroke-width="4.5" stroke-linejoin="round"/>
           <path d="M 260,190 L 370,150 M 260,205 L 360,240" stroke="#7c2d12" stroke-width="3"/>
@@ -141,12 +142,10 @@ class MonsterRenderer {
     } else if (wings === 'butterfly') {
       return `
         <g class="monster-wings-group butterfly-wings">
-          <!-- Left Butterfly Wing -->
           <path d="M 145,210 C 60,120 20,200 70,250 C 30,290 80,340 145,260 Z" 
                 fill="#ec4899" stroke="#be185d" stroke-width="4.5" stroke-linejoin="round"/>
           <circle cx="75" cy="205" r="14" fill="#fef08a" opacity="0.8"/>
           <circle cx="85" cy="285" r="10" fill="#38bdf8" opacity="0.8"/>
-          <!-- Right Butterfly Wing -->
           <path d="M 255,210 C 340,120 380,200 330,250 C 370,290 320,340 255,260 Z" 
                 fill="#ec4899" stroke="#be185d" stroke-width="4.5" stroke-linejoin="round"/>
           <circle cx="325" cy="205" r="14" fill="#fef08a" opacity="0.8"/>
@@ -156,10 +155,8 @@ class MonsterRenderer {
     } else if (wings === 'bat') {
       return `
         <g class="monster-wings-group bat-wings">
-          <!-- Left Bat Wing -->
           <path d="M 140,205 Q 60,140 25,185 Q 65,220 50,255 Q 95,255 100,285 Q 130,265 145,230 Z" 
                 fill="#334155" stroke="#0f172a" stroke-width="4.5" stroke-linejoin="round"/>
-          <!-- Right Bat Wing -->
           <path d="M 260,205 Q 340,140 375,185 Q 335,220 350,255 Q 305,255 300,285 Q 270,265 255,230 Z" 
                 fill="#334155" stroke="#0f172a" stroke-width="4.5" stroke-linejoin="round"/>
         </g>
@@ -193,7 +190,6 @@ class MonsterRenderer {
         <g class="monster-tail-group dino-tail">
           <path d="M 135,320 C 60,320 20,380 10,400 C 40,390 90,375 145,355 Z" 
                 fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round"/>
-          <!-- Dorsal Spikes -->
           <polygon points="120,324 110,305 102,328" fill="#facc15" stroke="${pal.stroke}" stroke-width="2"/>
           <polygon points="85,338 72,320 68,348" fill="#facc15" stroke="${pal.stroke}" stroke-width="2"/>
           <polygon points="48,362 32,345 35,375" fill="#facc15" stroke="${pal.stroke}" stroke-width="2"/>
@@ -219,7 +215,31 @@ class MonsterRenderer {
     return '';
   }
 
-  // 4. Cape Back
+  // 4. Shell on Back
+  renderShellBack(monster) {
+    return `
+      <g class="monster-shell-back">
+        <ellipse cx="200" cy="275" rx="100" ry="110" fill="#047857" stroke="#064e3b" stroke-width="6"/>
+        <path d="M 140,240 L 260,240 M 130,285 L 270,285 M 145,330 L 255,330" stroke="#064e3b" stroke-width="4"/>
+        <polygon points="120,210 110,195 128,205" fill="#facc15" stroke="#064e3b" stroke-width="2"/>
+        <polygon points="280,210 290,195 272,205" fill="#facc15" stroke="#064e3b" stroke-width="2"/>
+      </g>
+    `;
+  }
+
+  // 5. Tentacles on Back
+  renderTentaclesBack(monster, pal) {
+    return `
+      <g class="monster-tentacles-back">
+        <path d="M 125,270 C 60,260 40,320 60,370 C 80,410 40,430 30,440" fill="none" stroke="${pal.main}" stroke-width="16" stroke-linecap="round"/>
+        <path d="M 125,270 C 60,260 40,320 60,370 C 80,410 40,430 30,440" fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round"/>
+        <path d="M 275,270 C 340,260 360,320 340,370 C 320,410 360,430 370,440" fill="none" stroke="${pal.main}" stroke-width="16" stroke-linecap="round"/>
+        <path d="M 275,270 C 340,260 360,320 340,370 C 320,410 360,430 370,440" fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    `;
+  }
+
+  // 6. Cape Back
   renderCapeBack(monster) {
     const capeColor = monster.specialCapeColor || 'red';
     const fill = capeColor === 'red' ? 'url(#capeGrad)' : this.getClothColor(capeColor, '#ef4444');
@@ -233,7 +253,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 5. Backpack Back
+  // 7. Backpack Back
   renderBackpackBack(monster) {
     return `
       <g class="monster-backpack-back">
@@ -245,7 +265,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 6. Special Extras (Spikes, Shell, Fins, Tentacles)
+  // 8. Special Extras (Spikes, Fins)
   renderSpecialExtrasBack(monster, pal) {
     if (!monster.specialParts || !Array.isArray(monster.specialParts)) return '';
     let html = '';
@@ -272,7 +292,7 @@ class MonsterRenderer {
     return html;
   }
 
-  // 7. Ears (0, 1, 2, 4 × tiny, small, long, floppy, pointy, round, animal)
+  // 9. Ears (0, 1, 2, 4 × tiny, small, long, floppy, pointy, round, animal)
   renderEars(monster, pal) {
     const count = monster.earsCount !== undefined ? monster.earsCount : 2;
     if (count === 0) return '';
@@ -304,19 +324,38 @@ class MonsterRenderer {
                       fill="${pal.belly}" stroke="${pal.dark}" stroke-width="2"/>
               </g>
             `;
-          } else if (style === 'pointy' || style === 'animal') {
+          } else if (style === 'pointy') {
             return `
               <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
                 <polygon points="0,0 ${-25*sign},-45 ${15*sign},-30" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round"/>
                 <polygon points="${2*sign},-6 ${-14*sign},-36 ${8*sign},-25" fill="${pal.belly}"/>
               </g>
             `;
-          } else { // round, tiny, small
-            const r = style === 'tiny' ? 14 : 22;
+          } else if (style === 'animal') {
             return `
               <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
-                <ellipse cx="0" cy="0" rx="${r}" ry="${r*1.1}" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
-                <ellipse cx="0" cy="0" rx="${r*0.55}" ry="${r*0.6}" fill="${pal.belly}" stroke="${pal.dark}" stroke-width="2"/>
+                <polygon points="0,0 ${-30*sign},-38 ${10*sign},-36" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round"/>
+                <polygon points="${-2*sign},-8 ${-20*sign},-30 ${4*sign},-28" fill="#f472b6"/>
+              </g>
+            `;
+          } else if (style === 'small') {
+            return `
+              <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
+                <ellipse cx="0" cy="0" rx="14" ry="16" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4"/>
+                <ellipse cx="0" cy="0" rx="7" ry="9" fill="${pal.belly}"/>
+              </g>
+            `;
+          } else if (style === 'tiny') {
+            return `
+              <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
+                <circle cx="0" cy="0" r="9" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
+              </g>
+            `;
+          } else { // round
+            return `
+              <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
+                <ellipse cx="0" cy="0" rx="22" ry="24" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
+                <ellipse cx="0" cy="0" rx="12" ry="14" fill="${pal.belly}" stroke="${pal.dark}" stroke-width="2"/>
               </g>
             `;
           }
@@ -325,7 +364,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 8. Horns (0, 1, 2, 4 × tiny, big, curly, pointy, spiral)
+  // 10. Horns (0, 1, 2, 4 × tiny, big, curly, pointy, spiral)
   renderHorns(monster, pal) {
     const count = monster.hornsCount || 0;
     if (count === 0) return '';
@@ -363,8 +402,14 @@ class MonsterRenderer {
                 <line x1="${-8*sign}" y1="-40" x2="${8*sign}" y2="-45" stroke="#78350f" stroke-width="3"/>
               </g>
             `;
-          } else { // pointy, tiny, big
-            const h = style === 'tiny' ? 25 : (style === 'big' ? 55 : 40);
+          } else if (style === 'tiny') {
+            return `
+              <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
+                <polygon points="${-8*sign},0 0,-18 ${8*sign},0" fill="url(#goldGrad)" stroke="#78350f" stroke-width="3"/>
+              </g>
+            `;
+          } else { // pointy, big
+            const h = style === 'big' ? 56 : 38;
             return `
               <g transform="translate(${cfg.x}, ${cfg.y}) rotate(${cfg.rot})">
                 <polygon points="${-12*sign},0 0,${-h} ${12*sign},0" fill="url(#goldGrad)" stroke="#78350f" stroke-width="4" stroke-linejoin="round"/>
@@ -376,7 +421,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 9. Legs & Feet (0, 1, 2, 3, 4, many; claws, bird, monster, boots, sneakers, clown shoes)
+  // 11. Legs & Feet (0, 1, 2, 3, 4, many × tiny, normal, big, giant, claws, bird, monster)
   renderLegsAndFeet(monster, pal) {
     const count = monster.legsCount !== undefined ? monster.legsCount : 2;
     if (count === 0 || monster.bodyShape === 'ghost') return '';
@@ -396,14 +441,24 @@ class MonsterRenderer {
       { x: 200, y: 345, angle: 0 },
       { x: 260, y: 340, angle: 10 }
     ];
-    else { // 4 or many
+    else if (count === 4) {
       legConfigs = [
         { x: 126, y: 338, angle: -14 },
         { x: 175, y: 345, angle: -4 },
         { x: 225, y: 345, angle: 4 },
         { x: 274, y: 338, angle: 14 }
       ];
+    } else { // many (5 legs)
+      legConfigs = [
+        { x: 120, y: 338, angle: -16 },
+        { x: 160, y: 345, angle: -8 },
+        { x: 200, y: 348, angle: 0 },
+        { x: 240, y: 345, angle: 8 },
+        { x: 280, y: 338, angle: 16 }
+      ];
     }
+
+    const feet = monster.feetStyle || 'normal';
 
     return `
       <g class="monster-legs-group">
@@ -414,7 +469,7 @@ class MonsterRenderer {
             
             ${shoeType === 'boots' ? `
               <!-- Superhero Boots -->
-              <g transform="translate(0, 48)">
+              <g transform="translate(0, 48)" class="shoe-boots">
                 <path d="M -18,0 L 22,0 L 26,38 Q 26,48 10,48 L -20,48 Q -24,48 -22,36 Z" 
                       fill="${bootColor}" stroke="${pal.stroke}" stroke-width="4" stroke-linejoin="round"/>
                 <ellipse cx="2" cy="46" rx="24" ry="7" fill="${pal.stroke}"/>
@@ -422,32 +477,48 @@ class MonsterRenderer {
               </g>
             ` : shoeType === 'sneakers' ? `
               <!-- Sporty Sneakers -->
-              <g transform="translate(0, 56)">
+              <g transform="translate(0, 56)" class="shoe-sneakers">
                 <path d="M -18,0 L 24,0 L 28,32 Q 28,38 12,38 L -20,38 Z" fill="#ef4444" stroke="${pal.stroke}" stroke-width="3.5"/>
                 <rect x="-22" y="28" width="52" height="10" rx="4" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
                 <line x1="-10" y1="12" x2="14" y2="12" stroke="#ffffff" stroke-width="3"/>
               </g>
             ` : shoeType === 'clown_shoes' ? `
               <!-- Huge Clown Shoes -->
-              <g transform="translate(0, 50)">
+              <g transform="translate(0, 50)" class="shoe-clown-shoes">
                 <ellipse cx="8" cy="32" rx="34" ry="16" fill="#facc15" stroke="${pal.stroke}" stroke-width="4"/>
                 <circle cx="34" cy="24" r="8" fill="#ef4444"/>
               </g>
-            ` : monster.feetStyle === 'bird' ? `
-              <!-- Bird Talons -->
+            ` : shoeType === 'monster_feet' || feet === 'monster' ? `
+              <!-- Monster Scaly Feet -->
+              <g transform="translate(0, 76)" class="shoe-monster-feet">
+                <ellipse cx="2" cy="6" rx="26" ry="14" fill="#15803d" stroke="${pal.stroke}" stroke-width="4.5"/>
+                <polygon points="-16,10 -12,24 -8,10" fill="#a855f7" stroke="${pal.stroke}" stroke-width="1.5"/>
+                <polygon points="-2,12 2,26 6,12" fill="#a855f7" stroke="${pal.stroke}" stroke-width="1.5"/>
+                <polygon points="12,10 16,24 20,10" fill="#a855f7" stroke="${pal.stroke}" stroke-width="1.5"/>
+              </g>
+            ` : feet === 'bird' ? `
               <g transform="translate(0, 80)">
                 <path d="M -18,12 L 0,0 L 18,12 M 0,0 L 0,16 M 0,0 L -6,-10" stroke="#ca8a04" stroke-width="6" stroke-linecap="round"/>
               </g>
-            ` : monster.feetStyle === 'claws' ? `
-              <!-- Sharp Dragon Claws -->
+            ` : feet === 'claws' ? `
               <g transform="translate(0, 80)">
                 <ellipse cx="2" cy="5" rx="24" ry="12" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
                 <polygon points="-16,10 -12,24 -8,10" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
                 <polygon points="-2,12 2,26 6,12" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
                 <polygon points="12,10 16,24 20,10" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
               </g>
+            ` : feet === 'giant' || feet === 'big' ? `
+              <g transform="translate(0, 76)">
+                <ellipse cx="4" cy="8" rx="${feet === 'giant' ? 34 : 28}" ry="16" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
+                <circle cx="-16" cy="16" r="6" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
+                <circle cx="2" cy="20" r="7" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
+                <circle cx="20" cy="16" r="6" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
+              </g>
+            ` : feet === 'tiny' ? `
+              <g transform="translate(0, 82)">
+                <ellipse cx="0" cy="2" rx="14" ry="8" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>
+              </g>
             ` : `
-              <!-- Cute Monster Foot -->
               <g transform="translate(0, 80)">
                 <ellipse cx="2" cy="5" rx="24" ry="12" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
                 <circle cx="-12" cy="11" r="5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
@@ -461,7 +532,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 10. Body Base (10 Distinct Shapes: round, square, tall, short, wide, thin, blob, ghost, dinosaur, robot)
+  // 12. Body Base (10 Shapes)
   renderBodyBase(monster, pal, secPal) {
     const shape = monster.bodyShape || 'round';
     let bodyPath = '';
@@ -502,16 +573,14 @@ class MonsterRenderer {
     return `
       <g class="monster-body-group" filter="url(#mShadow)">
         <path d="${bodyPath}" fill="url(#bodyGrad_${monster.color})" stroke="${pal.stroke}" stroke-width="5" stroke-linejoin="round"/>
-        <!-- Soft Cheeks -->
         <ellipse cx="148" cy="178" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
         <ellipse cx="252" cy="178" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
-        <!-- Belly -->
         ${bellyPath}
       </g>
     `;
   }
 
-  // 11. Pattern Overlay (spots, stripes, stars, hearts, dots, zigzags, rainbow)
+  // 13. Pattern Overlay
   renderPatternOverlay(monster, secPal) {
     const pat = monster.pattern;
     if (!pat || pat === 'none') return '';
@@ -567,7 +636,7 @@ class MonsterRenderer {
     return '';
   }
 
-  // 12. Bottoms (Trousers, Shorts, Skirt, Dress)
+  // 14. Bottoms (Trousers, Shorts, Skirt, Dress)
   renderBottoms(monster) {
     if (!monster.clothesBottom || monster.clothesBottom === 'none' || (monster.specialSuit && monster.specialSuit !== 'none')) return '';
     const color = this.getClothColor(monster.clothesBottomColor, '#1e293b');
@@ -601,7 +670,7 @@ class MonsterRenderer {
     return '';
   }
 
-  // 13. Tops (T-shirt, Shirt, Jacket, Hoodie, Sweater)
+  // 15. Tops (T-shirt, Shirt, Jacket, Hoodie, Sweater)
   renderTops(monster) {
     if (!monster.clothesTop || monster.clothesTop === 'none' || (monster.specialSuit && monster.specialSuit !== 'none')) return '';
     const color = this.getClothColor(monster.clothesTopColor, '#2563eb');
@@ -632,9 +701,7 @@ class MonsterRenderer {
         <g class="monster-clothing-tops">
           <path d="M 140,212 Q 200,225 260,212 L 295,262 L 268,272 L 258,314 L 142,314 L 132,272 L 105,262 Z" 
                 fill="${color}" stroke="#0f172a" stroke-width="4.5" stroke-linejoin="round"/>
-          <!-- Front Pocket -->
           <rect x="160" y="275" width="80" height="28" rx="8" fill="#ffffff" opacity="0.4"/>
-          <!-- Drawstrings -->
           <line x1="190" y1="225" x2="188" y2="252" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
           <line x1="210" y1="225" x2="212" y2="252" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
         </g>
@@ -652,7 +719,7 @@ class MonsterRenderer {
     return '';
   }
 
-  // 14. Special Suits (Superhero, Astronaut, Pirate, Wizard, Royal, Football)
+  // 16. Special Suits (Superhero, Astronaut, Pirate, Wizard, Royal, Football)
   renderSpecialSuits(monster) {
     const suit = monster.specialSuit;
     if (!suit || suit === 'none') return '';
@@ -711,7 +778,7 @@ class MonsterRenderer {
     return '';
   }
 
-  // 15. Arms & Hands (0, 1, 2, 3, 4, many; claws, giant, 3/4 fingers, tentacles)
+  // 17. Arms & Hands (0, 1, 2, 3, 4, many × tiny, short, normal, long, super_long × normal, tiny, giant, claws, three_fingers, four_fingers)
   renderArmsAndHands(monster, pal) {
     const count = monster.armsCount !== undefined ? monster.armsCount : 2;
     if (count === 0) return '';
@@ -720,9 +787,11 @@ class MonsterRenderer {
     const gloveColor = this.getClothColor(monster.specialGlovesColor || 'green', '#16a34a');
 
     let armFactor = 1.0;
-    if (length === 'tiny') armFactor = 0.6;
+    if (length === 'tiny') armFactor = 0.55;
+    else if (length === 'short') armFactor = 0.85;
+    else if (length === 'normal') armFactor = 1.05;
     else if (length === 'long') armFactor = 1.35;
-    else if (length === 'super_long') armFactor = 1.7;
+    else if (length === 'super_long') armFactor = 1.75;
 
     let armConfigs = [];
     if (count === 1) armConfigs = [{ side: 'right', shX: 278, shY: 224, handX: 62 * armFactor, handY: -35 * armFactor, rot: 28, flip: true }];
@@ -735,14 +804,25 @@ class MonsterRenderer {
       { side: 'left',  shX: 124, shY: 265, handX: 58 * armFactor, handY: 35 * armFactor,  rot: -12, flip: false },
       { side: 'right', shX: 278, shY: 224, handX: 62 * armFactor, handY: 35 * armFactor,  rot: 28,  flip: true }
     ];
-    else { // 4 or many
+    else if (count === 4) {
       armConfigs = [
         { side: 'left',  shX: 122, shY: 210, handX: 64 * armFactor, handY: -32 * armFactor, rot: -46, flip: false },
         { side: 'left',  shX: 124, shY: 268, handX: 58 * armFactor, handY: 30 * armFactor,  rot: -10, flip: false },
         { side: 'right', shX: 278, shY: 210, handX: 64 * armFactor, handY: -32 * armFactor, rot: 46,  flip: true },
         { side: 'right', shX: 276, shY: 268, handX: 58 * armFactor, handY: 30 * armFactor,  rot: 10,  flip: true }
       ];
+    } else { // many (6 arms)
+      armConfigs = [
+        { side: 'left',  shX: 122, shY: 195, handX: 64 * armFactor, handY: -45 * armFactor, rot: -55, flip: false },
+        { side: 'left',  shX: 122, shY: 235, handX: 60 * armFactor, handY: 0,                rot: -20, flip: false },
+        { side: 'left',  shX: 124, shY: 275, handX: 56 * armFactor, handY: 35 * armFactor,  rot: 10,  flip: false },
+        { side: 'right', shX: 278, shY: 195, handX: 64 * armFactor, handY: -45 * armFactor, rot: 55,  flip: true },
+        { side: 'right', shX: 278, shY: 235, handX: 60 * armFactor, handY: 0,                rot: 20,  flip: true },
+        { side: 'right', shX: 276, shY: 275, handX: 56 * armFactor, handY: 35 * armFactor,  rot: -10, flip: true }
+      ];
     }
+
+    const hand = monster.handsStyle || 'normal';
 
     return `
       <g class="monster-arms-group">
@@ -765,15 +845,23 @@ class MonsterRenderer {
                   <circle cx="0" cy="0" r="16" fill="${gloveColor}" stroke="${pal.stroke}" stroke-width="3.5"/>
                   <circle cx="${dir * 8}" cy="-8" r="6.5" fill="${gloveColor}" stroke="${pal.stroke}" stroke-width="2"/>
                   <rect x="-12" y="6" width="24" height="7" rx="3" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
-                ` : monster.handsStyle === 'claws' ? `
+                ` : hand === 'claws' ? `
                   <circle cx="0" cy="0" r="13" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
                   <polygon points="${dir * -8},-8 ${dir * -14},-20 ${dir * -2},-10" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
                   <polygon points="0,-10 ${dir * 4},-22 ${dir * 6},-8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
                   <polygon points="${dir * 8},-6 ${dir * 18},-16 ${dir * 12},-2" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
-                ` : monster.handsStyle === 'giant' ? `
+                ` : hand === 'giant' ? `
                   <circle cx="0" cy="0" r="22" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
                   <circle cx="${dir * -10}" cy="-12" r="8" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="2"/>
                   <circle cx="${dir * 10}" cy="-12" r="8" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="2"/>
+                ` : hand === 'tiny' ? `
+                  <circle cx="0" cy="0" r="8" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>
+                ` : hand === 'four_fingers' ? `
+                  <circle cx="0" cy="0" r="15" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
+                  <circle cx="${dir * -9}" cy="-8" r="4" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
+                  <circle cx="${dir * -3}" cy="-10" r="4" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
+                  <circle cx="${dir * 3}" cy="-10" r="4" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
+                  <circle cx="${dir * 9}" cy="-8" r="4" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
                 ` : `
                   <circle cx="0" cy="0" r="14" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
                   <circle cx="${dir * -6}" cy="-8" r="5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="2"/>
@@ -787,7 +875,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 16. Eyes (1, 2, 3, 4, many × tiny, small, big, giant × round, sleepy, angry, happy, surprised, funny, star, heart)
+  // 18. Eyes (1, 2, 3, 4, many × tiny, small, big, giant × round, sleepy, angry, happy, surprised, funny, star, heart)
   renderEyes(monster) {
     const count = monster.eyesCount !== undefined ? monster.eyesCount : 2;
     const size = monster.eyesSize || 'big';
@@ -863,6 +951,17 @@ class MonsterRenderer {
               <circle cx="${eye.cx}" cy="${eye.cy + 1.5}" r="${eye.r * 0.42}" fill="#ef4444" />
               <path d="M ${eye.cx - eye.r},${eye.cy - eye.r*0.5} L ${eye.cx + eye.r},${eye.cy - eye.r*0.1}" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
             `;
+          } else if (style === 'surprised') {
+            pupilContent = `
+              <circle cx="${eye.cx}" cy="${eye.cy}" r="${eye.r * 0.28}" fill="#0f172a"/>
+              <path d="M ${eye.cx - eye.r*0.6},${eye.cy - eye.r*0.9} Q ${eye.cx},${eye.cy - eye.r*1.2} ${eye.cx + eye.r*0.6},${eye.cy - eye.r*0.9}" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+            `;
+          } else if (style === 'funny') {
+            pupilContent = `
+              <circle cx="${eye.cx + (idx % 2 === 0 ? eye.r*0.3 : -eye.r*0.3)}" cy="${eye.cy + (idx % 2 === 0 ? -eye.r*0.2 : eye.r*0.2)}" r="${eye.r * 0.45}" fill="#10b981"/>
+              <circle cx="${eye.cx + (idx % 2 === 0 ? eye.r*0.3 : -eye.r*0.3)}" cy="${eye.cy + (idx % 2 === 0 ? -eye.r*0.2 : eye.r*0.2)}" r="${eye.r * 0.25}" fill="#0f172a"/>
+              <circle cx="${eye.cx}" cy="${eye.cy}" r="${eye.r * 0.12}" fill="#ffffff"/>
+            `;
           }
 
           return `
@@ -876,7 +975,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 17. Glasses & Sunglasses
+  // 19. Glasses & Sunglasses
   renderGlasses(monster) {
     if (!monster.accessories) return '';
     const hasGlasses = monster.accessories.includes('glasses');
@@ -898,7 +997,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 18. Nose (none, tiny, small, big, long, round, funny)
+  // 20. Nose (none, tiny, small, big, long, round, funny)
   renderNose(monster, pal) {
     const style = monster.noseStyle;
     if (!style || style === 'none') return '';
@@ -916,7 +1015,7 @@ class MonsterRenderer {
           <circle cx="194" cy="170" r="5" fill="#ffffff" opacity="0.6"/>
         </g>
       `;
-    } else if (style === 'big' || style === 'round') {
+    } else if (style === 'round' || style === 'big') {
       return `
         <g class="monster-nose-group">
           <ellipse cx="200" cy="174" rx="16" ry="12" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="3.5"/>
@@ -926,14 +1025,14 @@ class MonsterRenderer {
     } else { // tiny, small
       return `
         <g class="monster-nose-group">
-          <ellipse cx="200" cy="172" rx="7.5" ry="5.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="3"/>
+          <ellipse cx="200" cy="172" rx="${style === 'tiny' ? 5 : 8}" ry="${style === 'tiny' ? 4 : 6}" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="3"/>
           <circle cx="198" cy="170" r="2" fill="#ffffff" opacity="0.6"/>
         </g>
       `;
     }
   }
 
-  // 19. Mouth & Teeth (Contained naturally inside mouth)
+  // 21. Mouth & Teeth (8 mouth types, 6 teeth types strictly inside mouth)
   renderMouthAndTeeth(monster) {
     const mouthType = monster.mouthType || 'big';
     const teethType = monster.teethType || 'sharp';
@@ -941,7 +1040,7 @@ class MonsterRenderer {
     let mouthCavity = '';
     let teethItems = '';
 
-    if (mouthType === 'huge' || mouthType === 'big' || mouthType === 'smiling') {
+    if (mouthType === 'huge' || mouthType === 'big' || mouthType === 'smiling' || mouthType === 'happy') {
       mouthCavity = `
         <path d="M 152,192 Q 200,248 248,192 Z" fill="#e11d48" stroke="#0f172a" stroke-width="4.5" stroke-linejoin="round"/>
         <path d="M 175,224 Q 200,202 225,224 Q 200,248 175,224 Z" fill="#fb7185"/>
@@ -953,7 +1052,7 @@ class MonsterRenderer {
           <polygon points="193,192 200,214 207,192" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
           <polygon points="214,192 221,208 228,192" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
         `;
-      } else if (teethType === 'giant') {
+      } else if (teethType === 'giant' || teethType === 'one_giant') {
         teethItems = `
           <rect x="192" y="192" width="16" height="22" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="2.5"/>
         `;
@@ -985,10 +1084,15 @@ class MonsterRenderer {
           <polygon points="204,190 213,222 222,191" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
           <polygon points="228,193 236,215 244,194" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
         `;
-      } else if (teethType === 'giant') {
+      } else if (teethType === 'giant' || teethType === 'one_giant') {
         teethItems = `<rect x="190" y="190" width="20" height="26" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="2.5"/>`;
+      } else if (teethType === 'big') {
+        teethItems = `
+          <rect x="184" y="190" width="14" height="18" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+          <rect x="202" y="190" width="14" height="18" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+        `;
       }
-    } else { // tiny, small, happy, surprised
+    } else { // tiny, small, surprised
       mouthCavity = `
         <path d="M 178,196 Q 200,222 222,196 Z" fill="#be123c" stroke="#0f172a" stroke-width="4" stroke-linejoin="round"/>
         <path d="M 188,212 Q 200,204 212,212 Q 200,222 188,212 Z" fill="#fb7185"/>
@@ -1010,7 +1114,7 @@ class MonsterRenderer {
     `;
   }
 
-  // 20. Neck Accessories (Scarf, Bow, Necklace)
+  // 22. Neck Accessories (Scarf, Bow, Necklace)
   renderNeckAccessories(monster) {
     if (!monster.accessories || !Array.isArray(monster.accessories)) return '';
     const accColors = monster.accessoryColors || {};
@@ -1049,7 +1153,7 @@ class MonsterRenderer {
     return html;
   }
 
-  // 21. Cape Front Clasp
+  // 23. Cape Front Clasp
   renderCapeFront(monster) {
     return `
       <g class="monster-cape-front">
@@ -1060,11 +1164,20 @@ class MonsterRenderer {
     `;
   }
 
-  // 22. Head Accessories (Hats, Caps, Crowns, Wizard, Pirate, Helmets)
+  // 24. Head Accessories (Crown, Hats, Caps, Helmets, Earrings)
   renderHeadAccessories(monster) {
     if (!monster.accessories || !Array.isArray(monster.accessories)) return '';
     const accColors = monster.accessoryColors || {};
     let html = '';
+
+    if (monster.accessories.includes('earrings')) {
+      html += `
+        <g class="accessory-earrings">
+          <circle cx="128" cy="148" r="8" fill="none" stroke="#facc15" stroke-width="3.5"/>
+          <circle cx="272" cy="148" r="8" fill="none" stroke="#facc15" stroke-width="3.5"/>
+        </g>
+      `;
+    }
 
     if (monster.accessories.includes('crown')) {
       html += `
@@ -1124,32 +1237,66 @@ class MonsterRenderer {
     return html;
   }
 
-  // 23. Power Aura
+  // 25. Power Visual Effects (All 10 Powers)
   renderPowerAura(monster) {
     if (!monster.powers || monster.powers.length === 0) return '';
+    let fx = '';
+
     if (monster.powers.includes('shoot_lightning')) {
-      return `
-        <g class="monster-power-fx">
+      fx += `
+        <g class="monster-power-fx lightning-fx">
           <path d="M 120,180 L 100,210 L 125,215 L 90,255" stroke="#facc15" stroke-width="4.5" fill="none" stroke-linecap="round"/>
           <path d="M 280,180 L 300,210 L 275,215 L 310,255" stroke="#facc15" stroke-width="4.5" fill="none" stroke-linecap="round"/>
         </g>
       `;
-    } else if (monster.powers.includes('breathe_fire')) {
-      return `
-        <g class="monster-power-fx">
+    }
+
+    if (monster.powers.includes('breathe_fire')) {
+      fx += `
+        <g class="monster-power-fx fire-fx">
           <path d="M 200,210 Q 230,230 255,205 Q 240,245 285,235 Q 245,260 200,225 Z" fill="#f97316" opacity="0.85"/>
           <circle cx="230" cy="225" r="8" fill="#fde047"/>
         </g>
       `;
-    } else if (monster.powers.includes('make_ice')) {
-      return `
-        <g class="monster-power-fx">
+    }
+
+    if (monster.powers.includes('make_ice')) {
+      fx += `
+        <g class="monster-power-fx ice-fx">
           <polygon points="120,380 130,340 140,380" fill="#38bdf8" opacity="0.8"/>
           <polygon points="260,380 270,335 280,380" fill="#38bdf8" opacity="0.8"/>
         </g>
       `;
     }
-    return '';
+
+    if (monster.powers.includes('magic')) {
+      fx += `
+        <g class="monster-power-fx magic-fx">
+          <polygon points="90,140 94,150 105,150 96,156 99,166 90,160 81,166 84,156 75,150 86,150" fill="#c084fc" opacity="0.85"/>
+          <polygon points="310,140 314,150 325,150 316,156 319,166 310,160 301,166 304,156 295,150 306,150" fill="#c084fc" opacity="0.85"/>
+        </g>
+      `;
+    }
+
+    if (monster.powers.includes('fly')) {
+      fx += `
+        <g class="monster-power-fx fly-fx">
+          <path d="M 160,435 Q 200,425 240,435" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 140,445 Q 200,435 260,445" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+        </g>
+      `;
+    }
+
+    if (monster.powers.includes('run_fast')) {
+      fx += `
+        <g class="monster-power-fx run-fx">
+          <circle cx="100" cy="425" r="8" fill="#cbd5e1" opacity="0.7"/>
+          <circle cx="85" cy="420" r="5" fill="#cbd5e1" opacity="0.5"/>
+        </g>
+      `;
+    }
+
+    return fx;
   }
 }
 
