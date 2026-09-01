@@ -1,12 +1,12 @@
 /* ==========================================================================
-   creator.css - Creator Studio, Wardrobe, Category Tabs & Option Selectors
+   creator.css - Step-by-Step Multi-Page Experience, Adventure Bar & Touch Cards
    "Build Your Own Monster!"
    ========================================================================== */
 
-/* Main Two-Column Layout for Creator & Wardrobe */
+/* Main Two-Column Layout for Multi-Step Creator */
 .creator-layout {
   display: grid;
-  grid-template-columns: 460px 1fr;
+  grid-template-columns: 1fr 440px;
   gap: 28px;
   align-items: start;
 }
@@ -31,21 +31,233 @@
   gap: 20px;
 }
 
-.creator-header-title {
-  font-size: 2rem;
-  font-weight: 900;
-  color: var(--primary-dark);
+/* ==========================================
+   ADVENTURE PROGRESS TOP BAR & LEVEL HEADERS
+   ========================================== */
+.adventure-top-bar {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.creator-header-subtitle {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-muted);
+.adventure-header-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
+
+.adventure-level-badge {
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+}
+
+.adventure-level-title {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+  letter-spacing: -0.5px;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.adventure-cheer-badge {
+  background: linear-gradient(135deg, #fef08a, #fde047);
+  border: 2px solid #eab308;
+  color: #854d0e;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  animation: cheerPulse 2s infinite ease-in-out;
+}
+
+@keyframes cheerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Breadcrumbs Navigation */
+.adventure-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 2px dashed #e2e8f0;
+  padding-top: 10px;
+}
+
+.adventure-breadcrumbs .crumb {
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.adventure-breadcrumbs .crumb:hover {
+  background: #e2e8f0;
+  color: #334155;
+  transform: translateY(-1px);
+}
+
+.adventure-breadcrumbs .crumb.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+}
+
+.adventure-breadcrumbs .crumb.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* ==========================================
+   FOCUSED STEP PAGES (ONE TASK PER SCREEN)
+   ========================================== */
+.creator-step-page {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  animation: stepFadeIn 0.3s ease-out;
+}
+
+.creator-step-page.active {
+  display: flex;
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Option Buttons & Large Visual Touch Cards */
+.option-button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.option-button-grid.wide {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.opt-btn {
+  background: #ffffff;
+  border: 3px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  min-height: 80px;
+}
+
+.opt-btn:hover {
+  background: #f8fafc;
+  border-color: var(--primary-light);
+  transform: translateY(-3px);
+}
+
+.opt-btn.active {
+  background: #f5f3ff;
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25);
+  transform: translateY(-2px);
+}
+
+.opt-btn-icon {
+  font-size: 1.8rem;
+}
+
+/* Color Swatches */
+.color-swatch-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.color-swatch-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.color-swatch-btn:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch-btn.active {
+  transform: scale(1.22);
+  box-shadow: 0 0 0 4px var(--primary), 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.color-swatch-btn.active::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.swatch-purple { background: #a855f7; }
+.swatch-green  { background: #22c55e; }
+.swatch-blue   { background: #38bdf8; }
+.swatch-red    { background: #f43f5e; }
+.swatch-orange { background: #fb923c; }
+.swatch-yellow { background: #eab308; }
+.swatch-pink   { background: #ec4899; }
+.swatch-black  { background: #334155; }
+.swatch-white  { background: #f8fafc; border: 3px solid #cbd5e1; }
 
 /* ==========================================
    ACTIVE ENGLISH PHRASE BADGE
@@ -108,187 +320,7 @@
   transform: scale(1.05);
 }
 
-.badge-bounce {
-  animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes badgePop {
-  0% { transform: scale(0.96); }
-  50% { transform: scale(1.04); }
-  100% { transform: scale(1); }
-}
-
-/* ==========================================
-   CATEGORY TABS (PHASE 1)
-   ========================================== */
-.category-tabs-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-bottom: 12px;
-  border-bottom: 2px dashed #e2e8f0;
-}
-
-.cat-tab-btn {
-  background: #f1f5f9;
-  border: 2px solid #cbd5e1;
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #475569;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.cat-tab-btn:hover {
-  background: #e2e8f0;
-  border-color: #94a3b8;
-  transform: translateY(-2px);
-}
-
-.cat-tab-btn.active {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  border-color: #6d28d9;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-  transform: translateY(-2px);
-}
-
-/* Category Panels */
-.category-panel,
-.wardrobe-panel {
-  display: none;
-  flex-direction: column;
-  gap: 20px;
-  animation: panelSlide 0.25s ease-out;
-}
-
-.category-panel.active,
-.wardrobe-panel.active {
-  display: flex;
-}
-
-@keyframes panelSlide {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.panel-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.panel-section-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #334155;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Option Buttons Grid */
-.option-button-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 12px;
-}
-
-.opt-btn {
-  background: #ffffff;
-  border: 3px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 14px 12px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #334155;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: var(--shadow-sm);
-}
-
-.opt-btn:hover {
-  background: #f8fafc;
-  border-color: var(--primary-light);
-  transform: translateY(-3px);
-}
-
-.opt-btn.active {
-  background: #f5f3ff;
-  border-color: var(--primary);
-  color: var(--primary-dark);
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.25);
-  transform: translateY(-2px);
-}
-
-.opt-btn-icon {
-  font-size: 1.6rem;
-}
-
-/* ==========================================
-   COLOR PALETTES SWATCHES
-   ========================================== */
-.color-swatch-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.color-swatch-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 4px solid #ffffff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  cursor: pointer;
-  position: relative;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.color-swatch-btn:hover {
-  transform: scale(1.15);
-}
-
-.color-swatch-btn.active {
-  transform: scale(1.22);
-  box-shadow: 0 0 0 4px var(--primary), 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.color-swatch-btn.active::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 1.3rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-/* Swatch Colors */
-.swatch-purple { background: #a855f7; }
-.swatch-green  { background: #22c55e; }
-.swatch-blue   { background: #38bdf8; }
-.swatch-red    { background: #f43f5e; }
-.swatch-orange { background: #fb923c; }
-.swatch-yellow { background: #eab308; }
-.swatch-pink   { background: #ec4899; }
-.swatch-black  { background: #334155; }
-
-/* ==========================================
-   SURPRISE ME! BUTTON & BANNER
-   ========================================== */
+/* Surprise Me Button & Popup */
 .surprise-action-bar {
   display: flex;
   justify-content: space-between;
@@ -318,7 +350,6 @@
   box-shadow: 0 8px 20px rgba(217, 70, 239, 0.45);
 }
 
-/* Surprise Popup Banner */
 .surprise-popup-banner {
   position: fixed;
   bottom: 30px;
@@ -353,7 +384,7 @@
 }
 
 /* ==========================================
-   NAVIGATION BOTTOM BAR
+   NAVIGATION BOTTOM BAR ON EVERY STEP
    ========================================== */
 .creator-bottom-bar {
   display: flex;
@@ -362,6 +393,15 @@
   margin-top: 20px;
   padding-top: 16px;
   border-top: 2px solid #f1f5f9;
+}
+
+/* ==========================================
+   START SCREEN & PREVIEW
+   ========================================== */
+.start-preview-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
 }
 
 /* ==========================================
@@ -397,25 +437,6 @@
   align-items: start;
 }
 
-/* Name Input Section */
-.name-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-
-.name-input-group label {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #334155;
-}
-
-.name-input-row {
-  display: flex;
-  gap: 10px;
-}
-
 .monster-name-input {
   flex: 1;
   background: #ffffff;
@@ -435,21 +456,22 @@
 }
 
 .random-name-btn {
-  background: #f1f5f9;
-  border: 3px solid #cbd5e1;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border: none;
   border-radius: var(--radius-md);
-  padding: 0 16px;
-  font-size: 1.3rem;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .random-name-btn:hover {
-  background: #e2e8f0;
-  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
 }
 
-/* Description Cards */
 .description-container {
   display: flex;
   flex-direction: column;
@@ -517,6 +539,7 @@
   }
   .creator-left-column {
     position: static;
+    order: -1;
   }
   .final-main-grid {
     grid-template-columns: 1fr;

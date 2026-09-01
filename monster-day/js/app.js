@@ -1,31 +1,32 @@
 /**
  * app.js - Main Application Orchestrator & UI Controller
  * "Build Your Own Monster!"
- * Coordinates State Store, Renderer, Grammar Engine, Audio, Challenges, and UI.
+ * Coordinates State Store, Renderer, Grammar Engine, Audio, Challenges, and Step-by-Step Multi-Page Flow.
  */
 
 class MonsterApp {
   constructor() {
     this.currentScreen = 'screen-start';
     this.currentMode = 'creator'; // 'creator', 'challenge', 'listening', 'secret'
-    this.currentStage = 'stage-body';
+    this.currentStep = 1;
+    this.totalSteps = 12;
     this.speakingStepIndex = 0;
     this.speakingSteps = [];
 
-    this.stages = [
-      'stage-body',
-      'stage-face',
-      'stage-arms',
-      'stage-legs',
-      'stage-special',
-      'stage-colors',
-      'stage-clothes',
-      'stage-accessories',
-      'stage-powers',
-      'stage-personality',
-      'stage-world',
-      'stage-food'
-    ];
+    this.levelData = {
+      1: { title: 'LEVEL 1: CHOOSE THE BODY! 🧸', cheer: 'Great choice! ⭐', phraseCat: 'body' },
+      2: { title: 'LEVEL 2: CHOOSE THE EYES! 👁️', cheer: 'Look at those eyes! 👀', phraseCat: 'eyes' },
+      3: { title: 'LEVEL 3: EARS & HORNS! 🦄', cheer: 'Super cool ears! 👂', phraseCat: 'ears' },
+      4: { title: 'LEVEL 4: MAKE THE FACE! 👄', cheer: 'What a funny face! 😃', phraseCat: 'face' },
+      5: { title: 'LEVEL 5: ARMS & LEGS! 👐', cheer: 'Ready to move! 🦵', phraseCat: 'limbs' },
+      6: { title: 'LEVEL 6: SPECIAL PARTS! 🐉', cheer: 'Your monster is unique! ✨', phraseCat: 'special' },
+      7: { title: 'LEVEL 7: COLORS & PATTERNS! 🎨', cheer: 'So colorful! 🌈', phraseCat: 'colors' },
+      8: { title: 'LEVEL 8: DRESS YOUR MONSTER! 👕', cheer: 'Looking stylish! 👗', phraseCat: 'clothes' },
+      9: { title: 'LEVEL 9: ADD ACCESSORIES! 🧢', cheer: 'Awesome accessories! 👑', phraseCat: 'accessories' },
+      10: { title: 'LEVEL 10: PERSONALITY & POWERS! ❤️', cheer: 'Super powers unlocked! ⚡', phraseCat: 'powers' },
+      11: { title: 'LEVEL 11: WORLD & FOOD! 🏠', cheer: 'Yummy favorite food! 🍕', phraseCat: 'world' },
+      12: { title: 'LEVEL 12: NAME YOUR MONSTER! 📛', cheer: 'Almost ready! 🎉', phraseCat: 'name' }
+    };
 
     this.randomNames = [
       'Zippy', 'Grumble', 'Fluffy', 'Sparky', 'Bob', 'Blobby', 'Pip', 'Ziggy', 
@@ -44,7 +45,8 @@ class MonsterApp {
     // 2. Bind all UI Events
     this.bindEvents();
 
-    // 3. Initial Rendering
+    // 3. Initial Setup
+    this.setStep(1);
     this.updateAllPreviews();
     this.updateSelectionButtons();
     this.updatePhraseBadge();
@@ -59,7 +61,7 @@ class MonsterApp {
     this.updateSelectionButtons();
     this.updatePhraseBadge();
 
-    // If currently on final screen, update description
+    // If on final screen, update description
     if (this.currentScreen === 'screen-final') {
       this.renderFinalScreen();
     }
@@ -82,7 +84,7 @@ class MonsterApp {
       this.currentScreen = screenId;
     }
 
-    // Header Home Visibility & Banner sync
+    // Quest banner sync for challenge/listening modes inside creator
     const banner = document.getElementById('creator-mode-banner');
     if (screenId === 'screen-create' && (this.currentMode === 'challenge' || this.currentMode === 'listening')) {
       if (banner) banner.classList.remove('hidden');
@@ -108,38 +110,61 @@ class MonsterApp {
   }
 
   // ==========================================
-  // CREATOR STAGE CONTROLLER (12 Steps)
+  // STEP-BY-STEP ADVENTURE FLOW (12 LEVELS)
   // ==========================================
-  setCreatorStage(stageId) {
+  setStep(stepNumber) {
+    if (stepNumber < 1 || stepNumber > this.totalSteps) return;
+    this.currentStep = stepNumber;
     window.soundEngine.playPop();
-    this.currentStage = stageId;
 
-    // Update Stage Buttons
-    document.querySelectorAll('.stage-step-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.stage === stageId);
+    // 1. Show only active step page
+    document.querySelectorAll('.creator-step-page').forEach(page => {
+      page.classList.remove('active');
+    });
+    const targetPage = document.getElementById(`step-page-${stepNumber}`);
+    if (targetPage) targetPage.classList.add('active');
+
+    // 2. Update Adventure Header (Badge, Title, Encouragement Cheer)
+    const levelInfo = this.levelData[stepNumber];
+    const badgeEl = document.getElementById('adventure-step-badge');
+    const titleEl = document.getElementById('adventure-level-title');
+    const cheerEl = document.getElementById('adventure-cheer-badge');
+
+    if (badgeEl) badgeEl.innerText = `STEP ${stepNumber} OF ${this.totalSteps}`;
+    if (titleEl) titleEl.innerText = levelInfo.title;
+    if (cheerEl) cheerEl.innerText = levelInfo.cheer;
+
+    // 3. Update Breadcrumbs (Active / Completed)
+    document.querySelectorAll('.adventure-breadcrumbs .crumb').forEach(crumb => {
+      const stepIdx = parseInt(crumb.dataset.step, 10);
+      crumb.classList.toggle('active', stepIdx === stepNumber);
+      crumb.classList.toggle('completed', stepIdx < stepNumber);
     });
 
-    // Update Panels
-    document.querySelectorAll('.creator-stage-panel').forEach(panel => {
-      panel.classList.toggle('active', panel.id === stageId);
-    });
+    // 4. Update Next Button Text
+    const nextBtn = document.getElementById('creator-next-btn');
+    if (nextBtn) {
+      if (stepNumber === this.totalSteps) {
+        nextBtn.innerHTML = '<span>FINISH MONSTER! 🎉</span>';
+      } else {
+        nextBtn.innerHTML = '<span>NEXT STEP ➔</span>';
+      }
+    }
 
     this.updatePhraseBadge();
   }
 
-  nextStage() {
-    const idx = this.stages.indexOf(this.currentStage);
-    if (idx < this.stages.length - 1) {
-      this.setCreatorStage(this.stages[idx + 1]);
+  nextStep() {
+    if (this.currentStep < this.totalSteps) {
+      this.setStep(this.currentStep + 1);
     } else {
       this.goToScreen('screen-final');
     }
   }
 
-  prevStage() {
-    const idx = this.stages.indexOf(this.currentStage);
-    if (idx > 0) {
-      this.setCreatorStage(this.stages[idx - 1]);
+  prevStep() {
+    if (this.currentStep > 1) {
+      this.setStep(this.currentStep - 1);
     } else {
       this.goToScreen('screen-start');
     }
@@ -153,6 +178,7 @@ class MonsterApp {
     const svgHtml = window.monsterRenderer.renderSvg(monster);
 
     const containers = [
+      'start-monster-preview',
       'create-monster-preview',
       'final-monster-preview',
       'challenge-monster-preview',
@@ -174,44 +200,50 @@ class MonsterApp {
     const monster = window.monsterStore.get();
     let phrase = '';
 
-    switch (this.currentStage) {
-      case 'stage-body':
+    switch (this.currentStep) {
+      case 1:
         phrase = `${monster.body.toUpperCase()} BODY`;
         break;
-      case 'stage-face':
+      case 2:
         phrase = window.grammarEngine.getEyesPhrase(monster).toUpperCase();
         break;
-      case 'stage-arms':
-        phrase = window.grammarEngine.getArmsPhrase(monster).toUpperCase();
+      case 3:
+        const ears = window.grammarEngine.getEarsPhrase(monster);
+        const horns = window.grammarEngine.getHornsPhrase(monster);
+        phrase = horns ? `${ears}, ${horns}`.toUpperCase() : ears.toUpperCase();
         break;
-      case 'stage-legs':
-        phrase = window.grammarEngine.getLegsPhrase(monster).toUpperCase();
+      case 4:
+        const mouth = window.grammarEngine.getMouthPhrase(monster);
+        const teeth = window.grammarEngine.getTeethPhrase(monster);
+        phrase = teeth ? `${mouth}, ${teeth}`.toUpperCase() : mouth.toUpperCase();
         break;
-      case 'stage-special':
+      case 5:
+        phrase = `${window.grammarEngine.getArmsPhrase(monster)}, ${window.grammarEngine.getLegsPhrase(monster)}`.toUpperCase();
+        break;
+      case 6:
         const specials = window.grammarEngine.getSpecialPartsPhrases(monster);
         phrase = specials.length > 0 ? specials.join(', ').toUpperCase() : 'NO SPECIAL PARTS';
         break;
-      case 'stage-colors':
+      case 7:
         phrase = window.grammarEngine.getColorAndPatternPhrase(monster).toUpperCase();
         break;
-      case 'stage-clothes':
+      case 8:
         const clothes = window.grammarEngine.getClothingPhrases(monster);
         phrase = clothes.length > 0 ? clothes.join(', ').toUpperCase() : 'NO CLOTHES';
         break;
-      case 'stage-accessories':
+      case 9:
         phrase = monster.accessories.length > 0 ? monster.accessories.join(', ').toUpperCase() : 'NO ACCESSORIES';
         break;
-      case 'stage-powers':
-        phrase = monster.powers.length > 0 ? `CAN ${monster.powers.join(', ').toUpperCase()}` : 'CHOOSE A POWER';
+      case 10:
+        const powers = window.grammarEngine.getPowersPhrase(monster);
+        const traits = window.grammarEngine.getPersonalityPhrase(monster);
+        phrase = powers ? `CAN ${powers.toUpperCase()}` : (traits ? `IS ${traits.toUpperCase()}` : 'MONSTER POWER');
         break;
-      case 'stage-personality':
-        phrase = monster.personality.length > 0 ? `IS ${monster.personality.join(', ').toUpperCase()}` : 'CHOOSE PERSONALITY';
+      case 11:
+        phrase = `LIVES IN ${monster.world.toUpperCase()}, LIKES ${monster.food.toUpperCase()}`;
         break;
-      case 'stage-world':
-        phrase = `LIVES IN ${monster.world.toUpperCase()}`;
-        break;
-      case 'stage-food':
-        phrase = `LIKES ${monster.food.toUpperCase()}`;
+      case 12:
+        phrase = `MEET ${monster.name.toUpperCase()}`;
         break;
       default:
         phrase = `MEET ${monster.name.toUpperCase()}`;
@@ -472,7 +504,7 @@ class MonsterApp {
     if (nameInput) nameInput.value = monster.name;
 
     const nameTitleEl = document.getElementById('final-monster-name-display');
-    if (nameTitleEl) nameTitleEl.innerText = monster.name;
+    if (nameTitleEl) nameTitleEl.innerText = monster.name.toUpperCase();
 
     const summaryCard = document.getElementById('final-summary-breakdown');
     if (summaryCard) {
@@ -512,10 +544,15 @@ class MonsterApp {
     if (paragraphEl) paragraphEl.innerText = fullParagraph;
   }
 
+  speakFullDescription() {
+    const text = window.grammarEngine.getFullDescription(window.monsterStore.get());
+    window.soundEngine.speak(text);
+  }
+
   setMonsterName(newName) {
     window.monsterStore.setName(newName);
     const nameTitleEl = document.getElementById('final-monster-name-display');
-    if (nameTitleEl) nameTitleEl.innerText = window.monsterStore.get().name;
+    if (nameTitleEl) nameTitleEl.innerText = window.monsterStore.get().name.toUpperCase();
     this.renderFinalScreen();
   }
 
@@ -523,10 +560,12 @@ class MonsterApp {
     window.soundEngine.playPop();
     const name = this.randomNames[Math.floor(Math.random() * this.randomNames.length)];
     this.setMonsterName(name);
+    const nameInput = document.getElementById('monster-name-input');
+    if (nameInput) nameInput.value = name;
   }
 
   // ==========================================
-  // SPEAKING TELEPROMPTER MODE
+  // SPEAKING TELEPROMPTER MODE (1 SENTENCE AT A TIME)
   // ==========================================
   startSpeakingMode() {
     window.soundEngine.playSuccess();
@@ -626,7 +665,8 @@ class MonsterApp {
 
   closePresentationMode() {
     const modal = document.getElementById('presentation-mode-modal');
-    if (modal) modal.classList.remove('active');
+    if (!modal) return;
+    modal.classList.remove('active');
     window.soundEngine.stopSpeech();
   }
 
@@ -962,7 +1002,7 @@ class MonsterApp {
   confirmReset() {
     window.monsterStore.reset();
     window.monsterStore.setName(this.randomNames[Math.floor(Math.random() * this.randomNames.length)]);
-    this.setCreatorStage('stage-body');
+    this.setStep(1);
     this.closeResetModal();
     this.goToScreen('screen-create');
   }
@@ -1012,10 +1052,11 @@ class MonsterApp {
       });
     });
 
-    // 2. Stage Stepper Navigation
-    document.querySelectorAll('.stage-step-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.setCreatorStage(e.currentTarget.dataset.stage);
+    // 2. Breadcrumb Click Navigation
+    document.querySelectorAll('.adventure-breadcrumbs .crumb').forEach(crumb => {
+      crumb.addEventListener('click', (e) => {
+        const step = parseInt(e.currentTarget.dataset.step, 10);
+        this.setStep(step);
       });
     });
 
