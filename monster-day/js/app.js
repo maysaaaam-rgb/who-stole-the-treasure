@@ -51,7 +51,8 @@ class MonsterApp {
       powers: ['fly'],
       personality: ['funny'],
       world: 'castle',
-      food: 'pizza'
+      food: 'pizza',
+      expression: 'happy'
     };
 
     // Current Monster State
@@ -249,24 +250,29 @@ class MonsterApp {
   }
 
   // ==========================================
-  // MAKE IT WEIRD! (CREATIVE RANDOMIZER)
+  // MIX & MATCH 🎲 (CREATIVE WEIRD RANDOMIZER)
   // ==========================================
+  mixAndMatch() {
+    this.makeItWeird();
+  }
+
   makeItWeird() {
     window.soundEngine.playSparkle();
 
     const shapes = ['round', 'square', 'tall', 'short', 'wide', 'thin', 'blob', 'ghost', 'dinosaur', 'robot'];
     const colors = ['purple', 'green', 'blue', 'red', 'orange', 'yellow', 'pink', 'black', 'white'];
     const patterns = ['none', 'spots', 'stripes', 'stars', 'hearts', 'dots', 'zigzags', 'rainbow'];
+    const expressions = ['happy', 'angry', 'sleepy', 'surprised', 'silly', 'scary'];
     const eyeCounts = [1, 2, 3, 4, 'many'];
     const eyeSizes = ['tiny', 'small', 'big', 'giant'];
     const eyeStyles = ['round', 'star', 'heart', 'sleepy', 'happy', 'angry', 'surprised'];
     const earCounts = [0, 1, 2, 4];
-    const earStyles = ['tiny', 'long', 'floppy', 'pointy', 'round'];
+    const earStyles = ['long', 'round', 'pointy', 'floppy'];
     const hornCounts = [0, 1, 2, 4];
     const hornStyles = ['curly', 'pointy', 'spiral', 'big'];
-    const mouthTypes = ['tiny', 'small', 'big', 'huge', 'scary', 'smiling'];
+    const mouthTypes = ['big', 'small', 'huge', 'scary', 'smiling'];
     const teethTypes = ['none', 'small', 'big', 'sharp', 'vampire', 'giant'];
-    const noseStyles = ['none', 'tiny', 'small', 'big', 'long', 'funny'];
+    const noseStyles = ['none', 'small', 'big', 'long', 'funny'];
     const armCounts = [0, 1, 2, 3, 4, 'many'];
     const armLengths = ['tiny', 'short', 'long', 'super_long'];
     const handStyles = ['normal', 'claws', 'giant', 'three_fingers'];
@@ -274,6 +280,7 @@ class MonsterApp {
     const feetStyles = ['normal', 'claws', 'bird', 'monster'];
     const wings = ['none', 'dragon', 'butterfly', 'bat'];
     const tails = ['none', 'long', 'curly', 'dinosaur', 'snake', 'bunny'];
+    const specialExtrasPool = ['tentacles', 'spikes', 'shell', 'fins'];
     const powers = ['fly', 'breathe_fire', 'make_ice', 'shoot_lightning', 'invisible', 'jump_high', 'swim_fast', 'magic'];
     const personalities = ['funny', 'friendly', 'scary', 'crazy', 'sleepy', 'clever', 'happy'];
     const worlds = ['house', 'forest', 'castle', 'volcano', 'ocean', 'ice_world', 'moon', 'space', 'jungle', 'cave'];
@@ -285,6 +292,7 @@ class MonsterApp {
     this.monster.color = pick(colors);
     this.monster.secondaryColor = pick(colors);
     this.monster.pattern = pick(patterns);
+    this.monster.expression = pick(expressions);
     this.monster.eyesCount = pick(eyeCounts);
     this.monster.eyesSize = pick(eyeSizes);
     this.monster.eyesStyle = pick(eyeStyles);
@@ -302,11 +310,22 @@ class MonsterApp {
     this.monster.feetStyle = pick(feetStyles);
     this.monster.specialWings = pick(wings);
     this.monster.specialTail = pick(tails);
+
+    // Random special extras
+    this.monster.specialParts = [];
+    if (Math.random() > 0.4) this.monster.specialParts.push(pick(specialExtrasPool));
+    if (Math.random() > 0.6) this.monster.specialParts.push(pick(specialExtrasPool));
+    this.monster.specialParts = [...new Set(this.monster.specialParts)];
+
     this.monster.powers = [pick(powers), pick(powers)].filter((v, i, a) => a.indexOf(v) === i);
     this.monster.personality = [pick(personalities)];
     this.monster.world = pick(worlds);
     this.monster.food = pick(foods);
     this.monster.name = pick(this.randomNames);
+
+    if (this.activeScreen !== 'screen-create') {
+      this.goToScreen('screen-create');
+    }
 
     this.updateAllPreviews();
     this.updateSelectionButtons();
@@ -317,6 +336,18 @@ class MonsterApp {
       const desc = window.grammarEngine.getFullDescription(this.monster);
       banner.innerHTML = `
         <div class="surprise-content">
+          <h3>🎲 MIX & MATCH! SUPER WEIRD MONSTER!</h3>
+          <p>${desc}</p>
+        </div>
+      `;
+      banner.classList.add('show');
+      window.soundEngine.speak(`Mix and Match! Meet ${this.monster.name}! It is super creative!`);
+      setTimeout(() => banner.classList.remove('show'), 4500);
+    }
+
+    this.updatePhraseBadge();
+    window.teacherMode.addPoints(1, 'Creative Monster');
+  }
           <h3>🎲 WOW! SUPER WEIRD MONSTER!</h3>
           <p>${desc}</p>
         </div>
@@ -410,6 +441,11 @@ class MonsterApp {
     });
     document.querySelectorAll('[data-nose-style]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.noseStyle === this.monster.noseStyle);
+    });
+
+    // Face Expression
+    document.querySelectorAll('[data-expression]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.expression === (this.monster.expression || 'happy'));
     });
 
     // Arms & Hands
@@ -1265,10 +1301,24 @@ class MonsterApp {
       });
     });
 
+    // Expression Selector
+    document.querySelectorAll('[data-expression]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.monster.expression = e.currentTarget.dataset.expression;
+        window.soundEngine.playBoing();
+        this.updateAllPreviews();
+        this.updateSelectionButtons();
+        this.updatePhraseBadge();
+        window.soundEngine.speak(this.monster.expression);
+      });
+    });
+
     // 9. Clothes & Accessories
     document.querySelectorAll('[data-cloth-top]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.clothesTop = e.currentTarget.dataset.clothTop;
+        if (this.monster.specialSuit && this.monster.specialSuit !== 'none') this.monster.specialSuit = 'none';
+        if (this.monster.clothesBottom === 'dress') this.monster.clothesBottom = 'none';
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();
@@ -1278,6 +1328,10 @@ class MonsterApp {
     document.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.clothesBottom = e.currentTarget.dataset.clothBottom;
+        if (this.monster.clothesBottom === 'dress') {
+          this.monster.clothesTop = 'none';
+          this.monster.specialSuit = 'none';
+        }
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();
@@ -1296,6 +1350,10 @@ class MonsterApp {
     document.querySelectorAll('[data-special-suit]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.specialSuit = e.currentTarget.dataset.specialSuit;
+        if (this.monster.specialSuit !== 'none') {
+          this.monster.clothesTop = 'none';
+          this.monster.clothesBottom = 'none';
+        }
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();

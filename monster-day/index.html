@@ -28,6 +28,11 @@
     </div>
 
     <div class="header-right">
+      <!-- Mix & Match Button -->
+      <button class="icon-btn" style="background: #fef08a; border-color: #eab308; color: #78350f; font-weight: 900;" onclick="app.mixAndMatch()" title="Mix & Match a Weird Monster">
+        <span>🎲</span> <span>MIX & MATCH</span>
+      </button>
+
       <!-- Stars Score Counter -->
       <div class="score-pill" title="Your Star Points">
         <span class="star-icon">⭐</span>
@@ -78,8 +83,8 @@
           <button class="btn btn-primary btn-large" data-goto="screen-create" data-mode="creator">
             <span>▶ START CREATING!</span>
           </button>
-          <button class="btn btn-accent btn-large" id="make-it-weird-btn">
-            <span>🎲 MAKE IT WEIRD!</span>
+          <button class="btn btn-accent btn-large" onclick="app.mixAndMatch()" title="Mix & Match Random Weird Monster">
+            <span>🎲 MIX & MATCH!</span>
           </button>
         </div>
 
@@ -153,8 +158,8 @@
 
           <!-- Creative Action Bar -->
           <div class="surprise-action-bar">
-            <button class="surprise-me-btn" id="surprise-me-btn">
-              <span>🎲 MAKE IT WEIRD!</span>
+            <button class="surprise-me-btn" id="surprise-me-btn" onclick="app.mixAndMatch()" title="Mix & Match a Weird Monster">
+              <span>🎲 MIX & MATCH!</span>
             </button>
             <button class="btn btn-secondary" onclick="app.showResetModal()">
               <span>🔄 Reset</span>
@@ -202,8 +207,21 @@
               </div>
             </div>
 
-            <!-- 2. STAGE: FACE (Eyes, Ears, Horns, Nose, Mouth, Teeth) -->
+            <!-- 2. STAGE: FACE (Expression, Eyes, Ears, Horns, Nose, Mouth, Teeth) -->
             <div class="creator-stage-panel" id="stage-face">
+              <!-- Expression Selector -->
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🎭</span> Monster Expression:</div>
+                <div class="option-button-grid wide">
+                  <button class="opt-btn active" data-expression="happy"><span class="opt-btn-icon">😄</span> HAPPY</button>
+                  <button class="opt-btn" data-expression="angry"><span class="opt-btn-icon">😠</span> ANGRY</button>
+                  <button class="opt-btn" data-expression="sleepy"><span class="opt-btn-icon">😴</span> SLEEPY</button>
+                  <button class="opt-btn" data-expression="surprised"><span class="opt-btn-icon">😲</span> SURPRISED</button>
+                  <button class="opt-btn" data-expression="silly"><span class="opt-btn-icon">🤪</span> SILLY</button>
+                  <button class="opt-btn" data-expression="scary"><span class="opt-btn-icon">😈</span> SCARY</button>
+                </div>
+              </div>
+
               <!-- Eyes -->
               <div class="panel-section">
                 <div class="panel-section-title"><span>👁️</span> How Many Eyes?</div>
@@ -380,6 +398,8 @@
               <div class="panel-section">
                 <div class="panel-section-title"><span>✨</span> Special Extras (Combine multiple!):</div>
                 <div class="option-button-grid">
+                  <button class="opt-btn" data-special-extra="tentacles">🐙 TENTACLES</button>
+                  <button class="opt-btn" data-special-extra="shell">🐢 SHELL</button>
                   <button class="opt-btn" data-special-extra="spikes">🌵 SPIKES</button>
                   <button class="opt-btn" data-special-extra="fins">🐬 FINS</button>
                 </div>

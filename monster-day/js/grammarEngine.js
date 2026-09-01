@@ -177,14 +177,14 @@ class GrammarEngine {
       phrases.push(suits[monster.specialSuit] || monster.specialSuit);
     }
 
-    // Tops
-    if (monster.clothesTop && monster.clothesTop !== 'none' && (!monster.specialSuit || monster.specialSuit === 'none')) {
+    // Tops (Only if no full suit and no dress)
+    if (monster.clothesTop && monster.clothesTop !== 'none' && (!monster.specialSuit || monster.specialSuit === 'none') && monster.clothesBottom !== 'dress') {
       const topName = monster.clothesTop === 'tshirt' ? 'T-shirt' : monster.clothesTop;
       const color = monster.clothesTopColor || 'blue';
       phrases.push(this.withArticle(`${color} ${topName}`));
     }
 
-    // Bottoms
+    // Bottoms (Only if no full suit)
     if (monster.clothesBottom && monster.clothesBottom !== 'none' && (!monster.specialSuit || monster.specialSuit === 'none')) {
       const botName = monster.clothesBottom;
       const color = monster.clothesBottomColor || 'black';
