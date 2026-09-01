@@ -764,7 +764,7 @@ class StoryApplication {
                 <div class="slot-num">${idx + 1}</div>
                 ${card ? `
                   <div class="slotted-card">
-                    <div class="slotted-icon">${card.icon}</div>
+                    <div class="slotted-mini-img">${SceneRenderer.getMemoryCardSvg(card.id)}</div>
                     <div class="slotted-title">${card.title}</div>
                   </div>
                 ` : `
@@ -780,7 +780,7 @@ class StoryApplication {
             <div class="memory-deck-grid">
               ${AppState.memoryDeck.map(card => `
                 <button class="deck-card-btn" onclick="window.StoryApp.placeMemoryCardInSlot(${card.id})">
-                  <span class="card-icon">${card.icon}</span>
+                  <div class="deck-card-thumb">${SceneRenderer.getMemoryCardSvg(card.id)}</div>
                   <span class="card-title">${card.title}</span>
                   <span class="card-desc">${card.desc}</span>
                 </button>
