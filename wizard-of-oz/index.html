@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Step into the Story: The Wizard of Oz | Interactive Classroom Stage (CEFR A1+)</title>
+  
+  <!-- Google Fonts for Storybook Classroom Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Application Styles -->
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/storybook.css" />
+  <link rel="stylesheet" href="styles/animations.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+</head>
+<body>
+
+  <!-- Top Classroom Header Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-logo">🌪️</span>
+      <div class="header-title-group">
+        <h1 class="app-title" id="nav-lesson-title">STEP INTO THE STORY: THE WIZARD OF OZ</h1>
+        <span class="lesson-meta-tag">CEFR A1+ • 30–40 MINS • PRIMARY ENGLISH</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="nav-step-pill" id="nav-step-indicator">PART 1: ENTER THE STORY</div>
+    </div>
+
+    <div class="header-right">
+      <button class="hdr-btn teacher-toggle-btn" id="btn-teacher-toggle" onclick="window.StoryApp.toggleTeacherDrawer()" title="Open Teacher Guide (Key T)">
+        👩‍🏫 TEACHER GUIDE
+      </button>
+      <button class="hdr-btn sound-toggle-btn" id="btn-sound-toggle" onclick="window.StoryApp.toggleSound()" title="Toggle Sound (Key M)">
+        🔊 SOUND ON
+      </button>
+      <button class="hdr-btn fullscreen-btn" onclick="window.StoryApp.toggleFullscreen()" title="Fullscreen Stage (Key F)">
+        ⛶ FULLSCREEN
+      </button>
+    </div>
+  </header>
+
+  <!-- Sub-Navigation Mode Hub -->
+  <nav class="mode-navigation-bar">
+    <button class="nav-menu-btn active-mode" data-mode="enter_story" onclick="window.StoryApp.navigateMode('enter_story')">
+      ✨ 1. Enter Story
+    </button>
+    <button class="nav-menu-btn" data-mode="prediction_intro" onclick="window.StoryApp.navigateMode('prediction_intro')">
+      🔮 2. Prediction
+    </button>
+    <button class="nav-menu-btn" data-mode="story_mode" onclick="window.StoryApp.navigateMode('story_mode')">
+      📖 3. Story Mode (11 Scenes)
+    </button>
+    <button class="nav-menu-btn" data-mode="character_mode" onclick="window.StoryApp.navigateMode('character_mode')">
+      🎭 4. Character Cards
+    </button>
+    <button class="nav-menu-btn" data-mode="pair_interaction" onclick="window.StoryApp.navigateMode('pair_interaction')">
+      💬 5. Pair Talk
+    </button>
+    <button class="nav-menu-btn" data-mode="story_decisions" onclick="window.StoryApp.navigateMode('story_decisions')">
+      🗺️ 6. Story Decisions
+    </button>
+    <button class="nav-menu-btn" data-mode="activity_memory" onclick="window.StoryApp.navigateMode('activity_memory')">
+      🧩 7. Story Memory
+    </button>
+    <button class="nav-menu-btn" data-mode="activity_retell" onclick="window.StoryApp.navigateMode('activity_retell')">
+      🎨 8. Picture Retell
+    </button>
+    <button class="nav-menu-btn" data-mode="activity_hotseat" onclick="window.StoryApp.navigateMode('activity_hotseat')">
+      🪑 9. Hot Seat
+    </button>
+    <button class="nav-menu-btn" data-mode="activity_whatif" onclick="window.StoryApp.navigateMode('activity_whatif')">
+      💡 10. What If...?
+    </button>
+    <button class="nav-menu-btn" data-mode="mini_theatre" onclick="window.StoryApp.navigateMode('mini_theatre')">
+      🎬 11. Performance
+    </button>
+    <button class="nav-menu-btn" data-mode="teacher_assessment" onclick="window.StoryApp.navigateMode('teacher_assessment')">
+      📋 12. Assessment
+    </button>
+  </nav>
+
+  <!-- Primary Interactive Classroom Stage (16:9 Viewport) -->
+  <main class="stage-main-viewport">
+    <div class="classroom-stage" id="classroom-stage">
+      <!-- Dynamic View Mounted Here by App.js -->
+    </div>
+  </main>
+
+  <!-- Dockable Teacher HUD / Drawer -->
+  <aside class="teacher-drawer" id="teacher-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <span class="drawer-badge">TEACHER PANEL</span>
+        <span class="drawer-title">Classroom Director's HUD & Narration Script</span>
+      </div>
+      <button class="drawer-close-btn" onclick="window.StoryApp.toggleTeacherDrawer()" title="Close Drawer">✕</button>
+    </div>
+    <div class="teacher-drawer-body" id="teacher-drawer-body">
+      <!-- Dynamic 2-Second Clarity Pillars & Narration Script Loaded Here -->
+    </div>
+  </aside>
+
+  <!-- Application Module Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

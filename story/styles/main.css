@@ -1,0 +1,276 @@
+/* ==========================================================================
+   MAIN THEME & CLASSROOM STAGE LAYOUT
+   Designed for Interactive Whiteboard, Projector, Tablet & Desktop
+   ========================================================================== */
+
+:root {
+  --font-primary: 'Fredoka', 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fredoka', 'Nunito', cursive, sans-serif;
+
+  /* Playful Storybook Palette */
+  --bg-classroom: #0f172a;
+  --stage-bg: #1e293b;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: #eff6ff;
+
+  --emerald: #10b981;
+  --emerald-dark: #065f46;
+  --amber: #f59e0b;
+  --amber-dark: #b45309;
+  --rose: #f43f5e;
+  --purple: #8b5cf6;
+  --gold: #facc15;
+
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #f8fafc;
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.2);
+  --shadow-stage: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--bg-classroom);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* App Header */
+.app-header {
+  height: 64px;
+  background: #1e293b;
+  border-bottom: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: #f8fafc;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-logo {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.header-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #facc15;
+  letter-spacing: 0.5px;
+}
+
+.lesson-meta-tag {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+}
+
+.nav-step-pill {
+  background: #334155;
+  color: #38bdf8;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid #475569;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hdr-btn {
+  background: #334155;
+  color: #f8fafc;
+  border: 1px solid #475569;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.hdr-btn:hover {
+  background: #475569;
+  border-color: #64748b;
+  transform: translateY(-1px);
+}
+
+.teacher-toggle-btn {
+  background: #2563eb;
+  border-color: #3b82f6;
+}
+
+.teacher-toggle-btn.active-toggle {
+  background: #e11d48;
+  border-color: #f43f5e;
+}
+
+.sound-toggle-btn.muted {
+  background: #64748b;
+  opacity: 0.8;
+}
+
+/* Sub-Navigation Mode Bar */
+.mode-navigation-bar {
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-menu-btn {
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-menu-btn:hover {
+  color: #f8fafc;
+  background: #334155;
+}
+
+.nav-menu-btn.active-mode {
+  background: #facc15;
+  color: #78350f;
+  border-color: #eab308;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+/* Primary Classroom Stage Container (16:9 Landscape Optimized) */
+.stage-main-viewport {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.classroom-stage {
+  width: 100%;
+  max-width: 1280px;
+  aspect-ratio: 16 / 9;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-stage);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .classroom-stage {
+    aspect-ratio: unset;
+    min-height: 600px;
+  }
+}
+
+/* Button & Action Styles */
+.primary-action-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s ease;
+}
+
+.primary-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+.secondary-action-btn {
+  background: #f1f5f9;
+  color: #334155;
+  border: 2px solid #cbd5e1;
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondary-action-btn:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.view-footbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding-bottom: 8px;
+}
