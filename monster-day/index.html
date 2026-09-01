@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>👹 Build Your Own Monster! — Interactive English Learning Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800;900&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/monster.css">
+  <link rel="stylesheet" href="css/creator.css">
+  <link rel="stylesheet" href="css/modes.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       TOP GLOBAL APP HEADER
+       ========================================================================= -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="home-btn" data-goto="screen-start" title="Return to Main Menu">
+        <span>🏠</span>
+        <span>HOME</span>
+      </button>
+      <div class="header-title-badge">👹 BUILD YOUR OWN MONSTER!</div>
+    </div>
+
+    <div class="header-right">
+      <!-- Stars Score Counter -->
+      <div class="score-pill" title="Your Star Points">
+        <span class="star-icon">⭐</span>
+        <span id="global-score-count">0</span>
+      </div>
+
+      <!-- Badges Button -->
+      <button class="icon-btn" onclick="teacherMode.checkBadges(); document.getElementById('badges-overview-modal').classList.add('active')" title="View Badges">
+        <span>🏆</span> <span>BADGES</span>
+      </button>
+
+      <!-- Sound & Voice Toggles -->
+      <button class="icon-btn sfx-toggle-btn" onclick="app.toggleSfx()" title="Toggle Sound Effects">🔊 SFX: ON</button>
+      <button class="icon-btn tts-toggle-btn" onclick="app.toggleTts()" title="Toggle English Voice">🗣️ Voice: ON</button>
+
+      <!-- Teacher Mode -->
+      <button class="icon-btn teacher-btn" onclick="document.getElementById('teacher-settings-modal').classList.add('active')" title="Teacher Settings">
+        <span>👩‍🏫 TEACHER</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Floating Star Points Container -->
+  <div id="floating-points-container"></div>
+
+  <!-- Confetti Canvas Container -->
+  <div id="confetti-canvas-container"></div>
+
+  <!-- =========================================================================
+       MAIN GAME VIEWPORT
+       ========================================================================= -->
+  <main id="game-viewport">
+
+    <!-- =======================================================================
+         0. SCREEN: START / MAIN MENU
+         ======================================================================= -->
+    <section class="screen-view active" id="screen-start">
+      <div class="start-screen-card">
+        <h1 class="title-hero">👹 BUILD YOUR OWN MONSTER!</h1>
+        <p class="subtitle-hero">Create it. Dress it. Name it. Describe it!</p>
+
+        <div class="start-action-container">
+          <button class="btn btn-primary btn-large" data-goto="screen-create" data-mode="creator">
+            <span>▶ START CREATING!</span>
+          </button>
+        </div>
+
+        <div class="mode-selection-grid">
+          <!-- Mode 1: Free Creator -->
+          <div class="mode-tile-card" data-goto="screen-create" data-mode="creator">
+            <div class="mode-tile-icon">🎨</div>
+            <h3>Monster Creator</h3>
+            <p>Design your monster & dress it up in the wardrobe!</p>
+          </div>
+
+          <!-- Mode 2: Monster Challenge -->
+          <div class="mode-tile-card" data-goto="screen-challenge" data-mode="challenge">
+            <div class="mode-tile-icon">🧠</div>
+            <h3>Monster Challenge</h3>
+            <p>Read instructions & build the target monster!</p>
+          </div>
+
+          <!-- Mode 3: Listening Challenge -->
+          <div class="mode-tile-card" data-goto="screen-listening" data-mode="listening">
+            <div class="mode-tile-icon">👂</div>
+            <h3>Listening Game</h3>
+            <p>Listen to spoken English and build the monster!</p>
+          </div>
+
+          <!-- Mode 4: Secret Monster 2-Player -->
+          <div class="mode-tile-card" data-goto="screen-secret" data-mode="secret">
+            <div class="mode-tile-icon">🤫</div>
+            <h3>Secret Monster</h3>
+            <p>2-Player classroom partner guessing game!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         1. SCREEN: PHASE 1 — CREATE THE MONSTER
+         ======================================================================= -->
+    <section class="screen-view" id="screen-create">
+      <!-- Active Mode Quest Banner (Shown during Challenge/Listening/Secret modes) -->
+      <div id="creator-mode-banner" class="mode-quest-banner hidden">
+        <div class="banner-quest-info">
+          <span class="banner-quest-icon" id="banner-quest-icon">🎯</span>
+          <span class="banner-quest-text" id="banner-quest-text">Mission: Give your monster 3 big eyes</span>
+        </div>
+        <div class="banner-quest-actions">
+          <button class="btn btn-accent" id="banner-audio-replay-btn" style="display: none;" onclick="app.playListeningAudio()">🔊 Replay</button>
+          <button class="btn btn-success" id="banner-check-btn" onclick="app.checkCurrentModeMission()">⭐ CHECK NOW!</button>
+          <button class="btn btn-secondary" id="banner-return-btn" onclick="app.returnToModeScreen()">➔ Back to Mission</button>
+        </div>
+      </div>
+
+      <div class="creator-layout">
+        
+        <!-- Left Column: Live Monster Preview & Phrase Badge -->
+        <div class="creator-left-column">
+          <div class="monster-preview-container" id="create-monster-preview">
+            <!-- Dynamic SVG Injected Here -->
+          </div>
+
+          <!-- Active English Phrase Badge -->
+          <div class="active-phrase-container">
+            <div class="active-phrase-left">
+              <span class="phrase-badge-tag">SAY</span>
+              <span class="active-phrase-text" id="active-phrase-text">2 BIG EYES</span>
+            </div>
+            <button class="hear-phrase-btn" title="Pronounce this phrase">
+              <span>🔊</span> <span>Hear it</span>
+            </button>
+          </div>
+
+          <!-- Surprise Me Action Bar -->
+          <div class="surprise-action-bar">
+            <button class="surprise-me-btn" id="surprise-me-btn">
+              <span>🎲 SURPRISE ME!</span>
+            </button>
+            <button class="btn btn-secondary" onclick="app.showResetModal()">
+              <span>🔄 Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Category Tabs & Option Selectors -->
+        <div class="creator-right-column">
+          <div>
+            <h2 class="creator-header-title">👹 CREATE YOUR MONSTER</h2>
+            <p class="creator-header-subtitle">Choose body parts, numbers, sizes, and colors!</p>
+          </div>
+
+          <!-- Category Navigation Tabs -->
+          <div class="category-tabs-row">
+            <button class="cat-tab-btn active" data-category="eyes"><span>👁️</span> Eyes</button>
+            <button class="cat-tab-btn" data-category="ears"><span>👂</span> Ears</button>
+            <button class="cat-tab-btn" data-category="mouth"><span>👄</span> Mouth</button>
+            <button class="cat-tab-btn" data-category="teeth"><span>🦷</span> Teeth</button>
+            <button class="cat-tab-btn" data-category="legs"><span>🦵</span> Legs</button>
+            <button class="cat-tab-btn" data-category="arms"><span>👐</span> Arms</button>
+            <button class="cat-tab-btn" data-category="nose"><span>👃</span> Nose</button>
+            <button class="cat-tab-btn" data-category="color"><span>🎨</span> Color</button>
+          </div>
+
+          <!-- Category Panels -->
+          <div class="category-panels-wrapper">
+            
+            <!-- 1. EYES -->
+            <div class="category-panel active" id="cat-panel-eyes">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👁️</span> How many eyes?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" data-eyes-count="1"><span class="opt-btn-icon">👁️</span> 1 ONE</button>
+                  <button class="opt-btn active" data-eyes-count="2"><span class="opt-btn-icon">👀</span> 2 TWO</button>
+                  <button class="opt-btn" data-eyes-count="3"><span class="opt-btn-icon">👁️👁️👁️</span> 3 THREE</button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🔍</span> What size?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-eyes-size="big"><span class="opt-btn-icon">🟢</span> BIG</button>
+                  <button class="opt-btn" data-eyes-size="small"><span class="opt-btn-icon">🔹</span> SMALL</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. EARS -->
+            <div class="category-panel" id="cat-panel-ears">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👂</span> How many ears?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" data-ears-count="1"><span class="opt-btn-icon">👂</span> 1 ONE</button>
+                  <button class="opt-btn active" data-ears-count="2"><span class="opt-btn-icon">👂👂</span> 2 TWO</button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>📏</span> Length?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-ears-length="long"><span class="opt-btn-icon">🐰</span> LONG</button>
+                  <button class="opt-btn" data-ears-length="short"><span class="opt-btn-icon">🐻</span> SHORT</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. MOUTH -->
+            <div class="category-panel" id="cat-panel-mouth">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👄</span> Choose a mouth:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-mouth-type="big"><span class="opt-btn-icon">😃</span> BIG MOUTH</button>
+                  <button class="opt-btn" data-mouth-type="small"><span class="opt-btn-icon">🙂</span> SMALL MOUTH</button>
+                  <button class="opt-btn" data-mouth-type="scary"><span class="opt-btn-icon">😈</span> SCARY MOUTH</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. TEETH -->
+            <div class="category-panel" id="cat-panel-teeth">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🦷</span> Choose teeth:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-teeth-type="sharp"><span class="opt-btn-icon">🦈</span> SHARP TEETH</button>
+                  <button class="opt-btn" data-teeth-type="big"><span class="opt-btn-icon">🐰</span> BIG TEETH</button>
+                  <button class="opt-btn" data-teeth-type="small"><span class="opt-btn-icon">✨</span> SMALL TEETH</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. LEGS -->
+            <div class="category-panel" id="cat-panel-legs">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🦵</span> How many legs?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-legs-count="2"><span class="opt-btn-icon">🦵🦵</span> 2 TWO</button>
+                  <button class="opt-btn" data-legs-count="3"><span class="opt-btn-icon">🦵🦵🦵</span> 3 THREE</button>
+                  <button class="opt-btn" data-legs-count="4"><span class="opt-btn-icon">🐾</span> 4 FOUR</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. ARMS -->
+            <div class="category-panel" id="cat-panel-arms">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👐</span> How many arms?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-arms-count="2"><span class="opt-btn-icon">👐</span> 2 TWO</button>
+                  <button class="opt-btn" data-arms-count="3"><span class="opt-btn-icon">🙌</span> 3 THREE</button>
+                  <button class="opt-btn" data-arms-count="many"><span class="opt-btn-icon">🐙</span> MANY</button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>📏</span> Arm length?</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" data-arms-length="long"><span class="opt-btn-icon">🦒</span> LONG</button>
+                  <button class="opt-btn active" data-arms-length="short"><span class="opt-btn-icon">🐧</span> SHORT</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. NOSE -->
+            <div class="category-panel" id="cat-panel-nose">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👃</span> Choose a nose:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" data-nose-size="big"><span class="opt-btn-icon">👃</span> BIG NOSE</button>
+                  <button class="opt-btn active" data-nose-size="small"><span class="opt-btn-icon">🐽</span> SMALL NOSE</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. BODY COLOR -->
+            <div class="category-panel" id="cat-panel-color">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🎨</span> Choose body color:</div>
+                <div class="color-swatch-grid">
+                  <button class="color-swatch-btn swatch-purple active" data-body-color="purple" title="Purple"></button>
+                  <button class="color-swatch-btn swatch-green" data-body-color="green" title="Green"></button>
+                  <button class="color-swatch-btn swatch-blue" data-body-color="blue" title="Blue"></button>
+                  <button class="color-swatch-btn swatch-red" data-body-color="red" title="Red"></button>
+                  <button class="color-swatch-btn swatch-orange" data-body-color="orange" title="Orange"></button>
+                  <button class="color-swatch-btn swatch-yellow" data-body-color="yellow" title="Yellow"></button>
+                  <button class="color-swatch-btn swatch-pink" data-body-color="pink" title="Pink"></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action -->
+          <div class="creator-bottom-bar">
+            <div></div>
+            <button class="btn btn-primary btn-large" data-goto="screen-dress">
+              <span>👕 NEXT: DRESS MY MONSTER! ➔</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         2. SCREEN: PHASE 2 — DRESS YOUR MONSTER
+         ======================================================================= -->
+    <section class="screen-view" id="screen-dress">
+      <!-- Active Mode Quest Banner -->
+      <div id="dress-mode-banner" class="mode-quest-banner hidden">
+        <div class="banner-quest-info">
+          <span class="banner-quest-icon" id="dress-banner-quest-icon">🎯</span>
+          <span class="banner-quest-text" id="dress-banner-quest-text">Mission: Give your monster a red cape</span>
+        </div>
+        <div class="banner-quest-actions">
+          <button class="btn btn-accent" id="dress-banner-audio-replay-btn" style="display: none;" onclick="app.playListeningAudio()">🔊 Replay</button>
+          <button class="btn btn-success" id="dress-banner-check-btn" onclick="app.checkCurrentModeMission()">⭐ CHECK NOW!</button>
+          <button class="btn btn-secondary" id="dress-banner-return-btn" onclick="app.returnToModeScreen()">➔ Back to Mission</button>
+        </div>
+      </div>
+
+      <div class="creator-layout">
+        
+        <!-- Left Column: Monster Wardrobe Preview -->
+        <div class="creator-left-column">
+          <div class="monster-preview-container" id="dress-monster-preview">
+            <!-- Dynamic SVG Injected Here -->
+          </div>
+
+          <!-- Active English Clothing Phrase Badge -->
+          <div class="active-phrase-container">
+            <div class="active-phrase-left">
+              <span class="phrase-badge-tag">WEARING</span>
+              <span class="active-phrase-text" id="dress-phrase-text">NO CLOTHES</span>
+            </div>
+            <button class="hear-phrase-btn" title="Pronounce this phrase">
+              <span>🔊</span> <span>Hear it</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Wardrobe Trays -->
+        <div class="creator-right-column">
+          <div>
+            <h2 class="creator-header-title">👕 DRESS YOUR MONSTER!</h2>
+            <p class="creator-header-subtitle">Choose cool clothes, accessories, and superhero items!</p>
+          </div>
+
+          <!-- Wardrobe Navigation Tabs -->
+          <div class="category-tabs-row">
+            <button class="wardrobe-tab-btn active" data-tab="tops"><span>👕</span> Tops</button>
+            <button class="wardrobe-tab-btn" data-tab="bottoms"><span>👖</span> Bottoms</button>
+            <button class="wardrobe-tab-btn" data-tab="accessories"><span>🧢</span> Accessories</button>
+            <button class="wardrobe-tab-btn" data-tab="special"><span>🦸</span> Special</button>
+          </div>
+
+          <!-- Wardrobe Panels -->
+          <div class="category-panels-wrapper">
+            
+            <!-- 1. TOPS -->
+            <div class="wardrobe-panel active" id="wardrobe-panel-tops">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👕</span> Choose Upper Body:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-cloth-top="none"><span class="opt-btn-icon">❌</span> NONE</button>
+                  <button class="opt-btn" data-cloth-top="tshirt"><span class="opt-btn-icon">👕</span> T-SHIRT</button>
+                  <button class="opt-btn" data-cloth-top="shirt"><span class="opt-btn-icon">👔</span> SHIRT</button>
+                  <button class="opt-btn" data-cloth-top="jacket"><span class="opt-btn-icon">🧥</span> JACKET</button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🎨</span> Top Color:</div>
+                <div class="color-swatch-grid">
+                  <button class="color-swatch-btn swatch-blue active" data-top-color="blue" title="Blue"></button>
+                  <button class="color-swatch-btn swatch-red" data-top-color="red" title="Red"></button>
+                  <button class="color-swatch-btn swatch-green" data-top-color="green" title="Green"></button>
+                  <button class="color-swatch-btn swatch-yellow" data-top-color="yellow" title="Yellow"></button>
+                  <button class="color-swatch-btn swatch-purple" data-top-color="purple" title="Purple"></button>
+                  <button class="color-swatch-btn swatch-orange" data-top-color="orange" title="Orange"></button>
+                  <button class="color-swatch-btn swatch-pink" data-top-color="pink" title="Pink"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. BOTTOMS -->
+            <div class="wardrobe-panel" id="wardrobe-panel-bottoms">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>👖</span> Choose Lower Body:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-cloth-bottom="none"><span class="opt-btn-icon">❌</span> NONE</button>
+                  <button class="opt-btn" data-cloth-bottom="trousers"><span class="opt-btn-icon">👖</span> TROUSERS</button>
+                  <button class="opt-btn" data-cloth-bottom="shorts"><span class="opt-btn-icon">🩳</span> SHORTS</button>
+                  <button class="opt-btn" data-cloth-bottom="dress"><span class="opt-btn-icon">👗</span> DRESS</button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🎨</span> Bottom Color:</div>
+                <div class="color-swatch-grid">
+                  <button class="color-swatch-btn swatch-black active" data-bottom-color="black" title="Black"></button>
+                  <button class="color-swatch-btn swatch-blue" data-bottom-color="blue" title="Blue"></button>
+                  <button class="color-swatch-btn swatch-red" data-bottom-color="red" title="Red"></button>
+                  <button class="color-swatch-btn swatch-green" data-bottom-color="green" title="Green"></button>
+                  <button class="color-swatch-btn swatch-purple" data-bottom-color="purple" title="Purple"></button>
+                  <button class="color-swatch-btn swatch-pink" data-bottom-color="pink" title="Pink"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. ACCESSORIES (Multi-Select) -->
+            <div class="wardrobe-panel" id="wardrobe-panel-accessories">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🧢</span> Select accessories (combine multiple!):</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" data-accessory="crown"><span class="opt-btn-icon">👑</span> CROWN</button>
+                  <button class="opt-btn" data-accessory="hat"><span class="opt-btn-icon">🎩</span> HAT</button>
+                  <button class="opt-btn" data-accessory="cap"><span class="opt-btn-icon">🧢</span> CAP</button>
+                  <button class="opt-btn" data-accessory="glasses"><span class="opt-btn-icon">🕶️</span> GLASSES</button>
+                  <button class="opt-btn" data-accessory="scarf"><span class="opt-btn-icon">🧣</span> SCARF</button>
+                  <button class="opt-btn" data-accessory="bow"><span class="opt-btn-icon">🎀</span> BOW</button>
+                  <button class="opt-btn" data-accessory="backpack"><span class="opt-btn-icon">🎒</span> BACKPACK</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. SPECIAL ITEMS -->
+            <div class="wardrobe-panel" id="wardrobe-panel-special">
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🦸</span> Special Superhero Gear:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn" id="special-btn-cape"><span class="opt-btn-icon">🦸</span> RED CAPE</button>
+                  <button class="opt-btn" id="special-btn-boots"><span class="opt-btn-icon">🥾</span> BOOTS</button>
+                  <button class="opt-btn" id="special-btn-gloves"><span class="opt-btn-icon">🧤</span> GLOVES</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Navigation Bar -->
+          <div class="creator-bottom-bar">
+            <button class="btn btn-secondary" data-goto="screen-create">
+              <span>⬅ EDIT BODY</span>
+            </button>
+            <button class="btn btn-success btn-large" data-goto="screen-final">
+              <span>✅ I'M FINISHED! ➔</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         3. SCREEN: FINAL MONSTER — NAME & DESCRIBE
+         ======================================================================= -->
+    <section class="screen-view" id="screen-final">
+      <div class="final-screen-card">
+        
+        <div class="final-screen-top">
+          <h1 class="final-title-hero">🎉 MY MONSTER: <span id="final-monster-name-display">ZIPPY</span>!</h1>
+        </div>
+
+        <div class="final-main-grid">
+          
+          <!-- Left Column: Monster Preview -->
+          <div class="creator-left-column">
+            <div class="monster-preview-container" id="final-monster-preview">
+              <!-- Dynamic SVG -->
+            </div>
+
+            <!-- Name Input Box -->
+            <div class="name-input-group" style="width: 100%; max-width: 440px;">
+              <label for="monster-name-input">📛 What is your monster's name?</label>
+              <div class="name-input-row">
+                <input type="text" id="monster-name-input" class="monster-name-input" placeholder="Enter name (e.g. Zippy)..." maxlength="20">
+                <button class="random-name-btn" id="random-name-btn" title="Random Name">🎲</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Automatic A1/A1+ English Description -->
+          <div class="description-container">
+            
+            <!-- Structured Breakdown Card -->
+            <div class="summary-breakdown-card" id="final-summary-breakdown">
+              <!-- Summary Injected Here -->
+            </div>
+
+            <!-- Full Natural Paragraph -->
+            <div class="full-paragraph-card">
+              <p id="final-description-paragraph">This is Zippy...</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="final-actions-row">
+              <button class="btn btn-primary btn-large" onclick="app.startSpeakingMode()">
+                <span>🎤 DESCRIBE MY MONSTER</span>
+              </button>
+              <button class="btn btn-accent" onclick="app.openPresentationMode()">
+                <span>📽️ PRESENTATION MODE</span>
+              </button>
+              <button class="btn btn-secondary" onclick="app.downloadMonsterCard()">
+                <span>📸 SAVE CARD</span>
+              </button>
+              <button class="btn btn-secondary" data-goto="screen-dress">
+                <span>👗 DRESS AGAIN</span>
+              </button>
+              <button class="btn btn-secondary" onclick="app.showResetModal()">
+                <span>🔄 NEW MONSTER</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         4. SCREEN: MONSTER CHALLENGE QUESTS
+         ======================================================================= -->
+    <section class="screen-view" id="screen-challenge">
+      <div class="challenge-screen-card">
+        
+        <div class="challenge-header">
+          <h2 class="challenge-title">🧠 MONSTER CHALLENGE</h2>
+          <p class="subtitle-hero">Read the English mission and build the monster!</p>
+        </div>
+
+        <!-- Mission Card -->
+        <div class="quest-mission-card">
+          <div class="quest-mission-title" id="challenge-quest-title">Mission: 3 Big Eyes</div>
+          <div class="quest-mission-instruction" id="challenge-quest-instruction">👉 Give your monster 3 big eyes.</div>
+          <div class="quest-mission-hint" id="challenge-quest-hint">💡 Hint: Go to Eyes ➔ Choose 3 ➔ Choose BIG</div>
+        </div>
+
+        <!-- Feedback Banner -->
+        <div class="feedback-banner hidden" id="challenge-feedback-banner"></div>
+
+        <!-- Quick Building Area -->
+        <div class="creator-layout">
+          <div class="creator-left-column">
+            <div class="monster-preview-container" id="challenge-monster-preview"></div>
+          </div>
+          <div class="creator-right-column">
+            <div style="display: flex; gap: 12px; justify-content: space-between; align-items: center;">
+              <button class="btn btn-primary" data-goto="screen-create"><span>🛠️ OPEN CREATOR</span></button>
+              <button class="btn btn-success btn-large" onclick="app.checkChallenge()"><span>⭐ CHECK MY MONSTER!</span></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         5. SCREEN: LISTENING CHALLENGE GAME
+         ======================================================================= -->
+    <section class="screen-view" id="screen-listening">
+      <div class="challenge-screen-card">
+        
+        <div class="challenge-header">
+          <h2 class="challenge-title">👂 LISTENING CHALLENGE</h2>
+          <p class="subtitle-hero">Listen to the spoken English and customize your monster!</p>
+        </div>
+
+        <!-- Difficulty Toggles & Listen Button -->
+        <div class="listening-controls-bar">
+          <div class="diff-selector-group">
+            <span>DIFFICULTY:</span>
+            <button class="diff-btn active" data-diff="easy" onclick="app.setListeningDifficulty('easy')">🟢 Easy</button>
+            <button class="diff-btn" data-diff="medium" onclick="app.setListeningDifficulty('medium')">🟡 Medium</button>
+            <button class="diff-btn" data-diff="hard" onclick="app.setListeningDifficulty('hard')">🔴 Hard (Audio Only)</button>
+          </div>
+
+          <button class="listen-audio-hero" onclick="app.playListeningAudio()">
+            <span>🔊 LISTEN TO INSTRUCTION</span>
+          </button>
+        </div>
+
+        <!-- Instruction Text Card -->
+        <div class="quest-mission-card" id="listening-instruction-card">
+          <!-- Text Injected Here -->
+        </div>
+
+        <!-- Feedback Banner -->
+        <div class="feedback-banner hidden" id="listening-feedback-banner"></div>
+
+        <!-- Quick Building Area -->
+        <div class="creator-layout">
+          <div class="creator-left-column">
+            <div class="monster-preview-container" id="listening-monster-preview"></div>
+          </div>
+          <div class="creator-right-column">
+            <div style="display: flex; gap: 12px; justify-content: space-between; align-items: center;">
+              <button class="btn btn-primary" data-goto="screen-create"><span>🛠️ OPEN CREATOR</span></button>
+              <button class="btn btn-success btn-large" onclick="app.checkListening()"><span>⭐ CHECK ANSWER!</span></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         6. SCREEN: SECRET MONSTER 2-PLAYER CLASSROOM MODE
+         ======================================================================= -->
+    <section class="screen-view" id="screen-secret">
+      <div class="challenge-screen-card">
+        
+        <div class="challenge-header">
+          <h2 class="challenge-title">🤫 SECRET MONSTER (2-PLAYER)</h2>
+          <p class="subtitle-hero">Player A describes the secret card. Player B listens and builds!</p>
+        </div>
+
+        <!-- Step 1: Player A Card & Player B Building -->
+        <div class="secret-step-container active" id="secret-step-1">
+          <div class="secret-player-banner">
+            🗣️ <strong>PLAYER A:</strong> Describe this monster out loud to your partner! Do not show the screen!
+          </div>
+
+          <div class="secret-card-box">
+            <div class="secret-card-title"><span>📜</span> SECRET MONSTER CARD</div>
+            <div class="secret-clue-list" id="secret-card-features">
+              <!-- Clues injected here -->
+            </div>
+          </div>
+
+          <div class="creator-layout" style="margin-top: 20px;">
+            <div class="creator-left-column">
+              <div class="monster-preview-container" id="secret-player-monster-preview"></div>
+            </div>
+            <div class="creator-right-column">
+              <p style="font-weight: 800; font-size: 1.1rem; color: #334155;">🔨 PLAYER B: Use creator to build what Player A describes!</p>
+              <div style="display: flex; gap: 14px; margin-top: 10px;">
+                <button class="btn btn-primary" data-goto="screen-create"><span>🎨 CUSTOMIZE MONSTER</span></button>
+                <button class="btn btn-success btn-large" onclick="app.compareSecretMonster()"><span>🔍 COMPARE MONSTERS!</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Compare & Results -->
+        <div class="secret-step-container" id="secret-step-2">
+          <div id="secret-score-banner" style="text-align: center;"></div>
+
+          <div class="secret-compare-grid">
+            <div class="secret-compare-monster-box">
+              <h3>SECRET MONSTER</h3>
+              <div class="monster-preview-container" id="secret-monster-reveal-preview"></div>
+            </div>
+            <div class="secret-compare-monster-box">
+              <h3>YOUR MONSTER</h3>
+              <div class="monster-preview-container" id="player-monster-reveal-preview"></div>
+            </div>
+          </div>
+
+          <!-- Feature comparison table -->
+          <div class="secret-comparison-table" id="secret-comparison-table"></div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-primary btn-large" onclick="app.setupSecretMonsterView()">
+              <span>🔄 PLAY NEXT SECRET MONSTER</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS & OVERLAYS
+       ========================================================================= -->
+
+  <!-- 1. Speaking Mode Teleprompter Modal -->
+  <div class="modal-overlay" id="speaking-teleprompter-modal">
+    <div class="modal-card speaking-teleprompter-card">
+      <div class="modal-header-row" style="width: 100%;">
+        <span class="speaking-step-counter" id="speaking-step-counter">Sentence 1 of 6</span>
+        <button class="modal-close-btn" onclick="app.closeSpeakingModal()">✕</button>
+      </div>
+
+      <div class="speaking-icon-badge" id="speaking-icon-badge">👁️</div>
+
+      <div class="speaking-starter-prompt" id="speaking-starter-prompt">🗣️ SAY: "It has..."</div>
+
+      <div class="speaking-main-sentence" id="speaking-main-sentence">
+        <strong>It has three big eyes.</strong>
+      </div>
+
+      <div class="speaking-controls-row">
+        <button class="btn btn-secondary" onclick="app.prevSpeakingStep()"><span>⬅ PREV</span></button>
+        <button class="btn btn-accent" onclick="window.soundEngine.speak(document.getElementById('speaking-main-sentence').innerText)"><span>🔊 HEAR MODEL</span></button>
+        <button class="btn btn-primary" onclick="app.nextSpeakingStep()"><span>NEXT ➔</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Presentation Fullscreen Modal (Classroom Projector) -->
+  <div class="presentation-fullscreen-modal" id="presentation-mode-modal">
+    <div class="presentation-top-bar">
+      <h1>MEET MY MONSTER: <span id="pres-monster-name" style="color: #facc15;">ZIPPY</span>!</h1>
+      <button class="btn btn-secondary" onclick="app.closePresentationMode()">✕ EXIT PRESENTATION</button>
+    </div>
+
+    <div class="presentation-body-layout">
+      <div class="presentation-monster-side">
+        <div class="monster-preview-container presentation-monster-wrap" id="presentation-monster-preview"></div>
+      </div>
+      <div class="presentation-bullets-container">
+        <div class="pres-bullet-card" onclick="window.soundEngine.speak('This is my monster')">
+          <span>👹 This is my monster</span>
+          <button class="pres-speak-chip">🔊</button>
+        </div>
+        <div class="pres-bullet-card" onclick="window.soundEngine.speak('It is ' + app.monster.color)">
+          <span>🟣 Body Color: <strong id="pres-monster-color">Purple</strong></span>
+          <button class="pres-speak-chip">🔊</button>
+        </div>
+        <div id="pres-bullets-list">
+          <!-- Dynamic Bullet Points -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Badges Overview Modal -->
+  <div class="modal-overlay" id="badges-overview-modal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <h2 class="modal-title">🏆 MONSTER MASTER BADGES</h2>
+        <button class="modal-close-btn" onclick="document.getElementById('badges-overview-modal').classList.remove('active')">✕</button>
+      </div>
+      <div class="badges-modal-grid" id="badges-modal-grid">
+        <!-- Badges Grid -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Badge Unlock Celebration Popover -->
+  <div class="modal-overlay" id="badge-unlock-modal">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="badge-unlock-content">
+        <div class="badge-unlock-icon" id="badge-unlock-icon">🏆</div>
+        <h2 class="badge-unlock-title" id="badge-unlock-title">Badge Unlocked!</h2>
+        <p class="badge-unlock-desc" id="badge-unlock-desc">You are a Monster Master!</p>
+        <button class="btn btn-primary btn-large" style="margin-top: 15px;" onclick="document.getElementById('badge-unlock-modal').classList.remove('active')">
+          <span>AWESOME! ⭐</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Teacher Settings Modal -->
+  <div class="modal-overlay" id="teacher-settings-modal">
+    <div class="modal-card">
+      <div class="modal-header-row">
+        <h2 class="modal-title">👩‍🏫 TEACHER SETTINGS</h2>
+        <button class="modal-close-btn" onclick="document.getElementById('teacher-settings-modal').classList.remove('active')">✕</button>
+      </div>
+      
+      <div style="text-align: left; display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <h4 style="font-weight: 800; margin-bottom: 8px;">Active Vocabulary Topics:</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-weight: 700;">
+            <label><input type="checkbox" checked> ☑ Body Parts</label>
+            <label><input type="checkbox" checked> ☑ Numbers (1-4, Many)</label>
+            <label><input type="checkbox" checked> ☑ Colors (7)</label>
+            <label><input type="checkbox" checked> ☑ Clothes & Special</label>
+            <label><input type="checkbox" checked> ☑ Adjectives</label>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-weight: 800; margin-bottom: 8px;">Speech Speed (TTS):</h4>
+          <input type="range" min="0.6" max="1.2" step="0.1" value="0.9" style="width: 100%;" onchange="window.soundEngine.speechRate = parseFloat(this.value)">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b;">
+            <span>Slower (Beginner)</span>
+            <span>Normal</span>
+            <span>Faster</span>
+          </div>
+        </div>
+
+        <div style="border-top: 2px solid #e2e8f0; padding-top: 14px; display: flex; justify-content: space-between;">
+          <button class="btn btn-secondary" onclick="teacherMode.score = 0; teacherMode.saveState(); teacherMode.updateScoreUI();">
+            <span>Reset Star Score</span>
+          </button>
+          <button class="btn btn-primary" onclick="document.getElementById('teacher-settings-modal').classList.remove('active')">
+            <span>SAVE & CLOSE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Reset Confirmation Modal -->
+  <div class="modal-overlay" id="reset-confirm-modal">
+    <div class="modal-card" style="max-width: 440px;">
+      <h2 class="modal-title" style="margin-bottom: 12px;">🔄 START AGAIN?</h2>
+      <p style="font-size: 1.15rem; color: #475569; margin-bottom: 24px;">Are you sure you want to make a new monster?</p>
+      <div style="display: flex; justify-content: center; gap: 14px;">
+        <button class="btn btn-danger btn-large" onclick="app.confirmReset()"><span>YES!</span></button>
+        <button class="btn btn-secondary btn-large" onclick="app.closeResetModal()"><span>NO</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Surprise Popup Banner Container -->
+  <div class="surprise-popup-banner" id="surprise-popup-banner"></div>
+
+  <!-- =========================================================================
+       SCRIPTS
+       ========================================================================= -->
+  <script src="js/audio.js"></script>
+  <script src="js/grammarEngine.js"></script>
+  <script src="js/monsterRenderer.js"></script>
+  <script src="js/challenges.js"></script>
+  <script src="js/teacherMode.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
