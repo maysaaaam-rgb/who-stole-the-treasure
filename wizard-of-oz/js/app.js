@@ -872,6 +872,14 @@ class StoryApplication {
     const prompt = STORY_DATA.retellPrompts[AppState.retellIndex];
     const hintLevel = AppState.retellHintsRevealed[AppState.retellIndex] || 0;
 
+    const retellImageMap = {
+      0: "assets/images/scene1.jpg",
+      1: "assets/images/scene6.jpg",
+      2: "assets/images/scene7.jpg",
+      3: "assets/images/scene11.jpg"
+    };
+    const currentRetellImg = retellImageMap[AppState.retellIndex] || "assets/images/scene1.jpg";
+
     this.stageContainer.innerHTML = `
       <div class="view-container retell-view">
         <div class="theatre-proscenium">
@@ -890,47 +898,63 @@ class StoryApplication {
             `).join('')}
           </div>
 
-          <!-- Main Image-Only Retell Visual Card -->
+          <!-- Main Image-Only Retell Visual Card Grid -->
           <div class="retell-stage-card">
-            <div class="retell-scene-badge">SCENE ${prompt.sceneNum}: ${prompt.title}</div>
-
-            <!-- Hint Revealer Box -->
-            <div class="retell-hint-box">
-              <div class="hint-header">
-                <span class="hint-icon">💡</span>
-                <span>TEACHER HINT SYSTEM:</span>
-                <button class="hint-toggle-btn" onclick="window.StoryApp.advanceRetellHint()">
-                  ${hintLevel === 0 ? '➕ REVEAL KEYWORDS (HINT 1)' : hintLevel === 1 ? '➕ REVEAL SENTENCE STARTER (HINT 2)' : hintLevel === 2 ? '➕ REVEAL MODEL OUTPUT' : '🔄 RESET HINTS'}
-                </button>
+            <div class="retell-split-grid">
+              <!-- Large Full-Picture Display (No Text on Image) -->
+              <div class="retell-art-viewport">
+                <img src="${currentRetellImg}" alt="${prompt.title}" class="retell-large-img" />
               </div>
 
-              <div class="hints-content">
-                ${hintLevel >= 1 ? `
-                  <div class="hint-item keywords-hint anim-bounce-quick">
-                    <strong>Key Words:</strong>
-                    <div class="keyword-tags">
-                      ${prompt.keywords.map(k => `<span class="kw-tag">${k}</span>`).join('')}
+              <!-- Teacher Hint Revealer Box -->
+              <div class="retell-hint-box">
+                <div class="retell-scene-badge">SCENE ${prompt.sceneNum}: ${prompt.title}</div>
+                <div class="hint-header">
+                  <span class="hint-icon">💡</span>
+                  <span>TEACHER HINT SYSTEM:</span>
+                  <button class="hint-toggle-btn" onclick="window.StoryApp.advanceRetellHint()">
+                    ${hintLevel === 0 ? '➕ REVEAL KEYWORDS (HINT 1)' : hintLevel === 1 ? '➕ REVEAL SENTENCE STARTER (HINT 2)' : hintLevel === 2 ? '➕ REVEAL MODEL OUTPUT' : '🔄 RESET HINTS'}
+                  </button>
+                </div>
+
+                <div class="hints-content">
+                  ${hintLevel >= 1 ? `
+                    <div class="hint-item keywords-hint anim-bounce-quick">
+                      <strong>Key Words:</strong>
+                      <div class="keyword-tags">
+                        ${prompt.keywords.map(k => `<span class="kw-tag">${k}</span>`).join('')}
+                      </div>
                     </div>
-                  </div>
-                ` : ''}
+                  ` : `
+                    <div class="hint-instruction-text">
+                      👈 Teacher points to the illustration. Ask students: <em>"What can you see? What happens here?"</em>
+                    </div>
+                  `}
 
-                ${hintLevel >= 2 ? `
-                  <div class="hint-item starter-hint anim-bounce-quick">
-                    <strong>Sentence Starter:</strong> "${prompt.starter}"
-                  </div>
-                ` : ''}
+                  ${hintLevel >= 2 ? `
+                    <div class="hint-item starter-hint anim-bounce-quick">
+                      <strong>Sentence Starter:</strong> "${prompt.starter}"
+                    </div>
+                  ` : ''}
 
-                ${hintLevel >= 3 ? `
-                  <div class="hint-item target-hint anim-bounce-quick">
-                    <strong>Expected A1+ Retell:</strong> "${prompt.targetOutput}"
-                  </div>
-                ` : ''}
+                  ${hintLevel >= 3 ? `
+                    <div class="hint-item target-hint anim-bounce-quick">
+                      <strong>Expected A1+ Retell:</strong> "${prompt.targetOutput}"
+                    </div>
+                  ` : ''}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     `;
+  }
+
+  triggerOilCan() {
+    sound.play('oil');
+    sound.play('success');
+    this.showFloatingCueModal("TIN MAN IS OILED!", "Thank you! Now I can move my arms and walk to the Wizard!");
   }
 
   selectRetellScene(index) {
