@@ -3,606 +3,261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>👹 Build Your Own Monster! — Interactive English Learning Game</title>
+  <title>🌿 Life in the Jungle — The Jungle Rangers (CLIL English & Science)</title>
+  
+  <!-- Child-friendly typography fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800;900&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/monster.css">
-  <link rel="stylesheet" href="css/creator.css">
-  <link rel="stylesheet" href="css/modes.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/jungle-theme.css">
+  <link rel="stylesheet" href="css/jungle-stages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
 </head>
 <body>
 
   <!-- =========================================================================
-       GLOBAL APP HEADER
+       APPLICATION ROOT WRAPPER
        ========================================================================= -->
-  <header class="app-header">
-    <div class="header-left">
-      <button class="home-btn" data-goto="screen-start" title="Return to Main Menu">
-        <span>🏠</span>
-        <span>HOME</span>
-      </button>
-      <div class="header-title-badge">👹 BUILD YOUR MONSTER! 👾</div>
-    </div>
-
-    <div class="header-right">
-      <!-- Positive Stars Score Pill -->
-      <div class="score-pill" title="Your Star Points">
-        <span class="star-icon">⭐</span>
-        <span id="global-score-count">0</span>
-      </div>
-
-      <!-- Badges Button -->
-      <button class="icon-btn" onclick="teacherMode.checkBadges(); document.getElementById('badges-overview-modal').classList.add('active')" title="View Badges">
-        <span>🏆</span> <span>BADGES</span>
-      </button>
-
-      <!-- Classroom Speaking Game: Find A Monster -->
-      <button class="icon-btn" style="background: #fdf4ff; border-color: #d946ef; color: #a21caf;" onclick="app.openFindMonsterGame()" title="Classroom Game: Find a Monster">
-        <span>🔎</span> <span>FIND MONSTER</span>
-      </button>
-
-      <!-- Sound & TTS Voice Toggles -->
-      <button class="icon-btn sfx-toggle-btn" onclick="app.toggleSfx()" title="Toggle Sound Effects">🔊 SFX: ON</button>
-      <button class="icon-btn tts-toggle-btn" onclick="app.toggleTts()" title="Toggle English Voice">🗣️ Voice: ON</button>
-
-      <!-- Teacher Settings -->
-      <button class="icon-btn teacher-btn" onclick="document.getElementById('teacher-settings-modal').classList.add('active')" title="Teacher Settings">
-        <span>👩‍🏫 TEACHER</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Floating Star Points Container -->
-  <div id="floating-points-container"></div>
-
-  <!-- Confetti Canvas Container -->
-  <div id="confetti-canvas-container"></div>
-
-  <!-- =========================================================================
-       MAIN GAME VIEWPORT (ONE SCREEN AT A TIME)
-       ========================================================================= -->
-  <main id="game-viewport">
-
+  <div id="app-root">
+    
     <!-- =======================================================================
-         0. SCREEN: START SCREEN (EXTREMELY SIMPLE)
+         TOP CLASSROOM HUD (WHITEBOARD READY)
          ======================================================================= -->
-    <section class="screen-view active" id="screen-start">
-      <div class="start-screen-card">
-        <h1 class="title-hero">BUILD YOUR MONSTER! 👾</h1>
-        <p class="subtitle-hero">Create a funny, scary or crazy monster!</p>
-
-        <!-- Big Friendly Preview on Start Page -->
-        <div class="start-preview-container">
-          <div class="monster-preview-container" id="start-monster-preview"></div>
+    <header class="jungle-hud">
+      <!-- Left Brand & Chapter Badge -->
+      <div class="hud-left">
+        <div class="hud-brand" onclick="window.jungleGame.goToChapter(0)" title="Return to Jungle Camp">
+          <span class="brand-icon">🌿</span>
+          <span>JUNGLE RANGERS</span>
         </div>
-
-        <div class="start-action-container" style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 18px;">
-          <button class="btn btn-primary btn-large" onclick="app.startCreation()">
-            <span>▶ START CREATING</span>
-          </button>
-          <button class="btn btn-accent btn-large" id="make-it-weird-btn">
-            <span>🎲 MAKE IT WEIRD!</span>
-          </button>
-          <button class="btn btn-secondary btn-large" data-goto="screen-modes-hub">
-            <span>🎮 PLAY MORE GAMES</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =======================================================================
-         1. SCREEN: DYNAMIC STEP-BY-STEP CREATION WIZARD
-         ======================================================================= -->
-    <section class="screen-view" id="screen-create">
-      
-      <!-- Top Step & Progress Bar -->
-      <div class="wizard-top-bar">
-        <div class="wizard-header-row">
-          <div class="wizard-step-badge" id="wizard-step-badge">STEP 1 OF 12</div>
-          <h2 class="wizard-step-title" id="wizard-step-title">CHOOSE YOUR BODY 🧸</h2>
-          <div class="wizard-cheer-badge" id="wizard-cheer-badge">Great choice! ⭐</div>
-        </div>
-
-        <!-- Progress Track (Visual Step Dots) -->
-        <div class="wizard-progress-track" id="wizard-progress-track">
-          <!-- Injected Dynamically by app.js -->
+        <div class="chapter-pill">
+          <span id="hud-chapter-num">Ch. 1</span>
+          <span>•</span>
+          <span id="hud-chapter-title">Welcome to Green Valley</span>
         </div>
       </div>
 
-      <!-- Mode Quest Banner (Only shown during challenge/listening modes) -->
-      <div id="creator-mode-banner" class="mode-quest-banner hidden">
-        <div class="banner-quest-info">
-          <span class="banner-quest-icon" id="banner-quest-icon">🎯</span>
-          <span class="banner-quest-text" id="banner-quest-text">Mission: Give your monster 3 big eyes</span>
-        </div>
-        <div class="banner-quest-actions">
-          <button class="btn btn-accent" id="banner-audio-replay-btn" style="display: none;" onclick="app.playListeningAudio()">🔊 Replay</button>
-          <button class="btn btn-success" id="banner-check-btn" onclick="app.checkCurrentModeMission()">⭐ CHECK NOW!</button>
-          <button class="btn btn-secondary" id="banner-return-btn" onclick="app.returnToModeScreen()">➔ Back to Mission</button>
-        </div>
-      </div>
-
-      <!-- Main Step Viewport: Options on Left, Live Monster on Right -->
-      <div class="single-step-viewport">
-        
-        <!-- Left Container: DYNAMICALLY INJECTED WITH ONLY CURRENT STEP OPTIONS -->
-        <div class="step-options-container" id="wizard-step-content">
-          <!-- Only the active step's HTML will be mounted here! -->
-        </div>
-
-        <!-- Right Container: PERSISTENT LIVE MONSTER PREVIEW & ACTIVE PHRASE -->
-        <div class="step-preview-container">
-          <div class="monster-preview-container" id="create-monster-preview"></div>
-
-          <!-- Active Spoken English Phrase Badge -->
-          <div class="active-phrase-container">
-            <div class="active-phrase-left">
-              <span class="phrase-badge-tag">SAY</span>
-              <span class="active-phrase-text" id="active-phrase-text">ROUND BODY</span>
-            </div>
-            <button class="hear-phrase-btn" title="Pronounce this phrase">
-              <span>🔊</span> <span>Hear it</span>
-            </button>
+      <!-- Center Dynamic Jungle Health Meter -->
+      <div class="hud-center">
+        <div class="jungle-health-wrap" title="Green Valley Ecosystem Health">
+          <span class="health-label">🌎 JUNGLE HEALTH:</span>
+          <div class="health-bar-track">
+            <div class="health-bar-fill" id="jungle-health-fill" style="width: 70%;"></div>
           </div>
+          <span class="health-pct" id="jungle-health-pct">70%</span>
+        </div>
+      </div>
 
-          <!-- Action Bar -->
-          <div class="surprise-action-bar">
-            <button class="surprise-me-btn" id="surprise-me-btn">
-              <span>🎲 MAKE IT WEIRD!</span>
-            </button>
-            <button class="btn btn-secondary" onclick="app.showResetModal()">
-              <span>🔄 Reset</span>
-            </button>
+      <!-- Right Teams Scoreboard & Controls -->
+      <div class="hud-right">
+        <div class="hud-teams">
+          <div class="team-score-card team-forest active-turn" id="team-card-forest" title="Team Forest Score">
+            <span>🟢 FOREST</span>
+            <span class="team-score-num" id="score-forest">0</span>
+            <button class="team-btn-add" id="btn-add-forest" title="Add Point for Team Forest">+</button>
+          </div>
+          <div class="team-score-card team-river" id="team-card-river" title="Team River Score">
+            <span>🔵 RIVER</span>
+            <span class="team-score-num" id="score-river">0</span>
+            <button class="team-btn-add" id="btn-add-river" title="Add Point for Team River">+</button>
           </div>
         </div>
 
-      </div>
-
-      <!-- Bottom Step Navigation Bar -->
-      <div class="wizard-bottom-bar">
-        <button class="btn btn-secondary btn-large" id="wizard-back-btn" onclick="app.prevStep()">
-          <span>← BACK</span>
+        <button class="hud-btn" id="btn-toggle-mute" title="Toggle Sound FX">
+          <span>🔊</span>
         </button>
-        <button class="btn btn-primary btn-large" id="wizard-next-btn" onclick="app.nextStep()">
-          <span>NEXT →</span>
+        <button class="hud-btn" id="btn-toggle-fullscreen" title="Toggle Fullscreen Mode (F)">
+          <span>⛶</span>
+        </button>
+        <button class="hud-btn hud-btn-teacher" id="btn-toggle-teacher" title="Teacher Guide & Remote (T)">
+          <span>👩‍🏫 GUIDE</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- =======================================================================
+         STAGE VIEWPORT (DYNAMIC ENVIRONMENT & CONTENT)
+         ======================================================================= -->
+    <main id="stage-viewport">
+      <!-- Environmental Background Vector Layers -->
+      <div class="env-layer env-sky"></div>
+      <div class="env-layer env-mountains">
+        <svg viewBox="0 0 1200 400" width="100%" height="100%" preserveAspectRatio="none">
+          <path d="M 0 320 Q 200 180 400 310 Q 600 140 850 300 Q 1050 200 1200 320 L 1200 400 L 0 400 Z" fill="#047857" opacity="0.4"/>
+          <path d="M 0 350 Q 300 230 650 340 Q 900 260 1200 350 L 1200 400 L 0 400 Z" fill="#065f46" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="env-layer env-canopy">
+        <svg viewBox="0 0 1200 200" width="100%" height="150" style="position:absolute; top:0; left:0;" preserveAspectRatio="none">
+          <path d="M 0 0 C 150 90 250 30 400 80 C 550 120 700 40 850 85 C 1000 110 1100 20 1200 0 Z" fill="#064e3b" opacity="0.8"/>
+        </svg>
+      </div>
+      <div class="env-layer env-river"></div>
+
+      <!-- Stage Interactive Content Container -->
+      <div id="stage-content">
+        
+        <!-- Story Narration Speech Bubble -->
+        <div class="narration-bar">
+          <div class="narrator-avatar">🌿</div>
+          <div class="narration-text-wrap">
+            <div class="narration-speaker" id="narrator-speaker-name">Chief Ranger Flora</div>
+            <div class="narration-dialogue" id="narrator-dialogue-text">
+              Welcome to Green Valley! Many animals live here. What do animals need to survive?
+            </div>
+          </div>
+          <button class="narrator-audio-btn" id="narrator-speak-btn" title="Read Story Prompt Aloud">
+            <span>🗣️</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Game Canvas Area (Rendered by JS) -->
+        <div id="stage-canvas-area" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+          <!-- Active chapter content renders here -->
+        </div>
+
+      </div>
+    </main>
+
+    <!-- =======================================================================
+         BOTTOM STAGE NAVIGATION BAR
+         ======================================================================= -->
+    <footer class="stage-nav-bar">
+      <div class="nav-left">
+        <button class="nav-stage-btn nav-prev-btn" id="nav-btn-prev" title="Previous Chapter (←)">
+          <span>⬅️</span>
+          <span>BACK</span>
         </button>
       </div>
 
-    </section>
-
-    <!-- =======================================================================
-         2. SCREEN: FINAL MONSTER SHOWCASE & ENGLISH DESCRIPTION
-         ======================================================================= -->
-    <section class="screen-view" id="screen-final">
-      <div class="final-screen-card">
-        
-        <div class="final-screen-top">
-          <h1 class="final-title-hero">YOUR MONSTER IS READY! 🎉</h1>
-          <h2 style="color: var(--primary); font-size: 2.2rem; font-weight: 900;" id="final-monster-name-display">ZIPPY</h2>
-        </div>
-
-        <div class="final-main-grid">
-          
-          <!-- Left Column: Monster Preview -->
-          <div class="creator-left-column">
-            <div class="monster-preview-container" id="final-monster-preview"></div>
-          </div>
-
-          <!-- Right Column: Visual English Description -->
-          <div class="description-container">
-            
-            <div class="summary-breakdown-card" id="final-summary-breakdown">
-              <!-- Summary Injected Here -->
-            </div>
-
-            <div class="full-paragraph-card">
-              <p id="final-description-paragraph">Meet Zippy...</p>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="final-actions-row">
-              <button class="btn btn-primary btn-large" onclick="app.startSpeakingMode()">
-                <span>🎤 DESCRIBE MY MONSTER</span>
-              </button>
-              <button class="btn btn-accent" onclick="app.speakFullDescription()">
-                <span>🔊 LISTEN</span>
-              </button>
-              <button class="btn btn-accent" onclick="app.openPresentationMode()">
-                <span>📽️ PRESENTATION MODE</span>
-              </button>
-              <button class="btn btn-secondary" onclick="app.downloadMonsterCard()">
-                <span>💾 SAVE MY MONSTER</span>
-              </button>
-              <button class="btn btn-secondary" data-goto="screen-modes-hub">
-                <span>🎮 PLAY MORE</span>
-              </button>
-              <button class="btn btn-secondary" data-goto="screen-create">
-                <span>🛠️ EDIT MONSTER</span>
-              </button>
-              <button class="btn btn-secondary" onclick="app.showResetModal()">
-                <span>🔄 START AGAIN</span>
-              </button>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =======================================================================
-         3. SCREEN: "PLAY MORE GAMES!" HUB
-         ======================================================================= -->
-    <section class="screen-view" id="screen-modes-hub">
-      <div class="start-screen-card">
-        <h1 class="title-hero">PLAY MORE MONSTER GAMES! 🎮</h1>
-        <p class="subtitle-hero">Challenge your English reading, listening, and speaking skills!</p>
-
-        <div class="mode-selection-grid">
-          <!-- Mode 1: Free Creation -->
-          <div class="mode-tile-card" onclick="app.startCreation()">
-            <div class="mode-tile-icon">🎨</div>
-            <h3>Free Creation</h3>
-            <p>12 Levels to create any monster you imagine!</p>
-          </div>
-
-          <!-- Mode 2: Monster Challenge -->
-          <div class="mode-tile-card" data-goto="screen-challenge" data-mode="challenge">
-            <div class="mode-tile-icon">🎯</div>
-            <h3>Monster Challenge</h3>
-            <p>Read missions and build the target monster!</p>
-          </div>
-
-          <!-- Mode 3: Listen & Build -->
-          <div class="mode-tile-card" data-goto="screen-listening" data-mode="listening">
-            <div class="mode-tile-icon">👂</div>
-            <h3>Listen & Build</h3>
-            <p>Listen to spoken English clues and build the monster!</p>
-          </div>
-
-          <!-- Mode 4: Secret Monster 2-Player -->
-          <div class="mode-tile-card" data-goto="screen-secret" data-mode="secret">
-            <div class="mode-tile-icon">🤫</div>
-            <h3>Secret Monster</h3>
-            <p>2-Player classroom partner guessing game!</p>
-          </div>
-
-          <!-- Mode 5: Classroom Find A Monster -->
-          <div class="mode-tile-card" onclick="app.openFindMonsterGame()">
-            <div class="mode-tile-icon">🔎</div>
-            <h3>Find A Monster</h3>
-            <p>Classroom speaking game for groups!</p>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 24px;">
-          <button class="btn btn-secondary btn-large" data-goto="screen-start">
-            <span>🏠 BACK TO MAIN MENU</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =======================================================================
-         4. SCREEN: MONSTER CHALLENGE QUESTS
-         ======================================================================= -->
-    <section class="screen-view" id="screen-challenge">
-      <div class="challenge-screen-card">
-        
-        <div class="challenge-header">
-          <h2 class="challenge-title">🎯 MONSTER CHALLENGE</h2>
-          <p class="subtitle-hero">Read the English mission and build the monster!</p>
-        </div>
-
-        <div class="quest-mission-card">
-          <div class="quest-mission-title" id="challenge-quest-title">Mission: 3 Big Eyes</div>
-          <div class="quest-mission-instruction" id="challenge-quest-instruction">👉 Give your monster 3 big eyes.</div>
-          <div class="quest-mission-hint" id="challenge-quest-hint">💡 Hint: Go to Face ➔ Eyes: Choose 3 ➔ Size: Choose BIG</div>
-        </div>
-
-        <div class="feedback-banner hidden" id="challenge-feedback-banner"></div>
-
-        <div class="creator-layout">
-          <div class="creator-left-column">
-            <div class="monster-preview-container" id="challenge-monster-preview"></div>
-          </div>
-          <div class="creator-right-column">
-            <div style="display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-              <button class="btn btn-primary" onclick="app.startCreation('challenge')"><span>🛠️ OPEN CREATOR</span></button>
-              <button class="btn btn-success btn-large" onclick="app.checkChallenge()"><span>⭐ CHECK MY MONSTER!</span></button>
-              <button class="btn btn-secondary" data-goto="screen-modes-hub"><span>➔ Back to Hub</span></button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =======================================================================
-         5. SCREEN: LISTEN & BUILD GAME
-         ======================================================================= -->
-    <section class="screen-view" id="screen-listening">
-      <div class="challenge-screen-card">
-        
-        <div class="challenge-header">
-          <h2 class="challenge-title">👂 LISTEN & BUILD</h2>
-          <p class="subtitle-hero">Listen to the spoken English and customize your monster!</p>
-        </div>
-
-        <div class="listening-controls-bar">
-          <div class="diff-selector-group">
-            <span>DIFFICULTY:</span>
-            <button class="diff-btn active" data-diff="easy" onclick="app.setListeningDifficulty('easy')">🟢 Easy</button>
-            <button class="diff-btn" data-diff="medium" onclick="app.setListeningDifficulty('medium')">🟡 Medium</button>
-            <button class="diff-btn" data-diff="hard" onclick="app.setListeningDifficulty('hard')">🔴 Hard (Audio Only)</button>
-          </div>
-
-          <button class="listen-audio-hero" onclick="app.playListeningAudio()">
-            <span>🔊 LISTEN TO INSTRUCTION</span>
-          </button>
-        </div>
-
-        <div class="quest-mission-card" id="listening-instruction-card"></div>
-
-        <div class="feedback-banner hidden" id="listening-feedback-banner"></div>
-
-        <div class="creator-layout">
-          <div class="creator-left-column">
-            <div class="monster-preview-container" id="listening-monster-preview"></div>
-          </div>
-          <div class="creator-right-column">
-            <div style="display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-              <button class="btn btn-primary" onclick="app.startCreation('listening')"><span>🛠️ OPEN CREATOR</span></button>
-              <button class="btn btn-success btn-large" onclick="app.checkListening()"><span>⭐ CHECK ANSWER!</span></button>
-              <button class="btn btn-secondary" data-goto="screen-modes-hub"><span>➔ Back to Hub</span></button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =======================================================================
-         6. SCREEN: SECRET MONSTER (2-PLAYER)
-         ======================================================================= -->
-    <section class="screen-view" id="screen-secret">
-      <div class="challenge-screen-card">
-        
-        <div class="challenge-header">
-          <h2 class="challenge-title">🤫 SECRET MONSTER (2-PLAYER)</h2>
-          <p class="subtitle-hero">Player A describes the secret card. Player B listens and builds!</p>
-        </div>
-
-        <div class="secret-step-container active" id="secret-step-1">
-          <div class="secret-player-banner">
-            🗣️ <strong>PLAYER A:</strong> Describe this monster out loud to your partner! Do not show the screen!
-          </div>
-
-          <div class="secret-card-box">
-            <div class="secret-card-title"><span>📜</span> SECRET MONSTER CARD</div>
-            <div class="secret-clue-list" id="secret-card-features"></div>
-          </div>
-
-          <div class="creator-layout" style="margin-top: 20px;">
-            <div class="creator-left-column">
-              <div class="monster-preview-container" id="secret-player-monster-preview"></div>
-            </div>
-            <div class="creator-right-column">
-              <p style="font-weight: 800; font-size: 1.1rem; color: #334155;">🔨 PLAYER B: Use creator to build what Player A describes!</p>
-              <div style="display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="app.startCreation('secret')"><span>🎨 CUSTOMIZE MONSTER</span></button>
-                <button class="btn btn-success btn-large" onclick="app.compareSecretMonster()"><span>🔍 COMPARE MONSTERS!</span></button>
-                <button class="btn btn-secondary" data-goto="screen-modes-hub"><span>➔ Back to Hub</span></button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="secret-step-container" id="secret-step-2">
-          <div id="secret-score-banner" style="text-align: center;"></div>
-
-          <div class="secret-compare-grid">
-            <div class="secret-compare-monster-box">
-              <h3>SECRET MONSTER</h3>
-              <div class="monster-preview-container" id="secret-monster-reveal-preview"></div>
-            </div>
-            <div class="secret-compare-monster-box">
-              <h3>YOUR MONSTER</h3>
-              <div class="monster-preview-container" id="player-monster-reveal-preview"></div>
-            </div>
-          </div>
-
-          <div class="secret-comparison-table" id="secret-comparison-table"></div>
-
-          <div style="text-align: center; margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
-            <button class="btn btn-primary btn-large" onclick="app.setupSecretMonsterView()">
-              <span>🔄 PLAY NEXT SECRET MONSTER</span>
-            </button>
-            <button class="btn btn-secondary btn-large" data-goto="screen-modes-hub">
-              <span>🎮 PLAY MORE GAMES</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <!-- =========================================================================
-       MODALS & OVERLAYS
-       ========================================================================= -->
-
-  <!-- 1. Speaking Mode Teleprompter Modal (1 Sentence at a time!) -->
-  <div class="modal-overlay" id="speaking-teleprompter-modal">
-    <div class="modal-card speaking-teleprompter-card">
-      <div class="modal-header-row" style="width: 100%;">
-        <span class="speaking-step-counter" id="speaking-step-counter">Sentence 1 of 8</span>
-        <button class="modal-close-btn" onclick="app.closeSpeakingModal()">✕</button>
+      <div class="nav-center">
+        <span style="color:#d1fae5; font-family:var(--font-display); font-weight:700; font-size:0.95rem;">
+          🌿 Life in the Jungle • CLIL English + Science
+        </span>
       </div>
 
-      <div class="speaking-icon-badge" id="speaking-icon-badge">👁️</div>
-
-      <div class="speaking-starter-prompt" id="speaking-starter-prompt">🗣️ SAY: "It has..."</div>
-
-      <div class="speaking-main-sentence" id="speaking-main-sentence">
-        <strong>It has three big eyes.</strong>
-      </div>
-
-      <div class="speaking-controls-row">
-        <button class="btn btn-secondary" onclick="app.prevSpeakingStep()"><span>← PREV</span></button>
-        <button class="btn btn-accent" onclick="window.soundEngine.speak(document.getElementById('speaking-main-sentence').innerText)"><span>🔊 HEAR MODEL</span></button>
-        <button class="btn btn-primary" onclick="app.nextSpeakingStep()"><span>NEXT SENTENCE →</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. Presentation Fullscreen Modal (Classroom Projector) -->
-  <div class="presentation-fullscreen-modal" id="presentation-mode-modal">
-    <div class="presentation-top-bar">
-      <h1>MEET MY MONSTER: <span id="pres-monster-name" style="color: #facc15;">ZIPPY</span>!</h1>
-      <button class="btn btn-secondary" onclick="app.closePresentationMode()">✕ EXIT PRESENTATION</button>
-    </div>
-
-    <div class="presentation-body-layout">
-      <div class="presentation-monster-side">
-        <div class="monster-preview-container presentation-monster-wrap" id="presentation-monster-preview"></div>
-      </div>
-      <div class="presentation-bullets-container">
-        <div class="pres-bullet-card" onclick="window.soundEngine.speak('This is my monster')">
-          <span>👹 This is my monster</span>
-          <button class="pres-speak-chip">🔊</button>
-        </div>
-        <div id="pres-bullets-list">
-          <!-- Dynamic Bullet Points -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. Classroom Speaking Game: "Find a Monster" Modal -->
-  <div class="modal-overlay" id="find-monster-modal">
-    <div class="modal-card find-monster-card">
-      <div class="modal-header-row" style="width: 100%;">
-        <h2 class="modal-title">🔎 FIND A MONSTER!</h2>
-        <button class="modal-close-btn" onclick="app.closeFindMonsterGame()">✕</button>
-      </div>
-
-      <div class="find-monster-badge">🗣️ 👥 💡</div>
-      <p style="font-size: 1.15rem; color: #475569;">Teacher prompt! Ask the classroom to find this monster:</p>
-
-      <div class="find-monster-prompt-box" id="find-monster-prompt-text">
-        Find a monster that can fly! 🦅
-      </div>
-
-      <div style="display: flex; gap: 14px; justify-content: center; width: 100%;">
-        <button class="btn btn-accent" onclick="window.soundEngine.speak(document.getElementById('find-monster-prompt-text').innerText)">
-          <span>🔊 READ ALOUD</span>
-        </button>
-        <button class="btn btn-primary" onclick="app.openFindMonsterGame()">
-          <span>🎲 NEXT CLUE ➔</span>
+      <div class="nav-right">
+        <button class="nav-stage-btn nav-next-btn pulse-ready" id="nav-btn-next" title="Next Chapter (→ / Space)">
+          <span>NEXT</span>
+          <span>➡️</span>
         </button>
       </div>
-    </div>
-  </div>
+    </footer>
 
-  <!-- 4. Badges Overview Modal -->
-  <div class="modal-overlay" id="badges-overview-modal">
-    <div class="modal-card">
-      <div class="modal-header-row">
-        <h2 class="modal-title">🏆 MONSTER MASTER BADGES</h2>
-        <button class="modal-close-btn" onclick="document.getElementById('badges-overview-modal').classList.remove('active')">✕</button>
+    <!-- =======================================================================
+         TEACHER CONTROL HUD DRAWER
+         ======================================================================= -->
+    <aside id="teacher-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">
+          <span>👩‍🏫</span>
+          <span>TEACHER GUIDE & HUD</span>
+        </div>
+        <button class="modal-close-btn" id="btn-close-teacher-drawer" style="color:#fff; background:rgba(255,255,255,0.1);">✕</button>
       </div>
-      <div class="badges-modal-grid" id="badges-modal-grid"></div>
-    </div>
-  </div>
 
-  <!-- 5. Badge Unlock Celebration Popover -->
-  <div class="modal-overlay" id="badge-unlock-modal">
-    <div class="modal-card" style="max-width: 450px;">
-      <div class="badge-unlock-content">
-        <div class="badge-unlock-icon" id="badge-unlock-icon">🏆</div>
-        <h2 class="badge-unlock-title" id="badge-unlock-title">Badge Unlocked!</h2>
-        <p class="badge-unlock-desc" id="badge-unlock-desc">You are a Monster Master!</p>
-        <button class="btn btn-primary btn-large" style="margin-top: 15px;" onclick="document.getElementById('badge-unlock-modal').classList.remove('active')">
-          <span>AWESOME! ⭐</span>
-        </button>
-      </div>
-    </div>
-  </div>
+      <div class="drawer-content">
+        <!-- Quick Chapter Jumper -->
+        <div class="teacher-card-section">
+          <div class="section-label">⚡ JUMP TO CHAPTER</div>
+          <select id="teacher-chapter-select" style="width:100%; padding:10px; border-radius:var(--radius-md); background:#1e293b; color:#fff; border:1px solid #475569; font-family:var(--font-display); font-size:0.95rem;">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
 
-  <!-- 6. Teacher Settings Modal -->
-  <div class="modal-overlay" id="teacher-settings-modal">
-    <div class="modal-card">
-      <div class="modal-header-row">
-        <h2 class="modal-title">👩‍🏫 TEACHER SETTINGS</h2>
-        <button class="modal-close-btn" onclick="document.getElementById('teacher-settings-modal').classList.remove('active')">✕</button>
-      </div>
-      
-      <div style="text-align: left; display: flex; flex-direction: column; gap: 16px;">
-        <div>
-          <h4 style="font-weight: 800; margin-bottom: 8px;">Active Vocabulary Topics:</h4>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-weight: 700;">
-            <label><input type="checkbox" checked> ☑ Body Shapes & Parts</label>
-            <label><input type="checkbox" checked> ☑ Horns & Wings & Tails</label>
-            <label><input type="checkbox" checked> ☑ Super Powers (It can...)</label>
-            <label><input type="checkbox" checked> ☑ Personality (It is...)</label>
-            <label><input type="checkbox" checked> ☑ Worlds & Foods</label>
-            <label><input type="checkbox" checked> ☑ Clothes & Outfits</label>
+        <!-- Spoken Script -->
+        <div class="teacher-card-section">
+          <div class="section-label">🗣️ WHAT DO I SAY?</div>
+          <div class="teacher-script-box" id="teacher-script-say">
+            "Look at Green Valley! Ask the class: 'What do animals need to survive every day?'"
           </div>
         </div>
 
-        <div>
-          <h4 style="font-weight: 800; margin-bottom: 8px;">Speech Speed (TTS):</h4>
-          <input type="range" min="0.6" max="1.2" step="0.1" value="0.9" style="width: 100%;" onchange="window.soundEngine.speechRate = parseFloat(this.value)">
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b;">
-            <span>Slower (Beginner)</span>
-            <span>Normal</span>
-            <span>Faster</span>
+        <!-- Student Action / TPR -->
+        <div class="teacher-card-section">
+          <div class="section-label">🙌 WHAT DO STUDENTS DO?</div>
+          <div class="teacher-script-box" id="teacher-script-do" style="border-left-color:#10b981;">
+            "Have a student come to the whiteboard and drag the 3 survival needs around Suki."
           </div>
         </div>
 
-        <div style="border-top: 2px solid #e2e8f0; padding-top: 14px; display: flex; justify-content: space-between;">
-          <button class="btn btn-secondary" onclick="teacherMode.score = 0; teacherMode.saveState(); teacherMode.updateScoreUI();">
-            <span>Reset Star Score</span>
+        <!-- What Happens Next -->
+        <div class="teacher-card-section">
+          <div class="section-label">➡️ WHAT HAPPENS NEXT?</div>
+          <div class="teacher-script-box" id="teacher-script-next" style="border-left-color:#f59e0b;">
+            "Once all 3 items are placed, present the Jungle Ranger Badge!"
+          </div>
+        </div>
+
+        <!-- Instant Soundboard FX -->
+        <div class="teacher-card-section">
+          <div class="section-label">🔊 INSTANT SOUNDBOARD FX</div>
+          <div class="soundboard-grid">
+            <button class="soundboard-btn" data-fx="wind">💨 Wind</button>
+            <button class="soundboard-btn" data-fx="thunder">⚡ Thunder</button>
+            <button class="soundboard-btn" data-fx="crash">💥 Crash</button>
+            <button class="soundboard-btn" data-fx="splash">💧 Splash</button>
+            <button class="soundboard-btn" data-fx="munch">🍎 Munch</button>
+            <button class="soundboard-btn" data-fx="fanfare">🎺 Fanfare</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- =======================================================================
+         OFFICIAL RANGER CERTIFICATE MODAL
+         ======================================================================= -->
+    <div class="modal-overlay" id="certificate-modal">
+      <div class="modal-card" style="text-align:center; max-width:700px; border-color:#f59e0b;">
+        <div class="modal-header" style="justify-content:center; border:none; margin-bottom:10px;">
+          <div class="modal-title" style="color:#d97706; font-size:2.2rem;">
+            🎖️ OFFICIAL JUNGLE RANGER CERTIFICATE
+          </div>
+        </div>
+
+        <div style="background:#fef3c7; border:3px solid #f59e0b; border-radius:var(--radius-xl); padding:24px; margin:16px 0;">
+          <div style="font-size:3.5rem; margin-bottom:8px;">🌿 🏆 🐾</div>
+          <div style="font-family:var(--font-display); font-size:1.6rem; color:#78350f; font-weight:900;">
+            CONGRATULATIONS, JUNGLE RANGERS!
+          </div>
+          <p style="font-size:1.15rem; color:#92400e; margin:10px 0;">
+            The classroom teams successfully saved Green Valley's ecosystem, protected animal habitats, restored food chains, and made great scientific predictions!
+          </p>
+
+          <div style="display:flex; justify-content:space-around; margin:18px 0; background:rgba(255,255,255,0.7); padding:12px; border-radius:var(--radius-lg);">
+            <div>
+              <div style="font-family:var(--font-display); font-size:1.1rem; color:#065f46; font-weight:800;">🟢 Team Forest</div>
+              <div style="font-size:1.8rem; font-weight:900; color:#059669;" id="cert-forest-score">0</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-display); font-size:1.1rem; color:#0369a1; font-weight:800;">🔵 Team River</div>
+              <div style="font-size:1.8rem; font-weight:900; color:#0284c7;" id="cert-river-score">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:16px;">
+          <button class="report-btn report-btn-cert" onclick="window.print()">
+            <span>🖨️ Print Certificate</span>
           </button>
-          <button class="btn btn-primary" onclick="document.getElementById('teacher-settings-modal').classList.remove('active')">
-            <span>SAVE & CLOSE</span>
+          <button class="report-btn" style="background:#475569; color:#fff;" onclick="window.jungleGame.hideCertificateModal()">
+            <span>Close ✕</span>
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Celebration Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
   </div>
 
-  <!-- 7. Reset Confirmation Modal -->
-  <div class="modal-overlay" id="reset-confirm-modal">
-    <div class="modal-card" style="max-width: 440px;">
-      <h2 class="modal-title" style="margin-bottom: 12px;">🔄 START AGAIN?</h2>
-      <p style="font-size: 1.15rem; color: #475569; margin-bottom: 24px;">Are you sure you want to make a new monster?</p>
-      <div style="display: flex; justify-content: center; gap: 14px;">
-        <button class="btn btn-danger btn-large" onclick="app.confirmReset()"><span>YES!</span></button>
-        <button class="btn btn-secondary btn-large" onclick="app.closeResetModal()"><span>NO</span></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Surprise Popup Banner Container -->
-  <div class="surprise-popup-banner" id="surprise-popup-banner"></div>
-
-  <!-- =========================================================================
-       SCRIPTS IN DEPENDENCY ORDER
-       ========================================================================= -->
-  <script src="js/audio.js"></script>
-  <script src="js/monsterState.js"></script>
-  <script src="js/monsterRenderer.js"></script>
-  <script src="js/grammarEngine.js"></script>
-  <script src="js/challenges.js"></script>
-  <script src="js/teacherMode.js"></script>
-  <script src="js/app.js"></script>
-
+  <!-- Game Scripts -->
+  <script src="js/jungle-audio.js"></script>
+  <script src="js/jungle-data.js"></script>
+  <script src="js/jungle-views.js"></script>
+  <script src="js/jungle-engine.js"></script>
 </body>
 </html>
