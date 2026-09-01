@@ -1,7 +1,7 @@
 /**
  * app.js - Main Application Orchestrator & UI Controller
  * "Build Your Own Monster!"
- * Coordinates State Store, Renderer, Grammar Engine, Audio, Challenges, and Step-by-Step Multi-Page Flow.
+ * Real Step-by-Step Single-Screen Engine (One Screen = One Step).
  */
 
 class MonsterApp {
@@ -14,35 +14,35 @@ class MonsterApp {
     this.speakingSteps = [];
 
     this.levelData = {
-      1: { title: 'LEVEL 1: CHOOSE THE BODY! 🧸', cheer: 'Great choice! ⭐', phraseCat: 'body' },
-      2: { title: 'LEVEL 2: CHOOSE THE EYES! 👁️', cheer: 'Look at those eyes! 👀', phraseCat: 'eyes' },
-      3: { title: 'LEVEL 3: EARS & HORNS! 🦄', cheer: 'Super cool ears! 👂', phraseCat: 'ears' },
-      4: { title: 'LEVEL 4: MAKE THE FACE! 👄', cheer: 'What a funny face! 😃', phraseCat: 'face' },
-      5: { title: 'LEVEL 5: ARMS & LEGS! 👐', cheer: 'Ready to move! 🦵', phraseCat: 'limbs' },
-      6: { title: 'LEVEL 6: SPECIAL PARTS! 🐉', cheer: 'Your monster is unique! ✨', phraseCat: 'special' },
-      7: { title: 'LEVEL 7: COLORS & PATTERNS! 🎨', cheer: 'So colorful! 🌈', phraseCat: 'colors' },
-      8: { title: 'LEVEL 8: DRESS YOUR MONSTER! 👕', cheer: 'Looking stylish! 👗', phraseCat: 'clothes' },
-      9: { title: 'LEVEL 9: ADD ACCESSORIES! 🧢', cheer: 'Awesome accessories! 👑', phraseCat: 'accessories' },
-      10: { title: 'LEVEL 10: PERSONALITY & POWERS! ❤️', cheer: 'Super powers unlocked! ⚡', phraseCat: 'powers' },
-      11: { title: 'LEVEL 11: WORLD & FOOD! 🏠', cheer: 'Yummy favorite food! 🍕', phraseCat: 'world' },
-      12: { title: 'LEVEL 12: NAME YOUR MONSTER! 📛', cheer: 'Almost ready! 🎉', phraseCat: 'name' }
+      1: { title: 'STEP 1: CHOOSE A BODY 🧸', cheer: 'Great choice! ⭐' },
+      2: { title: 'STEP 2: CHOOSE THE EYES 👁️', cheer: 'Look at those eyes! 👀' },
+      3: { title: 'STEP 3: EARS & HORNS 🦄', cheer: 'Super cool ears! 👂' },
+      4: { title: 'STEP 4: MAKE THE FACE 👄', cheer: 'What a funny face! 😃' },
+      5: { title: 'STEP 5: ARMS & LEGS 👐', cheer: 'Ready to move! 🦵' },
+      6: { title: 'STEP 6: SPECIAL PARTS 🐉', cheer: 'Your monster is unique! ✨' },
+      7: { title: 'STEP 7: COLORS & PATTERNS 🎨', cheer: 'So colorful! 🌈' },
+      8: { title: 'STEP 8: DRESS YOUR MONSTER 👕', cheer: 'Looking stylish! 👗' },
+      9: { title: 'STEP 9: ADD ACCESSORIES 🧢', cheer: 'Awesome accessories! 👑' },
+      10: { title: 'STEP 10: PERSONALITY & POWERS ❤️', cheer: 'Super powers unlocked! ⚡' },
+      11: { title: 'STEP 11: WORLD & FOOD 🏠', cheer: 'Yummy favorite food! 🍕' },
+      12: { title: 'STEP 12: NAME YOUR MONSTER 📛', cheer: 'Almost ready! 🎉' }
     };
 
     this.randomNames = [
-      'Zippy', 'Grumble', 'Fluffy', 'Sparky', 'Bob', 'Blobby', 'Pip', 'Ziggy', 
-      'Munchkin', 'Barnaby', 'Cosmo', 'Toby', 'Gizmo', 'Waffles', 'Bubbles', 'Rex'
+      'Zippy', 'Bobo', 'Fluffy', 'Rex', 'Momo', 'Grumble', 'Sparky', 'Bob', 
+      'Blobby', 'Pip', 'Ziggy', 'Munchkin', 'Barnaby', 'Cosmo', 'Toby', 'Gizmo'
     ];
 
     this.init();
   }
 
   init() {
-    // 1. Subscribe to Monster State updates
+    // 1. Subscribe to central Monster State updates
     window.monsterStore.subscribe((monster) => {
       this.onMonsterUpdated(monster);
     });
 
-    // 2. Bind all UI Events
+    // 2. Bind all UI click events
     this.bindEvents();
 
     // 3. Initial Setup
@@ -61,7 +61,6 @@ class MonsterApp {
     this.updateSelectionButtons();
     this.updatePhraseBadge();
 
-    // If on final screen, update description
     if (this.currentScreen === 'screen-final') {
       this.renderFinalScreen();
     }
@@ -109,46 +108,54 @@ class MonsterApp {
     this.updateAllPreviews();
   }
 
+  startCreation(mode = 'creator') {
+    this.currentMode = mode;
+    this.setStep(1);
+    this.goToScreen('screen-create', mode);
+  }
+
   // ==========================================
-  // STEP-BY-STEP ADVENTURE FLOW (12 LEVELS)
+  // STRICT STEP-BY-STEP FLOW (ONE SCREEN AT A TIME)
   // ==========================================
   setStep(stepNumber) {
     if (stepNumber < 1 || stepNumber > this.totalSteps) return;
     this.currentStep = stepNumber;
     window.soundEngine.playPop();
 
-    // 1. Show only active step page
-    document.querySelectorAll('.creator-step-page').forEach(page => {
-      page.classList.remove('active');
+    // 1. Hide ALL other step screens, show ONLY the active one
+    document.querySelectorAll('.step-screen').forEach(screen => {
+      screen.classList.remove('active');
     });
-    const targetPage = document.getElementById(`step-page-${stepNumber}`);
-    if (targetPage) targetPage.classList.add('active');
+    const target = document.getElementById(`step-screen-${stepNumber}`);
+    if (target) target.classList.add('active');
 
-    // 2. Update Adventure Header (Badge, Title, Encouragement Cheer)
+    // 2. Update Header Info (Badge, Title, Encouragement Cheer)
     const levelInfo = this.levelData[stepNumber];
-    const badgeEl = document.getElementById('adventure-step-badge');
-    const titleEl = document.getElementById('adventure-level-title');
-    const cheerEl = document.getElementById('adventure-cheer-badge');
+    const badgeEl = document.getElementById('wizard-step-badge');
+    const titleEl = document.getElementById('wizard-step-title');
+    const cheerEl = document.getElementById('wizard-cheer-badge');
 
     if (badgeEl) badgeEl.innerText = `STEP ${stepNumber} OF ${this.totalSteps}`;
     if (titleEl) titleEl.innerText = levelInfo.title;
     if (cheerEl) cheerEl.innerText = levelInfo.cheer;
 
-    // 3. Update Breadcrumbs (Active / Completed)
-    document.querySelectorAll('.adventure-breadcrumbs .crumb').forEach(crumb => {
-      const stepIdx = parseInt(crumb.dataset.step, 10);
-      crumb.classList.toggle('active', stepIdx === stepNumber);
-      crumb.classList.toggle('completed', stepIdx < stepNumber);
+    // 3. Update Progress Track
+    document.querySelectorAll('.wizard-progress-track .track-step').forEach(dot => {
+      const dotStep = parseInt(dot.dataset.step, 10);
+      dot.classList.toggle('active', dotStep === stepNumber);
+      dot.classList.toggle('completed', dotStep < stepNumber);
     });
 
-    // 4. Update Next Button Text
-    const nextBtn = document.getElementById('creator-next-btn');
+    // 4. Update Navigation Buttons
+    const backBtn = document.getElementById('wizard-back-btn');
+    const nextBtn = document.getElementById('wizard-next-btn');
+
+    if (backBtn) {
+      backBtn.innerHTML = stepNumber === 1 ? '<span>← HOME</span>' : '<span>← BACK</span>';
+    }
+
     if (nextBtn) {
-      if (stepNumber === this.totalSteps) {
-        nextBtn.innerHTML = '<span>FINISH MONSTER! 🎉</span>';
-      } else {
-        nextBtn.innerHTML = '<span>NEXT STEP ➔</span>';
-      }
+      nextBtn.innerHTML = stepNumber === this.totalSteps ? '<span>FINISH MONSTER! 🎉</span>' : '<span>NEXT →</span>';
     }
 
     this.updatePhraseBadge();
@@ -237,7 +244,7 @@ class MonsterApp {
       case 10:
         const powers = window.grammarEngine.getPowersPhrase(monster);
         const traits = window.grammarEngine.getPersonalityPhrase(monster);
-        phrase = powers ? `CAN ${powers.toUpperCase()}` : (traits ? `IS ${traits.toUpperCase()}` : 'MONSTER POWER');
+        phrase = powers ? `CAN ${powers.toUpperCase()}` : (traits ? `IS ${traits.toUpperCase()}` : 'CHOOSE POWERS');
         break;
       case 11:
         phrase = `LIVES IN ${monster.world.toUpperCase()}, LIKES ${monster.food.toUpperCase()}`;
@@ -687,7 +694,8 @@ class MonsterApp {
 
   closeFindMonsterGame() {
     const modal = document.getElementById('find-monster-modal');
-    if (modal) modal.classList.remove('active');
+    if (!modal) return;
+    modal.classList.remove('active');
     window.soundEngine.stopSpeech();
   }
 
@@ -728,7 +736,7 @@ class MonsterApp {
       banner.innerHTML = `
         <h3>💪 KEEP TRYING!</h3>
         <p>${quest.hint}</p>
-        <button class="btn btn-secondary" data-goto="screen-create" data-mode="challenge">🛠️ Open Creator & Fix</button>
+        <button class="btn btn-secondary" onclick="app.startCreation('challenge')">🛠️ Open Creator & Fix</button>
       `;
     }
   }
@@ -791,7 +799,7 @@ class MonsterApp {
       banner.innerHTML = `
         <h3>💪 LISTEN AGAIN!</h3>
         <button class="btn btn-accent" onclick="app.playListeningAudio()">🔊 Replay Audio</button>
-        <button class="btn btn-secondary" data-goto="screen-create" data-mode="listening">🛠️ Open Creator & Fix</button>
+        <button class="btn btn-secondary" onclick="app.startCreation('listening')">🛠️ Open Creator & Fix</button>
       `;
     }
   }
@@ -1052,9 +1060,9 @@ class MonsterApp {
       });
     });
 
-    // 2. Breadcrumb Click Navigation
-    document.querySelectorAll('.adventure-breadcrumbs .crumb').forEach(crumb => {
-      crumb.addEventListener('click', (e) => {
+    // 2. Track Step Click Navigation
+    document.querySelectorAll('.wizard-progress-track .track-step').forEach(dot => {
+      dot.addEventListener('click', (e) => {
         const step = parseInt(e.currentTarget.dataset.step, 10);
         this.setStep(step);
       });
