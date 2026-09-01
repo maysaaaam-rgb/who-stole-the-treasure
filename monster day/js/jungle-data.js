@@ -1,165 +1,684 @@
 /* ==========================================================================
    🌿 LIFE IN THE JUNGLE — THE JUNGLE RANGERS
-   Complete Game Data, Storyboard, CLIL Curriculum & Teacher Guide Scripts
+   Complete Game Data: Visual Jungle Exploration & Vocabulary Adventure
+   + Continuous Storyline & CLIL Science Curriculum
    ========================================================================== */
 
 window.JUNGLE_DATA = {
-  // Vocabulary Dictionary for Quick Reference
-  dictionary: {
-    HABITAT: {
-      word: "HABITAT",
-      icon: "🏠",
-      definition: "A habitat is the place where an animal lives and finds what it needs."
-    },
-    PREDATOR: {
-      word: "PREDATOR",
-      icon: "🦊",
-      definition: "A predator hunts other animals for food."
-    },
-    PREY: {
-      word: "PREY",
-      icon: "🐇",
-      definition: "Prey is an animal that is hunted and eaten by predators."
-    },
-    ECOSYSTEM: {
-      word: "ECOSYSTEM",
-      icon: "🌎",
-      definition: "Living things depend on each other and their environment."
-    },
-    SURVIVE: {
-      word: "SURVIVE",
-      icon: "💚",
-      definition: "To stay alive by finding food, water, and shelter."
-    }
-  },
-
-  // Animal Character Roster
+  // Expanded 16-Animal Cast for a Real Living Ecosystem
   animals: {
     squirrel: {
       id: "squirrel",
-      name: "Suki the Squirrel",
+      name: "Squirrel",
       emoji: "🐿️",
-      role: "Forest Herbivore",
       habitat: "Forest / Tall Trees",
       food: "Nuts & Seeds",
-      needs: "Trees for shelter, nuts for food, clean water",
-      predators: ["Owl", "Fox"],
-      status: "Lost her tree shelter in the storm"
-    },
-    raccoon: {
-      id: "raccoon",
-      name: "Rico the Raccoon",
-      emoji: "🦝",
-      role: "River Omnivore",
-      habitat: "Riverbank / Forest Edge",
-      food: "Berries, Fish & Clean Water",
-      needs: "Clean drinking water and forest shelter",
-      predators: ["Coyote", "Eagle"],
-      status: "Cannot drink dirty flood water"
+      shelter: "Tree Hollow",
+      sound: "chatter",
+      desc: "A small mammal with a bushy tail that climbs trees and collects acorns."
     },
     frog: {
       id: "frog",
-      name: "Poppy the Frog",
+      name: "Frog",
       emoji: "🐸",
-      role: "Wetland Amphibian",
-      habitat: "Pond / Wetlands",
-      food: "Insects & Bugs",
-      needs: "Moist clean water and lily pads",
-      predators: ["Eagle", "Fox"],
-      status: "Her pond is drying up"
-    },
-    bear: {
-      id: "bear",
-      name: "Boris the Bear",
-      emoji: "🐻",
-      role: "Forest Giant (Omnivore)",
-      habitat: "Deep Forest & Mountain",
-      food: "Fish & Sweet Forest Berries",
-      needs: "Abundant food and cave/woodland shelter",
-      predators: ["None (Top of local chain)"],
-      status: "Cannot find fish in the muddy river"
-    },
-    rabbit: {
-      id: "rabbit",
-      name: "Pip the Rabbit",
-      emoji: "🐇",
-      role: "Grassland Prey",
-      habitat: "Meadow & Grassland Burrows",
-      food: "Green Plants & Grasses",
-      needs: "Plentiful plants and underground burrows",
-      predators: ["Fox", "Owl", "Eagle"],
-      status: "Plants are disappearing"
+      habitat: "Pond & Wetlands",
+      food: "Insects & Flies",
+      shelter: "Pond & Lily Pads",
+      sound: "croak",
+      desc: "An amphibian that lives near water, has moist skin, and catches insects."
     },
     fox: {
       id: "fox",
-      name: "Flash the Fox",
+      name: "Fox",
       emoji: "🦊",
-      role: "Forest Predator",
-      habitat: "Forest & Meadow Edge",
-      food: "Rabbits & Small Rodents",
-      needs: "Hunting ground and den",
-      predators: ["Bear / Coyote"],
-      status: "Needs prey to survive"
+      habitat: "Forest & Meadow",
+      food: "Rabbits, Mice & Berries",
+      shelter: "Underground Den",
+      sound: "bark",
+      desc: "A clever predator with red fur, pointed ears, and a bushy tail."
+    },
+    rabbit: {
+      id: "rabbit",
+      name: "Rabbit",
+      emoji: "🐇",
+      habitat: "Grassland & Meadow",
+      food: "Green Grass & Plants",
+      shelter: "Burrow (Hole in ground)",
+      sound: "thump",
+      desc: "A gentle prey animal with long ears that hops and eats plants."
+    },
+    bear: {
+      id: "bear",
+      name: "Bear",
+      emoji: "🐻",
+      habitat: "Deep Forest & Mountain",
+      food: "Fish, Berries & Roots",
+      shelter: "Cave / Forest Thicket",
+      sound: "growl",
+      desc: "A large, strong omnivore that fishes in rivers and eats sweet berries."
+    },
+    raccoon: {
+      id: "raccoon",
+      name: "Raccoon",
+      emoji: "🦝",
+      habitat: "Riverbank & Woods",
+      food: "Fish, Berries & Frogs",
+      shelter: "Tree Hollow",
+      sound: "chitter",
+      desc: "A curious animal with a black face mask and dexterous paws."
     },
     owl: {
       id: "owl",
-      name: "Ollie the Owl",
+      name: "Owl",
       emoji: "🦉",
-      role: "Nocturnal Predator",
-      habitat: "Hollow Trees",
-      food: "Mice & Insects",
-      needs: "High tree perch and small prey",
-      predators: ["Eagle"],
-      status: "Watching the forest recovery"
+      habitat: "Tall Forest Trees",
+      food: "Mice & Small Rodents",
+      shelter: "High Tree Hollow",
+      sound: "hoot",
+      desc: "A nocturnal bird of prey with large round eyes that hunts at night."
+    },
+    eagle: {
+      id: "eagle",
+      name: "Eagle",
+      emoji: "🦅",
+      habitat: "Mountain Cliffs & High Sky",
+      food: "Fish & Small Mammals",
+      shelter: "High Clifftop Nest",
+      sound: "screech",
+      desc: "A majestic bird of prey with keen eyesight and powerful wings."
+    },
+    deer: {
+      id: "deer",
+      name: "Deer",
+      emoji: "🦌",
+      habitat: "Forest & Open Meadow",
+      food: "Leaves, Grass & Twigs",
+      shelter: "Forest Thicket",
+      sound: "bleat",
+      desc: "A graceful herbivore with slender legs that grazes quietly."
+    },
+    turtle: {
+      id: "turtle",
+      name: "Turtle",
+      emoji: "🐢",
+      habitat: "Pond & Riverbank",
+      food: "Water Plants & Small Bugs",
+      shelter: "Hard Shell",
+      sound: "splash",
+      desc: "A slow-moving reptile with a protective shell that sunbathes on rocks."
+    },
+    snake: {
+      id: "snake",
+      name: "Snake",
+      emoji: "🐍",
+      habitat: "Grassland & Forest Floor",
+      food: "Mice, Frogs & Eggs",
+      shelter: "Under Rocks & Logs",
+      sound: "hiss",
+      desc: "A reptile that slithers through grass and hunts small prey."
+    },
+    butterfly: {
+      id: "butterfly",
+      name: "Butterfly",
+      emoji: "🦋",
+      habitat: "Grassland & Flower Gardens",
+      food: "Flower Nectar",
+      shelter: "Under Leaf",
+      sound: "flutter",
+      desc: "A colorful insect that drinks nectar from blooming wildflowers."
+    },
+    bee: {
+      id: "bee",
+      name: "Bee",
+      emoji: "🐝",
+      habitat: "Meadow & Forest Hives",
+      food: "Flower Pollen & Nectar",
+      shelter: "Hive (in hollow tree)",
+      sound: "buzz",
+      desc: "A hardworking pollinator insect that makes honey."
+    },
+    fish: {
+      id: "fish",
+      name: "Fish",
+      emoji: "🐟",
+      habitat: "River & Freshwater Pond",
+      food: "Water Bugs & Algae",
+      shelter: "Deep River Currents",
+      sound: "bubble",
+      desc: "A water animal with fins and gills that swims in clean streams."
+    },
+    hedgehog: {
+      id: "hedgehog",
+      name: "Hedgehog",
+      emoji: "🦔",
+      habitat: "Forest Floor & Bushes",
+      food: "Insects, Worms & Berries",
+      shelter: "Leaf Pile under Bushes",
+      sound: "snuffle",
+      desc: "A small mammal covered in spiky quills that rolls into a ball for safety."
+    },
+    bird: {
+      id: "bird",
+      name: "Small Bird",
+      emoji: "🐦",
+      habitat: "Forest Canopy & Branches",
+      food: "Seeds, Berries & Worms",
+      shelter: "Twig Nest",
+      sound: "tweet",
+      desc: "A cheerful singing songbird that builds neat nests of twigs."
     }
   },
 
-  // 17 Story Chapters + Final Challenges
+  // Persistent Visual Word Wall Vocabulary
+  visualWordWall: [
+    { word: "SQUIRREL", icon: "🐿️", type: "animal", desc: "Climbs trees, eats nuts, has a bushy tail." },
+    { word: "FROG", icon: "🐸", type: "animal", desc: "Lives in water, hops, eats insects." },
+    { word: "RABBIT", icon: "🐇", type: "animal", desc: "Hops in grassland, eats plants, has long ears." },
+    { word: "FOX", icon: "🦊", type: "animal", desc: "Forest predator, hunts rabbits, has red fur." },
+    { word: "BEAR", icon: "🐻", type: "animal", desc: "Large forest mammal, eats fish and berries." },
+    { word: "RACCOON", icon: "🦝", type: "animal", desc: "Curious river animal with a black mask." },
+    { word: "OWL", icon: "🦉", type: "animal", desc: "Nocturnal hunter with large round eyes." },
+    { word: "EAGLE", icon: "🦅", type: "animal", desc: "High flying bird of prey with sharp vision." },
+    { word: "DEER", icon: "🦌", type: "animal", desc: "Gentle herbivore that grazes on leaves." },
+    { word: "FISH", icon: "🐟", type: "animal", desc: "Swims in clean rivers and ponds." },
+    { word: "TREE", icon: "🌳", type: "nature", desc: "Tall plant with branches, leaves, and wood." },
+    { word: "PLANT", icon: "🌿", type: "nature", desc: "Green living organism; primary food for herbivores." },
+    { word: "WATER", icon: "💧", type: "needs", desc: "Clean liquid all living things must drink." },
+    { word: "FOOD", icon: "🍎", type: "needs", desc: "Nourishment animals eat for energy to grow." },
+    { word: "SHELTER", icon: "🏠", type: "science", desc: "A safe place that protects an animal from danger." },
+    { word: "HABITAT", icon: "🏡", type: "science", desc: "An animal's home that provides food, water, and shelter." },
+    { word: "PREDATOR", icon: "🦊", type: "science", desc: "An animal that hunts and eats other animals." },
+    { word: "PREY", icon: "🐇", type: "science", desc: "An animal that is hunted and eaten by predators." },
+    { word: "FOOD CHAIN", icon: "🔗", type: "science", desc: "Shows how living things get food and energy." },
+    { word: "ECOSYSTEM", icon: "🌎", type: "science", desc: "A community of living things connected to their environment." }
+  ],
+
+  // Complete 26-Step Storyboard:
+  // Part 1: Visual Jungle Exploration & Vocabulary Adventure (Chapters 1–13)
+  // Part 2: The Great Storm & Ranger Rescue Missions (Chapters 14–26+)
   chapters: [
     // -----------------------------------------------------------------------
-    // CHAPTER 1: Welcome to Green Valley
+    // CHAPTER 1: Welcome to Green Valley (Open Visual Exploration)
     // -----------------------------------------------------------------------
     {
-      id: "chap-1",
+      id: "v-explore",
       number: 1,
+      phase: "exploration",
       title: "Welcome to Green Valley",
-      subtitle: "Discover Basic Animal Needs",
-      clilGoal: "Animals have 3 basic needs to survive: Food, Water, and Shelter.",
-      languageGoal: "Needs vocabulary + 'Animals need... to survive.'",
+      subtitle: "Open Visual Ecosystem Discovery",
+      clilGoal: "Observe and identify living things in a balanced natural ecosystem.",
+      languageGoal: "Naming & pointing: 'What can you see? I can see a squirrel, water, a tree...'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Welcome to Green Valley! Many animals live here happily. What do animals need to survive?",
-        spokenText: "Welcome to Green Valley! Many animals live here. What do animals need to survive?"
+        text: "Welcome to Green Valley! Touch the animals and nature to explore their beautiful home.",
+        spokenText: "Welcome to Green Valley! Touch the animals and nature to explore their home."
       },
       teacherGuide: {
-        say: "Look at Green Valley! Ask the class: 'What do animals need to survive every day?'",
-        do: "Have a student come to the whiteboard and drag the 3 survival needs around Suki.",
-        next: "Once all 3 items are placed, present the Jungle Ranger Badge!"
+        say: "Ask the class: 'What can you see? Can you find a squirrel? Can you find water? Can you find a frog?'",
+        do: "Invite students to touch different animals and plants on the whiteboard to hear their sounds and see them move.",
+        next: "Click NEXT to play 'Ranger Eyes'!"
       },
-      type: "needs_wheel",
-      targetAnimal: "squirrel",
-      requiredItems: ["food", "water", "shelter"],
-      availableItems: [
-        { id: "food", name: "Food", emoji: "🍎", label: "Nutritious Food", correct: true },
-        { id: "water", name: "Water", emoji: "💧", label: "Clean Water", correct: true },
-        { id: "shelter", name: "Shelter", emoji: "🏠", label: "Safe Shelter", correct: true },
-        { id: "toy", name: "Toy", emoji: "⚽", label: "Plastic Toy", correct: false },
-        { id: "tv", name: "Screen", emoji: "📺", label: "Television", correct: false }
+      type: "open_exploration",
+      hotspots: [
+        { id: "squirrel", name: "Squirrel 🐿️", sound: "chatter", x: 22, y: 35, emoji: "🐿️" },
+        { id: "frog", name: "Frog 🐸", sound: "croak", x: 68, y: 72, emoji: "🐸" },
+        { id: "fox", name: "Fox 🦊", sound: "bark", x: 42, y: 60, emoji: "🦊" },
+        { id: "bird", name: "Bird 🐦", sound: "tweet", x: 82, y: 28, emoji: "🐦" },
+        { id: "deer", name: "Deer 🦌", sound: "bleat", x: 88, y: 55, emoji: "🦌" },
+        { id: "butterfly", name: "Butterfly 🦋", sound: "flutter", x: 12, y: 68, emoji: "🦋" }
       ],
-      successMessage: "Great job! You are ready to become Jungle Rangers! 🎖️",
       healthChange: 5
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 2: The Great Storm
+    // CHAPTER 2: Ranger Eyes (Find the Animal in Nature)
     // -----------------------------------------------------------------------
     {
-      id: "chap-2",
+      id: "v-ranger-eyes",
       number: 2,
+      phase: "exploration",
+      title: "Ranger Eyes",
+      subtitle: "Spot the Hidden Animals",
+      clilGoal: "Animals blend naturally into their specific habitats (trees, pond, bushes).",
+      languageGoal: "Action directives: 'Find the frog! Find the squirrel! Find the fox!'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Use your Ranger Eyes! Can you find the hidden animals in the jungle?",
+        spokenText: "Use your Ranger Eyes! Can you find the hidden animals in the jungle?"
+      },
+      teacherGuide: {
+        say: "Call out one animal at a time: 'Find the frog near the water!' 'Find the squirrel in the tree!'",
+        do: "Students come up and tap each hidden animal.",
+        next: "Once all 5 animals are found, proceed to Who Am I?"
+      },
+      type: "ranger_eyes_search",
+      targets: [
+        { id: "frog", name: "Frog 🐸", hint: "Look near the water lily pond!", found: false },
+        { id: "squirrel", name: "Squirrel 🐿️", hint: "Look up in the oak tree!", found: false },
+        { id: "fox", name: "Fox 🦊", hint: "Look behind the forest bushes!", found: false },
+        { id: "owl", name: "Owl 🦉", hint: "Look in the high tree branch!", found: false },
+        { id: "rabbit", name: "Rabbit 🐇", hint: "Look in the tall meadow grass!", found: false }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 3: Who Am I? (Contextual Vocabulary Clues)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-who-am-i",
+      number: 3,
+      phase: "exploration",
+      title: "Who Am I?",
+      subtitle: "Discover Words through Visual Clues",
+      clilGoal: "Connect physical traits and behaviors to animal names.",
+      languageGoal: "Clue comprehension: 'I live in... I eat... Who am I?'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Look at the clues. Who is this animal?",
+        spokenText: "Look at the clues. Who is this animal?"
+      },
+      teacherGuide: {
+        say: "Read the 3 visual clues with TPR actions: 'I live in trees. I eat nuts. I am small. Who am I?'",
+        do: "Have students call out the answer before tapping the reveal button.",
+        next: "Practice with 3 different animals."
+      },
+      type: "who_am_i_puzzles",
+      puzzles: [
+        {
+          animalId: "squirrel",
+          name: "SQUIRREL",
+          emoji: "🐿️",
+          clues: [
+            "🌳 I live in tall trees.",
+            "🌰 I eat nuts and acorns.",
+            "🐾 I have a big bushy tail."
+          ],
+          revealed: false
+        },
+        {
+          animalId: "frog",
+          name: "FROG",
+          emoji: "🐸",
+          clues: [
+            "💧 I live near water.",
+            "🪲 I catch insects with my tongue.",
+            "🟢 I have smooth green skin."
+          ],
+          revealed: false
+        },
+        {
+          animalId: "rabbit",
+          name: "RABBIT",
+          emoji: "RABBIT",
+          clues: [
+            "🌾 I live in grassy fields.",
+            "🌿 I eat green plants.",
+            "🐰 I have long ears and I hop."
+          ],
+          revealed: false
+        }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 4: Match the Animal (Word to Picture)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-match-animal",
+      number: 4,
+      phase: "exploration",
+      title: "Match the Animal",
+      subtitle: "Touch & Drag Word Matching",
+      clilGoal: "Recognize realistic visual representations of key animal species.",
+      languageGoal: "Word recognition: SQUIRREL, FROG, RABBIT, FOX.",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Drag each word card to the matching animal picture. Tap works too!",
+        spokenText: "Drag each word card to the matching animal picture."
+      },
+      teacherGuide: {
+        say: "Point to each word: 'Where is SQUIRREL? Where is FROG?'",
+        do: "Students drag or tap the word to snap it to the matching animal photo.",
+        next: "Proceed to 'Where Does It Live?'"
+      },
+      type: "match_word_picture",
+      pairs: [
+        { id: "squirrel", word: "SQUIRREL", emoji: "🐿️", label: "Squirrel in tree" },
+        { id: "frog", word: "FROG", emoji: "🐸", label: "Frog on lily pad" },
+        { id: "rabbit", word: "RABBIT", emoji: "🐇", label: "Rabbit in grass" },
+        { id: "fox", word: "FOX", emoji: "🦊", label: "Fox in forest" }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 5: Where Does It Live? (Illustrated Biomes)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-where-lives",
+      number: 5,
+      phase: "exploration",
+      title: "Where Does It Live?",
+      subtitle: "Matching Animals to Real Illustrated Biomes",
+      clilGoal: "Different animal species live in specific natural environments.",
+      languageGoal: "Prepositions of place: 'The frog lives in the pond. The squirrel lives in the forest.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Drag each animal into its real home environment: Forest, Pond, River, or Grassland.",
+        spokenText: "Where do these animals live? Drag each animal to its environment."
+      },
+      teacherGuide: {
+        say: "Point to the 4 biomes: Forest 🌲, Pond 💧, River 🌊, Grassland 🌾.",
+        do: "Students drag the frog to the pond, the squirrel to the forest, the fish to the river, and the rabbit to the grassland.",
+        next: "Discover basic needs in Chapter 6."
+      },
+      type: "where_does_it_live",
+      items: [
+        { id: "frog", name: "Frog", emoji: "🐸", target: "pond", targetName: "Pond" },
+        { id: "squirrel", name: "Squirrel", emoji: "🐿️", target: "forest", targetName: "Forest" },
+        { id: "fish", name: "Fish", emoji: "🐟", target: "river", targetName: "River" },
+        { id: "rabbit", name: "Rabbit", emoji: "🐇", target: "grassland", targetName: "Grassland" }
+      ],
+      environments: [
+        { id: "forest", name: "Forest 🌲", desc: "Tall trees, moss & nuts" },
+        { id: "pond", name: "Pond 💧", desc: "Still water & lily pads" },
+        { id: "river", name: "River 🌊", desc: "Flowing stream & pebbles" },
+        { id: "grassland", name: "Grassland 🌾", desc: "Tall grass & flowers" }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 6: What Does It Need? (Survival Triangle)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-what-needs",
+      number: 6,
+      phase: "exploration",
+      title: "What Does It Need?",
+      subtitle: "Food, Water, and Shelter",
+      clilGoal: "Animals need 3 essential things to survive: Food, Water, and Shelter.",
+      languageGoal: "Sentences with NEED: 'The squirrel needs food, water, and shelter.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "What do animals need to survive? Drag the 3 basic survival items to the squirrel.",
+        spokenText: "What do animals need to survive? Drag food, water, and shelter."
+      },
+      teacherGuide: {
+        say: "Emphasize: 'Animals need FOOD to eat, WATER to drink, and SHELTER to stay safe.'",
+        do: "Have a student drag 🌰 Food, 💧 Water, and 🌳 Shelter around the animal.",
+        next: "Next, explore different types of animal shelters."
+      },
+      type: "what_needs_matching",
+      targetAnimal: "squirrel",
+      neededItems: [
+        { id: "food", name: "FOOD 🌰", desc: "Energy to live and grow", correct: true },
+        { id: "water", name: "WATER 💧", desc: "Clean water to drink", correct: true },
+        { id: "shelter", name: "SHELTER 🌳", desc: "A safe place to rest", correct: true }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 7: Animal Homes (Shelter Discovery)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-animal-homes",
+      number: 7,
+      phase: "exploration",
+      title: "Animal Homes (Shelter)",
+      subtitle: "A Shelter is a Safe Place",
+      clilGoal: "Shelters protect animals from bad weather and predators (Nests, Burrows, Hollows, Dens).",
+      languageGoal: "Vocabulary: SHELTER. 'A bird lives in a nest. A fox lives in a den.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "A SHELTER is a safe home. Match each animal to its shelter!",
+        spokenText: "A shelter is a safe place. Match each animal to its shelter."
+      },
+      teacherGuide: {
+        say: "Explain simply: 'SHELTER = a safe place.'",
+        do: "Match Bird ➔ Nest 🐦, Fox ➔ Den 🦊, Rabbit ➔ Burrow 🐇, Squirrel ➔ Tree Hollow 🐿️.",
+        next: "Proceed to discover Habitat."
+      },
+      type: "shelter_matching",
+      pairs: [
+        { animal: "Bird 🐦", shelter: "Nest 🪺", shelterName: "Twig Nest" },
+        { animal: "Fox 🦊", shelter: "Den 🕳️", shelterName: "Underground Den" },
+        { animal: "Rabbit 🐇", shelter: "Burrow 🕳️", shelterName: "Grassland Burrow" },
+        { animal: "Squirrel 🐿️", shelter: "Tree Hollow 🌳", shelterName: "Tree Hollow" }
+      ],
+      conceptNote: "🏠 SHELTER = A safe place where an animal sleeps and hides from danger.",
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 8: Discover Habitat (Visual Frog & Squirrel Home)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-discover-habitat",
+      number: 8,
+      phase: "exploration",
+      title: "Discover Habitat",
+      subtitle: "Habitat = An Animal's Home",
+      clilGoal: "A habitat is an environment that provides all survival needs in one place.",
+      languageGoal: "Definition: 'A HABITAT is an animal's home.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Look at the frog's pond: water + plants + insects. This is its HABITAT (an animal's home).",
+        spokenText: "Look at the pond: water, plants, and insects. This is the frog's habitat."
+      },
+      teacherGuide: {
+        say: "Show: 🐸 Frog + 💧 Water + 🌿 Plants + 🪲 Food = HABITAT.",
+        do: "Students repeat: 'Habitat is an animal's home.'",
+        next: "Proceed to animal diets in Chapter 9."
+      },
+      type: "visual_habitat_reveal",
+      examples: [
+        {
+          animal: "Frog 🐸",
+          components: ["💧 Clean Pond", "🌿 Reeds & Lilies", "🪲 Tasty Insects", "🏠 Water Shelter"],
+          habitatName: "Pond Habitat"
+        },
+        {
+          animal: "Squirrel 🐿️",
+          components: ["🌲 Tall Oak Trees", "🌰 Acorns & Nuts", "💧 Rain Drops", "🏠 Tree Hollow"],
+          habitatName: "Forest Habitat"
+        }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 9: Discover Food (Animal Diets)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-discover-food",
+      number: 9,
+      phase: "exploration",
+      title: "Discover Food",
+      subtitle: "Feeding the Jungle Animals",
+      clilGoal: "Different animals eat different foods (Herbivores eat plants, Carnivores eat meat, Omnivores eat both).",
+      languageGoal: "Action verbs: 'The squirrel eats nuts. The frog eats bugs. The rabbit eats grass.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Feed the hungry jungle animals! Drag each food to the animal that eats it.",
+        spokenText: "Feed the hungry jungle animals! Drag the food to the animal that eats it."
+      },
+      teacherGuide: {
+        say: "Ask: 'What does the rabbit eat? Green plants! What does the owl hunt? Mice!'",
+        do: "Students drag food items into the animals' mouths to hear munching sounds.",
+        next: "Next, learn about Predator and Prey."
+      },
+      type: "food_diet_feeder",
+      pairs: [
+        { animalId: "squirrel", animal: "Squirrel 🐿️", foodEmoji: "🌰", foodName: "Nuts & Acorns" },
+        { animalId: "frog", animal: "Frog 🐸", foodEmoji: "🪲", foodName: "Insects & Flies" },
+        { animalId: "rabbit", animal: "Rabbit 🐇", foodEmoji: "🌿", foodName: "Green Grass" },
+        { animalId: "owl", animal: "Owl 🦉", foodEmoji: "🐭", foodName: "Field Mouse" },
+        { animalId: "bear", animal: "Bear 🐻", foodEmoji: "🍓", foodName: "Forest Berries" }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 10: Who Eats Who? (Predator & Prey Concept)
+    // -----------------------------------------------------------------------
+    {
+      id: "v-who-eats-who",
+      number: 10,
+      phase: "exploration",
+      title: "Who Eats Who?",
+      subtitle: "Predator & Prey Concepts",
+      clilGoal: "Predators hunt other animals; Prey animals are hunted.",
+      languageGoal: "PREDATOR vs PREY: 'The fox is a predator. The rabbit is prey.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Look at the animated scene: The rabbit eats the plant. The fox hunts the rabbit. Who is the predator?",
+        spokenText: "The rabbit eats the plant. The fox hunts the rabbit. Who is the predator?"
+      },
+      teacherGuide: {
+        say: "Point to the animation: 'Rabbit eats plant. Fox eats rabbit. Who is the predator? The fox!'",
+        do: "Tap the Fox to reveal PREDATOR 🦊. Tap the Rabbit to reveal PREY 🐇.",
+        next: "Build a full Food Chain in Chapter 11."
+      },
+      type: "predator_prey_interactive",
+      chain: [
+        { role: "Producer", name: "Green Plant 🌱", action: "Grows from sunlight" },
+        { role: "Prey", name: "Rabbit 🐇", action: "Eats plants (PREY)" },
+        { role: "Predator", name: "Fox 🦊", action: "Hunts rabbits (PREDATOR)" }
+      ],
+      definitions: [
+        { word: "PREDATOR 🦊", desc: "An animal that hunts other animals for food." },
+        { word: "PREY 🐇", desc: "An animal that is hunted and eaten by predators." }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 11: Build a Food Chain
+    // -----------------------------------------------------------------------
+    {
+      id: "v-build-food-chain",
+      number: 11,
+      phase: "exploration",
+      title: "Build a Food Chain",
+      subtitle: "Energy Flow Through Food",
+      clilGoal: "Food chains start with plants and show how food energy flows to animals.",
+      languageGoal: "Sequencing: 'Plant ➔ Rabbit ➔ Fox.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Drag the picture cards in order to build the Food Chain: Plant ➔ Rabbit ➔ Fox.",
+        spokenText: "Drag the cards in order to build the food chain."
+      },
+      teacherGuide: {
+        say: "Prompt the order: 'First: Plant 🌱. Next: Rabbit 🐇. Finally: Fox 🦊.'",
+        do: "Students drag the 3 cards into the slots to watch the energy arrows glow.",
+        next: "Discover the whole Ecosystem in Chapter 12."
+      },
+      type: "food_chain_sequencer",
+      chains: [
+        {
+          id: "chain-1",
+          title: "Meadow Chain",
+          slots: [
+            { pos: 1, role: "Plant 🌱", expect: "plant" },
+            { pos: 2, role: "Rabbit 🐇", expect: "rabbit" },
+            { pos: 3, role: "Fox 🦊", expect: "fox" }
+          ]
+        },
+        {
+          id: "chain-2",
+          title: "Forest Canopy Chain",
+          slots: [
+            { pos: 1, role: "Acorn 🌰", expect: "acorn" },
+            { pos: 2, role: "Squirrel 🐿️", expect: "squirrel" },
+            { pos: 3, role: "Owl 🦉", expect: "owl" }
+          ]
+        }
+      ],
+      healthChange: 5
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 12: Discover Ecosystem Visually
+    // -----------------------------------------------------------------------
+    {
+      id: "v-discover-ecosystem",
+      number: 12,
+      phase: "exploration",
+      title: "Discover Ecosystem",
+      subtitle: "Everything is Connected",
+      clilGoal: "An ecosystem is a community where living things depend on each other and their environment.",
+      languageGoal: "Concept: 'Everything is connected. This is an ECOSYSTEM.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Look at all of Green Valley! Trees, water, animals, food, and shelters are connected. This is an ECOSYSTEM.",
+        spokenText: "Trees, water, animals, food, and shelters are connected. This is an ecosystem."
+      },
+      teacherGuide: {
+        say: "Tap the glowing connection lines: 'Trees give shelter to squirrels. Rivers give water to deer. Plants feed rabbits.'",
+        do: "Students chant together: 'Everything is connected!'",
+        next: "View the Story Preview before the storm strikes."
+      },
+      type: "ecosystem_connection_map",
+      connections: [
+        { from: "🌲 Forest Trees", to: "🐿️ Suki the Squirrel", text: "Shelter & Acorns" },
+        { from: "💧 River Water", to: "🦝 Rico the Raccoon", text: "Clean Drinking Water" },
+        { from: "🌿 Green Plants", to: "🐇 Pip the Rabbit", text: "Plant Food" },
+        { from: "🐇 Pip the Rabbit", to: "🦊 Flash the Fox", text: "Food Chain Link" },
+        { from: "🌊 Wetland Pond", to: "🐸 Poppy the Frog", text: "Moist Habitat" }
+      ],
+      healthChange: 10
+    },
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 13: Visual Story Preview
+    // -----------------------------------------------------------------------
+    {
+      id: "v-story-preview",
+      number: 13,
+      phase: "exploration",
+      title: "Story Preview: Trouble in Green Valley",
+      subtitle: "Predicting Before the Storm",
+      clilGoal: "Anticipate the impact of environmental changes on living things.",
+      languageGoal: "Predicting with 'I think...': 'I think a storm will come and Rangers will help.'",
+      narrator: {
+        speaker: "Chief Ranger Flora",
+        text: "Look at the 4 story cards: Healthy Jungle ➔ Big Storm ➔ Animals in Trouble ➔ Jungle Rangers Help! What do you think will happen?",
+        spokenText: "Look at the 4 story cards. What do you think will happen in our story?"
+      },
+      teacherGuide: {
+        say: "Guide prediction using the visual comic strip: 'Healthy Valley ➔ Storm strikes ➔ Homes damaged ➔ Rangers rescue!'",
+        do: "Students vote on: 'What will the Jungle Rangers do?'",
+        next: "Start the Main Story: Chapter 14 (The Great Storm)!"
+      },
+      type: "story_preview_strip",
+      cards: [
+        { step: 1, title: "1. Living Jungle ✨", desc: "Green Valley is peaceful and full of life." },
+        { step: 2, title: "2. The Big Storm ⛈️", desc: "Fierce winds and rain damage the valley." },
+        { step: 3, title: "3. Animals in Need 🐾", desc: "Animals lose shelter, clean water, and food." },
+        { step: 4, title: "4. Rangers to the Rescue 🎖️", desc: "Jungle Rangers work together to save the jungle!" }
+      ],
+      healthChange: 5
+    },
+
+    // =======================================================================
+    // PART 2: THE MAIN STORY & RANGER RESCUE MISSIONS (CHAPTERS 14–26+)
+    // =======================================================================
+
+    // -----------------------------------------------------------------------
+    // CHAPTER 14: The Great Storm
+    // -----------------------------------------------------------------------
+    {
+      id: "s-the-great-storm",
+      number: 14,
+      phase: "story",
       title: "The Great Storm",
       subtitle: "A Major Ecological Emergency",
-      clilGoal: "A natural disaster damages habitats, water sources, and food.",
-      languageGoal: "Past tense & emergency alert: 'A storm has changed the valley!'",
+      clilGoal: "A natural disaster damages habitats, water sources, and shelters.",
+      languageGoal: "Emergency alerts: 'A huge storm has changed Green Valley!'",
       narrator: {
         speaker: "Chief Ranger Flora",
         text: "Oh no! A huge storm has hit Green Valley! Trees have fallen and the water is muddy. Rangers, we need your help!",
@@ -181,24 +700,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 3: Suki the Squirrel
+    // CHAPTER 15: Suki the Squirrel
     // -----------------------------------------------------------------------
     {
-      id: "chap-3",
-      number: 3,
+      id: "s-suki-squirrel",
+      number: 15,
+      phase: "story",
       title: "Suki the Squirrel",
-      subtitle: "Predicting with WILL (Strong Expectation)",
-      clilGoal: "When shelter is destroyed, animals cannot stay safe without help.",
+      subtitle: "Predicting with WILL (Strong Consequence)",
+      clilGoal: "When shelter is destroyed, animals must find a new suitable habitat.",
       languageGoal: "Predicting with WILL: 'Suki will lose her shelter.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Suki has lost her home! What WILL happen to Suki after the storm?",
-        spokenText: "Suki has lost her home! What will happen to Suki?"
+        text: "Suki's tree has fallen (🌳 💥). What WILL happen to Suki?",
+        spokenText: "Suki's tree has fallen. What will happen to Suki?"
       },
       teacherGuide: {
-        say: "Emphasize 'WILL' for a certain prediction. 'What WILL happen to Suki?'",
-        do: "Have students predict in pairs: 'She will...' before choosing on screen.",
-        next: "Next, provide Suki with what she needs to recover."
+        say: "Emphasize 'WILL' for a certain prediction: 'What WILL happen to Suki?'",
+        do: "Students choose: 'She will lose her shelter.'",
+        next: "Provide Suki with what she needs to survive."
       },
       type: "prediction_choice",
       badge: { text: "WILL = Strong Prediction", type: "will" },
@@ -219,24 +739,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 4: Find Suki a New Home
+    // CHAPTER 16: Find Suki a New Home
     // -----------------------------------------------------------------------
     {
-      id: "chap-4",
-      number: 4,
+      id: "s-habitat-suki",
+      number: 16,
+      phase: "story",
       title: "Find Suki a New Home",
-      subtitle: "Suitable Habitat Matching",
-      clilGoal: "A habitat is a place that provides suitable food, water, and shelter.",
+      subtitle: "Matching to Forest Habitat",
+      clilGoal: "A habitat provides trees, food, and safe shelter for squirrels.",
       languageGoal: "Reasoning with BECAUSE: 'The forest is best BECAUSE it has trees and nuts.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Drag Suki to the best habitat. Why is this habitat suitable for her?",
+        text: "Drag Suki to the best habitat: Forest, River, or Desert.",
         spokenText: "Drag Suki to the best habitat. Where can she find trees and food?"
       },
       teacherGuide: {
-        say: "Point to each habitat: Forest, River, Desert. Ask: 'Where can a squirrel climb and find nuts?'",
+        say: "Point to each habitat: Forest 🌲, River 🌊, Desert 🏜️.",
         do: "A student drags Suki to the Forest habitat on the whiteboard.",
-        next: "Reinforce the word HABITAT with the on-screen card."
+        next: "Answer the 'Why?' reasoning question."
       },
       type: "habitat_drag",
       animalId: "squirrel",
@@ -253,32 +774,29 @@ window.JUNGLE_DATA = {
           { id: "C", text: "It has hot dry sand.", correct: false }
         ]
       },
-      conceptCard: {
-        title: "HABITAT 🏠",
-        text: "A habitat is the place where an animal lives and gets everything it needs."
-      },
       healthChange: 10
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 5: Rico the Raccoon
+    // CHAPTER 17: Rico the Raccoon
     // -----------------------------------------------------------------------
     {
-      id: "chap-5",
-      number: 5,
+      id: "s-rico-raccoon",
+      number: 17,
+      phase: "story",
       title: "Rico the Raccoon",
-      subtitle: "Predicting with MIGHT (Possibility) & Water Quality",
-      clilGoal: "Animals need clean water; polluted water threatens survival.",
+      subtitle: "Predicting with MIGHT (Possibility)",
+      clilGoal: "Polluted water threatens animal health; animals need clean drinking water.",
       languageGoal: "Predicting with MIGHT: 'Rico MIGHT have trouble finding clean water.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Look at the river! The storm washed thick mud into the water. What MIGHT happen if the river stays dirty?",
-        spokenText: "Look at the river! The water is dirty. What might happen to Rico?"
+        text: "The river is dirty with mud (🌊 ➔ 🟤). What MIGHT happen if the river stays dirty?",
+        spokenText: "The river is dirty. What might happen to Rico?"
       },
       teacherGuide: {
-        say: "Highlight MIGHT / COULD for possible danger: 'Rico might get sick or thirsty.'",
-        do: "Ask: 'What could the Rangers do to help Rico get clean water?'",
-        next: "Lead students to choose the environmental solution."
+        say: "Highlight MIGHT for possibility: 'Rico MIGHT have trouble finding clean water.'",
+        do: "Ask: 'What could the Rangers do? Find a clean freshwater spring!'",
+        next: "Lead students to guide Rico to the clean water spring."
       },
       type: "prediction_choice",
       badge: { text: "MIGHT = Possible Consequence", type: "might" },
@@ -299,24 +817,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 6: Poppy the Frog
+    // CHAPTER 18: Poppy the Frog
     // -----------------------------------------------------------------------
     {
-      id: "chap-6",
-      number: 6,
+      id: "s-poppy-frog",
+      number: 18,
+      phase: "story",
       title: "Poppy the Frog",
       subtitle: "Conditional Predictions (IF + RESULT)",
-      clilGoal: "Amphibians require wet environments for moist skin and breeding.",
-      languageGoal: "IF + RESULT: 'IF the pond dries, Poppy WILL look for water.'",
+      clilGoal: "Amphibians require wet conditions to keep their skin moist and survive.",
+      languageGoal: "IF + RESULT: 'IF the pond dries, Poppy WILL look for another wet place.'",
       narrator: {
         speaker: "Chief Ranger Flora",
         text: "Poppy's pond is drying up! IF the pond dries completely, what WILL happen?",
         spokenText: "Poppy's pond is drying up! If the pond dries completely, what will happen?"
       },
       teacherGuide: {
-        say: "Teach the pattern: 'IF + condition, animal + WILL / MIGHT + action.'",
-        do: "Students repeat the sentence chorus: 'If the pond dries, the frog will look for water.'",
-        next: "Drag Poppy to the healthy freshwater wetland."
+        say: "Teach the pattern: 'IF + condition, animal + WILL + action.'",
+        do: "Students repeat: 'If the pond dries, the frog will look for water.'",
+        next: "Drag Poppy to the clean freshwater wetland."
       },
       type: "prediction_choice",
       badge: { text: "IF + CONSEQUENCE", type: "if" },
@@ -325,32 +844,29 @@ window.JUNGLE_DATA = {
         { id: "B", text: "Poppy WILL eat tree branches.", correct: false, feedback: "Frogs eat insects, not tree wood!" },
         { id: "C", text: "Poppy WILL live in the desert.", correct: false, feedback: "The desert is too dry for frogs." }
       ],
-      subTask: {
-        prompt: "Drag Poppy the Frog to the fresh wetland pond:",
-        targetId: "wetland_pond"
-      },
       healthChange: 10
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 7: Boris the Bear
+    // CHAPTER 19: Boris the Bear
     // -----------------------------------------------------------------------
     {
-      id: "chap-7",
-      number: 7,
+      id: "s-boris-bear",
+      number: 19,
+      phase: "story",
       title: "Boris the Bear",
-      subtitle: "Adapting Foraging & Food Changes",
-      clilGoal: "When a food source is unavailable, animals may change where or what they eat.",
-      languageGoal: "MAY / MIGHT: 'Boris MAY look for another food source.'",
+      subtitle: "Adapting Foraging Behavior",
+      clilGoal: "When one food source is scarce, animals may change where or what they eat.",
+      languageGoal: "MIGHT / MAY: 'Boris MAY look for another food source.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Boris usually catches fish in the river, but now there are no fish (🐟 ❌). What MIGHT Boris do?",
+        text: "Boris cannot find fish in the muddy river (🐟 ❌). What MIGHT Boris do?",
         spokenText: "Boris cannot find fish in the river. What might Boris do?"
       },
       teacherGuide: {
-        say: "Explain: 'When food changes, animals change their behavior to survive.'",
-        do: "Tap the bushes to reveal ripe wild berries 🍓 for Boris.",
-        next: "Introduce the diet concept: Boris is an omnivore."
+        say: "Explain: 'When food changes, animals may look for another food source.'",
+        do: "Tap the forest bushes to reveal ripe wild berries 🍓 for Boris.",
+        next: "Introduce Boris's adaptable omnivore diet."
       },
       type: "prediction_choice",
       badge: { text: "MIGHT / MAY = Flexible Action", type: "might" },
@@ -367,23 +883,24 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 8: Ranger Detective
+    // CHAPTER 20: Ranger Detective
     // -----------------------------------------------------------------------
     {
-      id: "chap-8",
-      number: 8,
+      id: "s-ranger-detective",
+      number: 20,
+      phase: "story",
       title: "Ranger Detective",
       subtitle: "Deduce Animals from Habitat + Food + Needs",
-      clilGoal: "Identify animals based on their ecological niche, diet, and shelter.",
+      clilGoal: "Synthesize animal characteristics, diets, and shelters.",
       languageGoal: "Describing clues: 'I live in... I eat... I need... Who am I?'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Put on your detective hats, Rangers! Read the clues about habitat, diet, and needs to find the mystery animal.",
+        text: "Put on your detective hats, Rangers! Read the clues about habitat, diet, and needs to identify the animal.",
         spokenText: "Put on your detective hats! Read the clues to find the mystery animal."
       },
       teacherGuide: {
-        say: "Read clue 1, clue 2, clue 3 aloud with the class before asking 'Who am I?'",
-        do: "Have a student tap the matching animal avatar.",
+        say: "Read clue 1, clue 2, clue 3 aloud with the class.",
+        do: "Students tap the matching animal avatar.",
         next: "Review how habitat + food define an animal's lifestyle."
       },
       type: "detective_mystery",
@@ -397,9 +914,9 @@ window.JUNGLE_DATA = {
           ],
           question: "Who am I?",
           options: [
-            { id: "squirrel", emoji: "🐿️", name: "Suki the Squirrel", correct: true },
-            { id: "frog", emoji: "🐸", name: "Poppy the Frog", correct: false },
-            { id: "eagle", emoji: "🦅", name: "Cora the Eagle", correct: false }
+            { id: "squirrel", emoji: "🐿️", name: "Squirrel", correct: true },
+            { id: "frog", emoji: "🐸", name: "Frog", correct: false },
+            { id: "eagle", emoji: "🦅", name: "Eagle", correct: false }
           ]
         },
         {
@@ -411,9 +928,9 @@ window.JUNGLE_DATA = {
           ],
           question: "Who am I?",
           options: [
-            { id: "frog", emoji: "🐸", name: "Poppy the Frog", correct: true },
-            { id: "bear", emoji: "🐻", name: "Boris the Bear", correct: false },
-            { id: "owl", emoji: "🦉", name: "Ollie the Owl", correct: false }
+            { id: "frog", emoji: "🐸", name: "Frog", correct: true },
+            { id: "bear", emoji: "🐻", name: "Bear", correct: false },
+            { id: "owl", emoji: "🦉", name: "Owl", correct: false }
           ]
         },
         {
@@ -425,9 +942,9 @@ window.JUNGLE_DATA = {
           ],
           question: "Who am I?",
           options: [
-            { id: "owl", emoji: "🦉", name: "Ollie the Owl", correct: true },
-            { id: "rabbit", emoji: "🐇", name: "Pip the Rabbit", correct: false },
-            { id: "raccoon", emoji: "🦝", name: "Rico the Raccoon", correct: false }
+            { id: "owl", emoji: "🦉", name: "Owl", correct: true },
+            { id: "rabbit", emoji: "🐇", name: "Rabbit", correct: false },
+            { id: "raccoon", emoji: "🦝", name: "Raccoon", correct: false }
           ]
         }
       ],
@@ -435,54 +952,24 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 9: Feed the Animals
+    // CHAPTER 21: What Happens First? (Cause & Effect Sequencer)
     // -----------------------------------------------------------------------
     {
-      id: "chap-9",
-      number: 9,
-      title: "Feed the Animals",
-      subtitle: "Animal Diets & Herbivore / Carnivore / Omnivore Matching",
-      clilGoal: "Different animals have specific dietary needs to survive.",
-      languageGoal: "Action sentences: 'The squirrel eats nuts.' 'The frog eats insects.'",
-      narrator: {
-        speaker: "Chief Ranger Flora",
-        text: "The animals are hungry after the storm. Drag the correct food to each animal!",
-        spokenText: "The animals are hungry. Drag the correct food to each animal!"
-      },
-      teacherGuide: {
-        say: "Call different students to the board to feed each hungry animal.",
-        do: "Ask: 'What does the rabbit eat? What does the owl hunt?'",
-        next: "Observe the happy munching sound effects for each animal."
-      },
-      type: "feed_matcher",
-      pairs: [
-        { animal: "squirrel", animalName: "Squirrel", animalEmoji: "🐿️", food: "nuts", foodEmoji: "🌰", foodName: "Nuts" },
-        { animal: "frog", animalName: "Frog", animalEmoji: "🐸", food: "insects", foodEmoji: "🐛", foodName: "Insects" },
-        { animal: "rabbit", animalName: "Rabbit", animalEmoji: "🐇", food: "plants", foodEmoji: "🌿", foodName: "Green Plants" },
-        { animal: "owl", animalName: "Owl", animalEmoji: "🦉", food: "mice", foodEmoji: "🐭", foodName: "Mice" },
-        { animal: "bear", animalName: "Bear", animalEmoji: "🐻", food: "berries", foodEmoji: "🍓", foodName: "Berries / Fish" }
-      ],
-      healthChange: 10
-    },
-
-    // -----------------------------------------------------------------------
-    // CHAPTER 10: What Happens First?
-    // -----------------------------------------------------------------------
-    {
-      id: "chap-10",
-      number: 10,
+      id: "s-what-happens-first",
+      number: 21,
+      phase: "story",
       title: "What Happens First?",
       subtitle: "Cause and Effect Chronology",
-      clilGoal: "Environmental disturbances trigger a sequence of consequences.",
+      clilGoal: "Environmental disturbances trigger a sequence of ecological consequences.",
       languageGoal: "Sequencing words: First, Then, Next, Finally.",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Put the events in the correct chronological order to understand cause and effect.",
+        text: "Put the events in the correct chronological order: First, Then, Next, Finally.",
         spokenText: "Put the events in the correct order: First, Then, Next, Finally."
       },
       teacherGuide: {
-        say: "Guide students: 'What happened first? The storm! What happened next?'",
-        do: "Drag the 4 cards into boxes 1, 2, 3, 4.",
+        say: "Ask: 'What happened first? The storm! What happened next?'",
+        do: "Drag cards into boxes 1, 2, 3, 4.",
         next: "Answer the follow-up prediction: 'What will happen next?'"
       },
       type: "timeline_order",
@@ -504,96 +991,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 11: The Bigger Problem
+    // CHAPTER 22: The Bigger Problem (Plant Loss & Cascade)
     // -----------------------------------------------------------------------
     {
-      id: "chap-11",
-      number: 11,
+      id: "s-the-bigger-problem",
+      number: 22,
+      phase: "story",
       title: "The Bigger Problem",
-      subtitle: "Primary Producers & Plant Dependency",
-      clilGoal: "Plants are the foundation of food webs; losing plants threatens herbivores.",
-      languageGoal: "Reasoning: 'Animals need plants BECAUSE plants are their primary food.'",
+      subtitle: "Primary Producers & Ecosystem Cascade",
+      clilGoal: "Plants are the foundation of food webs; losing plants affects all living things.",
+      languageGoal: "Ecosystem cascade: 'If plants decrease, rabbits have less food, and foxes have less prey.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Look closely at the forest floor: many plants are disappearing (🌱🌱 → 🌱). Why is this a serious problem?",
-        spokenText: "Many plants are disappearing. Why is this a serious problem?"
+        text: "Look closely at the ground: plants are disappearing (🌱🌱 ➔ 🌱). When plants decrease, what will happen to rabbits and foxes?",
+        spokenText: "Plants are disappearing. What will happen to the rabbits and the foxes?"
       },
       teacherGuide: {
-        say: "Explain: 'Rabbits and squirrels eat plants and seeds. If plants die, what do they eat?'",
-        do: "Show the visual links: Plants feed Rabbits and Squirrels.",
-        next: "Move into constructing the food chain."
-      },
-      type: "prediction_choice",
-      badge: { text: "BECAUSE = Scientific Reasoning", type: "if" },
-      options: [
-        { id: "A", text: "Some animals depend on plants for food.", correct: true, feedback: "Correct! Herbivores need plants to survive." },
-        { id: "B", text: "Animals do not need food to live.", correct: false, feedback: "All animals must have food for energy." },
-        { id: "C", text: "Plants are only for decoration.", correct: false, feedback: "Plants are living producers, not decorations!" }
-      ],
-      visualLinks: [
-        { from: "🌱 Plants", to: "🐇 Pip the Rabbit", label: "eats plants" },
-        { from: "🌱 Plants", to: "🐿️ Suki the Squirrel", label: "eats seeds & nuts" }
-      ],
-      healthChange: 5
-    },
-
-    // -----------------------------------------------------------------------
-    // CHAPTER 12: Build the Food Chain
-    // -----------------------------------------------------------------------
-    {
-      id: "chap-12",
-      number: 12,
-      title: "Build the Food Chain",
-      subtitle: "Producers, Prey & Predators",
-      clilGoal: "Food chains show how energy moves: Plant (Producer) → Rabbit (Prey) → Fox (Predator).",
-      languageGoal: "Prey & Predator definitions: 'The rabbit eats the plant. The fox eats the rabbit.'",
-      narrator: {
-        speaker: "Chief Ranger Flora",
-        text: "Build the food chain by dragging the cards into the correct order. Who eats what?",
-        spokenText: "Build the food chain! Drag the cards into order: Producer, Prey, Predator."
-      },
-      teacherGuide: {
-        say: "Introduce: 'PREY is hunted. PREDATOR hunts.'",
-        do: "Students drag 🌱 Plant ➔ 🐇 Rabbit ➔ 🦊 Fox into the slots.",
-        next: "Check the arrows showing energy flow."
-      },
-      type: "food_chain_builder",
-      slots: [
-        { pos: 1, role: "Producer", tagClass: "tag-producer", correctId: "plant" },
-        { pos: 2, role: "Prey", tagClass: "tag-prey", correctId: "rabbit" },
-        { pos: 3, role: "Predator", tagClass: "tag-predator", correctId: "fox" }
-      ],
-      availableCards: [
-        { id: "rabbit", name: "Rabbit", emoji: "🐇", role: "Prey (Herbivore)" },
-        { id: "plant", name: "Green Plant", emoji: "🌱", role: "Producer" },
-        { id: "fox", name: "Fox", emoji: "🦊", role: "Predator (Carnivore)" }
-      ],
-      vocabulary: [
-        { word: "PREY 🐇", desc: "An animal that is hunted and eaten by others." },
-        { word: "PREDATOR 🦊", desc: "An animal that hunts other animals for food." }
-      ],
-      healthChange: 10
-    },
-
-    // -----------------------------------------------------------------------
-    // CHAPTER 13: One Change Affects Others
-    // -----------------------------------------------------------------------
-    {
-      id: "chap-13",
-      number: 13,
-      title: "One Change Affects Others",
-      subtitle: "Ecosystem Interdependence & Cascade",
-      clilGoal: "Living things depend on each other. A decrease in plants affects all higher trophic levels.",
-      languageGoal: "Conditional chains: 'If there are fewer plants, rabbits will have less food, and foxes might have less prey.'",
-      narrator: {
-        speaker: "Chief Ranger Flora",
-        text: "When plants decrease (🌱 ↓), what WILL happen to the rabbits? And what MIGHT happen to the foxes?",
-        spokenText: "If there are fewer plants, what will happen to the rabbits and the foxes?"
-      },
-      teacherGuide: {
-        say: "This is the core CLIL science concept: Interdependence in an ecosystem.",
-        do: "Use the interactive slider to decrease plants and watch rabbits and foxes react.",
-        next: "Have students recite: 'Living things depend on each other.'"
+        say: "Highlight the core CLIL rule: 'Living things depend on each other.'",
+        do: "Walk through the cascade: Plants decrease ➔ Rabbits decrease ➔ Foxes have less food.",
+        next: "Test predictions in the Prediction Machine."
       },
       type: "ecosystem_cascade",
       steps: [
@@ -619,24 +1035,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 14: The Prediction Machine
+    // CHAPTER 23: The Prediction Machine
     // -----------------------------------------------------------------------
     {
-      id: "chap-14",
-      number: 14,
+      id: "s-prediction-machine",
+      number: 23,
+      phase: "story",
       title: "The Prediction Machine",
-      subtitle: "Interactive Language Lab (WILL, WON'T, MIGHT, COULD)",
+      subtitle: "Language Lab with WILL, WON'T, MIGHT, COULD",
       clilGoal: "Formulate scientific predictions with modal certainty.",
-      languageGoal: "Practicing WILL (certain), WON'T (negative certainty), MIGHT/COULD (possibility).",
+      languageGoal: "Modal verbs: WILL (certain), WON'T (negative), MIGHT (possible).",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Power up the Jungle Prediction Machine! Choose the correct modal word to complete each scientific prediction.",
+        text: "Power up the Prediction Machine! Choose the best word to complete the scientific prediction.",
         spokenText: "Power up the Prediction Machine! Choose the best word to complete the sentence."
       },
       teacherGuide: {
-        say: "Ask students to analyze whether the result is certain (WILL), impossible (WON'T), or possible (MIGHT).",
-        do: "Students tap the modal token button to slot it into the machine.",
-        next: "The machine lights up and plays a mechanical gear chime!"
+        say: "Analyze each scenario: Is it certain (WILL), impossible (WON'T), or possible (MIGHT)?",
+        do: "Tap the modal token button to slot it into the machine.",
+        next: "Compare Green Valley Before and After the storm."
       },
       type: "prediction_machine",
       rounds: [
@@ -672,24 +1089,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 15: Before and After
+    // CHAPTER 24: Before and After (Interactive Comparison)
     // -----------------------------------------------------------------------
     {
-      id: "chap-15",
-      number: 15,
+      id: "s-before-and-after",
+      number: 24,
+      phase: "story",
       title: "Before and After",
-      subtitle: "Ecosystem Comparison & Analysis",
-      clilGoal: "Analyze visual data showing healthy vs damaged ecosystems.",
-      languageGoal: "Comparative observation: 'Before, there were... After, there are...'",
+      subtitle: "Ecosystem Data Comparison",
+      clilGoal: "Analyze differences between healthy and damaged ecosystems.",
+      languageGoal: "Comparative observation: 'Before... After...'",
       narrator: {
         speaker: "Chief Ranger Flora",
         text: "Compare Green Valley Before the Storm and After the Storm. What changed?",
         spokenText: "Compare the valley before and after the storm. What changed?"
       },
       teacherGuide: {
-        say: "Look at the side-by-side comparison: Trees, Water, Food, Animals.",
+        say: "Compare the 4 indicators: Trees, Water, Plants, Animals.",
         do: "Ask: 'What changed in the environment? What will happen because of this?'",
-        next: "Transition to active animal emergency rescue operations."
+        next: "Start the Animal Emergency Simulator."
       },
       type: "before_after_compare",
       beforeState: {
@@ -718,24 +1136,25 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 16: Animal Emergency Simulator
+    // CHAPTER 25: Animal Emergency Simulator (4-Step Rescue)
     // -----------------------------------------------------------------------
     {
-      id: "chap-16",
-      number: 16,
+      id: "s-emergency-simulator",
+      number: 25,
+      phase: "story",
       title: "Animal Emergency Simulator",
-      subtitle: "4-Step Ranger Rescue Dispatch",
-      clilGoal: "Apply the 4-step scientific method: Predict ➔ Solve ➔ Act ➔ Consequence.",
-      languageGoal: "Multi-step reasoning: 'If we do X, the animal will Y.'",
+      subtitle: "Predict ➔ Solve ➔ Act ➔ Consequence",
+      clilGoal: "Apply scientific problem-solving to restore animal welfare.",
+      languageGoal: "4-step method: 'If we build a shelter, the squirrel will survive.'",
       narrator: {
         speaker: "Chief Ranger Flora",
-        text: "Emergency Dispatch Active! Complete the 4 steps for each animal emergency to restore the valley.",
+        text: "Emergency Dispatch Active! Complete the 4 steps to help each animal.",
         spokenText: "Emergency dispatch active! Complete the 4 steps to help each animal."
       },
       teacherGuide: {
         say: "Walk through Step 1 (Predict), Step 2 (Solve), Step 3 (Act/Drag), Step 4 (Consequence).",
-        do: "Let students take turns executing the emergency rescues for Squirrel, Frog, Raccoon, Bear, and Rabbit.",
-        next: "Prepare for the Final Ecosystem Crisis."
+        do: "Let students execute emergency rescues for Squirrel and Frog.",
+        next: "Enter the Final Ecosystem Crisis."
       },
       type: "emergency_simulator",
       missions: [
@@ -794,11 +1213,12 @@ window.JUNGLE_DATA = {
     },
 
     // -----------------------------------------------------------------------
-    // CHAPTER 17: The Final Ecosystem Crisis & 4 Final Challenges
+    // CHAPTER 26: The Final Ecosystem Crisis & 4 Final Challenges
     // -----------------------------------------------------------------------
     {
-      id: "chap-17",
-      number: 17,
+      id: "s-final-crisis-hub",
+      number: 26,
+      phase: "story",
       title: "The Final Ecosystem Crisis",
       subtitle: "Save Green Valley (4 Final Challenges)",
       clilGoal: "Synthesize all concepts: Habitats, Food, Food Chains, and Human Conservation.",
@@ -814,12 +1234,6 @@ window.JUNGLE_DATA = {
         next: "Complete the Final Ranger Speaking Report and award certificates."
       },
       type: "final_crisis_hub",
-      challenges: [
-        { id: "c1", title: "Challenge 1: Restore Habitats", status: "ready" },
-        { id: "c2", title: "Challenge 2: Restore Food Sources", status: "locked" },
-        { id: "c3", title: "Challenge 3: Rebuild Food Chains", status: "locked" },
-        { id: "c4", title: "Challenge 4: Environmental Decision", status: "locked" }
-      ],
       healthChange: 20
     }
   ],

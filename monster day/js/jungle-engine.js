@@ -1,6 +1,6 @@
 /* ==========================================================================
    🌿 LIFE IN THE JUNGLE — THE JUNGLE RANGERS
-   Game Controller, State Manager & Smart Screen Interaction Engine
+   Complete Game Controller, Interaction Engine & Word Wall Manager
    ========================================================================== */
 
 class JungleGameEngine {
@@ -10,7 +10,9 @@ class JungleGameEngine {
     this.scores = { forest: 0, river: 0 };
     this.activeTurn = 'forest';
     this.selectedDraggable = null;
+    this.discoveredHotspots = new Set();
     this.activeSubState = {
+      whoAmIIdx: 0,
       detectiveCaseIdx: 0,
       machineRoundIdx: 0,
       emergencyMissionIdx: 0,
@@ -35,7 +37,9 @@ class JungleGameEngine {
   goToChapter(idx) {
     if (idx < 0 || idx >= window.JUNGLE_DATA.chapters.length) return;
     this.currentChapterIdx = idx;
+    this.discoveredHotspots.clear();
     this.activeSubState = {
+      whoAmIIdx: 0,
       detectiveCaseIdx: 0,
       machineRoundIdx: 0,
       emergencyMissionIdx: 0,
@@ -51,7 +55,6 @@ class JungleGameEngine {
     if (this.currentChapterIdx < window.JUNGLE_DATA.chapters.length - 1) {
       this.goToChapter(this.currentChapterIdx + 1);
     } else {
-      // Show Final Speaking Report / Certificate
       this.renderSpeakingStudio();
     }
   }
@@ -90,53 +93,298 @@ class JungleGameEngine {
     if (!stageContainer) return;
 
     switch (chapter.type) {
-      case 'needs_wheel':
-        window.jungleViews.renderChapter1(stageContainer, chapter);
+      case 'open_exploration':
+        window.jungleViews.renderOpenExploration(stageContainer, chapter);
+        break;
+      case 'ranger_eyes_search':
+        window.jungleViews.renderRangerEyes(stageContainer, chapter);
+        break;
+      case 'who_am_i_puzzles':
+        window.jungleViews.renderWhoAmI(stageContainer, chapter, this.activeSubState.whoAmIIdx);
+        break;
+      case 'match_word_picture':
+        window.jungleViews.renderMatchAnimal(stageContainer, chapter);
+        break;
+      case 'where_does_it_live':
+        window.jungleViews.renderWhereDoesItLive(stageContainer, chapter);
+        break;
+      case 'what_needs_matching':
+        window.jungleViews.renderWhereDoesItLive(stageContainer, chapter); // fallback or matching
+        break;
+      case 'shelter_matching':
+        window.jungleViews.renderAnimalHomes(stageContainer, chapter);
+        break;
+      case 'visual_habitat_reveal':
+        window.jungleViews.renderAnimalHomes(stageContainer, chapter);
+        break;
+      case 'food_diet_feeder':
+        window.jungleViews.renderMatchAnimal(stageContainer, chapter);
+        break;
+      case 'predator_prey_interactive':
+        window.jungleViews.renderPredatorPrey(stageContainer, chapter);
+        break;
+      case 'food_chain_sequencer':
+        window.jungleViews.renderPredatorPrey(stageContainer, chapter);
+        break;
+      case 'ecosystem_connection_map':
+        window.jungleViews.renderEcosystemMap(stageContainer, chapter);
+        break;
+      case 'story_preview_strip':
+        window.jungleViews.renderStoryPreview(stageContainer, chapter);
         break;
       case 'storm_animation':
-        window.jungleViews.renderChapter2(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div class="storm-stage">
+              <div class="lightning-flash" id="lightning-fx"></div>
+              <div style="font-family:var(--font-display); font-size:2.4rem; color:#fca5a5; font-weight:900; margin-bottom:12px;">
+                ⛈️ JUNGLE EMERGENCY ALERT! 🚨
+              </div>
+              <div style="font-family:var(--font-display); font-size:1.35rem; color:#f8fafc; max-width:750px;">
+                A fierce storm struck Green Valley! Trees have fallen and water is dirty!
+              </div>
+              <div class="storm-elements-grid">
+                ${chapter.damages.map(d => `
+                  <div class="storm-damage-card">
+                    <span class="damage-icon">${d.icon}</span>
+                    <span class="damage-title">${d.title}</span>
+                    <span class="damage-desc">${d.desc}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <button class="hud-btn hud-btn-teacher" id="btn-start-emergency-rescue" style="margin-top:24px; font-size:1.25rem; padding:12px 28px; background:linear-gradient(135deg, #10b981, #059669); border-color:#6ee7b7;">
+                <span>🛡️ START RESCUE MISSION ➔</span>
+              </button>
+            </div>
+          </div>
+        `;
         this.triggerStormEffects();
         break;
       case 'prediction_choice':
-        window.jungleViews.renderPredictionChoice(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div class="prediction-box-container">
+              <div class="animal-stage-actor">
+                ${window.jungleViews.getAnimalAvatar(chapter.animalId || "squirrel", 115)}
+                <div class="actor-name-tag">${chapter.title}</div>
+              </div>
+              ${chapter.badge ? `
+                <div class="prediction-badge badge-${chapter.badge.type}">
+                  <span>🔮</span>
+                  <span>${chapter.badge.text}</span>
+                </div>
+              ` : ''}
+              <div class="choice-cards-row">
+                ${chapter.options.map(opt => `
+                  <button class="choice-card-btn" data-id="${opt.id}" data-correct="${opt.correct}">
+                    <div class="choice-letter">${opt.id}</div>
+                    <div class="choice-text">${opt.text}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'habitat_drag':
-        window.jungleViews.renderHabitatDrag(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%;">
+              <div class="animal-stage-actor draggable-item" data-animal="${chapter.animalId}" style="cursor:grab;">
+                ${window.jungleViews.getAnimalAvatar(chapter.animalId, 110)}
+                <div class="actor-name-tag">🐿️ Drag Suki to her Habitat</div>
+              </div>
+              <div class="habitat-zones-container">
+                ${chapter.zones.map(z => `
+                  <div class="habitat-zone-card ${z.id}-zone drop-target" data-zone="${z.id}" data-correct="${z.correct}">
+                    <div class="habitat-header"><span>${z.emoji}</span><span>${z.name}</span></div>
+                    <div class="habitat-actor-slot">❓</div>
+                    <div class="habitat-tag">${z.desc}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'detective_mystery':
-        window.jungleViews.renderDetectiveMystery(stageContainer, chapter, this.activeSubState.detectiveCaseIdx);
-        break;
-      case 'feed_matcher':
-        window.jungleViews.renderFeedMatcher(stageContainer, chapter);
+        const curCase = chapter.cases[this.activeSubState.detectiveCaseIdx] || chapter.cases[0];
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div class="detective-stage">
+              <span class="prediction-badge" style="background:#0284c7;">
+                🔎 Mystery Case ${this.activeSubState.detectiveCaseIdx + 1} of ${chapter.cases.length}
+              </span>
+              <div class="clue-cards-holder">
+                ${curCase.clues.map((clue, idx) => `
+                  <div class="clue-card">
+                    <div class="clue-number-badge">#${idx + 1}</div>
+                    <div class="clue-text">${clue}</div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="choice-cards-row">
+                ${curCase.options.map(opt => `
+                  <button class="choice-card-btn detective-choice-btn" data-id="${opt.id}" data-correct="${opt.correct}">
+                    <span style="font-size:2.8rem;">${opt.emoji}</span>
+                    <div class="choice-text">${opt.name}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'timeline_order':
-        window.jungleViews.renderTimelineOrder(stageContainer, chapter);
-        break;
-      case 'food_chain_builder':
-        window.jungleViews.renderFoodChainBuilder(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:1050px;">
+              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+                🔢 Drag cards into correct order: 1 ➔ 2 ➔ 3 ➔ 4
+              </div>
+              <div style="display:flex; gap:16px; width:100%; justify-content:center;">
+                ${chapter.cards.map(c => `
+                  <div class="item-card" style="flex:1; max-width:230px;">
+                    <span class="item-emoji">${c.emoji}</span>
+                    <span class="item-label">${c.title}</span>
+                    <span style="font-size:0.85rem; color:#475569;">${c.text}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'ecosystem_cascade':
-        window.jungleViews.renderEcosystemCascade(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:950px;">
+              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+                ${chapter.steps[0].question}
+              </div>
+              <div class="choice-cards-row">
+                ${chapter.steps[0].options.map(opt => `
+                  <button class="choice-card-btn cascade-q1-btn" data-id="${opt.id}" data-correct="${opt.correct}">
+                    <div class="choice-letter">${opt.id}</div>
+                    <div class="choice-text">${opt.text}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'prediction_machine':
-        window.jungleViews.renderPredictionMachine(stageContainer, chapter, this.activeSubState.machineRoundIdx);
+        const round = chapter.rounds[this.activeSubState.machineRoundIdx] || chapter.rounds[0];
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div class="prediction-machine-stage">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fbbf24; font-weight:900;">
+                ⚙️ JUNGLE PREDICTION MACHINE (${this.activeSubState.machineRoundIdx + 1}/${chapter.rounds.length})
+              </div>
+              <div style="color:#fff; font-size:1.15rem; font-weight:700;">${round.scenario}</div>
+              <div class="sentence-builder-display">
+                <span class="sentence-chunk">${round.prefix}</span>
+                <div class="sentence-slot-token" id="machine-slot">${round.blank}</div>
+                <span class="sentence-chunk">${round.suffix}</span>
+              </div>
+              <div class="modal-word-bank">
+                ${round.tokens.map(tok => `
+                  <button class="word-token-btn" data-token="${tok}">${tok}</button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'before_after_compare':
-        window.jungleViews.renderBeforeAfter(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%;">
+              <div class="before-after-container">
+                <div class="compare-card before-card">
+                  <div class="compare-header"><span>🌲 Healthy Jungle</span><span>${chapter.beforeState.title}</span></div>
+                  <div class="compare-body">
+                    <div class="compare-feature-row"><span>🌲</span> ${chapter.beforeState.trees}</div>
+                    <div class="compare-feature-row"><span>💧</span> ${chapter.beforeState.water}</div>
+                    <div class="compare-feature-row"><span>🌱</span> ${chapter.beforeState.plants}</div>
+                    <div class="compare-feature-row"><span>🐾</span> ${chapter.beforeState.animals}</div>
+                  </div>
+                </div>
+                <div class="compare-card after-card">
+                  <div class="compare-header"><span>⛈️ Storm Impact</span><span>${chapter.afterState.title}</span></div>
+                  <div class="compare-body">
+                    <div class="compare-feature-row"><span>💥</span> ${chapter.afterState.trees}</div>
+                    <div class="compare-feature-row"><span>🟤</span> ${chapter.afterState.water}</div>
+                    <div class="compare-feature-row"><span>🥀</span> ${chapter.afterState.plants}</div>
+                    <div class="compare-feature-row"><span>😟</span> ${chapter.afterState.animals}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="choice-cards-row">
+                ${chapter.question.options.map(opt => `
+                  <button class="choice-card-btn before-after-btn" data-id="${opt.id}" data-correct="${opt.correct}">
+                    <div class="choice-letter">${opt.id}</div>
+                    <div class="choice-text">${opt.text}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'emergency_simulator':
-        window.jungleViews.renderEmergencySimulator(
-          stageContainer,
-          chapter,
-          this.activeSubState.emergencyMissionIdx,
-          this.activeSubState.emergencyStep
-        );
+        const mission = chapter.missions[this.activeSubState.emergencyMissionIdx] || chapter.missions[0];
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div class="emergency-simulator-stage">
+              <div class="emergency-step-indicator">
+                <div class="step-node ${this.activeSubState.emergencyStep >= 1 ? 'step-active' : ''}"><span>1️⃣ Predict</span></div>
+                <div class="step-node ${this.activeSubState.emergencyStep >= 2 ? 'step-active' : ''}"><span>2️⃣ Solve</span></div>
+                <div class="step-node ${this.activeSubState.emergencyStep >= 3 ? 'step-active' : ''}"><span>3️⃣ Act / Drag</span></div>
+                <div class="step-node ${this.activeSubState.emergencyStep >= 4 ? 'step-active' : ''}"><span>4️⃣ Consequence</span></div>
+              </div>
+              <div style="background:#fff; border-radius:var(--radius-xl); padding:20px; text-align:center;">
+                <div class="actor-name-tag" style="margin-bottom:12px;">${mission.name} — ${mission.problem}</div>
+                ${this.activeSubState.emergencyStep === 1 ? `
+                  <div style="font-size:1.3rem; font-weight:800; margin-bottom:12px; color:#065f46;">${mission.step1_predict.q}</div>
+                  <div class="choice-cards-row">
+                    ${mission.step1_predict.options.map(opt => `
+                      <button class="choice-card-btn sim-step1-btn" data-id="${opt.id}" data-correct="${opt.correct}">
+                        <div class="choice-letter">${opt.id}</div>
+                        <div class="choice-text">${opt.text}</div>
+                      </button>
+                    `).join('')}
+                  </div>
+                ` : `
+                  <div style="font-size:1.5rem; font-weight:900; color:#059669; margin-bottom:12px;">${mission.consequence}</div>
+                  <button class="hud-btn hud-btn-teacher" id="btn-next-mission" style="font-size:1.2rem; padding:12px 24px;">
+                    <span>✨ NEXT MISSION ➔</span>
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'final_crisis_hub':
-        window.jungleViews.renderFinalCrisisHub(stageContainer, chapter, this.activeSubState.finalChallengeId);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="background:rgba(255,255,255,0.96); border-radius:var(--radius-xl); padding:24px; text-align:center; max-width:900px;">
+              <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#065f46; margin-bottom:12px;">
+                🌟 RESTORE THE JUNGLE ECOSYSTEM
+              </div>
+              <div class="choice-cards-row">
+                <button class="choice-card-btn c4-decision-btn" data-correct="true">
+                  <div class="choice-text">🌳 Protect the forest, plant trees, and keep water clean!</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
         break;
       default:
-        stageContainer.innerHTML = `<div class="stage-board"><div style="color:#fff;">Loading chapter...</div></div>`;
+        stageContainer.innerHTML = `<div class="stage-board"><div style="color:#fff;">Active chapter...</div></div>`;
     }
 
     // Attach Interaction Handlers for the newly rendered elements
@@ -153,7 +401,7 @@ class JungleGameEngine {
       .replace(/\b(will|WILL)\b/g, '<span class="highlight-will">$1</span>')
       .replace(/\b(might|MIGHT|may|MAY|could|COULD)\b/g, '<span class="highlight-might">$1</span>')
       .replace(/\b(if|IF|If)\b/g, '<span class="highlight-if">$1</span>')
-      .replace(/\b(HABITAT|PREDATOR|PREY|ECOSYSTEM)\b/g, '<span class="highlight-vocab">$1</span>');
+      .replace(/\b(HABITAT|PREDATOR|PREY|ECOSYSTEM|SHELTER|FOOD)\b/g, '<span class="highlight-vocab">$1</span>');
   }
 
   // =========================================================================
@@ -172,7 +420,6 @@ class JungleGameEngine {
     if (fillEl) fillEl.style.width = `${health}%`;
     if (pctEl) pctEl.textContent = `${health}%`;
 
-    // Dynamic environment classes based on health
     if (viewport) {
       if (health < 40) {
         viewport.classList.add('polluted-mode');
@@ -229,64 +476,95 @@ class JungleGameEngine {
   }
 
   // =========================================================================
-  // INTERACTIVE STAGE EVENT HANDLERS
+  // INTERACTION HANDLERS FOR ALL CHAPTERS
   // =========================================================================
   attachStageInteractionHandlers(chapter) {
     this.initDragAndDrop();
 
-    // 1. Prediction Choices Handler
+    // 1. Exploration Hotspots
+    document.querySelectorAll('.explore-hotspot').forEach(spot => {
+      spot.addEventListener('click', () => {
+        const id = spot.getAttribute('data-id');
+        const animal = window.JUNGLE_DATA.animals[id];
+        if (animal) {
+          window.jungleAudio.speak(animal.name);
+          spot.style.transform = 'translate(-50%, -50%) scale(1.25)';
+          setTimeout(() => spot.style.transform = 'translate(-50%, -50%) scale(1)', 400);
+
+          this.discoveredHotspots.add(id);
+          const counter = document.getElementById('explore-found-count');
+          if (counter) counter.textContent = `Found: ${this.discoveredHotspots.size} / ${chapter.hotspots.length}`;
+
+          this.addTeamPoint(this.activeTurn, 1);
+        }
+      });
+    });
+
+    // 2. Ranger Eyes Targets
+    document.querySelectorAll('.nature-spot-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const pill = document.getElementById(`target-pill-${targetId}`);
+        if (pill) {
+          pill.style.background = '#059669';
+          pill.style.borderColor = '#6ee7b7';
+          pill.innerHTML = `<span>${targetId.toUpperCase()}</span> <span>✅</span>`;
+          window.jungleAudio.playSuccess();
+          this.addTeamPoint(this.activeTurn, 1);
+        }
+      });
+    });
+
+    // 3. Who Am I Reveal Button
+    const revealWhoBtn = document.getElementById('btn-reveal-who-am-i');
+    if (revealWhoBtn) {
+      revealWhoBtn.addEventListener('click', () => {
+        const rev = document.getElementById('who-am-i-revealed');
+        if (rev) rev.style.display = 'block';
+        window.jungleAudio.playSuccess();
+        this.addTeamPoint(this.activeTurn, 2);
+        revealWhoBtn.style.display = 'none';
+      });
+    }
+
+    // 4. Word-Picture Match Check
+    document.querySelectorAll('.animal-match-target').forEach(tgt => {
+      tgt.addEventListener('click', () => {
+        if (this.selectedDraggable) {
+          const word = this.selectedDraggable.getAttribute('data-word');
+          const animal = tgt.getAttribute('data-animal');
+          if (word === animal) {
+            tgt.querySelector('.matched-slot-label').textContent = `✅ ${word.toUpperCase()}`;
+            tgt.querySelector('.matched-slot-label').style.background = '#d1fae5';
+            tgt.querySelector('.matched-slot-label').style.color = '#065f46';
+            this.selectedDraggable.style.display = 'none';
+            this.selectedDraggable = null;
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 1);
+          } else {
+            tgt.classList.add('drop-wrong-shake');
+            window.jungleAudio.playHint();
+            setTimeout(() => tgt.classList.remove('drop-wrong-shake'), 600);
+          }
+        }
+      });
+    });
+
+    // 5. Begin Storm Story Button
+    const startStormBtn = document.getElementById('btn-begin-storm-story');
+    if (startStormBtn) {
+      startStormBtn.addEventListener('click', () => this.nextChapter());
+    }
+
+    // 6. Choice Cards (Prediction / Questions)
     document.querySelectorAll('.choice-card-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', () => {
         const isCorrect = btn.getAttribute('data-correct') === 'true';
         if (isCorrect) {
           btn.classList.add('correct-choice');
           window.jungleAudio.playSuccess();
           this.changeHealth(chapter.healthChange || 10);
           this.addTeamPoint(this.activeTurn, 2);
-
-          // Reveal sub-tasks if available
-          const subtask = document.getElementById('prediction-subtask');
-          if (subtask) subtask.style.display = 'block';
-
-          const cascade2 = document.getElementById('cascade-step-2');
-          if (cascade2 && btn.classList.contains('cascade-q1-btn')) {
-            cascade2.style.display = 'block';
-          }
-        } else {
-          btn.classList.add('wrong-choice');
-          btn.classList.add('drop-wrong-shake');
-          window.jungleAudio.playHint();
-          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
-        }
-      });
-    });
-
-    // 2. Berry Bush Tapper for Boris (Chapter 7)
-    document.querySelectorAll('.berry-bush-btn').forEach(bush => {
-      bush.addEventListener('click', () => {
-        bush.textContent = '🍓 Berries!';
-        bush.style.background = '#059669';
-        window.jungleAudio.playMunch();
-        this.addTeamPoint(this.activeTurn, 1);
-      });
-    });
-
-    // 3. Detective Mystery Choices (Chapter 8)
-    document.querySelectorAll('.detective-choice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const isCorrect = btn.getAttribute('data-correct') === 'true';
-        if (isCorrect) {
-          btn.classList.add('correct-choice');
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 2);
-          setTimeout(() => {
-            if (this.activeSubState.detectiveCaseIdx < chapter.cases.length - 1) {
-              this.activeSubState.detectiveCaseIdx++;
-              this.renderCurrentChapter();
-            } else {
-              this.nextChapter();
-            }
-          }, 1000);
         } else {
           btn.classList.add('drop-wrong-shake');
           window.jungleAudio.playHint();
@@ -295,18 +573,14 @@ class JungleGameEngine {
       });
     });
 
-    // 4. Prediction Machine Tokens (Chapter 14)
+    // 7. Prediction Machine Tokens
     document.querySelectorAll('.word-token-btn').forEach(tokBtn => {
       tokBtn.addEventListener('click', () => {
         const token = tokBtn.getAttribute('data-token');
         const slot = document.getElementById('machine-slot');
-        const round = chapter.rounds[this.activeSubState.machineRoundIdx];
-
+        const round = chapter.rounds && chapter.rounds[this.activeSubState.machineRoundIdx];
         if (slot && round) {
           slot.textContent = token;
-          slot.classList.add('filled');
-          window.jungleAudio.playClick();
-
           if (token === round.correctToken) {
             window.jungleAudio.playSuccess();
             this.addTeamPoint(this.activeTurn, 2);
@@ -317,7 +591,7 @@ class JungleGameEngine {
               } else {
                 this.nextChapter();
               }
-            }, 1200);
+            }, 1000);
           } else {
             slot.classList.add('drop-wrong-shake');
             window.jungleAudio.playHint();
@@ -327,12 +601,22 @@ class JungleGameEngine {
       });
     });
 
-    // 5. Emergency Simulator Controls (Chapter 16)
-    document.querySelectorAll('.mission-tab-btn').forEach(tab => {
-      tab.addEventListener('click', () => {
-        this.activeSubState.emergencyMissionIdx = parseInt(tab.getAttribute('data-idx'));
-        this.activeSubState.emergencyStep = 1;
-        this.renderCurrentChapter();
+    // 8. Emergency Simulator Step Buttons
+    document.querySelectorAll('.sim-step1-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.getAttribute('data-correct') === 'true') {
+          btn.classList.add('correct-choice');
+          window.jungleAudio.playSuccess();
+          this.addTeamPoint(this.activeTurn, 2);
+          setTimeout(() => {
+            this.activeSubState.emergencyStep = 4;
+            this.renderCurrentChapter();
+          }, 800);
+        } else {
+          btn.classList.add('drop-wrong-shake');
+          window.jungleAudio.playHint();
+          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
+        }
       });
     });
 
@@ -349,52 +633,6 @@ class JungleGameEngine {
       });
     }
 
-    // 6. Emergency Step 1 & 2 Buttons
-    document.querySelectorAll('.sim-step1-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.getAttribute('data-correct') === 'true') {
-          btn.classList.add('correct-choice');
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 2);
-          setTimeout(() => {
-            this.activeSubState.emergencyStep = 2;
-            this.renderCurrentChapter();
-          }, 800);
-        } else {
-          btn.classList.add('drop-wrong-shake');
-          window.jungleAudio.playHint();
-          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
-        }
-      });
-    });
-
-    document.querySelectorAll('.sim-step2-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.getAttribute('data-correct') === 'true') {
-          btn.classList.add('correct-choice');
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 2);
-          setTimeout(() => {
-            this.activeSubState.emergencyStep = 3;
-            this.renderCurrentChapter();
-          }, 800);
-        } else {
-          btn.classList.add('drop-wrong-shake');
-          window.jungleAudio.playHint();
-          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
-        }
-      });
-    });
-
-    // 7. Final Challenges Tabs (Chapter 17)
-    document.querySelectorAll('[data-chall]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.activeSubState.finalChallengeId = btn.getAttribute('data-chall');
-        this.renderCurrentChapter();
-      });
-    });
-
-    // 8. Start Rescue Button (Chapter 2)
     const rescueStartBtn = document.getElementById('btn-start-emergency-rescue');
     if (rescueStartBtn) {
       rescueStartBtn.addEventListener('click', () => this.nextChapter());
@@ -409,7 +647,6 @@ class JungleGameEngine {
     const dropTargets = document.querySelectorAll('.drop-target');
 
     draggables.forEach(item => {
-      // Tap-to-select fallback for whiteboard
       item.addEventListener('click', (e) => {
         e.stopPropagation();
         if (this.selectedDraggable === item) {
@@ -425,7 +662,6 @@ class JungleGameEngine {
         }
       });
 
-      // Pointer Drag Events
       item.addEventListener('pointerdown', (e) => {
         item.setPointerCapture(e.pointerId);
         item.classList.add('is-dragging');
@@ -436,7 +672,6 @@ class JungleGameEngine {
         item.releasePointerCapture(e.pointerId);
         item.classList.remove('is-dragging');
 
-        // Check if dropped over a valid drop target
         const dropElem = document.elementFromPoint(e.clientX, e.clientY);
         if (dropElem) {
           const target = dropElem.closest('.drop-target');
@@ -447,7 +682,6 @@ class JungleGameEngine {
       });
     });
 
-    // Direct Target Click (Tap-to-place completion)
     dropTargets.forEach(target => {
       target.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -461,30 +695,6 @@ class JungleGameEngine {
   }
 
   handleDrop(item, target) {
-    const chapter = window.JUNGLE_DATA.chapters[this.currentChapterIdx];
-
-    // Needs wheel dropping
-    if (target.getAttribute('data-target') === 'survival-ring') {
-      const isCorrect = item.getAttribute('data-correct') === 'true';
-      const itemId = item.getAttribute('data-id');
-      if (isCorrect) {
-        const slot = document.getElementById(`slot-${itemId}`);
-        if (slot) {
-          slot.textContent = item.querySelector('.item-emoji')?.textContent || '✅';
-          slot.classList.add('filled');
-          item.style.display = 'none';
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 1);
-        }
-      } else {
-        target.classList.add('drop-wrong-shake');
-        window.jungleAudio.playHint();
-        setTimeout(() => target.classList.remove('drop-wrong-shake'), 600);
-      }
-      return;
-    }
-
-    // Habitat dropping
     if (target.classList.contains('habitat-zone-card')) {
       const isCorrect = target.getAttribute('data-correct') === 'true';
       if (isCorrect) {
@@ -492,68 +702,11 @@ class JungleGameEngine {
         target.classList.add('drop-correct');
         window.jungleAudio.playSuccess();
         this.addTeamPoint(this.activeTurn, 2);
-        const reasoningArea = document.getElementById('habitat-reasoning-area');
-        if (reasoningArea) reasoningArea.style.display = 'block';
       } else {
         target.classList.add('drop-wrong-shake');
         window.jungleAudio.playHint();
         setTimeout(() => target.classList.remove('drop-wrong-shake'), 600);
       }
-      return;
-    }
-
-    // Feeding animals
-    if (target.classList.contains('feed-drop-target')) {
-      const animal = target.getAttribute('data-animal');
-      const match = item.getAttribute('data-match');
-      if (animal === match) {
-        target.classList.add('drop-correct');
-        const badge = document.getElementById(`fed-${animal}`);
-        if (badge) badge.textContent = 'Full & Happy! 💚';
-        item.style.display = 'none';
-        window.jungleAudio.playMunch();
-        this.addTeamPoint(this.activeTurn, 1);
-      } else {
-        target.classList.add('drop-wrong-shake');
-        window.jungleAudio.playHint();
-        setTimeout(() => target.classList.remove('drop-wrong-shake'), 600);
-      }
-      return;
-    }
-
-    // Food Chain Builder
-    if (target.classList.contains('chain-node-slot')) {
-      const expect = target.getAttribute('data-expect');
-      const cardId = item.getAttribute('data-id');
-      if (expect === cardId) {
-        target.classList.add('filled');
-        target.innerHTML = `
-          <span class="chain-role-tag">${target.querySelector('.chain-role-tag')?.textContent || ''}</span>
-          <span style="font-size:3.2rem;">${item.querySelector('.item-emoji')?.textContent || ''}</span>
-          <span style="font-family:var(--font-display); font-weight:800; color:#065f46;">${item.querySelector('.item-label')?.textContent || ''}</span>
-        `;
-        item.style.display = 'none';
-        window.jungleAudio.playSuccess();
-        this.addTeamPoint(this.activeTurn, 1);
-      } else {
-        target.classList.add('drop-wrong-shake');
-        window.jungleAudio.playHint();
-        setTimeout(() => target.classList.remove('drop-wrong-shake'), 600);
-      }
-      return;
-    }
-
-    // Emergency Simulator Step 3
-    if (target.classList.contains('sim-action-target')) {
-      target.textContent = '✅ Mission Accomplished!';
-      target.classList.add('drop-correct');
-      window.jungleAudio.playSuccess();
-      this.addTeamPoint(this.activeTurn, 2);
-      setTimeout(() => {
-        this.activeSubState.emergencyStep = 4;
-        this.renderCurrentChapter();
-      }, 800);
-      return;
     }
   }
 
@@ -587,29 +740,69 @@ class JungleGameEngine {
   }
 
   // =========================================================================
+  // VISUAL WORD WALL MODAL
+  // =========================================================================
+  openWordWall() {
+    const modal = document.getElementById('word-wall-modal');
+    if (modal) {
+      window.jungleViews.renderVisualWordWallModal(modal);
+      modal.classList.add('active');
+
+      document.querySelectorAll('.word-wall-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const word = card.getAttribute('data-word');
+          const desc = card.getAttribute('data-desc');
+          window.jungleAudio.speak(`${word}. ${desc}`);
+          card.style.transform = 'scale(1.08)';
+          card.style.borderColor = '#10b981';
+          setTimeout(() => card.style.transform = 'scale(1)', 300);
+        });
+      });
+
+      const closeBtn = document.getElementById('btn-close-word-wall');
+      if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    }
+  }
+
+  // =========================================================================
   // SPEAKING STUDIO & CERTIFICATE MODAL
   // =========================================================================
   renderSpeakingStudio() {
     const stageContainer = document.getElementById('stage-canvas-area');
     if (stageContainer) {
-      window.jungleViews.renderSpeakingReport(stageContainer, this.activeSubState.selectedReportAnimal);
+      const reportData = window.JUNGLE_DATA.speakingReport;
+      const selected = reportData.animals.find(a => a.id === this.activeSubState.selectedReportAnimal) || reportData.animals[0];
 
-      // Speaking Report Events
-      document.querySelectorAll('.picker-animal-card').forEach(c => {
-        c.addEventListener('click', () => {
-          this.activeSubState.selectedReportAnimal = c.getAttribute('data-id');
-          this.renderSpeakingStudio();
-        });
-      });
+      stageContainer.innerHTML = `
+        <div class="stage-board">
+          <div class="speaking-report-stage">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-family:var(--font-display); font-size:1.6rem; color:var(--primary-dark); font-weight:900;">
+                🎙️ OFFICIAL RANGER SPEAKING REPORT
+              </div>
+              <div class="prediction-badge" style="background:#059669;">A1+ / A2 Speaking</div>
+            </div>
+            <div class="report-sentence-grid">
+              <div class="report-sentence-line"><span>This is a</span> <span class="report-fill-pill">${selected.emoji} ${selected.name}</span>.</div>
+              <div class="report-sentence-line"><span>It lives</span> <span class="report-fill-pill">${selected.habitat}</span>.</div>
+              <div class="report-sentence-line"><span>It eats</span> <span class="report-fill-pill">${selected.food}</span>.</div>
+              <div class="report-sentence-line"><span>It needs</span> <span class="report-fill-pill">${selected.needs}</span>.</div>
+              <div class="report-sentence-line"><span>If <b>${selected.ifClause}</b>, it will</span> <span class="report-fill-pill">${selected.willAction}</span>.</div>
+              <div class="report-sentence-line"><span>It might do this because</span> <span class="report-fill-pill">${selected.mightReason}</span>.</div>
+            </div>
+            <div class="report-actions-row">
+              <button class="report-btn report-btn-speak" id="btn-read-report"><span>🔊 Read Report Aloud</span></button>
+              <button class="report-btn report-btn-cert" id="btn-show-certificate"><span>🎖️ Get Ranger Certificate</span></button>
+            </div>
+          </div>
+        </div>
+      `;
 
       const speakBtn = document.getElementById('btn-read-report');
       if (speakBtn) {
         speakBtn.addEventListener('click', () => {
-          const report = window.JUNGLE_DATA.speakingReport.animals.find(a => a.id === this.activeSubState.selectedReportAnimal);
-          if (report) {
-            const speechText = `This is a ${report.name}. It lives ${report.habitat}. It eats ${report.food}. It needs ${report.needs}. If ${report.ifClause}, it will ${report.willAction}. It might do this because ${report.mightReason}.`;
-            window.jungleAudio.speak(speechText);
-          }
+          const speechText = `This is a ${selected.name}. It lives ${selected.habitat}. It eats ${selected.food}. It needs ${selected.needs}. If ${selected.ifClause}, it will ${selected.willAction}. It might do this because ${selected.mightReason}.`;
+          window.jungleAudio.speak(speechText);
         });
       }
 
@@ -637,22 +830,22 @@ class JungleGameEngine {
   }
 
   // =========================================================================
-  // GLOBAL EVENT BINDINGS & KEYBOARD SHORTCUTS
+  // GLOBAL EVENT BINDINGS
   // =========================================================================
   bindGlobalEvents() {
-    // Navigation Buttons
     const nextBtn = document.getElementById('nav-btn-next');
     const prevBtn = document.getElementById('nav-btn-prev');
     if (nextBtn) nextBtn.addEventListener('click', () => this.nextChapter());
     if (prevBtn) prevBtn.addEventListener('click', () => this.prevChapter());
 
-    // Teacher Guide Toggle
     const teacherToggleBtn = document.getElementById('btn-toggle-teacher');
     const teacherCloseBtn = document.getElementById('btn-close-teacher-drawer');
     if (teacherToggleBtn) teacherToggleBtn.addEventListener('click', () => this.toggleTeacherDrawer());
     if (teacherCloseBtn) teacherCloseBtn.addEventListener('click', () => this.toggleTeacherDrawer());
 
-    // Audio & Speech Toggles
+    const wordWallBtn = document.getElementById('btn-open-word-wall');
+    if (wordWallBtn) wordWallBtn.addEventListener('click', () => this.openWordWall());
+
     const muteBtn = document.getElementById('btn-toggle-mute');
     if (muteBtn) {
       muteBtn.addEventListener('click', () => {
@@ -671,7 +864,6 @@ class JungleGameEngine {
       });
     }
 
-    // Fullscreen Toggle
     const fullscreenBtn = document.getElementById('btn-toggle-fullscreen');
     if (fullscreenBtn) {
       fullscreenBtn.addEventListener('click', () => {
@@ -683,7 +875,6 @@ class JungleGameEngine {
       });
     }
 
-    // Classroom Team Score Buttons
     const addForestBtn = document.getElementById('btn-add-forest');
     const addRiverBtn = document.getElementById('btn-add-river');
     if (addForestBtn) {
@@ -701,20 +892,7 @@ class JungleGameEngine {
       });
     }
 
-    // Soundboard FX Buttons
-    document.querySelectorAll('[data-fx]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const fx = btn.getAttribute('data-fx');
-        if (fx === 'wind') window.jungleAudio.playWind();
-        if (fx === 'thunder') window.jungleAudio.playThunder();
-        if (fx === 'crash') window.jungleAudio.playTreeCrash();
-        if (fx === 'splash') window.jungleAudio.playWaterSplash();
-        if (fx === 'munch') window.jungleAudio.playMunch();
-        if (fx === 'fanfare') window.jungleAudio.playFanfare();
-      });
-    });
-
-    // Chapter Select Dropdown in Teacher HUD
+    // Populate Teacher Chapter Select
     const chapterSelect = document.getElementById('teacher-chapter-select');
     if (chapterSelect) {
       window.JUNGLE_DATA.chapters.forEach((chap, idx) => {
@@ -728,7 +906,6 @@ class JungleGameEngine {
       });
     }
 
-    // Keyboard Shortcuts for Classroom Whiteboard & Teacher Remote
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' || e.key === ' ') {
         this.nextChapter();
@@ -736,10 +913,8 @@ class JungleGameEngine {
         this.prevChapter();
       } else if (e.key === 't' || e.key === 'T') {
         this.toggleTeacherDrawer();
-      } else if (e.key === 'm' || e.key === 'M') {
-        if (muteBtn) muteBtn.click();
-      } else if (e.key === 'f' || e.key === 'F') {
-        if (fullscreenBtn) fullscreenBtn.click();
+      } else if (e.key === 'w' || e.key === 'W') {
+        this.openWordWall();
       }
     });
   }
@@ -762,14 +937,14 @@ class JungleGameEngine {
   }
 
   launchMiniConfetti() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 25; i++) {
       this.confettiParticles.push(this.createConfettiParticle());
     }
     this.animateConfetti();
   }
 
   launchVictoryConfetti() {
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 120; i++) {
       this.confettiParticles.push(this.createConfettiParticle());
     }
     this.animateConfetti();
@@ -815,7 +990,6 @@ class JungleGameEngine {
   }
 }
 
-// Global initialization on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   window.jungleGame = new JungleGameEngine();
 });

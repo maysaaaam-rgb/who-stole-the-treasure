@@ -52,6 +52,11 @@
 
       <!-- Right Teams Scoreboard & Controls -->
       <div class="hud-right">
+        <!-- Visual Word Wall Button -->
+        <button class="hud-btn" id="btn-open-word-wall" style="background:#047857; border-color:#34d399;" title="Visual Word Wall (W)">
+          <span>🖼️ WORD WALL</span>
+        </button>
+
         <div class="hud-teams">
           <div class="team-score-card team-forest active-turn" id="team-card-forest" title="Team Forest Score">
             <span>🟢 FOREST</span>
@@ -105,7 +110,7 @@
           <div class="narration-text-wrap">
             <div class="narration-speaker" id="narrator-speaker-name">Chief Ranger Flora</div>
             <div class="narration-dialogue" id="narrator-dialogue-text">
-              Welcome to Green Valley! Many animals live here. What do animals need to survive?
+              Welcome to Green Valley! Touch the animals and nature to explore their home.
             </div>
           </div>
           <button class="narrator-audio-btn" id="narrator-speak-btn" title="Read Story Prompt Aloud">
@@ -171,7 +176,7 @@
         <div class="teacher-card-section">
           <div class="section-label">🗣️ WHAT DO I SAY?</div>
           <div class="teacher-script-box" id="teacher-script-say">
-            "Look at Green Valley! Ask the class: 'What do animals need to survive every day?'"
+            "Ask the class: 'What can you see? Can you find a squirrel? Can you find water?'"
           </div>
         </div>
 
@@ -179,7 +184,7 @@
         <div class="teacher-card-section">
           <div class="section-label">🙌 WHAT DO STUDENTS DO?</div>
           <div class="teacher-script-box" id="teacher-script-do" style="border-left-color:#10b981;">
-            "Have a student come to the whiteboard and drag the 3 survival needs around Suki."
+            "Students touch different animals on the whiteboard to hear sounds and explore."
           </div>
         </div>
 
@@ -187,7 +192,7 @@
         <div class="teacher-card-section">
           <div class="section-label">➡️ WHAT HAPPENS NEXT?</div>
           <div class="teacher-script-box" id="teacher-script-next" style="border-left-color:#f59e0b;">
-            "Once all 3 items are placed, present the Jungle Ranger Badge!"
+            "Move to Chapter 2: Ranger Eyes to find hidden animals."
           </div>
         </div>
 
@@ -207,6 +212,13 @@
     </aside>
 
     <!-- =======================================================================
+         VISUAL WORD WALL MODAL
+         ======================================================================= -->
+    <div class="modal-overlay" id="word-wall-modal">
+      <!-- Populated dynamically by jungleViews.renderVisualWordWallModal -->
+    </div>
+
+    <!-- =======================================================================
          OFFICIAL RANGER CERTIFICATE MODAL
          ======================================================================= -->
     <div class="modal-overlay" id="certificate-modal">
@@ -223,7 +235,7 @@
             CONGRATULATIONS, JUNGLE RANGERS!
           </div>
           <p style="font-size:1.15rem; color:#92400e; margin:10px 0;">
-            The classroom teams successfully saved Green Valley's ecosystem, protected animal habitats, restored food chains, and made great scientific predictions!
+            The classroom teams successfully explored Green Valley, protected animal habitats, restored food chains, and made great scientific predictions!
           </p>
 
           <div style="display:flex; justify-content:space-around; margin:18px 0; background:rgba(255,255,255,0.7); padding:12px; border-radius:var(--radius-lg);">
