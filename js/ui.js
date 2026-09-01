@@ -156,6 +156,21 @@ class UIController {
         <p class="sub-heading">Choose an interactive lesson game for your classroom:</p>
       </div>
 
+      <!-- FEATURED: BUILD YOUR OWN MONSTER GAME -->
+      <a href="monster-day/" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; padding: 18px 26px; border-radius: 20px; text-decoration: none; margin-bottom: 24px; box-shadow: 0 10px 24px rgba(217, 70, 239, 0.3); border: 3px solid #fff; transition: transform 0.2s;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span style="font-size: 3rem;">👹</span>
+          <div>
+            <div style="background: #fef08a; color: #854d0e; font-weight: 800; font-size: 0.8rem; padding: 2px 10px; border-radius: 999px; display: inline-block; margin-bottom: 4px;">✨ NEW! A1/A1+ ENGLISH GAME</div>
+            <h2 style="font-size: 1.6rem; font-weight: 900; margin: 0; color: #ffffff;">👹 BUILD YOUR OWN MONSTER!</h2>
+            <p style="margin: 0; opacity: 0.95; font-size: 0.95rem; color: #fdf4ff;">Create it. Dress it. Name it. Describe it! With Speaking, Listening & Secret Monster modes!</p>
+          </div>
+        </div>
+        <div style="background: #fde047; color: #78350f; font-weight: 900; font-size: 1.1rem; padding: 12px 24px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          PLAY MONSTER ➔
+        </div>
+      </a>
+
       <div class="hub-modes-grid-5">
         <!-- MODE 1: 3RD GRADE DETECTIVE PREPARATION -->
         <div class="hub-mode-card card-prep" onclick="uiController.showScreen('prep-intro')">
