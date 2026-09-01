@@ -1,6 +1,6 @@
 /**
  * challenges.js - Challenge & Learning Game Engine for "Build Your Own Monster!"
- * Supports Monster Quests, Listening Challenges, Secret Monster 2-Player, and "Find a Monster" Classroom Game.
+ * Handles Monster Challenges, Listening Challenges, and Secret Monster 2-Player mode.
  */
 
 class ChallengeEngine {
@@ -10,77 +10,77 @@ class ChallengeEngine {
     this.secretMonsterTarget = null;
     this.listeningDifficulty = 'easy'; // 'easy', 'medium', 'hard'
 
-    // Monster Challenge Quests (Expanded with creative choices)
+    // Monster Challenge Quests
     this.monsterQuests = [
       {
         id: 'q1',
         title: '3 Big Eyes',
         instruction: 'Give your monster 3 big eyes.',
-        hint: 'Go to Face ➔ Eyes ➔ Choose 3 ➔ Choose BIG',
-        check: (m) => m.eyesCount === 3 && (m.eyesSize === 'big' || m.eyesSize === 'giant')
+        hint: 'Go to Eyes 👁️ ➔ Choose 3 ➔ Choose BIG',
+        check: (m) => m.eyesCount === 3 && m.eyesSize === 'big'
       },
       {
         id: 'q2',
-        title: 'Dragon Wings',
-        instruction: 'Give your monster dragon wings.',
-        hint: 'Go to Special ➔ Wings ➔ Choose Dragon Wings 🐉',
-        check: (m) => m.specialWings === 'dragon'
+        title: 'Purple Body',
+        instruction: 'Give your monster a purple body.',
+        hint: 'Go to Color 🎨 ➔ Choose Purple',
+        check: (m) => m.color === 'purple'
       },
       {
         id: 'q3',
-        title: 'Curly Horns',
-        instruction: 'Give your monster 2 curly horns.',
-        hint: 'Go to Face ➔ Horns ➔ Choose 2 Curly Horns 🦄',
-        check: (m) => m.hornsCount >= 2 && m.hornsStyle === 'curly'
+        title: '2 Short Ears',
+        instruction: 'Give your monster 2 short ears.',
+        hint: 'Go to Ears 👂 ➔ Choose 2 ➔ Choose SHORT',
+        check: (m) => m.earsCount === 2 && m.earsLength === 'short'
       },
       {
         id: 'q4',
-        title: 'Power to Fly',
-        instruction: 'Give your monster the power to fly.',
-        hint: 'Go to Powers ✨ ➔ Choose Fly 🦅',
-        check: (m) => m.powers && m.powers.includes('fly')
+        title: 'Scary Mouth',
+        instruction: 'Give your monster a scary mouth.',
+        hint: 'Go to Mouth 👄 ➔ Choose SCARY',
+        check: (m) => m.mouthType === 'scary'
       },
       {
         id: 'q5',
-        title: 'Castle Home',
-        instruction: 'Make your monster live in a castle.',
-        hint: 'Go to World 🏠 ➔ Choose Castle 🏰',
-        check: (m) => m.world === 'castle'
+        title: '4 Legs',
+        instruction: 'Give your monster 4 legs.',
+        hint: 'Go to Legs 🦵 ➔ Choose 4',
+        check: (m) => m.legsCount === 4
       },
       {
         id: 'q6',
-        title: 'Funny Personality',
-        instruction: 'Make your monster funny.',
-        hint: 'Go to Personality ❤️ ➔ Choose Funny 😂',
-        check: (m) => m.personality && m.personality.includes('funny')
+        title: 'Sharp Teeth',
+        instruction: 'Give your monster sharp teeth.',
+        hint: 'Go to Teeth 🦷 ➔ Choose SHARP',
+        check: (m) => m.teethType === 'sharp'
       },
       {
         id: 'q7',
-        title: 'Likes Pizza',
-        instruction: 'Make your monster like pizza.',
-        hint: 'Go to Food 🍕 ➔ Choose Pizza 🍕',
-        check: (m) => m.food === 'pizza'
+        title: 'Long Arms',
+        instruction: 'Give your monster 2 long arms.',
+        hint: 'Go to Arms 👐 ➔ Choose 2 ➔ Choose LONG',
+        check: (m) => m.armsCount === 2 && m.armsLength === 'long'
       },
       {
         id: 'q8',
-        title: '4 Legs & Dinosaur Tail',
-        instruction: 'Give your monster 4 legs and a dinosaur tail.',
-        hint: 'Legs ➔ 4, Special ➔ Dinosaur Tail 🦕',
-        check: (m) => m.legsCount === 4 && m.specialTail === 'dinosaur'
+        title: 'Red Cape',
+        instruction: 'Give your monster a red cape.',
+        hint: 'Go to Dress 👕 ➔ Special 🦸 ➔ Choose Red Cape',
+        check: (m) => !!m.specialCape
       },
       {
         id: 'q9',
-        title: 'Wizard Hat & Cape',
-        instruction: 'Give your monster a wizard hat and a red cape.',
-        hint: 'Accessories ➔ Wizard Hat 🧙 + Special ➔ Red Cape',
-        check: (m) => m.accessories && m.accessories.includes('wizard_hat') && !!m.specialCape
+        title: 'Golden Crown',
+        instruction: 'Give your monster a crown.',
+        hint: 'Go to Dress 👕 ➔ Accessories 🧢 ➔ Choose Crown 👑',
+        check: (m) => m.accessories && m.accessories.includes('crown')
       },
       {
         id: 'q10',
-        title: 'Robot Body',
-        instruction: 'Give your monster a robot body.',
-        hint: 'Go to Body ➔ Shape ➔ Choose Robot 🤖',
-        check: (m) => m.bodyShape === 'robot'
+        title: 'Green Body & 1 Big Eye',
+        instruction: 'Give your monster a green body and 1 big eye.',
+        hint: 'Color: Green 🎨 + Eyes: 1 Big 👁️',
+        check: (m) => m.color === 'green' && m.eyesCount === 1 && m.eyesSize === 'big'
       }
     ];
 
@@ -88,53 +88,53 @@ class ChallengeEngine {
     this.listeningQuests = [
       {
         id: 'l1',
-        audioText: 'Give your monster three big eyes and two long ears.',
-        easyText: 'Give your monster 3 big eyes and 2 long ears.',
-        mediumText: 'Eyes: 3 BIG + Ears: 2 LONG',
-        check: (m) => m.eyesCount === 3 && (m.eyesSize === 'big' || m.eyesSize === 'giant') && m.earsCount === 2
+        audioText: 'Give your monster three big eyes.',
+        easyText: 'Give your monster 3 big eyes.',
+        mediumText: 'Eyes: 3 BIG',
+        check: (m) => m.eyesCount === 3 && m.eyesSize === 'big'
       },
       {
         id: 'l2',
-        audioText: 'Give your monster dragon wings and the power to fly.',
-        easyText: 'Give your monster dragon wings and the power to fly.',
-        mediumText: 'Wings: Dragon + Power: Fly',
-        check: (m) => m.specialWings === 'dragon' && m.powers && m.powers.includes('fly')
+        audioText: 'Give your monster a blue body.',
+        easyText: 'Give your monster a blue body.',
+        mediumText: 'Color: Blue',
+        check: (m) => m.color === 'blue'
       },
       {
         id: 'l3',
-        audioText: 'Give your monster a purple body with yellow spots.',
-        easyText: 'Give your monster a purple body with yellow spots.',
-        mediumText: 'Color: Purple + Pattern: Spots',
-        check: (m) => m.color === 'purple' && m.pattern === 'spots'
+        audioText: 'Give your monster two long ears.',
+        easyText: 'Give your monster 2 long ears.',
+        mediumText: 'Ears: 2 LONG',
+        check: (m) => m.earsCount === 2 && m.earsLength === 'long'
       },
       {
         id: 'l4',
-        audioText: 'Give your monster a scary mouth and sharp teeth.',
-        easyText: 'Give your monster a scary mouth and sharp teeth.',
-        mediumText: 'Mouth: Scary + Teeth: Sharp',
-        check: (m) => m.mouthType === 'scary' && (m.teethType === 'sharp' || m.teethType === 'vampire')
+        audioText: 'Give your monster four legs.',
+        easyText: 'Give your monster 4 legs.',
+        mediumText: 'Legs: 4',
+        check: (m) => m.legsCount === 4
       },
       {
         id: 'l5',
-        audioText: 'Make your monster live on the moon and like pizza.',
-        easyText: 'Make your monster live on the moon and like pizza.',
-        mediumText: 'World: Moon + Food: Pizza',
-        check: (m) => m.world === 'moon' && m.food === 'pizza'
+        audioText: 'Give your monster a big mouth and sharp teeth.',
+        easyText: 'Give your monster a big mouth and sharp teeth.',
+        mediumText: 'Mouth: BIG + Teeth: SHARP',
+        check: (m) => m.mouthType === 'big' && m.teethType === 'sharp'
+      },
+      {
+        id: 'l6',
+        audioText: 'Give your monster a red cape and yellow boots.',
+        easyText: 'Give your monster a red cape and yellow boots.',
+        mediumText: 'Dress: Red Cape + Yellow Boots',
+        check: (m) => !!m.specialCape && !!m.specialBoots
+      },
+      {
+        id: 'l7',
+        audioText: 'Give your monster a yellow hat and glasses.',
+        easyText: 'Give your monster a yellow hat and glasses.',
+        mediumText: 'Accessories: Hat + Glasses',
+        check: (m) => m.accessories && m.accessories.includes('hat') && m.accessories.includes('glasses')
       }
-    ];
-
-    // Classroom Speaking Game Prompts ("Find a Monster")
-    this.findMonsterPrompts = [
-      { text: "Find a monster that can fly! 🦅", targetCheck: (m) => m.powers && m.powers.includes('fly') },
-      { text: "Find a monster with 3 eyes! 👁️", targetCheck: (m) => m.eyesCount === 3 },
-      { text: "Find a monster with dragon wings! 🐉", targetCheck: (m) => m.specialWings === 'dragon' },
-      { text: "Find a monster that lives in a castle! 🏰", targetCheck: (m) => m.world === 'castle' },
-      { text: "Find a monster that likes pizza! 🍕", targetCheck: (m) => m.food === 'pizza' },
-      { text: "Find a funny monster! 😂", targetCheck: (m) => m.personality && m.personality.includes('funny') },
-      { text: "Find a monster wearing a wizard hat! 🧙", targetCheck: (m) => m.accessories && m.accessories.includes('wizard_hat') },
-      { text: "Find a monster with a robot body! 🤖", targetCheck: (m) => m.bodyShape === 'robot' },
-      { text: "Find a monster with 4 legs! 🐾", targetCheck: (m) => m.legsCount === 4 },
-      { text: "Find a monster that can breathe fire! 🔥", targetCheck: (m) => m.powers && m.powers.includes('breathe_fire') }
     ];
   }
 
@@ -156,55 +156,51 @@ class ChallengeEngine {
     return this.getCurrentListeningQuest();
   }
 
-  getRandomFindPrompt() {
-    const p = this.findMonsterPrompts[Math.floor(Math.random() * this.findMonsterPrompts.length)];
-    return p;
-  }
+  // ==========================================
+  // SECRET MONSTER GENERATOR & COMPARATOR
+  // ==========================================
 
-  // Generate Secret Monster for 2-Player Classroom Mode
   generateSecretMonster() {
     const colors = ['purple', 'green', 'blue', 'red', 'orange', 'yellow', 'pink'];
-    const shapes = ['round', 'square', 'tall', 'blob', 'robot'];
-    const wingsChoices = ['none', 'dragon', 'butterfly', 'bat'];
-    const tailsChoices = ['none', 'long', 'dinosaur', 'curly'];
-    const powersChoices = ['fly', 'breathe_fire', 'shoot_lightning', 'make_ice'];
-    const worlds = ['castle', 'moon', 'forest', 'volcano'];
-    const foods = ['pizza', 'ice_cream', 'burgers', 'cake'];
+    const eyesCounts = [1, 2, 3];
+    const eyesSizes = ['big', 'small'];
+    const earsCounts = [1, 2];
+    const earsLengths = ['long', 'short'];
+    const mouthTypes = ['big', 'small', 'scary'];
+    const teethTypes = ['sharp', 'big', 'small'];
+    const legsCounts = [2, 3, 4];
+    const armsCounts = [2, 3, 'many'];
+    const armsLengths = ['long', 'short'];
+    const topChoices = ['none', 'tshirt', 'shirt', 'jacket'];
+    const accChoices = ['none', 'hat', 'cap', 'glasses', 'scarf', 'crown'];
 
     const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    const chosenAcc = pick(accChoices);
+    const chosenTop = pick(topChoices);
 
     this.secretMonsterTarget = {
       name: 'Secret Mystery',
       color: pick(colors),
-      secondaryColor: 'yellow',
-      pattern: Math.random() > 0.5 ? 'spots' : 'none',
-      bodyShape: pick(shapes),
-      eyesCount: pick([1, 2, 3]),
-      eyesSize: 'big',
-      eyesStyle: 'round',
-      earsCount: pick([1, 2]),
-      earsStyle: 'long',
-      hornsCount: Math.random() > 0.5 ? 2 : 0,
-      hornsStyle: 'curly',
-      mouthType: pick(['big', 'scary', 'smiling']),
-      teethType: pick(['sharp', 'big', 'small']),
-      noseStyle: 'small',
-      legsCount: pick([2, 4]),
-      feetStyle: 'normal',
-      armsCount: pick([2, 3]),
-      armsLength: 'short',
-      handsStyle: 'normal',
-      specialWings: pick(wingsChoices),
-      specialTail: pick(tailsChoices),
-      specialParts: [],
-      clothesTop: 'none',
+      eyesCount: pick(eyesCounts),
+      eyesSize: pick(eyesSizes),
+      earsCount: pick(earsCounts),
+      earsLength: pick(earsLengths),
+      mouthType: pick(mouthTypes),
+      teethType: pick(teethTypes),
+      noseSize: 'small',
+      legsCount: pick(legsCounts),
+      armsCount: pick(armsCounts),
+      armsLength: pick(armsLengths),
+      clothesTop: chosenTop,
+      clothesTopColor: 'blue',
       clothesBottom: 'none',
-      accessories: Math.random() > 0.5 ? ['hat'] : [],
+      accessories: chosenAcc !== 'none' ? [chosenAcc] : [],
+      accessoryColors: { hat: 'yellow', cap: 'blue', scarf: 'red' },
       specialCape: Math.random() > 0.5,
-      powers: [pick(powersChoices)],
-      personality: ['funny'],
-      world: pick(worlds),
-      food: pick(foods)
+      specialCapeColor: 'red',
+      specialBoots: false,
+      specialGloves: false
     };
 
     return this.secretMonsterTarget;
@@ -217,69 +213,75 @@ class ChallengeEngine {
     const details = [];
 
     // 1. Color
+    const colorMatch = playerMonster.color === secretMonster.color;
     details.push({
-      feature: 'Color',
+      feature: 'Body Color',
       target: window.grammarEngine.capitalize(secretMonster.color),
       player: window.grammarEngine.capitalize(playerMonster.color),
-      match: playerMonster.color === secretMonster.color
+      match: colorMatch
     });
 
     // 2. Eyes
+    const eyesMatch = playerMonster.eyesCount === secretMonster.eyesCount && playerMonster.eyesSize === secretMonster.eyesSize;
     details.push({
       feature: 'Eyes',
       target: window.grammarEngine.getEyesPhrase(secretMonster),
       player: window.grammarEngine.getEyesPhrase(playerMonster),
-      match: playerMonster.eyesCount === secretMonster.eyesCount
+      match: eyesMatch
     });
 
     // 3. Ears
+    const earsMatch = playerMonster.earsCount === secretMonster.earsCount && playerMonster.earsLength === secretMonster.earsLength;
     details.push({
       feature: 'Ears',
       target: window.grammarEngine.getEarsPhrase(secretMonster),
       player: window.grammarEngine.getEarsPhrase(playerMonster),
-      match: playerMonster.earsCount === secretMonster.earsCount
+      match: earsMatch
     });
 
     // 4. Mouth
+    const mouthMatch = playerMonster.mouthType === secretMonster.mouthType;
     details.push({
       feature: 'Mouth',
       target: window.grammarEngine.getMouthPhrase(secretMonster),
       player: window.grammarEngine.getMouthPhrase(playerMonster),
-      match: playerMonster.mouthType === secretMonster.mouthType
+      match: mouthMatch
     });
 
-    // 5. Wings
+    // 5. Teeth
+    const teethMatch = playerMonster.teethType === secretMonster.teethType;
     details.push({
-      feature: 'Wings',
-      target: secretMonster.specialWings !== 'none' ? `${secretMonster.specialWings} wings` : 'No wings',
-      player: playerMonster.specialWings !== 'none' ? `${playerMonster.specialWings} wings` : 'No wings',
-      match: playerMonster.specialWings === secretMonster.specialWings
+      feature: 'Teeth',
+      target: window.grammarEngine.getTeethPhrase(secretMonster) || 'None',
+      player: window.grammarEngine.getTeethPhrase(playerMonster) || 'None',
+      match: teethMatch
     });
 
-    // 6. Power
-    const targetPower = secretMonster.powers && secretMonster.powers.length > 0 ? secretMonster.powers[0] : 'none';
-    const playerPower = playerMonster.powers && playerMonster.powers.length > 0 ? playerMonster.powers[0] : 'none';
+    // 6. Arms
+    const armsMatch = playerMonster.armsCount === secretMonster.armsCount && playerMonster.armsLength === secretMonster.armsLength;
     details.push({
-      feature: 'Power',
-      target: targetPower,
-      player: playerPower,
-      match: targetPower === playerPower
+      feature: 'Arms',
+      target: window.grammarEngine.getArmsPhrase(secretMonster),
+      player: window.grammarEngine.getArmsPhrase(playerMonster),
+      match: armsMatch
     });
 
-    // 7. World
+    // 7. Legs
+    const legsMatch = playerMonster.legsCount === secretMonster.legsCount;
     details.push({
-      feature: 'Home World',
-      target: secretMonster.world || 'castle',
-      player: playerMonster.world || 'castle',
-      match: playerMonster.world === secretMonster.world
+      feature: 'Legs',
+      target: window.grammarEngine.getLegsPhrase(secretMonster),
+      player: window.grammarEngine.getLegsPhrase(playerMonster),
+      match: legsMatch
     });
 
-    // 8. Food
+    // 8. Cape / Accessories
+    const capeMatch = (!!playerMonster.specialCape) === (!!secretMonster.specialCape);
     details.push({
-      feature: 'Favorite Food',
-      target: secretMonster.food || 'pizza',
-      player: playerMonster.food || 'pizza',
-      match: playerMonster.food === secretMonster.food
+      feature: 'Red Cape',
+      target: secretMonster.specialCape ? 'Wearing Cape' : 'No Cape',
+      player: playerMonster.specialCape ? 'Wearing Cape' : 'No Cape',
+      match: capeMatch
     });
 
     const correctCount = details.filter(d => d.match).length;

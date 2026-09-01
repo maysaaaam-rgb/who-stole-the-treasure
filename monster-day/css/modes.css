@@ -1,5 +1,5 @@
 /* ==========================================================================
-   modes.css - Challenge Modes, Listening Mode, Secret Monster, Find a Monster & Presentation
+   modes.css - Challenge Modes, Listening Mode, Secret Monster, Speaking Teleprompter & Presentation
    "Build Your Own Monster!"
    ========================================================================== */
 
@@ -279,6 +279,7 @@
   color: #334155;
 }
 
+/* Compare Screen (Step 2) */
 .secret-compare-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -335,36 +336,6 @@
 .compare-row.mismatch {
   background: #fef2f2;
   color: #991b1b;
-}
-
-/* ==========================================
-   CLASSROOM GAME: "FIND A MONSTER" MODAL
-   ========================================== */
-.find-monster-card {
-  max-width: 650px;
-  padding: 36px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.find-monster-badge {
-  font-size: 4rem;
-  animation: bounceScore 1.5s infinite alternate ease-in-out;
-}
-
-.find-monster-prompt-box {
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-  border: 3px solid #8b5cf6;
-  border-radius: var(--radius-lg);
-  padding: 24px 30px;
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: var(--primary-dark);
-  box-shadow: var(--shadow-sm);
-  width: 100%;
 }
 
 /* ==========================================
@@ -468,15 +439,15 @@
 .presentation-bullets-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .pres-bullet-card {
   background: rgba(255, 255, 255, 0.12);
   border: 2px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-md);
-  padding: 14px 22px;
-  font-size: 1.35rem;
+  padding: 16px 24px;
+  font-size: 1.5rem;
   font-weight: 800;
   display: flex;
   justify-content: space-between;
@@ -503,7 +474,13 @@
 }
 
 @media (max-width: 900px) {
-  .presentation-body-layout { grid-template-columns: 1fr; }
-  .secret-compare-grid { grid-template-columns: 1fr; }
-  .speaking-main-sentence { font-size: 1.6rem; }
+  .presentation-body-layout {
+    grid-template-columns: 1fr;
+  }
+  .secret-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .speaking-main-sentence {
+    font-size: 1.6rem;
+  }
 }

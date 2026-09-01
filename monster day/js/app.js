@@ -1,39 +1,26 @@
 /**
- * app.js - Main Application State & Stage Controller for "Build Your Own Monster!"
+ * app.js - Main Application State & UI Controller for "Build Your Own Monster!"
  */
 
 class MonsterApp {
   constructor() {
     this.defaultMonster = {
       name: 'Zippy',
-      bodyShape: 'round',
       color: 'purple',
-      secondaryColor: 'yellow',
-      pattern: 'none',
       eyesCount: 2,
       eyesSize: 'big',
-      eyesStyle: 'round',
       earsCount: 2,
-      earsStyle: 'long',
-      hornsCount: 0,
-      hornsStyle: 'curly',
+      earsLength: 'long',
       mouthType: 'big',
       teethType: 'sharp',
-      noseStyle: 'small',
+      noseSize: 'small',
       legsCount: 2,
-      feetStyle: 'normal',
       armsCount: 2,
       armsLength: 'short',
-      handsStyle: 'normal',
-      specialWings: 'none',
-      specialTail: 'none',
-      specialParts: [],
       clothesTop: 'none',
       clothesTopColor: 'blue',
       clothesBottom: 'none',
       clothesBottomColor: 'black',
-      clothesShoes: 'none',
-      specialSuit: 'none',
       accessories: [],
       accessoryColors: {
         hat: 'yellow',
@@ -47,50 +34,32 @@ class MonsterApp {
       specialBoots: false,
       specialBootsColor: 'yellow',
       specialGloves: false,
-      specialGlovesColor: 'green',
-      powers: ['fly'],
-      personality: ['funny'],
-      world: 'castle',
-      food: 'pizza',
-      expression: 'happy'
+      specialGlovesColor: 'green'
     };
 
     // Current Monster State
     this.monster = JSON.parse(JSON.stringify(this.defaultMonster));
 
     this.activeScreen = 'screen-start';
-    this.activeCreatorStage = 'stage-body';
+    this.activeCategory = 'eyes';
+    this.activeWardrobeTab = 'tops';
     this.currentMode = 'creator'; // 'creator', 'challenge', 'listening', 'secret'
     this.speakingStepIndex = 0;
     this.speakingSteps = [];
 
-    this.stages = [
-      'stage-body',
-      'stage-face',
-      'stage-arms',
-      'stage-legs',
-      'stage-special',
-      'stage-colors',
-      'stage-clothes',
-      'stage-powers',
-      'stage-personality',
-      'stage-world',
-      'stage-food'
-    ];
-
-    this.randomNames = ['Zippy', 'Bob', 'Gloop', 'Max', 'Spike', 'Fluffy', 'Pip', 'Bubbles', 'Ziggy', 'Munchy', 'Sparky', 'Gobo', 'Barnaby', 'Fizzy', 'Pebble'];
+    this.randomNames = ['Zippy', 'Bob', 'Gloop', 'Max', 'Spike', 'Fluffy', 'Pip', 'Bubbles', 'Ziggy', 'Munchy', 'Sparky', 'Gobo'];
   }
 
   init() {
     this.bindEvents();
     this.updateAllPreviews();
-    this.setCreatorStage('stage-body');
-    this.updateSelectionButtons();
+    this.updateCategoryUI();
+    this.updateWardrobeUI();
     this.updateGlobalSoundToggles();
   }
 
   // ==========================================
-  // NAVIGATION & STAGE PROGRESSION
+  // NAVIGATION & SCREEN MANAGEMENT
   // ==========================================
   goToScreen(screenId, mode = 'creator') {
     this.activeScreen = screenId;
@@ -102,7 +71,9 @@ class MonsterApp {
       target.classList.add('active');
     }
 
+    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
     window.soundEngine.playPop();
 
     if (screenId === 'screen-final') {
@@ -110,7 +81,7 @@ class MonsterApp {
       window.teacherMode.stats.monstersCreated++;
       window.teacherMode.addPoints(2, 'Monster Created');
       window.teacherMode.trackMonsterFeatures(this.monster);
-    } else if (screenId === 'screen-create') {
+    } else if (screenId === 'screen-create' || screenId === 'screen-dress') {
       this.updateAllPreviews();
       this.updatePhraseBadge();
       this.updateModeBanner();
@@ -123,38 +94,77 @@ class MonsterApp {
     }
   }
 
-  setCreatorStage(stageId) {
-    this.activeCreatorStage = stageId;
-    window.soundEngine.playPop();
+  updateModeBanner() {
+    const banners = [
+      {
+        el: document.getElementById('creator-mode-banner'),
+        icon: document.getElementById('banner-quest-icon'),
+        text: document.getElementById('banner-quest-text'),
+        audioBtn: document.getElementById('banner-audio-replay-btn'),
+        checkBtn: document.getElementById('banner-check-btn'),
+        retBtn: document.getElementById('banner-return-btn')
+      },
+      {
+        el: document.getElementById('dress-mode-banner'),
+        icon: document.getElementById('dress-banner-quest-icon'),
+        text: document.getElementById('dress-banner-quest-text'),
+        audioBtn: document.getElementById('dress-banner-audio-replay-btn'),
+        checkBtn: document.getElementById('dress-banner-check-btn'),
+        retBtn: document.getElementById('dress-banner-return-btn')
+      }
+    ];
 
-    // Update Stage Tabs
-    document.querySelectorAll('.stage-step-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.stage === stageId);
+    banners.forEach(b => {
+      if (!b.el) return;
+
+      if (this.currentMode === 'challenge') {
+        const quest = window.challengeEngine.getCurrentQuest();
+        b.el.classList.remove('hidden');
+        if (b.icon) b.icon.innerText = '🎯';
+        if (b.text) b.text.innerText = `Mission: ${quest.instruction}`;
+        if (b.audioBtn) b.audioBtn.style.display = 'none';
+        if (b.checkBtn) b.checkBtn.style.display = 'inline-flex';
+        if (b.retBtn) b.retBtn.innerText = '➔ Back to Mission';
+      } else if (this.currentMode === 'listening') {
+        const quest = window.challengeEngine.getCurrentListeningQuest();
+        b.el.classList.remove('hidden');
+        if (b.icon) b.icon.innerText = '👂';
+        if (b.text) b.text.innerText = `Listening: Listen carefully & build!`;
+        if (b.audioBtn) b.audioBtn.style.display = 'inline-flex';
+        if (b.checkBtn) b.checkBtn.style.display = 'inline-flex';
+        if (b.retBtn) b.retBtn.innerText = '➔ Back to Listening';
+      } else if (this.currentMode === 'secret') {
+        b.el.classList.remove('hidden');
+        if (b.icon) b.icon.innerText = '🤫';
+        if (b.text) b.text.innerText = `2-Player Mode: Player B is building!`;
+        if (b.audioBtn) b.audioBtn.style.display = 'none';
+        if (b.checkBtn) b.checkBtn.style.display = 'none';
+        if (b.retBtn) b.retBtn.innerText = '➔ Compare Monsters!';
+      } else {
+        b.el.classList.add('hidden');
+      }
     });
-
-    // Update Stage Panels
-    document.querySelectorAll('.creator-stage-panel').forEach(panel => {
-      panel.classList.toggle('active', panel.id === stageId);
-    });
-
-    this.updatePhraseBadge();
   }
 
-  nextStage() {
-    const currentIndex = this.stages.indexOf(this.activeCreatorStage);
-    if (currentIndex < this.stages.length - 1) {
-      this.setCreatorStage(this.stages[currentIndex + 1]);
-    } else {
-      this.goToScreen('screen-final');
+  checkCurrentModeMission() {
+    if (this.currentMode === 'challenge') {
+      this.goToScreen('screen-challenge', 'challenge');
+      this.checkChallenge();
+    } else if (this.currentMode === 'listening') {
+      this.goToScreen('screen-listening', 'listening');
+      this.checkListening();
     }
   }
 
-  prevStage() {
-    const currentIndex = this.stages.indexOf(this.activeCreatorStage);
-    if (currentIndex > 0) {
-      this.setCreatorStage(this.stages[currentIndex - 1]);
+  returnToModeScreen() {
+    if (this.currentMode === 'challenge') {
+      this.goToScreen('screen-challenge', 'challenge');
+    } else if (this.currentMode === 'listening') {
+      this.goToScreen('screen-listening', 'listening');
+    } else if (this.currentMode === 'secret') {
+      this.goToScreen('screen-secret', 'secret');
     } else {
-      this.goToScreen('screen-start');
+      this.goToScreen('screen-start', 'creator');
     }
   }
 
@@ -166,6 +176,7 @@ class MonsterApp {
 
     const previewContainers = [
       'create-monster-preview',
+      'dress-monster-preview',
       'final-monster-preview',
       'challenge-monster-preview',
       'listening-monster-preview',
@@ -180,6 +191,7 @@ class MonsterApp {
       }
     });
 
+    // Save feature tracking in stats
     window.teacherMode.trackMonsterFeatures(this.monster);
   }
 
@@ -188,52 +200,47 @@ class MonsterApp {
   // ==========================================
   updatePhraseBadge(explicitText = null) {
     let phrase = '';
+    let category = this.activeCategory;
 
     if (explicitText) {
       phrase = explicitText;
     } else if (this.activeScreen === 'screen-create') {
-      switch (this.activeCreatorStage) {
-        case 'stage-body':
-          phrase = `A ${this.monster.bodyShape || 'round'} body!`;
-          break;
-        case 'stage-face':
+      switch (category) {
+        case 'eyes':
           phrase = window.grammarEngine.getEyesPhrase(this.monster);
           break;
-        case 'stage-arms':
-          phrase = window.grammarEngine.getArmsPhrase(this.monster);
+        case 'ears':
+          phrase = window.grammarEngine.getEarsPhrase(this.monster);
           break;
-        case 'stage-legs':
+        case 'mouth':
+          phrase = window.grammarEngine.getMouthPhrase(this.monster);
+          break;
+        case 'teeth':
+          phrase = window.grammarEngine.getTeethPhrase(this.monster) || 'No teeth';
+          break;
+        case 'legs':
           phrase = window.grammarEngine.getLegsPhrase(this.monster);
           break;
-        case 'stage-special':
-          const specials = window.grammarEngine.getSpecialPartsPhrases(this.monster);
-          phrase = specials.length > 0 ? specials[0] : 'Special parts';
+        case 'arms':
+          phrase = window.grammarEngine.getArmsPhrase(this.monster);
           break;
-        case 'stage-colors':
-          phrase = `${this.monster.color} with ${this.monster.pattern !== 'none' ? this.monster.pattern : 'soft belly'}!`;
+        case 'nose':
+          phrase = window.grammarEngine.getNosePhrase(this.monster);
           break;
-        case 'stage-clothes':
-          const clothes = window.grammarEngine.getClothingPhrases(this.monster);
-          phrase = clothes.length > 0 ? clothes[clothes.length - 1] : 'Clothes & accessories';
-          break;
-        case 'stage-powers':
-          phrase = `It can ${window.grammarEngine.getPowersPhrase(this.monster) || 'fly'}!`;
-          break;
-        case 'stage-personality':
-          phrase = `It is ${window.grammarEngine.getPersonalityPhrase(this.monster)}!`;
-          break;
-        case 'stage-world':
-          phrase = `It ${window.grammarEngine.getWorldPhrase(this.monster)}!`;
-          break;
-        case 'stage-food':
-          phrase = `It likes ${window.grammarEngine.getFoodPhrase(this.monster)}!`;
+        case 'color':
+          phrase = `My monster is ${this.monster.color}!`;
           break;
         default:
-          phrase = `Meet ${this.monster.name}!`;
+          phrase = window.grammarEngine.getEyesPhrase(this.monster);
       }
+    } else if (this.activeScreen === 'screen-dress') {
+      const phrases = window.grammarEngine.getClothingPhrases(this.monster);
+      phrase = phrases.length > 0 ? phrases[phrases.length - 1] : 'No clothes';
     }
 
     const badgeTextEl = document.getElementById('active-phrase-text');
+    const dressBadgeTextEl = document.getElementById('dress-phrase-text');
+
     if (badgeTextEl && this.activeScreen === 'screen-create') {
       badgeTextEl.innerText = phrase.toUpperCase();
       if (badgeTextEl.parentElement && badgeTextEl.parentElement.classList) {
@@ -245,388 +252,282 @@ class MonsterApp {
         }, 400);
       }
     }
+
+    if (dressBadgeTextEl && this.activeScreen === 'screen-dress') {
+      dressBadgeTextEl.innerText = phrase.toUpperCase();
+      if (dressBadgeTextEl.parentElement && dressBadgeTextEl.parentElement.classList) {
+        dressBadgeTextEl.parentElement.classList.add('badge-bounce');
+        setTimeout(() => {
+          if (dressBadgeTextEl.parentElement && dressBadgeTextEl.parentElement.classList) {
+            dressBadgeTextEl.parentElement.classList.remove('badge-bounce');
+          }
+        }, 400);
+      }
+    }
   }
 
   speakCurrentPhrase() {
-    const badgeTextEl = document.getElementById('active-phrase-text');
-    const phrase = badgeTextEl ? badgeTextEl.innerText : '';
+    let phrase = '';
+    if (this.activeScreen === 'screen-create') {
+      const badgeTextEl = document.getElementById('active-phrase-text');
+      phrase = badgeTextEl ? badgeTextEl.innerText : '';
+    } else if (this.activeScreen === 'screen-dress') {
+      const dressBadgeTextEl = document.getElementById('dress-phrase-text');
+      phrase = dressBadgeTextEl ? dressBadgeTextEl.innerText : '';
+    }
+
     if (phrase) {
       window.soundEngine.speak(phrase.toLowerCase());
     }
   }
 
   // ==========================================
-  // MIX & MATCH 🎲 (CREATIVE WEIRD RANDOMIZER)
+  // SURPRISE ME! (RANDOMIZER)
   // ==========================================
-  mixAndMatch() {
-    this.makeItWeird();
-  }
-
-  makeItWeird() {
+  randomizeMonster() {
     window.soundEngine.playSparkle();
 
-    const shapes = ['round', 'square', 'tall', 'short', 'wide', 'thin', 'blob', 'ghost', 'dinosaur', 'robot'];
-    const colors = ['purple', 'green', 'blue', 'red', 'orange', 'yellow', 'pink', 'black', 'white'];
-    const patterns = ['none', 'spots', 'stripes', 'stars', 'hearts', 'dots', 'zigzags', 'rainbow'];
-    const expressions = ['happy', 'angry', 'sleepy', 'surprised', 'silly', 'scary'];
-    const eyeCounts = [1, 2, 3, 4, 'many'];
-    const eyeSizes = ['tiny', 'small', 'big', 'giant'];
-    const eyeStyles = ['round', 'star', 'heart', 'sleepy', 'happy', 'angry', 'surprised'];
-    const earCounts = [0, 1, 2, 4];
-    const earStyles = ['long', 'round', 'pointy', 'floppy'];
-    const hornCounts = [0, 1, 2, 4];
-    const hornStyles = ['curly', 'pointy', 'spiral', 'big'];
-    const mouthTypes = ['big', 'small', 'huge', 'scary', 'smiling'];
-    const teethTypes = ['none', 'small', 'big', 'sharp', 'vampire', 'giant'];
-    const noseStyles = ['none', 'small', 'big', 'long', 'funny'];
-    const armCounts = [0, 1, 2, 3, 4, 'many'];
-    const armLengths = ['tiny', 'short', 'long', 'super_long'];
-    const handStyles = ['normal', 'claws', 'giant', 'three_fingers'];
-    const legCounts = [0, 1, 2, 3, 4];
-    const feetStyles = ['normal', 'claws', 'bird', 'monster'];
-    const wings = ['none', 'dragon', 'butterfly', 'bat'];
-    const tails = ['none', 'long', 'curly', 'dinosaur', 'snake', 'bunny'];
-    const specialExtrasPool = ['tentacles', 'spikes', 'shell', 'fins'];
-    const powers = ['fly', 'breathe_fire', 'make_ice', 'shoot_lightning', 'invisible', 'jump_high', 'swim_fast', 'magic'];
-    const personalities = ['funny', 'friendly', 'scary', 'crazy', 'sleepy', 'clever', 'happy'];
-    const worlds = ['house', 'forest', 'castle', 'volcano', 'ocean', 'ice_world', 'moon', 'space', 'jungle', 'cave'];
-    const foods = ['pizza', 'burgers', 'ice_cream', 'apples', 'fish', 'cake', 'chocolate'];
+    const colors = ['purple', 'green', 'blue', 'red', 'orange', 'yellow', 'pink'];
+    const eyesCounts = [1, 2, 3];
+    const eyesSizes = ['big', 'small'];
+    const earsCounts = [1, 2];
+    const earsLengths = ['long', 'short'];
+    const mouthTypes = ['big', 'small', 'scary'];
+    const teethTypes = ['sharp', 'big', 'small'];
+    const legsCounts = [2, 3, 4];
+    const armsCounts = [2, 3, 'many'];
+    const armsLengths = ['long', 'short'];
+    const noseSizes = ['big', 'small'];
 
     const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-    this.monster.bodyShape = pick(shapes);
     this.monster.color = pick(colors);
-    this.monster.secondaryColor = pick(colors);
-    this.monster.pattern = pick(patterns);
-    this.monster.expression = pick(expressions);
-    this.monster.eyesCount = pick(eyeCounts);
-    this.monster.eyesSize = pick(eyeSizes);
-    this.monster.eyesStyle = pick(eyeStyles);
-    this.monster.earsCount = pick(earCounts);
-    this.monster.earsStyle = pick(earStyles);
-    this.monster.hornsCount = pick(hornCounts);
-    this.monster.hornsStyle = pick(hornStyles);
+    this.monster.eyesCount = pick(eyesCounts);
+    this.monster.eyesSize = pick(eyesSizes);
+    this.monster.earsCount = pick(earsCounts);
+    this.monster.earsLength = pick(earsLengths);
     this.monster.mouthType = pick(mouthTypes);
     this.monster.teethType = pick(teethTypes);
-    this.monster.noseStyle = pick(noseStyles);
-    this.monster.armsCount = pick(armCounts);
-    this.monster.armsLength = pick(armLengths);
-    this.monster.handsStyle = pick(handStyles);
-    this.monster.legsCount = pick(legCounts);
-    this.monster.feetStyle = pick(feetStyles);
-    this.monster.specialWings = pick(wings);
-    this.monster.specialTail = pick(tails);
+    this.monster.legsCount = pick(legsCounts);
+    this.monster.armsCount = pick(armsCounts);
+    this.monster.armsLength = pick(armsLengths);
+    this.monster.noseSize = pick(noseSizes);
 
-    // Random special extras
-    this.monster.specialParts = [];
-    if (Math.random() > 0.4) this.monster.specialParts.push(pick(specialExtrasPool));
-    if (Math.random() > 0.6) this.monster.specialParts.push(pick(specialExtrasPool));
-    this.monster.specialParts = [...new Set(this.monster.specialParts)];
-
-    this.monster.powers = [pick(powers), pick(powers)].filter((v, i, a) => a.indexOf(v) === i);
-    this.monster.personality = [pick(personalities)];
-    this.monster.world = pick(worlds);
-    this.monster.food = pick(foods);
+    // Randomize Name
     this.monster.name = pick(this.randomNames);
 
-    if (this.activeScreen !== 'screen-create') {
-      this.goToScreen('screen-create');
-    }
-
     this.updateAllPreviews();
+    this.updateCategoryUI();
     this.updateSelectionButtons();
 
-    // Creative Weird Popup Banner
+    // Fun Surprise Banner
     const banner = document.getElementById('surprise-popup-banner');
     if (banner) {
-      const desc = window.grammarEngine.getFullDescription(this.monster);
+      const eyesText = window.grammarEngine.getEyesPhrase(this.monster);
+      const earsText = window.grammarEngine.getEarsPhrase(this.monster);
       banner.innerHTML = `
         <div class="surprise-content">
-          <h3>🎲 MIX & MATCH! SUPER WEIRD MONSTER!</h3>
-          <p>${desc}</p>
+          <h3>🎉 WOW! SURPRISE MONSTER!</h3>
+          <p>It has <strong>${eyesText}</strong> and <strong>${earsText}</strong>!</p>
         </div>
       `;
       banner.classList.add('show');
-      window.soundEngine.speak(`Mix and Match! Meet ${this.monster.name}! It is super creative!`);
-      setTimeout(() => banner.classList.remove('show'), 4500);
+      window.soundEngine.speak(`Wow! It has ${eyesText}! It has ${earsText}!`);
+      setTimeout(() => banner.classList.remove('show'), 3500);
     }
 
     this.updatePhraseBadge();
-    window.teacherMode.addPoints(1, 'Creative Monster');
+    window.teacherMode.addPoints(1, 'Surprise Monster');
   }
 
   // ==========================================
-  // CLASSROOM SPEAKING GAME: "FIND A MONSTER"
+  // CATEGORY & OPTION CONTROLS (PHASE 1)
   // ==========================================
-  openFindMonsterGame() {
-    window.soundEngine.playSparkle();
-    const modal = document.getElementById('find-monster-modal');
-    if (!modal) return;
+  setCategory(catName) {
+    this.activeCategory = catName;
+    window.soundEngine.playPop();
 
-    const prompt = window.challengeEngine.getRandomFindPrompt();
-    document.getElementById('find-monster-prompt-text').innerText = prompt.text;
-    modal.classList.add('active');
+    // Update active tab button
+    document.querySelectorAll('.cat-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.category === catName);
+    });
 
-    window.soundEngine.speak(prompt.text);
+    this.updateCategoryUI();
+    this.updatePhraseBadge();
   }
 
-  closeFindMonsterGame() {
-    const modal = document.getElementById('find-monster-modal');
-    if (modal) modal.classList.remove('active');
-    window.soundEngine.stopSpeech();
+  updateCategoryUI() {
+    document.querySelectorAll('.category-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.id === `cat-panel-${this.activeCategory}`);
+    });
+    this.updateSelectionButtons();
   }
 
-  // ==========================================
-  // SELECTION BUTTONS SYNC
-  // ==========================================
   updateSelectionButtons() {
-    // Body Shapes
-    document.querySelectorAll('[data-body-shape]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.bodyShape === this.monster.bodyShape);
-    });
-
-    // Body Colors
-    document.querySelectorAll('[data-body-color]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.bodyColor === this.monster.color);
-    });
-    // Secondary Colors
-    document.querySelectorAll('[data-secondary-color]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.secondaryColor === this.monster.secondaryColor);
-    });
-    // Patterns
-    document.querySelectorAll('[data-pattern]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.pattern === this.monster.pattern);
-    });
-
-    // Eyes Count, Size, Style
-    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
-      const val = btn.dataset.eyesCount === 'many' ? 'many' : parseInt(btn.dataset.eyesCount, 10);
-      btn.classList.toggle('active', val === this.monster.eyesCount);
-    });
+    // Eyes Size
     document.querySelectorAll('[data-eyes-size]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.eyesSize === this.monster.eyesSize);
     });
-    document.querySelectorAll('[data-eyes-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.eyesStyle === this.monster.eyesStyle);
+    // Eyes Count
+    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.eyesCount, 10) === this.monster.eyesCount);
     });
-
-    // Ears Count & Style
+    // Ears Size
+    document.querySelectorAll('[data-ears-length]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.earsLength === this.monster.earsLength);
+    });
+    // Ears Count
     document.querySelectorAll('[data-ears-count]').forEach(btn => {
       btn.classList.toggle('active', parseInt(btn.dataset.earsCount, 10) === this.monster.earsCount);
     });
-    document.querySelectorAll('[data-ears-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.earsStyle === this.monster.earsStyle);
-    });
-
-    // Horns Count & Style
-    document.querySelectorAll('[data-horns-count]').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.hornsCount, 10) === this.monster.hornsCount);
-    });
-    document.querySelectorAll('[data-horns-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.hornsStyle === this.monster.hornsStyle);
-    });
-
-    // Mouth & Teeth
+    // Mouth
     document.querySelectorAll('[data-mouth-type]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mouthType === this.monster.mouthType);
     });
+    // Teeth
     document.querySelectorAll('[data-teeth-type]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.teethType === this.monster.teethType);
     });
-    document.querySelectorAll('[data-nose-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.noseStyle === this.monster.noseStyle);
+    // Legs
+    document.querySelectorAll('[data-legs-count]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.legsCount, 10) === this.monster.legsCount);
     });
-
-    // Face Expression
-    document.querySelectorAll('[data-expression]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.expression === (this.monster.expression || 'happy'));
+    // Arms Length
+    document.querySelectorAll('[data-arms-length]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.armsLength === this.monster.armsLength);
     });
-
-    // Arms & Hands
+    // Arms Count
     document.querySelectorAll('[data-arms-count]').forEach(btn => {
       const val = btn.dataset.armsCount === 'many' ? 'many' : parseInt(btn.dataset.armsCount, 10);
       btn.classList.toggle('active', val === this.monster.armsCount);
     });
-    document.querySelectorAll('[data-arms-length]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.armsLength === this.monster.armsLength);
+    // Nose
+    document.querySelectorAll('[data-nose-size]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.noseSize === this.monster.noseSize);
     });
-    document.querySelectorAll('[data-hands-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.handsStyle === this.monster.handsStyle);
+    // Color
+    document.querySelectorAll('[data-body-color]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bodyColor === this.monster.color);
+    });
+  }
+
+  // ==========================================
+  // WARDROBE CONTROLS (PHASE 2)
+  // ==========================================
+  setWardrobeTab(tabName) {
+    this.activeWardrobeTab = tabName;
+    window.soundEngine.playPop();
+
+    document.querySelectorAll('.wardrobe-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabName);
     });
 
-    // Legs & Feet
-    document.querySelectorAll('[data-legs-count]').forEach(btn => {
-      const val = btn.dataset.legsCount === 'many' ? 'many' : parseInt(btn.dataset.legsCount, 10);
-      btn.classList.toggle('active', val === this.monster.legsCount);
-    });
-    document.querySelectorAll('[data-feet-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.feetStyle === this.monster.feetStyle);
+    document.querySelectorAll('.wardrobe-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.id === `wardrobe-panel-${tabName}`);
     });
 
-    // Special Parts (Wings, Tails, Extras)
-    document.querySelectorAll('[data-special-wings]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialWings === this.monster.specialWings);
-    });
-    document.querySelectorAll('[data-special-tail]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialTail === this.monster.specialTail);
-    });
-    document.querySelectorAll('[data-special-extra]').forEach(btn => {
-      const extra = btn.dataset.specialExtra;
-      const isSelected = this.monster.specialParts && this.monster.specialParts.includes(extra);
-      btn.classList.toggle('active', isSelected);
-    });
+    this.updateWardrobeUI();
+  }
 
-    // Clothes
+  updateWardrobeUI() {
+    // Tops
     document.querySelectorAll('[data-cloth-top]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.clothTop === this.monster.clothesTop);
     });
+    // Top Color Swatches
+    document.querySelectorAll('[data-top-color]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.topColor === this.monster.clothesTopColor);
+    });
+
+    // Bottoms
     document.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.clothBottom === this.monster.clothesBottom);
     });
-    document.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.clothShoes === this.monster.clothesShoes);
-    });
-    document.querySelectorAll('[data-special-suit]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialSuit === this.monster.specialSuit);
+    // Bottom Color Swatches
+    document.querySelectorAll('[data-bottom-color]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bottomColor === this.monster.clothesBottomColor);
     });
 
-    // Accessories
+    // Accessories (Multi-select)
     document.querySelectorAll('[data-accessory]').forEach(btn => {
       const acc = btn.dataset.accessory;
       const isSelected = this.monster.accessories && this.monster.accessories.includes(acc);
       btn.classList.toggle('active', isSelected);
     });
 
-    // Powers (Multi-select)
-    document.querySelectorAll('[data-power]').forEach(btn => {
-      const p = btn.dataset.power;
-      const isSelected = this.monster.powers && this.monster.powers.includes(p);
-      btn.classList.toggle('active', isSelected);
-    });
+    // Special items
+    const capeBtn = document.getElementById('special-btn-cape');
+    if (capeBtn) capeBtn.classList.toggle('active', !!this.monster.specialCape);
 
-    // Personality (Multi-select)
-    document.querySelectorAll('[data-personality]').forEach(btn => {
-      const trait = btn.dataset.personality;
-      const isSelected = this.monster.personality && this.monster.personality.includes(trait);
-      btn.classList.toggle('active', isSelected);
-    });
+    const bootsBtn = document.getElementById('special-btn-boots');
+    if (bootsBtn) bootsBtn.classList.toggle('active', !!this.monster.specialBoots);
 
-    // World
-    document.querySelectorAll('[data-world]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.world === this.monster.world);
-    });
-
-    // Food
-    document.querySelectorAll('[data-food]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.food === this.monster.food);
-    });
-  }
-
-  togglePower(powerName) {
-    if (!this.monster.powers) this.monster.powers = [];
-    const idx = this.monster.powers.indexOf(powerName);
-    if (idx > -1) {
-      this.monster.powers.splice(idx, 1);
-    } else {
-      this.monster.powers.push(powerName);
-    }
-    window.soundEngine.playBoing();
-    this.updateAllPreviews();
-    this.updateSelectionButtons();
-    this.updatePhraseBadge();
-  }
-
-  togglePersonality(trait) {
-    if (!this.monster.personality) this.monster.personality = [];
-    const idx = this.monster.personality.indexOf(trait);
-    if (idx > -1) {
-      this.monster.personality.splice(idx, 1);
-    } else {
-      this.monster.personality.push(trait);
-    }
-    window.soundEngine.playBoing();
-    this.updateAllPreviews();
-    this.updateSelectionButtons();
-    this.updatePhraseBadge();
+    const glovesBtn = document.getElementById('special-btn-gloves');
+    if (glovesBtn) glovesBtn.classList.toggle('active', !!this.monster.specialGloves);
   }
 
   toggleAccessory(accName) {
     if (!this.monster.accessories) this.monster.accessories = [];
     const idx = this.monster.accessories.indexOf(accName);
+
     if (idx > -1) {
       this.monster.accessories.splice(idx, 1);
     } else {
       this.monster.accessories.push(accName);
     }
-    window.soundEngine.playBoing();
-    this.updateAllPreviews();
-    this.updateSelectionButtons();
-    this.updatePhraseBadge();
-  }
 
-  toggleSpecialExtra(extraName) {
-    if (!this.monster.specialParts) this.monster.specialParts = [];
-    const idx = this.monster.specialParts.indexOf(extraName);
-    if (idx > -1) {
-      this.monster.specialParts.splice(idx, 1);
-    } else {
-      this.monster.specialParts.push(extraName);
-    }
     window.soundEngine.playBoing();
     this.updateAllPreviews();
-    this.updateSelectionButtons();
+    this.updateWardrobeUI();
     this.updatePhraseBadge();
   }
 
   // ==========================================
-  // FINAL SCREEN: SHOWCASE & DESCRIPTIONS
+  // FINAL SCREEN: NAME & DESCRIPTION
   // ==========================================
   renderFinalScreen() {
     const summary = window.grammarEngine.getMonsterSummary(this.monster);
     const fullParagraph = window.grammarEngine.getFullDescription(this.monster);
 
+    // Update Name Input
     const nameInput = document.getElementById('monster-name-input');
-    if (nameInput) nameInput.value = this.monster.name;
+    if (nameInput) {
+      nameInput.value = this.monster.name;
+    }
 
     const nameTitleEl = document.getElementById('final-monster-name-display');
-    if (nameTitleEl) nameTitleEl.innerText = this.monster.name;
+    if (nameTitleEl) {
+      nameTitleEl.innerText = this.monster.name;
+    }
 
+    // Structured Breakdown Card
     const summaryCard = document.getElementById('final-summary-breakdown');
     if (summaryCard) {
       summaryCard.innerHTML = `
         <div class="summary-line"><strong>📛 Name:</strong> <span>${summary.name}</span></div>
-        <div class="summary-line"><strong>🎨 Appearance:</strong> <span class="capitalize">${summary.colorDesc}</span></div>
+        <div class="summary-line"><strong>🎨 Color:</strong> <span class="capitalize">${summary.color}</span></div>
         <div class="summary-section">
-          <strong>👁️ Features:</strong>
+          <strong>👁️ It has:</strong>
           <ul>
             ${summary.bodyFeatures.map(f => `<li>${f}</li>`).join('')}
           </ul>
         </div>
         ${summary.clothingItems.length > 0 ? `
           <div class="summary-section">
-            <strong>👕 Clothes:</strong>
+            <strong>👕 It is wearing:</strong>
             <ul>
               ${summary.clothingItems.map(c => `<li>${c}</li>`).join('')}
             </ul>
           </div>
         ` : ''}
-        ${summary.powers ? `
-          <div class="summary-line"><strong>✨ Super Power:</strong> <span>It can ${summary.powers}</span></div>
-        ` : ''}
-        ${summary.personality ? `
-          <div class="summary-line"><strong>❤️ Personality:</strong> <span>It is ${summary.personality}</span></div>
-        ` : ''}
-        ${summary.world ? `
-          <div class="summary-line"><strong>🏠 Home:</strong> <span>It ${summary.world}</span></div>
-        ` : ''}
-        ${summary.food ? `
-          <div class="summary-line"><strong>🍕 Favorite Food:</strong> <span>It likes ${summary.food}</span></div>
-        ` : ''}
       `;
     }
 
+    // Full Paragraph Display
     const paragraphEl = document.getElementById('final-description-paragraph');
-    if (paragraphEl) paragraphEl.innerText = fullParagraph;
+    if (paragraphEl) {
+      paragraphEl.innerText = fullParagraph;
+    }
   }
 
   setMonsterName(newName) {
@@ -668,6 +569,7 @@ class MonsterApp {
     document.getElementById('speaking-starter-prompt').innerText = `🗣️ SAY: "${step.starter}"`;
     document.getElementById('speaking-main-sentence').innerHTML = `<strong>${step.text}</strong>`;
 
+    // Speak model sentence
     window.soundEngine.speak(step.text);
   }
 
@@ -677,6 +579,7 @@ class MonsterApp {
       window.soundEngine.playPop();
       this.renderSpeakingStep();
     } else {
+      // Completed full speaking session!
       window.teacherMode.stats.speakingCompletedCount++;
       window.teacherMode.addPoints(3, 'Speaking Star!');
       this.closeSpeakingModal();
@@ -708,6 +611,7 @@ class MonsterApp {
 
     modal.classList.add('active');
 
+    // Fill presentation details
     document.getElementById('pres-monster-name').innerText = this.monster.name.toUpperCase();
     document.getElementById('pres-monster-color').innerText = window.grammarEngine.capitalize(this.monster.color);
 
@@ -715,18 +619,13 @@ class MonsterApp {
     if (bulletsList) {
       const summary = window.grammarEngine.getMonsterSummary(this.monster);
       const items = [
-        `🎨 ${summary.colorDesc}`,
         `👁️ ${window.grammarEngine.getEyesPhrase(this.monster)}`,
-        this.monster.hornsCount > 0 ? `🦄 ${window.grammarEngine.getHornsPhrase(this.monster)}` : null,
+        `👂 ${window.grammarEngine.getEarsPhrase(this.monster)}`,
         `👄 ${window.grammarEngine.getMouthPhrase(this.monster)}`,
         summary.bodyFeatures.find(f => f.includes('teeth')) ? `🦷 ${window.grammarEngine.getTeethPhrase(this.monster)}` : null,
-        `👐 ${window.grammarEngine.getArmsPhrase(this.monster)}`,
         `🦵 ${window.grammarEngine.getLegsPhrase(this.monster)}`,
-        ...summary.clothingItems.map(c => `👕 ${c}`),
-        summary.powers ? `✨ Can ${summary.powers}` : null,
-        summary.personality ? `❤️ Is ${summary.personality}` : null,
-        summary.world ? `🏠 ${summary.world}` : null,
-        summary.food ? `🍕 Likes ${summary.food}` : null
+        `👐 ${window.grammarEngine.getArmsPhrase(this.monster)}`,
+        ...summary.clothingItems.map(c => `👕 ${c}`)
       ].filter(Boolean);
 
       bulletsList.innerHTML = items.map(it => `
@@ -747,7 +646,7 @@ class MonsterApp {
   }
 
   // ==========================================
-  // MONSTER CHALLENGE & LISTENING MODES
+  // MONSTER CHALLENGE MODE
   // ==========================================
   setupChallengeView() {
     const quest = window.challengeEngine.getCurrentQuest();
@@ -763,6 +662,7 @@ class MonsterApp {
   checkChallenge() {
     const quest = window.challengeEngine.getCurrentQuest();
     const isCorrect = quest.check(this.monster);
+
     const banner = document.getElementById('challenge-feedback-banner');
 
     if (isCorrect) {
@@ -791,6 +691,9 @@ class MonsterApp {
     this.setupChallengeView();
   }
 
+  // ==========================================
+  // LISTENING CHALLENGE MODE
+  // ==========================================
   setupListeningView() {
     const quest = window.challengeEngine.getCurrentListeningQuest();
     const diff = window.challengeEngine.listeningDifficulty;
@@ -800,7 +703,7 @@ class MonsterApp {
       textCard.innerHTML = `<p class="listening-text-large">${quest.easyText}</p>`;
     } else if (diff === 'medium') {
       textCard.innerHTML = `<p class="listening-text-medium">${quest.mediumText}</p>`;
-    } else {
+    } else { // Hard (Audio only)
       textCard.innerHTML = `<p class="listening-text-hidden">🤫 Listen carefully to the voice!</p>`;
     }
 
@@ -857,13 +760,16 @@ class MonsterApp {
   }
 
   // ==========================================
-  // SECRET MONSTER 2-PLAYER MODE
+  // SECRET MONSTER MODE (2-PLAYER)
   // ==========================================
   setupSecretMonsterView() {
     const secret = window.challengeEngine.generateSecretMonster();
+    this.secretPlayerStep = 1; // 1: Player A describes, 2: Compare
+
     document.getElementById('secret-step-1').classList.add('active');
     document.getElementById('secret-step-2').classList.remove('active');
 
+    // Fill Secret Monster Card for Player A
     const listEl = document.getElementById('secret-card-features');
     if (listEl) {
       const summary = window.grammarEngine.getMonsterSummary(secret);
@@ -872,10 +778,11 @@ class MonsterApp {
         <div class="secret-clue-item">👁️ <strong>Eyes:</strong> ${window.grammarEngine.getEyesPhrase(secret)}</div>
         <div class="secret-clue-item">👂 <strong>Ears:</strong> ${window.grammarEngine.getEarsPhrase(secret)}</div>
         <div class="secret-clue-item">👄 <strong>Mouth:</strong> ${window.grammarEngine.getMouthPhrase(secret)}</div>
-        ${secret.specialWings !== 'none' ? `<div class="secret-clue-item">🐉 <strong>Wings:</strong> ${secret.specialWings} wings</div>` : ''}
-        ${summary.powers ? `<div class="secret-clue-item">✨ <strong>Power:</strong> Can ${summary.powers}</div>` : ''}
-        ${summary.world ? `<div class="secret-clue-item">🏠 <strong>Home:</strong> ${summary.world}</div>` : ''}
-        ${summary.food ? `<div class="secret-clue-item">🍕 <strong>Food:</strong> Likes ${summary.food}</div>` : ''}
+        <div class="secret-clue-item">🦷 <strong>Teeth:</strong> ${window.grammarEngine.getTeethPhrase(secret) || 'None'}</div>
+        <div class="secret-clue-item">👐 <strong>Arms:</strong> ${window.grammarEngine.getArmsPhrase(secret)}</div>
+        <div class="secret-clue-item">🦵 <strong>Legs:</strong> ${window.grammarEngine.getLegsPhrase(secret)}</div>
+        ${secret.specialCape ? `<div class="secret-clue-item">🦸 <strong>Special:</strong> Red Cape</div>` : ''}
+        ${secret.accessories.length > 0 ? `<div class="secret-clue-item">👑 <strong>Accessory:</strong> ${secret.accessories.join(', ')}</div>` : ''}
       `;
     }
 
@@ -889,17 +796,20 @@ class MonsterApp {
     document.getElementById('secret-step-1').classList.remove('active');
     document.getElementById('secret-step-2').classList.add('active');
 
+    // Render Side-by-Side Monsters
     const secretSvg = window.monsterRenderer.renderSvg(window.challengeEngine.secretMonsterTarget, { animated: false });
     const playerSvg = window.monsterRenderer.renderSvg(this.monster, { animated: false });
 
     document.getElementById('secret-monster-reveal-preview').innerHTML = secretSvg;
     document.getElementById('player-monster-reveal-preview').innerHTML = playerSvg;
 
+    // Render Score
     document.getElementById('secret-score-banner').innerHTML = `
       <h2>⭐ ${result.correct} / ${result.total} CORRECT! ⭐</h2>
       <p class="secret-congrats">${result.correct >= 6 ? '🎉 AMAZING TEAMWORK! Monster Masters!' : '💪 Great try! Keep practicing!'}</p>
     `;
 
+    // Render Feature Comparison Table
     const tableEl = document.getElementById('secret-comparison-table');
     if (tableEl) {
       tableEl.innerHTML = `
@@ -925,80 +835,80 @@ class MonsterApp {
   }
 
   // ==========================================
-  // DOWNLOAD MONSTER CARD (CANVAS PNG)
+  // DOWNLOAD / EXPORT MONSTER CARD
   // ==========================================
   downloadMonsterCard() {
     window.soundEngine.playSparkle();
 
     const canvas = document.createElement('canvas');
     canvas.width = 800;
-    canvas.height = 1060;
+    canvas.height = 1000;
     const ctx = canvas.getContext('2d');
 
-    const grad = ctx.createLinearGradient(0, 0, 0, 1060);
+    // Background Gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, 1000);
     grad.addColorStop(0, '#f8fafc');
     grad.addColorStop(1, '#e2e8f0');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 800, 1060);
+    ctx.fillRect(0, 0, 800, 1000);
 
+    // Frame Border
     ctx.strokeStyle = '#6366f1';
     ctx.lineWidth = 16;
-    ctx.strokeRect(20, 20, 760, 1020);
+    ctx.strokeRect(20, 20, 760, 960);
 
+    // Header Title
     ctx.fillStyle = '#4338ca';
-    ctx.font = 'bold 36px sans-serif';
+    ctx.font = 'bold 38px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('👹 BUILD YOUR OWN MONSTER!', 400, 75);
+    ctx.fillText('👹 BUILD YOUR OWN MONSTER!', 400, 85);
 
+    // Subtitle / Name
     ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 30px sans-serif';
-    ctx.fillText(`Meet ${this.monster.name}!`, 400, 120);
+    ctx.font = 'bold 32px sans-serif';
+    ctx.fillText(`Meet ${this.monster.name}!`, 400, 135);
 
+    // Convert SVG to image
     const svgString = window.monsterRenderer.renderSvg(this.monster, { width: 380, height: 450, animated: false });
     const img = new Image();
     const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      ctx.drawImage(img, 210, 140, 380, 450);
+      ctx.drawImage(img, 210, 160, 380, 450);
       URL.revokeObjectURL(url);
 
+      // Draw Description Box
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(50, 610, 700, 400);
+      ctx.fillRect(50, 640, 700, 310);
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 4;
-      ctx.strokeRect(50, 610, 700, 400);
+      ctx.strokeRect(50, 640, 700, 310);
 
+      // Text Lines
       ctx.textAlign = 'left';
       ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.fillText('English Description:', 75, 645);
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('English Description:', 80, 680);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '20px sans-serif';
       const lines = [
-        `• This is ${this.monster.name}. It is ${window.grammarEngine.getColorAndPatternPhrase(this.monster)}.`,
+        `• This is ${this.monster.name}. It is ${this.monster.color}.`,
         `• It has ${window.grammarEngine.getEyesPhrase(this.monster)} and ${window.grammarEngine.getEarsPhrase(this.monster)}.`,
-        `• It has ${window.grammarEngine.getMouthPhrase(this.monster)} and ${window.grammarEngine.getArmsPhrase(this.monster)}.`,
-        `• It has ${window.grammarEngine.getLegsPhrase(this.monster)}.`
+        `• It has ${window.grammarEngine.getMouthPhrase(this.monster)} and ${window.grammarEngine.getLegsPhrase(this.monster)}.`,
+        `• It has ${window.grammarEngine.getArmsPhrase(this.monster)}.`
       ];
 
-      const specials = window.grammarEngine.getSpecialPartsPhrases(this.monster);
-      if (specials.length > 0) lines.push(`• It has ${window.grammarEngine.joinListNaturally(specials)}.`);
-
-      const powers = window.grammarEngine.getPowersPhrase(this.monster);
-      if (powers) lines.push(`• It can ${powers}.`);
-
-      const personality = window.grammarEngine.getPersonalityPhrase(this.monster);
-      if (personality) lines.push(`• It is ${personality}.`);
-
-      const world = window.grammarEngine.getWorldPhrase(this.monster);
-      const food = window.grammarEngine.getFoodPhrase(this.monster);
-      lines.push(`• It ${world} and likes ${food}.`);
+      const clothing = window.grammarEngine.getClothingPhrases(this.monster);
+      if (clothing.length > 0) {
+        lines.push(`• It is wearing ${window.grammarEngine.joinListNaturally(clothing)}.`);
+      }
 
       lines.forEach((line, idx) => {
-        ctx.fillText(line, 75, 685 + (idx * 34));
+        ctx.fillText(line, 80, 725 + (idx * 40));
       });
 
+      // Trigger Download
       const link = document.createElement('a');
       link.download = `${this.monster.name}_Monster_Card.png`;
       link.href = canvas.toDataURL('image/png');
@@ -1008,7 +918,7 @@ class MonsterApp {
   }
 
   // ==========================================
-  // RESET / RESTART
+  // RESET / START AGAIN
   // ==========================================
   showResetModal() {
     window.soundEngine.playPop();
@@ -1019,9 +929,11 @@ class MonsterApp {
   confirmReset() {
     this.monster = JSON.parse(JSON.stringify(this.defaultMonster));
     this.monster.name = this.randomNames[Math.floor(Math.random() * this.randomNames.length)];
+    this.activeCategory = 'eyes';
+    this.activeWardrobeTab = 'tops';
     this.updateAllPreviews();
-    this.setCreatorStage('stage-body');
-    this.updateSelectionButtons();
+    this.updateCategoryUI();
+    this.updateWardrobeUI();
     this.closeResetModal();
     this.goToScreen('screen-create');
   }
@@ -1047,12 +959,14 @@ class MonsterApp {
   }
 
   updateGlobalSoundToggles() {
-    document.querySelectorAll('.sfx-toggle-btn').forEach(btn => {
+    const sfxBtns = document.querySelectorAll('.sfx-toggle-btn');
+    sfxBtns.forEach(btn => {
       btn.innerText = window.soundEngine.sfxEnabled ? '🔊 SFX: ON' : '🔇 SFX: OFF';
       btn.classList.toggle('off', !window.soundEngine.sfxEnabled);
     });
 
-    document.querySelectorAll('.tts-toggle-btn').forEach(btn => {
+    const ttsBtns = document.querySelectorAll('.tts-toggle-btn');
+    ttsBtns.forEach(btn => {
       btn.innerText = window.soundEngine.ttsEnabled ? '🗣️ Voice: ON' : '🤐 Voice: OFF';
       btn.classList.toggle('off', !window.soundEngine.ttsEnabled);
     });
@@ -1062,7 +976,7 @@ class MonsterApp {
   // EVENT BINDINGS
   // ==========================================
   bindEvents() {
-    // 1. Navigation
+    // 1. Navigation buttons
     document.querySelectorAll('[data-goto]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const screenId = e.currentTarget.dataset.goto;
@@ -1071,64 +985,15 @@ class MonsterApp {
       });
     });
 
-    // 2. Stage Progress Steps
-    document.querySelectorAll('.stage-step-btn').forEach(btn => {
+    // 2. Category Tab buttons (Phase 1)
+    document.querySelectorAll('.cat-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.setCreatorStage(e.currentTarget.dataset.stage);
+        this.setCategory(e.currentTarget.dataset.category);
       });
     });
 
-    // 3. Body Shapes
-    document.querySelectorAll('[data-body-shape]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.bodyShape = e.currentTarget.dataset.bodyShape;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // 4. Body Colors & Secondary Colors & Patterns
-    document.querySelectorAll('[data-body-color]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.color = e.currentTarget.dataset.bodyColor;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-    document.querySelectorAll('[data-secondary-color]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.secondaryColor = e.currentTarget.dataset.secondaryColor;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-    document.querySelectorAll('[data-pattern]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.pattern = e.currentTarget.dataset.pattern;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // 5. Face Elements
-    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const val = e.currentTarget.dataset.eyesCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.eyesCount, 10);
-        this.monster.eyesCount = val;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
+    // 3. Phase 1 Option Selectors
+    // Eyes Size
     document.querySelectorAll('[data-eyes-size]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.eyesSize = e.currentTarget.dataset.eyesSize;
@@ -1138,17 +1003,27 @@ class MonsterApp {
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-eyes-style]').forEach(btn => {
+    // Eyes Count
+    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.monster.eyesStyle = e.currentTarget.dataset.eyesStyle;
+        this.monster.eyesCount = parseInt(e.currentTarget.dataset.eyesCount, 10);
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();
         this.updatePhraseBadge();
       });
     });
-
-    // Ears
+    // Ears Length
+    document.querySelectorAll('[data-ears-length]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.monster.earsLength = e.currentTarget.dataset.earsLength;
+        window.soundEngine.playBoing();
+        this.updateAllPreviews();
+        this.updateSelectionButtons();
+        this.updatePhraseBadge();
+      });
+    });
+    // Ears Count
     document.querySelectorAll('[data-ears-count]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.earsCount = parseInt(e.currentTarget.dataset.earsCount, 10);
@@ -1158,48 +1033,7 @@ class MonsterApp {
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-ears-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.earsStyle = e.currentTarget.dataset.earsStyle;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // Horns
-    document.querySelectorAll('[data-horns-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.hornsCount = parseInt(e.currentTarget.dataset.hornsCount, 10);
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-    document.querySelectorAll('[data-horns-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.hornsStyle = e.currentTarget.dataset.hornsStyle;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // Nose
-    document.querySelectorAll('[data-nose-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.noseStyle = e.currentTarget.dataset.noseStyle;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // Mouth & Teeth
+    // Mouth
     document.querySelectorAll('[data-mouth-type]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.mouthType = e.currentTarget.dataset.mouthType;
@@ -1209,6 +1043,7 @@ class MonsterApp {
         this.updatePhraseBadge();
       });
     });
+    // Teeth
     document.querySelectorAll('[data-teeth-type]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.teethType = e.currentTarget.dataset.teethType;
@@ -1218,8 +1053,27 @@ class MonsterApp {
         this.updatePhraseBadge();
       });
     });
-
-    // 6. Arms & Hands
+    // Legs
+    document.querySelectorAll('[data-legs-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.monster.legsCount = parseInt(e.currentTarget.dataset.legsCount, 10);
+        window.soundEngine.playBoing();
+        this.updateAllPreviews();
+        this.updateSelectionButtons();
+        this.updatePhraseBadge();
+      });
+    });
+    // Arms Length
+    document.querySelectorAll('[data-arms-length]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.monster.armsLength = e.currentTarget.dataset.armsLength;
+        window.soundEngine.playBoing();
+        this.updateAllPreviews();
+        this.updateSelectionButtons();
+        this.updatePhraseBadge();
+      });
+    });
+    // Arms Count
     document.querySelectorAll('[data-arms-count]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const val = e.currentTarget.dataset.armsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.armsCount, 10);
@@ -1230,39 +1084,20 @@ class MonsterApp {
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-arms-length]').forEach(btn => {
+    // Nose
+    document.querySelectorAll('[data-nose-size]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.monster.armsLength = e.currentTarget.dataset.armsLength;
+        this.monster.noseSize = e.currentTarget.dataset.noseSize;
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-hands-style]').forEach(btn => {
+    // Color
+    document.querySelectorAll('[data-body-color]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.monster.handsStyle = e.currentTarget.dataset.handsStyle;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-
-    // 7. Legs & Feet
-    document.querySelectorAll('[data-legs-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const val = e.currentTarget.dataset.legsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.legsCount, 10);
-        this.monster.legsCount = val;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-    document.querySelectorAll('[data-feet-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.feetStyle = e.currentTarget.dataset.feetStyle;
+        this.monster.color = e.currentTarget.dataset.bodyColor;
         window.soundEngine.playBoing();
         this.updateAllPreviews();
         this.updateSelectionButtons();
@@ -1270,134 +1105,99 @@ class MonsterApp {
       });
     });
 
-    // 8. Special Parts
-    document.querySelectorAll('[data-special-wings]').forEach(btn => {
+    // 4. Wardrobe Tabs & Buttons (Phase 2)
+    document.querySelectorAll('.wardrobe-tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.monster.specialWings = e.currentTarget.dataset.specialWings;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
+        this.setWardrobeTab(e.currentTarget.dataset.tab);
       });
     });
-    document.querySelectorAll('[data-special-tail]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.specialTail = e.currentTarget.dataset.specialTail;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
-    document.querySelectorAll('[data-special-extra]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.toggleSpecialExtra(e.currentTarget.dataset.specialExtra);
-      });
-    });
-
-    // Expression Selector
-    document.querySelectorAll('[data-expression]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.expression = e.currentTarget.dataset.expression;
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-        window.soundEngine.speak(this.monster.expression);
-      });
-    });
-
-    // 9. Clothes & Accessories
+    // Tops
     document.querySelectorAll('[data-cloth-top]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.clothesTop = e.currentTarget.dataset.clothTop;
-        if (this.monster.specialSuit && this.monster.specialSuit !== 'none') this.monster.specialSuit = 'none';
-        if (this.monster.clothesBottom === 'dress') this.monster.clothesBottom = 'none';
         window.soundEngine.playBoing();
         this.updateAllPreviews();
-        this.updateSelectionButtons();
+        this.updateWardrobeUI();
         this.updatePhraseBadge();
       });
     });
+    // Top Color Swatches
+    document.querySelectorAll('[data-top-color]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.monster.clothesTopColor = e.currentTarget.dataset.topColor;
+        window.soundEngine.playPop();
+        this.updateAllPreviews();
+        this.updateWardrobeUI();
+        this.updatePhraseBadge();
+      });
+    });
+    // Bottoms
     document.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.monster.clothesBottom = e.currentTarget.dataset.clothBottom;
-        if (this.monster.clothesBottom === 'dress') {
-          this.monster.clothesTop = 'none';
-          this.monster.specialSuit = 'none';
-        }
         window.soundEngine.playBoing();
         this.updateAllPreviews();
-        this.updateSelectionButtons();
+        this.updateWardrobeUI();
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
+    // Bottom Color Swatches
+    document.querySelectorAll('[data-bottom-color]').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        this.monster.clothesShoes = e.currentTarget.dataset.clothShoes;
-        window.soundEngine.playBoing();
+        this.monster.clothesBottomColor = e.currentTarget.dataset.bottomColor;
+        window.soundEngine.playPop();
         this.updateAllPreviews();
-        this.updateSelectionButtons();
+        this.updateWardrobeUI();
         this.updatePhraseBadge();
       });
     });
-    document.querySelectorAll('[data-special-suit]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.specialSuit = e.currentTarget.dataset.specialSuit;
-        if (this.monster.specialSuit !== 'none') {
-          this.monster.clothesTop = 'none';
-          this.monster.clothesBottom = 'none';
-        }
-        window.soundEngine.playBoing();
-        this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
-      });
-    });
+    // Accessories
     document.querySelectorAll('[data-accessory]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.toggleAccessory(e.currentTarget.dataset.accessory);
       });
     });
-
-    // 10. Powers & Personality & World & Food
-    document.querySelectorAll('[data-power]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.togglePower(e.currentTarget.dataset.power);
-      });
-    });
-    document.querySelectorAll('[data-personality]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.togglePersonality(e.currentTarget.dataset.personality);
-      });
-    });
-    document.querySelectorAll('[data-world]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.world = e.currentTarget.dataset.world;
+    // Special Cape
+    const capeBtn = document.getElementById('special-btn-cape');
+    if (capeBtn) {
+      capeBtn.addEventListener('click', () => {
+        this.monster.specialCape = !this.monster.specialCape;
         window.soundEngine.playBoing();
         this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
+        this.updateWardrobeUI();
+        this.updatePhraseBadge(this.monster.specialCape ? 'RED CAPE' : 'NO CAPE');
       });
-    });
-    document.querySelectorAll('[data-food]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.monster.food = e.currentTarget.dataset.food;
+    }
+    // Special Boots
+    const bootsBtn = document.getElementById('special-btn-boots');
+    if (bootsBtn) {
+      bootsBtn.addEventListener('click', () => {
+        this.monster.specialBoots = !this.monster.specialBoots;
         window.soundEngine.playBoing();
         this.updateAllPreviews();
-        this.updateSelectionButtons();
-        this.updatePhraseBadge();
+        this.updateWardrobeUI();
+        this.updatePhraseBadge(this.monster.specialBoots ? 'YELLOW BOOTS' : 'NO BOOTS');
       });
-    });
+    }
+    // Special Gloves
+    const glovesBtn = document.getElementById('special-btn-gloves');
+    if (glovesBtn) {
+      glovesBtn.addEventListener('click', () => {
+        this.monster.specialGloves = !this.monster.specialGloves;
+        window.soundEngine.playBoing();
+        this.updateAllPreviews();
+        this.updateWardrobeUI();
+        this.updatePhraseBadge(this.monster.specialGloves ? 'GREEN GLOVES' : 'NO GLOVES');
+      });
+    }
 
-    // 11. Make it Weird & Surprise Button
-    const weirdBtn = document.getElementById('make-it-weird-btn');
-    if (weirdBtn) weirdBtn.addEventListener('click', () => this.makeItWeird());
-
+    // 5. Randomizer Button
     const surpriseBtn = document.getElementById('surprise-me-btn');
-    if (surpriseBtn) surpriseBtn.addEventListener('click', () => this.makeItWeird());
+    if (surpriseBtn) {
+      surpriseBtn.addEventListener('click', () => this.randomizeMonster());
+    }
 
-    // 12. Name Input
+    // 6. Name Input
     const nameInput = document.getElementById('monster-name-input');
     if (nameInput) {
       nameInput.addEventListener('input', (e) => this.setMonsterName(e.target.value));
@@ -1407,61 +1207,14 @@ class MonsterApp {
       randNameBtn.addEventListener('click', () => this.pickRandomName());
     }
 
-    // 13. Hear Phrase Button
+    // 7. Phrase Audio Speaker Buttons
     document.querySelectorAll('.hear-phrase-btn').forEach(btn => {
       btn.addEventListener('click', () => this.speakCurrentPhrase());
     });
   }
-
-  updateModeBanner() {
-    const banner = document.getElementById('creator-mode-banner');
-    if (!banner) return;
-
-    if (this.currentMode === 'challenge') {
-      const quest = window.challengeEngine.getCurrentQuest();
-      banner.classList.remove('hidden');
-      document.getElementById('banner-quest-icon').innerText = '🎯';
-      document.getElementById('banner-quest-text').innerText = `Mission: ${quest.instruction}`;
-      document.getElementById('banner-audio-replay-btn').style.display = 'none';
-      document.getElementById('banner-check-btn').style.display = 'inline-flex';
-      document.getElementById('banner-return-btn').innerText = '➔ Back to Mission';
-    } else if (this.currentMode === 'listening') {
-      banner.classList.remove('hidden');
-      document.getElementById('banner-quest-icon').innerText = '👂';
-      document.getElementById('banner-quest-text').innerText = `Listening: Listen carefully & build!`;
-      document.getElementById('banner-audio-replay-btn').style.display = 'inline-flex';
-      document.getElementById('banner-check-btn').style.display = 'inline-flex';
-      document.getElementById('banner-return-btn').innerText = '➔ Back to Listening';
-    } else if (this.currentMode === 'secret') {
-      banner.classList.remove('hidden');
-      document.getElementById('banner-quest-icon').innerText = '🤫';
-      document.getElementById('banner-quest-text').innerText = `2-Player Mode: Player B is building!`;
-      document.getElementById('banner-audio-replay-btn').style.display = 'none';
-      document.getElementById('banner-check-btn').style.display = 'none';
-      document.getElementById('banner-return-btn').innerText = '➔ Compare Monsters!';
-    } else {
-      banner.classList.add('hidden');
-    }
-  }
-
-  checkCurrentModeMission() {
-    if (this.currentMode === 'challenge') {
-      this.goToScreen('screen-challenge', 'challenge');
-      this.checkChallenge();
-    } else if (this.currentMode === 'listening') {
-      this.goToScreen('screen-listening', 'listening');
-      this.checkListening();
-    }
-  }
-
-  returnToModeScreen() {
-    if (this.currentMode === 'challenge') this.goToScreen('screen-challenge', 'challenge');
-    else if (this.currentMode === 'listening') this.goToScreen('screen-listening', 'listening');
-    else if (this.currentMode === 'secret') this.goToScreen('screen-secret', 'secret');
-    else this.goToScreen('screen-start', 'creator');
-  }
 }
 
+// Global Application Controller instance
 window.app = new MonsterApp();
 document.addEventListener('DOMContentLoaded', () => {
   window.app.init();
