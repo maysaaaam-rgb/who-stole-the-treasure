@@ -225,32 +225,102 @@ class SoundEngine {
 
   playLionRoar() {
     const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
+
+    // 1. Deep Guttural Vocal Roar (Sawtooth with low pitch surge)
+    const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
+    const roarGain = this.ctx.createGain();
 
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(110, now);
-    osc.frequency.linearRampToValueAtTime(170, now + 0.3);
-    osc.frequency.exponentialRampToValueAtTime(80, now + 1.2);
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(75, now);
+    osc1.frequency.exponentialRampToValueAtTime(160, now + 0.25);
+    osc1.frequency.linearRampToValueAtTime(110, now + 0.6);
+    osc1.frequency.exponentialRampToValueAtTime(55, now + 1.2);
 
-    osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(85, now);
-    osc2.frequency.linearRampToValueAtTime(140, now + 0.3);
-    osc2.frequency.exponentialRampToValueAtTime(60, now + 1.2);
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(60, now);
+    osc2.frequency.exponentialRampToValueAtTime(130, now + 0.25);
+    osc2.frequency.exponentialRampToValueAtTime(45, now + 1.2);
 
-    gain.gain.setValueAtTime(0.01, now);
-    gain.gain.linearRampToValueAtTime(0.45, now + 0.2);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+    // LFO for throaty growl vibration (20Hz growl shudder)
+    const lfo = this.ctx.createOscillator();
+    const lfoGain = this.ctx.createGain();
+    lfo.type = 'sawtooth';
+    lfo.frequency.setValueAtTime(22, now);
+    lfoGain.gain.setValueAtTime(0.3, now);
+    lfo.connect(lfoGain.gain);
 
-    osc.connect(gain);
-    osc2.connect(gain);
-    gain.connect(this.ctx.destination);
+    // Filter for vocal tract formant resonance
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(300, now);
+    filter.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+    filter.frequency.exponentialRampToValueAtTime(250, now + 1.2);
+    filter.Q.setValueAtTime(4.0, now);
 
-    osc.start(now);
+    roarGain.gain.setValueAtTime(0.01, now);
+    roarGain.gain.linearRampToValueAtTime(0.65, now + 0.15);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, now + 1.25);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(roarGain);
+    roarGain.connect(this.ctx.destination);
+
+    // 2. Breath & Throat Turbulent Noise
+    const noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 1.3, this.ctx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBuffer.length; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * 0.5;
+    }
+    const noiseSource = this.ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(500, now);
+    noiseFilter.frequency.linearRampToValueAtTime(950, now + 0.3);
+    noiseFilter.frequency.exponentialRampToValueAtTime(300, now + 1.1);
+    noiseFilter.Q.setValueAtTime(3.0, now);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.01, now);
+    noiseGain.gain.linearRampToValueAtTime(0.4, now + 0.2);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+
+    // 3. Comedic Timid Whimper / Squeak ("eeps!") right after the roar
+    const whimperTime = now + 1.15;
+    const whimperOsc = this.ctx.createOscillator();
+    const whimperGain = this.ctx.createGain();
+
+    whimperOsc.type = 'sine';
+    whimperOsc.frequency.setValueAtTime(620, whimperTime);
+    whimperOsc.frequency.linearRampToValueAtTime(420, whimperTime + 0.15);
+    whimperOsc.frequency.exponentialRampToValueAtTime(240, whimperTime + 0.5);
+
+    whimperGain.gain.setValueAtTime(0.01, whimperTime);
+    whimperGain.gain.linearRampToValueAtTime(0.3, whimperTime + 0.08);
+    whimperGain.gain.exponentialRampToValueAtTime(0.001, whimperTime + 0.5);
+
+    whimperOsc.connect(whimperGain);
+    whimperGain.connect(this.ctx.destination);
+
+    // Start all nodes
+    osc1.start(now);
     osc2.start(now);
-    osc.stop(now + 1.2);
-    osc2.stop(now + 1.2);
+    noiseSource.start(now);
+    lfo.start(now);
+    whimperOsc.start(whimperTime);
+
+    osc1.stop(now + 1.3);
+    osc2.stop(now + 1.3);
+    noiseSource.stop(now + 1.3);
+    lfo.stop(now + 1.3);
+    whimperOsc.stop(whimperTime + 0.55);
   }
 
   playMagicChime() {

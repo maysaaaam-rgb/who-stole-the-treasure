@@ -691,14 +691,14 @@ export const STORY_DATA = {
   // PART 7: POST-STORY ACTIVITY 1 - STORY MEMORY (8 Event Cards)
   storyMemory: {
     cards: [
-      { id: 1, title: "1. Tornado", icon: "🌪️", desc: "A tornado picks up the house in Kansas.", order: 1 },
-      { id: 2, title: "2. Strange Land", icon: "🌸", desc: "The house lands in a colorful, strange land.", order: 2 },
-      { id: 3, title: "3. The Scarecrow", icon: "🌾", desc: "Dorothy meets the Scarecrow on the yellow road.", order: 3 },
-      { id: 4, title: "4. The Tin Man", icon: "🤖", desc: "They oil the rusty Tin Man in the forest.", order: 4 },
-      { id: 5, title: "5. The Lion", icon: "🦁", desc: "They meet the scared Lion who wants courage.", order: 5 },
-      { id: 6, title: "6. Emerald City", icon: "🏰", desc: "The four friends visit the green Emerald City.", order: 6 },
-      { id: 7, title: "7. The Witch", icon: "🧙‍♀️", desc: "The brave friends stand together against the Witch.", order: 7 },
-      { id: 8, title: "8. Home", icon: "🏡", desc: "Dorothy closes her eyes and returns home to Kansas.", order: 8 }
+      { id: 1, title: "Tornado", icon: "🌪️", desc: "A tornado picks up the house in Kansas.", order: 1 },
+      { id: 2, title: "Strange Land", icon: "🌸", desc: "The house lands in a colorful, strange land.", order: 2 },
+      { id: 3, title: "The Scarecrow", icon: "🌾", desc: "Dorothy meets the Scarecrow on the yellow road.", order: 3 },
+      { id: 4, title: "The Tin Man", icon: "🤖", desc: "They oil the rusty Tin Man in the forest.", order: 4 },
+      { id: 5, title: "The Lion", icon: "🦁", desc: "They meet the scared Lion who wants courage.", order: 5 },
+      { id: 6, title: "Emerald City", icon: "🏰", desc: "The four friends visit the green Emerald City.", order: 6 },
+      { id: 7, title: "The Witch", icon: "🧙‍♀️", desc: "The brave friends stand together against the Witch.", order: 7 },
+      { id: 8, title: "Home", icon: "🏡", desc: "Dorothy closes her eyes and returns home to Kansas.", order: 8 }
     ],
     sentenceFrames: [
       "First, there is a ____________.",
