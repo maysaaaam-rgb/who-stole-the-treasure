@@ -1216,6 +1216,26 @@ class MonsterApp {
 
 // Global Application Controller instance
 window.app = new MonsterApp();
-document.addEventListener('DOMContentLoaded', () => {
-  window.app.init();
+
+function bootMonsterApp() {
+  if (window.app && !window.app._isBooted) {
+    window.app._isBooted = true;
+    window.app.init();
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootMonsterApp);
+} else {
+  bootMonsterApp();
+}
+
+// Global fallback click delegation for navigation buttons
+document.addEventListener('click', (e) => {
+  const gotoEl = e.target.closest ? e.target.closest('[data-goto]') : null;
+  if (gotoEl && window.app) {
+    const screenId = gotoEl.dataset.goto;
+    const mode = gotoEl.dataset.mode || 'creator';
+    window.app.goToScreen(screenId, mode);
+  }
 });
