@@ -236,8 +236,14 @@ class MonsterApp {
     const badgeTextEl = document.getElementById('active-phrase-text');
     if (badgeTextEl && this.activeScreen === 'screen-create') {
       badgeTextEl.innerText = phrase.toUpperCase();
-      badgeTextEl.parentElement.classList.add('badge-bounce');
-      setTimeout(() => badgeTextEl.parentElement.classList.remove('badge-bounce'), 400);
+      if (badgeTextEl.parentElement && badgeTextEl.parentElement.classList) {
+        badgeTextEl.parentElement.classList.add('badge-bounce');
+        setTimeout(() => {
+          if (badgeTextEl.parentElement && badgeTextEl.parentElement.classList) {
+            badgeTextEl.parentElement.classList.remove('badge-bounce');
+          }
+        }, 400);
+      }
     }
   }
 
@@ -343,18 +349,6 @@ class MonsterApp {
       banner.classList.add('show');
       window.soundEngine.speak(`Mix and Match! Meet ${this.monster.name}! It is super creative!`);
       setTimeout(() => banner.classList.remove('show'), 4500);
-    }
-
-    this.updatePhraseBadge();
-    window.teacherMode.addPoints(1, 'Creative Monster');
-  }
-          <h3>🎲 WOW! SUPER WEIRD MONSTER!</h3>
-          <p>${desc}</p>
-        </div>
-      `;
-      banner.classList.add('show');
-      window.soundEngine.speak(`Meet ${this.monster.name}! It is super weird and creative!`);
-      setTimeout(() => banner.classList.remove('show'), 4000);
     }
 
     this.updatePhraseBadge();
