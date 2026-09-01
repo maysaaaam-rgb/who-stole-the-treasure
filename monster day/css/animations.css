@@ -1,0 +1,175 @@
+/**
+ * 🌿 LIFE IN THE JUNGLE: THE JUNGLE RANGERS
+ * Animations, Weather Effects & Karaoke Highlights
+ */
+
+/* ==========================================================
+   WEATHER & NATURE BACKGROUND FX
+   ========================================================== */
+.weather-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Storm FX */
+.weather-layer.storm-active .lightning-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  animation: lightningStrike 4.5s infinite;
+}
+
+@keyframes lightningStrike {
+  0%, 88%, 93%, 100% { opacity: 0; }
+  90% { opacity: 0.9; }
+  92% { opacity: 0.4; }
+  94% { opacity: 0.8; }
+}
+
+.weather-layer.storm-active .rain-streaks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -25deg,
+    rgba(186, 230, 253, 0) 0px,
+    rgba(186, 230, 253, 0) 18px,
+    rgba(186, 230, 253, 0.4) 19px,
+    rgba(186, 230, 253, 0.4) 22px
+  );
+  animation: rainFlow 0.35s linear infinite;
+}
+
+@keyframes rainFlow {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-30px, 60px); }
+}
+
+.dark-clouds .c1 {
+  position: absolute;
+  top: 10px;
+  left: -20px;
+  width: 320px;
+  animation: cloudDrift 14s ease-in-out infinite alternate;
+}
+
+.dark-clouds .c2 {
+  position: absolute;
+  top: 30px;
+  right: -20px;
+  width: 360px;
+  animation: cloudDrift 18s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(60px); }
+}
+
+/* Healthy Sunshine & Fireflies */
+.weather-layer.healthy-active .sun-glow {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(254, 240, 138, 0) 70%);
+  border-radius: 50%;
+  animation: sunPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes sunPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.25); opacity: 1; }
+}
+
+.weather-layer.healthy-active .glowing-fireflies {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 60%, rgba(253, 224, 71, 0.6) 0, transparent 4px),
+              radial-gradient(circle at 45% 40%, rgba(253, 224, 71, 0.6) 0, transparent 5px),
+              radial-gradient(circle at 75% 70%, rgba(253, 224, 71, 0.6) 0, transparent 4px),
+              radial-gradient(circle at 85% 30%, rgba(253, 224, 71, 0.6) 0, transparent 6px);
+  animation: fireflyFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes fireflyFloat {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.1); }
+  100% { transform: translateY(10px) scale(0.9); }
+}
+
+/* ==========================================================
+   INTERACTIVE FEEDBACK ANIMATIONS
+   ========================================================== */
+.pulse-glow {
+  animation: pulseGlowAnim 1.8s infinite;
+}
+
+@keyframes pulseGlowAnim {
+  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+  70% { box-shadow: 0 0 0 16px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+.jump-bounce {
+  animation: jumpBounceAnim 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes jumpBounceAnim {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-30px) scale(1.12); }
+  70% { transform: translateY(-8px) scale(1.04); }
+}
+
+.shake-gentle {
+  animation: shakeGentleAnim 0.4s ease;
+}
+
+@keyframes shakeGentleAnim {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.shake-error {
+  animation: shakeErrorAnim 0.45s ease;
+}
+
+@keyframes shakeErrorAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-12px); }
+  40%, 80% { transform: translateX(12px); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* ==========================================================
+   KARAOKE SPEECH SYNCHRONIZATION
+   ========================================================== */
+.speech-word {
+  display: inline-block;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.speech-word.speaking {
+  color: #FDE047 !important;
+  text-shadow: 0 0 12px #EAB308, 0 0 20px #CA8A04;
+  transform: scale(1.18);
+  font-weight: 800;
+}

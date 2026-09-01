@@ -1,0 +1,334 @@
+/**
+ * 🌿 LIFE IN THE JUNGLE: THE JUNGLE RANGERS
+ * Illustration Styles, Character Poses & Visual Cards
+ */
+
+.animal-svg {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.18));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animal-svg:hover {
+  transform: scale(1.08) translateY(-4px);
+}
+
+.animal-svg.mood-happy .animal-body-group {
+  animation: animalGentleBreathe 3s ease-in-out infinite alternate;
+}
+
+.animal-svg.mood-scared .animal-body-group {
+  animation: animalShiver 0.25s infinite;
+}
+
+@keyframes animalGentleBreathe {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.03) translateY(-2px); }
+}
+
+@keyframes animalShiver {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+
+/* ==========================================================
+   CARDS & GRIDS
+   ========================================================== */
+.meet-animals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 980px;
+  width: 100%;
+}
+
+.animal-meet-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animal-meet-card:hover {
+  transform: translateY(-6px) scale(1.04);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.animal-name-badge {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  text-align: center;
+}
+
+/* Find Animal Scene */
+.find-animal-box {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 780px;
+  width: 100%;
+}
+
+.find-prompt-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.find-scene-canvas {
+  height: 280px;
+  background: linear-gradient(180deg, #BAE6FD 0%, #BBF7D0 100%);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden-target-animal {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* Needs Activity */
+.animal-needs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 820px;
+}
+
+.needs-character-view {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--surface-card);
+  padding: 20px 32px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.needs-speech-bubble {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.needs-options-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-need-card {
+  flex: 1;
+  background: var(--surface-card);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 120px;
+}
+
+.btn-need-card:hover {
+  transform: translateY(-6px) scale(1.05);
+  border-color: var(--accent-gold);
+}
+
+.need-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+/* Habitats Match */
+.habitat-match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 840px;
+  width: 100%;
+}
+
+.match-items-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.match-source-card,
+.match-target-habitat-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.match-source-card:hover,
+.match-target-habitat-card:hover {
+  transform: scale(1.03);
+}
+
+/* Predator / Prey Duel */
+.predator-prey-duel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 860px;
+}
+
+.role-card {
+  flex: 1;
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+  border: 4px solid #FFF;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-6px) scale(1.04);
+}
+
+.role-badge {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.predator-card .role-badge {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.prey-card .role-badge {
+  background: #DCFCE7;
+  color: #16A34A;
+}
+
+.role-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.role-action {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #64748B;
+}
+
+.vs-divider {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #FEF3C7;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Clue Hotspots */
+.detective-investigation-view {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.detective-hud {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.hud-badge {
+  background: rgba(15, 23, 42, 0.85);
+  color: #F8FAFC;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid var(--primary-light);
+}
+
+.detective-hotspots-canvas {
+  flex: 1;
+  position: relative;
+  width: 100%;
+}
+
+.clue-hotspot {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(254, 240, 138, 0.85);
+  border: 3px solid #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+  animation: radarPulse 2s infinite;
+}
+
+.clue-hotspot:hover {
+  transform: scale(1.2);
+}
+
+@keyframes radarPulse {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
