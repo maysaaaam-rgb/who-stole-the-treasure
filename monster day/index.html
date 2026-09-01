@@ -16,7 +16,7 @@
 <body>
 
   <!-- =========================================================================
-       TOP GLOBAL APP HEADER
+       GLOBAL APP HEADER
        ========================================================================= -->
   <header class="app-header">
     <div class="header-left">
@@ -28,7 +28,7 @@
     </div>
 
     <div class="header-right">
-      <!-- Stars Score Counter -->
+      <!-- Positive Stars Score Pill -->
       <div class="score-pill" title="Your Star Points">
         <span class="star-icon">⭐</span>
         <span id="global-score-count">0</span>
@@ -44,11 +44,11 @@
         <span>🔎</span> <span>FIND MONSTER</span>
       </button>
 
-      <!-- Sound & Voice Toggles -->
+      <!-- Sound & TTS Voice Toggles -->
       <button class="icon-btn sfx-toggle-btn" onclick="app.toggleSfx()" title="Toggle Sound Effects">🔊 SFX: ON</button>
       <button class="icon-btn tts-toggle-btn" onclick="app.toggleTts()" title="Toggle English Voice">🗣️ Voice: ON</button>
 
-      <!-- Teacher Mode -->
+      <!-- Teacher Settings -->
       <button class="icon-btn teacher-btn" onclick="document.getElementById('teacher-settings-modal').classList.add('active')" title="Teacher Settings">
         <span>👩‍🏫 TEACHER</span>
       </button>
@@ -72,7 +72,7 @@
     <section class="screen-view active" id="screen-start">
       <div class="start-screen-card">
         <h1 class="title-hero">👹 BUILD YOUR OWN MONSTER!</h1>
-        <p class="subtitle-hero">Create it. Dress it. Give it powers. Name it. Describe it!</p>
+        <p class="subtitle-hero">Create it. Dress it. Give it powers. Name it. Describe it in English!</p>
 
         <div class="start-action-container" style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
           <button class="btn btn-primary btn-large" data-goto="screen-create" data-mode="creator">
@@ -84,7 +84,7 @@
         </div>
 
         <div class="mode-selection-grid">
-          <!-- Mode 1: Free Creator -->
+          <!-- Mode 1: Free Creation -->
           <div class="mode-tile-card" data-goto="screen-create" data-mode="creator">
             <div class="mode-tile-icon">🎨</div>
             <h3>Free Creation</h3>
@@ -93,12 +93,12 @@
 
           <!-- Mode 2: Monster Challenge -->
           <div class="mode-tile-card" data-goto="screen-challenge" data-mode="challenge">
-            <div class="mode-tile-icon">🧠</div>
+            <div class="mode-tile-icon">🎯</div>
             <h3>Monster Challenge</h3>
             <p>Read missions and build the target monster!</p>
           </div>
 
-          <!-- Mode 3: Listening Challenge -->
+          <!-- Mode 3: Listen & Build -->
           <div class="mode-tile-card" data-goto="screen-listening" data-mode="listening">
             <div class="mode-tile-icon">👂</div>
             <h3>Listen & Build</h3>
@@ -116,10 +116,11 @@
     </section>
 
     <!-- =======================================================================
-         1. SCREEN: ADVANCED MONSTER CREATOR (ALL 11 STAGES)
+         1. SCREEN: ADVANCED MONSTER CREATOR (ALL 12 STAGES)
          ======================================================================= -->
     <section class="screen-view" id="screen-create">
-      <!-- Active Mode Quest Banner -->
+      
+      <!-- Quest Banner for Challenge / Listening Modes -->
       <div id="creator-mode-banner" class="mode-quest-banner hidden">
         <div class="banner-quest-info">
           <span class="banner-quest-icon" id="banner-quest-icon">🎯</span>
@@ -134,7 +135,7 @@
 
       <div class="creator-layout">
         
-        <!-- Left Column: Live Monster Preview & Phrase Badge -->
+        <!-- Left Column: Live Monster Preview & Active Phrase Badge -->
         <div class="creator-left-column">
           <div class="monster-preview-container" id="create-monster-preview">
             <!-- Dynamic SVG Injected Here -->
@@ -151,7 +152,7 @@
             </button>
           </div>
 
-          <!-- Creative Action Bar -->
+          <!-- Action Bar -->
           <div class="surprise-action-bar">
             <button class="surprise-me-btn" id="surprise-me-btn">
               <span>🎲 MAKE IT WEIRD!</span>
@@ -162,10 +163,10 @@
           </div>
         </div>
 
-        <!-- Right Column: Stage Bar & Customization Panels -->
+        <!-- Right Column: Stage Stepper & Panels -->
         <div class="creator-right-column">
           
-          <!-- Stage Progress Bar (11 Steps) -->
+          <!-- Stage Progress Stepper (12 Steps) -->
           <div class="creator-stages-bar">
             <button class="stage-step-btn active" data-stage="stage-body"><span>🧸</span> 1. Body</button>
             <button class="stage-step-btn" data-stage="stage-face"><span>👁️</span> 2. Face</button>
@@ -174,10 +175,11 @@
             <button class="stage-step-btn" data-stage="stage-special"><span>🐉</span> 5. Special</button>
             <button class="stage-step-btn" data-stage="stage-colors"><span>🎨</span> 6. Colors</button>
             <button class="stage-step-btn" data-stage="stage-clothes"><span>👕</span> 7. Clothes</button>
-            <button class="stage-step-btn" data-stage="stage-powers"><span>✨</span> 8. Powers</button>
-            <button class="stage-step-btn" data-stage="stage-personality"><span>❤️</span> 9. Personality</button>
-            <button class="stage-step-btn" data-stage="stage-world"><span>🏠</span> 10. World</button>
-            <button class="stage-step-btn" data-stage="stage-food"><span>🍕</span> 11. Food</button>
+            <button class="stage-step-btn" data-stage="stage-accessories"><span>🧢</span> 8. Items</button>
+            <button class="stage-step-btn" data-stage="stage-powers"><span>✨</span> 9. Powers</button>
+            <button class="stage-step-btn" data-stage="stage-personality"><span>❤️</span> 10. Personality</button>
+            <button class="stage-step-btn" data-stage="stage-world"><span>🏠</span> 11. World</button>
+            <button class="stage-step-btn" data-stage="stage-food"><span>🍕</span> 12. Food</button>
           </div>
 
           <!-- Panels Wrapper -->
@@ -189,7 +191,6 @@
                 <div class="panel-section-title"><span>🧸</span> Choose Monster Body Shape:</div>
                 <div class="option-button-grid wide">
                   <button class="opt-btn active" data-body-shape="round"><span class="opt-btn-icon">🟢</span> ROUND</button>
-                  <button class="opt-btn" data-body-shape="square"><span class="opt-btn-icon">⏹️</span> SQUARE</button>
                   <button class="opt-btn" data-body-shape="tall"><span class="opt-btn-icon">🦒</span> TALL</button>
                   <button class="opt-btn" data-body-shape="short"><span class="opt-btn-icon">🐧</span> SHORT</button>
                   <button class="opt-btn" data-body-shape="wide"><span class="opt-btn-icon">🥚</span> WIDE</button>
@@ -202,8 +203,22 @@
               </div>
             </div>
 
-            <!-- 2. STAGE: FACE (Eyes, Ears, Horns, Nose, Mouth, Teeth) -->
+            <!-- 2. STAGE: FACE (Eyes, Ears, Horns, Nose, Mouth, Teeth, Expressions) -->
             <div class="creator-stage-panel" id="stage-face">
+              
+              <!-- Shortcut Expressions -->
+              <div class="panel-section">
+                <div class="panel-section-title"><span>🎭</span> Quick Expression:</div>
+                <div class="option-button-grid">
+                  <button class="opt-btn active" data-expression="happy">😊 HAPPY</button>
+                  <button class="opt-btn" data-expression="angry">😡 ANGRY</button>
+                  <button class="opt-btn" data-expression="sleepy">😴 SLEEPY</button>
+                  <button class="opt-btn" data-expression="surprised">😮 SURPRISED</button>
+                  <button class="opt-btn" data-expression="silly">🤪 SILLY</button>
+                  <button class="opt-btn" data-expression="scary">😱 SCARY</button>
+                </div>
+              </div>
+
               <!-- Eyes Count -->
               <div class="panel-section">
                 <div class="panel-section-title"><span>👁️</span> How Many Eyes?</div>
@@ -216,7 +231,7 @@
                 </div>
               </div>
 
-              <!-- Eye Size & Style -->
+              <!-- Eyes Size & Style -->
               <div class="panel-section">
                 <div class="panel-section-title"><span>🔍</span> Eye Size & Style:</div>
                 <div class="option-button-grid">
@@ -306,10 +321,10 @@
               <div class="panel-section">
                 <div class="panel-section-title"><span>🦷</span> Teeth:</div>
                 <div class="option-button-grid">
-                  <button class="opt-btn" data-teeth-type="none">NO TEETH</button>
+                  <button class="opt-btn active" data-teeth-type="none">NO TEETH</button>
                   <button class="opt-btn" data-teeth-type="small">SMALL</button>
                   <button class="opt-btn" data-teeth-type="big">BIG</button>
-                  <button class="opt-btn active" data-teeth-type="sharp">🦈 SHARP</button>
+                  <button class="opt-btn" data-teeth-type="sharp">🦈 SHARP</button>
                   <button class="opt-btn" data-teeth-type="vampire">🧛 VAMPIRE</button>
                   <button class="opt-btn" data-teeth-type="giant">🦷 1 GIANT TOOTH</button>
                 </div>
@@ -333,8 +348,8 @@
                 <div class="panel-section-title"><span>📏</span> Arm Length:</div>
                 <div class="option-button-grid">
                   <button class="opt-btn" data-arms-length="tiny">TINY</button>
-                  <button class="opt-btn active" data-arms-length="short">SHORT</button>
-                  <button class="opt-btn" data-arms-length="normal">NORMAL</button>
+                  <button class="opt-btn" data-arms-length="short">SHORT</button>
+                  <button class="opt-btn active" data-arms-length="normal">NORMAL</button>
                   <button class="opt-btn" data-arms-length="long">LONG</button>
                   <button class="opt-btn" data-arms-length="super_long">SUPER LONG</button>
                 </div>
@@ -379,7 +394,7 @@
               </div>
             </div>
 
-            <!-- 5. STAGE: SPECIAL BODY PARTS (Wings, Tails, Extras) -->
+            <!-- 5. STAGE: SPECIAL BODY PARTS -->
             <div class="creator-stage-panel" id="stage-special">
               <div class="panel-section">
                 <div class="panel-section-title"><span>🦅</span> Wings:</div>
@@ -407,7 +422,7 @@
                   <button class="opt-btn" data-special-extra="spikes">🌵 SPIKES</button>
                   <button class="opt-btn" data-special-extra="fins">🐬 FINS</button>
                   <button class="opt-btn" data-special-extra="tentacles">🐙 TENTACLES</button>
-                  <button class="opt-btn" data-special-extra="shell">🐢 SHELL</button>
+                  <button class="opt-btn" data-special-extra="shell">🐌 SHELL</button>
                 </div>
               </div>
             </div>
@@ -457,12 +472,13 @@
               </div>
             </div>
 
-            <!-- 7. STAGE: CLOTHES & ACCESSORIES -->
+            <!-- 7. STAGE: CLOTHES & OUTFITS -->
             <div class="creator-stage-panel" id="stage-clothes">
               <div class="panel-section">
-                <div class="panel-section-title"><span>🦸</span> Special Superhero & Outfits:</div>
+                <div class="panel-section-title"><span>🦸</span> Full Outfits (Replaces Tops & Bottoms):</div>
                 <div class="option-button-grid">
-                  <button class="opt-btn active" data-special-suit="none">NORMAL</button>
+                  <button class="opt-btn active" data-special-suit="none">NONE</button>
+                  <button class="opt-btn" data-special-suit="dress">💃 DRESS</button>
                   <button class="opt-btn" data-special-suit="superhero">🦸 SUPERHERO</button>
                   <button class="opt-btn" data-special-suit="astronaut">👨‍🚀 ASTRONAUT</button>
                   <button class="opt-btn" data-special-suit="wizard">🧙 WIZARD</button>
@@ -489,7 +505,6 @@
                   <button class="opt-btn" data-cloth-bottom="trousers">👖 TROUSERS</button>
                   <button class="opt-btn" data-cloth-bottom="shorts">🩳 SHORTS</button>
                   <button class="opt-btn" data-cloth-bottom="skirt">👗 SKIRT</button>
-                  <button class="opt-btn" data-cloth-bottom="dress">💃 DRESS</button>
                 </div>
               </div>
               <div class="panel-section">
@@ -499,9 +514,12 @@
                   <button class="opt-btn" data-cloth-shoes="boots">🥾 BOOTS</button>
                   <button class="opt-btn" data-cloth-shoes="sneakers">👟 SNEAKERS</button>
                   <button class="opt-btn" data-cloth-shoes="clown_shoes">🤡 CLOWN SHOES</button>
-                  <button class="opt-btn" data-cloth-shoes="monster_feet">🐾 MONSTER BOOTS</button>
                 </div>
               </div>
+            </div>
+
+            <!-- 8. STAGE: ACCESSORIES -->
+            <div class="creator-stage-panel" id="stage-accessories">
               <div class="panel-section">
                 <div class="panel-section-title"><span>🧢</span> Accessories (Combine multiple!):</div>
                 <div class="option-button-grid">
@@ -522,7 +540,7 @@
               </div>
             </div>
 
-            <!-- 8. STAGE: POWERS (It can...) -->
+            <!-- 9. STAGE: POWERS (It can...) -->
             <div class="creator-stage-panel" id="stage-powers">
               <div class="panel-section">
                 <div class="panel-section-title"><span>✨</span> Choose Super Powers (Select 1 or more!):</div>
@@ -541,7 +559,7 @@
               </div>
             </div>
 
-            <!-- 9. STAGE: PERSONALITY (It is...) -->
+            <!-- 10. STAGE: PERSONALITY (It is...) -->
             <div class="creator-stage-panel" id="stage-personality">
               <div class="panel-section">
                 <div class="panel-section-title"><span>❤️</span> My Monster is... (Personality):</div>
@@ -560,7 +578,7 @@
               </div>
             </div>
 
-            <!-- 10. STAGE: WORLD (It lives in...) -->
+            <!-- 11. STAGE: WORLD (It lives in...) -->
             <div class="creator-stage-panel" id="stage-world">
               <div class="panel-section">
                 <div class="panel-section-title"><span>🏠</span> Where Does It Live?</div>
@@ -579,7 +597,7 @@
               </div>
             </div>
 
-            <!-- 11. STAGE: FOOD (It likes...) -->
+            <!-- 12. STAGE: FOOD (It likes...) -->
             <div class="creator-stage-panel" id="stage-food">
               <div class="panel-section">
                 <div class="panel-section-title"><span>🍕</span> Favorite Food (What does it like?):</div>
@@ -598,7 +616,7 @@
 
           </div>
 
-          <!-- Bottom Stage Navigation -->
+          <!-- Bottom Navigation Stepper -->
           <div class="creator-bottom-bar">
             <button class="btn btn-secondary" onclick="app.prevStage()">
               <span>⬅ BACK</span>
@@ -683,14 +701,14 @@
       <div class="challenge-screen-card">
         
         <div class="challenge-header">
-          <h2 class="challenge-title">🧠 MONSTER CHALLENGE</h2>
+          <h2 class="challenge-title">🎯 MONSTER CHALLENGE</h2>
           <p class="subtitle-hero">Read the English mission and build the monster!</p>
         </div>
 
         <div class="quest-mission-card">
           <div class="quest-mission-title" id="challenge-quest-title">Mission: 3 Big Eyes</div>
           <div class="quest-mission-instruction" id="challenge-quest-instruction">👉 Give your monster 3 big eyes.</div>
-          <div class="quest-mission-hint" id="challenge-quest-hint">💡 Hint: Go to Face ➔ Eyes ➔ Choose 3 ➔ Choose BIG</div>
+          <div class="quest-mission-hint" id="challenge-quest-hint">💡 Hint: Go to Face ➔ Eyes: Choose 3 ➔ Size: Choose BIG</div>
         </div>
 
         <div class="feedback-banner hidden" id="challenge-feedback-banner"></div>
@@ -711,7 +729,7 @@
     </section>
 
     <!-- =======================================================================
-         4. SCREEN: LISTENING CHALLENGE GAME
+         4. SCREEN: LISTEN & BUILD GAME
          ======================================================================= -->
     <section class="screen-view" id="screen-listening">
       <div class="challenge-screen-card">
@@ -754,7 +772,7 @@
     </section>
 
     <!-- =======================================================================
-         5. SCREEN: SECRET MONSTER 2-PLAYER CLASSROOM MODE
+         5. SCREEN: SECRET MONSTER (2-PLAYER)
          ======================================================================= -->
     <section class="screen-view" id="screen-secret">
       <div class="challenge-screen-card">
@@ -935,7 +953,7 @@
             <label><input type="checkbox" checked> ☑ Super Powers (It can...)</label>
             <label><input type="checkbox" checked> ☑ Personality (It is...)</label>
             <label><input type="checkbox" checked> ☑ Worlds & Foods</label>
-            <label><input type="checkbox" checked> ☑ Clothes & Patterns</label>
+            <label><input type="checkbox" checked> ☑ Clothes & Outfits</label>
           </div>
         </div>
 
@@ -977,11 +995,12 @@
   <div class="surprise-popup-banner" id="surprise-popup-banner"></div>
 
   <!-- =========================================================================
-       SCRIPTS
+       SCRIPTS IN DEPENDENCY ORDER
        ========================================================================= -->
   <script src="js/audio.js"></script>
-  <script src="js/grammarEngine.js"></script>
+  <script src="js/monsterState.js"></script>
   <script src="js/monsterRenderer.js"></script>
+  <script src="js/grammarEngine.js"></script>
   <script src="js/challenges.js"></script>
   <script src="js/teacherMode.js"></script>
   <script src="js/app.js"></script>
