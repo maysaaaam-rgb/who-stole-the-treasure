@@ -1,28 +1,33 @@
 /**
- * teacherMode.js - Teacher Controls, Vocabulary Settings, Scoring & Badges System
+ * teacherMode.js - Teacher Controls, Vocabulary Settings, Scoring & Expanded Badges System
  */
 
 class TeacherMode {
   constructor() {
     this.score = 0;
-    this.difficulty = 'easy'; // 'easy', 'medium', 'hard'
+    this.difficulty = 'easy';
 
-    // Active vocabulary units (Teacher can toggle)
     this.vocabSettings = {
       bodyParts: true,
+      shapes: true,
       numbers: true,
       colors: true,
       clothes: true,
-      adjectives: true
+      adjectives: true,
+      powers: true,
+      worlds: true,
+      foods: true
     };
 
-    // Tracking for unlocking badges
     this.stats = {
       monstersCreated: 0,
       eyesUsed: new Set(),
       earsUsed: new Set(),
       colorsUsed: new Set(),
       clothesWorn: new Set(),
+      powersUsed: new Set(),
+      personalityUsed: new Set(),
+      specialPartsUsed: new Set(),
       speakingCompletedCount: 0,
       challengesSolved: 0
     };
@@ -39,18 +44,10 @@ class TeacherMode {
       {
         id: 'eye_expert',
         title: 'Eye Expert',
-        icon: '👀',
-        description: 'Try 1, 2, and 3 eyes',
+        icon: '👁️',
+        description: 'Try 1, 2, and 3+ eyes',
         unlocked: false,
         check: () => this.stats.eyesUsed.size >= 3
-      },
-      {
-        id: 'ear_expert',
-        title: 'Ear Expert',
-        icon: '👂',
-        description: 'Try both long and short ears',
-        unlocked: false,
-        check: () => this.stats.earsUsed.has('long') && this.stats.earsUsed.has('short')
       },
       {
         id: 'color_champion',
@@ -67,6 +64,30 @@ class TeacherMode {
         description: 'Dress monster with top, bottom and accessories',
         unlocked: false,
         check: () => this.stats.clothesWorn.size >= 3
+      },
+      {
+        id: 'creature_creator',
+        title: 'Creature Creator',
+        icon: '🐉',
+        description: 'Add wings, tails, or special parts',
+        unlocked: false,
+        check: () => this.stats.specialPartsUsed.size >= 2
+      },
+      {
+        id: 'power_master',
+        title: 'Power Master',
+        icon: '✨',
+        description: 'Give your monster super powers',
+        unlocked: false,
+        check: () => this.stats.powersUsed.size >= 2
+      },
+      {
+        id: 'personality_master',
+        title: 'Personality Master',
+        icon: '🎭',
+        description: 'Choose unique monster personalities',
+        unlocked: false,
+        check: () => this.stats.personalityUsed.size >= 2
       },
       {
         id: 'monster_speaker',
@@ -135,13 +156,24 @@ class TeacherMode {
 
   trackMonsterFeatures(monster) {
     if (monster.eyesCount) this.stats.eyesUsed.add(monster.eyesCount);
-    if (monster.earsLength) this.stats.earsUsed.add(monster.earsLength);
     if (monster.color) this.stats.colorsUsed.add(monster.color);
 
     if (monster.clothesTop && monster.clothesTop !== 'none') this.stats.clothesWorn.add('top');
     if (monster.clothesBottom && monster.clothesBottom !== 'none') this.stats.clothesWorn.add('bottom');
     if (monster.specialCape) this.stats.clothesWorn.add('cape');
     if (monster.accessories && monster.accessories.length > 0) this.stats.clothesWorn.add('accessory');
+
+    if (monster.specialWings && monster.specialWings !== 'none') this.stats.specialPartsUsed.add(monster.specialWings);
+    if (monster.specialTail && monster.specialTail !== 'none') this.stats.specialPartsUsed.add(monster.specialTail);
+    if (monster.specialParts && monster.specialParts.length > 0) monster.specialParts.forEach(p => this.stats.specialPartsUsed.add(p));
+
+    if (monster.powers && Array.isArray(monster.powers)) {
+      monster.powers.forEach(p => this.stats.powersUsed.add(p));
+    }
+
+    if (monster.personality && Array.isArray(monster.personality)) {
+      monster.personality.forEach(p => this.stats.personalityUsed.add(p));
+    }
 
     this.checkBadges();
   }
@@ -175,8 +207,6 @@ class TeacherMode {
     document.getElementById('badge-unlock-desc').innerText = badge.description;
 
     modal.classList.add('active');
-
-    // Trigger confetti if container available
     this.triggerConfetti();
   }
 
