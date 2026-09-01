@@ -1,6 +1,6 @@
 /* ==========================================================================
    🌿 LIFE IN THE JUNGLE — THE JUNGLE RANGERS
-   Complete Game Controller, Interaction Engine & Word Wall Manager
+   Zero-Fail TAP → TAP Primary Interaction Engine for Smart Screens & Whiteboards
    ========================================================================== */
 
 class JungleGameEngine {
@@ -9,8 +9,9 @@ class JungleGameEngine {
     this.jungleHealth = 70;
     this.scores = { forest: 0, river: 0 };
     this.activeTurn = 'forest';
-    this.selectedDraggable = null;
+    this.selectedTapItem = null;
     this.discoveredHotspots = new Set();
+    this.foodChainProgress = [];
     this.activeSubState = {
       whoAmIIdx: 0,
       detectiveCaseIdx: 0,
@@ -37,7 +38,9 @@ class JungleGameEngine {
   goToChapter(idx) {
     if (idx < 0 || idx >= window.JUNGLE_DATA.chapters.length) return;
     this.currentChapterIdx = idx;
+    this.clearSelection();
     this.discoveredHotspots.clear();
+    this.foodChainProgress = [];
     this.activeSubState = {
       whoAmIIdx: 0,
       detectiveCaseIdx: 0,
@@ -109,7 +112,27 @@ class JungleGameEngine {
         window.jungleViews.renderWhereDoesItLive(stageContainer, chapter);
         break;
       case 'what_needs_matching':
-        window.jungleViews.renderWhereDoesItLive(stageContainer, chapter); // fallback or matching
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:1050px;">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
+                👇 STEP 1: Tap a Need Item ➔ STEP 2: Tap Suki to Deliver It!
+              </div>
+              <div class="animal-stage-actor tap-target" id="target-suki-needs" data-target="suki-needs" style="background:rgba(255,255,255,0.18); border:4px dashed #34d399; border-radius:var(--radius-xl); padding:20px 40px; cursor:pointer;">
+                ${window.jungleViews.getAnimalAvatar("squirrel", 120)}
+                <div class="actor-name-tag">🐿️ Suki's Needs: <span id="suki-needs-status">0 / 3</span></div>
+              </div>
+              <div class="items-palette">
+                ${chapter.neededItems.map(it => `
+                  <button class="item-card tap-item needs-item-btn" data-need="${it.id}">
+                    <span class="item-label" style="font-size:1.25rem;">${it.name}</span>
+                    <span style="font-size:0.85rem; color:#475569;">${it.desc}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'shelter_matching':
         window.jungleViews.renderAnimalHomes(stageContainer, chapter);
@@ -118,13 +141,76 @@ class JungleGameEngine {
         window.jungleViews.renderAnimalHomes(stageContainer, chapter);
         break;
       case 'food_diet_feeder':
-        window.jungleViews.renderMatchAnimal(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1100px;">
+              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+                👇 STEP 1: Tap Food ➔ STEP 2: Tap the Animal to Feed It!
+              </div>
+              <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+                ${chapter.pairs.map(p => `
+                  <div class="animal-stage-actor tap-target feed-target-animal" data-animal="${p.animalId}" style="padding:12px 18px; background:#fff; border-radius:var(--radius-xl); border:4px solid #cbd5e1; cursor:pointer;">
+                    ${window.jungleViews.getAnimalAvatar(p.animalId, 95)}
+                    <div class="actor-name-tag" style="font-size:1rem;">${p.animal}</div>
+                    <div class="fed-badge" id="fed-status-${p.animalId}" style="font-size:0.85rem; color:#059669; font-weight:800; margin-top:4px;">Hungry 😋</div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="items-palette">
+                ${chapter.pairs.map(p => `
+                  <button class="item-card tap-item food-feed-btn" data-animal-match="${p.animalId}" data-food="${p.foodEmoji}">
+                    <span class="item-emoji">${p.foodEmoji}</span>
+                    <span class="item-label">${p.foodName}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'predator_prey_interactive':
         window.jungleViews.renderPredatorPrey(stageContainer, chapter);
         break;
       case 'food_chain_sequencer':
-        window.jungleViews.renderPredatorPrey(stageContainer, chapter);
+        stageContainer.innerHTML = `
+          <div class="stage-board">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1000px;">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
+                👇 Build the Food Chain in Order: 1. Plant 🌱 ➔ 2. Rabbit 🐇 ➔ 3. Fox 🦊
+              </div>
+              <div style="display:flex; gap:18px; justify-content:center; width:100%;">
+                <div class="tap-target chain-slot" data-step="1" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #10b981; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                  <span style="font-family:var(--font-display); font-weight:900; color:#10b981; font-size:1.4rem;">1. Producer</span>
+                  <span class="slot-val" style="font-size:2.8rem; margin-top:8px;">❓</span>
+                </div>
+                <div style="font-size:2.5rem; color:#f59e0b; align-self:center;">➔</div>
+                <div class="tap-target chain-slot" data-step="2" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #0284c7; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                  <span style="font-family:var(--font-display); font-weight:900; color:#0284c7; font-size:1.4rem;">2. Prey</span>
+                  <span class="slot-val" style="font-size:2.8rem; margin-top:8px;">❓</span>
+                </div>
+                <div style="font-size:2.5rem; color:#f59e0b; align-self:center;">➔</div>
+                <div class="tap-target chain-slot" data-step="3" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #dc2626; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                  <span style="font-family:var(--font-display); font-weight:900; color:#dc2626; font-size:1.4rem;">3. Predator</span>
+                  <span class="slot-val" style="font-size:2.8rem; margin-top:8px;">❓</span>
+                </div>
+              </div>
+              <div class="items-palette">
+                <button class="item-card tap-item chain-card-btn" data-type="plant" data-emoji="🌱" data-step="1">
+                  <span class="item-emoji">🌱</span>
+                  <span class="item-label">Green Plant</span>
+                </button>
+                <button class="item-card tap-item chain-card-btn" data-type="rabbit" data-emoji="🐇" data-step="2">
+                  <span class="item-emoji">🐇</span>
+                  <span class="item-label">Rabbit (Prey)</span>
+                </button>
+                <button class="item-card tap-item chain-card-btn" data-type="fox" data-emoji="🦊" data-step="3">
+                  <span class="item-emoji">🦊</span>
+                  <span class="item-label">Fox (Predator)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
         break;
       case 'ecosystem_connection_map':
         window.jungleViews.renderEcosystemMap(stageContainer, chapter);
@@ -152,7 +238,7 @@ class JungleGameEngine {
                   </div>
                 `).join('')}
               </div>
-              <button class="hud-btn hud-btn-teacher" id="btn-start-emergency-rescue" style="margin-top:24px; font-size:1.25rem; padding:12px 28px; background:linear-gradient(135deg, #10b981, #059669); border-color:#6ee7b7;">
+              <button class="hud-btn hud-btn-teacher" id="btn-start-emergency-rescue" style="margin-top:24px; font-size:1.25rem; padding:14px 32px; background:linear-gradient(135deg, #10b981, #059669); border-color:#6ee7b7;">
                 <span>🛡️ START RESCUE MISSION ➔</span>
               </button>
             </div>
@@ -190,15 +276,18 @@ class JungleGameEngine {
         stageContainer.innerHTML = `
           <div class="stage-board">
             <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%;">
-              <div class="animal-stage-actor draggable-item" data-animal="${chapter.animalId}" style="cursor:grab;">
-                ${window.jungleViews.getAnimalAvatar(chapter.animalId, 110)}
-                <div class="actor-name-tag">🐿️ Drag Suki to her Habitat</div>
+              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+                👇 STEP 1: Tap Suki ➔ STEP 2: Tap the Forest Habitat!
               </div>
+              <button class="animal-stage-actor tap-item" id="suki-actor-btn" data-animal="${chapter.animalId}" style="background:none; border:none;">
+                ${window.jungleViews.getAnimalAvatar(chapter.animalId, 115)}
+                <div class="actor-name-tag">🐿️ Suki the Squirrel</div>
+              </button>
               <div class="habitat-zones-container">
                 ${chapter.zones.map(z => `
-                  <div class="habitat-zone-card ${z.id}-zone drop-target" data-zone="${z.id}" data-correct="${z.correct}">
+                  <div class="habitat-zone-card ${z.id}-zone tap-target suki-habitat-target" data-zone="${z.id}" data-correct="${z.correct}">
                     <div class="habitat-header"><span>${z.emoji}</span><span>${z.name}</span></div>
-                    <div class="habitat-actor-slot">❓</div>
+                    <div class="habitat-actor-slot" id="slot-zone-${z.id}">❓</div>
                     <div class="habitat-tag">${z.desc}</div>
                   </div>
                 `).join('')}
@@ -240,11 +329,11 @@ class JungleGameEngine {
           <div class="stage-board">
             <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:1050px;">
               <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
-                🔢 Drag cards into correct order: 1 ➔ 2 ➔ 3 ➔ 4
+                🔢 Cause & Effect Sequence: 1 ➔ 2 ➔ 3 ➔ 4
               </div>
               <div style="display:flex; gap:16px; width:100%; justify-content:center;">
                 ${chapter.cards.map(c => `
-                  <div class="item-card" style="flex:1; max-width:230px;">
+                  <div class="item-card" style="flex:1; max-width:230px; padding:16px;">
                     <span class="item-emoji">${c.emoji}</span>
                     <span class="item-label">${c.title}</span>
                     <span style="font-size:0.85rem; color:#475569;">${c.text}</span>
@@ -282,7 +371,7 @@ class JungleGameEngine {
               <div style="font-family:var(--font-display); font-size:1.4rem; color:#fbbf24; font-weight:900;">
                 ⚙️ JUNGLE PREDICTION MACHINE (${this.activeSubState.machineRoundIdx + 1}/${chapter.rounds.length})
               </div>
-              <div style="color:#fff; font-size:1.15rem; font-weight:700;">${round.scenario}</div>
+              <div style="color:#fff; font-size:1.2rem; font-weight:800;">${round.scenario}</div>
               <div class="sentence-builder-display">
                 <span class="sentence-chunk">${round.prefix}</span>
                 <div class="sentence-slot-token" id="machine-slot">${round.blank}</div>
@@ -341,13 +430,13 @@ class JungleGameEngine {
               <div class="emergency-step-indicator">
                 <div class="step-node ${this.activeSubState.emergencyStep >= 1 ? 'step-active' : ''}"><span>1️⃣ Predict</span></div>
                 <div class="step-node ${this.activeSubState.emergencyStep >= 2 ? 'step-active' : ''}"><span>2️⃣ Solve</span></div>
-                <div class="step-node ${this.activeSubState.emergencyStep >= 3 ? 'step-active' : ''}"><span>3️⃣ Act / Drag</span></div>
+                <div class="step-node ${this.activeSubState.emergencyStep >= 3 ? 'step-active' : ''}"><span>3️⃣ Act</span></div>
                 <div class="step-node ${this.activeSubState.emergencyStep >= 4 ? 'step-active' : ''}"><span>4️⃣ Consequence</span></div>
               </div>
-              <div style="background:#fff; border-radius:var(--radius-xl); padding:20px; text-align:center;">
-                <div class="actor-name-tag" style="margin-bottom:12px;">${mission.name} — ${mission.problem}</div>
+              <div style="background:#fff; border-radius:var(--radius-xl); padding:24px; text-align:center;">
+                <div class="actor-name-tag" style="margin-bottom:14px;">${mission.name} — Problem: ${mission.problem}</div>
                 ${this.activeSubState.emergencyStep === 1 ? `
-                  <div style="font-size:1.3rem; font-weight:800; margin-bottom:12px; color:#065f46;">${mission.step1_predict.q}</div>
+                  <div style="font-size:1.35rem; font-weight:800; margin-bottom:14px; color:#065f46;">${mission.step1_predict.q}</div>
                   <div class="choice-cards-row">
                     ${mission.step1_predict.options.map(opt => `
                       <button class="choice-card-btn sim-step1-btn" data-id="${opt.id}" data-correct="${opt.correct}">
@@ -357,8 +446,8 @@ class JungleGameEngine {
                     `).join('')}
                   </div>
                 ` : `
-                  <div style="font-size:1.5rem; font-weight:900; color:#059669; margin-bottom:12px;">${mission.consequence}</div>
-                  <button class="hud-btn hud-btn-teacher" id="btn-next-mission" style="font-size:1.2rem; padding:12px 24px;">
+                  <div style="font-size:1.6rem; font-weight:900; color:#059669; margin-bottom:14px;">${mission.consequence}</div>
+                  <button class="hud-btn hud-btn-teacher" id="btn-next-mission" style="font-size:1.25rem; padding:14px 28px;">
                     <span>✨ NEXT MISSION ➔</span>
                   </button>
                 `}
@@ -370,13 +459,13 @@ class JungleGameEngine {
       case 'final_crisis_hub':
         stageContainer.innerHTML = `
           <div class="stage-board">
-            <div style="background:rgba(255,255,255,0.96); border-radius:var(--radius-xl); padding:24px; text-align:center; max-width:900px;">
-              <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#065f46; margin-bottom:12px;">
-                🌟 RESTORE THE JUNGLE ECOSYSTEM
+            <div style="background:rgba(255,255,255,0.97); border-radius:var(--radius-xl); padding:28px; text-align:center; max-width:900px; border:4px solid #10b981;">
+              <div style="font-family:var(--font-display); font-size:2rem; font-weight:900; color:#065f46; margin-bottom:14px;">
+                🌟 SAVE THE ECOSYSTEM: MAKE YOUR DECISION!
               </div>
               <div class="choice-cards-row">
-                <button class="choice-card-btn c4-decision-btn" data-correct="true">
-                  <div class="choice-text">🌳 Protect the forest, plant trees, and keep water clean!</div>
+                <button class="choice-card-btn c4-decision-btn" data-correct="true" style="padding:20px; font-size:1.3rem;">
+                  <div class="choice-text">🌳 Protect the forest, plant trees, and keep rivers clean!</div>
                 </button>
               </div>
             </div>
@@ -384,11 +473,11 @@ class JungleGameEngine {
         `;
         break;
       default:
-        stageContainer.innerHTML = `<div class="stage-board"><div style="color:#fff;">Active chapter...</div></div>`;
+        stageContainer.innerHTML = `<div class="stage-board"><div style="color:#fff;">Loading chapter...</div></div>`;
     }
 
-    // Attach Interaction Handlers for the newly rendered elements
-    this.attachStageInteractionHandlers(chapter);
+    // Attach robust Tap-to-Tap handlers
+    this.attachTapToTapHandlers(chapter);
 
     // Speak Narration Line automatically if speech enabled
     if (window.jungleAudio.isSpeechEnabled && chapter.narrator) {
@@ -402,6 +491,307 @@ class JungleGameEngine {
       .replace(/\b(might|MIGHT|may|MAY|could|COULD)\b/g, '<span class="highlight-might">$1</span>')
       .replace(/\b(if|IF|If)\b/g, '<span class="highlight-if">$1</span>')
       .replace(/\b(HABITAT|PREDATOR|PREY|ECOSYSTEM|SHELTER|FOOD)\b/g, '<span class="highlight-vocab">$1</span>');
+  }
+
+  // =========================================================================
+  // TAP → TAP CORE STATE MACHINE
+  // =========================================================================
+  selectItem(element) {
+    this.clearSelection();
+    this.selectedTapItem = element;
+    element.classList.add('is-selected');
+
+    // Highlight all valid target drop containers on the stage
+    document.querySelectorAll('.tap-target').forEach(tgt => {
+      tgt.classList.add('target-available');
+    });
+
+    window.jungleAudio.playClick();
+  }
+
+  clearSelection() {
+    if (this.selectedTapItem) {
+      this.selectedTapItem.classList.remove('is-selected');
+      this.selectedTapItem = null;
+    }
+    document.querySelectorAll('.tap-target').forEach(tgt => {
+      tgt.classList.remove('target-available');
+    });
+  }
+
+  attachTapToTapHandlers(chapter) {
+    // 1. Generic Tap Item Selector
+    document.querySelectorAll('.tap-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (this.selectedTapItem === item) {
+          this.clearSelection();
+        } else {
+          this.selectItem(item);
+        }
+      });
+    });
+
+    // 2. Word-to-Picture Matching (Chapter 4)
+    document.querySelectorAll('.animal-match-target').forEach(tgt => {
+      tgt.addEventListener('click', () => {
+        if (this.selectedTapItem) {
+          const word = this.selectedTapItem.getAttribute('data-word');
+          const animal = tgt.getAttribute('data-animal');
+          if (word === animal) {
+            tgt.querySelector('.matched-slot-label').textContent = `✅ ${word.toUpperCase()}`;
+            tgt.querySelector('.matched-slot-label').style.background = '#d1fae5';
+            tgt.querySelector('.matched-slot-label').style.color = '#065f46';
+            tgt.classList.add('anim-hop-in');
+            this.selectedTapItem.style.display = 'none';
+            this.clearSelection();
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 1);
+          } else {
+            tgt.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => tgt.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 3. Animal-to-Biome Matching (Chapter 5)
+    document.querySelectorAll('.biome-target').forEach(tgt => {
+      tgt.addEventListener('click', () => {
+        if (this.selectedTapItem) {
+          const expectedTarget = this.selectedTapItem.getAttribute('data-target');
+          const biome = tgt.getAttribute('data-biome');
+          if (expectedTarget === biome) {
+            const animalName = this.selectedTapItem.querySelector('.item-label')?.textContent || '';
+            tgt.querySelector('.habitat-actor-slot').textContent = `✅ ${animalName}`;
+            tgt.classList.add('anim-hop-in');
+            this.selectedTapItem.style.display = 'none';
+            this.clearSelection();
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 1);
+          } else {
+            tgt.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => tgt.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 4. Suki Survival Needs (Chapter 6)
+    const sukiNeedsTarget = document.getElementById('target-suki-needs');
+    if (sukiNeedsTarget) {
+      sukiNeedsTarget.addEventListener('click', () => {
+        if (this.selectedTapItem && this.selectedTapItem.classList.contains('needs-item-btn')) {
+          this.selectedTapItem.style.display = 'none';
+          this.clearSelection();
+          sukiNeedsTarget.classList.add('anim-hop-in');
+          window.jungleAudio.playSuccess();
+          this.addTeamPoint(this.activeTurn, 1);
+        }
+      });
+    }
+
+    // 5. Feeding Animals (Chapter 9)
+    document.querySelectorAll('.feed-target-animal').forEach(animalTgt => {
+      animalTgt.addEventListener('click', () => {
+        if (this.selectedTapItem && this.selectedTapItem.classList.contains('food-feed-btn')) {
+          const animalId = animalTgt.getAttribute('data-animal');
+          const match = this.selectedTapItem.getAttribute('data-animal-match');
+          if (animalId === match) {
+            animalTgt.querySelector('.fed-badge').textContent = 'Full & Happy! 💚';
+            animalTgt.classList.add('anim-hop-in');
+            this.selectedTapItem.style.display = 'none';
+            this.clearSelection();
+            window.jungleAudio.playMunch();
+            this.addTeamPoint(this.activeTurn, 1);
+          } else {
+            animalTgt.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => animalTgt.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 6. Food Chain Slots (Chapter 11)
+    document.querySelectorAll('.chain-slot').forEach(slot => {
+      slot.addEventListener('click', () => {
+        if (this.selectedTapItem && this.selectedTapItem.classList.contains('chain-card-btn')) {
+          const expectedStep = slot.getAttribute('data-step');
+          const cardStep = this.selectedTapItem.getAttribute('data-step');
+          if (expectedStep === cardStep) {
+            const emoji = this.selectedTapItem.getAttribute('data-emoji');
+            slot.querySelector('.slot-val').textContent = emoji;
+            slot.classList.add('anim-hop-in');
+            this.selectedTapItem.style.display = 'none';
+            this.clearSelection();
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 1);
+          } else {
+            slot.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => slot.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 7. Suki Habitat Selection (Chapter 16)
+    document.querySelectorAll('.suki-habitat-target').forEach(habTgt => {
+      habTgt.addEventListener('click', () => {
+        if (this.selectedTapItem && this.selectedTapItem.id === 'suki-actor-btn') {
+          const isCorrect = habTgt.getAttribute('data-correct') === 'true';
+          if (isCorrect) {
+            habTgt.querySelector('.habitat-actor-slot').textContent = '🐿️ Safe!';
+            habTgt.classList.add('anim-hop-in');
+            this.selectedTapItem.style.display = 'none';
+            this.clearSelection();
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 2);
+          } else {
+            habTgt.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => habTgt.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 8. Exploration Hotspots
+    document.querySelectorAll('.explore-hotspot').forEach(spot => {
+      spot.addEventListener('click', () => {
+        const id = spot.getAttribute('data-id');
+        const animal = window.JUNGLE_DATA.animals[id];
+        if (animal) {
+          window.jungleAudio.speak(animal.name);
+          spot.classList.add('anim-hop-in');
+          this.discoveredHotspots.add(id);
+          const counter = document.getElementById('explore-found-count');
+          if (counter) counter.textContent = `Discovered: ${this.discoveredHotspots.size} / ${chapter.hotspots.length}`;
+          this.addTeamPoint(this.activeTurn, 1);
+        }
+      });
+    });
+
+    // 9. Nature Search (Chapter 2)
+    document.querySelectorAll('.nature-spot-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const pill = document.getElementById(`target-pill-${targetId}`);
+        if (pill) {
+          pill.style.background = '#059669';
+          pill.style.borderColor = '#6ee7b7';
+          pill.innerHTML = `<span>${targetId.toUpperCase()}</span> <span>✅</span>`;
+          window.jungleAudio.playSuccess();
+          this.addTeamPoint(this.activeTurn, 1);
+        }
+      });
+    });
+
+    // 10. Who Am I Reveal
+    const revealWhoBtn = document.getElementById('btn-reveal-who-am-i');
+    if (revealWhoBtn) {
+      revealWhoBtn.addEventListener('click', () => {
+        const rev = document.getElementById('who-am-i-revealed');
+        if (rev) rev.style.display = 'block';
+        window.jungleAudio.playSuccess();
+        this.addTeamPoint(this.activeTurn, 2);
+        revealWhoBtn.style.display = 'none';
+      });
+    }
+
+    // 11. Story Start & Choice Buttons
+    const startStormBtn = document.getElementById('btn-begin-storm-story');
+    if (startStormBtn) startStormBtn.addEventListener('click', () => this.nextChapter());
+
+    const rescueStartBtn = document.getElementById('btn-start-emergency-rescue');
+    if (rescueStartBtn) rescueStartBtn.addEventListener('click', () => this.nextChapter());
+
+    document.querySelectorAll('.choice-card-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isCorrect = btn.getAttribute('data-correct') === 'true';
+        if (isCorrect) {
+          btn.classList.add('correct-choice');
+          window.jungleAudio.playSuccess();
+          this.changeHealth(chapter.healthChange || 10);
+          this.addTeamPoint(this.activeTurn, 2);
+        } else {
+          btn.classList.add('shake-target');
+          window.jungleAudio.playHint();
+          setTimeout(() => btn.classList.remove('shake-target'), 600);
+        }
+      });
+    });
+
+    // 12. Prediction Machine Tokens
+    document.querySelectorAll('.word-token-btn').forEach(tokBtn => {
+      tokBtn.addEventListener('click', () => {
+        const token = tokBtn.getAttribute('data-token');
+        const slot = document.getElementById('machine-slot');
+        const round = chapter.rounds && chapter.rounds[this.activeSubState.machineRoundIdx];
+        if (slot && round) {
+          slot.textContent = token;
+          if (token === round.correctToken) {
+            slot.classList.add('anim-hop-in');
+            window.jungleAudio.playSuccess();
+            this.addTeamPoint(this.activeTurn, 2);
+            setTimeout(() => {
+              if (this.activeSubState.machineRoundIdx < chapter.rounds.length - 1) {
+                this.activeSubState.machineRoundIdx++;
+                this.renderCurrentChapter();
+              } else {
+                this.nextChapter();
+              }
+            }, 1000);
+          } else {
+            slot.classList.add('shake-target');
+            window.jungleAudio.playHint();
+            setTimeout(() => slot.classList.remove('shake-target'), 600);
+          }
+        }
+      });
+    });
+
+    // 13. Emergency Simulator Step Buttons
+    document.querySelectorAll('.sim-step1-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.getAttribute('data-correct') === 'true') {
+          btn.classList.add('correct-choice');
+          window.jungleAudio.playSuccess();
+          this.addTeamPoint(this.activeTurn, 2);
+          setTimeout(() => {
+            this.activeSubState.emergencyStep = 4;
+            this.renderCurrentChapter();
+          }, 800);
+        } else {
+          btn.classList.add('shake-target');
+          window.jungleAudio.playHint();
+          setTimeout(() => btn.classList.remove('shake-target'), 600);
+        }
+      });
+    });
+
+    const nextMissionBtn = document.getElementById('btn-next-mission');
+    if (nextMissionBtn) {
+      nextMissionBtn.addEventListener('click', () => {
+        if (this.activeSubState.emergencyMissionIdx < chapter.missions.length - 1) {
+          this.activeSubState.emergencyMissionIdx++;
+          this.activeSubState.emergencyStep = 1;
+          this.renderCurrentChapter();
+        } else {
+          this.nextChapter();
+        }
+      });
+    }
+
+    // 14. Global Background Tap (Deselects if tapped empty space)
+    document.getElementById('stage-viewport').addEventListener('click', (e) => {
+      if (!e.target.closest('.tap-item') && !e.target.closest('.tap-target')) {
+        this.clearSelection();
+      }
+    });
   }
 
   // =========================================================================
@@ -476,241 +866,6 @@ class JungleGameEngine {
   }
 
   // =========================================================================
-  // INTERACTION HANDLERS FOR ALL CHAPTERS
-  // =========================================================================
-  attachStageInteractionHandlers(chapter) {
-    this.initDragAndDrop();
-
-    // 1. Exploration Hotspots
-    document.querySelectorAll('.explore-hotspot').forEach(spot => {
-      spot.addEventListener('click', () => {
-        const id = spot.getAttribute('data-id');
-        const animal = window.JUNGLE_DATA.animals[id];
-        if (animal) {
-          window.jungleAudio.speak(animal.name);
-          spot.style.transform = 'translate(-50%, -50%) scale(1.25)';
-          setTimeout(() => spot.style.transform = 'translate(-50%, -50%) scale(1)', 400);
-
-          this.discoveredHotspots.add(id);
-          const counter = document.getElementById('explore-found-count');
-          if (counter) counter.textContent = `Found: ${this.discoveredHotspots.size} / ${chapter.hotspots.length}`;
-
-          this.addTeamPoint(this.activeTurn, 1);
-        }
-      });
-    });
-
-    // 2. Ranger Eyes Targets
-    document.querySelectorAll('.nature-spot-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const pill = document.getElementById(`target-pill-${targetId}`);
-        if (pill) {
-          pill.style.background = '#059669';
-          pill.style.borderColor = '#6ee7b7';
-          pill.innerHTML = `<span>${targetId.toUpperCase()}</span> <span>✅</span>`;
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 1);
-        }
-      });
-    });
-
-    // 3. Who Am I Reveal Button
-    const revealWhoBtn = document.getElementById('btn-reveal-who-am-i');
-    if (revealWhoBtn) {
-      revealWhoBtn.addEventListener('click', () => {
-        const rev = document.getElementById('who-am-i-revealed');
-        if (rev) rev.style.display = 'block';
-        window.jungleAudio.playSuccess();
-        this.addTeamPoint(this.activeTurn, 2);
-        revealWhoBtn.style.display = 'none';
-      });
-    }
-
-    // 4. Word-Picture Match Check
-    document.querySelectorAll('.animal-match-target').forEach(tgt => {
-      tgt.addEventListener('click', () => {
-        if (this.selectedDraggable) {
-          const word = this.selectedDraggable.getAttribute('data-word');
-          const animal = tgt.getAttribute('data-animal');
-          if (word === animal) {
-            tgt.querySelector('.matched-slot-label').textContent = `✅ ${word.toUpperCase()}`;
-            tgt.querySelector('.matched-slot-label').style.background = '#d1fae5';
-            tgt.querySelector('.matched-slot-label').style.color = '#065f46';
-            this.selectedDraggable.style.display = 'none';
-            this.selectedDraggable = null;
-            window.jungleAudio.playSuccess();
-            this.addTeamPoint(this.activeTurn, 1);
-          } else {
-            tgt.classList.add('drop-wrong-shake');
-            window.jungleAudio.playHint();
-            setTimeout(() => tgt.classList.remove('drop-wrong-shake'), 600);
-          }
-        }
-      });
-    });
-
-    // 5. Begin Storm Story Button
-    const startStormBtn = document.getElementById('btn-begin-storm-story');
-    if (startStormBtn) {
-      startStormBtn.addEventListener('click', () => this.nextChapter());
-    }
-
-    // 6. Choice Cards (Prediction / Questions)
-    document.querySelectorAll('.choice-card-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const isCorrect = btn.getAttribute('data-correct') === 'true';
-        if (isCorrect) {
-          btn.classList.add('correct-choice');
-          window.jungleAudio.playSuccess();
-          this.changeHealth(chapter.healthChange || 10);
-          this.addTeamPoint(this.activeTurn, 2);
-        } else {
-          btn.classList.add('drop-wrong-shake');
-          window.jungleAudio.playHint();
-          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
-        }
-      });
-    });
-
-    // 7. Prediction Machine Tokens
-    document.querySelectorAll('.word-token-btn').forEach(tokBtn => {
-      tokBtn.addEventListener('click', () => {
-        const token = tokBtn.getAttribute('data-token');
-        const slot = document.getElementById('machine-slot');
-        const round = chapter.rounds && chapter.rounds[this.activeSubState.machineRoundIdx];
-        if (slot && round) {
-          slot.textContent = token;
-          if (token === round.correctToken) {
-            window.jungleAudio.playSuccess();
-            this.addTeamPoint(this.activeTurn, 2);
-            setTimeout(() => {
-              if (this.activeSubState.machineRoundIdx < chapter.rounds.length - 1) {
-                this.activeSubState.machineRoundIdx++;
-                this.renderCurrentChapter();
-              } else {
-                this.nextChapter();
-              }
-            }, 1000);
-          } else {
-            slot.classList.add('drop-wrong-shake');
-            window.jungleAudio.playHint();
-            setTimeout(() => slot.classList.remove('drop-wrong-shake'), 600);
-          }
-        }
-      });
-    });
-
-    // 8. Emergency Simulator Step Buttons
-    document.querySelectorAll('.sim-step1-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.getAttribute('data-correct') === 'true') {
-          btn.classList.add('correct-choice');
-          window.jungleAudio.playSuccess();
-          this.addTeamPoint(this.activeTurn, 2);
-          setTimeout(() => {
-            this.activeSubState.emergencyStep = 4;
-            this.renderCurrentChapter();
-          }, 800);
-        } else {
-          btn.classList.add('drop-wrong-shake');
-          window.jungleAudio.playHint();
-          setTimeout(() => btn.classList.remove('drop-wrong-shake'), 600);
-        }
-      });
-    });
-
-    const nextMissionBtn = document.getElementById('btn-next-mission');
-    if (nextMissionBtn) {
-      nextMissionBtn.addEventListener('click', () => {
-        if (this.activeSubState.emergencyMissionIdx < chapter.missions.length - 1) {
-          this.activeSubState.emergencyMissionIdx++;
-          this.activeSubState.emergencyStep = 1;
-          this.renderCurrentChapter();
-        } else {
-          this.nextChapter();
-        }
-      });
-    }
-
-    const rescueStartBtn = document.getElementById('btn-start-emergency-rescue');
-    if (rescueStartBtn) {
-      rescueStartBtn.addEventListener('click', () => this.nextChapter());
-    }
-  }
-
-  // =========================================================================
-  // SMART SCREEN DRAG & DROP + TAP TO PLACE
-  // =========================================================================
-  initDragAndDrop() {
-    const draggables = document.querySelectorAll('.draggable-item');
-    const dropTargets = document.querySelectorAll('.drop-target');
-
-    draggables.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (this.selectedDraggable === item) {
-          item.classList.remove('tap-selected');
-          this.selectedDraggable = null;
-        } else {
-          if (this.selectedDraggable) {
-            this.selectedDraggable.classList.remove('tap-selected');
-          }
-          this.selectedDraggable = item;
-          item.classList.add('tap-selected');
-          window.jungleAudio.playClick();
-        }
-      });
-
-      item.addEventListener('pointerdown', (e) => {
-        item.setPointerCapture(e.pointerId);
-        item.classList.add('is-dragging');
-        this.selectedDraggable = item;
-      });
-
-      item.addEventListener('pointerup', (e) => {
-        item.releasePointerCapture(e.pointerId);
-        item.classList.remove('is-dragging');
-
-        const dropElem = document.elementFromPoint(e.clientX, e.clientY);
-        if (dropElem) {
-          const target = dropElem.closest('.drop-target');
-          if (target) {
-            this.handleDrop(item, target);
-          }
-        }
-      });
-    });
-
-    dropTargets.forEach(target => {
-      target.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (this.selectedDraggable) {
-          this.handleDrop(this.selectedDraggable, target);
-          this.selectedDraggable.classList.remove('tap-selected');
-          this.selectedDraggable = null;
-        }
-      });
-    });
-  }
-
-  handleDrop(item, target) {
-    if (target.classList.contains('habitat-zone-card')) {
-      const isCorrect = target.getAttribute('data-correct') === 'true';
-      if (isCorrect) {
-        target.querySelector('.habitat-actor-slot').textContent = '🐿️ Safe!';
-        target.classList.add('drop-correct');
-        window.jungleAudio.playSuccess();
-        this.addTeamPoint(this.activeTurn, 2);
-      } else {
-        target.classList.add('drop-wrong-shake');
-        window.jungleAudio.playHint();
-        setTimeout(() => target.classList.remove('drop-wrong-shake'), 600);
-      }
-    }
-  }
-
-  // =========================================================================
   // TEACHER HUD DRAWER & GUIDE
   // =========================================================================
   updateTeacherHUD(chapter) {
@@ -753,9 +908,8 @@ class JungleGameEngine {
           const word = card.getAttribute('data-word');
           const desc = card.getAttribute('data-desc');
           window.jungleAudio.speak(`${word}. ${desc}`);
-          card.style.transform = 'scale(1.08)';
-          card.style.borderColor = '#10b981';
-          setTimeout(() => card.style.transform = 'scale(1)', 300);
+          card.classList.add('anim-hop-in');
+          setTimeout(() => card.classList.remove('anim-hop-in'), 500);
         });
       });
 
@@ -892,7 +1046,19 @@ class JungleGameEngine {
       });
     }
 
-    // Populate Teacher Chapter Select
+    // Soundboard FX Buttons
+    document.querySelectorAll('[data-fx]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fx = btn.getAttribute('data-fx');
+        if (fx === 'wind') window.jungleAudio.playWind();
+        if (fx === 'thunder') window.jungleAudio.playThunder();
+        if (fx === 'crash') window.jungleAudio.playTreeCrash();
+        if (fx === 'splash') window.jungleAudio.playWaterSplash();
+        if (fx === 'munch') window.jungleAudio.playMunch();
+        if (fx === 'fanfare') window.jungleAudio.playFanfare();
+      });
+    });
+
     const chapterSelect = document.getElementById('teacher-chapter-select');
     if (chapterSelect) {
       window.JUNGLE_DATA.chapters.forEach((chap, idx) => {
