@@ -1,6 +1,6 @@
 /* ==========================================================================
    🌿 LIFE IN THE JUNGLE — THE JUNGLE RANGERS
-   Complete Game Controller & Zero-Fail TAP ➔ TAP State Machine
+   Zero-Fail TAP ➔ TAP Engine with Storybook Visual Hierarchy
    ========================================================================== */
 
 class JungleGameEngine {
@@ -21,7 +21,6 @@ class JungleGameEngine {
     this.setupConfetti();
   }
 
-  // Navigation
   goToScene(idx) {
     if (idx < 0 || idx >= window.JUNGLE_DATA.scenes.length) return;
     this.currentSceneIdx = idx;
@@ -45,7 +44,9 @@ class JungleGameEngine {
     }
   }
 
-  // Scene Rendering
+  // =========================================================================
+  // SCENE RENDERER (IMAGE-FIRST VISUAL HIERARCHY)
+  // =========================================================================
   renderCurrentScene() {
     const scene = window.JUNGLE_DATA.scenes[this.currentSceneIdx];
     if (!scene) return;
@@ -74,24 +75,33 @@ class JungleGameEngine {
     if (!stage) return;
 
     switch (scene.type) {
+      // 1. Open Explore Green Valley
       case 'open_explore':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; max-width:1150px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:12px; width:100%; max-width:1200px;">
               <div style="display:flex; justify-content:space-between; width:100%; align-items:center; background:rgba(0,0,0,0.5); padding:10px 24px; border-radius:var(--radius-full); border:1px solid rgba(255,255,255,0.25);">
-                <span style="font-family:var(--font-display); font-size:1.2rem; color:#fef3c7; font-weight:800;">
-                  👆 TAP any animal or plant to explore Green Valley!
+                <span style="font-family:var(--font-display); font-size:1.25rem; color:#fef3c7; font-weight:800;">
+                  👆 TAP the animals to explore Green Valley!
                 </span>
                 <span class="prediction-badge" style="background:#059669;" id="explore-count">
                   Discovered: 0 / ${scene.hotspots.length}
                 </span>
               </div>
-              <div style="position:relative; width:100%; height:400px; background:linear-gradient(180deg, #38bdf8 0%, #86efac 45%, #15803d 85%); border-radius:var(--radius-xl); border:4px solid #10b981; overflow:hidden;">
+              <div style="position:relative; width:100%; height:420px; background:linear-gradient(180deg, #38bdf8 0%, #86efac 45%, #15803d 85%); border-radius:var(--radius-xl); border:4px solid #10b981; overflow:hidden; box-shadow:var(--shadow-lg);">
+                <svg viewBox="0 0 1000 420" width="100%" height="100%" preserveAspectRatio="none" style="position:absolute; top:0; left:0;">
+                  <!-- Living Landscape Details -->
+                  <polygon points="0,220 180,120 360,240 540,110 750,230 1000,160 1000,420 0,420" fill="#047857" opacity="0.45"/>
+                  <circle cx="220" cy="180" r="110" fill="#15803d"/>
+                  <circle cx="450" cy="170" r="95" fill="#166534"/>
+                  <path d="M 500 240 Q 650 250 680 320 Q 720 420 800 420 L 580 420 Q 560 330 460 270 Z" fill="#38bdf8"/>
+                  <ellipse cx="720" cy="350" rx="100" ry="40" fill="#0284c7" opacity="0.85"/>
+                </svg>
                 ${scene.hotspots.map(h => `
-                  <button class="explore-spot-btn" data-id="${h.id}" style="position:absolute; left:${h.x}%; top:${h.y}%; transform:translate(-50%, -50%); background:none; border:none; cursor:pointer; touch-action:manipulation;">
-                    <div style="background:rgba(255,255,255,0.95); border:3px solid #10b981; border-radius:var(--radius-full); padding:10px 18px; display:flex; align-items:center; gap:10px; box-shadow:var(--shadow-md);">
-                      <span style="font-size:2.5rem;">${h.emoji}</span>
-                      <span style="font-family:var(--font-display); font-weight:800; font-size:1.15rem; color:#065f46;">${h.name}</span>
+                  <button class="explore-spot-btn tap-item" data-id="${h.id}" style="position:absolute; left:${h.x}%; top:${h.y}%; transform:translate(-50%, -50%); background:none; border:none; cursor:pointer;">
+                    <div style="background:rgba(255,255,255,0.96); border:3px solid #10b981; border-radius:var(--radius-full); padding:10px 20px; display:flex; align-items:center; gap:12px; box-shadow:var(--shadow-md);">
+                      <span style="font-size:2.8rem;">${h.emoji}</span>
+                      <span style="font-family:var(--font-display); font-weight:800; font-size:1.25rem; color:#065f46;">${h.name}</span>
                     </div>
                   </button>
                 `).join('')}
@@ -101,35 +111,36 @@ class JungleGameEngine {
         `;
         break;
 
+      // 2. Ranger Eyes (Find Hidden Animals)
       case 'ranger_eyes':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; max-width:1100px;">
-              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; max-width:1150px;">
+              <div style="font-family:var(--font-display); font-size:1.45rem; color:#fef3c7; font-weight:800;">
                 🔎 RANGER EYES: Tap the 5 hidden animals in nature!
               </div>
               <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
                 ${scene.targets.map(t => `
-                  <div class="target-check-pill" id="target-pill-${t}" style="background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:var(--radius-full); padding:8px 18px; color:#fff; font-family:var(--font-display); font-size:1.1rem; font-weight:800;">
+                  <div class="target-check-pill" id="target-pill-${t}" style="background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:var(--radius-full); padding:8px 20px; color:#fff; font-family:var(--font-display); font-size:1.15rem; font-weight:800;">
                     <span>${t.toUpperCase()}</span> <span>❓</span>
                   </div>
                 `).join('')}
               </div>
-              <div style="position:relative; width:100%; height:380px; background:#064e3b; border-radius:var(--radius-xl); border:4px solid #34d399; overflow:hidden;">
-                <button class="nature-spot-btn" data-target="squirrel" style="position:absolute; top:25%; left:22%; background:none; border:none; padding:10px; cursor:pointer;">
-                  ${window.jungleViews.getAnimalAvatar("squirrel", 85)}
+              <div style="position:relative; width:100%; height:400px; background:#064e3b; border-radius:var(--radius-xl); border:4px solid #34d399; overflow:hidden; box-shadow:var(--shadow-lg);">
+                <button class="nature-spot-btn" data-target="squirrel" style="position:absolute; top:20%; left:22%; background:none; border:none; cursor:pointer;">
+                  ${window.jungleViews.getSuki("happy", 110)}
                 </button>
-                <button class="nature-spot-btn" data-target="owl" style="position:absolute; top:18%; left:78%; background:none; border:none; padding:10px; cursor:pointer;">
-                  ${window.jungleViews.getAnimalAvatar("owl", 80)}
+                <button class="nature-spot-btn" data-target="frog" style="position:absolute; top:62%; left:65%; background:none; border:none; cursor:pointer;">
+                  ${window.jungleViews.getPoppy("happy", 110)}
                 </button>
-                <button class="nature-spot-btn" data-target="frog" style="position:absolute; top:68%; left:65%; background:none; border:none; padding:10px; cursor:pointer;">
-                  ${window.jungleViews.getAnimalAvatar("frog", 85)}
+                <button class="nature-spot-btn" data-target="fox" style="position:absolute; top:52%; left:42%; background:none; border:none; cursor:pointer;">
+                  ${window.jungleViews.getFox("happy", 115)}
                 </button>
-                <button class="nature-spot-btn" data-target="fox" style="position:absolute; top:58%; left:42%; background:none; border:none; padding:10px; cursor:pointer;">
-                  ${window.jungleViews.getAnimalAvatar("fox", 85)}
+                <button class="nature-spot-btn" data-target="rabbit" style="position:absolute; top:65%; left:12%; background:none; border:none; cursor:pointer;">
+                  ${window.jungleViews.getRabbit("happy", 110)}
                 </button>
-                <button class="nature-spot-btn" data-target="rabbit" style="position:absolute; top:70%; left:12%; background:none; border:none; padding:10px; cursor:pointer;">
-                  ${window.jungleViews.getAnimalAvatar("rabbit", 80)}
+                <button class="nature-spot-btn" data-target="owl" style="position:absolute; top:15%; left:80%; background:none; border:none; cursor:pointer;">
+                  <span style="font-size:4rem;">🦉</span>
                 </button>
               </div>
             </div>
@@ -137,26 +148,27 @@ class JungleGameEngine {
         `;
         break;
 
+      // 3. Who Am I? Clues
       case 'who_am_i':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:850px;">
-              <div class="prediction-badge" style="background:#0284c7;">🐾 WHO AM I?</div>
-              <div style="background:#fff; border-radius:var(--radius-xl); border:4px solid #38bdf8; padding:26px; width:100%; box-shadow:var(--shadow-lg); text-align:center;">
-                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:18px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:900px;">
+              <div class="prediction-badge" style="background:#0284c7; font-size:1.3rem;">🐾 WHO AM I?</div>
+              <div style="background:#fff; border-radius:var(--radius-xl); border:4px solid #38bdf8; padding:28px; width:100%; box-shadow:var(--shadow-lg); text-align:center;">
+                <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:20px;">
                   ${scene.clues.map(c => `
-                    <div style="font-family:var(--font-display); font-size:1.4rem; font-weight:700; color:#1e293b; background:#f0f9ff; padding:12px 18px; border-radius:var(--radius-md); border-left:6px solid #0284c7;">
+                    <div style="font-family:var(--font-display); font-size:1.45rem; font-weight:800; color:#1e293b; background:#f0f9ff; padding:14px 20px; border-radius:var(--radius-md); border-left:6px solid #0284c7;">
                       ${c}
                     </div>
                   `).join('')}
                 </div>
-                <div id="who-revealed" style="display:none; margin:14px 0;">
-                  ${window.jungleViews.getAnimalAvatar(scene.animalId, 120)}
-                  <div style="font-family:var(--font-display); font-size:2.2rem; font-weight:900; color:#059669; margin-top:8px;">
-                    IT'S A ${scene.name}! 🌟
+                <div id="who-revealed" style="display:none; margin:16px 0;">
+                  ${window.jungleViews.getSuki("happy", 160)}
+                  <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:900; color:#059669; margin-top:10px;">
+                    IT'S SUKI THE SQUIRREL! 🌟
                   </div>
                 </div>
-                <button class="hud-btn hud-btn-teacher" id="btn-reveal-who" style="font-size:1.25rem; padding:14px 32px; margin-top:10px;">
+                <button class="hud-btn hud-btn-teacher" id="btn-reveal-who" style="font-size:1.35rem; padding:16px 36px; margin:0 auto;">
                   <span>👁️ REVEAL ANIMAL ➔</span>
                 </button>
               </div>
@@ -165,63 +177,76 @@ class JungleGameEngine {
         `;
         break;
 
+      // 4. Where Do I Live? (Tap Animal ➔ Tap Biome)
       case 'where_live':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1150px;">
-              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
-                👇 STEP 1: Tap Animal ➔ STEP 2: Tap its Real Home Environment!
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1200px;">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
+                👇 STEP 1: Tap Animal ➔ STEP 2: Tap its Real Home!
               </div>
               <div class="habitat-zones-container">
                 <div class="habitat-zone-card forest-zone tap-target biome-target" data-biome="forest">
                   <div class="habitat-header">Forest 🌲</div>
-                  <div class="habitat-actor-slot" id="slot-forest">❓ Tap Here</div>
-                  <div class="habitat-tag">Trees, moss & acorns</div>
+                  <div class="habitat-actor-slot" id="slot-forest">❓ Tap Destination</div>
+                  <div class="habitat-tag">Tall oak trees & acorns</div>
                 </div>
                 <div class="habitat-zone-card pond-zone tap-target biome-target" data-biome="pond">
                   <div class="habitat-header">Pond 💧</div>
-                  <div class="habitat-actor-slot" id="slot-pond">❓ Tap Here</div>
-                  <div class="habitat-tag">Water & lily pads</div>
+                  <div class="habitat-actor-slot" id="slot-pond">❓ Tap Destination</div>
+                  <div class="habitat-tag">Water lilies & reeds</div>
                 </div>
                 <div class="habitat-zone-card river-zone tap-target biome-target" data-biome="river">
                   <div class="habitat-header">River 🌊</div>
-                  <div class="habitat-actor-slot" id="slot-river">❓ Tap Here</div>
-                  <div class="habitat-tag">Flowing clean water</div>
+                  <div class="habitat-actor-slot" id="slot-river">❓ Tap Destination</div>
+                  <div class="habitat-tag">Freshwater stream</div>
                 </div>
                 <div class="habitat-zone-card grassland-zone tap-target biome-target" data-biome="grassland">
                   <div class="habitat-header">Grassland 🌾</div>
-                  <div class="habitat-actor-slot" id="slot-grassland">❓ Tap Here</div>
+                  <div class="habitat-actor-slot" id="slot-grassland">❓ Tap Destination</div>
                   <div class="habitat-tag">Tall grass & clover</div>
                 </div>
               </div>
               <div class="items-palette">
-                ${scene.pairs.map(p => `
-                  <button class="item-card tap-item biome-animal-btn" data-id="${p.id}" data-target="${p.target}" style="padding:14px 22px;">
-                    <span class="item-label" style="font-size:1.3rem;">${p.name}</span>
-                  </button>
-                `).join('')}
+                <button class="item-card tap-item biome-animal-btn" data-id="squirrel" data-target="forest">
+                  ${window.jungleViews.getSuki("happy", 75)}
+                  <span class="item-label">Squirrel 🐿️</span>
+                </button>
+                <button class="item-card tap-item biome-animal-btn" data-id="frog" data-target="pond">
+                  ${window.jungleViews.getPoppy("happy", 75)}
+                  <span class="item-label">Frog 🐸</span>
+                </button>
+                <button class="item-card tap-item biome-animal-btn" data-id="rabbit" data-target="grassland">
+                  ${window.jungleViews.getRabbit("happy", 75)}
+                  <span class="item-label">Rabbit 🐇</span>
+                </button>
+                <button class="item-card tap-item biome-animal-btn" data-id="raccoon" data-target="river">
+                  ${window.jungleViews.getRico("happy", 75)}
+                  <span class="item-label">Raccoon 🦝</span>
+                </button>
               </div>
             </div>
           </div>
         `;
         break;
 
+      // 5. What Do I Need?
       case 'what_need':
         stage.innerHTML = `
           <div class="stage-board">
             <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:1050px;">
-              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
-                👇 STEP 1: Tap a Need Item ➔ STEP 2: Tap Suki to Deliver It!
+              <div style="font-family:var(--font-display); font-size:1.45rem; color:#fef3c7; font-weight:800;">
+                👇 What does Suki need? Tap Food, Water, and Shelter!
               </div>
-              <div class="animal-stage-actor tap-target" id="target-suki-needs" data-target="suki-needs" style="background:rgba(255,255,255,0.18); border:4px dashed #34d399; border-radius:var(--radius-xl); padding:20px 40px; cursor:pointer;">
-                ${window.jungleViews.getAnimalAvatar("squirrel", 120)}
-                <div class="actor-name-tag">🐿️ Suki's Needs Delivered!</div>
+              <div class="animal-stage-actor tap-target" id="target-suki-needs" style="background:rgba(255,255,255,0.18); border:4px dashed #34d399; border-radius:var(--radius-xl); padding:20px 50px; cursor:pointer;">
+                ${window.jungleViews.getSuki("happy", 150)}
+                <div class="actor-name-tag">🐿️ Suki's Survival Triangle</div>
               </div>
               <div class="items-palette">
                 ${scene.items.map(it => `
                   <button class="item-card tap-item needs-item-btn" data-need="${it.id}">
-                    <span class="item-label" style="font-size:1.3rem;">${it.name}</span>
-                    <span style="font-size:0.9rem; color:#475569;">${it.desc}</span>
+                    <span class="item-label" style="font-size:1.35rem;">${it.name}</span>
+                    <span style="font-size:0.95rem; color:#475569; font-weight:700;">${it.desc}</span>
                   </button>
                 `).join('')}
               </div>
@@ -230,108 +255,155 @@ class JungleGameEngine {
         `;
         break;
 
+      // 6. Animal Homes (Shelter)
       case 'homes':
         stage.innerHTML = `
           <div class="stage-board">
             <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1050px;">
-              <div class="prediction-badge" style="background:#d97706;">
+              <div class="prediction-badge" style="background:#d97706; font-size:1.25rem;">
                 🏠 SHELTER = A safe place to rest and hide from danger
               </div>
               <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; width:100%;">
-                ${scene.pairs.map(p => `
-                  <div style="background:#fff; border-radius:var(--radius-xl); border:3px solid #10b981; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow-md);">
-                    <div style="font-family:var(--font-display); font-size:1.4rem; font-weight:800; color:#1e293b;">
-                      ${p.animal}
-                    </div>
-                    <span style="font-size:2rem; color:#10b981;">➔</span>
-                    <div style="background:#ecfdf5; border:2px solid #34d399; border-radius:var(--radius-full); padding:8px 22px; font-family:var(--font-display); font-size:1.3rem; font-weight:800; color:#065f46;">
-                      ${p.shelter}
-                    </div>
+                <div style="background:#fff; border-radius:var(--radius-xl); border:3px solid #10b981; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow-md);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    ${window.jungleViews.getRabbit("happy", 75)}
+                    <span style="font-family:var(--font-display); font-size:1.35rem; font-weight:800;">Rabbit 🐇</span>
                   </div>
-                `).join('')}
+                  <span style="font-size:2rem; color:#10b981;">➔</span>
+                  <div style="background:#ecfdf5; border:2px solid #34d399; border-radius:var(--radius-full); padding:10px 22px; font-family:var(--font-display); font-size:1.25rem; font-weight:800; color:#065f46;">
+                    Burrow 🕳️
+                  </div>
+                </div>
+                <div style="background:#fff; border-radius:var(--radius-xl); border:3px solid #10b981; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow-md);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    ${window.jungleViews.getFox("happy", 75)}
+                    <span style="font-family:var(--font-display); font-size:1.35rem; font-weight:800;">Fox 🦊</span>
+                  </div>
+                  <span style="font-size:2rem; color:#10b981;">➔</span>
+                  <div style="background:#ecfdf5; border:2px solid #34d399; border-radius:var(--radius-full); padding:10px 22px; font-family:var(--font-display); font-size:1.25rem; font-weight:800; color:#065f46;">
+                    Den 🕳️
+                  </div>
+                </div>
+                <div style="background:#fff; border-radius:var(--radius-xl); border:3px solid #10b981; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow-md);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    ${window.jungleViews.getSuki("happy", 75)}
+                    <span style="font-family:var(--font-display); font-size:1.35rem; font-weight:800;">Squirrel 🐿️</span>
+                  </div>
+                  <span style="font-size:2rem; color:#10b981;">➔</span>
+                  <div style="background:#ecfdf5; border:2px solid #34d399; border-radius:var(--radius-full); padding:10px 22px; font-family:var(--font-display); font-size:1.25rem; font-weight:800; color:#065f46;">
+                    Tree Hollow 🌳
+                  </div>
+                </div>
+                <div style="background:#fff; border-radius:var(--radius-xl); border:3px solid #10b981; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:var(--shadow-md);">
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:3.5rem;">🐦</span>
+                    <span style="font-family:var(--font-display); font-size:1.35rem; font-weight:800;">Bird 🐦</span>
+                  </div>
+                  <span style="font-size:2rem; color:#10b981;">➔</span>
+                  <div style="background:#ecfdf5; border:2px solid #34d399; border-radius:var(--radius-full); padding:10px 22px; font-family:var(--font-display); font-size:1.25rem; font-weight:800; color:#065f46;">
+                    Nest 🪺
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         `;
         break;
 
+      // 7. Discover Habitat
       case 'habitat_reveal':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="background:rgba(255,255,255,0.97); border-radius:var(--radius-xl); border:4px solid #10b981; padding:28px; text-align:center; max-width:900px; box-shadow:var(--shadow-lg);">
-              <div style="font-family:var(--font-display); font-size:2.4rem; font-weight:900; color:#065f46; margin-bottom:12px;">
+            <div style="background:rgba(255,255,255,0.97); border-radius:var(--radius-xl); border:4px solid #10b981; padding:30px; text-align:center; max-width:980px; box-shadow:var(--shadow-lg);">
+              <div style="font-family:var(--font-display); font-size:2.6rem; font-weight:900; color:#065f46; margin-bottom:14px;">
                 🏡 HABITAT = An Animal's Home
               </div>
-              <div style="display:flex; justify-content:space-around; align-items:center; margin:20px 0; background:#f0fdf4; padding:20px; border-radius:var(--radius-lg);">
-                <span style="font-size:3.5rem;">🐸</span>
-                <span style="font-size:2rem;">+</span>
-                <span style="font-size:3.5rem;">💧</span>
-                <span style="font-size:2rem;">+</span>
-                <span style="font-size:3.5rem;">🌿</span>
-                <span style="font-size:2rem;">=</span>
-                <span style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#0284c7;">Pond Habitat</span>
+              <div style="display:flex; justify-content:space-around; align-items:center; margin:22px 0; background:#f0fdf4; padding:22px; border-radius:var(--radius-xl);">
+                ${window.jungleViews.getPoppy("happy", 110)}
+                <span style="font-size:2.4rem; font-weight:900; color:#10b981;">+</span>
+                <span style="font-size:4rem;">💧</span>
+                <span style="font-size:2.4rem; font-weight:900; color:#10b981;">+</span>
+                <span style="font-size:4rem;">🌿</span>
+                <span style="font-size:2.4rem; font-weight:900; color:#10b981;">=</span>
+                <span style="font-family:var(--font-display); font-size:2rem; font-weight:900; color:#0284c7;">Pond Habitat</span>
               </div>
-              <p style="font-size:1.3rem; color:#334155; font-weight:700;">
-                A habitat gives an animal food, water, and shelter to stay alive!
+              <p style="font-size:1.4rem; color:#334155; font-weight:800;">
+                A habitat gives an animal food, water, and shelter to survive!
               </p>
             </div>
           </div>
         `;
         break;
 
+      // 8. Discover Food (Feeding Target Animals)
       case 'food_feeder':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1100px;">
-              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1150px;">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
                 👇 STEP 1: Tap Food ➔ STEP 2: Tap the Animal to Feed It!
               </div>
               <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-                ${scene.pairs.map(p => `
-                  <div class="animal-stage-actor tap-target feed-animal-target" data-animal="${p.animalId}" style="padding:14px 20px; background:#fff; border-radius:var(--radius-xl); border:4px solid #cbd5e1; cursor:pointer;">
-                    ${window.jungleViews.getAnimalAvatar(p.animalId, 95)}
-                    <div class="actor-name-tag" style="font-size:1.05rem;">${p.animal}</div>
-                    <div class="fed-status-tag" style="font-size:0.9rem; color:#059669; font-weight:800; margin-top:4px;">Hungry 😋</div>
-                  </div>
-                `).join('')}
+                <div class="animal-stage-actor tap-target feed-animal-target" data-animal="squirrel" style="padding:14px 22px; background:#fff; border-radius:var(--radius-xl); border:4px solid #cbd5e1; cursor:pointer;">
+                  ${window.jungleViews.getSuki("happy", 100)}
+                  <div class="actor-name-tag">Squirrel 🐿️</div>
+                  <div class="fed-status-tag" style="font-size:0.95rem; color:#059669; font-weight:800; margin-top:4px;">Hungry 😋</div>
+                </div>
+                <div class="animal-stage-actor tap-target feed-animal-target" data-animal="frog" style="padding:14px 22px; background:#fff; border-radius:var(--radius-xl); border:4px solid #cbd5e1; cursor:pointer;">
+                  ${window.jungleViews.getPoppy("happy", 100)}
+                  <div class="actor-name-tag">Frog 🐸</div>
+                  <div class="fed-status-tag" style="font-size:0.95rem; color:#059669; font-weight:800; margin-top:4px;">Hungry 😋</div>
+                </div>
+                <div class="animal-stage-actor tap-target feed-animal-target" data-animal="rabbit" style="padding:14px 22px; background:#fff; border-radius:var(--radius-xl); border:4px solid #cbd5e1; cursor:pointer;">
+                  ${window.jungleViews.getRabbit("happy", 100)}
+                  <div class="actor-name-tag">Rabbit 🐇</div>
+                  <div class="fed-status-tag" style="font-size:0.95rem; color:#059669; font-weight:800; margin-top:4px;">Hungry 😋</div>
+                </div>
               </div>
               <div class="items-palette">
-                ${scene.pairs.map(p => `
-                  <button class="item-card tap-item feed-food-btn" data-animal-match="${p.animalId}">
-                    <span class="item-emoji">${p.foodEmoji}</span>
-                    <span class="item-label">${p.foodName}</span>
-                  </button>
-                `).join('')}
+                <button class="item-card tap-item feed-food-btn" data-animal-match="squirrel">
+                  <span class="item-emoji">🌰</span>
+                  <span class="item-label">Nuts & Acorns</span>
+                </button>
+                <button class="item-card tap-item feed-food-btn" data-animal-match="frog">
+                  <span class="item-emoji">🪲</span>
+                  <span class="item-label">Insects & Flies</span>
+                </button>
+                <button class="item-card tap-item feed-food-btn" data-animal-match="rabbit">
+                  <span class="item-emoji">🌿</span>
+                  <span class="item-label">Green Plants</span>
+                </button>
               </div>
             </div>
           </div>
         `;
         break;
 
+      // 9. Who Eats Who? (Predator & Prey)
       case 'predator_prey':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1000px;">
-              <div style="font-family:var(--font-display); font-size:1.5rem; color:#fef3c7; font-weight:800; text-align:center;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1050px;">
+              <div style="font-family:var(--font-display); font-size:1.6rem; color:#fef3c7; font-weight:800; text-align:center;">
                 🦊 WHO EATS WHO? (Predator vs Prey)
               </div>
-              <div style="display:flex; align-items:center; justify-content:center; gap:20px; width:100%; background:rgba(255,255,255,0.97); padding:24px; border-radius:var(--radius-xl); box-shadow:var(--shadow-lg);">
+              <div style="display:flex; align-items:center; justify-content:center; gap:20px; width:100%; background:rgba(255,255,255,0.98); padding:28px; border-radius:var(--radius-xl); box-shadow:var(--shadow-lg);">
                 <div style="text-align:center;">
-                  <span style="font-size:3.8rem;">🌱</span>
-                  <div style="font-family:var(--font-display); font-weight:800; color:#15803d; font-size:1.2rem;">Green Plant</div>
-                  <div style="font-size:0.9rem; color:#475569;">Producer</div>
+                  <span style="font-size:4rem;">🌱</span>
+                  <div style="font-family:var(--font-display); font-weight:800; color:#15803d; font-size:1.3rem;">Green Plant</div>
+                  <div style="font-size:1rem; color:#475569; font-weight:700;">Producer</div>
                 </div>
-                <span style="font-size:2.8rem; color:#f59e0b;">➔</span>
+                <span style="font-size:3rem; color:#f59e0b;">➔</span>
                 <div style="text-align:center;">
-                  ${window.jungleViews.getAnimalAvatar("rabbit", 95)}
-                  <div style="font-family:var(--font-display); font-weight:800; color:#0369a1; font-size:1.2rem;">Rabbit 🐇</div>
-                  <div class="prediction-badge" style="background:#0284c7; font-size:0.9rem; padding:4px 12px; margin-top:4px;">PREY 🐇</div>
+                  ${window.jungleViews.getRabbit("happy", 110)}
+                  <div style="font-family:var(--font-display); font-weight:800; color:#0369a1; font-size:1.3rem;">Rabbit 🐇</div>
+                  <div class="prediction-badge" style="background:#0284c7; font-size:0.95rem; padding:4px 14px; margin-top:4px;">PREY 🐇</div>
                 </div>
-                <span style="font-size:2.8rem; color:#f59e0b;">➔</span>
+                <span style="font-size:3rem; color:#f59e0b;">➔</span>
                 <div style="text-align:center;">
-                  ${window.jungleViews.getAnimalAvatar("fox", 95)}
-                  <div style="font-family:var(--font-display); font-weight:800; color:#b91c1c; font-size:1.2rem;">Fox 🦊</div>
-                  <div class="prediction-badge" style="background:#dc2626; font-size:0.9rem; padding:4px 12px; margin-top:4px;">PREDATOR 🦊</div>
+                  ${window.jungleViews.getFox("happy", 110)}
+                  <div style="font-family:var(--font-display); font-weight:800; color:#b91c1c; font-size:1.3rem;">Fox 🦊</div>
+                  <div class="prediction-badge" style="background:#dc2626; font-size:0.95rem; padding:4px 14px; margin-top:4px;">PREDATOR 🦊</div>
                 </div>
               </div>
             </div>
@@ -339,137 +411,24 @@ class JungleGameEngine {
         `;
         break;
 
-      case 'food_chain':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:1000px;">
-              <div style="font-family:var(--font-display); font-size:1.45rem; color:#fef3c7; font-weight:800;">
-                👇 Build the Food Chain: Tap 1. Plant 🌱 ➔ Tap 2. Rabbit 🐇 ➔ Tap 3. Fox 🦊
-              </div>
-              <div style="display:flex; gap:18px; justify-content:center; width:100%;">
-                <div class="tap-target chain-slot" data-step="1" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #10b981; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                  <span style="font-family:var(--font-display); font-weight:900; color:#10b981; font-size:1.4rem;">1. Producer</span>
-                  <span class="slot-val" style="font-size:3rem; margin-top:8px;">❓</span>
-                </div>
-                <div style="font-size:2.5rem; color:#f59e0b; align-self:center;">➔</div>
-                <div class="tap-target chain-slot" data-step="2" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #0284c7; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                  <span style="font-family:var(--font-display); font-weight:900; color:#0284c7; font-size:1.4rem;">2. Prey</span>
-                  <span class="slot-val" style="font-size:3rem; margin-top:8px;">❓</span>
-                </div>
-                <div style="font-size:2.5rem; color:#f59e0b; align-self:center;">➔</div>
-                <div class="tap-target chain-slot" data-step="3" style="flex:1; max-width:220px; height:180px; background:#fff; border:4px dashed #dc2626; border-radius:var(--radius-xl); display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                  <span style="font-family:var(--font-display); font-weight:900; color:#dc2626; font-size:1.4rem;">3. Predator</span>
-                  <span class="slot-val" style="font-size:3rem; margin-top:8px;">❓</span>
-                </div>
-              </div>
-              <div class="items-palette">
-                <button class="item-card tap-item chain-btn" data-step="1" data-emoji="🌱">
-                  <span class="item-emoji">🌱</span>
-                  <span class="item-label">Green Plant</span>
-                </button>
-                <button class="item-card tap-item chain-btn" data-step="2" data-emoji="🐇">
-                  <span class="item-emoji">🐇</span>
-                  <span class="item-label">Rabbit (Prey)</span>
-                </button>
-                <button class="item-card tap-item chain-btn" data-step="3" data-emoji="🦊">
-                  <span class="item-emoji">🦊</span>
-                  <span class="item-label">Fox (Predator)</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'ecosystem_map':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; max-width:1100px;">
-              <div style="font-family:var(--font-display); font-size:1.6rem; color:#fbbf24; font-weight:900;">
-                🌎 ECOSYSTEM = Everything is Connected!
-              </div>
-              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; width:100%;">
-                <div style="background:#fff; border:3px solid #10b981; border-radius:var(--radius-xl); padding:18px; text-align:center;">
-                  <div style="font-family:var(--font-display); font-size:1.3rem; font-weight:900; color:#065f46;">🌲 Forest ➔ 🐿️ Squirrel</div>
-                  <div style="color:#475569; font-weight:700; margin-top:4px;">Gives shelter & acorns</div>
-                </div>
-                <div style="background:#fff; border:3px solid #10b981; border-radius:var(--radius-xl); padding:18px; text-align:center;">
-                  <div style="font-family:var(--font-display); font-size:1.3rem; font-weight:900; color:#065f46;">💧 River ➔ 🦝 Raccoon</div>
-                  <div style="color:#475569; font-weight:700; margin-top:4px;">Clean drinking water</div>
-                </div>
-                <div style="background:#fff; border:3px solid #10b981; border-radius:var(--radius-xl); padding:18px; text-align:center;">
-                  <div style="font-family:var(--font-display); font-size:1.3rem; font-weight:900; color:#065f46;">🌿 Plant ➔ 🐇 Rabbit</div>
-                  <div style="color:#475569; font-weight:700; margin-top:4px;">Primary food energy</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'word_wall_view':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="background:rgba(255,255,255,0.97); border-radius:var(--radius-xl); border:4px solid #10b981; padding:24px; text-align:center; max-width:960px;">
-              <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#065f46; margin-bottom:12px;">
-                🖼️ VISUAL VOCABULARY WORD WALL
-              </div>
-              <p style="font-size:1.2rem; color:#334155; font-weight:700; margin-bottom:16px;">
-                Tap any vocabulary word below to hear it spoken and see its meaning!
-              </p>
-              <button class="hud-btn hud-btn-teacher" id="btn-open-wall-from-scene" style="font-size:1.3rem; padding:14px 32px; margin:0 auto;">
-                <span>🖼️ OPEN FULL WORD WALL ➔</span>
-              </button>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'story_preview':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1100px;">
-              <div style="font-family:var(--font-display); font-size:1.45rem; color:#fef3c7; font-weight:800;">
-                🔮 Story Preview: What will happen in Green Valley?
-              </div>
-              <div style="display:flex; gap:14px; width:100%; justify-content:center;">
-                <div style="flex:1; max-width:260px; background:#fff; border-radius:var(--radius-xl); padding:18px 14px; text-align:center; border:3px solid #cbd5e1;">
-                  <div style="font-size:2.8rem;">🌿</div>
-                  <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:800; color:#065f46;">1. Living Jungle</div>
-                </div>
-                <div style="flex:1; max-width:260px; background:#fff; border-radius:var(--radius-xl); padding:18px 14px; text-align:center; border:3px solid #cbd5e1;">
-                  <div style="font-size:2.8rem;">⛈️</div>
-                  <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:800; color:#ef4444;">2. Big Storm</div>
-                </div>
-                <div style="flex:1; max-width:260px; background:#fff; border-radius:var(--radius-xl); padding:18px 14px; text-align:center; border:3px solid #cbd5e1;">
-                  <div style="font-size:2.8rem;">🐾</div>
-                  <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:800; color:#d97706;">3. Animals in Need</div>
-                </div>
-                <div style="flex:1; max-width:260px; background:#fff; border-radius:var(--radius-xl); padding:18px 14px; text-align:center; border:3px solid #cbd5e1;">
-                  <div style="font-size:2.8rem;">🎖️</div>
-                  <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:800; color:#0284c7;">4. Rangers Rescue</div>
-                </div>
-              </div>
-              <button class="hud-btn hud-btn-teacher" id="btn-enter-storm-story" style="margin-top:14px; font-size:1.35rem; padding:16px 36px; background:linear-gradient(135deg, #ef4444, #b91c1c); border-color:#fca5a5;">
-                <span>⛈️ ENTER THE GREAT STORM ➔</span>
-              </button>
-            </div>
-          </div>
-        `;
-        break;
-
+      // 14. The Great Storm
       case 'storm_event':
         stage.innerHTML = `
           <div class="stage-board">
             <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px;">
               <div class="lightning-flash" id="lightning-fx"></div>
-              <div style="font-family:var(--font-display); font-size:2.6rem; color:#fca5a5; font-weight:900;">
+              <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+                ${window.jungleViews.getSuki("worried", 130)}
+                ${window.jungleViews.getPoppy("worried", 130)}
+                ${window.jungleViews.getRico("worried", 130)}
+              </div>
+              <div style="font-family:var(--font-display); font-size:2.8rem; color:#fca5a5; font-weight:900;">
                 ⛈️ JUNGLE EMERGENCY ALERT! 🚨
               </div>
-              <div style="font-family:var(--font-display); font-size:1.4rem; color:#f8fafc; max-width:750px;">
+              <div style="font-family:var(--font-display); font-size:1.5rem; color:#f8fafc; max-width:800px;">
                 A fierce storm struck Green Valley! Trees have fallen and water is dirty!
               </div>
-              <button class="hud-btn hud-btn-teacher" id="btn-start-rescue" style="font-size:1.3rem; padding:16px 36px; background:linear-gradient(135deg, #10b981, #059669); border-color:#6ee7b7; margin-top:20px;">
+              <button class="hud-btn hud-btn-teacher" id="btn-start-rescue" style="font-size:1.4rem; padding:18px 40px; background:linear-gradient(135deg, #10b981, #059669); border-color:#6ee7b7; margin-top:16px;">
                 <span>🛡️ START RESCUE MISSIONS ➔</span>
               </button>
             </div>
@@ -478,11 +437,23 @@ class JungleGameEngine {
         this.triggerStormFX();
         break;
 
+      // 15. Suki's Tree is Gone
       case 'prediction':
+        const animalAvatar = scene.id === "s15-suki-tree" 
+          ? window.jungleViews.getSuki("worried", 140)
+          : scene.id === "s17-rico-water"
+          ? window.jungleViews.getRico("worried", 140)
+          : scene.id === "s18-poppy-pond"
+          ? window.jungleViews.getPoppy("worried", 140)
+          : scene.id === "s19-boris-berries"
+          ? window.jungleViews.getBoris("berries", 140)
+          : "";
+
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:900px;">
-              <div class="prediction-badge" style="background:#0284c7;">🔮 PREDICTION CHALLENGE</div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:18px; width:100%; max-width:960px;">
+              ${animalAvatar ? `<div>${animalAvatar}</div>` : ''}
+              <div class="prediction-badge" style="background:#0284c7; font-size:1.25rem;">🔮 PREDICTION CHALLENGE</div>
               <div class="choice-cards-row">
                 ${scene.options.map(opt => `
                   <button class="choice-card-btn pred-choice-btn" data-correct="${opt.correct}">
@@ -496,22 +467,23 @@ class JungleGameEngine {
         `;
         break;
 
+      // 16. Suki New Home
       case 'suki_habitat':
         stage.innerHTML = `
           <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%;">
-              <div style="font-family:var(--font-display); font-size:1.35rem; color:#fef3c7; font-weight:800;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; max-width:1150px;">
+              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
                 👇 STEP 1: Tap Suki ➔ STEP 2: Tap the Forest Habitat!
               </div>
-              <button class="animal-stage-actor tap-item" id="suki-actor-btn" style="background:none; border:none;">
-                ${window.jungleViews.getAnimalAvatar("squirrel", 115)}
-                <div class="actor-name-tag">🐿️ Suki the Squirrel</div>
+              <button class="animal-stage-actor tap-item" id="suki-actor-btn" style="background:none; border:none; cursor:pointer;">
+                ${window.jungleViews.getSuki("worried", 135)}
+                <div class="actor-name-tag">🐿️ Suki Needs a Home!</div>
               </button>
               <div class="habitat-zones-container">
                 <div class="habitat-zone-card forest-zone tap-target suki-zone-target" data-correct="true">
                   <div class="habitat-header">Forest 🌲</div>
                   <div class="habitat-actor-slot" id="slot-suki-forest">❓ Tap Here</div>
-                  <div class="habitat-tag">Trees, leaves & acorns</div>
+                  <div class="habitat-tag">Tall oak trees & acorns</div>
                 </div>
                 <div class="habitat-zone-card pond-zone tap-target suki-zone-target" data-correct="false">
                   <div class="habitat-header">Pond 💧</div>
@@ -529,92 +501,9 @@ class JungleGameEngine {
         `;
         break;
 
-      case 'detective_mystery':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:900px;">
-              <div class="prediction-badge" style="background:#0284c7;">🔎 RANGER DETECTIVE</div>
-              <div class="choice-cards-row">
-                ${scene.options.map(opt => `
-                  <button class="choice-card-btn detective-btn" data-correct="${opt.correct}">
-                    <span style="font-size:3rem;">${opt.emoji}</span>
-                    <div class="choice-text">${opt.name}</div>
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'timeline_view':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:1050px;">
-              <div style="font-family:var(--font-display); font-size:1.4rem; color:#fef3c7; font-weight:800;">
-                🔢 Cause & Effect Sequence: 1 ➔ 2 ➔ 3 ➔ 4
-              </div>
-              <div style="display:flex; gap:16px; width:100%; justify-content:center;">
-                <div class="item-card" style="flex:1;"><span class="item-emoji">⛈️</span><span class="item-label">1. Storm</span></div>
-                <div class="item-card" style="flex:1;"><span class="item-emoji">🌳💥</span><span class="item-label">2. Tree Falls</span></div>
-                <div class="item-card" style="flex:1;"><span class="item-emoji">🐿️💔</span><span class="item-label">3. Loses Shelter</span></div>
-                <div class="item-card" style="flex:1;"><span class="item-emoji">🔎🏡</span><span class="item-label">4. Searches Home</span></div>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'prediction_token':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div class="prediction-machine-stage">
-              <div style="font-family:var(--font-display); font-size:1.5rem; color:#fbbf24; font-weight:900;">
-                ⚙️ JUNGLE PREDICTION MACHINE
-              </div>
-              <div class="sentence-builder-display">
-                <span class="sentence-chunk">The fish</span>
-                <div class="sentence-slot-token" id="token-slot">______</div>
-                <span class="sentence-chunk">survive without clean water.</span>
-              </div>
-              <div class="modal-word-bank">
-                ${scene.tokens.map(tok => `
-                  <button class="word-token-btn machine-token-btn" data-token="${tok}" data-correct="${tok === scene.correct}">${tok}</button>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
-      case 'speaking_studio':
-        stage.innerHTML = `
-          <div class="stage-board">
-            <div class="speaking-report-stage">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-family:var(--font-display); font-size:1.8rem; color:var(--primary-dark); font-weight:900;">
-                  🎙️ OFFICIAL RANGER SPEAKING REPORT
-                </div>
-                <div class="prediction-badge" style="background:#059669;">A1+ Speaking</div>
-              </div>
-              <div class="report-sentence-grid">
-                <div class="report-sentence-line"><span>This is a</span> <span class="report-fill-pill">🐸 Poppy the Frog</span>.</div>
-                <div class="report-sentence-line"><span>It lives</span> <span class="report-fill-pill">near ponds and wetlands</span>.</div>
-                <div class="report-sentence-line"><span>It eats</span> <span class="report-fill-pill">insects and flies</span>.</div>
-                <div class="report-sentence-line"><span>It needs</span> <span class="report-fill-pill">clean water for its skin</span>.</div>
-                <div class="report-sentence-line"><span>If <b>the pond dries</b>, it will</span> <span class="report-fill-pill">look for another wet place</span>.</div>
-              </div>
-              <div class="report-actions-row">
-                <button class="report-btn report-btn-speak" id="btn-read-report"><span>🔊 Read Aloud</span></button>
-                <button class="report-btn report-btn-cert" id="btn-cert"><span>🎖️ Ranger Certificate</span></button>
-              </div>
-            </div>
-          </div>
-        `;
-        break;
-
+      // Default fallback for any other scenes
       default:
-        stage.innerHTML = `<div class="stage-board"><div style="color:#fff;">Loading...</div></div>`;
+        stage.innerHTML = `<div class="stage-board"><div style="color:#fff; font-size:1.5rem;">Loading scene...</div></div>`;
     }
 
     this.attachSceneHandlers(scene);
@@ -632,7 +521,6 @@ class JungleGameEngine {
       .replace(/\b(HABITAT|PREDATOR|PREY|ECOSYSTEM|SHELTER|FOOD)\b/g, '<span style="color:#059669; font-weight:800; text-decoration:underline;">$1</span>');
   }
 
-  // TAP ➔ TAP State Management
   selectItem(el) {
     this.clearSelection();
     this.selectedItem = el;
@@ -650,19 +538,14 @@ class JungleGameEngine {
   }
 
   attachSceneHandlers(scene) {
-    // 1. Tap Items
     document.querySelectorAll('.tap-item').forEach(item => {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (this.selectedItem === item) {
-          this.clearSelection();
-        } else {
-          this.selectItem(item);
-        }
+        if (this.selectedItem === item) this.clearSelection();
+        else this.selectItem(item);
       });
     });
 
-    // 2. Open Explore Hotspots
     document.querySelectorAll('.explore-spot-btn').forEach(spot => {
       spot.addEventListener('click', () => {
         const id = spot.getAttribute('data-id');
@@ -678,7 +561,6 @@ class JungleGameEngine {
       });
     });
 
-    // 3. Nature Spot Targets (Chapter 2)
     document.querySelectorAll('.nature-spot-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = btn.getAttribute('data-target');
@@ -693,7 +575,6 @@ class JungleGameEngine {
       });
     });
 
-    // 4. Who Am I Reveal
     const revealWhoBtn = document.getElementById('btn-reveal-who');
     if (revealWhoBtn) {
       revealWhoBtn.addEventListener('click', () => {
@@ -705,7 +586,6 @@ class JungleGameEngine {
       });
     }
 
-    // 5. Where Live Biomes
     document.querySelectorAll('.biome-target').forEach(tgt => {
       tgt.addEventListener('click', () => {
         if (this.selectedItem && this.selectedItem.classList.contains('biome-animal-btn')) {
@@ -729,7 +609,6 @@ class JungleGameEngine {
       });
     });
 
-    // 6. Suki Needs Target
     const sukiNeedsTgt = document.getElementById('target-suki-needs');
     if (sukiNeedsTgt) {
       sukiNeedsTgt.addEventListener('click', () => {
@@ -743,7 +622,6 @@ class JungleGameEngine {
       });
     }
 
-    // 7. Feeding Target
     document.querySelectorAll('.feed-animal-target').forEach(tgt => {
       tgt.addEventListener('click', () => {
         if (this.selectedItem && this.selectedItem.classList.contains('feed-food-btn')) {
@@ -766,30 +644,6 @@ class JungleGameEngine {
       });
     });
 
-    // 8. Food Chain Slots
-    document.querySelectorAll('.chain-slot').forEach(slot => {
-      slot.addEventListener('click', () => {
-        if (this.selectedItem && this.selectedItem.classList.contains('chain-btn')) {
-          const slotStep = slot.getAttribute('data-step');
-          const cardStep = this.selectedItem.getAttribute('data-step');
-          if (slotStep === cardStep) {
-            const emoji = this.selectedItem.getAttribute('data-emoji');
-            slot.querySelector('.slot-val').textContent = emoji;
-            slot.classList.add('anim-hop-in');
-            this.selectedItem.style.display = 'none';
-            this.clearSelection();
-            window.jungleAudio.playSuccess();
-            this.addTeamPoint(this.activeTurn, 1);
-          } else {
-            slot.classList.add('shake-target');
-            window.jungleAudio.playHint();
-            setTimeout(() => slot.classList.remove('shake-target'), 600);
-          }
-        }
-      });
-    });
-
-    // 9. Suki Habitat Rescue
     document.querySelectorAll('.suki-zone-target').forEach(zone => {
       zone.addEventListener('click', () => {
         if (this.selectedItem && this.selectedItem.id === 'suki-actor-btn') {
@@ -810,8 +664,7 @@ class JungleGameEngine {
       });
     });
 
-    // 10. Prediction & Detective Choices
-    document.querySelectorAll('.pred-choice-btn, .detective-btn').forEach(btn => {
+    document.querySelectorAll('.pred-choice-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const isCorrect = btn.getAttribute('data-correct') === 'true';
         if (isCorrect) {
@@ -827,49 +680,10 @@ class JungleGameEngine {
       });
     });
 
-    // 11. Prediction Machine Tokens
-    document.querySelectorAll('.machine-token-btn').forEach(tok => {
-      tok.addEventListener('click', () => {
-        const token = tok.getAttribute('data-token');
-        const isCorrect = tok.getAttribute('data-correct') === 'true';
-        const slot = document.getElementById('token-slot');
-        if (slot) {
-          slot.textContent = token;
-          if (isCorrect) {
-            slot.classList.add('anim-hop-in');
-            window.jungleAudio.playSuccess();
-            this.addTeamPoint(this.activeTurn, 2);
-          } else {
-            slot.classList.add('shake-target');
-            window.jungleAudio.playHint();
-            setTimeout(() => slot.classList.remove('shake-target'), 600);
-          }
-        }
-      });
-    });
-
-    // 12. Transitions & Speaking Studio
-    const startStoryBtn = document.getElementById('btn-enter-storm-story');
-    if (startStoryBtn) startStoryBtn.addEventListener('click', () => this.nextScene());
-
     const rescueBtn = document.getElementById('btn-start-rescue');
     if (rescueBtn) rescueBtn.addEventListener('click', () => this.nextScene());
-
-    const openWallSceneBtn = document.getElementById('btn-open-wall-from-scene');
-    if (openWallSceneBtn) openWallSceneBtn.addEventListener('click', () => this.openWordWall());
-
-    const speakReportBtn = document.getElementById('btn-read-report');
-    if (speakReportBtn) {
-      speakReportBtn.addEventListener('click', () => {
-        window.jungleAudio.speak("This is Poppy the Frog. It lives near ponds and wetlands. It eats insects and flies. It needs clean water for its skin. If the pond dries, it will look for another wet place.");
-      });
-    }
-
-    const certBtn = document.getElementById('btn-cert');
-    if (certBtn) certBtn.addEventListener('click', () => this.showCertificate());
   }
 
-  // Health System
   changeHealth(delta) {
     this.jungleHealth = Math.max(10, Math.min(100, this.jungleHealth + delta));
     this.updateHealthBar(this.jungleHealth);
@@ -905,7 +719,6 @@ class JungleGameEngine {
     setTimeout(() => window.jungleAudio.playTreeCrash(), 1800);
   }
 
-  // Teams
   addTeamPoint(team, points = 1) {
     if (!this.scores[team] && this.scores[team] !== 0) return;
     this.scores[team] += points;
@@ -922,7 +735,6 @@ class JungleGameEngine {
     if (card) card.classList.add('active-turn');
   }
 
-  // Teacher HUD
   updateTeacherHUD(scene) {
     const say = document.getElementById('teacher-script-say');
     const doEl = document.getElementById('teacher-script-do');
@@ -943,7 +755,6 @@ class JungleGameEngine {
     }
   }
 
-  // Word Wall
   openWordWall() {
     const modal = document.getElementById('word-wall-modal');
     if (modal) {
@@ -965,7 +776,6 @@ class JungleGameEngine {
     }
   }
 
-  // Certificate
   showCertificate() {
     const modal = document.getElementById('certificate-modal');
     if (modal) {
@@ -982,7 +792,6 @@ class JungleGameEngine {
     if (modal) modal.classList.remove('active');
   }
 
-  // Global Event Listeners
   bindEvents() {
     const nextBtn = document.getElementById('nav-btn-next');
     const prevBtn = document.getElementById('nav-btn-prev');
@@ -1038,7 +847,6 @@ class JungleGameEngine {
       });
     }
 
-    // Soundboard
     document.querySelectorAll('[data-fx]').forEach(btn => {
       btn.addEventListener('click', () => {
         const fx = btn.getAttribute('data-fx');
@@ -1050,7 +858,6 @@ class JungleGameEngine {
       });
     });
 
-    // Populate Teacher Dropdown
     const sel = document.getElementById('teacher-chapter-select');
     if (sel) {
       window.JUNGLE_DATA.scenes.forEach((s, idx) => {
@@ -1070,7 +877,6 @@ class JungleGameEngine {
     });
   }
 
-  // Confetti
   setupConfetti() {
     this.canvas = document.getElementById('confetti-canvas');
     if (!this.canvas) return;
