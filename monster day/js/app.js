@@ -1,7 +1,7 @@
 /**
- * app.js - Main Application Orchestrator & UI Controller
+ * app.js - Dynamic Single-Screen Component Wizard & State Orchestrator
  * "Build Your Own Monster!"
- * Real Step-by-Step Single-Screen Engine (One Screen = One Step).
+ * Real Screen Navigation: Only ONE step exists in the DOM at any given moment!
  */
 
 class MonsterApp {
@@ -13,27 +13,29 @@ class MonsterApp {
     this.speakingStepIndex = 0;
     this.speakingSteps = [];
 
-    this.levelData = {
-      1: { title: 'STEP 1: CHOOSE A BODY 🧸', cheer: 'Great choice! ⭐' },
-      2: { title: 'STEP 2: CHOOSE THE EYES 👁️', cheer: 'Look at those eyes! 👀' },
-      3: { title: 'STEP 3: EARS & HORNS 🦄', cheer: 'Super cool ears! 👂' },
-      4: { title: 'STEP 4: MAKE THE FACE 👄', cheer: 'What a funny face! 😃' },
-      5: { title: 'STEP 5: ARMS & LEGS 👐', cheer: 'Ready to move! 🦵' },
-      6: { title: 'STEP 6: SPECIAL PARTS 🐉', cheer: 'Your monster is unique! ✨' },
-      7: { title: 'STEP 7: COLORS & PATTERNS 🎨', cheer: 'So colorful! 🌈' },
-      8: { title: 'STEP 8: DRESS YOUR MONSTER 👕', cheer: 'Looking stylish! 👗' },
-      9: { title: 'STEP 9: ADD ACCESSORIES 🧢', cheer: 'Awesome accessories! 👑' },
-      10: { title: 'STEP 10: PERSONALITY & POWERS ❤️', cheer: 'Super powers unlocked! ⚡' },
-      11: { title: 'STEP 11: WORLD & FOOD 🏠', cheer: 'Yummy favorite food! 🍕' },
-      12: { title: 'STEP 12: NAME YOUR MONSTER 📛', cheer: 'Almost ready! 🎉' }
-    };
+    this.stepsMeta = [
+      { id: 'body', title: 'CHOOSE YOUR BODY 🧸', label: '1. Body', cheer: 'Great choice! ⭐' },
+      { id: 'eyes', title: 'CHOOSE YOUR EYES 👁️', label: '2. Eyes', cheer: 'Look at those eyes! 👀' },
+      { id: 'ears_horns', title: 'EARS & HORNS 🦄', label: '3. Ears & Horns', cheer: 'Super cool ears! 👂' },
+      { id: 'face', title: 'MAKE THE FACE 👄', label: '4. Face', cheer: 'What a funny face! 😃' },
+      { id: 'arms_legs', title: 'ARMS & LEGS 👐', label: '5. Arms & Legs', cheer: 'Ready to move! 🦵' },
+      { id: 'special', title: 'MAKE IT SPECIAL! 🐉', label: '6. Special', cheer: 'Your monster is unique! ✨' },
+      { id: 'colors', title: 'CHOOSE COLORS 🎨', label: '7. Colors', cheer: 'So colorful! 🌈' },
+      { id: 'clothes', title: 'DRESS YOUR MONSTER! 👕', label: '8. Clothes', cheer: 'Looking stylish! 👗' },
+      { id: 'accessories', title: 'ADD ACCESSORIES! 🧢', label: '9. Items', cheer: 'Awesome accessories! 👑' },
+      { id: 'personality_powers', title: 'WHAT IS YOUR MONSTER LIKE? ❤️', label: '10. Powers', cheer: 'Super powers unlocked! ⚡' },
+      { id: 'world_food', title: 'WHERE DOES IT LIVE? 🏠', label: '11. World', cheer: 'Yummy favorite food! 🍕' },
+      { id: 'name', title: 'NAME YOUR MONSTER! 📛', label: '12. Name', cheer: 'Almost ready! 🎉' }
+    ];
 
     this.randomNames = [
       'Zippy', 'Bobo', 'Fluffy', 'Rex', 'Momo', 'Grumble', 'Sparky', 'Bob', 
       'Blobby', 'Pip', 'Ziggy', 'Munchkin', 'Barnaby', 'Cosmo', 'Toby', 'Gizmo'
     ];
 
-    this.init();
+    if (typeof document !== 'undefined') {
+      this.init();
+    }
   }
 
   init() {
@@ -42,14 +44,12 @@ class MonsterApp {
       this.onMonsterUpdated(monster);
     });
 
-    // 2. Bind all UI click events
-    this.bindEvents();
+    // 2. Bind static UI click events
+    this.bindStaticEvents();
 
     // 3. Initial Setup
     this.setStep(1);
     this.updateAllPreviews();
-    this.updateSelectionButtons();
-    this.updatePhraseBadge();
     this.updateGlobalSoundToggles();
   }
 
@@ -58,7 +58,6 @@ class MonsterApp {
   // ==========================================
   onMonsterUpdated(monster) {
     this.updateAllPreviews();
-    this.updateSelectionButtons();
     this.updatePhraseBadge();
 
     if (this.currentScreen === 'screen-final') {
@@ -115,36 +114,41 @@ class MonsterApp {
   }
 
   // ==========================================
-  // STRICT STEP-BY-STEP FLOW (ONE SCREEN AT A TIME)
+  // DYNAMIC STEP-BY-STEP COMPONENT WIZARD
   // ==========================================
   setStep(stepNumber) {
     if (stepNumber < 1 || stepNumber > this.totalSteps) return;
     this.currentStep = stepNumber;
     window.soundEngine.playPop();
 
-    // 1. Hide ALL other step screens, show ONLY the active one
-    document.querySelectorAll('.step-screen').forEach(screen => {
-      screen.classList.remove('active');
-    });
-    const target = document.getElementById(`step-screen-${stepNumber}`);
-    if (target) target.classList.add('active');
+    const meta = this.stepsMeta[stepNumber - 1];
 
-    // 2. Update Header Info (Badge, Title, Encouragement Cheer)
-    const levelInfo = this.levelData[stepNumber];
+    // 1. Update Header Badges & Title
     const badgeEl = document.getElementById('wizard-step-badge');
     const titleEl = document.getElementById('wizard-step-title');
     const cheerEl = document.getElementById('wizard-cheer-badge');
 
     if (badgeEl) badgeEl.innerText = `STEP ${stepNumber} OF ${this.totalSteps}`;
-    if (titleEl) titleEl.innerText = levelInfo.title;
-    if (cheerEl) cheerEl.innerText = levelInfo.cheer;
+    if (titleEl) titleEl.innerText = meta.title;
+    if (cheerEl) cheerEl.innerText = meta.cheer;
 
-    // 3. Update Progress Track
-    document.querySelectorAll('.wizard-progress-track .track-step').forEach(dot => {
-      const dotStep = parseInt(dot.dataset.step, 10);
-      dot.classList.toggle('active', dotStep === stepNumber);
-      dot.classList.toggle('completed', dotStep < stepNumber);
-    });
+    // 2. Render Progress Track
+    const trackEl = document.getElementById('wizard-progress-track');
+    if (trackEl) {
+      trackEl.innerHTML = this.stepsMeta.map((s, idx) => {
+        const stepNum = idx + 1;
+        const status = stepNum === stepNumber ? 'active' : (stepNum < stepNumber ? 'completed' : '');
+        return `<div class="track-step ${status}" onclick="app.setStep(${stepNum})" title="${s.title}"><span>${s.label}</span></div>`;
+      }).join('');
+    }
+
+    // 3. DYNAMICALLY MOUNT ONLY THE ACTIVE STEP HTML
+    const contentEl = document.getElementById('wizard-step-content');
+    if (contentEl) {
+      contentEl.innerHTML = this.getStepHtml(stepNumber);
+      this.bindStepEvents(contentEl);
+      this.syncStepSelections(contentEl);
+    }
 
     // 4. Update Navigation Buttons
     const backBtn = document.getElementById('wizard-back-btn');
@@ -178,7 +182,824 @@ class MonsterApp {
   }
 
   // ==========================================
-  // LIVE PREVIEW UPDATER
+  // DYNAMIC HTML TEMPLATES FOR EACH STEP
+  // ==========================================
+  getStepHtml(stepNumber) {
+    switch (stepNumber) {
+      case 1: // BODY
+        return `
+          <div class="step-screen-instruction">👉 Pick a body shape for your monster:</div>
+          <div class="option-button-grid wide">
+            <button class="opt-btn" data-body-shape="round"><span class="opt-btn-icon">🟢</span> ROUND</button>
+            <button class="opt-btn" data-body-shape="tall"><span class="opt-btn-icon">🦒</span> TALL</button>
+            <button class="opt-btn" data-body-shape="short"><span class="opt-btn-icon">🐧</span> SHORT</button>
+            <button class="opt-btn" data-body-shape="wide"><span class="opt-btn-icon">🥚</span> WIDE</button>
+            <button class="opt-btn" data-body-shape="thin"><span class="opt-btn-icon">📏</span> THIN</button>
+            <button class="opt-btn" data-body-shape="blob"><span class="opt-btn-icon">💧</span> BLOB</button>
+            <button class="opt-btn" data-body-shape="ghost"><span class="opt-btn-icon">👻</span> GHOST</button>
+            <button class="opt-btn" data-body-shape="dinosaur"><span class="opt-btn-icon">🦖</span> DINOSAUR</button>
+            <button class="opt-btn" data-body-shape="robot"><span class="opt-btn-icon">🤖</span> ROBOT</button>
+          </div>
+        `;
+
+      case 2: // EYES
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Number of Eyes:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-eyes-count="1"><span class="opt-btn-icon">👁️</span> 1 ONE</button>
+              <button class="opt-btn" data-eyes-count="2"><span class="opt-btn-icon">👀</span> 2 TWO</button>
+              <button class="opt-btn" data-eyes-count="3"><span class="opt-btn-icon">👁️👁️👁️</span> 3 THREE</button>
+              <button class="opt-btn" data-eyes-count="4"><span class="opt-btn-icon">4️⃣</span> 4 FOUR</button>
+              <button class="opt-btn" data-eyes-count="many"><span class="opt-btn-icon">✨</span> MANY</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Eye Size:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-eyes-size="tiny">TINY</button>
+              <button class="opt-btn" data-eyes-size="small">SMALL</button>
+              <button class="opt-btn" data-eyes-size="big">BIG</button>
+              <button class="opt-btn" data-eyes-size="giant">GIANT</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">3. Eye Style:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-eyes-style="round">ROUND</button>
+              <button class="opt-btn" data-eyes-style="sleepy">😴 SLEEPY</button>
+              <button class="opt-btn" data-eyes-style="angry">😠 ANGRY</button>
+              <button class="opt-btn" data-eyes-style="happy">😄 HAPPY</button>
+              <button class="opt-btn" data-eyes-style="surprised">😲 SURPRISED</button>
+              <button class="opt-btn" data-eyes-style="funny">🤪 FUNNY</button>
+              <button class="opt-btn" data-eyes-style="star">⭐ STAR</button>
+              <button class="opt-btn" data-eyes-style="heart">❤️ HEART</button>
+            </div>
+          </div>
+        `;
+
+      case 3: // EARS & HORNS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Monster Ears:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-ears-count="0">NO EARS</button>
+              <button class="opt-btn" data-ears-count="1">1 EAR</button>
+              <button class="opt-btn" data-ears-count="2">2 EARS</button>
+              <button class="opt-btn" data-ears-count="4">4 EARS</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-ears-style="tiny">🔹 TINY</button>
+              <button class="opt-btn" data-ears-style="small">🔸 SMALL</button>
+              <button class="opt-btn" data-ears-style="long">🐰 LONG</button>
+              <button class="opt-btn" data-ears-style="floppy">🐶 FLOPPY</button>
+              <button class="opt-btn" data-ears-style="pointy">🧝 POINTY</button>
+              <button class="opt-btn" data-ears-style="round">🐻 ROUND</button>
+              <button class="opt-btn" data-ears-style="animal">🦊 ANIMAL</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Monster Horns:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-horns-count="0">NO HORNS</button>
+              <button class="opt-btn" data-horns-count="1">1 HORN</button>
+              <button class="opt-btn" data-horns-count="2">2 HORNS</button>
+              <button class="opt-btn" data-horns-count="4">4 HORNS</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-horns-style="tiny">🔹 TINY</button>
+              <button class="opt-btn" data-horns-style="curly">🌀 CURLY</button>
+              <button class="opt-btn" data-horns-style="pointy">🔺 POINTY</button>
+              <button class="opt-btn" data-horns-style="spiral">🦄 SPIRAL</button>
+              <button class="opt-btn" data-horns-style="big">🦏 BIG</button>
+            </div>
+          </div>
+        `;
+
+      case 4: // FACE (Nose, Mouth, Teeth, Expression)
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Quick Expression:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-expression="happy">😊 HAPPY</button>
+              <button class="opt-btn" data-expression="angry">😡 ANGRY</button>
+              <button class="opt-btn" data-expression="sleepy">😴 SLEEPY</button>
+              <button class="opt-btn" data-expression="surprised">😮 SURPRISED</button>
+              <button class="opt-btn" data-expression="silly">🤪 SILLY</button>
+              <button class="opt-btn" data-expression="scary">😱 SCARY</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Nose:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-nose-style="none">NO NOSE</button>
+              <button class="opt-btn" data-nose-style="tiny">TINY</button>
+              <button class="opt-btn" data-nose-style="small">SMALL</button>
+              <button class="opt-btn" data-nose-style="big">BIG</button>
+              <button class="opt-btn" data-nose-style="long">LONG</button>
+              <button class="opt-btn" data-nose-style="round">ROUND</button>
+              <button class="opt-btn" data-nose-style="funny">🔴 FUNNY</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">3. Mouth & Teeth:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-mouth-type="tiny">🙂 TINY</button>
+              <button class="opt-btn" data-mouth-type="small">😊 SMALL</button>
+              <button class="opt-btn" data-mouth-type="big">😃 BIG</button>
+              <button class="opt-btn" data-mouth-type="huge">😄 HUGE</button>
+              <button class="opt-btn" data-mouth-type="smiling">😁 SMILING</button>
+              <button class="opt-btn" data-mouth-type="happy">🥰 HAPPY</button>
+              <button class="opt-btn" data-mouth-type="surprised">😲 SURPRISED</button>
+              <button class="opt-btn" data-mouth-type="scary">😈 SCARY</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-teeth-type="none">NO TEETH</button>
+              <button class="opt-btn" data-teeth-type="small">SMALL</button>
+              <button class="opt-btn" data-teeth-type="big">BIG</button>
+              <button class="opt-btn" data-teeth-type="sharp">🦈 SHARP</button>
+              <button class="opt-btn" data-teeth-type="vampire">🧛 VAMPIRE</button>
+              <button class="opt-btn" data-teeth-type="giant">🦷 1 GIANT TOOTH</button>
+            </div>
+          </div>
+        `;
+
+      case 5: // ARMS & LEGS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Arms & Hands:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-arms-count="0">0 NONE</button>
+              <button class="opt-btn" data-arms-count="1">1 ONE</button>
+              <button class="opt-btn" data-arms-count="2">2 TWO</button>
+              <button class="opt-btn" data-arms-count="3">3 THREE</button>
+              <button class="opt-btn" data-arms-count="4">4 FOUR</button>
+              <button class="opt-btn" data-arms-count="many">🐙 MANY</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-arms-length="tiny">TINY</button>
+              <button class="opt-btn" data-arms-length="short">SHORT</button>
+              <button class="opt-btn" data-arms-length="normal">NORMAL</button>
+              <button class="opt-btn" data-arms-length="long">LONG</button>
+              <button class="opt-btn" data-arms-length="super_long">SUPER LONG</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-hands-style="normal">NORMAL HANDS</button>
+              <button class="opt-btn" data-hands-style="tiny">TINY</button>
+              <button class="opt-btn" data-hands-style="giant">🥊 GIANT</button>
+              <button class="opt-btn" data-hands-style="claws">🦅 CLAWS</button>
+              <button class="opt-btn" data-hands-style="three_fingers">3 FINGERS</button>
+              <button class="opt-btn" data-hands-style="four_fingers">4 FINGERS</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Legs & Feet:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-legs-count="0">0 NONE</button>
+              <button class="opt-btn" data-legs-count="1">1 ONE</button>
+              <button class="opt-btn" data-legs-count="2">2 TWO</button>
+              <button class="opt-btn" data-legs-count="3">3 THREE</button>
+              <button class="opt-btn" data-legs-count="4">4 FOUR</button>
+              <button class="opt-btn" data-legs-count="many">🐾 MANY</button>
+            </div>
+            <div class="option-button-grid" style="margin-top: 8px;">
+              <button class="opt-btn" data-feet-style="tiny">TINY</button>
+              <button class="opt-btn" data-feet-style="normal">NORMAL</button>
+              <button class="opt-btn" data-feet-style="big">BIG</button>
+              <button class="opt-btn" data-feet-style="giant">GIANT</button>
+              <button class="opt-btn" data-feet-style="claws">🦅 CLAWS</button>
+              <button class="opt-btn" data-feet-style="bird">🐓 BIRD FEET</button>
+              <button class="opt-btn" data-feet-style="monster">🐾 MONSTER</button>
+            </div>
+          </div>
+        `;
+
+      case 6: // SPECIAL PARTS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Wings:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-special-wings="none">NO WINGS</button>
+              <button class="opt-btn" data-special-wings="dragon">🐉 DRAGON</button>
+              <button class="opt-btn" data-special-wings="butterfly">🦋 BUTTERFLY</button>
+              <button class="opt-btn" data-special-wings="bat">🦇 BAT</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Tails:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-special-tail="none">NO TAIL</button>
+              <button class="opt-btn" data-special-tail="long">LONG TAIL</button>
+              <button class="opt-btn" data-special-tail="curly">CURLY TAIL</button>
+              <button class="opt-btn" data-special-tail="dinosaur">🦖 DINOSAUR</button>
+              <button class="opt-btn" data-special-tail="snake">🐍 SNAKE</button>
+              <button class="opt-btn" data-special-tail="bunny">🐰 BUNNY</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">3. Special Extras (Combine multiple!):</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-special-extra="spikes">🌵 SPIKES</button>
+              <button class="opt-btn" data-special-extra="shell">🐌 SHELL</button>
+              <button class="opt-btn" data-special-extra="fins">🐬 FINS</button>
+              <button class="opt-btn" data-special-extra="tentacles">🐙 TENTACLES</button>
+            </div>
+          </div>
+        `;
+
+      case 7: // COLORS & PATTERNS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Body Main Color:</div>
+            <div class="color-swatch-grid">
+              <button class="color-swatch-btn swatch-purple" data-body-color="purple" title="Purple"></button>
+              <button class="color-swatch-btn swatch-green" data-body-color="green" title="Green"></button>
+              <button class="color-swatch-btn swatch-blue" data-body-color="blue" title="Blue"></button>
+              <button class="color-swatch-btn swatch-red" data-body-color="red" title="Red"></button>
+              <button class="color-swatch-btn swatch-orange" data-body-color="orange" title="Orange"></button>
+              <button class="color-swatch-btn swatch-yellow" data-body-color="yellow" title="Yellow"></button>
+              <button class="color-swatch-btn swatch-pink" data-body-color="pink" title="Pink"></button>
+              <button class="color-swatch-btn swatch-black" data-body-color="black" title="Black"></button>
+              <button class="color-swatch-btn swatch-white" data-body-color="white" title="White"></button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Secondary Belly / Accent Color:</div>
+            <div class="color-swatch-grid">
+              <button class="color-swatch-btn swatch-yellow" data-secondary-color="yellow" title="Yellow"></button>
+              <button class="color-swatch-btn swatch-purple" data-secondary-color="purple" title="Purple"></button>
+              <button class="color-swatch-btn swatch-green" data-secondary-color="green" title="Green"></button>
+              <button class="color-swatch-btn swatch-blue" data-secondary-color="blue" title="Blue"></button>
+              <button class="color-swatch-btn swatch-red" data-secondary-color="red" title="Red"></button>
+              <button class="color-swatch-btn swatch-pink" data-secondary-color="pink" title="Pink"></button>
+              <button class="color-swatch-btn swatch-orange" data-secondary-color="orange" title="Orange"></button>
+              <button class="color-swatch-btn swatch-black" data-secondary-color="black" title="Black"></button>
+              <button class="color-swatch-btn swatch-white" data-secondary-color="white" title="White"></button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">3. Body Pattern:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-pattern="none">NO PATTERN</button>
+              <button class="opt-btn" data-pattern="spots">🔴 SPOTS</button>
+              <button class="opt-btn" data-pattern="stripes">🦓 STRIPES</button>
+              <button class="opt-btn" data-pattern="stars">⭐ STARS</button>
+              <button class="opt-btn" data-pattern="hearts">❤️ HEARTS</button>
+              <button class="opt-btn" data-pattern="dots">⚪ DOTS</button>
+              <button class="opt-btn" data-pattern="zigzags">⚡ ZIGZAGS</button>
+              <button class="opt-btn" data-pattern="rainbow">🌈 RAINBOW</button>
+            </div>
+          </div>
+        `;
+
+      case 8: // CLOTHES & OUTFITS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Full Outfits (Replaces Tops & Bottoms):</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-special-suit="none">NO OUTFIT</button>
+              <button class="opt-btn" data-special-suit="dress">💃 DRESS</button>
+              <button class="opt-btn" data-special-suit="superhero">🦸 SUPERHERO</button>
+              <button class="opt-btn" data-special-suit="astronaut">👨‍🚀 ASTRONAUT</button>
+              <button class="opt-btn" data-special-suit="wizard">🧙 WIZARD</button>
+              <button class="opt-btn" data-special-suit="pirate">🏴‍☠️ PIRATE</button>
+              <button class="opt-btn" data-special-suit="football">⚽ FOOTBALL</button>
+              <button class="opt-btn" data-special-suit="royal">👑 ROYAL</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Tops:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-cloth-top="none">NO TOP</button>
+              <button class="opt-btn" data-cloth-top="tshirt">👕 T-SHIRT</button>
+              <button class="opt-btn" data-cloth-top="shirt">👔 SHIRT</button>
+              <button class="opt-btn" data-cloth-top="jacket">🧥 JACKET</button>
+              <button class="opt-btn" data-cloth-top="hoodie">🧤 HOODIE</button>
+              <button class="opt-btn" data-cloth-top="sweater">🧶 SWEATER</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">3. Bottoms:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-cloth-bottom="none">NO BOTTOM</button>
+              <button class="opt-btn" data-cloth-bottom="trousers">👖 TROUSERS</button>
+              <button class="opt-btn" data-cloth-bottom="shorts">🩳 SHORTS</button>
+              <button class="opt-btn" data-cloth-bottom="skirt">👗 SKIRT</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">4. Shoes:</div>
+            <div class="option-button-grid">
+              <button class="opt-btn" data-cloth-shoes="none">NO SHOES</button>
+              <button class="opt-btn" data-cloth-shoes="boots">🥾 BOOTS</button>
+              <button class="opt-btn" data-cloth-shoes="sneakers">👟 SNEAKERS</button>
+              <button class="opt-btn" data-cloth-shoes="clown_shoes">🤡 CLOWN SHOES</button>
+            </div>
+          </div>
+        `;
+
+      case 9: // ACCESSORIES
+        return `
+          <div class="step-screen-instruction">👉 Choose accessories for your monster (select multiple!):</div>
+          <div class="option-button-grid">
+            <button class="opt-btn" data-accessory="crown">👑 CROWN</button>
+            <button class="opt-btn" data-accessory="wizard_hat">🧙 WIZARD HAT</button>
+            <button class="opt-btn" data-accessory="pirate_hat">🏴‍☠️ PIRATE HAT</button>
+            <button class="opt-btn" data-accessory="hat">🎩 TOP HAT</button>
+            <button class="opt-btn" data-accessory="cap">🧢 CAP</button>
+            <button class="opt-btn" data-accessory="helmet">⛑️ HELMET</button>
+            <button class="opt-btn" data-accessory="glasses">🕶️ GLASSES</button>
+            <button class="opt-btn" data-accessory="sunglasses">😎 SUNGLASSES</button>
+            <button class="opt-btn" data-accessory="scarf">🧣 SCARF</button>
+            <button class="opt-btn" data-accessory="bow">🎀 BOW</button>
+            <button class="opt-btn" data-accessory="necklace">📿 NECKLACE</button>
+            <button class="opt-btn" data-accessory="backpack">🎒 BACKPACK</button>
+            <button class="opt-btn" data-accessory="earrings">✨ EARRINGS</button>
+          </div>
+        `;
+
+      case 10: // PERSONALITY & POWERS
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. My Monster is... (Personality):</div>
+            <div class="option-button-grid wide">
+              <button class="opt-btn" data-personality="friendly"><span class="opt-btn-icon">🤗</span> FRIENDLY</button>
+              <button class="opt-btn" data-personality="funny"><span class="opt-btn-icon">😂</span> FUNNY</button>
+              <button class="opt-btn" data-personality="scary"><span class="opt-btn-icon">😈</span> SCARY</button>
+              <button class="opt-btn" data-personality="angry"><span class="opt-btn-icon">😠</span> ANGRY</button>
+              <button class="opt-btn" data-personality="happy"><span class="opt-btn-icon">😃</span> HAPPY</button>
+              <button class="opt-btn" data-personality="sleepy"><span class="opt-btn-icon">😴</span> SLEEPY</button>
+              <button class="opt-btn" data-personality="crazy"><span class="opt-btn-icon">🤪</span> CRAZY</button>
+              <button class="opt-btn" data-personality="shy"><span class="opt-btn-icon">🙈</span> SHY</button>
+              <button class="opt-btn" data-personality="strong"><span class="opt-btn-icon">🦁</span> STRONG</button>
+              <button class="opt-btn" data-personality="clever"><span class="opt-btn-icon">🧠</span> CLEVER</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Super Powers (It can...):</div>
+            <div class="option-button-grid wide">
+              <button class="opt-btn" data-power="fly"><span class="opt-btn-icon">🦅</span> FLY</button>
+              <button class="opt-btn" data-power="breathe_fire"><span class="opt-btn-icon">🔥</span> BREATHE FIRE</button>
+              <button class="opt-btn" data-power="make_ice"><span class="opt-btn-icon">❄️</span> MAKE ICE</button>
+              <button class="opt-btn" data-power="shoot_lightning"><span class="opt-btn-icon">⚡</span> SHOOT LIGHTNING</button>
+              <button class="opt-btn" data-power="invisible"><span class="opt-btn-icon">👻</span> BE INVISIBLE</button>
+              <button class="opt-btn" data-power="jump_high"><span class="opt-btn-icon">🦘</span> JUMP HIGH</button>
+              <button class="opt-btn" data-power="swim_fast"><span class="opt-btn-icon">🐬</span> SWIM FAST</button>
+              <button class="opt-btn" data-power="super_strong"><span class="opt-btn-icon">💪</span> SUPER STRONG</button>
+              <button class="opt-btn" data-power="magic"><span class="opt-btn-icon">🪄</span> MAKE MAGIC</button>
+              <button class="opt-btn" data-power="run_fast"><span class="opt-btn-icon">🏃</span> RUN FAST</button>
+            </div>
+          </div>
+        `;
+
+      case 11: // WORLD & FOOD
+        return `
+          <div class="step-subgroup">
+            <div class="step-group-label">1. Where Does It Live?</div>
+            <div class="option-button-grid wide">
+              <button class="opt-btn" data-world="castle"><span class="opt-btn-icon">🏰</span> CASTLE</button>
+              <button class="opt-btn" data-world="forest"><span class="opt-btn-icon">🌲</span> FOREST</button>
+              <button class="opt-btn" data-world="volcano"><span class="opt-btn-icon">🌋</span> VOLCANO</button>
+              <button class="opt-btn" data-world="ocean"><span class="opt-btn-icon">🌊</span> OCEAN</button>
+              <button class="opt-btn" data-world="ice_world"><span class="opt-btn-icon">🧊</span> ICE WORLD</button>
+              <button class="opt-btn" data-world="moon"><span class="opt-btn-icon">🌕</span> MOON</button>
+              <button class="opt-btn" data-world="space"><span class="opt-btn-icon">🚀</span> SPACE</button>
+              <button class="opt-btn" data-world="jungle"><span class="opt-btn-icon">🌴</span> JUNGLE</button>
+              <button class="opt-btn" data-world="cave"><span class="opt-btn-icon">🕳️</span> CAVE</button>
+              <button class="opt-btn" data-world="house"><span class="opt-btn-icon">🏡</span> HOUSE</button>
+            </div>
+          </div>
+          <div class="step-subgroup">
+            <div class="step-group-label">2. Favorite Food (What does it like?):</div>
+            <div class="option-button-grid wide">
+              <button class="opt-btn" data-food="pizza"><span class="opt-btn-icon">🍕</span> PIZZA</button>
+              <button class="opt-btn" data-food="burgers"><span class="opt-btn-icon">🍔</span> BURGERS</button>
+              <button class="opt-btn" data-food="ice_cream"><span class="opt-btn-icon">🍦</span> ICE CREAM</button>
+              <button class="opt-btn" data-food="apples"><span class="opt-btn-icon">🍎</span> APPLES</button>
+              <button class="opt-btn" data-food="fish"><span class="opt-btn-icon">🐟</span> FISH</button>
+              <button class="opt-btn" data-food="cake"><span class="opt-btn-icon">🎂</span> CAKE</button>
+              <button class="opt-btn" data-food="sandwiches"><span class="opt-btn-icon">🥪</span> SANDWICHES</button>
+              <button class="opt-btn" data-food="chocolate"><span class="opt-btn-icon">🍫</span> CHOCOLATE</button>
+            </div>
+          </div>
+        `;
+
+      case 12: // NAME
+        const currentName = window.monsterStore.get().name || 'Zippy';
+        return `
+          <div class="step-screen-instruction">👉 Give your monster a name:</div>
+          <div class="name-entry-card">
+            <p class="name-prompt-text">My monster's name is...</p>
+            <div class="name-input-row" style="margin-top: 14px;">
+              <input type="text" id="monster-name-input" class="monster-name-input" placeholder="Type name (e.g. Zippy)..." maxlength="20" value="${currentName}">
+              <button class="random-name-btn" id="random-name-btn" title="Pick a random funny name">🎲 RANDOM NAME</button>
+            </div>
+          </div>
+        `;
+
+      default:
+        return '';
+    }
+  }
+
+  // ==========================================
+  // SYNC SELECTIONS FROM STATE FOR CURRENT STEP
+  // ==========================================
+  syncStepSelections(container) {
+    const m = window.monsterStore.get();
+
+    // Body
+    container.querySelectorAll('[data-body-shape]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bodyShape === m.body);
+    });
+
+    // Eyes
+    container.querySelectorAll('[data-eyes-count]').forEach(btn => {
+      const val = btn.dataset.eyesCount === 'many' ? 'many' : parseInt(btn.dataset.eyesCount, 10);
+      btn.classList.toggle('active', val === m.eyes.count);
+    });
+    container.querySelectorAll('[data-eyes-size]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.eyesSize === m.eyes.size);
+    });
+    container.querySelectorAll('[data-eyes-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.eyesStyle === m.eyes.style);
+    });
+
+    // Ears & Horns
+    container.querySelectorAll('[data-ears-count]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.earsCount, 10) === m.ears.count);
+    });
+    container.querySelectorAll('[data-ears-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.earsStyle === m.ears.style);
+    });
+    container.querySelectorAll('[data-horns-count]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.hornsCount, 10) === m.horns.count);
+    });
+    container.querySelectorAll('[data-horns-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.hornsStyle === m.horns.style);
+    });
+
+    // Face
+    container.querySelectorAll('[data-nose-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.noseStyle === m.nose);
+    });
+    container.querySelectorAll('[data-mouth-type]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mouthType === m.mouth);
+    });
+    container.querySelectorAll('[data-teeth-type]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.teethType === m.teeth);
+    });
+    container.querySelectorAll('[data-expression]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.expression === m.expression);
+    });
+
+    // Arms & Legs
+    container.querySelectorAll('[data-arms-count]').forEach(btn => {
+      const val = btn.dataset.armsCount === 'many' ? 'many' : parseInt(btn.dataset.armsCount, 10);
+      btn.classList.toggle('active', val === m.arms.count);
+    });
+    container.querySelectorAll('[data-arms-length]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.armsLength === m.arms.length);
+    });
+    container.querySelectorAll('[data-hands-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.handsStyle === m.hands);
+    });
+    container.querySelectorAll('[data-legs-count]').forEach(btn => {
+      const val = btn.dataset.legsCount === 'many' ? 'many' : parseInt(btn.dataset.legsCount, 10);
+      btn.classList.toggle('active', val === m.legs.count);
+    });
+    container.querySelectorAll('[data-feet-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.feetStyle === m.feet);
+    });
+
+    // Special
+    container.querySelectorAll('[data-special-wings]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.specialWings === m.specialParts.wings);
+    });
+    container.querySelectorAll('[data-special-tail]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.specialTail === m.specialParts.tail);
+    });
+    container.querySelectorAll('[data-special-extra]').forEach(btn => {
+      btn.classList.toggle('active', !!m.specialParts[btn.dataset.specialExtra]);
+    });
+
+    // Colors
+    container.querySelectorAll('[data-body-color]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bodyColor === m.color);
+    });
+    container.querySelectorAll('[data-secondary-color]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.secondaryColor === m.secondaryColor);
+    });
+    container.querySelectorAll('[data-pattern]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.pattern === m.pattern);
+    });
+
+    // Clothes
+    container.querySelectorAll('[data-special-suit]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.specialSuit === m.clothes.outfit);
+    });
+    container.querySelectorAll('[data-cloth-top]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.clothTop === m.clothes.top);
+    });
+    container.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.clothBottom === m.clothes.bottom);
+    });
+    container.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.clothShoes === m.clothes.shoes);
+    });
+
+    // Accessories
+    container.querySelectorAll('[data-accessory]').forEach(btn => {
+      btn.classList.toggle('active', m.accessories.includes(btn.dataset.accessory));
+    });
+
+    // Personality & Powers
+    container.querySelectorAll('[data-power]').forEach(btn => {
+      btn.classList.toggle('active', m.powers.includes(btn.dataset.power));
+    });
+    container.querySelectorAll('[data-personality]').forEach(btn => {
+      btn.classList.toggle('active', m.personality.includes(btn.dataset.personality));
+    });
+
+    // World & Food
+    container.querySelectorAll('[data-world]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.world === m.world);
+    });
+    container.querySelectorAll('[data-food]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.food === m.food);
+    });
+  }
+
+  // ==========================================
+  // BIND EVENTS FOR CURRENT STEP
+  // ==========================================
+  bindStepEvents(container) {
+    // Body Shapes
+    container.querySelectorAll('[data-body-shape]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setBodyShape(e.currentTarget.dataset.bodyShape);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Eyes
+    container.querySelectorAll('[data-eyes-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const val = e.currentTarget.dataset.eyesCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.eyesCount, 10);
+        window.monsterStore.setEyesCount(val);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-eyes-size]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setEyesSize(e.currentTarget.dataset.eyesSize);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-eyes-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setEyesStyle(e.currentTarget.dataset.eyesStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Ears & Horns
+    container.querySelectorAll('[data-ears-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setEarsCount(parseInt(e.currentTarget.dataset.earsCount, 10));
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-ears-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setEarsStyle(e.currentTarget.dataset.earsStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-horns-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setHornsCount(parseInt(e.currentTarget.dataset.hornsCount, 10));
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-horns-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setHornsStyle(e.currentTarget.dataset.hornsStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Face
+    container.querySelectorAll('[data-nose-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setNoseStyle(e.currentTarget.dataset.noseStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-mouth-type]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setMouthType(e.currentTarget.dataset.mouthType);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-teeth-type]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setTeethType(e.currentTarget.dataset.teethType);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-expression]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setExpression(e.currentTarget.dataset.expression);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Arms & Legs
+    container.querySelectorAll('[data-arms-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const val = e.currentTarget.dataset.armsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.armsCount, 10);
+        window.monsterStore.setArmsCount(val);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-arms-length]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setArmsLength(e.currentTarget.dataset.armsLength);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-hands-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setHandsStyle(e.currentTarget.dataset.handsStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-legs-count]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const val = e.currentTarget.dataset.legsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.legsCount, 10);
+        window.monsterStore.setLegsCount(val);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-feet-style]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setFeetStyle(e.currentTarget.dataset.feetStyle);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Special
+    container.querySelectorAll('[data-special-wings]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setSpecialWings(e.currentTarget.dataset.specialWings);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-special-tail]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setSpecialTail(e.currentTarget.dataset.specialTail);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-special-extra]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.toggleSpecialExtra(e.currentTarget.dataset.specialExtra);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Colors
+    container.querySelectorAll('[data-body-color]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setMainColor(e.currentTarget.dataset.bodyColor);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-secondary-color]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setSecondaryColor(e.currentTarget.dataset.secondaryColor);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-pattern]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setPattern(e.currentTarget.dataset.pattern);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Clothes
+    container.querySelectorAll('[data-special-suit]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setSpecialOutfit(e.currentTarget.dataset.specialSuit);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-cloth-top]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setClothesTop(e.currentTarget.dataset.clothTop);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setClothesBottom(e.currentTarget.dataset.clothBottom);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setClothesShoes(e.currentTarget.dataset.clothShoes);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Accessories
+    container.querySelectorAll('[data-accessory]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.toggleAccessory(e.currentTarget.dataset.accessory);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Personality & Powers
+    container.querySelectorAll('[data-power]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.togglePower(e.currentTarget.dataset.power);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-personality]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.togglePersonality(e.currentTarget.dataset.personality);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // World & Food
+    container.querySelectorAll('[data-world]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setWorld(e.currentTarget.dataset.world);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+    container.querySelectorAll('[data-food]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        window.monsterStore.setFood(e.currentTarget.dataset.food);
+        window.soundEngine.playBoing();
+        this.syncStepSelections(container);
+      });
+    });
+
+    // Name Input & Random Name Button
+    const nameInput = container.querySelector('#monster-name-input');
+    if (nameInput) {
+      nameInput.addEventListener('input', (e) => {
+        window.monsterStore.setName(e.target.value);
+      });
+    }
+    const randNameBtn = container.querySelector('#random-name-btn');
+    if (randNameBtn) {
+      randNameBtn.addEventListener('click', () => {
+        this.pickRandomName();
+      });
+    }
+  }
+
+  // ==========================================
+  // LIVE PREVIEW & PHRASE BADGE UPDATER
   // ==========================================
   updateAllPreviews() {
     const monster = window.monsterStore.get();
@@ -200,9 +1021,6 @@ class MonsterApp {
     });
   }
 
-  // ==========================================
-  // ACTIVE ENGLISH PHRASE BADGE
-  // ==========================================
   updatePhraseBadge() {
     const monster = window.monsterStore.get();
     let phrase = '';
@@ -345,6 +1163,12 @@ class MonsterApp {
 
     window.monsterStore.set(weirdMonster);
 
+    // Sync active step options
+    const contentEl = document.getElementById('wizard-step-content');
+    if (contentEl) {
+      this.syncStepSelections(contentEl);
+    }
+
     // Creative Weird Popup Banner
     const banner = document.getElementById('surprise-popup-banner');
     if (banner) {
@@ -364,151 +1188,12 @@ class MonsterApp {
   }
 
   // ==========================================
-  // SYNC SELECTION BUTTONS STATE
-  // ==========================================
-  updateSelectionButtons() {
-    const m = window.monsterStore.get();
-
-    // Body Shapes
-    document.querySelectorAll('[data-body-shape]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.bodyShape === m.body);
-    });
-
-    // Body Colors & Secondary Colors & Patterns
-    document.querySelectorAll('[data-body-color]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.bodyColor === m.color);
-    });
-    document.querySelectorAll('[data-secondary-color]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.secondaryColor === m.secondaryColor);
-    });
-    document.querySelectorAll('[data-pattern]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.pattern === m.pattern);
-    });
-
-    // Eyes
-    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
-      const val = btn.dataset.eyesCount === 'many' ? 'many' : parseInt(btn.dataset.eyesCount, 10);
-      btn.classList.toggle('active', val === m.eyes.count);
-    });
-    document.querySelectorAll('[data-eyes-size]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.eyesSize === m.eyes.size);
-    });
-    document.querySelectorAll('[data-eyes-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.eyesStyle === m.eyes.style);
-    });
-
-    // Ears
-    document.querySelectorAll('[data-ears-count]').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.earsCount, 10) === m.ears.count);
-    });
-    document.querySelectorAll('[data-ears-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.earsStyle === m.ears.style);
-    });
-
-    // Horns
-    document.querySelectorAll('[data-horns-count]').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.hornsCount, 10) === m.horns.count);
-    });
-    document.querySelectorAll('[data-horns-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.hornsStyle === m.horns.style);
-    });
-
-    // Nose, Mouth, Teeth, Expressions
-    document.querySelectorAll('[data-nose-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.noseStyle === m.nose);
-    });
-    document.querySelectorAll('[data-mouth-type]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.mouthType === m.mouth);
-    });
-    document.querySelectorAll('[data-teeth-type]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.teethType === m.teeth);
-    });
-    document.querySelectorAll('[data-expression]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.expression === m.expression);
-    });
-
-    // Arms & Hands
-    document.querySelectorAll('[data-arms-count]').forEach(btn => {
-      const val = btn.dataset.armsCount === 'many' ? 'many' : parseInt(btn.dataset.armsCount, 10);
-      btn.classList.toggle('active', val === m.arms.count);
-    });
-    document.querySelectorAll('[data-arms-length]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.armsLength === m.arms.length);
-    });
-    document.querySelectorAll('[data-hands-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.handsStyle === m.hands);
-    });
-
-    // Legs & Feet
-    document.querySelectorAll('[data-legs-count]').forEach(btn => {
-      const val = btn.dataset.legsCount === 'many' ? 'many' : parseInt(btn.dataset.legsCount, 10);
-      btn.classList.toggle('active', val === m.legs.count);
-    });
-    document.querySelectorAll('[data-feet-style]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.feetStyle === m.feet);
-    });
-
-    // Special Parts
-    document.querySelectorAll('[data-special-wings]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialWings === m.specialParts.wings);
-    });
-    document.querySelectorAll('[data-special-tail]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialTail === m.specialParts.tail);
-    });
-    document.querySelectorAll('[data-special-extra]').forEach(btn => {
-      const extra = btn.dataset.specialExtra;
-      btn.classList.toggle('active', !!m.specialParts[extra]);
-    });
-
-    // Clothes & Outfits
-    document.querySelectorAll('[data-special-suit]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.specialSuit === m.clothes.outfit);
-    });
-    document.querySelectorAll('[data-cloth-top]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.clothTop === m.clothes.top);
-    });
-    document.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.clothBottom === m.clothes.bottom);
-    });
-    document.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.clothShoes === m.clothes.shoes);
-    });
-
-    // Accessories
-    document.querySelectorAll('[data-accessory]').forEach(btn => {
-      const acc = btn.dataset.accessory;
-      btn.classList.toggle('active', m.accessories.includes(acc));
-    });
-
-    // Powers & Personality
-    document.querySelectorAll('[data-power]').forEach(btn => {
-      const p = btn.dataset.power;
-      btn.classList.toggle('active', m.powers.includes(p));
-    });
-    document.querySelectorAll('[data-personality]').forEach(btn => {
-      const trait = btn.dataset.personality;
-      btn.classList.toggle('active', m.personality.includes(trait));
-    });
-
-    // World & Food
-    document.querySelectorAll('[data-world]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.world === m.world);
-    });
-    document.querySelectorAll('[data-food]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.food === m.food);
-    });
-  }
-
-  // ==========================================
   // FINAL SCREEN: SHOWCASE & DESCRIPTIONS
   // ==========================================
   renderFinalScreen() {
     const monster = window.monsterStore.get();
     const summary = window.grammarEngine.getMonsterSummary(monster);
     const fullParagraph = window.grammarEngine.getFullDescription(monster);
-
-    const nameInput = document.getElementById('monster-name-input');
-    if (nameInput) nameInput.value = monster.name;
 
     const nameTitleEl = document.getElementById('final-monster-name-display');
     if (nameTitleEl) nameTitleEl.innerText = monster.name.toUpperCase();
@@ -1048,10 +1733,10 @@ class MonsterApp {
   }
 
   // ==========================================
-  // EVENT BINDINGS
+  // STATIC EVENT BINDINGS
   // ==========================================
-  bindEvents() {
-    // 1. Screen Navigation
+  bindStaticEvents() {
+    // Screen Navigation
     document.querySelectorAll('[data-goto]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const screenId = e.currentTarget.dataset.goto;
@@ -1060,252 +1745,24 @@ class MonsterApp {
       });
     });
 
-    // 2. Track Step Click Navigation
-    document.querySelectorAll('.wizard-progress-track .track-step').forEach(dot => {
-      dot.addEventListener('click', (e) => {
-        const step = parseInt(e.currentTarget.dataset.step, 10);
-        this.setStep(step);
-      });
-    });
-
-    // 3. Body Shapes
-    document.querySelectorAll('[data-body-shape]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setBodyShape(e.currentTarget.dataset.bodyShape);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 4. Colors & Patterns
-    document.querySelectorAll('[data-body-color]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setMainColor(e.currentTarget.dataset.bodyColor);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-secondary-color]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setSecondaryColor(e.currentTarget.dataset.secondaryColor);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-pattern]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setPattern(e.currentTarget.dataset.pattern);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 5. Face Elements (Eyes, Ears, Horns, Nose, Mouth, Teeth, Expressions)
-    document.querySelectorAll('[data-eyes-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const val = e.currentTarget.dataset.eyesCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.eyesCount, 10);
-        window.monsterStore.setEyesCount(val);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-eyes-size]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setEyesSize(e.currentTarget.dataset.eyesSize);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-eyes-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setEyesStyle(e.currentTarget.dataset.eyesStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    document.querySelectorAll('[data-ears-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setEarsCount(parseInt(e.currentTarget.dataset.earsCount, 10));
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-ears-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setEarsStyle(e.currentTarget.dataset.earsStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    document.querySelectorAll('[data-horns-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setHornsCount(parseInt(e.currentTarget.dataset.hornsCount, 10));
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-horns-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setHornsStyle(e.currentTarget.dataset.hornsStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    document.querySelectorAll('[data-nose-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setNoseStyle(e.currentTarget.dataset.noseStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-mouth-type]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setMouthType(e.currentTarget.dataset.mouthType);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-teeth-type]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setTeethType(e.currentTarget.dataset.teethType);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-expression]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setExpression(e.currentTarget.dataset.expression);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 6. Arms & Hands
-    document.querySelectorAll('[data-arms-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const val = e.currentTarget.dataset.armsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.armsCount, 10);
-        window.monsterStore.setArmsCount(val);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-arms-length]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setArmsLength(e.currentTarget.dataset.armsLength);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-hands-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setHandsStyle(e.currentTarget.dataset.handsStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 7. Legs & Feet
-    document.querySelectorAll('[data-legs-count]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const val = e.currentTarget.dataset.legsCount === 'many' ? 'many' : parseInt(e.currentTarget.dataset.legsCount, 10);
-        window.monsterStore.setLegsCount(val);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-feet-style]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setFeetStyle(e.currentTarget.dataset.feetStyle);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 8. Special Parts
-    document.querySelectorAll('[data-special-wings]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setSpecialWings(e.currentTarget.dataset.specialWings);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-special-tail]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setSpecialTail(e.currentTarget.dataset.specialTail);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-special-extra]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.toggleSpecialExtra(e.currentTarget.dataset.specialExtra);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 9. Clothes & Accessories
-    document.querySelectorAll('[data-special-suit]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setSpecialOutfit(e.currentTarget.dataset.specialSuit);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-cloth-top]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setClothesTop(e.currentTarget.dataset.clothTop);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-cloth-bottom]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setClothesBottom(e.currentTarget.dataset.clothBottom);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-cloth-shoes]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setClothesShoes(e.currentTarget.dataset.clothShoes);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-accessory]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.toggleAccessory(e.currentTarget.dataset.accessory);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 10. Powers, Personality, World, Food
-    document.querySelectorAll('[data-power]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.togglePower(e.currentTarget.dataset.power);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-personality]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.togglePersonality(e.currentTarget.dataset.personality);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-world]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setWorld(e.currentTarget.dataset.world);
-        window.soundEngine.playBoing();
-      });
-    });
-    document.querySelectorAll('[data-food]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        window.monsterStore.setFood(e.currentTarget.dataset.food);
-        window.soundEngine.playBoing();
-      });
-    });
-
-    // 11. "Make It Weird" Buttons
+    // Make It Weird
     const makeWeirdBtn = document.getElementById('make-it-weird-btn');
     if (makeWeirdBtn) makeWeirdBtn.addEventListener('click', () => this.makeItWeird());
 
     const surpriseMeBtn = document.getElementById('surprise-me-btn');
     if (surpriseMeBtn) surpriseMeBtn.addEventListener('click', () => this.makeItWeird());
 
-    // 12. Active Phrase Pronunciation
+    // Active Phrase Pronunciation
     const hearPhraseBtn = document.querySelector('.hear-phrase-btn');
     if (hearPhraseBtn) hearPhraseBtn.addEventListener('click', () => this.speakActivePhrase());
-
-    // 13. Name Input
-    const nameInput = document.getElementById('monster-name-input');
-    if (nameInput) {
-      nameInput.addEventListener('input', (e) => this.setMonsterName(e.target.value));
-    }
-    const randomNameBtn = document.getElementById('random-name-btn');
-    if (randomNameBtn) {
-      randomNameBtn.addEventListener('click', () => this.pickRandomName());
-    }
   }
 }
 
+window.MonsterApp = MonsterApp;
+
 // Initialize Application when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.app = new MonsterApp();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.app = new MonsterApp();
+  });
+}
