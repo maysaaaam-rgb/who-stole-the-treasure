@@ -323,6 +323,18 @@ const LESSON_DATA = {
 
   // CHARACTER CREATION OPTIONS
   creatorOptions: {
+    bases: [
+      { id: "fox", label: "FOX", emoji: "🦊", defaultImage: "assets/images/fennekin.png" },
+      { id: "cat", label: "CAT", emoji: "🐱", defaultImage: "assets/images/litten.png" },
+      { id: "rabbit", label: "RABBIT", emoji: "🐰", defaultImage: "assets/images/scorbunny.png" },
+      { id: "turtle", label: "TURTLE", emoji: "🐢", defaultImage: "assets/images/squirtle.png" },
+      { id: "dragon", label: "DRAGON", emoji: "🐉", defaultImage: "assets/images/dragonite.png" },
+      { id: "bird", label: "BIRD", emoji: "🦅", defaultImage: "assets/images/rookidee.png" },
+      { id: "wolf", label: "WOLF", emoji: "🐺", defaultImage: "assets/images/rockruff.png" },
+      { id: "frog", label: "FROG", emoji: "🐸", defaultImage: "assets/images/froakie.png" },
+      { id: "dinosaur", label: "DINOSAUR", emoji: "🦖", defaultImage: "assets/images/fuecoco.png" },
+      { id: "mouse", label: "MOUSE", emoji: "🐭", defaultImage: "assets/images/pikachu.png" }
+    ],
     size: [
       { id: "tiny", label: "TINY", emoji: "🤏", scale: 0.65 },
       { id: "small", label: "SMALL", emoji: "🐭", scale: 0.82 },

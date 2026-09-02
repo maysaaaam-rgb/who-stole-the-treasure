@@ -430,24 +430,44 @@
           <!-- Left: Selection Control Panels -->
           <div class="creator-options-panel">
             
-            <!-- Step 1: Size -->
+            <!-- Step 1: Creature Base -->
             <div class="creator-step-section">
               <div class="step-title">
                 <span class="step-num">1</span>
+                <span>CHOOSE CREATURE BASE:</span>
+              </div>
+              <div class="choice-pills-row creature-base-pills" id="p1-base-choices">
+                <button class="choice-pill base-pill" data-type="base" data-val="fox">🦊 FOX</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="cat">🐱 CAT</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="rabbit">🐰 RABBIT</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="turtle">🐢 TURTLE</button>
+                <button class="choice-pill base-pill active" data-type="base" data-val="dragon">🐉 DRAGON</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="bird">🦅 BIRD</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="wolf">🐺 WOLF</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="frog">🐸 FROG</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="dinosaur">🦖 DINOSAUR</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="mouse">🐭 MOUSE</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Size -->
+            <div class="creator-step-section">
+              <div class="step-title">
+                <span class="step-num">2</span>
                 <span>CHOOSE SIZE:</span>
               </div>
               <div class="choice-pills-row" id="p1-size-choices">
                 <button class="choice-pill" data-type="size" data-val="tiny">🤏 TINY</button>
                 <button class="choice-pill" data-type="size" data-val="small">🐭 SMALL</button>
-                <button class="choice-pill active" data-type="size" data-val="big">🐻 BIG</button>
-                <button class="choice-pill" data-type="size" data-val="huge">🐉 HUGE</button>
+                <button class="choice-pill" data-type="size" data-val="big">🐻 BIG</button>
+                <button class="choice-pill active" data-type="size" data-val="huge">🐉 HUGE</button>
               </div>
             </div>
 
-            <!-- Step 2: Personality -->
+            <!-- Step 3: Personality -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">2</span>
+                <span class="step-num">3</span>
                 <span>CHOOSE PERSONALITY:</span>
               </div>
               <div class="choice-pills-row" id="p1-personality-choices">
@@ -459,10 +479,10 @@
               </div>
             </div>
 
-            <!-- Step 3: Power -->
+            <!-- Step 4: Power -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">3</span>
+                <span class="step-num">4</span>
                 <span>CHOOSE POWER:</span>
               </div>
               <div class="choice-pills-row" id="p1-power-choices">
@@ -473,10 +493,10 @@
               </div>
             </div>
 
-            <!-- Step 4: Two Abilities -->
+            <!-- Step 5: Two Abilities -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">4</span>
+                <span class="step-num">5</span>
                 <span>CHOOSE TWO ABILITIES: <span class="badge-count" id="p1-ability-count">2/2</span></span>
               </div>
               <div class="ability-select-grid" id="p1-ability-choices">
@@ -491,15 +511,16 @@
             <div class="pod-capsule">
               <div class="pod-glass-inner">
                 <div class="dna-helix-glow"></div>
-                <div class="pod-mystery-silhouette" id="p1-pod-silhouette">
-                  <span class="mystery-qm">?</span>
+                <div class="pod-creature-wrap" id="p1-pod-silhouette">
+                  <img src="assets/images/dragonite.png" alt="Creature Base Preview" id="p1-pod-preview-img" class="pod-creature-preview-img">
                 </div>
               </div>
             </div>
 
             <div class="creator-summary-card">
               <h4>SYNTHESIS SPECIFICATION</h4>
-              <div class="spec-row"><span>Size:</span> <strong id="p1-spec-size">BIG</strong></div>
+              <div class="spec-row"><span>Base:</span> <strong id="p1-spec-base">DRAGON</strong></div>
+              <div class="spec-row"><span>Size:</span> <strong id="p1-spec-size">HUGE</strong></div>
               <div class="spec-row"><span>Personality:</span> <strong id="p1-spec-personality">BRAVE</strong></div>
               <div class="spec-row"><span>Power:</span> <strong id="p1-spec-power">STRONG</strong></div>
               <div class="spec-row"><span>Abilities:</span> <strong id="p1-spec-abilities">MAKE FIRE, FLY</strong></div>
@@ -535,7 +556,9 @@
               <span class="fixed-text">."</span>
             </div>
             <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is</span>
+              <span class="fixed-text">"It is a</span>
+              <span class="slot-text slot-base" id="p1-slot-base">dragon</span>
+              <span class="fixed-text">. It is</span>
               <span class="slot-text slot-adj" id="p1-slot-personality">brave</span>
               <span class="fixed-text">."</span>
             </div>
@@ -608,9 +631,30 @@
 
         <div class="creator-workspace-grid">
           <div class="creator-options-panel">
+            <!-- Step 1: Creature Base -->
             <div class="creator-step-section">
               <div class="step-title">
                 <span class="step-num">1</span>
+                <span>CHOOSE CREATURE BASE:</span>
+              </div>
+              <div class="choice-pills-row creature-base-pills" id="p2-base-choices">
+                <button class="choice-pill base-pill active" data-type="base" data-val="fox">🦊 FOX</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="cat">🐱 CAT</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="rabbit">🐰 RABBIT</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="turtle">🐢 TURTLE</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="dragon">🐉 DRAGON</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="bird">🦅 BIRD</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="wolf">🐺 WOLF</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="frog">🐸 FROG</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="dinosaur">🦖 DINOSAUR</button>
+                <button class="choice-pill base-pill" data-type="base" data-val="mouse">🐭 MOUSE</button>
+              </div>
+            </div>
+
+            <!-- Step 2: Size -->
+            <div class="creator-step-section">
+              <div class="step-title">
+                <span class="step-num">2</span>
                 <span>CHOOSE SIZE:</span>
               </div>
               <div class="choice-pills-row" id="p2-size-choices">
@@ -621,9 +665,10 @@
               </div>
             </div>
 
+            <!-- Step 3: Personality -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">2</span>
+                <span class="step-num">3</span>
                 <span>CHOOSE PERSONALITY:</span>
               </div>
               <div class="choice-pills-row" id="p2-personality-choices">
@@ -635,9 +680,10 @@
               </div>
             </div>
 
+            <!-- Step 4: Power -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">3</span>
+                <span class="step-num">4</span>
                 <span>CHOOSE POWER:</span>
               </div>
               <div class="choice-pills-row" id="p2-power-choices">
@@ -648,9 +694,10 @@
               </div>
             </div>
 
+            <!-- Step 5: Two Abilities -->
             <div class="creator-step-section">
               <div class="step-title">
-                <span class="step-num">4</span>
+                <span class="step-num">5</span>
                 <span>CHOOSE TWO ABILITIES: <span class="badge-count" id="p2-ability-count">2/2</span></span>
               </div>
               <div class="ability-select-grid" id="p2-ability-choices">
@@ -663,14 +710,15 @@
             <div class="pod-capsule">
               <div class="pod-glass-inner">
                 <div class="dna-helix-glow"></div>
-                <div class="pod-mystery-silhouette" id="p2-pod-silhouette">
-                  <span class="mystery-qm">?</span>
+                <div class="pod-creature-wrap" id="p2-pod-silhouette">
+                  <img src="assets/images/fennekin.png" alt="Creature Base Preview" id="p2-pod-preview-img" class="pod-creature-preview-img">
                 </div>
               </div>
             </div>
 
             <div class="creator-summary-card">
               <h4>SYNTHESIS SPECIFICATION</h4>
+              <div class="spec-row"><span>Base:</span> <strong id="p2-spec-base">FOX</strong></div>
               <div class="spec-row"><span>Size:</span> <strong id="p2-spec-size">SMALL</strong></div>
               <div class="spec-row"><span>Personality:</span> <strong id="p2-spec-personality">CUTE</strong></div>
               <div class="spec-row"><span>Power:</span> <strong id="p2-spec-power">FAST</strong></div>
@@ -706,7 +754,9 @@
               <span class="fixed-text">."</span>
             </div>
             <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is</span>
+              <span class="fixed-text">"It is a</span>
+              <span class="slot-text slot-base" id="p2-slot-base">fox</span>
+              <span class="fixed-text">. It is</span>
               <span class="slot-text slot-adj" id="p2-slot-personality">cute</span>
               <span class="fixed-text">."</span>
             </div>
@@ -970,6 +1020,22 @@
           <div class="pokedex-col">
             <h3 class="col-title col-p1">POKÉMON 1 (TRAINER 1)</h3>
             <div class="pokedex-section">
+              <h4>Creature Base:</h4>
+              <div class="check-grid base-check-grid" id="pokedexCheckP1Base">
+                <label><input type="checkbox"> 🦊 Fox</label>
+                <label><input type="checkbox"> 🐱 Cat</label>
+                <label><input type="checkbox"> 🐰 Rabbit</label>
+                <label><input type="checkbox"> 🐢 Turtle</label>
+                <label><input type="checkbox"> 🐉 Dragon</label>
+                <label><input type="checkbox"> 🦅 Bird</label>
+                <label><input type="checkbox"> 🐺 Wolf</label>
+                <label><input type="checkbox"> 🐸 Frog</label>
+                <label><input type="checkbox"> 🦖 Dino</label>
+                <label><input type="checkbox"> 🐭 Mouse</label>
+              </div>
+            </div>
+
+            <div class="pokedex-section">
               <h4>Adjectives:</h4>
               <div class="check-grid" id="pokedexCheckP1Adj">
                 <label><input type="checkbox"> tiny</label>
@@ -1007,6 +1073,22 @@
           <!-- P2 Listening Column -->
           <div class="pokedex-col">
             <h3 class="col-title col-p2">POKÉMON 2 (TRAINER 2)</h3>
+            <div class="pokedex-section">
+              <h4>Creature Base:</h4>
+              <div class="check-grid base-check-grid" id="pokedexCheckP2Base">
+                <label><input type="checkbox"> 🦊 Fox</label>
+                <label><input type="checkbox"> 🐱 Cat</label>
+                <label><input type="checkbox"> 🐰 Rabbit</label>
+                <label><input type="checkbox"> 🐢 Turtle</label>
+                <label><input type="checkbox"> 🐉 Dragon</label>
+                <label><input type="checkbox"> 🦅 Bird</label>
+                <label><input type="checkbox"> 🐺 Wolf</label>
+                <label><input type="checkbox"> 🐸 Frog</label>
+                <label><input type="checkbox"> 🦖 Dino</label>
+                <label><input type="checkbox"> 🐭 Mouse</label>
+              </div>
+            </div>
+
             <div class="pokedex-section">
               <h4>Adjectives:</h4>
               <div class="check-grid" id="pokedexCheckP2Adj">
@@ -1067,7 +1149,7 @@
           <li><strong>0:00 - 0:05</strong>: 🚨 Pokémon Emergency & Spotting icebreaker (warm-up, high energy).</li>
           <li><strong>0:05 - 0:15</strong>: 📖 Adjectives & Abilities vocabulary teaching with TPR physical gestures (stretch, flex, fly).</li>
           <li><strong>0:15 - 0:20</strong>: 🗣️ Sentence modeling ("It is small and fast. It can jump and make electricity.").</li>
-          <li><strong>0:20 - 0:32</strong>: 🧬 Character Creator & Speaking Gate. Call pairs of students to smartboard to create, describe aloud, and battle!</li>
+          <li><strong>0:20 - 0:32</strong>: 🧬 Character Creator (10 Bases) & Speaking Gate. Call pairs of students to smartboard to create, describe aloud, and battle!</li>
           <li><strong>0:32 - 0:38</strong>: ⚔️ English Battle: Spoken English earns attack power! Whole class ticks their Pokédex.</li>
           <li><strong>0:38 - 0:40</strong>: 🏆 Champion Badge ceremony & independent drawing sheet.</li>
         </ol>
@@ -1087,6 +1169,9 @@
       <div class="print-grid">
         <div class="print-box">
           <h2>POKÉMON 1 (TRAINER 1)</h2>
+          <p><strong>Creature Base:</strong></p>
+          <p>☐ Fox &nbsp; ☐ Cat &nbsp; ☐ Rabbit &nbsp; ☐ Turtle &nbsp; ☐ Dragon</p>
+          <p>☐ Bird &nbsp; ☐ Wolf &nbsp; ☐ Frog &nbsp; ☐ Dinosaur &nbsp; ☐ Mouse</p>
           <p><strong>Adjectives:</strong></p>
           <p>☐ tiny &nbsp; ☐ small &nbsp; ☐ big &nbsp; ☐ huge</p>
           <p>☐ fast &nbsp; ☐ slow &nbsp; ☐ strong &nbsp; ☐ weak</p>
@@ -1098,6 +1183,9 @@
         </div>
         <div class="print-box">
           <h2>POKÉMON 2 (TRAINER 2)</h2>
+          <p><strong>Creature Base:</strong></p>
+          <p>☐ Fox &nbsp; ☐ Cat &nbsp; ☐ Rabbit &nbsp; ☐ Turtle &nbsp; ☐ Dragon</p>
+          <p>☐ Bird &nbsp; ☐ Wolf &nbsp; ☐ Frog &nbsp; ☐ Dinosaur &nbsp; ☐ Mouse</p>
           <p><strong>Adjectives:</strong></p>
           <p>☐ tiny &nbsp; ☐ small &nbsp; ☐ big &nbsp; ☐ huge</p>
           <p>☐ fast &nbsp; ☐ slow &nbsp; ☐ strong &nbsp; ☐ weak</p>
@@ -1121,7 +1209,7 @@
       <div class="print-sentence-frame-box">
         <h3>WRITE ABOUT YOUR POKÉMON:</h3>
         <p class="print-line">My Pokémon is __________________ and __________________.</p>
-        <p class="print-line">It is __________________.</p>
+        <p class="print-line">It is a __________________. It is __________________.</p>
         <p class="print-line">It can __________________ and __________________.</p>
         <p class="print-line">It can't __________________.</p>
       </div>

@@ -1524,6 +1524,154 @@ body {
   100% { filter: hue-rotate(360deg); }
 }
 
+/* Complete Full-Body Creature Presentation & Ground Shadows */
+.creature-display-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+.creature-ground-shadow {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%);
+  pointer-events: none;
+  z-index: 1;
+}
+.creature-fullbody-img {
+  max-width: 90%;
+  max-height: 90%;
+  height: 240px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(var(--creature-scale, 1.0));
+  transform-origin: bottom center;
+}
+.creature-flip-x {
+  transform: scale(var(--creature-scale, 1.0)) scaleX(-1) !important;
+}
+
+/* Creature Base Selection Pills & Scaffolding */
+.creature-base-pills {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+.base-pill {
+  font-size: 0.95rem;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+.base-pill.active {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+.slot-base {
+  background: #0284c7;
+  color: #fef08a;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.6);
+}
+.pod-creature-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 5;
+}
+.pod-creature-preview-img {
+  max-width: 140px;
+  max-height: 150px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.85));
+  animation: floatingPreview 2s infinite ease-in-out;
+}
+@keyframes floatingPreview {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.base-check-grid {
+  grid-template-columns: repeat(5, 1fr) !important;
+  margin-bottom: 0.8rem;
+}
+
+/* Elemental Particle Layers */
+.element-effect-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: visible;
+}
+.fire-embers .ember {
+  position: absolute;
+  font-size: 1.8rem;
+  animation: emberRise 1.8s infinite ease-out;
+}
+.ember.e1 { bottom: 20%; left: 20%; animation-delay: 0s; }
+.ember.e2 { bottom: 30%; right: 20%; animation-delay: 0.6s; }
+.ember.e3 { bottom: 40%; left: 50%; animation-delay: 1.2s; }
+@keyframes emberRise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
+}
+.electric-sparks .spark {
+  position: absolute;
+  font-size: 1.8rem;
+  animation: sparkFlash 0.6s infinite alternate;
+}
+.spark.s1 { top: 20%; left: 15%; animation-delay: 0.1s; }
+.spark.s2 { top: 25%; right: 15%; animation-delay: 0.3s; }
+.spark.s3 { bottom: 35%; right: 40%; animation-delay: 0.5s; }
+@keyframes sparkFlash {
+  0% { transform: scale(0.7) rotate(0deg); opacity: 0.4; }
+  100% { transform: scale(1.3) rotate(15deg); opacity: 1; filter: drop-shadow(0 0 10px #facc15); }
+}
+.ice-frost .frost {
+  position: absolute;
+  font-size: 1.6rem;
+  animation: frostSpin 3s infinite linear;
+}
+.frost.f1 { top: 15%; left: 25%; animation-delay: 0s; }
+.frost.f2 { top: 25%; right: 25%; animation-delay: 1s; }
+.frost.f3 { bottom: 25%; left: 45%; animation-delay: 2s; }
+@keyframes frostSpin {
+  0% { transform: rotate(0deg) scale(0.8); opacity: 0.6; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+  100% { transform: rotate(360deg) scale(0.8); opacity: 0.6; }
+}
+.wind-swirls .wind {
+  position: absolute;
+  font-size: 2rem;
+  animation: windGlide 2s infinite ease-in-out;
+}
+.wind.w1 { top: 20%; left: 15%; animation-delay: 0s; }
+.wind.w2 { top: 30%; right: 15%; animation-delay: 1s; }
+@keyframes windGlide {
+  0% { transform: translateX(0) scale(0.8); opacity: 0.4; }
+  50% { transform: translateX(20px) scale(1.2); opacity: 0.9; }
+  100% { transform: translateX(0) scale(0.8); opacity: 0.4; }
+}
+
 /* ==========================================================================
    SCREEN 12: CREATOR BATTLE ARENA
    ========================================================================== */
@@ -1623,12 +1771,13 @@ body {
   width: 320px;
 }
 .creature-battle-wrap {
-  width: 280px;
-  height: 250px;
+  width: 320px;
+  height: 280px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   transition: transform 0.3s ease;
+  position: relative;
 }
 
 .battle-turn-indicator {
@@ -1879,11 +2028,12 @@ body {
   color: #facc15;
 }
 .champion-creature-viewport {
-  width: 250px;
-  height: 200px;
+  width: 280px;
+  height: 240px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
+  position: relative;
 }
 .champion-creature-name {
   font-size: 1.8rem;

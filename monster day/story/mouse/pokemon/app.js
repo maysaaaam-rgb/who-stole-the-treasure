@@ -10,12 +10,14 @@ class PokemonApp {
 
     // Game & Creature State
     this.p1Config = {
+      base: 'dragon',
       size: 'huge',
       personality: 'brave',
       power: 'strong',
       abilities: ['make fire', 'fly']
     };
     this.p2Config = {
+      base: 'fox',
       size: 'small',
       personality: 'cute',
       power: 'fast',
@@ -583,6 +585,18 @@ class PokemonApp {
     const config = playerNum === 1 ? this.p1Config : this.p2Config;
     const prefix = `p${playerNum}`;
 
+    // Base Pills
+    const basePills = document.querySelectorAll(`#${prefix}-base-choices .choice-pill`);
+    basePills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        basePills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        config.base = pill.getAttribute('data-val');
+        sounds.playClick();
+        this.updateCreatorSummary(playerNum);
+      });
+    });
+
     // Size Pills
     const sizePills = document.querySelectorAll(`#${prefix}-size-choices .choice-pill`);
     sizePills.forEach(pill => {
@@ -663,12 +677,22 @@ class PokemonApp {
     const config = playerNum === 1 ? this.p1Config : this.p2Config;
     const prefix = `p${playerNum}`;
 
+    const baseEl = document.getElementById(`${prefix}-spec-base`);
+    if (baseEl) baseEl.textContent = (config.base || 'fox').toUpperCase();
+
     document.getElementById(`${prefix}-spec-size`).textContent = config.size.toUpperCase();
     document.getElementById(`${prefix}-spec-personality`).textContent = config.personality.toUpperCase();
     document.getElementById(`${prefix}-spec-power`).textContent = config.power.toUpperCase();
     document.getElementById(`${prefix}-spec-abilities`).textContent = config.abilities.join(', ').toUpperCase();
 
     document.getElementById(`${prefix}-ability-count`).textContent = `${config.abilities.length}/2`;
+
+    // Update capsule pod preview image
+    const modelImg = creatures.selectModelImage(config.base, config.abilities, config.personality, config.power, config.size);
+    const previewImg = document.getElementById(`${prefix}-pod-preview-img`);
+    if (previewImg) {
+      previewImg.src = modelImg;
+    }
 
     // Highlight Pod Glow based on chosen primary ability
     const pod = document.querySelector(`#screen-create-${prefix} .pod-capsule`);
@@ -718,6 +742,9 @@ class PokemonApp {
     const config = playerNum === 1 ? this.p1Config : this.p2Config;
     const prefix = `p${playerNum}`;
 
+    const slotBase = document.getElementById(`${prefix}-slot-base`);
+    if (slotBase) slotBase.textContent = config.base || 'creature';
+
     document.getElementById(`${prefix}-slot-size`).textContent = config.size;
     document.getElementById(`${prefix}-slot-power`).textContent = config.power;
     document.getElementById(`${prefix}-slot-personality`).textContent = config.personality;
@@ -734,7 +761,8 @@ class PokemonApp {
     const config = playerNum === 1 ? this.p1Config : this.p2Config;
     const ab1 = config.abilities[0] || 'jump';
     const ab2 = config.abilities[1] || 'fly';
-    const text = `My Pokémon is ${config.size} and ${config.power}. It is ${config.personality}. It can ${ab1} and ${ab2}.`;
+    const base = config.base || 'creature';
+    const text = `My Pokémon is ${config.size} and ${config.power}. It is a ${base}. It is ${config.personality}. It can ${ab1} and ${ab2}.`;
     sounds.speak(text);
   }
 
@@ -773,9 +801,9 @@ class PokemonApp {
 
         document.getElementById(`${prefix}-revealed-name`).textContent = creature.name.toUpperCase();
         document.getElementById(`${prefix}-revealed-traits`).textContent =
-          `${creature.size.toUpperCase()} • ${creature.power.toUpperCase()} • ${creature.personality.toUpperCase()}`;
+          `${creature.base.toUpperCase()} • ${creature.size.toUpperCase()} • ${creature.power.toUpperCase()} • ${creature.personality.toUpperCase()}`;
 
-        document.getElementById(`${prefix}-creature-viewport`).innerHTML = creature.svg;
+        document.getElementById(`${prefix}-creature-viewport`).innerHTML = creature.renderHTML({ isPlayer2: false });
 
         const abContainer = document.getElementById(`${prefix}-revealed-abilities`);
         abContainer.innerHTML = '';
@@ -828,8 +856,8 @@ class PokemonApp {
     document.getElementById('battleP1Name').textContent = this.p1Creature.name.toUpperCase();
     document.getElementById('battleP2Name').textContent = this.p2Creature.name.toUpperCase();
 
-    document.getElementById('battleCreatureP1').innerHTML = this.p1Creature.svg;
-    document.getElementById('battleCreatureP2').innerHTML = this.p2Creature.svg;
+    document.getElementById('battleCreatureP1').innerHTML = this.p1Creature.renderHTML({ isPlayer2: false });
+    document.getElementById('battleCreatureP2').innerHTML = this.p2Creature.renderHTML({ isPlayer2: true });
 
     this.updateBattleHUD();
     this.renderBattleAttackButtons();
@@ -978,7 +1006,7 @@ class PokemonApp {
 
     document.getElementById('champWinnerTitle').textContent = `CHAMPION TRAINER ${winner}!`;
     document.getElementById('champCreatureName').textContent = winnerCreature.name.toUpperCase();
-    document.getElementById('champCreatureViewport').innerHTML = winnerCreature.svg;
+    document.getElementById('champCreatureViewport').innerHTML = winnerCreature.renderHTML({ isPlayer2: false });
 
     document.getElementById('champScoreP1').textContent = `${this.p1Points} Points ⭐`;
     document.getElementById('champScoreP2').textContent = `${this.p2Points} Points ⭐`;
