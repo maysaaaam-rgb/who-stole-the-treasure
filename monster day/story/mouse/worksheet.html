@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The City Mouse & The Country Mouse - Printable Worksheet (A1/A1+)</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap">
+  <style>
+    /* Print & Screen Setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      color: #222;
+      background: #f0f2f5;
+      padding: 20px;
+      line-height: 1.4;
+    }
+
+    /* Top Floating Print Bar (Hidden during print) */
+    .print-bar {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 2px solid #e0e0e0;
+    }
+
+    .print-btn {
+      background: #2e7d32;
+      color: #fff;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .print-btn:hover {
+      background: #1b5e20;
+    }
+
+    .back-btn {
+      color: #1565c0;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* Printable Page Sheet */
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      background: #ffffff;
+      padding: 15mm 18mm;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    /* Page Header */
+    .sheet-header {
+      border-bottom: 3px solid #333;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .sheet-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sheet-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #2e7d32;
+    }
+
+    .sheet-level {
+      font-size: 13px;
+      font-weight: 800;
+      background: #e8f5e9;
+      color: #1b5e20;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .student-info-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .info-line {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .line-field {
+      flex: 1;
+      border-bottom: 1.5px solid #555;
+      height: 20px;
+    }
+
+    /* Section Styling */
+    .exercise-box {
+      margin-bottom: 20px;
+    }
+
+    .exercise-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1565c0;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .exercise-instruction {
+      font-size: 13px;
+      color: #555;
+      font-weight: 600;
+      margin-top: -6px;
+      margin-bottom: 12px;
+    }
+
+    /* Exercise 1: Vocabulary Match */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .vocab-card {
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .vocab-img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    .vocab-word-bank {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: #fff8e1;
+      border: 1.5px dashed #ffa000;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #e65100;
+    }
+
+    .vocab-blank {
+      border-bottom: 2px solid #333;
+      height: 22px;
+      margin: 4px 8px 0;
+    }
+
+    /* Exercise 2: Story Sequencing */
+    .sequence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .seq-item {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+    }
+
+    .seq-img {
+      width: 100%;
+      height: 95px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+
+    .seq-caption {
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      color: #333;
+      min-height: 32px;
+    }
+
+    .seq-circle {
+      width: 32px;
+      height: 32px;
+      border: 2.5px solid #2e7d32;
+      border-radius: 50%;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #2e7d32;
+    }
+
+    /* Exercise 3: True or False */
+    .qa-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .qa-table tr {
+      border-bottom: 1.5px solid #eee;
+    }
+
+    .qa-table td {
+      padding: 10px 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .circle-choice {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      line-height: 32px;
+      text-align: center;
+      border: 2px solid #666;
+      border-radius: 50%;
+      margin-left: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* Exercise 4: Sorting Box */
+    .sort-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .sort-bank {
+      grid-column: 1 / -1;
+      background: #e3f2fd;
+      border: 1.5px dashed #1976d2;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: #0d47a1;
+      margin-bottom: 6px;
+    }
+
+    .sort-basket {
+      border: 2px solid #aaa;
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-height: 140px;
+      background: #fafafa;
+    }
+
+    .sort-basket-header {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      border-bottom: 1.5px solid #ccc;
+      padding-bottom: 4px;
+    }
+
+    .write-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .write-line {
+      border-bottom: 1.5px solid #999;
+      height: 18px;
+    }
+
+    /* Exercise 5: Sentence Frame */
+    .sentence-frame-box {
+      background: #fdfae6;
+      border: 2px solid #ffd54f;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-top: 10px;
+    }
+
+    .frame-text {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 2;
+    }
+
+    .frame-blank {
+      display: inline-block;
+      width: 140px;
+      border-bottom: 2px solid #333;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* Drawing Box */
+    .drawing-box {
+      width: 100%;
+      height: 150px;
+      border: 2px dashed #888;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-weight: 700;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    /* Page Break for Multi-page Print */
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Moral Banner */
+    .moral-banner {
+      border: 2px solid #2e7d32;
+      background: #e8f5e9;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1b5e20;
+      margin-top: 16px;
+    }
+
+    /* Print Stylesheet Overrides */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .print-bar {
+        display: none !important;
+      }
+      .sheet {
+        box-shadow: none;
+        margin: 0;
+        padding: 10mm 12mm;
+        width: 100%;
+        min-height: auto;
+      }
+      .page-break {
+        page-break-after: always;
+        break-after: page;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar for Teachers (Hidden when printing) -->
+  <div class="print-bar">
+    <div>
+      <h2 style="font-family: 'Fredoka', sans-serif; font-size: 20px; color: #2e7d32;">
+        🖨️ Printable English Lesson Worksheet Pack
+      </h2>
+      <p style="font-size: 13px; color: #666; font-weight: 600;">
+        "The City Mouse &amp; The Country Mouse" • 2 Pages • A1 / A1+ Level
+      </p>
+    </div>
+    <div style="display: flex; gap: 14px; align-items: center;">
+      <a href="index.html" class="back-btn">⬅️ Back to Interactive Lesson</a>
+      <button class="print-btn" onclick="window.print()">
+        <span>🖨️ Print Worksheet</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PAGE 1: VOCABULARY & STORY SEQUENCING
+       ====================================================================== -->
+  <div class="sheet page-break">
+    <div class="sheet-header">
+      <div class="sheet-title-row">
+        <h1 class="sheet-title">🐭 The City Mouse &amp; The Country Mouse</h1>
+        <span class="sheet-level">A1 / A1+ ENGLISH WORKSHEET</span>
+      </div>
+      <div class="student-info-grid">
+        <div class="info-line"><span>Name:</span><div class="line-field"></div></div>
+        <div class="info-line"><span>Date:</span><div class="line-field"></div></div>
+        <div class="info-line"><span>Score:</span><div class="line-field"></div></div>
+      </div>
+    </div>
+
+    <!-- Exercise 1: Vocabulary Labeling -->
+    <div class="exercise-box">
+      <div class="exercise-title">
+        <span>Part 1: Word Bank — Write the Correct Word under each Picture</span>
+      </div>
+      <div class="vocab-word-bank">
+        <span>[ City Mouse ]</span>
+        <span>[ Country Mouse ]</span>
+        <span>[ Delicious Food ]</span>
+        <span>[ The Cat ]</span>
+      </div>
+
+      <div class="vocab-grid">
+        <!-- Picture 1 -->
+        <div class="vocab-card">
+          <img src="assets/images/avatar_city_mouse.jpg" class="vocab-img" alt="City Mouse">
+          <div class="vocab-blank"></div>
+        </div>
+        <!-- Picture 2 -->
+        <div class="vocab-card">
+          <img src="assets/images/avatar_country_mouse.jpg" class="vocab-img" alt="Country Mouse">
+          <div class="vocab-blank"></div>
+        </div>
+        <!-- Picture 3 -->
+        <div class="vocab-card">
+          <img src="assets/images/feast_table.jpg" class="vocab-img" alt="Food">
+          <div class="vocab-blank"></div>
+        </div>
+        <!-- Picture 4 -->
+        <div class="vocab-card">
+          <img src="assets/images/cat_appears.jpg" class="vocab-img" alt="Cat">
+          <div class="vocab-blank"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise 2: Story Sequencing -->
+    <div class="exercise-box" style="margin-top: 14px;">
+      <div class="exercise-title">
+        <span>Part 2: Story Sequence — Write numbers (1, 2, 3, 4, 5, 6) in the circles</span>
+      </div>
+      <div class="exercise-instruction">
+        Put the story pictures in order from 1 (First) to 6 (Finally):
+      </div>
+
+      <div class="sequence-grid">
+        <!-- Card A -->
+        <div class="seq-item">
+          <img src="assets/images/country_home.jpg" class="seq-img" alt="Country Home">
+          <div class="seq-caption">Country Mouse lives in the country.</div>
+          <div class="seq-circle"></div>
+        </div>
+
+        <!-- Card B -->
+        <div class="seq-item">
+          <img src="assets/images/city_visits.jpg" class="seq-img" alt="City Visits">
+          <div class="seq-caption">City Mouse visits his country friend.</div>
+          <div class="seq-circle"></div>
+        </div>
+
+        <!-- Card C -->
+        <div class="seq-item">
+          <img src="assets/images/city_basement.jpg" class="seq-img" alt="Basement">
+          <div class="seq-caption">They go to the city and find a cellar.</div>
+          <div class="seq-circle"></div>
+        </div>
+
+        <!-- Card D -->
+        <div class="seq-item">
+          <img src="assets/images/feast_table.jpg" class="seq-img" alt="Feast">
+          <div class="seq-caption">They find a big table of delicious food!</div>
+          <div class="seq-circle"></div>
+        </div>
+
+        <!-- Card E -->
+        <div class="seq-item">
+          <img src="assets/images/mice_running.jpg" class="seq-img" alt="Mice Run">
+          <div class="seq-caption">A cat comes! The mice run away fast!</div>
+          <div class="seq-circle"></div>
+        </div>
+
+        <!-- Card F -->
+        <div class="seq-item">
+          <img src="assets/images/country_safe.jpg" class="seq-img" alt="Country Safe">
+          <div class="seq-caption">Country Mouse is safe at home.</div>
+          <div class="seq-circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PAGE 2: COMPREHENSION, SORTING & PERSONAL CHOICE
+       ====================================================================== -->
+  <div class="sheet">
+    <div class="sheet-header">
+      <div class="sheet-title-row">
+        <h1 class="sheet-title">🐭 The City Mouse &amp; The Country Mouse</h1>
+        <span class="sheet-level">PAGE 2: READING &amp; WRITING</span>
+      </div>
+    </div>
+
+    <!-- Exercise 3: Reading Comprehension -->
+    <div class="exercise-box">
+      <div class="exercise-title">
+        <span>Part 3: Read and Circle YES or NO</span>
+      </div>
+
+      <table class="qa-table">
+        <tr>
+          <td>1. The Country Mouse lives in a big, noisy city.</td>
+          <td style="text-align: right; width: 130px;">
+            <span class="circle-choice">YES</span>
+            <span class="circle-choice">NO</span>
+          </td>
+        </tr>
+        <tr>
+          <td>2. City Mouse wears a smart navy vest and red bowtie.</td>
+          <td style="text-align: right;">
+            <span class="circle-choice">YES</span>
+            <span class="circle-choice">NO</span>
+          </td>
+        </tr>
+        <tr>
+          <td>3. The mice find delicious cheese and cake on the table.</td>
+          <td style="text-align: right;">
+            <span class="circle-choice">YES</span>
+            <span class="circle-choice">NO</span>
+          </td>
+        </tr>
+        <tr>
+          <td>4. A friendly dog plays with the mice.</td>
+          <td style="text-align: right;">
+            <span class="circle-choice">YES</span>
+            <span class="circle-choice">NO</span>
+          </td>
+        </tr>
+        <tr>
+          <td>5. Country Mouse wants to go home to a safe life.</td>
+          <td style="text-align: right;">
+            <span class="circle-choice">YES</span>
+            <span class="circle-choice">NO</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Exercise 4: City vs Country Sorting -->
+    <div class="exercise-box" style="margin-top: 14px;">
+      <div class="exercise-title">
+        <span>Part 4: City or Country? — Write the Words in the Correct Box</span>
+      </div>
+
+      <div class="sort-bank">
+        <span>• noisy</span>
+        <span>• quiet</span>
+        <span>• safe</span>
+        <span>• exciting</span>
+        <span>• dangerous</span>
+        <span>• peaceful</span>
+      </div>
+
+      <div class="sort-container">
+        <!-- City Box -->
+        <div class="sort-basket" style="border-color: #1976d2;">
+          <div class="sort-basket-header" style="color: #0d47a1;">🏙️ THE CITY</div>
+          <div class="write-lines">
+            <div class="write-line">1. </div>
+            <div class="write-line">2. </div>
+            <div class="write-line">3. </div>
+          </div>
+        </div>
+
+        <!-- Country Box -->
+        <div class="sort-basket" style="border-color: #388e3c;">
+          <div class="sort-basket-header" style="color: #1b5e20;">🌳 THE COUNTRY</div>
+          <div class="write-lines">
+            <div class="write-line">1. </div>
+            <div class="write-line">2. </div>
+            <div class="write-line">3. </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise 5: Personal Writing -->
+    <div class="exercise-box" style="margin-top: 16px;">
+      <div class="exercise-title">
+        <span>Part 5: Your Choice — Complete the Sentence</span>
+      </div>
+
+      <div class="sentence-frame-box">
+        <div class="frame-text">
+          I choose the <span class="frame-blank">( city / country )</span>
+          because it is <span class="frame-blank">( safe / fun / exciting / quiet )</span>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise 6: Draw & Color -->
+    <div class="exercise-box" style="margin-top: 14px;">
+      <div class="exercise-title">
+        <span>Part 6: Draw &amp; Color Your Favorite Mouse Home! 🎨</span>
+      </div>
+      <div class="drawing-box">
+        Draw the City Home or the Country Home here!
+      </div>
+    </div>
+
+    <!-- Moral Takeaway -->
+    <div class="moral-banner">
+      💡 Lesson Moral: "A simple and safe life can be a happy life." ✨
+    </div>
+
+  </div>
+
+</body>
+</html>
