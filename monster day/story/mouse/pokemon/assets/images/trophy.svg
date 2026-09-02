@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 380" width="100%" height="100%">
+  <defs>
+    <radialGradient id="trophyGold" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="35%" stop-color="#facc15"/>
+      <stop offset="70%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#854d0e"/>
+    </radialGradient>
+    <linearGradient id="baseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="trophyGlow">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#eab308" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#trophyGlow)">
+    <!-- Confetti & Sparkles -->
+    <circle cx="60" cy="80" r="6" fill="#ec4899"/>
+    <rect x="250" y="70" width="12" height="12" rx="3" fill="#38bdf8" transform="rotate(25 250 70)"/>
+    <circle cx="80" cy="180" r="7" fill="#a855f7"/>
+    <rect x="230" y="190" width="10" height="10" rx="2" fill="#22c55e" transform="rotate(45 230 190)"/>
+    <polygon points="160,10 165,22 178,25 167,31 163,44 157,32 145,28 156,23" fill="#ffffff"/>
+
+    <!-- Handles -->
+    <path d="M 85 90 C 20 90, 25 180, 95 190" fill="none" stroke="url(#trophyGold)" stroke-width="16" stroke-linecap="round"/>
+    <path d="M 235 90 C 300 90, 295 180, 225 190" fill="none" stroke="url(#trophyGold)" stroke-width="16" stroke-linecap="round"/>
+
+    <!-- Main Cup Body -->
+    <path d="M 80 70 L 240 70 C 240 160, 205 210, 160 225 C 115 210, 80 160, 80 70 Z" fill="url(#trophyGold)" stroke="#a16207" stroke-width="4"/>
+
+    <!-- Cup Rim -->
+    <ellipse cx="160" cy="70" rx="80" ry="16" fill="#fef08a" stroke="#ca8a04" stroke-width="4"/>
+
+    <!-- Star Emblem on Cup -->
+    <polygon points="160,110 168,132 192,132 172,146 179,168 160,154 141,168 148,146 128,132 152,132" fill="#ffffff" stroke="#eab308" stroke-width="2"/>
+
+    <!-- Stem -->
+    <path d="M 145 225 L 175 225 L 180 270 L 140 270 Z" fill="url(#trophyGold)" stroke="#a16207" stroke-width="3"/>
+    <ellipse cx="160" cy="270" rx="30" ry="8" fill="#ca8a04"/>
+
+    <!-- Pedestal / Base -->
+    <path d="M 120 275 L 200 275 L 220 340 L 100 340 Z" fill="url(#baseGrad)" stroke="#475569" stroke-width="3"/>
+    <rect x="90" y="340" width="140" height="20" rx="4" fill="#0f172a"/>
+
+    <!-- Gold Plate on Base -->
+    <rect x="115" y="295" width="90" height="32" rx="4" fill="url(#trophyGold)" stroke="#ca8a04" stroke-width="2"/>
+    <text x="160" y="316" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="14" fill="#78350f" text-anchor="middle">CHAMPION</text>
+  </g>
+</svg>
