@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#70c4ff"/>
+      <stop offset="60%" stop-color="#b8e4ff"/>
+      <stop offset="100%" stop-color="#eaf6ff"/>
+    </linearGradient>
+    <linearGradient id="brick" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d32f2f"/>
+      <stop offset="50%" stop-color="#e53935"/>
+      <stop offset="100%" stop-color="#c62828"/>
+    </linearGradient>
+    <linearGradient id="door" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b71c1c"/>
+      <stop offset="100%" stop-color="#7f0000"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="600" fill="url(#sky)"/>
+
+  <!-- Clouds -->
+  <g fill="#ffffff" opacity="0.9">
+    <circle cx="120" cy="90" r="35"/>
+    <circle cx="160" cy="80" r="45"/>
+    <circle cx="205" cy="90" r="35"/>
+    <circle cx="620" cy="110" r="40"/>
+    <circle cx="670" cy="95" r="50"/>
+    <circle cx="720" cy="110" r="40"/>
+  </g>
+
+  <!-- Ground / Pavement -->
+  <rect y="440" width="800" height="160" fill="#cfd8dc"/>
+  <rect y="420" width="800" height="25" fill="#78909c"/>
+  <rect y="480" width="800" height="120" fill="#90a4ae"/>
+  <!-- Road markings -->
+  <line x1="50" y1="540" x2="150" y2="540" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="250" y1="540" x2="350" y2="540" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="450" y1="540" x2="550" y2="540" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="650" y1="540" x2="750" y2="540" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Fire Station Main Building -->
+  <g filter="url(#shadow)">
+    <rect x="140" y="140" width="520" height="285" rx="8" fill="url(#brick)" stroke="#8e0000" stroke-width="4"/>
+    <!-- Roof cornice -->
+    <rect x="125" y="130" width="550" height="22" rx="4" fill="#37474f"/>
+    <!-- Bricks pattern lines -->
+    <line x1="140" y1="180" x2="660" y2="180" stroke="#b71c1c" stroke-width="2" opacity="0.6"/>
+    <line x1="140" y1="220" x2="660" y2="220" stroke="#b71c1c" stroke-width="2" opacity="0.6"/>
+    <line x1="140" y1="260" x2="660" y2="260" stroke="#b71c1c" stroke-width="2" opacity="0.6"/>
+
+    <!-- Sign Board -->
+    <rect x="230" y="160" width="340" height="55" rx="10" fill="#fff9c4" stroke="#fbc02d" stroke-width="5"/>
+    <text x="400" y="198" font-family="'Comic Sans MS', 'Fredoka', 'Quicksand', sans-serif" font-size="28" font-weight="900" fill="#b71c1c" text-anchor="middle" letter-spacing="2">🚒 FIRE STATION 🚒</text>
+
+    <!-- Large Garage Doors -->
+    <!-- Door 1 -->
+    <rect x="180" y="240" width="180" height="185" rx="12" fill="url(#door)" stroke="#37474f" stroke-width="4"/>
+    <g fill="#455a64" stroke="#263238" stroke-width="2">
+      <rect x="195" y="255" width="65" height="40" rx="4" fill="#e0f7fa" opacity="0.8"/>
+      <rect x="280" y="255" width="65" height="40" rx="4" fill="#e0f7fa" opacity="0.8"/>
+      <line x1="180" y1="315" x2="360" y2="315" stroke="#ffe082" stroke-width="4"/>
+      <line x1="180" y1="365" x2="360" y2="365" stroke="#ffe082" stroke-width="4"/>
+    </g>
+
+    <!-- Door 2 -->
+    <rect x="440" y="240" width="180" height="185" rx="12" fill="url(#door)" stroke="#37474f" stroke-width="4"/>
+    <g fill="#455a64" stroke="#263238" stroke-width="2">
+      <rect x="455" y="255" width="65" height="40" rx="4" fill="#e0f7fa" opacity="0.8"/>
+      <rect x="540" y="255" width="65" height="40" rx="4" fill="#e0f7fa" opacity="0.8"/>
+      <line x1="440" y1="315" x2="620" y2="315" stroke="#ffe082" stroke-width="4"/>
+      <line x1="440" y1="365" x2="620" y2="365" stroke="#ffe082" stroke-width="4"/>
+    </g>
+
+    <!-- Station Siren Bell on Roof -->
+    <polygon points="385,130 415,130 408,100 392,100" fill="#fbc02d" stroke="#f57f17" stroke-width="3"/>
+    <circle cx="400" cy="95" r="10" fill="#f44336"/>
+  </g>
+
+  <!-- Fire Engine front partially visible in Door 2 -->
+  <g transform="translate(460, 290)">
+    <rect x="10" y="25" width="120" height="110" rx="10" fill="#d32f2f" stroke="#b71c1c" stroke-width="3"/>
+    <rect x="25" y="35" width="90" height="45" rx="6" fill="#b3e5fc" stroke="#0288d1" stroke-width="2"/>
+    <circle cx="35" cy="115" r="14" fill="#ffeb3b" stroke="#f57f17" stroke-width="2"/>
+    <circle cx="105" cy="115" r="14" fill="#ffeb3b" stroke="#f57f17" stroke-width="2"/>
+    <polygon points="60,25 80,25 75,12 65,12" fill="#29b6f6" stroke="#0288d1" stroke-width="2"/>
+  </g>
+
+  <!-- Mr Clark and Tulip Class Children arriving -->
+  <!-- Mr Clark -->
+  <g transform="translate(70, 360)">
+    <rect x="20" y="45" width="30" height="60" rx="10" fill="#42a5f5" stroke="#1565c0" stroke-width="2"/>
+    <line x1="27" y1="105" x2="27" y2="155" stroke="#37474f" stroke-width="8" stroke-linecap="round"/>
+    <line x1="43" y1="105" x2="43" y2="155" stroke="#37474f" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="35" cy="25" r="18" fill="#ffcc80" stroke="#e65100" stroke-width="2"/>
+    <path d="M 22,25 Q 35,45 48,25 Q 52,10 35,10 Q 18,10 22,25 Z" fill="#8d6e63"/>
+    <circle cx="35" cy="22" r="15" fill="#ffcc80"/>
+    <circle cx="31" cy="20" r="2.5" fill="#333"/>
+    <circle cx="39" cy="20" r="2.5" fill="#333"/>
+    <path d="M 31,27 Q 35,32 39,27" stroke="#333" stroke-width="2" fill="none"/>
+    <line x1="20" y1="55" x2="2" y2="25" stroke="#42a5f5" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="2" cy="23" r="5" fill="#ffcc80"/>
+  </g>
+
+  <!-- Child 1 (Dylan - cap) -->
+  <g transform="translate(135, 410)">
+    <circle cx="15" cy="18" r="12" fill="#ffe0b2"/>
+    <path d="M 5,16 Q 15,6 25,16" fill="#4caf50"/>
+    <polygon points="23,14 34,16 26,19" fill="#4caf50"/>
+    <rect x="8" y="30" width="16" height="35" rx="6" fill="#ff9800"/>
+    <line x1="12" y1="65" x2="12" y2="95" stroke="#1976d2" stroke-width="5" stroke-linecap="round"/>
+    <line x1="20" y1="65" x2="20" y2="95" stroke="#1976d2" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Child 2 (Medinah) -->
+  <g transform="translate(170, 420)">
+    <circle cx="15" cy="18" r="12" fill="#8d6e63"/>
+    <circle cx="15" cy="15" r="14" fill="#3e2723"/>
+    <circle cx="15" cy="18" r="11" fill="#a1887f"/>
+    <rect x="8" y="30" width="16" height="30" rx="6" fill="#ab47bc"/>
+    <line x1="12" y1="60" x2="12" y2="88" stroke="#f48fb1" stroke-width="5" stroke-linecap="round"/>
+    <line x1="20" y1="60" x2="20" y2="88" stroke="#f48fb1" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Interactive Highlight Target for FIND THE SIGN -->
+  <rect id="fire-station-sign-box" class="interactive-target" x="220" y="150" width="360" height="75" rx="15" fill="none" stroke="#ffeb3b" stroke-width="6" stroke-dasharray="10 6" opacity="0.9" cursor="pointer">
+    <animate attributeName="stroke-dashoffset" values="0;32" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <text x="400" y="245" font-family="'Comic Sans MS', sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle" filter="url(#shadow)">👆 Tap the Fire Station Sign!</text>
+</svg>

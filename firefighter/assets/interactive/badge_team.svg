@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bronze" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#ffe0b2"/>
+      <stop offset="60%" stop-color="#ff9800"/>
+      <stop offset="100%" stop-color="#e65100"/>
+    </radialGradient>
+  </defs>
+  <polygon points="90,140 70,225 105,200 120,225 105,140" fill="#388e3c"/>
+  <polygon points="150,140 170,225 135,200 120,225 135,140" fill="#1b5e20"/>
+  <circle cx="120" cy="110" r="75" fill="url(#bronze)" stroke="#bf360c" stroke-width="6"/>
+  <circle cx="120" cy="110" r="60" fill="none" stroke="#fff3e0" stroke-width="3" stroke-dasharray="6 4"/>
+  <text x="120" y="105" font-size="50" text-anchor="middle">🤝</text>
+  <text x="120" y="145" font-family="'Comic Sans MS', 'Fredoka', sans-serif" font-size="13" font-weight="900" fill="#1b5e20" text-anchor="middle">SUPER TEAM</text>
+  <text x="120" y="160" font-family="'Comic Sans MS', 'Fredoka', sans-serif" font-size="12" font-weight="900" fill="#3e2723" text-anchor="middle">PLAYER</text>
+</svg>
