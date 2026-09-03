@@ -1,22 +1,23 @@
 /**
- * Predictions Application Controller: 10-Stage Progression, Dramatic Reveal Timing, Team Scoreboard
+ * Predictions Application Controller: Picture-First Mechanics, Comic Story Flow & Matching Games
  */
 
 class PredictionsAppController {
   constructor() {
     this.state = {
       currentStage: 1,
-      difficulty: 'normal', // 'easy', 'normal', 'challenge'
+      difficulty: 'normal',
       introChoice: null,
       introRevealed: false,
-      lookPredictIndex: 0,
-      lookPredictRevealed: false,
-      listenGuessIndex: 0,
-      listenGuessRevealed: false,
-      sequenceIndex: 0,
-      sequenceRevealed: false,
-      whatWillDoIndex: 0,
-      whatWillDoRevealed: false,
+      comicStoryIndex: 0,
+      comicStoryRevealed: false,
+      visualListeningIndex: 0,
+      visualListeningRevealed: false,
+      whichPicIndex: 0,
+      whichPicSelected: null,
+      matchSelectedSentence: null,
+      matchSelectedSentenceMatchId: null,
+      matchedPairs: new Set(),
       bingoBoard: JSON.parse(JSON.stringify(window.PREDICTIONS_DATA.bingoBoard)),
       crazyScenarioIndex: 0,
       detectiveIndex: 0,
@@ -82,19 +83,19 @@ class PredictionsAppController {
         window.predictionsSound.playPop();
         break;
       case 3:
-        viewport.innerHTML = window.PredictionsScenes.renderLookAndPredict(this.state);
+        viewport.innerHTML = window.PredictionsScenes.renderComicStories(this.state);
         window.predictionsSound.playPop();
         break;
       case 4:
-        viewport.innerHTML = window.PredictionsScenes.renderListenAndGuess(this.state);
+        viewport.innerHTML = window.PredictionsScenes.renderVisualListening(this.state);
         window.predictionsSound.playPop();
         break;
       case 5:
-        viewport.innerHTML = window.PredictionsScenes.renderPictureSequences(this.state);
+        viewport.innerHTML = window.PredictionsScenes.renderWhichPictureMatches(this.state);
         window.predictionsSound.playPop();
         break;
       case 6:
-        viewport.innerHTML = window.PredictionsScenes.renderWhatWillTheyDo(this.state);
+        viewport.innerHTML = window.PredictionsScenes.renderPictureMatching(this.state);
         window.predictionsSound.playPop();
         break;
       case 7:
@@ -181,51 +182,56 @@ class PredictionsAppController {
         window.predictionsSound.playDogBark();
         this.state.introRevealed = true;
         this.addStars(10, "Revealed the future outcome!");
-        window.predictionsSound.speak(window.PREDICTIONS_DATA.introFreeze.revealText);
+        window.predictionsSound.speak(window.PREDICTIONS_DATA.introFreeze.nextScene.revealText);
         this.renderStage(1);
       }, 400);
     });
   }
 
-  /* ================= STAGE 3: LOOK & PREDICT ================= */
+  /* ================= STAGE 3: 4-PANEL COMIC STORIES ================= */
 
-  selectLookChoice(isCorrect) {
+  selectComicChoice(isCorrect) {
     if (isCorrect) {
-      window.predictionsSound.playSparkle();
-      this.addStars(10, "Good observation!");
+      this.revealComicStory();
     } else {
       window.predictionsSound.playPop();
+      this.showToast("Look closely at the panel clues!");
     }
-    this.revealLookPredict();
   }
 
-  revealLookPredict() {
-    this.state.lookPredictRevealed = true;
-    const curCase = window.PREDICTIONS_DATA.lookPredictCases[this.state.lookPredictIndex];
-    window.predictionsSound.speak(curCase.sentence);
+  revealComicStory() {
+    this.state.comicStoryRevealed = true;
+    const curStory = window.PREDICTIONS_DATA.comicStories[this.state.comicStoryIndex];
+    if (this.state.comicStoryIndex === 2) {
+      window.predictionsSound.playSplash();
+    } else {
+      window.predictionsSound.playSparkle();
+    }
+    window.predictionsSound.speak(curStory.reveal.text);
+    this.addStars(15, "Completed the comic prediction!");
     this.renderStage(3);
   }
 
-  nextLookPredictCase() {
-    this.state.lookPredictRevealed = false;
-    const total = window.PREDICTIONS_DATA.lookPredictCases.length;
-    if (this.state.lookPredictIndex < total - 1) {
-      this.state.lookPredictIndex++;
+  nextComicStory() {
+    this.state.comicStoryRevealed = false;
+    const total = window.PREDICTIONS_DATA.comicStories.length;
+    if (this.state.comicStoryIndex < total - 1) {
+      this.state.comicStoryIndex++;
       this.renderStage(3);
     } else {
-      this.state.lookPredictIndex = 0;
+      this.state.comicStoryIndex = 0;
       this.renderStage(4);
     }
   }
 
-  /* ================= STAGE 4: LISTEN & GUESS ================= */
+  /* ================= STAGE 4: VISUAL LISTENING ================= */
 
-  selectListenChoice(isCorrect) {
-    this.state.listenGuessRevealed = true;
-    const curCase = window.PREDICTIONS_DATA.listenGuessCases[this.state.listenGuessIndex];
+  selectVisualListenChoice(isCorrect) {
+    this.state.visualListeningRevealed = true;
+    const curCase = window.PREDICTIONS_DATA.visualListeningCases[this.state.visualListeningIndex];
     if (isCorrect) {
       window.predictionsSound.playSparkle();
-      this.addStars(10, "Great listening prediction!");
+      this.addStars(10, "Great visual listening prediction!");
     } else {
       window.predictionsSound.playPop();
     }
@@ -233,66 +239,78 @@ class PredictionsAppController {
     this.renderStage(4);
   }
 
-  nextListenGuessCase() {
-    this.state.listenGuessRevealed = false;
-    const total = window.PREDICTIONS_DATA.listenGuessCases.length;
-    if (this.state.listenGuessIndex < total - 1) {
-      this.state.listenGuessIndex++;
+  nextVisualListenCase() {
+    this.state.visualListeningRevealed = false;
+    const total = window.PREDICTIONS_DATA.visualListeningCases.length;
+    if (this.state.visualListeningIndex < total - 1) {
+      this.state.visualListeningIndex++;
       this.renderStage(4);
     } else {
-      this.state.listenGuessIndex = 0;
+      this.state.visualListeningIndex = 0;
       this.renderStage(5);
     }
   }
 
-  /* ================= STAGE 5: SEQUENCES ================= */
+  /* ================= STAGE 5: WHICH PICTURE MATCHES? ================= */
 
-  selectSeqChoice(isCorrect) {
+  selectWhichPic(picId, isCorrect) {
+    this.state.whichPicSelected = picId;
+    const curCase = window.PREDICTIONS_DATA.whichPictureCases[this.state.whichPicIndex];
+
     if (isCorrect) {
-      this.revealSequence();
+      window.predictionsSound.playSparkle();
+      this.addStars(15, "Matched the picture to the sentence!");
+      window.predictionsSound.speak(curCase.speech);
     } else {
       window.predictionsSound.playPop();
-      this.showToast("Try another prediction!");
+      this.showToast("Look at the picture actions again!");
     }
+    this.renderStage(5);
   }
 
-  revealSequence() {
-    this.state.sequenceRevealed = true;
-    const curSeq = window.PREDICTIONS_DATA.sequences[this.state.sequenceIndex];
-    if (this.state.sequenceIndex === 0) {
-      window.predictionsSound.playSplash();
+  nextWhichPicCase() {
+    this.state.whichPicSelected = null;
+    const total = window.PREDICTIONS_DATA.whichPictureCases.length;
+    if (this.state.whichPicIndex < total - 1) {
+      this.state.whichPicIndex++;
+      this.renderStage(5);
     } else {
-      window.predictionsSound.playSparkle();
+      this.state.whichPicIndex = 0;
+      this.renderStage(6);
     }
-    window.predictionsSound.speak(curSeq.reveal.text);
-    this.addStars(15, "Completed the sequence prediction!");
-    this.renderStage(5);
   }
 
-  nextSequence() {
-    this.state.sequenceRevealed = false;
-    const total = window.PREDICTIONS_DATA.sequences.length;
-    this.state.sequenceIndex = (this.state.sequenceIndex + 1) % total;
+  /* ================= STAGE 6: PICTURE-SENTENCE MATCHING ================= */
+
+  selectMatchSentence(sentenceId, matchId) {
+    this.state.matchSelectedSentence = sentenceId;
+    this.state.matchSelectedSentenceMatchId = matchId;
     window.predictionsSound.playPop();
-    this.renderStage(5);
-  }
-
-  /* ================= STAGE 6: WHAT WILL THEY DO ================= */
-
-  selectWhatWillDoItem(isBest) {
-    this.state.whatWillDoRevealed = true;
-    const curCase = window.PREDICTIONS_DATA.whatWillDoCases[this.state.whatWillDoIndex];
-    window.predictionsSound.playSparkle();
-    window.predictionsSound.speak(curCase.prediction);
-    this.addStars(10, "Predicted character choice!");
+    this.showToast("Now tap the matching picture card!");
     this.renderStage(6);
   }
 
-  nextWhatWillDoCase() {
-    this.state.whatWillDoRevealed = false;
-    const total = window.PREDICTIONS_DATA.whatWillDoCases.length;
-    this.state.whatWillDoIndex = (this.state.whatWillDoIndex + 1) % total;
-    window.predictionsSound.playPop();
+  selectMatchPicture(picMatchId) {
+    if (!this.state.matchSelectedSentenceMatchId) {
+      this.showToast("👆 Tap a sentence on the left first!");
+      return;
+    }
+
+    if (this.state.matchSelectedSentenceMatchId === picMatchId) {
+      window.predictionsSound.playSparkle();
+      this.state.matchedPairs.add(picMatchId);
+      this.state.matchSelectedSentence = null;
+      this.state.matchSelectedSentenceMatchId = null;
+      this.addStars(15, "Matched sentence to picture!");
+
+      if (this.state.matchedPairs.size === window.PREDICTIONS_DATA.matchingActivity.sentences.length) {
+        window.predictionsSound.playFanfare();
+        this.showToast("🎉 Outstanding! All pairs matched!");
+      }
+    } else {
+      window.predictionsSound.playPop();
+      this.showToast("Not quite! Try matching again.");
+    }
     this.renderStage(6);
   }
 
@@ -406,11 +424,13 @@ class PredictionsAppController {
     if (this.state.currentStage === 1) {
       this.revealIntroEvent();
     } else if (this.state.currentStage === 3) {
-      this.revealLookPredict();
+      this.revealComicStory();
     } else if (this.state.currentStage === 5) {
-      this.revealSequence();
+      const curCase = window.PREDICTIONS_DATA.whichPictureCases[this.state.whichPicIndex];
+      const correctPic = curCase.pictures.find(p => p.isCorrect);
+      if (correctPic) this.selectWhichPic(correctPic.id, true);
     } else {
-      this.showToast("💡 Future event revealed by teacher!");
+      this.showToast("💡 Future outcome revealed by teacher!");
     }
   }
 }

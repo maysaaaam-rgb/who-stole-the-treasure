@@ -1,5 +1,5 @@
 /*
- * What Will Happen Next?: 16:9 Smartboard Scaling & Cosmic Comic Pop Aesthetic
+ * What Will Happen Next?: 16:9 Picture-First Visual Storytelling & Comic Strips
  */
 
 :root {
@@ -288,12 +288,12 @@ body, html {
 .pred-action-btn.primary:hover { box-shadow: 0 6px 0 #5b21b6; }
 .pred-action-btn.large { font-size: 18px; padding: 14px 28px; }
 
-/* ================= 1. THE FREEZE FRAME ================= */
+/* ================= 1. FREEZE FRAME (NOW vs NEXT) ================= */
 
 .freeze-stage-layout {
   flex: 1;
   display: flex;
-  padding: 18px 24px;
+  padding: 16px 24px;
   gap: 20px;
   background: #faf5ff;
 }
@@ -308,18 +308,22 @@ body, html {
   box-shadow: 0 10px 28px rgba(124, 58, 237, 0.12);
 }
 
-.freeze-stamp-tag {
+.now-visual-badge {
   position: absolute;
   top: 12px;
   left: 12px;
   background: #3b82f6;
   color: #fff;
-  font-size: 12px;
-  font-weight: 900;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 10px;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.now-visual-badge .badge-title { font-size: 12px; font-weight: 900; }
+.now-visual-badge .badge-emojis { font-size: 16px; }
 
 .freeze-svg { width: 100%; height: 100%; display: block; }
 
@@ -334,28 +338,25 @@ body, html {
   background: #ffffff;
   border: 3px solid #c084fc;
   border-radius: 18px;
-  padding: 14px;
+  padding: 12px 16px;
   text-align: center;
 }
 
-.q-tag { font-size: 12px; font-weight: 900; color: #7c3aed; letter-spacing: 1px; }
-.q-title { font-size: 24px; font-weight: 900; color: #581c87; margin-top: 4px; }
+.q-tag { font-size: 13px; font-weight: 900; color: #7c3aed; letter-spacing: 1px; }
+.q-sub { font-size: 13px; color: #64748b; font-weight: 700; margin-top: 2px; }
 
-.prediction-choices-list {
+.visual-choices-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 8px;
+  margin: 8px 0;
 }
 
-.pred-choice-btn {
+.visual-choice-card {
   background: #ffffff;
-  border: 2px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 12px 18px;
-  font-size: 16px;
-  font-weight: 800;
-  text-align: left;
+  border: 3px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 10px 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -363,18 +364,16 @@ body, html {
   transition: all 0.15s;
 }
 
-.pred-choice-btn:hover {
-  transform: translateY(-2px);
-  border-color: #7c3aed;
-}
-
-.pred-choice-btn.active {
+.visual-choice-card:hover { transform: translateY(-2px); border-color: #7c3aed; }
+.visual-choice-card.active {
   background: #f3e8ff;
   border-color: #7c3aed;
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
 }
 
-.c-badge { font-size: 12px; font-weight: 900; color: #7c3aed; }
+.v-card-pic { font-size: 28px; }
+.v-card-text { font-size: 17px; font-weight: 900; color: #1e293b; margin-left: 10px; flex: 1; text-align: left; }
+.v-card-selected { font-size: 12px; font-weight: 900; color: #7c3aed; }
 
 .big-reveal-btn {
   width: 100%;
@@ -382,8 +381,8 @@ body, html {
   color: #ffffff;
   border: none;
   border-radius: 16px;
-  padding: 14px 20px;
-  font-size: 20px;
+  padding: 12px 20px;
+  font-size: 18px;
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 5px 0 #d97706;
@@ -398,16 +397,20 @@ body, html {
   100% { transform: scale(1.03); }
 }
 
-.outcome-pill {
-  padding: 10px 14px;
+.now-next-outcome-box {
+  background: #dcfce7;
+  border: 2px solid #86efac;
   border-radius: 12px;
-  font-size: 15px;
-  font-weight: 800;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.outcome-pill.correct { background: #dcfce7; border: 2px solid #86efac; color: #166534; }
+.next-tag { font-size: 12px; font-weight: 900; color: #166534; }
+.next-text { font-size: 15px; font-weight: 800; color: #15803d; }
 
-/* ================= 2. TIMELINE & LANGUAGE ================= */
+/* ================= 2. TIMELINE & VISUAL CARDS ================= */
 
 .language-timeline-stage {
   flex: 1;
@@ -415,8 +418,8 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  gap: 22px;
+  padding: 20px;
+  gap: 20px;
   background: #faf5ff;
 }
 
@@ -430,7 +433,7 @@ body, html {
   background: #ffffff;
   border: 3px solid #cbd5e1;
   border-radius: 20px;
-  padding: 16px 24px;
+  padding: 14px 20px;
   text-align: center;
   width: 220px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
@@ -440,157 +443,151 @@ body, html {
 .future-node { border-color: #a855f7; }
 
 .node-label { font-size: 13px; font-weight: 900; color: #6b21a8; }
-.node-icon { font-size: 40px; margin: 8px 0; }
+.node-icon { font-size: 38px; margin: 6px 0; }
 .node-desc { font-size: 14px; font-weight: 800; color: #1e293b; }
 
 .timeline-arrow-bridge { text-align: center; }
 .arrow-text { font-size: 12px; font-weight: 900; color: #7c3aed; display: block; }
 .bridge-arrow { font-size: 20px; font-weight: 900; color: #7c3aed; }
 
-.formula-banner-card {
-  background: #ffffff;
-  border: 3px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 16px 28px;
-  text-align: center;
-}
-
-.form-tag { font-size: 13px; font-weight: 900; color: #7c3aed; margin-bottom: 10px; display: block; }
-
-.formula-blocks-row {
-  display: flex;
-  align-items: center;
+.visual-future-cards-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
+  width: 100%;
 }
 
-.f-block {
+.future-card-item {
+  background: #ffffff;
   border: 3px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 10px 18px;
+  border-radius: 18px;
+  padding: 14px 10px;
   text-align: center;
-}
-
-.f-block.blue { border-color: #0284c7; }
-.f-block.purple { border-color: #7c3aed; }
-.f-block.green { border-color: #16a34a; }
-
-.f-sub { font-size: 11px; font-weight: 900; color: #64748b; display: block; }
-.f-main { font-size: 20px; font-weight: 900; color: #0f172a; }
-.f-plus { font-size: 24px; font-weight: 900; color: #7c3aed; }
-
-.prediction-starters-grid {
-  display: flex;
-  gap: 12px;
-}
-
-.starter-chip {
-  background: #ffffff;
-  border: 2px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 8px 16px;
-  font-size: 15px;
-  font-weight: 800;
   cursor: pointer;
-  transition: all 0.15s;
-}
-
-.starter-chip:hover { border-color: #7c3aed; transform: translateY(-2px); }
-
-/* ================= 3. LOOK & PREDICT ================= */
-
-.lookpredict-stage-layout {
-  flex: 1;
-  display: flex;
-  padding: 20px 28px;
-  gap: 24px;
-  background: #faf5ff;
-}
-
-.picture-scene-hero {
-  flex: 1.2;
-  background: #ffffff;
-  border: 4px solid #a855f7;
-  border-radius: 20px;
-  padding: 24px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-}
-
-.scene-emoji-large { font-size: 80px; }
-.scene-hero-title { font-size: 22px; font-weight: 900; color: #581c87; margin: 12px 0; }
-.scene-clues-pill { background: #fef3c7; border: 2px solid #fde047; border-radius: 12px; padding: 8px 16px; font-size: 14px; color: #78350f; }
-
-.predict-reveal-box {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 190px;
+  transition: all 0.15s;
 }
 
-.box-q-tag { font-size: 14px; font-weight: 900; color: #7c3aed; }
+.future-card-item:hover { transform: translateY(-3px); border-color: #7c3aed; }
+.future-card-pic { font-size: 42px; display: block; margin-bottom: 6px; }
+.future-card-sentence { font-size: 15px; font-weight: 900; color: #0f172a; margin: 4px 0; }
+.mini-audio-btn {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #d8b4fe;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
 
-.choices-stack {
+/* ================= 3. 4-PANEL COMIC STRIP STORIES ================= */
+
+.comic-strip-stage-layout {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 10px 0;
+  padding: 16px 24px;
+  gap: 14px;
+  background: #faf5ff;
 }
 
-.choice-row-btn {
+.four-panels-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.comic-panel-card {
+  flex: 1;
   background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 12px;
+  text-align: center;
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comic-panel-card.mystery { border-color: #f59e0b; background: #fffbeb; }
+.comic-panel-card.revealed { border-color: #10b981; background: #ecfdf5; }
+.p-num-tag { font-size: 11px; font-weight: 900; color: #7c3aed; }
+.p-hero-icon { font-size: 46px; }
+.mystery-q-mark { font-size: 54px; color: #f59e0b; }
+.p-caption { font-size: 13px; font-weight: 800; color: #1e293b; }
+.p-arrow { font-size: 24px; font-weight: 900; color: #94a3b8; }
+
+.comic-choices-panel {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.c-prompt-title { font-size: 14px; font-weight: 900; color: #581c87; white-space: nowrap; }
+
+.comic-choices-row {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.comic-choice-btn {
+  flex: 1;
+  background: #f8fafc;
   border: 2px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 12px 18px;
-  font-size: 16px;
-  font-weight: 800;
-  text-align: left;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.choice-row-btn:hover { border-color: #7c3aed; transform: translateY(-2px); }
+.comic-choice-btn:hover { border-color: #7c3aed; transform: translateY(-2px); }
+.btn-pic { font-size: 22px; }
+.btn-text { font-size: 14px; font-weight: 800; text-align: left; }
 
-.revealed-outcome-card {
-  background: #dcfce7;
-  border: 2px solid #86efac;
-  border-radius: 14px;
-  padding: 12px 18px;
-  font-size: 18px;
-  font-weight: 900;
-  color: #166534;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* ================= 4. VISUAL LISTENING ================= */
 
-/* ================= 4. LISTEN & GUESS ================= */
-
-.listenguess-stage-layout {
+.vis-listening-stage-layout {
   flex: 1;
   display: flex;
-  padding: 20px 28px;
+  padding: 18px 28px;
   gap: 24px;
 }
 
-.audio-caller-card {
+.vis-caller-card {
   flex: 1.2;
   background: #ffffff;
   border: 3px solid #06b6d4;
   border-radius: 20px;
-  padding: 24px;
+  padding: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-.audio-hero-icon { font-size: 64px; margin-bottom: 12px; }
-.big-audio-play-btn {
+.caller-tag { font-size: 12px; font-weight: 900; color: #0891b2; }
+.caller-hero-emojis { font-size: 52px; margin: 10px 0; }
+.caller-desc { font-size: 16px; font-weight: 800; color: #0f172a; }
+
+.big-audio-btn {
   background: #06b6d4;
   color: #fff;
   border: none;
@@ -602,127 +599,176 @@ body, html {
   box-shadow: 0 4px 0 #0891b2;
 }
 
-.audio-story-transcript {
-  font-size: 15px;
-  color: #334155;
-  font-weight: 700;
-  margin-top: 14px;
-  font-style: italic;
-}
-
-.listening-options-column {
+.vis-choices-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-/* ================= 5. PICTURE SEQUENCES ================= */
+.q-banner { font-size: 14px; font-weight: 900; color: #7c3aed; }
 
-.sequences-stage-layout {
+.vis-choices-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vis-listen-choice-btn {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.vis-listen-choice-btn:hover { border-color: #06b6d4; transform: translateY(-2px); }
+.c-pic { font-size: 28px; }
+.c-label { font-size: 16px; font-weight: 800; text-align: left; }
+
+.vis-outcome-card {
+  background: #dcfce7;
+  border: 2px solid #86efac;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #166534;
+}
+
+/* ================= 5. WHICH PICTURE MATCHES? ================= */
+
+.whichpic-stage-layout {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 18px 28px;
-  gap: 16px;
+  gap: 18px;
 }
 
-.comic-trio-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.comic-panel-box {
-  flex: 1;
-  background: #ffffff;
-  border: 3px solid #cbd5e1;
-  border-radius: 18px;
-  padding: 16px;
-  text-align: center;
-  height: 220px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.comic-panel-box.mystery { border-color: #f59e0b; background: #fffbeb; }
-.comic-panel-box.revealed { border-color: #10b981; background: #ecfdf5; }
-.panel-tag { font-size: 12px; font-weight: 900; color: #7c3aed; }
-.panel-icon-hero { font-size: 54px; }
-.mystery-q { font-size: 64px; color: #f59e0b; }
-.panel-desc { font-size: 14px; font-weight: 800; color: #1e293b; }
-.comic-arrow-sep { font-size: 26px; font-weight: 900; color: #94a3b8; }
-
-.panel-choices-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.seq-choice-btn {
-  background: #ffffff;
-  border: 2px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 10px 18px;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* ================= 6. WHAT WILL THEY DO ================= */
-
-.whatwilldo-stage-layout {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 32px;
-  gap: 20px;
-}
-
-.character-situation-card {
+.target-sentence-banner {
   background: #fdf4ff;
   border: 3px solid #f0abfc;
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 16px 24px;
   text-align: center;
 }
 
-.char-header-title { font-size: 24px; font-weight: 900; color: #86198f; }
-.char-situation-text { font-size: 18px; font-weight: 700; color: #701a75; margin-top: 6px; }
+.target-tag { font-size: 12px; font-weight: 900; color: #86198f; }
+.target-sentence-text { font-size: 28px; font-weight: 900; color: #701a75; margin: 4px 0 8px; }
+.mini-sentence-audio-btn {
+  background: #ffffff;
+  border: 1px solid #d8b4fe;
+  color: #7c3aed;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
 
-.items-choice-trio {
+.which-pictures-trio {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
 }
 
-.item-card-btn {
+.picture-match-card {
   background: #ffffff;
-  border: 3px solid #cbd5e1;
+  border: 4px solid #cbd5e1;
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 220px;
   transition: all 0.15s;
 }
 
-.item-card-btn:hover { transform: translateY(-3px); border-color: #7c3aed; }
-.item-icon-huge { font-size: 54px; display: block; margin-bottom: 8px; }
-.item-name-label { font-size: 16px; font-weight: 900; color: #1e293b; }
+.picture-match-card:hover { transform: translateY(-4px); border-color: #7c3aed; }
+.picture-match-card.correct { border-color: #16a34a; background: #f0fdf4; }
+.picture-match-card.wrong { border-color: #ef4444; background: #fef2f2; }
+.pic-hero-emojis { font-size: 54px; }
+.pic-card-label { font-size: 16px; font-weight: 900; color: #1e293b; }
 
-.whatwilldo-reveal-banner {
-  background: #dcfce7;
-  border: 2px solid #86efac;
-  border-radius: 14px;
-  padding: 12px 20px;
-  font-size: 18px;
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 900;
-  color: #166534;
-  text-align: center;
 }
+.status-pill.win { background: #dcfce7; color: #166534; }
+.status-pill.try { background: #fee2e2; color: #991b1b; }
+
+/* ================= 6. PICTURE-SENTENCE MATCHING ================= */
+
+.matching-board-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 36px;
+  gap: 20px;
+}
+
+.match-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.col-title { font-size: 13px; font-weight: 900; color: #7c3aed; }
+
+.match-items-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.match-card-btn {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s;
+}
+
+.match-card-btn:hover { border-color: #7c3aed; transform: translateX(4px); }
+.match-card-btn.active { border-color: #7c3aed; background: #f3e8ff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2); }
+.match-card-btn.matched { border-color: #16a34a; background: #f0fdf4; color: #166534; pointer-events: none; }
+
+.match-pic-btn {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s;
+}
+
+.match-pic-btn:hover { border-color: #7c3aed; transform: translateX(-4px); }
+.match-pic-btn.matched { border-color: #16a34a; background: #f0fdf4; pointer-events: none; }
+.match-pic-hero { font-size: 32px; }
+.match-pic-label { font-size: 15px; font-weight: 900; color: #1e293b; }
+.status-check { font-size: 12px; font-weight: 900; color: #16a34a; }
+.match-center-divider { font-size: 30px; color: #cbd5e1; }
 
 /* ================= 7. PREDICTION BINGO ================= */
 
@@ -735,7 +781,7 @@ body, html {
 }
 
 .bingo-3x3-grid {
-  width: 580px;
+  width: 600px;
   height: 380px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -746,10 +792,7 @@ body, html {
   background: #ffffff;
   border: 3px solid #cbd5e1;
   border-radius: 16px;
-  padding: 10px;
-  font-size: 17px;
-  font-weight: 900;
-  color: #1e293b;
+  padding: 8px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -766,12 +809,9 @@ body, html {
   color: #854d0e;
 }
 
-.bingo-stamp {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 20px;
-}
+.b-pic { font-size: 32px; }
+.b-text { font-size: 15px; font-weight: 900; color: #1e293b; margin-top: 4px; }
+.bingo-stamp { position: absolute; top: 6px; right: 8px; font-size: 20px; }
 
 /* ================= 8. CRAZY PREDICTIONS ================= */
 
@@ -779,20 +819,20 @@ body, html {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 32px;
-  gap: 18px;
+  padding: 18px 28px;
+  gap: 16px;
 }
 
 .crazy-scenario-card {
   background: #fef3c7;
   border: 3px solid #fde047;
   border-radius: 18px;
-  padding: 16px;
+  padding: 14px;
   text-align: center;
 }
 
-.crazy-hero-emoji { font-size: 48px; }
-.crazy-headline { font-size: 24px; font-weight: 900; color: #78350f; margin-top: 6px; }
+.crazy-hero-emoji { font-size: 44px; }
+.crazy-headline { font-size: 22px; font-weight: 900; color: #78350f; margin-top: 4px; }
 
 .crazy-ideas-grid {
   display: grid;
@@ -808,14 +848,16 @@ body, html {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+  text-align: center;
   height: 200px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .crazy-idea-card:hover { transform: translateY(-3px); border-color: #f59e0b; }
-.idea-tag { font-size: 11px; font-weight: 900; color: #f59e0b; }
-.idea-text { font-size: 16px; font-weight: 800; color: #1e293b; margin: 10px 0; }
+.idea-hero-icon { font-size: 40px; }
+.idea-text { font-size: 15px; font-weight: 800; color: #1e293b; margin: 8px 0; }
 .mini-audio-chip {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
@@ -832,20 +874,20 @@ body, html {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 32px;
-  gap: 16px;
+  padding: 18px 28px;
+  gap: 14px;
 }
 
 .det-headline-card {
   background: #ecfeff;
   border: 3px solid #a5f3fc;
-  border-radius: 18px;
-  padding: 12px 20px;
+  border-radius: 16px;
+  padding: 10px 18px;
   text-align: center;
 }
 
-.det-step-badge { font-size: 12px; font-weight: 900; color: #0891b2; }
-.det-title { font-size: 22px; font-weight: 900; color: #0e7490; }
+.det-step-badge { font-size: 11px; font-weight: 900; color: #0891b2; }
+.det-title { font-size: 20px; font-weight: 900; color: #0e7490; }
 
 .clues-trio-row {
   display: grid;
@@ -864,24 +906,22 @@ body, html {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   transition: all 0.15s;
 }
 
 .clue-inspect-card:hover { transform: translateY(-2px); border-color: #06b6d4; }
-.clue-inspect-card.found {
-  border: 3px solid #06b6d4;
-  background: #f0fdfa;
-}
-
-.clue-status-icon { font-size: 12px; font-weight: 900; color: #0891b2; }
-.clue-name { font-size: 18px; font-weight: 900; color: #0f172a; }
+.clue-inspect-card.found { border: 3px solid #06b6d4; background: #f0fdfa; }
+.clue-big-pic { font-size: 44px; }
+.clue-name { font-size: 16px; font-weight: 900; color: #0f172a; }
 .clue-desc { font-size: 13px; color: #64748b; font-weight: 700; }
+.clue-status-tag { font-size: 11px; font-weight: 900; color: #0891b2; }
 
 .synthesized-prediction-card {
   background: #dcfce7;
   border: 2px solid #86efac;
   border-radius: 14px;
-  padding: 12px 20px;
+  padding: 10px 18px;
   font-size: 18px;
   font-weight: 900;
   color: #166534;
@@ -908,7 +948,7 @@ body, html {
   background: #ffffff;
   border: 3px solid #cbd5e1;
   border-radius: 16px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -939,24 +979,22 @@ body, html {
   background: #ffffff;
   border: 4px solid #f59e0b;
   border-radius: 24px;
-  padding: 24px 36px;
+  padding: 20px 32px;
   text-align: center;
   cursor: pointer;
   box-shadow: 0 12px 32px rgba(0,0,0,0.08);
 }
 
-.shaking-box-hero.shaking {
-  animation: boxShake 0.4s infinite alternate;
-}
+.shaking-box-hero.shaking { animation: boxShake 0.4s infinite alternate; }
 
 @keyframes boxShake {
   0% { transform: rotate(-2deg); }
   100% { transform: rotate(2deg); }
 }
 
-.box-emoji-huge { font-size: 72px; }
-.box-title { font-size: 26px; font-weight: 900; color: #b45309; margin: 8px 0; }
-.box-desc { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 16px; }
+.box-emoji-huge { font-size: 68px; }
+.box-title { font-size: 24px; font-weight: 900; color: #b45309; margin: 6px 0; }
+.box-desc { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 14px; }
 .open-box-btn {
   background: #f59e0b;
   color: #fff;
@@ -981,7 +1019,7 @@ body, html {
   background: #ffffff;
   border: 6px solid #8b5cf6;
   border-radius: 24px;
-  padding: 28px 36px;
+  padding: 24px 36px;
   text-align: center;
   box-shadow: 0 16px 40px rgba(139, 92, 246, 0.2);
 }
@@ -997,10 +1035,10 @@ body, html {
   letter-spacing: 2px;
 }
 
-.master-headline { font-size: 38px; font-weight: 900; color: #581c87; margin: 6px 0; }
-.master-sub { font-size: 16px; color: #475569; font-weight: 700; margin-bottom: 18px; }
-.trophy-row { font-size: 54px; margin-bottom: 20px; }
-.stars-stars { font-size: 28px; display: block; }
+.master-headline { font-size: 36px; font-weight: 900; color: #581c87; margin: 6px 0; }
+.master-sub { font-size: 15px; color: #475569; font-weight: 700; margin-bottom: 16px; }
+.trophy-row { font-size: 50px; margin-bottom: 16px; }
+.stars-stars { font-size: 26px; display: block; }
 .actions-celebrate-row { display: flex; justify-content: center; gap: 16px; }
 
 /* ================= TOAST NOTIFICATION ================= */

@@ -1,10 +1,10 @@
 /**
- * Predictions Scenes Renderer: High-Impact SVG Comic Illustrations & Dramatic Reveals
+ * Predictions Scenes Renderer: 100% Picture-First Visual Storytelling & Comic Strips
  */
 
 const PredictionsScenes = {
   /**
-   * 1. INTRO: The Freeze Frame Cliffhanger
+   * 1. INTRO: NOW vs NEXT Freeze Frame
    */
   renderIntroFreeze(state) {
     const data = window.PREDICTIONS_DATA.introFreeze;
@@ -17,8 +17,8 @@ const PredictionsScenes = {
           <div class="pred-title-pill cliff-pill">
             <span class="icon">🔮</span>
             <div class="text-block">
-              <h2>Look Carefully! What Will Happen Next?</h2>
-              <p class="sub">Observe the clues! The scene is frozen in time. Make your prediction before the reveal!</p>
+              <h2>Picture Clues: What Will Happen Next?</h2>
+              <p class="sub">Observe the picture clues! The moment is frozen in time. Make your prediction!</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
@@ -27,95 +27,88 @@ const PredictionsScenes = {
         </div>
 
         <div class="freeze-stage-layout">
-          <!-- Frozen Comic Scene (SVG) -->
+          <!-- Frozen Comic Scene (SVG + Visual Tags) -->
           <div class="comic-freeze-box">
-            <div class="freeze-stamp-tag">❄️ FROZEN MOMENT!</div>
-            <svg viewBox="0 0 700 400" class="freeze-svg">
+            <div class="now-visual-badge">
+              <span class="badge-title">1. NOW: WHAT IS HAPPENING NOW?</span>
+              <span class="badge-emojis">👦 🏃 🍌 🐶</span>
+            </div>
+
+            <svg viewBox="0 0 700 380" class="freeze-svg">
               <defs>
                 <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stop-color="#bae6fd" />
                   <stop offset="100%" stop-color="#e0f2fe" />
                 </linearGradient>
               </defs>
-              <!-- Background -->
-              <rect x="0" y="0" width="700" height="280" fill="url(#skyGrad)" />
-              <rect x="0" y="280" width="700" height="120" fill="#86efac" />
-              <!-- Pavement -->
-              <rect x="0" y="320" width="700" height="80" fill="#cbd5e1" stroke="#94a3b8" stroke-width="4" />
+              <rect x="0" y="0" width="700" height="260" fill="url(#skyGrad)" />
+              <rect x="0" y="260" width="700" height="120" fill="#86efac" />
+              <rect x="0" y="300" width="700" height="80" fill="#cbd5e1" stroke="#94a3b8" stroke-width="4" />
 
-              <!-- Yellow Banana Peel on Sidewalk -->
-              <g transform="translate(390, 325)">
-                <path d="M 0 15 Q 15 0 35 12 Q 25 30 10 32 Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
-                <path d="M 12 10 Q 25 -5 40 5" stroke="#ca8a04" stroke-width="2" fill="none" />
+              <!-- Banana Peel on Sidewalk -->
+              <g transform="translate(390, 310)">
+                <path d="M 0 15 Q 15 0 35 12 Q 25 30 10 32 Z" fill="#facc15" stroke="#ca8a04" stroke-width="3" />
+                <path d="M 12 10 Q 25 -5 40 5" stroke="#ca8a04" stroke-width="3" fill="none" />
                 <circle cx="20" cy="8" r="4" fill="#854d0e" />
-                <!-- Attention Warning Lines -->
                 <line x1="-5" y1="0" x2="-15" y2="-10" stroke="#ef4444" stroke-width="3" />
                 <line x1="20" y1="-5" x2="20" y2="-18" stroke="#ef4444" stroke-width="3" />
                 <line x1="45" y1="0" x2="55" y2="-10" stroke="#ef4444" stroke-width="3" />
               </g>
 
-              <!-- Running Boy (Mid-Stride) -->
               ${!isRevealed ? `
-                <g transform="translate(230, 110)">
-                  <!-- Head & Wide Eyes -->
+                <!-- Running Boy (Mid-Air Stride) -->
+                <g transform="translate(230, 95)">
                   <circle cx="60" cy="50" r="30" fill="#fde047" stroke="#eab308" stroke-width="2" />
                   <circle cx="50" cy="45" r="7" fill="#ffffff" />
                   <circle cx="70" cy="45" r="7" fill="#ffffff" />
                   <circle cx="52" cy="45" r="3" fill="#0f172a" />
                   <circle cx="68" cy="45" r="3" fill="#0f172a" />
-                  <!-- Open Mouth Shock -->
                   <ellipse cx="60" cy="65" rx="8" ry="10" fill="#b91c1c" />
-                  <!-- Running Cap -->
                   <path d="M 30 40 Q 60 15 90 40 L 110 45 Z" fill="#3b82f6" />
-                  <!-- Body & Arms -->
                   <rect x="40" y="80" width="40" height="70" rx="8" fill="#ef4444" />
                   <line x1="40" y1="95" x2="0" y2="70" stroke="#ef4444" stroke-width="12" stroke-linecap="round" />
                   <line x1="80" y1="95" x2="130" y2="80" stroke="#ef4444" stroke-width="12" stroke-linecap="round" />
-                  <!-- Legs Running Forward Over Banana -->
                   <line x1="50" y1="150" x2="20" y2="210" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round" />
                   <line x1="70" y1="150" x2="150" y2="205" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round" />
-                  <!-- Shoes -->
                   <ellipse cx="15" cy="215" rx="14" ry="8" fill="#0f172a" />
                   <ellipse cx="155" cy="210" rx="16" ry="9" fill="#0f172a" />
                 </g>
               ` : `
-                <!-- REVEALED: Slid & Fallen on Grass! -->
-                <g transform="translate(320, 240)">
-                  <!-- Impact Stars -->
-                  <text x="30" y="-30" font-size="36">💥 ⭐ 💫</text>
-                  <!-- Boy Slipping on Back -->
+                <!-- REVEALED: Fallen on Grass! -->
+                <g transform="translate(310, 230)">
+                  <text x="30" y="-30" font-size="40">💥 ⭐ 💫</text>
                   <ellipse cx="80" cy="60" rx="60" ry="25" fill="#ef4444" />
                   <circle cx="150" cy="30" r="28" fill="#fde047" stroke="#eab308" stroke-width="2" />
                   <line x1="135" y1="25" x2="145" y2="35" stroke="#000" stroke-width="3" />
                   <line x1="145" y1="25" x2="135" y2="35" stroke="#000" stroke-width="3" />
                   <line x1="155" y1="25" x2="165" y2="35" stroke="#000" stroke-width="3" />
                   <line x1="165" y1="25" x2="155" y2="35" stroke="#000" stroke-width="3" />
-                  <!-- Legs Flying in Air -->
                   <line x1="40" y1="50" x2="0" y2="-10" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round" />
                   <line x1="30" y1="50" x2="-20" y2="10" stroke="#1e3a8a" stroke-width="14" stroke-linecap="round" />
                 </g>
               `}
 
-              <!-- Chasing Puppy Behind -->
-              <g transform="translate(60, 260)">
+              <!-- Chasing Puppy -->
+              <g transform="translate(60, 250)">
                 <text x="0" y="0" font-size="52">🐶 💨</text>
-                <text x="20" y="-20" font-size="16" font-weight="900" fill="#713f12">WOOF!</text>
+                <text x="20" y="-18" font-size="16" font-weight="900" fill="#713f12">WOOF!</text>
               </g>
             </svg>
           </div>
 
-          <!-- Prediction Voting & Reveal Controls -->
+          <!-- Dual-Coded Picture Choices & Reveal Controls -->
           <div class="freeze-controls-box">
             <div class="question-banner-card">
-              <span class="q-tag">🔮 PREDICTION QUESTION:</span>
-              <h2 class="q-title">What will happen next?</h2>
+              <span class="q-tag">🔮 WHAT WILL HAPPEN NEXT?</span>
+              <p class="q-sub">Look at the pictures and tap your prediction:</p>
             </div>
 
-            <div class="prediction-choices-list">
+            <div class="visual-choices-grid">
               ${data.choices.map(c => `
-                <button class="pred-choice-btn ${userChoice === c.id ? 'active' : ''}" onclick="window.predictionsApp.chooseIntroChoice('${c.id}')">
-                  <span class="c-text">${c.text}</span>
-                  ${userChoice === c.id ? '<span class="c-badge">MY GUESS!</span>' : ''}
+                <button class="visual-choice-card ${userChoice === c.id ? 'active' : ''}" onclick="window.predictionsApp.chooseIntroChoice('${c.id}')">
+                  <span class="v-card-pic">${c.icon}</span>
+                  <span class="v-card-text">${c.text}</span>
+                  ${userChoice === c.id ? '<span class="v-card-selected">✓ MY GUESS</span>' : ''}
                 </button>
               `).join('')}
             </div>
@@ -127,8 +120,9 @@ const PredictionsScenes = {
             </div>
 
             ${isRevealed ? `
-              <div class="outcome-pill correct">
-                🎉 <strong>REVEAL:</strong> "${data.revealText}"
+              <div class="now-next-outcome-box">
+                <span class="next-tag">2. NEXT:</span>
+                <span class="next-text">"${data.nextScene.revealText}"</span>
               </div>
             ` : ''}
           </div>
@@ -150,26 +144,28 @@ const PredictionsScenes = {
   },
 
   /**
-   * 2. TEACH THE PREDICTION LANGUAGE: Timeline & Formula
+   * 2. TEACH PREDICTION LANGUAGE: Formula + Visual Cards
    */
   renderPredictionLanguage(state) {
+    const cards = window.PREDICTIONS_DATA.futureCards;
+
     return `
       <div class="pred-scene-container scene-language-view">
         <div class="pred-header">
           <div class="pred-title-pill lang-pill">
             <span class="icon">⏳</span>
             <div class="text-block">
-              <h2>Language of the Future: WILL + VERB</h2>
-              <p class="sub">How to predict what will happen in English!</p>
+              <h2>Language of the Future: WILL + ACTION</h2>
+              <p class="sub">Every prediction pairs a clear picture with the English sentence!</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
-            Next: Look & Predict 👀 ➔
+            Next: 4-Panel Comic Stories 📰 ➔
           </button>
         </div>
 
         <div class="language-timeline-stage">
-          <!-- Visual Timeline: NOW vs FUTURE -->
+          <!-- Visual Timeline: NOW -> FUTURE -->
           <div class="timeline-visual-row">
             <div class="timeline-node now-node">
               <span class="node-label">1. NOW</span>
@@ -183,57 +179,31 @@ const PredictionsScenes = {
             </div>
 
             <div class="timeline-node future-node">
-              <span class="node-label">2. FUTURE (PREDICTION)</span>
+              <span class="node-label">2. FUTURE (WILL)</span>
               <div class="node-icon">💥 💦</div>
               <span class="node-desc">"He WILL fall!"</span>
             </div>
           </div>
 
-          <!-- Formula Blocks -->
-          <div class="formula-banner-card">
-            <span class="form-tag">THE PREDICTION FORMULA:</span>
-            <div class="formula-blocks-row">
-              <div class="f-block blue">
-                <span class="f-sub">Subject</span>
-                <span class="f-main">He / She / It / They</span>
+          <!-- 5 Visual Sentence Picture Cards (Rule 38) -->
+          <div class="visual-future-cards-row">
+            ${cards.map(c => `
+              <div class="future-card-item" onclick="window.predictionsSound.speak('${c.audio}')">
+                <span class="future-card-pic">${c.icon}</span>
+                <span class="future-card-sentence">"${c.sentence}"</span>
+                <button class="mini-audio-btn">🔊 Listen</button>
               </div>
-              <span class="f-plus">+</span>
-              <div class="f-block purple">
-                <span class="f-sub">Future Word</span>
-                <span class="f-main">WILL</span>
-              </div>
-              <span class="f-plus">+</span>
-              <div class="f-block green">
-                <span class="f-sub">Action (Verb)</span>
-                <span class="f-main">fall / run / rain / laugh</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Example Chips Grid -->
-          <div class="prediction-starters-grid">
-            <button class="starter-chip" onclick="window.predictionsSound.speak('He will fall.')">
-              🔊 "He will fall."
-            </button>
-            <button class="starter-chip" onclick="window.predictionsSound.speak('She will run.')">
-              🔊 "She will run."
-            </button>
-            <button class="starter-chip" onclick="window.predictionsSound.speak('It will rain.')">
-              🔊 "It will rain."
-            </button>
-            <button class="starter-chip" onclick="window.predictionsSound.speak('They will laugh.')">
-              🔊 "They will laugh."
-            </button>
+            `).join('')}
           </div>
         </div>
 
-        <div class="adv-action-footer">
+        <div class="pred-action-footer">
           <div class="pred-speech-bubble">
             <span class="bubble-icon">💡</span>
-            <span class="bubble-text">Stronger students can add: <strong>"I think..."</strong> or <strong>"Maybe..."</strong></span>
+            <span class="bubble-text">Remember: <strong>WILL</strong> means what happens LATER!</span>
           </div>
           <button class="pred-action-btn large primary" onclick="window.predictionsApp.nextStage()">
-            Start Look & Predict ➔
+            Start 4-Panel Comic Stories ➔
           </button>
         </div>
       </div>
@@ -241,59 +211,151 @@ const PredictionsScenes = {
   },
 
   /**
-   * 3. LOOK & PREDICT: 3 Visual Cases (Melting Ice Cream, Falling Cake, Cupcakes)
+   * 3. 4-PANEL COMIC STRIP STORIES (Rules 36 & 46)
    */
-  renderLookAndPredict(state) {
-    const caseIdx = state.lookPredictIndex || 0;
-    const cases = window.PREDICTIONS_DATA.lookPredictCases;
-    const curCase = cases[caseIdx];
-    const isRevealed = state.lookPredictRevealed || false;
+  renderComicStories(state) {
+    const storyIdx = state.comicStoryIndex || 0;
+    const stories = window.PREDICTIONS_DATA.comicStories;
+    const curStory = stories[storyIdx];
+    const isRevealed = state.comicStoryRevealed || false;
 
     return `
-      <div class="pred-scene-container scene-lookpredict-view">
+      <div class="pred-scene-container scene-comic-view">
         <div class="pred-header">
-          <div class="pred-title-pill look-pill">
-            <span class="icon">👀</span>
+          <div class="pred-title-pill comic-pill">
+            <span class="icon">📰</span>
             <div class="text-block">
-              <h2>Look & Predict (${caseIdx + 1}/${cases.length})</h2>
-              <p class="sub">Observe the picture clues carefully. What will happen next?</p>
+              <h2>4-Panel Comic Story (${storyIdx + 1}/${stories.length})</h2>
+              <p class="sub">Follow the visual story across the panels. What will happen in Panel 4?</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
-            Next: Listen & Guess 🎧 ➔
+            Next: Visual Listening 🎧 ➔
           </button>
         </div>
 
-        <div class="lookpredict-stage-layout">
-          <!-- Picture Scene Card -->
-          <div class="picture-scene-hero">
-            <span class="scene-emoji-large">${curCase.icon}</span>
-            <h2 class="scene-hero-title">${curCase.title}</h2>
-            <div class="scene-clues-pill">
-              🔍 <strong>Visual Clues:</strong> ${curCase.clues}
+        <div class="comic-strip-stage-layout">
+          <!-- 4 Sequential Comic Panels -->
+          <div class="four-panels-row">
+            <div class="comic-panel-card">
+              <span class="p-num-tag">${curStory.panel1.label}</span>
+              <span class="p-hero-icon">${curStory.panel1.icon}</span>
+              <p class="p-caption">${curStory.panel1.text}</p>
+            </div>
+
+            <div class="p-arrow">➔</div>
+
+            <div class="comic-panel-card">
+              <span class="p-num-tag">${curStory.panel2.label}</span>
+              <span class="p-hero-icon">${curStory.panel2.icon}</span>
+              <p class="p-caption">${curStory.panel2.text}</p>
+            </div>
+
+            <div class="p-arrow">➔</div>
+
+            <div class="comic-panel-card">
+              <span class="p-num-tag">${curStory.panel3.label}</span>
+              <span class="p-hero-icon">${curStory.panel3.icon}</span>
+              <p class="p-caption">${curStory.panel3.text}</p>
+            </div>
+
+            <div class="p-arrow">➔</div>
+
+            <!-- Panel 4 (Mystery or Revealed) -->
+            <div class="comic-panel-card ${isRevealed ? 'revealed' : 'mystery'}">
+              <span class="p-num-tag">4. NEXT (PREDICT!)</span>
+              ${!isRevealed ? `
+                <span class="mystery-q-mark">❓</span>
+                <p class="p-caption">What will happen next?</p>
+              ` : `
+                <span class="p-hero-icon">${curStory.reveal.icon}</span>
+                <p class="p-caption">${curStory.reveal.text}</p>
+              `}
             </div>
           </div>
 
-          <!-- Prediction & Reveal Box -->
-          <div class="predict-reveal-box">
-            <span class="box-q-tag">WHAT WILL HAPPEN NEXT?</span>
-            <div class="choices-stack">
-              ${curCase.choices.map(c => `
-                <button class="choice-row-btn" onclick="window.predictionsApp.selectLookChoice(${c.isCorrect})">
-                  <span>${c.text}</span>
+          <!-- Dual-Coded Picture Choices -->
+          <div class="comic-choices-panel">
+            <span class="c-prompt-title">Choose what will happen in Panel 4:</span>
+            <div class="comic-choices-row">
+              ${curStory.choices.map(c => `
+                <button class="comic-choice-btn" onclick="window.predictionsApp.selectComicChoice(${c.isCorrect})">
+                  <span class="btn-pic">${c.icon}</span>
+                  <span class="btn-text">${c.text}</span>
                 </button>
               `).join('')}
             </div>
 
-            <div class="reveal-button-wrap">
-              <button class="pred-action-btn primary large" onclick="window.predictionsApp.revealLookPredict()">
-                🎬 Reveal What Happens!
+            <div class="panel-reveal-action">
+              <button class="pred-action-btn primary large" onclick="window.predictionsApp.revealComicStory()">
+                🎬 Reveal Panel 4!
               </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pred-action-footer">
+          <button class="pred-action-btn" onclick="window.predictionsApp.nextComicStory()">
+            🎲 Next Comic Story
+          </button>
+          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextStage()">
+            Go to Visual Listening ➔
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 4. VISUAL LISTENING ACTIVITIES (Rule 40)
+   */
+  renderVisualListening(state) {
+    const caseIdx = state.visualListeningIndex || 0;
+    const cases = window.PREDICTIONS_DATA.visualListeningCases;
+    const curCase = cases[caseIdx];
+    const isRevealed = state.visualListeningRevealed || false;
+
+    return `
+      <div class="pred-scene-container scene-listening-view">
+        <div class="pred-header">
+          <div class="pred-title-pill listen-pill">
+            <span class="icon">🎧</span>
+            <div class="text-block">
+              <h2>Visual Listening (${caseIdx + 1}/${cases.length})</h2>
+              <p class="sub">Listen to the story while looking at the picture setup!</p>
+            </div>
+          </div>
+          <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
+            Next: Which Picture Matches? ➔
+          </button>
+        </div>
+
+        <div class="vis-listening-stage-layout">
+          <!-- Visual Scene Card (Rule 40) -->
+          <div class="vis-caller-card">
+            <span class="caller-tag">VISUAL SCENE SETUP:</span>
+            <span class="caller-hero-emojis">${curCase.sceneCard.icon}</span>
+            <p class="caller-desc">"${curCase.sceneCard.desc}"</p>
+            <button class="big-audio-btn" onclick="window.predictionsSound.speak('${curCase.audioText}')">
+              🔊 <span>TAP TO HEAR STORY</span>
+            </button>
+          </div>
+
+          <!-- Dual-Coded Picture Choices -->
+          <div class="vis-choices-column">
+            <span class="q-banner">WHAT WILL HAPPEN NEXT?</span>
+            <div class="vis-choices-stack">
+              ${curCase.choices.map(c => `
+                <button class="vis-listen-choice-btn" onclick="window.predictionsApp.selectVisualListenChoice(${c.isCorrect})">
+                  <span class="c-pic">${c.icon}</span>
+                  <span class="c-label">${c.text}</span>
+                </button>
+              `).join('')}
             </div>
 
             ${isRevealed ? `
-              <div class="revealed-outcome-card">
-                <span class="outcome-icon">🎉</span>
+              <div class="vis-outcome-card">
+                <span class="outcome-icon">✅</span>
                 <span class="outcome-text">"${curCase.sentence}"</span>
               </div>
             ` : ''}
@@ -304,8 +366,8 @@ const PredictionsScenes = {
           <button class="pred-action-btn" onclick="window.predictionsSound.speak('${curCase.sentence}')">
             🔊 Speak Outcome Sentence
           </button>
-          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextLookPredictCase()">
-            ${caseIdx === cases.length - 1 ? 'Go to Listen & Guess ➔' : 'Next Situation ➔'}
+          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextVisualListenCase()">
+            ${caseIdx === cases.length - 1 ? 'Go to Which Picture Matches? ➔' : 'Next Listening Story ➔'}
           </button>
         </div>
       </div>
@@ -313,144 +375,58 @@ const PredictionsScenes = {
   },
 
   /**
-   * 4. LISTEN & GUESS: Auditory Scenes (Tom, Rain, Balloons)
+   * 5. "WHICH PICTURE MATCHES?" (Rules 43 & 44)
    */
-  renderListenAndGuess(state) {
-    const caseIdx = state.listenGuessIndex || 0;
-    const cases = window.PREDICTIONS_DATA.listenGuessCases;
+  renderWhichPictureMatches(state) {
+    const caseIdx = state.whichPicIndex || 0;
+    const cases = window.PREDICTIONS_DATA.whichPictureCases;
     const curCase = cases[caseIdx];
-    const isRevealed = state.listenGuessRevealed || false;
+    const userSelected = state.whichPicSelected;
 
     return `
-      <div class="pred-scene-container scene-listenguess-view">
+      <div class="pred-scene-container scene-whichpic-view">
         <div class="pred-header">
-          <div class="pred-title-pill listen-pill">
-            <span class="icon">🎧</span>
-            <div class="text-block">
-              <h2>Listen & Guess (${caseIdx + 1}/${cases.length})</h2>
-              <p class="sub">Close your eyes and listen to the story! What will happen next?</p>
-            </div>
-          </div>
-          <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
-            Next: Picture Sequences ➔
-          </button>
-        </div>
-
-        <div class="listenguess-stage-layout">
-          <!-- Audio Player Card -->
-          <div class="audio-caller-card">
-            <span class="audio-hero-icon">${curCase.icon}</span>
-            <button class="big-audio-play-btn" onclick="window.predictionsSound.speak('${curCase.audioText}')">
-              🔊 <span>TAP TO LISTEN TO THE SCENE</span>
-            </button>
-            <p class="audio-story-transcript">"${curCase.audioText}"</p>
-          </div>
-
-          <!-- Guessing Options Column -->
-          <div class="listening-options-column">
-            <span class="list-title">WHAT WILL HAPPEN NEXT?</span>
-            <div class="choices-stack">
-              ${curCase.choices.map(c => `
-                <button class="choice-row-btn" onclick="window.predictionsApp.selectListenChoice(${c.isCorrect})">
-                  <span>${c.text}</span>
-                </button>
-              `).join('')}
-            </div>
-
-            ${isRevealed ? `
-              <div class="revealed-outcome-card">
-                <span class="outcome-icon">✅</span>
-                <span class="outcome-text">"${curCase.sentence}"</span>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-
-        <div class="pred-action-footer">
-          <button class="pred-action-btn" onclick="window.predictionsSound.speak('${curCase.sentence}')">
-            🔊 Speak Prediction
-          </button>
-          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextListenGuessCase()">
-            ${caseIdx === cases.length - 1 ? 'Go to Picture Sequences ➔' : 'Next Listening Story ➔'}
-          </button>
-        </div>
-      </div>
-    `;
-  },
-
-  /**
-   * 5. PICTURE SEQUENCES: 3-Panel Comics
-   */
-  renderPictureSequences(state) {
-    const seqIdx = state.sequenceIndex || 0;
-    const seq = window.PREDICTIONS_DATA.sequences[seqIdx];
-    const isRevealed = state.sequenceRevealed || false;
-
-    return `
-      <div class="pred-scene-container scene-sequences-view">
-        <div class="pred-header">
-          <div class="pred-title-pill seq-pill">
+          <div class="pred-title-pill which-pill">
             <span class="icon">🖼️</span>
             <div class="text-block">
-              <h2>Picture Sequences: Story Predictor</h2>
-              <p class="sub">Panel 1 and 2 are showing... What will happen in Panel 3?</p>
+              <h2>Which Picture Matches? (${caseIdx + 1}/${cases.length})</h2>
+              <p class="sub">Read the sentence. Tap the picture that matches the meaning!</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
-            Next: What Will They Do? ➔
+            Next: Picture-Sentence Match 🔗 ➔
           </button>
         </div>
 
-        <div class="sequences-stage-layout">
-          <!-- 3-Panel Comic Layout -->
-          <div class="comic-trio-row">
-            <div class="comic-panel-box">
-              <span class="panel-tag">PANEL 1</span>
-              <span class="panel-icon-hero">${seq.panel1.icon}</span>
-              <p class="panel-desc">${seq.panel1.text}</p>
-            </div>
-
-            <div class="comic-arrow-sep">➔</div>
-
-            <div class="comic-panel-box">
-              <span class="panel-tag">PANEL 2</span>
-              <span class="panel-icon-hero">${seq.panel2.icon}</span>
-              <p class="panel-desc">${seq.panel2.text}</p>
-            </div>
-
-            <div class="comic-arrow-sep">➔</div>
-
-            <div class="comic-panel-box ${isRevealed ? 'revealed' : 'mystery'}">
-              <span class="panel-tag">PANEL 3 (PREDICT!)</span>
-              ${!isRevealed ? `
-                <span class="mystery-q">❓</span>
-                <p class="panel-desc">What will happen in Panel 3?</p>
-              ` : `
-                <span class="panel-icon-hero">${seq.reveal.icon}</span>
-                <p class="panel-desc">${seq.reveal.text}</p>
-              `}
-            </div>
+        <div class="whichpic-stage-layout">
+          <!-- Target Sentence Display Banner -->
+          <div class="target-sentence-banner">
+            <span class="target-tag">TARGET SENTENCE:</span>
+            <h1 class="target-sentence-text">"${curCase.sentence}"</h1>
+            <button class="mini-sentence-audio-btn" onclick="window.predictionsSound.speak('${curCase.speech}')">
+              🔊 Hear Sentence Aloud
+            </button>
           </div>
 
-          <!-- Choices & Reveal Control -->
-          <div class="panel-choices-row">
-            ${seq.panel3Choices.map(c => `
-              <button class="seq-choice-btn" onclick="window.predictionsApp.selectSeqChoice(${c.isCorrect})">
-                ${c.text}
+          <!-- 3 Picture Cards (Rule 43) -->
+          <div class="which-pictures-trio">
+            ${curCase.pictures.map(p => `
+              <button class="picture-match-card ${userSelected === p.id ? (p.isCorrect ? 'correct' : 'wrong') : ''}" onclick="window.predictionsApp.selectWhichPic('${p.id}', ${p.isCorrect})">
+                <span class="pic-hero-emojis">${p.icon}</span>
+                <span class="pic-card-label">${p.label}</span>
+                ${userSelected === p.id ? (p.isCorrect ? '<span class="status-pill win">CORRECT MATCH! 🎉</span>' : '<span class="status-pill try">TRY AGAIN</span>') : ''}
               </button>
             `).join('')}
-            <button class="pred-action-btn primary" onclick="window.predictionsApp.revealSequence()">
-              🎬 Reveal Panel 3!
-            </button>
           </div>
         </div>
 
         <div class="pred-action-footer">
-          <button class="pred-action-btn" onclick="window.predictionsApp.nextSequence()">
-            🎲 Next Comic Story
-          </button>
-          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextStage()">
-            Go to "What Will They Do?" ➔
+          <div class="pred-speech-bubble highlight">
+            <span class="bubble-icon">🗣️</span>
+            <span class="bubble-text">Say it aloud: <strong>"${curCase.sentence}"</strong></span>
+          </div>
+          <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextWhichPicCase()">
+            ${caseIdx === cases.length - 1 ? 'Go to Picture-Sentence Match ➔' : 'Next Picture Challenge ➔'}
           </button>
         </div>
       </div>
@@ -458,21 +434,21 @@ const PredictionsScenes = {
   },
 
   /**
-   * 6. "WHAT WILL HE / SHE DO?"
+   * 6. PICTURE + SENTENCE MATCHING BOARD (Rule 42)
    */
-  renderWhatWillTheyDo(state) {
-    const caseIdx = state.whatWillDoIndex || 0;
-    const curCase = window.PREDICTIONS_DATA.whatWillDoCases[caseIdx];
-    const isRevealed = state.whatWillDoRevealed || false;
+  renderPictureMatching(state) {
+    const act = window.PREDICTIONS_DATA.matchingActivity;
+    const selectedS = state.matchSelectedSentence;
+    const matched = state.matchedPairs || new Set();
 
     return `
-      <div class="pred-scene-container scene-whatwilldo-view">
+      <div class="pred-scene-container scene-matching-view">
         <div class="pred-header">
-          <div class="pred-title-pill what-pill">
-            <span class="icon">🤔</span>
+          <div class="pred-title-pill match-pill">
+            <span class="icon">🔗</span>
             <div class="text-block">
-              <h2>What Will He or She Do?</h2>
-              <p class="sub">Observe the character and their situation. Predict their choice!</p>
+              <h2>Picture + Sentence Matching</h2>
+              <p class="sub">Tap a sentence on the left, then tap its matching picture on the right!</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
@@ -480,32 +456,42 @@ const PredictionsScenes = {
           </button>
         </div>
 
-        <div class="whatwilldo-stage-layout">
-          <div class="character-situation-card">
-            <span class="char-header-title">${curCase.character}</span>
-            <p class="char-situation-text">"${curCase.situation}"</p>
-          </div>
-
-          <div class="items-choice-trio">
-            ${curCase.items.map(item => `
-              <button class="item-card-btn" onclick="window.predictionsApp.selectWhatWillDoItem(${item.isBest})">
-                <span class="item-icon-huge">${item.icon}</span>
-                <span class="item-name-label">${item.name}</span>
-              </button>
-            `).join('')}
-          </div>
-
-          ${isRevealed ? `
-            <div class="whatwilldo-reveal-banner">
-              🎉 <strong>PREDICTION REVEALED:</strong> "${curCase.prediction}"
+        <div class="matching-board-stage">
+          <!-- Sentences Column -->
+          <div class="match-column sentences-col">
+            <span class="col-title">1. SENTENCES</span>
+            <div class="match-items-stack">
+              ${act.sentences.map(s => `
+                <button class="match-card-btn ${selectedS === s.id ? 'active' : ''} ${matched.has(s.matchId) ? 'matched' : ''}" onclick="window.predictionsApp.selectMatchSentence('${s.id}', '${s.matchId}')">
+                  <span>${s.text}</span>
+                  ${matched.has(s.matchId) ? '<span>✅</span>' : ''}
+                </button>
+              `).join('')}
             </div>
-          ` : ''}
+          </div>
+
+          <div class="match-center-divider">⚡</div>
+
+          <!-- Pictures Column -->
+          <div class="match-column pictures-col">
+            <span class="col-title">2. PICTURES</span>
+            <div class="match-items-stack">
+              ${act.pictures.map(p => `
+                <button class="match-pic-btn ${matched.has(p.matchId) ? 'matched' : ''}" onclick="window.predictionsApp.selectMatchPicture('${p.matchId}')">
+                  <span class="match-pic-hero">${p.icon}</span>
+                  <span class="match-pic-label">${p.label}</span>
+                  ${matched.has(p.matchId) ? '<span class="status-check">✅ MATCHED!</span>' : ''}
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </div>
 
         <div class="pred-action-footer">
-          <button class="pred-action-btn" onclick="window.predictionsApp.nextWhatWillDoCase()">
-            🎲 Next Character Scenario
-          </button>
+          <div class="pred-speech-bubble highlight">
+            <span class="bubble-icon">🗣️</span>
+            <span class="bubble-text">After matching, say each sentence aloud to the class!</span>
+          </div>
           <button class="pred-action-btn primary large" onclick="window.predictionsApp.nextStage()">
             Start Prediction Bingo ➔
           </button>
@@ -515,7 +501,7 @@ const PredictionsScenes = {
   },
 
   /**
-   * 7. PREDICTION BINGO: 3x3 Interactive Touch Board
+   * 7. PREDICTION BINGO: 3x3 Visual Touch Grid
    */
   renderPredictionBingo(state) {
     const board = state.bingoBoard || window.PREDICTIONS_DATA.bingoBoard;
@@ -526,8 +512,8 @@ const PredictionsScenes = {
           <div class="pred-title-pill bingo-pill">
             <span class="icon">🎯</span>
             <div class="text-block">
-              <h2>Prediction Bingo!</h2>
-              <p class="sub">Tap any square when you predict that action! Try to get 3 in a row!</p>
+              <h2>Visual Prediction Bingo!</h2>
+              <p class="sub">Every square has a picture! Tap a square when you predict that future action!</p>
             </div>
           </div>
           <button class="pred-action-btn" onclick="window.predictionsApp.resetBingo()">
@@ -542,7 +528,8 @@ const PredictionsScenes = {
           <div class="bingo-3x3-grid">
             ${board.map(cell => `
               <button class="bingo-cell-btn ${cell.marked ? 'marked' : ''}" onclick="window.predictionsApp.toggleBingoCell('${cell.id}')">
-                <span class="cell-text">${cell.text}</span>
+                <span class="b-pic">${cell.icon}</span>
+                <span class="b-text">${cell.text}</span>
                 ${cell.marked ? '<span class="bingo-stamp">⭐</span>' : ''}
               </button>
             `).join('')}
@@ -563,7 +550,7 @@ const PredictionsScenes = {
   },
 
   /**
-   * 8. CRAZY PREDICTIONS: Duck with Backpack!
+   * 8. CRAZY PREDICTIONS: Visual Scenes
    */
   renderCrazyPredictions(state) {
     const scenarioIdx = state.crazyScenarioIndex || 0;
@@ -577,11 +564,11 @@ const PredictionsScenes = {
             <span class="icon">🤪</span>
             <div class="text-block">
               <h2>Crazy Predictions Adventure!</h2>
-              <p class="sub">There is no single correct answer! What funny thing will happen next?</p>
+              <p class="sub">Look at the funny picture! What hilarious thing will happen next?</p>
             </div>
           </div>
-          <button class="pred-action-btn primary" onclick="window.adviceApp ? window.predictionsApp.nextStage() : window.predictionsApp.nextStage()">
-            Next: Prediction Detectives ➔
+          <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
+            Next: Clue Detectives 🔎 ➔
           </button>
         </div>
 
@@ -594,7 +581,7 @@ const PredictionsScenes = {
           <div class="crazy-ideas-grid">
             ${curScenario.ideas.map(idea => `
               <div class="crazy-idea-card" onclick="window.predictionsSound.speak('${idea.text}')">
-                <span class="idea-tag">${idea.type.toUpperCase()} PREDICTION</span>
+                <span class="idea-hero-icon">${idea.icon}</span>
                 <p class="idea-text">"${idea.text}"</p>
                 <button class="mini-audio-chip">🔊 Hear Prediction</button>
               </div>
@@ -629,8 +616,8 @@ const PredictionsScenes = {
           <div class="pred-title-pill det-pill">
             <span class="icon">🔎</span>
             <div class="text-block">
-              <h2>Prediction Detectives: Find the Clues!</h2>
-              <p class="sub">Good predictions use visual evidence! Tap all 3 clues to reveal the future.</p>
+              <h2>Prediction Detectives: Visual Evidence!</h2>
+              <p class="sub">Good predictions use visual clues! Tap all 3 clues to reveal the future.</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.nextStage()">
@@ -647,9 +634,10 @@ const PredictionsScenes = {
           <div class="clues-trio-row">
             ${curCase.clues.map(c => `
               <div class="clue-inspect-card ${cluesFound.has(c.id) ? 'found' : ''}" onclick="window.predictionsApp.toggleClue('${c.id}')">
-                <span class="clue-status-icon">${cluesFound.has(c.id) ? '🔍 CLUE FOUND!' : '❓ TAP TO INSPECT'}</span>
+                <span class="clue-big-pic">${c.icon}</span>
                 <h3 class="clue-name">${c.name}</h3>
                 <p class="clue-desc">${c.desc}</p>
+                <span class="clue-status-tag">${cluesFound.has(c.id) ? '✓ EVIDENCE FOUND!' : '❓ TAP TO INSPECT'}</span>
               </div>
             `).join('')}
           </div>
@@ -689,7 +677,7 @@ const PredictionsScenes = {
             <span class="icon">🏆</span>
             <div class="text-block">
               <h2>THE BIG PREDICTION SHOWDOWN!</h2>
-              <p class="sub">Team competition! What is inside the shaking mystery box?</p>
+              <p class="sub">Team game! What is inside the shaking mystery box?</p>
             </div>
           </div>
           <button class="pred-action-btn primary" onclick="window.predictionsApp.renderStage('award')">
@@ -715,11 +703,11 @@ const PredictionsScenes = {
           <!-- Mystery Shaking Gift Box -->
           <div class="mystery-box-stage">
             <div class="shaking-box-hero ${!boxRevealed ? 'shaking' : 'opened'}" onclick="window.predictionsApp.revealMysteryBox()">
-              <span class="box-emoji-huge">${!boxRevealed ? '🎁' : '🎉'}</span>
-              <h2 class="box-title">${box.title}</h2>
+              <span class="box-emoji-huge">${!boxRevealed ? '🎁' : activeReveal.icon}</span>
+              <h2 class="box-title">${!boxRevealed ? box.title : activeReveal.title}</h2>
               <p class="box-desc">${!boxRevealed ? box.description : activeReveal.text}</p>
               <button class="open-box-btn">
-                ${!boxRevealed ? '🔮 TAP TO SHAKE & REVEAL!' : '🎲 NEXT MYSTERY ENDING!'}
+                ${!boxRevealed ? '🔮 TAP TO SHAKE & REVEAL!' : '🎲 NEXT SURPRISE ENDING!'}
               </button>
             </div>
           </div>
@@ -728,7 +716,7 @@ const PredictionsScenes = {
         <div class="pred-action-footer">
           <div class="pred-speech-bubble highlight">
             <span class="bubble-icon">🎤</span>
-            <span class="bubble-text">Teams speak their final prediction: <strong>"I think ______ will ______!"</strong></span>
+            <span class="bubble-text">Teams speak their prediction: <strong>"I think ______ will ______!"</strong></span>
           </div>
           <button class="pred-action-btn large primary" onclick="window.predictionsApp.renderStage('award')">
             Complete Challenge & Get Trophies 🏅

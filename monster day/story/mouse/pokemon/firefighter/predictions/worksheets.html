@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Printable Worksheets: What Will Happen Next? | Future Predictions with WILL</title>
+  <title>Printable Worksheets: What Will Happen Next? | Picture-First Predictions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
       background: #ffffff;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
-      padding: 22mm 18mm;
+      padding: 20mm 18mm;
       box-shadow: 0 8px 24px rgba(0,0,0,0.06);
       min-height: 1050px;
       position: relative;
@@ -103,7 +103,7 @@
     .ws-header {
       border-bottom: 2px solid #cbd5e1;
       padding-bottom: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .ws-title-row {
@@ -131,7 +131,7 @@
     .ws-meta-row {
       display: flex;
       gap: 24px;
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 14px;
       font-weight: 800;
       color: #64748b;
@@ -151,20 +151,23 @@
     }
 
     /* Worksheet 1 Grid */
-    .pred-items-grid {
+    .pic-choice-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
 
-    .pred-card-box {
+    .pic-choice-card {
       border: 2px solid #e2e8f0;
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
+      background: #faf5ff;
     }
 
-    .pred-emoji { font-size: 36px; margin-bottom: 6px; }
-    .pred-scene-title { font-size: 14px; font-weight: 800; color: #b91c1c; margin-bottom: 6px; }
+    .card-scene-icon { font-size: 34px; margin-bottom: 4px; }
+    .card-scene-title { font-size: 13px; font-weight: 900; color: #b91c1c; margin-bottom: 6px; }
+    .choice-options-list { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 800; }
+    .c-box { width: 14px; height: 14px; border: 2px solid #64748b; border-radius: 3px; display: inline-block; margin-right: 4px; vertical-align: middle; }
     .write-line {
       font-size: 14px;
       font-weight: 700;
@@ -173,37 +176,41 @@
       color: #334155;
     }
 
-    /* Worksheet 3 Drawing Box */
-    .comic-strip-print {
+    /* 4-Panel Comic on Worksheet 3 */
+    .ws-4panel-row {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .comic-print-panel {
+    .ws-panel-box {
       flex: 1;
       border: 2px solid #cbd5e1;
       border-radius: 10px;
-      padding: 12px;
+      padding: 8px;
       text-align: center;
-      height: 170px;
+      height: 140px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .comic-print-panel.draw-box {
+    .ws-panel-box.draw-box {
       border: 2px dashed #7c3aed;
       background: #faf5ff;
     }
+
+    .p-tag { font-size: 10px; font-weight: 900; color: #7c3aed; }
+    .p-icon { font-size: 28px; }
+    .p-desc { font-size: 11px; font-weight: 700; }
 
     /* Worksheet 5 Challenge Box */
     .challenge-step-box {
       background: #f8fafc;
       border: 2px solid #cbd5e1;
       border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
     }
 
     .ws-footer {
@@ -248,7 +255,7 @@
   <div class="no-print-bar">
     <div class="bar-title">
       <span>🔮</span>
-      <span>Printable Worksheets: What Will Happen Next? (Predictions with WILL)</span>
+      <span>Printable Worksheets: What Will Happen Next? (Picture-First Predictions)</span>
     </div>
     <div class="bar-actions">
       <a href="index.html" class="back-btn">⬅️ Back to Digital Lesson</a>
@@ -266,7 +273,7 @@
         <div class="ws-header">
           <div class="ws-title-row">
             <h1 class="ws-title">📝 Worksheet 1: What Will Happen?</h1>
-            <span class="ws-badge">Future Predictions</span>
+            <span class="ws-badge">Picture Choices</span>
           </div>
           <div class="ws-meta-row">
             <span>Name: <span class="meta-line"></span></span>
@@ -276,36 +283,52 @@
         </div>
 
         <div class="ws-instruction">
-          Look at each funny situation. Circle the best action word and complete the sentence using <strong>"will"</strong>:
+          Look at each picture scene. Tick (✓) the picture prediction and complete the sentence:
         </div>
 
-        <div class="pred-items-grid">
-          <div class="pred-card-box">
-            <div class="pred-emoji">🏃 🍌</div>
-            <div class="pred-scene-title">1. Leo is running towards a banana peel!</div>
-            <p>Word bank: <em>[fall / fly / sleep]</em></p>
-            <div class="write-line">He will ________________________________________</div>
+        <div class="pic-choice-grid">
+          <div class="pic-choice-card">
+            <div class="card-scene-icon">👦 🏃 🍌</div>
+            <div class="card-scene-title">1. Leo runs towards a banana peel!</div>
+            <div class="choice-options-list">
+              <div><span class="c-box"></span> 💥 <strong>He will fall.</strong></div>
+              <div><span class="c-box"></span> 🚀 <strong>He will fly.</strong></div>
+              <div><span class="c-box"></span> 😴 <strong>He will sleep.</strong></div>
+            </div>
+            <div class="write-line" style="margin-top: 6px;">He will ________________________________________</div>
           </div>
 
-          <div class="pred-card-box">
-            <div class="pred-emoji">☀️ 🍦</div>
-            <div class="pred-scene-title">2. Giant ice cream under the blazing sun!</div>
-            <p>Word bank: <em>[melt / dance / freeze]</em></p>
-            <div class="write-line">The ice cream will _____________________________</div>
+          <div class="pic-choice-card">
+            <div class="card-scene-icon">☀️ 🍦 💧</div>
+            <div class="card-scene-title">2. Ice cream under blazing hot sun!</div>
+            <div class="choice-options-list">
+              <div><span class="c-box"></span> 🫠 <strong>The ice cream will melt.</strong></div>
+              <div><span class="c-box"></span> 🏃 <strong>The ice cream will run.</strong></div>
+              <div><span class="c-box"></span> ❄️ <strong>The ice cream will freeze.</strong></div>
+            </div>
+            <div class="write-line" style="margin-top: 6px;">The ice cream will _____________________________</div>
           </div>
 
-          <div class="pred-card-box">
-            <div class="pred-emoji">🎂 🪑</div>
-            <div class="pred-scene-title">3. The waiter trips over a chair with the cake!</div>
-            <p>Word bank: <em>[drop / sing / swim]</em></p>
-            <div class="write-line">The cake will _________________________________</div>
+          <div class="pic-choice-card">
+            <div class="card-scene-icon">🧑‍🍳 🎂 🧸 🚗</div>
+            <div class="card-scene-title">3. Chef trips over toy car with cake!</div>
+            <div class="choice-options-list">
+              <div><span class="c-box"></span> 💥 <strong>The cake will fall.</strong></div>
+              <div><span class="c-box"></span> 🎵 <strong>The cake will sing.</strong></div>
+              <div><span class="c-box"></span> ✈️ <strong>The cake will fly.</strong></div>
+            </div>
+            <div class="write-line" style="margin-top: 6px;">The cake will _________________________________</div>
           </div>
 
-          <div class="pred-card-box">
-            <div class="pred-emoji">🏃 🚌</div>
-            <div class="pred-scene-title">4. Tom is running, but the bus is driving away!</div>
-            <p>Word bank: <em>[miss / eat / paint]</em></p>
-            <div class="write-line">Tom will ______________________________________</div>
+          <div class="pic-choice-card">
+            <div class="card-scene-icon">👦 🏃 💨 🚌 💨</div>
+            <div class="card-scene-title">4. Bus drives away and Tom is far!</div>
+            <div class="choice-options-list">
+              <div><span class="c-box"></span> ❌ <strong>Tom will miss the bus.</strong></div>
+              <div><span class="c-box"></span> 🚗 <strong>Tom will drive the bus.</strong></div>
+              <div><span class="c-box"></span> 🍕 <strong>Tom will eat the bus.</strong></div>
+            </div>
+            <div class="write-line" style="margin-top: 6px;">Tom will ______________________________________</div>
           </div>
         </div>
       </div>
@@ -332,27 +355,31 @@
         </div>
 
         <div class="ws-instruction">
-          Look at the visual clues. Write predictions using: <strong>"I think ______ will ______."</strong>:
+          Look at the picture clues. Write predictions using: <strong>"I think ______ will ______."</strong>:
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <div class="challenge-step-box">
-            <strong>Case 1 Clues:</strong> ☁️ Dark black clouds + 💨 Cold howling wind + 🌂 Umbrella at home.
+            <div style="font-size: 24px;">☁️ ⚡ + 💨 🍂 + ❌ 🌂</div>
+            <strong>Clues: Dark clouds + Cold wind + No umbrella!</strong>
             <div class="write-line" style="margin-top: 8px;">I think it will rain and she will get wet.</div>
           </div>
 
           <div class="challenge-step-box">
-            <strong>Case 2 Clues:</strong> 🎈 50 helium balloons + 💨 Strong sudden gust of wind + 👦 Light boy.
+            <div style="font-size: 24px;">🎈 🎈 🎈 (50 Balloons) + 💨 💨 💨 (Gust of Wind)</div>
+            <strong>Clues: 50 helium balloons + sudden strong wind!</strong>
             <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
           </div>
 
           <div class="challenge-step-box">
-            <strong>Case 3 Clues:</strong> 🎂 Birthday cake with candles + 🎈 Balloons in the hall + 🎁 Wrapped gifts.
+            <div style="font-size: 24px;">🎂 🕯️ + 🎈 🎊 + 🎁 🎀</div>
+            <strong>Clues: Frosted cake with candles + balloons + wrapped gifts!</strong>
             <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
           </div>
 
           <div class="challenge-step-box">
-            <strong>Case 4 Clues:</strong> 👧 Hungry after school + 🍕 Hot cheesy pizza + 🍏 Green apple.
+            <div style="font-size: 24px;">👧 🤤 (Hungry) + 🍕 🧀 (Cheesy Pizza)</div>
+            <strong>Clues: Starving after school + hot pizza on table!</strong>
             <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
           </div>
         </div>
@@ -364,13 +391,13 @@
       </div>
     </div>
 
-    <!-- ================= WORKSHEET 3: WHAT HAPPENS NEXT? ================= -->
+    <!-- ================= WORKSHEET 3: 4-PANEL COMIC STORIES ================= -->
     <div class="a4-page">
       <div>
         <div class="ws-header">
           <div class="ws-title-row">
-            <h1 class="ws-title">📝 Worksheet 3: What Happens Next?</h1>
-            <span class="ws-badge">Comic Sequencing</span>
+            <h1 class="ws-title">📝 Worksheet 3: 4-Panel Comic Stories</h1>
+            <span class="ws-badge">Draw & Predict</span>
           </div>
           <div class="ws-meta-row">
             <span>Name: <span class="meta-line"></span></span>
@@ -380,51 +407,61 @@
         </div>
 
         <div class="ws-instruction">
-          Look at the 3-picture comic sequence. Draw Panel 3 and write the final prediction sentence:
+          Follow the comic story. Draw Panel 4 and write the prediction sentence:
         </div>
 
         <div>
-          <h3 style="font-size: 16px; margin-bottom: 6px; color: #7c3aed;">Story 1: The Puddle Jump</h3>
-          <div class="comic-strip-print">
-            <div class="comic-print-panel">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 1</span>
-              <span style="font-size: 32px;">👦 🌊</span>
-              <p style="font-size: 12px; font-weight: 700;">Billy sees a huge mud puddle!</p>
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: #7c3aed;">Comic 1: The Puddle Jump</h3>
+          <div class="ws-4panel-row">
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 1</span>
+              <span class="p-icon">👦 🌊</span>
+              <p class="p-desc">Billy sees a mud puddle</p>
             </div>
-            <div class="comic-print-panel">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 2</span>
-              <span style="font-size: 32px;">🏃 💨</span>
-              <p style="font-size: 12px; font-weight: 700;">He jumps high in the air!</p>
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 2</span>
+              <span class="p-icon">🏃 💨</span>
+              <p class="p-desc">He sprints fast</p>
             </div>
-            <div class="comic-print-panel draw-box">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 3 (DRAW HERE!)</span>
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 3</span>
+              <span class="p-icon">🦘 ☁️</span>
+              <p class="p-desc">He jumps high</p>
+            </div>
+            <div class="ws-panel-box draw-box">
+              <span class="p-tag">PANEL 4 (DRAW!)</span>
               <span style="font-size: 24px; color: #94a3b8;">✏️</span>
-              <p style="font-size: 11px; color: #64748b;">Draw what happens next</p>
+              <p class="p-desc">Draw what happens</p>
             </div>
           </div>
           <div class="write-line">Prediction: He will ___________________________________________________________</div>
         </div>
 
-        <div style="margin-top: 20px;">
-          <h3 style="font-size: 16px; margin-bottom: 6px; color: #7c3aed;">Story 2: The Curious Kitten</h3>
-          <div class="comic-strip-print">
-            <div class="comic-print-panel">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 1</span>
-              <span style="font-size: 32px;">🐱 👀</span>
-              <p style="font-size: 12px; font-weight: 700;">Kitten sees red ball of yarn.</p>
+        <div style="margin-top: 16px;">
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: #7c3aed;">Comic 2: The Melting Ice Cream</h3>
+          <div class="ws-4panel-row">
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 1</span>
+              <span class="p-icon">👧 🍦</span>
+              <p class="p-desc">Lucy has huge ice cream</p>
             </div>
-            <div class="comic-print-panel">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 2</span>
-              <span style="font-size: 32px;">🐈 💨</span>
-              <p style="font-size: 12px; font-weight: 700;">It wiggles its tail and pounces!</p>
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 2</span>
+              <span class="p-icon">☀️ 🔥</span>
+              <p class="p-desc">The sun is 38°C</p>
             </div>
-            <div class="comic-print-panel draw-box">
-              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 3 (DRAW HERE!)</span>
+            <div class="ws-panel-box">
+              <span class="p-tag">PANEL 3</span>
+              <span class="p-icon">🍦 💧</span>
+              <p class="p-desc">Drops start melting</p>
+            </div>
+            <div class="ws-panel-box draw-box">
+              <span class="p-tag">PANEL 4 (DRAW!)</span>
               <span style="font-size: 24px; color: #94a3b8;">✏️</span>
-              <p style="font-size: 11px; color: #64748b;">Draw what happens next</p>
+              <p class="p-desc">Draw what happens</p>
             </div>
           </div>
-          <div class="write-line">Prediction: It will ___________________________________________________________</div>
+          <div class="write-line">Prediction: The ice cream will ________________________________________________</div>
         </div>
       </div>
 
@@ -450,32 +487,32 @@
         </div>
 
         <div class="ws-instruction">
-          These funny pictures have no single answer! Use your imagination and write crazy predictions using: <strong>"Maybe..."</strong> or <strong>"I think..."</strong>:
+          These funny pictures have no single answer! Use your imagination and write crazy predictions:
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
           <div class="challenge-step-box">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-              <span style="font-size: 32px;">🦆 🎒 🏫</span>
-              <strong>Scene 1: A duck wearing a backpack at the school door!</strong>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+              <span style="font-size: 36px;">🦆 🎒 🏫</span>
+              <strong>A duck wearing a yellow backpack stands at the school door!</strong>
             </div>
             <p>1. I think the duck will __________________________________________________</p>
             <p style="margin-top: 6px;">2. Maybe the duck will _________________________________________________</p>
           </div>
 
           <div class="challenge-step-box">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-              <span style="font-size: 32px;">🐶 🛹 🕶️</span>
-              <strong>Scene 2: A dog wearing sunglasses riding a skateboard!</strong>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+              <span style="font-size: 36px;">🐶 🛹 🕶️</span>
+              <strong>A dog wearing sunglasses is riding a skateboard downhill!</strong>
             </div>
             <p>1. I think the dog will ___________________________________________________</p>
             <p style="margin-top: 6px;">2. Maybe the dog will __________________________________________________</p>
           </div>
 
           <div class="challenge-step-box">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-              <span style="font-size: 32px;">🐔 💻 📚</span>
-              <strong>Scene 3: A chicken typing on the teacher's laptop!</strong>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+              <span style="font-size: 36px;">🐔 💻 📚</span>
+              <strong>A chicken typing on the teacher's classroom laptop!</strong>
             </div>
             <p>1. I think the chicken will _______________________________________________</p>
             <p style="margin-top: 6px;">2. Maybe the chicken will ______________________________________________</p>
@@ -495,7 +532,7 @@
         <div class="ws-header">
           <div class="ws-title-row">
             <h1 class="ws-title">📝 Worksheet 5: My Prediction Challenge</h1>
-            <span class="ws-badge">Speaking & Writing Challenge</span>
+            <span class="ws-badge">Speaking & Writing</span>
           </div>
           <div class="ws-meta-row">
             <span>Name: <span class="meta-line"></span></span>
@@ -508,26 +545,29 @@
           <strong>The Shaking Mystery Box! 🎁</strong> A giant wrapped gift box is shaking, ticking, and rumbling! Write 3 different predictions with reasons:
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 12px;">
           <div class="challenge-step-box">
+            <div style="font-size: 24px; margin-bottom: 4px;">🐶 🐾 (Puppy Prediction)</div>
             <strong>PREDICTION 1 (Sensible):</strong>
-            <p style="margin-top: 6px;">I think a puppy will jump out ___________________________________________</p>
-            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+            <p style="margin-top: 4px;">I think a puppy will jump out ___________________________________________</p>
+            <p style="margin-top: 4px;">because _________________________________________________________________</p>
           </div>
 
           <div class="challenge-step-box">
+            <div style="font-size: 24px; margin-bottom: 4px;">🎈 🚀 (Balloon Prediction)</div>
             <strong>PREDICTION 2 (Surprising):</strong>
-            <p style="margin-top: 6px;">I think __________________________________________________________________</p>
-            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+            <p style="margin-top: 4px;">I think __________________________________________________________________</p>
+            <p style="margin-top: 4px;">because _________________________________________________________________</p>
           </div>
 
           <div class="challenge-step-box">
+            <div style="font-size: 24px; margin-bottom: 4px;">🦖 🤖 (Dinosaur Prediction)</div>
             <strong>PREDICTION 3 (Crazy):</strong>
-            <p style="margin-top: 6px;">Maybe a friendly dinosaur robot will _____________________________________</p>
-            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+            <p style="margin-top: 4px;">Maybe a friendly robot dinosaur will ____________________________________</p>
+            <p style="margin-top: 4px;">because _________________________________________________________________</p>
           </div>
 
-          <div style="border: 2px dashed #7c3aed; border-radius: 12px; padding: 12px; background: #faf5ff;">
+          <div style="border: 2px dashed #7c3aed; border-radius: 12px; padding: 10px 14px; background: #faf5ff;">
             <strong>🗣️ Partner Discussion Checklist:</strong>
             <p style="margin-top: 4px; font-size: 13px;">Read your predictions to your partner! Listen to theirs and tick:
               [ ] Partner used WILL &nbsp;&nbsp;&nbsp; [ ] Partner explained WHY &nbsp;&nbsp;&nbsp; [ ] Made me laugh!
