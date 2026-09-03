@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🍽️ At the Restaurant — "I'd Like..." | ESL Speaking Lesson</title>
+  <link rel="stylesheet" href="css/restaurant.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="restaurant-screen-wrapper">
+    <div id="restaurant-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="restaurant-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.restaurantApp.renderStage(1)" title="Restaurant Entrance">
+            🍽️ <span>Bistro</span>
+          </button>
+          
+          <button class="hud-btn" onclick="window.restaurantApp.prevStage()" title="Previous Stage">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.restaurantApp.nextStage()" title="Next Stage">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Current Stage Indicator -->
+          <div class="stage-tracker-pill" id="hud-stage-name">
+            🍽️ 1. Enter Restaurant
+          </div>
+
+          <!-- Printable Worksheets Launcher -->
+          <a href="worksheets.html" target="_blank" class="hud-btn" title="Open 5 Printable Worksheets">
+            🖨️ <span>Worksheets</span>
+          </a>
+
+          <!-- Return to Neighbourhood Lesson -->
+          <a href="../index.html" class="hud-btn" title="Go to My Neighbourhood Lesson" style="background:#e8f5e9; border-color:#81c784; color:#2e7d32;">
+            🏘️ <span>Neighbourhood</span> ➔
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Stars Counter -->
+          <div class="rest-stars-counter" title="Explorer Stars">
+            <span>⭐</span>
+            <span id="hud-rest-stars">10</span>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="rest-voice-btn" onclick="toggleRestSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="rest-sfx-btn" onclick="toggleRestSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Control Hub -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherPanel()" title="Teacher Control Panel">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="rest-teacher-menu">
+              <div class="menu-section-tag">--- DIFFICULTY ---</div>
+              <button onclick="window.restaurantApp.setDifficulty('easy'); toggleTeacherPanel();">🟢 Easy (Full Words + Starters)</button>
+              <button onclick="window.restaurantApp.setDifficulty('normal'); toggleTeacherPanel();">🟡 Normal (Standard Support)</button>
+              <button onclick="window.restaurantApp.setDifficulty('challenge'); toggleTeacherPanel();">🔴 Challenge (Visuals Only)</button>
+              
+              <div class="menu-section-tag">--- SECRET ORDER ---</div>
+              <button onclick="window.restaurantApp.generateRandomOrder(); toggleTeacherPanel();">🎲 Generate New Secret Order</button>
+              <button onclick="window.restaurantApp.revealSecretAnswer(); toggleTeacherPanel();">👁️ Reveal Secret Order</button>
+
+              <div class="menu-section-tag">--- JUMP TO STAGE (40 MIN) ---</div>
+              <button onclick="window.restaurantApp.renderStage(1); toggleTeacherPanel();">1. 🍽️ Enter Restaurant (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(2); toggleTeacherPanel();">2. 📋 Explore Menu (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(3); toggleTeacherPanel();">3. 🗣️ Learn "I'd Like..." (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(4); toggleTeacherPanel();">4. 🎮 Ordering Practice (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(5); toggleTeacherPanel();">5. 🧠 Listen & Remember (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(6); toggleTeacherPanel();">6. 👩‍🍳 Learn Roles (3m)</button>
+              <button onclick="window.restaurantApp.renderStage(7); toggleTeacherPanel();">7. 🎭 First Role-Play (7m)</button>
+              <button onclick="window.restaurantApp.renderStage(8); toggleTeacherPanel();">8. 🎲 Secret Order (4m)</button>
+              <button onclick="window.restaurantApp.renderStage(9); toggleTeacherPanel();">9. 🔄 Switch Roles (3m)</button>
+              <button onclick="window.restaurantApp.renderStage(10); toggleTeacherPanel();">10. 🏆 Final Role-Play (3m)</button>
+              <button onclick="window.restaurantApp.renderStage('award'); toggleTeacherPanel();">🎖️ Restaurant Star Award</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="restaurant-viewport">
+        <!-- Injected via JavaScript -->
+      </main>
+
+      <!-- Toast Feedback -->
+      <div id="rest-toast"></div>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleTeacherPanel() {
+      const menu = document.getElementById('rest-teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('rest-teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleRestSpeech() {
+      const enabled = window.restaurantSound.toggleSpeech();
+      const btn = document.getElementById('rest-voice-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.restaurantApp.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function toggleRestSfx() {
+      const enabled = window.restaurantSound.toggleSound();
+      const btn = document.getElementById('rest-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.restaurantApp.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/restaurant-audio.js"></script>
+  <script src="js/restaurant-data.js"></script>
+  <script src="js/restaurant-scenes.js"></script>
+  <script src="js/restaurant-app.js"></script>
+</body>
+</html>

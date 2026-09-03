@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Printable Worksheets: At the Restaurant — "I'd Like..."</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      padding-bottom: 40px;
+    }
+
+    /* Screen Navigation Bar */
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .bar-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #d32f2f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .print-btn {
+      background: #d32f2f;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 0 #b71c1c;
+    }
+
+    .back-btn {
+      background: #eceff1;
+      color: #37474f;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* A4 Worksheet Pages */
+    .sheet-wrapper {
+      max-width: 800px;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .a4-page {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 24mm 18mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      min-height: 1050px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Worksheet Headers */
+    .ws-header {
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ws-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ws-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #b71c1c;
+    }
+
+    .ws-badge {
+      background: #fff3e0;
+      color: #e65100;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid #ffcc80;
+    }
+
+    .ws-meta-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .meta-line {
+      border-bottom: 1px dashed #94a3b8;
+      display: inline-block;
+      width: 140px;
+    }
+
+    /* Worksheet Content Sections */
+    .ws-section {
+      margin-bottom: 16px;
+    }
+
+    .ws-instruction {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+
+    /* Matching Grid (WS 1) */
+    .matching-items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .match-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .match-icon { font-size: 38px; }
+    .match-box {
+      border: 1px dashed #64748b;
+      width: 90%;
+      height: 24px;
+      border-radius: 6px;
+    }
+
+    .word-bank-box {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      letter-spacing: 1px;
+    }
+
+    /* Sentence Lines (WS 2) */
+    .trace-line {
+      background: #fdfaf6;
+      border-left: 4px solid #ff9800;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .trace-dotted {
+      color: #94a3b8;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 2px;
+    }
+
+    /* Cutout Secret Cards (WS 4) */
+    .cards-cutout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .cutout-card {
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .scissors-icon {
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: #ffffff;
+      padding: 0 4px;
+      font-size: 14px;
+    }
+
+    .cutout-icons { font-size: 40px; margin: 8px 0; }
+    .cutout-names { font-size: 17px; font-weight: 900; color: #b71c1c; }
+    .cutout-phrase { font-size: 13px; font-weight: 800; color: #475569; margin-top: 6px; }
+
+    /* Role Sorting (WS 3) */
+    .dialogue-bubbles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .role-bubble-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .checkboxes-box {
+      display: flex;
+      gap: 14px;
+    }
+
+    .check-opt {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .square-box {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #64748b;
+      display: inline-block;
+      border-radius: 4px;
+    }
+
+    /* Roleplay Script (WS 5) */
+    .script-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .script-table th, .script-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .script-table th {
+      background: #f1f5f9;
+      font-weight: 900;
+      color: #334155;
+    }
+
+    .ws-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet-wrapper {
+        margin: 0 !important;
+        max-width: 100% !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 15mm 15mm !important;
+        page-break-after: always !important;
+        min-height: auto !important;
+        height: 100vh !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Top Bar (Hidden during printing) -->
+  <div class="no-print-bar">
+    <div class="bar-title">
+      <span>🍽️</span>
+      <span>Printable Worksheets: At the Restaurant — "I'd Like..."</span>
+    </div>
+    <div class="bar-actions">
+      <a href="index.html" class="back-btn">⬅️ Back to Digital Lesson</a>
+      <button class="print-btn" onclick="window.print()">
+        🖨️ PRINT ALL 5 WORKSHEETS
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet-wrapper">
+
+    <!-- ================= WORKSHEET 1: MY RESTAURANT MENU ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 1: My Restaurant Menu</h1>
+            <span class="ws-badge">A1 Vocabulary</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-section">
+          <h3 class="ws-instruction">1. Write the correct word under each picture:</h3>
+          <div class="matching-items-grid">
+            <div class="match-card"><span class="match-icon">🍕</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🥗</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🥪</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🥞</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🍝</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🍲</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">💧</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🥛</span><div class="match-box"></div></div>
+            <div class="match-card"><span class="match-icon">🧃</span><div class="match-box"></div></div>
+          </div>
+          <div class="word-bank-box">
+            <strong>WORD BANK:</strong> pizza • salad • sandwich • pancakes • pasta • soup • water • milkshake • juice
+          </div>
+        </div>
+
+        <div class="ws-section" style="margin-top: 18px;">
+          <h3 class="ws-instruction">2. Circle your favorite food and drink, then write your order:</h3>
+          <div class="trace-line">
+            "I'd like some ________________________ and some ________________________, please."
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🍽️ ESL Speaking Lesson: At the Restaurant</span>
+        <span>Page 1 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 2: I'D LIKE... ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 2: Polite Ordering — "I'd Like..."</h1>
+            <span class="ws-badge">A1 Sentence Building</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-section">
+          <h3 class="ws-instruction">1. Trace and complete the sentences:</h3>
+          
+          <div class="trace-line">
+            <span class="trace-dotted">🧑‍🍳 What would you like?</span><br>
+            🧒 I'd like some <span class="trace-dotted">pizza</span>, please. 🍕
+          </div>
+
+          <div class="trace-line">
+            <span class="trace-dotted">🧑‍🍳 Anything to drink?</span><br>
+            🧒 I'd like some <span class="trace-dotted">water</span>, please. 💧
+          </div>
+
+          <div class="trace-line">
+            🧑‍🍳 What would you like?<br>
+            🧒 I'd like some ______________________________, please. 🍝
+          </div>
+
+          <div class="trace-line">
+            🧑‍🍳 Anything to drink?<br>
+            🧒 I'd like some ______________________________, please. 🥛
+          </div>
+        </div>
+
+        <div class="ws-section" style="margin-top: 18px;">
+          <h3 class="ws-instruction">2. Unscramble the polite order:</h3>
+          <p style="font-size: 14px; margin-bottom: 6px; color: #475569;">[ please / some / I'd / pancakes / like ]</p>
+          <div class="trace-line">
+            ✍️ __________________________________________________________________
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🍽️ ESL Speaking Lesson: At the Restaurant</span>
+        <span>Page 2 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 3: WAITER OR CUSTOMER? ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 3: Waiter or Customer?</h1>
+            <span class="ws-badge">A1 Role Sorting</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-section">
+          <h3 class="ws-instruction">Tick who says each sentence: Waiter (🧑‍🍳) or Customer (🧒)?</h3>
+          <div class="dialogue-bubbles-list">
+            <div class="role-bubble-item">
+              <span>"Hello! Welcome to our restaurant."</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"I'd like some pasta, please."</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"What would you like?"</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"Anything to drink?"</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"I'd like some juice, please."</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"Here you are."</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"Thank you!"</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+
+            <div class="role-bubble-item">
+              <span>"You're welcome!"</span>
+              <div class="checkboxes-box">
+                <span class="check-opt"><span class="square-box"></span> 🧑‍🍳 Waiter</span>
+                <span class="check-opt"><span class="square-box"></span> 🧒 Customer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🍽️ ESL Speaking Lesson: At the Restaurant</span>
+        <span>Page 3 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 4: SECRET ORDER CARDS ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 4: Secret Order Cards (Cut & Play)</h1>
+            <span class="ws-badge">Speaking Pair Work</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Cut along the dashed lines. Customer holds card secretly, Waiter listens!</span>
+          </div>
+        </div>
+
+        <div class="ws-section">
+          <div class="cards-cutout-grid">
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🍕 + 💧</div>
+              <div class="cutout-names">Pizza & Water</div>
+              <div class="cutout-phrase">"I'd like some pizza and some water, please."</div>
+            </div>
+
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🥪 + 🥛</div>
+              <div class="cutout-names">Sandwich & Milkshake</div>
+              <div class="cutout-phrase">"I'd like some sandwich and a milkshake, please."</div>
+            </div>
+
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🥞 + 🧃</div>
+              <div class="cutout-names">Pancakes & Juice</div>
+              <div class="cutout-phrase">"I'd like some pancakes and some juice, please."</div>
+            </div>
+
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🍝 + 💧</div>
+              <div class="cutout-names">Pasta & Water</div>
+              <div class="cutout-phrase">"I'd like some pasta and some water, please."</div>
+            </div>
+
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🍲 + 🥛</div>
+              <div class="cutout-names">Soup & Milkshake</div>
+              <div class="cutout-phrase">"I'd like some soup and a milkshake, please."</div>
+            </div>
+
+            <div class="cutout-card">
+              <span class="scissors-icon">✂️</span>
+              <div class="cutout-icons">🥗 + 🧃</div>
+              <div class="cutout-names">Salad & Juice</div>
+              <div class="cutout-phrase">"I'd like some salad and some juice, please."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🍽️ ESL Speaking Lesson: At the Restaurant</span>
+        <span>Page 4 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 5: ROLE-PLAY SCRIPT ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 5: Restaurant Role-Play Script</h1>
+            <span class="ws-badge">Speaking & Retelling</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Partner: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-section">
+          <h3 class="ws-instruction">Complete the conversation with your speaking partner:</h3>
+          <table class="script-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Speaker</th>
+                <th>Dialogue Lines</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🧑‍🍳 WAITER</td>
+                <td>"Hello! Welcome to our restaurant."</td>
+              </tr>
+              <tr>
+                <td>🧒 CUSTOMER</td>
+                <td>"Hello!"</td>
+              </tr>
+              <tr>
+                <td>🧑‍🍳 WAITER</td>
+                <td>"What would you like?"</td>
+              </tr>
+              <tr>
+                <td>🧒 CUSTOMER</td>
+                <td>"I'd like some __________________________, please."</td>
+              </tr>
+              <tr>
+                <td>🧑‍🍳 WAITER</td>
+                <td>"Anything to drink?"</td>
+              </tr>
+              <tr>
+                <td>🧒 CUSTOMER</td>
+                <td>"I'd like some __________________________, please."</td>
+              </tr>
+              <tr>
+                <td>🧑‍🍳 WAITER</td>
+                <td>"Here you are."</td>
+              </tr>
+              <tr>
+                <td>🧒 CUSTOMER</td>
+                <td>"Thank you!"</td>
+              </tr>
+              <tr>
+                <td>🧑‍🍳 WAITER</td>
+                <td>"You're welcome!"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ws-section" style="margin-top: 14px;">
+          <h3 class="ws-instruction">Partner Speaking Checklist:</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; font-weight: 800;">
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px;">
+              <p>☑ Did Customer say "Please"?</p>
+              <p>☑ Did Customer say "Thank you"?</p>
+            </div>
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px;">
+              <p>☑ Did Waiter say "Welcome"?</p>
+              <p>☑ Did Waiter say "Here you are"?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🍽️ ESL Speaking Lesson: At the Restaurant</span>
+        <span>Page 5 of 5</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
