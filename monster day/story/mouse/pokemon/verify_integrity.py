@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import subprocess
 
 print("=== VERIFYING POKEMON GAME INTEGRITY ===")
 
@@ -33,11 +34,12 @@ expected_bases = [
     'scorbunny', 'buneary', 'plusle', 'raboot', # Rabbit
     'squirtle', 'torkoal', 'turtwig', 'chewtle', 'drednaw', # Turtle
     'dragonite', 'dratini', 'axew', 'noibat', 'gible', 'bagon', # Dragon
-    'fletchling', 'torchic', 'rowlet', 'rookidee', 'pidgey', # Bird
+    'fletchling', 'torchic', 'rowlet', 'rookidee', 'pidgey', 'pidgeot', # Bird
     'rockruff', 'growlithe', 'houndour', 'riolu', 'electrike', # Wolf
     'froakie', 'croagunk', 'poliwag', 'greninja', # Frog
     'fuecoco', 'tyrunt', 'totodile', 'larvitar', 'charmander', # Dinosaur
-    'pikachu', 'cyndaquil', 'marill', 'dedenne', 'pawmi' # Mouse
+    'pikachu', 'cyndaquil', 'marill', 'dedenne', 'pawmi', # Mouse
+    'butterfree', 'heracross', 'magnemite', 'bulbasaur', 'jigglypuff', 'onix', 'gengar'
 ]
 
 missing_bases = []
@@ -52,8 +54,6 @@ else:
     print(f"All {len(expected_bases)} curated creature base models exist on disk!")
 
 # 3. Check JavaScript syntax using Node
-import subprocess
-
 for js_file in ['data.js', 'sound.js', 'creatures.js', 'app.js']:
     res = subprocess.run(['node', '-c', js_file], capture_output=True, text=True)
     if res.returncode != 0:
@@ -67,16 +67,32 @@ with open('index.html', 'r', encoding='utf-8') as f:
     html_content = f.read()
 
 required_ids = [
-    'p1-base-choices', 'p2-base-choices',
-    'p1-size-choices', 'p2-size-choices',
-    'p1-personality-choices', 'p2-personality-choices',
-    'p1-power-choices', 'p2-power-choices',
-    'p1-ability-choices', 'p2-ability-choices',
-    'p1-spec-base', 'p2-spec-base',
-    'p1-pod-preview-img', 'p2-pod-preview-img',
-    'p1-slot-base', 'p2-slot-base',
-    'battleCreatureP1', 'battleCreatureP2',
-    'champCreatureViewport'
+    # Top controls
+    'btnFullscreen', 'fullscreenIcon', 'btnAudioPrompt',
+    # Mystery Icebreaker Screen (zero silhouette)
+    'screen-spotting', 'mysteryClueView', 'mysteryRevealView',
+    'mysteryRoundBadge', 'mysteryStarRatingPill', 'mysteryPodFrame',
+    'mysteryThemeLabel', 'cluesRevealedTracker', 'clueBarsGrid',
+    'mysteryChoicesGrid', 'mysteryFeedbackMsg',
+    # Dedicated Reveal View
+    'revealHeroTitle', 'revealHeroType', 'revealHeroImg',
+    'revealSentencesList', 'btnSpeakAllClues', 'revealStarsText', 'btnNextMysteryRound',
+    # Trainer 1 Paginated Creator
+    'p1-creator-page-1', 'p1-creator-page-2', 'p1-creator-page-3',
+    'p1-base-choices', 'p1-size-choices', 'p1-personality-choices',
+    'p1-color-choices', 'p1-feature-choices', 'p1-ability-choices',
+    'p1-spec-base', 'p1-spec-size', 'p1-spec-personality', 'p1-spec-color',
+    'p1-spec-features', 'p1-spec-abilities', 'p1-pod-preview-img',
+    'p1-slot-base', 'p1-slot-size', 'p1-slot-color', 'p1-slot-personality', 'p1-slot-ab1', 'p1-slot-ab2',
+    # Trainer 2 Paginated Creator
+    'p2-creator-page-1', 'p2-creator-page-2', 'p2-creator-page-3',
+    'p2-base-choices', 'p2-size-choices', 'p2-personality-choices',
+    'p2-color-choices', 'p2-feature-choices', 'p2-ability-choices',
+    'p2-spec-base', 'p2-spec-size', 'p2-spec-personality', 'p2-spec-color',
+    'p2-spec-features', 'p2-spec-abilities', 'p2-pod-preview-img',
+    'p2-slot-base', 'p2-slot-size', 'p2-slot-color', 'p2-slot-personality', 'p2-slot-ab1', 'p2-slot-ab2',
+    # Battle Arena
+    'battleCreatureP1', 'battleCreatureP2', 'champCreatureViewport'
 ]
 
 missing_ids = [i for i in required_ids if f'id="{i}"' not in html_content]
@@ -84,6 +100,6 @@ if missing_ids:
     print(f"ERROR: Missing HTML IDs: {missing_ids}")
     sys.exit(1)
 else:
-    print("All required Smartboard UI IDs are present in index.html!")
+    print(f"All {len(required_ids)} required Smartboard UI IDs are present in index.html!")
 
-print("\n=== ALL GAME AND CREATURE INTEGRITY CHECKS PASSED PERFECTLY! ===")
+print("\n=== ALL GAME, MYSTERY ICEBREAKER & CREATOR INTEGRITY CHECKS PASSED PERFECTLY! ===")
