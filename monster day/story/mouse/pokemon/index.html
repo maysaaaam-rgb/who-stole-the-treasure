@@ -3,1220 +3,842 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Pokémon Trainer Battle | Interactive A1+ ESL Game</title>
+  <title>Pokémon Trainer Challenge — Interactive ESL Lesson</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23ef4444'/><path d='M 2 50 A 48 48 0 0 0 98 50 Z' fill='%23ffffff'/><line x1='2' y1='50' x2='98' y2='50' stroke='%230f172a' stroke-width='10'/><circle cx='50' cy='50' r='16' fill='%230f172a'/><circle cx='50' cy='50' r='10' fill='%23ffffff'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- TOP TEACHER CONTROLS BAR -->
-  <header class="top-nav-bar" id="topNav">
-    <div class="nav-left">
-      <div class="brand-badge">
-        <span class="pokeball-icon"></span>
-        <span class="brand-title">POKÉMON TRAINER BATTLE</span>
-      </div>
-      <div class="stage-selector-wrap">
-        <label for="stageSelect" class="sr-only">Jump to Stage</label>
-        <select id="stageSelect" class="stage-dropdown" aria-label="Select Lesson Stage">
-          <option value="0">1. 🚨 Pokémon Emergency</option>
-          <option value="1">2. 🔍 Spotting Icebreaker</option>
-          <option value="2">3. 📖 Adjectives (Size & Speed)</option>
-          <option value="3">4. 📖 Adjectives (Power & Personality)</option>
-          <option value="4">5. 🎮 Adjective Quick Game</option>
-          <option value="5">6. ⚡ Abilities (What Can It Do?)</option>
-          <option value="6">7. 🏃 Movement TPR Game</option>
-          <option value="7">8. 🗣️ Model Description</option>
-          <option value="8">9. 🧬 Create Pokémon (Trainer 1)</option>
-          <option value="9">10. 🎤 Speak & Reveal (Trainer 1)</option>
-          <option value="10">11. 🧬 Create Pokémon (Trainer 2)</option>
-          <option value="11">12. 🎤 Speak & Reveal (Trainer 2)</option>
-          <option value="12">13. ⚔️ Creator Battle Arena</option>
-          <option value="13">14. 🏆 Champion Ceremony</option>
-        </select>
-      </div>
-    </div>
 
-    <!-- STAGE PROGRESS PILLS -->
-    <div class="stage-progress-track" id="stageProgressTrack">
-      <!-- Generated dynamically -->
-    </div>
+  <!-- FIXED VIEWPORT WRAPPER (Prevents window scroll) -->
+  <div id="appViewport" class="app-viewport">
 
-    <div class="nav-right">
-      <button class="nav-btn" id="btnAudioPrompt" title="Speak Current Instruction (TTS)" aria-label="Speak Instruction">
-        <span class="icon">🔊</span>
-        <span class="btn-text">Speak</span>
-      </button>
-      <button class="nav-btn" id="btnMuteToggle" title="Toggle Sound" aria-label="Toggle Sound">
-        <span class="icon" id="muteIcon">🔔</span>
-      </button>
-      <button class="nav-btn btn-highlight" id="btnPokedexModal" title="Audience Pokédex" aria-label="Open Trainer's Pokédex">
-        <span class="icon">📋</span>
-        <span class="btn-text">Pokédex</span>
-      </button>
-      <button class="nav-btn" id="btnPrintWorksheets" title="Print Class Worksheets" aria-label="Print Worksheets">
-        <span class="icon">🖨️</span>
-        <span class="btn-text">Print</span>
-      </button>
-      <button class="nav-btn" id="btnTeacherNotes" title="Teacher Guide" aria-label="Teacher Notes">
-        <span class="icon">💡</span>
-      </button>
-      <button class="nav-btn" id="btnFullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
-        <span class="icon" id="fullscreenIcon">⛶</span>
-      </button>
-    </div>
-  </header>
+    <!-- 16:9 AUTO-SCALING VIRTUAL CANVAS (1920x1080) -->
+    <div id="appStage" class="app-stage">
 
-  <!-- MAIN LESSON STAGE CONTAINER -->
-  <main class="main-viewport" id="mainViewport">
-
-    <!-- ==================== SCREEN 0: POKÉMON EMERGENCY ==================== -->
-    <section class="screen-view active" id="screen-emergency">
-      <div class="screen-bg lab-bg"></div>
-      <div class="emergency-alarm-flash"></div>
-      
-      <div class="screen-content emergency-layout">
-        <div class="emergency-badge-banner">
-          <span class="siren-icon">🚨</span>
-          <h1>POKÉMON EMERGENCY!</h1>
-          <span class="siren-icon">🚨</span>
-        </div>
-
-        <div class="emergency-hero-grid">
-          <!-- Professor Avatar Card -->
-          <div class="professor-card floating-anim">
-            <img src="assets/images/professor.svg" alt="Professor Spark" class="professor-avatar">
-            <div class="speech-bubble speech-bubble-left">
-              <p class="prof-greeting">"Attention! The Pokémon have escaped from the lab!"</p>
-              <p class="prof-callout">"I need new <strong>Pokémon Trainers</strong>!"</p>
-            </div>
+      <!-- ==================== PERSISTENT TOP UTILITY BAR ==================== -->
+      <header class="top-utility-bar" id="topUtilityBar">
+        <div class="bar-left">
+          <div class="game-logo" id="btnLogoHome">
+            <span class="logo-ball">🔴</span>
+            <span class="logo-title">POKÉMON TRAINER CHALLENGE</span>
           </div>
-
-          <!-- Escaped Pokémon Banner -->
-          <div class="escaped-preview-box">
-            <h3>Look! They are running everywhere!</h3>
-            <div class="escaped-scroller" id="escapedScroller">
-              <!-- Animated Pokémon sprites -->
-              <img src="assets/images/pikachu.png" alt="Pikachu" class="run-sprite sprite-1">
-              <img src="assets/images/eevee.png" alt="Eevee" class="run-sprite sprite-2">
-              <img src="assets/images/squirtle.png" alt="Squirtle" class="run-sprite sprite-3">
-              <img src="assets/images/charmander.png" alt="Charmander" class="run-sprite sprite-4">
-              <img src="assets/images/gengar.png" alt="Gengar" class="run-sprite sprite-5">
-            </div>
-
-            <!-- Mission List -->
-            <div class="mission-brief-card">
-              <h4>🎯 YOUR MISSION</h4>
-              <ul class="mission-checklist">
-                <li><span class="check">1</span> Learn the Pokémon language (Adjectives & Abilities)</li>
-                <li><span class="check">2</span> Create your OWN original Pokémon</li>
-                <li><span class="check">3</span> Speak English to battle another Trainer</li>
-                <li><span class="check">4</span> Win English points and become Champion!</li>
-              </ul>
-            </div>
+          <div class="stage-progress-track" id="stageProgressTrack">
+            <!-- 13 Step Dots generated dynamically -->
           </div>
         </div>
 
-        <div class="center-action-bar">
-          <button class="action-btn btn-huge btn-pulse btn-start-mission" id="btnStartMission">
-            <span class="btn-icon">⚡</span>
-            START MISSION!
-            <span class="btn-icon">⚡</span>
+        <div class="bar-center">
+          <span class="active-stage-title" id="topStageTitle">1. Welcome Trainer!</span>
+        </div>
+
+        <div class="bar-right">
+          <button class="top-btn" id="btnSoundToggle" title="Toggle Sound / TTS" aria-label="Toggle Sound">
+            <span class="btn-icon" id="soundIcon">🔊</span>
+            <span class="btn-text">Sound</span>
+          </button>
+          <button class="top-btn top-btn-fullscreen" id="btnFullscreenToggle" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+            <span class="btn-icon" id="fullscreenIcon">🔲</span>
+            <span class="btn-text" id="fullscreenText">Fullscreen</span>
+          </button>
+          <button class="top-btn" id="btnClassroomMode" title="Toggle Classroom Focus Mode" aria-label="Toggle Classroom Mode">
+            <span class="btn-icon">🏫</span>
+            <span class="btn-text">Classroom</span>
+          </button>
+          <button class="top-btn top-btn-restart" id="btnRestartAdventure" title="Restart Adventure" aria-label="Restart Adventure">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Restart</span>
           </button>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <!-- ==================== SCREEN 1: SPOTTING ICEBREAKER ==================== -->
-    <section class="screen-view" id="screen-spotting">
-      <div class="screen-bg training-bg"></div>
+      <!-- ==================== MAIN ACTIVITY VIEWPORT (860px SAFE ZONE) ==================== -->
+      <main class="activity-viewport" id="activityViewport">
 
-      <div class="screen-content spotting-layout">
-        <div class="screen-header">
-          <span class="stage-tag">ICEBREAKER</span>
-          <h2>🔍 SPOT THE ESCAPED POKÉMON!</h2>
-          <p class="instruction-subtitle">Tap a Pokémon, say its name, and call it out!</p>
-        </div>
-
-        <div class="spotting-grid" id="spottingGrid">
-          <!-- Populated dynamically with escaped Pokemon -->
-        </div>
-
-        <div class="spotting-feedback-bar" id="spottingFeedback">
-          <span class="feedback-text">Point and call them out!</span>
-          <button class="action-btn btn-secondary" id="btnFinishSpotting">
-            🎉 WOW! You know Pokémon! Next ➔
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 2: VOCABULARY - ADJECTIVES PART 1 ==================== -->
-    <section class="screen-view" id="screen-adjectives-1">
-      <div class="screen-bg training-bg"></div>
-
-      <div class="screen-content vocab-layout">
-        <div class="screen-header">
-          <span class="stage-tag">VOCABULARY STAGE 1</span>
-          <h2>📖 ADJECTIVES: SIZE & SPEED</h2>
-          <p class="instruction-subtitle">Look at the contrast! Do the movement with the teacher!</p>
-        </div>
-
-        <!-- Big Visual Contrast Area -->
-        <div class="contrast-container">
-          <div class="contrast-card card-left" id="adjCardLeft">
-            <div class="contrast-header">
-              <span class="vocab-word" id="adjWordLeft">🤏 TINY</span>
-              <button class="btn-audio-mini" id="btnSpeakAdjLeft">🔊</button>
-            </div>
-            <div class="contrast-img-wrap">
-              <img src="assets/images/joltik.png" alt="Tiny" id="adjImgLeft" class="vocab-creature-img">
-            </div>
-            <div class="gesture-badge" id="adjGestureLeft">
-              <span class="gesture-icon">🤸</span>
-              <span class="gesture-text">Make yourself very small!</span>
-            </div>
-            <div class="sentence-box" id="adjSentenceLeft">"It is tiny."</div>
-          </div>
-
-          <div class="contrast-vs-divider">
-            <span>VS</span>
-          </div>
-
-          <div class="contrast-card card-right" id="adjCardRight">
-            <div class="contrast-header">
-              <span class="vocab-word" id="adjWordRight">🐉 HUGE</span>
-              <button class="btn-audio-mini" id="btnSpeakAdjRight">🔊</button>
-            </div>
-            <div class="contrast-img-wrap">
-              <img src="assets/images/onix.png" alt="Huge" id="adjImgRight" class="vocab-creature-img">
-            </div>
-            <div class="gesture-badge" id="adjGestureRight">
-              <span class="gesture-icon">🙌</span>
-              <span class="gesture-text">Stretch arms wide and stand tall!</span>
-            </div>
-            <div class="sentence-box" id="adjSentenceRight">"It is huge."</div>
-          </div>
-        </div>
-
-        <!-- Category Selector Tabs -->
-        <div class="vocab-category-selector">
-          <button class="cat-pill active" id="tabSize">SIZE (Tiny vs Huge)</button>
-          <button class="cat-pill" id="tabSpeed">SPEED (Fast vs Slow)</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 3: VOCABULARY - ADJECTIVES PART 2 ==================== -->
-    <section class="screen-view" id="screen-adjectives-2">
-      <div class="screen-bg training-bg"></div>
-
-      <div class="screen-content vocab-layout">
-        <div class="screen-header">
-          <span class="stage-tag">VOCABULARY STAGE 1 (CONT.)</span>
-          <h2>📖 ADJECTIVES: POWER & PERSONALITY</h2>
-          <p class="instruction-subtitle">Practice with gestures! Say the words out loud!</p>
-        </div>
-
-        <div class="contrast-container">
-          <div class="contrast-card card-left" id="adj2CardLeft">
-            <div class="contrast-header">
-              <span class="vocab-word" id="adj2WordLeft">💪 STRONG</span>
-              <button class="btn-audio-mini" id="btnSpeakAdj2Left">🔊</button>
-            </div>
-            <div class="contrast-img-wrap">
-              <img src="assets/images/machamp.png" alt="Strong" id="adj2ImgLeft" class="vocab-creature-img">
-            </div>
-            <div class="gesture-badge" id="adj2GestureLeft">
-              <span class="gesture-icon">💪</span>
-              <span class="gesture-text">Flex your muscles!</span>
-            </div>
-            <div class="sentence-box" id="adj2SentenceLeft">"It is strong."</div>
-          </div>
-
-          <div class="contrast-vs-divider">
-            <span>VS</span>
-          </div>
-
-          <div class="contrast-card card-right" id="adj2CardRight">
-            <div class="contrast-header">
-              <span class="vocab-word" id="adj2WordRight">😴 WEAK</span>
-              <button class="btn-audio-mini" id="btnSpeakAdj2Right">🔊</button>
-            </div>
-            <div class="contrast-img-wrap">
-              <img src="assets/images/magikarp.png" alt="Weak" id="adj2ImgRight" class="vocab-creature-img">
-            </div>
-            <div class="gesture-badge" id="adj2GestureRight">
-              <span class="gesture-icon">😴</span>
-              <span class="gesture-text">Act tired and flop around!</span>
-            </div>
-            <div class="sentence-box" id="adj2SentenceRight">"It is weak."</div>
-          </div>
-        </div>
-
-        <div class="vocab-category-selector">
-          <button class="cat-pill active" id="tabPower">POWER (Strong vs Weak)</button>
-          <button class="cat-pill" id="tabPersonality">PERSONALITY (Cute vs Scary)</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 4: ADJECTIVE QUICK GAME ==================== -->
-    <section class="screen-view" id="screen-adj-game">
-      <div class="screen-bg training-bg"></div>
-
-      <div class="screen-content quiz-layout">
-        <div class="screen-header">
-          <span class="stage-tag">QUICK PRACTICE</span>
-          <h2 id="adjQuizQuestionTitle">🔍 FIND THE HUGE POKÉMON!</h2>
-          <p class="instruction-subtitle">Tap the correct Pokémon and say the sentence!</p>
-        </div>
-
-        <div class="quiz-choices-grid" id="adjQuizChoices">
-          <!-- 3 choices rendered dynamically -->
-        </div>
-
-        <div class="quiz-status-box" id="adjQuizStatus">
-          <div class="quiz-message" id="adjQuizFeedbackMsg">Choose one!</div>
-          <div class="quiz-sentence-frame" id="adjQuizSentenceFrame">"It is ______."</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 5: VOCABULARY - ABILITIES ==================== -->
-    <section class="screen-view" id="screen-abilities">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content abilities-layout">
-        <div class="screen-header">
-          <span class="stage-tag">VOCABULARY STAGE 2</span>
-          <h2>⚡ WHAT CAN YOUR POKÉMON DO?</h2>
-          <p class="instruction-subtitle">Tap each ability card to see and hear it!</p>
-        </div>
-
-        <div class="abilities-cards-grid" id="abilitiesCardsGrid">
-          <!-- Populated from LESSON_DATA.abilities -->
-        </div>
-
-        <!-- Ability Detail Spotlight Area -->
-        <div class="ability-spotlight-bar" id="abilitySpotlight">
-          <div class="spotlight-left">
-            <span class="spotlight-emoji" id="spotlightEmoji">🔥</span>
-            <div class="spotlight-info">
-              <h3 id="spotlightTitle">MAKE FIRE</h3>
-              <p class="spotlight-sentence" id="spotlightSentence">"It can make fire."</p>
-            </div>
-          </div>
-          <div class="spotlight-gesture" id="spotlightGesture">
-            <span class="gesture-icon">💨</span>
-            <span class="gesture-desc">Gesture: Breathe fire and push hands out!</span>
-          </div>
-          <button class="action-btn btn-secondary" id="btnSpeakSpotlight">
-            🔊 Listen & Repeat
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 6: MOVEMENT TPR ACTION GAME ==================== -->
-    <section class="screen-view" id="screen-movement-game">
-      <div class="screen-bg training-bg"></div>
-
-      <div class="screen-content movement-layout">
-        <div class="screen-header">
-          <span class="stage-tag">ACTION GAME (TPR)</span>
-          <h2>🏃 TRAINER MOVEMENT CHALLENGE!</h2>
-          <p class="instruction-subtitle">Look at the command! Move! Then say: <strong>"It can..."</strong></p>
-        </div>
-
-        <div class="movement-hero-card" id="movementHeroCard">
-          <div class="movement-icon-giant pulse-anim" id="moveGiantEmoji">🪽</div>
-          <h1 class="movement-command" id="moveCommandText">FLY!</h1>
-          <div class="movement-action-tip" id="moveActionTip">Everyone flap your wings and fly!</div>
+        <!-- ==================== SCREEN 1: START / TITLE ==================== -->
+        <section class="activity-screen active" id="screen-start">
+          <div class="screen-bg stadium-bg"></div>
           
-          <div class="movement-speech-callout">
-            <span class="label">EVERYONE SAY:</span>
-            <span class="sentence" id="moveSentenceText">"It can fly."</span>
-            <button class="btn-audio-mini" id="btnSpeakMoveSentence">🔊</button>
-          </div>
-        </div>
+          <div class="start-hero-container">
+            <div class="start-title-badge">GRADE 4 ESL • SMARTBOARD ADVENTURE</div>
+            <h1 class="start-main-title">POKÉMON TRAINER<br><span class="title-highlight">CHALLENGE!</span></h1>
+            <p class="start-subtitle">Create your Pokémon, discover 16 abilities, and describe it in English!</p>
 
-        <div class="movement-controls">
-          <button class="action-btn btn-secondary" id="btnPrevMove">⬅ Previous Action</button>
-          <button class="action-btn btn-primary" id="btnNextMove">Next Action ➡</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 7: COMPLETE MODEL DESCRIPTIONS ==================== -->
-    <section class="screen-view" id="screen-model-desc">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content model-layout">
-        <div class="screen-header">
-          <span class="stage-tag">LANGUAGE MODELING</span>
-          <h2>🗣️ DESCRIBE THE POKÉMON</h2>
-          <p class="instruction-subtitle">Put adjectives and abilities together!</p>
-        </div>
-
-        <div class="model-showcase-grid">
-          <!-- Pokémon Visual & Tags -->
-          <div class="model-creature-card">
-            <div class="model-image-wrap">
-              <img src="assets/images/pikachu.png" alt="Pikachu" id="modelImage" class="model-pokemon-img">
-            </div>
-            <h3 class="model-name" id="modelName">PIKACHU</h3>
-            <div class="model-tags-row" id="modelTagsRow">
-              <span class="tag tag-adj">small</span>
-              <span class="tag tag-adj">fast</span>
-              <span class="tag tag-adj">cute</span>
-              <span class="tag tag-ab">jump</span>
-              <span class="tag tag-ab">make electricity</span>
-            </div>
-          </div>
-
-          <!-- Question & Answer Scaffolding -->
-          <div class="model-scaffolding-card">
-            <div class="scaffold-block">
-              <span class="teacher-prompt-label">Teacher asks: "What is Pikachu like?"</span>
-              <div class="student-answer-bubble">
-                <span class="bubble-tag">Students:</span>
-                <p id="modelSentence1">"It is small and fast."</p>
-                <button class="btn-audio-mini" data-text="It is small and fast.">🔊</button>
+            <!-- Showcase Gallery of Diverse Archetypes -->
+            <div class="start-creature-showcase">
+              <div class="showcase-item charizard-card">
+                <img src="assets/images/charizard.png" alt="Charizard">
+                <span>Dragon</span>
+              </div>
+              <div class="showcase-item pikachu-card">
+                <img src="assets/images/pikachu.png" alt="Pikachu">
+                <span>Electric Mouse</span>
+              </div>
+              <div class="showcase-item lapras-card">
+                <img src="assets/images/lapras.png" alt="Lapras">
+                <span>Aquatic</span>
+              </div>
+              <div class="showcase-item butterfree-card">
+                <img src="assets/images/butterfree.png" alt="Butterfree">
+                <span>Insect</span>
+              </div>
+              <div class="showcase-item bulbasaur-card">
+                <img src="assets/images/bulbasaur.png" alt="Bulbasaur">
+                <span>Plant</span>
               </div>
             </div>
 
-            <div class="scaffold-block">
-              <span class="teacher-prompt-label">Teacher asks: "What can it do?"</span>
-              <div class="student-answer-bubble">
-                <span class="bubble-tag">Students:</span>
-                <p id="modelSentence2">"It can jump and make electricity."</p>
-                <button class="btn-audio-mini" data-text="It can jump and make electricity.">🔊</button>
-              </div>
-            </div>
-
-            <!-- Complete Champion Model -->
-            <div class="full-champion-model-box">
-              <span class="star-badge">⭐ COMPLETE TARGET SPEECH:</span>
-              <p class="target-speech-text" id="modelFullSpeech">
-                "My Pokémon is small and fast. It is cute. It can jump and make electricity!"
-              </p>
-              <button class="action-btn btn-highlight" id="btnSpeakModelFull">
-                🔊 Model Complete Speech
+            <!-- Start Controls -->
+            <div class="start-action-row">
+              <button class="action-btn btn-huge btn-pulse btn-start" id="btnStartAdventure">
+                🎮 START ADVENTURE! ➔
+              </button>
+              <button class="action-btn btn-secondary btn-large" id="btnOpenHowToPlay">
+                📖 HOW TO PLAY
               </button>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="model-switch-tabs">
-          <button class="tab-btn active" id="tabModelPikachu">Pikachu</button>
-          <button class="tab-btn" id="tabModelCharizard">Charizard</button>
-          <button class="tab-btn" id="tabModelSquirtle">Squirtle</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 8: CREATOR STUDIO (TRAINER 1) ==================== -->
-    <section class="screen-view" id="screen-create-p1">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content creator-layout">
-        <div class="screen-header">
-          <span class="stage-tag player-tag-p1">TRAINER 1</span>
-          <h2>🧬 CREATE YOUR POKÉMON!</h2>
-          <p class="instruction-subtitle">Choose characteristics to design your unique Pokémon!</p>
-        </div>
-
-        <div class="creator-workspace-grid">
-          <!-- Left: Selection Control Panels -->
-          <div class="creator-options-panel">
-            
-            <!-- Step 1: Creature Base -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">1</span>
-                <span>CHOOSE CREATURE BASE:</span>
-              </div>
-              <div class="choice-pills-row creature-base-pills" id="p1-base-choices">
-                <button class="choice-pill base-pill" data-type="base" data-val="fox">🦊 FOX</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="cat">🐱 CAT</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="rabbit">🐰 RABBIT</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="turtle">🐢 TURTLE</button>
-                <button class="choice-pill base-pill active" data-type="base" data-val="dragon">🐉 DRAGON</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="bird">🦅 BIRD</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="wolf">🐺 WOLF</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="frog">🐸 FROG</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="dinosaur">🦖 DINOSAUR</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="mouse">🐭 MOUSE</button>
-              </div>
-            </div>
-
-            <!-- Step 2: Size -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">2</span>
-                <span>CHOOSE SIZE:</span>
-              </div>
-              <div class="choice-pills-row" id="p1-size-choices">
-                <button class="choice-pill" data-type="size" data-val="tiny">🤏 TINY</button>
-                <button class="choice-pill" data-type="size" data-val="small">🐭 SMALL</button>
-                <button class="choice-pill" data-type="size" data-val="big">🐻 BIG</button>
-                <button class="choice-pill active" data-type="size" data-val="huge">🐉 HUGE</button>
-              </div>
-            </div>
-
-            <!-- Step 3: Personality -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">3</span>
-                <span>CHOOSE PERSONALITY:</span>
-              </div>
-              <div class="choice-pills-row" id="p1-personality-choices">
-                <button class="choice-pill" data-type="personality" data-val="cute">🥰 CUTE</button>
-                <button class="choice-pill" data-type="personality" data-val="scary">😱 SCARY</button>
-                <button class="choice-pill" data-type="personality" data-val="friendly">😊 FRIENDLY</button>
-                <button class="choice-pill" data-type="personality" data-val="funny">😂 FUNNY</button>
-                <button class="choice-pill active" data-type="personality" data-val="brave">🦁 BRAVE</button>
-              </div>
-            </div>
-
-            <!-- Step 4: Power -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">4</span>
-                <span>CHOOSE POWER:</span>
-              </div>
-              <div class="choice-pills-row" id="p1-power-choices">
-                <button class="choice-pill" data-type="power" data-val="fast">⚡ FAST</button>
-                <button class="choice-pill" data-type="power" data-val="slow">🐢 SLOW</button>
-                <button class="choice-pill active" data-type="power" data-val="strong">💪 STRONG</button>
-                <button class="choice-pill" data-type="power" data-val="weak">😴 WEAK</button>
-              </div>
-            </div>
-
-            <!-- Step 5: Two Abilities -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">5</span>
-                <span>CHOOSE TWO ABILITIES: <span class="badge-count" id="p1-ability-count">2/2</span></span>
-              </div>
-              <div class="ability-select-grid" id="p1-ability-choices">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-
+        <!-- ==================== SCREEN 2: HOW TO PLAY / RULES ==================== -->
+        <section class="activity-screen" id="screen-how-to-play">
+          <div class="screen-bg lab-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">TRAINER RULES</span>
+            <h2>📖 HOW TO PLAY & WIN!</h2>
+            <p class="instruction-subtitle">4 simple steps to become a Pokémon English Champion</p>
           </div>
 
-          <!-- Right: DNA Hologram Pod Preview -->
-          <div class="creator-pod-preview">
-            <div class="pod-capsule">
-              <div class="pod-glass-inner">
-                <div class="dna-helix-glow"></div>
-                <div class="pod-creature-wrap" id="p1-pod-silhouette">
-                  <img src="assets/images/dragonite.png" alt="Creature Base Preview" id="p1-pod-preview-img" class="pod-creature-preview-img">
+          <div class="rules-cards-grid">
+            <div class="rule-card">
+              <div class="rule-icon-circle">🔍</div>
+              <h3>1. GUESS & DISCOVER</h3>
+              <p>Listen to clues, look at silhouettes, and discover mysterious Pokémon!</p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-icon-circle">🏃</div>
+              <h3>2. MOVE & ACT (TPR)</h3>
+              <p>Stretch wide for BIG, flex for STRONG, flap wings for FLY, and roar for FIRE!</p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-icon-circle">🧬</div>
+              <h3>3. BUILD YOUR POKÉMON</h3>
+              <p>Pick a body, size, color, and 2 to 4 incredible elemental abilities!</p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-icon-circle">🗣️</div>
+              <h3>4. SPEAK IN ENGLISH!</h3>
+              <p>Say: "My Pokémon is... It has... It can..." and earn the Gold Master Trainer Badge!</p>
+            </div>
+          </div>
+
+          <div class="screen-center-action">
+            <button class="action-btn btn-huge btn-primary" id="btnRulesContinue">
+              🚀 LET'S GO TO THE FIRST CHALLENGE! ➔
+            </button>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 3: SILHOUETTE MYSTERY GAME ==================== -->
+        <section class="activity-screen" id="screen-silhouette">
+          <div class="screen-bg mystery-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">ICEBREAKER</span>
+            <h2>🔍 WHO'S THAT POKÉMON?</h2>
+            <p class="instruction-subtitle">Touch the clue buttons, listen to the descriptions, then tap your guess!</p>
+          </div>
+
+          <div class="silhouette-game-layout">
+            <!-- Left: Mystery Silhouette Pod -->
+            <div class="silhouette-pod-box">
+              <div class="silhouette-stage" id="silhouetteStage">
+                <img src="assets/images/charizard.png" alt="Mystery Pokémon" id="silhouetteImage" class="silhouette-img is-shadow">
+                <div class="silhouette-reveal-fx" id="silhouetteFx"></div>
+              </div>
+              <div class="silhouette-round-tag" id="silhouetteRoundTag">ROUND 1 of 4</div>
+            </div>
+
+            <!-- Right: Progressive Clues & Choices -->
+            <div class="silhouette-interaction-box">
+              <div class="clues-stack">
+                <span class="clues-header-label">TOUCH CLUES IN ORDER:</span>
+                <button class="clue-card-btn active" id="clueBtn1" data-index="0">
+                  <span class="clue-num">1</span>
+                  <span class="clue-text" id="clueText1">Touch for Clue 1</span>
+                  <span class="clue-speaker">🔊</span>
+                </button>
+                <button class="clue-card-btn" id="clueBtn2" data-index="1">
+                  <span class="clue-num">2</span>
+                  <span class="clue-text" id="clueText2">Touch for Clue 2</span>
+                  <span class="clue-speaker">🔊</span>
+                </button>
+                <button class="clue-card-btn" id="clueBtn3" data-index="2">
+                  <span class="clue-num">3</span>
+                  <span class="clue-text" id="clueText3">Touch for Clue 3</span>
+                  <span class="clue-speaker">🔊</span>
+                </button>
+                <button class="clue-card-btn" id="clueBtn4" data-index="3">
+                  <span class="clue-num">4</span>
+                  <span class="clue-text" id="clueText4">Touch for Clue 4</span>
+                  <span class="clue-speaker">🔊</span>
+                </button>
+              </div>
+
+              <!-- 3 Visual Choices -->
+              <div class="silhouette-choices-row">
+                <span class="choices-header-label">WHICH POKÉMON IS IT?</span>
+                <div class="choices-container" id="silhouetteChoicesContainer">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 4: TEACH APPEARANCE VOCABULARY ==================== -->
+        <section class="activity-screen" id="screen-appearance-vocab">
+          <div class="screen-bg lab-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">VOCABULARY</span>
+            <h2>📖 APPEARANCE: WHAT DOES IT LOOK LIKE?</h2>
+            <p class="instruction-subtitle">Look at the opposites, make the physical gestures, and tap the quick checks!</p>
+          </div>
+
+          <div class="vocab-layout-container">
+            <!-- Left: Vocabulary Navigation Tabs -->
+            <div class="vocab-nav-tabs" id="vocabNavTabs">
+              <button class="vocab-tab active" data-pair="0">🐘 BIG vs 🐜 SMALL</button>
+              <button class="vocab-tab" data-pair="1">🦒 TALL vs 🦔 SHORT</button>
+              <button class="vocab-tab" data-pair="2">⚡ FAST vs 💪 STRONG</button>
+              <button class="vocab-tab" data-pair="3">🥰 CUTE vs 😱 SCARY</button>
+              <button class="vocab-tab" data-pair="4">🌈 COLORFUL</button>
+            </div>
+
+            <!-- Center: Giant Visual Contrast Cards -->
+            <div class="vocab-contrast-stage" id="vocabContrastStage">
+              <!-- Left Creature Card -->
+              <div class="contrast-card card-left" id="contrastCardLeft">
+                <div class="card-img-wrap">
+                  <img src="assets/images/snorlax.png" alt="Big Creature" id="contrastImgLeft">
+                </div>
+                <h3 class="contrast-word" id="contrastWordLeft">BIG</h3>
+                <div class="contrast-sentence" id="contrastSentenceLeft">"It is big."</div>
+                <div class="contrast-gesture" id="contrastGestureLeft">Gesture: Stretch arms wide!</div>
+                <button class="btn-speak-mini" id="btnSpeakLeft">🔊 Speak</button>
+              </div>
+
+              <div class="contrast-divider">VS</div>
+
+              <!-- Right Creature Card -->
+              <div class="contrast-card card-right" id="contrastCardRight">
+                <div class="card-img-wrap">
+                  <img src="assets/images/joltik.png" alt="Small Creature" id="contrastImgRight">
+                </div>
+                <h3 class="contrast-word" id="contrastWordRight">SMALL</h3>
+                <div class="contrast-sentence" id="contrastSentenceRight">"It is small."</div>
+                <div class="contrast-gesture" id="contrastGestureRight">Gesture: Crouch down low!</div>
+                <button class="btn-speak-mini" id="btnSpeakRight">🔊 Speak</button>
+              </div>
+            </div>
+
+            <!-- Bottom: Quick Smartboard Challenge Callout -->
+            <div class="vocab-quick-challenge-bar" id="vocabQuickChallengeBar">
+              <span class="challenge-trophy">⚡ QUICK CHECK:</span>
+              <span class="challenge-prompt" id="vocabChallengePrompt">"Touch the BIG Pokémon!"</span>
+              <span class="challenge-feedback" id="vocabChallengeFeedback">Tap one above!</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 5: APPEARANCE EXPLORER ==================== -->
+        <section class="activity-screen" id="screen-appearance-explorer">
+          <div class="screen-bg lab-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">EXPLORER</span>
+            <h2>🧭 APPEARANCE EXPLORER</h2>
+            <p class="instruction-subtitle">Tap any characteristic button to highlight matching Pokémon!</p>
+          </div>
+
+          <div class="explorer-layout-container">
+            <!-- Filter Controls Panel -->
+            <div class="explorer-filter-panel">
+              <div class="filter-group">
+                <span class="filter-title">SIZE:</span>
+                <div class="filter-buttons-row">
+                  <button class="filter-btn" data-type="size" data-val="big">BIG</button>
+                  <button class="filter-btn" data-type="size" data-val="small">SMALL</button>
+                  <button class="filter-btn" data-type="height" data-val="tall">TALL</button>
+                  <button class="filter-btn" data-type="height" data-val="short">SHORT</button>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <span class="filter-title">COLOR:</span>
+                <div class="filter-buttons-row">
+                  <button class="filter-btn btn-color-yellow" data-type="color" data-val="yellow">YELLOW</button>
+                  <button class="filter-btn btn-color-blue" data-type="color" data-val="blue">BLUE</button>
+                  <button class="filter-btn btn-color-red" data-type="color" data-val="red">RED</button>
+                  <button class="filter-btn btn-color-green" data-type="color" data-val="green">GREEN</button>
+                  <button class="filter-btn btn-color-purple" data-type="color" data-val="purple">PURPLE</button>
+                  <button class="filter-btn btn-color-black" data-type="color" data-val="black">BLACK</button>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <span class="filter-title">LOOK:</span>
+                <div class="filter-buttons-row">
+                  <button class="filter-btn" data-type="look" data-val="cute">CUTE</button>
+                  <button class="filter-btn" data-type="look" data-val="scary">SCARY</button>
+                  <button class="filter-btn" data-type="look" data-val="strong">STRONG</button>
+                  <button class="filter-btn" data-type="look" data-val="friendly">FRIENDLY</button>
+                </div>
+              </div>
+
+              <button class="action-btn btn-secondary btn-clear-filters" id="btnClearExplorerFilters">
+                🔄 Show All Pokémon
+              </button>
+            </div>
+
+            <!-- 8 Creature Cards Grid -->
+            <div class="explorer-cards-grid" id="explorerCardsGrid">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 6: POKÉMON ABILITY LAB (16 ABILITIES) ==================== -->
+        <section class="activity-screen" id="screen-ability-lab">
+          <div class="screen-bg lab-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">ABILITY LAB</span>
+            <h2>⚡ POKÉMON ABILITY LAB (16 ABILITIES)</h2>
+            <p class="instruction-subtitle">Tap any ability! Watch the demonstration and say: <strong>"It can..."</strong></p>
+          </div>
+
+          <div class="ability-lab-layout">
+            <!-- Left: Interactive 16 Abilities Grid (4x4) -->
+            <div class="abilities-grid-panel">
+              <div class="abilities-16-grid" id="abilities16Grid">
+                <!-- 16 Ability Cards populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Right: Creature Live Demonstration Stage -->
+            <div class="ability-demo-stage" id="abilityDemoStage">
+              <div class="demo-display-box" id="demoDisplayBox">
+                <div class="demo-ground-shadow"></div>
+                <img src="assets/images/charizard.png" alt="Demo Creature" id="demoCreatureImg" class="demo-creature-sprite">
+                <div class="demo-fx-overlay" id="demoFxOverlay"></div>
+              </div>
+
+              <!-- Target Sentence Banner -->
+              <div class="demo-sentence-banner" id="demoSentenceBanner">
+                <span class="demo-ability-tag" id="demoAbilityTag">🪽 FLY</span>
+                <h3 class="demo-sentence-text" id="demoSentenceText">"It can fly."</h3>
+                <div class="demo-gesture-hint" id="demoGestureHint">Gesture: Spread arms wide and flap like wings!</div>
+                <button class="btn-audio-mini" id="btnSpeakAbilitySentence">🔊 Repeat Speech</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 7: CAN VS CAN'T CHALLENGE ==================== -->
+        <section class="activity-screen" id="screen-can-cant">
+          <div class="screen-bg training-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">CAN / CAN'T CHALLENGE</span>
+            <h2>❓ WHAT CAN IT DO?</h2>
+            <p class="instruction-subtitle">Look at the Pokémon! Choose <strong>CAN</strong> or <strong>CAN'T</strong>!</p>
+          </div>
+
+          <div class="can-cant-layout">
+            <!-- Left: Featured Creature Card -->
+            <div class="can-cant-creature-card">
+              <div class="can-cant-img-wrap">
+                <img src="assets/images/magikarp.png" alt="Featured Pokémon" id="canCantCreatureImg">
+              </div>
+              <h3 class="can-cant-name" id="canCantName">MAGIKARP (FISH POKÉMON)</h3>
+              <div class="can-cant-round-counter" id="canCantRoundCounter">Round 1 of 4</div>
+            </div>
+
+            <!-- Right: 3 Ability Statements with CAN / CAN'T Buttons -->
+            <div class="can-cant-questions-stack" id="canCantQuestionsStack">
+              <!-- Rendered dynamically for current round -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 8: BUILD YOUR OWN POKÉMON ==================== -->
+        <section class="activity-screen" id="screen-creator">
+          <div class="screen-bg lab-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">CHARACTER CREATOR</span>
+            <h2>🧬 BUILD YOUR OWN POKÉMON!</h2>
+            <p class="instruction-subtitle">Choose your body, size, color, look, and 2 to 4 abilities!</p>
+          </div>
+
+          <div class="creator-studio-layout">
+            <!-- Left: Customization Selectors -->
+            <div class="creator-customizer-panel">
+              <!-- Step 1: Archetype / Body Type (10 options) -->
+              <div class="creator-option-row">
+                <div class="creator-row-header">
+                  <span class="step-badge">1</span>
+                  <span>BODY ARCHETYPE:</span>
+                </div>
+                <div class="pills-grid archetype-pills" id="creatorArchetypePills">
+                  <!-- 10 Archetypes: Dragon, Bird, Aquatic, Cat, Fox, Dinosaur, Insect, Robot, Plant, Cute Round -->
+                </div>
+              </div>
+
+              <!-- Step 2: Size & Look -->
+              <div class="creator-option-columns">
+                <div class="creator-column">
+                  <div class="creator-row-header">
+                    <span class="step-badge">2</span>
+                    <span>SIZE:</span>
+                  </div>
+                  <div class="pills-row" id="creatorSizePills">
+                    <button class="choice-pill" data-val="tiny">🤏 TINY</button>
+                    <button class="choice-pill" data-val="small">🐭 SMALL</button>
+                    <button class="choice-pill active" data-val="big">🐻 BIG</button>
+                    <button class="choice-pill" data-val="huge">🐉 HUGE</button>
+                  </div>
+                </div>
+
+                <div class="creator-column">
+                  <div class="creator-row-header">
+                    <span class="step-badge">3</span>
+                    <span>LOOK:</span>
+                  </div>
+                  <div class="pills-row" id="creatorLookPills">
+                    <button class="choice-pill active" data-val="cute">🥰 CUTE</button>
+                    <button class="choice-pill" data-val="brave">🦁 BRAVE</button>
+                    <button class="choice-pill" data-val="strong">💪 STRONG</button>
+                    <button class="choice-pill" data-val="scary">😱 SCARY</button>
+                    <button class="choice-pill" data-val="friendly">😊 FRIENDLY</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Color -->
+              <div class="creator-option-row">
+                <div class="creator-row-header">
+                  <span class="step-badge">4</span>
+                  <span>COLOR:</span>
+                </div>
+                <div class="pills-row color-pills" id="creatorColorPills">
+                  <button class="choice-pill btn-color-blue active" data-val="blue">🔵 BLUE</button>
+                  <button class="choice-pill btn-color-red" data-val="red">🔴 RED</button>
+                  <button class="choice-pill btn-color-green" data-val="green">🟢 GREEN</button>
+                  <button class="choice-pill btn-color-yellow" data-val="yellow">🟡 YELLOW</button>
+                  <button class="choice-pill btn-color-purple" data-val="purple">🟣 PURPLE</button>
+                  <button class="choice-pill btn-color-black" data-val="black">⚫ BLACK</button>
+                  <button class="choice-pill btn-color-white" data-val="white">⚪ WHITE</button>
+                </div>
+              </div>
+
+              <!-- Step 4: Body Features -->
+              <div class="creator-option-row">
+                <div class="creator-row-header">
+                  <span class="step-badge">5</span>
+                  <span>BODY FEATURE:</span>
+                </div>
+                <div class="pills-row" id="creatorFeaturePills">
+                  <button class="choice-pill active" data-val="wings">🪽 Big Wings</button>
+                  <button class="choice-pill" data-val="tail">🐾 Long Tail</button>
+                  <button class="choice-pill" data-val="horns">⚡ Sharp Horns</button>
+                  <button class="choice-pill" data-val="ears">🐰 Long Ears</button>
+                </div>
+              </div>
+
+              <!-- Step 5: Choose 2 to 4 Abilities -->
+              <div class="creator-option-row">
+                <div class="creator-row-header">
+                  <span class="step-badge">6</span>
+                  <span>ABILITIES (SELECT 2 TO 4): <span class="badge-count" id="creatorAbilityCount">2/4</span></span>
+                </div>
+                <div class="creator-abilities-grid" id="creatorAbilitiesGrid">
+                  <!-- 16 Ability Pills -->
                 </div>
               </div>
             </div>
 
-            <div class="creator-summary-card">
-              <h4>SYNTHESIS SPECIFICATION</h4>
-              <div class="spec-row"><span>Base:</span> <strong id="p1-spec-base">DRAGON</strong></div>
-              <div class="spec-row"><span>Size:</span> <strong id="p1-spec-size">HUGE</strong></div>
-              <div class="spec-row"><span>Personality:</span> <strong id="p1-spec-personality">BRAVE</strong></div>
-              <div class="spec-row"><span>Power:</span> <strong id="p1-spec-power">STRONG</strong></div>
-              <div class="spec-row"><span>Abilities:</span> <strong id="p1-spec-abilities">MAKE FIRE, FLY</strong></div>
-            </div>
-
-            <button class="action-btn btn-primary btn-large btn-pulse" id="btnP1Ready">
-              ✨ READY TO SPEAK & REVEAL! ➔
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 9: SPEAKING & REVEAL (TRAINER 1) ==================== -->
-    <section class="screen-view" id="screen-reveal-p1">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content reveal-layout">
-        <!-- PHASE 1: SPEAKING CHECKPOINT -->
-        <div class="speaking-checkpoint-box" id="p1-speaking-box">
-          <div class="screen-header">
-            <span class="stage-tag player-tag-p1">TRAINER 1</span>
-            <h2>🎤 DESCRIBE YOUR POKÉMON!</h2>
-            <p class="instruction-subtitle">Stand up, speak clearly in English, then press CREATE!</p>
-          </div>
-
-          <div class="speech-scaffold-card">
-            <div class="scaffold-line line-1">
-              <span class="fixed-text">"My Pokémon is</span>
-              <span class="slot-text slot-adj" id="p1-slot-size">big</span>
-              <span class="fixed-text">and</span>
-              <span class="slot-text slot-adj" id="p1-slot-power">strong</span>
-              <span class="fixed-text">."</span>
-            </div>
-            <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is a</span>
-              <span class="slot-text slot-base" id="p1-slot-base">dragon</span>
-              <span class="fixed-text">. It is</span>
-              <span class="slot-text slot-adj" id="p1-slot-personality">brave</span>
-              <span class="fixed-text">."</span>
-            </div>
-            <div class="scaffold-line line-3">
-              <span class="fixed-text">"It can</span>
-              <span class="slot-text slot-ab" id="p1-slot-ab1">fly</span>
-              <span class="fixed-text">and</span>
-              <span class="slot-text slot-ab" id="p1-slot-ab2">make fire</span>
-              <span class="fixed-text">."</span>
-            </div>
-          </div>
-
-          <div class="speaking-actions">
-            <button class="action-btn btn-secondary" id="btnP1PracticeSpeech">
-              🔊 Hear Example Speech
-            </button>
-            <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnP1TriggerReveal">
-              💥 STUDENT SPOKE! CREATE POKÉMON!
-            </button>
-          </div>
-        </div>
-
-        <!-- PHASE 2: DRAMATIC COUNTDOWN OVERLAY -->
-        <div class="countdown-overlay hidden" id="p1-countdown-overlay">
-          <div class="countdown-card">
-            <div class="building-dna-spin">🧬</div>
-            <h2 class="building-text">SYNTHESIZING POKÉMON...</h2>
-            <div class="countdown-digits" id="p1-countdown-number">3</div>
-            <div class="countdown-traits" id="p1-countdown-traits">
-              SIZE: HUGE • POWER: STRONG • ABILITY: FIRE
-            </div>
-          </div>
-        </div>
-
-        <!-- PHASE 3: REVEALED CREATURE CARD -->
-        <div class="reveal-result-card hidden" id="p1-reveal-card">
-          <div class="reveal-header">
-            <span class="badge-created">💥 POKÉMON CREATED!</span>
-            <h1 class="creature-title" id="p1-revealed-name">PYROCLAST</h1>
-            <div class="creature-subtraits" id="p1-revealed-traits">Huge • Strong • Brave</div>
-          </div>
-
-          <div class="reveal-creature-viewport" id="p1-creature-viewport">
-            <!-- Dynamic SVG inserted here -->
-          </div>
-
-          <div class="reveal-abilities-row" id="p1-revealed-abilities">
-            <!-- Ability badges inserted here -->
-          </div>
-
-          <div class="reveal-bottom-bar">
-            <button class="action-btn btn-primary btn-large" id="btnP1NextToTrainer2">
-              ➔ TRAINER 2's TURN TO CREATE!
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 10: CREATOR STUDIO (TRAINER 2) ==================== -->
-    <section class="screen-view" id="screen-create-p2">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content creator-layout">
-        <div class="screen-header">
-          <span class="stage-tag player-tag-p2">TRAINER 2</span>
-          <h2>🧬 CREATE YOUR POKÉMON!</h2>
-          <p class="instruction-subtitle">Trainer 2: Choose your own size, personality, power & abilities!</p>
-        </div>
-
-        <div class="creator-workspace-grid">
-          <div class="creator-options-panel">
-            <!-- Step 1: Creature Base -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">1</span>
-                <span>CHOOSE CREATURE BASE:</span>
-              </div>
-              <div class="choice-pills-row creature-base-pills" id="p2-base-choices">
-                <button class="choice-pill base-pill active" data-type="base" data-val="fox">🦊 FOX</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="cat">🐱 CAT</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="rabbit">🐰 RABBIT</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="turtle">🐢 TURTLE</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="dragon">🐉 DRAGON</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="bird">🦅 BIRD</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="wolf">🐺 WOLF</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="frog">🐸 FROG</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="dinosaur">🦖 DINOSAUR</button>
-                <button class="choice-pill base-pill" data-type="base" data-val="mouse">🐭 MOUSE</button>
-              </div>
-            </div>
-
-            <!-- Step 2: Size -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">2</span>
-                <span>CHOOSE SIZE:</span>
-              </div>
-              <div class="choice-pills-row" id="p2-size-choices">
-                <button class="choice-pill" data-type="size" data-val="tiny">🤏 TINY</button>
-                <button class="choice-pill active" data-type="size" data-val="small">🐭 SMALL</button>
-                <button class="choice-pill" data-type="size" data-val="big">🐻 BIG</button>
-                <button class="choice-pill" data-type="size" data-val="huge">🐉 HUGE</button>
-              </div>
-            </div>
-
-            <!-- Step 3: Personality -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">3</span>
-                <span>CHOOSE PERSONALITY:</span>
-              </div>
-              <div class="choice-pills-row" id="p2-personality-choices">
-                <button class="choice-pill active" data-type="personality" data-val="cute">🥰 CUTE</button>
-                <button class="choice-pill" data-type="personality" data-val="scary">😱 SCARY</button>
-                <button class="choice-pill" data-type="personality" data-val="friendly">😊 FRIENDLY</button>
-                <button class="choice-pill" data-type="personality" data-val="funny">😂 FUNNY</button>
-                <button class="choice-pill" data-type="personality" data-val="brave">🦁 BRAVE</button>
-              </div>
-            </div>
-
-            <!-- Step 4: Power -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">4</span>
-                <span>CHOOSE POWER:</span>
-              </div>
-              <div class="choice-pills-row" id="p2-power-choices">
-                <button class="choice-pill active" data-type="power" data-val="fast">⚡ FAST</button>
-                <button class="choice-pill" data-type="power" data-val="slow">🐢 SLOW</button>
-                <button class="choice-pill" data-type="power" data-val="strong">💪 STRONG</button>
-                <button class="choice-pill" data-type="power" data-val="weak">😴 WEAK</button>
-              </div>
-            </div>
-
-            <!-- Step 5: Two Abilities -->
-            <div class="creator-step-section">
-              <div class="step-title">
-                <span class="step-num">5</span>
-                <span>CHOOSE TWO ABILITIES: <span class="badge-count" id="p2-ability-count">2/2</span></span>
-              </div>
-              <div class="ability-select-grid" id="p2-ability-choices">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <div class="creator-pod-preview">
-            <div class="pod-capsule">
-              <div class="pod-glass-inner">
-                <div class="dna-helix-glow"></div>
-                <div class="pod-creature-wrap" id="p2-pod-silhouette">
-                  <img src="assets/images/fennekin.png" alt="Creature Base Preview" id="p2-pod-preview-img" class="pod-creature-preview-img">
+            <!-- Right: Hologram Synthesis Pod Preview & Random Button -->
+            <div class="creator-pod-panel">
+              <div class="synthesis-capsule-pod">
+                <div class="capsule-glass-inner">
+                  <div class="dna-helix-bg"></div>
+                  <div class="pod-creature-preview" id="podCreaturePreview">
+                    <img src="assets/images/dragonite.png" alt="Preview Creature" id="creatorPreviewImg">
+                  </div>
                 </div>
               </div>
+
+              <div class="creator-spec-card">
+                <h4>SYNTHESIS SPECIFICATION</h4>
+                <div class="spec-item"><span>Archetype:</span> <strong id="specArchetype">DRAGON</strong></div>
+                <div class="spec-item"><span>Appearance:</span> <strong id="specAppearance">BIG, CUTE, BLUE</strong></div>
+                <div class="spec-item"><span>Feature:</span> <strong id="specFeature">WINGS</strong></div>
+                <div class="spec-item"><span>Abilities:</span> <strong id="specAbilities">FLY, BREATHE FIRE</strong></div>
+              </div>
+
+              <div class="pod-buttons-column">
+                <button class="action-btn btn-secondary btn-large btn-random" id="btnCreateRandomPokemon">
+                  🎲 RANDOM POKÉMON!
+                </button>
+                <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnTriggerCreatePokemon">
+                  ✨ REVEAL MY POKÉMON! ➔
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 9: DRAMATIC 3-2-1 REVEAL ==================== -->
+        <section class="activity-screen" id="screen-reveal">
+          <div class="screen-bg mystery-bg"></div>
+          
+          <!-- Countdown Phase -->
+          <div class="reveal-countdown-container" id="revealCountdownPhase">
+            <div class="dna-reactor-circle">
+              <div class="reactor-core-spin"></div>
+            </div>
+            <h2 class="reveal-building-title">SYNTHESIZING NEW POKÉMON...</h2>
+            <div class="countdown-giant-number" id="countdownNumber">3</div>
+            <div class="reveal-specs-ticker" id="countdownSpecsTicker">Combining elemental energy...</div>
+          </div>
+
+          <!-- Revealed Pokémon Result Phase -->
+          <div class="reveal-result-container hidden" id="revealResultPhase">
+            <div class="reveal-banner-created">🎉 WOW! YOU DISCOVERED A NEW POKÉMON!</div>
+            <h1 class="reveal-creature-title" id="revealedName">PYRO-DRAKE</h1>
+            <div class="reveal-creature-subtitle" id="revealedTraits">Big • Blue • Cute • Dragon</div>
+
+            <div class="reveal-stage-viewport" id="revealStageViewport">
+              <!-- Rendered by CreatureEngine -->
             </div>
 
-            <div class="creator-summary-card">
-              <h4>SYNTHESIS SPECIFICATION</h4>
-              <div class="spec-row"><span>Base:</span> <strong id="p2-spec-base">FOX</strong></div>
-              <div class="spec-row"><span>Size:</span> <strong id="p2-spec-size">SMALL</strong></div>
-              <div class="spec-row"><span>Personality:</span> <strong id="p2-spec-personality">CUTE</strong></div>
-              <div class="spec-row"><span>Power:</span> <strong id="p2-spec-power">FAST</strong></div>
-              <div class="spec-row"><span>Abilities:</span> <strong id="p2-spec-abilities">SWIM, MAKE ICE</strong></div>
+            <div class="reveal-abilities-badges" id="revealedAbilitiesBadges">
+              <!-- Abilities tags -->
             </div>
 
-            <button class="action-btn btn-primary btn-large btn-pulse" id="btnP2Ready">
-              ✨ READY TO SPEAK & REVEAL! ➔
+            <button class="action-btn btn-huge btn-primary btn-pulse" id="btnProceedToSpeaking">
+              🗣️ DESCRIBE YOUR POKÉMON IN ENGLISH! ➔
             </button>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <!-- ==================== SCREEN 11: SPEAKING & REVEAL (TRAINER 2) ==================== -->
-    <section class="screen-view" id="screen-reveal-p2">
-      <div class="screen-bg lab-bg"></div>
-
-      <div class="screen-content reveal-layout">
-        <div class="speaking-checkpoint-box" id="p2-speaking-box">
+        <!-- ==================== SCREEN 10: SPEAKING CHALLENGE ==================== -->
+        <section class="activity-screen" id="screen-speaking">
+          <div class="screen-bg stadium-bg"></div>
           <div class="screen-header">
-            <span class="stage-tag player-tag-p2">TRAINER 2</span>
-            <h2>🎤 DESCRIBE YOUR POKÉMON!</h2>
-            <p class="instruction-subtitle">Trainer 2: Speak in English, then press CREATE!</p>
+            <span class="stage-tag">SPEAKING CHALLENGE</span>
+            <h2>🗣️ DESCRIBE YOUR POKÉMON!</h2>
+            <p class="instruction-subtitle">Stand up, speak clearly in English, and practice each sentence!</p>
           </div>
 
-          <div class="speech-scaffold-card">
-            <div class="scaffold-line line-1">
-              <span class="fixed-text">"My Pokémon is</span>
-              <span class="slot-text slot-adj" id="p2-slot-size">small</span>
-              <span class="fixed-text">and</span>
-              <span class="slot-text slot-adj" id="p2-slot-power">fast</span>
-              <span class="fixed-text">."</span>
-            </div>
-            <div class="scaffold-line line-2">
-              <span class="fixed-text">"It is a</span>
-              <span class="slot-text slot-base" id="p2-slot-base">fox</span>
-              <span class="fixed-text">. It is</span>
-              <span class="slot-text slot-adj" id="p2-slot-personality">cute</span>
-              <span class="fixed-text">."</span>
-            </div>
-            <div class="scaffold-line line-3">
-              <span class="fixed-text">"It can</span>
-              <span class="slot-text slot-ab" id="p2-slot-ab1">swim</span>
-              <span class="fixed-text">and</span>
-              <span class="slot-text slot-ab" id="p2-slot-ab2">make ice</span>
-              <span class="fixed-text">."</span>
-            </div>
-          </div>
-
-          <div class="speaking-actions">
-            <button class="action-btn btn-secondary" id="btnP2PracticeSpeech">
-              🔊 Hear Example Speech
-            </button>
-            <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnP2TriggerReveal">
-              💥 STUDENT SPOKE! CREATE POKÉMON!
-            </button>
-          </div>
-        </div>
-
-        <div class="countdown-overlay hidden" id="p2-countdown-overlay">
-          <div class="countdown-card">
-            <div class="building-dna-spin">🧬</div>
-            <h2 class="building-text">SYNTHESIZING POKÉMON...</h2>
-            <div class="countdown-digits" id="p2-countdown-number">3</div>
-            <div class="countdown-traits" id="p2-countdown-traits">
-              SIZE: SMALL • POWER: FAST • ABILITY: ICE
-            </div>
-          </div>
-        </div>
-
-        <div class="reveal-result-card hidden" id="p2-reveal-card">
-          <div class="reveal-header">
-            <span class="badge-created">💥 POKÉMON CREATED!</span>
-            <h1 class="creature-title" id="p2-revealed-name">VOLTSWIFT</h1>
-            <div class="creature-subtraits" id="p2-revealed-traits">Small • Fast • Cute</div>
-          </div>
-
-          <div class="reveal-creature-viewport" id="p2-creature-viewport"></div>
-
-          <div class="reveal-abilities-row" id="p2-revealed-abilities"></div>
-
-          <div class="reveal-bottom-bar">
-            <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnStartBattleArena">
-              ⚔️ ENTER THE BATTLE ARENA! ➔
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 12: CREATOR BATTLE ARENA ==================== -->
-    <section class="screen-view" id="screen-battle">
-      <div class="screen-bg stadium-bg"></div>
-
-      <div class="screen-content battle-layout">
-        <!-- Battle Top Header -->
-        <div class="battle-hud-header">
-          <div class="hud-trainer-box trainer-box-p1" id="hudTrainer1">
-            <div class="trainer-avatar-mini">🔵</div>
-            <div class="hud-details">
-              <span class="trainer-title">TRAINER 1</span>
-              <h3 class="pokemon-name" id="battleP1Name">PYROCLAST</h3>
-              <div class="hp-bar-container">
-                <div class="hp-bar-fill" id="battleP1HpBar" style="width: 100%;"></div>
+          <div class="speaking-layout-container">
+            <!-- Left: Prominent Creature Showcase -->
+            <div class="speaking-creature-card">
+              <div class="speaking-img-wrap" id="speakingImgWrap">
+                <img src="assets/images/dragonite.png" alt="My Pokémon" id="speakingCreatureImg">
               </div>
-              <div class="points-badge" id="battleP1PointsBadge">⭐ 0 English Pts</div>
+              <h3 class="speaking-creature-name" id="speakingCreatureName">PYRO-DRAKE</h3>
+              <div class="speaking-badge-archetype" id="speakingArchetypeBadge">Dragon Archetype</div>
             </div>
-          </div>
 
-          <div class="battle-vs-badge">
-            <span class="vs-text">VS</span>
-            <span class="round-indicator" id="battleRoundText">ROUND 1</span>
-          </div>
-
-          <div class="hud-trainer-box trainer-box-p2" id="hudTrainer2">
-            <div class="hud-details hud-right">
-              <span class="trainer-title">TRAINER 2</span>
-              <h3 class="pokemon-name" id="battleP2Name">FROSTFANG</h3>
-              <div class="hp-bar-container">
-                <div class="hp-bar-fill" id="battleP2HpBar" style="width: 100%;"></div>
+            <!-- Right: Color-Coded Sentence Scaffolding -->
+            <div class="speaking-scaffold-panel">
+              <div class="speech-sentence-box line-purple">
+                <span class="speech-label">APPEARANCE:</span>
+                <p class="speech-text" id="speechLine1">"My Pokémon is <span class="slot-val slot-size">big</span> and <span class="slot-val slot-look">cute</span>."</p>
+                <button class="btn-speech-audio" id="btnSpeakLine1">🔊</button>
               </div>
-              <div class="points-badge" id="battleP2PointsBadge">⭐ 0 English Pts</div>
-            </div>
-            <div class="trainer-avatar-mini">🔴</div>
-          </div>
-        </div>
 
-        <!-- Center Battle Stadium Ring -->
-        <div class="battle-stadium-stage">
-          <!-- Player 1 Arena Side -->
-          <div class="battle-podium podium-p1" id="battlePodiumP1">
-            <div class="speech-bubble-battle hidden" id="bubbleP1">
-              <span class="bubble-speech-text">"It can make fire!"</span>
-            </div>
-            <div class="creature-battle-wrap" id="battleCreatureP1">
-              <!-- Player 1 SVG rendered here -->
-            </div>
-            <div class="battle-turn-indicator" id="turnIndicatorP1">Active Turn ⚡</div>
-          </div>
-
-          <!-- Battle FX Overlay for elemental attacks -->
-          <div class="battle-effects-layer" id="battleFxLayer"></div>
-
-          <!-- Player 2 Arena Side -->
-          <div class="battle-podium podium-p2" id="battlePodiumP2">
-            <div class="speech-bubble-battle hidden" id="bubbleP2">
-              <span class="bubble-speech-text">"It can make ice!"</span>
-            </div>
-            <div class="creature-battle-wrap" id="battleCreatureP2">
-              <!-- Player 2 SVG rendered here -->
-            </div>
-            <div class="battle-turn-indicator" id="turnIndicatorP2">Waiting...</div>
-          </div>
-        </div>
-
-        <!-- Teacher Battle Control Console & English Power Rubric -->
-        <div class="battle-console-panel">
-          <div class="turn-prompt-banner" id="turnPromptBanner">
-            <span class="turn-callout">TRAINER 1 TURN:</span>
-            <span class="turn-instruction">Say your Pokémon sentence aloud! (e.g. "My Pokémon is big and strong. It can fly.")</span>
-          </div>
-
-          <!-- Action Buttons: Attack via Language -->
-          <div class="battle-action-rows">
-            <!-- Attack Trigger Buttons for Spoken Abilities -->
-            <div class="ability-attack-buttons" id="abilityAttackButtons">
-              <!-- Rendered for current active player -->
-            </div>
-
-            <!-- Teacher English Scoring Rubric Buttons -->
-            <div class="teacher-score-rubric">
-              <span class="rubric-label">AWARD ENGLISH POINTS:</span>
-              <button class="btn-rubric" data-pts="1" data-label="Adjective">+1 Adjective</button>
-              <button class="btn-rubric" data-pts="1" data-label="Ability">+1 Ability</button>
-              <button class="btn-rubric btn-rubric-star" data-pts="1" data-label="Full Sentence">+1 Full Sentence</button>
-              <button class="btn-rubric btn-rubric-star" data-pts="1" data-label="Double Sentence">+1 Double "And"</button>
-              <button class="btn-rubric btn-rubric-gold" data-pts="1" data-label="Loud & Proud">+1 Fluency ⭐</button>
-            </div>
-          </div>
-
-          <div class="battle-footer-actions">
-            <button class="action-btn btn-secondary" id="btnSwitchBattleTurn">
-              🔄 Switch Turn to Other Trainer
-            </button>
-            <button class="action-btn btn-highlight" id="btnFinishBattle">
-              🏆 Calculate Champion! ➔
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SCREEN 13: CHAMPION CEREMONY ==================== -->
-    <section class="screen-view" id="screen-champion">
-      <div class="screen-bg stadium-bg"></div>
-      <div class="confetti-container" id="confettiContainer"></div>
-
-      <div class="screen-content champion-layout">
-        <div class="champion-header-card">
-          <span class="trophy-icon">🏆</span>
-          <h1>MISSION COMPLETE!</h1>
-          <p class="champion-subtitle">YOU ARE OFFICIAL POKÉMON TRAINERS!</p>
-        </div>
-
-        <div class="champion-podium-showcase">
-          <!-- Winner Creature Center Stage -->
-          <div class="champion-winner-box">
-            <div class="trophy-img-wrap">
-              <img src="assets/images/trophy.svg" alt="Champion Trophy" class="trophy-img">
-            </div>
-            <h2 class="winner-title" id="champWinnerTitle">CHAMPION TRAINER 1!</h2>
-            <div class="champion-creature-viewport" id="champCreatureViewport"></div>
-            <h3 class="champion-creature-name" id="champCreatureName">PYROCLAST</h3>
-          </div>
-
-          <!-- Official Trainer Badge Award -->
-          <div class="trainer-badge-award-card">
-            <div class="badge-img-wrap pulse-anim">
-              <img src="assets/images/badge_gold.svg" alt="Gold Pokémon Trainer Badge" class="gold-badge-img">
-            </div>
-            <h3>OFFICIAL TRAINER BADGE</h3>
-            <div class="score-summary-box">
-              <div class="score-line">
-                <span>Trainer 1 English Score:</span>
-                <strong id="champScoreP1">8 Points ⭐</strong>
+              <div class="speech-sentence-box line-blue">
+                <span class="speech-label">COLOR:</span>
+                <p class="speech-text" id="speechLine2">"It is <span class="slot-val slot-color">blue</span>."</p>
+                <button class="btn-speech-audio" id="btnSpeakLine2">🔊</button>
               </div>
-              <div class="score-line">
-                <span>Trainer 2 English Score:</span>
-                <strong id="champScoreP2">7 Points ⭐</strong>
+
+              <div class="speech-sentence-box line-green">
+                <span class="speech-label">BODY FEATURE:</span>
+                <p class="speech-text" id="speechLine3">"It has <span class="slot-val slot-feature">big wings</span>."</p>
+                <button class="btn-speech-audio" id="btnSpeakLine3">🔊</button>
+              </div>
+
+              <div class="speech-sentence-box line-orange">
+                <span class="speech-label">ABILITIES (CAN):</span>
+                <p class="speech-text" id="speechLine4">"It can <span class="slot-val slot-ab1">fly</span> and <span class="slot-val slot-ab2">breathe fire</span>."</p>
+                <button class="btn-speech-audio" id="btnSpeakLine4">🔊</button>
+              </div>
+
+              <div class="speech-sentence-box line-red">
+                <span class="speech-label">CAN'T:</span>
+                <p class="speech-text" id="speechLine5">"It can't <span class="slot-val slot-cant">swim</span>."</p>
+                <button class="btn-speech-audio" id="btnSpeakLine5">🔊</button>
+              </div>
+
+              <!-- Complete Model & Teacher Award Controls -->
+              <div class="speaking-controls-row">
+                <button class="action-btn btn-secondary" id="btnSpeakFullSpeech">
+                  🔊 Model Complete Speech
+                </button>
+                <button class="action-btn btn-highlight btn-pulse" id="btnAwardSpeakingStar">
+                  ⭐ GREAT ENGLISH! (+1 STAR)
+                </button>
               </div>
             </div>
-            <div class="champion-message-quote">
-              "Great English = Great Trainer!"
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 11: MYSTERY POKÉMON CLASS GAME ==================== -->
+        <section class="activity-screen" id="screen-mystery-game">
+          <div class="screen-bg mystery-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag">LISTENING GAME</span>
+            <h2>🕵️ MYSTERY POKÉMON GAME</h2>
+            <p class="instruction-subtitle">One student speaks! The class listens and taps the matching Pokémon!</p>
+          </div>
+
+          <div class="mystery-game-layout">
+            <!-- Left: Description Card -->
+            <div class="mystery-clues-box">
+              <div class="mystery-badge-header">
+                <span>SECRET POKÉMON CARD #<span id="mysteryRoundNumber">1</span></span>
+                <button class="btn-audio-mini" id="btnReadMysteryLines">🔊 Read</button>
+              </div>
+              <div class="mystery-lines-container" id="mysteryLinesContainer">
+                <div class="mystery-line">"It is small and yellow."</div>
+                <div class="mystery-line">"It is cute."</div>
+                <div class="mystery-line">"It has long ears."</div>
+                <div class="mystery-line">"It can run fast and make electricity."</div>
+              </div>
+              <div class="mystery-feedback-message" id="mysteryFeedbackMessage">
+                Tap the matching Pokémon on the right!
+              </div>
+            </div>
+
+            <!-- Right: 4 Visual Choices Grid -->
+            <div class="mystery-choices-grid" id="mysteryChoicesGrid">
+              <!-- 4 Choice cards rendered dynamically -->
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="champion-actions-bar">
-          <button class="action-btn btn-secondary btn-large" id="btnOpenClassroomWorksheets">
-            📋 View Class Pokédex & Drawing Sheets
+        <!-- ==================== SCREEN 12: FINAL BOSS CHALLENGE ==================== -->
+        <section class="activity-screen" id="screen-final-boss">
+          <div class="screen-bg boss-bg"></div>
+          <div class="screen-header">
+            <span class="stage-tag tag-boss">FINAL BOSS CHALLENGE</span>
+            <h2>👹 BEFRIEND THE SHADOW TITAN!</h2>
+            <p class="instruction-subtitle">Describe the Titan using 5 correct English characteristics to tame it!</p>
+          </div>
+
+          <div class="boss-layout-container">
+            <!-- Left: Boss Visual & Energy Meter -->
+            <div class="boss-showcase-box">
+              <div class="boss-creature-stage" id="bossCreatureStage">
+                <img src="assets/images/charizard.png" alt="Shadow Titan" id="bossCreatureImg" class="boss-sprite boss-shadow-mode">
+                <div class="boss-aura-fx" id="bossAuraFx"></div>
+              </div>
+              <h3 class="boss-name" id="bossName">SHADOW TITAN</h3>
+              
+              <!-- 5-Star Trainer Power-up Bar -->
+              <div class="boss-power-bar-box">
+                <div class="star-rating-row" id="bossStarRating">
+                  <span class="star s1">⭐</span>
+                  <span class="star s2">⭐</span>
+                  <span class="star s3">⭐</span>
+                  <span class="star s4">⭐</span>
+                  <span class="star s5">⭐</span>
+                </div>
+                <span class="star-counter-label" id="bossStarCounterLabel">TRAINER LEVEL: 0 / 5 STARS</span>
+              </div>
+            </div>
+
+            <!-- Right: Description Phase Console -->
+            <div class="boss-console-panel">
+              <div class="boss-phase-instruction" id="bossPhaseInstruction">
+                <span class="phase-step-badge" id="bossPhaseBadge">STEP 1 / 4</span>
+                <span class="phase-prompt-text" id="bossPhasePrompt">Touch 2 words to describe its APPEARANCE!</span>
+              </div>
+
+              <!-- Selection Chips Container -->
+              <div class="boss-chips-grid" id="bossChipsGrid">
+                <!-- Dynamically rendered based on active step -->
+              </div>
+
+              <div class="boss-console-footer">
+                <div class="boss-feedback-text" id="bossFeedbackText">Select the correct words to power up!</div>
+                <button class="action-btn btn-primary" id="btnBossConfirmStep">
+                  ⚡ CONFIRM STEP & POWER UP!
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== SCREEN 13: FINAL CREATURE CARD & CELEBRATION ==================== -->
+        <section class="activity-screen" id="screen-profile-card">
+          <div class="screen-bg stadium-bg"></div>
+          <div class="confetti-holder" id="confettiHolder"></div>
+
+          <div class="profile-card-layout">
+            <div class="profile-header-banner">
+              <div class="badge-gold-star">🏆 OFFICIAL POKÉMON TRAINER CERTIFICATE</div>
+              <h2>MASTER TRAINER CHAMPION!</h2>
+            </div>
+
+            <!-- Official Pokémon Profile Card -->
+            <div class="master-pokemon-card" id="masterPokemonCard">
+              <div class="card-top-row">
+                <span class="card-brand">POKÉMON TRAINER ARCHIVE</span>
+                <span class="card-id-num">#ESL-2026</span>
+              </div>
+
+              <div class="card-body-content">
+                <div class="card-avatar-wrap" id="finalAvatarWrap">
+                  <img src="assets/images/dragonite.png" alt="My Pokémon" id="finalCardImg">
+                </div>
+
+                <div class="card-data-column">
+                  <h1 class="card-pokemon-name" id="finalPokemonName">PYRO-DRAKE</h1>
+                  <div class="card-info-table">
+                    <div class="info-row">
+                      <span class="info-label">APPEARANCE:</span>
+                      <strong class="info-val" id="finalCardAppearance">Big • Cute • Blue</strong>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">BODY FEATURE:</span>
+                      <strong class="info-val" id="finalCardFeature">Big Wings</strong>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">ABILITIES:</span>
+                      <strong class="info-val" id="finalCardAbilities">Fly • Breathe Fire</strong>
+                    </div>
+                    <div class="info-row">
+                      <span class="info-label">CAN'T:</span>
+                      <strong class="info-val" id="finalCardCant">Swim</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-badge-footer">
+                <div class="gold-trainer-badge">
+                  <span class="badge-icon">🎖️</span>
+                  <span>GOLD TRAINER AWARD</span>
+                </div>
+                <div class="badge-signature">Signed: Professor Spark ⚡</div>
+              </div>
+            </div>
+
+            <!-- Post-Game Action Buttons -->
+            <div class="profile-actions-row">
+              <button class="action-btn btn-secondary btn-large" id="btnPrintProfileCard">
+                🖨️ PRINT HANDOUTS & WORKSHEETS
+              </button>
+              <button class="action-btn btn-primary btn-large" id="btnRestartGameFinal">
+                🔄 CREATE ANOTHER POKÉMON!
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ==================== PERSISTENT BOTTOM NAVIGATION BAR ==================== -->
+      <footer class="bottom-nav-bar" id="bottomNavBar">
+        <div class="nav-bar-left">
+          <button class="nav-btn nav-btn-back" id="btnNavBack" title="Previous Activity (Left Arrow)">
+            <span class="nav-icon">⬅</span>
+            <span>BACK</span>
           </button>
-          <button class="action-btn btn-primary btn-large btn-pulse" id="btnNextPairBattle">
-            🔄 BATTLE NEXT TRAINER PAIR!
+          <button class="nav-btn" id="btnNavHome" title="Go to Title Screen">
+            <span class="nav-icon">🏠</span>
+            <span>HOME</span>
           </button>
         </div>
-      </div>
-    </section>
 
-  </main>
+        <div class="nav-bar-center">
+          <span class="nav-stage-indicator" id="navStageIndicator">Stage 1 of 13: Welcome Trainer</span>
+        </div>
 
-  <!-- BOTTOM PERSISTENT TEACHER NAV BAR -->
-  <footer class="bottom-nav-bar" id="bottomNav">
-    <div class="bar-left">
-      <button class="bar-btn" id="btnNavPrev" title="Previous Screen (Left Arrow)">
-        <span class="icon">⬅</span>
-        <span>Back</span>
-      </button>
-      <button class="bar-btn" id="btnNavReplay" title="Repeat Speech / Audio (Spacebar)">
-        <span class="icon">🔄</span>
-        <span>Replay Audio</span>
-      </button>
-    </div>
+        <div class="nav-bar-right">
+          <button class="nav-btn nav-btn-next" id="btnNavNext" title="Next Activity (Right Arrow)">
+            <span>NEXT</span>
+            <span class="nav-icon">➡</span>
+          </button>
+        </div>
+      </footer>
 
-    <div class="bar-center">
-      <span class="stage-name-display" id="stageNameDisplay">1. Pokémon Emergency</span>
-    </div>
+    </div><!-- END #appStage -->
+  </div><!-- END #appViewport -->
 
-    <div class="bar-right">
-      <button class="bar-btn" id="btnNavSkip" title="Skip to Next Section">
-        <span>Skip</span>
-        <span class="icon">⏩</span>
-      </button>
-      <button class="bar-btn bar-btn-next" id="btnNavNext" title="Next Screen (Right Arrow)">
-        <span>Next</span>
-        <span class="icon">➡</span>
-      </button>
-    </div>
-  </footer>
-
-  <!-- ==================== MODAL: TRAINER'S POKÉDEX (FOR WHOLE CLASS) ==================== -->
-  <div class="modal-backdrop hidden" id="modalPokedex">
-    <div class="modal-card pokedex-modal-card">
+  <!-- ==================== MODAL: HOW TO PLAY ==================== -->
+  <div class="modal-backdrop hidden" id="modalHowToPlay">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title-group">
-          <span class="modal-icon">📋</span>
-          <h2>TRAINER'S CLASSROOM POKÉDEX</h2>
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📖</span>
+          <h3>TEACHER'S SMARTBOARD GUIDE</h3>
         </div>
-        <button class="modal-close-btn" id="btnClosePokedex" aria-label="Close">✖</button>
+        <button class="modal-close-btn" id="btnCloseHowToPlay">✖</button>
       </div>
-
       <div class="modal-body">
-        <p class="modal-desc">
-          Audience task: Listen to the trainers battle! Tick the adjectives and abilities you hear!
-        </p>
-
-        <div class="pokedex-columns-grid">
-          <!-- P1 Listening Column -->
-          <div class="pokedex-col">
-            <h3 class="col-title col-p1">POKÉMON 1 (TRAINER 1)</h3>
-            <div class="pokedex-section">
-              <h4>Creature Base:</h4>
-              <div class="check-grid base-check-grid" id="pokedexCheckP1Base">
-                <label><input type="checkbox"> 🦊 Fox</label>
-                <label><input type="checkbox"> 🐱 Cat</label>
-                <label><input type="checkbox"> 🐰 Rabbit</label>
-                <label><input type="checkbox"> 🐢 Turtle</label>
-                <label><input type="checkbox"> 🐉 Dragon</label>
-                <label><input type="checkbox"> 🦅 Bird</label>
-                <label><input type="checkbox"> 🐺 Wolf</label>
-                <label><input type="checkbox"> 🐸 Frog</label>
-                <label><input type="checkbox"> 🦖 Dino</label>
-                <label><input type="checkbox"> 🐭 Mouse</label>
-              </div>
-            </div>
-
-            <div class="pokedex-section">
-              <h4>Adjectives:</h4>
-              <div class="check-grid" id="pokedexCheckP1Adj">
-                <label><input type="checkbox"> tiny</label>
-                <label><input type="checkbox"> small</label>
-                <label><input type="checkbox"> big</label>
-                <label><input type="checkbox"> huge</label>
-                <label><input type="checkbox"> fast</label>
-                <label><input type="checkbox"> slow</label>
-                <label><input type="checkbox"> strong</label>
-                <label><input type="checkbox"> weak</label>
-                <label><input type="checkbox"> cute</label>
-                <label><input type="checkbox"> scary</label>
-                <label><input type="checkbox"> friendly</label>
-                <label><input type="checkbox"> brave</label>
-              </div>
-            </div>
-
-            <div class="pokedex-section">
-              <h4>It can:</h4>
-              <div class="check-grid" id="pokedexCheckP1Ab">
-                <label><input type="checkbox"> fly</label>
-                <label><input type="checkbox"> swim</label>
-                <label><input type="checkbox"> jump</label>
-                <label><input type="checkbox"> climb</label>
-                <label><input type="checkbox"> dig</label>
-                <label><input type="checkbox"> run fast</label>
-                <label><input type="checkbox"> make fire</label>
-                <label><input type="checkbox"> make ice</label>
-                <label><input type="checkbox"> make electricity</label>
-                <label><input type="checkbox"> become invisible</label>
-              </div>
-            </div>
-          </div>
-
-          <!-- P2 Listening Column -->
-          <div class="pokedex-col">
-            <h3 class="col-title col-p2">POKÉMON 2 (TRAINER 2)</h3>
-            <div class="pokedex-section">
-              <h4>Creature Base:</h4>
-              <div class="check-grid base-check-grid" id="pokedexCheckP2Base">
-                <label><input type="checkbox"> 🦊 Fox</label>
-                <label><input type="checkbox"> 🐱 Cat</label>
-                <label><input type="checkbox"> 🐰 Rabbit</label>
-                <label><input type="checkbox"> 🐢 Turtle</label>
-                <label><input type="checkbox"> 🐉 Dragon</label>
-                <label><input type="checkbox"> 🦅 Bird</label>
-                <label><input type="checkbox"> 🐺 Wolf</label>
-                <label><input type="checkbox"> 🐸 Frog</label>
-                <label><input type="checkbox"> 🦖 Dino</label>
-                <label><input type="checkbox"> 🐭 Mouse</label>
-              </div>
-            </div>
-
-            <div class="pokedex-section">
-              <h4>Adjectives:</h4>
-              <div class="check-grid" id="pokedexCheckP2Adj">
-                <label><input type="checkbox"> tiny</label>
-                <label><input type="checkbox"> small</label>
-                <label><input type="checkbox"> big</label>
-                <label><input type="checkbox"> huge</label>
-                <label><input type="checkbox"> fast</label>
-                <label><input type="checkbox"> slow</label>
-                <label><input type="checkbox"> strong</label>
-                <label><input type="checkbox"> weak</label>
-                <label><input type="checkbox"> cute</label>
-                <label><input type="checkbox"> scary</label>
-                <label><input type="checkbox"> friendly</label>
-                <label><input type="checkbox"> brave</label>
-              </div>
-            </div>
-
-            <div class="pokedex-section">
-              <h4>It can:</h4>
-              <div class="check-grid" id="pokedexCheckP2Ab">
-                <label><input type="checkbox"> fly</label>
-                <label><input type="checkbox"> swim</label>
-                <label><input type="checkbox"> jump</label>
-                <label><input type="checkbox"> climb</label>
-                <label><input type="checkbox"> dig</label>
-                <label><input type="checkbox"> run fast</label>
-                <label><input type="checkbox"> make fire</label>
-                <label><input type="checkbox"> make ice</label>
-                <label><input type="checkbox"> make electricity</label>
-                <label><input type="checkbox"> become invisible</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="action-btn btn-secondary" id="btnClearPokedexChecks">Clear Ticks</button>
-        <button class="action-btn btn-primary" id="btnPrintPokedexModal">🖨️ Print Handouts</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL: TEACHER GUIDE ==================== -->
-  <div class="modal-backdrop hidden" id="modalTeacherGuide">
-    <div class="modal-card guide-modal-card">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <span class="modal-icon">💡</span>
-          <h2>TEACHER'S LESSON GUIDE (A1+ GRADE 4)</h2>
-        </div>
-        <button class="modal-close-btn" id="btnCloseGuide" aria-label="Close">✖</button>
-      </div>
-      <div class="modal-body teacher-guide-text">
-        <h3>Classroom Flow (35-40 Minutes):</h3>
+        <h4>Classroom Lesson Flow (35–45 minutes):</h4>
         <ol>
-          <li><strong>0:00 - 0:05</strong>: 🚨 Pokémon Emergency & Spotting icebreaker (warm-up, high energy).</li>
-          <li><strong>0:05 - 0:15</strong>: 📖 Adjectives & Abilities vocabulary teaching with TPR physical gestures (stretch, flex, fly).</li>
-          <li><strong>0:15 - 0:20</strong>: 🗣️ Sentence modeling ("It is small and fast. It can jump and make electricity.").</li>
-          <li><strong>0:20 - 0:32</strong>: 🧬 Character Creator (10 Bases) & Speaking Gate. Call pairs of students to smartboard to create, describe aloud, and battle!</li>
-          <li><strong>0:32 - 0:38</strong>: ⚔️ English Battle: Spoken English earns attack power! Whole class ticks their Pokédex.</li>
-          <li><strong>0:38 - 0:40</strong>: 🏆 Champion Badge ceremony & independent drawing sheet.</li>
+          <li><strong>0:00 - 0:05</strong>: Title & Silhouette Mystery Icebreaker (high energy student participation).</li>
+          <li><strong>0:05 - 0:15</strong>: Appearance Vocabulary teaching with TPR physical movements & quick checks.</li>
+          <li><strong>0:15 - 0:25</strong>: Pokémon Ability Lab (16 rich animated abilities) & CAN/CAN'T Challenge.</li>
+          <li><strong>0:25 - 0:35</strong>: Build Your Own Pokémon (10 archetypes) & Dramatic 3-2-1 Reveal.</li>
+          <li><strong>0:35 - 0:40</strong>: Speaking Challenge with sentence scaffolds & Mystery Pokémon class game.</li>
+          <li><strong>0:40 - 0:45</strong>: Final Boss Challenge & Master Trainer Profile Card celebration.</li>
         </ol>
-        <h4>Key Keyboard Shortcuts:</h4>
-        <p><code>➡</code> Next Screen | <code>⬅</code> Previous Screen | <code>Spacebar</code> Replay Audio / TTS</p>
+        <h4>Smartboard & Keyboard Shortcuts:</h4>
+        <p><code>➡</code> Next Screen | <code>⬅</code> Previous Screen | <code>Spacebar</code> Repeat Audio | <code>F</code> Toggle Fullscreen</p>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn btn-primary" id="btnModalUnderstood">Got it! Let's Play ➔</button>
       </div>
     </div>
   </div>
 
-  <!-- PRINTABLE WORKSHEET CONTAINER (Visible only during window.print()) -->
+  <!-- PRINTABLE WORKSHEET CONTAINER (Visible only in window.print()) -->
   <div class="print-worksheet-area" id="printWorksheetArea">
     <div class="print-page">
       <div class="print-header">
-        <h1>POKÉMON TRAINER BATTLE — CLASSROOM POKÉDEX</h1>
-        <p>Name: ______________________ Class: ________ Date: ____________</p>
+        <h1>POKÉMON TRAINER CHALLENGE — CLASSROOM POKÉDEX</h1>
+        <p>Student Name: ______________________ Class: ________ Date: ____________</p>
       </div>
       <div class="print-grid">
         <div class="print-box">
-          <h2>POKÉMON 1 (TRAINER 1)</h2>
-          <p><strong>Creature Base:</strong></p>
-          <p>☐ Fox &nbsp; ☐ Cat &nbsp; ☐ Rabbit &nbsp; ☐ Turtle &nbsp; ☐ Dragon</p>
-          <p>☐ Bird &nbsp; ☐ Wolf &nbsp; ☐ Frog &nbsp; ☐ Dinosaur &nbsp; ☐ Mouse</p>
-          <p><strong>Adjectives:</strong></p>
-          <p>☐ tiny &nbsp; ☐ small &nbsp; ☐ big &nbsp; ☐ huge</p>
-          <p>☐ fast &nbsp; ☐ slow &nbsp; ☐ strong &nbsp; ☐ weak</p>
-          <p>☐ cute &nbsp; ☐ scary &nbsp; ☐ friendly &nbsp; ☐ brave</p>
-          <p><strong>It can:</strong></p>
-          <p>☐ fly &nbsp; ☐ swim &nbsp; ☐ jump &nbsp; ☐ climb &nbsp; ☐ dig</p>
-          <p>☐ make fire &nbsp; ☐ make ice &nbsp; ☐ make electricity</p>
-          <p>Sentence heard: _________________________________________</p>
+          <h2>MY POKÉMON PROFILE</h2>
+          <p><strong>Name:</strong> _________________________________________</p>
+          <p><strong>Appearance:</strong> ☐ big &nbsp; ☐ small &nbsp; ☐ tall &nbsp; ☐ short &nbsp; ☐ cute &nbsp; ☐ strong &nbsp; ☐ scary</p>
+          <p><strong>Color:</strong> ☐ blue &nbsp; ☐ red &nbsp; ☐ green &nbsp; ☐ yellow &nbsp; ☐ purple &nbsp; ☐ black &nbsp; ☐ white</p>
+          <p><strong>Feature:</strong> ☐ big wings &nbsp; ☐ long tail &nbsp; ☐ sharp horns &nbsp; ☐ long ears</p>
+          <p><strong>Abilities:</strong></p>
+          <p>☐ fly &nbsp; ☐ swim &nbsp; ☐ run fast &nbsp; ☐ jump high &nbsp; ☐ climb &nbsp; ☐ dig</p>
+          <p>☐ breathe fire &nbsp; ☐ make electricity &nbsp; ☐ freeze things &nbsp; ☐ create wind</p>
+          <p>☐ control plants &nbsp; ☐ control water &nbsp; ☐ become invisible &nbsp; ☐ make light</p>
         </div>
-        <div class="print-box">
-          <h2>POKÉMON 2 (TRAINER 2)</h2>
-          <p><strong>Creature Base:</strong></p>
-          <p>☐ Fox &nbsp; ☐ Cat &nbsp; ☐ Rabbit &nbsp; ☐ Turtle &nbsp; ☐ Dragon</p>
-          <p>☐ Bird &nbsp; ☐ Wolf &nbsp; ☐ Frog &nbsp; ☐ Dinosaur &nbsp; ☐ Mouse</p>
-          <p><strong>Adjectives:</strong></p>
-          <p>☐ tiny &nbsp; ☐ small &nbsp; ☐ big &nbsp; ☐ huge</p>
-          <p>☐ fast &nbsp; ☐ slow &nbsp; ☐ strong &nbsp; ☐ weak</p>
-          <p>☐ cute &nbsp; ☐ scary &nbsp; ☐ friendly &nbsp; ☐ brave</p>
-          <p><strong>It can:</strong></p>
-          <p>☐ fly &nbsp; ☐ swim &nbsp; ☐ jump &nbsp; ☐ climb &nbsp; ☐ dig</p>
-          <p>☐ make fire &nbsp; ☐ make ice &nbsp; ☐ make electricity</p>
-          <p>Sentence heard: _________________________________________</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="print-page print-page-break">
-      <div class="print-header">
-        <h1>MY OWN POKÉMON CREATION SHEET</h1>
-        <p>Trainer Name: ______________________ Pokémon Name: ______________________</p>
-      </div>
-      <div class="print-drawing-frame">
-        <p class="draw-prompt">🎨 DRAW YOUR POKÉMON HERE:</p>
       </div>
       <div class="print-sentence-frame-box">
         <h3>WRITE ABOUT YOUR POKÉMON:</h3>
-        <p class="print-line">My Pokémon is __________________ and __________________.</p>
-        <p class="print-line">It is a __________________. It is __________________.</p>
-        <p class="print-line">It can __________________ and __________________.</p>
-        <p class="print-line">It can't __________________.</p>
+        <p class="print-line">My Pokémon is ____________________ and ____________________.</p>
+        <p class="print-line">It is ____________________.</p>
+        <p class="print-line">It has ____________________.</p>
+        <p class="print-line">It can ____________________ and ____________________.</p>
+        <p class="print-line">It can't ____________________.</p>
       </div>
     </div>
   </div>
 
-  <!-- APPLICATION SCRIPTS -->
+  <!-- APP SCRIPTS -->
   <script src="data.js"></script>
   <script src="sound.js"></script>
   <script src="creatures.js"></script>

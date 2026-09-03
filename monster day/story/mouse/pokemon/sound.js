@@ -1,254 +1,273 @@
 /**
- * POKÉMON TRAINER BATTLE - SOUND SYNTHESIS & SPEECH ENGINE
- * Uses Web Audio API for 100% reliable zero-dependency SFX
- * Uses Web Speech API for native English pronunciation
+ * POKÉMON TRAINER CHALLENGE - ZERO-DEPENDENCY AUDIO ENGINE
+ * Uses Web Audio API for synthesized game sounds & Web Speech API for pronunciation
  */
 
 class SoundEngine {
   constructor() {
-    this.ctx = null;
-    this.muted = false;
-    this.speechAvailable = ('speechSynthesis' in window);
+    this.audioCtx = null;
+    this.isMuted = false;
+    this.hasSpoken = false;
   }
 
-  init() {
-    if (!this.ctx) {
+  // Lazy-initialize AudioContext on first user touch/click
+  initCtx() {
+    if (!this.audioCtx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
-        this.ctx = new AudioCtx();
+        this.audioCtx = new AudioCtx();
       }
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
     }
   }
 
   toggleMute() {
-    this.muted = !this.muted;
-    return this.muted;
-  }
-
-  // Helper to create basic synth tone
-  playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.2, pitchSlide = null) {
-    if (this.muted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-    if (pitchSlide) {
-      osc.frequency.exponentialRampToValueAtTime(pitchSlide, this.ctx.currentTime + duration);
+    this.isMuted = !this.isMuted;
+    if (this.isMuted && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
     }
-
-    gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start();
-    osc.stop(this.ctx.currentTime + duration);
+    return this.isMuted;
   }
+
+  // Play a synthesized tone with frequency, type, duration, and volume
+  playTone(freq, type = 'sine', duration = 0.2, gainVal = 0.2, detune = 0) {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.audioCtx) return;
+
+    try {
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+      if (detune) osc.detune.setValueAtTime(detune, this.audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(gainVal, this.audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      osc.start();
+      osc.stop(this.audioCtx.currentTime + duration);
+    } catch (e) {
+      console.warn("Audio tone error", e);
+    }
+  }
+
+  // Synthesize white noise (for wind, fire, splash, thuds)
+  playNoise(duration = 0.3, filterFreq = 1000, gainVal = 0.2) {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.audioCtx) return;
+
+    try {
+      const bufferSize = this.audioCtx.sampleRate * duration;
+      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = this.audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(filterFreq, this.audioCtx.currentTime);
+
+      const gain = this.audioCtx.createGain();
+      gain.gain.setValueAtTime(gainVal, this.audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.audioCtx.currentTime + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      noise.start();
+    } catch (e) {
+      console.warn("Audio noise error", e);
+    }
+  }
+
+  // --- STANDARD GAME SOUNDS ---
 
   playClick() {
-    this.playTone(800, 'triangle', 0.06, 0.15, 400);
+    this.playTone(800, 'sine', 0.08, 0.15);
   }
 
   playSelect() {
-    this.playTone(523.25, 'sine', 0.08, 0.15);
-    setTimeout(() => this.playTone(659.25, 'sine', 0.12, 0.18), 70);
+    this.playTone(587.33, 'triangle', 0.12, 0.2);
+    setTimeout(() => this.playTone(880, 'sine', 0.15, 0.2), 60);
   }
 
   playCorrect() {
-    if (this.muted) return;
-    this.init();
+    if (this.isMuted) return;
     const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-    notes.forEach((freq, i) => {
-      setTimeout(() => {
-        this.playTone(freq, 'triangle', 0.14, 0.2);
-      }, i * 75);
+    notes.forEach((freq, idx) => {
+      setTimeout(() => this.playTone(freq, 'sine', 0.18, 0.25), idx * 80);
     });
   }
 
   playWrong() {
-    if (this.muted) return;
-    this.init();
-    this.playTone(300, 'sawtooth', 0.25, 0.2, 180);
-    setTimeout(() => {
-      this.playTone(240, 'sawtooth', 0.35, 0.2, 120);
-    }, 150);
+    if (this.isMuted) return;
+    this.playTone(220, 'sawtooth', 0.2, 0.25);
+    setTimeout(() => this.playTone(164.81, 'sawtooth', 0.35, 0.3), 120);
+  }
+
+  playCelebration() {
+    if (this.isMuted) return;
+    const fanfare = [
+      { f: 523.25, d: 100 },
+      { f: 523.25, d: 100 },
+      { f: 523.25, d: 100 },
+      { f: 659.25, d: 300 },
+      { f: 783.99, d: 200 },
+      { f: 1046.50, d: 500 }
+    ];
+    let elapsed = 0;
+    fanfare.forEach(note => {
+      setTimeout(() => this.playTone(note.f, 'triangle', note.d / 1000 + 0.1, 0.3), elapsed);
+      elapsed += note.d;
+    });
   }
 
   playCountdown(count) {
-    if (this.muted) return;
-    this.init();
-    const freqs = { 3: 440, 2: 554.37, 1: 659.25 };
-    const freq = freqs[count] || 440;
-    this.playTone(freq, 'sine', 0.25, 0.25);
-  }
-
-  playReveal() {
-    if (this.muted) return;
-    this.init();
-    const arpeggio = [440, 554.37, 659.25, 880, 1108.73, 1318.51, 1760];
-    arpeggio.forEach((freq, idx) => {
-      setTimeout(() => {
-        this.playTone(freq, 'triangle', 0.35, 0.25);
-      }, idx * 60);
-    });
-  }
-
-  playPoint() {
-    this.playTone(880, 'sine', 0.1, 0.2, 1320);
-  }
-
-  playSuper() {
-    if (this.muted) return;
-    this.init();
-    const notes = [440, 554, 659, 880];
-    notes.forEach((freq, i) => {
-      setTimeout(() => this.playTone(freq, 'triangle', 0.18, 0.25), i * 60);
-    });
-  }
-
-  playHit() {
-    if (this.muted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    // White noise explosion burst
-    const bufferSize = this.ctx.sampleRate * 0.2;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const output = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
+    if (count > 0) {
+      this.playTone(440, 'triangle', 0.15, 0.3);
+    } else {
+      this.playTone(880, 'sine', 0.5, 0.4);
     }
-
-    const whiteNoise = this.ctx.createBufferSource();
-    whiteNoise.buffer = buffer;
-
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(800, this.ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.2);
-
-    const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
-
-    whiteNoise.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    whiteNoise.start();
-    this.playTone(120, 'triangle', 0.25, 0.35, 40);
   }
 
-  playAttackSound(type) {
-    if (this.muted) return;
-    this.init();
+  playRevealBoom() {
+    this.playNoise(0.6, 500, 0.4);
+    this.playTone(150, 'sawtooth', 0.5, 0.3);
+    setTimeout(() => this.playTone(659.25, 'triangle', 0.4, 0.3), 150);
+    setTimeout(() => this.playTone(987.77, 'sine', 0.6, 0.35), 300);
+  }
 
-    switch (type) {
-      case 'fire':
-        this.playHit();
-        this.playTone(350, 'sawtooth', 0.45, 0.28, 120);
-        setTimeout(() => this.playTone(280, 'triangle', 0.35, 0.3, 80), 80);
+  playStarPowerup() {
+    const notes = [440, 554.37, 659.25, 880];
+    notes.forEach((f, i) => {
+      setTimeout(() => this.playTone(f, 'sine', 0.15, 0.25), i * 60);
+    });
+  }
+
+  playBossHit() {
+    this.playNoise(0.4, 400, 0.35);
+    this.playTone(120, 'square', 0.3, 0.3);
+  }
+
+  // --- ABILITY SPECIFIC SOUND EFFECTS ---
+  playAbilityEffect(abilityId) {
+    if (this.isMuted) return;
+
+    switch (abilityId) {
+      case 'breathe fire':
+        this.playNoise(0.8, 1200, 0.35);
+        this.playTone(180, 'sawtooth', 0.6, 0.2);
         break;
-
-      case 'ice':
-        const iceNotes = [1200, 1500, 1800, 2400];
-        iceNotes.forEach((n, idx) => {
-          setTimeout(() => this.playTone(n, 'sine', 0.2, 0.18), idx * 50);
-        });
-        break;
-
-      case 'electric':
-        for (let i = 0; i < 6; i++) {
-          setTimeout(() => {
-            this.playTone(Math.random() * 1000 + 500, 'square', 0.05, 0.15);
-          }, i * 40);
+      case 'make electricity':
+        for (let i = 0; i < 4; i++) {
+          setTimeout(() => this.playTone(1200 + Math.random() * 800, 'sawtooth', 0.08, 0.25), i * 60);
         }
         break;
-
-      case 'swim':
-        this.playTone(400, 'sine', 0.3, 0.25, 800);
-        setTimeout(() => this.playTone(600, 'triangle', 0.25, 0.2, 300), 100);
+      case 'freeze things':
+        this.playTone(1200, 'sine', 0.3, 0.2);
+        setTimeout(() => this.playTone(1600, 'sine', 0.4, 0.25), 100);
+        setTimeout(() => this.playTone(2100, 'sine', 0.5, 0.2), 200);
         break;
-
+      case 'create wind':
       case 'fly':
-        this.playTone(300, 'triangle', 0.35, 0.25, 900);
-        setTimeout(() => this.playTone(700, 'sine', 0.25, 0.2, 300), 120);
+        this.playNoise(0.7, 700, 0.3);
+        this.playTone(350, 'sine', 0.5, 0.2);
         break;
-
-      case 'jump':
-        this.playTone(200, 'sine', 0.3, 0.3, 750);
+      case 'swim':
+      case 'control water':
+        this.playNoise(0.4, 900, 0.25);
+        setTimeout(() => this.playTone(400, 'sine', 0.2, 0.2), 100);
+        setTimeout(() => this.playTone(550, 'sine', 0.25, 0.2), 200);
         break;
-
+      case 'jump high':
+        if (this.audioCtx) {
+          const osc = this.audioCtx.createOscillator();
+          const gain = this.audioCtx.createGain();
+          osc.frequency.setValueAtTime(220, this.audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, this.audioCtx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(this.audioCtx.destination);
+          osc.start();
+          osc.stop(this.audioCtx.currentTime + 0.3);
+        }
+        break;
       case 'dig':
-        this.playTone(160, 'triangle', 0.4, 0.35, 50);
-        setTimeout(() => this.playHit(), 100);
+      case 'move rocks':
+        this.playNoise(0.5, 350, 0.4);
+        this.playTone(90, 'square', 0.4, 0.3);
         break;
-
-      case 'invisible':
-        this.playTone(880, 'sine', 0.4, 0.18, 440);
-        setTimeout(() => this.playTone(550, 'sine', 0.4, 0.18, 880), 150);
+      case 'run fast':
+        this.playNoise(0.3, 1400, 0.3);
         break;
-
+      case 'become invisible':
+        this.playTone(600, 'sine', 0.4, 0.2);
+        setTimeout(() => this.playTone(400, 'sine', 0.4, 0.15), 150);
+        break;
+      case 'make light':
+        this.playTone(880, 'triangle', 0.3, 0.25);
+        setTimeout(() => this.playTone(1320, 'sine', 0.4, 0.25), 100);
+        break;
+      case 'control plants':
+        this.playTone(523.25, 'sine', 0.2, 0.2);
+        setTimeout(() => this.playTone(659.25, 'triangle', 0.25, 0.2), 90);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.3, 0.2), 180);
+        break;
+      case 'see in the dark':
+        this.playTone(300, 'sine', 0.5, 0.2);
+        setTimeout(() => this.playTone(450, 'sine', 0.5, 0.2), 200);
+        break;
       default:
-        this.playHit();
+        this.playTone(500, 'sine', 0.2, 0.2);
     }
   }
 
-  playVictory() {
-    if (this.muted) return;
-    this.init();
+  // --- NATIVE WEB SPEECH API TTS ---
+  speak(text, onEndCallback = null) {
+    if (this.isMuted) return;
+    if (!('speechSynthesis' in window)) return;
 
-    // Classic Pokémon fanfare sequence
-    const fanfare = [
-      { f: 523.25, d: 0.15, pause: 140 }, // C5
-      { f: 523.25, d: 0.15, pause: 140 }, // C5
-      { f: 523.25, d: 0.15, pause: 140 }, // C5
-      { f: 523.25, d: 0.35, pause: 300 }, // C5
-      { f: 415.30, d: 0.35, pause: 300 }, // G#4
-      { f: 466.16, d: 0.35, pause: 300 }, // A#4
-      { f: 523.25, d: 0.25, pause: 200 }, // C5
-      { f: 466.16, d: 0.15, pause: 120 }, // A#4
-      { f: 523.25, d: 0.70, pause: 600 }  // C5 (long hold)
-    ];
-
-    let delay = 0;
-    fanfare.forEach(note => {
-      setTimeout(() => {
-        this.playTone(note.f, 'triangle', note.d, 0.3);
-      }, delay);
-      delay += note.pause;
-    });
-  }
-
-  // Native Speech Synthesis for clear English audio
-  speak(text) {
-    if (this.muted || !this.speechAvailable) return;
     try {
-      window.speechSynthesis.cancel();
+      window.speechSynthesis.cancel(); // cancel previous speech
       const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9; // Clear, classroom pacing for Grade 4 ESL
+      utterance.pitch = 1.05; // Friendly tone
       utterance.lang = 'en-US';
-      utterance.rate = 0.88; // slightly slower, clear for young ESL learners
-      utterance.pitch = 1.05; // warm, energetic
 
-      // Prefer high quality English voices if available
+      // Pick English voice if available
       const voices = window.speechSynthesis.getVoices();
-      const enVoice = voices.find(v => (v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('David')))) || voices.find(v => v.lang.startsWith('en'));
-      if (enVoice) {
-        utterance.voice = enVoice;
+      const engVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Zira')));
+      if (engVoice) {
+        utterance.voice = engVoice;
       }
+
+      if (onEndCallback) {
+        utterance.onend = onEndCallback;
+      }
+
       window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.warn('Speech synthesis error:', e);
+      console.warn("Speech synthesis error", e);
     }
   }
 }
 
 const sounds = new SoundEngine();
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = SoundEngine;
+}

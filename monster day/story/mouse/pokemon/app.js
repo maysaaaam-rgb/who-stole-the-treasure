@@ -1,432 +1,396 @@
 /**
- * POKÉMON TRAINER BATTLE - CORE APPLICATION CONTROLLER
- * Grade 4 ESL A1+ Interactive Smartboard Game
+ * POKÉMON TRAINER CHALLENGE — SMARTBOARD APPLICATION CONTROLLER
+ * Responsive 16:9 Auto-Scaling, Touch-Optimized, Classroom-First ESL Game
  */
 
-class PokemonApp {
+class PokemonTrainerApp {
   constructor() {
-    this.currentStage = 0;
-    this.totalStages = 14;
+    this.currentStageIndex = 0;
+    this.isClassroomMode = false;
 
-    // Game & Creature State
-    this.p1Config = {
-      base: 'dragon',
-      size: 'huge',
-      personality: 'brave',
-      power: 'strong',
-      abilities: ['make fire', 'fly']
+    // Student Creature State
+    this.studentPokemon = {
+      archetype: 'dragon',
+      size: 'big',
+      look: 'cute',
+      color: 'blue',
+      features: 'wings',
+      abilities: ['fly', 'breathe fire']
     };
-    this.p2Config = {
-      base: 'fox',
-      size: 'small',
-      personality: 'cute',
-      power: 'fast',
-      abilities: ['swim', 'make ice']
-    };
+    this.createdCreatureObj = null;
 
-    this.p1Creature = null;
-    this.p2Creature = null;
+    // Activity States
+    this.silhouetteRound = 0;
+    this.vocabPairIndex = 0;
+    this.canCantRound = 0;
+    this.mysteryClassRound = 0;
+    this.bossStars = 0;
+    this.bossStep = 1; // 1 to 4
 
-    // Battle State
-    this.activeBattleTrainer = 1; // 1 or 2
-    this.battleRound = 1;
-    this.p1Points = 0;
-    this.p2Points = 0;
-    this.p1Hp = 100;
-    this.p2Hp = 100;
-
-    // Quiz & Activity State
-    this.quizIndex = 0;
-    this.movementIndex = 0;
-
+    // Screen IDs
     this.screens = [
-      'screen-emergency',
-      'screen-spotting',
-      'screen-adjectives-1',
-      'screen-adjectives-2',
-      'screen-adj-game',
-      'screen-abilities',
-      'screen-movement-game',
-      'screen-model-desc',
-      'screen-create-p1',
-      'screen-reveal-p1',
-      'screen-create-p2',
-      'screen-reveal-p2',
-      'screen-battle',
-      'screen-champion'
+      'screen-start',
+      'screen-how-to-play',
+      'screen-silhouette',
+      'screen-appearance-vocab',
+      'screen-appearance-explorer',
+      'screen-ability-lab',
+      'screen-can-cant',
+      'screen-creator',
+      'screen-reveal',
+      'screen-speaking',
+      'screen-mystery-game',
+      'screen-final-boss',
+      'screen-profile-card'
     ];
 
-    this.stageNames = [
-      '1. 🚨 Pokémon Emergency',
-      '2. 🔍 Spotting Icebreaker',
-      '3. 📖 Adjectives (Size & Speed)',
-      '4. 📖 Adjectives (Power & Personality)',
-      '5. 🎮 Adjective Quick Game',
-      '6. ⚡ Abilities (What Can It Do?)',
-      '7. 🏃 Movement TPR Game',
-      '8. 🗣️ Model Description',
-      '9. 🧬 Create Pokémon (Trainer 1)',
-      '10. 🎤 Speak & Reveal (Trainer 1)',
-      '11. 🧬 Create Pokémon (Trainer 2)',
-      '12. 🎤 Speak & Reveal (Trainer 2)',
-      '13. ⚔️ Creator Battle Arena',
-      '14. 🏆 Champion Ceremony'
+    this.stageTitles = [
+      '1. Welcome Trainer!',
+      '2. How to Play',
+      '3. Guess the Pokémon (Icebreaker)',
+      '4. Teach Appearance Vocabulary',
+      '5. Appearance Explorer',
+      '6. Pokémon Ability Lab (16 Abilities)',
+      '7. CAN or CAN\'T Challenge',
+      '8. Build Your Own Pokémon',
+      '9. Dramatic 3-2-1 Reveal',
+      '10. Speaking Challenge',
+      '11. Mystery Pokémon Class Game',
+      '12. Final Boss Challenge',
+      '13. Master Trainer Certificate'
     ];
-
-    this.init();
   }
 
   init() {
-    this.setupNavigation();
-    this.setupSpottingScreen();
-    this.setupAdjectivesScreens();
-    this.setupQuizScreen();
-    this.setupAbilitiesScreen();
-    this.setupMovementScreen();
-    this.setupModelScreen();
-    this.setupCreatorScreens();
-    this.setupRevealScreens();
-    this.setupBattleArena();
-    this.setupModals();
+    // 1. Initial 16:9 Screen Fit
+    this.fitToScreen();
+    window.addEventListener('resize', () => this.fitToScreen());
+    document.addEventListener('fullscreenchange', () => {
+      this.fitToScreen();
+      this.updateFullscreenButton();
+    });
+
+    // 2. Global Navigation & Utilities
+    this.setupGlobalControls();
+    this.renderProgressDots();
+
+    // 3. Screen Initializers
+    this.setupStartScreen();
+    this.setupSilhouetteGame();
+    this.setupVocabScreen();
+    this.setupExplorerScreen();
+    this.setupAbilityLab();
+    this.setupCanCantScreen();
+    this.setupCreatorStudio();
+    this.setupSpeakingScreen();
+    this.setupMysteryGame();
+    this.setupBossChallenge();
+    this.setupProfileCard();
+
+    // 4. Keyboard Navigation
     this.setupKeyboardShortcuts();
 
+    // Start at Screen 0
     this.goToStage(0);
   }
 
   /* ==========================================================================
-     STAGE NAVIGATION & TOP BAR
+     VIRTUAL CANVAS AUTO-SCALER (Guarantees Zero Scrolling & Zero Clipping)
      ========================================================================== */
-  setupNavigation() {
-    // Dropdown
-    const stageSelect = document.getElementById('stageSelect');
-    stageSelect.addEventListener('change', (e) => {
-      this.goToStage(parseInt(e.target.value, 10));
-    });
+  fitToScreen() {
+    const stage = document.getElementById('appStage');
+    if (!stage) return;
 
-    // Progress Track Dots
-    const progressTrack = document.getElementById('stageProgressTrack');
-    progressTrack.innerHTML = '';
-    for (let i = 0; i < this.totalStages; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'progress-dot';
-      dot.title = this.stageNames[i];
-      dot.addEventListener('click', () => this.goToStage(i));
-      progressTrack.appendChild(dot);
-    }
+    const availableW = window.innerWidth;
+    const availableH = window.innerHeight;
 
-    // Bottom Bar Buttons
-    document.getElementById('btnNavPrev').addEventListener('click', () => this.prevStage());
-    document.getElementById('btnNavNext').addEventListener('click', () => this.nextStage());
-    document.getElementById('btnNavSkip').addEventListener('click', () => this.nextStage());
-    document.getElementById('btnNavReplay').addEventListener('click', () => this.speakCurrentInstruction());
-
-    // Top Controls
-    document.getElementById('btnAudioPrompt').addEventListener('click', () => this.speakCurrentInstruction());
-    
-    document.getElementById('btnMuteToggle').addEventListener('click', () => {
-      const muted = sounds.toggleMute();
-      document.getElementById('muteIcon').textContent = muted ? '🔕' : '🔔';
-    });
-
-    document.getElementById('btnFullscreen').addEventListener('click', () => this.toggleFullscreen());
-    document.getElementById('btnPrintWorksheets').addEventListener('click', () => window.print());
-
-    // Screen 0 Start Mission Button
-    document.getElementById('btnStartMission').addEventListener('click', () => {
-      sounds.playClick();
-      sounds.playSelect();
-      this.goToStage(1);
-    });
+    // Maintain 1920x1080 (16:9) aspect ratio within any display
+    const scale = Math.min(availableW / 1920, availableH / 1080);
+    stage.style.transform = `scale(${scale})`;
   }
 
-  goToStage(stageIndex) {
-    if (stageIndex < 0) stageIndex = 0;
-    if (stageIndex >= this.totalStages) stageIndex = this.totalStages - 1;
-
-    // Hide old screen
-    const oldScreen = document.getElementById(this.screens[this.currentStage]);
-    if (oldScreen) oldScreen.classList.remove('active');
-
-    this.currentStage = stageIndex;
-
-    // Show new screen
-    const newScreen = document.getElementById(this.screens[this.currentStage]);
-    if (newScreen) newScreen.classList.add('active');
-
-    // Update Dropdown & Bottom Display
-    document.getElementById('stageSelect').value = this.currentStage;
-    document.getElementById('stageNameDisplay').textContent = this.stageNames[this.currentStage];
-
-    // Update Progress Dots
-    const dots = document.querySelectorAll('.progress-dot');
-    dots.forEach((dot, idx) => {
-      dot.classList.toggle('active', idx === this.currentStage);
-      dot.classList.toggle('completed', idx < this.currentStage);
-    });
-
-    // Lifecycle triggers per stage
-    this.onStageEnter(this.currentStage);
-  }
-
-  nextStage() {
-    sounds.playClick();
-    this.goToStage(this.currentStage + 1);
-  }
-
-  prevStage() {
-    sounds.playClick();
-    this.goToStage(this.currentStage - 1);
-  }
-
-  onStageEnter(stage) {
-    switch (stage) {
-      case 0:
-        sounds.playTone(400, 'sine', 0.2);
-        break;
-      case 1:
-        // Spotting
-        break;
-      case 4:
-        this.renderQuizQuestion();
-        break;
-      case 6:
-        this.renderMovementAction();
-        break;
-      case 8:
-        this.updateCreatorSummary(1);
-        break;
-      case 9:
-        this.prepareSpeakingGate(1);
-        break;
-      case 10:
-        this.updateCreatorSummary(2);
-        break;
-      case 11:
-        this.prepareSpeakingGate(2);
-        break;
-      case 12:
-        this.initBattleArena();
-        break;
-      case 13:
-        this.initChampionCeremony();
-        break;
-    }
-  }
-
-  speakCurrentInstruction() {
-    const instructions = [
-      "Attention! The Pokémon have escaped! I need new Pokémon Trainers!",
-      "Spot the escaped Pokémon! Tap a Pokémon, say its name, and call it out!",
-      "Look at the contrast! Tiny versus Huge! Fast versus Slow!",
-      "Look at the contrast! Strong versus Weak! Cute versus Scary!",
-      "Find the Pokémon! Tap the right one!",
-      "What can your Pokémon do? It can fly, it can swim, it can make fire!",
-      "Action challenge! Move like your Pokémon and say: It can!",
-      "My Pokémon is small and fast. It is cute. It can jump and make electricity.",
-      "Trainer 1, choose your size, personality, power, and two abilities!",
-      "Trainer 1, describe your Pokémon aloud before creation!",
-      "Trainer 2, choose your size, personality, power, and two abilities!",
-      "Trainer 2, describe your Pokémon aloud before creation!",
-      "Welcome to the Battle Arena! Use your English to attack!",
-      "Mission Complete! You are official Pokémon Trainers!"
-    ];
-
-    const text = instructions[this.currentStage] || "Pokémon Trainer Battle!";
-    sounds.speak(text);
+  updateFullscreenButton() {
+    const isFs = !!document.fullscreenElement;
+    const btnText = document.getElementById('fullscreenText');
+    const btnIcon = document.getElementById('fullscreenIcon');
+    if (btnText) btnText.textContent = isFs ? 'Exit Full' : 'Fullscreen';
+    if (btnIcon) btnIcon.textContent = isFs ? '✖' : '🔲';
   }
 
   toggleFullscreen() {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      document.getElementById('fullscreenIcon').textContent = '🗗';
+      document.documentElement.requestFullscreen().catch(err => {
+        console.warn("Fullscreen request error", err);
+      });
     } else {
-      document.exitFullscreen().catch(() => {});
-      document.getElementById('fullscreenIcon').textContent = '⛶';
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
     }
   }
 
-  setupKeyboardShortcuts() {
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  toggleSound() {
+    const isMuted = sounds.toggleMute();
+    const icon = document.getElementById('soundIcon');
+    if (icon) icon.textContent = isMuted ? '🔇' : '🔊';
+  }
 
-      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        this.nextStage();
-      } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        this.prevStage();
-      } else if (e.key === ' ') {
-        e.preventDefault();
-        this.speakCurrentInstruction();
+  toggleClassroomMode() {
+    this.isClassroomMode = !this.isClassroomMode;
+    const viewport = document.getElementById('appViewport');
+    if (viewport) {
+      viewport.classList.toggle('classroom-mode', this.isClassroomMode);
+    }
+  }
+
+  /* ==========================================================================
+     NAVIGATION & BREADCRUMBS
+     ========================================================================== */
+  renderProgressDots() {
+    const track = document.getElementById('stageProgressTrack');
+    if (!track) return;
+    track.innerHTML = '';
+    this.screens.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = `progress-dot ${idx === 0 ? 'active' : ''}`;
+      dot.title = this.stageTitles[idx] || `Stage ${idx + 1}`;
+      dot.addEventListener('click', () => {
+        sounds.playClick();
+        this.goToStage(idx);
+      });
+      track.appendChild(dot);
+    });
+  }
+
+  updateProgressDots() {
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((dot, idx) => {
+      dot.classList.remove('active', 'completed');
+      if (idx === this.currentStageIndex) {
+        dot.classList.add('active');
+      } else if (idx < this.currentStageIndex) {
+        dot.classList.add('completed');
       }
     });
   }
 
-  /* ==========================================================================
-     SCREEN 1: SPOTTING ICEBREAKER
-     ========================================================================== */
-  setupSpottingScreen() {
-    const grid = document.getElementById('spottingGrid');
-    grid.innerHTML = '';
+  goToStage(index) {
+    if (index < 0 || index >= this.screens.length) return;
 
-    LESSON_DATA.escapedPokemon.forEach(pk => {
-      const card = document.createElement('div');
-      card.className = 'spot-card';
-      card.innerHTML = `
-        <span class="spot-tag hidden">FOUND!</span>
-        <img src="${pk.image}" alt="${pk.name}" class="spot-img">
-        <span class="spot-name">${pk.name}</span>
-      `;
+    // Hide all screens
+    document.querySelectorAll('.activity-screen').forEach(s => s.classList.remove('active'));
 
-      card.addEventListener('click', () => {
-        sounds.playClick();
-        sounds.playPoint();
-        sounds.speak(pk.name);
-        card.classList.add('spotted');
-        const tag = card.querySelector('.spot-tag');
-        if (tag) tag.classList.remove('hidden');
+    this.currentStageIndex = index;
+    const activeScreenId = this.screens[index];
+    const targetScreen = document.getElementById(activeScreenId);
+    if (targetScreen) {
+      targetScreen.classList.add('active');
+    }
 
-        document.getElementById('spottingFeedback').querySelector('.feedback-text').textContent =
-          `🎉 Great job! You spotted ${pk.name}!`;
-      });
+    // Update Top & Bottom Stage Titles
+    const titleText = this.stageTitles[index] || `Stage ${index + 1}`;
+    document.getElementById('topStageTitle').textContent = titleText;
+    document.getElementById('navStageIndicator').textContent = titleText;
 
-      grid.appendChild(card);
+    this.updateProgressDots();
+
+    // Trigger stage-specific entries
+    this.onStageEnter(index);
+  }
+
+  nextStage() {
+    if (this.currentStageIndex < this.screens.length - 1) {
+      sounds.playClick();
+      this.goToStage(this.currentStageIndex + 1);
+    }
+  }
+
+  prevStage() {
+    if (this.currentStageIndex > 0) {
+      sounds.playClick();
+      this.goToStage(this.currentStageIndex - 1);
+    }
+  }
+
+  setupGlobalControls() {
+    // Top Bar
+    document.getElementById('btnLogoHome').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(0);
+    });
+    document.getElementById('btnSoundToggle').addEventListener('click', () => this.toggleSound());
+    document.getElementById('btnFullscreenToggle').addEventListener('click', () => this.toggleFullscreen());
+    document.getElementById('btnClassroomMode').addEventListener('click', () => this.toggleClassroomMode());
+    document.getElementById('btnRestartAdventure').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(0);
     });
 
-    document.getElementById('btnFinishSpotting').addEventListener('click', () => {
-      sounds.playCorrect();
-      this.nextStage();
+    // Bottom Bar
+    document.getElementById('btnNavBack').addEventListener('click', () => this.prevStage());
+    document.getElementById('btnNavHome').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(0);
+    });
+    document.getElementById('btnNavNext').addEventListener('click', () => this.nextStage());
+
+    // Modal How to Play
+    const modal = document.getElementById('modalHowToPlay');
+    document.getElementById('btnOpenHowToPlay').addEventListener('click', () => {
+      sounds.playClick();
+      modal.classList.remove('hidden');
+    });
+    document.getElementById('btnCloseHowToPlay').addEventListener('click', () => modal.classList.add('hidden'));
+    document.getElementById('btnModalUnderstood').addEventListener('click', () => {
+      modal.classList.add('hidden');
+      this.goToStage(1);
+    });
+  }
+
+  setupKeyboardShortcuts() {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        this.nextStage();
+      } else if (e.key === 'ArrowLeft') {
+        this.prevStage();
+      } else if (e.key === 'f' || e.key === 'F') {
+        this.toggleFullscreen();
+      } else if (e.key === ' ') {
+        // Space repeats current active speech
+        e.preventDefault();
+        this.repeatActiveSpeech();
+      }
+    });
+  }
+
+  repeatActiveSpeech() {
+    if (this.currentStageIndex === 3) {
+      const pair = LESSON_DATA.appearanceVocab[this.vocabPairIndex];
+      if (pair) sounds.speak(`${pair.sentence1} ${pair.sentence2}`);
+    } else if (this.currentStageIndex === 5) {
+      const sentence = document.getElementById('demoSentenceText').textContent;
+      sounds.speak(sentence);
+    } else if (this.currentStageIndex === 9) {
+      this.speakFullPokemonDescription();
+    }
+  }
+
+  onStageEnter(index) {
+    if (index === 2) {
+      this.renderSilhouetteRound();
+    } else if (index === 3) {
+      this.renderVocabPair(0);
+    } else if (index === 4) {
+      this.renderExplorerCards();
+    } else if (index === 6) {
+      this.renderCanCantRound();
+    } else if (index === 7) {
+      this.updateCreatorPreview();
+    } else if (index === 8) {
+      this.start321Reveal();
+    } else if (index === 9) {
+      this.prepareSpeakingChallenge();
+    } else if (index === 10) {
+      this.renderMysteryClassRound();
+    } else if (index === 11) {
+      this.initBossChallenge();
+    } else if (index === 12) {
+      this.renderFinalProfileCard();
+    }
+  }
+
+  /* ==========================================================================
+     SCREEN 1: START SCREEN
+     ========================================================================== */
+  setupStartScreen() {
+    document.getElementById('btnStartAdventure').addEventListener('click', () => {
+      sounds.playClick();
+      sounds.playSelect();
+      this.goToStage(1);
+    });
+    document.getElementById('btnRulesContinue').addEventListener('click', () => {
+      sounds.playClick();
+      sounds.playSelect();
+      this.goToStage(2);
     });
   }
 
   /* ==========================================================================
-     SCREEN 2 & 3: ADJECTIVE VOCABULARY CONTRASTS
+     SCREEN 3: SILHOUETTE MYSTERY GAME (ICEBREAKER)
      ========================================================================== */
-  setupAdjectivesScreens() {
-    // Screen 2: Size & Speed
-    const tabSize = document.getElementById('tabSize');
-    const tabSpeed = document.getElementById('tabSpeed');
-
-    const updateScreen2 = (catIndex) => {
-      const data = LESSON_DATA.adjectives[catIndex].contrast;
-      document.getElementById('adjWordLeft').textContent = data.left.label;
-      document.getElementById('adjImgLeft').src = data.left.image;
-      document.getElementById('adjSentenceLeft').textContent = `"${LESSON_DATA.adjectives[catIndex].words[0].sentence}"`;
-      document.getElementById('adjGestureLeft').querySelector('.gesture-text').textContent = LESSON_DATA.adjectives[catIndex].words[0].gesture;
-
-      document.getElementById('adjWordRight').textContent = data.right.label;
-      document.getElementById('adjImgRight').src = data.right.image;
-      document.getElementById('adjSentenceRight').textContent = `"${LESSON_DATA.adjectives[catIndex].words[catIndex === 0 ? 3 : 1].sentence}"`;
-      document.getElementById('adjGestureRight').querySelector('.gesture-text').textContent = LESSON_DATA.adjectives[catIndex].words[catIndex === 0 ? 3 : 1].gesture;
-    };
-
-    tabSize.addEventListener('click', () => {
-      tabSize.classList.add('active');
-      tabSpeed.classList.remove('active');
-      sounds.playClick();
-      updateScreen2(0);
-    });
-    tabSpeed.addEventListener('click', () => {
-      tabSpeed.classList.add('active');
-      tabSize.classList.remove('active');
-      sounds.playClick();
-      updateScreen2(1);
-    });
-
-    document.getElementById('btnSpeakAdjLeft').addEventListener('click', () => {
-      sounds.speak(document.getElementById('adjSentenceLeft').textContent);
-    });
-    document.getElementById('btnSpeakAdjRight').addEventListener('click', () => {
-      sounds.speak(document.getElementById('adjSentenceRight').textContent);
-    });
-
-    // Screen 3: Power & Personality
-    const tabPower = document.getElementById('tabPower');
-    const tabPersonality = document.getElementById('tabPersonality');
-
-    const updateScreen3 = (catIndex) => {
-      const data = LESSON_DATA.adjectives[catIndex].contrast;
-      document.getElementById('adj2WordLeft').textContent = data.left.label;
-      document.getElementById('adj2ImgLeft').src = data.left.image;
-      document.getElementById('adj2SentenceLeft').textContent = `"${LESSON_DATA.adjectives[catIndex].words[0].sentence}"`;
-      document.getElementById('adj2GestureLeft').querySelector('.gesture-text').textContent = LESSON_DATA.adjectives[catIndex].words[0].gesture;
-
-      document.getElementById('adj2WordRight').textContent = data.right.label;
-      document.getElementById('adj2ImgRight').src = data.right.image;
-      document.getElementById('adj2SentenceRight').textContent = `"${LESSON_DATA.adjectives[catIndex].words[1].sentence}"`;
-      document.getElementById('adj2GestureRight').querySelector('.gesture-text').textContent = LESSON_DATA.adjectives[catIndex].words[1].gesture;
-    };
-
-    tabPower.addEventListener('click', () => {
-      tabPower.classList.add('active');
-      tabPersonality.classList.remove('active');
-      sounds.playClick();
-      updateScreen3(2);
-    });
-    tabPersonality.addEventListener('click', () => {
-      tabPersonality.classList.add('active');
-      tabPower.classList.remove('active');
-      sounds.playClick();
-      updateScreen3(3);
-    });
-
-    document.getElementById('btnSpeakAdj2Left').addEventListener('click', () => {
-      sounds.speak(document.getElementById('adj2SentenceLeft').textContent);
-    });
-    document.getElementById('btnSpeakAdj2Right').addEventListener('click', () => {
-      sounds.speak(document.getElementById('adj2SentenceRight').textContent);
-    });
+  setupSilhouetteGame() {
+    for (let i = 1; i <= 4; i++) {
+      const btn = document.getElementById(`clueBtn${i}`);
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const round = LESSON_DATA.silhouetteRounds[this.silhouetteRound];
+          if (!round) return;
+          const clueText = round.clues[i - 1];
+          btn.querySelector('.clue-text').textContent = clueText;
+          btn.classList.add('active');
+          sounds.playSelect();
+          sounds.speak(clueText);
+        });
+      }
+    }
   }
 
-  /* ==========================================================================
-     SCREEN 4: ADJECTIVE QUICK GAME
-     ========================================================================== */
-  setupQuizScreen() {
-    // Handled in renderQuizQuestion
-  }
-
-  renderQuizQuestion() {
-    const quizData = LESSON_DATA.adjectiveQuiz[this.quizIndex];
-    if (!quizData) {
-      this.quizIndex = 0;
+  renderSilhouetteRound() {
+    const round = LESSON_DATA.silhouetteRounds[this.silhouetteRound];
+    if (!round) {
+      this.silhouetteRound = 0;
       this.nextStage();
       return;
     }
 
-    document.getElementById('adjQuizQuestionTitle').textContent = `🔍 ${quizData.question.toUpperCase()}`;
-    document.getElementById('adjQuizSentenceFrame').textContent = `"It is ${quizData.targetWord}."`;
-    document.getElementById('adjQuizFeedbackMsg').textContent = 'Tap the correct Pokémon!';
+    document.getElementById('silhouetteRoundTag').textContent = `ROUND ${this.silhouetteRound + 1} of ${LESSON_DATA.silhouetteRounds.length}`;
+    const img = document.getElementById('silhouetteImage');
+    img.src = round.image;
+    img.className = 'silhouette-img is-shadow';
 
-    const container = document.getElementById('adjQuizChoices');
+    // Reset clues
+    for (let i = 1; i <= 4; i++) {
+      const btn = document.getElementById(`clueBtn${i}`);
+      btn.querySelector('.clue-text').textContent = `Touch for Clue ${i}`;
+      btn.classList.remove('active');
+    }
+
+    // Render 3 choices
+    const container = document.getElementById('silhouetteChoicesContainer');
     container.innerHTML = '';
 
-    quizData.options.forEach(opt => {
+    round.choices.forEach(choice => {
       const card = document.createElement('div');
-      card.className = 'quiz-choice-card';
+      card.className = 'silhouette-choice-card';
       card.innerHTML = `
-        <img src="${opt.image}" alt="${opt.name}" class="choice-img">
-        <span class="choice-name">${opt.name}</span>
+        <img src="${choice.image}" alt="${choice.name}">
+        <span>${choice.name}</span>
       `;
 
       card.addEventListener('click', () => {
-        if (opt.isCorrect) {
+        if (choice.isCorrect) {
           card.classList.add('correct');
           sounds.playCorrect();
-          document.getElementById('adjQuizFeedbackMsg').textContent = `🎉 YES! ${opt.name} is ${quizData.targetWord}!`;
-          sounds.speak(`${opt.name} is ${quizData.targetWord}!`);
+          sounds.playCelebration();
+
+          // Reveal silhouette!
+          img.className = 'silhouette-img is-revealed';
+          sounds.speak(`YES! It is ${round.answerName}!`);
 
           setTimeout(() => {
-            this.quizIndex++;
-            if (this.quizIndex < LESSON_DATA.adjectiveQuiz.length) {
-              this.renderQuizQuestion();
+            this.silhouetteRound++;
+            if (this.silhouetteRound < LESSON_DATA.silhouetteRounds.length) {
+              this.renderSilhouetteRound();
             } else {
-              this.quizIndex = 0;
+              this.silhouetteRound = 0;
               this.nextStage();
             }
-          }, 1800);
+          }, 2400);
         } else {
           card.classList.add('wrong');
           sounds.playWrong();
-          document.getElementById('adjQuizFeedbackMsg').textContent = '😂 NOPE! Try again, Trainer!';
-          setTimeout(() => card.classList.remove('wrong'), 800);
+          sounds.speak("Try again, Trainer!");
+          setTimeout(() => card.classList.remove('wrong'), 700);
         }
       });
 
@@ -435,644 +399,823 @@ class PokemonApp {
   }
 
   /* ==========================================================================
-     SCREEN 5: VOCABULARY - ABILITIES
+     SCREEN 4: TEACH APPEARANCE VOCABULARY
      ========================================================================== */
-  setupAbilitiesScreen() {
-    const grid = document.getElementById('abilitiesCardsGrid');
+  setupVocabScreen() {
+    const tabs = document.querySelectorAll('.vocab-tab');
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        sounds.playClick();
+        this.renderVocabPair(idx);
+      });
+    });
+
+    document.getElementById('btnSpeakLeft').addEventListener('click', () => {
+      sounds.speak(document.getElementById('contrastSentenceLeft').textContent);
+    });
+    document.getElementById('btnSpeakRight').addEventListener('click', () => {
+      sounds.speak(document.getElementById('contrastSentenceRight').textContent);
+    });
+
+    // Touch card interaction
+    document.getElementById('contrastCardLeft').addEventListener('click', () => {
+      this.handleVocabCardTouch('left');
+    });
+    document.getElementById('contrastCardRight').addEventListener('click', () => {
+      this.handleVocabCardTouch('right');
+    });
+  }
+
+  renderVocabPair(pairIdx) {
+    this.vocabPairIndex = pairIdx;
+    const pair = LESSON_DATA.appearanceVocab[pairIdx];
+    if (!pair) return;
+
+    document.getElementById('contrastImgLeft').src = pair.image1;
+    document.getElementById('contrastWordLeft').textContent = pair.word1.toUpperCase();
+    document.getElementById('contrastSentenceLeft').textContent = `"${pair.sentence1}"`;
+    document.getElementById('contrastGestureLeft').textContent = `Gesture: ${pair.gesture1}`;
+
+    document.getElementById('contrastImgRight').src = pair.image2;
+    document.getElementById('contrastWordRight').textContent = pair.word2.toUpperCase();
+    document.getElementById('contrastSentenceRight').textContent = `"${pair.sentence2}"`;
+    document.getElementById('contrastGestureRight').textContent = `Gesture: ${pair.gesture2}`;
+
+    // Prompt for quick check challenge
+    const promptEl = document.getElementById('vocabChallengePrompt');
+    promptEl.textContent = `Touch the ${pair.word1.toUpperCase()} Pokémon!`;
+    document.getElementById('vocabChallengeFeedback').textContent = 'Tap one above!';
+
+    // Speak sentence
+    sounds.speak(`${pair.sentence1} ${pair.sentence2}`);
+  }
+
+  handleVocabCardTouch(side) {
+    const pair = LESSON_DATA.appearanceVocab[this.vocabPairIndex];
+    if (!pair) return;
+
+    const card = side === 'left' ? document.getElementById('contrastCardLeft') : document.getElementById('contrastCardRight');
+    const word = side === 'left' ? pair.word1 : pair.word2;
+
+    card.classList.add('touched-correct');
+    sounds.playCorrect();
+    document.getElementById('vocabChallengeFeedback').textContent = `⭐ YES! That is ${word.toUpperCase()}!`;
+    sounds.speak(`Yes! It is ${word}!`);
+
+    setTimeout(() => card.classList.remove('touched-correct'), 1200);
+  }
+
+  /* ==========================================================================
+     SCREEN 5: APPEARANCE EXPLORER
+     ========================================================================== */
+  setupExplorerScreen() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-type');
+        const val = btn.getAttribute('data-val');
+
+        const wasActive = btn.classList.contains('active');
+        filterBtns.forEach(b => {
+          if (b.getAttribute('data-type') === type) b.classList.remove('active');
+        });
+
+        if (!wasActive) {
+          btn.classList.add('active');
+          sounds.playSelect();
+          this.applyExplorerFilter(type, val);
+        } else {
+          this.clearExplorerFilters();
+        }
+      });
+    });
+
+    document.getElementById('btnClearExplorerFilters').addEventListener('click', () => {
+      sounds.playClick();
+      this.clearExplorerFilters();
+    });
+  }
+
+  clearExplorerFilters() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.explorer-creature-card').forEach(card => {
+      card.classList.remove('highlighted', 'dimmed');
+    });
+  }
+
+  applyExplorerFilter(type, val) {
+    const cards = document.querySelectorAll('.explorer-creature-card');
+    cards.forEach(card => {
+      const cardVal = card.getAttribute(`data-${type}`);
+      if (cardVal && cardVal.includes(val)) {
+        card.classList.add('highlighted');
+        card.classList.remove('dimmed');
+      } else {
+        card.classList.remove('highlighted');
+        card.classList.add('dimmed');
+      }
+    });
+
+    sounds.speak(`Showing ${val} Pokémon!`);
+  }
+
+  renderExplorerCards() {
+    const container = document.getElementById('explorerCardsGrid');
+    container.innerHTML = '';
+
+    LESSON_DATA.explorerCards.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'explorer-creature-card';
+      card.setAttribute('data-size', item.size);
+      card.setAttribute('data-height', item.height);
+      card.setAttribute('data-color', item.color);
+      card.setAttribute('data-look', item.look);
+
+      card.innerHTML = `
+        <img src="${item.image}" alt="${item.name}">
+        <span class="card-title">${item.name}</span>
+        <span class="card-tags">${item.size.toUpperCase()} • ${item.color.toUpperCase()} • ${item.look.toUpperCase()}</span>
+      `;
+
+      card.addEventListener('click', () => {
+        sounds.playClick();
+        sounds.speak(`${item.name} is ${item.size}, ${item.color}, and ${item.look}.`);
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  /* ==========================================================================
+     SCREEN 6: POKÉMON ABILITY LAB (16 RICH ABILITIES)
+     ========================================================================== */
+  setupAbilityLab() {
+    const grid = document.getElementById('abilities16Grid');
     grid.innerHTML = '';
 
     LESSON_DATA.abilities.forEach((ab, idx) => {
       const card = document.createElement('div');
-      card.className = `ability-card-item ${idx === 0 ? 'active' : ''}`;
+      card.className = `ability-grid-card ${idx === 0 ? 'active' : ''}`;
       card.innerHTML = `
         <span class="ability-card-emoji">${ab.emoji}</span>
         <span class="ability-card-name">${ab.name}</span>
-        <span class="ability-card-sentence">"${ab.sentence}"</span>
       `;
 
       card.addEventListener('click', () => {
-        document.querySelectorAll('.ability-card-item').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.ability-grid-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
 
-        sounds.playClick();
-        sounds.playTone(600, 'sine', 0.1);
-
-        document.getElementById('spotlightEmoji').textContent = ab.emoji;
-        document.getElementById('spotlightTitle').textContent = ab.name.toUpperCase();
-        document.getElementById('spotlightSentence').textContent = `"${ab.sentence}"`;
-        document.getElementById('spotlightGesture').querySelector('.gesture-desc').textContent = `Gesture: ${ab.gesture}`;
-
-        sounds.speak(ab.sentence);
+        this.demonstrateAbility(ab);
       });
 
       grid.appendChild(card);
     });
 
-    document.getElementById('btnSpeakSpotlight').addEventListener('click', () => {
-      const sentence = document.getElementById('spotlightSentence').textContent;
-      sounds.speak(sentence);
+    document.getElementById('btnSpeakAbilitySentence').addEventListener('click', () => {
+      sounds.speak(document.getElementById('demoSentenceText').textContent);
     });
+
+    // Default demonstration for Fly
+    this.demonstrateAbility(LESSON_DATA.abilities[0]);
+  }
+
+  demonstrateAbility(ability) {
+    sounds.playSelect();
+    sounds.playAbilityEffect(ability.id);
+
+    // Update Banner
+    document.getElementById('demoAbilityTag').textContent = `${ability.emoji} ${ability.name.toUpperCase()}`;
+    document.getElementById('demoSentenceText').textContent = `"${ability.sentence}"`;
+    document.getElementById('demoGestureHint').textContent = `Gesture: ${ability.gesture}`;
+
+    // Update Demo Sprite
+    const sprite = document.getElementById('demoCreatureImg');
+    sprite.src = ability.demoImage;
+
+    // Trigger visual demonstration animation
+    sprite.className = 'demo-creature-sprite';
+    const fx = document.getElementById('demoFxOverlay');
+    fx.textContent = ability.emoji;
+    fx.style.opacity = '1';
+
+    if (ability.id === 'fly') sprite.classList.add('anim-fly-active');
+    else if (ability.id === 'jump high') sprite.classList.add('anim-jump-active');
+    else if (ability.id === 'run fast') sprite.classList.add('anim-run-active');
+
+    setTimeout(() => {
+      fx.style.opacity = '0';
+    }, 1200);
+
+    // Speak native sentence
+    sounds.speak(ability.sentence);
   }
 
   /* ==========================================================================
-     SCREEN 6: ACTION GAME (TPR)
+     SCREEN 7: CAN VS CAN'T CHALLENGE
      ========================================================================== */
-  setupMovementScreen() {
-    document.getElementById('btnNextMove').addEventListener('click', () => {
-      this.movementIndex = (this.movementIndex + 1) % LESSON_DATA.abilities.length;
-      sounds.playClick();
-      this.renderMovementAction();
-    });
-
-    document.getElementById('btnPrevMove').addEventListener('click', () => {
-      this.movementIndex = (this.movementIndex - 1 + LESSON_DATA.abilities.length) % LESSON_DATA.abilities.length;
-      sounds.playClick();
-      this.renderMovementAction();
-    });
-
-    document.getElementById('btnSpeakMoveSentence').addEventListener('click', () => {
-      const sentence = document.getElementById('moveSentenceText').textContent;
-      sounds.speak(sentence);
-    });
+  setupCanCantScreen() {
+    // Handled in renderCanCantRound
   }
 
-  renderMovementAction() {
-    const ab = LESSON_DATA.abilities[this.movementIndex];
-    document.getElementById('moveGiantEmoji').textContent = ab.emoji;
-    document.getElementById('moveCommandText').textContent = `${ab.name.toUpperCase()}!`;
-    document.getElementById('moveActionTip').textContent = `Action: ${ab.gesture}`;
-    document.getElementById('moveSentenceText').textContent = `"${ab.sentence}"`;
+  renderCanCantRound() {
+    const q = LESSON_DATA.canCantQuestions[this.canCantRound];
+    if (!q) {
+      this.canCantRound = 0;
+      this.nextStage();
+      return;
+    }
 
-    sounds.playTone(550, 'triangle', 0.2);
-    setTimeout(() => sounds.speak(ab.sentence), 200);
-  }
+    document.getElementById('canCantRoundCounter').textContent = `Round ${this.canCantRound + 1} of ${LESSON_DATA.canCantQuestions.length}`;
+    document.getElementById('canCantName').textContent = q.pokemonName.toUpperCase();
+    document.getElementById('canCantCreatureImg').src = q.image;
 
-  /* ==========================================================================
-     SCREEN 7: MODEL COMPLETE DESCRIPTIONS
-     ========================================================================== */
-  setupModelScreen() {
-    const setModel = (index) => {
-      const model = LESSON_DATA.modelingExamples[index];
-      document.getElementById('modelImage').src = model.image;
-      document.getElementById('modelName').textContent = model.name.toUpperCase();
+    const stack = document.getElementById('canCantQuestionsStack');
+    stack.innerHTML = '';
 
-      const tagsRow = document.getElementById('modelTagsRow');
-      tagsRow.innerHTML = '';
-      model.adjectives.forEach(adj => {
-        tagsRow.innerHTML += `<span class="tag tag-adj">${adj}</span>`;
-      });
-      model.abilities.forEach(ab => {
-        tagsRow.innerHTML += `<span class="tag tag-ab">${ab}</span>`;
-      });
+    q.prompts.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'can-cant-row-card';
+      row.innerHTML = `
+        <span class="can-cant-statement">"${p.statement}"</span>
+        <div class="can-cant-buttons-pair">
+          <button class="btn-choice-can">✅ CAN</button>
+          <button class="btn-choice-cant">❌ CAN'T</button>
+        </div>
+      `;
 
-      document.getElementById('modelSentence1').textContent = `"${model.sentence1}"`;
-      document.getElementById('modelSentence2').textContent = `"${model.sentence3}"`;
-      document.getElementById('modelFullSpeech').textContent = `"${model.fullSpeech}"`;
-    };
+      const btnCan = row.querySelector('.btn-choice-can');
+      const btnCant = row.querySelector('.btn-choice-cant');
 
-    document.getElementById('tabModelPikachu').addEventListener('click', (e) => {
-      document.querySelectorAll('.model-switch-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      sounds.playClick();
-      setModel(0);
-    });
-    document.getElementById('tabModelCharizard').addEventListener('click', (e) => {
-      document.querySelectorAll('.model-switch-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      sounds.playClick();
-      setModel(1);
-    });
-    document.getElementById('tabModelSquirtle').addEventListener('click', (e) => {
-      document.querySelectorAll('.model-switch-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      sounds.playClick();
-      setModel(2);
-    });
-
-    document.getElementById('btnSpeakModelFull').addEventListener('click', () => {
-      const text = document.getElementById('modelFullSpeech').textContent;
-      sounds.speak(text);
-    });
-
-    document.querySelectorAll('.student-answer-bubble .btn-audio-mini').forEach(btn => {
-      btn.addEventListener('click', () => {
-        sounds.speak(btn.getAttribute('data-text'));
-      });
-    });
-  }
-
-  /* ==========================================================================
-     SCREENS 8 & 10: CHARACTER CREATOR (P1 & P2)
-     ========================================================================== */
-  setupCreatorScreens() {
-    this.setupSingleCreator(1);
-    this.setupSingleCreator(2);
-
-    document.getElementById('btnP1Ready').addEventListener('click', () => {
-      sounds.playClick();
-      sounds.playSelect();
-      this.goToStage(9); // P1 Speaking & Reveal
-    });
-
-    document.getElementById('btnP2Ready').addEventListener('click', () => {
-      sounds.playClick();
-      sounds.playSelect();
-      this.goToStage(11); // P2 Speaking & Reveal
-    });
-  }
-
-  setupSingleCreator(playerNum) {
-    const config = playerNum === 1 ? this.p1Config : this.p2Config;
-    const prefix = `p${playerNum}`;
-
-    // Base Pills
-    const basePills = document.querySelectorAll(`#${prefix}-base-choices .choice-pill`);
-    basePills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        basePills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        config.base = pill.getAttribute('data-val');
-        sounds.playClick();
-        this.updateCreatorSummary(playerNum);
-      });
-    });
-
-    // Size Pills
-    const sizePills = document.querySelectorAll(`#${prefix}-size-choices .choice-pill`);
-    sizePills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        sizePills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        config.size = pill.getAttribute('data-val');
-        sounds.playClick();
-        this.updateCreatorSummary(playerNum);
-      });
-    });
-
-    // Personality Pills
-    const personalityPills = document.querySelectorAll(`#${prefix}-personality-choices .choice-pill`);
-    personalityPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        personalityPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        config.personality = pill.getAttribute('data-val');
-        sounds.playClick();
-        this.updateCreatorSummary(playerNum);
-      });
-    });
-
-    // Power Pills
-    const powerPills = document.querySelectorAll(`#${prefix}-power-choices .choice-pill`);
-    powerPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        powerPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        config.power = pill.getAttribute('data-val');
-        sounds.playClick();
-        this.updateCreatorSummary(playerNum);
-      });
-    });
-
-    // Ability Select Grid (Exactly 2 allowed)
-    const abilityContainer = document.getElementById(`${prefix}-ability-choices`);
-    abilityContainer.innerHTML = '';
-
-    LESSON_DATA.abilities.forEach(ab => {
-      const pill = document.createElement('button');
-      pill.type = 'button';
-      pill.className = `ability-pill ${config.abilities.includes(ab.id) ? 'active' : ''}`;
-      pill.setAttribute('data-id', ab.id);
-      pill.innerHTML = `<span>${ab.emoji}</span> <span>${ab.name}</span>`;
-
-      pill.addEventListener('click', () => {
-        const isSelected = config.abilities.includes(ab.id);
-        if (isSelected) {
-          // Deselect
-          config.abilities = config.abilities.filter(a => a !== ab.id);
-          pill.classList.remove('active');
-          sounds.playClick();
+      btnCan.addEventListener('click', () => {
+        if (p.isCan) {
+          row.style.borderColor = '#22c55e';
+          sounds.playCorrect();
+          sounds.speak(p.explanation);
         } else {
-          // Select if under 2
-          if (config.abilities.length < 2) {
-            config.abilities.push(ab.id);
-            pill.classList.add('active');
+          row.style.borderColor = '#ef4444';
+          sounds.playWrong();
+          sounds.speak(p.explanation);
+        }
+      });
+
+      btnCant.addEventListener('click', () => {
+        if (!p.isCan) {
+          row.style.borderColor = '#22c55e';
+          sounds.playCorrect();
+          sounds.speak(p.explanation);
+        } else {
+          row.style.borderColor = '#ef4444';
+          sounds.playWrong();
+          sounds.speak(p.explanation);
+        }
+      });
+
+      stack.appendChild(row);
+    });
+  }
+
+  /* ==========================================================================
+     SCREEN 8: BUILD YOUR OWN POKÉMON (CREATOR STUDIO)
+     ========================================================================== */
+  setupCreatorStudio() {
+    // 1. Archetype Pills (10 Archetypes)
+    const archContainer = document.getElementById('creatorArchetypePills');
+    archContainer.innerHTML = '';
+    LESSON_DATA.archetypes.forEach(arch => {
+      const btn = document.createElement('button');
+      btn.className = `choice-pill ${arch.id === this.studentPokemon.archetype ? 'active' : ''}`;
+      btn.setAttribute('data-val', arch.id);
+      btn.innerHTML = `<span>${arch.emoji}</span> <span>${arch.name}</span>`;
+
+      btn.addEventListener('click', () => {
+        archContainer.querySelectorAll('.choice-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.studentPokemon.archetype = arch.id;
+        sounds.playClick();
+        this.updateCreatorPreview();
+      });
+
+      archContainer.appendChild(btn);
+    });
+
+    // 2. Size Pills
+    document.querySelectorAll('#creatorSizePills .choice-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#creatorSizePills .choice-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.studentPokemon.size = pill.getAttribute('data-val');
+        sounds.playClick();
+        this.updateCreatorPreview();
+      });
+    });
+
+    // 3. Look Pills
+    document.querySelectorAll('#creatorLookPills .choice-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#creatorLookPills .choice-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.studentPokemon.look = pill.getAttribute('data-val');
+        sounds.playClick();
+        this.updateCreatorPreview();
+      });
+    });
+
+    // 4. Color Pills
+    document.querySelectorAll('#creatorColorPills .choice-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#creatorColorPills .choice-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.studentPokemon.color = pill.getAttribute('data-val');
+        sounds.playClick();
+        this.updateCreatorPreview();
+      });
+    });
+
+    // 5. Feature Pills
+    document.querySelectorAll('#creatorFeaturePills .choice-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#creatorFeaturePills .choice-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.studentPokemon.features = pill.getAttribute('data-val');
+        sounds.playClick();
+        this.updateCreatorPreview();
+      });
+    });
+
+    // 6. Abilities Grid (Select 2 to 4)
+    const abGrid = document.getElementById('creatorAbilitiesGrid');
+    abGrid.innerHTML = '';
+    LESSON_DATA.abilities.forEach(ab => {
+      const btn = document.createElement('button');
+      btn.className = `creator-ab-pill ${this.studentPokemon.abilities.includes(ab.id) ? 'active' : ''}`;
+      btn.innerHTML = `<span>${ab.emoji}</span> <span>${ab.name}</span>`;
+
+      btn.addEventListener('click', () => {
+        const idx = this.studentPokemon.abilities.indexOf(ab.id);
+        if (idx !== -1) {
+          // Can remove if >= 2
+          if (this.studentPokemon.abilities.length > 2) {
+            this.studentPokemon.abilities.splice(idx, 1);
+            btn.classList.remove('active');
+            sounds.playClick();
+          } else {
+            sounds.playWrong();
+          }
+        } else {
+          // Can add if <= 4
+          if (this.studentPokemon.abilities.length < 4) {
+            this.studentPokemon.abilities.push(ab.id);
+            btn.classList.add('active');
             sounds.playSelect();
           } else {
-            // Shake to indicate max 2
             sounds.playWrong();
-            pill.classList.add('wrong');
-            setTimeout(() => pill.classList.remove('wrong'), 400);
           }
         }
-        this.updateCreatorSummary(playerNum);
+        this.updateCreatorPreview();
       });
 
-      abilityContainer.appendChild(pill);
+      abGrid.appendChild(btn);
     });
 
-    this.updateCreatorSummary(playerNum);
+    // Random Pokémon Generator Button
+    document.getElementById('btnCreateRandomPokemon').addEventListener('click', () => {
+      this.generateRandomPokemon();
+    });
+
+    // Trigger Reveal Button
+    document.getElementById('btnTriggerCreatePokemon').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(8); // Dramatic Reveal
+    });
   }
 
-  updateCreatorSummary(playerNum) {
-    const config = playerNum === 1 ? this.p1Config : this.p2Config;
-    const prefix = `p${playerNum}`;
+  generateRandomPokemon() {
+    const archs = LESSON_DATA.archetypes;
+    const sizes = ['tiny', 'small', 'big', 'huge'];
+    const looks = ['cute', 'brave', 'strong', 'scary', 'friendly'];
+    const colors = ['blue', 'red', 'green', 'yellow', 'purple', 'black', 'white'];
+    const features = ['wings', 'tail', 'horns', 'ears'];
 
-    const baseEl = document.getElementById(`${prefix}-spec-base`);
-    if (baseEl) baseEl.textContent = (config.base || 'fox').toUpperCase();
+    this.studentPokemon.archetype = archs[Math.floor(Math.random() * archs.length)].id;
+    this.studentPokemon.size = sizes[Math.floor(Math.random() * sizes.length)];
+    this.studentPokemon.look = looks[Math.floor(Math.random() * looks.length)];
+    this.studentPokemon.color = colors[Math.floor(Math.random() * colors.length)];
+    this.studentPokemon.features = features[Math.floor(Math.random() * features.length)];
 
-    document.getElementById(`${prefix}-spec-size`).textContent = config.size.toUpperCase();
-    document.getElementById(`${prefix}-spec-personality`).textContent = config.personality.toUpperCase();
-    document.getElementById(`${prefix}-spec-power`).textContent = config.power.toUpperCase();
-    document.getElementById(`${prefix}-spec-abilities`).textContent = config.abilities.join(', ').toUpperCase();
+    // 2-3 random abilities
+    const shuffledAbs = [...LESSON_DATA.abilities].sort(() => 0.5 - Math.random());
+    this.studentPokemon.abilities = [shuffledAbs[0].id, shuffledAbs[1].id];
 
-    document.getElementById(`${prefix}-ability-count`).textContent = `${config.abilities.length}/2`;
+    sounds.playSelect();
+    this.syncCreatorUI();
+    this.updateCreatorPreview();
+  }
 
-    // Update capsule pod preview image
-    const modelImg = creatures.selectModelImage(config.base, config.abilities, config.personality, config.power, config.size);
-    const previewImg = document.getElementById(`${prefix}-pod-preview-img`);
+  syncCreatorUI() {
+    // Sync archetype pills
+    document.querySelectorAll('#creatorArchetypePills .choice-pill').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-val') === this.studentPokemon.archetype);
+    });
+    // Sync size pills
+    document.querySelectorAll('#creatorSizePills .choice-pill').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-val') === this.studentPokemon.size);
+    });
+    // Sync look pills
+    document.querySelectorAll('#creatorLookPills .choice-pill').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-val') === this.studentPokemon.look);
+    });
+    // Sync color pills
+    document.querySelectorAll('#creatorColorPills .choice-pill').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-val') === this.studentPokemon.color);
+    });
+    // Sync feature pills
+    document.querySelectorAll('#creatorFeaturePills .choice-pill').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-val') === this.studentPokemon.features);
+    });
+    // Sync abilities
+    document.querySelectorAll('.creator-ab-pill').forEach(p => {
+      const name = p.textContent.trim().toLowerCase();
+      const has = this.studentPokemon.abilities.some(a => name.includes(a));
+      p.classList.toggle('active', has);
+    });
+  }
+
+  updateCreatorPreview() {
+    const p = this.studentPokemon;
+    document.getElementById('specArchetype').textContent = p.archetype.toUpperCase();
+    document.getElementById('specAppearance').textContent = `${p.size.toUpperCase()}, ${p.look.toUpperCase()}, ${p.color.toUpperCase()}`;
+    document.getElementById('specFeature').textContent = p.features.toUpperCase();
+    document.getElementById('specAbilities').textContent = p.abilities.join(', ').toUpperCase();
+    document.getElementById('creatorAbilityCount').textContent = `${p.abilities.length}/4`;
+
+    const modelImg = creatures.selectModelImage(p.archetype, p.abilities, p.look, p.size);
+    const previewImg = document.getElementById('creatorPreviewImg');
     if (previewImg) {
       previewImg.src = modelImg;
-    }
-
-    // Highlight Pod Glow based on chosen primary ability
-    const pod = document.querySelector(`#screen-create-${prefix} .pod-capsule`);
-    if (pod) {
-      if (config.abilities.includes('make fire')) pod.style.borderColor = '#ef4444';
-      else if (config.abilities.includes('make electricity')) pod.style.borderColor = '#facc15';
-      else if (config.abilities.includes('make ice')) pod.style.borderColor = '#06b6d4';
-      else if (config.abilities.includes('swim')) pod.style.borderColor = '#0284c7';
-      else pod.style.borderColor = '#38bdf8';
+      previewImg.style = creatures.getColorFilter(p.color);
     }
   }
 
   /* ==========================================================================
-     SCREENS 9 & 11: SPEAKING CHECKPOINT & REVEAL
+     SCREEN 9: DRAMATIC 3-2-1 REVEAL
      ========================================================================== */
-  setupRevealScreens() {
-    // Player 1
-    document.getElementById('btnP1PracticeSpeech').addEventListener('click', () => {
-      this.speakPokemonDescription(1);
-    });
+  start321Reveal() {
+    const countdownBox = document.getElementById('revealCountdownPhase');
+    const resultBox = document.getElementById('revealResultPhase');
+    const countNum = document.getElementById('countdownNumber');
 
-    document.getElementById('btnP1TriggerReveal').addEventListener('click', () => {
-      this.triggerCountdownReveal(1);
-    });
-
-    document.getElementById('btnP1NextToTrainer2').addEventListener('click', () => {
-      sounds.playClick();
-      this.goToStage(10); // Trainer 2 Create
-    });
-
-    // Player 2
-    document.getElementById('btnP2PracticeSpeech').addEventListener('click', () => {
-      this.speakPokemonDescription(2);
-    });
-
-    document.getElementById('btnP2TriggerReveal').addEventListener('click', () => {
-      this.triggerCountdownReveal(2);
-    });
-
-    document.getElementById('btnStartBattleArena').addEventListener('click', () => {
-      sounds.playClick();
-      this.goToStage(12); // Battle Arena
-    });
-  }
-
-  prepareSpeakingGate(playerNum) {
-    const config = playerNum === 1 ? this.p1Config : this.p2Config;
-    const prefix = `p${playerNum}`;
-
-    const slotBase = document.getElementById(`${prefix}-slot-base`);
-    if (slotBase) slotBase.textContent = config.base || 'creature';
-
-    document.getElementById(`${prefix}-slot-size`).textContent = config.size;
-    document.getElementById(`${prefix}-slot-power`).textContent = config.power;
-    document.getElementById(`${prefix}-slot-personality`).textContent = config.personality;
-    document.getElementById(`${prefix}-slot-ab1`).textContent = config.abilities[0] || 'jump';
-    document.getElementById(`${prefix}-slot-ab2`).textContent = config.abilities[1] || 'fly';
-
-    // Show speaking box, hide countdown and reveal cards
-    document.getElementById(`${prefix}-speaking-box`).classList.remove('hidden');
-    document.getElementById(`${prefix}-countdown-overlay`).classList.add('hidden');
-    document.getElementById(`${prefix}-reveal-card`).classList.add('hidden');
-  }
-
-  speakPokemonDescription(playerNum) {
-    const config = playerNum === 1 ? this.p1Config : this.p2Config;
-    const ab1 = config.abilities[0] || 'jump';
-    const ab2 = config.abilities[1] || 'fly';
-    const base = config.base || 'creature';
-    const text = `My Pokémon is ${config.size} and ${config.power}. It is a ${base}. It is ${config.personality}. It can ${ab1} and ${ab2}.`;
-    sounds.speak(text);
-  }
-
-  triggerCountdownReveal(playerNum) {
-    const prefix = `p${playerNum}`;
-    const speakingBox = document.getElementById(`${prefix}-speaking-box`);
-    const countdownOverlay = document.getElementById(`${prefix}-countdown-overlay`);
-    const countdownNumber = document.getElementById(`${prefix}-countdown-number`);
-    const revealCard = document.getElementById(`${prefix}-reveal-card`);
-
-    speakingBox.classList.add('hidden');
-    countdownOverlay.classList.remove('hidden');
+    countdownBox.classList.remove('hidden');
+    resultBox.classList.add('hidden');
 
     let count = 3;
-    countdownNumber.textContent = count;
+    countNum.textContent = count;
     sounds.playCountdown(count);
 
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       count--;
       if (count > 0) {
-        countdownNumber.textContent = count;
+        countNum.textContent = count;
         sounds.playCountdown(count);
       } else {
-        clearInterval(interval);
-        countdownOverlay.classList.add('hidden');
+        clearInterval(timer);
+        countdownBox.classList.add('hidden');
+        resultBox.classList.remove('hidden');
 
-        // Create Creature
-        const config = playerNum === 1 ? this.p1Config : this.p2Config;
-        const creature = creatures.create(config, `Trainer ${playerNum}`);
-        if (playerNum === 1) this.p1Creature = creature;
-        else this.p2Creature = creature;
+        // Create the Pokémon object
+        this.createdCreatureObj = creatures.create(this.studentPokemon);
+        sounds.playRevealBoom();
+        sounds.playCelebration();
 
-        // Render Revealed Creature
-        revealCard.classList.remove('hidden');
-        sounds.playReveal();
+        document.getElementById('revealedName').textContent = this.createdCreatureObj.name.toUpperCase();
+        document.getElementById('revealedTraits').textContent =
+          `${this.studentPokemon.size.toUpperCase()} • ${this.studentPokemon.color.toUpperCase()} • ${this.studentPokemon.look.toUpperCase()} • ${this.studentPokemon.archetype.toUpperCase()}`;
 
-        document.getElementById(`${prefix}-revealed-name`).textContent = creature.name.toUpperCase();
-        document.getElementById(`${prefix}-revealed-traits`).textContent =
-          `${creature.base.toUpperCase()} • ${creature.size.toUpperCase()} • ${creature.power.toUpperCase()} • ${creature.personality.toUpperCase()}`;
+        document.getElementById('revealStageViewport').innerHTML = this.createdCreatureObj.renderCardHTML();
 
-        document.getElementById(`${prefix}-creature-viewport`).innerHTML = creature.renderHTML({ isPlayer2: false });
-
-        const abContainer = document.getElementById(`${prefix}-revealed-abilities`);
-        abContainer.innerHTML = '';
-        creature.abilities.forEach(ab => {
-          abContainer.innerHTML += `<span class="revealed-ability-pill">Can ${ab}</span>`;
+        const badgeWrap = document.getElementById('revealedAbilitiesBadges');
+        badgeWrap.innerHTML = '';
+        this.studentPokemon.abilities.forEach(ab => {
+          badgeWrap.innerHTML += `<span class="badge-ab-pill">⚡ Can ${ab}</span>`;
         });
       }
     }, 1000);
+
+    document.getElementById('btnProceedToSpeaking').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(9);
+    });
   }
 
   /* ==========================================================================
-     SCREEN 12: CREATOR BATTLE ARENA
+     SCREEN 10: SPEAKING CHALLENGE
      ========================================================================== */
-  setupBattleArena() {
-    // Rubric Scoring Buttons
-    const rubricButtons = document.querySelectorAll('.teacher-score-rubric .btn-rubric');
-    rubricButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const pts = parseInt(btn.getAttribute('data-pts'), 10) || 1;
-        const label = btn.getAttribute('data-label');
-        this.awardEnglishPoints(this.activeBattleTrainer, pts, label);
+  setupSpeakingScreen() {
+    document.getElementById('btnSpeakLine1').addEventListener('click', () => {
+      sounds.speak(document.getElementById('speechLine1').textContent);
+    });
+    document.getElementById('btnSpeakLine2').addEventListener('click', () => {
+      sounds.speak(document.getElementById('speechLine2').textContent);
+    });
+    document.getElementById('btnSpeakLine3').addEventListener('click', () => {
+      sounds.speak(document.getElementById('speechLine3').textContent);
+    });
+    document.getElementById('btnSpeakLine4').addEventListener('click', () => {
+      sounds.speak(document.getElementById('speechLine4').textContent);
+    });
+    document.getElementById('btnSpeakLine5').addEventListener('click', () => {
+      sounds.speak(document.getElementById('speechLine5').textContent);
+    });
+
+    document.getElementById('btnSpeakFullSpeech').addEventListener('click', () => {
+      this.speakFullPokemonDescription();
+    });
+
+    document.getElementById('btnAwardSpeakingStar').addEventListener('click', () => {
+      sounds.playCelebration();
+      sounds.playStarPowerup();
+      sounds.speak("Great English, Trainer! Gold star awarded!");
+    });
+  }
+
+  prepareSpeakingChallenge() {
+    if (!this.createdCreatureObj) {
+      this.createdCreatureObj = creatures.create(this.studentPokemon);
+    }
+
+    const p = this.studentPokemon;
+    document.getElementById('speakingCreatureName').textContent = this.createdCreatureObj.name.toUpperCase();
+    document.getElementById('speakingArchetypeBadge').textContent = `${p.archetype.toUpperCase()} ARCHETYPE`;
+
+    const img = document.getElementById('speakingCreatureImg');
+    img.src = this.createdCreatureObj.image;
+    img.style = creatures.getColorFilter(p.color);
+
+    // Populate sentence frames
+    document.querySelector('.slot-size').textContent = p.size;
+    document.querySelector('.slot-look').textContent = p.look;
+    document.querySelector('.slot-color').textContent = p.color;
+    document.querySelector('.slot-feature').textContent = p.features;
+    document.querySelector('.slot-ab1').textContent = p.abilities[0];
+    document.querySelector('.slot-ab2').textContent = p.abilities[1] || 'jump high';
+
+    // Pick something it CAN'T do
+    const allAbIds = LESSON_DATA.abilities.map(a => a.id);
+    const cantAb = allAbIds.find(a => !p.abilities.includes(a)) || 'freeze things';
+    document.querySelector('.slot-cant').textContent = cantAb;
+  }
+
+  speakFullPokemonDescription() {
+    const p = this.studentPokemon;
+    const fullText = `My Pokémon is ${p.size} and ${p.look}. It is ${p.color}. It has ${p.features}. It can ${p.abilities[0]} and ${p.abilities[1] || 'jump'}.`;
+    sounds.speak(fullText);
+  }
+
+  /* ==========================================================================
+     SCREEN 11: MYSTERY POKÉMON CLASS GAME
+     ========================================================================== */
+  setupMysteryGame() {
+    document.getElementById('btnReadMysteryLines').addEventListener('click', () => {
+      const q = LESSON_DATA.mysteryClassQuestions[this.mysteryClassRound];
+      if (q) sounds.speak(q.lines.join(' '));
+    });
+  }
+
+  renderMysteryClassRound() {
+    const q = LESSON_DATA.mysteryClassQuestions[this.mysteryClassRound];
+    if (!q) {
+      this.mysteryClassRound = 0;
+      this.nextStage();
+      return;
+    }
+
+    document.getElementById('mysteryRoundNumber').textContent = this.mysteryClassRound + 1;
+    const linesContainer = document.getElementById('mysteryLinesContainer');
+    linesContainer.innerHTML = '';
+    q.lines.forEach(l => {
+      linesContainer.innerHTML += `<div class="mystery-line">"${l}"</div>`;
+    });
+
+    document.getElementById('mysteryFeedbackMessage').textContent = 'Listen carefully and tap your guess!';
+
+    const choicesContainer = document.getElementById('mysteryChoicesGrid');
+    choicesContainer.innerHTML = '';
+
+    q.options.forEach(opt => {
+      const card = document.createElement('div');
+      card.className = 'mystery-choice-card';
+      card.innerHTML = `
+        <img src="${opt.image}" alt="${opt.name}">
+        <span>${opt.name}</span>
+      `;
+
+      card.addEventListener('click', () => {
+        if (opt.id === q.correctId) {
+          card.classList.add('correct');
+          sounds.playCorrect();
+          document.getElementById('mysteryFeedbackMessage').textContent = `🎉 EXCELLENT! That is ${opt.name}!`;
+          sounds.speak(`Excellent! It is ${opt.name}!`);
+
+          setTimeout(() => {
+            this.mysteryClassRound++;
+            if (this.mysteryClassRound < LESSON_DATA.mysteryClassQuestions.length) {
+              this.renderMysteryClassRound();
+            } else {
+              this.mysteryClassRound = 0;
+              this.nextStage();
+            }
+          }, 2000);
+        } else {
+          card.classList.add('wrong');
+          sounds.playWrong();
+          document.getElementById('mysteryFeedbackMessage').textContent = `NOPE! Listen again!`;
+          setTimeout(() => card.classList.remove('wrong'), 700);
+        }
       });
-    });
 
-    // Switch Turn
-    document.getElementById('btnSwitchBattleTurn').addEventListener('click', () => {
-      sounds.playClick();
-      this.switchBattleTurn();
-    });
-
-    // Finish Battle
-    document.getElementById('btnFinishBattle').addEventListener('click', () => {
-      sounds.playClick();
-      this.goToStage(13); // Champion Ceremony
+      choicesContainer.appendChild(card);
     });
   }
 
-  initBattleArena() {
-    // If creatures weren't created yet, generate defaults
-    if (!this.p1Creature) this.p1Creature = creatures.create(this.p1Config, "Trainer 1");
-    if (!this.p2Creature) this.p2Creature = creatures.create(this.p2Config, "Trainer 2");
-
-    this.activeBattleTrainer = 1;
-    this.battleRound = 1;
-    this.p1Hp = 100;
-    this.p2Hp = 100;
-    this.p1Points = 0;
-    this.p2Points = 0;
-
-    document.getElementById('battleP1Name').textContent = this.p1Creature.name.toUpperCase();
-    document.getElementById('battleP2Name').textContent = this.p2Creature.name.toUpperCase();
-
-    document.getElementById('battleCreatureP1').innerHTML = this.p1Creature.renderHTML({ isPlayer2: false });
-    document.getElementById('battleCreatureP2').innerHTML = this.p2Creature.renderHTML({ isPlayer2: true });
-
-    this.updateBattleHUD();
-    this.renderBattleAttackButtons();
+  /* ==========================================================================
+     SCREEN 12: FINAL BOSS CHALLENGE
+     ========================================================================== */
+  setupBossChallenge() {
+    document.getElementById('btnBossConfirmStep').addEventListener('click', () => {
+      this.confirmBossStep();
+    });
   }
 
-  updateBattleHUD() {
-    document.getElementById('battleP1HpBar').style.width = `${Math.max(0, this.p1Hp)}%`;
-    document.getElementById('battleP2HpBar').style.width = `${Math.max(0, this.p2Hp)}%`;
+  initBossChallenge() {
+    this.bossStars = 0;
+    this.bossStep = 1;
+    this.updateBossStars();
 
-    document.getElementById('battleP1PointsBadge').textContent = `⭐ ${this.p1Points} English Pts`;
-    document.getElementById('battleP2PointsBadge').textContent = `⭐ ${this.p2Points} English Pts`;
+    const sprite = document.getElementById('bossCreatureImg');
+    sprite.className = 'boss-sprite boss-shadow-mode';
+    document.getElementById('bossName').textContent = 'SHADOW TITAN';
+    document.getElementById('bossName').style.color = '#ef4444';
 
-    document.getElementById('battleRoundText').textContent = `ROUND ${this.battleRound}`;
+    this.renderBossStepChips();
+  }
 
-    // Highlight active podium
-    const podiumP1 = document.getElementById('battlePodiumP1');
-    const podiumP2 = document.getElementById('battlePodiumP2');
-    if (this.activeBattleTrainer === 1) {
-      podiumP1.classList.add('active-turn');
-      podiumP2.classList.remove('active-turn');
-      document.getElementById('turnIndicatorP1').textContent = 'Active Turn ⚡';
-      document.getElementById('turnIndicatorP2').textContent = 'Waiting...';
-      document.getElementById('turnPromptBanner').querySelector('.turn-callout').textContent = 'TRAINER 1 TURN:';
-    } else {
-      podiumP2.classList.add('active-turn');
-      podiumP1.classList.remove('active-turn');
-      document.getElementById('turnIndicatorP2').textContent = 'Active Turn ⚡';
-      document.getElementById('turnIndicatorP1').textContent = 'Waiting...';
-      document.getElementById('turnPromptBanner').querySelector('.turn-callout').textContent = 'TRAINER 2 TURN:';
+  updateBossStars() {
+    const stars = document.querySelectorAll('#bossStarRating .star');
+    stars.forEach((s, idx) => {
+      s.classList.toggle('earned', idx < this.bossStars);
+    });
+    document.getElementById('bossStarCounterLabel').textContent = `TRAINER LEVEL: ${this.bossStars} / 5 STARS`;
+  }
+
+  renderBossStepChips() {
+    const grid = document.getElementById('bossChipsGrid');
+    grid.innerHTML = '';
+    const prompt = document.getElementById('bossPhasePrompt');
+    const badge = document.getElementById('bossPhaseBadge');
+
+    if (this.bossStep === 1) {
+      badge.textContent = 'STEP 1 / 4';
+      prompt.textContent = 'Touch 2 words to describe its APPEARANCE!';
+      ['big', 'small', 'strong', 'cute', 'tall', 'scary'].forEach(word => {
+        grid.appendChild(this.createBossChip(word));
+      });
+    } else if (this.bossStep === 2) {
+      badge.textContent = 'STEP 2 / 4';
+      prompt.textContent = 'What COLOR is the Titan?';
+      ['red', 'blue', 'green', 'yellow', 'purple', 'black'].forEach(word => {
+        grid.appendChild(this.createBossChip(word));
+      });
+    } else if (this.bossStep === 3) {
+      badge.textContent = 'STEP 3 / 4';
+      prompt.textContent = 'What BODY FEATURE does it have?';
+      ['wings', 'long ears', 'big horns', 'tiny fins'].forEach(word => {
+        grid.appendChild(this.createBossChip(word));
+      });
+    } else if (this.bossStep === 4) {
+      badge.textContent = 'STEP 4 / 4';
+      prompt.textContent = 'What can it do? Choose 2 ABILITIES!';
+      ['fly', 'swim', 'breathe fire', 'dig', 'freeze things', 'climb'].forEach(word => {
+        grid.appendChild(this.createBossChip(word));
+      });
     }
   }
 
-  renderBattleAttackButtons() {
-    const container = document.getElementById('abilityAttackButtons');
-    container.innerHTML = '';
+  createBossChip(label) {
+    const chip = document.createElement('button');
+    chip.className = 'boss-chip-btn';
+    chip.textContent = label.toUpperCase();
+    chip.setAttribute('data-val', label);
 
-    const currentCreature = this.activeBattleTrainer === 1 ? this.p1Creature : this.p2Creature;
-    const abilities = currentCreature.abilities || ['make fire', 'fly'];
-
-    abilities.forEach(abName => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'btn-attack';
-      btn.textContent = `💥 "It can ${abName}!"`;
-
-      btn.addEventListener('click', () => {
-        this.triggerBattleAttack(this.activeBattleTrainer, abName);
-      });
-
-      container.appendChild(btn);
-    });
-  }
-
-  triggerBattleAttack(attackerNum, abilityName) {
-    const defenderNum = attackerNum === 1 ? 2 : 1;
-    const attackerEl = document.getElementById(`battleCreatureP${attackerNum}`);
-    const defenderEl = document.getElementById(`battleCreatureP${defenderNum}`);
-    const bubble = document.getElementById(`bubbleP${attackerNum}`);
-
-    // Show Speech Bubble
-    bubble.querySelector('.bubble-speech-text').textContent = `"It can ${abilityName}!"`;
-    bubble.classList.remove('hidden');
-    sounds.speak(`It can ${abilityName}!`);
-
-    // Attacker lunge animation
-    attackerEl.classList.add(attackerNum === 1 ? 'attack-lunge-p1' : 'attack-lunge-p2');
-
-    // Attack FX Blast
-    const fxLayer = document.getElementById('battleFxLayer');
-    const blast = document.createElement('div');
-    blast.className = 'fx-blast';
-    blast.style.left = defenderNum === 2 ? '75%' : '25%';
-    blast.style.top = '50%';
-
-    const emojiMap = {
-      'make fire': '🔥',
-      'make ice': '❄️',
-      'make electricity': '⚡',
-      'fly': '🌪️',
-      'swim': '🌊',
-      'jump': '💥',
-      'dig': '🪨',
-      'become invisible': '👻'
-    };
-    blast.textContent = emojiMap[abilityName] || '💥';
-    fxLayer.appendChild(blast);
-
-    // Audio & Hit
-    sounds.playAttackSound(abilityName.split(' ')[1] || abilityName);
-
-    setTimeout(() => {
-      defenderEl.classList.add('hit-shake');
-      sounds.playHit();
-
-      // Reduce HP
-      if (defenderNum === 1) this.p1Hp -= 20;
-      else this.p2Hp -= 20;
-
-      // Award automatic +1 attack point
-      if (attackerNum === 1) this.p1Points += 1;
-      else this.p2Points += 1;
-
-      this.updateBattleHUD();
-
-      setTimeout(() => {
-        attackerEl.classList.remove('attack-lunge-p1', 'attack-lunge-p2');
-        defenderEl.classList.remove('hit-shake');
-        bubble.classList.add('hidden');
-        if (blast.parentNode) blast.parentNode.removeChild(blast);
-      }, 500);
-    }, 250);
-  }
-
-  awardEnglishPoints(trainerNum, pts, reason) {
-    if (trainerNum === 1) this.p1Points += pts;
-    else this.p2Points += pts;
-
-    sounds.playPoint();
-    sounds.playSuper();
-    this.updateBattleHUD();
-
-    // Floating notification on screen
-    const feedback = document.getElementById('turnPromptBanner').querySelector('.turn-instruction');
-    feedback.textContent = `⭐ +${pts} ${reason}! Great English, Trainer ${trainerNum}!`;
-  }
-
-  switchBattleTurn() {
-    this.activeBattleTrainer = this.activeBattleTrainer === 1 ? 2 : 1;
-    if (this.activeBattleTrainer === 1) this.battleRound++;
-    this.updateBattleHUD();
-    this.renderBattleAttackButtons();
-  }
-
-  /* ==========================================================================
-     SCREEN 13: CHAMPION CEREMONY
-     ========================================================================== */
-  initChampionCeremony() {
-    sounds.playVictory();
-
-    // Determine winner based on English points
-    let winner = 1;
-    if (this.p2Points > this.p1Points) winner = 2;
-    else if (this.p1Points === this.p2Points && this.p2Hp > this.p1Hp) winner = 2;
-
-    const winnerCreature = winner === 1 ? this.p1Creature : this.p2Creature;
-
-    document.getElementById('champWinnerTitle').textContent = `CHAMPION TRAINER ${winner}!`;
-    document.getElementById('champCreatureName').textContent = winnerCreature.name.toUpperCase();
-    document.getElementById('champCreatureViewport').innerHTML = winnerCreature.renderHTML({ isPlayer2: false });
-
-    document.getElementById('champScoreP1').textContent = `${this.p1Points} Points ⭐`;
-    document.getElementById('champScoreP2').textContent = `${this.p2Points} Points ⭐`;
-
-    // Confetti particles
-    const confettiWrap = document.getElementById('confettiContainer');
-    confettiWrap.innerHTML = '';
-    for (let i = 0; i < 40; i++) {
-      const conf = document.createElement('div');
-      conf.className = 'confetti-piece';
-      conf.style.left = `${Math.random() * 100}%`;
-      conf.style.backgroundColor = ['#facc15', '#38bdf8', '#ef4444', '#22c55e', '#ec4899'][Math.floor(Math.random() * 5)];
-      conf.style.animationDelay = `${Math.random() * 2}s`;
-      confettiWrap.appendChild(conf);
-    }
-
-    // Handlers for champion buttons
-    document.getElementById('btnOpenClassroomWorksheets').addEventListener('click', () => {
-      document.getElementById('modalPokedex').classList.remove('hidden');
-    });
-
-    document.getElementById('btnNextPairBattle').addEventListener('click', () => {
-      // Reset for next battle pair
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
       sounds.playClick();
-      this.goToStage(8); // Trainer 1 Create
     });
+
+    return chip;
+  }
+
+  confirmBossStep() {
+    const selected = Array.from(document.querySelectorAll('.boss-chip-btn.selected')).map(c => c.getAttribute('data-val'));
+
+    if (this.bossStep === 1) {
+      if (selected.includes('big') || selected.includes('strong') || selected.includes('tall') || selected.includes('scary')) {
+        this.bossStars += 1;
+        this.bossStep++;
+        sounds.playBossHit();
+        sounds.playStarPowerup();
+        this.updateBossStars();
+        this.renderBossStepChips();
+        sounds.speak("Yes! It is big and strong!");
+      } else {
+        sounds.playWrong();
+      }
+    } else if (this.bossStep === 2) {
+      if (selected.includes('red') || selected.includes('black')) {
+        this.bossStars += 1;
+        this.bossStep++;
+        sounds.playBossHit();
+        sounds.playStarPowerup();
+        this.updateBossStars();
+        this.renderBossStepChips();
+        sounds.speak("Correct! It is red!");
+      } else {
+        sounds.playWrong();
+      }
+    } else if (this.bossStep === 3) {
+      if (selected.includes('wings')) {
+        this.bossStars += 1;
+        this.bossStep++;
+        sounds.playBossHit();
+        sounds.playStarPowerup();
+        this.updateBossStars();
+        this.renderBossStepChips();
+        sounds.speak("Awesome! It has wings!");
+      } else {
+        sounds.playWrong();
+      }
+    } else if (this.bossStep === 4) {
+      if (selected.includes('fly') || selected.includes('breathe fire')) {
+        this.bossStars = 5;
+        this.updateBossStars();
+        sounds.playCelebration();
+
+        // Tame the boss!
+        const sprite = document.getElementById('bossCreatureImg');
+        sprite.className = 'boss-sprite boss-tamed-mode';
+        document.getElementById('bossName').textContent = 'GOLDEN TITAN (TAMED!)';
+        document.getElementById('bossName').style.color = '#facc15';
+
+        sounds.speak("AMAZING! You tamed the Shadow Titan with English! You are a Master Trainer!");
+
+        setTimeout(() => {
+          this.nextStage();
+        }, 3000);
+      } else {
+        sounds.playWrong();
+      }
+    }
   }
 
   /* ==========================================================================
-     MODALS: POKÉDEX & TEACHER GUIDE
+     SCREEN 13: MASTER TRAINER PROFILE CARD & CERTIFICATE
      ========================================================================== */
-  setupModals() {
-    // Pokédex Modal
-    const modalPokedex = document.getElementById('modalPokedex');
-    document.getElementById('btnPokedexModal').addEventListener('click', () => {
-      modalPokedex.classList.remove('hidden');
-    });
-    document.getElementById('btnClosePokedex').addEventListener('click', () => {
-      modalPokedex.classList.add('hidden');
-    });
-    document.getElementById('btnClearPokedexChecks').addEventListener('click', () => {
-      modalPokedex.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-    });
-    document.getElementById('btnPrintPokedexModal').addEventListener('click', () => {
+  setupProfileCard() {
+    document.getElementById('btnPrintProfileCard').addEventListener('click', () => {
       window.print();
     });
 
-    // Teacher Guide Modal
-    const modalGuide = document.getElementById('modalTeacherGuide');
-    document.getElementById('btnTeacherNotes').addEventListener('click', () => {
-      modalGuide.classList.remove('hidden');
+    document.getElementById('btnRestartGameFinal').addEventListener('click', () => {
+      sounds.playClick();
+      this.goToStage(7); // Jump back to Character Creator for another Pokémon
     });
-    document.getElementById('btnCloseGuide').addEventListener('click', () => {
-      modalGuide.classList.add('hidden');
-    });
+  }
 
-    // Close on backdrop click
-    [modalPokedex, modalGuide].forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.add('hidden');
-      });
-    });
+  renderFinalProfileCard() {
+    sounds.playCelebration();
+
+    if (!this.createdCreatureObj) {
+      this.createdCreatureObj = creatures.create(this.studentPokemon);
+    }
+
+    const p = this.studentPokemon;
+    document.getElementById('finalPokemonName').textContent = this.createdCreatureObj.name.toUpperCase();
+    document.getElementById('finalCardAppearance').textContent = `${p.size.toUpperCase()} • ${p.look.toUpperCase()} • ${p.color.toUpperCase()}`;
+    document.getElementById('finalCardFeature').textContent = p.features.toUpperCase();
+    document.getElementById('finalCardAbilities').textContent = p.abilities.map(a => a.toUpperCase()).join(', ');
+
+    const allAbIds = LESSON_DATA.abilities.map(a => a.id);
+    const cantAb = allAbIds.find(a => !p.abilities.includes(a)) || 'freeze things';
+    document.getElementById('finalCardCant').textContent = cantAb.toUpperCase();
+
+    const img = document.getElementById('finalCardImg');
+    img.src = this.createdCreatureObj.image;
+    img.style = creatures.getColorFilter(p.color);
   }
 }
 
-// Instantiate on load
+// Instantiate on DOM load
 window.addEventListener('DOMContentLoaded', () => {
-  window.app = new PokemonApp();
+  window.app = new PokemonTrainerApp();
+  window.app.init();
 });
