@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Printable Worksheets: The Crazy Advice Academy | Should & Shouldn't</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      padding-bottom: 40px;
+    }
+
+    /* Screen Top Bar */
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .bar-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .print-btn {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 0 #0369a1;
+    }
+
+    .back-btn {
+      background: #eceff1;
+      color: #37474f;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* A4 Worksheets Container */
+    .sheet-wrapper {
+      max-width: 800px;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .a4-page {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 22mm 18mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      min-height: 1050px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ws-header {
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ws-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ws-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0284c7;
+    }
+
+    .ws-badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid #7dd3fc;
+    }
+
+    .ws-meta-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .meta-line {
+      border-bottom: 1px dashed #94a3b8;
+      display: inline-block;
+      width: 140px;
+    }
+
+    .ws-instruction {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+
+    /* Worksheet 1: Picture Grid */
+    .prob-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .prob-box {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .prob-icon { font-size: 34px; margin-bottom: 6px; }
+    .prob-situation { font-size: 14px; font-weight: 800; color: #b91c1c; margin-bottom: 6px; }
+    .write-line {
+      font-size: 14px;
+      font-weight: 700;
+      border-bottom: 1px dashed #94a3b8;
+      padding-top: 4px;
+      color: #334155;
+    }
+
+    /* Worksheet 2: Good vs Crazy Cards */
+    .advice-sort-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advice-sort-item {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-text { font-size: 15px; font-weight: 800; }
+    .sort-checkboxes { display: flex; gap: 14px; }
+    .sort-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .check-sq { width: 16px; height: 16px; border: 2px solid #64748b; border-radius: 4px; display: inline-block; }
+
+    /* Worksheet 4: Cutout Cards */
+    .cards-cutout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .cutout-card {
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      position: relative;
+    }
+
+    .scissors-icon {
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: #ffffff;
+      padding: 0 4px;
+      font-size: 14px;
+    }
+
+    .cutout-emoji { font-size: 36px; margin: 4px 0; }
+    .cutout-title { font-size: 16px; font-weight: 900; color: #0284c7; }
+    .cutout-prompt { font-size: 13px; font-weight: 700; color: #475569; margin-top: 6px; }
+
+    /* Worksheet 5: Multi-problem Lines */
+    .chaos-final-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .final-write-box {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .ws-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet-wrapper {
+        margin: 0 !important;
+        max-width: 100% !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 15mm 15mm !important;
+        page-break-after: always !important;
+        min-height: auto !important;
+        height: 100vh !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Top Bar -->
+  <div class="no-print-bar">
+    <div class="bar-title">
+      <span>🧠</span>
+      <span>Printable Worksheets: The Crazy Advice Academy (Should / Shouldn't)</span>
+    </div>
+    <div class="bar-actions">
+      <a href="index.html" class="back-btn">⬅️ Back to Digital Lesson</a>
+      <button class="print-btn" onclick="window.print()">
+        🖨️ PRINT ALL 5 WORKSHEETS
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet-wrapper">
+
+    <!-- ================= WORKSHEET 1: WHAT'S THE PROBLEM? ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 1: What's the Problem?</h1>
+            <span class="ws-badge">Problem Identification</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Look at each problem picture. Write advice using: <strong>"He should..."</strong> or <strong>"She should..."</strong>:
+        </div>
+
+        <div class="prob-grid">
+          <div class="prob-box">
+            <div class="prob-icon">❄️ 🥶</div>
+            <div class="prob-situation">Problem: It is freezing cold in the snow!</div>
+            <div class="write-line">Advice: He should wear a warm coat.</div>
+          </div>
+
+          <div class="prob-box">
+            <div class="prob-icon">🥱 ⏰</div>
+            <div class="prob-situation">Problem: Tom woke up late for school!</div>
+            <div class="write-line">Advice: He should __________________________________</div>
+          </div>
+
+          <div class="prob-box">
+            <div class="prob-icon">📚 😵</div>
+            <div class="prob-situation">Problem: Professor Should has 100 pages of homework!</div>
+            <div class="write-line">Advice: He should __________________________________</div>
+          </div>
+
+          <div class="prob-box">
+            <div class="prob-icon">🌧️ ⚽</div>
+            <div class="prob-situation">Problem: It is thunderstorming outside, but Sam wants to play!</div>
+            <div class="write-line">Advice: He shouldn't ________________________________</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🧠 The Crazy Advice Academy: Should & Shouldn't</span>
+        <span>Page 1 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 2: GOOD ADVICE OR CRAZY ADVICE? ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 2: Good Advice or Crazy Advice?</h1>
+            <span class="ws-badge">Thinking & Classifying</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Read each piece of advice. Tick (✓) if it is <strong>GOOD ADVICE 👍</strong> or <strong>CRAZY ADVICE 🤪</strong>:
+        </div>
+
+        <div class="advice-sort-list">
+          <div class="advice-sort-item">
+            <span class="item-text">1. "You should wear 17 pairs of socks on your head."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">2. "You should do your homework before playing video games."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">3. "You should eat ice cream for breakfast, lunch, and dinner."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">4. "You should speak quietly in the library."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">5. "You should feed your math homework to a dragon."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">6. "You should listen when your teacher is talking."</span>
+            <div class="sort-checkboxes">
+              <span class="sort-box"><span class="check-sq"></span> 👍 Good</span>
+              <span class="sort-box"><span class="check-sq"></span> 🤪 Crazy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🧠 The Crazy Advice Academy: Should & Shouldn't</span>
+        <span>Page 2 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 3: ADVICE DETECTIVE ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 3: Advice Detective (Should / Shouldn't)</h1>
+            <span class="ws-badge">Grammar in Context</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Fill in each blank with <strong>SHOULD</strong> or <strong>SHOULDN'T</strong>:
+        </div>
+
+        <div class="advice-sort-list">
+          <div class="advice-sort-item">
+            <span class="item-text">1. You _____________________ shout in the classroom.</span>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">2. You _____________________ eat fruit and vegetables to stay healthy.</span>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">3. You _____________________ stay up until 3:00 AM on school nights.</span>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">4. You _____________________ look left and right before crossing the road.</span>
+          </div>
+
+          <div class="advice-sort-item">
+            <span class="item-text">5. You _____________________ throw your clothes on the bedroom floor.</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <h3 class="ws-instruction">Write your own advice for a friend who is tired:</h3>
+          <div class="write-line" style="padding: 10px 0;">
+            "You should __________________________________________________________________"
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🧠 The Crazy Advice Academy: Should & Shouldn't</span>
+        <span>Page 3 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 4: ADVICE EXPERT CARDS ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 4: Advice Expert Cards (Cut & Play)</h1>
+            <span class="ws-badge">Pair Role-Play</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Cut along the dashed lines. Student A reads the problem; Student B gives advice!</span>
+          </div>
+        </div>
+
+        <div class="cards-cutout-grid">
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">🐶 📝</div>
+            <div class="cutout-title">Card 1: Sleeping Dog</div>
+            <div class="cutout-prompt">"My dog is sleeping on my homework! What should I do?"</div>
+          </div>
+
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">🍦 🥣</div>
+            <div class="cutout-title">Card 2: Ice Cream Diet</div>
+            <div class="cutout-prompt">"I want ice cream for breakfast, lunch, and dinner! What should I do?"</div>
+          </div>
+
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">🌧️ ⚽</div>
+            <div class="cutout-title">Card 3: Rainy Match</div>
+            <div class="cutout-prompt">"It is raining heavily, but I want to play football outside! What should I do?"</div>
+          </div>
+
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">🧦 👟</div>
+            <div class="cutout-title">Card 4: Missing Shoes</div>
+            <div class="cutout-prompt">"I cannot find my shoes and the school bus is coming! What should I do?"</div>
+          </div>
+
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">📚 😴</div>
+            <div class="cutout-title">Card 5: 50 Pages Homework</div>
+            <div class="cutout-prompt">"I have 50 pages of science homework! What should I do?"</div>
+          </div>
+
+          <div class="cutout-card">
+            <span class="scissors-icon">✂️</span>
+            <div class="cutout-emoji">🍌 🧢</div>
+            <div class="cutout-title">Card 6: Banana Hat</div>
+            <div class="cutout-prompt">"My friend is wearing a banana on his head at school! What should he do?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🧠 The Crazy Advice Academy: Should & Shouldn't</span>
+        <span>Page 4 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 5: SAVE PROFESSOR SHOULD! ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 5: Save Professor Should!</h1>
+            <span class="ws-badge">Thinking & Explaining Why</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Professor Should has 5 problems: 100 pages of homework 📚, buzzing phone 📱, video games 🎮, very tired 🥱, and cold pizza 🍕. Write 3 pieces of advice with reasons (<strong>"because..."</strong>):
+        </div>
+
+        <div class="chaos-final-list">
+          <div class="final-write-box">
+            <strong>ADVICE 1:</strong>
+            <p style="margin-top: 4px;">He should ____________________________________________________________________</p>
+            <p style="margin-top: 4px;">because ____________________________________________________________________</p>
+          </div>
+
+          <div class="final-write-box">
+            <strong>ADVICE 2:</strong>
+            <p style="margin-top: 4px;">He should ____________________________________________________________________</p>
+            <p style="margin-top: 4px;">because ____________________________________________________________________</p>
+          </div>
+
+          <div class="final-write-box">
+            <strong>ADVICE 3:</strong>
+            <p style="margin-top: 4px;">He shouldn't _________________________________________________________________</p>
+            <p style="margin-top: 4px;">because ____________________________________________________________________</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🧠 The Crazy Advice Academy: Should & Shouldn't</span>
+        <span>Page 5 of 5</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

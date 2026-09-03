@@ -1,0 +1,1101 @@
+/*
+ * The Crazy Advice Academy: 16:9 Smartboard Scaling & Comic Book Pop-Art Aesthetic
+ */
+
+:root {
+  --comic-cyan: #00b4d8;
+  --comic-yellow: #ffd166;
+  --comic-red: #ef476f;
+  --comic-green: #06d6a0;
+  --comic-dark: #118ab2;
+  --comic-bg: #f8f9fa;
+  --comic-text: #073b4c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0b132b;
+  font-family: 'Comic Neue', 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  color: var(--comic-text);
+}
+
+/* ================= 16:9 SHELL & STAGE ================= */
+
+#advice-screen-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle at center, #1c2541 0%, #0b132b 100%);
+}
+
+#advice-stage {
+  width: 1200px;
+  height: 675px;
+  min-width: 1200px;
+  min-height: 675px;
+  max-width: 1200px;
+  max-height: 675px;
+  background: var(--comic-bg);
+  border-radius: 20px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: center center;
+  border: 4px solid #ffffff26;
+}
+
+/* ================= TOP PERSISTENT HUD ================= */
+
+#advice-hud {
+  height: 64px;
+  background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%);
+  border-bottom: 3px solid #7dd3fc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.hud-left, .hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-btn {
+  background: #ffffff;
+  border: 2px solid #38bdf8;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0369a1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 0 #0284c7;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.hud-btn:hover {
+  transform: translateY(-2px);
+  background: #f0f9ff;
+}
+
+.hud-btn.primary {
+  background: #ef476f;
+  color: #ffffff;
+  border-color: #d90429;
+  box-shadow: 0 3px 0 #9b001a;
+}
+
+.stage-tracker-pill {
+  background: #fffbeb;
+  border: 2px solid #fcd34d;
+  border-radius: 18px;
+  padding: 6px 16px;
+  font-size: 15px;
+  font-weight: 900;
+  color: #b45309;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.adv-stars-counter {
+  display: flex;
+  align-items: center;
+  background: #fef08a;
+  border: 2px solid #eab308;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #854d0e;
+  gap: 6px;
+  box-shadow: 0 3px 0 #ca8a04;
+}
+
+/* Teacher Menu Dropdown */
+.teacher-dropdown-wrap {
+  position: relative;
+}
+
+.teacher-panel-modal {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  width: 270px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding: 10px;
+  z-index: 100;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.teacher-panel-modal.show {
+  display: flex;
+}
+
+.teacher-panel-modal button {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  color: #1e293b;
+}
+
+.teacher-panel-modal button:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.menu-section-tag {
+  font-size: 11px;
+  font-weight: 900;
+  color: #64748b;
+  padding: 4px 6px 2px;
+}
+
+/* ================= VIEWPORT & BASE STYLES ================= */
+
+#advice-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.adv-scene-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.adv-header {
+  height: 72px;
+  background: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.adv-title-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.adv-title-pill .icon { font-size: 34px; }
+.adv-title-pill h2 { font-size: 22px; font-weight: 900; color: #073b4c; }
+.adv-title-pill .sub { font-size: 14px; color: #475569; }
+
+.adv-action-footer {
+  height: 74px;
+  background: #ffffff;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.adv-speech-bubble {
+  flex: 1;
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+  border-radius: 16px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #166534;
+}
+
+.adv-speech-bubble.highlight {
+  border-color: #38bdf8;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.adv-action-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+  background: #f1f5f9;
+  color: #334155;
+  box-shadow: 0 4px 0 #cbd5e1;
+  text-decoration: none;
+}
+
+.adv-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #cbd5e1;
+}
+
+.adv-action-btn.primary {
+  background: #0284c7;
+  color: #fff;
+  box-shadow: 0 4px 0 #0369a1;
+}
+
+.adv-action-btn.primary:hover { box-shadow: 0 6px 0 #0369a1; }
+.adv-action-btn.large { font-size: 18px; padding: 14px 28px; }
+
+/* ================= 1. EMERGENCY INTRO ================= */
+
+.emergency-stage-layout {
+  flex: 1;
+  display: flex;
+  padding: 18px 24px;
+  gap: 20px;
+  background: #fffdf9;
+}
+
+.study-room-svg-wrap {
+  flex: 1.3;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border: 3px solid #cbd5e1;
+}
+
+.room-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.emergency-decision-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dilemma-card {
+  background: #fff1f2;
+  border: 3px solid #fecdd3;
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+}
+
+.prof-tag { font-size: 12px; font-weight: 900; color: #be123c; letter-spacing: 1px; }
+.dilemma-quote { font-size: 24px; font-weight: 900; color: #881337; margin-top: 4px; }
+
+.vote-options-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.vote-opt-btn {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s;
+}
+
+.vote-opt-btn:hover {
+  transform: translateY(-2px);
+  border-color: #0284c7;
+}
+
+.vote-opt-btn.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+
+.vote-tick { font-size: 13px; font-weight: 900; color: #0284c7; }
+
+.professor-reaction-box {
+  background: #fefce8;
+  border: 2px solid #fef08a;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  color: #713f12;
+}
+
+.reaction-avatar { font-size: 30px; }
+
+/* ================= 2. WHAT'S THE PROBLEM? ================= */
+
+.snowstorm-stage-layout {
+  flex: 1;
+  display: flex;
+  padding: 20px 28px;
+  gap: 24px;
+  background: #f0fdfa;
+}
+
+.snow-scene-box {
+  flex: 1;
+  background: linear-gradient(180deg, #cffafe 0%, #e0f2fe 100%);
+  border: 3px solid #a5f3fc;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scene-weather-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: #ffffff;
+  border: 2px solid #06b6d4;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 900;
+  color: #0891b2;
+}
+
+.char-icon { font-size: 72px; animation: shiver 0.3s infinite alternate; }
+
+@keyframes shiver {
+  0% { transform: translateX(-3px); }
+  100% { transform: translateX(3px); }
+}
+
+.char-clothing-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.bad-tag {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.ok-tag {
+  background: #fef9c3;
+  border: 1px solid #fde047;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #854d0e;
+}
+
+.investigation-controls-box {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.problem-diagnosis-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.diag-tag { font-size: 12px; font-weight: 900; color: #0284c7; letter-spacing: 1px; }
+.diag-title { font-size: 20px; font-weight: 900; color: #0f172a; margin-top: 4px; }
+
+.nearby-items-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.item-choice-btn {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.item-choice-btn:hover {
+  transform: translateY(-2px);
+  border-color: #0284c7;
+}
+
+.item-choice-btn.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+.item-emoji { font-size: 28px; }
+.item-name { font-size: 14px; font-weight: 800; }
+
+.advice-solution-pill {
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.advice-solution-pill.good { background: #dcfce7; border: 2px solid #86efac; color: #166534; }
+.advice-solution-pill.bad { background: #fee2e2; border: 2px solid #fca5a5; color: #991b1b; }
+
+/* ================= 3. SHOULD OR SHOULDN'T ================= */
+
+.grammar-round-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 20px;
+}
+
+.situation-hero-card {
+  width: 750px;
+  background: #ffffff;
+  border: 4px solid #38bdf8;
+  border-radius: 24px;
+  padding: 24px 36px;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+}
+
+.situation-emoji { font-size: 54px; display: block; margin-bottom: 8px; }
+.situation-badge {
+  font-size: 13px;
+  font-weight: 900;
+  color: #0284c7;
+  letter-spacing: 1px;
+}
+
+.sentence-prompt {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-top: 10px;
+}
+
+.blank-slot {
+  display: inline-block;
+  min-width: 140px;
+  border-bottom: 4px solid #0284c7;
+  color: #0284c7;
+}
+
+.blank-slot.correct { color: #16a34a; border-color: #16a34a; }
+.blank-slot.wrong { color: #dc2626; border-color: #dc2626; }
+
+.should-buttons-row {
+  display: flex;
+  gap: 24px;
+}
+
+.modal-choice-btn {
+  border: none;
+  border-radius: 18px;
+  padding: 14px 44px;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.should-btn { background: #22c55e; color: #fff; box-shadow: 0 5px 0 #15803d; }
+.shouldnt-btn { background: #ef4444; color: #fff; box-shadow: 0 5px 0 #b91c1c; }
+
+.grammar-reaction-box {
+  width: 750px;
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.grammar-reaction-box.correct { background: #dcfce7; border: 2px solid #86efac; color: #166534; }
+.grammar-reaction-box.wrong { background: #fee2e2; border: 2px solid #fca5a5; color: #991b1b; }
+
+.round-tracker-dots { display: flex; gap: 8px; }
+.round-dot { width: 14px; height: 14px; border-radius: 50%; background: #cbd5e1; }
+.round-dot.active { background: #0284c7; transform: scale(1.3); }
+.round-dot.done { background: #22c55e; }
+
+/* ================= 4. CONSEQUENCE DETECTIVE ================= */
+
+.consequence-stage-layout {
+  flex: 1;
+  display: flex;
+  padding: 20px 28px;
+  gap: 20px;
+}
+
+.cause-card {
+  flex: 1;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.card-step-tag { font-size: 12px; font-weight: 900; color: #0284c7; }
+.cause-title { font-size: 18px; font-weight: 900; color: #0f172a; margin: 6px 0 10px; }
+.cause-box { background: #fff1f2; border: 2px solid #fecdd3; border-radius: 12px; padding: 12px; }
+.warning-icon { font-size: 26px; }
+.cause-text { font-size: 15px; font-weight: 800; color: #9f1239; margin-top: 6px; }
+
+.effects-investigation-box {
+  flex: 1.4;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.effects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.effect-chip {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s;
+}
+
+.effect-chip.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+.solution-reason-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.solution-pill { background: #dcfce7; border: 2px solid #86efac; border-radius: 14px; padding: 12px; font-size: 14px; color: #166534; }
+.reason-pill { background: #fefce8; border: 2px solid #fde047; border-radius: 14px; padding: 12px; font-size: 14px; color: #854d0e; }
+
+/* ================= 5. WHICH ADVICE IS BEST? ================= */
+
+.bestadvice-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 32px;
+  gap: 16px;
+}
+
+.scenario-banner-card {
+  background: #f0fdf4;
+  border: 3px solid #86efac;
+  border-radius: 18px;
+  padding: 14px 20px;
+}
+
+.scenario-tag { font-size: 12px; font-weight: 900; color: #166534; }
+.scenario-text { font-size: 20px; font-weight: 900; color: #14532d; margin-top: 4px; }
+
+.advice-cards-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.advice-card-item {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 220px;
+  transition: all 0.15s;
+}
+
+.advice-card-item:hover { transform: translateY(-3px); border-color: #0284c7; }
+.advice-card-item.selected { border-color: #0284c7; background: #f0f9ff; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15); }
+
+.letter-badge { font-size: 13px; font-weight: 900; color: #0284c7; }
+.rating-badge { font-size: 13px; font-weight: 900; color: #e11d48; }
+.opt-body { font-size: 15px; font-weight: 800; color: #1e293b; margin: 10px 0; }
+.because-frame { background: #e0f2fe; border-radius: 10px; padding: 8px; font-size: 13px; color: #0369a1; }
+.tap-hint { font-size: 12px; color: #94a3b8; font-weight: 700; }
+
+/* ================= 6. TOM'S TERRIBLE MORNING ================= */
+
+.tom-comic-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 28px;
+  gap: 14px;
+}
+
+.comic-strip-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.comic-panel-card {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.comic-panel-card:hover { transform: translateY(-2px); border-color: #0284c7; }
+.comic-panel-card.active { border-color: #0284c7; background: #e0f2fe; box-shadow: 0 6px 14px rgba(2, 132, 199, 0.2); }
+
+.panel-num { font-size: 11px; font-weight: 900; color: #64748b; }
+.panel-icon { font-size: 28px; display: block; margin: 4px 0; }
+.panel-title { font-size: 13px; font-weight: 900; }
+
+.active-panel-detail-box {
+  display: flex;
+  gap: 20px;
+}
+
+.detail-story {
+  flex: 1.2;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.detail-badge { font-size: 12px; font-weight: 900; color: #0284c7; }
+.detail-desc { font-size: 20px; font-weight: 900; margin: 6px 0 10px; }
+.problem-statement { font-size: 15px; color: #e11d48; font-weight: 800; margin-bottom: 6px; }
+.advice-statement { font-size: 16px; color: #16a34a; font-weight: 900; }
+
+.crazy-advice-widget {
+  flex: 1;
+  background: #fffbeb;
+  border: 3px dashed #fcd34d;
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+}
+
+.crazy-title { font-size: 13px; font-weight: 900; color: #b45309; }
+.crazy-quote { font-size: 17px; font-weight: 900; margin: 6px 0 12px; }
+.crazy-buttons-row { display: flex; justify-content: center; gap: 12px; }
+.btn-check {
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.btn-check.selected { transform: scale(1.05); }
+
+/* ================= 7. PAIR ROLEPLAY ================= */
+
+.roleplay-interactive-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 36px;
+  gap: 20px;
+}
+
+.rp-problem-header-card {
+  background: #eff6ff;
+  border: 3px solid #bfdbfe;
+  border-radius: 20px;
+  padding: 16px 24px;
+  text-align: center;
+}
+
+.rp-tag { font-size: 12px; font-weight: 900; color: #1d4ed8; }
+.rp-problem-headline { font-size: 24px; font-weight: 900; color: #1e40af; margin-top: 4px; }
+
+.rp-speakers-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.rp-speaker-pod {
+  flex: 1;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rp-speaker-pod.student-a { border-color: #ec4899; }
+.rp-speaker-pod.student-b { border-color: #06b6d4; }
+
+.speaker-avatar { font-size: 40px; }
+.speaker-title { font-size: 13px; font-weight: 900; color: #475569; }
+.speech-dialogue-bubble {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.rp-exchange-arrow { font-size: 24px; font-weight: 900; color: #94a3b8; }
+
+/* ================= 8. ADVICE PUZZLE ================= */
+
+.puzzle-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 36px;
+  gap: 16px;
+}
+
+.puzzle-problem-banner {
+  background: #fee2e2;
+  border: 3px solid #fca5a5;
+  border-radius: 18px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-alert { font-size: 20px; font-weight: 900; color: #991b1b; }
+.banner-mission { font-size: 14px; font-weight: 900; color: #b91c1c; }
+
+.puzzle-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.puzzle-card {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.puzzle-card:hover { transform: translateX(6px); border-color: #0284c7; }
+.puzzle-card.selected { border-color: #16a34a; background: #f0fdf4; }
+.p-check { font-size: 20px; }
+.p-text { font-size: 16px; font-weight: 800; color: #1e293b; }
+
+/* ================= 9. CRAZY ADVICE BATTLE ================= */
+
+.battle-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 36px;
+  gap: 20px;
+}
+
+.battle-scenario-card {
+  background: #fef08a;
+  border: 4px solid #eab308;
+  border-radius: 20px;
+  padding: 16px 24px;
+  text-align: center;
+}
+
+.scenario-headline { font-size: 24px; font-weight: 900; color: #854d0e; }
+
+.battle-cards-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.battle-card-choice {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 220px;
+}
+
+.category-icon { font-size: 44px; }
+.choice-text { font-size: 16px; font-weight: 800; color: #1e293b; margin: 10px 0; }
+.category-pill {
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.category-pill.good { background: #dcfce7; color: #166534; }
+.category-pill.funny { background: #fef9c3; color: #854d0e; }
+.category-pill.bad { background: #fee2e2; color: #991b1b; }
+
+/* ================= 10. FINAL CHALLENGE ================= */
+
+.final-chaos-stage-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  gap: 16px;
+}
+
+.chaos-problems-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.chaos-problem-card {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 10px;
+  text-align: center;
+}
+
+.prob-icon { font-size: 32px; display: block; }
+.prob-title { font-size: 13px; font-weight: 900; color: #b91c1c; margin: 4px 0; }
+.prob-desc { font-size: 11px; color: #64748b; font-weight: 700; }
+
+.team-presentation-box {
+  background: #f0f9ff;
+  border: 3px solid #bae6fd;
+  border-radius: 18px;
+  padding: 14px 20px;
+}
+
+.pres-title { font-size: 16px; font-weight: 900; color: #0369a1; margin-bottom: 10px; }
+
+.sentence-starters-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.starter-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.num-b {
+  background: #0284c7;
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* ================= AWARD CEREMONY ================= */
+
+.scene-award-view {
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #fffbeb 0%, #fef3c7 100%);
+}
+
+.academy-certificate-card {
+  width: 860px;
+  background: #ffffff;
+  border: 6px solid #f59e0b;
+  border-radius: 24px;
+  padding: 28px 36px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+}
+
+.cert-gold-ribbon {
+  display: inline-block;
+  background: #f59e0b;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 4px 18px;
+  border-radius: 12px;
+  letter-spacing: 2px;
+}
+
+.cert-headline { font-size: 38px; font-weight: 900; color: #0284c7; margin: 6px 0; }
+.cert-subtext { font-size: 16px; color: #475569; font-weight: 700; margin-bottom: 18px; }
+
+.badges-grid-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.award-badge-card {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.award-badge-card:hover { transform: translateY(-3px); border-color: #f59e0b; }
+.badge-title { font-size: 13px; font-weight: 900; color: #0f172a; display: block; }
+.badge-desc { font-size: 11px; color: #64748b; font-weight: 700; margin-top: 4px; }
+
+.cert-actions-row { display: flex; justify-content: center; gap: 16px; }
+
+/* ================= TOAST NOTIFICATION ================= */
+
+#adv-toast {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(15, 23, 42, 0.95);
+  color: #ffffff;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 800;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+#adv-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ================= CONFETTI PARTICLES ================= */
+
+.confetti-particle {
+  position: absolute;
+  width: 12px;
+  height: 18px;
+  top: -20px;
+  border-radius: 4px;
+  z-index: 150;
+  pointer-events: none;
+  animation: fallConfetti linear forwards;
+}
+
+@keyframes fallConfetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(700px) rotate(720deg); opacity: 0; }
+}

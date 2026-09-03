@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🧠 The Crazy Advice Academy | Should & Shouldn't ESL Lesson</title>
+  <link rel="stylesheet" href="css/advice.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="advice-screen-wrapper">
+    <div id="advice-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="advice-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.adviceApp.renderStage(1)" title="Emergency Intro">
+            🧠 <span>Academy</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.adviceApp.prevStage()" title="Previous Stage">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.adviceApp.nextStage()" title="Next Stage">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Stage Tracker Indicator -->
+          <div class="stage-tracker-pill" id="hud-adv-stage-name">
+            🚨 1. Emergency Help
+          </div>
+
+          <!-- Printable Worksheets -->
+          <a href="worksheets.html" target="_blank" class="hud-btn" title="Open 5 Printable Worksheets">
+            🖨️ <span>Worksheets</span>
+          </a>
+
+          <!-- Quick link to Restaurant Lesson -->
+          <a href="../restaurant/index.html" class="hud-btn" title="Go to Restaurant Lesson" style="background:#fff3e0; border-color:#ffb74d; color:#e65100;">
+            🍽️ <span>Restaurant</span>
+          </a>
+
+          <!-- Quick link to Neighbourhood Lesson -->
+          <a href="../index.html" class="hud-btn" title="Go to Neighbourhood Lesson" style="background:#e8f5e9; border-color:#81c784; color:#2e7d32;">
+            🏘️ <span>Neighbourhood</span>
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Stars Counter -->
+          <div class="adv-stars-counter" title="Academy Stars">
+            <span>⭐</span>
+            <span id="hud-adv-stars">10</span>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="adv-voice-btn" onclick="toggleAdvSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="adv-sfx-btn" onclick="toggleAdvSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Hub Dropdown -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherPanel()" title="Teacher Control Panel">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="adv-teacher-menu">
+              <div class="menu-section-tag">--- DIFFICULTY ---</div>
+              <button onclick="window.adviceApp.setDifficulty('easy'); toggleTeacherPanel();">🟢 Easy (Full Words + Starters)</button>
+              <button onclick="window.adviceApp.setDifficulty('normal'); toggleTeacherPanel();">🟡 Normal (Standard Support)</button>
+              <button onclick="window.adviceApp.setDifficulty('challenge'); toggleTeacherPanel();">🔴 Challenge (Visuals Only)</button>
+
+              <div class="menu-section-tag">--- CONTROLS ---</div>
+              <button onclick="window.adviceApp.revealAnswer(); toggleTeacherPanel();">💡 Reveal Suggested Answer</button>
+
+              <div class="menu-section-tag">--- 10-STAGE JUMP (40 MIN) ---</div>
+              <button onclick="window.adviceApp.renderStage(1); toggleTeacherPanel();">1. 🚨 Emergency Help (4m)</button>
+              <button onclick="window.adviceApp.renderStage(2); toggleTeacherPanel();">2. 🔍 What's the Problem? (4m)</button>
+              <button onclick="window.adviceApp.renderStage(3); toggleTeacherPanel();">3. ⚡ Should / Shouldn't (5m)</button>
+              <button onclick="window.adviceApp.renderStage(4); toggleTeacherPanel();">4. 🕵️ Consequence Detective (4m)</button>
+              <button onclick="window.adviceApp.renderStage(5); toggleTeacherPanel();">5. 💡 Which Advice is Best? (4m)</button>
+              <button onclick="window.adviceApp.renderStage(6); toggleTeacherPanel();">6. 📰 Tom's Morning (4m)</button>
+              <button onclick="window.adviceApp.renderStage(7); toggleTeacherPanel();">7. 🎭 Pair Role-Play (4m)</button>
+              <button onclick="window.adviceApp.renderStage(8); toggleTeacherPanel();">8. 🧩 Advice Puzzle (4m)</button>
+              <button onclick="window.adviceApp.renderStage(9); toggleTeacherPanel();">9. 🍌 Crazy Advice Battle (3m)</button>
+              <button onclick="window.adviceApp.renderStage(10); toggleTeacherPanel();">10. 🏆 Save Prof. Should! (4m)</button>
+              <button onclick="window.adviceApp.renderStage('award'); toggleTeacherPanel();">🎖️ Academy Badges</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="advice-viewport">
+        <!-- Injected via JavaScript -->
+      </main>
+
+      <!-- Toast Feedback -->
+      <div id="adv-toast"></div>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleTeacherPanel() {
+      const menu = document.getElementById('adv-teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('adv-teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleAdvSpeech() {
+      const enabled = window.adviceSound.toggleSpeech();
+      const btn = document.getElementById('adv-voice-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.adviceApp.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function toggleAdvSfx() {
+      const enabled = window.adviceSound.toggleSound();
+      const btn = document.getElementById('adv-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.adviceApp.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/advice-audio.js"></script>
+  <script src="js/advice-data.js"></script>
+  <script src="js/advice-scenes.js"></script>
+  <script src="js/advice-app.js"></script>
+</body>
+</html>
