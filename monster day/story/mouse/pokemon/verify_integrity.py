@@ -82,14 +82,14 @@ required_ids = [
     'p1-base-choices', 'p1-size-choices', 'p1-personality-choices',
     'p1-color-choices', 'p1-feature-choices', 'p1-ability-choices',
     'p1-spec-base', 'p1-spec-size', 'p1-spec-personality', 'p1-spec-color',
-    'p1-spec-features', 'p1-spec-abilities', 'p1-pod-preview-img',
+    'p1-spec-features', 'p1-spec-abilities', 'p1-mystery-locked-pod', 'btnP1Ready',
     'p1-slot-base', 'p1-slot-size', 'p1-slot-color', 'p1-slot-personality', 'p1-slot-ab1', 'p1-slot-ab2',
     # Trainer 2 Paginated Creator
     'p2-creator-page-1', 'p2-creator-page-2', 'p2-creator-page-3',
     'p2-base-choices', 'p2-size-choices', 'p2-personality-choices',
     'p2-color-choices', 'p2-feature-choices', 'p2-ability-choices',
     'p2-spec-base', 'p2-spec-size', 'p2-spec-personality', 'p2-spec-color',
-    'p2-spec-features', 'p2-spec-abilities', 'p2-pod-preview-img',
+    'p2-spec-features', 'p2-spec-abilities', 'p2-mystery-locked-pod', 'btnP2Ready',
     'p2-slot-base', 'p2-slot-size', 'p2-slot-color', 'p2-slot-personality', 'p2-slot-ab1', 'p2-slot-ab2',
     # Battle Arena
     'battleCreatureP1', 'battleCreatureP2', 'champCreatureViewport'

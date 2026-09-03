@@ -27,9 +27,9 @@
           <option value="6">7. 🏃 Movement TPR Game</option>
           <option value="7">8. 🗣️ Model Description</option>
           <option value="8">9. 🧬 Create Pokémon (Trainer 1)</option>
-          <option value="9">10. 🎤 Speak & Reveal (Trainer 1)</option>
+          <option value="9">10. 🗣️ Speak About Your Pokémon (Trainer 1)</option>
           <option value="10">11. 🧬 Create Pokémon (Trainer 2)</option>
-          <option value="11">12. 🎤 Speak & Reveal (Trainer 2)</option>
+          <option value="11">12. 🗣️ Speak About Your Pokémon (Trainer 2)</option>
           <option value="12">13. ⚔️ Creator Battle Arena</option>
           <option value="13">14. 🏆 Champion Ceremony</option>
         </select>
@@ -642,21 +642,21 @@
                   ⬅ Back
                 </button>
                 <button class="action-btn btn-primary btn-pulse btn-finish-ready" id="btnP1Ready">
-                  ✨ READY TO SPEAK & REVEAL! ➔
+                  ✨ READY TO SPEAK ➔
                 </button>
               </div>
             </div>
 
           </div>
 
-          <!-- Right: DNA Hologram Pod Preview -->
+          <!-- Right: Mystery Locked Synthesis Pod (POKÉMON COMPLETELY HIDDEN) -->
           <div class="creator-pod-preview">
-            <div class="pod-capsule">
-              <div class="pod-glass-inner">
-                <div class="dna-helix-glow"></div>
-                <div class="pod-creature-wrap" id="p1-pod-silhouette">
-                  <img src="assets/images/dragonite.png" alt="Creature Base Preview" id="p1-pod-preview-img" class="pod-creature-preview-img">
-                </div>
+            <div class="creator-mystery-locked-pod" id="p1-mystery-locked-pod">
+              <div class="locked-energy-orbit"></div>
+              <div class="locked-core-orb">
+                <span class="locked-glowing-qm">❓</span>
+                <span class="locked-status-badge">🔒 POKÉMON HIDDEN</span>
+                <span class="locked-subtext-badge">✨ REVEAL AFTER SPEAKING</span>
               </div>
             </div>
 
@@ -671,14 +671,14 @@
             </div>
 
             <button class="action-btn btn-primary btn-large btn-pulse" id="btnP1QuickReady">
-              ✨ READY TO SPEAK & REVEAL! ➔
+              ✨ READY TO SPEAK ➔
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== SCREEN 9: SPEAKING & REVEAL (TRAINER 1) ==================== -->
+    <!-- ==================== SCREEN 9: SPEAK ABOUT YOUR POKÉMON (TRAINER 1) ==================== -->
     <section class="screen-view" id="screen-reveal-p1">
       <div class="screen-bg lab-bg"></div>
 
@@ -687,8 +687,18 @@
         <div class="speaking-checkpoint-box" id="p1-speaking-box">
           <div class="screen-header">
             <span class="stage-tag player-tag-p1">TRAINER 1</span>
-            <h2>🎤 DESCRIBE YOUR POKÉMON!</h2>
-            <p class="instruction-subtitle">Stand up, speak clearly in English, then press CREATE!</p>
+            <h2>🗣️ SPEAK ABOUT YOUR POKÉMON!</h2>
+            <p class="instruction-subtitle">Stand up, describe your Pokémon in English, then press REVEAL!</p>
+          </div>
+
+          <!-- Mystery Locked Indicator on Speaking Screen -->
+          <div class="speaking-mystery-pod-banner">
+            <div class="speaking-lock-icon">🔒</div>
+            <div class="speaking-lock-info">
+              <span class="lock-title">MYSTERY POKÉMON IS LOCKED</span>
+              <span class="lock-desc">Describe your Pokémon using the sentences below to unlock it!</span>
+            </div>
+            <div class="speaking-qm-pulse">❓</div>
           </div>
 
           <div class="speech-scaffold-card">
@@ -720,7 +730,7 @@
               🔊 Hear Example Speech
             </button>
             <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnP1TriggerReveal">
-              💥 STUDENT SPOKE! CREATE POKÉMON!
+              ✨ REVEAL MY POKÉMON!
             </button>
           </div>
         </div>
@@ -908,20 +918,21 @@
                   ⬅ Back
                 </button>
                 <button class="action-btn btn-primary btn-pulse btn-finish-ready" id="btnP2Ready">
-                  ✨ READY TO SPEAK & REVEAL! ➔
+                  ✨ READY TO SPEAK ➔
                 </button>
               </div>
             </div>
 
           </div>
 
+          <!-- Right: Mystery Locked Synthesis Pod (POKÉMON COMPLETELY HIDDEN) -->
           <div class="creator-pod-preview">
-            <div class="pod-capsule">
-              <div class="pod-glass-inner">
-                <div class="dna-helix-glow"></div>
-                <div class="pod-creature-wrap" id="p2-pod-silhouette">
-                  <img src="assets/images/fennekin.png" alt="Creature Base Preview" id="p2-pod-preview-img" class="pod-creature-preview-img">
-                </div>
+            <div class="creator-mystery-locked-pod" id="p2-mystery-locked-pod">
+              <div class="locked-energy-orbit"></div>
+              <div class="locked-core-orb">
+                <span class="locked-glowing-qm">❓</span>
+                <span class="locked-status-badge">🔒 POKÉMON HIDDEN</span>
+                <span class="locked-subtext-badge">✨ REVEAL AFTER SPEAKING</span>
               </div>
             </div>
 
@@ -935,12 +946,15 @@
               <div class="spec-row"><span>Abilities:</span> <strong id="p2-spec-abilities">SWIM, MAKE ICE</strong></div>
             </div>
 
+            <button class="action-btn btn-primary btn-large btn-pulse" id="btnP2QuickReady">
+              ✨ READY TO SPEAK ➔
+            </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== SCREEN 11: SPEAKING & REVEAL (TRAINER 2) ==================== -->
+    <!-- ==================== SCREEN 11: SPEAK ABOUT YOUR POKÉMON (TRAINER 2) ==================== -->
     <section class="screen-view" id="screen-reveal-p2">
       <div class="screen-bg lab-bg"></div>
 
@@ -948,8 +962,18 @@
         <div class="speaking-checkpoint-box" id="p2-speaking-box">
           <div class="screen-header">
             <span class="stage-tag player-tag-p2">TRAINER 2</span>
-            <h2>🎤 DESCRIBE YOUR POKÉMON!</h2>
-            <p class="instruction-subtitle">Trainer 2: Speak in English, then press CREATE!</p>
+            <h2>🗣️ SPEAK ABOUT YOUR POKÉMON!</h2>
+            <p class="instruction-subtitle">Trainer 2: Stand up, describe your Pokémon in English, then reveal it!</p>
+          </div>
+
+          <!-- Mystery Locked Indicator on Speaking Screen -->
+          <div class="speaking-mystery-pod-banner">
+            <div class="speaking-lock-icon">🔒</div>
+            <div class="speaking-lock-info">
+              <span class="lock-title">MYSTERY POKÉMON IS LOCKED</span>
+              <span class="lock-desc">Describe your Pokémon using the sentences below to unlock it!</span>
+            </div>
+            <div class="speaking-qm-pulse">❓</div>
           </div>
 
           <div class="speech-scaffold-card">
@@ -981,7 +1005,7 @@
               🔊 Hear Example Speech
             </button>
             <button class="action-btn btn-huge btn-pulse btn-highlight" id="btnP2TriggerReveal">
-              💥 STUDENT SPOKE! CREATE POKÉMON!
+              ✨ REVEAL MY POKÉMON!
             </button>
           </div>
         </div>

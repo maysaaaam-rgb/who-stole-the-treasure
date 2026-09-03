@@ -80,9 +80,9 @@ class PokemonApp {
       '7. 🏃 Movement TPR Game',
       '8. 🗣️ Model Description',
       '9. 🧬 Create Pokémon (Trainer 1)',
-      '10. 🎤 Speak & Reveal (Trainer 1)',
+      '10. 🗣️ Speak About Your Pokémon (Trainer 1)',
       '11. 🧬 Create Pokémon (Trainer 2)',
-      '12. 🎤 Speak & Reveal (Trainer 2)',
+      '12. 🗣️ Speak About Your Pokémon (Trainer 2)',
       '13. ⚔️ Creator Battle Arena',
       '14. 🏆 Champion Ceremony'
     ];
@@ -243,10 +243,10 @@ class PokemonApp {
       "What can your Pokémon do? It can fly, it can swim, it can make fire!",
       "Action challenge! Move like your Pokémon and say: It can!",
       "My Pokémon is small and fast. It is cute. It can jump and make electricity.",
-      "Trainer 1, choose your size, personality, power, and two abilities!",
-      "Trainer 1, describe your Pokémon aloud before creation!",
-      "Trainer 2, choose your size, personality, power, and two abilities!",
-      "Trainer 2, describe your Pokémon aloud before creation!",
+      "Trainer 1, choose your characteristics! Your Pokémon is a mystery until you describe it!",
+      "Trainer 1, speak about your Pokémon aloud, then reveal it!",
+      "Trainer 2, choose your characteristics! Your Pokémon is a mystery until you describe it!",
+      "Trainer 2, speak about your Pokémon aloud, then reveal it!",
       "Welcome to the Battle Arena! Use your English to attack!",
       "Mission Complete! You are official Pokémon Trainers!"
     ];
@@ -966,26 +966,22 @@ class PokemonApp {
     const countEl = document.getElementById(`${prefix}-ability-count`);
     if (countEl) countEl.textContent = `${config.abilities ? config.abilities.length : 0}/2`;
 
-    // Update capsule pod preview image
-    const modelImg = creatures.selectModelImage(config.archetype || config.base, config.abilities, config.look || config.personality, config.power, config.size);
-    const previewImg = document.getElementById(`${prefix}-pod-preview-img`);
-    if (previewImg) {
-      previewImg.src = modelImg;
-    }
-
-    // Highlight Pod Glow based on chosen color
-    const pod = document.querySelector(`#screen-create-${prefix} .pod-capsule`);
-    if (pod) {
-      const colorBorderMap = {
-        blue: '#0284c7',
-        red: '#ef4444',
-        green: '#22c55e',
-        yellow: '#facc15',
-        purple: '#a855f7',
-        black: '#334155',
-        white: '#e2e8f0'
+    // Pokémon image remains 100% hidden during creation!
+    // Update mystery locked pod border/glow matching the student's chosen color
+    const lockedPod = document.getElementById(`${prefix}-mystery-locked-pod`);
+    if (lockedPod) {
+      const colorMap = {
+        blue: { border: '#0284c7', glow: 'rgba(2, 132, 199, 0.45)' },
+        red: { border: '#ef4444', glow: 'rgba(239, 68, 68, 0.45)' },
+        green: { border: '#22c55e', glow: 'rgba(34, 197, 94, 0.45)' },
+        yellow: { border: '#facc15', glow: 'rgba(250, 204, 21, 0.45)' },
+        purple: { border: '#a855f7', glow: 'rgba(168, 85, 247, 0.45)' },
+        black: { border: '#475569', glow: 'rgba(71, 85, 105, 0.45)' },
+        white: { border: '#e2e8f0', glow: 'rgba(226, 232, 240, 0.45)' }
       };
-      pod.style.borderColor = colorBorderMap[config.color] || '#38bdf8';
+      const c = colorMap[config.color] || colorMap.blue;
+      lockedPod.style.setProperty('--custom-border', c.border);
+      lockedPod.style.setProperty('--custom-glow', c.glow);
     }
   }
 
