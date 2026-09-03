@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Printable Worksheets: What Will Happen Next? | Future Predictions with WILL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      padding-bottom: 40px;
+    }
+
+    /* Screen Top Bar */
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .bar-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #7c3aed;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .print-btn {
+      background: #7c3aed;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 0 #5b21b6;
+    }
+
+    .back-btn {
+      background: #eceff1;
+      color: #37474f;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* A4 Worksheets Container */
+    .sheet-wrapper {
+      max-width: 800px;
+      margin: 24px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .a4-page {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 22mm 18mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      min-height: 1050px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ws-header {
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ws-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ws-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #7c3aed;
+    }
+
+    .ws-badge {
+      background: #f3e8ff;
+      color: #7c3aed;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid #d8b4fe;
+    }
+
+    .ws-meta-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .meta-line {
+      border-bottom: 1px dashed #94a3b8;
+      display: inline-block;
+      width: 140px;
+    }
+
+    .ws-instruction {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    /* Worksheet 1 Grid */
+    .pred-items-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pred-card-box {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .pred-emoji { font-size: 36px; margin-bottom: 6px; }
+    .pred-scene-title { font-size: 14px; font-weight: 800; color: #b91c1c; margin-bottom: 6px; }
+    .write-line {
+      font-size: 14px;
+      font-weight: 700;
+      border-bottom: 1px dashed #94a3b8;
+      padding-top: 4px;
+      color: #334155;
+    }
+
+    /* Worksheet 3 Drawing Box */
+    .comic-strip-print {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .comic-print-panel {
+      flex: 1;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .comic-print-panel.draw-box {
+      border: 2px dashed #7c3aed;
+      background: #faf5ff;
+    }
+
+    /* Worksheet 5 Challenge Box */
+    .challenge-step-box {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .ws-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet-wrapper {
+        margin: 0 !important;
+        max-width: 100% !important;
+        gap: 0 !important;
+      }
+      .a4-page {
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 15mm 15mm !important;
+        page-break-after: always !important;
+        min-height: auto !important;
+        height: 100vh !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Top Bar -->
+  <div class="no-print-bar">
+    <div class="bar-title">
+      <span>🔮</span>
+      <span>Printable Worksheets: What Will Happen Next? (Predictions with WILL)</span>
+    </div>
+    <div class="bar-actions">
+      <a href="index.html" class="back-btn">⬅️ Back to Digital Lesson</a>
+      <button class="print-btn" onclick="window.print()">
+        🖨️ PRINT ALL 5 WORKSHEETS
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet-wrapper">
+
+    <!-- ================= WORKSHEET 1: WHAT WILL HAPPEN? ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 1: What Will Happen?</h1>
+            <span class="ws-badge">Future Predictions</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Look at each funny situation. Circle the best action word and complete the sentence using <strong>"will"</strong>:
+        </div>
+
+        <div class="pred-items-grid">
+          <div class="pred-card-box">
+            <div class="pred-emoji">🏃 🍌</div>
+            <div class="pred-scene-title">1. Leo is running towards a banana peel!</div>
+            <p>Word bank: <em>[fall / fly / sleep]</em></p>
+            <div class="write-line">He will ________________________________________</div>
+          </div>
+
+          <div class="pred-card-box">
+            <div class="pred-emoji">☀️ 🍦</div>
+            <div class="pred-scene-title">2. Giant ice cream under the blazing sun!</div>
+            <p>Word bank: <em>[melt / dance / freeze]</em></p>
+            <div class="write-line">The ice cream will _____________________________</div>
+          </div>
+
+          <div class="pred-card-box">
+            <div class="pred-emoji">🎂 🪑</div>
+            <div class="pred-scene-title">3. The waiter trips over a chair with the cake!</div>
+            <p>Word bank: <em>[drop / sing / swim]</em></p>
+            <div class="write-line">The cake will _________________________________</div>
+          </div>
+
+          <div class="pred-card-box">
+            <div class="pred-emoji">🏃 🚌</div>
+            <div class="pred-scene-title">4. Tom is running, but the bus is driving away!</div>
+            <p>Word bank: <em>[miss / eat / paint]</em></p>
+            <div class="write-line">Tom will ______________________________________</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🔮 What Will Happen Next? (ESL Predictions with WILL)</span>
+        <span>Page 1 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 2: PREDICTION DETECTIVE ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 2: Prediction Detective</h1>
+            <span class="ws-badge">Clue Evidence</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Look at the visual clues. Write predictions using: <strong>"I think ______ will ______."</strong>:
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="challenge-step-box">
+            <strong>Case 1 Clues:</strong> ☁️ Dark black clouds + 💨 Cold howling wind + 🌂 Umbrella at home.
+            <div class="write-line" style="margin-top: 8px;">I think it will rain and she will get wet.</div>
+          </div>
+
+          <div class="challenge-step-box">
+            <strong>Case 2 Clues:</strong> 🎈 50 helium balloons + 💨 Strong sudden gust of wind + 👦 Light boy.
+            <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
+          </div>
+
+          <div class="challenge-step-box">
+            <strong>Case 3 Clues:</strong> 🎂 Birthday cake with candles + 🎈 Balloons in the hall + 🎁 Wrapped gifts.
+            <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
+          </div>
+
+          <div class="challenge-step-box">
+            <strong>Case 4 Clues:</strong> 👧 Hungry after school + 🍕 Hot cheesy pizza + 🍏 Green apple.
+            <div class="write-line" style="margin-top: 8px;">I think __________________________________________________________________</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🔮 What Will Happen Next? (ESL Predictions with WILL)</span>
+        <span>Page 2 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 3: WHAT HAPPENS NEXT? ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 3: What Happens Next?</h1>
+            <span class="ws-badge">Comic Sequencing</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          Look at the 3-picture comic sequence. Draw Panel 3 and write the final prediction sentence:
+        </div>
+
+        <div>
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: #7c3aed;">Story 1: The Puddle Jump</h3>
+          <div class="comic-strip-print">
+            <div class="comic-print-panel">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 1</span>
+              <span style="font-size: 32px;">👦 🌊</span>
+              <p style="font-size: 12px; font-weight: 700;">Billy sees a huge mud puddle!</p>
+            </div>
+            <div class="comic-print-panel">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 2</span>
+              <span style="font-size: 32px;">🏃 💨</span>
+              <p style="font-size: 12px; font-weight: 700;">He jumps high in the air!</p>
+            </div>
+            <div class="comic-print-panel draw-box">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 3 (DRAW HERE!)</span>
+              <span style="font-size: 24px; color: #94a3b8;">✏️</span>
+              <p style="font-size: 11px; color: #64748b;">Draw what happens next</p>
+            </div>
+          </div>
+          <div class="write-line">Prediction: He will ___________________________________________________________</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <h3 style="font-size: 16px; margin-bottom: 6px; color: #7c3aed;">Story 2: The Curious Kitten</h3>
+          <div class="comic-strip-print">
+            <div class="comic-print-panel">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 1</span>
+              <span style="font-size: 32px;">🐱 👀</span>
+              <p style="font-size: 12px; font-weight: 700;">Kitten sees red ball of yarn.</p>
+            </div>
+            <div class="comic-print-panel">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 2</span>
+              <span style="font-size: 32px;">🐈 💨</span>
+              <p style="font-size: 12px; font-weight: 700;">It wiggles its tail and pounces!</p>
+            </div>
+            <div class="comic-print-panel draw-box">
+              <span style="font-size: 11px; font-weight: 900; color: #7c3aed;">PANEL 3 (DRAW HERE!)</span>
+              <span style="font-size: 24px; color: #94a3b8;">✏️</span>
+              <p style="font-size: 11px; color: #64748b;">Draw what happens next</p>
+            </div>
+          </div>
+          <div class="write-line">Prediction: It will ___________________________________________________________</div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🔮 What Will Happen Next? (ESL Predictions with WILL)</span>
+        <span>Page 3 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 4: CRAZY PREDICTIONS ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 4: Crazy Predictions</h1>
+            <span class="ws-badge">Creative Thinking</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          These funny pictures have no single answer! Use your imagination and write crazy predictions using: <strong>"Maybe..."</strong> or <strong>"I think..."</strong>:
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="challenge-step-box">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+              <span style="font-size: 32px;">🦆 🎒 🏫</span>
+              <strong>Scene 1: A duck wearing a backpack at the school door!</strong>
+            </div>
+            <p>1. I think the duck will __________________________________________________</p>
+            <p style="margin-top: 6px;">2. Maybe the duck will _________________________________________________</p>
+          </div>
+
+          <div class="challenge-step-box">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+              <span style="font-size: 32px;">🐶 🛹 🕶️</span>
+              <strong>Scene 2: A dog wearing sunglasses riding a skateboard!</strong>
+            </div>
+            <p>1. I think the dog will ___________________________________________________</p>
+            <p style="margin-top: 6px;">2. Maybe the dog will __________________________________________________</p>
+          </div>
+
+          <div class="challenge-step-box">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+              <span style="font-size: 32px;">🐔 💻 📚</span>
+              <strong>Scene 3: A chicken typing on the teacher's laptop!</strong>
+            </div>
+            <p>1. I think the chicken will _______________________________________________</p>
+            <p style="margin-top: 6px;">2. Maybe the chicken will ______________________________________________</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🔮 What Will Happen Next? (ESL Predictions with WILL)</span>
+        <span>Page 4 of 5</span>
+      </div>
+    </div>
+
+    <!-- ================= WORKSHEET 5: MY PREDICTION CHALLENGE ================= -->
+    <div class="a4-page">
+      <div>
+        <div class="ws-header">
+          <div class="ws-title-row">
+            <h1 class="ws-title">📝 Worksheet 5: My Prediction Challenge</h1>
+            <span class="ws-badge">Speaking & Writing Challenge</span>
+          </div>
+          <div class="ws-meta-row">
+            <span>Name: <span class="meta-line"></span></span>
+            <span>Date: <span class="meta-line"></span></span>
+            <span>Class: <span class="meta-line"></span></span>
+          </div>
+        </div>
+
+        <div class="ws-instruction">
+          <strong>The Shaking Mystery Box! 🎁</strong> A giant wrapped gift box is shaking, ticking, and rumbling! Write 3 different predictions with reasons:
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="challenge-step-box">
+            <strong>PREDICTION 1 (Sensible):</strong>
+            <p style="margin-top: 6px;">I think a puppy will jump out ___________________________________________</p>
+            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+          </div>
+
+          <div class="challenge-step-box">
+            <strong>PREDICTION 2 (Surprising):</strong>
+            <p style="margin-top: 6px;">I think __________________________________________________________________</p>
+            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+          </div>
+
+          <div class="challenge-step-box">
+            <strong>PREDICTION 3 (Crazy):</strong>
+            <p style="margin-top: 6px;">Maybe a friendly dinosaur robot will _____________________________________</p>
+            <p style="margin-top: 6px;">because _________________________________________________________________</p>
+          </div>
+
+          <div style="border: 2px dashed #7c3aed; border-radius: 12px; padding: 12px; background: #faf5ff;">
+            <strong>🗣️ Partner Discussion Checklist:</strong>
+            <p style="margin-top: 4px; font-size: 13px;">Read your predictions to your partner! Listen to theirs and tick:
+              [ ] Partner used WILL &nbsp;&nbsp;&nbsp; [ ] Partner explained WHY &nbsp;&nbsp;&nbsp; [ ] Made me laugh!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-footer">
+        <span>🔮 What Will Happen Next? (ESL Predictions with WILL)</span>
+        <span>Page 5 of 5</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

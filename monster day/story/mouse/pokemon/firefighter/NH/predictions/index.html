@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔮 What Will Happen Next? | Future Predictions with WILL ESL Lesson</title>
+  <link rel="stylesheet" href="css/predictions.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="predictions-screen-wrapper">
+    <div id="predictions-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="predictions-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.predictionsApp.renderStage(1)" title="Restart from Freeze Frame">
+            🔮 <span>Predict!</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.predictionsApp.prevStage()" title="Previous Stage">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.predictionsApp.nextStage()" title="Next Stage">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Stage Tracker Indicator -->
+          <div class="stage-tracker-pill" id="hud-pred-stage-name">
+            🔮 1. The Freeze Frame
+          </div>
+
+          <!-- Printable Worksheets -->
+          <a href="worksheets.html" target="_blank" class="hud-btn" title="Open 5 Printable Worksheets">
+            🖨️ <span>Worksheets</span>
+          </a>
+
+          <!-- Quick Links to Sibling Lessons -->
+          <a href="../advice/index.html" class="hud-btn" title="Go to Advice Academy" style="background:#f0fdf4; border-color:#86efac; color:#166534;">
+            🧠 <span>Advice</span>
+          </a>
+          <a href="../restaurant/index.html" class="hud-btn" title="Go to Restaurant Lesson" style="background:#fff3e0; border-color:#ffb74d; color:#e65100;">
+            🍽️ <span>Restaurant</span>
+          </a>
+          <a href="../index.html" class="hud-btn" title="Go to Neighbourhood Lesson" style="background:#e8f5e9; border-color:#81c784; color:#2e7d32;">
+            🏘️ <span>Neighbourhood</span>
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Stars Counter -->
+          <div class="pred-stars-counter" title="Prediction Stars">
+            <span>⭐</span>
+            <span id="hud-pred-stars">10</span>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="pred-voice-btn" onclick="togglePredSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="pred-sfx-btn" onclick="togglePredSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Hub Dropdown -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherPanel()" title="Teacher Control Panel">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="pred-teacher-menu">
+              <div class="menu-section-tag">--- DIFFICULTY ---</div>
+              <button onclick="window.predictionsApp.setDifficulty('easy'); toggleTeacherPanel();">🟢 Easy (Full Words + Prompts)</button>
+              <button onclick="window.predictionsApp.setDifficulty('normal'); toggleTeacherPanel();">🟡 Normal (Standard Support)</button>
+              <button onclick="window.predictionsApp.setDifficulty('challenge'); toggleTeacherPanel();">🔴 Challenge (Visuals Only: "I think...")</button>
+
+              <div class="menu-section-tag">--- CONTROLS ---</div>
+              <button onclick="window.predictionsApp.revealAnswer(); toggleTeacherPanel();">💡 Reveal Future Event Now</button>
+
+              <div class="menu-section-tag">--- 10-STAGE JUMP (40 MIN) ---</div>
+              <button onclick="window.predictionsApp.renderStage(1); toggleTeacherPanel();">1. 🔮 The Freeze Frame (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(2); toggleTeacherPanel();">2. ⏳ Language of Future (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(3); toggleTeacherPanel();">3. 👀 Look & Predict (5m)</button>
+              <button onclick="window.predictionsApp.renderStage(4); toggleTeacherPanel();">4. 🎧 Listen & Guess (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(5); toggleTeacherPanel();">5. 🖼️ Picture Sequences (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(6); toggleTeacherPanel();">6. 🤔 What Will They Do? (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(7); toggleTeacherPanel();">7. 🎯 Prediction Bingo (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(8); toggleTeacherPanel();">8. 🤪 Crazy Predictions (4m)</button>
+              <button onclick="window.predictionsApp.renderStage(9); toggleTeacherPanel();">9. 🔎 Clue Detectives (3m)</button>
+              <button onclick="window.predictionsApp.renderStage(10); toggleTeacherPanel();">10. 🏆 Big Showdown (4m)</button>
+              <button onclick="window.predictionsApp.renderStage('award'); toggleTeacherPanel();">🎖️ Prediction Certificate</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="predictions-viewport">
+        <!-- Injected via JavaScript -->
+      </main>
+
+      <!-- Toast Feedback -->
+      <div id="pred-toast"></div>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleTeacherPanel() {
+      const menu = document.getElementById('pred-teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('pred-teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function togglePredSpeech() {
+      const enabled = window.predictionsSound.toggleSpeech();
+      const btn = document.getElementById('pred-voice-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.predictionsApp.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function togglePredSfx() {
+      const enabled = window.predictionsSound.toggleSound();
+      const btn = document.getElementById('pred-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.predictionsApp.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/predictions-audio.js"></script>
+  <script src="js/predictions-data.js"></script>
+  <script src="js/predictions-scenes.js"></script>
+  <script src="js/predictions-app.js"></script>
+</body>
+</html>
