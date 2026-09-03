@@ -202,6 +202,19 @@ body, html {
   display: flex;
 }
 
+.teacher-menu-modal {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.menu-group-title {
+  font-size: 11px;
+  font-weight: 900;
+  color: #78909c;
+  padding: 6px 8px 2px;
+  letter-spacing: 1px;
+}
+
 .teacher-menu-modal button {
   background: #f5f7fa;
   border: 1px solid #e0e0e0;
@@ -1587,3 +1600,573 @@ body, html {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(700px) rotate(720deg); opacity: 0; }
 }
+
+/* ================= COMPREHENSION & MEMORY STYLES ================= */
+
+/* 1. What Did You See */
+.comprehension-map-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.see-chips-tray {
+  background: #ffffff;
+  border-top: 2px solid #e2e8f0;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 25;
+}
+
+.tray-label {
+  font-size: 15px;
+  font-weight: 900;
+  color: #37474f;
+}
+
+.chips-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.see-chip {
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.see-chip:hover {
+  transform: translateY(-2px);
+  border-color: #ff7043;
+}
+
+.see-chip.active {
+  background: #4caf50;
+  color: #ffffff;
+  border-color: #2e7d32;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.35);
+}
+
+/* 2. Memory Veil (Hidden Map) */
+.memory-veil-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #eceff1 0%, #cfd8dc 100%);
+  padding: 24px;
+}
+
+.mystery-veil-card {
+  width: 720px;
+  background: #ffffff;
+  border: 4px solid #78909c;
+  border-radius: 24px;
+  padding: 32px 40px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+
+.veil-cloud-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.memory-question-text {
+  font-size: 28px;
+  font-weight: 900;
+  color: #263238;
+  margin: 16px 0 24px;
+}
+
+.memory-actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.memory-choice-btn {
+  border: none;
+  border-radius: 20px;
+  padding: 16px 44px;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s;
+}
+
+.yes-btn {
+  background: #4caf50;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #2e7d32;
+}
+
+.yes-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 0 #2e7d32;
+}
+
+.no-btn {
+  background: #e53935;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #b71c1c;
+}
+
+.no-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 0 #b71c1c;
+}
+
+.memory-feedback-banner {
+  margin-top: 24px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.memory-feedback-banner.correct {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 2px solid #81c784;
+}
+
+.memory-feedback-banner.incorrect {
+  background: #ffebee;
+  color: #b71c1c;
+  border: 2px solid #ef9a9a;
+}
+
+/* 3. True / False */
+.tf-stage-layout {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.tf-map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.tf-overlay-card {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.96);
+  border: 3px solid #ff7043;
+  border-radius: 20px;
+  padding: 20px 32px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  text-align: center;
+  width: 580px;
+  z-index: 30;
+  backdrop-filter: blur(6px);
+}
+
+.tf-statement-quote {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1a252f;
+  margin-bottom: 16px;
+}
+
+.tf-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.tf-btn {
+  border: none;
+  border-radius: 16px;
+  padding: 12px 32px;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.true-btn {
+  background: #4caf50;
+  color: #fff;
+  box-shadow: 0 5px 0 #2e7d32;
+}
+
+.false-btn {
+  background: #e53935;
+  color: #fff;
+  box-shadow: 0 5px 0 #b71c1c;
+}
+
+.tf-feedback-box {
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 8px 14px;
+  border-radius: 10px;
+}
+
+.tf-feedback-box.correct { background: #e8f5e9; color: #2e7d32; }
+.tf-feedback-box.wrong { background: #ffebee; color: #c62828; }
+
+/* 4. Listen & Find */
+.listen-audio-banner {
+  background: #fff8e1;
+  border-bottom: 2px solid #ffe082;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 25;
+}
+
+.big-audio-play-btn {
+  background: #ff9800;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 24px;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #e65100;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.big-audio-play-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #e65100;
+}
+
+.listen-hint-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f57c00;
+}
+
+.listen-map-stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 5. Grammar: There is / There are */
+.grammar-card-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  padding: 24px;
+}
+
+.grammar-box-card {
+  width: 680px;
+  background: #ffffff;
+  border: 4px solid #4a90e2;
+  border-radius: 24px;
+  padding: 30px 40px;
+  text-align: center;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.1);
+}
+
+.grammar-visual-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+}
+
+.grammar-sentence-prompt {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1a252f;
+  margin: 16px 0 24px;
+}
+
+.blank-slot {
+  display: inline-block;
+  min-width: 90px;
+  border-bottom: 4px solid #ff7043;
+  color: #ff7043;
+}
+
+.completed-sentence {
+  color: #2e7d32;
+}
+
+.grammar-options-row {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+
+.grammar-btn {
+  background: #f1f5f9;
+  border: 3px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 14px 48px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #1e293b;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #94a3b8;
+  transition: all 0.15s;
+}
+
+.grammar-btn:hover {
+  transform: translateY(-3px);
+  border-color: #4a90e2;
+  box-shadow: 0 8px 0 #94a3b8;
+}
+
+.grammar-btn.correct {
+  background: #4caf50;
+  color: #fff;
+  border-color: #2e7d32;
+  box-shadow: 0 5px 0 #1b5e20;
+}
+
+.grammar-btn.wrong {
+  background: #ef5350;
+  color: #fff;
+  border-color: #c62828;
+}
+
+.grammar-feedback-pill {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 8px 16px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* 6 & 7. Favorite Places & Activities */
+.favorite-places-grid, .favorite-activities-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  padding: 24px 32px;
+  align-items: center;
+}
+
+.favorite-place-card, .favorite-act-card {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 220px;
+  transition: all 0.2s;
+}
+
+.favorite-place-card:hover, .favorite-act-card:hover {
+  transform: translateY(-5px);
+  border-color: #e91e63;
+  box-shadow: 0 14px 28px rgba(233, 30, 99, 0.25);
+}
+
+.favorite-place-card.active, .favorite-act-card.active {
+  border-color: #e91e63;
+  background: #fce4ec;
+  box-shadow: 0 12px 28px rgba(233, 30, 99, 0.3);
+}
+
+.card-emoji { font-size: 52px; }
+.card-name { font-size: 18px; font-weight: 900; color: #1a252f; margin: 8px 0; }
+.card-speak-badge {
+  background: #e91e63;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* 8. Scaffolded Levels */
+.scaffold-tabs-bar {
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+  padding: 10px 24px;
+  display: flex;
+  gap: 16px;
+}
+
+.scaffold-tab {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 8px 20px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scaffold-tab.active.level-1 { background: #4caf50; color: #fff; border-color: #2e7d32; }
+.scaffold-tab.active.level-2 { background: #fbc02d; color: #333; border-color: #f57f17; }
+.scaffold-tab.active.level-3 { background: #e53935; color: #fff; border-color: #b71c1c; }
+
+.scaffold-prompts-stage {
+  flex: 1;
+  padding: 16px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.level-intro-pill {
+  background: #e0f2fe;
+  border: 1px solid #7dd3fc;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #0369a1;
+}
+
+.scaffold-items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.scaffold-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.scaffold-card:hover {
+  transform: translateY(-3px);
+  border-color: #2196f3;
+}
+
+.scaffold-icon { font-size: 32px; }
+.scaffold-text { font-size: 16px; font-weight: 900; color: #1e293b; margin: 8px 0; }
+.scaffold-mic-btn {
+  background: #e0f2fe;
+  color: #0288d1;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* 9. Brand New Town */
+.newtown-stage-layout {
+  flex: 1;
+  display: flex;
+  padding: 14px 24px;
+  gap: 20px;
+  background: #f8fafc;
+}
+
+.newtown-svg-wrap {
+  flex: 2;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  background: #ffffff;
+}
+
+.newtown-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.newtown-prompt-cues {
+  flex: 1;
+  background: #ffffff;
+  border: 3px solid #ffb74d;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.cues-header {
+  font-size: 16px;
+  font-weight: 900;
+  color: #e65100;
+  margin-bottom: 10px;
+}
+
+.cue-pill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cue-card {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.15s;
+}
+
+.cue-card:hover {
+  background: #ffecb3;
+  transform: translateX(4px);
+}
+
+.cue-badge {
+  font-size: 12px;
+  font-weight: 900;
+  color: #f57c00;
+}
+
+.cue-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #37474f;
+}
+

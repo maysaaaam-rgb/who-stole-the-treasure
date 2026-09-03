@@ -34,17 +34,20 @@
           </div>
 
           <!-- Quick Navigation Buttons -->
-          <button class="hud-btn" onclick="window.app.renderScene('builder')" title="Build Town">
-            🏗️ <span>Build</span>
+          <button class="hud-btn" onclick="window.app.renderScene('what_did_you_see')" title="What Did You See?">
+            👀 <span>Check</span>
           </button>
-          <button class="hud-btn" onclick="window.app.renderScene('matching')" title="Match Words to Pictures">
-            🧩 <span>Match</span>
+          <button class="hud-btn" onclick="window.app.renderScene('remember_game')" title="Memory Check">
+            🧠 <span>Remember</span>
           </button>
-          <button class="hud-btn" onclick="window.app.renderScene('dialogues')" title="Practice Conversations">
-            💬 <span>Dialogue</span>
+          <button class="hud-btn" onclick="window.app.renderScene('there_is_are')" title="There is / There are">
+            ✏️ <span>Grammar</span>
           </button>
-          <button class="hud-btn" onclick="window.app.renderScene('speaking_builder')" title="Sentence Builder">
-            🗣️ <span>Sentence Builder</span>
+          <button class="hud-btn" onclick="window.app.renderScene('scaffold_levels')" title="3-Level Speaking Challenge">
+            🧗 <span>Challenge</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('new_town')" title="Brand New Neighbourhood">
+            🏙️ <span>New Town</span>
           </button>
           <button class="hud-btn" onclick="window.app.renderScene('tour')" title="Walking Tour Guide">
             🚶 <span>Tour</span>
@@ -72,20 +75,31 @@
               👩‍🏫 <span>Teacher</span> ▾
             </button>
             <div class="teacher-menu-modal" id="teacher-menu">
+              <div class="menu-group-title">--- 1. EXPLORE ---</div>
               <button onclick="window.app.renderScene('welcome'); toggleTeacherMenu();">1. Welcome Screen</button>
               <button onclick="window.app.renderScene('map'); toggleTeacherMenu();">2. Living Map Overview</button>
-              <button onclick="window.app.enterLocation('home'); toggleTeacherMenu();">3. My Home (Where do you live?)</button>
-              <button onclick="window.app.enterLocation('park'); toggleTeacherMenu();">4. The Park & Detective</button>
-              <button onclick="window.app.enterLocation('school'); toggleTeacherMenu();">5. School (There is a school)</button>
+              <button onclick="window.app.enterLocation('home'); toggleTeacherMenu();">3. My Home (Inside & Out)</button>
+              <button onclick="window.app.enterLocation('park'); toggleTeacherMenu();">4. Park & Detective</button>
+              <button onclick="window.app.enterLocation('school'); toggleTeacherMenu();">5. School (Bell & Class)</button>
               <button onclick="window.app.enterLocation('shop'); toggleTeacherMenu();">6. Bakery & Shop</button>
-              <button onclick="window.app.enterLocation('neighbours'); toggleTeacherMenu();">7. Meet the Neighbours</button>
-              <button onclick="window.app.renderScene('builder'); toggleTeacherMenu();">8. Build Your Neighbourhood</button>
-              <button onclick="window.app.renderScene('matching'); toggleTeacherMenu();">9. Match Words (Slide 13)</button>
-              <button onclick="window.app.renderScene('dialogues'); toggleTeacherMenu();">10. Practice Dialogues (Slides 14-18)</button>
-              <button onclick="window.app.renderScene('speaking_builder'); toggleTeacherMenu();">11. Speaking Builder (Slide 19)</button>
-              <button onclick="window.app.renderScene('speaking_mission'); toggleTeacherMenu();">12. Speaking Prompts (Slide 20)</button>
-              <button onclick="window.app.renderScene('tour'); toggleTeacherMenu();">13. Final Walking Tour</button>
-              <button onclick="window.app.renderScene('reward'); toggleTeacherMenu();">14. Explorer Certificate 🏅</button>
+              <button onclick="window.app.enterLocation('neighbours'); toggleTeacherMenu();">7. Meet Neighbours</button>
+              <button onclick="window.app.renderScene('builder'); toggleTeacherMenu();">8. Town Builder</button>
+              <div class="menu-group-title">--- 2. REMEMBER & CHECK ---</div>
+              <button onclick="window.app.renderScene('what_did_you_see'); toggleTeacherMenu();">9. What Did You See?</button>
+              <button onclick="window.app.renderScene('remember_game'); toggleTeacherMenu();">10. Remember the Town (Veiled)</button>
+              <button onclick="window.app.renderScene('true_false'); toggleTeacherMenu();">11. True or False</button>
+              <button onclick="window.app.renderScene('listen_find'); toggleTeacherMenu();">12. Listen & Find 🎧</button>
+              <button onclick="window.app.renderScene('there_is_are'); toggleTeacherMenu();">13. There is / There are</button>
+              <button onclick="window.app.renderScene('favorite_places'); toggleTeacherMenu();">14. Where do you like to go?</button>
+              <button onclick="window.app.renderScene('favorite_activities'); toggleTeacherMenu();">15. What do you like to do?</button>
+              <div class="menu-group-title">--- 3. BUILD & SPEAK ---</div>
+              <button onclick="window.app.renderScene('matching'); toggleTeacherMenu();">16. Match Words (Slide 13)</button>
+              <button onclick="window.app.renderScene('dialogues'); toggleTeacherMenu();">17. Practice Dialogues (14-18)</button>
+              <button onclick="window.app.renderScene('speaking_builder'); toggleTeacherMenu();">18. Sentence Builder (Slide 19)</button>
+              <button onclick="window.app.renderScene('scaffold_levels'); toggleTeacherMenu();">19. 3-Level Speaking Fader</button>
+              <button onclick="window.app.renderScene('tour'); toggleTeacherMenu();">20. Tour Guide Walk</button>
+              <button onclick="window.app.renderScene('new_town'); toggleTeacherMenu();">21. Brand New Town Challenge 🏙️</button>
+              <button onclick="window.app.renderScene('reward'); toggleTeacherMenu();">22. Explorer Certificate 🏅</button>
             </div>
           </div>
         </div>

@@ -238,5 +238,118 @@ window.NEIGHBOURHOOD_DATA = {
       x: 500,
       y: 720
     }
-  ]
+  ],
+
+  // ================= NEW COMPREHENSION & SPEAKING DATA =================
+
+  // 1. Remember the Neighbourhood (Memory check with hidden map)
+  memoryQuestions: [
+    { id: 'school', q: 'Was there a school in our neighbourhood?', answer: true, feedback: 'Yes! There was a school with a bell! 🏫' },
+    { id: 'zoo', q: 'Was there a zoo in our neighbourhood?', answer: false, feedback: 'No! There was no zoo with wild animals! 🦁❌' },
+    { id: 'park', q: 'Was there a park in our neighbourhood?', answer: true, feedback: 'Yes! There was a park with a slide! 🌳' },
+    { id: 'shop', q: 'Was there a shop in our neighbourhood?', answer: true, feedback: 'Yes! There was a bakery and shop! 🛒' },
+    { id: 'houses', q: 'Were there lots of houses in our neighbourhood?', answer: true, feedback: 'Yes! There were lots of houses! 🏠' }
+  ],
+
+  // 2. True or False statements
+  trueFalseStatements: [
+    { id: 'tf_school', text: 'There is a school.', isTrue: true, target: 'school', prompt: 'Look at the school on top!' },
+    { id: 'tf_zoo', text: 'There is a zoo.', isTrue: false, target: null, prompt: 'No zoo here! Only houses, park, school, and shop!' },
+    { id: 'tf_park', text: 'There is a park.', isTrue: true, target: 'park', prompt: 'Yes! There is a park on the right!' },
+    { id: 'tf_houses', text: 'There are lots of houses.', isTrue: true, target: 'houses', prompt: 'Yes! We have houses all around!' },
+    { id: 'tf_airport', text: 'There is an airport.', isTrue: false, target: null, prompt: 'No airport in this quiet neighbourhood!' }
+  ],
+
+  // 3. Listen and Find audio targets
+  listenAndFindPrompts: [
+    { id: 'lf_school', audio: 'I can see a school.', target: 'school', label: 'School 🏫' },
+    { id: 'lf_park', audio: 'There is a park.', target: 'park', label: 'Park 🌳' },
+    { id: 'lf_cars', audio: 'I can see cars.', target: 'car', label: 'Cars 🚗' },
+    { id: 'lf_shop', audio: 'There is a shop.', target: 'shop', label: 'Shop 🛒' },
+    { id: 'lf_house', audio: 'I can see a house.', target: 'house', label: 'House 🏠' }
+  ],
+
+  // 4. Grammar: There is vs There are
+  thereIsAreQuestions: [
+    { id: 'tia_1', icon: '🏫', text: 'There ___ a school.', correct: 'is', complete: 'There is a school.' },
+    { id: 'tia_2', icon: '🏠 🏠 🏠 🏠', text: 'There ___ lots of houses.', correct: 'are', complete: 'There are lots of houses.' },
+    { id: 'tia_3', icon: '🛒', text: 'There ___ a shop.', correct: 'is', complete: 'There is a shop.' },
+    { id: 'tia_4', icon: '🌳 🌳 🌳', text: 'There ___ green trees.', correct: 'are', complete: 'There are green trees.' },
+    { id: 'tia_5', icon: '🛝', text: 'There ___ a fun slide.', correct: 'is', complete: 'There is a fun slide.' }
+  ],
+
+  // 5. Where do you like to go? Choices
+  favoritePlaces: [
+    { id: 'park', icon: '🌳', label: 'Park', sentence: 'I like to go to the park.' },
+    { id: 'school', icon: '🏫', label: 'School', sentence: 'I like to go to the school.' },
+    { id: 'shop', icon: '🛒', label: 'Shop', sentence: 'I like to go to the shop.' },
+    { id: 'home', icon: '🏠', label: 'Home', sentence: 'I like to stay at home.' }
+  ],
+
+  // 6. What do you like to do? Choices
+  favoriteActivities: [
+    { id: 'walks', icon: '👨‍👩‍👧 🚶', label: 'Walk with my family', sentence: 'I like to go for walks with my family.' },
+    { id: 'play', icon: '🛝 ⚽', label: 'Play on the slide', sentence: 'I like to play on the slide.' },
+    { id: 'bike', icon: '🚲 👦', label: 'Ride a bike', sentence: 'I like to ride my bike.' },
+    { id: 'ball', icon: '⚽ 👟', label: 'Kick a ball', sentence: 'I like to play football.' }
+  ],
+
+  // 7. Scaffolded Support Levels
+  scaffoldLevels: [
+    {
+      level: 1,
+      title: 'Level 1 — Full Support',
+      badge: '🟢 FULL SUPPORT',
+      desc: 'Complete sentence + picture cues for beginners.',
+      items: [
+        { icon: '🏠', text: 'I live in a house.' },
+        { icon: '🚗 🏠 🌳', text: 'I can see cars, houses and trees.' },
+        { icon: '🏫', text: 'There is a school.' },
+        { icon: '🛒', text: 'There is a shop.' },
+        { icon: '🌳', text: 'I like to go to the park.' },
+        { icon: '👨‍👩‍👧 🚶', text: 'I like to go for walks with my family.' }
+      ]
+    },
+    {
+      level: 2,
+      title: 'Level 2 — Partial Support',
+      badge: '🟡 PARTIAL SUPPORT',
+      desc: 'Sentence starter + picture cues to encourage memory.',
+      items: [
+        { icon: '🏠', text: 'I live in a...' },
+        { icon: '🚗 🏠 🌳', text: 'I can see...' },
+        { icon: '🏫', text: 'There is a...' },
+        { icon: '🛒', text: 'There is a...' },
+        { icon: '🌳', text: 'I like to go...' },
+        { icon: '👨‍👩‍👧 🚶', text: 'I like to go for walks with...' }
+      ]
+    },
+    {
+      level: 3,
+      title: 'Level 3 — Speaking Challenge',
+      badge: '🔴 SPEAKING CHALLENGE',
+      desc: 'Visual icons only! You must produce the whole sentence yourself.',
+      items: [
+        { icon: '🏠', text: '🏠 (Where do you live?)' },
+        { icon: '🚗 🏠 🌳', text: '🚗 🏠 🌳 (What can you see?)' },
+        { icon: '🏫', text: '🏫 (What is there?)' },
+        { icon: '🛒', text: '🛒 (What is there?)' },
+        { icon: '🌳', text: '🌳 (Where do you like to go?)' },
+        { icon: '👨‍👩‍👧 🚶', text: '👨‍👩‍👧 🚶 (What do you like to do?)' }
+      ]
+    }
+  ],
+
+  // 8. Brand New Neighbourhood (Independent Challenge)
+  newNeighbourhood: {
+    name: 'Blossom Hill',
+    features: [
+      { id: 'home', icon: '🏢', label: 'My Flat', sentence: 'I live in a flat.', x: 180, y: 320 },
+      { id: 'street', icon: '🚗', label: 'Cars & Trees', sentence: 'I can see cars and tall trees.', x: 450, y: 440 },
+      { id: 'school', icon: '🏫', label: 'Sunny School', sentence: 'There is a school.', x: 720, y: 220 },
+      { id: 'shop', icon: '🛒', label: 'Fruit Shop', sentence: 'There is a shop.', x: 300, y: 180 },
+      { id: 'park', icon: '🌳', label: 'Blossom Park', sentence: 'I like to go to the park.', x: 880, y: 380 },
+      { id: 'walks', icon: '👨‍👩‍👧', label: 'Family Walk', sentence: 'I like to go for walks with my family.', x: 580, y: 520 }
+    ]
+  }
 };

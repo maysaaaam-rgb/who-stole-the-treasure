@@ -41,7 +41,20 @@ class AppController {
       matchingSelectedWord: null,
       matchedPairs: new Set(),
       // Active dialogue index (Slides 14-18)
-      dialogueIndex: 0
+      dialogueIndex: 0,
+      // Comprehension activities state
+      whatDidYouSeeSelected: new Set(),
+      memoryIndex: 0,
+      memoryFeedback: null,
+      trueFalseIndex: 0,
+      trueFalseFeedback: null,
+      listenFindIndex: 0,
+      listenFindFound: false,
+      thereIsAreIndex: 0,
+      thereIsAreAnswered: null,
+      favPlaceSelected: 'park',
+      favActivitySelected: 'walks',
+      scaffoldActiveLevel: 1
     };
 
     this.init();
@@ -157,9 +170,56 @@ class AppController {
         contentArea.innerHTML = this.renderSpeakingMissionView();
         break;
 
-      case 'tour':
-        contentArea.innerHTML = this.renderTourView();
-        this.playCurrentTourStop();
+      case 'what_did_you_see':
+        contentArea.innerHTML = window.Scenes.renderWhatDidYouSee(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak("What did you see in the neighbourhood? Tap what you saw!");
+        break;
+
+      case 'remember_game':
+        contentArea.innerHTML = window.Scenes.renderRememberGame(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak(window.NEIGHBOURHOOD_DATA.memoryQuestions[this.state.memoryIndex].q);
+        break;
+
+      case 'true_false':
+        contentArea.innerHTML = window.Scenes.renderTrueFalseGame(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak(window.NEIGHBOURHOOD_DATA.trueFalseStatements[this.state.trueFalseIndex].text);
+        break;
+
+      case 'listen_find':
+        contentArea.innerHTML = window.Scenes.renderListenAndFind(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak(window.NEIGHBOURHOOD_DATA.listenAndFindPrompts[this.state.listenFindIndex].audio);
+        break;
+
+      case 'there_is_are':
+        contentArea.innerHTML = window.Scenes.renderThereIsAre(this.state);
+        window.soundEngine.playPop();
+        break;
+
+      case 'favorite_places':
+        contentArea.innerHTML = window.Scenes.renderFavoritePlaces(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak("Where do you like to go in your neighbourhood?");
+        break;
+
+      case 'favorite_activities':
+        contentArea.innerHTML = window.Scenes.renderFavoriteActivities(this.state);
+        window.soundEngine.playPop();
+        window.soundEngine.speak("What do you like to do in your neighbourhood?");
+        break;
+
+      case 'scaffold_levels':
+        contentArea.innerHTML = window.Scenes.renderScaffoldLevels(this.state);
+        window.soundEngine.playPop();
+        break;
+
+      case 'new_town':
+        contentArea.innerHTML = window.Scenes.renderNewNeighbourhood(this.state);
+        window.soundEngine.playSparkle();
+        window.soundEngine.speak("Here is a brand new neighbourhood! Look at the pictures and describe it!");
         break;
 
       case 'reward':
@@ -1055,6 +1115,191 @@ class AppController {
       conf.style.animationDelay = `${Math.random() * 0.5}s`;
       container.appendChild(conf);
       setTimeout(() => conf.remove(), 4000);
+    }
+  }
+
+  /* ================= 1. WHAT DID YOU SEE? ================= */
+
+  handleWhatDidYouSeeClick(id) {
+    if (this.state.whatDidYouSeeSelected.has(id)) {
+      this.state.whatDidYouSeeSelected.delete(id);
+    } else {
+      this.state.whatDidYouSeeSelected.add(id);
+      window.soundEngine.playPop();
+    }
+
+    const bubble = document.getElementById('see-speech-text');
+    if (this.state.whatDidYouSeeSelected.size >= 3) {
+      window.soundEngine.playSparkle();
+      const targetSentence = "I can see houses, trees and cars.";
+      if (bubble) bubble.innerHTML = `Say together: <strong>"${targetSentence}"</strong>`;
+      window.soundEngine.speak(targetSentence);
+      this.addStars(5, "Discovered neighbourhood items!");
+    } else {
+      if (bubble) bubble.textContent = "Tap at least 3 things you saw!";
+    }
+
+    this.renderScene('what_did_you_see');
+  }
+
+  /* ================= 2. REMEMBER THE NEIGHBOURHOOD ================= */
+
+  handleMemoryAnswer(userAnswer) {
+    const q = window.NEIGHBOURHOOD_DATA.memoryQuestions[this.state.memoryIndex];
+    const isCorrect = (userAnswer === q.answer);
+
+    this.state.memoryFeedback = {
+      isCorrect: isCorrect,
+      text: isCorrect ? `Correct! ${q.feedback}` : `Not quite! ${q.feedback}`
+    };
+
+    if (isCorrect) {
+      window.soundEngine.playDing();
+      this.addStars(5, "Great memory!");
+    } else {
+      window.soundEngine.playPop();
+    }
+
+    window.soundEngine.speak(q.feedback);
+    this.renderScene('remember_game');
+  }
+
+  nextMemoryQuestion() {
+    this.state.memoryFeedback = null;
+    if (this.state.memoryIndex < window.NEIGHBOURHOOD_DATA.memoryQuestions.length - 1) {
+      this.state.memoryIndex++;
+      window.soundEngine.playPop();
+      this.renderScene('remember_game');
+    } else {
+      this.state.memoryIndex = 0;
+      this.renderScene('true_false');
+    }
+  }
+
+  /* ================= 3. TRUE OR FALSE ================= */
+
+  handleTrueFalseAnswer(userAnswer) {
+    const item = window.NEIGHBOURHOOD_DATA.trueFalseStatements[this.state.trueFalseIndex];
+    const isCorrect = (userAnswer === item.isTrue);
+
+    this.state.trueFalseFeedback = {
+      isCorrect: isCorrect,
+      target: item.target,
+      message: isCorrect ? `Correct! ${item.prompt}` : `Try again! ${item.prompt}`
+    };
+
+    if (isCorrect) {
+      window.soundEngine.playDing();
+      this.addStars(5, "True/False Master!");
+    } else {
+      window.soundEngine.playPop();
+    }
+
+    window.soundEngine.speak(item.prompt);
+    this.renderScene('true_false');
+  }
+
+  nextTrueFalse() {
+    this.state.trueFalseFeedback = null;
+    if (this.state.trueFalseIndex < window.NEIGHBOURHOOD_DATA.trueFalseStatements.length - 1) {
+      this.state.trueFalseIndex++;
+      window.soundEngine.playPop();
+      this.renderScene('true_false');
+    } else {
+      this.state.trueFalseIndex = 0;
+      this.renderScene('listen_find');
+    }
+  }
+
+  /* ================= 4. LISTEN AND FIND ================= */
+
+  nextListenFind() {
+    this.state.listenFindFound = false;
+    if (this.state.listenFindIndex < window.NEIGHBOURHOOD_DATA.listenAndFindPrompts.length - 1) {
+      this.state.listenFindIndex++;
+      window.soundEngine.playPop();
+      this.renderScene('listen_find');
+    } else {
+      this.state.listenFindIndex = 0;
+      this.renderScene('there_is_are');
+    }
+  }
+
+  /* ================= 5. GRAMMAR: THERE IS / THERE ARE ================= */
+
+  handleThereIsAreChoice(choice) {
+    const q = window.NEIGHBOURHOOD_DATA.thereIsAreQuestions[this.state.thereIsAreIndex];
+    const isCorrect = (choice === q.correct);
+
+    this.state.thereIsAreAnswered = {
+      choice: choice,
+      isCorrect: isCorrect
+    };
+
+    if (isCorrect) {
+      window.soundEngine.playDing();
+      window.soundEngine.speak(q.complete);
+      this.addStars(5, "Grammar Star!");
+    } else {
+      window.soundEngine.playPop();
+      window.soundEngine.speak("Remember: IS is for 1 item, ARE is for more than 1!");
+    }
+
+    this.renderScene('there_is_are');
+  }
+
+  nextThereIsAre() {
+    this.state.thereIsAreAnswered = null;
+    if (this.state.thereIsAreIndex < window.NEIGHBOURHOOD_DATA.thereIsAreQuestions.length - 1) {
+      this.state.thereIsAreIndex++;
+      window.soundEngine.playPop();
+      this.renderScene('there_is_are');
+    } else {
+      this.state.thereIsAreIndex = 0;
+      this.renderScene('favorite_places');
+    }
+  }
+
+  /* ================= 6. FAVORITE PLACES ================= */
+
+  selectFavoritePlace(placeId) {
+    this.state.favPlaceSelected = placeId;
+    const place = window.NEIGHBOURHOOD_DATA.favoritePlaces.find(p => p.id === placeId);
+    if (place) {
+      window.soundEngine.playDing();
+      window.soundEngine.speak(place.sentence);
+      this.addStars(5, `Favorite place: ${place.label}`);
+    }
+    this.renderScene('favorite_places');
+  }
+
+  /* ================= 7. FAVORITE ACTIVITIES ================= */
+
+  selectFavoriteActivity(actId) {
+    this.state.favActivitySelected = actId;
+    const act = window.NEIGHBOURHOOD_DATA.favoriteActivities.find(a => a.id === actId);
+    if (act) {
+      window.soundEngine.playDing();
+      window.soundEngine.speak(act.sentence);
+      this.addStars(5, `Activity: ${act.label}`);
+    }
+    this.renderScene('favorite_activities');
+  }
+
+  /* ================= 8. SCAFFOLDED SUPPORT LEVELS ================= */
+
+  setScaffoldLevel(level) {
+    this.state.scaffoldActiveLevel = level;
+    window.soundEngine.playPop();
+    this.renderScene('scaffold_levels');
+  }
+
+  speakScaffoldItem(idx) {
+    const fullItems = window.NEIGHBOURHOOD_DATA.scaffoldLevels[0].items;
+    if (fullItems[idx]) {
+      window.soundEngine.playSparkle();
+      window.soundEngine.speak(fullItems[idx].text);
+      this.showToast(`🗣️ "${fullItems[idx].text}"`);
     }
   }
 

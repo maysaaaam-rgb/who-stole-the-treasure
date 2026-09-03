@@ -944,6 +944,649 @@ const Scenes = {
         </div>
       </div>
     `;
+  },
+
+  /**
+   * 1. WHAT DID YOU SEE? Interactive map check
+   */
+  renderWhatDidYouSee(state) {
+    const selected = state.whatDidYouSeeSelected || new Set();
+    const items = [
+      { id: 'houses', icon: '🏠', label: 'Houses' },
+      { id: 'trees', icon: '🌳', label: 'Trees' },
+      { id: 'cars', icon: '🚗', label: 'Cars' },
+      { id: 'school', icon: '🏫', label: 'School' },
+      { id: 'shop', icon: '🛒', label: 'Shop' },
+      { id: 'park', icon: '🌳', label: 'Park' }
+    ];
+
+    return `
+      <div class="scene-container scene-comprehension-view">
+        <div class="interior-header">
+          <div class="interior-title-pill see-pill">
+            <span class="icon">👀</span>
+            <div class="text-block">
+              <h2>What Did You See in the Neighbourhood?</h2>
+              <p class="sub">Tap all the things you saw during your exploration!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('remember_game')">
+            Next: Memory Check 🧠 ➡️
+          </button>
+        </div>
+
+        <div class="comprehension-map-wrapper">
+          ${this.renderMainMap(state)}
+        </div>
+
+        <!-- Interactive Selection Chips -->
+        <div class="see-chips-tray">
+          <span class="tray-label">Tap what you saw:</span>
+          <div class="chips-list">
+            ${items.map(it => `
+              <button class="see-chip ${selected.has(it.id) ? 'active' : ''}" onclick="window.app.handleWhatDidYouSeeClick('${it.id}')">
+                <span class="chip-icon">${it.icon}</span>
+                <span class="chip-label">${it.label}</span>
+                ${selected.has(it.id) ? '<span class="chip-check">✅</span>' : ''}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="see-speech-bubble">
+            <span class="bubble-icon">🗣️</span>
+            <span class="bubble-text" id="see-speech-text">
+              ${selected.size >= 3 ? 'Say together: "I can see houses, trees and cars."' : 'Tap at least 3 things you saw!'}
+            </span>
+          </div>
+          <button class="action-play-btn" onclick="window.soundEngine.speak('I can see houses, trees and cars.')">
+            🔊 Speak Together
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 2. REMEMBER THE NEIGHBOURHOOD (Hidden Map Memory Challenge)
+   */
+  renderRememberGame(state) {
+    const qIndex = state.memoryIndex || 0;
+    const questions = window.NEIGHBOURHOOD_DATA.memoryQuestions;
+    const q = questions[qIndex];
+    const total = questions.length;
+    const answered = state.memoryFeedback;
+
+    return `
+      <div class="scene-container scene-memory-view">
+        <div class="interior-header">
+          <div class="interior-title-pill memory-pill">
+            <span class="icon">🧠</span>
+            <div class="text-block">
+              <h2>Remember the Neighbourhood! (${qIndex + 1}/${total})</h2>
+              <p class="sub">The map is hidden! Can you remember what was there?</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('true_false')">
+            Next: True / False ➡️
+          </button>
+        </div>
+
+        <!-- Veiled Memory Screen -->
+        <div class="memory-veil-stage">
+          <div class="mystery-veil-card">
+            <div class="veil-cloud-icon">🌫️ ❓ 🌫️</div>
+            <div class="memory-question-text">"${q.q}"</div>
+
+            <!-- YES / NO Buttons -->
+            <div class="memory-actions-row">
+              <button class="memory-choice-btn yes-btn" onclick="window.app.handleMemoryAnswer(true)">
+                <span class="choice-icon">👍</span>
+                <span class="choice-label">YES</span>
+              </button>
+              <button class="memory-choice-btn no-btn" onclick="window.app.handleMemoryAnswer(false)">
+                <span class="choice-icon">👎</span>
+                <span class="choice-label">NO</span>
+              </button>
+            </div>
+
+            <!-- Immediate Feedback Display -->
+            ${answered ? `
+              <div class="memory-feedback-banner ${answered.isCorrect ? 'correct' : 'incorrect'}">
+                <span class="feedback-icon">${answered.isCorrect ? '🌟' : '💡'}</span>
+                <span class="feedback-text">${answered.text}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <button class="action-play-btn" onclick="window.soundEngine.speak('${q.q}')">
+            🔊 Read Question
+          </button>
+          <button class="action-next-btn" onclick="window.app.nextMemoryQuestion()">
+            ${qIndex === total - 1 ? 'Go to True or False ➡️' : 'Next Question ➡️'}
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 3. TRUE OR FALSE WITH MAP HIGHLIGHT
+   */
+  renderTrueFalseGame(state) {
+    const tfIndex = state.trueFalseIndex || 0;
+    const statements = window.NEIGHBOURHOOD_DATA.trueFalseStatements;
+    const item = statements[tfIndex];
+    const total = statements.length;
+    const feedback = state.trueFalseFeedback;
+
+    return `
+      <div class="scene-container scene-truefalse-view">
+        <div class="interior-header">
+          <div class="interior-title-pill tf-pill">
+            <span class="icon">⚖️</span>
+            <div class="text-block">
+              <h2>True or False? (${tfIndex + 1}/${total})</h2>
+              <p class="sub">Is this statement true or false for our neighbourhood?</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('listen_find')">
+            Next: Listen & Find 🎧 ➡️
+          </button>
+        </div>
+
+        <div class="tf-stage-layout">
+          <!-- Background Map with potential highlight -->
+          <div class="tf-map-container ${feedback && feedback.target ? 'spotlight-' + feedback.target : ''}">
+            ${this.renderMainMap(state)}
+          </div>
+
+          <!-- Floating Question Overlay Card -->
+          <div class="tf-overlay-card">
+            <div class="tf-statement-quote">"${item.text}"</div>
+            
+            <div class="tf-btn-row">
+              <button class="tf-btn true-btn" onclick="window.app.handleTrueFalseAnswer(true)">
+                🟢 TRUE
+              </button>
+              <button class="tf-btn false-btn" onclick="window.app.handleTrueFalseAnswer(false)">
+                🔴 FALSE
+              </button>
+            </div>
+
+            ${feedback ? `
+              <div class="tf-feedback-box ${feedback.isCorrect ? 'correct' : 'wrong'}">
+                <span class="fb-icon">${feedback.isCorrect ? '✅' : '❌'}</span>
+                <span class="fb-text">${feedback.message}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <button class="action-play-btn" onclick="window.soundEngine.speak('${item.text}')">
+            🔊 Read Statement
+          </button>
+          <button class="action-next-btn" onclick="window.app.nextTrueFalse()">
+            ${tfIndex === total - 1 ? 'Go to Listen & Find ➡️' : 'Next Statement ➡️'}
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 4. LISTEN AND FIND 🎧
+   */
+  renderListenAndFind(state) {
+    const lfIndex = state.listenFindIndex || 0;
+    const prompts = window.NEIGHBOURHOOD_DATA.listenAndFindPrompts;
+    const cur = prompts[lfIndex];
+    const total = prompts.length;
+    const found = state.listenFindFound;
+
+    return `
+      <div class="scene-container scene-listenfind-view">
+        <div class="interior-header">
+          <div class="interior-title-pill listen-pill">
+            <span class="icon">🎧</span>
+            <div class="text-block">
+              <h2>Listen and Find (${lfIndex + 1}/${total})</h2>
+              <p class="sub">Listen carefully, then touch the correct location on the map!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('there_is_are')">
+            Next: Grammar (Is / Are) ➡️
+          </button>
+        </div>
+
+        <!-- Audio Player Callout Banner -->
+        <div class="listen-audio-banner">
+          <button class="big-audio-play-btn" onclick="window.soundEngine.speak('${cur.audio}')">
+            🔊 <span class="btn-text">PLAY AUDIO: "${cur.audio}"</span>
+          </button>
+          <span class="listen-hint-text">👆 Tap the audio button to hear the clue, then touch the location below!</span>
+        </div>
+
+        <!-- Interactive Map with click interception for Listen & Find -->
+        <div class="listen-map-stage">
+          ${this.renderMainMap(state)}
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="listen-speech-bubble">
+            <span class="bubble-icon">⭐</span>
+            <span class="bubble-text" id="listen-speech-text">
+              ${found ? `🎉 Correct! You found the ${cur.label}!` : `Clue: "${cur.audio}"`}
+            </span>
+          </div>
+          <button class="action-play-btn" onclick="window.soundEngine.speak('${cur.audio}')">
+            🔊 Replay Audio
+          </button>
+          <button class="action-next-btn" onclick="window.app.nextListenFind()">
+            ${lfIndex === total - 1 ? 'Go to Grammar (Is/Are) ➡️' : 'Next Clue ➡️'}
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 5. THERE IS / THERE ARE GRAMMAR BUILDER
+   */
+  renderThereIsAre(state) {
+    const qIndex = state.thereIsAreIndex || 0;
+    const questions = window.NEIGHBOURHOOD_DATA.thereIsAreQuestions;
+    const q = questions[qIndex];
+    const total = questions.length;
+    const answered = state.thereIsAreAnswered;
+
+    return `
+      <div class="scene-container scene-grammar-view">
+        <div class="interior-header">
+          <div class="interior-title-pill grammar-pill">
+            <span class="icon">✏️</span>
+            <div class="text-block">
+              <h2>Grammar: There is / There are (${qIndex + 1}/${total})</h2>
+              <p class="sub">Choose "IS" for one item, or "ARE" for lots of items!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('favorite_places')">
+            Next: Where do you like to go? ➡️
+          </button>
+        </div>
+
+        <div class="grammar-card-stage">
+          <div class="grammar-box-card">
+            <div class="grammar-visual-icon">${q.icon}</div>
+            
+            <div class="grammar-sentence-prompt">
+              ${answered ? `
+                <span class="completed-sentence">"${q.complete}"</span>
+              ` : `
+                <span>There <span class="blank-slot">_____</span> ${q.text.replace('There ___ ', '')}</span>
+              `}
+            </div>
+
+            <!-- IS / ARE Buttons -->
+            <div class="grammar-options-row">
+              <button class="grammar-btn ${answered && answered.choice === 'is' ? (answered.isCorrect ? 'correct' : 'wrong') : ''}" onclick="window.app.handleThereIsAreChoice('is')">
+                IS
+              </button>
+              <button class="grammar-btn ${answered && answered.choice === 'are' ? (answered.isCorrect ? 'correct' : 'wrong') : ''}" onclick="window.app.handleThereIsAreChoice('are')">
+                ARE
+              </button>
+            </div>
+
+            ${answered ? `
+              <div class="grammar-feedback-pill ${answered.isCorrect ? 'correct' : 'wrong'}">
+                ${answered.isCorrect ? '🌟 Correct!' : '💡 Remember: IS is for 1, ARE is for more than 1!'}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <button class="action-play-btn" onclick="window.soundEngine.speak('${answered ? q.complete : q.text.replace('___', '...')}')">
+            🔊 Read Aloud
+          </button>
+          <button class="action-next-btn" onclick="window.app.nextThereIsAre()">
+            ${qIndex === total - 1 ? 'Favorite Places ➡️' : 'Next Question ➡️'}
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 6. WHERE DO YOU LIKE TO GO?
+   */
+  renderFavoritePlaces(state) {
+    const selected = state.favPlaceSelected || 'park';
+    const places = window.NEIGHBOURHOOD_DATA.favoritePlaces;
+    const cur = places.find(p => p.id === selected) || places[0];
+
+    return `
+      <div class="scene-container scene-favorite-view">
+        <div class="interior-header">
+          <div class="interior-title-pill fav-pill">
+            <span class="icon">❤️</span>
+            <div class="text-block">
+              <h2>Where Do You Like to Go?</h2>
+              <p class="sub">Choose your favourite place, then say the sentence aloud!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('favorite_activities')">
+            Next: Activities ➡️
+          </button>
+        </div>
+
+        <div class="favorite-places-grid">
+          ${places.map(p => `
+            <div class="favorite-place-card clickable-item ${selected === p.id ? 'active' : ''}" onclick="window.app.selectFavoritePlace('${p.id}')">
+              <div class="card-emoji">${p.icon}</div>
+              <div class="card-name">${p.label}</div>
+              <button class="card-speak-badge">I like to go here</button>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="fav-place-bubble">
+            <span class="bubble-icon">🗣️</span>
+            <span class="bubble-text" id="fav-place-text">"${cur.sentence}"</span>
+          </div>
+          <button class="action-play-btn large" onclick="window.soundEngine.speak('${cur.sentence}')">
+            🔊 Say: "${cur.sentence}"
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 7. WHAT DO YOU LIKE TO DO?
+   */
+  renderFavoriteActivities(state) {
+    const selected = state.favActivitySelected || 'walks';
+    const acts = window.NEIGHBOURHOOD_DATA.favoriteActivities;
+    const cur = acts.find(a => a.id === selected) || acts[0];
+
+    return `
+      <div class="scene-container scene-favorite-view">
+        <div class="interior-header">
+          <div class="interior-title-pill fav-act-pill">
+            <span class="icon">🚶</span>
+            <div class="text-block">
+              <h2>What Do You Like to Do?</h2>
+              <p class="sub">Choose a fun activity, then speak your sentence aloud!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('scaffold_levels')">
+            Next: 3-Level Speaking Challenge ➡️
+          </button>
+        </div>
+
+        <div class="favorite-activities-grid">
+          ${acts.map(a => `
+            <div class="favorite-act-card clickable-item ${selected === a.id ? 'active' : ''}" onclick="window.app.selectFavoriteActivity('${a.id}')">
+              <div class="card-emoji">${a.icon}</div>
+              <div class="card-name">${a.label}</div>
+              <button class="card-speak-badge">Choose this</button>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="fav-act-bubble">
+            <span class="bubble-icon">🗣️</span>
+            <span class="bubble-text" id="fav-act-text">"${cur.sentence}"</span>
+          </div>
+          <button class="action-play-btn large" onclick="window.soundEngine.speak('${cur.sentence}')">
+            🔊 Say: "${cur.sentence}"
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 8. THREE SCAFFOLDED SUPPORT LEVELS (Fading Support)
+   */
+  renderScaffoldLevels(state) {
+    const activeLevel = state.scaffoldActiveLevel || 1;
+    const levelData = window.NEIGHBOURHOOD_DATA.scaffoldLevels.find(l => l.level === activeLevel) || window.NEIGHBOURHOOD_DATA.scaffoldLevels[0];
+
+    return `
+      <div class="scene-container scene-scaffold-view">
+        <div class="interior-header">
+          <div class="interior-title-pill scaffold-pill">
+            <span class="icon">🧗</span>
+            <div class="text-block">
+              <h2>Gradual Speaking Fader (Support Levels)</h2>
+              <p class="sub">Remove support step-by-step until you can speak independently!</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('new_town')">
+            Next: Brand New Town! 🏙️ ➡️
+          </button>
+        </div>
+
+        <!-- Level Selector Tabs -->
+        <div class="scaffold-tabs-bar">
+          <button class="scaffold-tab ${activeLevel === 1 ? 'active level-1' : ''}" onclick="window.app.setScaffoldLevel(1)">
+            🟢 LEVEL 1 (Full Support)
+          </button>
+          <button class="scaffold-tab ${activeLevel === 2 ? 'active level-2' : ''}" onclick="window.app.setScaffoldLevel(2)">
+            🟡 LEVEL 2 (Starters Only)
+          </button>
+          <button class="scaffold-tab ${activeLevel === 3 ? 'active level-3' : ''}" onclick="window.app.setScaffoldLevel(3)">
+            🔴 LEVEL 3 (Icons Only!)
+          </button>
+        </div>
+
+        <!-- Scaffolded Prompts Stage -->
+        <div class="scaffold-prompts-stage">
+          <div class="level-intro-pill">
+            <strong>${levelData.badge}:</strong> ${levelData.desc}
+          </div>
+
+          <div class="scaffold-items-grid">
+            ${levelData.items.map((it, idx) => `
+              <div class="scaffold-card clickable-item" onclick="window.app.speakScaffoldItem(${idx})">
+                <div class="scaffold-icon">${it.icon}</div>
+                <div class="scaffold-text">${it.text}</div>
+                <button class="scaffold-mic-btn">🎤 Speak</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="scaffold-speech-bubble">
+            <span class="bubble-icon">🎤</span>
+            <span class="bubble-text" id="scaffold-speech-text">
+              ${activeLevel === 3 ? 'Try saying all 6 sentences without reading!' : 'Tap each card to practice speaking!'}
+            </span>
+          </div>
+          <button class="action-play-btn" onclick="window.soundEngine.speak('Try speaking each sentence aloud in English!')">
+            🔊 Instructions
+          </button>
+          <button class="action-next-btn" onclick="window.app.exitToMap()">
+            🗺️ Back to Map
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 9. BRAND NEW NEIGHBOURHOOD (Final Independent Speaking Challenge)
+   */
+  renderNewNeighbourhood(state) {
+    return `
+      <div class="scene-container scene-newtown-view">
+        <div class="interior-header">
+          <div class="interior-title-pill newtown-pill">
+            <span class="icon">🏙️</span>
+            <div class="text-block">
+              <h2>Final Challenge: A Brand New Neighbourhood!</h2>
+              <p class="sub">Look at this new town! Can you describe it independently?</p>
+            </div>
+          </div>
+          <button class="action-next-btn" onclick="window.app.renderScene('reward')">
+            Get Explorer Badge 🏅 ➡️
+          </button>
+        </div>
+
+        <div class="newtown-stage-layout">
+          <!-- New Neighbourhood SVG Graphic -->
+          <div class="newtown-svg-wrap">
+            <svg class="newtown-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="newSky" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#4fc3f7" />
+                  <stop offset="100%" stop-color="#b3e5fc" />
+                </linearGradient>
+                <linearGradient id="newGrass" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#81c784" />
+                  <stop offset="100%" stop-color="#4caf50" />
+                </linearGradient>
+              </defs>
+
+              <!-- Sky, Sun & Grass -->
+              <rect x="0" y="0" width="1000" height="160" fill="url(#newSky)" />
+              <circle cx="150" cy="50" r="30" fill="#fbc02d" />
+              <rect x="0" y="150" width="1000" height="350" fill="url(#newGrass)" />
+
+              <!-- New Coastal Avenue Road -->
+              <path d="M 0 320 L 1000 320 L 1000 420 L 0 420 Z" fill="#546e7a" />
+              <line x1="0" y1="370" x2="1000" y2="370" stroke="#fbc02d" stroke-width="4" stroke-dasharray="25,20" />
+
+              <!-- Tall Modern Apartment Block / Flats -->
+              <g transform="translate(80, 140)">
+                <rect x="0" y="0" width="110" height="180" rx="4" fill="#ffb74d" stroke="#f57c00" stroke-width="2" />
+                <rect x="15" y="20" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="45" y="20" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="75" y="20" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="15" y="60" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="45" y="60" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="75" y="60" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="15" y="100" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="45" y="100" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="75" y="100" width="22" height="22" rx="2" fill="#e0f7fa" />
+                <rect x="40" y="145" width="30" height="35" rx="2" fill="#5d4037" />
+                <text x="55" y="-8" text-anchor="middle" font-size="14" font-weight="900" fill="#e65100">🏢 FLATS</text>
+              </g>
+
+              <!-- Central Sunny School -->
+              <g transform="translate(380, 160)">
+                <rect x="0" y="20" width="180" height="140" rx="4" fill="#fff9c4" stroke="#fbc02d" stroke-width="3" />
+                <polygon points="0,20 90,-20 180,20" fill="#e57373" />
+                <circle cx="90" cy="5" r="12" fill="#ffffff" stroke="#5d4037" stroke-width="2" />
+                <text x="90" y="9" text-anchor="middle" font-size="10">🔔</text>
+                <text x="90" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#d32f2f">SUNNY SCHOOL</text>
+                <rect x="70" y="100" width="40" height="60" rx="2" fill="#795548" />
+              </g>
+
+              <!-- Fruit Market & Grocery -->
+              <g transform="translate(230, 200)">
+                <rect x="0" y="20" width="110" height="100" rx="3" fill="#ffe0b2" stroke="#fb8c00" stroke-width="2" />
+                <path d="M -5 20 L 115 20 L 105 40 L -15 40 Z" fill="#e91e63" />
+                <text x="55" y="10" text-anchor="middle" font-size="13" font-weight="900" fill="#ad1457">🛒 FRUIT SHOP</text>
+              </g>
+
+              <!-- Blossom Fountain Park -->
+              <g transform="translate(680, 180)">
+                <ellipse cx="140" cy="80" rx="130" ry="70" fill="#81c784" stroke="#388e3c" stroke-width="3" />
+                <!-- Fountain -->
+                <circle cx="140" cy="80" r="28" fill="#4fc3f7" stroke="#0288d1" stroke-width="3" />
+                <circle cx="140" cy="80" r="10" fill="#ffffff" />
+                <!-- Trees & Flowers -->
+                <circle cx="60" cy="50" r="25" fill="#2e7d32" />
+                <circle cx="210" cy="60" r="28" fill="#388e3c" />
+                <text x="140" y="-8" text-anchor="middle" font-size="14" font-weight="900" fill="#1b5e20">🌳 BLOSSOM PARK</text>
+              </g>
+
+              <!-- Yellow Taxi Driving -->
+              <g transform="translate(480, 335)">
+                <rect x="0" y="0" width="80" height="34" rx="8" fill="#fdd835" stroke="#f57f17" stroke-width="2" />
+                <rect x="16" y="4" width="44" height="16" rx="4" fill="#e1f5fe" />
+                <circle cx="18" cy="34" r="9" fill="#212121" />
+                <circle cx="62" cy="34" r="9" fill="#212121" />
+                <text x="40" y="28" text-anchor="middle" font-size="10" font-weight="900" fill="#333">TAXI</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Independent Speaking Prompt Cues -->
+          <div class="newtown-prompt-cues">
+            <h3 class="cues-header">🎤 Describe This Neighbourhood!</h3>
+            <div class="cue-pill-list">
+              <div class="cue-card" onclick="window.soundEngine.speak('Where do you live? I live in a flat.')">
+                <span class="cue-badge">1. 🏢 WHERE?</span>
+                <span class="cue-text">Where do you live?</span>
+              </div>
+              <div class="cue-card" onclick="window.soundEngine.speak('What can you see? I can see cars and trees.')">
+                <span class="cue-badge">2. 👀 SEE?</span>
+                <span class="cue-text">What can you see?</span>
+              </div>
+              <div class="cue-card" onclick="window.soundEngine.speak('What is there? There is a school, a shop, and a park.')">
+                <span class="cue-badge">3. 🏫🌳🛒 WHAT IS THERE?</span>
+                <span class="cue-text">There is a...</span>
+              </div>
+              <div class="cue-card" onclick="window.soundEngine.speak('Where do you like to go? I like to go to the park.')">
+                <span class="cue-badge">4. ❤️ LIKE TO GO?</span>
+                <span class="cue-text">Where do you like to go?</span>
+              </div>
+              <div class="cue-card" onclick="window.soundEngine.speak('What do you like to do? I like to go for walks with my family.')">
+                <span class="cue-badge">5. 🚶 WHAT TO DO?</span>
+                <span class="cue-text">What do you like to do?</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sentence-action-footer">
+          <div class="speech-result-bubble" id="newtown-speech-bubble">
+            <span class="bubble-icon">🏆</span>
+            <span class="bubble-text" id="newtown-speech-text">
+              "My neighbourhood is big. I live in a flat. I can see cars and trees. There is a school and a park. I like to go for walks with my family!"
+            </span>
+          </div>
+          <button class="action-play-btn large" onclick="window.soundEngine.speak(document.getElementById('newtown-speech-text').textContent)">
+            🔊 Hear Model Speech
+          </button>
+          <button class="action-next-btn" onclick="window.app.renderScene('reward')">
+            Get Certificate 🏅
+          </button>
+        </div>
+      </div>
+    `;
   }
 };
 
