@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>My Neighbourhood - ESL Interactive Speaking Adventure</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Friendly, high-readability font for young learners -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive Shell (16:9 Letterbox Engine) -->
+  <div id="screen-wrapper">
+    <div id="app-stage">
+      
+      <!-- Top Persistent HUD -->
+      <header id="main-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.app.renderScene('map')" title="Neighbourhood Map">
+            🏠 <span>Map</span>
+          </button>
+          
+          <button class="hud-btn" onclick="window.app.renderScene('map')" title="Back to Map">
+            ⬅️ <span>Back</span>
+          </button>
+
+          <!-- Big / Small Neighbourhood Toggle (PDF Slide 6 & 19) -->
+          <div class="size-toggle-pill" title="Toggle Neighbourhood Size">
+            <button class="size-btn big active" onclick="window.app.toggleNeighbourhoodSize('big')">🔵 BIG</button>
+            <button class="size-btn small" onclick="window.app.toggleNeighbourhoodSize('small')">🟢 SMALL</button>
+          </div>
+
+          <!-- Quick Navigation Buttons -->
+          <button class="hud-btn" onclick="window.app.renderScene('builder')" title="Build Town">
+            🏗️ <span>Build</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('matching')" title="Match Words to Pictures">
+            🧩 <span>Match</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('dialogues')" title="Practice Conversations">
+            💬 <span>Dialogue</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('speaking_builder')" title="Sentence Builder">
+            🗣️ <span>Sentence Builder</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('tour')" title="Walking Tour Guide">
+            🚶 <span>Tour</span>
+          </button>
+        </div>
+
+        <div class="hud-right">
+          <!-- Star Explorer Badge Counter -->
+          <div class="star-badge-counter" title="Explorer Stars">
+            <span class="star-icon">⭐</span>
+            <span id="hud-star-count">10</span>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="hud-speech-btn" onclick="toggleSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="hud-sfx-btn" onclick="toggleSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Quick Jump Menu -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherMenu()" title="Teacher Jump Menu">
+              👩‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-menu-modal" id="teacher-menu">
+              <button onclick="window.app.renderScene('welcome'); toggleTeacherMenu();">1. Welcome Screen</button>
+              <button onclick="window.app.renderScene('map'); toggleTeacherMenu();">2. Living Map Overview</button>
+              <button onclick="window.app.enterLocation('home'); toggleTeacherMenu();">3. My Home (Where do you live?)</button>
+              <button onclick="window.app.enterLocation('park'); toggleTeacherMenu();">4. The Park & Detective</button>
+              <button onclick="window.app.enterLocation('school'); toggleTeacherMenu();">5. School (There is a school)</button>
+              <button onclick="window.app.enterLocation('shop'); toggleTeacherMenu();">6. Bakery & Shop</button>
+              <button onclick="window.app.enterLocation('neighbours'); toggleTeacherMenu();">7. Meet the Neighbours</button>
+              <button onclick="window.app.renderScene('builder'); toggleTeacherMenu();">8. Build Your Neighbourhood</button>
+              <button onclick="window.app.renderScene('matching'); toggleTeacherMenu();">9. Match Words (Slide 13)</button>
+              <button onclick="window.app.renderScene('dialogues'); toggleTeacherMenu();">10. Practice Dialogues (Slides 14-18)</button>
+              <button onclick="window.app.renderScene('speaking_builder'); toggleTeacherMenu();">11. Speaking Builder (Slide 19)</button>
+              <button onclick="window.app.renderScene('speaking_mission'); toggleTeacherMenu();">12. Speaking Prompts (Slide 20)</button>
+              <button onclick="window.app.renderScene('tour'); toggleTeacherMenu();">13. Final Walking Tour</button>
+              <button onclick="window.app.renderScene('reward'); toggleTeacherMenu();">14. Explorer Certificate 🏅</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Active Street Mission Floating Banner -->
+      <div id="street-mission-banner"></div>
+
+      <!-- Main Dynamic Scene Viewport -->
+      <main id="scene-viewport">
+        <!-- Injected via JavaScript -->
+      </main>
+
+      <!-- Game Toast Notification -->
+      <div id="game-toast"></div>
+
+    </div>
+  </div>
+
+  <!-- Audio Controls Helper Script -->
+  <script>
+    function toggleTeacherMenu() {
+      const menu = document.getElementById('teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    // Close teacher menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleSpeech() {
+      const enabled = window.soundEngine.toggleSpeech();
+      const btn = document.getElementById('hud-speech-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.app.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function toggleSfx() {
+      const enabled = window.soundEngine.toggleSound();
+      const btn = document.getElementById('hud-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.app.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
