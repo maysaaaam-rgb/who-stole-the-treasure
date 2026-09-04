@@ -661,16 +661,16 @@
 
       // 10. Transaction-based XP Ledger
       xpTransactions: [
-        { id: 'xp-1', studentId: 'student-emma', amount: 500, reason: 'Completed Initial Explorer Orientation', date: 'Sep 1, 2026', source: 'System' },
-        { id: 'xp-2', studentId: 'student-emma', amount: 350, reason: 'Mastered Body Parts in Monster Day', date: 'Sep 4, 2026', source: 'Activity' },
-        { id: 'xp-3', studentId: 'student-emma', amount: 250, reason: 'Polite Dialogue in Restaurant Roleplay', date: 'Sep 7, 2026', source: 'Activity' },
-        { id: 'xp-4', studentId: 'student-emma', amount: 140, reason: 'Great Speaking Participation Award', date: 'Sep 9, 2026', source: 'Teacher' },
-        { id: 'xp-5', studentId: 'student-lucas', amount: 500, reason: 'Completed Initial Explorer Orientation', date: 'Sep 1, 2026', source: 'System' },
-        { id: 'xp-6', studentId: 'student-lucas', amount: 320, reason: 'Restaurant Roleplay Completion', date: 'Sep 6, 2026', source: 'Activity' },
-        { id: 'xp-7', studentId: 'student-sofia', amount: 980, reason: 'Treasure Mystery Super Sleuth', date: 'Sep 8, 2026', source: 'Activity' },
-        { id: 'xp-8', studentId: 'student-noah', amount: 620, reason: 'Firefighter Mission Accomplished', date: 'Sep 5, 2026', source: 'Activity' },
-        { id: 'xp-9', studentId: 'student-maya', amount: 710, reason: 'Jungle Explorer Mission', date: 'Sep 6, 2026', source: 'Activity' },
-        { id: 'xp-10', studentId: 'student-oliver', amount: 450, reason: 'Super Hero Phonics Training', date: 'Sep 3, 2026', source: 'Activity' }
+        { id: 'xp-1', studentId: 'student-emma', amount: 500, reason: 'Completed Initial Explorer Orientation', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
+        { id: 'xp-2', studentId: 'student-emma', amount: 350, reason: 'Mastered Body Parts in Monster Day', category: 'positive', icon: '🦖', date: 'Sep 4, 2026', timestamp: '2026-09-04T10:30:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-3', studentId: 'student-emma', amount: 250, reason: 'Polite Dialogue in Restaurant Roleplay', category: 'positive', icon: '🍽️', date: 'Sep 7, 2026', timestamp: '2026-09-07T11:15:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-4', studentId: 'student-emma', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 9, 2026', timestamp: '2026-09-09T14:00:00Z', createdBy: 'Ms. Sarah', source: 'Teacher', status: 'active' },
+        { id: 'xp-5', studentId: 'student-lucas', amount: 500, reason: 'Completed Initial Explorer Orientation', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
+        { id: 'xp-6', studentId: 'student-lucas', amount: 320, reason: 'Restaurant Roleplay Completion', category: 'positive', icon: '🍽️', date: 'Sep 6, 2026', timestamp: '2026-09-06T10:45:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-7', studentId: 'student-sofia', amount: 980, reason: 'Treasure Mystery Super Sleuth', category: 'positive', icon: '🗝️', date: 'Sep 8, 2026', timestamp: '2026-09-08T13:20:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-8', studentId: 'student-noah', amount: 620, reason: 'Firefighter Mission Accomplished', category: 'positive', icon: '🚒', date: 'Sep 5, 2026', timestamp: '2026-09-05T11:00:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-9', studentId: 'student-maya', amount: 710, reason: 'Jungle Explorer Mission', category: 'positive', icon: '🌴', date: 'Sep 6, 2026', timestamp: '2026-09-06T14:10:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-10', studentId: 'student-oliver', amount: 450, reason: 'Super Hero Phonics Training', category: 'positive', icon: '🦸', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'System', source: 'Activity', status: 'active' }
       ],
 
       // 11. Learning Evidence (Progress Calculation)
@@ -961,6 +961,112 @@
           room: 'Room 302',
           type: 'Lesson'
         }
+      ],
+
+      // 28. Editable XP Skills (Positive +1 to +3 and Needs Work -1)
+      xpSkills: [
+        { id: 'skill-help', name: 'Helping others', icon: '🤝', points: 1, category: 'positive', description: 'Assisting classmates with kindness and patience' },
+        { id: 'skill-speak', name: 'Speaking English', icon: '🗣️', points: 1, category: 'positive', description: 'Making an effort to use English sentences in class' },
+        { id: 'skill-focus', name: 'On task & focused', icon: '🎯', points: 1, category: 'positive', description: 'Staying engaged and completing classroom tasks' },
+        { id: 'skill-part', name: 'Participating enthusiastically', icon: '🙋', points: 1, category: 'positive', description: 'Raising hand and actively contributing to discussions' },
+        { id: 'skill-team', name: 'Teamwork & collaboration', icon: '🌟', points: 2, category: 'positive', description: 'Working respectfully and productively in group activities' },
+        { id: 'skill-ideas', name: 'Creative ideas', icon: '💡', points: 2, category: 'positive', description: 'Sharing original thoughts, stories, and solutions' },
+        { id: 'skill-hard', name: 'Hard work & perseverance', icon: '💪', points: 2, category: 'positive', description: 'Overcoming difficult vocabulary or pronunciation hurdles' },
+        { id: 'skill-leader', name: 'Adventure leadership', icon: '👑', points: 3, category: 'positive', description: 'Leading class quests, roleplays, or helping coordinate games' },
+        { id: 'skill-distract', name: 'Off task / distracted', icon: '💭', points: -1, category: 'needs_work', description: 'Needed reminding to refocus on current exercise' },
+        { id: 'skill-interrupt', name: 'Talking out of turn', icon: '🤫', points: -1, category: 'needs_work', description: 'Speaking while others or teacher are presenting' },
+        { id: 'skill-unprepared', name: 'Unprepared for lesson', icon: '🎒', points: -1, category: 'needs_work', description: 'Missing required books, worksheets, or materials' }
+      ],
+
+      // 29. Classroom Rewards Catalog & Student Redemption
+      rewards: [
+        { id: 'rew-1', title: 'Choose Class Warm-Up Game', cost: 50, icon: '🎮', description: "Pick the opening ESL warm-up game for tomorrow's lesson", category: 'Activity', active: true },
+        { id: 'rew-2', title: "Teacher's Special Assistant", cost: 60, icon: '⭐', description: 'Help pass out flashcards, manage props, and co-run the smartboard', category: 'Privilege', active: true },
+        { id: 'rew-3', title: 'Class Story DJ', cost: 75, icon: '🎵', description: 'Choose the background music or phonics rhyme during workshop time', category: 'Privilege', active: true },
+        { id: 'rew-4', title: 'Drawing & Doodle Break', cost: 100, icon: '🎨', description: '10 minutes of creative comic or doodle time at the end of class', category: 'Creativity', active: true },
+        { id: 'rew-5', title: 'Treasure Chest Mystery Pick', cost: 150, icon: '🎁', description: 'Pick a real sticker pack, pencil topper, or mystery badge from the chest', category: 'Physical', active: true },
+        { id: 'rew-6', title: 'Homework Pass', cost: 200, icon: '🎫', description: 'Skip one regular vocabulary practice worksheet', category: 'Academic', active: true }
+      ],
+
+      // 30. Big Ideas Classroom Brainstorm Board
+      bigIdeas: [
+        { id: 'idea-1', classId: 'class-3a', title: 'EAA Science Fair: Alien Planet Descriptions', description: 'Each student invents an exoplanet, draws its landscape, and gives a 2-minute English presentation describing alien flora, fauna, and weather.', category: 'Project', author: 'Ms. Sarah', votes: 14, pinned: true, tags: ['Science', 'Speaking', 'Art'], date: 'Sep 4, 2026' },
+        { id: 'idea-2', classId: 'class-3a', title: 'English Puppet Theater Show', description: 'Using paper bag puppets to perform the "Who Stole the Treasure?" mystery for the 2nd grade classes.', category: 'Drama', author: 'Ms. Sarah', votes: 19, pinned: true, tags: ['Roleplay', 'Creativity', 'Teamwork'], date: 'Sep 6, 2026' },
+        { id: 'idea-3', classId: 'class-3a', title: 'Treasure Island Illustrated Map', description: 'Students collaborate on a huge butcher paper map with compass directions, obstacles, and prepositions.', category: 'Writing', author: 'Ms. Sarah', votes: 11, pinned: false, tags: ['Writing', 'Geography'], date: 'Sep 8, 2026' },
+        { id: 'idea-4', classId: 'class-4b', title: 'Global Pen Pals Exchange', description: 'Writing letters and postcards describing hometown weather, favorite foods, and school life.', category: 'Culture', author: 'Ms. Sarah', votes: 16, pinned: true, tags: ['Culture', 'Writing'], date: 'Sep 7, 2026' }
+      ],
+
+      // 31. Original Adventure Avatar Customizer Catalog (6 Categories)
+      avatarCatalog: [
+        {
+          category: 'Fantasy & Dragons',
+          icon: '🐉',
+          characters: [
+            { id: 'dragon_emerald', name: 'Emerald Drake', emoji: '🐲', description: 'Wise and ancient forest dragon who loves story quests' },
+            { id: 'dragon_fire', name: 'Flame Dragon', emoji: '🐉', description: 'Energetic dragon with a fiery passion for challenges' },
+            { id: 'phoenix', name: 'Golden Phoenix', emoji: '🦅', description: 'Rises above difficulties with perseverance and grace' },
+            { id: 'unicorn', name: 'Starlight Unicorn', emoji: '🦄', description: 'Magical creature of kindness, friendship, and wonder' },
+            { id: 'wizard', name: 'Enchanted Wizard', emoji: '🧙', description: 'Master of spelling spells and vocabulary incantations' },
+            { id: 'knight', name: 'Brave Knight', emoji: '🛡️', description: 'Defender of teamwork, truth, and heroic adventures' }
+          ]
+        },
+        {
+          category: 'Space & Explorers',
+          icon: '🧑‍🚀',
+          characters: [
+            { id: 'astronaut', name: 'Cosmic Explorer', emoji: '🧑‍🚀', description: 'Floating through galaxies in search of new words' },
+            { id: 'space_cadet', name: 'Orbit Cadet', emoji: '👩‍🚀', description: 'Curious stargazing navigator charting alien worlds' },
+            { id: 'alien_scout', name: 'Star Scout', emoji: '👽', description: 'Friendly extraterrestrial eager to learn Earth languages' },
+            { id: 'cosmic_rover', name: 'Planetary Rover', emoji: '🛸', description: 'Explores cratered moons and beams back discoveries' },
+            { id: 'star_voyager', name: 'Nebula Voyager', emoji: '⭐', description: 'Shining bright and lighting the way for classmates' },
+            { id: 'rocket_pilot', name: 'Rocket Ace', emoji: '🚀', description: 'Blasts off to higher CEFR levels at lightning speed' }
+          ]
+        },
+        {
+          category: 'Robots & Tech',
+          icon: '🤖',
+          characters: [
+            { id: 'cyber_bot', name: 'Cyber Bot 3000', emoji: '🤖', description: 'High-speed grammar processor with a heart of gold' },
+            { id: 'mecha_owl', name: 'Mecha Owl', emoji: '🦉', description: 'Digital night-watcher analyzing sentence patterns' },
+            { id: 'pixel_cat', name: 'Pixel Kitten', emoji: '🐱', description: '8-bit companion leaping over learning obstacles' },
+            { id: 'steam_gadget', name: 'Clockwork Gear', emoji: '⚙️', description: 'Intricate contraption turning curiosity into wisdom' },
+            { id: 'circuit_spark', name: 'Spark Dynamo', emoji: '⚡', description: 'Crackles with electrifying ideas and quick answers' }
+          ]
+        },
+        {
+          category: 'Animals & Nature',
+          icon: '🦊',
+          characters: [
+            { id: 'clever_fox', name: 'Clever Fox', emoji: '🦊', description: 'Sharp-minded explorer who solves every riddle' },
+            { id: 'panda_zen', name: 'Zen Panda', emoji: '🐼', description: 'Calm, patient, and deeply thoughtful learner' },
+            { id: 'tiger_brave', name: 'Brave Tiger', emoji: '🐯', description: 'Fierce and confident when speaking up in class' },
+            { id: 'wise_owl', name: 'Professor Owl', emoji: '🦉', description: 'Keeper of storybooks, definitions, and phonics rules' },
+            { id: 'koala_climber', name: 'Eucalyptus Koala', emoji: '🐨', description: 'Gentle friend who is always encouraging to peers' },
+            { id: 'safari_lion', name: 'Safari King', emoji: '🦁', description: 'Roars with enthusiasm during songs and dialogues' }
+          ]
+        },
+        {
+          category: 'Friendly Monsters',
+          icon: '👾',
+          characters: [
+            { id: 'zorgon_puff', name: 'Zorgon Puff', emoji: '👾', description: 'Bouncy purple monster who loves high-fives and games' },
+            { id: 'chomper_green', name: 'Chomper', emoji: '🦖', description: 'Hungry for new vocabulary cards and adventure tales' },
+            { id: 'fluffy_yeti', name: 'Fluffy Yeti', emoji: '🐻', description: 'Warm-hearted gentle giant from the snowy peaks' },
+            { id: 'blobby_sun', name: 'Sunny Blob', emoji: '🌞', description: 'Radiates joy, optimism, and smiles across the room' },
+            { id: 'sparkle_beast', name: 'Glimmer Beast', emoji: '✨', description: 'Leaves a trail of sparkling compliments wherever it goes' }
+          ]
+        },
+        {
+          category: 'Ocean & Deep Sea',
+          icon: '🐙',
+          characters: [
+            { id: 'ocean_squid', name: 'Inky Squid', emoji: '🦑', description: 'Writes artistic tales with eight energetic tentacles' },
+            { id: 'dolphin_blue', name: 'Splash Dolphin', emoji: '🐬', description: 'Leaps joyfully into every listening and speaking challenge' },
+            { id: 'coral_turtle', name: 'Coral Turtle', emoji: '🐢', description: 'Steady, persistent explorer who never gives up' },
+            { id: 'starfish_gleam', name: 'Tidepool Star', emoji: '⭐', description: 'Glows under water and celebrates everyone’s victories' },
+            { id: 'deep_whale', name: 'Oceanic Whale', emoji: '🐳', description: 'Singing melodious phonics ballads across the deep blue' }
+          ]
+        }
       ]
     };
   }
@@ -991,6 +1097,20 @@
             if (!merged.reports) merged.reports = initial.reports || [];
             if (!merged.schoolSettings) merged.schoolSettings = initial.schoolSettings || {};
             if (!merged.calendarEvents) merged.calendarEvents = initial.calendarEvents || [];
+            if (!merged.xpSkills || !merged.xpSkills.length) merged.xpSkills = initial.xpSkills || [];
+            if (!merged.rewards || !merged.rewards.length) merged.rewards = initial.rewards || [];
+            if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
+            if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
+
+            // Normalize existing transactions: ensure status, category, icon, and timestamp
+            if (Array.isArray(merged.xpTransactions)) {
+              merged.xpTransactions.forEach(tx => {
+                if (!tx.status) tx.status = 'active';
+                if (!tx.category) tx.category = (tx.amount < 0 ? 'needs_work' : 'positive');
+                if (!tx.icon) tx.icon = (tx.amount > 0 ? '⭐' : '💭');
+                if (!tx.timestamp) tx.timestamp = new Date(tx.date || Date.now()).toISOString();
+              });
+            }
             return merged;
           }
         }
@@ -1143,32 +1263,149 @@
       return false;
     }
 
-    // Dynamic XP Calculation
+    // =========================================================================
+    // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
+    // =========================================================================
     getStudentTotalXP(studentId) {
-      const txs = this.state.xpTransactions.filter(t => t.studentId === studentId);
-      return txs.reduce((sum, t) => sum + (t.amount || 0), 0);
+      if (!this.state.xpTransactions) return 0;
+      // Strictly recalculate from active transactions only
+      const txs = this.state.xpTransactions.filter(t => t.studentId === studentId && t.status !== 'voided');
+      return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
     }
 
-    getXPTransactions(studentId) {
-      return this.state.xpTransactions.filter(t => t.studentId === studentId).reverse();
+    getXPTransactions(studentId, includeVoided = false) {
+      if (!this.state.xpTransactions) return [];
+      return this.state.xpTransactions
+        .filter(t => t.studentId === studentId && (includeVoided || t.status !== 'voided'))
+        .slice()
+        .reverse();
     }
 
-    giveXP(studentId, amount, reason = 'Great effort', source = 'Teacher') {
+    getAllXPTransactions(studentId) {
+      if (!this.state.xpTransactions) return [];
+      return this.state.xpTransactions
+        .filter(t => t.studentId === studentId)
+        .slice()
+        .reverse();
+    }
+
+    giveXP(studentId, amount, reason = 'Great effort', source = 'Teacher', options = {}) {
       const s = this.getStudent(studentId);
       if (!s) return null;
 
+      const numAmount = parseInt(amount, 10) || 0;
+      const category = options.category || (numAmount < 0 ? 'needs_work' : 'positive');
       const tx = {
         id: 'xp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
         studentId,
-        amount: parseInt(amount, 10) || 50,
-        reason,
+        amount: numAmount,
+        reason: reason || (numAmount >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
+        category,
+        skillId: options.skillId || null,
+        icon: options.icon || (numAmount > 0 ? '⭐' : '💭'),
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        source
+        timestamp: new Date().toISOString(),
+        createdBy: options.createdBy || source || 'Teacher',
+        source: source || 'Teacher',
+        status: 'active'
       };
 
+      if (!this.state.xpTransactions) this.state.xpTransactions = [];
       this.state.xpTransactions.push(tx);
       this.saveState();
-      return { transaction: tx, student: s, newTotalXP: this.getStudentTotalXP(studentId), reason, amount };
+      this.notify('xp', this.state.xpTransactions);
+      return { transaction: tx, student: s, newTotalXP: this.getStudentTotalXP(studentId), reason: tx.reason, amount: numAmount };
+    }
+
+    voidXPTransaction(txId, voidReason = 'Removed by teacher') {
+      if (!this.state.xpTransactions) return false;
+      const tx = this.state.xpTransactions.find(t => t.id === txId);
+      if (!tx) return false;
+      tx.status = 'voided';
+      tx.voidReason = voidReason;
+      tx.voidedAt = new Date().toISOString();
+      this.saveState();
+      this.notify('xp', this.state.xpTransactions);
+      return true;
+    }
+
+    restoreXPTransaction(txId) {
+      if (!this.state.xpTransactions) return false;
+      const tx = this.state.xpTransactions.find(t => t.id === txId);
+      if (!tx) return false;
+      tx.status = 'active';
+      delete tx.voidReason;
+      delete tx.voidedAt;
+      this.saveState();
+      this.notify('xp', this.state.xpTransactions);
+      return true;
+    }
+
+    updateXPTransaction(txId, updates) {
+      if (!this.state.xpTransactions) return null;
+      const tx = this.state.xpTransactions.find(t => t.id === txId);
+      if (!tx) return null;
+      if (updates.amount !== undefined) tx.amount = parseInt(updates.amount, 10) || 0;
+      if (updates.reason !== undefined) tx.reason = updates.reason;
+      if (updates.category !== undefined) tx.category = updates.category;
+      if (updates.skillId !== undefined) tx.skillId = updates.skillId;
+      if (updates.icon !== undefined) tx.icon = updates.icon;
+      tx.updatedAt = new Date().toISOString();
+      this.saveState();
+      this.notify('xp', this.state.xpTransactions);
+      return tx;
+    }
+
+    getXPReport(studentId) {
+      const allTxs = (this.state.xpTransactions || []).filter(t => t.studentId === studentId);
+      const activeTxs = allTxs.filter(t => t.status !== 'voided');
+      const voidedTxs = allTxs.filter(t => t.status === 'voided');
+      const totalXP = activeTxs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+
+      const now = Date.now();
+      const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+      const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+
+      const weekTxs = activeTxs.filter(t => {
+        const tTime = t.timestamp ? new Date(t.timestamp).getTime() : new Date(t.date).getTime();
+        return !isNaN(tTime) && tTime >= sevenDaysAgo;
+      });
+      const monthTxs = activeTxs.filter(t => {
+        const tTime = t.timestamp ? new Date(t.timestamp).getTime() : new Date(t.date).getTime();
+        return !isNaN(tTime) && tTime >= thirtyDaysAgo;
+      });
+
+      const xpThisWeek = weekTxs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      const xpThisMonth = monthTxs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+
+      const categoryBreakdown = {
+        positive: activeTxs.filter(t => t.category === 'positive' || (!t.category && t.amount > 0)).reduce((sum, t) => sum + t.amount, 0),
+        needs_work: activeTxs.filter(t => t.category === 'needs_work' || (!t.category && t.amount < 0)).reduce((sum, t) => sum + Math.abs(t.amount), 0),
+        redeemed: activeTxs.filter(t => t.category === 'redeemed').reduce((sum, t) => sum + Math.abs(t.amount), 0),
+        activity: activeTxs.filter(t => t.source === 'Activity' || t.source === 'Game').reduce((sum, t) => sum + t.amount, 0)
+      };
+
+      const skillCounts = {};
+      activeTxs.filter(t => t.amount > 0).forEach(t => {
+        const key = t.reason || 'Classroom Contribution';
+        skillCounts[key] = (skillCounts[key] || 0) + 1;
+      });
+      const topSkills = Object.entries(skillCounts)
+        .map(([skill, count]) => ({ skill, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      return {
+        totalXP,
+        xpThisWeek,
+        xpThisMonth,
+        activeCount: activeTxs.length,
+        voidedCount: voidedTxs.length,
+        categoryBreakdown,
+        topSkills,
+        transactions: activeTxs.slice().reverse(),
+        auditHistory: allTxs.slice().reverse()
+      };
     }
 
     // Dynamic Skill Mastery from Evidence
@@ -3101,6 +3338,261 @@
     getPortfolios(studentId = null) { return studentId ? this.getStudentPortfolio(studentId) : (this.state.portfolios || []); }
     getMessages() { return this.getMessageThreads(); }
 
+    // =========================================================================
+    // XP SKILLS MANAGEMENT (ClassDojo-style Positive & Needs Work Skills)
+    // =========================================================================
+    getXPSkills(category = null) {
+      if (!this.state.xpSkills) return [];
+      return this.state.xpSkills.filter(s => !category || s.category === category);
+    }
+
+    getXPSkill(id) {
+      if (!this.state.xpSkills) return null;
+      return this.state.xpSkills.find(s => s.id === id) || null;
+    }
+
+    addXPSkill(data) {
+      if (!this.state.xpSkills) this.state.xpSkills = [];
+      const newSkill = {
+        id: 'skill-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        name: data.name || 'New Skill',
+        icon: data.icon || '⭐',
+        points: parseInt(data.points, 10) || 1,
+        category: data.category || (parseInt(data.points, 10) < 0 ? 'needs_work' : 'positive'),
+        description: data.description || ''
+      };
+      this.state.xpSkills.push(newSkill);
+      this.saveState();
+      this.notify('xpSkills', this.state.xpSkills);
+      return newSkill;
+    }
+
+    updateXPSkill(id, updates) {
+      if (!this.state.xpSkills) return null;
+      const skill = this.state.xpSkills.find(s => s.id === id);
+      if (!skill) return null;
+      if (updates.name !== undefined) skill.name = updates.name;
+      if (updates.icon !== undefined) skill.icon = updates.icon;
+      if (updates.points !== undefined) skill.points = parseInt(updates.points, 10) || 1;
+      if (updates.category !== undefined) skill.category = updates.category;
+      if (updates.description !== undefined) skill.description = updates.description;
+      this.saveState();
+      this.notify('xpSkills', this.state.xpSkills);
+      return skill;
+    }
+
+    deleteXPSkill(id) {
+      if (!this.state.xpSkills) return false;
+      const prevLen = this.state.xpSkills.length;
+      this.state.xpSkills = this.state.xpSkills.filter(s => s.id !== id);
+      if (this.state.xpSkills.length !== prevLen) {
+        this.saveState();
+        this.notify('xpSkills', this.state.xpSkills);
+        return true;
+      }
+      return false;
+    }
+
+    // =========================================================================
+    // CLASSROOM REWARDS & REDEMPTION SYSTEM
+    // =========================================================================
+    getRewards() {
+      if (!this.state.rewards) return [];
+      return this.state.rewards.filter(r => r.active !== false);
+    }
+
+    getAllRewards() {
+      return this.state.rewards || [];
+    }
+
+    getReward(id) {
+      if (!this.state.rewards) return null;
+      return this.state.rewards.find(r => r.id === id) || null;
+    }
+
+    addReward(data) {
+      if (!this.state.rewards) this.state.rewards = [];
+      const newReward = {
+        id: 'rew-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        title: data.title || 'Classroom Reward',
+        cost: Math.abs(parseInt(data.cost, 10)) || 50,
+        icon: data.icon || '🎁',
+        description: data.description || '',
+        category: data.category || 'General',
+        active: true
+      };
+      this.state.rewards.push(newReward);
+      this.saveState();
+      this.notify('rewards', this.state.rewards);
+      return newReward;
+    }
+
+    updateReward(id, updates) {
+      if (!this.state.rewards) return null;
+      const rew = this.state.rewards.find(r => r.id === id);
+      if (!rew) return null;
+      if (updates.title !== undefined) rew.title = updates.title;
+      if (updates.cost !== undefined) rew.cost = Math.abs(parseInt(updates.cost, 10)) || 50;
+      if (updates.icon !== undefined) rew.icon = updates.icon;
+      if (updates.description !== undefined) rew.description = updates.description;
+      if (updates.category !== undefined) rew.category = updates.category;
+      if (updates.active !== undefined) rew.active = updates.active;
+      this.saveState();
+      this.notify('rewards', this.state.rewards);
+      return rew;
+    }
+
+    deleteReward(id) {
+      if (!this.state.rewards) return false;
+      const rew = this.state.rewards.find(r => r.id === id);
+      if (rew) {
+        rew.active = false;
+        this.saveState();
+        this.notify('rewards', this.state.rewards);
+        return true;
+      }
+      return false;
+    }
+
+    redeemReward(studentId, rewardId, teacherName = 'Ms. Sarah') {
+      const student = this.getStudent(studentId);
+      if (!student) return { success: false, error: 'Student not found' };
+
+      const reward = this.getReward(rewardId);
+      if (!reward) return { success: false, error: 'Reward not found' };
+
+      const currentXP = this.getStudentTotalXP(studentId);
+      if (currentXP < reward.cost) {
+        return { success: false, error: `Insufficient XP: Needs ${reward.cost} XP, but has ${currentXP} XP` };
+      }
+
+      const tx = {
+        id: 'xp-redeem-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        studentId,
+        amount: -reward.cost,
+        reason: 'Redeemed: ' + reward.title,
+        category: 'redeemed',
+        skillId: reward.id,
+        icon: reward.icon || '🎁',
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        timestamp: new Date().toISOString(),
+        createdBy: teacherName,
+        source: 'Teacher',
+        status: 'active'
+      };
+
+      if (!this.state.xpTransactions) this.state.xpTransactions = [];
+      this.state.xpTransactions.push(tx);
+      this.saveState();
+      this.notify('xp', this.state.xpTransactions);
+      return { success: true, transaction: tx, student, reward, newTotalXP: this.getStudentTotalXP(studentId) };
+    }
+
+    // =========================================================================
+    // BIG IDEAS CLASSROOM BOARD (ClassDojo-style Brainstorming & Projects)
+    // =========================================================================
+    getBigIdeas(classId = null) {
+      if (!this.state.bigIdeas) return [];
+      return this.state.bigIdeas
+        .filter(i => !classId || i.classId === classId)
+        .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.votes || 0) - (a.votes || 0));
+    }
+
+    getBigIdea(id) {
+      if (!this.state.bigIdeas) return null;
+      return this.state.bigIdeas.find(i => i.id === id) || null;
+    }
+
+    addBigIdea(data) {
+      if (!this.state.bigIdeas) this.state.bigIdeas = [];
+      const newIdea = {
+        id: 'idea-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        classId: data.classId || this.state.activeClassId,
+        title: data.title || 'New Big Idea',
+        description: data.description || '',
+        category: data.category || 'Project',
+        author: data.author || 'Teacher',
+        votes: 0,
+        pinned: data.pinned || false,
+        tags: Array.isArray(data.tags) ? data.tags : (data.tags ? data.tags.split(',').map(t => t.trim()) : ['Adventure']),
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+      this.state.bigIdeas.unshift(newIdea);
+      this.saveState();
+      this.notify('bigIdeas', this.state.bigIdeas);
+      return newIdea;
+    }
+
+    updateBigIdea(id, updates) {
+      if (!this.state.bigIdeas) return null;
+      const idea = this.state.bigIdeas.find(i => i.id === id);
+      if (!idea) return null;
+      Object.assign(idea, updates);
+      this.saveState();
+      this.notify('bigIdeas', this.state.bigIdeas);
+      return idea;
+    }
+
+    pinBigIdea(id) {
+      if (!this.state.bigIdeas) return false;
+      const idea = this.state.bigIdeas.find(i => i.id === id);
+      if (!idea) return false;
+      idea.pinned = !idea.pinned;
+      this.saveState();
+      this.notify('bigIdeas', this.state.bigIdeas);
+      return idea.pinned;
+    }
+
+    voteBigIdea(id) {
+      if (!this.state.bigIdeas) return 0;
+      const idea = this.state.bigIdeas.find(i => i.id === id);
+      if (!idea) return 0;
+      idea.votes = (idea.votes || 0) + 1;
+      this.saveState();
+      this.notify('bigIdeas', this.state.bigIdeas);
+      return idea.votes;
+    }
+
+    deleteBigIdea(id) {
+      if (!this.state.bigIdeas) return false;
+      const prevLen = this.state.bigIdeas.length;
+      this.state.bigIdeas = this.state.bigIdeas.filter(i => i.id !== id);
+      if (this.state.bigIdeas.length !== prevLen) {
+        this.saveState();
+        this.notify('bigIdeas', this.state.bigIdeas);
+        return true;
+      }
+      return false;
+    }
+
+    // =========================================================================
+    // ORIGINAL ADVENTURE AVATAR SYSTEM (6 Categories)
+    // =========================================================================
+    getAvatarCatalog() {
+      return this.state.avatarCatalog || [];
+    }
+
+    updateStudentAvatar(studentId, avatarData) {
+      const student = this.getStudent(studentId);
+      if (!student) return null;
+      if (typeof avatarData === 'string') {
+        student.avatar = { emoji: avatarData, hair: 'girl' };
+      } else {
+        student.avatar = Object.assign({}, student.avatar, avatarData);
+      }
+      this.saveState();
+      this.notify('students', this.state.students);
+      return student;
+    }
+
+    // =========================================================================
+    // GROUP TOTAL XP (Dynamic Sum of Active Student Transactions)
+    // =========================================================================
+    getGroupTotalXP(groupId) {
+      const group = this.getGroup(groupId);
+      if (!group || !Array.isArray(group.studentIds)) return 0;
+      return group.studentIds.reduce((total, sId) => total + this.getStudentTotalXP(sId), 0);
+    }
   }
 
   // Export singleton instance

@@ -1226,6 +1226,10 @@
   <!-- Bottom Classroom Toolkit Dock -->
   <div id="classroom-floating-toolkit" class="classroom-toolkit-dock" style="display:none;">
     <div class="toolkit-inner">
+      <button type="button" class="toolkit-item-btn toolkit-btn-drawer" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit" style="background:var(--color-primary); color:#ffffff; font-weight:800;">
+        <span class="toolkit-icon">🧰</span>
+        <span class="toolkit-label">Toolkit</span>
+      </button>
       <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
         <span class="toolkit-icon">🎲</span>
         <span class="toolkit-label">Random</span>
@@ -1477,6 +1481,339 @@
     </div>
   </div>
 
+
+
+
+  <!-- ========================================================================
+       CLASSROOM STUDENT MANAGEMENT & TRANSACTION XP MODALS
+       ======================================================================== -->
+
+  <!-- 1. ClassDojo-Style XP Skills Award Modal -->
+  <div class="modal-overlay" id="modal-give-xp-skills">
+    <div class="modal-dialog" style="max-width: 640px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <div id="xp-award-target-avatar" style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:26px;">⭐</div>
+        <div>
+          <h2 id="xp-award-target-title" style="font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">Award Classroom Points</h2>
+          <p id="xp-award-target-sub" style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Select a positive skill or corrective feedback</p>
+        </div>
+        <div style="margin-left:auto;">
+          <button type="button" class="btn-sm-secondary" onclick="openXPSkillEditor()" style="font-size:0.78rem;">+ Add Custom Skill</button>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs (Positive vs Needs Work) -->
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <button type="button" id="tab-xp-positive" class="classroom-view-pill-btn is-active" onclick="switchXPAwardTab('positive')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
+          <span>⭐ Positive (+XP)</span>
+        </button>
+        <button type="button" id="tab-xp-needs-work" class="classroom-view-pill-btn" onclick="switchXPAwardTab('needs_work')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
+          <span>💭 Needs Work (-XP)</span>
+        </button>
+      </div>
+
+      <!-- Skills Grid Container -->
+      <div id="xp-skills-grid-container" class="xp-skills-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
+        <!-- Dynamically rendered skills -->
+      </div>
+
+      <!-- Quick Custom Note / Optional Adjustment -->
+      <div style="background:var(--bg-muted); border-radius:var(--radius-md); padding:10px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1rem;">📝</span>
+        <input type="text" id="xp-award-custom-note" placeholder="Optional award note or specific task detail..." style="flex:1; background:transparent; border:none; font-size:0.84rem; outline:none;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. XP Skill Creator & Editor Modal -->
+  <div class="modal-overlay" id="modal-xp-skill-editor">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-xp-skill-editor')">✕</button>
+      <h2 id="xp-skill-editor-title" style="font-size:1.25rem; font-weight:800; margin-bottom:14px;">✨ Create Custom XP Skill</h2>
+      <form onsubmit="handleSaveXPSkill(event)" style="display:flex; flex-direction:column; gap:14px;">
+        <input type="hidden" id="xp-skill-id-val" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Skill Name *</label>
+          <input type="text" id="xp-skill-name-val" class="filter-input" placeholder="e.g. Speaking in Full Sentences" required style="width:100%;" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Emoji Icon *</label>
+            <input type="text" id="xp-skill-icon-val" class="filter-input" value="⭐" maxlength="4" required style="width:100%; text-align:center; font-size:1.3rem;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Point Value *</label>
+            <select id="xp-skill-points-val" class="filter-select" style="width:100%;">
+              <option value="1">+1 XP</option>
+              <option value="2">+2 XP</option>
+              <option value="3">+3 XP</option>
+              <option value="4">+4 XP</option>
+              <option value="5">+5 XP</option>
+              <option value="-1">-1 XP (Needs Work)</option>
+              <option value="-2">-2 XP (Needs Work)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category *</label>
+          <select id="xp-skill-category-val" class="filter-select" style="width:100%;">
+            <option value="positive">Positive Behavior (+XP)</option>
+            <option value="needs_work">Needs Work / Constructive (-XP)</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description</label>
+          <textarea id="xp-skill-desc-val" class="filter-input" rows="2" placeholder="Explain what behavior earns or needs this skill..." style="width:100%; resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-xp-skill-editor')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Skill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Void / Remove XP Transaction Confirmation Modal -->
+  <div class="modal-overlay" id="modal-remove-xp-confirm">
+    <div class="modal-dialog" style="max-width: 460px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-remove-xp-confirm')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; color:var(--color-danger);">
+        <span style="font-size:1.8rem;">🗑️</span>
+        <h2 style="font-size:1.25rem; font-weight:800; margin:0;">Void XP Transaction</h2>
+      </div>
+      <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">
+        Voiding this entry will immediately recalculate the student's total XP, group points, and leaderboard standings while preserving the record in audit logs.
+      </p>
+      <div id="void-xp-details-card" style="background:var(--bg-muted); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; margin-bottom:14px; font-size:0.85rem;">
+        <!-- Populated dynamically -->
+      </div>
+      <form onsubmit="handleExecuteVoidXP(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="void-xp-tx-id" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason for Voiding *</label>
+          <select id="void-xp-reason-select" class="filter-select" style="width:100%;" onchange="if(this.value==='Other'){document.getElementById('void-xp-custom-reason-wrap').style.display='block';}else{document.getElementById('void-xp-custom-reason-wrap').style.display='none';}">
+            <option value="Accidental award">Accidental award</option>
+            <option value="Teacher point correction">Teacher point correction</option>
+            <option value="Duplicate entry">Duplicate entry</option>
+            <option value="Test entry">Test entry</option>
+            <option value="Other">Other reason...</option>
+          </select>
+        </div>
+        <div id="void-xp-custom-reason-wrap" style="display:none;">
+          <input type="text" id="void-xp-custom-reason" class="filter-input" placeholder="Specify reason..." style="width:100%;" />
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-remove-xp-confirm')">Cancel</button>
+          <button type="submit" class="btn-primary-action" style="background:var(--color-danger); border-color:var(--color-danger);">Confirm Void & Recalculate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Edit XP Transaction Modal -->
+  <div class="modal-overlay" id="modal-edit-xp-transaction">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-edit-xp-transaction')">✕</button>
+      <h2 style="font-size:1.25rem; font-weight:800; margin-bottom:14px;">✏️ Edit XP Entry</h2>
+      <form onsubmit="handleSaveEditedXPTransaction(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-xp-tx-id" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">XP Amount *</label>
+          <input type="number" id="edit-xp-amount-val" class="filter-input" required style="width:100%;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason / Skill *</label>
+          <input type="text" id="edit-xp-reason-val" class="filter-input" required style="width:100%;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category *</label>
+          <select id="edit-xp-category-val" class="filter-select" style="width:100%;">
+            <option value="positive">Positive</option>
+            <option value="needs_work">Needs Work</option>
+            <option value="redeemed">Redeemed</option>
+            <option value="correction">Correction</option>
+          </select>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-edit-xp-transaction')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save & Recalculate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Original Adventure Avatar Customizer Gallery Modal -->
+  <div class="modal-overlay" id="modal-avatar-selector">
+    <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-avatar-selector')">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <span style="font-size:1.8rem;">🎨</span>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:800; margin:0; color:var(--text-main);">Adventure Academy Avatar Creator</h2>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Choose your explorer character from 6 original adventure worlds</p>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div id="avatar-category-nav" class="class-subnav-tabs" style="margin-bottom:16px; overflow-x:auto;">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Main Layout: Characters Grid + Live Preview Panel -->
+      <div style="display:grid; grid-template-columns: 1fr 240px; gap:20px;">
+        <!-- Characters Grid -->
+        <div id="avatar-characters-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; max-height:420px; overflow-y:auto; padding:4px;">
+          <!-- Dynamically populated character cards -->
+        </div>
+
+        <!-- Live Preview Panel -->
+        <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:18px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:space-between;">
+          <div style="width:100%;">
+            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Active Selection</div>
+            <div id="avatar-preview-box" style="width:100px; height:100px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:52px; margin:0 auto 12px auto; box-shadow:var(--shadow-md);">
+              🐲
+            </div>
+            <h4 id="avatar-preview-name" style="font-size:1.1rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Emerald Drake</h4>
+            <div id="avatar-preview-category" style="font-size:0.78rem; color:var(--color-primary); font-weight:700; margin-bottom:8px;">Fantasy & Dragons</div>
+            <p id="avatar-preview-desc" style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Wise and ancient forest dragon who loves story quests.</p>
+          </div>
+          <div style="width:100%; margin-top:16px;">
+            <button type="button" class="btn-primary-action" style="width:100%;" onclick="handleConfirmSaveAvatar()">Save Avatar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Interactive Classroom Teacher Toolkit Modal -->
+  <div class="modal-overlay" id="modal-classroom-toolkit">
+    <div class="modal-dialog" style="max-width: 860px; max-height: 92vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-classroom-toolkit')">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <span style="font-size:1.8rem;">🧰</span>
+        <div>
+          <h2 style="font-size:1.35rem; font-weight:900; margin:0; color:var(--text-main);">Classroom Teacher Toolkit</h2>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Interactive smartboard utilities to engage and manage your classroom</p>
+        </div>
+      </div>
+
+      <!-- Toolkit Tab Switcher -->
+      <div class="classroom-top-nav-tabs" style="margin-bottom:18px;">
+        <button type="button" id="tab-tool-timer" class="classroom-nav-tab-btn is-active" onclick="switchToolkitTool('timer')">⏱️ Timer</button>
+        <button type="button" id="tab-tool-random" class="classroom-nav-tab-btn" onclick="switchToolkitTool('random')">🎲 Random Picker</button>
+        <button type="button" id="tab-tool-groups" class="classroom-nav-tab-btn" onclick="switchToolkitTool('groups')">👥 Group Maker</button>
+        <button type="button" id="tab-tool-noise" class="classroom-nav-tab-btn" onclick="switchToolkitTool('noise')">🔊 Noise Meter</button>
+        <button type="button" id="tab-tool-dice" class="classroom-nav-tab-btn" onclick="switchToolkitTool('dice')">🎲 Dice Roller</button>
+        <button type="button" id="tab-tool-spinner" class="classroom-nav-tab-btn" onclick="switchToolkitTool('spinner')">🎡 Spinner Wheel</button>
+        <button type="button" id="tab-tool-instructions" class="classroom-nav-tab-btn" onclick="switchToolkitTool('instructions')">📝 Smartboard Note</button>
+      </div>
+
+      <!-- Tool Body Views -->
+      <div id="toolkit-active-tool-container" style="min-height:360px;">
+        <!-- Populated dynamically based on active tool -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Classroom Rewards Catalog & Student Redemption Modal -->
+  <div class="modal-overlay" id="modal-rewards-manager">
+    <div class="modal-dialog" style="max-width: 760px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-rewards-manager')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.8rem;">🎁</span>
+          <div>
+            <h2 style="font-size:1.35rem; font-weight:800; margin:0; color:var(--text-main);">Classroom Rewards & Redemption</h2>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Motivate students to spend hard-earned XP on classroom privileges</p>
+          </div>
+        </div>
+        <button type="button" class="btn-primary-action" onclick="openCreateRewardForm()">+ Add Reward</button>
+      </div>
+
+      <!-- Rewards List -->
+      <div id="rewards-cards-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:14px; margin-bottom:20px;">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- New Reward Form Container (collapsible) -->
+      <div id="new-reward-form-container" style="display:none; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:16px; margin-top:14px;">
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:12px;">Create Classroom Reward</h3>
+        <form onsubmit="handleSaveReward(event)" style="display:flex; flex-direction:column; gap:12px;">
+          <input type="hidden" id="reward-id-val" value="" />
+          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px;">
+            <div>
+              <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reward Title *</label>
+              <input type="text" id="reward-title-val" class="filter-input" placeholder="e.g. Choose Warm-Up Game" required style="width:100%;" />
+            </div>
+            <div>
+              <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Cost (XP) *</label>
+              <input type="number" id="reward-cost-val" class="filter-input" placeholder="50" min="1" required style="width:100%;" />
+            </div>
+            <div>
+              <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Emoji Icon *</label>
+              <input type="text" id="reward-icon-val" class="filter-input" value="🎁" maxlength="4" required style="width:100%; text-align:center; font-size:1.2rem;" />
+            </div>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description</label>
+            <input type="text" id="reward-desc-val" class="filter-input" placeholder="What does the student get when redeeming?" style="width:100%;" />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px;">
+            <button type="button" class="btn-sm-secondary" onclick="document.getElementById('new-reward-form-container').style.display='none';">Cancel</button>
+            <button type="submit" class="btn-primary-action">Save Reward</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Big Ideas Classroom Brainstorm Board Modal -->
+  <div class="modal-overlay" id="modal-big-ideas-editor">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-big-ideas-editor')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <span style="font-size:1.8rem;">💡</span>
+        <h2 id="big-idea-form-title" style="font-size:1.3rem; font-weight:800; margin:0;">Post a Big Idea</h2>
+      </div>
+      <form onsubmit="handleSaveBigIdea(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="big-idea-id-val" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Idea Title *</label>
+          <input type="text" id="big-idea-title-val" class="filter-input" placeholder="e.g. English Puppet Theater Show" required style="width:100%;" />
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category *</label>
+            <select id="big-idea-category-val" class="filter-select" style="width:100%;">
+              <option value="Project">Project</option>
+              <option value="Drama">Drama & Roleplay</option>
+              <option value="Writing">Writing & Art</option>
+              <option value="Science">Science Exploration</option>
+              <option value="Game">Class Game</option>
+              <option value="Culture">Global Culture</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Tags (comma-separated)</label>
+            <input type="text" id="big-idea-tags-val" class="filter-input" placeholder="Speaking, Art, Teamwork" style="width:100%;" />
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description *</label>
+          <textarea id="big-idea-desc-val" class="filter-input" rows="3" placeholder="Describe the idea, materials needed, and learning goal..." required style="width:100%; resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="big-idea-pinned-val" />
+          <label for="big-idea-pinned-val" style="font-size:0.84rem; font-weight:600; cursor:pointer;">📌 Pin this idea to the top of the classroom board</label>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-big-ideas-editor')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Post Idea</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 
   <!-- ========================================================================

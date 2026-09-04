@@ -2376,3 +2376,103 @@ body.classroom-mode-active .classroom-students-grid {
     padding-bottom: 4px;
   }
 }
+
+
+/* =========================================================================
+   CLASSROOM STUDENT MANAGEMENT & ADVANCED INTERACTIVE TOOLKIT STYLES
+   ========================================================================= */
+
+/* Floating +1 XP burst animation */
+.xp-burst-float {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  padding: 2px 8px;
+  pointer-events: none;
+  z-index: 50;
+  animation: floatUpFade 1.2s ease forwards;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+}
+
+@keyframes floatUpFade {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-24px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.05);
+  }
+}
+
+/* XP Skill Card interactive states */
+.xp-skill-card {
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.xp-skill-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.xp-skill-card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.xp-skill-card.is-positive:hover {
+  border-color: #10b981 !important;
+}
+
+.xp-skill-card.is-needs-work:hover {
+  border-color: #ef4444 !important;
+}
+
+/* Adventure Avatar Customizer cards */
+.avatar-char-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.avatar-char-card:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-primary) !important;
+}
+
+.avatar-char-card.is-selected {
+  border-color: var(--color-primary) !important;
+  background: var(--color-primary-soft) !important;
+}
+
+/* Student card quick point buttons */
+.btn-card-quick-point:hover {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  transform: scale(1.08);
+}
+
+/* Keyframe animations for toolkit */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
