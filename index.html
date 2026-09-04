@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Adventure Academy | Game Library</title>
-  <meta name="description" content="Professional ESL Game Library & Teacher Dashboard. Discover and launch interactive English classroom games, stories, mystery challenges, and printable worksheets with one click.">
+  <title>English Adventure Academy | Modern Digital ESL School Platform</title>
+  <meta name="description" content="Complete modern digital ESL school platform for young English learners. Featuring Teacher Dashboard, Class & Student Management, CEFR Progress Tracking, Attendance, Curriculum, 15 Interactive Games, Assignments, Gamification, and Parent Communication.">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,1697 +13,204 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
-  <style>
-    /* ==========================================================================
-       DESIGN SYSTEM & TOKENS - PROFESSIONAL EDTECH SAAS
-       ========================================================================== */
-    :root {
-      --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-
-      --bg-canvas: #f8fafc;
-      --bg-surface: #ffffff;
-      --bg-muted: #f1f5f9;
-      --bg-hover: #e2e8f0;
-
-      --border-light: #e2e8f0;
-      --border-medium: #cbd5e1;
-      --border-focus: #2563eb;
-
-      --text-main: #0f172a;
-      --text-secondary: #334155;
-      --text-muted: #64748b;
-      --text-subtle: #94a3b8;
-      --text-inverse: #ffffff;
-
-      --color-primary: #2563eb;
-      --color-primary-hover: #1d4ed8;
-      --color-primary-soft: #eff6ff;
-
-      --color-emerald: #059669;
-      --color-emerald-soft: #ecfdf5;
-
-      --color-amber: #d97706;
-      --color-amber-soft: #fffbeb;
-
-      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
-      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
-      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
-
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --radius-pill: 9999px;
-
-      --transition: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Reset & Base */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: var(--font-family);
-      background-color: var(--bg-canvas);
-      color: var(--text-main);
-      min-height: 100vh;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button, input, select {
-      font-family: inherit;
-      color: inherit;
-      border: none;
-      background: none;
-    }
-
-    /* ==========================================================================
-       1. TOP NAVIGATION
-       ========================================================================== */
-    .top-nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .top-nav-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      height: 64px;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      color: var(--text-main);
-      cursor: pointer;
-    }
-
-    .brand-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--color-primary);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      flex-shrink: 0;
-    }
-
-    .nav-tabs {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      list-style: none;
-    }
-
-    .nav-tab-link {
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-tab-link:hover {
-      color: var(--text-main);
-      background: var(--bg-muted);
-    }
-
-    .nav-tab-link.active {
-      color: var(--color-primary);
-      background: var(--color-primary-soft);
-      font-weight: 700;
-    }
-
-    .nav-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: var(--radius-pill);
-      background: #dbeafe;
-      color: var(--color-primary);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .nav-icon-btn:hover {
-      color: var(--text-main);
-      background: var(--bg-muted);
-      border-color: var(--border-medium);
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 12px 4px 4px;
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--border-light);
-      background: var(--bg-surface);
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .user-profile:hover {
-      border-color: var(--border-medium);
-      background: var(--bg-muted);
-    }
-
-    .avatar-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--radius-pill);
-      background: #e0e7ff;
-      color: #3730a3;
-      font-weight: 800;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ==========================================================================
-       2. LIBRARY HEADER & FILTER AREA
-       ========================================================================== */
-    .library-header {
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-light);
-      padding: 32px 0 24px;
-    }
-
-    .library-header-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .header-titles {
-      margin-bottom: 20px;
-    }
-
-    .page-title {
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .page-subtitle {
-      font-size: 0.96rem;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-
-    /* Search & Filters Bar */
-    .controls-container {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .search-box-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 680px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-subtle);
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-input {
-      width: 100%;
-      height: 44px;
-      padding: 0 75px 0 42px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-md);
-      font-size: 0.92rem;
-      color: var(--text-main);
-      transition: var(--transition);
-      box-shadow: var(--shadow-xs);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    .search-input::placeholder {
-      color: var(--text-subtle);
-    }
-
-    .search-shortcut-hint {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-subtle);
-      background: var(--bg-muted);
-      border: 1px solid var(--border-light);
-      padding: 2px 7px;
-      border-radius: 4px;
-      pointer-events: none;
-    }
-
-    .search-clear-btn {
-      position: absolute;
-      right: 42px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
-      border-radius: var(--radius-pill);
-      background: var(--bg-muted);
-      color: var(--text-muted);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .search-clear-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-main);
-    }
-
-    /* Filters Row */
-    .filters-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .filters-group {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .filter-select {
-      height: 36px;
-      padding: 0 28px 0 12px;
-      background: var(--bg-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-sm);
-      font-size: 0.83rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      cursor: pointer;
-      appearance: none;
-      transition: var(--transition);
-    }
-
-    .filter-select:hover {
-      border-color: var(--border-medium);
-      background-color: var(--bg-muted);
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--border-focus);
-    }
-
-    .filter-select.is-active {
-      border-color: var(--color-primary);
-      background-color: var(--color-primary-soft);
-      color: var(--color-primary);
-      font-weight: 600;
-    }
-
-    .btn-reset-filters {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--color-primary);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      display: none;
-      transition: var(--transition);
-    }
-
-    .btn-reset-filters:hover {
-      background: var(--color-primary-soft);
-      text-decoration: underline;
-    }
-
-    .sort-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.83rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    /* ==========================================================================
-       3. MAIN LAYOUT (SIDEBAR + CONTENT)
-       ========================================================================== */
-    .main-layout {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 28px 24px 60px;
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 32px;
-      align-items: start;
-    }
-
-    /* Sidebar */
-    .library-sidebar {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      padding: 16px 12px;
-      position: sticky;
-      top: 84px;
-      box-shadow: var(--shadow-xs);
-    }
-
-    .sidebar-group {
-      margin-bottom: 20px;
-    }
-
-    .sidebar-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .sidebar-group-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--text-subtle);
-      padding: 0 10px;
-      margin-bottom: 6px;
-    }
-
-    .sidebar-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .sidebar-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.84rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-align: left;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .sidebar-btn:hover {
-      background: var(--bg-muted);
-      color: var(--text-main);
-    }
-
-    .sidebar-btn.is-active {
-      background: var(--color-primary-soft);
-      color: var(--color-primary);
-      font-weight: 700;
-    }
-
-    .sidebar-count {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--text-subtle);
-      background: var(--bg-muted);
-      padding: 1px 6px;
-      border-radius: var(--radius-pill);
-    }
-
-    .sidebar-btn.is-active .sidebar-count {
-      background: #dbeafe;
-      color: var(--color-primary);
-    }
-
-    .sidebar-divider {
-      height: 1px;
-      background: var(--border-light);
-      margin: 12px 10px;
-    }
-
-    /* Main Content Container */
-    .library-content {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
-
-    /* Section Headers */
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: 1.18rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      color: var(--text-main);
-    }
-
-    .section-counter {
-      font-size: 0.84rem;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    /* ==========================================================================
-       4. CONTINUE TEACHING SECTION
-       ========================================================================== */
-    .continue-card {
-      background: #ffffff;
-      border: 1px solid var(--border-light);
-      border-left: 4px solid var(--color-primary);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      box-shadow: var(--shadow-xs);
-      transition: var(--transition);
-    }
-
-    .continue-card:hover {
-      box-shadow: var(--shadow-sm);
-      border-color: var(--border-medium);
-      border-left-color: var(--color-primary-hover);
-    }
-
-    .continue-info {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .continue-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .continue-badge::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: var(--radius-pill);
-      background: var(--color-primary);
-      display: inline-block;
-    }
-
-    .continue-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .continue-meta {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .btn-continue {
-      padding: 9px 18px;
-      background: var(--color-primary);
-      color: #ffffff;
-      border-radius: var(--radius-sm);
-      font-size: 0.84rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-      flex-shrink: 0;
-      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
-    }
-
-    .btn-continue:hover {
-      background: var(--color-primary-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25);
-    }
-
-    /* ==========================================================================
-       5. FEATURED LESSONS SECTION (HORIZONTAL SHOWCASE)
-       ========================================================================== */
-    .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-    }
-
-    .featured-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      box-shadow: var(--shadow-xs);
-      transition: var(--transition);
-    }
-
-    .featured-card:hover {
-      border-color: var(--border-medium);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    .featured-thumb {
-      background: var(--bg-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .featured-thumb svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .featured-body {
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .featured-tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: #92400e;
-      background: #fef3c7;
-      padding: 2px 7px;
-      border-radius: var(--radius-pill);
-      align-self: flex-start;
-      letter-spacing: 0.3px;
-    }
-
-    .featured-title {
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text-main);
-      line-height: 1.3;
-    }
-
-    .featured-meta {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: -4px;
-    }
-
-    .featured-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-featured-start {
-      flex: 1;
-      padding: 7px 12px;
-      background: var(--color-primary);
-      color: #ffffff;
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: var(--transition);
-    }
-
-    .btn-featured-start:hover {
-      background: var(--color-primary-hover);
-    }
-
-    .btn-featured-sheet {
-      padding: 7px 10px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      color: var(--text-secondary);
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-featured-sheet:hover {
-      background: var(--bg-muted);
-      color: var(--text-main);
-    }
-
-    /* ==========================================================================
-       6. REUSABLE GAMECARD COMPONENT GRID
-       ========================================================================== */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    /* Semantic Article Card - Strictly Zero Nested Links */
-    .game-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-xs);
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .game-card:hover {
-      border-color: var(--border-medium);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    /* Card Thumbnail Area */
-    .card-thumbnail {
-      position: relative;
-      width: 100%;
-      height: 144px;
-      background: var(--bg-muted);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card-thumbnail svg {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .level-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(4px);
-      color: #ffffff;
-      padding: 2px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.4px;
-    }
-
-    .bookmark-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 30px;
-      height: 30px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .bookmark-btn:hover {
-      background: #ffffff;
-      color: #e11d48;
-      transform: scale(1.08);
-    }
-
-    .bookmark-btn.is-saved {
-      color: #e11d48;
-      background: #ffffff;
-    }
-
-    /* Card Body */
-    .card-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      gap: 10px;
-    }
-
-    .card-category-pill {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: -0.2px;
-      color: var(--text-main);
-      line-height: 1.35;
-    }
-
-    .card-desc {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      min-height: 38px;
-    }
-
-    .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-subtle);
-    }
-
-    .separator {
-      color: var(--border-medium);
-    }
-
-    .card-skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: auto;
-      padding-top: 4px;
-    }
-
-    .skill-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: var(--bg-muted);
-      color: var(--text-secondary);
-    }
-
-    /* Card Footer - 1-Click Launch Button */
-    .card-footer {
-      padding: 12px 16px;
-      background: var(--bg-canvas);
-      border-top: 1px solid var(--border-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-start {
-      flex: 1;
-      height: 38px;
-      background: var(--color-primary);
-      color: #ffffff;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: var(--transition);
-      letter-spacing: 0.3px;
-      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
-    }
-
-    .btn-start:hover {
-      background: var(--color-primary-hover);
-      box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25);
-    }
-
-    .btn-worksheet {
-      height: 38px;
-      padding: 0 12px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      color: var(--text-secondary);
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-worksheet:hover {
-      background: var(--bg-muted);
-      border-color: var(--border-medium);
-      color: var(--text-main);
-    }
-
-    /* Empty State */
-    .empty-results {
-      grid-column: 1 / -1;
-      padding: 56px 24px;
-      text-align: center;
-      background: var(--bg-surface);
-      border: 1px dashed var(--border-medium);
-      border-radius: var(--radius-md);
-    }
-
-    .empty-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-    }
-
-    .empty-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .empty-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      max-width: 420px;
-      margin: 0 auto 16px;
-    }
-
-    /* Responsive */
-    @media (max-width: 980px) {
-      .main-layout {
-        grid-template-columns: 1fr;
-      }
-      .library-sidebar {
-        position: static;
-        display: none;
-      }
-      .library-sidebar.is-open {
-        display: block;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .top-nav-inner {
-        padding: 0 16px;
-      }
-      .nav-tabs {
-        display: none;
-      }
-      .library-header {
-        padding: 24px 0 18px;
-      }
-      .library-header-inner {
-        padding: 0 16px;
-      }
-      .main-layout {
-        padding: 20px 16px 40px;
-      }
-      .filters-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .filters-group {
-        width: 100%;
-      }
-      .filter-select {
-        flex: 1;
-        min-width: 130px;
-      }
-      .featured-card {
-        grid-template-columns: 1fr;
-      }
-      .featured-thumb {
-        height: 120px;
-      }
-    }
-  </style>
+  <!-- School Platform Unified Stylesheet -->
+  <link rel="stylesheet" href="css/school-platform.css">
 </head>
 <body>
 
   <!-- ========================================================================
-       1. TOP NAVIGATION
+       1. GLOBAL TOP HEADER & ROLE SWITCHER
        ======================================================================== -->
-  <header class="top-nav">
-    <div class="top-nav-inner">
-      <div class="nav-left">
-        <a href="index.html" class="brand-logo" title="English Adventure Academy Home">
-          <div class="brand-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-section">
+        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy">
+          <div class="brand-icon-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
               <path d="M6 12v5c3 3 9 3 12 0v-5"/>
             </svg>
           </div>
-          <span>English Adventure Academy</span>
-        </a>
+          <span>Adventure Academy</span>
+        </div>
 
-        <nav>
-          <ul class="nav-tabs">
-            <li>
-              <button class="nav-tab-link active" data-nav="library">
-                <span>Game Library</span>
-                <span class="nav-badge" id="badge-total-games">15</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-tab-link" data-nav="favorites">
-                <span>Favorites</span>
-                <span class="nav-badge" id="badge-favorites">0</span>
-              </button>
-            </li>
-            <li>
-              <button class="nav-tab-link" data-nav="worksheets">
-                <span>Worksheets</span>
-              </button>
-            </li>
-          </ul>
+        <!-- Role Switcher (Teacher · Student · Parent) -->
+        <nav class="role-pill-group" aria-label="Role Switcher">
+          <button class="role-pill-btn is-active" data-role="teacher" title="Switch to Teacher Dashboard">
+            <span>👩‍🏫</span> <span>Teacher</span>
+          </button>
+          <button class="role-pill-btn" data-role="student" title="Switch to Student Learning Adventure">
+            <span>🧒</span> <span>Student (Emma)</span>
+          </button>
+          <button class="role-pill-btn" data-role="parent" title="Switch to Parent Portal">
+            <span>👨‍👩‍👧</span> <span>Parent</span>
+          </button>
         </nav>
       </div>
 
-      <div class="nav-right">
-        <button class="nav-icon-btn" onclick="focusSearch()" title="Search (Press /)" aria-label="Search shortcut">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Right Controls -->
+      <div class="header-right">
+        <!-- Class Selector (Teacher mode) -->
+        <select id="header-class-select" class="class-switcher-select" title="Active Class">
+          <option value="class-3a">Grade 3A — The Explorers</option>
+          <option value="class-4b">Grade 4B — The Adventurers</option>
+        </select>
+
+        <button class="icon-circle-btn" onclick="const s = document.getElementById('search-input') || document.getElementById('lib-search-input'); if (s) s.focus();" title="Search shortcut (Press /)" aria-label="Search shortcut">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/>
             <path d="m21 21-4.3-4.3"/>
           </svg>
         </button>
-        <div class="user-profile" title="Teacher Dashboard">
-          <div class="avatar-badge">TC</div>
-          <span>Teacher Mode</span>
+
+        <div class="user-chip" id="header-user-chip">
+          <div class="avatar-initials">SJ</div>
+          <span>Ms. Sarah</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- ========================================================================
-       2. LIBRARY HEADER (SEARCH & FILTER CONTROLS)
+       2. MAIN APPLICATION LAYOUT (SIDEBAR + DYNAMIC VIEW)
        ======================================================================== -->
-  <section class="library-header">
-    <div class="library-header-inner">
-      <div class="header-titles">
-        <h1 class="page-title">Game Library</h1>
-        <p class="page-subtitle">Interactive English games ready to play in your classroom.</p>
-      </div>
-
-      <div class="controls-container">
-        <!-- Search Box -->
-        <div class="search-box-wrap">
-          <div class="search-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.3-4.3"/>
-            </svg>
-          </div>
-          <input 
-            type="text" 
-            id="search-input" 
-            class="search-input" 
-            placeholder="Search games, topics, vocabulary, grammar..."
-            autocomplete="off"
-            spellcheck="false"
-          />
-          <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" title="Clear search">✕</button>
-          <span class="search-shortcut-hint">/</span>
-        </div>
-
-        <!-- Filter Dropdowns Row -->
-        <div class="filters-row">
-          <div class="filters-group">
-            <!-- Level Filter -->
-            <select id="filter-level" class="filter-select" title="Filter by CEFR Level">
-              <option value="">Level: All</option>
-              <option value="A1">A1 Beginner</option>
-              <option value="A1+">A1+ Elementary</option>
-              <option value="A2">A2 Pre-Intermediate</option>
-            </select>
-
-            <!-- Age Filter -->
-            <select id="filter-age" class="filter-select" title="Filter by Age">
-              <option value="">Age: All</option>
-              <option value="5-6">Ages 5–6</option>
-              <option value="7-8">Ages 7–8</option>
-              <option value="9-10">Ages 9–10</option>
-            </select>
-
-            <!-- Skill Filter -->
-            <select id="filter-skill" class="filter-select" title="Filter by Target Skill">
-              <option value="">Skill: All</option>
-              <option value="Speaking">Speaking</option>
-              <option value="Listening">Listening</option>
-              <option value="Reading">Reading</option>
-              <option value="Writing">Writing</option>
-              <option value="Vocabulary">Vocabulary</option>
-              <option value="Grammar">Grammar</option>
-              <option value="CLIL">CLIL</option>
-            </select>
-
-            <!-- Category / Type Filter -->
-            <select id="filter-type" class="filter-select" title="Filter by Category">
-              <option value="">Category: All</option>
-              <option value="Classroom Games">Classroom Games</option>
-              <option value="Interactive Stories">Interactive Stories</option>
-              <option value="Mystery & Detective">Mystery & Detective</option>
-              <option value="Speaking Games">Speaking Games</option>
-              <option value="Grammar Games">Grammar Games</option>
-              <option value="Role Plays">Role Plays</option>
-              <option value="Quick Warm-ups">Quick Warm-ups</option>
-              <option value="CLIL">CLIL</option>
-              <option value="Worksheets">Has Worksheets</option>
-            </select>
-
-            <!-- Duration Filter -->
-            <select id="filter-duration" class="filter-select" title="Filter by Duration">
-              <option value="">Duration: Any</option>
-              <option value="15">≤ 15 min</option>
-              <option value="30">≤ 30 min</option>
-              <option value="40">≤ 40 min</option>
-              <option value="45">≤ 45 min</option>
-            </select>
-
-            <button class="btn-reset-filters" id="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
-          </div>
-
-          <div class="sort-wrap">
-            <span>Sort:</span>
-            <select id="sort-select" class="filter-select" style="height: 36px;">
-              <option value="recommended">Recommended</option>
-              <option value="level">Level (A1 → A2)</option>
-              <option value="duration">Duration (Short → Long)</option>
-              <option value="title">Title (A–Z)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       3. MAIN LAYOUT (SIDEBAR + MAIN CONTENT)
-       ======================================================================== -->
-  <div class="main-layout">
-
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="library-sidebar" aria-label="Library Navigation">
-      <div class="sidebar-group">
-        <div class="sidebar-group-title">Browse</div>
-        <ul class="sidebar-list">
-          <li>
-            <button class="sidebar-btn is-active" data-sidebar="all">
-              <span>All Games</span>
-              <span class="sidebar-count" id="count-sidebar-all">15</span>
-            </button>
-          </li>
-          <li>
-            <button class="sidebar-btn" data-sidebar="recent">
-              <span>Recently Played</span>
-              <span class="sidebar-count">1</span>
-            </button>
-          </li>
-          <li>
-            <button class="sidebar-btn" data-sidebar="favorites">
-              <span>Favorites</span>
-              <span class="sidebar-count" id="count-sidebar-favs">0</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="sidebar-divider"></div>
-
-      <div class="sidebar-group">
-        <div class="sidebar-group-title">Categories</div>
-        <ul class="sidebar-list" id="sidebar-categories-list">
-          <li><button class="sidebar-btn" data-sidebar="cat:Classroom Games"><span>🎮 Classroom Games</span><span class="sidebar-count">3</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Interactive Stories"><span>📖 Interactive Stories</span><span class="sidebar-count">3</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Mystery & Detective"><span>🕵️ Mystery &amp; Detective</span><span class="sidebar-count">1</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Speaking Games"><span>🗣️ Speaking Games</span><span class="sidebar-count">1</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Grammar Games"><span>📚 Grammar Games</span><span class="sidebar-count">2</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Role Plays"><span>🎭 Role Plays</span><span class="sidebar-count">1</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:Quick Warm-ups"><span>⚡ Quick Warm-ups</span><span class="sidebar-count">1</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="cat:CLIL"><span>🌍 CLIL</span><span class="sidebar-count">3</span></button></li>
-        </ul>
-      </div>
-
-      <div class="sidebar-divider"></div>
-
-      <div class="sidebar-group">
-        <div class="sidebar-group-title">Levels</div>
-        <ul class="sidebar-list">
-          <li><button class="sidebar-btn" data-sidebar="level:A1"><span>A1 Beginner</span><span class="sidebar-count">8</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="level:A1+"><span>A1+ Elementary</span><span class="sidebar-count">4</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="level:A2"><span>A2 Pre-Intermediate</span><span class="sidebar-count">3</span></button></li>
-        </ul>
-      </div>
+  <div class="app-layout">
+    <!-- Dynamic Role Sidebar -->
+    <aside class="app-sidebar" id="app-sidebar-nav" aria-label="Platform Navigation">
+      <!-- Injected dynamically by school-app.js -->
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="library-content">
-
-      <!-- CONTINUE TEACHING SECTION -->
-      <section class="continue-card" id="continue-section">
-        <div class="continue-info">
-          <span class="continue-badge">Continue Teaching</span>
-          <div class="continue-title">Fire Station Adventure</div>
-          <div class="continue-meta">A1 · Ages 7–9 · 35 min · Community Helpers</div>
-        </div>
-        <a href="firefighter/index.html" class="btn-continue" title="Resume Fire Station Adventure">
-          <span>▶ Continue</span>
-        </a>
-      </section>
-
-      <!-- FEATURED GAMES SECTION -->
-      <section id="featured-section">
-        <div class="section-header">
-          <h2 class="section-title">Featured Games</h2>
-        </div>
-        <div class="featured-grid" id="featured-grid">
-          <!-- Dynamically populated from GAMES_REGISTRY -->
-        </div>
-      </section>
-
-      <!-- ALL GAMES SECTION -->
-      <section>
-        <div class="section-header">
-          <h2 class="section-title" id="grid-title">All Games</h2>
-          <span class="section-counter" id="results-count">Showing 15 games</span>
-        </div>
-        <div class="games-grid" id="games-grid">
-          <!-- Dynamically populated from GAMES_REGISTRY with zero nested links -->
-        </div>
-      </section>
-
+    <!-- Dynamic Sub-view Container -->
+    <main class="app-main" id="app-view-container">
+      <!-- Injected dynamically by school-app.js -->
     </main>
   </div>
 
   <!-- ========================================================================
-       4. JAVASCRIPT LOGIC & SINGLE SOURCE OF TRUTH
+       3. REUSABLE MODALS & DIALOGS
        ======================================================================== -->
-  <!-- Universal Central Registry (all 15 games) -->
+  <!-- Student Profile Drilldown Modal -->
+  <div class="modal-overlay" id="modal-student-profile">
+    <!-- Populated by window.openStudentDetail() -->
+  </div>
+
+  <!-- Add Student Modal -->
+  <div class="modal-overlay" id="modal-add-student">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Add New Student</h2>
+      <form onsubmit="handleCreateStudent(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">First Name</label>
+          <input type="text" id="new-stud-fname" class="filter-select" style="width:100%;" required placeholder="e.g. Leo" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Last Name</label>
+          <input type="text" id="new-stud-lname" class="filter-select" style="width:100%;" required placeholder="e.g. Dupont" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Age</label>
+            <input type="number" id="new-stud-age" class="filter-select" style="width:100%;" value="8" min="5" max="14" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">CEFR Level</label>
+            <select id="new-stud-cefr" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save &amp; Enroll Student</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Assignment Modal -->
+  <div class="modal-overlay" id="modal-create-assignment">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Assignment</h2>
+      <form onsubmit="handleCreateAssignment(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Assignment Title</label>
+          <input type="text" id="new-asg-title" class="filter-select" style="width:100%;" required placeholder="e.g. Restaurant Polite Ordering" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Game or Activity</label>
+          <select id="new-asg-game" class="filter-select" style="width:100%;">
+            <option value="restaurant">At the Restaurant (Roleplay)</option>
+            <option value="monster-day">Build Your Own Monster (Creature Builder)</option>
+            <option value="firefighter">Fire Station Adventure (Interactive Story)</option>
+            <option value="neighbourhood">My Neighbourhood (Prepositions)</option>
+            <option value="advice">The Crazy Advice Academy (Should/Shouldn't)</option>
+            <option value="predictions">What Will Happen Next? (Predictions)</option>
+            <option value="city-mouse">The City Mouse &amp; Country Mouse (Story)</option>
+            <option value="pokemon">Pokémon Trainer Battle (Action Verbs)</option>
+            <option value="jungle">Life in the Jungle (Animal Habitats)</option>
+            <option value="treasure">Treasure Mystery (Past Continuous)</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Due Date</label>
+          <input type="text" id="new-asg-date" class="filter-select" style="width:100%;" value="Sep 15, 2026" />
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Publish Assignment</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Class Modal -->
+  <div class="modal-overlay" id="modal-add-class">
+    <div class="modal-dialog" style="max-width: 460px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Class</h2>
+      <form onsubmit="event.preventDefault(); const name = document.getElementById('new-cls-name').value; if(name){ window.schoolStore.addClass({name, grade:'Grade 3', cefr:'A1', room:'Room 206', schedule:'Mon, Wed 10:00'}); closeAllModals(); switchView('classes'); }" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class Name</label>
+          <input type="text" id="new-cls-name" class="filter-select" style="width:100%;" required placeholder="e.g. Grade 3C — The Navigators" />
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Create Class</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Avatar Customizer Modal (Student Mode) -->
+  <div class="modal-overlay" id="modal-avatar-customizer">
+    <div class="modal-dialog" style="max-width: 480px; text-align:center;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:6px;">🎨 Customize Your Avatar</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px;">Choose your hairstyle, explorer outfit, and lucky badge!</p>
+
+      <div style="font-size:64px; margin-bottom:20px;" id="avatar-preview-box">👧</div>
+
+      <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+        <div>
+          <label style="font-size:0.8rem; font-weight:700;">Hairstyle</label>
+          <select id="avatar-hair-select" class="filter-select" style="width:100%;" onchange="document.getElementById('avatar-preview-box').innerText = this.value === 'boy' ? '👦' : this.value === 'star' ? '🦸' : '👧';">
+            <option value="girl" selected>Pigtails &amp; Ribbon</option>
+            <option value="boy">Spiky Explorer</option>
+            <option value="star">Superhero Cape</option>
+          </select>
+        </div>
+        <button class="btn-primary-action" style="justify-content:center; margin-top:8px;" onclick="closeAllModals(); alert('✓ Avatar updated! Keep exploring to unlock more outfits.');">Save My Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. SCRIPTS & ARCHITECTURE (GAMES REGISTRY -> STORE -> APP)
+       ======================================================================== -->
+  <!-- 1. Central 15-game Registry -->
   <script src="js/games-data.js"></script>
 
-  <script>
-    /* --------------------------------------------------------------------------
-       STATE MANAGEMENT
-       -------------------------------------------------------------------------- */
-    const state = {
-      search: "",
-      level: "",
-      age: "",
-      skill: "",
-      type: "",
-      duration: "",
-      sort: "recommended",
-      sidebar: "all",
-      navTab: "library",
-      favorites: JSON.parse(localStorage.getItem("eaa_game_favs") || "[]"),
-      recentId: localStorage.getItem("eaa_recent_game") || "firefighter"
-    };
+  <!-- 2. School Platform Store (Single Source of Truth) -->
+  <script src="js/school-store.js"></script>
 
-    /* --------------------------------------------------------------------------
-       DOM ELEMENTS
-       -------------------------------------------------------------------------- */
-    const searchInput = document.getElementById("search-input");
-    const searchClearBtn = document.getElementById("search-clear-btn");
-    const filterLevel = document.getElementById("filter-level");
-    const filterAge = document.getElementById("filter-age");
-    const filterSkill = document.getElementById("filter-skill");
-    const filterType = document.getElementById("filter-type");
-    const filterDuration = document.getElementById("filter-duration");
-    const sortSelect = document.getElementById("sort-select");
-    const btnReset = document.getElementById("btn-reset-filters");
-    const gamesGrid = document.getElementById("games-grid");
-    const featuredGrid = document.getElementById("featured-grid");
-    const featuredSection = document.getElementById("featured-section");
-    const continueSection = document.getElementById("continue-section");
-    const gridTitle = document.getElementById("grid-title");
-    const resultsCount = document.getElementById("results-count");
-    const badgeTotalGames = document.getElementById("badge-total-games");
-    const badgeFavorites = document.getElementById("badge-favorites");
-    const countSidebarAll = document.getElementById("count-sidebar-all");
-    const countSidebarFavs = document.getElementById("count-sidebar-favs");
+  <!-- 3. Application Controller & Router -->
+  <script src="js/school-app.js"></script>
 
-    /* --------------------------------------------------------------------------
-       INIT & EVENT LISTENERS
-       -------------------------------------------------------------------------- */
-    function init() {
-      // Ensure registry is loaded
-      const games = window.GAMES_REGISTRY || [];
-      badgeTotalGames.textContent = games.length;
-      countSidebarAll.textContent = games.length;
-      updateFavoritesBadge();
-
-      renderFeatured();
-      renderGames();
-
-      // Search events
-      searchInput.addEventListener("input", (e) => {
-        state.search = e.target.value.trim().toLowerCase();
-        searchClearBtn.style.display = state.search ? "flex" : "none";
-        checkResetBtn();
-        renderGames();
-      });
-
-      // Filter events
-      filterLevel.addEventListener("change", (e) => {
-        state.level = e.target.value;
-        toggleActiveSelect(filterLevel, state.level);
-        checkResetBtn();
-        renderGames();
-      });
-
-      filterAge.addEventListener("change", (e) => {
-        state.age = e.target.value;
-        toggleActiveSelect(filterAge, state.age);
-        checkResetBtn();
-        renderGames();
-      });
-
-      filterSkill.addEventListener("change", (e) => {
-        state.skill = e.target.value;
-        toggleActiveSelect(filterSkill, state.skill);
-        checkResetBtn();
-        renderGames();
-      });
-
-      filterType.addEventListener("change", (e) => {
-        state.type = e.target.value;
-        toggleActiveSelect(filterType, state.type);
-        checkResetBtn();
-        renderGames();
-      });
-
-      filterDuration.addEventListener("change", (e) => {
-        state.duration = e.target.value;
-        toggleActiveSelect(filterDuration, state.duration);
-        checkResetBtn();
-        renderGames();
-      });
-
-      sortSelect.addEventListener("change", (e) => {
-        state.sort = e.target.value;
-        renderGames();
-      });
-
-      // Top Nav Tab Events
-      document.querySelectorAll(".nav-tab-link").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".nav-tab-link").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          state.navTab = btn.dataset.nav;
-          renderGames();
-        });
-      });
-
-      // Sidebar Filter Events
-      document.querySelectorAll(".sidebar-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
-          btn.classList.add("is-active");
-          state.sidebar = btn.dataset.sidebar;
-          renderGames();
-        });
-      });
-
-      // Keyboard Shortcut '/' to search
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "/" && document.activeElement !== searchInput) {
-          e.preventDefault();
-          focusSearch();
-        }
-      });
-    }
-
-    /* --------------------------------------------------------------------------
-       FEATURED SECTION RENDER
-       -------------------------------------------------------------------------- */
-    function renderFeatured() {
-      const games = window.GAMES_REGISTRY || [];
-      const featured = games.filter(g => g.featured);
-
-      featuredGrid.innerHTML = featured.map(game => `
-        <article class="featured-card" data-id="${game.id}">
-          <div class="featured-thumb">
-            ${game.thumbnailSvg}
-          </div>
-          <div class="featured-body">
-            <div>
-              <span class="featured-tag">Featured</span>
-              <h3 class="featured-title">${game.title}</h3>
-              <div class="featured-meta">${game.level} · ${game.age} · ${game.durationText}</div>
-            </div>
-            <div class="featured-actions">
-              <a href="${game.route}" class="btn-featured-start" onclick="recordRecent('${game.id}')">
-                <span>▶ START GAME</span>
-              </a>
-              ${game.worksheet ? `
-                <a href="${game.worksheet}" target="_blank" class="btn-featured-sheet">Worksheet</a>
-              ` : ''}
-            </div>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    /* --------------------------------------------------------------------------
-       GAMES GRID RENDER (REUSABLE GAMECARD COMPONENT)
-       -------------------------------------------------------------------------- */
-    function renderGames() {
-      const games = window.GAMES_REGISTRY || [];
-      let list = [...games];
-
-      // Top Nav Tab Filter
-      if (state.navTab === "favorites") {
-        list = list.filter(g => state.favorites.includes(g.id));
-        gridTitle.textContent = "Favorite Games";
-        featuredSection.style.display = "none";
-        continueSection.style.display = "none";
-      } else if (state.navTab === "worksheets") {
-        list = list.filter(g => g.worksheet);
-        gridTitle.textContent = "Games with Printable Worksheets";
-        featuredSection.style.display = "none";
-        continueSection.style.display = "none";
-      } else {
-        gridTitle.textContent = "All Games";
-        const isFiltering = state.search || state.level || state.age || state.skill || state.type || state.duration || state.sidebar !== "all";
-        featuredSection.style.display = isFiltering ? "none" : "block";
-        continueSection.style.display = isFiltering ? "none" : "flex";
-      }
-
-      // Sidebar Filter
-      if (state.sidebar === "favorites") {
-        list = list.filter(g => state.favorites.includes(g.id));
-        gridTitle.textContent = "Favorites";
-      } else if (state.sidebar === "recent") {
-        list = list.filter(g => g.id === state.recentId);
-        gridTitle.textContent = "Recently Played";
-      } else if (state.sidebar.startsWith("cat:")) {
-        const cat = state.sidebar.replace("cat:", "");
-        list = list.filter(g => g.category === cat);
-        gridTitle.textContent = cat;
-      } else if (state.sidebar.startsWith("level:")) {
-        const lvl = state.sidebar.replace("level:", "");
-        list = list.filter(g => g.level === lvl);
-        gridTitle.textContent = `Level ${lvl}`;
-      }
-
-      // Search Box Filter
-      if (state.search) {
-        const q = state.search;
-        list = list.filter(g => {
-          return g.title.toLowerCase().includes(q) ||
-                 g.description.toLowerCase().includes(q) ||
-                 (g.topic && g.topic.toLowerCase().includes(q)) ||
-                 g.category.toLowerCase().includes(q) ||
-                 g.level.toLowerCase().includes(q) ||
-                 g.skills.some(s => s.toLowerCase().includes(q));
-        });
-      }
-
-      // Dropdown Filters
-      if (state.level) {
-        list = list.filter(g => g.level === state.level);
-      }
-      if (state.age) {
-        list = list.filter(g => g.ageGroup === state.age);
-      }
-      if (state.skill) {
-        list = list.filter(g => g.skills.includes(state.skill));
-      }
-      if (state.type) {
-        if (state.type === "Worksheets") {
-          list = list.filter(g => g.worksheet);
-        } else {
-          list = list.filter(g => g.category === state.type);
-        }
-      }
-      if (state.duration) {
-        const max = parseInt(state.duration, 10);
-        list = list.filter(g => g.duration <= max);
-      }
-
-      // Sorting
-      list.sort((a, b) => {
-        if (state.sort === "level") {
-          return a.level.localeCompare(b.level);
-        } else if (state.sort === "duration") {
-          return a.duration - b.duration;
-        } else if (state.sort === "title") {
-          return a.title.localeCompare(b.title);
-        }
-        return 0; // recommended
-      });
-
-      // Update counter
-      resultsCount.textContent = `Showing ${list.length} games`;
-
-      // Empty State
-      if (list.length === 0) {
-        gamesGrid.innerHTML = `
-          <div class="empty-results">
-            <div class="empty-icon">🔍</div>
-            <div class="empty-title">No games found</div>
-            <p class="empty-desc">Try clearing your filters or changing your search terms to discover classroom games.</p>
-            <button class="btn-continue" onclick="resetFilters()">Reset all filters</button>
-          </div>
-        `;
-        return;
-      }
-
-      // Render Reusable GameCard Component
-      gamesGrid.innerHTML = list.map(game => renderGameCard(game)).join("");
-    }
-
-    /* --------------------------------------------------------------------------
-       REUSABLE GAMECARD COMPONENT (STRICTLY ZERO NESTED LINKS)
-       -------------------------------------------------------------------------- */
-    function renderGameCard(game) {
-      const isFav = state.favorites.includes(game.id);
-      return `
-        <article class="game-card" data-id="${game.id}">
-          <div class="card-thumbnail">
-            ${game.thumbnailSvg}
-            <span class="level-badge">${game.level}</span>
-            <button class="bookmark-btn ${isFav ? 'is-saved' : ''}" onclick="toggleBookmark('${game.id}', event)" title="${isFav ? 'Remove from favorites' : 'Bookmark game'}" aria-label="Bookmark">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2">
-                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="card-body">
-            <span class="card-category-pill">${game.category}</span>
-            <h3 class="card-title">${game.title}</h3>
-            <p class="card-desc">${game.description}</p>
-            
-            <div class="card-meta">
-              <span>${game.level}</span>
-              <span class="separator">·</span>
-              <span>${game.age}</span>
-              <span class="separator">·</span>
-              <span>${game.durationText}</span>
-            </div>
-
-            <div class="card-skills">
-              ${game.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join("")}
-            </div>
-          </div>
-
-          <div class="card-footer">
-            <a href="${game.route}" class="btn-start" onclick="recordRecent('${game.id}')">
-              <span>▶ START GAME</span>
-            </a>
-            ${game.worksheet ? `
-              <a href="${game.worksheet}" target="_blank" class="btn-worksheet">Worksheet</a>
-            ` : ''}
-          </div>
-        </article>
-      `;
-    }
-
-    /* --------------------------------------------------------------------------
-       HELPERS & ACTIONS
-       -------------------------------------------------------------------------- */
-    function recordRecent(id) {
-      state.recentId = id;
-      localStorage.setItem("eaa_recent_game", id);
-    }
-
-    function toggleBookmark(id, event) {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-      if (state.favorites.includes(id)) {
-        state.favorites = state.favorites.filter(x => x !== id);
-      } else {
-        state.favorites.push(id);
-      }
-      localStorage.setItem("eaa_game_favs", JSON.stringify(state.favorites));
-      updateFavoritesBadge();
-      renderGames();
-    }
-
-    function updateFavoritesBadge() {
-      badgeFavorites.textContent = state.favorites.length;
-      countSidebarFavs.textContent = state.favorites.length;
-    }
-
-    function toggleActiveSelect(el, val) {
-      if (val) {
-        el.classList.add("is-active");
-      } else {
-        el.classList.remove("is-active");
-      }
-    }
-
-    function checkResetBtn() {
-      const active = state.search || state.level || state.age || state.skill || state.type || state.duration;
-      btnReset.style.display = active ? "inline-block" : "none";
-    }
-
-    function clearSearch() {
-      searchInput.value = "";
-      state.search = "";
-      searchClearBtn.style.display = "none";
-      checkResetBtn();
-      renderGames();
-      searchInput.focus();
-    }
-
-    function focusSearch() {
-      searchInput.focus();
-    }
-
-    function resetFilters() {
-      state.search = "";
-      state.level = "";
-      state.age = "";
-      state.skill = "";
-      state.type = "";
-      state.duration = "";
-      state.sidebar = "all";
-
-      searchInput.value = "";
-      searchClearBtn.style.display = "none";
-
-      filterLevel.value = "";
-      filterAge.value = "";
-      filterSkill.value = "";
-      filterType.value = "";
-      filterDuration.value = "";
-
-      [filterLevel, filterAge, filterSkill, filterType, filterDuration].forEach(el => el.classList.remove("is-active"));
-      document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
-      const allBtn = document.querySelector(".sidebar-btn[data-sidebar='all']");
-      if (allBtn) allBtn.classList.add("is-active");
-
-      btnReset.style.display = "none";
-      renderGames();
-    }
-
-    // Launch when DOM is ready
-    document.addEventListener("DOMContentLoaded", init);
-  </script>
 </body>
 </html>
