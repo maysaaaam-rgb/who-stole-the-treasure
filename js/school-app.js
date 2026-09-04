@@ -15,6 +15,8 @@
 
   // Application State
   let currentView = 'dashboard';
+  let selectedAttDate = new Date().toISOString().split('T')[0];
+  let activeArchivedFilter = 'all';
   let selectedClassDetailId = 'class-3a';
   let selectedClassDetailTab = 'classroom';
   let studentProfileActiveTab = 'overview';
@@ -871,13 +873,18 @@
 
   window.handleCreateAssignment = function(e) {
     e.preventDefault();
+    const editId = document.getElementById('edit-asg-id') ? document.getElementById('edit-asg-id').value : '';
     const title = document.getElementById('new-asg-title').value.trim();
     const classId = document.getElementById('new-asg-class').value;
     const activityId = document.getElementById('new-asg-game').value;
     const dueDate = document.getElementById('new-asg-date').value || 'Sep 25, 2026';
     const instructions = document.getElementById('new-asg-inst').value.trim();
 
-    store.createAssignment({ title, classId, activityId, dueDate, instructions });
+    if (editId) {
+      store.updateAssignment(editId, { title, classId, activityId, dueDate, instructions });
+    } else {
+      store.createAssignment({ title, classId, activityId, dueDate, instructions });
+    }
     window.closeAllModals();
     window.switchView('assignments');
   };
@@ -905,13 +912,18 @@
   // Homework CRUD
   window.handleCreateHomework = function(e) {
     e.preventDefault();
+    const editId = document.getElementById('edit-hw-id') ? document.getElementById('edit-hw-id').value : '';
     const title = document.getElementById('new-hw-title').value.trim();
     const type = document.getElementById('new-hw-type').value;
     const classId = document.getElementById('new-hw-class').value;
     const dueDate = document.getElementById('new-hw-date').value || 'Sep 25, 2026';
-    const description = document.getElementById('new-hw-desc').value.trim();
+    const description = document.getElementById('new-hw-desc') ? document.getElementById('new-hw-desc').value.trim() : '';
 
-    store.createHomework({ title, type, classId, dueDate, description });
+    if (editId) {
+      store.updateHomework(editId, { title, type, classId, dueDate, description });
+    } else {
+      store.createHomework({ title, type, classId, dueDate, description });
+    }
     window.closeAllModals();
     window.switchView('homework');
   };
@@ -934,21 +946,26 @@
   // Quizzes CRUD
   window.handleCreateQuiz = function(e) {
     e.preventDefault();
+    const editId = document.getElementById('edit-quiz-id') ? document.getElementById('edit-quiz-id').value : '';
     const title = document.getElementById('quiz-title').value.trim();
     const targetCefr = document.getElementById('quiz-cefr').value;
     const skill = document.getElementById('quiz-skill').value;
-    const q1 = document.getElementById('quiz-q1').value.trim();
-    const opt1 = document.getElementById('quiz-opt1').value.trim();
-    const opt2 = document.getElementById('quiz-opt2').value.trim();
 
-    store.createQuiz({
-      title,
-      targetCefr,
-      skill,
-      questions: [
-        { id: 'q-1', question: q1, options: [opt1, opt2], correctIndex: 0 }
-      ]
-    });
+    if (editId) {
+      store.updateQuiz(editId, { title, targetCefr, skill });
+    } else {
+      const q1 = document.getElementById('quiz-q1') ? document.getElementById('quiz-q1').value.trim() : 'Sample speaking checkpoint';
+      const opt1 = document.getElementById('quiz-opt1') ? document.getElementById('quiz-opt1').value.trim() : 'Option A';
+      const opt2 = document.getElementById('quiz-opt2') ? document.getElementById('quiz-opt2').value.trim() : 'Option B';
+      store.createQuiz({
+        title,
+        targetCefr,
+        skill,
+        questions: [
+          { id: 'q-1', question: q1, options: [opt1, opt2], correctIndex: 0 }
+        ]
+      });
+    }
 
     window.closeAllModals();
     window.switchView('quizzes');
@@ -1010,12 +1027,17 @@
   // CLASS STORY HANDLERS
   window.handleCreateStoryPost = function(e) {
     e.preventDefault();
+    const editId = document.getElementById('edit-story-id') ? document.getElementById('edit-story-id').value : '';
     const title = document.getElementById('story-post-title').value.trim();
     const category = document.getElementById('story-post-cat').value;
     const classId = document.getElementById('story-post-class').value;
     const content = document.getElementById('story-post-content').value.trim();
 
-    store.addStoryPost({ title, category, classId, content });
+    if (editId) {
+      store.updateStoryPost(editId, { title, category, classId, content });
+    } else {
+      store.addStoryPost({ title, category, classId, content });
+    }
     window.closeAllModals();
     window.switchView('story');
   };
@@ -1246,20 +1268,39 @@
           '</div>';
 
       case 'portfolio':
+        const studentPortfolio = store.getStudentPortfolio(student.id);
         return '' +
-          '<h4 style="font-weight:800; margin-bottom:10px;">Student Work &amp; Creative Artifacts</h4>' +
-          '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px;">' +
-              '<strong>🎨 My Crazy Monster</strong><p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Drawing + sentence recording</p>' +
-              '<div style="font-size:36px; margin:10px 0;">👾</div>' +
-              '<p style="font-size:0.78rem; font-style:italic;">"Zorgon has got 4 eyes and big blue wings."</p>' +
-            '</div>' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px;">' +
-              '<strong>🎙️ Restaurant Dialogue Recording</strong><p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Customer roleplay recording</p>' +
-              '<div style="font-size:36px; margin:10px 0;">🍽️</div>' +
-              '<p style="font-size:0.78rem; font-style:italic;">"Can I have a pizza and lemonade, please?"</p>' +
-            '</div>' +
-          '</div>';
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
+            '<h4 style="font-weight:800; font-size:1.05rem;">Student Work &amp; Creative Artifacts (' + studentPortfolio.length + ')</h4>' +
+            '<button class="btn-primary-action" onclick="openPortfolioItemModal(null, \'' + student.id + '\')">🎨 + Add Artifact</button>' +
+          '</div>' +
+          (studentPortfolio.length === 0 ? 
+            '<div style="text-align:center; padding:32px 16px; background:var(--bg-canvas); border-radius:var(--radius-md); border:1px solid var(--border-light);">' +
+              '<div style="font-size:32px; margin-bottom:8px;">🎨</div>' +
+              '<div style="font-weight:700;">No creative artifacts recorded yet</div>' +
+              '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Add drawings, spoken dialogue recordings, or story projects.</p>' +
+              '<button class="btn-primary-action" style="margin-top:10px;" onclick="openPortfolioItemModal(null, \'' + student.id + '\')">+ Add First Artifact</button>' +
+            '</div>' :
+            '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;">' +
+              studentPortfolio.map(item => '' +
+                '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; display:flex; flex-direction:column; justify-content:space-between;">' +
+                  '<div>' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                      '<span style="font-size:0.72rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 6px; border-radius:999px; font-weight:700;">' + item.category + '</span>' +
+                      '<span style="font-size:0.72rem; color:var(--text-muted);">' + (item.date || '') + '</span>' +
+                    '</div>' +
+                    '<strong style="font-size:0.95rem; display:block; margin-bottom:6px;">' + item.title + '</strong>' +
+                    '<div style="font-size:36px; margin:6px 0; text-align:center;">' + (item.preview || '🎨') + '</div>' +
+                    (item.notes ? '<p style="font-size:0.78rem; font-style:italic; color:var(--text-secondary); margin-top:4px;">"' + item.notes + '"</p>' : '') +
+                  '</div>' +
+                  '<div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top:1px solid var(--border-light); padding-top:8px;">' +
+                    '<button class="btn-sm-secondary" onclick="openPortfolioItemModal(\'' + item.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem;">✏️ Edit</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDeletePortfolioItem(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">🗑️ Delete</button>' +
+                  '</div>' +
+                '</div>'
+              ).join('') +
+            '</div>'
+          );
 
       case 'xp':
         return '' +
@@ -1900,10 +1941,16 @@
 
       // Books Tab Switcher
       '<div class="curriculum-book-tabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
-        books.map(b => 
-          '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="curriculumActiveBookId=\'' + b.id + '\'; renderCurrentView();" style="background:transparent; border:none; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding:8px 16px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
-            b.title + ' (' + b.targetLevel + ')' +
-          '</button>'
+        books.map(b => '' +
+          '<div style="display:inline-flex; align-items:center; gap:2px; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding-bottom:4px;">' +
+            '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="curriculumActiveBookId=\'' + b.id + '\'; renderCurrentView();" style="background:transparent; border:none; padding:8px 12px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
+              b.title + ' (' + b.targetLevel + ')' +
+            '</button>' +
+            (activeBook.id === b.id ? 
+              '<button onclick="openEditBookModal(\'' + b.id + '\')" title="Edit Book" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; padding:2px;">✏️</button>' +
+              '<button onclick="handleArchiveBook(\'' + b.id + '\')" title="Archive Book" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; padding:2px; color:var(--color-danger);">🗑️</button>'
+              : '') +
+          '</div>'
         ).join('') +
       '</div>' +
 
@@ -2781,6 +2828,7 @@
         '<ul class="sidebar-nav-list">' +
           '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')"><span class="nav-item-left"><span>📊</span> System Health &amp; CRUD</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')"><span class="nav-item-left"><span>🏆</span> Gamification &amp; Badges</span></button></li>' +
+          '<li><button class="nav-link-btn" onclick="openArchivedManagerModal()"><span class="nav-item-left"><span>🗄️</span> Archived &amp; Restore</span></button></li>' +
           '<li><button class="nav-link-btn" onclick="openSchoolSettingsModal()"><span class="nav-item-left"><span>⚙️</span> School Settings</span></button></li>' +
         '</ul>';
     } else if (role === 'student') {
@@ -4166,3 +4214,516 @@ window.switchClassroomSubTab = function(subTab) {
   window.openUnitModal = window.openAddUnitModal;
   window.openLessonModal = window.openAddLessonModal;
   window.openObjectiveModal = window.openAddObjectiveModal;
+
+
+  // =========================================================================
+  // MISSING & UPGRADED CRUD HANDLERS (Assignments, Homework, Quizzes, Badges)
+  // =========================================================================
+  window.toggleCardMenu = function(resourceId, e) {
+    window.toggleCardDropdown(resourceId, e);
+  };
+
+  window.handleToggleFavorite = function(resourceId) {
+    window.handleToggleFeaturedResource(resourceId);
+  };
+
+  window.handleDuplicateLesson = function(lessonId) {
+    store.duplicateLesson(lessonId);
+    renderCurrentView();
+  };
+
+  window.openEditAssignmentModal = function(asgId) {
+    const a = store.getAssignment(asgId);
+    if (!a) return;
+    populateModalDropdowns();
+    const editIdInput = document.getElementById('edit-asg-id');
+    const titleInput = document.getElementById('new-asg-title');
+    const classSelect = document.getElementById('new-asg-class');
+    const gameSelect = document.getElementById('new-asg-game');
+    const dateInput = document.getElementById('new-asg-date');
+    const instInput = document.getElementById('new-asg-inst');
+    const modalTitle = document.getElementById('asg-modal-title');
+
+    if (editIdInput) editIdInput.value = a.id;
+    if (titleInput) titleInput.value = a.title;
+    if (classSelect) classSelect.value = a.classId;
+    if (gameSelect) gameSelect.value = a.activityId || a.gameId || '';
+    if (dateInput) dateInput.value = a.dueDate;
+    if (instInput) instInput.value = a.instructions || '';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Assignment';
+
+    window.openModal('modal-create-assignment');
+  };
+
+  window.openEditHomeworkModal = function(hwId) {
+    const h = store.getHomeworkItem(hwId);
+    if (!h) return;
+    populateModalDropdowns();
+    const editIdInput = document.getElementById('edit-hw-id');
+    const titleInput = document.getElementById('new-hw-title');
+    const typeSelect = document.getElementById('new-hw-type');
+    const classSelect = document.getElementById('new-hw-class');
+    const dateInput = document.getElementById('new-hw-date');
+    const descInput = document.getElementById('new-hw-desc');
+    const modalTitle = document.getElementById('hw-modal-title');
+
+    if (editIdInput) editIdInput.value = h.id;
+    if (titleInput) titleInput.value = h.title;
+    if (typeSelect) typeSelect.value = h.type || 'Worksheet';
+    if (classSelect) classSelect.value = h.classId;
+    if (dateInput) dateInput.value = h.dueDate;
+    if (descInput) descInput.value = h.description || '';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Homework Task';
+
+    window.openModal('modal-homework-editor');
+  };
+
+  window.handleDuplicateHomework = function(hwId) {
+    store.duplicateHomework(hwId);
+    renderCurrentView();
+  };
+
+  window.openEditQuizModal = function(quizId) {
+    const q = store.getQuiz(quizId);
+    if (!q) return;
+    const editIdInput = document.getElementById('edit-quiz-id');
+    const titleInput = document.getElementById('quiz-title');
+    const cefrSelect = document.getElementById('quiz-cefr');
+    const skillSelect = document.getElementById('quiz-skill');
+    const modalTitle = document.getElementById('quiz-modal-title');
+
+    if (editIdInput) editIdInput.value = q.id;
+    if (titleInput) titleInput.value = q.title;
+    if (cefrSelect) cefrSelect.value = q.targetCefr || 'A1';
+    if (skillSelect) skillSelect.value = q.skill || 'Vocabulary';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Quiz Details';
+
+    window.openModal('modal-quiz-builder');
+  };
+
+  window.handleDuplicateQuiz = function(quizId) {
+    store.duplicateQuiz(quizId);
+    renderCurrentView();
+  };
+
+  window.handleDeleteAssessment = function(assId) {
+    window.confirmAction({
+      title: 'Delete Assessment Evaluation?',
+      message: 'This will remove the rubric evaluation score permanently from the student records.',
+      onConfirm: () => {
+        store.deleteAssessment(assId);
+        renderCurrentView();
+      }
+    });
+  };
+
+  window.openEditBadgeModal = function(badgeId) {
+    const b = store.getBadge(badgeId);
+    if (!b) return;
+    const title = document.getElementById('gamification-modal-title');
+    const idInput = document.getElementById('edit-game-reward-id');
+    const typeSelect = document.getElementById('edit-game-reward-type');
+    const nameInput = document.getElementById('reward-name');
+    const iconInput = document.getElementById('reward-icon');
+    const reqInput = document.getElementById('reward-requirement');
+    const catInput = document.getElementById('reward-category');
+
+    if (title) title.textContent = '✏️ Edit Badge';
+    if (idInput) idInput.value = b.id;
+    if (typeSelect) typeSelect.value = 'badge';
+    if (nameInput) nameInput.value = b.name;
+    if (iconInput) iconInput.value = b.icon || '🏅';
+    if (reqInput) reqInput.value = b.description || '';
+    if (catInput) catInput.value = b.category || 'General';
+
+    window.openModal('modal-gamification-editor');
+  };
+
+  window.openEditAchievementModal = function(achId) {
+    const a = store.getAchievement(achId);
+    if (!a) return;
+    const title = document.getElementById('gamification-modal-title');
+    const idInput = document.getElementById('edit-game-reward-id');
+    const typeSelect = document.getElementById('edit-game-reward-type');
+    const nameInput = document.getElementById('reward-name');
+    const iconInput = document.getElementById('reward-icon');
+    const reqInput = document.getElementById('reward-requirement');
+    const catInput = document.getElementById('reward-category');
+
+    if (title) title.textContent = '✏️ Edit Achievement';
+    if (idInput) idInput.value = a.id;
+    if (typeSelect) typeSelect.value = 'achievement';
+    if (nameInput) nameInput.value = a.title || a.name;
+    if (iconInput) iconInput.value = a.icon || '🏆';
+    if (reqInput) reqInput.value = a.description || '';
+    if (catInput) catInput.value = a.category || 'Milestones';
+
+    window.openModal('modal-gamification-editor');
+  };
+
+  window.openEditBookModal = function(bookId) {
+    const b = store.getBooks().find(item => item.id === bookId);
+    if (!b) return;
+    const newTitle = prompt('Edit Book Title:', b.title);
+    if (newTitle && newTitle.trim()) {
+      const newLevel = prompt('Edit Target CEFR Level:', b.targetLevel || 'A1');
+      store.updateBook(bookId, { title: newTitle.trim(), targetLevel: newLevel || 'A1' });
+      renderCurrentView();
+    }
+  };
+
+  window.handleArchiveBook = function(bookId) {
+    const b = store.getBooks().find(item => item.id === bookId);
+    if (!b) return;
+    window.confirmAction({
+      title: 'Archive ' + b.title + '?',
+      message: 'This book and its units will be archived.',
+      onConfirm: () => {
+        store.archiveBook(bookId);
+        const remaining = store.getBooks();
+        if (remaining.length > 0) curriculumActiveBookId = remaining[0].id;
+        renderCurrentView();
+      }
+    });
+  };
+
+  window.openEditObjectiveModal = function(objId) {
+    const o = store.getObjectives().find(item => item.id === objId);
+    if (!o) return;
+    const newText = prompt('Edit Learning Objective:', o.text);
+    if (newText && newText.trim()) {
+      const newSkill = prompt('Target Skill (Speaking, Listening, Vocabulary, Grammar, Reading, Writing):', o.skill || 'Speaking');
+      store.updateObjective(objId, { text: newText.trim(), skill: newSkill || 'Speaking' });
+      renderCurrentView();
+    }
+  };
+
+  window.openMoveLessonModal = function(lessonId) {
+    const l = store.getLessons().find(item => item.id === lessonId);
+    if (!l) return;
+    const units = store.getUnits();
+    const promptList = units.map((u, i) => (i + 1) + '. ' + u.title).join('\n');
+    const pick = prompt('Move lesson to which Unit number?\n' + promptList, '1');
+    const idx = parseInt(pick, 10) - 1;
+    if (idx >= 0 && idx < units.length) {
+      store.moveLessonToUnit(lessonId, units[idx].id);
+      renderCurrentView();
+    }
+  };
+
+  window.openEditStoryPostModal = function(postId) {
+    const post = store.getClassStory().find(p => p.id === postId);
+    if (!post) return;
+    populateModalDropdowns();
+    const idInput = document.getElementById('edit-story-id');
+    const titleInput = document.getElementById('story-post-title');
+    const catSelect = document.getElementById('story-post-cat');
+    const classSelect = document.getElementById('story-post-class');
+    const contentInput = document.getElementById('story-post-content');
+    const modalTitle = document.getElementById('story-modal-title');
+
+    if (idInput) idInput.value = post.id;
+    if (titleInput) titleInput.value = post.title;
+    if (catSelect) catSelect.value = post.category || 'Announcement';
+    if (classSelect) classSelect.value = post.classId || 'all';
+    if (contentInput) contentInput.value = post.content || '';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Class Story Post';
+
+    window.openModal('modal-story-post');
+  };
+
+  // =========================================================================
+  // CALENDAR EVENT HANDLERS
+  // =========================================================================
+  window.openCalendarEventModal = function(eventId = null) {
+    populateModalDropdowns();
+    const modalTitle = document.getElementById('event-modal-title');
+    const idInput = document.getElementById('edit-event-id');
+    const titleInput = document.getElementById('event-title');
+    const classSelect = document.getElementById('event-class');
+    const typeSelect = document.getElementById('event-type');
+    const daySelect = document.getElementById('event-day');
+    const timeInput = document.getElementById('event-time');
+    const roomInput = document.getElementById('event-room');
+    const dateInput = document.getElementById('event-date');
+    const topicInput = document.getElementById('event-topic');
+
+    // Populate classSelect
+    if (classSelect) {
+      classSelect.innerHTML = store.getClasses().map(c => '<option value="' + c.id + '">' + c.name + '</option>').join('');
+    }
+
+    if (eventId) {
+      const ev = store.getCalendarEvent(eventId);
+      if (!ev) return;
+      if (modalTitle) modalTitle.textContent = '✏️ Edit Calendar Event';
+      if (idInput) idInput.value = ev.id;
+      if (titleInput) titleInput.value = ev.title;
+      if (classSelect) classSelect.value = ev.classId;
+      if (typeSelect) typeSelect.value = ev.type || 'Lesson';
+      if (daySelect) daySelect.value = ev.dayOfWeek || 'Monday';
+      if (timeInput) timeInput.value = ev.time || '10:00 – 10:45';
+      if (roomInput) roomInput.value = ev.room || 'Room 204';
+      if (dateInput) dateInput.value = ev.date || '';
+      if (topicInput) topicInput.value = ev.topic || '';
+    } else {
+      if (modalTitle) modalTitle.textContent = '📅 Add Calendar Event';
+      if (idInput) idInput.value = '';
+      if (titleInput) titleInput.value = '';
+      if (classSelect) classSelect.value = store.getActiveClass().id;
+      if (typeSelect) typeSelect.value = 'Lesson';
+      if (daySelect) daySelect.value = 'Monday';
+      if (timeInput) timeInput.value = '10:00 – 10:45';
+      if (roomInput) roomInput.value = store.getActiveClass().room || 'Room 204';
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+      if (topicInput) topicInput.value = '';
+    }
+
+    window.openModal('modal-calendar-event-editor');
+  };
+
+  window.handleSaveCalendarEvent = function(e) {
+    e.preventDefault();
+    const editId = document.getElementById('edit-event-id') ? document.getElementById('edit-event-id').value : '';
+    const title = document.getElementById('event-title').value.trim();
+    const classId = document.getElementById('event-class').value;
+    const type = document.getElementById('event-type').value;
+    const dayOfWeek = document.getElementById('event-day').value;
+    const time = document.getElementById('event-time').value.trim();
+    const room = document.getElementById('event-room').value.trim();
+    const date = document.getElementById('event-date') ? document.getElementById('event-date').value : '';
+    const topic = document.getElementById('event-topic') ? document.getElementById('event-topic').value.trim() : '';
+
+    if (editId) {
+      store.updateCalendarEvent(editId, { title, classId, type, dayOfWeek, time, room, date, topic });
+    } else {
+      store.addCalendarEvent({ title, classId, type, dayOfWeek, time, room, date, topic });
+    }
+    window.closeAllModals();
+    renderCurrentView();
+  };
+
+  window.handleDeleteCalendarEvent = function(eventId) {
+    window.confirmAction({
+      title: 'Delete Calendar Event?',
+      message: 'This scheduled session will be removed from the class schedule.',
+      onConfirm: () => {
+        store.deleteCalendarEvent(eventId);
+        renderCurrentView();
+      }
+    });
+  };
+
+  // =========================================================================
+  // PORTFOLIO ARTIFACT HANDLERS
+  // =========================================================================
+  window.openPortfolioItemModal = function(itemId = null, studentId = null) {
+    const modalTitle = document.getElementById('portfolio-modal-title');
+    const idInput = document.getElementById('edit-portfolio-id');
+    const studSelect = document.getElementById('portfolio-student-id');
+    const titleInput = document.getElementById('portfolio-title');
+    const catSelect = document.getElementById('portfolio-category');
+    const previewInput = document.getElementById('portfolio-preview');
+    const dateInput = document.getElementById('portfolio-date');
+    const notesInput = document.getElementById('portfolio-notes');
+
+    if (studSelect) {
+      studSelect.innerHTML = store.getStudents().map(s => '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + '</option>').join('');
+      if (studentId) studSelect.value = studentId;
+    }
+
+    if (itemId) {
+      const allPortfolios = (store.state.portfolios || []);
+      const item = allPortfolios.find(p => p.id === itemId);
+      if (!item) return;
+      if (modalTitle) modalTitle.textContent = '✏️ Edit Portfolio Artifact';
+      if (idInput) idInput.value = item.id;
+      if (studSelect) studSelect.value = item.studentId;
+      if (titleInput) titleInput.value = item.title;
+      if (catSelect) catSelect.value = item.category || 'Drawing';
+      if (previewInput) previewInput.value = item.preview || '🎨';
+      if (dateInput) dateInput.value = item.date || '';
+      if (notesInput) notesInput.value = item.notes || '';
+    } else {
+      if (modalTitle) modalTitle.textContent = '🎨 Add Portfolio Artifact';
+      if (idInput) idInput.value = '';
+      if (titleInput) titleInput.value = '';
+      if (catSelect) catSelect.value = 'Drawing';
+      if (previewInput) previewInput.value = '🎨';
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+      if (notesInput) notesInput.value = '';
+    }
+
+    window.openModal('modal-portfolio-editor');
+  };
+
+  window.handleSavePortfolioItem = function(e) {
+    e.preventDefault();
+    const editId = document.getElementById('edit-portfolio-id') ? document.getElementById('edit-portfolio-id').value : '';
+    const studentId = document.getElementById('portfolio-student-id').value;
+    const title = document.getElementById('portfolio-title').value.trim();
+    const category = document.getElementById('portfolio-category').value;
+    const preview = document.getElementById('portfolio-preview').value.trim() || '🎨';
+    const date = document.getElementById('portfolio-date') ? document.getElementById('portfolio-date').value : '';
+    const notes = document.getElementById('portfolio-notes') ? document.getElementById('portfolio-notes').value.trim() : '';
+
+    const student = store.getStudent(studentId);
+    const classId = student ? student.classId : store.getActiveClass().id;
+
+    if (editId) {
+      store.updatePortfolioItem(editId, { studentId, classId, title, category, preview, date, notes });
+    } else {
+      store.addPortfolioItem({ studentId, classId, title, category, preview, date, notes });
+    }
+    window.closeAllModals();
+    renderCurrentView();
+    if (studentId) window.switchStudentProfileTab('portfolio');
+  };
+
+  window.handleDeletePortfolioItem = function(itemId) {
+    window.confirmAction({
+      title: 'Delete Portfolio Artifact?',
+      message: 'This artifact will be removed from the student portfolio.',
+      onConfirm: () => {
+        store.deletePortfolioItem(itemId);
+        renderCurrentView();
+        const s = store.getActiveStudent();
+        if (s) window.switchStudentProfileTab('portfolio');
+      }
+    });
+  };
+
+  // =========================================================================
+  // UNIVERSAL ARCHIVED & RESTORE HANDLERS
+  // =========================================================================
+  window.openArchivedManagerModal = function(filterType = 'all') {
+    activeArchivedFilter = filterType;
+    renderArchivedItemsList(filterType);
+    window.openModal('modal-archived-manager');
+  };
+
+  window.filterArchivedItems = function(filterType, btnElem) {
+    activeArchivedFilter = filterType;
+    const pills = document.querySelectorAll('#archived-filter-pills .btn-sm-secondary');
+    pills.forEach(p => p.classList.remove('is-active'));
+    if (btnElem) btnElem.classList.add('is-active');
+    renderArchivedItemsList(filterType);
+  };
+
+  window.renderArchivedItemsList = function(filterType = 'all') {
+    const container = document.getElementById('archived-items-list-container');
+    if (!container) return;
+
+    const actualFilter = filterType === 'all' ? null : filterType;
+    const list = store.getArchivedEntities(actualFilter);
+
+    if (list.length === 0) {
+      container.innerHTML = 
+        '<div style="text-align:center; padding:40px 16px; background:var(--bg-card-secondary); border-radius:12px;">' +
+          '<div style="font-size:32px; margin-bottom:8px;">✨</div>' +
+          '<div style="font-weight:700; font-size:1rem;">No archived items found</div>' +
+          '<p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">When you archive students, lessons, or resources, they will appear here safely for recovery.</p>' +
+        '</div>';
+      return;
+    }
+
+    container.innerHTML = list.map(item => '' +
+      '<div style="background:var(--bg-card-secondary); border:1px solid var(--border-subtle); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+        '<div style="display:flex; align-items:center; gap:10px;">' +
+          '<span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:3px 8px; border-radius:6px;">' + item.type + '</span>' +
+          '<div>' +
+            '<div style="font-weight:800; font-size:0.95rem;">' + item.title + '</div>' +
+            '<div style="font-size:0.75rem; color:var(--text-muted);">' + item.meta + ' · ID: ' + item.id + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="btn-primary-action" onclick="handleRestoreArchivedItem(\'' + item.type + '\', \'' + item.id + '\')" style="padding:5px 12px; font-size:0.8rem;">' +
+          '<span>↺</span> <span>Restore Item</span>' +
+        '</button>' +
+      '</div>'
+    ).join('');
+  };
+
+  window.handleRestoreArchivedItem = function(type, id) {
+    const success = store.restoreEntity(type, id);
+    if (success) {
+      renderArchivedItemsList(activeArchivedFilter);
+      renderCurrentView();
+    }
+  };
+
+  // =========================================================================
+  // MOVE STUDENT HANDLERS
+  // =========================================================================
+  window.openMoveStudentModal = function(studentId) {
+    const s = store.getStudent(studentId);
+    if (!s) return;
+    const idInput = document.getElementById('move-stud-id');
+    const nameDisplay = document.getElementById('move-stud-display-name');
+    const select = document.getElementById('move-target-class-select');
+
+    if (idInput) idInput.value = s.id;
+    if (nameDisplay) nameDisplay.textContent = 'Student: ' + s.firstName + ' ' + s.lastName + ' (Current: ' + (store.getClass(s.classId) ? store.getClass(s.classId).name : 'Unenrolled') + ')';
+    if (select) {
+      select.innerHTML = 
+        '<option value="">-- Mark as Unenrolled --</option>' +
+        store.getClasses().map(c => '<option value="' + c.id + '" ' + (c.id === s.classId ? 'selected' : '') + '>' + c.name + ' (' + c.grade + ')</option>').join('');
+    }
+
+    window.openModal('modal-move-student');
+  };
+
+  window.handleExecuteMoveStudent = function(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('move-stud-id').value;
+    const targetClassId = document.getElementById('move-target-class-select').value;
+    store.moveStudentToClass(studentId, targetClassId);
+    window.closeAllModals();
+    renderCurrentView();
+  };
+
+  // =========================================================================
+  // REAL AVATAR CUSTOMIZER HANDLER
+  // =========================================================================
+  window.handleSaveAvatar = function() {
+    const hair = document.getElementById('avatar-hair-select') ? document.getElementById('avatar-hair-select').value : 'girl';
+    const activeStudent = store.getActiveStudent();
+    if (activeStudent) {
+      store.updateStudentAvatar(activeStudent.id, { hair });
+    }
+    window.closeAllModals();
+    renderCurrentView();
+  };
+
+  // =========================================================================
+  // MESSAGE THREAD HANDLERS
+  // =========================================================================
+  window.openNewMessageThreadModal = function() {
+    const studSelect = document.getElementById('new-msg-student-select');
+    const parentInput = document.getElementById('new-msg-parent-name');
+    if (studSelect) {
+      studSelect.innerHTML = store.getStudents().map(s => '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + ' (' + (s.parentName || 'Parent') + ')</option>').join('');
+      const first = store.getStudents()[0];
+      if (first && parentInput) parentInput.value = first.parentName || 'Parent';
+    }
+    window.openModal('modal-new-message-thread');
+  };
+
+  window.handleCreateMessageThread = function(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('new-msg-student-select').value;
+    const parentName = document.getElementById('new-msg-parent-name').value.trim();
+    const text = document.getElementById('new-msg-text').value.trim();
+    store.createMessageThread(studentId, parentName, text);
+    window.closeAllModals();
+    window.switchView('messages');
+  };
+
+  // =========================================================================
+  // MOBILE NAVIGATION DRAWER TOGGLE
+  // =========================================================================
+  window.toggleMobileSidebar = function() {
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('is-mobile-open');
+    }
+  };

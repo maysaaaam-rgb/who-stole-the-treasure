@@ -2327,3 +2327,52 @@ body.classroom-mode-active .classroom-students-grid {
     display: none !important;
   }
 }
+
+
+/* =========================================================================
+   RESPONSIVE DRAWER & NARROW SCREEN ENHANCEMENTS
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+  .mobile-nav-toggle-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .app-sidebar {
+    position: fixed !important;
+    top: 60px;
+    left: -280px;
+    bottom: 0;
+    width: 260px;
+    background: var(--bg-card) !important;
+    z-index: 999;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+  .app-sidebar.is-mobile-open {
+    left: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal-dialog {
+    max-width: 95vw !important;
+    padding: 16px !important;
+    margin: 12px auto;
+  }
+  .modal-dialog div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  .classroom-subtoolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .classroom-view-toggle-pills {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+  }
+}

@@ -24,6 +24,7 @@
   <header class="app-header">
     <div class="header-inner">
       <div class="brand-section">
+        <button class="mobile-nav-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle navigation" style="display:none; background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-main); padding:4px 8px; margin-right:8px;">☰</button>
         <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy">
           <div class="brand-icon-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -82,6 +83,13 @@
             <button class="dropdown-item-btn" onclick="openRubricEditorModal()"><span>🎯</span> <span>+ Assessment Rubric</span></button>
             <button class="dropdown-item-btn" onclick="openModal('modal-story-post')"><span>📸</span> <span>+ Class Story Post</span></button>
             <button class="dropdown-item-btn" onclick="openGamificationEditorModal()"><span>🏆</span> <span>+ Badge / Achievement</span></button>
+            <button class="dropdown-item-btn" onclick="openCalendarEventModal()"><span>📅</span> <span>+ Calendar Event</span></button>
+            <button class="dropdown-item-btn" onclick="openPortfolioItemModal()"><span>🎨</span> <span>+ Portfolio Item</span></button>
+            <button class="dropdown-item-btn" onclick="openNewMessageThreadModal()"><span>💬</span> <span>+ Family Message</span></button>
+
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Admin &amp; Archive</div>
+            <button class="dropdown-item-btn" onclick="openArchivedManagerModal()"><span>🗄️</span> <span>Archived Items &amp; Restore</span></button>
+            <button class="dropdown-item-btn" onclick="openSchoolSettingsModal()"><span>⚙️</span> <span>School Settings</span></button>
           </div>
         </div>
 
@@ -297,8 +305,9 @@
   <div class="modal-overlay" id="modal-create-assignment">
     <div class="modal-dialog" style="max-width: 520px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Assignment</h2>
+      <h2 id="asg-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Assignment</h2>
       <form onsubmit="handleCreateAssignment(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-asg-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Assignment Title</label>
           <input type="text" id="new-asg-title" class="filter-select" style="width:100%;" required placeholder="e.g. Restaurant Polite Ordering" />
@@ -332,8 +341,9 @@
   <div class="modal-overlay" id="modal-homework-editor">
     <div class="modal-dialog" style="max-width: 520px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Homework Task</h2>
+      <h2 id="hw-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Homework Task</h2>
       <form onsubmit="handleCreateHomework(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-hw-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Task Title</label>
           <input type="text" id="new-hw-title" class="filter-select" style="width:100%;" required placeholder="e.g. Animal Habitats Vocabulary Drill" />
@@ -457,8 +467,9 @@
   <div class="modal-overlay" id="modal-quiz-builder">
     <div class="modal-dialog" style="max-width: 580px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Quiz &amp; Test</h2>
+      <h2 id="quiz-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Quiz &amp; Test</h2>
       <form onsubmit="handleCreateQuiz(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-quiz-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Quiz Title</label>
           <input type="text" id="quiz-title" class="filter-select" style="width:100%;" required placeholder="e.g. Unit 3 Grammar &amp; Vocabulary Check" />
@@ -568,6 +579,7 @@
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
       <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">📸 Post to Class Story</h2>
       <form onsubmit="handleCreateStoryPost(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-story-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Post Title</label>
           <input type="text" id="story-post-title" class="filter-select" style="width:100%;" required placeholder="e.g. Wonderful Monster Creations Today!" />
@@ -616,7 +628,7 @@
             <option value="star">Superhero Cape</option>
           </select>
         </div>
-        <button class="btn-primary-action" style="justify-content:center; margin-top:8px;" onclick="closeAllModals(); alert('✓ Avatar updated! Keep exploring to unlock more outfits.');">Save My Avatar</button>
+        <button class="btn-primary-action" style="justify-content:center; margin-top:8px;" onclick="handleSaveAvatar()">Save My Avatar</button>
       </div>
     </div>
   </div>
@@ -1262,6 +1274,210 @@
       </div>
     </div>
   </div>
+
+  <!-- =========================================================================
+       CALENDAR EVENT EDITOR MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-calendar-event-editor">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="event-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">📅 Add Calendar Event</h2>
+      <form onsubmit="handleSaveCalendarEvent(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-event-id" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Session Title / Lesson</label>
+          <input type="text" id="event-title" class="filter-select" style="width:100%;" required placeholder="e.g. Unit 3: Space Exploration & Daily Routine" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class Cohort</label>
+            <select id="event-class" class="filter-select" style="width:100%;">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Session Type</label>
+            <select id="event-type" class="filter-select" style="width:100%;">
+              <option value="Lesson">Lesson</option>
+              <option value="Quiz">Quiz / Checkpoint</option>
+              <option value="Review">Speaking Review</option>
+              <option value="Presentation">Student Showcase</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Day</label>
+            <select id="event-day" class="filter-select" style="width:100%;">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Time</label>
+            <input type="text" id="event-time" class="filter-select" style="width:100%;" value="10:00 – 10:45" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Room</label>
+            <input type="text" id="event-room" class="filter-select" style="width:100%;" value="Room 204" />
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Date (optional)</label>
+          <input type="date" id="event-date" class="filter-select" style="width:100%;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Topic &amp; Communicative Drills</label>
+          <textarea id="event-topic" class="filter-select" rows="2" style="width:100%;" placeholder="Key vocabulary, grammar structures, dialogue speaking goals..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       STUDENT PORTFOLIO ARTIFACT EDITOR MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-portfolio-editor">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="portfolio-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">🎨 Add Portfolio Artifact</h2>
+      <form onsubmit="handleSavePortfolioItem(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-portfolio-id" value="" />
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student</label>
+            <select id="portfolio-student-id" class="filter-select" style="width:100%;">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Artifact Category</label>
+            <select id="portfolio-category" class="filter-select" style="width:100%;">
+              <option value="Drawing">🎨 Drawing &amp; Art</option>
+              <option value="Audio Recording">🎙️ Audio Recording</option>
+              <option value="Story Writing">✍️ Story Writing</option>
+              <option value="Worksheet">📄 Worksheet</option>
+              <option value="Project">🚀 Project Creation</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Artifact Title</label>
+          <input type="text" id="portfolio-title" class="filter-select" style="width:100%;" required placeholder="e.g. My Alien Pet Description" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Preview Icon</label>
+            <input type="text" id="portfolio-preview" class="filter-select" style="width:100%; font-size:1.2rem; text-align:center;" value="👾" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Date</label>
+            <input type="date" id="portfolio-date" class="filter-select" style="width:100%;" />
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student Voice / Teacher Transcript</label>
+          <textarea id="portfolio-notes" class="filter-select" rows="3" style="width:100%;" placeholder='e.g. "Zorgon has got 4 eyes and big blue wings."'></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Artifact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       UNIVERSAL ARCHIVED & RESTORE DRAWER MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-archived-manager">
+    <div class="modal-dialog" style="max-width: 680px; max-height:85vh; display:flex; flex-direction:column;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.35rem; font-weight:800; margin-bottom:6px;">🗄️ Archived Items &amp; Restore Center</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:16px;">Browse and restore archived records. Restoring brings items back to active views immediately.</p>
+      
+      <!-- Filter tabs -->
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; border-bottom:1px solid var(--border-subtle); padding-bottom:8px;" id="archived-filter-pills">
+        <button class="btn-sm-secondary is-active" onclick="filterArchivedItems('all', this)" style="padding:4px 10px; font-size:0.75rem;">All Items</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('student', this)" style="padding:4px 10px; font-size:0.75rem;">Students</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('class', this)" style="padding:4px 10px; font-size:0.75rem;">Classes</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('curriculum', this)" style="padding:4px 10px; font-size:0.75rem;">Curriculum</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('resource', this)" style="padding:4px 10px; font-size:0.75rem;">Games</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('worksheet', this)" style="padding:4px 10px; font-size:0.75rem;">Worksheets</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('assignment', this)" style="padding:4px 10px; font-size:0.75rem;">Assignments</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('quiz', this)" style="padding:4px 10px; font-size:0.75rem;">Quizzes</button>
+        <button class="btn-sm-secondary" onclick="filterArchivedItems('rubric', this)" style="padding:4px 10px; font-size:0.75rem;">Rubrics</button>
+      </div>
+
+      <!-- Items List -->
+      <div id="archived-items-list-container" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; min-height:220px; max-height:450px;">
+        <!-- Populated dynamically by renderArchivedItemsList() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       NEW PARENT MESSAGE CONVERSATION MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-new-message-thread">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">💬 Start Family Conversation</h2>
+      <form onsubmit="handleCreateMessageThread(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Student Family</label>
+          <select id="new-msg-student-select" class="filter-select" style="width:100%;" onchange="const s = window.schoolStore.getStudent(this.value); if (s && document.getElementById('new-msg-parent-name')) document.getElementById('new-msg-parent-name').value = s.parentName || 'Parent';">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Parent / Guardian Name</label>
+          <input type="text" id="new-msg-parent-name" class="filter-select" style="width:100%;" placeholder="e.g. Maria Silva" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Initial Message</label>
+          <textarea id="new-msg-text" class="filter-select" rows="3" style="width:100%;" required placeholder="Share an update, praise student progress, or invite to speaking exhibition..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MOVE STUDENT TO CLASS MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-move-student">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">👥 Move Student to Class</h2>
+      <form onsubmit="handleExecuteMoveStudent(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="move-stud-id" value="" />
+        <p id="move-stud-display-name" style="font-size:0.92rem; font-weight:700; color:var(--color-primary);"></p>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Class</label>
+          <select id="move-target-class-select" class="filter-select" style="width:100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Move Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
 
   <!-- ========================================================================
        4. SCRIPTS & ARCHITECTURE (GAMES REGISTRY -> STORE -> APP)

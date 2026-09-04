@@ -913,6 +913,54 @@
             { from: 'parent', text: 'Thank you Ms. Sarah! She came home excited and was asking for dinner in English.', time: '10:30 AM' }
           ]
         }
+      ],
+
+      // Calendar Events collection
+      calendarEvents: [
+        {
+          id: 'event-1',
+          classId: 'class-3a',
+          title: 'Unit 1: Fire Station Rescue',
+          topic: 'Emergency calls, speaking drills, action verbs',
+          dayOfWeek: 'Monday',
+          time: '10:00 – 10:45',
+          date: '2026-09-08',
+          room: 'Room 204',
+          type: 'Lesson'
+        },
+        {
+          id: 'event-2',
+          classId: 'class-3a',
+          title: 'Unit 2: My Town Map Navigation',
+          topic: 'Prepositions of place, giving directions',
+          dayOfWeek: 'Wednesday',
+          time: '10:00 – 10:45',
+          date: '2026-09-10',
+          room: 'Room 204',
+          type: 'Lesson'
+        },
+        {
+          id: 'event-3',
+          classId: 'class-3a',
+          title: 'Unit 1 & 2 Checkpoint Quiz',
+          topic: 'Oral speaking review & vocabulary check',
+          dayOfWeek: 'Friday',
+          time: '10:00 – 10:45',
+          date: '2026-09-12',
+          room: 'Room 204',
+          type: 'Quiz'
+        },
+        {
+          id: 'event-4',
+          classId: 'class-4b',
+          title: 'Unit 3: Animal Habitats & Discovery',
+          topic: 'Comparative adjectives, reading comprehension',
+          dayOfWeek: 'Tuesday',
+          time: '13:30 – 14:15',
+          date: '2026-09-09',
+          room: 'Room 302',
+          type: 'Lesson'
+        }
       ]
     };
   }
@@ -942,6 +990,7 @@
             if (!merged.achievements) merged.achievements = initial.achievements || [];
             if (!merged.reports) merged.reports = initial.reports || [];
             if (!merged.schoolSettings) merged.schoolSettings = initial.schoolSettings || {};
+            if (!merged.calendarEvents) merged.calendarEvents = initial.calendarEvents || [];
             return merged;
           }
         }
@@ -2712,6 +2761,345 @@
       return this.state.schoolSettings;
     }
 
+
+
+
+    // =========================================================================
+    // CALENDAR EVENTS CRUD
+    // =========================================================================
+    getCalendarEvents(classId = null) {
+      if (!this.state.calendarEvents) this.state.calendarEvents = [];
+      if (classId) {
+        return this.state.calendarEvents.filter(ev => ev.classId === classId);
+      }
+      return this.state.calendarEvents;
+    }
+
+    getCalendarEvent(id) {
+      return (this.state.calendarEvents || []).find(ev => ev.id === id) || null;
+    }
+
+    addCalendarEvent(data) {
+      if (!this.state.calendarEvents) this.state.calendarEvents = [];
+      const newEv = Object.assign({
+        id: 'event-' + Date.now(),
+        classId: this.state.activeClassId || 'class-3a',
+        title: 'New Class Session',
+        topic: 'General English Practice',
+        dayOfWeek: 'Monday',
+        time: '10:00 – 10:45',
+        date: new Date().toISOString().split('T')[0],
+        room: 'Room 204',
+        type: 'Lesson'
+      }, data);
+      this.state.calendarEvents.push(newEv);
+      this.saveState();
+      this.notify('calendar', newEv);
+      return newEv;
+    }
+
+    updateCalendarEvent(id, updates) {
+      const ev = this.getCalendarEvent(id);
+      if (ev) {
+        Object.assign(ev, updates);
+        this.saveState();
+        this.notify('calendar', ev);
+        return ev;
+      }
+      return null;
+    }
+
+    deleteCalendarEvent(id) {
+      if (!this.state.calendarEvents) return false;
+      const idx = this.state.calendarEvents.findIndex(ev => ev.id === id);
+      if (idx !== -1) {
+        const removed = this.state.calendarEvents.splice(idx, 1)[0];
+        this.saveState();
+        this.notify('calendar', { deleted: id });
+        return true;
+      }
+      return false;
+    }
+
+    // =========================================================================
+    // UNIVERSAL RESTORE & ARCHIVE AUDIT ENGINE
+    // =========================================================================
+    restoreStudent(id) {
+      const s = this.state.students.find(item => item.id === id);
+      if (s) { s.archived = false; this.saveState(); this.notify('students', s); return true; }
+      return false;
+    }
+
+    restoreClass(id) {
+      const c = this.state.classes.find(item => item.id === id);
+      if (c) { c.archived = false; this.saveState(); this.notify('classes', c); return true; }
+      return false;
+    }
+
+    restoreBook(id) {
+      const b = (this.state.curriculum.books || []).find(item => item.id === id);
+      if (b) { b.archived = false; this.saveState(); this.notify('curriculum', b); return true; }
+      return false;
+    }
+
+    restoreUnit(id) {
+      const u = (this.state.curriculum.units || []).find(item => item.id === id);
+      if (u) { u.archived = false; this.saveState(); this.notify('curriculum', u); return true; }
+      return false;
+    }
+
+    restoreLesson(id) {
+      const l = (this.state.curriculum.lessons || []).find(item => item.id === id);
+      if (l) { l.archived = false; this.saveState(); this.notify('curriculum', l); return true; }
+      return false;
+    }
+
+    restoreResource(id) {
+      const r = this.state.resources.find(item => item.id === id);
+      if (r) { r.archived = false; this.saveState(); this.notify('resources', r); return true; }
+      return false;
+    }
+
+    restoreWorksheet(id) {
+      const w = (this.state.worksheets || []).find(item => item.id === id);
+      if (w) { w.archived = false; this.saveState(); this.notify('worksheets', w); return true; }
+      return false;
+    }
+
+    restoreAssignment(id) {
+      const a = this.state.assignments.find(item => item.id === id);
+      if (a) { a.archived = false; this.saveState(); this.notify('assignments', a); return true; }
+      return false;
+    }
+
+    restoreHomework(id) {
+      const h = this.state.homework.find(item => item.id === id);
+      if (h) { h.archived = false; this.saveState(); this.notify('homework', h); return true; }
+      return false;
+    }
+
+    restoreQuiz(id) {
+      const q = this.state.quizzes.find(item => item.id === id);
+      if (q) { q.archived = false; this.saveState(); this.notify('quizzes', q); return true; }
+      return false;
+    }
+
+    restoreRubric(id) {
+      const r = (this.state.rubrics || []).find(item => item.id === id);
+      if (r) { r.archived = false; this.saveState(); this.notify('rubrics', r); return true; }
+      return false;
+    }
+
+    restoreBadge(id) {
+      const b = (this.state.badges || []).find(item => item.id === id);
+      if (b) { b.archived = false; this.saveState(); this.notify('badges', b); return true; }
+      return false;
+    }
+
+    restoreAchievement(id) {
+      const a = (this.state.achievements || []).find(item => item.id === id);
+      if (a) { a.archived = false; this.saveState(); this.notify('achievements', a); return true; }
+      return false;
+    }
+
+    getArchivedEntities(filterType = null) {
+      const s = this.state;
+      const list = [];
+
+      const addItems = (type, labelKey, arr) => {
+        if (!filterType || filterType === type) {
+          (arr || []).filter(item => item.archived === true).forEach(item => {
+            list.push({
+              type,
+              id: item.id,
+              title: item[labelKey] || item.name || item.title || item.firstName + ' ' + item.lastName,
+              meta: item.grade || item.level || item.cefrTarget || item.skill || type,
+              item
+            });
+          });
+        }
+      };
+
+      addItems('student', 'firstName', s.students);
+      addItems('class', 'name', s.classes);
+      addItems('book', 'title', (s.curriculum && s.curriculum.books));
+      addItems('unit', 'title', (s.curriculum && s.curriculum.units));
+      addItems('lesson', 'title', (s.curriculum && s.curriculum.lessons));
+      addItems('resource', 'title', s.resources);
+      addItems('worksheet', 'title', s.worksheets);
+      addItems('assignment', 'title', s.assignments);
+      addItems('homework', 'title', s.homework);
+      addItems('quiz', 'title', s.quizzes);
+      addItems('rubric', 'name', s.rubrics);
+      addItems('badge', 'name', s.badges);
+      addItems('achievement', 'title', s.achievements);
+
+      return list;
+    }
+
+    restoreEntity(type, id) {
+      switch (type) {
+        case 'student': return this.restoreStudent(id);
+        case 'class': return this.restoreClass(id);
+        case 'book': return this.restoreBook(id);
+        case 'unit': return this.restoreUnit(id);
+        case 'lesson': return this.restoreLesson(id);
+        case 'resource': return this.restoreResource(id);
+        case 'worksheet': return this.restoreWorksheet(id);
+        case 'assignment': return this.restoreAssignment(id);
+        case 'homework': return this.restoreHomework(id);
+        case 'quiz': return this.restoreQuiz(id);
+        case 'rubric': return this.restoreRubric(id);
+        case 'badge': return this.restoreBadge(id);
+        case 'achievement': return this.restoreAchievement(id);
+        default: return false;
+      }
+    }
+
+    // =========================================================================
+    // STUDENT MOVEMENTS & ENROLLMENT
+    // =========================================================================
+    moveStudentToClass(studentId, targetClassId) {
+      const s = this.getStudent(studentId);
+      if (s) {
+        s.classId = targetClassId || null;
+        this.saveState();
+        this.notify('students', s);
+        return true;
+      }
+      return false;
+    }
+
+    getUnenrolledStudents() {
+      return this.state.students.filter(s => !s.archived && !s.classId);
+    }
+
+    updateStudentAvatar(studentId, avatarObj) {
+      const s = this.getStudent(studentId);
+      if (s) {
+        s.avatar = Object.assign({}, s.avatar || {}, avatarObj);
+        this.saveState();
+        this.notify('students', s);
+        return true;
+      }
+      return false;
+    }
+
+    // =========================================================================
+    // ENHANCED ENTITY EDITS (Assessments, Portfolios, Books, Objectives, Groups)
+    // =========================================================================
+    updateAssessment(id, updates) {
+      const ass = this.state.assessments.find(a => a.id === id);
+      if (ass) {
+        Object.assign(ass, updates);
+        this.saveState();
+        this.notify('assessments', ass);
+        return ass;
+      }
+      return null;
+    }
+
+    updateXPTransaction(id, updates) {
+      const tx = this.state.xpTransactions.find(t => t.id === id);
+      if (tx) {
+        Object.assign(tx, updates);
+        this.saveState();
+        this.notify('xp', tx);
+        return tx;
+      }
+      return null;
+    }
+
+    updatePortfolioItem(id, updates) {
+      if (!this.state.portfolios) this.state.portfolios = [];
+      const it = this.state.portfolios.find(p => p.id === id);
+      if (it) {
+        Object.assign(it, updates);
+        this.saveState();
+        this.notify('portfolio', it);
+        return it;
+      }
+      return null;
+    }
+
+    deleteBook(id) {
+      if (!this.state.curriculum || !this.state.curriculum.books) return false;
+      const idx = this.state.curriculum.books.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        this.state.curriculum.books.splice(idx, 1);
+        this.saveState();
+        this.notify('curriculum', { deletedBook: id });
+        return true;
+      }
+      return false;
+    }
+
+    moveLessonToUnit(lessonId, newUnitId) {
+      const l = this.getLessons(null, true).find(item => item.id === lessonId);
+      if (l) {
+        l.unitId = newUnitId;
+        // set order to end of new unit
+        const existingInUnit = this.getLessons(newUnitId, true);
+        l.order = existingInUnit.length;
+        this.saveState();
+        this.notify('curriculum', l);
+        return true;
+      }
+      return false;
+    }
+
+    createMessageThread(studentId, parentName, initialMessage) {
+      if (!this.state.messages) this.state.messages = [];
+      const student = this.getStudent(studentId);
+      const newThread = {
+        id: 'msg-' + Date.now(),
+        studentId,
+        studentName: student ? (student.firstName + ' ' + student.lastName) : 'Student',
+        parentName: parentName || (student ? student.parentName : 'Parent'),
+        messages: [
+          {
+            sender: 'teacher',
+            text: initialMessage || 'Hello! Thank you for connecting with English Adventure Academy.',
+            timestamp: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+          }
+        ]
+      };
+      this.state.messages.push(newThread);
+      this.saveState();
+      this.notify('messages', newThread);
+      return newThread;
+    }
+
+    archiveMessageThread(threadId) {
+      if (!this.state.messages) return false;
+      const idx = this.state.messages.findIndex(t => t.id === threadId);
+      if (idx !== -1) {
+        this.state.messages.splice(idx, 1);
+        this.saveState();
+        this.notify('messages', { deletedThread: threadId });
+        return true;
+      }
+      return false;
+    }
+
+    updateReport(id, updates) {
+      if (!this.state.reports) return null;
+      const rep = this.state.reports.find(r => r.id === id);
+      if (rep) {
+        Object.assign(rep, updates);
+        this.saveState();
+        this.notify('reports', rep);
+        return rep;
+      }
+      return null;
+    }
+
+
+
+    // Convenient Store Getter Aliases
+    getXpTransactions(studentId = null) { return this.getXPTransactions(studentId); }
+    getPortfolios(studentId = null) { return studentId ? this.getStudentPortfolio(studentId) : (this.state.portfolios || []); }
+    getMessages() { return this.getMessageThreads(); }
 
   }
 
