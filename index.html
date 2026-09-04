@@ -2,105 +2,63 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>English Adventure Academy | Professional Lesson Library</title>
-  <meta name="description" content="Professional ESL lesson library and teacher resource dashboard. Interactive classroom lessons, speaking simulations, readers, and printable worksheets for young learners.">
-  
-  <!-- Professional Typography -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Adventure Academy | Lesson Library</title>
+  <meta name="description" content="Professional ESL lesson library and teacher dashboard. Find interactive English lessons, classroom games, stories, and printable activities.">
+
+  <!-- Inter & Plus Jakarta Sans typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
   <style>
     /* ==========================================================================
-       DESIGN TOKENS - PREMIUM EDTECH SAAS PALETTE
+       DESIGN TOKENS - PROFESSIONAL EDTECH SAAS
        ========================================================================== */
     :root {
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-      --bg-app: #f8fafc;
+      --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --bg-canvas: #f8fafc;
       --bg-surface: #ffffff;
-      --bg-surface-elevated: #ffffff;
-      --bg-subtle: #f1f5f9;
+      --bg-muted: #f1f5f9;
       --bg-hover: #e2e8f0;
 
-      --border-subtle: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --border-active: #2563eb;
+      --border-light: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --border-focus: #2563eb;
 
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
+      --text-main: #0f172a;
+      --text-secondary: #334155;
       --text-muted: #64748b;
-      --text-tertiary: #94a3b8;
+      --text-subtle: #94a3b8;
       --text-inverse: #ffffff;
 
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-subtle: #eff6ff;
-      --primary-border: #bfdbfe;
-      --primary-text: #1e40af;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-soft: #eff6ff;
 
-      --accent-green: #059669;
-      --accent-green-bg: #ecfdf5;
-      --accent-green-border: #a7f3d0;
+      --color-success: #059669;
+      --color-success-soft: #ecfdf5;
 
-      --accent-amber: #d97706;
-      --accent-amber-bg: #fffbeb;
-      --accent-amber-border: #fde68a;
+      --color-amber: #d97706;
+      --color-amber-soft: #fffbeb;
 
-      --accent-purple: #7c3aed;
-      --accent-purple-bg: #faf5ff;
-      --accent-purple-border: #e9d5ff;
-
-      --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-      --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
-      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-      --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
 
       --radius-sm: 6px;
       --radius-md: 10px;
       --radius-lg: 14px;
-      --radius-full: 9999px;
+      --radius-pill: 9999px;
 
-      --transition-fast: 0.15s ease;
-      --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    [data-theme="dark"] {
-      --bg-app: #0b0f17;
-      --bg-surface: #111827;
-      --bg-surface-elevated: #1e293b;
-      --bg-subtle: #1e293b;
-      --bg-hover: #334155;
-
-      --border-subtle: #1f2937;
-      --border-strong: #374151;
-      --border-active: #3b82f6;
-
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-      --text-tertiary: #64748b;
-      --text-inverse: #0f172a;
-
-      --primary: #3b82f6;
-      --primary-hover: #60a5fa;
-      --primary-subtle: rgba(59, 130, 246, 0.15);
-      --primary-border: rgba(59, 130, 246, 0.3);
-      --primary-text: #93c5fd;
-
-      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.55);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+      --transition: 0.18s ease;
     }
 
     /* ==========================================================================
-       BASE & RESET
+       BASE & RESET (CLEAN & MINIMAL)
        ========================================================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -109,9 +67,9 @@
     }
 
     body {
-      font-family: var(--font-sans);
-      background-color: var(--bg-app);
-      color: var(--text-primary);
+      font-family: var(--font-family);
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
       min-height: 100vh;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
@@ -126,184 +84,151 @@
     button, input, select {
       font-family: inherit;
       color: inherit;
-    }
-
-    button {
-      cursor: pointer;
       border: none;
       background: none;
-      transition: var(--transition-base);
     }
 
     /* ==========================================================================
-       APP HEADER (COMPACT & ELEGANT)
+       1. TOP NAVIGATION
        ========================================================================== */
-    .app-header {
+    .top-nav {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 40;
       background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-xs);
+      border-bottom: 1px solid var(--border-light);
     }
 
-    .header-container {
-      max-width: 1480px;
+    .top-nav-inner {
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 0 24px;
       height: 64px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
     }
 
-    .header-left {
+    .nav-left {
       display: flex;
       align-items: center;
       gap: 32px;
     }
 
-    .brand {
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-weight: 800;
       font-size: 1.05rem;
+      font-weight: 800;
       letter-spacing: -0.3px;
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .brand-icon {
       width: 32px;
       height: 32px;
-      background: var(--primary);
-      color: #ffffff;
+      background: var(--color-primary);
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #ffffff;
+      flex-shrink: 0;
     }
 
-    .nav-links {
+    .nav-tabs {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       list-style: none;
     }
 
-    .nav-item-btn {
+    .nav-tab-link {
       padding: 8px 14px;
       border-radius: var(--radius-sm);
       font-size: 0.88rem;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .nav-item-btn:hover {
-      color: var(--text-primary);
-      background: var(--bg-subtle);
+    .nav-tab-link:hover {
+      color: var(--text-main);
+      background: var(--bg-muted);
     }
 
-    .nav-item-btn.active {
-      color: var(--primary);
-      background: var(--primary-subtle);
+    .nav-tab-link.active {
+      color: var(--color-primary);
+      background: var(--color-primary-soft);
       font-weight: 700;
     }
 
-    .nav-badge-pill {
+    .nav-badge {
       font-size: 0.72rem;
       font-weight: 700;
       padding: 1px 7px;
-      border-radius: var(--radius-full);
-      background: var(--primary-border);
-      color: var(--primary-text);
+      border-radius: var(--radius-pill);
+      background: #dbeafe;
+      color: var(--color-primary);
     }
 
-    .header-right {
+    .nav-right {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .header-search-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-subtle);
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .header-search-btn kbd {
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-surface);
-      font-size: 0.72rem;
-      font-family: inherit;
-    }
-
-    .icon-btn-util {
+    .nav-icon-btn {
       width: 36px;
       height: 36px;
       border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      border: 1px solid var(--border-subtle);
-      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
     }
 
-    .icon-btn-util:hover {
-      color: var(--text-primary);
-      background: var(--bg-subtle);
-      border-color: var(--border-strong);
+    .nav-icon-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-muted);
+      border-color: var(--border-medium);
     }
 
-    .notif-dot {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 7px;
-      height: 7px;
-      border-radius: var(--radius-full);
-      background: var(--accent-green);
-    }
-
-    .teacher-profile-chip {
+    .user-profile {
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 4px 10px 4px 6px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--border-subtle);
+      gap: 10px;
+      padding: 4px 12px 4px 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-light);
       background: var(--bg-surface);
       font-size: 0.84rem;
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--text-main);
       cursor: pointer;
     }
 
-    .teacher-profile-chip:hover {
-      border-color: var(--border-strong);
-      background: var(--bg-subtle);
+    .user-profile:hover {
+      border-color: var(--border-medium);
+      background: var(--bg-muted);
     }
 
-    .avatar-circle {
+    .avatar-badge {
       width: 28px;
       height: 28px;
-      border-radius: var(--radius-full);
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: #ffffff;
-      font-weight: 700;
+      border-radius: var(--radius-pill);
+      background: #e0e7ff;
+      color: #3730a3;
+      font-weight: 800;
       font-size: 0.75rem;
       display: flex;
       align-items: center;
@@ -311,242 +236,86 @@
     }
 
     /* ==========================================================================
-       APP LAYOUT (SIDEBAR + MAIN VIEWPORT)
+       2. LIBRARY HEADER & FILTER AREA
        ========================================================================== */
-    .app-viewport {
-      max-width: 1480px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 32px;
-      align-items: start;
+    .library-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
+      padding: 32px 0 28px;
     }
 
-    /* ==========================================================================
-       SIDEBAR NAVIGATION
-       ========================================================================== */
-    .sidebar {
-      position: sticky;
-      top: 88px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 18px 14px;
-      box-shadow: var(--shadow-xs);
+    .library-header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    .sidebar-section-title {
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--text-tertiary);
-      padding: 0 10px 4px;
-    }
-
-    .sidebar-nav-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .sidebar-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: var(--transition-fast);
-      user-select: none;
-    }
-
-    .sidebar-item:hover {
-      background: var(--bg-subtle);
-      color: var(--text-primary);
-    }
-
-    .sidebar-item.active {
-      background: var(--primary-subtle);
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .sidebar-item-count {
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: var(--text-tertiary);
-      padding: 1px 6px;
-      border-radius: var(--radius-full);
-      background: var(--bg-subtle);
-    }
-
-    .sidebar-item.active .sidebar-item-count {
-      background: var(--primary-border);
-      color: var(--primary-text);
-    }
-
-    .sidebar-divider {
-      height: 1px;
-      background: var(--border-subtle);
-      margin: 2px 0;
-    }
-
-    /* ==========================================================================
-       MAIN CONTENT CONTAINER
-       ========================================================================== */
-    .main-content {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-      min-width: 0;
-    }
-
-    /* Continue Teaching Banner */
-    .continue-teaching-bar {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-left: 4px solid var(--primary);
-      border-radius: var(--radius-md);
-      padding: 12px 18px;
-      box-shadow: var(--shadow-xs);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .continue-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .continue-tag {
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: var(--primary-subtle);
-      color: var(--primary);
-    }
-
-    .continue-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .continue-progress-meta {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .continue-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.84rem;
-      font-weight: 700;
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .continue-btn:hover {
-      background: var(--primary-hover);
-    }
-
-    /* Library Hero & Search Bar */
-    .library-hero {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .hero-title-group h1 {
+    .library-headline h1 {
       font-size: 1.85rem;
       font-weight: 800;
-      letter-spacing: -0.6px;
-      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      color: var(--text-main);
       line-height: 1.2;
     }
 
-    .hero-title-group p {
-      font-size: 0.98rem;
+    .library-headline p {
+      font-size: 0.95rem;
       color: var(--text-muted);
       margin-top: 4px;
     }
 
-    /* Search & Compact Filter Toolbar */
-    .search-filter-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow-xs);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .search-input-wrapper {
+    /* Professional Search Box */
+    .search-box-wrap {
       position: relative;
       display: flex;
       align-items: center;
+      max-width: 980px;
     }
 
-    .search-icon-svg {
+    .search-icon {
       position: absolute;
-      left: 14px;
+      left: 16px;
       width: 18px;
       height: 18px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
-    .main-search-input {
+    .search-input {
       width: 100%;
-      height: 44px;
-      padding: 0 42px 0 42px;
+      height: 46px;
+      padding: 0 44px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--bg-app);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-canvas);
       font-size: 0.94rem;
       font-weight: 500;
-      color: var(--text-primary);
+      color: var(--text-main);
       outline: none;
-      transition: var(--transition-fast);
+      transition: var(--transition);
     }
 
-    .main-search-input:focus {
-      border-color: var(--primary);
+    .search-input:focus {
+      border-color: var(--border-focus);
       background: var(--bg-surface);
-      box-shadow: 0 0 0 3px var(--primary-subtle);
+      box-shadow: 0 0 0 3px var(--color-primary-soft);
     }
 
-    .clear-search-btn {
+    .search-clear-btn {
       position: absolute;
-      right: 12px;
+      right: 14px;
       color: var(--text-muted);
-      font-size: 1rem;
-      padding: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
       display: none;
+      padding: 4px;
     }
 
-    .filter-chips-row {
+    /* Filter Controls Row */
+    .filters-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -554,7 +323,7 @@
       flex-wrap: wrap;
     }
 
-    .filter-dropdowns {
+    .filter-selects-group {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -562,132 +331,287 @@
     }
 
     .filter-select {
-      height: 34px;
-      padding: 0 10px;
+      height: 36px;
+      padding: 0 12px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      background: var(--bg-canvas);
       font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
       outline: none;
+      transition: var(--transition);
     }
 
     .filter-select:hover, .filter-select:focus {
-      border-color: var(--border-strong);
-      color: var(--text-primary);
+      border-color: var(--border-medium);
+      color: var(--text-main);
     }
 
-    .filter-select.active-filter {
-      border-color: var(--primary);
-      background: var(--primary-subtle);
-      color: var(--primary);
+    .filter-select.is-active {
+      border-color: var(--color-primary);
+      background: var(--color-primary-soft);
+      color: var(--color-primary);
       font-weight: 700;
-    }
-
-    .filter-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
 
     .btn-reset-filters {
       font-size: 0.82rem;
       font-weight: 600;
-      color: var(--primary);
+      color: var(--color-primary);
+      cursor: pointer;
       display: none;
+      padding: 4px 6px;
     }
 
     .btn-reset-filters:hover {
       text-decoration: underline;
     }
 
-    .sort-control-wrap {
+    .sort-wrap {
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 0.82rem;
-      color: var(--text-muted);
       font-weight: 600;
+      color: var(--text-muted);
     }
 
     /* ==========================================================================
-       FEATURED LESSONS SECTION (HORIZONTAL PREMIUM CARDS)
+       3. MAIN LIBRARY AREA (SIDEBAR + CONTENT)
        ========================================================================== */
-    .featured-section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+    .main-layout {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 24px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+      align-items: start;
     }
 
-    .section-headline {
-      font-size: 1.15rem;
+    /* --------------------------------------------------------------------------
+       SIDEBAR
+       -------------------------------------------------------------------------- */
+    .library-sidebar {
+      position: sticky;
+      top: 88px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .sidebar-group-title {
+      font-size: 0.72rem;
       font-weight: 800;
-      letter-spacing: -0.3px;
-      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-subtle);
+      padding: 0 8px 4px;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-btn {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
     }
 
+    .sidebar-btn:hover {
+      background: var(--bg-muted);
+      color: var(--text-main);
+    }
+
+    .sidebar-btn.is-active {
+      background: var(--color-primary-soft);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .sidebar-count {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-subtle);
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-canvas);
+    }
+
+    .sidebar-btn.is-active .sidebar-count {
+      background: #dbeafe;
+      color: var(--color-primary);
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 2px 0;
+    }
+
+    /* --------------------------------------------------------------------------
+       CONTENT AREA
+       -------------------------------------------------------------------------- */
+    .library-content {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      min-width: 0;
+    }
+
+    /* Continue Teaching Component */
+    .continue-teaching-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-xs);
+      flex-wrap: wrap;
+    }
+
+    .continue-details {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .continue-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-primary);
+    }
+
+    .continue-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .continue-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .btn-continue {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      font-weight: 700;
+      background: var(--color-primary);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-continue:hover {
+      background: var(--color-primary-hover);
+    }
+
+    /* Section Headlines */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+    }
+
+    .section-counter {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Featured Lessons (Horizontal Cards) */
     .featured-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
     }
 
     .featured-card {
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
-      padding: 18px;
-      box-shadow: var(--shadow-xs);
+      padding: 16px;
       display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 18px;
-      align-items: center;
-      transition: var(--transition-base);
-      position: relative;
+      grid-template-columns: 130px 1fr;
+      gap: 16px;
+      box-shadow: var(--shadow-xs);
+      transition: var(--transition);
     }
 
     .featured-card:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-md);
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-sm);
       transform: translateY(-2px);
     }
 
-    .featured-thumbnail {
-      width: 140px;
-      height: 120px;
+    .featured-thumb {
+      width: 130px;
+      height: 110px;
       border-radius: var(--radius-sm);
-      background: var(--bg-subtle);
+      background: var(--bg-muted);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       position: relative;
     }
 
     .featured-card-content {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
-    .featured-badge-pill {
-      font-size: 0.72rem;
+    .featured-tag {
+      font-size: 0.7rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--primary);
+      color: var(--color-primary);
     }
 
-    .featured-card-title {
-      font-size: 1.05rem;
+    .featured-title {
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--text-main);
       line-height: 1.3;
     }
 
@@ -705,112 +629,81 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      margin-top: 2px;
     }
 
-    .featured-skills-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin: 2px 0 6px;
-    }
-
-    .skill-pill {
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: var(--bg-subtle);
-      color: var(--text-secondary);
-    }
-
-    .featured-card-actions {
+    .featured-actions {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-top: 8px;
     }
 
-    .btn-featured-open {
+    .btn-open-featured {
       padding: 6px 14px;
       border-radius: var(--radius-sm);
       font-size: 0.82rem;
       font-weight: 700;
-      background: var(--primary);
+      background: var(--color-primary);
       color: #ffffff;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
-    .btn-featured-open:hover {
-      background: var(--primary-hover);
+    .btn-open-featured:hover {
+      background: var(--color-primary-hover);
     }
 
-    .btn-featured-sheet {
+    .btn-sheet-featured {
       padding: 6px 12px;
       border-radius: var(--radius-sm);
       font-size: 0.82rem;
       font-weight: 600;
-      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      background: var(--bg-canvas);
       color: var(--text-secondary);
-      border: 1px solid var(--border-subtle);
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
 
-    .btn-featured-sheet:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
+    .btn-sheet-featured:hover {
+      background: var(--bg-muted);
+      color: var(--text-main);
     }
 
-    /* ==========================================================================
-       ALL LESSONS GRID SECTION (COMPACT 280-320px SAAS CARDS)
-       ========================================================================== */
-    .lessons-section {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .results-count-text {
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .results-count-text span {
-      color: var(--text-primary);
-      font-weight: 700;
-    }
-
+    /* --------------------------------------------------------------------------
+       ALL LESSONS GRID & COMPACT LESSON CARDS (REBUILT FROM ZERO)
+       -------------------------------------------------------------------------- */
     .lessons-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
 
     .lesson-card {
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       overflow: hidden;
       box-shadow: var(--shadow-xs);
       display: flex;
       flex-direction: column;
-      transition: var(--transition-base);
+      transition: var(--transition);
       position: relative;
     }
 
     .lesson-card:hover {
-      border-color: var(--border-strong);
+      border-color: var(--border-medium);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
-    /* Polished SVG Thumbnail Banner */
-    .lesson-thumb-box {
-      height: 150px;
-      background: var(--bg-subtle);
+    /* Thumbnail Header */
+    .card-thumbnail {
+      height: 140px;
+      background: var(--bg-muted);
       position: relative;
       overflow: hidden;
       display: flex;
@@ -818,7 +711,7 @@
       justify-content: center;
     }
 
-    .thumb-level-tag {
+    .level-badge {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -832,51 +725,37 @@
       letter-spacing: 0.4px;
     }
 
-    .thumb-type-tag {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(4px);
-      color: var(--text-primary);
-      font-size: 0.72rem;
-      font-weight: 700;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
     .bookmark-btn {
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.9);
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: var(--transition-fast);
-      z-index: 2;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      transition: var(--transition);
     }
 
     .bookmark-btn:hover {
       background: #ffffff;
-      color: var(--primary);
+      color: var(--color-primary);
       transform: scale(1.08);
     }
 
-    .bookmark-btn.saved {
-      color: var(--accent-amber);
+    .bookmark-btn.is-saved {
+      color: var(--color-amber);
       background: #ffffff;
     }
 
-    /* Lesson Card Body */
-    .lesson-card-body {
+    /* Card Body */
+    .card-body {
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -884,19 +763,14 @@
       gap: 8px;
     }
 
-    .lesson-card-title {
+    .card-title {
       font-size: 1.02rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--text-main);
       line-height: 1.35;
-      cursor: pointer;
     }
 
-    .lesson-card-title:hover {
-      color: var(--primary);
-    }
-
-    .lesson-card-desc {
+    .card-desc {
       font-size: 0.82rem;
       color: var(--text-secondary);
       line-height: 1.45;
@@ -907,7 +781,7 @@
       flex: 1;
     }
 
-    .lesson-card-meta {
+    .card-meta {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -917,59 +791,69 @@
       margin-top: 4px;
     }
 
-    .meta-bullet {
-      color: var(--text-tertiary);
+    .card-meta span.separator {
+      color: var(--text-subtle);
     }
 
-    .lesson-card-skills {
+    .card-skills {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
-    /* Lesson Card Footer */
-    .lesson-card-footer {
+    .skill-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+    }
+
+    /* Card Footer (Non-nested clean links) */
+    .card-footer {
       padding: 12px 16px;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--border-light);
       background: var(--bg-surface);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .card-open-link {
+    .btn-open-lesson {
       font-size: 0.84rem;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--color-primary);
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+      transition: var(--transition);
     }
 
-    .card-open-link:hover {
-      color: var(--primary-hover);
-      gap: 8px;
+    .btn-open-lesson:hover {
+      color: var(--color-primary-hover);
+      gap: 7px;
     }
 
-    .card-sheet-quick {
+    .btn-card-worksheet {
       font-size: 0.78rem;
       font-weight: 600;
-      color: var(--accent-green);
+      color: var(--color-success);
       display: inline-flex;
       align-items: center;
       gap: 4px;
     }
 
-    .card-sheet-quick:hover {
+    .btn-card-worksheet:hover {
       text-decoration: underline;
     }
 
-    /* Empty State */
-    .empty-state {
+    /* Empty Search State */
+    .empty-results {
       grid-column: 1 / -1;
       background: var(--bg-surface);
-      border: 1px dashed var(--border-strong);
+      border: 1px dashed var(--border-medium);
       border-radius: var(--radius-md);
       padding: 48px 24px;
       text-align: center;
@@ -979,321 +863,40 @@
       gap: 12px;
     }
 
-    .empty-state-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--radius-full);
-      background: var(--bg-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-    }
-
-    .empty-state-title {
+    .empty-title {
       font-size: 1.1rem;
       font-weight: 700;
+      color: var(--text-main);
     }
 
-    .empty-state-text {
+    .empty-desc {
       font-size: 0.86rem;
       color: var(--text-muted);
       max-width: 360px;
     }
 
     /* ==========================================================================
-       LESSON OVERVIEW SLIDE-OVER DRAWER (MODAL)
+       RESPONSIVE BEHAVIOR
        ========================================================================== */
-    .drawer-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: flex-end;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-
-    .drawer-backdrop.open {
-      display: flex;
-      opacity: 1;
-    }
-
-    .drawer-panel {
-      width: 100%;
-      max-width: 600px;
-      height: 100%;
-      background: var(--bg-surface);
-      box-shadow: var(--shadow-xl);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .drawer-backdrop.open .drawer-panel {
-      transform: translateX(0);
-    }
-
-    .drawer-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: var(--bg-surface);
-      z-index: 10;
-    }
-
-    .drawer-header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .drawer-level-pill {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--primary);
-    }
-
-    .drawer-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.25;
-    }
-
-    .drawer-meta-line {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .btn-close-drawer {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .btn-close-drawer:hover {
-      background: var(--bg-subtle);
-      color: var(--text-primary);
-    }
-
-    .drawer-body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      flex: 1;
-    }
-
-    .drawer-block {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .drawer-block-heading {
-      font-size: 0.88rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-    }
-
-    .objectives-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .objective-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      line-height: 1.45;
-    }
-
-    .check-bullet {
-      color: var(--accent-green);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .contents-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .timeline-step {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-subtle);
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .step-number {
-      width: 24px;
-      height: 24px;
-      border-radius: var(--radius-full);
-      background: var(--bg-surface);
-      border: 1px solid var(--border-strong);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .drawer-footer {
-      padding: 18px 24px;
-      border-top: 1px solid var(--border-subtle);
-      background: var(--bg-surface);
-      position: sticky;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .drawer-actions-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-drawer-primary {
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-weight: 700;
-      background: var(--primary);
-      color: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-drawer-primary:hover {
-      background: var(--primary-hover);
-    }
-
-    .btn-drawer-secondary {
-      padding: 9px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.86rem;
-      font-weight: 600;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-strong);
-      color: var(--text-secondary);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-drawer-secondary:hover {
-      background: var(--bg-subtle);
-      color: var(--text-primary);
-    }
-
-    /* Toast Notification */
-    .toast-pill {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: var(--radius-md);
-      font-size: 0.84rem;
-      font-weight: 600;
-      box-shadow: var(--shadow-lg);
-      z-index: 150;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      animation: toastIn 0.25s ease;
-    }
-
-    @keyframes toastIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* ==========================================================================
-       FOOTER
-       ========================================================================== */
-    .saas-footer {
-      border-top: 1px solid var(--border-subtle);
-      background: var(--bg-surface);
-      margin-top: 60px;
-      padding: 28px 24px;
-    }
-
-    .footer-container {
-      max-width: 1480px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    /* ==========================================================================
-       RESPONSIVE DESIGN
-       ========================================================================== */
-    @media (max-width: 1120px) {
-      .app-viewport {
+    @media (max-width: 1024px) {
+      .main-layout {
         grid-template-columns: 200px 1fr;
         gap: 20px;
-        padding: 18px;
+        padding: 20px 16px;
       }
     }
 
-    @media (max-width: 860px) {
-      .app-viewport {
+    @media (max-width: 840px) {
+      .main-layout {
         grid-template-columns: 1fr;
       }
-      .sidebar {
+      .library-sidebar {
         display: none;
       }
-      .header-container {
+      .top-nav-inner, .library-header-inner {
         padding: 0 16px;
       }
-      .nav-links {
+      .nav-tabs {
         display: none;
       }
       .featured-grid {
@@ -1305,12 +908,12 @@
 <body>
 
   <!-- ========================================================================
-       TOP NAVIGATION BAR
+       TOP NAVIGATION
        ======================================================================== -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="header-left">
-        <a href="#" class="brand" title="English Adventure Academy">
+  <header class="top-nav">
+    <div class="top-nav-inner">
+      <div class="nav-left">
+        <a href="#" class="brand-logo" title="English Adventure Academy">
           <div class="brand-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -1320,285 +923,219 @@
           <span>English Adventure Academy</span>
         </a>
 
-        <!-- Main Navigation Links -->
-        <ul class="nav-links">
-          <li>
-            <button class="nav-item-btn active" data-tab="library">Library</button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-tab="my-lessons">
-              My Lessons
-              <span class="nav-badge-pill" id="my-lessons-badge">0</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-tab="favorites">
-              Favorites
-              <span class="nav-badge-pill" id="favorites-badge">0</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-tab="worksheets">Worksheets</button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-tab="activities">Activities</button>
-          </li>
+        <ul class="nav-tabs">
+          <li><button class="nav-tab-link active" data-nav="library">Library</button></li>
+          <li><button class="nav-tab-link" data-nav="my-lessons">My Lessons <span class="nav-badge" id="badge-my-lessons">0</span></button></li>
+          <li><button class="nav-tab-link" data-nav="favorites">Favorites <span class="nav-badge" id="badge-favorites">0</span></button></li>
+          <li><button class="nav-tab-link" data-nav="worksheets">Worksheets</button></li>
         </ul>
       </div>
 
-      <!-- Right Actions -->
-      <div class="header-right">
-        <button class="header-search-btn" onclick="focusSearchInput()" title="Quick search (Press /)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="nav-right">
+        <button class="nav-icon-btn" onclick="focusSearch()" title="Search lessons (Press /)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <span>Search</span>
-          <kbd>/</kbd>
         </button>
 
-        <button class="icon-btn-util" id="theme-btn" title="Toggle Theme" onclick="toggleTheme()">
-          <svg id="theme-sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        </button>
-
-        <button class="icon-btn-util" title="Notifications">
+        <button class="nav-icon-btn" title="Settings">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-          </svg>
-          <span class="notif-dot"></span>
-        </button>
-
-        <button class="icon-btn-util" title="Settings">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         </button>
 
-        <div class="teacher-profile-chip" title="Teacher Account">
-          <div class="avatar-circle">TR</div>
-          <span>Teacher Portal</span>
+        <div class="user-profile" title="Teacher Account">
+          <div class="avatar-badge">TR</div>
+          <span>Teacher</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- ========================================================================
-       MAIN APPLICATION VIEWPORT (SIDEBAR + CONTENT)
+       LIBRARY HEADER (TITLE, SEARCH & FILTERS)
        ======================================================================== -->
-  <div class="app-viewport">
-    
-    <!-- LEFT SIDEBAR BROWSE DIRECTORY -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">Browse</div>
-        <ul class="sidebar-nav-list">
-          <li class="sidebar-item active" data-sidebar-filter="all">
-            <span>All Lessons</span>
-            <span class="sidebar-item-count" id="count-all">14</span>
+  <section class="library-header">
+    <div class="library-header-inner">
+      <div class="library-headline">
+        <h1>Lesson Library</h1>
+        <p>Find interactive English lessons, classroom games, stories and printable activities.</p>
+      </div>
+
+      <!-- Professional Search Input -->
+      <div class="search-box-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="search-input" class="search-input" placeholder="Search lessons, topics, grammar, vocabulary..." autocomplete="off">
+        <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()" title="Clear search">✕</button>
+      </div>
+
+      <!-- Compact Filters Bar -->
+      <div class="filters-bar">
+        <div class="filter-selects-group">
+          <!-- Level Filter -->
+          <select id="filter-level" class="filter-select" title="Filter by Level">
+            <option value="">Level: All</option>
+            <option value="Pre-A1">Pre-A1</option>
+            <option value="A1">A1</option>
+            <option value="A1+">A1+</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+          </select>
+
+          <!-- Age Filter -->
+          <select id="filter-age" class="filter-select" title="Filter by Age">
+            <option value="">Age: All</option>
+            <option value="5-6">5–6</option>
+            <option value="7-8">7–8</option>
+            <option value="9-10">9–10</option>
+            <option value="11-12">11–12</option>
+          </select>
+
+          <!-- Skill Filter -->
+          <select id="filter-skill" class="filter-select" title="Filter by Skill">
+            <option value="">Skill: All</option>
+            <option value="Speaking">Speaking</option>
+            <option value="Listening">Listening</option>
+            <option value="Reading">Reading</option>
+            <option value="Writing">Writing</option>
+            <option value="Vocabulary">Vocabulary</option>
+            <option value="Grammar">Grammar</option>
+            <option value="CLIL">CLIL</option>
+          </select>
+
+          <!-- Lesson Type Filter -->
+          <select id="filter-type" class="filter-select" title="Filter by Lesson Type">
+            <option value="">Lesson Type: All</option>
+            <option value="Interactive Lessons">Interactive Lessons</option>
+            <option value="Stories">Stories</option>
+            <option value="Classroom Games">Classroom Games</option>
+            <option value="Role Plays">Role Plays</option>
+            <option value="Mystery Games">Mystery Games</option>
+            <option value="Worksheets">Has Worksheets</option>
+          </select>
+
+          <!-- Duration Filter -->
+          <select id="filter-duration" class="filter-select" title="Filter by Duration">
+            <option value="">Duration: Any</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="45">45 min</option>
+            <option value="60">60 min</option>
+          </select>
+
+          <button class="btn-reset-filters" id="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
+        </div>
+
+        <div class="sort-wrap">
+          <span>Sort:</span>
+          <select id="sort-select" class="filter-select" style="height: 34px;">
+            <option value="recommended">Recommended</option>
+            <option value="level">Level</option>
+            <option value="duration">Duration</option>
+            <option value="title">Title (A–Z)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MAIN LIBRARY AREA
+       ======================================================================== -->
+  <div class="main-layout">
+
+    <!-- NEW SIDEBAR COMPONENT -->
+    <aside class="library-sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Browse</div>
+        <ul class="sidebar-list">
+          <li>
+            <button class="sidebar-btn is-active" data-sidebar="all">
+              <span>All Lessons</span>
+              <span class="sidebar-count" id="count-all">14</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-btn" data-sidebar="recent">
+              <span>Recently Used</span>
+              <span class="sidebar-count">1</span>
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-btn" data-sidebar="favorites">
+              <span>Favorites</span>
+              <span class="sidebar-count" id="count-favorites">0</span>
+            </button>
           </li>
         </ul>
       </div>
 
       <div class="sidebar-divider"></div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">By Skill</div>
-        <ul class="sidebar-nav-list">
-          <li class="sidebar-item" data-sidebar-filter="skill:Speaking">
-            <span>Speaking</span>
-            <span class="sidebar-item-count">11</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="skill:Listening">
-            <span>Listening</span>
-            <span class="sidebar-item-count">8</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="skill:Reading">
-            <span>Reading</span>
-            <span class="sidebar-item-count">6</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="skill:Vocabulary">
-            <span>Vocabulary</span>
-            <span class="sidebar-item-count">12</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="skill:Grammar">
-            <span>Grammar</span>
-            <span class="sidebar-item-count">9</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="skill:CLIL">
-            <span>CLIL Science</span>
-            <span class="sidebar-item-count">4</span>
-          </li>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Skills</div>
+        <ul class="sidebar-list">
+          <li><button class="sidebar-btn" data-sidebar="skill:Speaking"><span>Speaking</span><span class="sidebar-count">11</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:Listening"><span>Listening</span><span class="sidebar-count">8</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:Reading"><span>Reading</span><span class="sidebar-count">6</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:Writing"><span>Writing</span><span class="sidebar-count">3</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:Vocabulary"><span>Vocabulary</span><span class="sidebar-count">12</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:Grammar"><span>Grammar</span><span class="sidebar-count">8</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="skill:CLIL"><span>CLIL</span><span class="sidebar-count">4</span></button></li>
         </ul>
       </div>
 
       <div class="sidebar-divider"></div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">By Format</div>
-        <ul class="sidebar-nav-list">
-          <li class="sidebar-item" data-sidebar-filter="type:Lesson">
-            <span>Interactive Lesson</span>
-            <span class="sidebar-item-count">7</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="type:Story">
-            <span>Story</span>
-            <span class="sidebar-item-count">3</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="type:Game">
-            <span>Classroom Game</span>
-            <span class="sidebar-item-count">4</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="type:Worksheet">
-            <span>Has Worksheets</span>
-            <span class="sidebar-item-count">6</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="sidebar-divider"></div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">By Age Group</div>
-        <ul class="sidebar-nav-list">
-          <li class="sidebar-item" data-sidebar-filter="age:5-6">
-            <span>Ages 5–6</span>
-            <span class="sidebar-item-count">2</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="age:7-8">
-            <span>Ages 7–8</span>
-            <span class="sidebar-item-count">8</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="age:9-10">
-            <span>Ages 9–10</span>
-            <span class="sidebar-item-count">10</span>
-          </li>
-          <li class="sidebar-item" data-sidebar-filter="age:11-12">
-            <span>Ages 11–12</span>
-            <span class="sidebar-item-count">4</span>
-          </li>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Formats</div>
+        <ul class="sidebar-list">
+          <li><button class="sidebar-btn" data-sidebar="format:Interactive Lessons"><span>Interactive Lessons</span><span class="sidebar-count">6</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="format:Classroom Games"><span>Classroom Games</span><span class="sidebar-count">4</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="format:Stories"><span>Stories</span><span class="sidebar-count">3</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="format:Worksheets"><span>Worksheets</span><span class="sidebar-count">6</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="format:Role Plays"><span>Role Plays</span><span class="sidebar-count">2</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="format:Mystery Games"><span>Mystery Games</span><span class="sidebar-count">2</span></button></li>
         </ul>
       </div>
     </aside>
 
-    <!-- MAIN CONTENT VIEWPORT -->
-    <main class="main-content">
+    <!-- MAIN CONTENT -->
+    <main class="library-content">
 
-      <!-- Continue Teaching Widget -->
-      <section class="continue-teaching-bar">
-        <div class="continue-info">
-          <span class="continue-tag">Continue Teaching</span>
-          <div>
-            <div class="continue-title">Fire Station Adventure: Charlie the Firefighter</div>
-            <div class="continue-progress-meta">A1 · Slide 14 of 23 completed with Class 3-A</div>
-          </div>
+      <!-- CONTINUE TEACHING COMPONENT -->
+      <section class="continue-teaching-card">
+        <div class="continue-details">
+          <span class="continue-badge">Continue Teaching</span>
+          <div class="continue-title">Fire Station Adventure</div>
+          <div class="continue-meta">A1 · 35 min · 70% complete</div>
         </div>
-        <a href="firefighter/index.html" class="continue-btn">
-          <span>Continue Lesson</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+        <a href="firefighter/index.html" class="btn-continue">
+          <span>Continue</span>
+          <span>→</span>
         </a>
       </section>
 
-      <!-- Library Hero & Filters -->
-      <section class="library-hero">
-        <div class="hero-title-group">
-          <h1>Lesson Library</h1>
-          <p>Interactive English lessons, classroom games, worksheets and activities — all in one place.</p>
-        </div>
-
-        <div class="search-filter-card">
-          <!-- Main Search Bar -->
-          <div class="search-input-wrapper">
-            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input type="text" id="search-input" class="main-search-input" placeholder="Search lessons, topics, vocabulary, grammar..." autocomplete="off">
-            <button class="clear-search-btn" id="clear-search-btn" onclick="clearSearch()" title="Clear search">✕</button>
-          </div>
-
-          <!-- Compact Filter Controls -->
-          <div class="filter-chips-row">
-            <div class="filter-dropdowns">
-              <!-- Age Filter -->
-              <select id="filter-age" class="filter-select">
-                <option value="">Age: All</option>
-                <option value="5-6">Ages 5–6</option>
-                <option value="7-8">Ages 7–8</option>
-                <option value="9-10">Ages 9–10</option>
-                <option value="11-12">Ages 11–12</option>
-              </select>
-
-              <!-- Level Filter -->
-              <select id="filter-level" class="filter-select">
-                <option value="">Level: All</option>
-                <option value="Pre-A1">Pre-A1</option>
-                <option value="A1">A1</option>
-                <option value="A1+">A1+</option>
-                <option value="A2">A2</option>
-              </select>
-
-              <!-- Type Filter -->
-              <select id="filter-type" class="filter-select">
-                <option value="">Type: All</option>
-                <option value="Lesson">Lesson</option>
-                <option value="Speaking">Speaking</option>
-                <option value="Grammar">Grammar</option>
-                <option value="Story">Story</option>
-                <option value="Game">Game</option>
-                <option value="Worksheet">Worksheet</option>
-              </select>
-
-              <!-- Duration Filter -->
-              <select id="filter-duration" class="filter-select">
-                <option value="">Duration: Any</option>
-                <option value="15">Up to 15 min</option>
-                <option value="30">30 min</option>
-                <option value="45">45 min</option>
-                <option value="60">60 min</option>
-              </select>
-
-              <button class="btn-reset-filters" id="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
-            </div>
-
-            <!-- Sort By -->
-            <div class="sort-control-wrap">
-              <span>Sort:</span>
-              <select id="sort-select" class="filter-select" style="height: 32px; font-weight: 600;">
-                <option value="popular">Most Popular</option>
-                <option value="level">CEFR Level</option>
-                <option value="duration">Duration</option>
-                <option value="title">Title (A–Z)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Featured Lessons Section (Horizontal Cards) -->
-      <section class="featured-section" id="featured-container">
-        <div class="section-headline">
-          <span>Featured Curriculum</span>
+      <!-- FEATURED LESSONS SECTION -->
+      <section id="featured-section">
+        <div class="section-header">
+          <h2 class="section-title">Featured Lessons</h2>
         </div>
         <div class="featured-grid" id="featured-grid">
-          <!-- Injected dynamically -->
+          <!-- Populated from new data model -->
         </div>
       </section>
 
-      <!-- Main All Lessons Grid -->
-      <section class="lessons-section">
-        <div class="section-headline">
-          <div style="display: flex; align-items: baseline; gap: 10px;">
-            <span id="grid-header-title">All Lessons</span>
-            <div class="results-count-text">
-              Showing <span id="visible-lesson-count">0</span> lessons
-            </div>
-          </div>
+      <!-- ALL LESSONS GRID -->
+      <section>
+        <div class="section-header">
+          <h2 class="section-title" id="grid-title">All Lessons</h2>
+          <span class="section-counter" id="results-count">Showing 14 lessons</span>
         </div>
-
         <div class="lessons-grid" id="lessons-grid">
-          <!-- Populated dynamically -->
+          <!-- Populated from new data model -->
         </div>
       </section>
 
@@ -1606,889 +1143,441 @@
   </div>
 
   <!-- ========================================================================
-       LESSON OVERVIEW SLIDE-OVER DRAWER (TEACHER WORKFLOW)
-       ======================================================================== -->
-  <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawerOnBackdrop(event)">
-    <div class="drawer-panel" role="dialog" aria-modal="true">
-      <div class="drawer-header">
-        <div class="drawer-header-left">
-          <span class="drawer-level-pill" id="d-level">A1 · AGES 7–9</span>
-          <h2 class="drawer-title" id="d-title">Lesson Title</h2>
-          <div class="drawer-meta-line" id="d-meta">35 minutes · Speaking · Vocabulary</div>
-        </div>
-        <button class="btn-close-drawer" onclick="closeDrawer()" title="Close (Esc)">✕</button>
-      </div>
-
-      <div class="drawer-body">
-        <!-- Thumbnail preview -->
-        <div id="d-thumb-container" style="height: 140px; border-radius: 8px; overflow: hidden; background: var(--bg-subtle);"></div>
-
-        <!-- Description -->
-        <div class="drawer-block">
-          <div class="drawer-block-heading">Description</div>
-          <p id="d-desc" style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;"></p>
-        </div>
-
-        <!-- Learning Objectives -->
-        <div class="drawer-block">
-          <div class="drawer-block-heading">Learning Objectives</div>
-          <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 6px;">Students will:</p>
-          <ul class="objectives-list" id="d-objectives">
-            <!-- Injected -->
-          </ul>
-        </div>
-
-        <!-- Lesson Contents (Timeline) -->
-        <div class="drawer-block">
-          <div class="drawer-block-heading">Lesson Contents</div>
-          <div class="contents-timeline" id="d-contents">
-            <!-- Injected -->
-          </div>
-        </div>
-      </div>
-
-      <div class="drawer-footer">
-        <div class="drawer-actions-left">
-          <button class="btn-drawer-secondary" id="d-bookmark-btn" onclick="toggleCurrentBookmark()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-            <span id="d-bookmark-label">Add to My Lessons</span>
-          </button>
-          <a id="d-sheet-link" href="#" target="_blank" class="btn-drawer-secondary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
-            <span>Worksheet</span>
-          </a>
-        </div>
-
-        <a id="d-launch-btn" href="#" class="btn-drawer-primary">
-          <span>Start Lesson</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div class="toast-pill" id="toast-pill">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="toast-msg">Added to My Lessons</span>
-  </div>
-
-  <!-- ========================================================================
-       FOOTER
-       ======================================================================== -->
-  <footer class="saas-footer">
-    <div class="footer-container">
-      <div>
-        <strong>English Adventure Academy</strong> — Professional ESL Teacher Platform & Resource Dashboard
-      </div>
-      <div>
-        Designed for interactive whiteboards, tablets, and classroom workstations · CEFR A1–A2
-      </div>
-    </div>
-  </footer>
-
-  <!-- ========================================================================
-       DATA REPOSITORY & APPLICATION LOGIC
+       DATA MODEL & JAVASCRIPT LOGIC
        ======================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       LESSONS REPOSITORY DATABASE
+       CLEAN LESSON DATA MODEL (SINGLE SOURCE OF TRUTH)
        -------------------------------------------------------------------------- */
-    const LESSONS = [
+    const LESSONS_DATA = [
       {
         id: "firefighter",
         title: "Fire Station Adventure",
-        subtitle: "Charlie the Firefighter",
+        description: "Interactive story lesson about firefighters, emergency vehicles, safety equipment, and action verbs.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Ages 7–9",
         ageGroup: "7-8",
-        ageText: "Ages 7–9",
         duration: 35,
         durationText: "35 min",
-        type: "Lesson",
-        typeLabel: "Interactive Story",
         skills: ["Vocabulary", "Speaking", "Listening"],
+        type: "Interactive Lessons",
         featured: true,
-        url: "firefighter/index.html",
-        sheetUrl: "firefighter/worksheet.html",
-        themeAccent: "#ef4444",
-        description: "Interactive story lesson about firefighters. Students explore station equipment, listen to sirens, follow action commands, and extinguish fires with a water hose simulation.",
-        objectives: [
-          "Identify and pronounce core firefighter equipment vocabulary (helmet, hose, ladder, engine)",
-          "Follow physical action commands ('spray the water', 'climb the ladder')",
-          "Ask and answer simple present questions about daily emergency routines",
-          "Practice cooperative speaking through an interactive hose simulation"
-        ],
-        contents: [
-          "Warm-up & emergency siren hook",
-          "Vocabulary presentation (Tools & Station)",
-          "Story: A Day with Charlie",
-          "Interactive equipment sorting",
-          "Water hose simulation challenge",
-          "Review & printable worksheet"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#fee2e2"/>
-            <!-- Fire Station building -->
-            <rect x="20" y="30" width="160" height="110" rx="6" fill="#fca5a5"/>
-            <rect x="35" y="45" width="40" height="40" rx="4" fill="#ffffff" opacity="0.8"/>
-            <rect x="125" y="45" width="40" height="40" rx="4" fill="#ffffff" opacity="0.8"/>
-            <!-- Garage door -->
-            <rect x="55" y="70" width="90" height="70" rx="4" fill="#ef4444"/>
-            <line x1="55" y1="88" x2="145" y2="88" stroke="#dc2626" stroke-width="2"/>
-            <line x1="55" y1="106" x2="145" y2="106" stroke="#dc2626" stroke-width="2"/>
-            <line x1="55" y1="124" x2="145" y2="124" stroke="#dc2626" stroke-width="2"/>
+        lessonPath: "firefighter/index.html",
+        worksheetPath: "firefighter/worksheet.html",
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#fee2e2"/>
+            <rect x="25" y="30" width="150" height="110" rx="4" fill="#fca5a5"/>
+            <rect x="50" y="65" width="100" height="75" rx="3" fill="#ef4444"/>
+            <line x1="50" y1="85" x2="150" y2="85" stroke="#dc2626" stroke-width="2"/>
+            <line x1="50" y1="105" x2="150" y2="105" stroke="#dc2626" stroke-width="2"/>
+            <line x1="50" y1="125" x2="150" y2="125" stroke="#dc2626" stroke-width="2"/>
             <!-- Fire truck front -->
-            <rect x="68" y="90" width="64" height="46" rx="6" fill="#b91c1c"/>
-            <rect x="74" y="96" width="52" height="18" rx="3" fill="#bae6fd"/>
-            <circle x="80" y="126" r="6" fill="#1e293b"/>
-            <circle x="120" y="126" r="6" fill="#1e293b"/>
-            <!-- Siren light -->
-            <rect x="94" y="85" width="12" height="6" rx="2" fill="#38bdf8"/>
-          </svg>
-        `
+            <rect x="68" y="85" width="64" height="42" rx="4" fill="#b91c1c"/>
+            <rect x="74" y="90" width="52" height="16" rx="2" fill="#bae6fd"/>
+            <circle x="80" y="122" r="6" fill="#1e293b"/>
+            <circle x="120" y="122" r="6" fill="#1e293b"/>
+            <rect x="94" y="80" width="12" height="5" rx="1" fill="#38bdf8"/>
+          </svg>`
       },
       {
         id: "story",
         title: "The Wizard of Oz",
-        subtitle: "Reader's Theater & Story Stage",
+        description: "Classic reader's theater stage following Dorothy and friends down the Yellow Brick Road.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Ages 7–9",
         ageGroup: "7-8",
-        ageText: "Ages 7–9",
         duration: 40,
         durationText: "40 min",
-        type: "Story",
-        typeLabel: "Dramatized Story",
-        skills: ["Reading", "Speaking", "Listening"],
+        type: "Stories",
         featured: true,
-        url: "story/index.html",
-        sheetUrl: null,
-        themeAccent: "#7c3aed",
-        description: "Dramatized 11-scene reader's theater along the Yellow Brick Road. Students engage with Dorothy, Scarecrow, Tin Woodman, and Lion through audio soundscapes and character badges.",
-        objectives: [
-          "Follow past narrative events and sequencing words (first, then, suddenly)",
-          "Express personal attributes and emotions (brain, heart, courage, afraid)",
-          "Perform short reader's theater dialogue lines in character roles",
-          "Identify cause-and-effect in fairy tale story settings"
-        ],
-        contents: [
-          "Prologue: The Kansas Tornado",
-          "Munchkinland & The Yellow Brick Road",
-          "Meeting the Scarecrow & Tin Woodman",
-          "The Cowardly Lion's Courage",
-          "Emerald City Audience Chamber",
-          "Retelling & character reflection"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#ede9fe"/>
-            <!-- Yellow Brick Road curve -->
-            <path d="M 0 150 Q 80 110 100 80 Q 120 50 140 20 L 160 20 Q 140 60 120 90 Q 90 130 0 150 Z" fill="#fde047"/>
-            <!-- Emerald Towers in background -->
-            <rect x="130" y="25" width="16" height="50" rx="3" fill="#10b981"/>
-            <polygon points="138,10 130,25 146,25" fill="#059669"/>
-            <rect x="150" y="35" width="20" height="40" rx="3" fill="#059669"/>
-            <polygon points="160,20 150,35 170,35" fill="#047857"/>
-            <rect x="118" y="40" width="14" height="35" rx="2" fill="#34d399"/>
-            <!-- Rainbow arc -->
-            <path d="M 20 80 A 70 70 0 0 1 170 80" fill="none" stroke="#a78bfa" stroke-width="4" opacity="0.6"/>
-            <path d="M 25 80 A 65 65 0 0 1 165 80" fill="none" stroke="#38bdf8" stroke-width="4" opacity="0.6"/>
-          </svg>
-        `
+        lessonPath: "story/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#ede9fe"/>
+            <path d="M 0 140 Q 80 100 100 70 Q 120 40 140 15 L 160 15 Q 140 50 120 80 Q 90 120 0 140 Z" fill="#fde047"/>
+            <rect x="130" y="25" width="16" height="45" rx="2" fill="#10b981"/>
+            <polygon points="138,12 130,25 146,25" fill="#059669"/>
+            <rect x="150" y="35" width="18" height="35" rx="2" fill="#059669"/>
+            <polygon points="159,22 150,35 168,35" fill="#047857"/>
+          </svg>`
       },
       {
         id: "neighbourhood",
         title: "My Neighbourhood",
-        subtitle: "Living Town Exploration",
+        description: "Living town exploration where students identify community locations, practice directions, and prepositions.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Ages 6–9",
         ageGroup: "7-8",
-        ageText: "Ages 6–9",
         duration: 30,
         durationText: "30 min",
-        type: "Speaking",
-        typeLabel: "Town Exploration",
-        skills: ["Speaking", "Vocabulary", "Grammar"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "neighbourhood/index.html",
-        sheetUrl: null,
-        themeAccent: "#0d9488",
-        description: "Interactive living town map where learners visit homes, parks, schools, and bakeries. Includes house interior inspection, Park Detective mystery, and scaffolded speaking prompts.",
-        objectives: [
-          "Name key community locations (school, park, bakery, house)",
-          "Construct accurate sentences with 'There is' and 'There are'",
-          "Apply prepositions of place (next to, opposite, behind, between)",
-          "Act as a tour guide giving simple walking directions"
-        ],
-        contents: [
-          "Town map overview & toggle size",
-          "Location tour: Inside My Home",
-          "Park Detective hidden clues",
-          "Bakery shopping dialogue",
-          "3-Level scaffolded speaking challenge",
-          "Memory check: What did you see?"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#ccfbf1"/>
-            <!-- Roads -->
-            <rect x="0" y="65" width="200" height="24" fill="#94a3b8"/>
-            <rect x="85" y="0" width="24" height="150" fill="#94a3b8"/>
-            <line x1="0" y1="77" x2="200" y2="77" stroke="#ffffff" stroke-dasharray="8 6" stroke-width="2"/>
-            <!-- House 1 -->
-            <rect x="25" y="20" width="40" height="34" rx="3" fill="#38bdf8"/>
-            <polygon points="45,8 20,20 70,20" fill="#0284c7"/>
-            <!-- Bakery -->
-            <rect x="135" y="20" width="44" height="34" rx="3" fill="#f59e0b"/>
-            <polygon points="157,8 130,20 184,20" fill="#d97706"/>
-            <!-- Park tree -->
-            <circle cx="45" cy="118" r="18" fill="#10b981"/>
-            <rect x="42" y="125" width="6" height="16" fill="#78350f"/>
-            <!-- School -->
-            <rect x="130" y="105" width="50" height="36" rx="3" fill="#6366f1"/>
-            <polygon points="155,95 125,105 185,105" fill="#4338ca"/>
-          </svg>
-        `
+        lessonPath: "neighbourhood/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#ccfbf1"/>
+            <rect x="0" y="60" width="200" height="24" fill="#94a3b8"/>
+            <rect x="88" y="0" width="24" height="140" fill="#94a3b8"/>
+            <rect x="25" y="18" width="40" height="32" rx="3" fill="#38bdf8"/>
+            <polygon points="45,6 20,18 70,18" fill="#0284c7"/>
+            <rect x="135" y="18" width="42" height="32" rx="3" fill="#f59e0b"/>
+            <polygon points="156,6 130,18 182,18" fill="#d97706"/>
+            <circle cx="45" cy="112" r="16" fill="#10b981"/>
+            <rect x="42" y="118" width="6" height="16" fill="#78350f"/>
+          </svg>`
       },
       {
         id: "restaurant",
         title: "At the Restaurant",
-        subtitle: "'I'd Like...' Speaking Lesson",
+        description: "Interactive dining role-play practicing 'I'd like...', menu ordering, polite requests, and bill calculation.",
         level: "A1+",
-        cefrCategory: "A1+",
+        age: "Ages 7–11",
         ageGroup: "7-8",
-        ageText: "Ages 7–11",
         duration: 40,
         durationText: "40 min",
-        type: "Speaking",
-        typeLabel: "Role-Play Lesson",
-        skills: ["Speaking", "Vocabulary", "Worksheet"],
+        type: "Role Plays",
         featured: true,
-        url: "restaurant/index.html",
-        sheetUrl: "restaurant/worksheets.html",
-        themeAccent: "#ea580c",
-        description: "Complete 40-minute dining simulation with interactive food & drink menu, order builder, secret order challenge cards, and waiter/customer role switching. Includes 5 printable worksheets.",
-        objectives: [
-          "Use polite request structures: 'I would like...', 'Can I have...?'",
-          "Order food and beverages confidently in a restaurant role-play",
-          "Understand menu pricing and calculate simple bills",
-          "Distinguish customer and waiter speaking etiquette"
-        ],
-        contents: [
-          "Warm-up: Entering the Bistro",
-          "Menu exploration & pronunciation",
-          "Interactive order builder",
-          "Secret order challenge cards",
-          "Pair speaking: Waiter & Customer",
-          "5 Printable A4 activity worksheets"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#ffedd5"/>
-            <!-- Bistro Table -->
-            <ellipse cx="100" cy="115" rx="65" ry="24" fill="#fed7aa"/>
-            <rect x="94" y="115" width="12" height="30" fill="#c2410c"/>
-            <!-- Cloche / Plate -->
-            <ellipse cx="100" cy="98" rx="28" ry="10" fill="#e2e8f0"/>
-            <path d="M 78 98 A 22 22 0 0 1 122 98 Z" fill="#94a3b8"/>
-            <circle cx="100" cy="76" r="3" fill="#64748b"/>
-            <!-- Menu card -->
-            <rect x="42" y="55" width="26" height="38" rx="3" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
-            <line x1="48" y1="65" x2="62" y2="65" stroke="#ea580c" stroke-width="1.5"/>
-            <line x1="48" y1="72" x2="58" y2="72" stroke="#ea580c" stroke-width="1.5"/>
-            <!-- Drink cup -->
-            <rect x="135" y="80" width="12" height="20" rx="2" fill="#38bdf8"/>
-            <line x1="140" y1="72" x2="144" y2="80" stroke="#f59e0b" stroke-width="2"/>
-          </svg>
-        `
+        lessonPath: "restaurant/index.html",
+        worksheetPath: "restaurant/worksheets.html",
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#ffedd5"/>
+            <ellipse cx="100" cy="105" rx="60" ry="22" fill="#fed7aa"/>
+            <rect x="94" y="105" width="12" height="28" fill="#c2410c"/>
+            <ellipse cx="100" cy="90" rx="26" ry="9" fill="#e2e8f0"/>
+            <path d="M 80 90 A 20 20 0 0 1 120 90 Z" fill="#94a3b8"/>
+            <circle cx="100" cy="70" r="3" fill="#64748b"/>
+            <rect x="45" y="50" width="24" height="34" rx="2" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
+          </svg>`
       },
       {
         id: "advice",
         title: "The Crazy Advice Academy",
-        subtitle: "Modal Verbs: Should & Shouldn't",
+        description: "Practice modal verbs 'should' and 'shouldn't' by solving 10 hilarious dilemmas with Professor Should.",
         level: "A2",
-        cefrCategory: "A2",
+        age: "Ages 8–12",
         ageGroup: "9-10",
-        ageText: "Ages 8–12",
         duration: 35,
         durationText: "35 min",
-        type: "Grammar",
-        typeLabel: "Thinking & Grammar",
-        skills: ["Grammar", "Speaking", "Worksheet"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "advice/index.html",
-        sheetUrl: "advice/worksheets.html",
-        themeAccent: "#0284c7",
-        description: "Join animated mentor Professor Should to solve 10 hilarious dilemmas. Features consequence detective logic, pair role-play dialogue simulator, team battles, and 5 printable worksheets.",
-        objectives: [
-          "Master modal verbs 'should' and 'shouldn't' for positive and negative advice",
-          "Explain logical consequences using conditional structures",
-          "Analyze humorous scenarios and offer sensible solutions",
-          "Engage in cooperative decision-making and group debating"
-        ],
-        contents: [
-          "Professor Should's emergency hook",
-          "Grammar formula presentation",
-          "10 Real-world funny dilemmas",
-          "Consequence Detective ranking",
-          "Crazy Advice Team Showdown",
-          "5 Printable A4 worksheets"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#e0f2fe"/>
-            <!-- Lightbulb idea -->
-            <circle cx="100" cy="65" r="28" fill="#facc15"/>
-            <rect x="92" y="90" width="16" height="10" rx="2" fill="#94a3b8"/>
-            <line x1="94" y1="104" x2="106" y2="104" stroke="#64748b" stroke-width="2"/>
-            <!-- Brain gears / Rays -->
-            <line x1="100" y1="26" x2="100" y2="16" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <line x1="130" y1="40" x2="138" y2="34" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <line x1="70" y1="40" x2="62" y2="34" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <!-- Checklist badge -->
-            <rect x="35" y="75" width="36" height="46" rx="4" fill="#ffffff" stroke="#38bdf8" stroke-width="2"/>
-            <polyline points="44,92 48,96 56,86" fill="none" stroke="#10b981" stroke-width="2"/>
-            <polyline points="44,106 48,110 56,100" fill="none" stroke="#ef4444" stroke-width="2"/>
-          </svg>
-        `
+        lessonPath: "advice/index.html",
+        worksheetPath: "advice/worksheets.html",
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#e0f2fe"/>
+            <circle cx="100" cy="60" r="26" fill="#facc15"/>
+            <rect x="92" y="84" width="16" height="8" rx="1" fill="#94a3b8"/>
+            <line x1="100" y1="24" x2="100" y2="14" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+            <line x1="128" y1="36" x2="136" y2="30" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+            <line x1="72" y1="36" x2="64" y2="30" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
+            <rect x="40" y="70" width="32" height="42" rx="3" fill="#ffffff" stroke="#38bdf8" stroke-width="1.5"/>
+            <polyline points="48,86 52,90 58,82" fill="none" stroke="#10b981" stroke-width="2"/>
+          </svg>`
       },
       {
         id: "predictions",
         title: "What Will Happen Next?",
-        subtitle: "Future Predictions with WILL",
+        description: "Dramatic frozen cliffhangers where students use 'will' and 'won't' before revealing the comic outcome.",
         level: "A2",
-        cefrCategory: "A2",
+        age: "Ages 8–12",
         ageGroup: "9-10",
-        ageText: "Ages 8–12",
         duration: 30,
         durationText: "30 min",
-        type: "Grammar",
-        typeLabel: "Future Predictions",
-        skills: ["Grammar", "Speaking", "Worksheet"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "predictions/index.html",
-        sheetUrl: "predictions/worksheets.html",
-        themeAccent: "#7c3aed",
-        description: "Dramatic frozen cliffhanger scenes where students predict outcomes using will/won't before triggering slow-motion comic reveals! Includes Prediction Bingo and 5 printable worksheets.",
-        objectives: [
-          "Express future predictions using 'will' and 'won't' with base verbs",
-          "Incorporate certainty qualifiers (definitely, probably, maybe)",
-          "Identify narrative cues in frozen picture scenes",
-          "Sequence 3-panel comic outcomes chronologically"
-        ],
-        contents: [
-          "The Freeze Frame dramatic cliffhangers",
-          "Prediction grammar scaffolding",
-          "Slow-motion reveal mechanism",
-          "3-Panel comic sequence builder",
-          "Classroom Prediction Bingo game",
-          "5 Printable A4 worksheets"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#f3e8ff"/>
-            <!-- Crystal Ball -->
-            <circle cx="100" cy="70" r="36" fill="#c084fc"/>
-            <circle cx="92" cy="60" r="12" fill="#ffffff" opacity="0.4"/>
-            <!-- Stand -->
-            <path d="M 75 116 L 125 116 L 115 102 L 85 102 Z" fill="#6b21a8"/>
-            <rect x="70" y="116" width="60" height="8" rx="2" fill="#581c87"/>
-            <!-- Question mark & Sparkles -->
-            <circle cx="150" cy="45" r="4" fill="#a855f7"/>
-            <circle cx="50" cy="55" r="3" fill="#a855f7"/>
-            <circle cx="145" cy="95" r="3" fill="#a855f7"/>
-          </svg>
-        `
+        lessonPath: "predictions/index.html",
+        worksheetPath: "predictions/worksheets.html",
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#f3e8ff"/>
+            <circle cx="100" cy="65" r="32" fill="#c084fc"/>
+            <circle cx="92" cy="56" r="10" fill="#ffffff" opacity="0.4"/>
+            <path d="M 78 106 L 122 106 L 112 94 L 88 94 Z" fill="#6b21a8"/>
+            <rect x="74" y="106" width="52" height="7" rx="2" fill="#581c87"/>
+          </svg>`
       },
       {
         id: "monster-day",
         title: "Build Your Own Monster",
-        subtitle: "Interactive Creator & Adjectives",
+        description: "Real-time SVG creator practicing body parts, numbers, colors, and descriptive adjective order.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Ages 6–8",
         ageGroup: "5-6",
-        ageText: "Ages 6–8",
         duration: 30,
         durationText: "30 min",
-        type: "Game",
-        typeLabel: "Interactive Creator",
-        skills: ["Speaking", "Vocabulary", "Writing"],
+        type: "Classroom Games",
         featured: false,
-        url: "monster-day/index.html",
-        sheetUrl: null,
-        themeAccent: "#8b5cf6",
-        description: "Real-time SVG monster workshop where children assemble eyes, horns, mouths, colors, and limbs. Automated sentence engine produces descriptive sentences for speaking practice.",
-        objectives: [
-          "Recognize and pronounce body part terms (horns, tentacles, eyes, claws)",
-          "Practice correct adjective word order (number + size + color + noun)",
-          "Use 'has got' and 'has not got' in descriptive sentences",
-          "Present customized creature designs orally to classmates"
-        ],
-        contents: [
-          "Monster creator lab & parts picker",
-          "Automated grammar sentence generator",
-          "5 Interactive classroom challenges",
-          "Teacher dictation mode ('Draw this')",
-          "Presentation showcase stage",
-          "Printable creator badges"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#f5f3ff"/>
-            <!-- Monster Body -->
-            <rect x="65" y="45" width="70" height="75" rx="30" fill="#a855f7"/>
-            <!-- Horns -->
-            <polygon points="65,48 55,25 78,40" fill="#fbbf24"/>
-            <polygon points="135,48 145,25 122,40" fill="#fbbf24"/>
-            <!-- Three Eyes -->
-            <circle cx="82" cy="65" r="9" fill="#ffffff"/>
-            <circle cx="82" cy="65" r="4" fill="#0f172a"/>
-            <circle cx="100" cy="60" r="11" fill="#ffffff"/>
-            <circle cx="100" cy="60" r="5" fill="#0f172a"/>
-            <circle cx="118" cy="65" r="9" fill="#ffffff"/>
-            <circle cx="118" cy="65" r="4" fill="#0f172a"/>
-            <!-- Smile -->
-            <path d="M 85 92 Q 100 106 115 92" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
-          </svg>
-        `
+        lessonPath: "monster-day/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#f5f3ff"/>
+            <rect x="68" y="40" width="64" height="70" rx="28" fill="#a855f7"/>
+            <polygon points="68,44 58,22 80,36" fill="#fbbf24"/>
+            <polygon points="132,44 142,22 120,36" fill="#fbbf24"/>
+            <circle cx="84" cy="60" r="8" fill="#ffffff"/><circle cx="84" cy="60" r="3.5" fill="#0f172a"/>
+            <circle cx="100" cy="55" r="10" fill="#ffffff"/><circle cx="100" cy="55" r="4.5" fill="#0f172a"/>
+            <circle cx="116" cy="60" r="8" fill="#ffffff"/><circle cx="116" cy="60" r="3.5" fill="#0f172a"/>
+            <path d="M 86 85 Q 100 98 114 85" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>`
       },
       {
         id: "city-mouse",
         title: "The City Mouse & The Country Mouse",
-        subtitle: "Aesop's Fable & Comparatives",
+        description: "Interactive Aesop's fable contrasting bustling city skyscrapers with calm country fields.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Ages 7–10",
         ageGroup: "7-8",
-        ageText: "Ages 7–10",
         duration: 35,
         durationText: "35 min",
-        type: "Story",
-        typeLabel: "Illustrated Reader",
-        skills: ["Reading", "Speaking", "Worksheet"],
+        type: "Stories",
         featured: false,
-        url: "city-mouse/index.html",
-        sheetUrl: "city-mouse/worksheet.html",
-        themeAccent: "#f59e0b",
-        description: "Interactive Aesop's fable contrasting urban skyscrapers with tranquil country fields. Features interactive photo icebreakers, vocabulary cards, dramatic cat escape, and moral debrief.",
-        objectives: [
-          "Apply comparative adjectives (bigger, quieter, cleaner, busier)",
-          "Contrast urban and rural lifestyles and environments",
-          "Express personal living preferences with supporting reasons",
-          "Retell key fable plot points using connective words"
-        ],
-        contents: [
-          "Photo icebreaker: City or Country?",
-          "The Country Cousin's humble feast",
-          "Visiting the City skyscraper",
-          "Cat danger & dramatic escape",
-          "Moral reflection: Peace vs Luxury",
-          "Printable comparative worksheet"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#fef3c7"/>
-            <!-- City half -->
-            <rect x="100" y="20" width="30" height="110" fill="#94a3b8"/>
-            <rect x="135" y="35" width="28" height="95" fill="#64748b"/>
-            <rect x="168" y="50" width="22" height="80" fill="#475569"/>
-            <!-- Country half -->
-            <path d="M 0 130 Q 50 85 100 130 Z" fill="#86efac"/>
-            <rect x="35" y="85" width="30" height="25" rx="2" fill="#f59e0b"/>
-            <polygon points="50,72 30,85 70,85" fill="#b45309"/>
-            <!-- Divider Line -->
-            <line x1="100" y1="10" x2="100" y2="140" stroke="#d97706" stroke-dasharray="4 4" stroke-width="2"/>
-          </svg>
-        `
+        lessonPath: "city-mouse/index.html",
+        worksheetPath: "city-mouse/worksheet.html",
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#fef3c7"/>
+            <rect x="105" y="20" width="28" height="100" fill="#94a3b8"/>
+            <rect x="138" y="35" width="26" height="85" fill="#64748b"/>
+            <path d="M 0 120 Q 50 80 100 120 Z" fill="#86efac"/>
+            <rect x="35" y="80" width="28" height="22" rx="2" fill="#f59e0b"/>
+            <polygon points="49,68 30,80 68,80" fill="#b45309"/>
+            <line x1="100" y1="10" x2="100" y2="130" stroke="#d97706" stroke-dasharray="3 3" stroke-width="1.5"/>
+          </svg>`
       },
       {
         id: "detective-prep",
         title: "Detective Prep",
-        subtitle: "Wh-Questions & Clue Warm-Up",
+        subtitle: "Warm-Up Drill",
+        description: "Targeted 10-minute warm-up drilling Wh-question patterns (Who, Where, What) before the mystery.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Grade 3",
         ageGroup: "9-10",
-        ageText: "Grade 3 · Ages 8–9",
         duration: 10,
         durationText: "10 min",
-        type: "Speaking",
-        typeLabel: "Warm-Up Activity",
-        skills: ["Speaking", "Grammar"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "treasure/index.html",
-        sheetUrl: null,
-        themeAccent: "#3b82f6",
-        description: "Targeted 10-minute warm-up screen drilling question patterns: 'Who is that?', 'Where was he?', 'What was she wearing?'. Sets up detective deduction before the mystery.",
-        objectives: [
-          "Differentiate question words: Who (person), Where (place), What (thing)",
-          "Formulate grammatically accurate past interrogation questions",
-          "Build confidence through rapid-fire whiteboard question practice"
-        ],
-        contents: [
-          "Wh-Question rule recap",
-          "Suspect photo interrogation drill",
-          "Rapid-fire team question challenge"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#eff6ff"/>
-            <circle cx="100" cy="65" r="30" fill="none" stroke="#2563eb" stroke-width="5"/>
-            <line x1="122" y1="87" x2="152" y2="117" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
-            <text x="92" y="75" font-family="sans-serif" font-weight="800" font-size="28" fill="#2563eb">?</text>
-          </svg>
-        `
+        lessonPath: "treasure/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#eff6ff"/>
+            <circle cx="100" cy="60" r="28" fill="none" stroke="#2563eb" stroke-width="5"/>
+            <line x1="120" y1="80" x2="148" y2="108" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <text x="92" y="70" font-family="sans-serif" font-weight="800" font-size="26" fill="#2563eb">?</text>
+          </svg>`
       },
       {
         id: "treasure",
         title: "Treasure Mystery",
-        subtitle: "Who Stole the Royal Treasure?",
+        description: "Solve the royal theft with a 4-team live scoreboard. Cross-examine suspects and evaluate clues.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Grade 3",
         ageGroup: "9-10",
-        ageText: "Grade 3 · Ages 8–10",
         duration: 40,
         durationText: "40 min",
-        type: "Game",
-        typeLabel: "Mystery & Scoreboard",
-        skills: ["Speaking", "Listening", "Vocabulary"],
+        type: "Mystery Games",
         featured: false,
-        url: "treasure/index.html",
-        sheetUrl: null,
-        themeAccent: "#d97706",
-        description: "Interactive classroom mystery with a 4-team dynamic scoreboard. Teams interrogate suspects, cross-examine evidence, and vote on the thief using past continuous clues.",
-        objectives: [
-          "Utilize past continuous for alibis ('I was reading in the library')",
-          "Deduce information from witness statements and physical clues",
-          "Collaborate in a 4-team structured classroom scoreboard competition"
-        ],
-        contents: [
-          "The crime scene announcement",
-          "4-Team scoreboard activation",
-          "Interrogating the 4 royal suspects",
-          "Analyzing the footprint & key evidence",
-          "Final verdict & team victory ceremony"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#fef3c7"/>
-            <!-- Treasure Chest -->
-            <rect x="50" y="65" width="100" height="60" rx="6" fill="#92400e"/>
-            <path d="M 50 65 Q 100 35 150 65 Z" fill="#b45309"/>
-            <rect x="94" y="68" width="12" height="18" rx="2" fill="#facc15"/>
-            <circle x="100" y="75" r="3" fill="#78350f"/>
-            <!-- Gold Bands -->
-            <rect x="65" y="65" width="8" height="60" fill="#fbbf24"/>
-            <rect x="127" y="65" width="8" height="60" fill="#fbbf24"/>
-          </svg>
-        `
+        lessonPath: "treasure/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#fef3c7"/>
+            <rect x="52" y="60" width="96" height="56" rx="5" fill="#92400e"/>
+            <path d="M 52 60 Q 100 32 148 60 Z" fill="#b45309"/>
+            <rect x="94" y="62" width="12" height="16" rx="2" fill="#facc15"/>
+            <rect x="66" y="60" width="8" height="56" fill="#fbbf24"/>
+            <rect x="126" y="60" width="8" height="56" fill="#fbbf24"/>
+          </svg>`
       },
       {
         id: "room-rescue",
         title: "Room Rescue",
-        subtitle: "Furniture Coordinates & Clues",
+        description: "Restore disorganized rooms by placing furniture items according to precise coordinate clues.",
         level: "A1",
-        cefrCategory: "A1",
+        age: "Grade 4",
         ageGroup: "9-10",
-        ageText: "Grade 4 · Ages 9–10",
         duration: 30,
         durationText: "25–35 min",
-        type: "Game",
-        typeLabel: "Interactive Room Rescue",
-        skills: ["Vocabulary", "Speaking", "Grammar"],
+        type: "Classroom Games",
         featured: false,
-        url: "treasure/index.html",
-        sheetUrl: null,
-        themeAccent: "#059669",
-        description: "Rescue disorganized rooms by placing furniture items in their precise coordinates. Teams listen to spatial clues and clear the crime scene before time runs out.",
-        objectives: [
-          "Recall household furniture and appliance vocabulary",
-          "Accurately apply positional phrases ('under the desk', 'on the shelf')",
-          "Coordinate fast-paced team whiteboard retrieval missions"
-        ],
-        contents: [
-          "Room briefing: The ransacked study",
-          "Listening coordinates challenge",
-          "Furniture placement time-trial",
-          "Accuracy check & bonus points"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#ecfdf5"/>
-            <!-- Room walls -->
-            <polygon points="0,0 200,0 170,30 30,30" fill="#d1fae5"/>
-            <polygon points="30,30 170,30 170,110 30,110" fill="#a7f3d0"/>
-            <polygon points="30,110 170,110 200,150 0,150" fill="#6ee7b7"/>
-            <!-- Desk -->
-            <rect x="65" y="80" width="70" height="35" rx="3" fill="#047857"/>
-            <rect x="75" y="65" width="22" height="15" rx="2" fill="#3b82f6"/>
-          </svg>
-        `
+        lessonPath: "treasure/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#ecfdf5"/>
+            <polygon points="0,0 200,0 170,25 30,25" fill="#d1fae5"/>
+            <polygon points="30,25 170,25 170,105 30,105" fill="#a7f3d0"/>
+            <polygon points="30,105 170,105 200,140 0,140" fill="#6ee7b7"/>
+            <rect x="68" y="75" width="64" height="30" rx="3" fill="#047857"/>
+            <rect x="78" y="60" width="20" height="15" rx="2" fill="#3b82f6"/>
+          </svg>`
       },
       {
         id: "clil-lab",
         title: "CLIL Crime Lab",
-        subtitle: "Forensic Science in English",
+        description: "Integrate English with science! Examine microscope fibers, compare fingerprint patterns, and test pH.",
         level: "A1+",
-        cefrCategory: "A1+",
+        age: "Grade 4",
         ageGroup: "9-10",
-        ageText: "Grade 4 · Ages 9–10",
         duration: 35,
         durationText: "35 min",
-        type: "Lesson",
-        typeLabel: "CLIL Science",
-        skills: ["CLIL", "Vocabulary", "Reading"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "treasure/index.html",
-        sheetUrl: null,
-        themeAccent: "#0284c7",
-        description: "Integrate English with science! Examine microscope evidence, compare fingerprint patterns, and test mystery powder pH levels in an interactive forensic laboratory.",
-        objectives: [
-          "Learn basic scientific laboratory terminology in English",
-          "Describe shapes and textures (arches, loops, whorls, crystalline)",
-          "Formulate hypotheses and verify experimental results"
-        ],
-        contents: [
-          "Lab safety & apparatus overview",
-          "Fingerprint pattern analysis",
-          "Microscope fiber comparison",
-          "Chemical reaction evidence testing",
-          "Final scientific case report"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#e0f2fe"/>
-            <!-- Flask -->
-            <path d="M 94 35 L 106 35 L 106 60 L 130 110 L 70 110 L 94 60 Z" fill="#38bdf8" opacity="0.8"/>
-            <ellipse cx="100" cy="110" rx="30" ry="8" fill="#0284c7"/>
-            <circle cx="95" cy="85" r="4" fill="#ffffff"/>
-            <circle cx="108" cy="98" r="3" fill="#ffffff"/>
-            <!-- Microscope base -->
-            <rect x="145" y="105" width="35" height="15" rx="2" fill="#475569"/>
-            <path d="M 160 105 L 160 55 L 140 55" fill="none" stroke="#475569" stroke-width="6"/>
-          </svg>
-        `
+        lessonPath: "treasure/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#e0f2fe"/>
+            <path d="M 94 30 L 106 30 L 106 55 L 128 100 L 72 100 L 94 55 Z" fill="#38bdf8" opacity="0.8"/>
+            <ellipse cx="100" cy="100" rx="28" ry="7" fill="#0284c7"/>
+            <circle cx="95" cy="78" r="3.5" fill="#ffffff"/>
+            <circle cx="107" cy="88" r="2.5" fill="#ffffff"/>
+            <rect x="145" y="95" width="30" height="14" rx="2" fill="#475569"/>
+            <path d="M 160 95 L 160 50 L 142 50" fill="none" stroke="#475569" stroke-width="5"/>
+          </svg>`
       },
       {
         id: "expedition",
         title: "The Last Expedition",
-        subtitle: "Global Habitat Investigation",
+        description: "Explore world biomes from rainforests to the Arctic, practicing wildlife terms and compass directions.",
         level: "A1+",
-        cefrCategory: "A1+",
+        age: "Grade 4",
         ageGroup: "9-10",
-        ageText: "Grade 4 · Ages 9–10",
         duration: 35,
         durationText: "30–40 min",
-        type: "Lesson",
-        typeLabel: "CLIL Geography",
-        skills: ["CLIL", "Speaking", "Listening"],
+        type: "Interactive Lessons",
         featured: false,
-        url: "treasure/index.html",
-        sheetUrl: null,
-        themeAccent: "#059669",
-        description: "Travel to rainforests, deserts, and the Arctic to follow animal tracks and environmental clues. Practice wildlife terminology and compass directions.",
-        objectives: [
-          "Identify global biomes (desert, tundra, rainforest, savannah)",
-          "Practice compass directions (North, South, East, West)",
-          "Describe animal adaptations to extreme climates"
-        ],
-        contents: [
-          "Expedition dispatch & map reading",
-          "Rainforest canopy tracker",
-          "Arctic blizzard survival quiz",
-          "Expedition log completion"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#ecfdf5"/>
-            <!-- Mountain Range -->
-            <polygon points="100,25 40,120 160,120" fill="#059669"/>
-            <polygon points="100,25 78,60 122,60" fill="#ffffff"/>
-            <polygon points="150,45 105,120 195,120" fill="#047857"/>
-            <polygon points="150,45 135,70 165,70" fill="#ffffff"/>
-            <!-- Compass Rose -->
-            <circle cx="50" cy="50" r="22" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
-            <polygon points="50,33 54,48 50,45 46,48" fill="#ef4444"/>
-            <polygon points="50,67 54,52 50,55 46,52" fill="#475569"/>
-          </svg>
-        `
+        lessonPath: "treasure/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#ecfdf5"/>
+            <polygon points="100,20 45,110 155,110" fill="#059669"/>
+            <polygon points="100,20 80,55 120,55" fill="#ffffff"/>
+            <circle cx="50" cy="45" r="20" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+            <polygon points="50,30 53,44 50,41 47,44" fill="#ef4444"/>
+            <polygon points="50,60 53,46 50,49 47,46" fill="#475569"/>
+          </svg>`
       },
       {
         id: "pokemon",
         title: "Pokémon Trainer Battle",
-        subtitle: "ESL Grammar Battle Arena",
+        description: "Gamified arena showdown where answering grammar challenges powers up attacks and defenses.",
         level: "A2",
-        cefrCategory: "A2",
+        age: "Ages 8–12",
         ageGroup: "9-10",
-        ageText: "Ages 8–12",
         duration: 45,
         durationText: "45 min",
-        type: "Game",
-        typeLabel: "Gamified Battle",
-        skills: ["Grammar", "Speaking", "Vocabulary"],
+        type: "Classroom Games",
         featured: false,
-        url: "pokemon/index.html",
-        sheetUrl: null,
-        themeAccent: "#2563eb",
-        description: "Gamified creature arena showdown where answering English grammar challenges correctly powers up attacks and defenses! Features animated health bars, creature creator, and battle fanfare.",
-        objectives: [
-          "Recall action verbs under timed challenge conditions",
-          "Formulate complete descriptive sentences with stat adjectives",
-          "Communicate strategic battle decisions in English"
-        ],
-        contents: [
-          "Trainer check-in & creature selection",
-          "Adjective speed drills (Swift vs Fierce)",
-          "Arena Turn-based grammar battles",
-          "Creature creator showcase"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#dbeafe"/>
-            <!-- Stadium circle -->
-            <ellipse cx="100" cy="100" rx="75" ry="30" fill="#93c5fd"/>
-            <ellipse cx="100" cy="100" rx="55" ry="20" fill="#bfdbfe"/>
-            <!-- Pokeball center -->
-            <circle cx="100" cy="55" r="28" fill="#ef4444"/>
-            <path d="M 72 55 A 28 28 0 0 0 128 55 Z" fill="#ffffff"/>
-            <line x1="72" y1="55" x2="128" y2="55" stroke="#0f172a" stroke-width="5"/>
-            <circle cx="100" cy="55" r="9" fill="#0f172a"/>
-            <circle cx="100" cy="55" r="5" fill="#ffffff"/>
-          </svg>
-        `
-      },
-      {
-        id: "jungle",
-        title: "Life in the Jungle",
-        subtitle: "The Jungle Rangers",
-        level: "A1+",
-        cefrCategory: "A1+",
-        ageGroup: "7-8",
-        ageText: "Ages 7–11",
-        duration: 40,
-        durationText: "40 min",
-        type: "Lesson",
-        typeLabel: "CLIL Ecology",
-        skills: ["CLIL", "Vocabulary", "Listening"],
-        featured: false,
-        url: "jungle/index.html",
-        sheetUrl: null,
-        themeAccent: "#059669",
-        description: "Join wildlife rangers on conservation missions! Spot jungle animals in their natural habitats, monitor ecosystem health, and practice ability modals (can / can't).",
-        objectives: [
-          "Name wild jungle animals and body adaptations (stripes, claws, beak)",
-          "Use modal 'can' and 'can't' for animal movement and abilities",
-          "Understand simple ecological relationships and habitat conservation"
-        ],
-        contents: [
-          "Ranger mission dispatch & soundscapes",
-          "Valley animal spotter",
-          "Animal abilities interactive quiz",
-          "Ecosystem health evaluation"
-        ],
-        svgIllustration: `
-          <svg viewBox="0 0 200 150" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="150" fill="#d1fae5"/>
-            <!-- Rainforest trees -->
-            <circle cx="45" cy="55" r="28" fill="#047857"/>
-            <circle cx="95" cy="45" r="32" fill="#059669"/>
-            <circle cx="150" cy="55" r="26" fill="#10b981"/>
-            <rect x="40" y="70" width="10" height="60" fill="#78350f"/>
-            <rect x="90" y="65" width="12" height="65" fill="#78350f"/>
-            <rect x="145" y="70" width="10" height="60" fill="#78350f"/>
-            <!-- Ferns -->
-            <path d="M 0 150 Q 40 100 80 150 Z" fill="#065f46"/>
-            <path d="M 120 150 Q 160 110 200 150 Z" fill="#065f46"/>
-          </svg>
-        `
+        lessonPath: "pokemon/index.html",
+        worksheetPath: null,
+        thumbnailSvg: `
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect width="200" height="140" fill="#dbeafe"/>
+            <ellipse cx="100" cy="95" rx="70" ry="26" fill="#93c5fd"/>
+            <circle cx="100" cy="55" r="26" fill="#ef4444"/>
+            <path d="M 74 55 A 26 26 0 0 0 126 55 Z" fill="#ffffff"/>
+            <line x1="74" y1="55" x2="126" y2="55" stroke="#0f172a" stroke-width="4.5"/>
+            <circle cx="100" cy="55" r="8" fill="#0f172a"/>
+            <circle cx="100" cy="55" r="4" fill="#ffffff"/>
+          </svg>`
       }
     ];
 
     /* --------------------------------------------------------------------------
-       STATE MANAGEMENT
+       STATE
        -------------------------------------------------------------------------- */
     const state = {
       search: "",
-      age: "",
       level: "",
+      age: "",
+      skill: "",
       type: "",
       duration: "",
-      sort: "popular",
-      activeSidebar: "all",
-      activeTab: "library",
-      favorites: JSON.parse(localStorage.getItem("eaa_favorites") || "[]"),
-      myLessons: JSON.parse(localStorage.getItem("eaa_mylessons") || "[]"),
-      currentDrawerLesson: null,
-      theme: localStorage.getItem("eaa_theme") || "light"
+      sort: "recommended",
+      sidebar: "all",
+      navTab: "library",
+      favorites: JSON.parse(localStorage.getItem("eaa_favs") || "[]"),
+      myLessons: JSON.parse(localStorage.getItem("eaa_saved") || "[]")
     };
 
     /* --------------------------------------------------------------------------
        DOM REFERENCES
        -------------------------------------------------------------------------- */
     const searchInput = document.getElementById("search-input");
-    const clearSearchBtn = document.getElementById("clear-search-btn");
-    const filterAge = document.getElementById("filter-age");
+    const searchClearBtn = document.getElementById("search-clear-btn");
     const filterLevel = document.getElementById("filter-level");
+    const filterAge = document.getElementById("filter-age");
+    const filterSkill = document.getElementById("filter-skill");
     const filterType = document.getElementById("filter-type");
     const filterDuration = document.getElementById("filter-duration");
     const sortSelect = document.getElementById("sort-select");
-    const btnResetFilters = document.getElementById("btn-reset-filters");
+    const btnReset = document.getElementById("btn-reset-filters");
     const lessonsGrid = document.getElementById("lessons-grid");
     const featuredGrid = document.getElementById("featured-grid");
-    const featuredContainer = document.getElementById("featured-container");
-    const visibleLessonCount = document.getElementById("visible-lesson-count");
-    const gridHeaderTitle = document.getElementById("grid-header-title");
-    const drawerBackdrop = document.getElementById("drawer-backdrop");
-    const toastPill = document.getElementById("toast-pill");
-    const toastMsg = document.getElementById("toast-msg");
-    const favBadge = document.getElementById("favorites-badge");
-    const myLessonsBadge = document.getElementById("my-lessons-badge");
+    const featuredSection = document.getElementById("featured-section");
+    const resultsCount = document.getElementById("results-count");
+    const gridTitle = document.getElementById("grid-title");
+    const badgeFavs = document.getElementById("badge-favorites");
+    const badgeSaved = document.getElementById("badge-my-lessons");
+    const countAll = document.getElementById("count-all");
+    const countFavs = document.getElementById("count-favorites");
 
     /* --------------------------------------------------------------------------
-       INIT APPLICATION
+       INITIALIZATION
        -------------------------------------------------------------------------- */
     function init() {
-      // Set Theme
-      document.documentElement.setAttribute("data-theme", state.theme);
       updateBadges();
-
-      // Render Views
       renderFeatured();
       renderLessons();
 
-      // Setup Listeners
+      // Search events
       searchInput.addEventListener("input", (e) => {
         state.search = e.target.value.trim().toLowerCase();
-        clearSearchBtn.style.display = state.search ? "block" : "none";
-        checkFilterResetVisibility();
+        searchClearBtn.style.display = state.search ? "block" : "none";
+        checkResetBtn();
+        renderLessons();
+      });
+
+      // Filter events
+      filterLevel.addEventListener("change", (e) => {
+        state.level = e.target.value;
+        toggleActiveSelect(filterLevel, state.level);
+        checkResetBtn();
         renderLessons();
       });
 
       filterAge.addEventListener("change", (e) => {
         state.age = e.target.value;
-        toggleSelectActive(filterAge, state.age);
-        checkFilterResetVisibility();
+        toggleActiveSelect(filterAge, state.age);
+        checkResetBtn();
         renderLessons();
       });
 
-      filterLevel.addEventListener("change", (e) => {
-        state.level = e.target.value;
-        toggleSelectActive(filterLevel, state.level);
-        checkFilterResetVisibility();
+      filterSkill.addEventListener("change", (e) => {
+        state.skill = e.target.value;
+        toggleActiveSelect(filterSkill, state.skill);
+        checkResetBtn();
         renderLessons();
       });
 
       filterType.addEventListener("change", (e) => {
         state.type = e.target.value;
-        toggleSelectActive(filterType, state.type);
-        checkFilterResetVisibility();
+        toggleActiveSelect(filterType, state.type);
+        checkResetBtn();
         renderLessons();
       });
 
       filterDuration.addEventListener("change", (e) => {
         state.duration = e.target.value;
-        toggleSelectActive(filterDuration, state.duration);
-        checkFilterResetVisibility();
+        toggleActiveSelect(filterDuration, state.duration);
+        checkResetBtn();
         renderLessons();
       });
 
@@ -2497,74 +1586,58 @@
         renderLessons();
       });
 
-      // Top navigation bar buttons
-      document.querySelectorAll(".nav-item-btn").forEach(btn => {
+      // Top nav tab events
+      document.querySelectorAll(".nav-tab-link").forEach(btn => {
         btn.addEventListener("click", () => {
-          document.querySelectorAll(".nav-item-btn").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".nav-tab-link").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          state.activeTab = btn.dataset.tab;
-          handleTabChange();
+          state.navTab = btn.dataset.nav;
+          handleNavTabChange();
         });
       });
 
-      // Sidebar filter clicks
-      document.querySelectorAll(".sidebar-item").forEach(item => {
-        item.addEventListener("click", () => {
-          document.querySelectorAll(".sidebar-item").forEach(i => i.classList.remove("active"));
-          item.classList.add("active");
-          state.activeSidebar = item.dataset.sidebarFilter;
+      // Sidebar events
+      document.querySelectorAll(".sidebar-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          state.sidebar = btn.dataset.sidebar;
           renderLessons();
         });
       });
 
-      // Keyboard shortcuts
+      // Global keyboard shortcut
       document.addEventListener("keydown", (e) => {
         if (e.key === "/" && document.activeElement !== searchInput) {
           e.preventDefault();
-          focusSearchInput();
-        } else if (e.key === "Escape") {
-          closeDrawer();
+          focusSearch();
         }
       });
     }
 
     /* --------------------------------------------------------------------------
-       RENDER FEATURED (2-3 PREMIUM HORIZONTAL CARDS)
+       RENDER FEATURED LESSONS (HORIZONTAL CARDS)
        -------------------------------------------------------------------------- */
     function renderFeatured() {
-      const featured = LESSONS.filter(l => l.featured);
+      const featured = LESSONS_DATA.filter(l => l.featured);
       featuredGrid.innerHTML = featured.map(lesson => `
         <article class="featured-card">
-          <div class="featured-thumbnail">
-            ${lesson.svgIllustration}
-            <span class="thumb-level-tag">${lesson.level}</span>
+          <div class="featured-thumb">
+            ${lesson.thumbnailSvg}
           </div>
-
           <div class="featured-card-content">
-            <span class="featured-badge-pill">Curriculum Highlight</span>
-            <h3 class="featured-card-title">${lesson.title}</h3>
-            <div class="featured-meta">${lesson.level} · ${lesson.ageText} · ${lesson.durationText}</div>
+            <span class="featured-tag">Featured</span>
+            <h3 class="featured-title">${lesson.title}</h3>
+            <div class="featured-meta">${lesson.level} · ${lesson.age} · ${lesson.durationText}</div>
             <p class="featured-desc">${lesson.description}</p>
-            
-            <div class="featured-skills-row">
-              ${lesson.skills.map(s => `<span class="skill-pill">${s}</span>`).join("")}
-            </div>
-
-            <div class="featured-card-actions">
-              <a href="${lesson.url}" class="btn-featured-open">
+            <div class="featured-actions">
+              <a href="${lesson.lessonPath}" class="btn-open-featured">
                 <span>Open lesson</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span>→</span>
               </a>
-              ${lesson.sheetUrl ? `
-                <a href="${lesson.sheetUrl}" target="_blank" class="btn-featured-sheet">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
-                  <span>Worksheet</span>
-                </a>
-              ` : `
-                <button class="btn-featured-sheet" onclick="openDrawer('${lesson.id}')">
-                  <span>Overview</span>
-                </button>
-              `}
+              ${lesson.worksheetPath ? `
+                <a href="${lesson.worksheetPath}" target="_blank" class="btn-sheet-featured">Worksheet</a>
+              ` : ''}
             </div>
           </div>
         </article>
@@ -2572,81 +1645,76 @@
     }
 
     /* --------------------------------------------------------------------------
-       RENDER ALL LESSONS GRID
+       RENDER ALL LESSONS (USING REUSABLE LESSON CARD)
        -------------------------------------------------------------------------- */
     function renderLessons() {
-      let list = [...LESSONS];
+      let list = [...LESSONS_DATA];
 
-      // Tab Filtering
-      if (state.activeTab === "favorites") {
+      // Top Nav Tab Filter
+      if (state.navTab === "favorites") {
         list = list.filter(l => state.favorites.includes(l.id));
-        gridHeaderTitle.textContent = "My Favorites";
-        featuredContainer.style.display = "none";
-      } else if (state.activeTab === "my-lessons") {
+        gridTitle.textContent = "Favorites";
+        featuredSection.style.display = "none";
+      } else if (state.navTab === "my-lessons") {
         list = list.filter(l => state.myLessons.includes(l.id));
-        gridHeaderTitle.textContent = "My Saved Lessons";
-        featuredContainer.style.display = "none";
-      } else if (state.activeTab === "worksheets") {
-        list = list.filter(l => l.sheetUrl);
-        gridHeaderTitle.textContent = "Lessons with Printable Worksheets";
-        featuredContainer.style.display = "none";
-      } else if (state.activeTab === "activities") {
-        list = list.filter(l => l.type === "Game" || l.type === "Speaking");
-        gridHeaderTitle.textContent = "Classroom Games & Activities";
-        featuredContainer.style.display = "none";
+        gridTitle.textContent = "My Lessons";
+        featuredSection.style.display = "none";
+      } else if (state.navTab === "worksheets") {
+        list = list.filter(l => l.worksheetPath);
+        gridTitle.textContent = "Printable Worksheets";
+        featuredSection.style.display = "none";
       } else {
-        gridHeaderTitle.textContent = "All Lessons";
-        featuredContainer.style.display = (state.search || state.age || state.level || state.type || state.duration || state.activeSidebar !== "all") ? "none" : "flex";
+        gridTitle.textContent = "All Lessons";
+        // Hide featured when filtering/searching
+        const isFiltering = state.search || state.level || state.age || state.skill || state.type || state.duration || state.sidebar !== "all";
+        featuredSection.style.display = isFiltering ? "none" : "block";
       }
 
       // Sidebar Filter
-      if (state.activeSidebar !== "all") {
-        const [kind, val] = state.activeSidebar.split(":");
-        if (kind === "skill") {
-          list = list.filter(l => l.skills.includes(val));
-        } else if (kind === "type") {
-          if (val === "Worksheet") {
-            list = list.filter(l => l.sheetUrl);
-          } else {
-            list = list.filter(l => l.type === val);
-          }
-        } else if (kind === "age") {
-          list = list.filter(l => l.ageGroup === val);
+      if (state.sidebar === "favorites") {
+        list = list.filter(l => state.favorites.includes(l.id));
+      } else if (state.sidebar === "recent") {
+        list = list.slice(0, 3);
+      } else if (state.sidebar.startsWith("skill:")) {
+        const skill = state.sidebar.replace("skill:", "");
+        list = list.filter(l => l.skills.includes(skill));
+      } else if (state.sidebar.startsWith("format:")) {
+        const format = state.sidebar.replace("format:", "");
+        if (format === "Worksheets") {
+          list = list.filter(l => l.worksheetPath);
+        } else {
+          list = list.filter(l => l.type === format);
         }
       }
 
-      // Search Filter
+      // Search Box Filter
       if (state.search) {
         const q = state.search;
         list = list.filter(l => {
           return l.title.toLowerCase().includes(q) ||
-                 l.subtitle.toLowerCase().includes(q) ||
                  l.description.toLowerCase().includes(q) ||
                  l.skills.some(s => s.toLowerCase().includes(q)) ||
                  l.level.toLowerCase().includes(q);
         });
       }
 
-      // Age Dropdown
-      if (state.age) {
-        list = list.filter(l => l.ageGroup === state.age);
-      }
-
-      // Level Dropdown
+      // Dropdown Filters
       if (state.level) {
         list = list.filter(l => l.level === state.level);
       }
-
-      // Type Dropdown
+      if (state.age) {
+        list = list.filter(l => l.ageGroup === state.age);
+      }
+      if (state.skill) {
+        list = list.filter(l => l.skills.includes(state.skill));
+      }
       if (state.type) {
-        if (state.type === "Worksheet") {
-          list = list.filter(l => l.sheetUrl);
+        if (state.type === "Worksheets") {
+          list = list.filter(l => l.worksheetPath);
         } else {
           list = list.filter(l => l.type === state.type);
         }
       }
-
-      // Duration Dropdown
       if (state.duration) {
         const max = parseInt(state.duration, 10);
         list = list.filter(l => l.duration <= max);
@@ -2661,257 +1729,153 @@
         } else if (state.sort === "title") {
           return a.title.localeCompare(b.title);
         }
-        return 0; // default / popular
+        return 0; // recommended
       });
 
-      // Update count
-      visibleLessonCount.textContent = list.length;
+      // Update counter
+      resultsCount.textContent = `Showing ${list.length} lessons`;
 
       // Empty State
       if (list.length === 0) {
         lessonsGrid.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            </div>
-            <div class="empty-state-title">No lessons match your filters</div>
-            <div class="empty-state-text">Try adjusting your search query, clearing age/level filters, or resetting to view all lessons.</div>
-            <button class="btn-drawer-primary" style="margin-top: 8px;" onclick="resetFilters()">Reset All Filters</button>
+          <div class="empty-results">
+            <div class="empty-title">No lessons found</div>
+            <p class="empty-desc">Try clearing filters or changing your search terms to discover available lessons.</p>
+            <button class="btn-continue" style="margin-top: 6px;" onclick="resetFilters()">Reset all filters</button>
           </div>
         `;
         return;
       }
 
-      // Render Cards
-      lessonsGrid.innerHTML = list.map(lesson => {
-        const isSaved = state.favorites.includes(lesson.id);
-        return `
-          <article class="lesson-card" data-id="${lesson.id}">
-            <!-- Thumbnail Box -->
-            <div class="lesson-thumb-box" onclick="openDrawer('${lesson.id}')" style="cursor: pointer;">
-              ${lesson.svgIllustration}
-              <span class="thumb-level-tag">${lesson.level}</span>
-              <span class="thumb-type-tag">${lesson.typeLabel}</span>
-              <button class="bookmark-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleFavorite('${lesson.id}')" title="${isSaved ? 'Remove from favorites' : 'Bookmark lesson'}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-              </button>
-            </div>
-
-            <!-- Body -->
-            <div class="lesson-card-body">
-              <h4 class="lesson-card-title" onclick="openDrawer('${lesson.id}')">${lesson.title}</h4>
-              <p class="lesson-card-desc">${lesson.description}</p>
-              
-              <div class="lesson-card-meta">
-                <span>${lesson.level}</span>
-                <span class="meta-bullet">·</span>
-                <span>${lesson.ageText}</span>
-                <span class="meta-bullet">·</span>
-                <span>${lesson.durationText}</span>
-              </div>
-
-              <div class="lesson-card-skills">
-                ${lesson.skills.map(s => `<span class="skill-pill">${s}</span>`).join("")}
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="lesson-card-footer">
-              <a href="${lesson.url}" class="card-open-link">
-                <span>Open lesson</span>
-                <span>→</span>
-              </a>
-
-              ${lesson.sheetUrl ? `
-                <a href="${lesson.sheetUrl}" target="_blank" class="card-sheet-quick" title="Printable A4 worksheet">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/></svg>
-                  <span>Worksheet</span>
-                </a>
-              ` : `
-                <button onclick="openDrawer('${lesson.id}')" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Overview</button>
-              `}
-            </div>
-          </article>
-        `;
-      }).join("");
+      // Reusable LessonCard Component Render
+      lessonsGrid.innerHTML = list.map(lesson => renderLessonCard(lesson)).join("");
     }
 
     /* --------------------------------------------------------------------------
-       DRAWER WORKFLOW (LESSON OVERVIEW)
+       REUSABLE LESSON CARD COMPONENT
        -------------------------------------------------------------------------- */
-    function openDrawer(lessonId) {
-      const lesson = LESSONS.find(l => l.id === lessonId);
-      if (!lesson) return;
+    function renderLessonCard(lesson) {
+      const isFav = state.favorites.includes(lesson.id);
+      return `
+        <article class="lesson-card" data-id="${lesson.id}">
+          <div class="card-thumbnail">
+            ${lesson.thumbnailSvg}
+            <span class="level-badge">${lesson.level}</span>
+            <button class="bookmark-btn ${isFav ? 'is-saved' : ''}" onclick="toggleBookmark('${lesson.id}')" title="${isFav ? 'Remove from favorites' : 'Bookmark lesson'}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2">
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+              </svg>
+            </button>
+          </div>
 
-      state.currentDrawerLesson = lesson;
+          <div class="card-body">
+            <h3 class="card-title">${lesson.title}</h3>
+            <p class="card-desc">${lesson.description}</p>
+            
+            <div class="card-meta">
+              <span>${lesson.level}</span>
+              <span class="separator">·</span>
+              <span>${lesson.age}</span>
+              <span class="separator">·</span>
+              <span>${lesson.durationText}</span>
+            </div>
 
-      document.getElementById("d-level").textContent = `${lesson.level} · ${lesson.ageText.toUpperCase()}`;
-      document.getElementById("d-title").textContent = lesson.title;
-      document.getElementById("d-meta").textContent = `${lesson.durationText} · ${lesson.typeLabel} · ${lesson.skills.join(" · ")}`;
-      document.getElementById("d-desc").textContent = lesson.description;
+            <div class="card-skills">
+              ${lesson.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join("")}
+            </div>
+          </div>
 
-      document.getElementById("d-thumb-container").innerHTML = lesson.svgIllustration;
-
-      // Objectives list
-      document.getElementById("d-objectives").innerHTML = lesson.objectives.map(obj => `
-        <li class="objective-item">
-          <span class="check-bullet">✓</span>
-          <span>${obj}</span>
-        </li>
-      `).join("");
-
-      // Contents timeline
-      document.getElementById("d-contents").innerHTML = lesson.contents.map((step, idx) => `
-        <div class="timeline-step">
-          <span class="step-number">${idx + 1}</span>
-          <span>${step}</span>
-        </div>
-      `).join("");
-
-      // Worksheet button
-      const sheetLink = document.getElementById("d-sheet-link");
-      if (lesson.sheetUrl) {
-        sheetLink.href = lesson.sheetUrl;
-        sheetLink.style.display = "inline-flex";
-      } else {
-        sheetLink.style.display = "none";
-      }
-
-      // Launch button
-      document.getElementById("d-launch-btn").href = lesson.url;
-
-      // Bookmark button state
-      updateDrawerBookmarkBtn();
-
-      drawerBackdrop.classList.add("open");
-      document.body.style.overflow = "hidden";
+          <div class="card-footer">
+            <a href="${lesson.lessonPath}" class="btn-open-lesson">
+              <span>Open lesson</span>
+              <span>→</span>
+            </a>
+            ${lesson.worksheetPath ? `
+              <a href="${lesson.worksheetPath}" target="_blank" class="btn-card-worksheet">Worksheet</a>
+            ` : ''}
+          </div>
+        </article>
+      `;
     }
 
-    function closeDrawer() {
-      drawerBackdrop.classList.remove("open");
-      document.body.style.overflow = "";
-      state.currentDrawerLesson = null;
-    }
-
-    function closeDrawerOnBackdrop(e) {
-      if (e.target === drawerBackdrop) {
-        closeDrawer();
-      }
-    }
-
-    function updateDrawerBookmarkBtn() {
-      if (!state.currentDrawerLesson) return;
-      const isSaved = state.myLessons.includes(state.currentDrawerLesson.id);
-      const label = document.getElementById("d-bookmark-label");
-      label.textContent = isSaved ? "In My Lessons" : "Add to My Lessons";
-    }
-
-    function toggleCurrentBookmark() {
-      if (!state.currentDrawerLesson) return;
-      const id = state.currentDrawerLesson.id;
-      if (state.myLessons.includes(id)) {
-        state.myLessons = state.myLessons.filter(x => x !== id);
-        showToast("Removed from My Lessons");
-      } else {
-        state.myLessons.push(id);
-        showToast("Added to My Lessons");
-      }
-      localStorage.setItem("eaa_mylessons", JSON.stringify(state.myLessons));
-      updateBadges();
-      updateDrawerBookmarkBtn();
-      renderLessons();
-    }
-
-    function toggleFavorite(id) {
+    /* --------------------------------------------------------------------------
+       HELPERS & ACTIONS
+       -------------------------------------------------------------------------- */
+    function toggleBookmark(id) {
       if (state.favorites.includes(id)) {
         state.favorites = state.favorites.filter(x => x !== id);
-        showToast("Removed from Favorites");
       } else {
         state.favorites.push(id);
-        showToast("Added to Favorites");
       }
-      localStorage.setItem("eaa_favorites", JSON.stringify(state.favorites));
+      localStorage.setItem("eaa_favs", JSON.stringify(state.favorites));
       updateBadges();
       renderLessons();
     }
 
-    /* --------------------------------------------------------------------------
-       UI UTILITIES & HELPERS
-       -------------------------------------------------------------------------- */
     function updateBadges() {
-      favBadge.textContent = state.favorites.length;
-      myLessonsBadge.textContent = state.myLessons.length;
+      badgeFavs.textContent = state.favorites.length;
+      badgeSaved.textContent = state.myLessons.length;
+      countFavs.textContent = state.favorites.length;
+      countAll.textContent = LESSONS_DATA.length;
     }
 
-    function showToast(msg) {
-      toastMsg.textContent = msg;
-      toastPill.style.display = "flex";
-      setTimeout(() => {
-        toastPill.style.display = "none";
-      }, 2400);
+    function handleNavTabChange() {
+      renderLessons();
     }
 
-    function focusSearchInput() {
-      searchInput.focus();
+    function toggleActiveSelect(el, val) {
+      if (val) {
+        el.classList.add("is-active");
+      } else {
+        el.classList.remove("is-active");
+      }
+    }
+
+    function checkResetBtn() {
+      const active = state.search || state.level || state.age || state.skill || state.type || state.duration;
+      btnReset.style.display = active ? "inline-block" : "none";
     }
 
     function clearSearch() {
       searchInput.value = "";
       state.search = "";
-      clearSearchBtn.style.display = "none";
-      checkFilterResetVisibility();
+      searchClearBtn.style.display = "none";
+      checkResetBtn();
       renderLessons();
       searchInput.focus();
     }
 
-    function toggleSelectActive(el, val) {
-      if (val) {
-        el.classList.add("active-filter");
-      } else {
-        el.classList.remove("active-filter");
-      }
-    }
-
-    function checkFilterResetVisibility() {
-      const hasActive = state.search || state.age || state.level || state.type || state.duration || state.activeSidebar !== "all";
-      btnResetFilters.style.display = hasActive ? "inline-block" : "none";
+    function focusSearch() {
+      searchInput.focus();
     }
 
     function resetFilters() {
       state.search = "";
-      state.age = "";
       state.level = "";
+      state.age = "";
+      state.skill = "";
       state.type = "";
       state.duration = "";
-      state.activeSidebar = "all";
+      state.sidebar = "all";
 
       searchInput.value = "";
-      clearSearchBtn.style.display = "none";
+      searchClearBtn.style.display = "none";
 
-      filterAge.value = "";
       filterLevel.value = "";
+      filterAge.value = "";
+      filterSkill.value = "";
       filterType.value = "";
       filterDuration.value = "";
 
-      [filterAge, filterLevel, filterType, filterDuration].forEach(el => el.classList.remove("active-filter"));
-      document.querySelectorAll(".sidebar-item").forEach(i => i.classList.remove("active"));
-      document.querySelector(".sidebar-item[data-sidebar-filter='all']").classList.add("active");
+      [filterLevel, filterAge, filterSkill, filterType, filterDuration].forEach(el => el.classList.remove("is-active"));
+      document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
+      document.querySelector(".sidebar-btn[data-sidebar='all']").classList.add("is-active");
 
-      btnResetFilters.style.display = "none";
+      btnReset.style.display = "none";
       renderLessons();
     }
 
-    function handleTabChange() {
-      renderLessons();
-    }
-
-    function toggleTheme() {
-      state.theme = state.theme === "light" ? "dark" : "light";
-      document.documentElement.setAttribute("data-theme", state.theme);
-      localStorage.setItem("eaa_theme", state.theme);
-    }
-
-    // Launch application
+    // Launch on DOM ready
     document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
