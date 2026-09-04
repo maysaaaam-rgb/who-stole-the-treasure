@@ -773,6 +773,134 @@
           notes: 'Drawn neighbourhood layout with accurate labels for between, next to, opposite.'
         }
       ],
+      
+      // 15. Worksheets & Printable Activity Sheets
+      worksheets: [
+        {
+          id: 'ws-1',
+          title: 'At the Restaurant: Dining Dialogue & Menu Ordering',
+          level: 'A1+',
+          category: 'Roleplay & Speaking',
+          lessonId: 'lesson-1',
+          gameId: 'restaurant',
+          pdfUrl: 'restaurant/worksheets.html',
+          answerKey: 'Polite requests: "I would like...", "How much is...?"',
+          description: 'Customer and waiter script practice with food vocabulary matching.',
+          archived: false
+        },
+        {
+          id: 'ws-2',
+          title: 'Fire Station Adventure: Gear & Emergency Protocol',
+          level: 'A1',
+          category: 'Interactive Story',
+          lessonId: 'lesson-2',
+          gameId: 'firefighter',
+          pdfUrl: 'firefighter/worksheet.html',
+          answerKey: 'Helmet, boots, hose, ladder, fire extinguisher matching.',
+          description: 'Vocabulary labeling and sequencing exercise for emergency response.',
+          archived: false
+        },
+        {
+          id: 'ws-3',
+          title: 'My Neighbourhood: Prepositions of Place Map',
+          level: 'A1',
+          category: 'Grammar & Vocabulary',
+          lessonId: 'lesson-3',
+          gameId: 'neighbourhood',
+          pdfUrl: 'neighbourhood/index.html',
+          answerKey: 'next to, opposite, between, behind town locations.',
+          description: 'Map navigation exercise completing "There is a..." sentences.',
+          archived: false
+        },
+        {
+          id: 'ws-4',
+          title: 'Past Simple Detective Clues Worksheet',
+          level: 'A2',
+          category: 'Mystery & Grammar',
+          lessonId: 'lesson-4',
+          gameId: 'story/hotel/index.html',
+          pdfUrl: 'story/hotel/index.html',
+          answerKey: 'Regular (-ed) and irregular past tense crime investigation notes.',
+          description: 'Grammar analysis matching witness statements with suspects.',
+          archived: false
+        }
+      ],
+
+      // 16. Rubrics (Customizable Multi-Skill Criteria)
+      rubrics: [
+        {
+          id: 'rubric-speaking-a1',
+          name: 'Primary Speaking & Fluency Rubric (CEFR A1)',
+          skill: 'Speaking',
+          criteria: [
+            { id: 'crit-1', name: 'Interactive Fluency', description: 'Can ask and answer simple questions about personal details and familiar topics.', maxScore: 5 },
+            { id: 'crit-2', name: 'Vocabulary Range', description: 'Uses basic repertoire of words related to concrete everyday situations.', maxScore: 5 },
+            { id: 'crit-3', name: 'Grammatical Accuracy', description: 'Shows only limited control of a few simple grammatical structures and sentence patterns.', maxScore: 5 },
+            { id: 'crit-4', name: 'Phonological Clarity', description: 'Pronunciation is clear enough to be understood with some repetition needed.', maxScore: 5 }
+          ],
+          archived: false
+        },
+        {
+          id: 'rubric-writing-a1',
+          name: 'Primary Writing & Composition Rubric (CEFR A1)',
+          skill: 'Writing',
+          criteria: [
+            { id: 'crit-w1', name: 'Content & Task Completion', description: 'Writes short simple phrases and sentences on familiar topics.', maxScore: 5 },
+            { id: 'crit-w2', name: 'Spelling & Mechanics', description: 'Can copy familiar words and short phrases correctly with minimal errors.', maxScore: 5 },
+            { id: 'crit-w3', name: 'Sentence Construction', description: 'Forms basic SVO sentences using simple conjunctions like and, but.', maxScore: 5 }
+          ],
+          archived: false
+        }
+      ],
+
+      // 17. Badges (Gamification Milestones)
+      badges: [
+        { id: 'badge-1', name: 'Star Explorer', icon: '⭐', description: 'Earned your first 1,000 XP in learning missions.', category: 'Milestones', xpReward: 100, archived: false },
+        { id: 'badge-2', name: 'Spoken Fluent', icon: '🗣️', description: 'Spoke English with high confidence in 5 classroom sessions.', category: 'Speaking', xpReward: 150, archived: false },
+        { id: 'badge-3', name: 'Grammar Wizard', icon: '🪄', description: 'Mastered 3 consecutive grammar challenges with 90%+ accuracy.', category: 'Grammar', xpReward: 200, archived: false },
+        { id: 'badge-4', name: 'Team Helper', icon: '🤝', description: 'Assisted classmates during pairwork and group challenges.', category: 'Social', xpReward: 100, archived: false },
+        { id: 'badge-5', name: 'Streak Champion', icon: '🔥', description: 'Maintained a 7-day learning streak in digital activities.', category: 'Consistency', xpReward: 250, archived: false }
+      ],
+
+      // 18. Achievements (Unlockable Challenges)
+      achievements: [
+        { id: 'ach-1', name: 'World Traveler', icon: '🌍', requirement: 'Unlock 3 distinct interactive learning worlds.', category: 'Exploration', xpReward: 300, archived: false },
+        { id: 'ach-2', name: 'Vocabulary Collector', icon: '📚', requirement: 'Master 100 core vocabulary words across units.', category: 'Vocabulary', xpReward: 350, archived: false },
+        { id: 'ach-3', name: 'Mystery Solver', icon: '🕵️', requirement: 'Complete the Mystery Hotel investigation story.', category: 'Reading & Logic', xpReward: 250, archived: false }
+      ],
+
+      // 19. Reports (Dynamic Generated Student Report Cards)
+      reports: [
+        {
+          id: 'rep-1',
+          studentId: 'student-emma',
+          classId: 'class-3a',
+          title: 'Term 1 Mid-Year Progress Report Card',
+          reportType: 'CEFR Progress Report',
+          date: '2026-09-01',
+          term: 'Term 1',
+          dataSnapshot: {
+            totalXP: 1240,
+            attendanceRate: 100,
+            overallCefr: 'A1+',
+            skills: { speaking: 80, listening: 85, vocabulary: 89, grammar: 75, reading: 80, writing: 70 }
+          },
+          teacherNotes: 'Emma shows remarkable enthusiasm during interactive speaking games and leads group discussions naturally.',
+          archived: false
+        }
+      ],
+
+      // 20. School & Classroom Global Settings
+      schoolSettings: {
+        schoolName: 'English Adventure Academy',
+        teacherName: 'Ms. Sarah Jenkins',
+        academicYear: '2026–2027',
+        term: 'Term 1',
+        primaryCefrTarget: 'A1',
+        leaderboardEnabled: true,
+        parentStoryVisibility: true,
+        soundEffectsEnabled: true
+      },
       messages: [
         {
           id: 'msg-th-1',
@@ -808,6 +936,12 @@
             const merged = Object.assign({}, initial, parsed);
             if (!merged.groups) merged.groups = initial.groups || [];
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
+            if (!merged.worksheets) merged.worksheets = initial.worksheets || [];
+            if (!merged.rubrics) merged.rubrics = initial.rubrics || [];
+            if (!merged.badges) merged.badges = initial.badges || [];
+            if (!merged.achievements) merged.achievements = initial.achievements || [];
+            if (!merged.reports) merged.reports = initial.reports || [];
+            if (!merged.schoolSettings) merged.schoolSettings = initial.schoolSettings || {};
             return merged;
           }
         }
@@ -2090,6 +2224,494 @@
       this.notify('portfolio', this.state.portfolios);
       return true;
     }
+
+    // ----------------------------------------------------
+    // CURRICULUM REORDERING (Position-Based Ordering)
+    // ----------------------------------------------------
+    reorderUnits(bookId, unitIdsOrder) {
+      if (!this.state.curriculum || !this.state.curriculum.units) return false;
+      unitIdsOrder.forEach((id, index) => {
+        const u = this.state.curriculum.units.find(item => item.id === id);
+        if (u) u.order = index + 1;
+      });
+      this.state.curriculum.units.sort((a, b) => (a.order || 0) - (b.order || 0));
+      this.saveState();
+      this.notify('curriculum', this.state.curriculum);
+      return true;
+    }
+
+    reorderLessons(unitId, lessonIdsOrder) {
+      if (!this.state.curriculum || !this.state.curriculum.lessons) return false;
+      lessonIdsOrder.forEach((id, index) => {
+        const l = this.state.curriculum.lessons.find(item => item.id === id);
+        if (l) l.order = index + 1;
+      });
+      this.state.curriculum.lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
+      this.saveState();
+      this.notify('curriculum', this.state.curriculum);
+      return true;
+    }
+
+    reorderObjectives(lessonId, objectiveIdsOrder) {
+      if (!this.state.curriculum || !this.state.curriculum.objectives) return false;
+      objectiveIdsOrder.forEach((id, index) => {
+        const o = this.state.curriculum.objectives.find(item => item.id === id);
+        if (o) o.order = index + 1;
+      });
+      this.saveState();
+      this.notify('curriculum', this.state.curriculum);
+      return true;
+    }
+
+    // ----------------------------------------------------
+    // WORKSHEETS CRUD
+    // ----------------------------------------------------
+    getWorksheets(includeArchived = false) {
+      if (!this.state.worksheets) this.state.worksheets = [];
+      return this.state.worksheets.filter(w => includeArchived || !w.archived);
+    }
+
+    getWorksheet(id) {
+      if (!this.state.worksheets) this.state.worksheets = [];
+      return this.state.worksheets.find(w => w.id === id) || null;
+    }
+
+    addWorksheet(data) {
+      if (!this.state.worksheets) this.state.worksheets = [];
+      const newWs = {
+        id: 'ws-' + Date.now(),
+        title: (data.title || 'New Worksheet').trim(),
+        level: data.level || 'A1',
+        category: data.category || 'Worksheet & Drill',
+        lessonId: data.lessonId || null,
+        gameId: data.gameId || null,
+        pdfUrl: data.pdfUrl || 'worksheet.html',
+        answerKey: data.answerKey || '',
+        description: data.description || '',
+        archived: false
+      };
+      this.state.worksheets.push(newWs);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return newWs;
+    }
+
+    updateWorksheet(id, updates) {
+      const ws = this.getWorksheet(id);
+      if (!ws) return null;
+      Object.assign(ws, updates);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return ws;
+    }
+
+    archiveWorksheet(id) {
+      const ws = this.getWorksheet(id);
+      if (ws) {
+        ws.archived = true;
+        this.saveState();
+        this.notify('worksheets', this.state.worksheets);
+        return true;
+      }
+      return false;
+    }
+
+    deleteWorksheet(id) {
+      if (!this.state.worksheets) this.state.worksheets = [];
+      this.state.worksheets = this.state.worksheets.filter(w => w.id !== id);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return true;
+    }
+
+    // ----------------------------------------------------
+    // QUIZ QUESTIONS CRUD & REORDERING
+    // ----------------------------------------------------
+    getQuizQuestions(quizId) {
+      const q = this.getQuiz(quizId);
+      return q && Array.isArray(q.questions) ? q.questions : [];
+    }
+
+    addQuizQuestion(quizId, questionData) {
+      const q = this.getQuiz(quizId);
+      if (!q) return null;
+      if (!Array.isArray(q.questions)) q.questions = [];
+      const newQuestion = {
+        id: 'q-' + Date.now(),
+        question: (questionData.question || 'New Question').trim(),
+        options: Array.isArray(questionData.options) ? questionData.options : ['Option A', 'Option B', 'Option C'],
+        correctIndex: parseInt(questionData.correctIndex, 10) || 0,
+        points: parseInt(questionData.points, 10) || 10
+      };
+      q.questions.push(newQuestion);
+      this.saveState();
+      this.notify('quizzes', this.state.quizzes);
+      return newQuestion;
+    }
+
+    updateQuizQuestion(quizId, questionId, updates) {
+      const q = this.getQuiz(quizId);
+      if (!q || !Array.isArray(q.questions)) return null;
+      const question = q.questions.find(item => item.id === questionId);
+      if (!question) return null;
+      Object.assign(question, updates);
+      this.saveState();
+      this.notify('quizzes', this.state.quizzes);
+      return question;
+    }
+
+    deleteQuizQuestion(quizId, questionId) {
+      const q = this.getQuiz(quizId);
+      if (!q || !Array.isArray(q.questions)) return false;
+      const initLen = q.questions.length;
+      q.questions = q.questions.filter(item => item.id !== questionId);
+      if (q.questions.length !== initLen) {
+        this.saveState();
+        this.notify('quizzes', this.state.quizzes);
+        return true;
+      }
+      return false;
+    }
+
+    reorderQuizQuestions(quizId, questionIdsOrder) {
+      const q = this.getQuiz(quizId);
+      if (!q || !Array.isArray(q.questions)) return false;
+      const sorted = [];
+      questionIdsOrder.forEach(id => {
+        const found = q.questions.find(item => item.id === id);
+        if (found) sorted.push(found);
+      });
+      // append any unmentioned
+      q.questions.forEach(item => {
+        if (!sorted.includes(item)) sorted.push(item);
+      });
+      q.questions = sorted;
+      this.saveState();
+      this.notify('quizzes', this.state.quizzes);
+      return true;
+    }
+
+    // ----------------------------------------------------
+    // RUBRICS CRUD (Customizable Criteria)
+    // ----------------------------------------------------
+    getRubrics(includeArchived = false) {
+      if (!this.state.rubrics) this.state.rubrics = [];
+      return this.state.rubrics.filter(r => includeArchived || !r.archived);
+    }
+
+    getRubric(id) {
+      if (!this.state.rubrics) this.state.rubrics = [];
+      return this.state.rubrics.find(r => r.id === id) || null;
+    }
+
+    createRubric(data) {
+      if (!this.state.rubrics) this.state.rubrics = [];
+      const newRubric = {
+        id: 'rubric-' + Date.now(),
+        name: (data.name || 'Custom CEFR Rubric').trim(),
+        skill: data.skill || 'Speaking',
+        criteria: Array.isArray(data.criteria) ? data.criteria : [
+          { id: 'crit-' + Date.now() + '-1', name: 'Fluency & Spontaneity', description: 'Speaks clearly with natural rhythm', maxScore: 5 },
+          { id: 'crit-' + Date.now() + '-2', name: 'Vocabulary Range', description: 'Uses target words accurately', maxScore: 5 }
+        ],
+        archived: false
+      };
+      this.state.rubrics.push(newRubric);
+      this.saveState();
+      this.notify('rubrics', this.state.rubrics);
+      return newRubric;
+    }
+
+    updateRubric(id, updates) {
+      const r = this.getRubric(id);
+      if (!r) return null;
+      Object.assign(r, updates);
+      this.saveState();
+      this.notify('rubrics', this.state.rubrics);
+      return r;
+    }
+
+    archiveRubric(id) {
+      const r = this.getRubric(id);
+      if (r) {
+        r.archived = true;
+        this.saveState();
+        this.notify('rubrics', this.state.rubrics);
+        return true;
+      }
+      return false;
+    }
+
+    deleteRubric(id) {
+      if (!this.state.rubrics) this.state.rubrics = [];
+      this.state.rubrics = this.state.rubrics.filter(r => r.id !== id);
+      this.saveState();
+      this.notify('rubrics', this.state.rubrics);
+      return true;
+    }
+
+    addCriterionToRubric(rubricId, criterionData) {
+      const r = this.getRubric(rubricId);
+      if (!r) return null;
+      if (!Array.isArray(r.criteria)) r.criteria = [];
+      const newCrit = {
+        id: 'crit-' + Date.now(),
+        name: (criterionData.name || 'New Criterion').trim(),
+        description: criterionData.description || '',
+        maxScore: parseInt(criterionData.maxScore, 10) || 5
+      };
+      r.criteria.push(newCrit);
+      this.saveState();
+      this.notify('rubrics', this.state.rubrics);
+      return newCrit;
+    }
+
+    removeCriterionFromRubric(rubricId, criterionId) {
+      const r = this.getRubric(rubricId);
+      if (!r || !Array.isArray(r.criteria)) return false;
+      r.criteria = r.criteria.filter(c => c.id !== criterionId);
+      this.saveState();
+      this.notify('rubrics', this.state.rubrics);
+      return true;
+    }
+
+    // ----------------------------------------------------
+    // BADGES & ACHIEVEMENTS CRUD
+    // ----------------------------------------------------
+    getBadges(includeArchived = false) {
+      if (!this.state.badges) this.state.badges = [];
+      return this.state.badges.filter(b => includeArchived || !b.archived);
+    }
+
+    getBadge(id) {
+      if (!this.state.badges) this.state.badges = [];
+      return this.state.badges.find(b => b.id === id) || null;
+    }
+
+    createBadge(data) {
+      if (!this.state.badges) this.state.badges = [];
+      const badge = {
+        id: 'badge-' + Date.now(),
+        name: (data.name || 'New Badge').trim(),
+        icon: data.icon || '⭐',
+        description: data.description || '',
+        category: data.category || 'General',
+        xpReward: parseInt(data.xpReward, 10) || 100,
+        archived: false
+      };
+      this.state.badges.push(badge);
+      this.saveState();
+      this.notify('badges', this.state.badges);
+      return badge;
+    }
+
+    updateBadge(id, updates) {
+      const b = this.getBadge(id);
+      if (!b) return null;
+      Object.assign(b, updates);
+      this.saveState();
+      this.notify('badges', this.state.badges);
+      return b;
+    }
+
+    archiveBadge(id) {
+      const b = this.getBadge(id);
+      if (b) {
+        b.archived = true;
+        this.saveState();
+        this.notify('badges', this.state.badges);
+        return true;
+      }
+      return false;
+    }
+
+    getAchievements(includeArchived = false) {
+      if (!this.state.achievements) this.state.achievements = [];
+      return this.state.achievements.filter(a => includeArchived || !a.archived);
+    }
+
+    getAchievement(id) {
+      if (!this.state.achievements) this.state.achievements = [];
+      return this.state.achievements.find(a => a.id === id) || null;
+    }
+
+    createAchievement(data) {
+      if (!this.state.achievements) this.state.achievements = [];
+      const ach = {
+        id: 'ach-' + Date.now(),
+        name: (data.name || 'New Achievement').trim(),
+        icon: data.icon || '🏆',
+        requirement: data.requirement || '',
+        category: data.category || 'General',
+        xpReward: parseInt(data.xpReward, 10) || 200,
+        archived: false
+      };
+      this.state.achievements.push(ach);
+      this.saveState();
+      this.notify('achievements', this.state.achievements);
+      return ach;
+    }
+
+    updateAchievement(id, updates) {
+      const a = this.getAchievement(id);
+      if (!a) return null;
+      Object.assign(a, updates);
+      this.saveState();
+      this.notify('achievements', this.state.achievements);
+      return a;
+    }
+
+    archiveAchievement(id) {
+      const a = this.getAchievement(id);
+      if (a) {
+        a.archived = true;
+        this.saveState();
+        this.notify('achievements', this.state.achievements);
+        return true;
+      }
+      return false;
+    }
+
+    // ----------------------------------------------------
+    // LEARNING EVIDENCE EDIT & CORRECTION AUDIT
+    // ----------------------------------------------------
+    getLearningEvidence(studentId = null) {
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      return this.state.learningEvidence.filter(e => !studentId || e.studentId === studentId);
+    }
+
+    updateLearningEvidence(id, updates, reason = 'Teacher score correction') {
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      const ev = this.state.learningEvidence.find(e => e.id === id);
+      if (!ev) return null;
+
+      // Keep audit trail of changes
+      if (!ev.history) ev.history = [];
+      ev.history.push({
+        previousScore: ev.score,
+        previousPct: ev.percentage,
+        updatedDate: new Date().toISOString().split('T')[0],
+        correctionReason: reason
+      });
+
+      Object.assign(ev, updates);
+      if (updates.score !== undefined && ev.maxScore) {
+        ev.percentage = Math.round((ev.score / ev.maxScore) * 100);
+      }
+
+      this.saveState();
+      this.notify('evidence', this.state.learningEvidence);
+      return ev;
+    }
+
+    deleteLearningEvidence(id) {
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      const initLen = this.state.learningEvidence.length;
+      this.state.learningEvidence = this.state.learningEvidence.filter(e => e.id !== id);
+      if (this.state.learningEvidence.length !== initLen) {
+        this.saveState();
+        this.notify('evidence', this.state.learningEvidence);
+        return true;
+      }
+      return false;
+    }
+
+    // ----------------------------------------------------
+    // DYNAMIC REPORTS GENERATOR
+    // ----------------------------------------------------
+    getReports(classId = null) {
+      if (!this.state.reports) this.state.reports = [];
+      return this.state.reports.filter(r => !classId || r.classId === classId);
+    }
+
+    getReport(id) {
+      if (!this.state.reports) this.state.reports = [];
+      return this.state.reports.find(r => r.id === id) || null;
+    }
+
+    generateStudentReport({ studentId, classId, term = 'Term 1', reportType = 'CEFR Progress Report', customNotes = '' }) {
+      const s = this.getStudent(studentId);
+      if (!s) return null;
+      const targetClass = classId || s.classId;
+      const totalXP = this.getStudentTotalXP(studentId);
+      const attendanceRate = this.getStudentAttendanceRate(studentId);
+      const skills = this.getStudentSkills(studentId);
+
+      const report = {
+        id: 'rep-' + Date.now(),
+        studentId,
+        studentName: s.firstName + ' ' + s.lastName,
+        classId: targetClass,
+        className: (this.getClass(targetClass) || {}).name || 'Class',
+        title: s.firstName + ' ' + s.lastName + ' — ' + term + ' ' + reportType,
+        reportType,
+        term,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        dataSnapshot: {
+          totalXP,
+          attendanceRate,
+          overallCefr: s.overallCefr,
+          skills
+        },
+        teacherNotes: customNotes || ('Demonstrated strong learning progress throughout ' + term + '.'),
+        archived: false
+      };
+
+      if (!this.state.reports) this.state.reports = [];
+      this.state.reports.unshift(report);
+      this.saveState();
+      this.notify('reports', this.state.reports);
+      return report;
+    }
+
+    saveGeneratedReport(report) {
+      if (!this.state.reports) this.state.reports = [];
+      const idx = this.state.reports.findIndex(r => r.id === report.id);
+      if (idx !== -1) {
+        this.state.reports[idx] = report;
+      } else {
+        this.state.reports.push(report);
+      }
+      this.saveState();
+      this.notify('reports', this.state.reports);
+      return report;
+    }
+
+    deleteReport(id) {
+      if (!this.state.reports) this.state.reports = [];
+      this.state.reports = this.state.reports.filter(r => r.id !== id);
+      this.saveState();
+      this.notify('reports', this.state.reports);
+      return true;
+    }
+
+    // ----------------------------------------------------
+    // GLOBAL SCHOOL SETTINGS
+    // ----------------------------------------------------
+    getSchoolSettings() {
+      if (!this.state.schoolSettings) {
+        this.state.schoolSettings = {
+          schoolName: 'English Adventure Academy',
+          teacherName: 'Ms. Sarah Jenkins',
+          academicYear: '2026–2027',
+          term: 'Term 1',
+          primaryCefrTarget: 'A1',
+          leaderboardEnabled: true,
+          parentStoryVisibility: true,
+          soundEffectsEnabled: true
+        };
+      }
+      return this.state.schoolSettings;
+    }
+
+    updateSchoolSettings(updates) {
+      this.getSchoolSettings();
+      Object.assign(this.state.schoolSettings, updates);
+      this.saveState();
+      this.notify('settings', this.state.schoolSettings);
+      return this.state.schoolSettings;
+    }
+
 
   }
 

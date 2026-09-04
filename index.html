@@ -61,15 +61,27 @@
             <span>+ Create</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <div class="create-dropdown-menu" id="header-create-menu">
-            <button class="dropdown-item-btn" onclick="openStudentModal()"><span>👧</span> <span>+ Add Student</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-add-class')"><span>👥</span> <span>+ Create Class</span></button>
-            <button class="dropdown-item-btn" onclick="openResourceEditor()"><span>🎮</span> <span>+ Add Resource</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-create-assignment')"><span>📝</span> <span>+ Create Assignment</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-homework-editor')"><span>✍️</span> <span>+ Create Homework</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-quiz-builder')"><span>🧩</span> <span>+ Create Quiz</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-give-xp')"><span>⭐</span> <span>+ Give XP</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-story-post')"><span>📢</span> <span>+ New Post</span></button>
+          <div class="create-dropdown-menu" id="header-create-menu" style="max-height:420px; overflow-y:auto; width:220px;">
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Classroom & Students</div>
+            <button class="dropdown-item-btn" onclick="openStudentModal()"><span>👧</span> <span>+ Student</span></button>
+            <button class="dropdown-item-btn" onclick="openClassModal()"><span>👥</span> <span>+ Class</span></button>
+            <button class="dropdown-item-btn" onclick="openCreateGroupModal()"><span>👥</span> <span>+ Group</span></button>
+            
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Curriculum & Content</div>
+            <button class="dropdown-item-btn" onclick="openAddBookModal()"><span>📖</span> <span>+ Book</span></button>
+            <button class="dropdown-item-btn" onclick="openAddUnitModal()"><span>📑</span> <span>+ Unit</span></button>
+            <button class="dropdown-item-btn" onclick="openAddLessonModal()"><span>📝</span> <span>+ Lesson</span></button>
+            <button class="dropdown-item-btn" onclick="openAddObjectiveModal()"><span>🎯</span> <span>+ Objective</span></button>
+            <button class="dropdown-item-btn" onclick="openResourceEditor()"><span>🎮</span> <span>+ Game / Activity</span></button>
+            <button class="dropdown-item-btn" onclick="openWorksheetEditor()"><span>📄</span> <span>+ Worksheet</span></button>
+
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Teaching & Assessment</div>
+            <button class="dropdown-item-btn" onclick="openModal('modal-create-assignment')"><span>📝</span> <span>+ Assignment</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-homework-editor')"><span>✍️</span> <span>+ Homework</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-quiz-builder')"><span>🧩</span> <span>+ Quiz</span></button>
+            <button class="dropdown-item-btn" onclick="openRubricEditorModal()"><span>🎯</span> <span>+ Assessment Rubric</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-story-post')"><span>📸</span> <span>+ Class Story Post</span></button>
+            <button class="dropdown-item-btn" onclick="openGamificationEditorModal()"><span>🏆</span> <span>+ Badge / Achievement</span></button>
           </div>
         </div>
 
@@ -611,6 +623,323 @@
 
   
   
+  
+  <!-- Worksheet Editor Modal (Add & Edit) -->
+  <div class="modal-overlay" id="modal-worksheet-editor">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="worksheet-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">Add New Worksheet</h2>
+      <form onsubmit="handleSaveWorksheet(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="ws-edit-id" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Worksheet Title</label>
+          <input type="text" id="ws-title" class="filter-select" style="width:100%;" required placeholder="e.g. Animal Habitats Vocabulary Drill" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target CEFR Level</label>
+            <select id="ws-level" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category / Skill</label>
+            <select id="ws-category" class="filter-select" style="width:100%;">
+              <option value="Vocabulary &amp; Grammar">Vocabulary &amp; Grammar</option>
+              <option value="Speaking &amp; Roleplay">Speaking &amp; Roleplay</option>
+              <option value="Reading Comprehension">Reading Comprehension</option>
+              <option value="Writing &amp; Sentences">Writing &amp; Sentences</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Link to Curriculum Lesson (Optional)</label>
+          <select id="ws-lesson-select" class="filter-select" style="width:100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description &amp; Instructions</label>
+          <textarea id="ws-description" class="filter-select" style="width:100%; height:54px;" placeholder="Instructions for students and teachers..."></textarea>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">PDF / Document URL</label>
+            <input type="text" id="ws-pdfurl" class="filter-select" style="width:100%;" value="worksheet.html" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Answer Key / Solutions</label>
+            <input type="text" id="ws-answerkey" class="filter-select" style="width:100%;" placeholder="e.g. 1. helmet, 2. boots, 3. hose" />
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" id="btn-save-worksheet" class="btn-primary-action">Save Worksheet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quiz Questions Manager Modal -->
+  <div class="modal-overlay" id="modal-quiz-questions-manager">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <h2 id="quiz-qm-title" style="font-size:1.3rem; font-weight:800; margin:0;">Manage Quiz Questions</h2>
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;" id="quiz-qm-subtitle">Unit 1 &amp; 2 Check</div>
+        </div>
+        <button type="button" class="btn-primary-action" onclick="openAddQuestionForm()">+ Add Question</button>
+      </div>
+
+      <!-- Question List Container -->
+      <div id="quiz-questions-list-container" style="max-height:360px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+        <!-- Populated dynamically with reorder buttons and delete/edit -->
+      </div>
+
+      <!-- Inline Question Editor Form -->
+      <div id="quiz-question-edit-box" style="display:none; background:var(--bg-card-secondary); border:1.5px solid var(--color-primary); border-radius:12px; padding:14px; margin-bottom:14px;">
+        <h4 id="question-edit-title" style="font-size:0.95rem; font-weight:800; margin-bottom:8px;">Add New Question</h4>
+        <input type="hidden" id="edit-question-id" value="" />
+        <div style="margin-bottom:8px;">
+          <label style="display:block; font-size:0.78rem; font-weight:700; margin-bottom:4px;">Question Prompt</label>
+          <input type="text" id="edit-q-prompt" class="filter-select" style="width:100%;" placeholder="e.g. Which tool does a firefighter use to put out fire?" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+          <div>
+            <label style="font-size:0.76rem; font-weight:700;">Option A</label>
+            <input type="text" id="edit-q-opt0" class="filter-select" style="width:100%;" placeholder="Option A" />
+          </div>
+          <div>
+            <label style="font-size:0.76rem; font-weight:700;">Option B</label>
+            <input type="text" id="edit-q-opt1" class="filter-select" style="width:100%;" placeholder="Option B" />
+          </div>
+          <div>
+            <label style="font-size:0.76rem; font-weight:700;">Option C</label>
+            <input type="text" id="edit-q-opt2" class="filter-select" style="width:100%;" placeholder="Option C" />
+          </div>
+          <div>
+            <label style="font-size:0.76rem; font-weight:700;">Correct Answer</label>
+            <select id="edit-q-correct" class="filter-select" style="width:100%;">
+              <option value="0">Option A is correct</option>
+              <option value="1">Option B is correct</option>
+              <option value="2">Option C is correct</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="document.getElementById('quiz-question-edit-box').style.display='none'">Cancel</button>
+          <button type="button" class="btn-primary-action" onclick="handleSaveQuizQuestion()">Save Question</button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rubric Editor Modal (Custom Criteria & Descriptors) -->
+  <div class="modal-overlay" id="modal-rubric-editor">
+    <div class="modal-dialog" style="max-width: 640px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="rubric-editor-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">🎯 Customize Assessment Rubric</h2>
+      <form onsubmit="handleSaveRubric(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-rubric-id" value="" />
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Rubric Name</label>
+            <input type="text" id="edit-rubric-name" class="filter-select" style="width:100%;" required placeholder="e.g. Speaking &amp; Fluency Rubric" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Skill</label>
+            <select id="edit-rubric-skill" class="filter-select" style="width:100%;">
+              <option value="Speaking">Speaking</option>
+              <option value="Listening">Listening</option>
+              <option value="Writing">Writing</option>
+              <option value="Reading">Reading</option>
+              <option value="Vocabulary">Vocabulary</option>
+              <option value="Grammar">Grammar</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:0.8rem; font-weight:700;">Evaluation Criteria (1–5 Scale)</label>
+            <button type="button" class="btn-sm-secondary" style="font-size:0.75rem; padding:2px 8px;" onclick="handleAddRubricCriterionRow()">+ Add Criterion</button>
+          </div>
+          <div id="rubric-criteria-editor-rows" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" id="btn-save-rubric" class="btn-primary-action">Save Rubric</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gamification Settings Editor Modal (Badges & Achievements) -->
+  <div class="modal-overlay" id="modal-gamification-editor">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="gamification-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">🏆 Add Reward Badge</h2>
+      <form onsubmit="handleSaveGamificationItem(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-game-reward-id" value="" />
+        <input type="hidden" id="edit-game-reward-type" value="badge" />
+
+        <div style="display:grid; grid-template-columns: 3fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Title</label>
+            <input type="text" id="reward-name" class="filter-select" style="width:100%;" required placeholder="e.g. Spoken Fluency Master" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Icon / Emoji</label>
+            <input type="text" id="reward-icon" class="filter-select" style="width:100%; text-align:center; font-size:1.2rem;" value="⭐" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Requirement Rule / Criteria</label>
+          <textarea id="reward-requirement" class="filter-select" style="width:100%; height:54px;" placeholder="e.g. Complete 5 speaking challenges with 85%+ score" required></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category</label>
+            <select id="reward-category" class="filter-select" style="width:100%;">
+              <option value="Milestones">Milestones</option>
+              <option value="Speaking">Speaking</option>
+              <option value="Vocabulary">Vocabulary</option>
+              <option value="Grammar">Grammar</option>
+              <option value="Consistency">Consistency</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">XP Reward Value</label>
+            <input type="number" id="reward-xp" class="filter-select" style="width:100%;" value="150" min="25" max="1000" />
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" id="btn-save-reward" class="btn-primary-action">Save Badge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dynamic Report Generator Modal -->
+  <div class="modal-overlay" id="modal-report-generator">
+    <div class="modal-dialog" style="max-width: 640px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">📄 Generate Student Report Card</h2>
+      <form onsubmit="handleExecuteGenerateReport(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Student</label>
+            <select id="report-gen-student" class="filter-select" style="width:100%;">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Report Type</label>
+            <select id="report-gen-type" class="filter-select" style="width:100%;">
+              <option value="CEFR Progress Report">CEFR Progress Report</option>
+              <option value="Term End Assessment Card">Term End Assessment Card</option>
+              <option value="Attendance &amp; Behavior Log">Attendance &amp; Behavior Log</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Academic Term</label>
+            <select id="report-gen-term" class="filter-select" style="width:100%;">
+              <option value="Term 1" selected>Term 1 (Autumn)</option>
+              <option value="Term 2">Term 2 (Winter)</option>
+              <option value="Term 3">Term 3 (Spring)</option>
+              <option value="Full Year">Full Academic Year</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Grading Period</label>
+            <input type="text" id="report-gen-period" class="filter-select" style="width:100%;" value="Sep 2026 – Jan 2027" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Evaluation Remarks</label>
+          <textarea id="report-gen-remarks" class="filter-select" style="width:100%; height:64px;" placeholder="Student has shown enthusiastic participation in communicative classroom games..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Compile &amp; View Report Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global School Settings Modal -->
+  <div class="modal-overlay" id="modal-school-settings">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">⚙️ School &amp; Classroom Settings</h2>
+      <form onsubmit="handleSaveSchoolSettings(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">School Name</label>
+            <input type="text" id="settings-school-name" class="filter-select" style="width:100%;" value="English Adventure Academy" required />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Name</label>
+            <input type="text" id="settings-teacher-name" class="filter-select" style="width:100%;" value="Ms. Sarah Jenkins" required />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Academic Year</label>
+            <input type="text" id="settings-year" class="filter-select" style="width:100%;" value="2026–2027" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Primary Target CEFR</label>
+            <select id="settings-target-cefr" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; padding-top:6px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.84rem;">
+            <input type="checkbox" id="settings-leaderboard" checked /> Enable Classroom Leaderboard
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.84rem;">
+            <input type="checkbox" id="settings-parent-visibility" checked /> Allow Parents to View Class Story Posts
+          </label>
+          <label style="display:flex; align-items:center; gap:8px; font-size:0.84rem;">
+            <input type="checkbox" id="settings-sound-effects" checked /> Enable Sound Effects on Points &amp; Timer
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ========================================================================
        CLASSROOM HUB MODALS & LIVE TOOLKIT WIDGETS
        ======================================================================== -->
