@@ -213,20 +213,26 @@
 
   <!-- Add / Edit Student Modal -->
   <div class="modal-overlay" id="modal-student-editor">
-    <div class="modal-dialog" style="max-width: 480px;">
+    <div class="modal-dialog" style="max-width: 520px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
       <h2 id="student-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Add New Student</h2>
-      <form onsubmit="handleCreateStudent(event)" style="display:flex; flex-direction:column; gap:12px;">
+      <form onsubmit="handleSaveStudent(event)" style="display:flex; flex-direction:column; gap:12px;">
         <input type="hidden" id="edit-stud-id" value="" />
-        <div>
-          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">First Name</label>
-          <input type="text" id="new-stud-fname" class="filter-select" style="width:100%;" required placeholder="e.g. Leo" />
-        </div>
-        <div>
-          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Last Name</label>
-          <input type="text" id="new-stud-lname" class="filter-select" style="width:100%;" required placeholder="e.g. Dupont" />
-        </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">First Name</label>
+            <input type="text" id="new-stud-fname" class="filter-select" style="width:100%;" required placeholder="e.g. Leo" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Last Name</label>
+            <input type="text" id="new-stud-lname" class="filter-select" style="width:100%;" required placeholder="e.g. Dupont" />
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student ID</label>
+            <input type="text" id="new-stud-idnum" class="filter-select" style="width:100%;" placeholder="e.g. STU-1049" />
+          </div>
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Age</label>
             <input type="number" id="new-stud-age" class="filter-select" style="width:100%;" value="8" min="5" max="14" />
@@ -241,13 +247,36 @@
             </select>
           </div>
         </div>
-        <div>
-          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Assign to Class</label>
-          <select id="new-stud-class" class="filter-select" style="width:100%;">
-            <!-- Dynamically populated -->
-          </select>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Assign to Class</label>
+            <select id="new-stud-class" class="filter-select" style="width:100%;">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Avatar / Badge</label>
+            <select id="new-stud-avatar" class="filter-select" style="width:100%;">
+              <option value="girl">👧 Girl Explorer</option>
+              <option value="boy">👦 Boy Explorer</option>
+              <option value="star">🦸 Superhero</option>
+              <option value="bear">🐼 Panda Scout</option>
+              <option value="fox">🦊 Clever Fox</option>
+              <option value="rocket">🚀 Astronaut</option>
+            </select>
+          </div>
         </div>
-        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save Student</button>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Parent / Guardian Name</label>
+            <input type="text" id="new-stud-pname" class="filter-select" style="width:100%;" placeholder="e.g. Marie Dupont" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Parent Contact (Phone/Email)</label>
+            <input type="text" id="new-stud-pcontact" class="filter-select" style="width:100%;" placeholder="e.g. marie.d@example.com" />
+          </div>
+        </div>
+        <button type="submit" id="btn-student-modal-submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save Student</button>
       </form>
     </div>
   </div>
@@ -327,17 +356,18 @@
     </div>
   </div>
 
-  <!-- Create Class Modal -->
+  <!-- Create / Edit Class Modal -->
   <div class="modal-overlay" id="modal-add-class">
-    <div class="modal-dialog" style="max-width: 480px;">
+    <div class="modal-dialog" style="max-width: 500px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Class</h2>
-      <form onsubmit="handleCreateClass(event)" style="display:flex; flex-direction:column; gap:12px;">
+      <h2 id="class-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Class</h2>
+      <form onsubmit="handleSaveClass(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-cls-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class Name</label>
           <input type="text" id="new-cls-name" class="filter-select" style="width:100%;" required placeholder="e.g. Grade 3C — The Navigators" />
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Grade Level</label>
             <input type="text" id="new-cls-grade" class="filter-select" style="width:100%;" value="Grade 3" />
@@ -351,6 +381,10 @@
               <option value="A2">A2</option>
             </select>
           </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Academic Year</label>
+            <input type="text" id="new-cls-year" class="filter-select" style="width:100%;" value="2026–2027" />
+          </div>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
           <div>
@@ -362,7 +396,11 @@
             <input type="text" id="new-cls-schedule" class="filter-select" style="width:100%;" value="Tue, Thu 09:30" />
           </div>
         </div>
-        <button type="submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Create Class</button>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description / Focus</label>
+          <textarea id="new-cls-desc" class="filter-select" style="width:100%; height:54px;" placeholder="Optional focus, classroom rules, or teacher notes..."></textarea>
+        </div>
+        <button type="submit" id="btn-class-modal-submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Create Class</button>
       </form>
     </div>
   </div>
@@ -567,6 +605,21 @@
           </select>
         </div>
         <button class="btn-primary-action" style="justify-content:center; margin-top:8px;" onclick="closeAllModals(); alert('✓ Avatar updated! Keep exploring to unlock more outfits.');">Save My Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Reusable Confirmation Modal -->
+  <div class="modal-overlay" id="modal-confirm-action">
+    <div class="modal-dialog" style="max-width: 440px; text-align:center;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="font-size:36px; margin-bottom:10px;">⚠️</div>
+      <h2 id="confirm-action-title" style="font-size:1.25rem; font-weight:800; margin-bottom:10px;">Confirm Action</h2>
+      <p id="confirm-action-message" style="font-size:0.88rem; color:var(--text-muted); margin-bottom:20px; line-height:1.5;">Are you sure you want to perform this action? This can be undone from archived records.</p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <button type="button" class="btn-sm-secondary" style="padding:10px 18px;" onclick="closeAllModals()">Cancel</button>
+        <button type="button" id="confirm-action-submit-btn" class="btn-primary-action" style="padding:10px 20px;" onclick="handleExecuteConfirmedAction()">Confirm</button>
       </div>
     </div>
   </div>
