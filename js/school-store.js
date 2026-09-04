@@ -705,6 +705,74 @@
       ],
 
       // 14. Family Message Threads
+      
+      // 13. Groups (Classroom Teams)
+      groups: [
+        {
+          id: 'group-blue',
+          classId: 'class-3a',
+          name: 'Blue Dolphins',
+          color: '#2563eb',
+          studentIds: ['student-emma', 'student-lucas', 'student-sophia'],
+          createdDate: '2026-09-01'
+        },
+        {
+          id: 'group-green',
+          classId: 'class-3a',
+          name: 'Green Explorers',
+          color: '#10b981',
+          studentIds: ['student-liam', 'student-olivia', 'student-noah'],
+          createdDate: '2026-09-01'
+        }
+      ],
+
+      // 14. Portfolios (Student Work & Multimedia Evidence)
+      portfolios: [
+        {
+          id: 'port-1',
+          studentId: 'student-emma',
+          classId: 'class-3a',
+          title: 'Monster Day: Gloop the Friendly Alien',
+          category: 'Projects',
+          type: 'image',
+          date: '2026-09-02',
+          preview: '👾',
+          notes: 'Emma used 8 body parts and 5 color adjectives accurately during show & tell.'
+        },
+        {
+          id: 'port-2',
+          studentId: 'student-emma',
+          classId: 'class-3a',
+          title: 'Fire Station Radio Call Audio',
+          category: 'Speaking',
+          type: 'audio',
+          date: '2026-09-03',
+          preview: '🎙️',
+          notes: 'Clear pronunciation of emergency vocabulary and polite request structures.'
+        },
+        {
+          id: 'port-3',
+          studentId: 'student-emma',
+          classId: 'class-3a',
+          title: 'At the Restaurant Menu Worksheet',
+          category: 'Worksheets',
+          type: 'document',
+          date: '2026-09-04',
+          preview: '📄',
+          notes: 'Scored 10/10 on food categories and dialogue writing.'
+        },
+        {
+          id: 'port-4',
+          studentId: 'student-lucas',
+          classId: 'class-3a',
+          title: 'Prepositions of Place Map Drawing',
+          category: 'Projects',
+          type: 'image',
+          date: '2026-09-03',
+          preview: '🗺️',
+          notes: 'Drawn neighbourhood layout with accurate labels for between, next to, opposite.'
+        }
+      ],
       messages: [
         {
           id: 'msg-th-1',
@@ -736,9 +804,11 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
-            // Ensure essential arrays exist
             const initial = getInitialState();
-            return Object.assign({}, initial, parsed);
+            const merged = Object.assign({}, initial, parsed);
+            if (!merged.groups) merged.groups = initial.groups || [];
+            if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
+            return merged;
           }
         }
       } catch (e) {
@@ -1813,6 +1883,214 @@
         scorePct
       };
     }
+
+    // ----------------------------------------------------
+    // GROUPS MANAGEMENT (Classroom Teams)
+    // ----------------------------------------------------
+    getGroups(classId = null) {
+      if (!this.state.groups) this.state.groups = [];
+      return this.state.groups.filter(g => !classId || g.classId === classId);
+    }
+
+    getGroup(id) {
+      if (!this.state.groups) this.state.groups = [];
+      return this.state.groups.find(g => g.id === id) || null;
+    }
+
+    addGroup({ classId, name, color = '#2563eb', studentIds = [] }) {
+      if (!this.state.groups) this.state.groups = [];
+      const newGroup = {
+        id: 'group-' + Date.now(),
+        classId: classId || this.state.activeClassId,
+        name: (name || 'New Team').trim(),
+        color: color || '#2563eb',
+        studentIds: Array.isArray(studentIds) ? studentIds : [],
+        createdDate: new Date().toISOString().split('T')[0]
+      };
+      this.state.groups.push(newGroup);
+      this.saveState();
+      this.notify('groups', this.state.groups);
+      return newGroup;
+    }
+
+    updateGroup(id, updates) {
+      if (!this.state.groups) this.state.groups = [];
+      const group = this.state.groups.find(g => g.id === id);
+      if (!group) return null;
+      if (updates.name !== undefined) group.name = updates.name.trim();
+      if (updates.color !== undefined) group.color = updates.color;
+      if (updates.studentIds !== undefined) group.studentIds = updates.studentIds;
+      this.saveState();
+      this.notify('groups', this.state.groups);
+      return group;
+    }
+
+    deleteGroup(id) {
+      if (!this.state.groups) this.state.groups = [];
+      this.state.groups = this.state.groups.filter(g => g.id !== id);
+      this.saveState();
+      this.notify('groups', this.state.groups);
+      return true;
+    }
+
+    awardGroupXP(groupId, amount, reason, teacherName = 'Ms. Sarah') {
+      const group = this.getGroup(groupId);
+      if (!group || !Array.isArray(group.studentIds) || group.studentIds.length === 0) return [];
+      const transactions = [];
+      group.studentIds.forEach(studentId => {
+        const res = this.giveXP(studentId, amount, (group.name + ': ' + reason), teacherName);
+        if (res && res.transaction) transactions.push(res.transaction);
+      });
+      return transactions;
+    }
+
+    // ----------------------------------------------------
+    // POINTS AUDIT & TRANSACTION MANAGEMENT
+    // ----------------------------------------------------
+    deleteXPTransaction(transactionId) {
+      const initialLen = this.state.xpTransactions.length;
+      this.state.xpTransactions = this.state.xpTransactions.filter(t => t.id !== transactionId);
+      if (this.state.xpTransactions.length !== initialLen) {
+        this.saveState();
+        this.notify('xp', this.state.xpTransactions);
+        return true;
+      }
+      return false;
+    }
+
+    // ----------------------------------------------------
+    // BULK ATTENDANCE (1-Click Mark All & Fast Adjust)
+    // ----------------------------------------------------
+    recordBulkAttendance(classId, date, statusMap) {
+      if (!this.state.attendanceRecords) this.state.attendanceRecords = [];
+      const effectiveDate = date || new Date().toISOString().split('T')[0];
+      const recordsUpdated = [];
+
+      Object.entries(statusMap).forEach(([studentId, status]) => {
+        let record = this.state.attendanceRecords.find(r => r.classId === classId && r.studentId === studentId && r.date === effectiveDate);
+        if (record) {
+          record.status = status;
+        } else {
+          record = {
+            id: 'att-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+            classId,
+            studentId,
+            date: effectiveDate,
+            status
+          };
+          this.state.attendanceRecords.push(record);
+        }
+        recordsUpdated.push(record);
+      });
+
+      this.saveState();
+      this.notify('attendance', this.state.attendanceRecords);
+      return recordsUpdated;
+    }
+
+    // ----------------------------------------------------
+    // QUICK ASSESSMENT & QUICK EVIDENCE (Live Classroom)
+    // ----------------------------------------------------
+    recordQuickAssessment({ studentId, skill = 'Speaking', objective, rating = 'Developing', comment = '', teacherName = 'Ms. Sarah' }) {
+      const scoreMap = {
+        'Beginning': 50,
+        'Developing': 70,
+        'Achieving': 85,
+        'Excelling': 100
+      };
+      const score = scoreMap[rating] || 75;
+
+      const evidence = {
+        id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId,
+        date: new Date().toISOString().split('T')[0],
+        activityType: 'Quick Teacher Assessment',
+        activityTitle: objective || (skill + ' Assessment'),
+        skill,
+        score,
+        maxScore: 100,
+        percentage: score,
+        notes: rating + ': ' + (comment || 'Formative observation by ' + teacherName)
+      };
+
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      this.state.learningEvidence.push(evidence);
+
+      // Award formative encouragement XP (+10 XP)
+      this.giveXP(studentId, 10, 'Formative Assessment: ' + skill, teacherName);
+
+      this.saveState();
+      this.notify('evidence', this.state.learningEvidence);
+      return evidence;
+    }
+
+    recordQuickEvidence({ classId, activityTitle, scores = [], teacherName = 'Ms. Sarah' }) {
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      const results = [];
+      const today = new Date().toISOString().split('T')[0];
+
+      scores.forEach(item => {
+        const pct = Math.round((item.score / item.maxScore) * 100);
+        const ev = {
+          id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+          studentId: item.studentId,
+          date: today,
+          activityType: 'Worksheet / Written Evidence',
+          activityTitle: activityTitle || 'Classroom Worksheet',
+          skill: item.skill || 'Writing',
+          score: item.score,
+          maxScore: item.maxScore,
+          percentage: pct,
+          notes: item.notes || ('Scored ' + item.score + '/' + item.maxScore + ' (' + pct + '%)')
+        };
+        this.state.learningEvidence.push(ev);
+
+        const earnedXP = Math.max(5, Math.round(pct / 10));
+        this.giveXP(item.studentId, earnedXP, 'Worksheet: ' + (activityTitle || 'Class Assignment'), teacherName);
+
+        results.push(ev);
+      });
+
+      this.saveState();
+      this.notify('evidence', this.state.learningEvidence);
+      return results;
+    }
+
+    // ----------------------------------------------------
+    // PORTFOLIOS MANAGEMENT
+    // ----------------------------------------------------
+    getStudentPortfolio(studentId) {
+      if (!this.state.portfolios) this.state.portfolios = [];
+      return this.state.portfolios.filter(p => p.studentId === studentId);
+    }
+
+    addPortfolioItem({ studentId, classId, title, category = 'Projects', type = 'image', date = null, preview = '🎨', notes = '' }) {
+      if (!this.state.portfolios) this.state.portfolios = [];
+      const item = {
+        id: 'port-' + Date.now(),
+        studentId,
+        classId: classId || this.state.activeClassId,
+        title: (title || 'Student Artifact').trim(),
+        category,
+        type,
+        date: date || new Date().toISOString().split('T')[0],
+        preview: preview || '🎨',
+        notes: notes || ''
+      };
+      this.state.portfolios.push(item);
+      this.saveState();
+      this.notify('portfolio', this.state.portfolios);
+      return item;
+    }
+
+    deletePortfolioItem(id) {
+      if (!this.state.portfolios) this.state.portfolios = [];
+      this.state.portfolios = this.state.portfolios.filter(p => p.id !== id);
+      this.saveState();
+      this.notify('portfolio', this.state.portfolios);
+      return true;
+    }
+
   }
 
   // Export singleton instance

@@ -16,12 +16,24 @@
   // Application State
   let currentView = 'dashboard';
   let selectedClassDetailId = 'class-3a';
-  let selectedClassDetailTab = 'overview';
+  let selectedClassDetailTab = 'classroom';
   let studentProfileActiveTab = 'overview';
   let currentProfileStudentId = 'student-emma';
   let isLibraryManageMode = false;
   let activeCardMenuId = null;
   let activeCreateMenuOpen = false;
+
+  // Classroom Hub state
+  let classroomActiveSubTab = 'students'; // 'students' | 'groups'
+  let isMultiSelectMode = false;
+  let selectedStudentIds = new Set();
+  let timerInterval = null;
+  let timerRemainingSeconds = 180;
+  let timerIsRunning = false;
+  let timerPresetSeconds = 180;
+  let randomPickerExclusions = new Set();
+  let lastPickedStudentId = null;
+  let isClassroomSmartboardMode = false;
 
   // Library filters
   let libSearchQuery = '';
@@ -187,8 +199,52 @@
   };
 
   // Switch tab in Class Dashboard
+  
+  // Helper: map avatar hair & outfit to emoji
+  function getStudentAvatarEmoji(avatar) {
+    if (!avatar) return '👧';
+    if (typeof avatar === 'string') return avatar;
+    const hair = avatar.hair || 'girl';
+    switch (hair) {
+      case 'boy': return '👦';
+      case 'star': return '🦸';
+      case 'bear': return '🐼';
+      case 'fox': return '🦊';
+      case 'rocket': return '🚀';
+      case 'scout': return '🧒';
+      case 'lion': return '🦁';
+      case 'dolphin': return '🐬';
+      default: return '👧';
+    }
+  }
+
+  // Helper: compute average mastery percentage across all 7 language skills
+  function calculateStudentProgressPct(studentId) {
+    const skills = store.getStudentSkills(studentId);
+    const vals = Object.values(skills).map(s => s.score);
+    if (!vals.length) return 75;
+    const sum = vals.reduce((a, b) => a + b, 0);
+    return Math.round(sum / vals.length);
+  }
+
+  // Helper: determine real-time status (active, attention, absent, unassessed)
+  function determineStudentStatus(studentId, classId) {
+    const attRecords = store.getAttendanceRecords(classId);
+    const latestAtt = attRecords.filter(r => r.studentId === studentId).sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0];
+    if (latestAtt && latestAtt.status === 'Absent') return 'absent';
+    const pct = calculateStudentProgressPct(studentId);
+    if (pct < 65) return 'attention';
+    const ev = (store.state.learningEvidence || []).filter(e => e.studentId === studentId);
+    if (!ev.length) return 'unassessed';
+    return 'active';
+  }
+
   window.switchClassTab = function(tabName) {
     selectedClassDetailTab = tabName;
+    const toolkit = document.getElementById('classroom-floating-toolkit');
+    if (toolkit) {
+      toolkit.style.display = (currentView === 'classes' || currentView === 'class-detail' || currentView === 'students') ? 'flex' : 'none';
+    }
     const container = document.getElementById('app-view-container');
     if (container) renderClassDetailView(container);
   };
@@ -1241,75 +1297,12 @@
   // =========================================================================
 
   function renderStudentsView(container) {
-    const students = store.getStudents();
-
-    container.innerHTML = 
-      '<div class="view-header" style="display:flex; justify-content:space-between; align-items:center;">' +
-        '<div>' +
-          '<h1 class="view-greeting">Students Directory</h1>' +
-          '<p class="view-sub">' + students.length + ' active learners enrolled across cohorts. Manage rosters, profiles, and skill data.</p>' +
-        '</div>' +
-        '<button class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
-      '</div>' +
-
-      (students.length === 0 ? 
-        '<div style="text-align:center; padding:48px 16px; background:var(--bg-surface); border-radius:var(--radius-lg); border:1px solid var(--border-light);">' +
-          '<div style="font-size:36px; margin-bottom:10px;">👧</div>' +
-          '<h3 style="font-size:1.1rem; font-weight:800;">No students yet</h3>' +
-          '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Add your first student to start building your class roster.</p>' +
-          '<button class="btn-primary-action" style="margin-top:14px;" onclick="openStudentModal()">+ Add Student</button>' +
-        '</div>' :
-        '<div class="students-grid">' +
-          students.map(s => renderStudentCard(s)).join('') +
-        '</div>'
-      );
+    // Classroom Hub is the heart of student management
+    selectedClassDetailId = store.getActiveClass().id;
+    selectedClassDetailTab = 'classroom';
+    renderClassDetailView(container);
   }
 
-  function renderStudentCard(s) {
-    const totalXP = store.getStudentTotalXP(s.id);
-    const cls = store.getClass(s.classId);
-
-    return '' +
-      '<div class="student-card">' +
-        '<div class="student-card-header">' +
-          '<div class="student-avatar-box">' +
-            (s.avatar && s.avatar.hair === 'boy' ? '👦' : '👧') +
-          '</div>' +
-          '<div style="flex:1;">' +
-            '<div class="student-name">' + s.firstName + ' ' + s.lastName + '</div>' +
-            '<div class="student-meta">' + (cls ? cls.name : 'Unenrolled') + ' · Age ' + s.age + '</div>' +
-          '</div>' +
-          '<span class="badge-cefr badge-cefr-' + s.overallCefr.toLowerCase().replace('+', '-plus') + '">' + s.overallCefr + '</span>' +
-        '</div>' +
-
-        '<div class="student-stats-row" style="margin:12px 0;">' +
-          '<span>⭐ <strong>' + totalXP + '</strong> XP</span>' +
-          '<span>🔥 <strong>' + s.streakDays + '</strong>-day streak</span>' +
-          '<span>ID: <strong>' + (s.studentIdNumber || 'EAA-001') + '</strong></span>' +
-        '</div>' +
-
-        '<div class="student-card-actions">' +
-          '<button class="btn-primary-action" style="flex:1; justify-content:center;" onclick="openStudentDetail(\'' + s.id + '\')">View</button>' +
-          '<button class="btn-sm-secondary" onclick="openStudentModal(\'' + s.id + '\')">Edit</button>' +
-          '<div class="card-more-menu-wrap" style="position:relative;">' +
-            '<button class="btn-card-more" onclick="toggleCardDropdown(\'' + s.id + '\', event)" title="More Actions">⋯</button>' +
-            '<div class="card-dropdown-menu" id="menu-' + s.id + '">' +
-              '<button class="card-dropdown-item" onclick="openStudentModal(\'' + s.id + '\')">✏️ Edit Student</button>' +
-              '<button class="card-dropdown-item" onclick="openStudentDetail(\'' + s.id + '\')">👁️ View Profile</button>' +
-              '<button class="card-dropdown-item" onclick="openAssignModal()">📝 Assign Activity</button>' +
-              '<button class="card-dropdown-item" onclick="' +
-                'const n = prompt(\'Add Note for ' + s.firstName + ':\');' +
-                'if (n && n.trim()) { window.schoolStore.addTeacherNote(\'' + s.id + '\', n.trim()); renderCurrentView(); }' +
-              '">📝 Add Note</button>' +
-              '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + s.id + '\')">Unenroll from Class</button>' +
-              '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + s.id + '\')">🗑️ Archive Student</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-  }
-
-  // CLASSES VIEW
   function renderClassesView(container) {
     const classes = store.getClasses();
 
@@ -1370,274 +1363,486 @@
   }
 
   // DEDICATED CLASS DASHBOARD (10 TABS)
+  
+  // =========================================================================
+  // CLASSROOM HUB (Heart of the Class: Visual Avatars, Groups, Points, Toolkit)
+  // =========================================================================
+
   function renderClassDetailView(container) {
     const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
     const assignments = store.getAssignments(cls.id);
-    const homework = store.getHomework(cls.id);
-    const attRecords = store.getAttendanceRecords(cls.id);
     const attRate = store.getClassAttendanceRate(cls.id);
 
-    const tabs = [
-      { id: 'overview', label: '📊 Overview' },
-      { id: 'students', label: '👧 Students (' + students.length + ')' },
-      { id: 'attendance', label: '📋 Attendance (' + attRate + '%)' },
-      { id: 'lessons', label: '🎮 Lessons' },
+    // Calculate class average mastery
+    let avgMastery = 78;
+    if (students.length > 0) {
+      const sum = students.reduce((acc, s) => acc + calculateStudentProgressPct(s.id), 0);
+      avgMastery = Math.round(sum / students.length);
+    }
+
+    // Ensure toolkit is visible
+    const toolkit = document.getElementById('classroom-floating-toolkit');
+    if (toolkit) toolkit.style.display = 'flex';
+
+    // Top Navigation Tabs for the Class
+    const classTabs = [
+      { id: 'classroom', label: '🏫 Classroom' },
+      { id: 'story', label: '📸 Class Story' },
       { id: 'assignments', label: '📝 Assignments (' + assignments.length + ')' },
-      { id: 'homework', label: '✍️ Homework (' + homework.length + ')' },
-      { id: 'assessments', label: '🎯 Assessments' },
       { id: 'progress', label: '📈 Progress' },
-      { id: 'analytics', label: '📊 Analytics' },
-      { id: 'story', label: '📸 Class Story' }
+      { id: 'assessments', label: '🎯 Assessments' },
+      { id: 'calendar', label: '📅 Calendar & Schedule' }
     ];
 
     container.innerHTML = 
-      '<div style="margin-bottom:12px;">' +
+      '<div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">' +
         '<button class="btn-sm-secondary" onclick="switchView(\'classes\')" style="padding:4px 10px; font-size:0.78rem;">← Back to All Classes</button>' +
+        (isClassroomSmartboardMode ? 
+          '<button class="btn-primary-action" onclick="toggleSmartboardMode()" style="padding:4px 12px; font-size:0.8rem; background:var(--color-danger);">✕ Exit Classroom Mode</button>' : '') +
       '</div>' +
 
-      '<div class="class-detail-header">' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">' +
-          '<div>' +
-            '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<h1 style="font-size:1.6rem; font-weight:800; color:var(--text-main);">' + cls.name + '</h1>' +
-              '<span class="badge-cefr badge-cefr-' + (cls.cefrTarget || 'A1').toLowerCase().replace('+', '-plus') + '" style="font-size:0.9rem; padding:3px 10px;">' + (cls.cefrTarget || 'A1') + ' Target</span>' +
-            '</div>' +
-            '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' +
-              cls.grade + ' · ' + cls.room + ' · Schedule: <strong>' + cls.schedule + '</strong> · ' + students.length + ' Enrolled Learners' +
-            '</p>' +
+      // Top Banner
+      '<div class="classroom-header-banner">' +
+        '<div>' +
+          '<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">' +
+            '<h1 style="font-size:1.65rem; font-weight:900; color:var(--text-main); margin:0;">🌍 ' + cls.name + '</h1>' +
+            '<span class="badge-cefr badge-cefr-' + (cls.cefrTarget || 'A1').toLowerCase().replace('+', '-plus') + '" style="font-size:0.86rem; padding:3px 10px;">' + (cls.cefrTarget || 'A1') + ' Target</span>' +
           '</div>' +
-
-          '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
-            '<button class="btn-sm-secondary" onclick="openStudentModal()">+ Add Student</button>' +
-            '<button class="btn-sm-secondary" onclick="openModal(\'modal-create-assignment\')">+ Assign Activity</button>' +
-            '<button class="btn-sm-secondary" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
-            '<button class="btn-primary-action" onclick="switchClassTab(\'attendance\')">📋 Take Attendance</button>' +
+          '<div class="classroom-meta-pills">' +
+            '<span class="classroom-meta-pill">👥 ' + students.length + ' Students</span>' +
+            '<span class="classroom-meta-pill">📋 ' + attRate + '% Attendance</span>' +
+            '<span class="classroom-meta-pill">📈 ' + avgMastery + '% Average Mastery</span>' +
+            '<span class="classroom-meta-pill">📍 ' + cls.room + ' · ' + cls.schedule + '</span>' +
           '</div>' +
         '</div>' +
 
-        '<div class="class-subnav-tabs">' +
-          tabs.map(t => 
-            '<button class="class-tab-btn ' + (selectedClassDetailTab === t.id ? 'is-active' : '') + '" onclick="switchClassTab(\'' + t.id + '\')">' +
-              t.label +
-            '</button>'
-          ).join('') +
+        '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+          '<button class="btn-primary-action" onclick="openStudentModal()" style="font-size:0.86rem; padding:8px 14px;">+ Add Student</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;">⭐ Points</button>' +
+          '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="font-size:0.86rem; padding:8px 14px;">✓ Attendance</button>' +
+          '<button class="btn-sm-secondary" onclick="toggleSmartboardMode()" style="font-size:0.86rem; padding:8px 14px;">🎓 ' + (isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode') + '</button>' +
         '</div>' +
       '</div>' +
 
-      '<div id="class-tab-content-container">' +
-        renderClassSubTabContent(cls, students, assignments, homework, attRecords) +
+      // Top Navigation Tabs
+      '<div class="classroom-top-nav-tabs">' +
+        classTabs.map(t => 
+          '<button class="classroom-nav-tab-btn ' + (selectedClassDetailTab === t.id ? 'is-active' : '') + '" onclick="switchClassTab(\'' + t.id + '\')">' +
+            t.label +
+          '</button>'
+        ).join('') +
+      '</div>' +
+
+      // Tab Content Area
+      '<div id="classroom-main-content-wrap">' +
+        renderClassroomSubTabContent(cls, students) +
       '</div>';
   }
 
-  function renderClassSubTabContent(cls, students, assignments, homework, attRecords) {
+  function renderClassroomSubTabContent(cls, students) {
     switch (selectedClassDetailTab) {
-      case 'overview':
-        return '' +
-          '<div class="kpi-grid" style="margin-bottom:20px;">' +
-            '<div class="kpi-card"><span class="kpi-label">Class Roster</span><span class="kpi-val">' + students.length + '</span><span class="kpi-sub">Active Students</span></div>' +
-            '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + store.getClassAttendanceRate(cls.id) + '%</span><span class="kpi-sub">✓ Computed from roll call</span></div>' +
-            '<div class="kpi-card"><span class="kpi-label">Assignments Due</span><span class="kpi-val">' + assignments.length + '</span><span class="kpi-sub">Active Tasks</span></div>' +
-            '<div class="kpi-card"><span class="kpi-label">Target CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span><span class="kpi-sub">' + (cls.academicYear || '2026–2027') + '</span></div>' +
-          '</div>' +
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-              '<h3 style="font-size:1.1rem; font-weight:800;">Enrolled Student Snapshot</h3>' +
-              '<button class="btn-sm-secondary" onclick="switchClassTab(\'students\')">Manage Roster →</button>' +
-            '</div>' +
-            '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;">' +
-              students.map(s => '' +
-                '<div style="display:flex; align-items:center; gap:10px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px 12px; cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\')">' +
-                  '<div style="font-size:24px;">' + (s.avatar && s.avatar.hair === 'boy' ? '👦' : '👧') + '</div>' +
-                  '<div style="flex:1;">' +
-                    '<div style="font-size:0.86rem; font-weight:700;">' + s.firstName + ' ' + s.lastName + '</div>' +
-                    '<div style="font-size:0.75rem; color:var(--text-muted);">⭐ ' + store.getStudentTotalXP(s.id) + ' XP · ' + s.overallCefr + '</div>' +
-                  '</div>' +
-                '</div>'
-              ).join('') +
-            '</div>' +
-          '</div>';
-
-      case 'students':
-        return '' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800;">Class Roster (' + students.length + ')</h3>' +
-            '<button class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
-          '</div>' +
-          '<div class="students-grid">' +
-            students.map(s => renderStudentCard(s)).join('') +
-          '</div>';
-
-      case 'attendance':
-        return renderAttendanceTableForClass(cls, students);
-
-      case 'lessons':
-        return '' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800;">Curriculum Lessons</h3>' +
-            '<button class="btn-sm-secondary" onclick="switchView(\'library\')">Open Library</button>' +
-          '</div>' +
-          '<div class="games-grid">' +
-            store.getResources().slice(0, 4).map(r => renderGameCard(r)).join('') +
-          '</div>';
-
-      case 'assignments':
-        return renderAssignmentsTableForClass(assignments);
-
-      case 'homework':
-        return renderHomeworkCardsForClass(homework);
-
-      case 'assessments':
-        return '' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800;">Class Rubric Evaluations</h3>' +
-            '<button class="btn-primary-action" onclick="openModal(\'modal-assessment-rubric\')">+ New Assessment</button>' +
-          '</div>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">' +
-            students.map(s => '' +
-              '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:16px;">' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
-                  '<strong style="font-size:0.95rem;">' + s.firstName + ' ' + s.lastName + '</strong>' +
-                  '<span class="badge-cefr badge-cefr-' + s.overallCefr.toLowerCase().replace('+', '-plus') + '">' + s.overallCefr + '</span>' +
-                '</div>' +
-                '<button class="btn-sm-secondary" style="width:100%; justify-content:center;" onclick="document.getElementById(\'rubric-student-select\').value=\'' + s.id + '\'; openModal(\'modal-assessment-rubric\');">Evaluate Rubric</button>' +
-              '</div>'
-            ).join('') +
-          '</div>';
-
-      case 'progress':
-        return '' +
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:14px;">Class Skill Progress Matrix</h3>' +
-            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">' +
-              ['speaking', 'listening', 'vocabulary', 'grammar'].map(sk => '' +
-                '<div style="background:var(--bg-canvas); padding:14px; border-radius:var(--radius-md); text-transform:capitalize;">' +
-                  '<div style="font-size:0.84rem; font-weight:700;">' + sk + '</div>' +
-                  '<div class="progress-bar-wrap" style="margin:8px 0;"><div class="progress-bar-fill" style="width:78%;"></div></div>' +
-                  '<div style="font-size:0.78rem; color:var(--text-muted);">Class Average: 78%</div>' +
-                '</div>'
-              ).join('') +
-            '</div>' +
-          '</div>';
-
-      case 'analytics':
-        return '' +
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:12px;">Cohort Diagnostics</h3>' +
-            '<p style="font-size:0.84rem; color:var(--text-secondary); line-height:1.5;">' +
-              'Vocabulary acquisition is strong at 92%. Focus on conversational dialogues and roleplay games to reinforce sentence structure.' +
-            '</p>' +
-          '</div>';
-
+      case 'classroom':
+        return renderClassroomWorkspace(cls, students);
       case 'story':
         return '' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-            '<h3 style="font-size:1.1rem; font-weight:800;">' + cls.name + ' Story Feed</h3>' +
-            '<button class="btn-primary-action" onclick="document.getElementById(\'story-post-class\').value=\'' + cls.id + '\'; openModal(\'modal-story-post\');">+ New Post</button>' +
+            '<h2 style="font-size:1.3rem; font-weight:800;">Class Story Feed</h2>' +
+            '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">📸 + New Post</button>' +
           '</div>' +
-          '<div class="story-feed">' +
+          '<div class="story-feed-grid">' +
             store.getClassStory(cls.id).map(p => renderStoryPost(p)).join('') +
           '</div>';
-
+      case 'assignments':
+        return renderAssignmentsTableForClass(store.getAssignments(cls.id));
+      case 'progress':
+        return renderClassProgressSubTab(cls, students);
+      case 'assessments':
+        return renderClassAssessmentsSubTab(cls, students);
+      case 'calendar':
+        return renderClassCalendarSubTab(cls, students);
       default:
-        return '<p>Select tab</p>';
+        return renderClassroomWorkspace(cls, students);
     }
   }
 
-  function renderAttendanceTableForClass(cls, students) {
-    const today = new Date().toISOString().split('T')[0];
-    const records = store.getAttendanceRecords(cls.id, today);
-    const recMap = {};
-    records.forEach(r => { recMap[r.studentId] = r.status; });
+  // The Live Classroom Workspace (Students visual grid | Groups view)
+  function renderClassroomWorkspace(cls, students) {
+    const groups = store.getGroups(cls.id);
 
     return '' +
-      '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px;">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
-          '<div>' +
-            '<h3 style="font-size:1.1rem; font-weight:800;">Roll Call — ' + today + '</h3>' +
-            '<span style="font-size:0.82rem; color:var(--text-muted);">Real-time attendance record generator</span>' +
+      // Subtoolbar: Students | Groups + Quick Filters
+      '<div class="classroom-subtoolbar">' +
+        '<div class="classroom-view-toggle-pills">' +
+          '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'students' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'students\')">' +
+            '<span>🧒</span> <span>Students (' + students.length + ')</span>' +
+          '</button>' +
+          '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'groups' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'groups\')">' +
+            '<span>👥</span> <span>Groups (' + groups.length + ')</span>' +
+          '</button>' +
+        '</div>' +
+
+        '<div class="classroom-action-buttons-group">' +
+          '<button class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+            (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') +
+          '</button>' +
+          (classroomActiveSubTab === 'groups' ?
+            '<button class="btn-primary-action" onclick="openCreateGroupModal()">+ Create Group</button>' :
+            '<button class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>'
+          ) +
+        '</div>' +
+      '</div>' +
+
+      // Body View: Students Grid or Groups Grid
+      (classroomActiveSubTab === 'students' ? 
+        renderClassroomStudentsGrid(cls, students) : 
+        renderClassroomGroupsGrid(cls, groups, students)
+      ) +
+
+      // Classroom Dashboard Summary Widgets
+      renderClassroomDashboardWidgets(cls, students);
+  }
+
+  // 1. Students Visual Avatar Grid
+  function renderClassroomStudentsGrid(cls, students) {
+    if (students.length === 0) {
+      return '' +
+        '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px;">' +
+          '<div class="card-add-student-icon">🎓</div>' +
+          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">Your classroom is ready</h3>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student to begin tracking learning adventure.</p>' +
+          '<button class="btn-primary-action">+ Add Student</button>' +
+        '</div>';
+    }
+
+    const cardsHtml = students.map(s => {
+      const totalXP = store.getStudentTotalXP(s.id);
+      const formattedXP = totalXP.toLocaleString();
+      const progressPct = calculateStudentProgressPct(s.id);
+      const status = determineStudentStatus(s.id, cls.id);
+      const avatarEmoji = getStudentAvatarEmoji(s.avatar);
+      const isSelected = selectedStudentIds.has(s.id);
+      const streak = s.streakDays || 5;
+
+      return '' +
+        '<div class="classroom-student-card ' + (isSelected ? 'is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+          // Checkbox
+          '<div class="student-card-check-wrap" style="' + (isMultiSelectMode ? 'display:block;' : '') + '">' +
+            '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
           '</div>' +
-          '<div style="font-weight:700; font-size:0.88rem; color:var(--color-primary);">' +
-            'Class Attendance: ' + store.getClassAttendanceRate(cls.id) + '%' +
+
+          // Status Dot
+          '<div class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></div>' +
+
+          // Avatar Frame
+          '<div class="student-avatar-frame">' +
+            avatarEmoji +
+          '</div>' +
+
+          // Name (Uppercase)
+          '<div class="student-card-name">' + s.firstName.toUpperCase() + '</div>' +
+
+          // Meta Row (Points + CEFR)
+          '<div class="student-card-meta-row">' +
+            '<span class="student-card-xp-badge">⭐ ' + formattedXP + '</span>' +
+            '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+          '</div>' +
+
+          // Streak
+          '<div class="student-card-streak-badge">🔥 ' + streak + '-day streak</div>' +
+
+          // Progress Bar
+          '<div class="student-card-progress-bar" title="Curriculum Mastery: ' + progressPct + '%">' +
+            '<div class="student-card-progress-fill" style="width:' + progressPct + '%;"></div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    // Append + Add Student card at the end
+    const addCardHtml = '' +
+      '<div class="card-add-student" onclick="openStudentModal()" title="Add a new student to ' + cls.name + '">' +
+        '<div class="card-add-student-icon">+</div>' +
+        '<div style="font-weight:800; font-size:1rem;">Add Student</div>' +
+        '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Enroll new learner</div>' +
+      '</div>';
+
+    return '<div class="classroom-students-grid">' + cardsHtml + addCardHtml + '</div>';
+  }
+
+  // 2. Groups View
+  function renderClassroomGroupsGrid(cls, groups, students) {
+    if (groups.length === 0) {
+      return '' +
+        '<div class="card-add-student" onclick="openCreateGroupModal()" style="padding:48px 20px; min-height:240px; margin-bottom:24px;">' +
+          '<div class="card-add-student-icon">👥</div>' +
+          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No groups yet</h3>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Create teams and tables to organize classroom challenges.</p>' +
+          '<button class="btn-primary-action">+ Create Group</button>' +
+        '</div>';
+    }
+
+    const groupsHtml = groups.map(g => {
+      const memberStudents = (g.studentIds || []).map(id => store.getStudent(id)).filter(Boolean);
+
+      return '' +
+        '<div class="group-team-card">' +
+          '<div class="group-team-color-strip" style="background:' + (g.color || '#2563eb') + ';"></div>' +
+          '<div class="group-team-body">' +
+            '<div class="group-team-header">' +
+              '<div class="group-team-title">' +
+                '<span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:' + (g.color || '#2563eb') + ';"></span>' +
+                '<span>' + g.name + '</span>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button class="btn-sm-secondary" onclick="openCreateGroupModal(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem;">✏️ Edit</button>' +
+                '<button class="btn-sm-secondary" onclick="handleDeleteGroup(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem; color:var(--color-danger);">🗑️</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="font-size:0.8rem; color:var(--text-muted);">' + memberStudents.length + ' Members</div>' +
+
+            '<div class="group-members-pills">' +
+              memberStudents.map(m => '' +
+                '<span class="group-member-pill">' +
+                  getStudentAvatarEmoji(m.avatar) + ' ' + m.firstName +
+                '</span>'
+              ).join('') +
+            '</div>' +
+
+            '<div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">' +
+              '<button class="btn-sm-secondary" onclick="handleAwardGroupXP(\'' + g.id + '\', 5)" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b; padding:6px 12px;">' +
+                '⭐ +5 XP to Team' +
+              '</button>' +
+              '<button class="btn-sm-secondary" onclick="openAssignModalForGroup(\'' + g.id + '\')" style="padding:6px 10px; font-size:0.78rem;">' +
+                '📝 Assign' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    const addGroupCard = '' +
+      '<div class="card-add-student" onclick="openCreateGroupModal()" title="Create a new classroom team" style="min-height:220px;">' +
+        '<div class="card-add-student-icon">+</div>' +
+        '<div style="font-weight:800; font-size:1rem;">Create Group</div>' +
+        '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Organize students into teams</div>' +
+      '</div>';
+
+    return '<div class="classroom-groups-grid">' + groupsHtml + addGroupCard + '</div>';
+  }
+
+  // 3. Classroom Dashboard Summary Widgets (Today's Classroom + Needs Attention)
+  function renderClassroomDashboardWidgets(cls, students) {
+    const today = new Date().toISOString().split('T')[0];
+    const attRecords = store.getAttendanceRecords(cls.id);
+    const todayAttCount = attRecords.filter(r => r.date === today).length;
+    const attStatusText = todayAttCount > 0 ? 'Completed for today (' + todayAttCount + ' logged)' : 'Roll call needed today';
+
+    return '' +
+      '<div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-top:16px;">' +
+        // Today's Classroom
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+          '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:8px;">' +
+            '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
+          '</h3>' +
+          '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">' +
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Next Lesson</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">Fire Station Adventure</div>' +
+              '<a href="firefighter/index.html" class="btn-primary-action" style="padding:4px 10px; font-size:0.76rem; text-decoration:none; display:inline-flex; margin-top:4px;">▶ Start Lesson</a>' +
+            '</div>' +
+
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Active Assignment</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">My Town Prepositions</div>' +
+              '<div style="font-size:0.78rem; color:var(--text-muted);">' + students.length + ' Assigned · Due Friday</div>' +
+            '</div>' +
+
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Attendance Status</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">' + attStatusText + '</div>' +
+              '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="padding:4px 10px; font-size:0.76rem; margin-top:4px;">📋 Open Roll Call</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
-        '<table style="width:100%; border-collapse:collapse; font-size:0.86rem;">' +
-          '<thead><tr style="border-bottom:2px solid var(--border-light); text-align:left; color:var(--text-muted);"><th style="padding:10px 0;">Student</th><th style="padding:10px 0;">Rate</th><th style="padding:10px 0; text-align:right;">Status</th></tr></thead>' +
-          '<tbody>' +
-            students.map(s => {
-              const status = recMap[s.id] || 'Present';
-              return '' +
-                '<tr style="border-bottom:1px solid var(--border-light);">' +
-                  '<td style="padding:10px 0; font-weight:700;">' + (s.avatar && s.avatar.hair === 'boy' ? '👦 ' : '👧 ') + s.firstName + ' ' + s.lastName + '</td>' +
-                  '<td style="padding:10px 0; color:var(--text-muted);">' + store.getStudentAttendanceRate(s.id) + '%</td>' +
-                  '<td style="padding:10px 0; text-align:right;">' +
-                    '<div style="display:inline-flex; gap:4px;">' +
-                      ['Present', 'Late', 'Absent', 'Excused'].map(st => 
-                        '<button class="btn-sm-secondary ' + (status === st ? 'btn-primary-action' : '') + '" style="padding:3px 8px; font-size:0.75rem;" onclick="handleRollCall(\'' + s.id + '\', \'' + st + '\')">' + st + '</button>'
-                      ).join('') +
-                    '</div>' +
-                  '</td>' +
-                '</tr>';
-            }).join('') +
-          '</tbody>' +
-        '</table>' +
+
+        // Needs Attention
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+          '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:8px;">' +
+            '<span>⚠️</span> <span>Needs Attention</span>' +
+          '</h3>' +
+          '<div style="display:flex; flex-direction:column; gap:10px;">' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(239,68,68,0.06); border-radius:8px; border-left:3px solid var(--color-danger);">' +
+              '<span>🗣</span> <span>2 students need extra speaking practice</span>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(245,158,11,0.06); border-radius:8px; border-left:3px solid var(--color-warning);">' +
+              '<span>✍️</span> <span>1 homework submission awaiting review</span>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(79,70,229,0.06); border-radius:8px; border-left:3px solid var(--color-primary);">' +
+              '<span>🎯</span> <span>Prepositions quiz scheduled for Thursday</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Secondary sub-tab controllers
+  function renderClassProgressSubTab(cls, students) {
+    return '' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+        '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:16px;">Classroom CEFR Skill Mastery Distribution</h3>' +
+        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">' +
+          students.map(s => {
+            const skills = store.getStudentSkills(s.id);
+            const avg = calculateStudentProgressPct(s.id);
+            return '' +
+              '<div style="background:var(--bg-card-secondary); border:1px solid var(--border-subtle); border-radius:12px; padding:14px; cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\', \'progress\')">' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                  '<div style="font-weight:800; font-size:0.95rem;">' + getStudentAvatarEmoji(s.avatar) + ' ' + s.firstName + ' ' + s.lastName + '</div>' +
+                  '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + ' (' + avg + '%)</span>' +
+                '</div>' +
+                '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.78rem;">' +
+                  '<div style="display:flex; justify-content:space-between;"><span>Speaking:</span><strong>' + skills.speaking.score + '% (' + skills.speaking.cefr + ')</strong></div>' +
+                  '<div style="display:flex; justify-content:space-between;"><span>Listening:</span><strong>' + skills.listening.score + '% (' + skills.listening.cefr + ')</strong></div>' +
+                  '<div style="display:flex; justify-content:space-between;"><span>Vocabulary:</span><strong>' + skills.vocabulary.score + '% (' + skills.vocabulary.cefr + ')</strong></div>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderClassAssessmentsSubTab(cls, students) {
+    return '' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
+        '<h3 style="font-size:1.15rem; font-weight:800;">Classroom Rubric Evaluations</h3>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-primary-action" onclick="openQuickAssessmentModal()">📝 + Quick Assessment</button>' +
+          '<button class="btn-sm-secondary" onclick="openModal(\'modal-assessment-rubric\')">🎯 Full Rubric</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+        '<div style="display:flex; flex-direction:column; gap:10px;">' +
+          (store.state.learningEvidence || []).slice(0, 10).map(ev => '' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle);">' +
+              '<div>' +
+                '<div style="font-weight:700; font-size:0.88rem;">' + ev.activityTitle + ' · <span style="color:var(--color-primary);">' + ev.skill + '</span></div>' +
+                '<div style="font-size:0.78rem; color:var(--text-muted);">' + (ev.notes || '') + '</div>' +
+              '</div>' +
+              '<div style="text-align:right;">' +
+                '<span style="font-weight:800; color:var(--color-success); font-size:0.95rem;">' + ev.percentage + '%</span>' +
+                '<div style="font-size:0.74rem; color:var(--text-muted);">' + ev.date + '</div>' +
+              '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderClassCalendarSubTab(cls, students) {
+    return '' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:24px;">' +
+        '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:12px;">Classroom Weekly Schedule &amp; Milestones</h3>' +
+        '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:20px;">Regular class meetings: ' + cls.schedule + ' in ' + cls.room + '</p>' +
+        '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">' +
+          '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
+            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Monday · 10:00</div>' +
+            '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Unit 1: Fire Station Rescue</div>' +
+            '<div style="font-size:0.78rem; color:var(--text-muted);">Emergency calls, speaking drills, action verbs</div>' +
+          '</div>' +
+          '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
+            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Wednesday · 10:00</div>' +
+            '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Unit 2: My Town Map Navigation</div>' +
+            '<div style="font-size:0.78rem; color:var(--text-muted);">Prepositions of place, giving directions</div>' +
+          '</div>' +
+          '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
+            '<div style="font-weight:800; font-size:0.92rem; color:#f59e0b;">Friday · Diagnostic Check</div>' +
+            '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Prepositions Worksheet &amp; Speech</div>' +
+            '<div style="font-size:0.78rem; color:var(--text-muted);">Worksheet scoring + quick formative assessment</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderAttendanceTableForClass(cls, students) {
+    return renderFastAttendanceSheet(cls, students);
+  }
+
+  function renderFastAttendanceSheet(cls, students) {
+    const today = new Date().toISOString().split('T')[0];
+    const attRecords = store.getAttendanceRecords(cls.id);
+
+    return '' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
+          '<div>' +
+            '<h3 style="font-size:1.15rem; font-weight:800;">Class Attendance Register</h3>' +
+            '<div style="font-size:0.82rem; color:var(--text-muted);">Current cohort attendance: ' + store.getClassAttendanceRate(cls.id) + '%</div>' +
+          '</div>' +
+          '<button class="btn-primary-action" onclick="openFastAttendanceModal()">📋 Take Today\'s Attendance</button>' +
+        '</div>' +
+        '<div style="display:flex; flex-direction:column; gap:8px;">' +
+          students.map(s => {
+            const studentAtts = attRecords.filter(r => r.studentId === s.id);
+            const rate = store.getStudentAttendanceRate(s.id);
+            return '' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-card-secondary); border-radius:10px;">' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<span style="font-size:1.3rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+                  '<span style="font-weight:700; font-size:0.92rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
+                '</div>' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<span style="font-weight:800; font-size:0.88rem; color:' + (rate >= 90 ? 'var(--color-success)' : '#f59e0b') + ';">' + rate + '% Rate</span>' +
+                  '<span style="font-size:0.78rem; color:var(--text-muted);">' + studentAtts.length + ' Recorded Sessions</span>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>' +
       '</div>';
   }
 
   function renderAssignmentsTableForClass(assignments) {
     return '' +
-      '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px;">' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-          '<h3 style="font-size:1.1rem; font-weight:800;">Active Assignments</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:800;">Class Assignments</h3>' +
           '<button class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
         '</div>' +
-        (assignments.length === 0 ? '<p style="color:var(--text-muted); font-size:0.86rem;">No assignments currently assigned.</p>' :
-          '<table style="width:100%; border-collapse:collapse; font-size:0.86rem;">' +
-            '<thead><tr style="border-bottom:2px solid var(--border-light); text-align:left; color:var(--text-muted);"><th style="padding:10px 0;">Title</th><th style="padding:10px 0;">Due Date</th><th style="padding:10px 0; text-align:right;">Actions</th></tr></thead>' +
-            '<tbody>' +
-              assignments.map(a => '' +
-                '<tr style="border-bottom:1px solid var(--border-light);">' +
-                  '<td style="padding:10px 0; font-weight:700;">' + a.title + '</td>' +
-                  '<td style="padding:10px 0; color:var(--text-muted);">' + a.dueDate + '</td>' +
-                  '<td style="padding:10px 0; text-align:right;">' +
-                    '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + a.id + '\')">Duplicate</button> ' +
-                    '<button class="btn-sm-secondary" style="color:var(--color-danger);" onclick="handleArchiveAssignment(\'' + a.id + '\')">Archive</button>' +
-                  '</td>' +
-                '</tr>'
-              ).join('') +
-            '</tbody>' +
-          '</table>'
-        ) +
+        '<div style="display:flex; flex-direction:column; gap:10px;">' +
+          assignments.map(a => '' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle);">' +
+              '<div>' +
+                '<div style="font-weight:800; font-size:0.95rem;">' + a.title + '</div>' +
+                '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + ' · Game: ' + a.gameId + '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
+              '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
       '</div>';
   }
 
   function renderHomeworkCardsForClass(homework) {
     return '' +
-      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
-        '<h3 style="font-size:1.1rem; font-weight:800;">Homework Missions</h3>' +
-        '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
-      '</div>' +
-      '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px;">' +
-        homework.map(h => '' +
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:18px;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--color-primary); background:var(--color-primary-soft); padding:2px 8px; border-radius:4px;">' + h.type + '</span>' +
-              '<span style="font-size:0.78rem; color:var(--text-muted);">Due ' + h.dueDate + '</span>' +
-            '</div>' +
-            '<h4 style="font-size:1rem; font-weight:800; margin-bottom:6px;">' + h.title + '</h4>' +
-            '<p style="font-size:0.82rem; color:var(--text-muted); line-height:1.4; margin-bottom:14px;">' + h.description + '</p>' +
-            '<div style="display:flex; justify-content:flex-end; gap:6px;">' +
-              '<button class="btn-sm-secondary" onclick="store.duplicateHomework(\'' + h.id + '\'); renderCurrentView();">Duplicate</button>' +
-              '<button class="btn-sm-secondary" style="color:var(--color-danger);" onclick="handleArchiveHomework(\'' + h.id + '\')">Archive</button>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
+          '<h3 style="font-size:1.15rem; font-weight:800;">Homework Tasks</h3>' +
+          '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
+        '</div>' +
+        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">' +
+          homework.map(h => '' +
+            '<div style="background:var(--bg-card-secondary); border:1px solid var(--border-subtle); border-radius:12px; padding:14px;">' +
+              '<div style="font-weight:800; font-size:0.95rem; margin-bottom:4px;">' + h.title + '</div>' +
+              '<div style="font-size:0.78rem; color:var(--color-primary); font-weight:700;">' + h.type + '</div>' +
+              '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">Due: ' + (h.dueDate || 'Friday') + '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
       '</div>';
   }
 
-  // =========================================================================
-  // 6. CURRICULUM MANAGEMENT INTERFACE (BOOK -> UNIT -> LESSON -> OBJECTIVE)
-  // =========================================================================
   function renderCurriculumView(container) {
     const books = store.getBooks();
     const activeBook = books.find(b => b.id === curriculumActiveBookId) || books[0];
@@ -2410,5 +2615,654 @@
   } else {
     initApp();
   }
+
+
+  // =========================================================================
+  // CLASSROOM HUB CONTROLLERS & LIVE TOOLKIT EVENT HANDLERS
+  // =========================================================================
+
+  // Sub-Tab Switcher (Students vs Groups)
+  window.switchClassroomSubTab = function(subTab) {
+    classroomActiveSubTab = subTab;
+    const container = document.getElementById('app-view-container');
+    if (container) renderClassDetailView(container);
+  };
+
+  // Student Card Click (Profile vs Selection)
+  window.handleStudentCardClick = function(studentId, event) {
+    if (isMultiSelectMode) {
+      window.toggleSelectStudent(studentId, event);
+    } else {
+      window.openStudentDetail(studentId);
+    }
+  };
+
+  // Multi-Select Mode & Student Toggling
+  window.toggleMultiSelectMode = function() {
+    isMultiSelectMode = !isMultiSelectMode;
+    if (!isMultiSelectMode) {
+      selectedStudentIds.clear();
+      window.updateMultiSelectBar();
+    }
+    const container = document.getElementById('app-view-container');
+    if (container) renderClassDetailView(container);
+  };
+
+  window.toggleSelectStudent = function(studentId, event) {
+    if (event) event.stopPropagation();
+    if (selectedStudentIds.has(studentId)) {
+      selectedStudentIds.delete(studentId);
+    } else {
+      selectedStudentIds.add(studentId);
+    }
+    window.updateMultiSelectBar();
+
+    // Toggle card selection class
+    const card = document.querySelector('.classroom-student-card[data-student-id="' + studentId + '"]');
+    if (card) {
+      if (selectedStudentIds.has(studentId)) card.classList.add('is-selected');
+      else card.classList.remove('is-selected');
+      const cb = card.querySelector('.student-card-checkbox');
+      if (cb) cb.checked = selectedStudentIds.has(studentId);
+    }
+  };
+
+  window.updateMultiSelectBar = function() {
+    const bar = document.getElementById('floating-multiselect-bar');
+    const badge = document.getElementById('multiselect-count-badge');
+    if (!bar) return;
+    if (selectedStudentIds.size > 0) {
+      bar.style.display = 'flex';
+      if (badge) badge.textContent = selectedStudentIds.size;
+    } else {
+      bar.style.display = 'none';
+    }
+  };
+
+  window.clearSelectedStudents = function() {
+    selectedStudentIds.clear();
+    window.updateMultiSelectBar();
+    const cards = document.querySelectorAll('.classroom-student-card');
+    cards.forEach(c => {
+      c.classList.remove('is-selected');
+      const cb = c.querySelector('.student-card-checkbox');
+      if (cb) cb.checked = false;
+    });
+  };
+
+  // Quick Points Modal Controller
+  window.openQuickPointsModal = function(preselectedIds = null) {
+    const modal = document.getElementById('modal-quick-points');
+    const container = document.getElementById('quick-points-students-list');
+    if (!modal || !container) return;
+
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+    const targetSet = preselectedIds ? new Set(preselectedIds) : selectedStudentIds;
+
+    container.innerHTML = students.map(s => '' +
+      '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; border-radius:6px; cursor:pointer; font-size:0.84rem;">' +
+        '<input type="checkbox" name="quick-points-student" value="' + s.id + '" ' + (targetSet.size === 0 || targetSet.has(s.id) ? 'checked' : '') + ' />' +
+        '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+        '<strong>' + s.firstName + ' ' + s.lastName + '</strong>' +
+        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
+      '</label>'
+    ).join('');
+
+    window.openModal('modal-quick-points');
+  };
+
+  window.openQuickPointsForSelected = function() {
+    window.openQuickPointsModal(Array.from(selectedStudentIds));
+  };
+
+  window.setQuickPointsAmount = function(amount, btn) {
+    const input = document.getElementById('quick-points-amount-val');
+    if (input) input.value = amount;
+    const buttons = document.querySelectorAll('.btn-points-amount');
+    buttons.forEach(b => b.classList.remove('is-active'));
+    if (btn) btn.classList.add('is-active');
+  };
+
+  window.setQuickPointsReason = function(reason, btn) {
+    const input = document.getElementById('quick-points-reason-val');
+    if (input) input.value = reason;
+    const custom = document.getElementById('quick-points-custom-reason');
+    if (custom) custom.value = '';
+    const buttons = document.querySelectorAll('.points-reason-btn');
+    buttons.forEach(b => b.classList.remove('is-active'));
+    if (btn) btn.classList.add('is-active');
+  };
+
+  window.handleToggleSelectAllPointsStudents = function() {
+    const checkboxes = document.querySelectorAll('#quick-points-students-list input[type="checkbox"]');
+    if (!checkboxes.length) return;
+    const allChecked = Array.from(checkboxes).every(c => c.checked);
+    checkboxes.forEach(c => c.checked = !allChecked);
+  };
+
+  window.handleExecuteQuickPoints = function(e) {
+    e.preventDefault();
+    const amount = parseInt(document.getElementById('quick-points-amount-val').value, 10) || 5;
+    const reason = document.getElementById('quick-points-reason-val').value || '👏 Great participation';
+    const checkedBoxes = document.querySelectorAll('#quick-points-students-list input[type="checkbox"]:checked');
+    const studentIds = Array.from(checkedBoxes).map(c => c.value);
+
+    if (studentIds.length === 0) {
+      alert('Please select at least one student to award points.');
+      return;
+    }
+
+    studentIds.forEach(id => {
+      store.giveXP(id, amount, reason, 'Ms. Sarah');
+    });
+
+    window.closeAllModals();
+    alert('✓ Awarded +' + amount + ' ⭐ to ' + studentIds.length + ' student' + (studentIds.length > 1 ? 's' : '') + ' for ' + reason + '!');
+    
+    // Clear selection if applicable and re-render
+    window.clearSelectedStudents();
+    renderCurrentView();
+  };
+
+  // Group Management Modal & Handlers
+  window.openCreateGroupModal = function(groupId = null) {
+    const title = document.getElementById('group-modal-title');
+    const idInput = document.getElementById('edit-group-id');
+    const nameInput = document.getElementById('new-group-name');
+    const container = document.getElementById('group-students-select-container');
+    const submitBtn = document.getElementById('btn-save-group-submit');
+
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+
+    if (groupId) {
+      const g = store.getGroup(groupId);
+      if (!g) return;
+      if (title) title.textContent = '✏️ Edit Group: ' + g.name;
+      if (idInput) idInput.value = g.id;
+      if (nameInput) nameInput.value = g.name;
+      if (submitBtn) submitBtn.textContent = 'Save Changes';
+      const colorRadio = document.querySelector('input[name="group-color"][value="' + g.color + '"]');
+      if (colorRadio) colorRadio.checked = true;
+
+      const memberSet = new Set(g.studentIds || []);
+      if (container) {
+        container.innerHTML = students.map(s => '' +
+          '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; cursor:pointer;">' +
+            '<input type="checkbox" name="group-student-member" value="' + s.id + '" ' + (memberSet.has(s.id) ? 'checked' : '') + ' />' +
+            '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<span>' + s.firstName + ' ' + s.lastName + '</span>' +
+          '</label>'
+        ).join('');
+      }
+    } else {
+      if (title) title.textContent = '👥 Create Classroom Group';
+      if (idInput) idInput.value = '';
+      if (nameInput) nameInput.value = '';
+      if (submitBtn) submitBtn.textContent = 'Create Group';
+      if (container) {
+        container.innerHTML = students.map(s => '' +
+          '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; cursor:pointer;">' +
+            '<input type="checkbox" name="group-student-member" value="' + s.id + '" ' + (selectedStudentIds.has(s.id) ? 'checked' : '') + ' />' +
+            '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<span>' + s.firstName + ' ' + s.lastName + '</span>' +
+          '</label>'
+        ).join('');
+      }
+    }
+
+    window.openModal('modal-create-group');
+  };
+
+  window.handleSaveGroup = function(e) {
+    e.preventDefault();
+    const editId = document.getElementById('edit-group-id').value;
+    const name = document.getElementById('new-group-name').value.trim();
+    const colorRadio = document.querySelector('input[name="group-color"]:checked');
+    const color = colorRadio ? colorRadio.value : '#2563eb';
+    const checked = document.querySelectorAll('input[name="group-student-member"]:checked');
+    const studentIds = Array.from(checked).map(c => c.value);
+
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+
+    if (editId) {
+      store.updateGroup(editId, { name, color, studentIds });
+    } else {
+      store.addGroup({ classId: cls.id, name, color, studentIds });
+    }
+
+    window.closeAllModals();
+    renderCurrentView();
+  };
+
+  window.handleDeleteGroup = function(groupId) {
+    const g = store.getGroup(groupId);
+    if (!g) return;
+    window.confirmAction({
+      title: 'Delete Team Group',
+      message: 'Are you sure you want to delete ' + g.name + '? The students\' learning records will not be affected.',
+      confirmText: 'Delete Group',
+      isDanger: true,
+      onConfirm: function() {
+        store.deleteGroup(groupId);
+        renderCurrentView();
+      }
+    });
+  };
+
+  window.handleAwardGroupXP = function(groupId, amount = 5) {
+    const group = store.getGroup(groupId);
+    if (!group) return;
+    const txs = store.awardGroupXP(groupId, amount, 'Team Points');
+    alert('✓ Awarded +' + amount + ' ⭐ to all ' + txs.length + ' members of ' + group.name + '!');
+    renderCurrentView();
+  };
+
+  // Random Student Selector
+  window.openRandomStudentModal = function() {
+    const avatar = document.getElementById('random-student-avatar');
+    const name = document.getElementById('random-student-name');
+    const meta = document.getElementById('random-student-meta');
+    const rewardBtn = document.getElementById('btn-reward-random');
+    if (avatar) avatar.textContent = '🎲';
+    if (name) name.textContent = 'Ready to Pick!';
+    if (meta) meta.textContent = 'Click Spin to select a random learner';
+    if (rewardBtn) rewardBtn.style.display = 'none';
+    lastPickedStudentId = null;
+
+    window.openModal('modal-random-selector');
+  };
+
+  window.handleSpinRandomStudent = function() {
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    let students = store.getStudentsByClass(cls.id);
+    const excludeCheckbox = document.getElementById('random-exclude-picked');
+    if (excludeCheckbox && excludeCheckbox.checked && randomPickerExclusions.size > 0) {
+      students = students.filter(s => !randomPickerExclusions.has(s.id));
+      if (students.length === 0) {
+        alert('All students have had a turn! Resetting exclusions.');
+        randomPickerExclusions.clear();
+        students = store.getStudentsByClass(cls.id);
+      }
+    }
+
+    if (students.length === 0) {
+      alert('No students in this class to pick from.');
+      return;
+    }
+
+    const avatarEl = document.getElementById('random-student-avatar');
+    const nameEl = document.getElementById('random-student-name');
+    const metaEl = document.getElementById('random-student-meta');
+    const rewardBtn = document.getElementById('btn-reward-random');
+
+    let count = 0;
+    const emojis = ['👧', '👦', '🧒', '🦸', '🦊', '🐼', '🚀', '⭐'];
+    const interval = setInterval(() => {
+      const rnd = students[Math.floor(Math.random() * students.length)];
+      if (avatarEl) avatarEl.textContent = emojis[count % emojis.length];
+      if (nameEl) nameEl.textContent = rnd.firstName.toUpperCase();
+      count++;
+      if (count > 10) {
+        clearInterval(interval);
+        const finalStudent = students[Math.floor(Math.random() * students.length)];
+        lastPickedStudentId = finalStudent.id;
+        if (excludeCheckbox && excludeCheckbox.checked) {
+          randomPickerExclusions.add(finalStudent.id);
+        }
+        if (avatarEl) {
+          avatarEl.textContent = getStudentAvatarEmoji(finalStudent.avatar);
+          avatarEl.style.transform = 'scale(1.2)';
+          setTimeout(() => { if (avatarEl) avatarEl.style.transform = 'scale(1)'; }, 300);
+        }
+        if (nameEl) nameEl.textContent = '🎉 ' + finalStudent.firstName.toUpperCase() + '!';
+        if (metaEl) metaEl.textContent = cls.name + ' · CEFR: ' + (finalStudent.overallCefr || 'A1') + ' · ⭐ ' + store.getStudentTotalXP(finalStudent.id);
+        if (rewardBtn) rewardBtn.style.display = 'inline-flex';
+      }
+    }, 80);
+  };
+
+  window.handleRewardPickedStudent = function() {
+    if (!lastPickedStudentId) return;
+    const s = store.getStudent(lastPickedStudentId);
+    if (!s) return;
+    store.giveXP(s.id, 5, '🎲 Random Challenger Spotlight', 'Ms. Sarah');
+    alert('✓ Awarded +5 ⭐ to ' + s.firstName + '!');
+    renderCurrentView();
+  };
+
+  // Floating Live Classroom Timer
+  window.toggleFloatingTimer = function(forceState = null) {
+    const timer = document.getElementById('classroom-floating-timer');
+    if (!timer) return;
+    const shouldShow = forceState !== null ? forceState : (timer.style.display === 'none' || !timer.style.display);
+    timer.style.display = shouldShow ? 'block' : 'none';
+  };
+
+  window.setTimerMinutes = function(mins) {
+    timerPresetSeconds = mins * 60;
+    timerRemainingSeconds = timerPresetSeconds;
+    timerIsRunning = false;
+    if (timerInterval) clearInterval(timerInterval);
+    const startBtn = document.getElementById('btn-timer-start');
+    if (startBtn) startBtn.textContent = '▶ Start';
+    window.updateTimerDisplay();
+
+    const presets = document.querySelectorAll('.timer-preset-btn');
+    presets.forEach(p => p.classList.remove('is-active'));
+    const matching = Array.from(presets).find(p => p.textContent.trim() === mins + 'm');
+    if (matching) matching.classList.add('is-active');
+  };
+
+  window.promptCustomTimer = function() {
+    const custom = prompt('Enter timer minutes (e.g. 2 or 7):', '2');
+    const mins = parseInt(custom, 10);
+    if (mins && mins > 0) {
+      window.setTimerMinutes(mins);
+    }
+  };
+
+  window.toggleTimerRunning = function() {
+    const startBtn = document.getElementById('btn-timer-start');
+    if (timerIsRunning) {
+      // Pause
+      timerIsRunning = false;
+      if (timerInterval) clearInterval(timerInterval);
+      if (startBtn) startBtn.textContent = '▶ Resume';
+    } else {
+      // Start
+      timerIsRunning = true;
+      if (startBtn) startBtn.textContent = '⏸ Pause';
+      timerInterval = setInterval(() => {
+        if (timerRemainingSeconds > 0) {
+          timerRemainingSeconds--;
+          window.updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerIsRunning = false;
+          if (startBtn) startBtn.textContent = '▶ Start';
+          window.playTimerChime();
+        }
+      }, 1000);
+    }
+  };
+
+  window.resetTimer = function() {
+    timerIsRunning = false;
+    if (timerInterval) clearInterval(timerInterval);
+    timerRemainingSeconds = timerPresetSeconds;
+    const startBtn = document.getElementById('btn-timer-start');
+    if (startBtn) startBtn.textContent = '▶ Start';
+    window.updateTimerDisplay();
+  };
+
+  window.updateTimerDisplay = function() {
+    const display = document.getElementById('timer-digits');
+    if (!display) return;
+    const m = Math.floor(timerRemainingSeconds / 60);
+    const s = timerRemainingSeconds % 60;
+    display.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  };
+
+  window.playTimerChime = function() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2); // A5
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.8);
+      }
+    } catch (e) {
+      console.log('Timer chime:', e);
+    }
+    alert('⏰ Time is up!');
+  };
+
+  // Fast Attendance Modal
+  window.openFastAttendanceModal = function() {
+    const modal = document.getElementById('modal-fast-attendance');
+    const container = document.getElementById('fast-attendance-list');
+    const dateDisplay = document.getElementById('fast-att-date-display');
+    if (!modal || !container) return;
+
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+    const today = new Date().toISOString().split('T')[0];
+
+    if (dateDisplay) {
+      dateDisplay.textContent = 'Today · ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    // Read current statuses or default to Present
+    const existing = store.getAttendanceRecords(cls.id).filter(r => r.date === today);
+    const statusMap = {};
+    existing.forEach(r => { statusMap[r.studentId] = r.status; });
+
+    container.innerHTML = students.map(s => {
+      const status = statusMap[s.id] || 'Present';
+      return '' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-card-secondary); border-radius:10px;" data-att-student="' + s.id + '">' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<span style="font-size:1.3rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<span style="font-weight:700; font-size:0.92rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
+          '</div>' +
+          '<div class="classroom-view-toggle-pills" style="gap:2px;">' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Present' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Present\', this)">✓ Present</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Late' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Late\', this)">◷ Late</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Absent' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Absent\', this)">✕ Absent</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Excused' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Excused\', this)">○ Excused</button>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    window.updateFastAttCounterSummary();
+    window.openModal('modal-fast-attendance');
+  };
+
+  window.handleToggleStudentAttFast = function(studentId, status, btn) {
+    const row = document.querySelector('[data-att-student="' + studentId + '"]');
+    if (!row) return;
+    const buttons = row.querySelectorAll('.classroom-view-pill-btn');
+    buttons.forEach(b => b.classList.remove('is-active'));
+    if (btn) btn.classList.add('is-active');
+    window.updateFastAttCounterSummary();
+  };
+
+  window.handleMarkAllPresentFast = function() {
+    const rows = document.querySelectorAll('#fast-attendance-list > div');
+    rows.forEach(r => {
+      const buttons = r.querySelectorAll('.classroom-view-pill-btn');
+      buttons.forEach(b => b.classList.remove('is-active'));
+      if (buttons[0]) buttons[0].classList.add('is-active'); // Present
+    });
+    window.updateFastAttCounterSummary();
+  };
+
+  window.updateFastAttCounterSummary = function() {
+    const summary = document.getElementById('fast-att-counter-summary');
+    if (!summary) return;
+    let present = 0, late = 0, absent = 0;
+    const rows = document.querySelectorAll('#fast-attendance-list > div');
+    rows.forEach(r => {
+      const active = r.querySelector('.classroom-view-pill-btn.is-active');
+      if (active) {
+        const text = active.textContent;
+        if (text.includes('Present')) present++;
+        else if (text.includes('Late')) late++;
+        else if (text.includes('Absent')) absent++;
+      }
+    });
+    summary.textContent = present + ' Present · ' + late + ' Late · ' + absent + ' Absent';
+  };
+
+  window.handleSaveFastAttendance = function() {
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const rows = document.querySelectorAll('#fast-attendance-list > div');
+    const today = new Date().toISOString().split('T')[0];
+    const statusMap = {};
+
+    rows.forEach(r => {
+      const studentId = r.getAttribute('data-att-student');
+      const active = r.querySelector('.classroom-view-pill-btn.is-active');
+      if (studentId && active) {
+        const text = active.textContent.trim();
+        const status = text.includes('Present') ? 'Present' : text.includes('Late') ? 'Late' : text.includes('Absent') ? 'Absent' : 'Excused';
+        statusMap[studentId] = status;
+      }
+    });
+
+    store.recordBulkAttendance(cls.id, today, statusMap);
+    window.closeAllModals();
+    alert('✓ Attendance saved for ' + Object.keys(statusMap).length + ' students in ' + cls.name + '!');
+    renderCurrentView();
+  };
+
+  // Quick Assessment Formative Modal
+  window.openQuickAssessmentModal = function(studentId = null) {
+    const select = document.getElementById('quick-ass-student');
+    if (!select) return;
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+
+    select.innerHTML = students.map(s => '' +
+      '<option value="' + s.id + '" ' + (studentId === s.id ? 'selected' : '') + '>' +
+        getStudentAvatarEmoji(s.avatar) + ' ' + s.firstName + ' ' + s.lastName + ' (' + (s.overallCefr || 'A1') + ')' +
+      '</option>'
+    ).join('');
+
+    window.openModal('modal-quick-assessment');
+  };
+
+  window.handleSaveQuickAssessment = function(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('quick-ass-student').value;
+    const skill = document.getElementById('quick-ass-skill').value;
+    const rating = document.getElementById('quick-ass-rating').value;
+    const objective = document.getElementById('quick-ass-objective').value.trim();
+    const comment = document.getElementById('quick-ass-comment').value.trim();
+
+    store.recordQuickAssessment({
+      studentId,
+      skill,
+      objective,
+      rating,
+      comment,
+      teacherName: 'Ms. Sarah'
+    });
+
+    window.closeAllModals();
+    alert('✓ Recorded ' + skill + ' assessment for ' + store.getStudent(studentId).firstName + ' (+10 ⭐)!');
+    renderCurrentView();
+  };
+
+  // Quick Evidence (Worksheets) Modal
+  window.openQuickEvidenceModal = function() {
+    const container = document.getElementById('quick-ev-students-scores');
+    if (!container) return;
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+
+    container.innerHTML = students.map(s => '' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--bg-card); border-radius:8px; border:1px solid var(--border-subtle);">' +
+        '<div style="display:flex; align-items:center; gap:8px;">' +
+          '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+          '<span style="font-weight:700; font-size:0.86rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
+        '</div>' +
+        '<div style="display:flex; align-items:center; gap:6px;">' +
+          '<input type="number" class="quick-ev-input filter-select" data-student-id="' + s.id + '" value="8" min="0" max="10" style="width:60px; text-align:center; padding:4px;" />' +
+          '<span style="font-size:0.8rem; color:var(--text-muted);">/ 10</span>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+
+    window.openModal('modal-quick-evidence');
+  };
+
+  window.handleSaveQuickEvidence = function(e) {
+    e.preventDefault();
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const title = document.getElementById('quick-ev-title').value.trim();
+    const maxScore = parseInt(document.getElementById('quick-ev-max').value, 10) || 10;
+    const inputs = document.querySelectorAll('.quick-ev-input');
+
+    const scores = Array.from(inputs).map(inp => ({
+      studentId: inp.getAttribute('data-student-id'),
+      score: parseInt(inp.value, 10) || 0,
+      maxScore,
+      skill: 'Writing'
+    }));
+
+    store.recordQuickEvidence({
+      classId: cls.id,
+      activityTitle: title,
+      scores,
+      teacherName: 'Ms. Sarah'
+    });
+
+    window.closeAllModals();
+    alert('✓ Recorded worksheet evidence for ' + scores.length + ' students!');
+    renderCurrentView();
+  };
+
+  // Smartboard / 🎓 Classroom Mode Toggle
+  window.toggleSmartboardMode = function() {
+    isClassroomSmartboardMode = !isClassroomSmartboardMode;
+    if (isClassroomSmartboardMode) {
+      document.body.classList.add('classroom-mode-active');
+    } else {
+      document.body.classList.remove('classroom-mode-active');
+    }
+    const label = document.getElementById('label-smartboard-mode');
+    if (label) label.textContent = isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode';
+    renderCurrentView();
+  };
+
+  // Delete / Correct Transaction from Student Points History
+  window.handleDeleteXPTransaction = function(txId, studentId) {
+    window.confirmAction({
+      title: 'Remove Points Transaction',
+      message: 'Are you sure you want to remove this points transaction? The student\'s total XP will be recalculated.',
+      confirmText: 'Remove Transaction',
+      isDanger: true,
+      onConfirm: function() {
+        store.deleteXPTransaction(txId);
+        window.openStudentDetail(studentId, 'xp');
+      }
+    });
+  };
+
+  // Multi-Select Shortcuts
+  window.openAssignModalForSelected = function() {
+    window.openModal('modal-create-assignment');
+  };
+
+  window.openAttendanceForSelected = function() {
+    window.openFastAttendanceModal();
+  };
+
+  window.openAddSelectedToGroup = function() {
+    window.openCreateGroupModal();
+  };
+
+  window.openMessageForSelected = function() {
+    alert('Opening parent message broadcast for ' + selectedStudentIds.size + ' families...');
+    switchView('messages');
+  };
+
+  window.openAssignModalForGroup = function(groupId) {
+    const group = store.getGroup(groupId);
+    if (!group) return;
+    window.openModal('modal-create-assignment');
+  };
+
 
 })(typeof window !== 'undefined' ? window : global);

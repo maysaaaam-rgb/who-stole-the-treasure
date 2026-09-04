@@ -610,6 +610,316 @@
   </div>
 
   
+  
+  <!-- ========================================================================
+       CLASSROOM HUB MODALS & LIVE TOOLKIT WIDGETS
+       ======================================================================== -->
+
+  <!-- Quick Points System Modal -->
+  <div class="modal-overlay" id="modal-quick-points">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <span style="font-size:1.6rem;">⭐</span>
+        <h2 style="font-size:1.3rem; font-weight:800; margin:0;">Award Classroom Points</h2>
+      </div>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">Select students, choose points, and celebrate positive learning behaviors.</p>
+      
+      <form onsubmit="handleExecuteQuickPoints(event)" style="display:flex; flex-direction:column; gap:14px;">
+        <!-- Students Multi-Selection Container -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="font-size:0.8rem; font-weight:700;">Select Students</label>
+            <button type="button" class="btn-sm-secondary" style="font-size:0.75rem; padding:2px 8px;" onclick="handleToggleSelectAllPointsStudents()">Select All</button>
+          </div>
+          <div id="quick-points-students-list" class="points-students-select-grid" style="max-height:130px; overflow-y:auto; padding:6px; background:var(--bg-card-secondary); border-radius:8px; border:1px solid var(--border-subtle);">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Points Amount Picker -->
+        <div>
+          <label style="font-size:0.8rem; font-weight:700; margin-bottom:6px; display:block;">Amount</label>
+          <div class="points-amount-pills" style="display:flex; gap:8px;">
+            <button type="button" class="btn-points-amount is-active" data-amount="5" onclick="setQuickPointsAmount(5, this)">+5 ⭐</button>
+            <button type="button" class="btn-points-amount" data-amount="1" onclick="setQuickPointsAmount(1, this)">+1 ⭐</button>
+            <button type="button" class="btn-points-amount" data-amount="2" onclick="setQuickPointsAmount(2, this)">+2 ⭐</button>
+            <button type="button" class="btn-points-amount" data-amount="10" onclick="setQuickPointsAmount(10, this)">+10 ⭐</button>
+            <button type="button" class="btn-points-amount" data-amount="20" onclick="setQuickPointsAmount(20, this)">+20 ⭐</button>
+          </div>
+          <input type="hidden" id="quick-points-amount-val" value="5" />
+        </div>
+
+        <!-- Positive Reason Grid -->
+        <div>
+          <label style="font-size:0.8rem; font-weight:700; margin-bottom:6px; display:block;">Reason for Recognition</label>
+          <div class="points-reason-grid" id="quick-points-reasons">
+            <button type="button" class="points-reason-btn is-active" onclick="setQuickPointsReason('👏 Great participation', this)"><span>👏</span> <span>Great participation</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('🗣 Spoke English confidently', this)"><span>🗣</span> <span>Spoke English confidently</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('📚 Excellent work', this)"><span>📚</span> <span>Excellent work</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('🤝 Helping a classmate', this)"><span>🤝</span> <span>Helping others</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('🎯 Completed challenge', this)"><span>🎯</span> <span>Completed challenge</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('✏️ Great effort & focus', this)"><span>✏️</span> <span>Great effort</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('🌟 Star of the Day', this)"><span>🌟</span> <span>Star of the Day</span></button>
+            <button type="button" class="points-reason-btn" onclick="setQuickPointsReason('📖 Fluent story reading', this)"><span>📖</span> <span>Fluent reading</span></button>
+          </div>
+          <input type="hidden" id="quick-points-reason-val" value="👏 Great participation" />
+          <input type="text" id="quick-points-custom-reason" class="filter-select" style="width:100%; margin-top:8px;" placeholder="Or type a custom praise note..." oninput="document.getElementById('quick-points-reason-val').value = this.value;" />
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action" style="padding:8px 20px;">Award Points</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create / Edit Group Modal -->
+  <div class="modal-overlay" id="modal-create-group">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="group-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">👥 Create Classroom Group</h2>
+      <form onsubmit="handleSaveGroup(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-group-id" value="" />
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Group Name</label>
+          <input type="text" id="new-group-name" class="filter-select" style="width:100%;" required placeholder="e.g. Blue Dolphins or Team Gryphon" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Team Color</label>
+          <div class="color-picker-palette" style="display:flex; gap:10px;">
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#2563eb" checked><span class="color-swatch-circle" style="background:#2563eb;"></span></label>
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#10b981"><span class="color-swatch-circle" style="background:#10b981;"></span></label>
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#f59e0b"><span class="color-swatch-circle" style="background:#f59e0b;"></span></label>
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#ef4444"><span class="color-swatch-circle" style="background:#ef4444;"></span></label>
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#8b5cf6"><span class="color-swatch-circle" style="background:#8b5cf6;"></span></label>
+            <label class="color-swatch-label"><input type="radio" name="group-color" value="#06b6d4"><span class="color-swatch-circle" style="background:#06b6d4;"></span></label>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Students in Group</label>
+          <div id="group-students-select-container" class="points-students-select-grid" style="max-height:160px; overflow-y:auto; padding:8px; background:var(--bg-card-secondary); border-radius:8px; border:1px solid var(--border-subtle);">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" id="btn-save-group-submit" class="btn-primary-action">Create Group</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Random Student Selector Modal -->
+  <div class="modal-overlay" id="modal-random-selector">
+    <div class="modal-dialog" style="max-width: 460px; text-align:center;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:6px;">🎲 Random Student Picker</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:16px;">Pick a student for questions, helpers, or games.</p>
+
+      <div class="random-spotlight-card" id="random-spotlight-box" style="padding:24px 16px; background:var(--bg-card-secondary); border-radius:14px; border:2px dashed var(--border-subtle); margin-bottom:18px;">
+        <div id="random-student-avatar" style="font-size:72px; line-height:1; margin-bottom:10px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);">🎲</div>
+        <div id="random-student-name" style="font-size:1.6rem; font-weight:900; color:var(--text-primary);">Ready to Pick!</div>
+        <div id="random-student-meta" style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Click Spin to select a random learner</div>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+        <button type="button" class="btn-primary-action" id="btn-spin-random" style="padding:10px 22px; font-size:0.96rem;" onclick="handleSpinRandomStudent()">🎲 Pick Student</button>
+        <button type="button" class="btn-sm-secondary" id="btn-reward-random" style="padding:10px 16px; display:none;" onclick="handleRewardPickedStudent()">⭐ Award +5 XP</button>
+      </div>
+
+      <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--text-muted); cursor:pointer;">
+        <input type="checkbox" id="random-exclude-picked" /> Exclude picked student from next turn
+      </label>
+    </div>
+  </div>
+
+  <!-- Floating Live Classroom Timer -->
+  <div id="classroom-floating-timer" class="classroom-floating-timer" style="display:none;">
+    <div class="timer-header">
+      <span style="font-weight:700; font-size:0.84rem; display:flex; align-items:center; gap:6px;">⏱ Classroom Timer</span>
+      <button class="timer-close-btn" onclick="toggleFloatingTimer(false)">✕</button>
+    </div>
+    <div class="timer-display" id="timer-digits">03:00</div>
+    <div class="timer-presets-row">
+      <button type="button" class="timer-preset-btn" onclick="setTimerMinutes(1)">1m</button>
+      <button type="button" class="timer-preset-btn is-active" onclick="setTimerMinutes(3)">3m</button>
+      <button type="button" class="timer-preset-btn" onclick="setTimerMinutes(5)">5m</button>
+      <button type="button" class="timer-preset-btn" onclick="setTimerMinutes(10)">10m</button>
+      <button type="button" class="timer-preset-btn" onclick="promptCustomTimer()">Custom</button>
+    </div>
+    <div class="timer-controls-row">
+      <button type="button" class="btn-timer-action" id="btn-timer-start" onclick="toggleTimerRunning()">▶ Start</button>
+      <button type="button" class="btn-timer-action btn-timer-reset" onclick="resetTimer()">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- Fast Attendance Roll Call Modal -->
+  <div class="modal-overlay" id="modal-fast-attendance">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <h2 style="font-size:1.3rem; font-weight:800; margin:0;">📋 Daily Attendance Roll Call</h2>
+          <div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;" id="fast-att-date-display">Today · September 4, 2026</div>
+        </div>
+        <button type="button" class="btn-sm-secondary" style="font-weight:700;" onclick="handleMarkAllPresentFast()">✓ Mark All Present</button>
+      </div>
+
+      <div id="fast-attendance-list" style="max-height:360px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+        <!-- Populated dynamically -->
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div id="fast-att-counter-summary" style="font-size:0.84rem; font-weight:700; color:var(--text-muted);">
+          6 Present · 0 Late · 0 Absent
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="button" class="btn-primary-action" onclick="handleSaveFastAttendance()">Save Attendance</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Formative Assessment Modal -->
+  <div class="modal-overlay" id="modal-quick-assessment">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:8px;">📝 Quick Live Assessment</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">Rapidly record spoken or written evidence during class activities.</p>
+      
+      <form onsubmit="handleSaveQuickAssessment(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student</label>
+          <select id="quick-ass-student" class="filter-select" style="width:100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Skill</label>
+            <select id="quick-ass-skill" class="filter-select" style="width:100%;">
+              <option value="Speaking">Speaking &amp; Fluency</option>
+              <option value="Listening">Listening Comprehension</option>
+              <option value="Vocabulary">Vocabulary Range</option>
+              <option value="Grammar">Grammar &amp; Accuracy</option>
+              <option value="Reading">Reading</option>
+              <option value="Writing">Writing</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Mastery Rating</label>
+            <select id="quick-ass-rating" class="filter-select" style="width:100%;">
+              <option value="Achieving" selected>Achieving (85%)</option>
+              <option value="Excelling">Excelling (100%)</option>
+              <option value="Developing">Developing (70%)</option>
+              <option value="Beginning">Beginning (50%)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Communicative Objective</label>
+          <input type="text" id="quick-ass-objective" class="filter-select" style="width:100%;" placeholder="e.g. Answer Wh- questions using present simple" required />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Observation</label>
+          <textarea id="quick-ass-comment" class="filter-select" style="width:100%; height:54px;" placeholder="Student spoke spontaneously with clear pronunciation..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Record Assessment (+10 XP)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quick Worksheet Score Recording Modal -->
+  <div class="modal-overlay" id="modal-quick-evidence">
+    <div class="modal-dialog" style="max-width: 560px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:8px;">📄 Quick Worksheet &amp; Evidence Entry</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">Enter scores for paper worksheets or classroom exercises.</p>
+
+      <form onsubmit="handleSaveQuickEvidence(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Activity / Worksheet Name</label>
+            <input type="text" id="quick-ev-title" class="filter-select" style="width:100%;" required placeholder="e.g. Prepositions of Place Worksheet" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Max Score</label>
+            <input type="number" id="quick-ev-max" class="filter-select" style="width:100%;" value="10" min="1" max="100" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student Scores</label>
+          <div id="quick-ev-students-scores" style="max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding:6px; background:var(--bg-card-secondary); border-radius:8px;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save All Evidence</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Multi-Select Action Bar -->
+  <div id="floating-multiselect-bar" class="floating-multiselect-bar" style="display:none;">
+    <div class="multiselect-count"><span id="multiselect-count-badge">0</span> selected</div>
+    <div class="multiselect-actions">
+      <button type="button" class="btn-multiselect-action" onclick="openQuickPointsForSelected()">⭐ Give Points</button>
+      <button type="button" class="btn-multiselect-action" onclick="openAssignModalForSelected()">📝 Assign Activity</button>
+      <button type="button" class="btn-multiselect-action" onclick="openAttendanceForSelected()">✓ Take Attendance</button>
+      <button type="button" class="btn-multiselect-action" onclick="openAddSelectedToGroup()">👥 Add to Group</button>
+      <button type="button" class="btn-multiselect-action" onclick="openMessageForSelected()">💬 Message Parents</button>
+      <button type="button" class="btn-multiselect-action" onclick="clearSelectedStudents()">✕ Clear</button>
+    </div>
+  </div>
+
+  <!-- Bottom Classroom Toolkit Dock -->
+  <div id="classroom-floating-toolkit" class="classroom-toolkit-dock" style="display:none;">
+    <div class="toolkit-inner">
+      <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
+        <span class="toolkit-icon">🎲</span>
+        <span class="toolkit-label">Random</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="toggleFloatingTimer()" title="Classroom Timer">
+        <span class="toolkit-icon">⏱</span>
+        <span class="toolkit-label">Timer</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Groups">
+        <span class="toolkit-icon">👥</span>
+        <span class="toolkit-label">Groups</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
+        <span class="toolkit-icon">✓</span>
+        <span class="toolkit-label">Attendance</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openQuickPointsModal()" title="Award Classroom Points">
+        <span class="toolkit-icon">⭐</span>
+        <span class="toolkit-label">Points</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openQuickAssessmentModal()" title="Quick Formative Assessment">
+        <span class="toolkit-icon">📝</span>
+        <span class="toolkit-label">Assess</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openQuickEvidenceModal()" title="Quick Worksheet Scoring">
+        <span class="toolkit-icon">📄</span>
+        <span class="toolkit-label">Evidence</span>
+      </button>
+      <button type="button" class="toolkit-item-btn toolkit-btn-mode" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
+        <span class="toolkit-icon">🎓</span>
+        <span class="toolkit-label" id="label-smartboard-mode">Classroom Mode</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Reusable Confirmation Modal -->
   <div class="modal-overlay" id="modal-confirm-action">
     <div class="modal-dialog" style="max-width: 440px; text-align:center;">
