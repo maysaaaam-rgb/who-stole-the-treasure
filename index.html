@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Adventure Academy | Lesson Library</title>
-  <meta name="description" content="Professional ESL lesson library and teacher dashboard. Find interactive English lessons, classroom games, stories, and printable activities.">
+  <title>English Adventure Academy | Game Library</title>
+  <meta name="description" content="Professional ESL Game Library & Teacher Dashboard. Discover and launch interactive English classroom games, stories, mystery challenges, and printable worksheets with one click.">
 
-  <!-- Inter & Plus Jakarta Sans typography -->
+  <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
   <style>
     /* ==========================================================================
-       DESIGN TOKENS - PROFESSIONAL EDTECH SAAS
+       DESIGN SYSTEM & TOKENS - PROFESSIONAL EDTECH SAAS
        ========================================================================== */
     :root {
       --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      
+
       --bg-canvas: #f8fafc;
       --bg-surface: #ffffff;
       --bg-muted: #f1f5f9;
@@ -39,8 +39,8 @@
       --color-primary-hover: #1d4ed8;
       --color-primary-soft: #eff6ff;
 
-      --color-success: #059669;
-      --color-success-soft: #ecfdf5;
+      --color-emerald: #059669;
+      --color-emerald-soft: #ecfdf5;
 
       --color-amber: #d97706;
       --color-amber-soft: #fffbeb;
@@ -48,18 +48,17 @@
       --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
       --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
       --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
 
       --radius-sm: 6px;
       --radius-md: 10px;
       --radius-lg: 14px;
       --radius-pill: 9999px;
 
-      --transition: 0.18s ease;
+      --transition: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* ==========================================================================
-       BASE & RESET (CLEAN & MINIMAL)
-       ========================================================================== */
+    /* Reset & Base */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -94,7 +93,7 @@
     .top-nav {
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 50;
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-light);
     }
@@ -124,6 +123,7 @@
       font-weight: 800;
       letter-spacing: -0.3px;
       color: var(--text-main);
+      cursor: pointer;
     }
 
     .brand-icon {
@@ -215,6 +215,7 @@
       font-weight: 600;
       color: var(--text-main);
       cursor: pointer;
+      transition: var(--transition);
     }
 
     .user-profile:hover {
@@ -241,179 +242,229 @@
     .library-header {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-light);
-      padding: 32px 0 28px;
+      padding: 32px 0 24px;
     }
 
     .library-header-inner {
       max-width: 1440px;
       margin: 0 auto;
       padding: 0 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
     }
 
-    .library-headline h1 {
+    .header-titles {
+      margin-bottom: 20px;
+    }
+
+    .page-title {
       font-size: 1.85rem;
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--text-main);
-      line-height: 1.2;
+      margin-bottom: 6px;
     }
 
-    .library-headline p {
-      font-size: 0.95rem;
+    .page-subtitle {
+      font-size: 0.96rem;
       color: var(--text-muted);
-      margin-top: 4px;
+      font-weight: 400;
     }
 
-    /* Professional Search Box */
+    /* Search & Filters Bar */
+    .controls-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     .search-box-wrap {
       position: relative;
-      display: flex;
-      align-items: center;
-      max-width: 980px;
+      width: 100%;
+      max-width: 680px;
     }
 
     .search-icon {
       position: absolute;
-      left: 16px;
-      width: 18px;
-      height: 18px;
-      color: var(--text-muted);
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
       pointer-events: none;
+      display: flex;
+      align-items: center;
     }
 
     .search-input {
       width: 100%;
-      height: 46px;
-      padding: 0 44px;
-      border-radius: var(--radius-sm);
+      height: 44px;
+      padding: 0 75px 0 42px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-medium);
-      background: var(--bg-canvas);
-      font-size: 0.94rem;
-      font-weight: 500;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
       color: var(--text-main);
-      outline: none;
       transition: var(--transition);
+      box-shadow: var(--shadow-xs);
     }
 
     .search-input:focus {
+      outline: none;
       border-color: var(--border-focus);
-      background: var(--bg-surface);
-      box-shadow: 0 0 0 3px var(--color-primary-soft);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-subtle);
+    }
+
+    .search-shortcut-hint {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-subtle);
+      background: var(--bg-muted);
+      border: 1px solid var(--border-light);
+      padding: 2px 7px;
+      border-radius: 4px;
+      pointer-events: none;
     }
 
     .search-clear-btn {
       position: absolute;
-      right: 14px;
+      right: 42px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-muted);
       color: var(--text-muted);
-      font-size: 1.1rem;
-      cursor: pointer;
       display: none;
-      padding: 4px;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
     }
 
-    /* Filter Controls Row */
-    .filters-bar {
+    .search-clear-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+
+    /* Filters Row */
+    .filters-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
       flex-wrap: wrap;
+      gap: 12px;
     }
 
-    .filter-selects-group {
+    .filters-group {
       display: flex;
       align-items: center;
-      gap: 8px;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
     .filter-select {
       height: 36px;
-      padding: 0 12px;
-      border-radius: var(--radius-sm);
+      padding: 0 28px 0 12px;
+      background: var(--bg-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
       border: 1px solid var(--border-light);
-      background: var(--bg-canvas);
-      font-size: 0.82rem;
-      font-weight: 600;
+      border-radius: var(--radius-sm);
+      font-size: 0.83rem;
+      font-weight: 500;
       color: var(--text-secondary);
       cursor: pointer;
-      outline: none;
+      appearance: none;
       transition: var(--transition);
     }
 
-    .filter-select:hover, .filter-select:focus {
+    .filter-select:hover {
       border-color: var(--border-medium);
-      color: var(--text-main);
+      background-color: var(--bg-muted);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--border-focus);
     }
 
     .filter-select.is-active {
       border-color: var(--color-primary);
-      background: var(--color-primary-soft);
+      background-color: var(--color-primary-soft);
       color: var(--color-primary);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .btn-reset-filters {
       font-size: 0.82rem;
       font-weight: 600;
       color: var(--color-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       display: none;
-      padding: 4px 6px;
+      transition: var(--transition);
     }
 
     .btn-reset-filters:hover {
+      background: var(--color-primary-soft);
       text-decoration: underline;
     }
 
     .sort-wrap {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.82rem;
-      font-weight: 600;
+      gap: 8px;
+      font-size: 0.83rem;
+      font-weight: 500;
       color: var(--text-muted);
     }
 
     /* ==========================================================================
-       3. MAIN LIBRARY AREA (SIDEBAR + CONTENT)
+       3. MAIN LAYOUT (SIDEBAR + CONTENT)
        ========================================================================== */
     .main-layout {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 28px 24px;
+      padding: 28px 24px 60px;
       display: grid;
       grid-template-columns: 240px 1fr;
       gap: 32px;
       align-items: start;
     }
 
-    /* --------------------------------------------------------------------------
-       SIDEBAR
-       -------------------------------------------------------------------------- */
+    /* Sidebar */
     .library-sidebar {
-      position: sticky;
-      top: 88px;
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       padding: 16px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+      position: sticky;
+      top: 84px;
       box-shadow: var(--shadow-xs);
+    }
+
+    .sidebar-group {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-group:last-child {
+      margin-bottom: 0;
     }
 
     .sidebar-group-title {
       font-size: 0.72rem;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       color: var(--text-subtle);
-      padding: 0 8px 4px;
+      padding: 0 10px;
+      margin-bottom: 6px;
     }
 
     .sidebar-list {
@@ -425,17 +476,17 @@
 
     .sidebar-btn {
       width: 100%;
-      padding: 7px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: left;
       cursor: pointer;
       transition: var(--transition);
-      text-align: left;
     }
 
     .sidebar-btn:hover {
@@ -450,12 +501,12 @@
     }
 
     .sidebar-count {
-      font-size: 0.74rem;
-      font-weight: 700;
+      font-size: 0.72rem;
+      font-weight: 600;
       color: var(--text-subtle);
+      background: var(--bg-muted);
       padding: 1px 6px;
       border-radius: var(--radius-pill);
-      background: var(--bg-canvas);
     }
 
     .sidebar-btn.is-active .sidebar-count {
@@ -466,35 +517,62 @@
     .sidebar-divider {
       height: 1px;
       background: var(--border-light);
-      margin: 2px 0;
+      margin: 12px 10px;
     }
 
-    /* --------------------------------------------------------------------------
-       CONTENT AREA
-       -------------------------------------------------------------------------- */
+    /* Main Content Container */
     .library-content {
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 32px;
-      min-width: 0;
     }
 
-    /* Continue Teaching Component */
-    .continue-teaching-card {
-      background: var(--bg-surface);
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 1.18rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+    }
+
+    .section-counter {
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       4. CONTINUE TEACHING SECTION
+       ========================================================================== */
+    .continue-card {
+      background: #ffffff;
       border: 1px solid var(--border-light);
       border-left: 4px solid var(--color-primary);
       border-radius: var(--radius-md);
-      padding: 14px 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       box-shadow: var(--shadow-xs);
-      flex-wrap: wrap;
+      transition: var(--transition);
     }
 
-    .continue-details {
+    .continue-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border-medium);
+      border-left-color: var(--color-primary-hover);
+    }
+
+    .continue-info {
       display: flex;
       flex-direction: column;
       gap: 3px;
@@ -502,14 +580,26 @@
 
     .continue-badge {
       font-size: 0.72rem;
-      font-weight: 800;
+      font-weight: 700;
+      color: var(--color-primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .continue-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--color-primary);
+      display: inline-block;
     }
 
     .continue-title {
-      font-size: 0.98rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: var(--text-main);
     }
@@ -520,96 +610,90 @@
     }
 
     .btn-continue {
-      padding: 8px 16px;
+      padding: 9px 18px;
+      background: var(--color-primary);
+      color: #ffffff;
       border-radius: var(--radius-sm);
       font-size: 0.84rem;
       font-weight: 700;
-      background: var(--color-primary);
-      color: #ffffff;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: var(--transition);
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
     }
 
     .btn-continue:hover {
       background: var(--color-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25);
     }
 
-    /* Section Headlines */
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-      color: var(--text-main);
-    }
-
-    .section-counter {
-      font-size: 0.86rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    /* Featured Lessons (Horizontal Cards) */
+    /* ==========================================================================
+       5. FEATURED LESSONS SECTION (HORIZONTAL SHOWCASE)
+       ========================================================================== */
     .featured-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
     }
 
     .featured-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
-      padding: 16px;
+      overflow: hidden;
       display: grid;
-      grid-template-columns: 130px 1fr;
-      gap: 16px;
+      grid-template-columns: 140px 1fr;
       box-shadow: var(--shadow-xs);
       transition: var(--transition);
     }
 
     .featured-card:hover {
       border-color: var(--border-medium);
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
     .featured-thumb {
-      width: 130px;
-      height: 110px;
-      border-radius: var(--radius-sm);
       background: var(--bg-muted);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       position: relative;
     }
 
-    .featured-card-content {
+    .featured-thumb svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .featured-body {
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .featured-tag {
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--color-primary);
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #92400e;
+      background: #fef3c7;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      align-self: flex-start;
+      letter-spacing: 0.3px;
     }
 
     .featured-title {
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
       color: var(--text-main);
       line-height: 1.3;
@@ -617,111 +701,113 @@
 
     .featured-meta {
       font-size: 0.78rem;
-      font-weight: 600;
       color: var(--text-muted);
-    }
-
-    .featured-desc {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-top: 2px;
+      margin-top: -4px;
     }
 
     .featured-actions {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
     }
 
-    .btn-open-featured {
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 700;
+    .btn-featured-start {
+      flex: 1;
+      padding: 7px 12px;
       background: var(--color-primary);
       color: #ffffff;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
     }
 
-    .btn-open-featured:hover {
+    .btn-featured-start:hover {
       background: var(--color-primary-hover);
     }
 
-    .btn-sheet-featured {
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 600;
-      border: 1px solid var(--border-light);
-      background: var(--bg-canvas);
+    .btn-featured-sheet {
+      padding: 7px 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
       color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      transition: var(--transition);
+      white-space: nowrap;
     }
 
-    .btn-sheet-featured:hover {
+    .btn-featured-sheet:hover {
       background: var(--bg-muted);
       color: var(--text-main);
     }
 
-    /* --------------------------------------------------------------------------
-       ALL LESSONS GRID & COMPACT LESSON CARDS (REBUILT FROM ZERO)
-       -------------------------------------------------------------------------- */
-    .lessons-grid {
+    /* ==========================================================================
+       6. REUSABLE GAMECARD COMPONENT GRID
+       ========================================================================== */
+    .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
 
-    .lesson-card {
+    /* Semantic Article Card - Strictly Zero Nested Links */
+    .game-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       overflow: hidden;
-      box-shadow: var(--shadow-xs);
       display: flex;
       flex-direction: column;
+      box-shadow: var(--shadow-xs);
       transition: var(--transition);
       position: relative;
     }
 
-    .lesson-card:hover {
+    .game-card:hover {
       border-color: var(--border-medium);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
-    /* Thumbnail Header */
+    /* Card Thumbnail Area */
     .card-thumbnail {
-      height: 140px;
-      background: var(--bg-muted);
       position: relative;
+      width: 100%;
+      height: 144px;
+      background: var(--bg-muted);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
+    .card-thumbnail svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .level-badge {
       position: absolute;
       top: 10px;
       left: 10px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(4px);
-      color: #ffffff;
       font-size: 0.72rem;
       font-weight: 800;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 4px;
       letter-spacing: 0.4px;
     }
 
@@ -732,25 +818,25 @@
       width: 30px;
       height: 30px;
       border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-muted);
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
       transition: var(--transition);
     }
 
     .bookmark-btn:hover {
       background: #ffffff;
-      color: var(--color-primary);
+      color: #e11d48;
       transform: scale(1.08);
     }
 
     .bookmark-btn.is-saved {
-      color: var(--color-amber);
+      color: #e11d48;
       background: #ffffff;
     }
 
@@ -760,25 +846,35 @@
       display: flex;
       flex-direction: column;
       flex: 1;
-      gap: 8px;
+      gap: 10px;
+    }
+
+    .card-category-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
 
     .card-title {
-      font-size: 1.02rem;
+      font-size: 1.05rem;
       font-weight: 700;
+      letter-spacing: -0.2px;
       color: var(--text-main);
       line-height: 1.35;
     }
 
     .card-desc {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
+      font-size: 0.84rem;
+      color: var(--text-muted);
       line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      flex: 1;
+      text-overflow: ellipsis;
+      min-height: 38px;
     }
 
     .card-meta {
@@ -787,19 +883,19 @@
       gap: 6px;
       font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text-muted);
-      margin-top: 4px;
+      color: var(--text-subtle);
     }
 
-    .card-meta span.separator {
-      color: var(--text-subtle);
+    .separator {
+      color: var(--border-medium);
     }
 
     .card-skills {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 2px;
+      gap: 5px;
+      margin-top: auto;
+      padding-top: 4px;
     }
 
     .skill-tag {
@@ -811,96 +907,135 @@
       color: var(--text-secondary);
     }
 
-    /* Card Footer (Non-nested clean links) */
+    /* Card Footer - 1-Click Launch Button */
     .card-footer {
       padding: 12px 16px;
+      background: var(--bg-canvas);
       border-top: 1px solid var(--border-light);
-      background: var(--bg-surface);
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
     }
 
-    .btn-open-lesson {
-      font-size: 0.84rem;
+    .btn-start {
+      flex: 1;
+      height: 38px;
+      background: var(--color-primary);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--color-primary);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 6px;
       transition: var(--transition);
+      letter-spacing: 0.3px;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
     }
 
-    .btn-open-lesson:hover {
-      color: var(--color-primary-hover);
-      gap: 7px;
+    .btn-start:hover {
+      background: var(--color-primary-hover);
+      box-shadow: 0 3px 6px rgba(37, 99, 235, 0.25);
     }
 
-    .btn-card-worksheet {
+    .btn-worksheet {
+      height: 38px;
+      padding: 0 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
       font-size: 0.78rem;
       font-weight: 600;
-      color: var(--color-success);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      transition: var(--transition);
+      white-space: nowrap;
     }
 
-    .btn-card-worksheet:hover {
-      text-decoration: underline;
-    }
-
-    /* Empty Search State */
-    .empty-results {
-      grid-column: 1 / -1;
-      background: var(--bg-surface);
-      border: 1px dashed var(--border-medium);
-      border-radius: var(--radius-md);
-      padding: 48px 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .empty-title {
-      font-size: 1.1rem;
-      font-weight: 700;
+    .btn-worksheet:hover {
+      background: var(--bg-muted);
+      border-color: var(--border-medium);
       color: var(--text-main);
     }
 
+    /* Empty State */
+    .empty-results {
+      grid-column: 1 / -1;
+      padding: 56px 24px;
+      text-align: center;
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-medium);
+      border-radius: var(--radius-md);
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .empty-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
     .empty-desc {
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
-      max-width: 360px;
+      max-width: 420px;
+      margin: 0 auto 16px;
     }
 
-    /* ==========================================================================
-       RESPONSIVE BEHAVIOR
-       ========================================================================== */
-    @media (max-width: 1024px) {
-      .main-layout {
-        grid-template-columns: 200px 1fr;
-        gap: 20px;
-        padding: 20px 16px;
-      }
-    }
-
-    @media (max-width: 840px) {
+    /* Responsive */
+    @media (max-width: 980px) {
       .main-layout {
         grid-template-columns: 1fr;
       }
       .library-sidebar {
+        position: static;
         display: none;
       }
-      .top-nav-inner, .library-header-inner {
+      .library-sidebar.is-open {
+        display: block;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top-nav-inner {
         padding: 0 16px;
       }
       .nav-tabs {
         display: none;
       }
-      .featured-grid {
+      .library-header {
+        padding: 24px 0 18px;
+      }
+      .library-header-inner {
+        padding: 0 16px;
+      }
+      .main-layout {
+        padding: 20px 16px 40px;
+      }
+      .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filters-group {
+        width: 100%;
+      }
+      .filter-select {
+        flex: 1;
+        min-width: 130px;
+      }
+      .featured-card {
         grid-template-columns: 1fr;
+      }
+      .featured-thumb {
+        height: 120px;
       }
     }
   </style>
@@ -908,12 +1043,12 @@
 <body>
 
   <!-- ========================================================================
-       TOP NAVIGATION
+       1. TOP NAVIGATION
        ======================================================================== -->
   <header class="top-nav">
     <div class="top-nav-inner">
       <div class="nav-left">
-        <a href="#" class="brand-logo" title="English Adventure Academy">
+        <a href="index.html" class="brand-logo" title="English Adventure Academy Home">
           <div class="brand-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -923,150 +1058,172 @@
           <span>English Adventure Academy</span>
         </a>
 
-        <ul class="nav-tabs">
-          <li><button class="nav-tab-link active" data-nav="library">Library</button></li>
-          <li><button class="nav-tab-link" data-nav="my-lessons">My Lessons <span class="nav-badge" id="badge-my-lessons">0</span></button></li>
-          <li><button class="nav-tab-link" data-nav="favorites">Favorites <span class="nav-badge" id="badge-favorites">0</span></button></li>
-          <li><button class="nav-tab-link" data-nav="worksheets">Worksheets</button></li>
-        </ul>
+        <nav>
+          <ul class="nav-tabs">
+            <li>
+              <button class="nav-tab-link active" data-nav="library">
+                <span>Game Library</span>
+                <span class="nav-badge" id="badge-total-games">15</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-tab-link" data-nav="favorites">
+                <span>Favorites</span>
+                <span class="nav-badge" id="badge-favorites">0</span>
+              </button>
+            </li>
+            <li>
+              <button class="nav-tab-link" data-nav="worksheets">
+                <span>Worksheets</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <div class="nav-right">
-        <button class="nav-icon-btn" onclick="focusSearch()" title="Search lessons (Press /)">
+        <button class="nav-icon-btn" onclick="focusSearch()" title="Search (Press /)" aria-label="Search shortcut">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
           </svg>
         </button>
-
-        <button class="nav-icon-btn" title="Settings">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-        </button>
-
-        <div class="user-profile" title="Teacher Account">
-          <div class="avatar-badge">TR</div>
-          <span>Teacher</span>
+        <div class="user-profile" title="Teacher Dashboard">
+          <div class="avatar-badge">TC</div>
+          <span>Teacher Mode</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- ========================================================================
-       LIBRARY HEADER (TITLE, SEARCH & FILTERS)
+       2. LIBRARY HEADER (SEARCH & FILTER CONTROLS)
        ======================================================================== -->
   <section class="library-header">
     <div class="library-header-inner">
-      <div class="library-headline">
-        <h1>Lesson Library</h1>
-        <p>Find interactive English lessons, classroom games, stories and printable activities.</p>
+      <div class="header-titles">
+        <h1 class="page-title">Game Library</h1>
+        <p class="page-subtitle">Interactive English games ready to play in your classroom.</p>
       </div>
 
-      <!-- Professional Search Input -->
-      <div class="search-box-wrap">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input type="text" id="search-input" class="search-input" placeholder="Search lessons, topics, grammar, vocabulary..." autocomplete="off">
-        <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()" title="Clear search">✕</button>
-      </div>
-
-      <!-- Compact Filters Bar -->
-      <div class="filters-bar">
-        <div class="filter-selects-group">
-          <!-- Level Filter -->
-          <select id="filter-level" class="filter-select" title="Filter by Level">
-            <option value="">Level: All</option>
-            <option value="Pre-A1">Pre-A1</option>
-            <option value="A1">A1</option>
-            <option value="A1+">A1+</option>
-            <option value="A2">A2</option>
-            <option value="B1">B1</option>
-          </select>
-
-          <!-- Age Filter -->
-          <select id="filter-age" class="filter-select" title="Filter by Age">
-            <option value="">Age: All</option>
-            <option value="5-6">5–6</option>
-            <option value="7-8">7–8</option>
-            <option value="9-10">9–10</option>
-            <option value="11-12">11–12</option>
-          </select>
-
-          <!-- Skill Filter -->
-          <select id="filter-skill" class="filter-select" title="Filter by Skill">
-            <option value="">Skill: All</option>
-            <option value="Speaking">Speaking</option>
-            <option value="Listening">Listening</option>
-            <option value="Reading">Reading</option>
-            <option value="Writing">Writing</option>
-            <option value="Vocabulary">Vocabulary</option>
-            <option value="Grammar">Grammar</option>
-            <option value="CLIL">CLIL</option>
-          </select>
-
-          <!-- Lesson Type Filter -->
-          <select id="filter-type" class="filter-select" title="Filter by Lesson Type">
-            <option value="">Lesson Type: All</option>
-            <option value="Interactive Lessons">Interactive Lessons</option>
-            <option value="Stories">Stories</option>
-            <option value="Classroom Games">Classroom Games</option>
-            <option value="Role Plays">Role Plays</option>
-            <option value="Mystery Games">Mystery Games</option>
-            <option value="Worksheets">Has Worksheets</option>
-          </select>
-
-          <!-- Duration Filter -->
-          <select id="filter-duration" class="filter-select" title="Filter by Duration">
-            <option value="">Duration: Any</option>
-            <option value="15">15 min</option>
-            <option value="30">30 min</option>
-            <option value="45">45 min</option>
-            <option value="60">60 min</option>
-          </select>
-
-          <button class="btn-reset-filters" id="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
+      <div class="controls-container">
+        <!-- Search Box -->
+        <div class="search-box-wrap">
+          <div class="search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.3-4.3"/>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-input" 
+            placeholder="Search games, topics, vocabulary, grammar..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" title="Clear search">✕</button>
+          <span class="search-shortcut-hint">/</span>
         </div>
 
-        <div class="sort-wrap">
-          <span>Sort:</span>
-          <select id="sort-select" class="filter-select" style="height: 34px;">
-            <option value="recommended">Recommended</option>
-            <option value="level">Level</option>
-            <option value="duration">Duration</option>
-            <option value="title">Title (A–Z)</option>
-          </select>
+        <!-- Filter Dropdowns Row -->
+        <div class="filters-row">
+          <div class="filters-group">
+            <!-- Level Filter -->
+            <select id="filter-level" class="filter-select" title="Filter by CEFR Level">
+              <option value="">Level: All</option>
+              <option value="A1">A1 Beginner</option>
+              <option value="A1+">A1+ Elementary</option>
+              <option value="A2">A2 Pre-Intermediate</option>
+            </select>
+
+            <!-- Age Filter -->
+            <select id="filter-age" class="filter-select" title="Filter by Age">
+              <option value="">Age: All</option>
+              <option value="5-6">Ages 5–6</option>
+              <option value="7-8">Ages 7–8</option>
+              <option value="9-10">Ages 9–10</option>
+            </select>
+
+            <!-- Skill Filter -->
+            <select id="filter-skill" class="filter-select" title="Filter by Target Skill">
+              <option value="">Skill: All</option>
+              <option value="Speaking">Speaking</option>
+              <option value="Listening">Listening</option>
+              <option value="Reading">Reading</option>
+              <option value="Writing">Writing</option>
+              <option value="Vocabulary">Vocabulary</option>
+              <option value="Grammar">Grammar</option>
+              <option value="CLIL">CLIL</option>
+            </select>
+
+            <!-- Category / Type Filter -->
+            <select id="filter-type" class="filter-select" title="Filter by Category">
+              <option value="">Category: All</option>
+              <option value="Classroom Games">Classroom Games</option>
+              <option value="Interactive Stories">Interactive Stories</option>
+              <option value="Mystery & Detective">Mystery & Detective</option>
+              <option value="Speaking Games">Speaking Games</option>
+              <option value="Grammar Games">Grammar Games</option>
+              <option value="Role Plays">Role Plays</option>
+              <option value="Quick Warm-ups">Quick Warm-ups</option>
+              <option value="CLIL">CLIL</option>
+              <option value="Worksheets">Has Worksheets</option>
+            </select>
+
+            <!-- Duration Filter -->
+            <select id="filter-duration" class="filter-select" title="Filter by Duration">
+              <option value="">Duration: Any</option>
+              <option value="15">≤ 15 min</option>
+              <option value="30">≤ 30 min</option>
+              <option value="40">≤ 40 min</option>
+              <option value="45">≤ 45 min</option>
+            </select>
+
+            <button class="btn-reset-filters" id="btn-reset-filters" onclick="resetFilters()">Reset filters</button>
+          </div>
+
+          <div class="sort-wrap">
+            <span>Sort:</span>
+            <select id="sort-select" class="filter-select" style="height: 36px;">
+              <option value="recommended">Recommended</option>
+              <option value="level">Level (A1 → A2)</option>
+              <option value="duration">Duration (Short → Long)</option>
+              <option value="title">Title (A–Z)</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========================================================================
-       MAIN LIBRARY AREA
+       3. MAIN LAYOUT (SIDEBAR + MAIN CONTENT)
        ======================================================================== -->
   <div class="main-layout">
 
-    <!-- NEW SIDEBAR COMPONENT -->
-    <aside class="library-sidebar">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="library-sidebar" aria-label="Library Navigation">
       <div class="sidebar-group">
         <div class="sidebar-group-title">Browse</div>
         <ul class="sidebar-list">
           <li>
             <button class="sidebar-btn is-active" data-sidebar="all">
-              <span>All Lessons</span>
-              <span class="sidebar-count" id="count-all">14</span>
+              <span>All Games</span>
+              <span class="sidebar-count" id="count-sidebar-all">15</span>
             </button>
           </li>
           <li>
             <button class="sidebar-btn" data-sidebar="recent">
-              <span>Recently Used</span>
+              <span>Recently Played</span>
               <span class="sidebar-count">1</span>
             </button>
           </li>
           <li>
             <button class="sidebar-btn" data-sidebar="favorites">
               <span>Favorites</span>
-              <span class="sidebar-count" id="count-favorites">0</span>
+              <span class="sidebar-count" id="count-sidebar-favs">0</span>
             </button>
           </li>
         </ul>
@@ -1075,29 +1232,27 @@
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-group">
-        <div class="sidebar-group-title">Skills</div>
-        <ul class="sidebar-list">
-          <li><button class="sidebar-btn" data-sidebar="skill:Speaking"><span>Speaking</span><span class="sidebar-count">11</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:Listening"><span>Listening</span><span class="sidebar-count">8</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:Reading"><span>Reading</span><span class="sidebar-count">6</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:Writing"><span>Writing</span><span class="sidebar-count">3</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:Vocabulary"><span>Vocabulary</span><span class="sidebar-count">12</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:Grammar"><span>Grammar</span><span class="sidebar-count">8</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="skill:CLIL"><span>CLIL</span><span class="sidebar-count">4</span></button></li>
+        <div class="sidebar-group-title">Categories</div>
+        <ul class="sidebar-list" id="sidebar-categories-list">
+          <li><button class="sidebar-btn" data-sidebar="cat:Classroom Games"><span>🎮 Classroom Games</span><span class="sidebar-count">3</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Interactive Stories"><span>📖 Interactive Stories</span><span class="sidebar-count">3</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Mystery & Detective"><span>🕵️ Mystery &amp; Detective</span><span class="sidebar-count">1</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Speaking Games"><span>🗣️ Speaking Games</span><span class="sidebar-count">1</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Grammar Games"><span>📚 Grammar Games</span><span class="sidebar-count">2</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Role Plays"><span>🎭 Role Plays</span><span class="sidebar-count">1</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:Quick Warm-ups"><span>⚡ Quick Warm-ups</span><span class="sidebar-count">1</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="cat:CLIL"><span>🌍 CLIL</span><span class="sidebar-count">3</span></button></li>
         </ul>
       </div>
 
       <div class="sidebar-divider"></div>
 
       <div class="sidebar-group">
-        <div class="sidebar-group-title">Formats</div>
+        <div class="sidebar-group-title">Levels</div>
         <ul class="sidebar-list">
-          <li><button class="sidebar-btn" data-sidebar="format:Interactive Lessons"><span>Interactive Lessons</span><span class="sidebar-count">6</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="format:Classroom Games"><span>Classroom Games</span><span class="sidebar-count">4</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="format:Stories"><span>Stories</span><span class="sidebar-count">3</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="format:Worksheets"><span>Worksheets</span><span class="sidebar-count">6</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="format:Role Plays"><span>Role Plays</span><span class="sidebar-count">2</span></button></li>
-          <li><button class="sidebar-btn" data-sidebar="format:Mystery Games"><span>Mystery Games</span><span class="sidebar-count">2</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="level:A1"><span>A1 Beginner</span><span class="sidebar-count">8</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="level:A1+"><span>A1+ Elementary</span><span class="sidebar-count">4</span></button></li>
+          <li><button class="sidebar-btn" data-sidebar="level:A2"><span>A2 Pre-Intermediate</span><span class="sidebar-count">3</span></button></li>
         </ul>
       </div>
     </aside>
@@ -1105,37 +1260,36 @@
     <!-- MAIN CONTENT -->
     <main class="library-content">
 
-      <!-- CONTINUE TEACHING COMPONENT -->
-      <section class="continue-teaching-card">
-        <div class="continue-details">
+      <!-- CONTINUE TEACHING SECTION -->
+      <section class="continue-card" id="continue-section">
+        <div class="continue-info">
           <span class="continue-badge">Continue Teaching</span>
           <div class="continue-title">Fire Station Adventure</div>
-          <div class="continue-meta">A1 · 35 min · 70% complete</div>
+          <div class="continue-meta">A1 · Ages 7–9 · 35 min · Community Helpers</div>
         </div>
-        <a href="firefighter/index.html" class="btn-continue">
-          <span>Continue</span>
-          <span>→</span>
+        <a href="firefighter/index.html" class="btn-continue" title="Resume Fire Station Adventure">
+          <span>▶ Continue</span>
         </a>
       </section>
 
-      <!-- FEATURED LESSONS SECTION -->
+      <!-- FEATURED GAMES SECTION -->
       <section id="featured-section">
         <div class="section-header">
-          <h2 class="section-title">Featured Lessons</h2>
+          <h2 class="section-title">Featured Games</h2>
         </div>
         <div class="featured-grid" id="featured-grid">
-          <!-- Populated from new data model -->
+          <!-- Dynamically populated from GAMES_REGISTRY -->
         </div>
       </section>
 
-      <!-- ALL LESSONS GRID -->
+      <!-- ALL GAMES SECTION -->
       <section>
         <div class="section-header">
-          <h2 class="section-title" id="grid-title">All Lessons</h2>
-          <span class="section-counter" id="results-count">Showing 14 lessons</span>
+          <h2 class="section-title" id="grid-title">All Games</h2>
+          <span class="section-counter" id="results-count">Showing 15 games</span>
         </div>
-        <div class="lessons-grid" id="lessons-grid">
-          <!-- Populated from new data model -->
+        <div class="games-grid" id="games-grid">
+          <!-- Dynamically populated from GAMES_REGISTRY with zero nested links -->
         </div>
       </section>
 
@@ -1143,355 +1297,14 @@
   </div>
 
   <!-- ========================================================================
-       DATA MODEL & JAVASCRIPT LOGIC
+       4. JAVASCRIPT LOGIC & SINGLE SOURCE OF TRUTH
        ======================================================================== -->
+  <!-- Universal Central Registry (all 15 games) -->
+  <script src="js/games-data.js"></script>
+
   <script>
     /* --------------------------------------------------------------------------
-       CLEAN LESSON DATA MODEL (SINGLE SOURCE OF TRUTH)
-       -------------------------------------------------------------------------- */
-    const LESSONS_DATA = [
-      {
-        id: "firefighter",
-        title: "Fire Station Adventure",
-        description: "Interactive story lesson about firefighters, emergency vehicles, safety equipment, and action verbs.",
-        level: "A1",
-        age: "Ages 7–9",
-        ageGroup: "7-8",
-        duration: 35,
-        durationText: "35 min",
-        skills: ["Vocabulary", "Speaking", "Listening"],
-        type: "Interactive Lessons",
-        featured: true,
-        lessonPath: "firefighter/index.html",
-        worksheetPath: "firefighter/worksheet.html",
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#fee2e2"/>
-            <rect x="25" y="30" width="150" height="110" rx="4" fill="#fca5a5"/>
-            <rect x="50" y="65" width="100" height="75" rx="3" fill="#ef4444"/>
-            <line x1="50" y1="85" x2="150" y2="85" stroke="#dc2626" stroke-width="2"/>
-            <line x1="50" y1="105" x2="150" y2="105" stroke="#dc2626" stroke-width="2"/>
-            <line x1="50" y1="125" x2="150" y2="125" stroke="#dc2626" stroke-width="2"/>
-            <!-- Fire truck front -->
-            <rect x="68" y="85" width="64" height="42" rx="4" fill="#b91c1c"/>
-            <rect x="74" y="90" width="52" height="16" rx="2" fill="#bae6fd"/>
-            <circle x="80" y="122" r="6" fill="#1e293b"/>
-            <circle x="120" y="122" r="6" fill="#1e293b"/>
-            <rect x="94" y="80" width="12" height="5" rx="1" fill="#38bdf8"/>
-          </svg>`
-      },
-      {
-        id: "story",
-        title: "The Wizard of Oz",
-        description: "Classic reader's theater stage following Dorothy and friends down the Yellow Brick Road.",
-        level: "A1",
-        age: "Ages 7–9",
-        ageGroup: "7-8",
-        duration: 40,
-        durationText: "40 min",
-        type: "Stories",
-        featured: true,
-        lessonPath: "story/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#ede9fe"/>
-            <path d="M 0 140 Q 80 100 100 70 Q 120 40 140 15 L 160 15 Q 140 50 120 80 Q 90 120 0 140 Z" fill="#fde047"/>
-            <rect x="130" y="25" width="16" height="45" rx="2" fill="#10b981"/>
-            <polygon points="138,12 130,25 146,25" fill="#059669"/>
-            <rect x="150" y="35" width="18" height="35" rx="2" fill="#059669"/>
-            <polygon points="159,22 150,35 168,35" fill="#047857"/>
-          </svg>`
-      },
-      {
-        id: "neighbourhood",
-        title: "My Neighbourhood",
-        description: "Living town exploration where students identify community locations, practice directions, and prepositions.",
-        level: "A1",
-        age: "Ages 6–9",
-        ageGroup: "7-8",
-        duration: 30,
-        durationText: "30 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "neighbourhood/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#ccfbf1"/>
-            <rect x="0" y="60" width="200" height="24" fill="#94a3b8"/>
-            <rect x="88" y="0" width="24" height="140" fill="#94a3b8"/>
-            <rect x="25" y="18" width="40" height="32" rx="3" fill="#38bdf8"/>
-            <polygon points="45,6 20,18 70,18" fill="#0284c7"/>
-            <rect x="135" y="18" width="42" height="32" rx="3" fill="#f59e0b"/>
-            <polygon points="156,6 130,18 182,18" fill="#d97706"/>
-            <circle cx="45" cy="112" r="16" fill="#10b981"/>
-            <rect x="42" y="118" width="6" height="16" fill="#78350f"/>
-          </svg>`
-      },
-      {
-        id: "restaurant",
-        title: "At the Restaurant",
-        description: "Interactive dining role-play practicing 'I'd like...', menu ordering, polite requests, and bill calculation.",
-        level: "A1+",
-        age: "Ages 7–11",
-        ageGroup: "7-8",
-        duration: 40,
-        durationText: "40 min",
-        type: "Role Plays",
-        featured: true,
-        lessonPath: "restaurant/index.html",
-        worksheetPath: "restaurant/worksheets.html",
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#ffedd5"/>
-            <ellipse cx="100" cy="105" rx="60" ry="22" fill="#fed7aa"/>
-            <rect x="94" y="105" width="12" height="28" fill="#c2410c"/>
-            <ellipse cx="100" cy="90" rx="26" ry="9" fill="#e2e8f0"/>
-            <path d="M 80 90 A 20 20 0 0 1 120 90 Z" fill="#94a3b8"/>
-            <circle cx="100" cy="70" r="3" fill="#64748b"/>
-            <rect x="45" y="50" width="24" height="34" rx="2" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
-          </svg>`
-      },
-      {
-        id: "advice",
-        title: "The Crazy Advice Academy",
-        description: "Practice modal verbs 'should' and 'shouldn't' by solving 10 hilarious dilemmas with Professor Should.",
-        level: "A2",
-        age: "Ages 8–12",
-        ageGroup: "9-10",
-        duration: 35,
-        durationText: "35 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "advice/index.html",
-        worksheetPath: "advice/worksheets.html",
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#e0f2fe"/>
-            <circle cx="100" cy="60" r="26" fill="#facc15"/>
-            <rect x="92" y="84" width="16" height="8" rx="1" fill="#94a3b8"/>
-            <line x1="100" y1="24" x2="100" y2="14" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <line x1="128" y1="36" x2="136" y2="30" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <line x1="72" y1="36" x2="64" y2="30" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
-            <rect x="40" y="70" width="32" height="42" rx="3" fill="#ffffff" stroke="#38bdf8" stroke-width="1.5"/>
-            <polyline points="48,86 52,90 58,82" fill="none" stroke="#10b981" stroke-width="2"/>
-          </svg>`
-      },
-      {
-        id: "predictions",
-        title: "What Will Happen Next?",
-        description: "Dramatic frozen cliffhangers where students use 'will' and 'won't' before revealing the comic outcome.",
-        level: "A2",
-        age: "Ages 8–12",
-        ageGroup: "9-10",
-        duration: 30,
-        durationText: "30 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "predictions/index.html",
-        worksheetPath: "predictions/worksheets.html",
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#f3e8ff"/>
-            <circle cx="100" cy="65" r="32" fill="#c084fc"/>
-            <circle cx="92" cy="56" r="10" fill="#ffffff" opacity="0.4"/>
-            <path d="M 78 106 L 122 106 L 112 94 L 88 94 Z" fill="#6b21a8"/>
-            <rect x="74" y="106" width="52" height="7" rx="2" fill="#581c87"/>
-          </svg>`
-      },
-      {
-        id: "monster-day",
-        title: "Build Your Own Monster",
-        description: "Real-time SVG creator practicing body parts, numbers, colors, and descriptive adjective order.",
-        level: "A1",
-        age: "Ages 6–8",
-        ageGroup: "5-6",
-        duration: 30,
-        durationText: "30 min",
-        type: "Classroom Games",
-        featured: false,
-        lessonPath: "monster-day/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#f5f3ff"/>
-            <rect x="68" y="40" width="64" height="70" rx="28" fill="#a855f7"/>
-            <polygon points="68,44 58,22 80,36" fill="#fbbf24"/>
-            <polygon points="132,44 142,22 120,36" fill="#fbbf24"/>
-            <circle cx="84" cy="60" r="8" fill="#ffffff"/><circle cx="84" cy="60" r="3.5" fill="#0f172a"/>
-            <circle cx="100" cy="55" r="10" fill="#ffffff"/><circle cx="100" cy="55" r="4.5" fill="#0f172a"/>
-            <circle cx="116" cy="60" r="8" fill="#ffffff"/><circle cx="116" cy="60" r="3.5" fill="#0f172a"/>
-            <path d="M 86 85 Q 100 98 114 85" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-          </svg>`
-      },
-      {
-        id: "city-mouse",
-        title: "The City Mouse & The Country Mouse",
-        description: "Interactive Aesop's fable contrasting bustling city skyscrapers with calm country fields.",
-        level: "A1",
-        age: "Ages 7–10",
-        ageGroup: "7-8",
-        duration: 35,
-        durationText: "35 min",
-        type: "Stories",
-        featured: false,
-        lessonPath: "city-mouse/index.html",
-        worksheetPath: "city-mouse/worksheet.html",
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#fef3c7"/>
-            <rect x="105" y="20" width="28" height="100" fill="#94a3b8"/>
-            <rect x="138" y="35" width="26" height="85" fill="#64748b"/>
-            <path d="M 0 120 Q 50 80 100 120 Z" fill="#86efac"/>
-            <rect x="35" y="80" width="28" height="22" rx="2" fill="#f59e0b"/>
-            <polygon points="49,68 30,80 68,80" fill="#b45309"/>
-            <line x1="100" y1="10" x2="100" y2="130" stroke="#d97706" stroke-dasharray="3 3" stroke-width="1.5"/>
-          </svg>`
-      },
-      {
-        id: "detective-prep",
-        title: "Detective Prep",
-        subtitle: "Warm-Up Drill",
-        description: "Targeted 10-minute warm-up drilling Wh-question patterns (Who, Where, What) before the mystery.",
-        level: "A1",
-        age: "Grade 3",
-        ageGroup: "9-10",
-        duration: 10,
-        durationText: "10 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "treasure/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#eff6ff"/>
-            <circle cx="100" cy="60" r="28" fill="none" stroke="#2563eb" stroke-width="5"/>
-            <line x1="120" y1="80" x2="148" y2="108" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
-            <text x="92" y="70" font-family="sans-serif" font-weight="800" font-size="26" fill="#2563eb">?</text>
-          </svg>`
-      },
-      {
-        id: "treasure",
-        title: "Treasure Mystery",
-        description: "Solve the royal theft with a 4-team live scoreboard. Cross-examine suspects and evaluate clues.",
-        level: "A1",
-        age: "Grade 3",
-        ageGroup: "9-10",
-        duration: 40,
-        durationText: "40 min",
-        type: "Mystery Games",
-        featured: false,
-        lessonPath: "treasure/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#fef3c7"/>
-            <rect x="52" y="60" width="96" height="56" rx="5" fill="#92400e"/>
-            <path d="M 52 60 Q 100 32 148 60 Z" fill="#b45309"/>
-            <rect x="94" y="62" width="12" height="16" rx="2" fill="#facc15"/>
-            <rect x="66" y="60" width="8" height="56" fill="#fbbf24"/>
-            <rect x="126" y="60" width="8" height="56" fill="#fbbf24"/>
-          </svg>`
-      },
-      {
-        id: "room-rescue",
-        title: "Room Rescue",
-        description: "Restore disorganized rooms by placing furniture items according to precise coordinate clues.",
-        level: "A1",
-        age: "Grade 4",
-        ageGroup: "9-10",
-        duration: 30,
-        durationText: "25–35 min",
-        type: "Classroom Games",
-        featured: false,
-        lessonPath: "treasure/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#ecfdf5"/>
-            <polygon points="0,0 200,0 170,25 30,25" fill="#d1fae5"/>
-            <polygon points="30,25 170,25 170,105 30,105" fill="#a7f3d0"/>
-            <polygon points="30,105 170,105 200,140 0,140" fill="#6ee7b7"/>
-            <rect x="68" y="75" width="64" height="30" rx="3" fill="#047857"/>
-            <rect x="78" y="60" width="20" height="15" rx="2" fill="#3b82f6"/>
-          </svg>`
-      },
-      {
-        id: "clil-lab",
-        title: "CLIL Crime Lab",
-        description: "Integrate English with science! Examine microscope fibers, compare fingerprint patterns, and test pH.",
-        level: "A1+",
-        age: "Grade 4",
-        ageGroup: "9-10",
-        duration: 35,
-        durationText: "35 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "treasure/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#e0f2fe"/>
-            <path d="M 94 30 L 106 30 L 106 55 L 128 100 L 72 100 L 94 55 Z" fill="#38bdf8" opacity="0.8"/>
-            <ellipse cx="100" cy="100" rx="28" ry="7" fill="#0284c7"/>
-            <circle cx="95" cy="78" r="3.5" fill="#ffffff"/>
-            <circle cx="107" cy="88" r="2.5" fill="#ffffff"/>
-            <rect x="145" y="95" width="30" height="14" rx="2" fill="#475569"/>
-            <path d="M 160 95 L 160 50 L 142 50" fill="none" stroke="#475569" stroke-width="5"/>
-          </svg>`
-      },
-      {
-        id: "expedition",
-        title: "The Last Expedition",
-        description: "Explore world biomes from rainforests to the Arctic, practicing wildlife terms and compass directions.",
-        level: "A1+",
-        age: "Grade 4",
-        ageGroup: "9-10",
-        duration: 35,
-        durationText: "30–40 min",
-        type: "Interactive Lessons",
-        featured: false,
-        lessonPath: "treasure/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#ecfdf5"/>
-            <polygon points="100,20 45,110 155,110" fill="#059669"/>
-            <polygon points="100,20 80,55 120,55" fill="#ffffff"/>
-            <circle cx="50" cy="45" r="20" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
-            <polygon points="50,30 53,44 50,41 47,44" fill="#ef4444"/>
-            <polygon points="50,60 53,46 50,49 47,46" fill="#475569"/>
-          </svg>`
-      },
-      {
-        id: "pokemon",
-        title: "Pokémon Trainer Battle",
-        description: "Gamified arena showdown where answering grammar challenges powers up attacks and defenses.",
-        level: "A2",
-        age: "Ages 8–12",
-        ageGroup: "9-10",
-        duration: 45,
-        durationText: "45 min",
-        type: "Classroom Games",
-        featured: false,
-        lessonPath: "pokemon/index.html",
-        worksheetPath: null,
-        thumbnailSvg: `
-          <svg viewBox="0 0 200 140" width="100%" height="100%">
-            <rect width="200" height="140" fill="#dbeafe"/>
-            <ellipse cx="100" cy="95" rx="70" ry="26" fill="#93c5fd"/>
-            <circle cx="100" cy="55" r="26" fill="#ef4444"/>
-            <path d="M 74 55 A 26 26 0 0 0 126 55 Z" fill="#ffffff"/>
-            <line x1="74" y1="55" x2="126" y2="55" stroke="#0f172a" stroke-width="4.5"/>
-            <circle cx="100" cy="55" r="8" fill="#0f172a"/>
-            <circle cx="100" cy="55" r="4" fill="#ffffff"/>
-          </svg>`
-      }
-    ];
-
-    /* --------------------------------------------------------------------------
-       STATE
+       STATE MANAGEMENT
        -------------------------------------------------------------------------- */
     const state = {
       search: "",
@@ -1503,12 +1316,12 @@
       sort: "recommended",
       sidebar: "all",
       navTab: "library",
-      favorites: JSON.parse(localStorage.getItem("eaa_favs") || "[]"),
-      myLessons: JSON.parse(localStorage.getItem("eaa_saved") || "[]")
+      favorites: JSON.parse(localStorage.getItem("eaa_game_favs") || "[]"),
+      recentId: localStorage.getItem("eaa_recent_game") || "firefighter"
     };
 
     /* --------------------------------------------------------------------------
-       DOM REFERENCES
+       DOM ELEMENTS
        -------------------------------------------------------------------------- */
     const searchInput = document.getElementById("search-input");
     const searchClearBtn = document.getElementById("search-clear-btn");
@@ -1519,30 +1332,36 @@
     const filterDuration = document.getElementById("filter-duration");
     const sortSelect = document.getElementById("sort-select");
     const btnReset = document.getElementById("btn-reset-filters");
-    const lessonsGrid = document.getElementById("lessons-grid");
+    const gamesGrid = document.getElementById("games-grid");
     const featuredGrid = document.getElementById("featured-grid");
     const featuredSection = document.getElementById("featured-section");
-    const resultsCount = document.getElementById("results-count");
+    const continueSection = document.getElementById("continue-section");
     const gridTitle = document.getElementById("grid-title");
-    const badgeFavs = document.getElementById("badge-favorites");
-    const badgeSaved = document.getElementById("badge-my-lessons");
-    const countAll = document.getElementById("count-all");
-    const countFavs = document.getElementById("count-favorites");
+    const resultsCount = document.getElementById("results-count");
+    const badgeTotalGames = document.getElementById("badge-total-games");
+    const badgeFavorites = document.getElementById("badge-favorites");
+    const countSidebarAll = document.getElementById("count-sidebar-all");
+    const countSidebarFavs = document.getElementById("count-sidebar-favs");
 
     /* --------------------------------------------------------------------------
-       INITIALIZATION
+       INIT & EVENT LISTENERS
        -------------------------------------------------------------------------- */
     function init() {
-      updateBadges();
+      // Ensure registry is loaded
+      const games = window.GAMES_REGISTRY || [];
+      badgeTotalGames.textContent = games.length;
+      countSidebarAll.textContent = games.length;
+      updateFavoritesBadge();
+
       renderFeatured();
-      renderLessons();
+      renderGames();
 
       // Search events
       searchInput.addEventListener("input", (e) => {
         state.search = e.target.value.trim().toLowerCase();
-        searchClearBtn.style.display = state.search ? "block" : "none";
+        searchClearBtn.style.display = state.search ? "flex" : "none";
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       // Filter events
@@ -1550,63 +1369,63 @@
         state.level = e.target.value;
         toggleActiveSelect(filterLevel, state.level);
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       filterAge.addEventListener("change", (e) => {
         state.age = e.target.value;
         toggleActiveSelect(filterAge, state.age);
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       filterSkill.addEventListener("change", (e) => {
         state.skill = e.target.value;
         toggleActiveSelect(filterSkill, state.skill);
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       filterType.addEventListener("change", (e) => {
         state.type = e.target.value;
         toggleActiveSelect(filterType, state.type);
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       filterDuration.addEventListener("change", (e) => {
         state.duration = e.target.value;
         toggleActiveSelect(filterDuration, state.duration);
         checkResetBtn();
-        renderLessons();
+        renderGames();
       });
 
       sortSelect.addEventListener("change", (e) => {
         state.sort = e.target.value;
-        renderLessons();
+        renderGames();
       });
 
-      // Top nav tab events
+      // Top Nav Tab Events
       document.querySelectorAll(".nav-tab-link").forEach(btn => {
         btn.addEventListener("click", () => {
           document.querySelectorAll(".nav-tab-link").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
           state.navTab = btn.dataset.nav;
-          handleNavTabChange();
+          renderGames();
         });
       });
 
-      // Sidebar events
+      // Sidebar Filter Events
       document.querySelectorAll(".sidebar-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
           btn.classList.add("is-active");
           state.sidebar = btn.dataset.sidebar;
-          renderLessons();
+          renderGames();
         });
       });
 
-      // Global keyboard shortcut
+      // Keyboard Shortcut '/' to search
       document.addEventListener("keydown", (e) => {
         if (e.key === "/" && document.activeElement !== searchInput) {
           e.preventDefault();
@@ -1616,27 +1435,29 @@
     }
 
     /* --------------------------------------------------------------------------
-       RENDER FEATURED LESSONS (HORIZONTAL CARDS)
+       FEATURED SECTION RENDER
        -------------------------------------------------------------------------- */
     function renderFeatured() {
-      const featured = LESSONS_DATA.filter(l => l.featured);
-      featuredGrid.innerHTML = featured.map(lesson => `
-        <article class="featured-card">
+      const games = window.GAMES_REGISTRY || [];
+      const featured = games.filter(g => g.featured);
+
+      featuredGrid.innerHTML = featured.map(game => `
+        <article class="featured-card" data-id="${game.id}">
           <div class="featured-thumb">
-            ${lesson.thumbnailSvg}
+            ${game.thumbnailSvg}
           </div>
-          <div class="featured-card-content">
-            <span class="featured-tag">Featured</span>
-            <h3 class="featured-title">${lesson.title}</h3>
-            <div class="featured-meta">${lesson.level} · ${lesson.age} · ${lesson.durationText}</div>
-            <p class="featured-desc">${lesson.description}</p>
+          <div class="featured-body">
+            <div>
+              <span class="featured-tag">Featured</span>
+              <h3 class="featured-title">${game.title}</h3>
+              <div class="featured-meta">${game.level} · ${game.age} · ${game.durationText}</div>
+            </div>
             <div class="featured-actions">
-              <a href="${lesson.lessonPath}" class="btn-open-featured">
-                <span>Open lesson</span>
-                <span>→</span>
+              <a href="${game.route}" class="btn-featured-start" onclick="recordRecent('${game.id}')">
+                <span>▶ START GAME</span>
               </a>
-              ${lesson.worksheetPath ? `
-                <a href="${lesson.worksheetPath}" target="_blank" class="btn-sheet-featured">Worksheet</a>
+              ${game.worksheet ? `
+                <a href="${game.worksheet}" target="_blank" class="btn-featured-sheet">Worksheet</a>
               ` : ''}
             </div>
           </div>
@@ -1645,79 +1466,80 @@
     }
 
     /* --------------------------------------------------------------------------
-       RENDER ALL LESSONS (USING REUSABLE LESSON CARD)
+       GAMES GRID RENDER (REUSABLE GAMECARD COMPONENT)
        -------------------------------------------------------------------------- */
-    function renderLessons() {
-      let list = [...LESSONS_DATA];
+    function renderGames() {
+      const games = window.GAMES_REGISTRY || [];
+      let list = [...games];
 
       // Top Nav Tab Filter
       if (state.navTab === "favorites") {
-        list = list.filter(l => state.favorites.includes(l.id));
-        gridTitle.textContent = "Favorites";
+        list = list.filter(g => state.favorites.includes(g.id));
+        gridTitle.textContent = "Favorite Games";
         featuredSection.style.display = "none";
-      } else if (state.navTab === "my-lessons") {
-        list = list.filter(l => state.myLessons.includes(l.id));
-        gridTitle.textContent = "My Lessons";
-        featuredSection.style.display = "none";
+        continueSection.style.display = "none";
       } else if (state.navTab === "worksheets") {
-        list = list.filter(l => l.worksheetPath);
-        gridTitle.textContent = "Printable Worksheets";
+        list = list.filter(g => g.worksheet);
+        gridTitle.textContent = "Games with Printable Worksheets";
         featuredSection.style.display = "none";
+        continueSection.style.display = "none";
       } else {
-        gridTitle.textContent = "All Lessons";
-        // Hide featured when filtering/searching
+        gridTitle.textContent = "All Games";
         const isFiltering = state.search || state.level || state.age || state.skill || state.type || state.duration || state.sidebar !== "all";
         featuredSection.style.display = isFiltering ? "none" : "block";
+        continueSection.style.display = isFiltering ? "none" : "flex";
       }
 
       // Sidebar Filter
       if (state.sidebar === "favorites") {
-        list = list.filter(l => state.favorites.includes(l.id));
+        list = list.filter(g => state.favorites.includes(g.id));
+        gridTitle.textContent = "Favorites";
       } else if (state.sidebar === "recent") {
-        list = list.slice(0, 3);
-      } else if (state.sidebar.startsWith("skill:")) {
-        const skill = state.sidebar.replace("skill:", "");
-        list = list.filter(l => l.skills.includes(skill));
-      } else if (state.sidebar.startsWith("format:")) {
-        const format = state.sidebar.replace("format:", "");
-        if (format === "Worksheets") {
-          list = list.filter(l => l.worksheetPath);
-        } else {
-          list = list.filter(l => l.type === format);
-        }
+        list = list.filter(g => g.id === state.recentId);
+        gridTitle.textContent = "Recently Played";
+      } else if (state.sidebar.startsWith("cat:")) {
+        const cat = state.sidebar.replace("cat:", "");
+        list = list.filter(g => g.category === cat);
+        gridTitle.textContent = cat;
+      } else if (state.sidebar.startsWith("level:")) {
+        const lvl = state.sidebar.replace("level:", "");
+        list = list.filter(g => g.level === lvl);
+        gridTitle.textContent = `Level ${lvl}`;
       }
 
       // Search Box Filter
       if (state.search) {
         const q = state.search;
-        list = list.filter(l => {
-          return l.title.toLowerCase().includes(q) ||
-                 l.description.toLowerCase().includes(q) ||
-                 l.skills.some(s => s.toLowerCase().includes(q)) ||
-                 l.level.toLowerCase().includes(q);
+        list = list.filter(g => {
+          return g.title.toLowerCase().includes(q) ||
+                 g.description.toLowerCase().includes(q) ||
+                 (g.topic && g.topic.toLowerCase().includes(q)) ||
+                 g.category.toLowerCase().includes(q) ||
+                 g.level.toLowerCase().includes(q) ||
+                 g.skills.some(s => s.toLowerCase().includes(q));
         });
       }
 
       // Dropdown Filters
       if (state.level) {
-        list = list.filter(l => l.level === state.level);
+        list = list.filter(g => g.level === state.level);
       }
       if (state.age) {
-        list = list.filter(l => l.ageGroup === state.age);
+        list = list.filter(g => g.ageGroup === state.age);
       }
       if (state.skill) {
-        list = list.filter(l => l.skills.includes(state.skill));
+        list = list.filter(g => g.skills.includes(state.skill));
       }
       if (state.type) {
         if (state.type === "Worksheets") {
-          list = list.filter(l => l.worksheetPath);
+          list = list.filter(g => g.worksheet);
         } else {
-          list = list.filter(l => l.type === state.type);
+          list = list.filter(g => g.category === state.type);
         }
       }
       if (state.duration) {
         const max = parseInt(state.duration, 10);
-        list = list.filter(l => l.duration <= max);
+        list = list.filter(g => g.duration <= max);
       }
 
       // Sorting
@@ -1733,35 +1555,36 @@
       });
 
       // Update counter
-      resultsCount.textContent = `Showing ${list.length} lessons`;
+      resultsCount.textContent = `Showing ${list.length} games`;
 
       // Empty State
       if (list.length === 0) {
-        lessonsGrid.innerHTML = `
+        gamesGrid.innerHTML = `
           <div class="empty-results">
-            <div class="empty-title">No lessons found</div>
-            <p class="empty-desc">Try clearing filters or changing your search terms to discover available lessons.</p>
-            <button class="btn-continue" style="margin-top: 6px;" onclick="resetFilters()">Reset all filters</button>
+            <div class="empty-icon">🔍</div>
+            <div class="empty-title">No games found</div>
+            <p class="empty-desc">Try clearing your filters or changing your search terms to discover classroom games.</p>
+            <button class="btn-continue" onclick="resetFilters()">Reset all filters</button>
           </div>
         `;
         return;
       }
 
-      // Reusable LessonCard Component Render
-      lessonsGrid.innerHTML = list.map(lesson => renderLessonCard(lesson)).join("");
+      // Render Reusable GameCard Component
+      gamesGrid.innerHTML = list.map(game => renderGameCard(game)).join("");
     }
 
     /* --------------------------------------------------------------------------
-       REUSABLE LESSON CARD COMPONENT
+       REUSABLE GAMECARD COMPONENT (STRICTLY ZERO NESTED LINKS)
        -------------------------------------------------------------------------- */
-    function renderLessonCard(lesson) {
-      const isFav = state.favorites.includes(lesson.id);
+    function renderGameCard(game) {
+      const isFav = state.favorites.includes(game.id);
       return `
-        <article class="lesson-card" data-id="${lesson.id}">
+        <article class="game-card" data-id="${game.id}">
           <div class="card-thumbnail">
-            ${lesson.thumbnailSvg}
-            <span class="level-badge">${lesson.level}</span>
-            <button class="bookmark-btn ${isFav ? 'is-saved' : ''}" onclick="toggleBookmark('${lesson.id}')" title="${isFav ? 'Remove from favorites' : 'Bookmark lesson'}">
+            ${game.thumbnailSvg}
+            <span class="level-badge">${game.level}</span>
+            <button class="bookmark-btn ${isFav ? 'is-saved' : ''}" onclick="toggleBookmark('${game.id}', event)" title="${isFav ? 'Remove from favorites' : 'Bookmark game'}" aria-label="Bookmark">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2">
                 <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
               </svg>
@@ -1769,29 +1592,29 @@
           </div>
 
           <div class="card-body">
-            <h3 class="card-title">${lesson.title}</h3>
-            <p class="card-desc">${lesson.description}</p>
+            <span class="card-category-pill">${game.category}</span>
+            <h3 class="card-title">${game.title}</h3>
+            <p class="card-desc">${game.description}</p>
             
             <div class="card-meta">
-              <span>${lesson.level}</span>
+              <span>${game.level}</span>
               <span class="separator">·</span>
-              <span>${lesson.age}</span>
+              <span>${game.age}</span>
               <span class="separator">·</span>
-              <span>${lesson.durationText}</span>
+              <span>${game.durationText}</span>
             </div>
 
             <div class="card-skills">
-              ${lesson.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join("")}
+              ${game.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join("")}
             </div>
           </div>
 
           <div class="card-footer">
-            <a href="${lesson.lessonPath}" class="btn-open-lesson">
-              <span>Open lesson</span>
-              <span>→</span>
+            <a href="${game.route}" class="btn-start" onclick="recordRecent('${game.id}')">
+              <span>▶ START GAME</span>
             </a>
-            ${lesson.worksheetPath ? `
-              <a href="${lesson.worksheetPath}" target="_blank" class="btn-card-worksheet">Worksheet</a>
+            ${game.worksheet ? `
+              <a href="${game.worksheet}" target="_blank" class="btn-worksheet">Worksheet</a>
             ` : ''}
           </div>
         </article>
@@ -1801,26 +1624,29 @@
     /* --------------------------------------------------------------------------
        HELPERS & ACTIONS
        -------------------------------------------------------------------------- */
-    function toggleBookmark(id) {
+    function recordRecent(id) {
+      state.recentId = id;
+      localStorage.setItem("eaa_recent_game", id);
+    }
+
+    function toggleBookmark(id, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       if (state.favorites.includes(id)) {
         state.favorites = state.favorites.filter(x => x !== id);
       } else {
         state.favorites.push(id);
       }
-      localStorage.setItem("eaa_favs", JSON.stringify(state.favorites));
-      updateBadges();
-      renderLessons();
+      localStorage.setItem("eaa_game_favs", JSON.stringify(state.favorites));
+      updateFavoritesBadge();
+      renderGames();
     }
 
-    function updateBadges() {
-      badgeFavs.textContent = state.favorites.length;
-      badgeSaved.textContent = state.myLessons.length;
-      countFavs.textContent = state.favorites.length;
-      countAll.textContent = LESSONS_DATA.length;
-    }
-
-    function handleNavTabChange() {
-      renderLessons();
+    function updateFavoritesBadge() {
+      badgeFavorites.textContent = state.favorites.length;
+      countSidebarFavs.textContent = state.favorites.length;
     }
 
     function toggleActiveSelect(el, val) {
@@ -1841,7 +1667,7 @@
       state.search = "";
       searchClearBtn.style.display = "none";
       checkResetBtn();
-      renderLessons();
+      renderGames();
       searchInput.focus();
     }
 
@@ -1869,13 +1695,14 @@
 
       [filterLevel, filterAge, filterSkill, filterType, filterDuration].forEach(el => el.classList.remove("is-active"));
       document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("is-active"));
-      document.querySelector(".sidebar-btn[data-sidebar='all']").classList.add("is-active");
+      const allBtn = document.querySelector(".sidebar-btn[data-sidebar='all']");
+      if (allBtn) allBtn.classList.add("is-active");
 
       btnReset.style.display = "none";
-      renderLessons();
+      renderGames();
     }
 
-    // Launch on DOM ready
+    // Launch when DOM is ready
     document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>

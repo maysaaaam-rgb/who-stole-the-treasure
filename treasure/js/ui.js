@@ -23,7 +23,21 @@ class UIController {
     this.initConfetti();
     this.bindGlobalEvents();
     this.updateScoreboard();
-    this.showScreen("hub");
+
+    // Direct 1-Click Game Launch via URL Hash
+    const hash = (window.location.hash || "").replace("#", "").trim();
+    if (hash && document.getElementById(`screen-${hash}`)) {
+      this.showScreen(hash);
+    } else {
+      this.showScreen("hub");
+    }
+
+    window.addEventListener("hashchange", () => {
+      const h = (window.location.hash || "").replace("#", "").trim();
+      if (h && document.getElementById(`screen-${h}`)) {
+        this.showScreen(h);
+      }
+    });
   }
 
   // =========================================================================
