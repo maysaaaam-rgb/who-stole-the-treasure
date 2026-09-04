@@ -50,11 +50,28 @@
 
       <!-- Right Controls -->
       <div class="header-right">
-        <!-- Class Selector (Teacher mode) -->
+        <!-- Active Class Selector -->
         <select id="header-class-select" class="class-switcher-select" title="Active Class">
-          <option value="class-3a">Grade 3A — The Explorers</option>
-          <option value="class-4b">Grade 4B — The Adventurers</option>
+          <!-- Dynamically populated by school-app.js -->
         </select>
+
+        <!-- Prominent + Create Dropdown Quick Action -->
+        <div class="create-dropdown-wrap" id="header-create-wrap">
+          <button class="btn-header-create" id="btn-header-create" onclick="toggleCreateDropdown(event)" title="Quick Action Menu">
+            <span>+ Create</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="create-dropdown-menu" id="header-create-menu">
+            <button class="dropdown-item-btn" onclick="openStudentModal()"><span>👧</span> <span>+ Add Student</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-add-class')"><span>👥</span> <span>+ Create Class</span></button>
+            <button class="dropdown-item-btn" onclick="openResourceEditor()"><span>🎮</span> <span>+ Add Resource</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-create-assignment')"><span>📝</span> <span>+ Create Assignment</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-homework-editor')"><span>✍️</span> <span>+ Create Homework</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-quiz-builder')"><span>🧩</span> <span>+ Create Quiz</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-give-xp')"><span>⭐</span> <span>+ Give XP</span></button>
+            <button class="dropdown-item-btn" onclick="openModal('modal-story-post')"><span>📢</span> <span>+ New Post</span></button>
+          </div>
+        </div>
 
         <button class="icon-circle-btn" onclick="const s = document.getElementById('search-input') || document.getElementById('lib-search-input'); if (s) s.focus();" title="Search shortcut (Press /)" aria-label="Search shortcut">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,8 +81,8 @@
         </button>
 
         <div class="user-chip" id="header-user-chip">
-          <div class="avatar-initials">SJ</div>
-          <span>Ms. Sarah</span>
+          <div class="avatar-initials" id="header-avatar-initials">SJ</div>
+          <span id="header-user-name">Ms. Sarah</span>
         </div>
       </div>
     </div>
@@ -87,19 +104,120 @@
   </div>
 
   <!-- ========================================================================
-       3. REUSABLE MODALS & DIALOGS
+       3. REUSABLE MODALS & DIALOGS (TRUE CRUD CONTROLS)
        ======================================================================== -->
-  <!-- Student Profile Drilldown Modal -->
-  <div class="modal-overlay" id="modal-student-profile">
-    <!-- Populated by window.openStudentDetail() -->
+
+  <!-- Resource Editor Modal (Add & Edit) -->
+  <div class="modal-overlay" id="modal-resource-editor">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 id="resource-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Add New Resource</h2>
+      <form id="form-resource-editor" onsubmit="handleSaveResource(event)" style="display:flex; flex-direction:column; gap:14px;">
+        <input type="hidden" id="res-edit-id" value="" />
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:12px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Title</label>
+            <input type="text" id="res-title" class="filter-select" style="width:100%;" required placeholder="e.g. Space Station Mystery" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Type / Category</label>
+            <select id="res-category" class="filter-select" style="width:100%;">
+              <option value="Game">Classroom Game</option>
+              <option value="Story">Interactive Story</option>
+              <option value="Mystery">Mystery &amp; Detective</option>
+              <option value="Roleplay">Speaking &amp; Roleplay</option>
+              <option value="Grammar">Grammar Challenge</option>
+              <option value="Vocabulary">Vocabulary Builder</option>
+              <option value="CLIL">CLIL / Science</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description</label>
+          <textarea id="res-description" class="filter-select" style="width:100%; height:64px; resize:vertical;" placeholder="Describe what students will learn and do..."></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">CEFR Level</label>
+            <select id="res-level" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Age</label>
+            <input type="text" id="res-ages" class="filter-select" style="width:100%;" value="7–9" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Grade</label>
+            <input type="text" id="res-grade" class="filter-select" style="width:100%;" value="Grade 3" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Duration (min)</label>
+            <input type="number" id="res-duration" class="filter-select" style="width:100%;" value="30" min="5" max="120" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Topic</label>
+            <input type="text" id="res-topic" class="filter-select" style="width:100%;" placeholder="e.g. Space Exploration" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Route / Game URL</label>
+            <input type="text" id="res-route" class="filter-select" style="width:100%;" placeholder="e.g. space-adventure/index.html" required />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Target Skills</label>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; font-size:0.84rem;">
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Speaking" checked> Speaking</label>
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Listening" checked> Listening</label>
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Vocabulary" checked> Vocabulary</label>
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Grammar"> Grammar</label>
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Reading"> Reading</label>
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" name="res-skills" value="Writing"> Writing</label>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Learning Objectives (comma separated)</label>
+          <input type="text" id="res-objectives" class="filter-select" style="width:100%;" placeholder="e.g. Ask polite questions, Describe celestial bodies" />
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px; font-size:0.84rem; padding-top:4px;">
+          <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="res-worksheet" checked> Worksheet Available</label>
+          <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="res-guide" checked> Teacher Guide Available</label>
+          <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="res-featured"> Featured Card</label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Resource</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- Add Student Modal -->
-  <div class="modal-overlay" id="modal-add-student">
+  <!-- Student Profile Drilldown Modal -->
+  <div class="modal-overlay" id="modal-student-profile">
+    <!-- Populated dynamically by window.openStudentDetail() -->
+  </div>
+
+  <!-- Add / Edit Student Modal -->
+  <div class="modal-overlay" id="modal-student-editor">
     <div class="modal-dialog" style="max-width: 480px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Add New Student</h2>
+      <h2 id="student-modal-title" style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Add New Student</h2>
       <form onsubmit="handleCreateStudent(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-stud-id" value="" />
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">First Name</label>
           <input type="text" id="new-stud-fname" class="filter-select" style="width:100%;" required placeholder="e.g. Leo" />
@@ -123,7 +241,13 @@
             </select>
           </div>
         </div>
-        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save &amp; Enroll Student</button>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Assign to Class</label>
+          <select id="new-stud-class" class="filter-select" style="width:100%;">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save Student</button>
       </form>
     </div>
   </div>
@@ -139,40 +263,287 @@
           <input type="text" id="new-asg-title" class="filter-select" style="width:100%;" required placeholder="e.g. Restaurant Polite Ordering" />
         </div>
         <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Class</label>
+          <select id="new-asg-class" class="filter-select" style="width:100%;">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Game or Activity</label>
           <select id="new-asg-game" class="filter-select" style="width:100%;">
-            <option value="restaurant">At the Restaurant (Roleplay)</option>
-            <option value="monster-day">Build Your Own Monster (Creature Builder)</option>
-            <option value="firefighter">Fire Station Adventure (Interactive Story)</option>
-            <option value="neighbourhood">My Neighbourhood (Prepositions)</option>
-            <option value="advice">The Crazy Advice Academy (Should/Shouldn't)</option>
-            <option value="predictions">What Will Happen Next? (Predictions)</option>
-            <option value="city-mouse">The City Mouse &amp; Country Mouse (Story)</option>
-            <option value="pokemon">Pokémon Trainer Battle (Action Verbs)</option>
-            <option value="jungle">Life in the Jungle (Animal Habitats)</option>
-            <option value="treasure">Treasure Mystery (Past Continuous)</option>
+            <!-- Dynamically populated from store resources -->
           </select>
         </div>
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Due Date</label>
-          <input type="text" id="new-asg-date" class="filter-select" style="width:100%;" value="Sep 15, 2026" />
+          <input type="date" id="new-asg-date" class="filter-select" style="width:100%;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Learning Goal / Instructions</label>
+          <textarea id="new-asg-inst" class="filter-select" style="width:100%; height:60px;" placeholder="Complete 3 rounds and order your food politely..."></textarea>
         </div>
         <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Publish Assignment</button>
       </form>
     </div>
   </div>
 
+  <!-- Create Homework Modal -->
+  <div class="modal-overlay" id="modal-homework-editor">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Homework Task</h2>
+      <form onsubmit="handleCreateHomework(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Task Title</label>
+          <input type="text" id="new-hw-title" class="filter-select" style="width:100%;" required placeholder="e.g. Animal Habitats Vocabulary Drill" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Task Type</label>
+            <select id="new-hw-type" class="filter-select" style="width:100%;">
+              <option value="Game Mission">Game Mission</option>
+              <option value="Worksheet">Printable Worksheet</option>
+              <option value="Speaking Audio">Speaking Audio Recording</option>
+              <option value="Reading Passage">Reading &amp; Questions</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Class</label>
+            <select id="new-hw-class" class="filter-select" style="width:100%;">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Due Date</label>
+          <input type="date" id="new-hw-date" class="filter-select" style="width:100%;" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Instructions for Students &amp; Parents</label>
+          <textarea id="new-hw-desc" class="filter-select" style="width:100%; height:60px;" placeholder="Play the Jungle game for 15 minutes and learn 5 animal names..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Assign Homework</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Create Class Modal -->
   <div class="modal-overlay" id="modal-add-class">
-    <div class="modal-dialog" style="max-width: 460px;">
+    <div class="modal-dialog" style="max-width: 480px;">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
       <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create New Class</h2>
-      <form onsubmit="event.preventDefault(); const name = document.getElementById('new-cls-name').value; if(name){ window.schoolStore.addClass({name, grade:'Grade 3', cefr:'A1', room:'Room 206', schedule:'Mon, Wed 10:00'}); closeAllModals(); switchView('classes'); }" style="display:flex; flex-direction:column; gap:12px;">
+      <form onsubmit="handleCreateClass(event)" style="display:flex; flex-direction:column; gap:12px;">
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class Name</label>
           <input type="text" id="new-cls-name" class="filter-select" style="width:100%;" required placeholder="e.g. Grade 3C — The Navigators" />
         </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Grade Level</label>
+            <input type="text" id="new-cls-grade" class="filter-select" style="width:100%;" value="Grade 3" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target CEFR</label>
+            <select id="new-cls-cefr" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Room / Location</label>
+            <input type="text" id="new-cls-room" class="filter-select" style="width:100%;" value="Room 204" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class Schedule</label>
+            <input type="text" id="new-cls-schedule" class="filter-select" style="width:100%;" value="Tue, Thu 09:30" />
+          </div>
+        </div>
         <button type="submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Create Class</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Give XP Modal -->
+  <div class="modal-overlay" id="modal-give-xp">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">⭐ Award XP to Student</h2>
+      <form onsubmit="handleGiveXPSubmit(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Student</label>
+          <select id="xp-student-select" class="filter-select" style="width:100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">XP Amount</label>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+            <button type="button" class="btn-sm-secondary" onclick="document.getElementById('xp-amount-val').value = 25">+25 XP</button>
+            <button type="button" class="btn-sm-secondary" onclick="document.getElementById('xp-amount-val').value = 50">+50 XP</button>
+            <button type="button" class="btn-sm-secondary" onclick="document.getElementById('xp-amount-val').value = 100">+100 XP</button>
+          </div>
+          <input type="number" id="xp-amount-val" class="filter-select" style="width:100%; margin-top:8px;" value="50" min="5" max="500" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason / Skill</label>
+          <select id="xp-reason-select" class="filter-select" style="width:100%;">
+            <option value="Speaking Participation">🗣️ Great Speaking Participation</option>
+            <option value="Helping Classmate">🤝 Helping a Classmate</option>
+            <option value="Vocabulary Mastery">🧠 Vocabulary Mastery</option>
+            <option value="Completed Mission">🎯 Completed Learning Mission</option>
+            <option value="Curiosity & Effort">✨ Outstanding Effort &amp; Curiosity</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Award XP</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quiz Builder Modal -->
+  <div class="modal-overlay" id="modal-quiz-builder">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:16px;">Create Quiz &amp; Test</h2>
+      <form onsubmit="handleCreateQuiz(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Quiz Title</label>
+          <input type="text" id="quiz-title" class="filter-select" style="width:100%;" required placeholder="e.g. Unit 3 Grammar &amp; Vocabulary Check" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target CEFR</label>
+            <select id="quiz-cefr" class="filter-select" style="width:100%;">
+              <option value="Pre-A1">Pre-A1</option>
+              <option value="A1" selected>A1</option>
+              <option value="A1+">A1+</option>
+              <option value="A2">A2</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Primary Skill</label>
+            <select id="quiz-skill" class="filter-select" style="width:100%;">
+              <option value="Grammar">Grammar</option>
+              <option value="Vocabulary">Vocabulary</option>
+              <option value="Listening">Listening</option>
+              <option value="Reading">Reading</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Sample Question</label>
+          <input type="text" id="quiz-q1" class="filter-select" style="width:100%;" placeholder="e.g. What is the monkey doing in the tree?" required />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <input type="text" id="quiz-opt1" class="filter-select" placeholder="Option A (Correct)" required />
+          <input type="text" id="quiz-opt2" class="filter-select" placeholder="Option B" required />
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:10px; justify-content:center;">Save &amp; Publish Quiz</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Multi-Skill Rubric Assessment Modal -->
+  <div class="modal-overlay" id="modal-assessment-rubric">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:8px;">🎯 Teacher Rubric Assessment</h2>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">Evaluate student skills on a 1–5 CEFR mastery scale.</p>
+      <form onsubmit="handleRecordAssessment(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Select Student</label>
+          <select id="rubric-student-select" class="filter-select" style="width:100%;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div class="rubric-grid">
+          <div class="rubric-item">
+            <div class="rubric-header-line">
+              <span style="font-size:0.84rem; font-weight:700;">🗣️ Speaking &amp; Fluency</span>
+              <span class="rubric-badge" id="val-rubric-speaking">4 / 5 (80%)</span>
+            </div>
+            <input type="range" min="1" max="5" value="4" class="rubric-slider" id="slider-rubric-speaking" oninput="document.getElementById('val-rubric-speaking').innerText = this.value + ' / 5 (' + (this.value*20) + '%)';" />
+          </div>
+
+          <div class="rubric-item">
+            <div class="rubric-header-line">
+              <span style="font-size:0.84rem; font-weight:700;">🧠 Vocabulary Range</span>
+              <span class="rubric-badge" id="val-rubric-vocab">4 / 5 (80%)</span>
+            </div>
+            <input type="range" min="1" max="5" value="4" class="rubric-slider" id="slider-rubric-vocab" oninput="document.getElementById('val-rubric-vocab').innerText = this.value + ' / 5 (' + (this.value*20) + '%)';" />
+          </div>
+
+          <div class="rubric-item">
+            <div class="rubric-header-line">
+              <span style="font-size:0.84rem; font-weight:700;">📚 Grammar &amp; Accuracy</span>
+              <span class="rubric-badge" id="val-rubric-grammar">3 / 5 (60%)</span>
+            </div>
+            <input type="range" min="1" max="5" value="3" class="rubric-slider" id="slider-rubric-grammar" oninput="document.getElementById('val-rubric-grammar').innerText = this.value + ' / 5 (' + (this.value*20) + '%)';" />
+          </div>
+
+          <div class="rubric-item">
+            <div class="rubric-header-line">
+              <span style="font-size:0.84rem; font-weight:700;">👂 Listening Comprehension</span>
+              <span class="rubric-badge" id="val-rubric-listening">4 / 5 (80%)</span>
+            </div>
+            <input type="range" min="1" max="5" value="4" class="rubric-slider" id="slider-rubric-listening" oninput="document.getElementById('val-rubric-listening').innerText = this.value + ' / 5 (' + (this.value*20) + '%)';" />
+          </div>
+
+          <div class="rubric-item">
+            <div class="rubric-header-line">
+              <span style="font-size:0.84rem; font-weight:700;">🗣️ Pronunciation &amp; Clarity</span>
+              <span class="rubric-badge" id="val-rubric-pronun">4 / 5 (80%)</span>
+            </div>
+            <input type="range" min="1" max="5" value="4" class="rubric-slider" id="slider-rubric-pronun" oninput="document.getElementById('val-rubric-pronun').innerText = this.value + ' / 5 (' + (this.value*20) + '%)';" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Observations &amp; Evidence</label>
+          <textarea id="rubric-comment" class="filter-select" style="width:100%; height:54px;" placeholder="Student demonstrated strong spontaneous responses during the restaurant roleplay..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary-action" style="margin-top:6px; justify-content:center;">Save Assessment &amp; Update CEFR</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Class Story New Post Modal -->
+  <div class="modal-overlay" id="modal-story-post">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <h2 style="font-size:1.3rem; font-weight:800; margin-bottom:14px;">📸 Post to Class Story</h2>
+      <form onsubmit="handleCreateStoryPost(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Post Title</label>
+          <input type="text" id="story-post-title" class="filter-select" style="width:100%;" required placeholder="e.g. Wonderful Monster Creations Today!" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category</label>
+            <select id="story-post-cat" class="filter-select" style="width:100%;">
+              <option value="Classroom Moment">📸 Classroom Moment</option>
+              <option value="Student Achievement">🏆 Student Achievement</option>
+              <option value="Important Announcement">📢 Announcement</option>
+              <option value="Home Extension">🏡 Home Extension</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Class</label>
+            <select id="story-post-class" class="filter-select" style="width:100%;">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Message</label>
+          <textarea id="story-post-content" class="filter-select" style="width:100%; height:70px;" required placeholder="Share what happened in class with parents and students..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary-action" style="margin-top:6px; justify-content:center;">Share Post</button>
       </form>
     </div>
   </div>
