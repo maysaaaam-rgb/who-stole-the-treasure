@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>My Neighbourhood - ESL Interactive Speaking Adventure</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Friendly, high-readability font for young learners -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive Shell (16:9 Letterbox Engine) -->
+  <div id="screen-wrapper">
+    <div id="app-stage">
+      
+      <!-- Top Persistent HUD -->
+      <header id="main-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.app.renderScene('map')" title="Neighbourhood Map">
+            🏠 <span>Map</span>
+          </button>
+          
+          <button class="hud-btn" onclick="window.app.renderScene('map')" title="Back to Map">
+            ⬅️ <span>Back</span>
+          </button>
+
+          <!-- Big / Small Neighbourhood Toggle (PDF Slide 6 & 19) -->
+          <div class="size-toggle-pill" title="Toggle Neighbourhood Size">
+            <button class="size-btn big active" onclick="window.app.toggleNeighbourhoodSize('big')">🔵 BIG</button>
+            <button class="size-btn small" onclick="window.app.toggleNeighbourhoodSize('small')">🟢 SMALL</button>
+          </div>
+
+          <!-- Quick Navigation Buttons -->
+          <button class="hud-btn" onclick="window.app.renderScene('what_did_you_see')" title="What Did You See?">
+            👀 <span>Check</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('remember_game')" title="Memory Check">
+            🧠 <span>Remember</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('there_is_are')" title="There is / There are">
+            ✏️ <span>Grammar</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('scaffold_levels')" title="3-Level Speaking Challenge">
+            🧗 <span>Challenge</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('new_town')" title="Brand New Neighbourhood">
+            🏙️ <span>New Town</span>
+          </button>
+          <button class="hud-btn" onclick="window.app.renderScene('tour')" title="Walking Tour Guide">
+            🚶 <span>Tour</span>
+          </button>
+          <a href="../index.html" class="hud-btn" title="Return to ESL Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none; font-weight:800;">
+            📚 <span>Library</span>
+          </a>
+          <a href="../restaurant/index.html" class="hud-btn" title="Go to Restaurant Role-Play Lesson" style="background:#fff3e0; border-color:#ffb74d; color:#e65100; text-decoration:none;">
+            🍽️ <span>Restaurant</span>
+          </a>
+          <a href="../advice/index.html" class="hud-btn" title="Go to Advice Academy Lesson" style="background:#f0f9ff; border-color:#38bdf8; color:#0284c7; text-decoration:none;">
+            🧠 <span>Advice</span>
+          </a>
+          <a href="../predictions/index.html" class="hud-btn" title="Go to Predictions Lesson" style="background:#faf5ff; border-color:#c084fc; color:#7c3aed; text-decoration:none;">
+            🔮 <span>Predictions</span> ➔
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Star Explorer Badge Counter -->
+          <div class="star-badge-counter" title="Explorer Stars">
+            <span class="star-icon">⭐</span>
+            <span id="hud-star-count">10</span>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="hud-speech-btn" onclick="toggleSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="hud-sfx-btn" onclick="toggleSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Quick Jump Menu -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherMenu()" title="Teacher Jump Menu">
+              👩‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-menu-modal" id="teacher-menu">
+              <div class="menu-group-title">--- 1. EXPLORE ---</div>
+              <button onclick="window.app.renderScene('welcome'); toggleTeacherMenu();">1. Welcome Screen</button>
+              <button onclick="window.app.renderScene('map'); toggleTeacherMenu();">2. Living Map Overview</button>
+              <button onclick="window.app.enterLocation('home'); toggleTeacherMenu();">3. My Home (Inside & Out)</button>
+              <button onclick="window.app.enterLocation('park'); toggleTeacherMenu();">4. Park & Detective</button>
+              <button onclick="window.app.enterLocation('school'); toggleTeacherMenu();">5. School (Bell & Class)</button>
+              <button onclick="window.app.enterLocation('shop'); toggleTeacherMenu();">6. Bakery & Shop</button>
+              <button onclick="window.app.enterLocation('neighbours'); toggleTeacherMenu();">7. Meet Neighbours</button>
+              <button onclick="window.app.renderScene('builder'); toggleTeacherMenu();">8. Town Builder</button>
+              <div class="menu-group-title">--- 2. REMEMBER & CHECK ---</div>
+              <button onclick="window.app.renderScene('what_did_you_see'); toggleTeacherMenu();">9. What Did You See?</button>
+              <button onclick="window.app.renderScene('remember_game'); toggleTeacherMenu();">10. Remember the Town (Veiled)</button>
+              <button onclick="window.app.renderScene('true_false'); toggleTeacherMenu();">11. True or False</button>
+              <button onclick="window.app.renderScene('listen_find'); toggleTeacherMenu();">12. Listen & Find 🎧</button>
+              <button onclick="window.app.renderScene('there_is_are'); toggleTeacherMenu();">13. There is / There are</button>
+              <button onclick="window.app.renderScene('favorite_places'); toggleTeacherMenu();">14. Where do you like to go?</button>
+              <button onclick="window.app.renderScene('favorite_activities'); toggleTeacherMenu();">15. What do you like to do?</button>
+              <div class="menu-group-title">--- 3. BUILD & SPEAK ---</div>
+              <button onclick="window.app.renderScene('matching'); toggleTeacherMenu();">16. Match Words (Slide 13)</button>
+              <button onclick="window.app.renderScene('dialogues'); toggleTeacherMenu();">17. Practice Dialogues (14-18)</button>
+              <button onclick="window.app.renderScene('speaking_builder'); toggleTeacherMenu();">18. Sentence Builder (Slide 19)</button>
+              <button onclick="window.app.renderScene('scaffold_levels'); toggleTeacherMenu();">19. 3-Level Speaking Fader</button>
+              <button onclick="window.app.renderScene('tour'); toggleTeacherMenu();">20. Tour Guide Walk</button>
+              <button onclick="window.app.renderScene('new_town'); toggleTeacherMenu();">21. Brand New Town Challenge 🏙️</button>
+              <button onclick="window.app.renderScene('reward'); toggleTeacherMenu();">22. Explorer Certificate 🏅</button>
+              <div class="menu-group-title">--- 🍽️ RESTAURANT LESSON ---</div>
+              <a href="restaurant/index.html" style="background:#fff3e0; color:#e65100; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🍽️ Open Restaurant Lesson ("I'd Like...") ➔</a>
+              <a href="restaurant/worksheets.html" target="_blank" style="background:#fdfaf6; color:#b71c1c; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🖨️ Restaurant Worksheets (5 Pages) ➔</a>
+              <div class="menu-group-title">--- 🧠 ADVICE ACADEMY ---</div>
+              <a href="advice/index.html" style="background:#f0f9ff; color:#0284c7; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🧠 Open Crazy Advice Academy (Should/Shouldn't) ➔</a>
+              <a href="advice/worksheets.html" target="_blank" style="background:#fdfaf6; color:#0369a1; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🖨️ Advice Worksheets (5 Pages) ➔</a>
+              <div class="menu-group-title">--- 🔮 PREDICTIONS LESSON ---</div>
+              <a href="predictions/index.html" style="background:#faf5ff; color:#7c3aed; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🔮 Open Predictions Lesson ("What Will Happen?") ➔</a>
+              <a href="predictions/worksheets.html" target="_blank" style="background:#fdfaf6; color:#7c3aed; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">🖨️ Predictions Worksheets (5 Pages) ➔</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Active Street Mission Floating Banner -->
+      <div id="street-mission-banner"></div>
+
+      <!-- Main Dynamic Scene Viewport -->
+      <main id="scene-viewport">
+        <!-- Injected via JavaScript -->
+      </main>
+
+      <!-- Game Toast Notification -->
+      <div id="game-toast"></div>
+
+    </div>
+  </div>
+
+  <!-- Audio Controls Helper Script -->
+  <script>
+    function toggleTeacherMenu() {
+      const menu = document.getElementById('teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    // Close teacher menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleSpeech() {
+      const enabled = window.soundEngine.toggleSpeech();
+      const btn = document.getElementById('hud-speech-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.app.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function toggleSfx() {
+      const enabled = window.soundEngine.toggleSound();
+      const btn = document.getElementById('hud-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.app.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

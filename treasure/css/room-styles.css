@@ -1,0 +1,688 @@
+/* ==========================================================================
+   🏠 ROOM RESCUE: HIGHLY INTERACTIVE VISUAL CARTOON ROOM & DRAG-AND-DROP
+   ========================================================================== */
+
+/* Main Room Scene Container */
+.room-scene-viewport {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cartoon-room-stage {
+  width: 100%;
+  height: 520px;
+  position: relative;
+  background: #f8fafc;
+  border: 6px solid #5c2c08;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.12);
+  touch-action: none; /* Crucial for smooth pointer drag on touchscreens */
+}
+
+.cartoon-room-stage.room-sparkle-clean {
+  border-color: #10b981;
+  box-shadow: 0 0 45px rgba(16, 185, 129, 0.6), 0 20px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   ROOM WALLS & FLOOR BACKGROUND ART
+   ========================================================================== */
+
+.room-wall-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56%;
+  background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 75%, #f0f9ff 100%);
+  border-bottom: 10px solid #94a3b8;
+  box-shadow: inset 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Wall Wallpaper Stripes */
+.room-wall-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(56, 189, 248, 0.12) 48px, rgba(56, 189, 248, 0.12) 50px);
+}
+
+.room-floor-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44%;
+  background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #92400e 100%);
+  box-shadow: inset 0 15px 25px rgba(0,0,0,0.25);
+}
+
+/* Wood Planks on Floor */
+.room-floor-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 2px, transparent 2px, transparent 32px);
+}
+
+/* Window Art */
+.room-window-frame {
+  position: absolute;
+  top: 18px;
+  left: 36%;
+  width: 140px;
+  height: 120px;
+  background: linear-gradient(180deg, #7dd3fc, #38bdf8);
+  border: 6px solid #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15), inset 0 0 15px rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.room-window-frame::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: #f8fafc;
+}
+.room-window-frame::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 4px;
+  background: #f8fafc;
+}
+
+/* Picture Frame */
+.room-picture-frame {
+  position: absolute;
+  top: 24px;
+  left: 58%;
+  width: 90px;
+  height: 80px;
+  background: #fef08a;
+  border: 5px solid #78350f;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  z-index: 2;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.room-picture-frame:hover {
+  transform: rotate(4deg) scale(1.05);
+}
+
+/* ==========================================================================
+   ILLUSTRATED FURNITURE & DROP ZONES
+   ========================================================================== */
+
+.furniture-piece {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+/* Drop Target Highlight Glow when dragging an object over it */
+.furniture-piece.drop-target-active {
+  box-shadow: 0 0 25px 8px #f59e0b, inset 0 0 15px rgba(245, 158, 11, 0.4) !important;
+  border: 4px dashed #f59e0b !important;
+  transform: scale(1.04);
+}
+
+.furniture-piece.drop-target-correct {
+  box-shadow: 0 0 30px 10px #10b981 !important;
+  border: 4px solid #10b981 !important;
+  animation: bounce-success 0.4s ease;
+}
+
+/* 1. Bookshelf */
+.furniture-bookshelf {
+  left: 3%;
+  top: 10%;
+  width: 140px;
+  height: 220px;
+  background: linear-gradient(135deg, #a16207, #78350f);
+  border: 5px solid #451a03;
+  border-radius: 14px;
+  box-shadow: 6px 8px 16px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.shelf-plank {
+  height: 10px;
+  background: #ca8a04;
+  border-radius: 4px;
+  border-bottom: 3px solid #713f12;
+  position: relative;
+}
+
+.shelf-slot-zone {
+  height: 48px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+}
+
+/* 2. Bed with Layered Blanket */
+.furniture-bed {
+  left: 4%;
+  top: 56%;
+  width: 250px;
+  height: 180px;
+  background: linear-gradient(180deg, #f87171, #dc2626);
+  border: 6px solid #451a03;
+  border-radius: 20px;
+  box-shadow: 8px 12px 20px rgba(0,0,0,0.3);
+  position: absolute;
+  overflow: visible;
+}
+
+.bed-pillow {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 60px;
+  height: 45px;
+  background: #fff;
+  border: 3px solid #cbd5e1;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.bed-blanket {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+  border-top: 5px solid #93c5fd;
+  border-radius: 0 0 14px 14px;
+  cursor: pointer;
+  transition: transform 0.3s ease, height 0.3s ease;
+}
+
+.bed-blanket.blanket-lifted {
+  transform: translateY(40px);
+  height: 80px;
+}
+
+.under-bed-zone {
+  position: absolute;
+  bottom: -22px;
+  left: 15px;
+  width: 220px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 2px dashed rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 3. Desk with Openable Drawer */
+.furniture-desk {
+  left: 42%;
+  top: 45%;
+  width: 240px;
+  height: 170px;
+  background: linear-gradient(180deg, #d97706, #b45309);
+  border: 6px solid #78350f;
+  border-radius: 16px;
+  box-shadow: 8px 10px 20px rgba(0,0,0,0.25);
+  position: absolute;
+}
+
+.desk-surface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 55px;
+  background: #f59e0b;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 4px solid #92400e;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+}
+
+.desk-drawer-box {
+  position: absolute;
+  top: 62px;
+  right: 12px;
+  width: 90px;
+  height: 60px;
+  background: #78350f;
+  border: 3px solid #451a03;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.desk-drawer-handle {
+  width: 32px;
+  height: 8px;
+  background: #fef08a;
+  border: 2px solid #b45309;
+  border-radius: 4px;
+}
+
+.desk-drawer-box.drawer-pulled-open {
+  transform: translateY(22px) scale(1.05);
+  background: #92400e;
+  border-color: #f59e0b;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.35);
+}
+
+.under-desk-zone {
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  width: 110px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  border: 2px dashed rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 4. Chair */
+.furniture-chair {
+  left: 45%;
+  top: 66%;
+  width: 75px;
+  height: 125px;
+  z-index: 15;
+  cursor: grab;
+}
+
+.chair-backrest {
+  width: 55px;
+  height: 50px;
+  background: #3b82f6;
+  border: 4px solid #1d4ed8;
+  border-radius: 8px 8px 0 0;
+}
+
+.chair-seat {
+  width: 65px;
+  height: 20px;
+  background: #60a5fa;
+  border: 3px solid #1d4ed8;
+  border-radius: 4px;
+}
+
+.chair-legs {
+  width: 55px;
+  height: 45px;
+  border-left: 5px solid #475569;
+  border-right: 5px solid #475569;
+}
+
+/* 5. Door & Wardrobe */
+.furniture-door {
+  right: 2%;
+  top: 40%;
+  width: 110px;
+  height: 260px;
+  background: linear-gradient(180deg, #92400e, #78350f);
+  border: 6px solid #451a03;
+  border-radius: 14px 14px 0 0;
+  box-shadow: -6px 8px 18px rgba(0,0,0,0.3);
+  position: absolute;
+}
+
+.door-knob {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  background: #fef08a;
+  border: 2px solid #b45309;
+  border-radius: 50%;
+}
+
+.furniture-wardrobe {
+  right: 18%;
+  top: 8%;
+  width: 140px;
+  height: 240px;
+  background: linear-gradient(180deg, #b45309, #78350f);
+  border: 6px solid #451a03;
+  border-radius: 12px;
+  box-shadow: 6px 8px 16px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+.wardrobe-doors {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.wardrobe-door-left, .wardrobe-door-right {
+  flex: 1;
+  border: 2px solid #92400e;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.furniture-wardrobe.wardrobe-open .wardrobe-door-left {
+  transform: perspective(600px) rotateY(-80deg);
+  transform-origin: left;
+}
+.furniture-wardrobe.wardrobe-open .wardrobe-door-right {
+  transform: perspective(600px) rotateY(80deg);
+  transform-origin: right;
+}
+
+/* 6. Toy Box with Openable Lid */
+.furniture-toybox {
+  right: 20%;
+  top: 72%;
+  width: 100px;
+  height: 80px;
+  position: absolute;
+  cursor: pointer;
+  z-index: 12;
+}
+
+.toybox-body {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(180deg, #ec4899, #be185d);
+  border: 4px solid #831843;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bungee', cursive;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.toybox-lid {
+  width: 108%;
+  margin-left: -4%;
+  height: 22px;
+  background: #f472b6;
+  border: 3px solid #831843;
+  border-radius: 8px 8px 0 0;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: bottom right;
+}
+
+.furniture-toybox.toybox-open .toybox-lid {
+  transform: rotate(-65deg) translate(-5px, -15px);
+}
+
+/* 7. Laundry Clothes Basket */
+.furniture-basket {
+  right: 6%;
+  top: 74%;
+  width: 80px;
+  height: 75px;
+  background: repeating-linear-gradient(45deg, #fde047, #fde047 8px, #eab308 8px, #eab308 16px);
+  border: 4px solid #a16207;
+  border-radius: 8px 8px 16px 16px;
+  box-shadow: 4px 6px 12px rgba(0,0,0,0.2);
+  z-index: 12;
+}
+
+/* 8. Pencil Case on Desk */
+.furniture-pencilcase {
+  width: 75px;
+  height: 32px;
+  background: linear-gradient(180deg, #34d399, #059669);
+  border: 3px solid #065f46;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+/* ==========================================================================
+   ACTUAL VISUAL DRAGGABLE OBJECTS
+   ========================================================================== */
+
+.room-visual-item {
+  position: absolute;
+  z-index: 25;
+  cursor: grab;
+  cursor: -webkit-grab;
+  touch-action: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+
+.room-visual-item:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px #facc15) drop-shadow(0 6px 8px rgba(0,0,0,0.35));
+}
+
+.room-visual-item.is-dragging {
+  cursor: grabbing !important;
+  cursor: -webkit-grabbing !important;
+  z-index: 1000 !important;
+  transform: scale(1.22) rotate(4deg) !important;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 15px #f59e0b) !important;
+  transition: none !important;
+  pointer-events: none; /* Let pointer events hit the underlying drop zone */
+}
+
+/* Item Visual Elements */
+.item-art-books {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.item-art-shoes {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.item-art-bag {
+  font-size: 3.4rem;
+  line-height: 1;
+}
+
+.item-art-pencil {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.item-art-teddy {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.item-art-clothes {
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.item-art-key {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.item-art-hat {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.item-art-notebook {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+/* Hidden objects initial state inside room */
+.room-hidden-item {
+  position: absolute;
+  z-index: 8;
+  display: none; /* Hidden behind furniture/container */
+  animation: popFound 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.room-hidden-item.is-revealed {
+  display: flex !important;
+  z-index: 35 !important;
+}
+
+@keyframes popFound {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  70% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   AUDIO & INSTRUCTION SPOTLIGHT BAR
+   ========================================================================== */
+
+.room-control-ribbon {
+  background: #fff;
+  border: 4px solid #38bdf8;
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.instruction-text-bubble {
+  flex: 1;
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.spoken-phrase-tag {
+  color: #2563eb;
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   PICTURE SEQUENCE CARDS (LEVEL 8 VISUALS)
+   ========================================================================== */
+
+.sequence-visual-track {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.seq-picture-card {
+  background: #fff;
+  border: 4px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: grab;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.15s, border-color 0.15s;
+  touch-action: none;
+}
+
+.seq-picture-card:hover {
+  transform: translateY(-4px);
+  border-color: #6366f1;
+}
+
+.seq-card-order-badge {
+  background: #4338ca;
+  color: #fff;
+  font-family: 'Bungee', cursive;
+  font-size: 1.1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.seq-card-image {
+  font-size: 3.5rem;
+  margin: 6px 0;
+  line-height: 1;
+}
+
+.seq-card-caption {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #334155;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .cartoon-room-stage {
+    height: 440px;
+  }
+  .sequence-visual-track {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .cartoon-room-stage {
+    height: 380px;
+  }
+  .sequence-visual-track {
+    grid-template-columns: 1fr;
+  }
+}

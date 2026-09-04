@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Night Sky Gradient -->
+    <linearGradient id="stadiumSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="60%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+
+    <!-- Stadium Arena Floor Gradient -->
+    <linearGradient id="arenaFloor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="60%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Stadium Floodlight Glows -->
+    <radialGradient id="lightConeLeft" cx="10%" cy="10%" r="90%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#38bdf8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1e293b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lightConeRight" cx="90%" cy="10%" r="90%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#ec4899" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1e293b" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Center Arena Glow -->
+    <radialGradient id="ringGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#6366f1" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Night Sky -->
+  <rect x="0" y="0" width="1920" height="600" fill="url(#stadiumSky)"/>
+
+  <!-- Stadium Floodlights Cones -->
+  <polygon points="120,40 0,600 700,600" fill="url(#lightConeLeft)" opacity="0.7"/>
+  <polygon points="1800,40 1220,600 1920,600" fill="url(#lightConeRight)" opacity="0.7"/>
+
+  <!-- Distant Stadium Stands / Crowd Silhouettes -->
+  <path d="M 0 350 Q 960 440 1920 350 L 1920 600 L 0 600 Z" fill="#0f172a"/>
+  <path d="M 0 380 Q 960 460 1920 380 L 1920 600 L 0 600 Z" fill="#1e293b"/>
+  <!-- Cheering Crowd Dots & Flashbulbs -->
+  <g opacity="0.8">
+    <circle cx="200" cy="380" r="3" fill="#fef08a"/>
+    <circle cx="340" cy="390" r="2" fill="#38bdf8"/>
+    <circle cx="510" cy="420" r="4" fill="#f43f5e"/>
+    <circle cx="720" cy="430" r="3" fill="#ffffff"/>
+    <circle cx="900" cy="440" r="4" fill="#a855f7"/>
+    <circle cx="1100" cy="435" r="3" fill="#22c55e"/>
+    <circle cx="1320" cy="420" r="4" fill="#ffffff"/>
+    <circle cx="1550" cy="395" r="3" fill="#facc15"/>
+    <circle cx="1780" cy="375" r="4" fill="#38bdf8"/>
+    <circle cx="450" cy="360" r="3" fill="#ffffff"/>
+    <circle cx="850" cy="390" r="2" fill="#ec4899"/>
+    <circle cx="1250" cy="380" r="3" fill="#34d399"/>
+    <circle cx="1680" cy="350" r="3" fill="#ffffff"/>
+  </g>
+
+  <!-- Stadium Light Towers -->
+  <!-- Left Tower -->
+  <polygon points="90,40 150,40 135,360 105,360" fill="#334155"/>
+  <rect x="80" y="20" width="80" height="30" rx="4" fill="#f8fafc"/>
+  <circle cx="95" cy="35" r="8" fill="#fef08a"/>
+  <circle cx="120" cy="35" r="8" fill="#fef08a"/>
+  <circle cx="145" cy="35" r="8" fill="#fef08a"/>
+
+  <!-- Right Tower -->
+  <polygon points="1770,40 1830,40 1815,360 1785,360" fill="#334155"/>
+  <rect x="1760" y="20" width="80" height="30" rx="4" fill="#f8fafc"/>
+  <circle cx="1775" cy="35" r="8" fill="#fef08a"/>
+  <circle cx="1800" cy="35" r="8" fill="#fef08a"/>
+  <circle cx="1825" cy="35" r="8" fill="#fef08a"/>
+
+  <!-- Stadium Arena Wall & LED Banners -->
+  <path d="M 0 520 Q 960 620 1920 520 L 1920 560 Q 960 660 0 560 Z" fill="#f59e0b"/>
+  <path d="M 0 540 Q 960 640 1920 540 L 1920 570 Q 960 670 0 570 Z" fill="#0284c7"/>
+
+  <!-- Arena Battle Floor (Perspective) -->
+  <polygon points="0,560 1920,560 1920,1080 0,1080" fill="url(#arenaFloor)"/>
+
+  <!-- Battle Arena Markings -->
+  <!-- Outer glowing ring -->
+  <ellipse cx="960" cy="840" rx="720" ry="210" fill="url(#ringGlow)"/>
+  <ellipse cx="960" cy="840" rx="680" ry="200" fill="none" stroke="#38bdf8" stroke-width="6" opacity="0.7"/>
+  <ellipse cx="960" cy="840" rx="660" ry="190" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+
+  <!-- Center Court Giant Pokéball -->
+  <g transform="translate(960, 840) scale(1, 0.32)">
+    <!-- Top red half -->
+    <path d="M -300 0 A 300 300 0 0 1 300 0 Z" fill="#ef4444" fill-opacity="0.85"/>
+    <!-- Bottom white half -->
+    <path d="M -300 0 A 300 300 0 0 0 300 0 Z" fill="#f8fafc" fill-opacity="0.85"/>
+    <!-- Center seam line -->
+    <line x1="-300" y1="0" x2="300" y2="0" stroke="#0f172a" stroke-width="24"/>
+    <!-- Center circle button -->
+    <circle cx="0" cy="0" r="100" fill="#0f172a"/>
+    <circle cx="0" cy="0" r="75" fill="#f8fafc"/>
+    <circle cx="0" cy="0" r="45" fill="#e2e8f0" stroke="#0f172a" stroke-width="8"/>
+  </g>
+
+  <!-- Player 1 Battle Pedestal (Left - Blue Team) -->
+  <ellipse cx="440" cy="880" rx="200" ry="60" fill="#0284c7" fill-opacity="0.5"/>
+  <ellipse cx="440" cy="880" rx="190" ry="55" fill="none" stroke="#38bdf8" stroke-width="5"/>
+  <text x="440" y="885" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" fill="#e0f2fe" text-anchor="middle" letter-spacing="4" opacity="0.9">TRAINER 1</text>
+
+  <!-- Player 2 Battle Pedestal (Right - Red/Orange Team) -->
+  <ellipse cx="1480" cy="880" rx="200" ry="60" fill="#ea580c" fill-opacity="0.5"/>
+  <ellipse cx="1480" cy="880" rx="190" ry="55" fill="none" stroke="#fb923c" stroke-width="5"/>
+  <text x="1480" y="885" font-family="'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" fill="#ffedd5" text-anchor="middle" letter-spacing="4" opacity="0.9">TRAINER 2</text>
+</svg>

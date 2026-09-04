@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎓 English Adventure Academy: Treasure Mystery & Room Rescue</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/room-styles.css">
+  <link rel="stylesheet" href="css/clil-styles.css">
+  <link rel="stylesheet" href="css/expedition-styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       TOP PERSISTENT WHITEBOARD HEADER
+       ========================================================================= -->
+  <header id="game-header">
+    <div class="header-left">
+      <a href="../index.html" class="game-title-badge" style="text-decoration:none; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #fff;" title="Return to ESL Library">
+        <span>📚</span>
+        <span>LIBRARY</span>
+      </a>
+      <div class="game-title-badge" id="home-menu-btn" title="Click for Main Menu">
+        <span>🏠</span>
+        <span>MAIN MENU</span>
+      </div>
+
+      <!-- Active Team Turn Indicator (For 3rd Grade Treasure Game) -->
+      <div id="active-turn-pill" class="turn-pill turn-red">
+        🔴 <span>TURN: TEAM RED</span>
+      </div>
+
+      <button id="next-turn-btn" class="next-turn-btn" title="Pass turn to next team">
+        <span>NEXT TEAM</span> ➔
+      </button>
+    </div>
+
+    <!-- 4-Team Dynamic Scoreboard -->
+    <div class="scoreboard-container">
+      <div class="team-score-card card-red" id="team-card-red" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🔴 RED</span>
+        <div class="team-star-count"><span id="score-val-red">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-blue" id="team-card-blue" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🔵 BLUE</span>
+        <div class="team-star-count"><span id="score-val-blue">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-green" id="team-card-green" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🟢 GREEN</span>
+        <div class="team-star-count"><span id="score-val-green">0</span> ⭐</div>
+      </div>
+
+      <div class="team-score-card card-yellow" id="team-card-yellow" onclick="uiController.awardPointsToActive(1)" title="Click to add +1 point">
+        <span>🟡 YELLOW</span>
+        <div class="team-star-count"><span id="score-val-yellow">0</span> ⭐</div>
+      </div>
+    </div>
+
+    <!-- Persistent Header Actions -->
+    <div class="header-actions">
+      <button class="icon-btn" id="qboard-toggle-btn" title="Open Persistent Question Board" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border-color: #a78bfa; font-weight: 800; font-size: 0.9rem; padding: 8px 12px;">
+        📌 QUESTION BOARD
+      </button>
+      <button class="icon-btn active-btn" id="sfx-toggle-btn" title="Toggle Sound Effects">🔊</button>
+      <button class="icon-btn active-btn" id="tts-toggle-btn" title="Toggle English Voice TTS">🗣️</button>
+      <button class="icon-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
+      <button class="teacher-hub-btn" id="teacher-hub-btn">
+        <span>🧑‍🏫 TEACHER</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN GAME VIEWPORT
+       ========================================================================= -->
+  <main id="game-viewport">
+
+    <!-- 0. SCREEN: MAIN HUB (CHOOSE MODE) -->
+    <section class="screen-view active" id="screen-hub">
+      <div class="adventure-card" style="max-width: 1300px;">
+        <div style="background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(211, 47, 47, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #ffeb3b; letter-spacing: 0.5px;">🚒 NEW INTERACTIVE STORY LESSON (A1+ • AGES 7–9)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">Fire Station Adventure: Charlie the Firefighter</h2>
+            <p style="font-size: 14px; opacity: 0.95; margin: 0;">Interactive whiteboard lesson with 23 slides, tap-based hose simulation, sound effects, and printable worksheet.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="firefighter/" style="background: #ffeb3b; color: #b71c1c; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+              🚒 LAUNCH LESSON ➔
+            </a>
+            <a href="firefighter/worksheet.html" target="_blank" style="background: rgba(255,255,255,0.25); color: #fff; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 14px; white-space: nowrap;">
+              🖨️ Worksheet
+            </a>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #facc15; letter-spacing: 0.5px;">✨ NEW INTERACTIVE CLASSROOM LESSON (CEFR A1+)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">Step into the Story: The Wizard of Oz</h2>
+            <p style="font-size: 14px; opacity: 0.9; margin: 0;">Interactive stage with 11 scenes, sound effects, character badges, and retelling activities.</p>
+          </div>
+          <a href="story/" style="background: #facc15; color: #78350f; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+            🎭 LAUNCH OZ STAGE ➔
+          </a>
+        </div>
+        <div style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #fef08a; letter-spacing: 0.5px;">🏘️ INTERACTIVE ESL SPEAKING LESSON (A1 • AGES 6–9)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">My Neighbourhood: Living Town Exploration</h2>
+            <p style="font-size: 14px; opacity: 0.95; margin: 0;">Explore living town map, house interior, park detective, bakery, comprehension games & walking tour.</p>
+          </div>
+          <a href="monster%20day/story/mouse/pokemon/firefighter/NH/index.html" style="background: #fef08a; color: #065f46; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+            🏘️ LAUNCH NEIGHBOURHOOD ➔
+          </a>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(234, 88, 12, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #fef08a; letter-spacing: 0.5px;">🍽️ NEW INTERACTIVE RESTAURANT ROLE-PLAY (A1/A1+)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">At the Restaurant — "I'd Like..." (40 Min Lesson)</h2>
+            <p style="font-size: 14px; opacity: 0.95; margin: 0;">Interactive menu, ordering practice, secret order cards, role switching & 5 printable A4 worksheets.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/restaurant/index.html" style="background: #fef08a; color: #9a3412; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+              🍽️ LAUNCH RESTAURANT ➔
+            </a>
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/restaurant/worksheets.html" target="_blank" style="background: rgba(255,255,255,0.25); color: #fff; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 14px; white-space: nowrap;">
+              🖨️ Worksheets
+            </a>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #fef08a; letter-spacing: 0.5px;">🧠 NEW INTERACTIVE THINKING & CLIL LESSON (A1+/A2)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">The Crazy Advice Academy: Should & Shouldn't</h2>
+            <p style="font-size: 14px; opacity: 0.95; margin: 0;">Help Professor Should! Solve 10 funny dilemmas, consequence detective, pair role-play, crazy advice battle & 5 printable worksheets.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/advice/index.html" style="background: #fef08a; color: #075985; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+              🧠 LAUNCH ADVICE ACADEMY ➔
+            </a>
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/advice/worksheets.html" target="_blank" style="background: rgba(255,255,255,0.25); color: #fff; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 14px; white-space: nowrap;">
+              🖨️ Worksheets
+            </a>
+          </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #7c3aed, #5b21b6); color: #fff; padding: 18px 24px; border-radius: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.35);">
+          <div>
+            <div style="font-size: 13px; font-weight: 900; color: #fef08a; letter-spacing: 0.5px;">🔮 NEW INTERACTIVE FUTURE & PREDICTIONS LESSON (A1+/A2)</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 4px 0;">What Will Happen Next? (Predictions with WILL)</h2>
+            <p style="font-size: 14px; opacity: 0.95; margin: 0;">Frozen cliffhangers, dramatic reveals, 3-panel comic sequences, prediction bingo, team showdown & 5 printable worksheets.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/predictions/index.html" style="background: #fef08a; color: #581c87; text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); white-space: nowrap;">
+              🔮 LAUNCH PREDICTIONS ➔
+            </a>
+            <a href="monster%20day/story/mouse/pokemon/firefighter/NH/predictions/worksheets.html" target="_blank" style="background: rgba(255,255,255,0.25); color: #fff; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-weight: 800; font-size: 14px; white-space: nowrap;">
+              🖨️ Worksheets
+            </a>
+          </div>
+        </div>
+        <div id="hub-content">
+          <!-- Hub Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 1: 🕵️ 3RD GRADE DETECTIVE PREPARATION (WARM-UP SCREENS)
+         ======================================================================= -->
+
+    <!-- PREP SCREEN 0: INTRO -->
+    <section class="screen-view" id="screen-prep-intro">
+      <div class="adventure-card">
+        <div id="prep-intro-content">
+          <!-- Prep Intro -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 1: QUESTION PRACTICE -->
+    <section class="screen-view" id="screen-prep-mg1">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="prep-mg1-content">
+          <!-- Prep MG1 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 2: ASK ABOUT THE PERSON -->
+    <section class="screen-view" id="screen-prep-mg2">
+      <div class="adventure-card" style="max-width: 1200px;">
+        <div class="game-stage-container" id="prep-mg2-content">
+          <!-- Prep MG2 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 3: WHICH QUESTION DO WE NEED? -->
+    <section class="screen-view" id="screen-prep-mg3">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="prep-mg3-content">
+          <!-- Prep MG3 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 4: 5-SECOND QUICK MEMORY -->
+    <section class="screen-view" id="screen-prep-mg4">
+      <div class="adventure-card" style="max-width: 1100px;">
+        <div class="game-stage-container" id="prep-mg4-content">
+          <!-- Prep MG4 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 5: PERMANENT QUESTION BOARD -->
+    <section class="screen-view" id="screen-prep-board">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="prep-board-content">
+          <!-- Prep Question Board -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREP SCREEN 6: CLASSROOM INVESTIGATION GUIDE -->
+    <section class="screen-view" id="screen-prep-classroom">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="prep-classroom-content">
+          <!-- Classroom Guide -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 2: 🏴‍☠️ 3RD GRADE WHO STOLE THE TREASURE? (FULL INVESTIGATION)
+         ======================================================================= -->
+
+    <!-- TREASURE SCREEN 1: INTRO & STORY -->
+    <section class="screen-view" id="screen-intro">
+      <div class="adventure-card">
+        <div class="card-header-banner">
+          <span class="card-tag">🏴‍☠️ FIRST WEEK OF SCHOOL ENGLISH ADVENTURE</span>
+          <h1 class="main-heading">🕵️ WHO STOLE THE TREASURE?</h1>
+          <p class="sub-heading">A classroom mystery for 4 Detective Teams!</p>
+        </div>
+
+        <div class="intro-chest-container">
+          <div class="chest-animation-box">💰 🏴‍☠️ 🔐</div>
+          <div class="alarm-banner">
+            🚨 OH NO! THE GOLDEN TREASURE IS GONE! 🚨
+          </div>
+          <p style="font-size: 1.35rem; font-weight: 800; color: #334155; text-align: center; max-width: 750px;">
+            Someone took the golden treasure chest! We need <strong>4 teams of super detectives</strong> to find the thief!
+          </p>
+        </div>
+
+        <!-- Suspects Preview Strip -->
+        <div style="margin: 20px 0; text-align: center;">
+          <h3 style="font-family: 'Bungee', cursive; font-size: 1.2rem; color: #1e293b; margin-bottom: 8px;">
+            🔍 THE 8 SUSPECTS UNDER INVESTIGATION:
+          </h3>
+          <div class="suspects-preview-row" id="intro-suspects-preview">
+            <!-- Rendered by UI -->
+          </div>
+        </div>
+
+        <!-- 4 Step Mission Roadmap -->
+        <div class="mission-brief-steps">
+          <div class="step-card">
+            <div class="step-icon">🧠</div>
+            <div class="step-text">1. Training Missions</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Learn secret grammar & question skills</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🔐</div>
+            <div class="step-text">2. Unlock the Vault</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Crack the 5-key combination lock</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🧩</div>
+            <div class="step-text">3. Collect Clues</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Interrogate suspects & eliminate innocents</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">🚨</div>
+            <div class="step-text">4. Catch the Thief</div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Make the accusation & win the trophy!</p>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 14px; margin-top: 24px;">
+          <button class="jumbo-btn btn-ocean" style="font-size: 1.1rem; padding: 14px 28px;" onclick="uiController.showScreen('hub')">
+            🏠 MAIN MENU
+          </button>
+          <button class="jumbo-btn btn-gold" style="font-size: 1.5rem; padding: 18px 42px;" onclick="uiController.showScreen('mg1')">
+            🚀 START DETECTIVE MISSIONS ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 2: MINI-GAME 1 - QUESTION MATCH -->
+    <section class="screen-view" id="screen-mg1">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg1-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 3: MINI-GAME 2 - WHO AM I? -->
+    <section class="screen-view" id="screen-mg2">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg2-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 4: MINI-GAME 3 - CAN / CAN'T CHALLENGE -->
+    <section class="screen-view" id="screen-mg3">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg3-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 5: MINI-GAME 4 - DO YOU LIKE / DOES HE/SHE LIKE? -->
+    <section class="screen-view" id="screen-mg4">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg4-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 6: MINI-GAME 5 - HAVE GOT -->
+    <section class="screen-view" id="screen-mg5">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="mg5-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 7: BOSS LOCK - TREASURE MASTER VAULT -->
+    <section class="screen-view" id="screen-boss">
+      <div class="adventure-card">
+        <div class="game-stage-container" id="boss-lock-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 8: PART 2 - REAL INVESTIGATION & SUSPECTS EVIDENCE BOARD -->
+    <section class="screen-view" id="screen-investigation">
+      <div class="adventure-card" style="max-width: 1250px;">
+        <div id="investigation-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 9: FINAL ACCUSATION & REVEAL CEREMONY -->
+    <section class="screen-view" id="screen-accusation">
+      <div class="adventure-card">
+        <div class="accusation-arena" id="accusation-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREASURE SCREEN 10: FINAL SCORE & DETECTIVE AWARDS -->
+    <section class="screen-view" id="screen-victory">
+      <div class="adventure-card">
+        <div id="victory-content">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 3: 🏠 4TH GRADE ROOM RESCUE (THE LOST THINGS MISSION)
+         ======================================================================= -->
+    <section class="screen-view" id="screen-room-rescue">
+      <div id="room-main-view" style="width: 100%; display: flex; justify-content: center;">
+        <!-- Rendered by roomUI -->
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 4: 🕵️ 4TH GRADE CLIL CRIME LAB (FOUR MYSTERY CASES)
+         ======================================================================= -->
+    <section class="screen-view" id="screen-clil-lab">
+      <div id="clil-main-view" style="width: 100%; display: flex; justify-content: center;">
+        <!-- Rendered by clilUI -->
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         SECTION 5: 🧭 4TH GRADE THE LAST EXPEDITION (PREDICTION & CLIL)
+         ======================================================================= -->
+    <section class="screen-view" id="screen-expedition">
+      <div id="expedition-main-view" style="width: 100%; display: flex; justify-content: center;">
+        <!-- Rendered by expeditionUI -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS: DOSSIER, STICKY QUESTION BOARD, ROOM TEACHER, CLIL & MAIN TEACHER HUB
+       ========================================================================= -->
+
+  <!-- Suspect Interrogation Dossier / Meeting Modal -->
+  <div class="modal-overlay" id="dossier-modal">
+    <div class="dossier-card">
+      <button class="modal-close-btn" onclick="uiController.closeInterview(false)">✕</button>
+      <div id="dossier-modal-body">
+        <!-- Interrogation Dossier Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent Sticky Question Board Modal (Floating / Popup) -->
+  <div class="modal-overlay" id="sticky-question-board-modal">
+    <div class="dossier-card" style="max-width: 1100px;">
+      <div id="sticky-question-board-body">
+        <!-- Sticky Question Board -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Room Rescue Teacher Control Modal -->
+  <div class="modal-overlay" id="room-teacher-modal">
+    <div class="teacher-modal-box">
+      <div id="room-teacher-body">
+        <!-- Room Teacher Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIL Question Modal -->
+  <div class="modal-overlay" id="clil-question-modal">
+    <div class="teacher-modal-box" style="max-width: 650px;">
+      <div id="clil-question-modal-body">
+        <!-- CLIL Question Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIL Hint Modal -->
+  <div class="modal-overlay" id="clil-hint-modal">
+    <div class="teacher-modal-box" style="max-width: 650px;">
+      <div id="clil-hint-modal-body">
+        <!-- CLIL Hint Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Teacher Control Center Modal -->
+  <div class="modal-overlay" id="teacher-modal">
+    <div class="teacher-modal-box">
+      <div id="teacher-modal-body">
+        <!-- Teacher Hub Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/room-data.js"></script>
+  <script src="js/room-svg.js"></script>
+  <script src="js/clil-data.js"></script>
+  <script src="js/clil-svg.js"></script>
+  <script src="js/expedition-data.js"></script>
+  <script src="js/expedition-svg.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/room-game.js"></script>
+  <script src="js/clil-game.js"></script>
+  <script src="js/expedition-game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/room-ui.js"></script>
+  <script src="js/clil-ui.js"></script>
+  <script src="js/expedition-ui.js"></script>
+</body>
+</html>

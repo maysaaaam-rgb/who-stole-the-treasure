@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="100%" height="100%">
+  <defs>
+    <!-- Background glow -->
+    <radialGradient id="labGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- Hair gradient -->
+    <linearGradient id="hairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+
+    <!-- Coat gradient -->
+    <linearGradient id="coatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+
+    <!-- Shirt gradient -->
+    <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+
+    <!-- Skin gradient -->
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffedd5"/>
+      <stop offset="100%" stop-color="#fed7aa"/>
+    </linearGradient>
+
+    <!-- Tablet screen glow -->
+    <linearGradient id="screenGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Glow circle -->
+  <circle cx="200" cy="240" r="180" fill="url(#labGlow)"/>
+
+  <!-- Character Group with shadow -->
+  <g filter="url(#dropShadow)">
+    <!-- Back Hair Spikes -->
+    <path d="M 120 130 C 90 70, 160 50, 190 60 C 220 40, 290 60, 280 120 C 300 150, 280 200, 260 210 L 140 210 Z" fill="#b45309"/>
+
+    <!-- Lab Coat Back Collar -->
+    <path d="M 130 250 L 200 230 L 270 250 L 280 290 L 120 290 Z" fill="#cbd5e1"/>
+
+    <!-- Neck -->
+    <rect x="180" y="210" width="40" height="45" rx="10" fill="url(#skinGrad)"/>
+    <path d="M 180 230 C 195 240, 205 240, 220 230 L 220 245 L 180 245 Z" fill="#fdba74" opacity="0.6"/>
+
+    <!-- Head Base -->
+    <path d="M 140 150 C 140 100, 260 100, 260 150 C 260 210, 225 240, 200 240 C 175 240, 140 210, 140 150 Z" fill="url(#skinGrad)"/>
+
+    <!-- Ears -->
+    <circle cx="138" cy="165" r="14" fill="url(#skinGrad)"/>
+    <circle cx="138" cy="165" r="8" fill="#fbcfe8" opacity="0.7"/>
+    <circle cx="262" cy="165" r="14" fill="url(#skinGrad)"/>
+    <circle cx="262" cy="165" r="8" fill="#fbcfe8" opacity="0.7"/>
+
+    <!-- Cheerful Eyes -->
+    <!-- Left Eye -->
+    <ellipse cx="172" cy="155" rx="12" ry="14" fill="#ffffff"/>
+    <circle cx="174" cy="155" r="8" fill="#1e293b"/>
+    <circle cx="176" cy="151" r="3" fill="#ffffff"/>
+    <ellipse cx="166" cy="172" rx="10" ry="4" fill="#fda4af" opacity="0.8"/> <!-- Blush -->
+
+    <!-- Right Eye -->
+    <ellipse cx="228" cy="155" rx="12" ry="14" fill="#ffffff"/>
+    <circle cx="226" cy="155" r="8" fill="#1e293b"/>
+    <circle cx="228" cy="151" r="3" fill="#ffffff"/>
+    <ellipse cx="234" cy="172" rx="10" ry="4" fill="#fda4af" opacity="0.8"/> <!-- Blush -->
+
+    <!-- Cute Friendly Eyebrows -->
+    <path d="M 160 135 Q 172 128 185 135" stroke="#78350f" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M 215 135 Q 228 128 240 135" stroke="#78350f" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- Nose -->
+    <path d="M 197 165 C 200 168, 203 168, 206 165" stroke="#fb923c" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+    <!-- Big Welcoming Smile -->
+    <path d="M 180 182 Q 200 210 220 182 Z" fill="#e11d48"/>
+    <path d="M 188 183 Q 200 193 212 183 Z" fill="#ffffff"/> <!-- White teeth -->
+
+    <!-- Front Spiky Anime Hair -->
+    <path d="M 135 125 C 130 90, 160 60, 190 55 C 220 50, 260 70, 265 110 C 250 100, 230 110, 215 105 C 195 95, 175 115, 160 110 C 145 115, 140 120, 135 125 Z" fill="url(#hairGrad)"/>
+    <!-- Additional Hair Tufts -->
+    <path d="M 180 60 Q 195 30 210 65 Z" fill="#f59e0b"/>
+    <path d="M 150 80 Q 140 50 170 70 Z" fill="#f59e0b"/>
+    <path d="M 230 75 Q 255 45 245 85 Z" fill="#f59e0b"/>
+
+    <!-- Glasses Frame -->
+    <rect x="154" y="142" width="36" height="28" rx="8" fill="none" stroke="#3b82f6" stroke-width="4"/>
+    <rect x="210" y="142" width="36" height="28" rx="8" fill="none" stroke="#3b82f6" stroke-width="4"/>
+    <path d="M 190 154 L 210 154" stroke="#3b82f6" stroke-width="4"/>
+    <path d="M 140 150 L 154 150" stroke="#3b82f6" stroke-width="4"/>
+    <path d="M 246 150 L 260 150" stroke="#3b82f6" stroke-width="4"/>
+
+    <!-- Inner Shirt & Tie -->
+    <path d="M 160 250 L 240 250 L 235 340 L 165 340 Z" fill="url(#shirtGrad)"/>
+    <polygon points="195,250 205,250 208,310 200,325 192,310" fill="#f43f5e"/>
+
+    <!-- Lab Coat Body -->
+    <path d="M 110 280 L 165 250 L 180 380 L 90 440 Z" fill="url(#coatGrad)"/>
+    <path d="M 290 280 L 235 250 L 220 380 L 310 440 Z" fill="url(#coatGrad)"/>
+    <!-- Lapels -->
+    <polygon points="165,250 190,320 160,330 145,265" fill="#f1f5f9"/>
+    <polygon points="235,250 210,320 240,330 255,265" fill="#f1f5f9"/>
+    <!-- Coat Buttons -->
+    <circle cx="200" cy="350" r="5" fill="#94a3b8"/>
+    <circle cx="200" cy="385" r="5" fill="#94a3b8"/>
+
+    <!-- Left Arm & Hand (Pointing enthusiastically) -->
+    <path d="M 120 270 C 80 300, 70 330, 60 370 C 55 390, 75 400, 85 385 C 95 370, 110 340, 130 320 Z" fill="url(#coatGrad)"/>
+    <circle cx="65" cy="380" r="14" fill="url(#skinGrad)"/>
+    <!-- Pointing Finger -->
+    <path d="M 60 375 L 45 355 C 40 348, 52 342, 57 350 L 68 368 Z" fill="url(#skinGrad)"/>
+
+    <!-- Right Arm holding Holographic Pokédex Tablet -->
+    <path d="M 280 270 C 310 310, 320 340, 305 380 L 270 340 Z" fill="url(#coatGrad)"/>
+    
+    <!-- Pokédex Tablet -->
+    <g transform="translate(250, 320) rotate(-10)">
+      <rect x="0" y="0" width="105" height="130" rx="14" fill="#e11d48" stroke="#be123c" stroke-width="4"/>
+      <!-- Tablet Screen -->
+      <rect x="10" y="14" width="85" height="75" rx="8" fill="#0f172a"/>
+      <rect x="14" y="18" width="77" height="67" rx="6" fill="url(#screenGlow)"/>
+      <!-- Pokeball icon on tablet screen -->
+      <circle cx="52" cy="51" r="18" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+      <path d="M 34 51 L 70 51" stroke="#0f172a" stroke-width="3"/>
+      <circle cx="52" cy="51" r="6" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+      <!-- Tablet buttons -->
+      <circle cx="24" cy="105" r="8" fill="#38bdf8"/>
+      <circle cx="52" cy="105" r="8" fill="#facc15"/>
+      <circle cx="80" cy="105" r="8" fill="#4ade80"/>
+      <!-- Hand gripping tablet -->
+      <circle cx="15" cy="70" r="12" fill="url(#skinGrad)"/>
+      <circle cx="95" cy="70" r="12" fill="url(#skinGrad)"/>
+    </g>
+
+    <!-- Professor Badge on Coat -->
+    <rect x="140" y="325" width="22" height="14" rx="3" fill="#38bdf8"/>
+    <circle cx="151" cy="332" r="3" fill="#ffffff"/>
+  </g>
+</svg>

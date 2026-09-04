@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The City Mouse & The Country Mouse - Interactive English Lesson</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="app-container">
+
+    <!-- Top Navigation & Progress Bar -->
+    <header class="top-nav">
+      <div class="brand-section">
+        <div class="brand-badge">🐭</div>
+        <div class="lesson-title">The City Mouse & The Country Mouse</div>
+        <span class="lesson-step-tag" id="current-stage-tag">Start</span>
+      </div>
+
+      <!-- Navigation & Teacher Controls -->
+      <div class="nav-actions">
+        <a href="../index.html" class="nav-btn" style="text-decoration:none; font-weight:800; background:rgba(255,255,255,0.25);" title="Return to ESL Library">📚 Library</a>
+        <div class="progress-track" id="progress-dots"></div>
+        <button class="nav-btn" id="btn-prev" title="Previous Slide">⬅️ Back</button>
+        <button class="nav-btn primary" id="btn-next" title="Next Slide">Next ➡️</button>
+        <a href="worksheet.html" target="_blank" class="nav-btn" style="text-decoration: none;" title="Printable Worksheet">🖨️ Worksheet</a>
+        <button class="nav-btn" id="btn-sound" title="Toggle Sound">🔊</button>
+        <button class="nav-btn teacher-toggle" id="btn-teacher-toggle" title="Teacher Menu">⚙️ Teacher</button>
+      </div>
+    </header>
+
+    <!-- Main Interactive Stage Viewport -->
+    <main class="stage-viewport">
+
+      <!-- ==========================================================
+           SLIDE 1: START SCREEN
+           ========================================================== -->
+      <section class="slide active" id="slide-1">
+        <div class="title-card">
+          <div class="title-badge">A1 / A1+ ENGLISH STORYBOOK ADVENTURE</div>
+          <h1 class="title-main">
+            THE <span class="city-text">CITY MOUSE</span> &amp;<br>
+            THE <span class="country-text">COUNTRY MOUSE</span>
+          </h1>
+
+          <div class="title-visual-wrapper">
+            <img src="assets/images/cover_mice.jpg" alt="City Mouse and Country Mouse" class="title-img">
+          </div>
+
+          <button class="big-btn big-btn-orange" id="btn-start-adventure">
+            <span>✨ START ADVENTURE ✨</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 2: PHYSICAL ICEBREAKER — CITY OR COUNTRY?
+           ========================================================== -->
+      <section class="slide" id="slide-2">
+        <div class="icebreaker-stage">
+          <!-- Permanent Left Zone: CITY -->
+          <div class="choice-zone city-zone">
+            <div class="zone-icon">🏙️</div>
+            <div class="zone-label">CITY</div>
+            <div class="zone-sub">Step Left ⬅️</div>
+          </div>
+
+          <!-- Spectacular Image Showcase -->
+          <div class="icebreaker-center">
+            <div class="ice-image-container">
+              <img id="ice-current-img" src="assets/images/icebreaker/neon_city.jpg" alt="Spectacular Scene" class="ice-img">
+              <div class="ice-caption-bar">
+                <div class="ice-caption-title" id="ice-caption-text">1. Spectacular Neon City at Night 🏙️</div>
+              </div>
+            </div>
+
+            <!-- Teacher Controls & WHY Prompt -->
+            <div class="ice-controls">
+              <div class="why-prompt-card" id="why-prompt-card">
+                <span>🤔 Teacher asks: "Why do you choose this?"</span>
+              </div>
+              <button class="big-btn big-btn-blue" id="btn-ice-next">Next Picture ➡️</button>
+            </div>
+          </div>
+
+          <!-- Permanent Right Zone: COUNTRY -->
+          <div class="choice-zone country-zone">
+            <div class="zone-icon">🌳</div>
+            <div class="zone-label">COUNTRY</div>
+            <div class="zone-sub">Step Right ➡️</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 3: MEET THE CHARACTERS
+           ========================================================== -->
+      <section class="slide" id="slide-3">
+        <div class="slide-header">
+          <h2 class="slide-title">Who Are They? 🐭</h2>
+          <p class="slide-subtitle">Tap each character to discover who they are!</p>
+        </div>
+
+        <div class="characters-stage">
+          <!-- City Mouse Card -->
+          <div class="character-card city-card" id="card-city-mouse">
+            <div class="char-mystery-overlay">
+              <span style="font-size: 50px;">❓</span>
+              <span>Tap to Reveal!</span>
+            </div>
+            <div class="char-avatar-frame">
+              <img src="assets/images/avatar_city_mouse.jpg" alt="City Mouse" class="char-avatar-img">
+            </div>
+            <div class="char-name" style="color: #1565c0;">CITY MOUSE 🏙️</div>
+            <p class="char-desc">He wears a stylish navy vest and red bowtie. He loves the exciting city!</p>
+            <div class="char-env-bubble" style="background: #e3f2fd; color: #0d47a1;">
+              🏙️ "I live in the big city!"
+            </div>
+          </div>
+
+          <!-- Country Mouse Card -->
+          <div class="character-card country-card" id="card-country-mouse">
+            <div class="char-mystery-overlay">
+              <span style="font-size: 50px;">❓</span>
+              <span>Tap to Reveal!</span>
+            </div>
+            <div class="char-avatar-frame">
+              <img src="assets/images/avatar_country_mouse.jpg" alt="Country Mouse" class="char-avatar-img">
+            </div>
+            <div class="char-name" style="color: #2e7d32;">COUNTRY MOUSE 🌳</div>
+            <p class="char-desc">He wears cozy green overalls and a neckerchief. He loves his peaceful home!</p>
+            <div class="char-env-bubble" style="background: #e8f5e9; color: #1b5e20;">
+              🌳 "I live in the peaceful country!"
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 4: PRE-STORY PREDICTION
+           ========================================================== -->
+      <section class="slide" id="slide-4">
+        <div class="slide-header">
+          <h2 class="slide-title">What Do You Think Happens? 🔮</h2>
+          <p class="slide-subtitle">Look at the mystery story clues and make a guess!</p>
+        </div>
+
+        <div class="pre-story-grid">
+          <!-- Mystery Clues -->
+          <div class="mystery-clues-row">
+            <div class="clue-badge">
+              <img src="assets/images/feast_table.jpg" class="clue-thumb" alt="Food">
+              <span>🍰 Delicious Food</span>
+            </div>
+            <div class="clue-badge">
+              <img src="assets/images/city_basement.jpg" class="clue-thumb" alt="Basement">
+              <span>🚪 Basement</span>
+            </div>
+            <div class="clue-badge">
+              <img src="assets/images/cat_appears.jpg" class="clue-thumb" alt="Cat">
+              <span>🐱 A Cat</span>
+            </div>
+            <div class="clue-badge">
+              <img src="assets/images/mice_running.jpg" class="clue-thumb" alt="Running">
+              <span>🏃 Running Mice</span>
+            </div>
+          </div>
+
+          <!-- 3 Large Prediction Choices -->
+          <div class="prediction-choices">
+            <button class="pred-btn" data-choice="A">
+              <div class="pred-letter">A</div>
+              <span>The mice have an adventure! 🗺️</span>
+            </button>
+            <button class="pred-btn" data-choice="B">
+              <div class="pred-letter">B</div>
+              <span>The mice go to school. 🎒</span>
+            </button>
+            <button class="pred-btn" data-choice="C">
+              <div class="pred-letter">C</div>
+              <span>The mice have a dance party. 💃</span>
+            </button>
+          </div>
+
+          <div class="pred-feedback" id="pred-feedback-box">
+            🌟 "Let's watch the story and find out!"
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 5: VIDEO WATCH MISSION
+           ========================================================== -->
+      <section class="slide" id="slide-5">
+        <div class="slide-header">
+          <h2 class="slide-title">Watch Carefully! 🎬</h2>
+          <p class="slide-subtitle">Find these 5 things in the video:</p>
+        </div>
+
+        <div class="video-mission-bar">
+          <div class="mission-target">🏙️ CITY</div>
+          <div class="mission-target">🌳 COUNTRY</div>
+          <div class="mission-target">🍰 FOOD</div>
+          <div class="mission-target">🐱 CAT</div>
+          <div class="mission-target">🏃 RUNNING</div>
+        </div>
+
+        <div class="video-wrapper">
+          <iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/Atkt-vhxFIc?enablejsapi=1" title="The City Mouse and The Country Mouse Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <button class="big-btn big-btn-green" id="btn-video-done">
+          <span>I am Ready! Let's Find Them ➡️</span>
+        </button>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 6: WATCH & FIND
+           ========================================================== -->
+      <section class="slide" id="slide-6">
+        <div class="slide-header">
+          <h2 class="slide-title">Watch &amp; Find! 🔍</h2>
+          <p class="slide-subtitle">Tap each item you remember seeing in the story:</p>
+        </div>
+
+        <div class="checklist-grid">
+          <div class="find-card" data-find="city">
+            <div class="check-overlay">✓</div>
+            <img src="assets/images/city_arrival.jpg" class="find-card-img" alt="City">
+            <div class="find-card-label">🏙️ CITY</div>
+          </div>
+
+          <div class="find-card" data-find="country">
+            <div class="check-overlay">✓</div>
+            <img src="assets/images/country_home.jpg" class="find-card-img" alt="Country">
+            <div class="find-card-label">🌳 COUNTRY</div>
+          </div>
+
+          <div class="find-card" data-find="food">
+            <div class="check-overlay">✓</div>
+            <img src="assets/images/feast_table.jpg" class="find-card-img" alt="Food">
+            <div class="find-card-label">🍰 FOOD</div>
+          </div>
+
+          <div class="find-card" data-find="cat">
+            <div class="check-overlay">✓</div>
+            <img src="assets/images/cat_appears.jpg" class="find-card-img" alt="Cat">
+            <div class="find-card-label">🐱 CAT</div>
+          </div>
+
+          <div class="find-card" data-find="running">
+            <div class="check-overlay">✓</div>
+            <img src="assets/images/mice_running.jpg" class="find-card-img" alt="Running">
+            <div class="find-card-label">🏃 RUNNING</div>
+          </div>
+        </div>
+
+        <div id="find-all-celebration" style="margin-top: 24px; display: none;">
+          <button class="big-btn big-btn-orange" id="btn-after-find">
+            <span>Great Job! Next Activity ➡️</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 7: STORY COMPREHENSION (6 Visual Questions)
+           ========================================================== -->
+      <section class="slide" id="slide-7">
+        <div class="quiz-box">
+          <div class="quiz-indicator" id="quiz-num">Question 1 of 6</div>
+
+          <div class="quiz-question">
+            <span id="quiz-q-text">Where does the Country Mouse live?</span>
+            <button class="speak-btn" id="btn-quiz-speak" title="Listen to question">🔊</button>
+          </div>
+
+          <div class="quiz-options" id="quiz-options-container">
+            <!-- Dynamically populated options -->
+          </div>
+
+          <div id="quiz-feedback" style="margin-top: 20px; font-size: 24px; font-weight: 800; min-height: 40px;"></div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 8: WHAT HAPPENS NEXT? — MAIN GAME
+           ========================================================== -->
+      <section class="slide" id="slide-8">
+        <div class="slide-header">
+          <h2 class="slide-title">What Happens Next? 🎮</h2>
+          <p class="slide-subtitle" id="predict-round-tag">Round 1 of 6</p>
+        </div>
+
+        <div class="predict-game-wrapper">
+          <!-- Current Scene Frame -->
+          <div class="scene-display">
+            <div class="scene-img-holder">
+              <img id="predict-scene-img" src="assets/images/country_home.jpg" alt="Story Scene" class="scene-img">
+            </div>
+            <div class="scene-caption" id="predict-scene-caption">
+              The Country Mouse lives in the country.
+            </div>
+          </div>
+
+          <!-- 3 Choices Panel -->
+          <div class="choices-panel" id="predict-choices-panel">
+            <!-- Dynamically generated choice buttons -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 9: STORY SEQUENCE GAME (8 Cards)
+           ========================================================== -->
+      <section class="slide" id="slide-9">
+        <div class="slide-header">
+          <h2 class="slide-title">Story Sequence Game 🔢</h2>
+          <p class="slide-subtitle">Put the 8 story pictures in the correct order!</p>
+        </div>
+
+        <div class="sequence-container">
+          <!-- 8 Drop Target Slots -->
+          <div class="sequence-slots" id="seq-slots-row">
+            <!-- 8 Slots generated by JS -->
+          </div>
+
+          <!-- Card Bank -->
+          <div class="sequence-bank" id="seq-card-bank">
+            <!-- Cards to pick from -->
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; gap: 16px; margin-top: 8px;">
+            <button class="big-btn big-btn-blue" id="btn-seq-reset">↺ Reset</button>
+            <button class="big-btn big-btn-green" id="btn-seq-check">Check Order ✓</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 10: STORY RETELL (First / Then / Next / Finally)
+           ========================================================== -->
+      <section class="slide" id="slide-10">
+        <div class="slide-header">
+          <h2 class="slide-title">Story Retell 🗣️</h2>
+          <p class="slide-subtitle">Use <b>FIRST, THEN, NEXT, FINALLY</b> to retell the story!</p>
+        </div>
+
+        <!-- 4 Stepper Tabs -->
+        <div class="retell-stepper">
+          <button class="step-marker-btn active" data-step="0">
+            <span class="step-word">FIRST</span>
+            <span class="step-subtext">The Country Home</span>
+          </button>
+          <button class="step-marker-btn" data-step="1">
+            <span class="step-word">THEN</span>
+            <span class="step-subtext">To the City</span>
+          </button>
+          <button class="step-marker-btn" data-step="2">
+            <span class="step-word">NEXT</span>
+            <span class="step-subtext">Food &amp; Cat</span>
+          </button>
+          <button class="step-marker-btn" data-step="3">
+            <span class="step-word">FINALLY</span>
+            <span class="step-subtext">Run &amp; Safe Home</span>
+          </button>
+        </div>
+
+        <!-- Retell Display Card -->
+        <div class="retell-display-card">
+          <div class="retell-visual-row" id="retell-images-row">
+            <!-- 2 Images for current step -->
+          </div>
+
+          <div class="retell-sentence-box">
+            <span id="retell-sentence-text">"The Country Mouse lives in the country. The City Mouse visits."</span>
+            <button class="speak-btn" id="btn-retell-speak" title="Listen to model sentence">🔊</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 11: SPEAKING — BE THE MOUSE (Roleplay)
+           ========================================================== -->
+      <section class="slide" id="slide-11">
+        <div class="slide-header">
+          <h2 class="slide-title">Be the Mouse! 🎭</h2>
+          <p class="slide-subtitle">Student A is City Mouse 🏙️ • Student B is Country Mouse 🌳</p>
+        </div>
+
+        <div class="cat-alarm-banner" id="roleplay-cat-alarm">
+          🐱 DANGER! THE CAT COMES! 🐱
+        </div>
+
+        <div class="roleplay-container">
+          <!-- Student A: City Mouse -->
+          <div class="roleplay-avatar-box" id="rp-city-box">
+            <div class="char-avatar-frame" style="width: 150px; height: 150px;">
+              <img src="assets/images/avatar_city_mouse.jpg" class="char-avatar-img" alt="City Mouse">
+            </div>
+            <div class="avatar-badge-label" style="color: #1565c0;">CITY MOUSE (Student A)</div>
+            <div class="speech-bubble" id="rp-city-speech">"Hello!"</div>
+          </div>
+
+          <!-- Student B: Country Mouse -->
+          <div class="roleplay-avatar-box" id="rp-country-box">
+            <div class="char-avatar-frame" style="width: 150px; height: 150px;">
+              <img src="assets/images/avatar_country_mouse.jpg" class="char-avatar-img" alt="Country Mouse">
+            </div>
+            <div class="avatar-badge-label" style="color: #2e7d32;">COUNTRY MOUSE (Student B)</div>
+            <div class="speech-bubble" id="rp-country-speech">"Hello!"</div>
+          </div>
+        </div>
+
+        <!-- Roleplay Controls -->
+        <div style="display: flex; gap: 16px; margin-top: 24px;">
+          <button class="big-btn big-btn-blue" id="btn-rp-listen">🔊 Listen</button>
+          <button class="big-btn big-btn-orange" id="btn-rp-next">Next Line 💬</button>
+          <button class="big-btn big-btn-green" id="btn-rp-reset">↺ Restart Dialogue</button>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 12: CITY VS COUNTRY COMPARISON (Sorting Baskets)
+           ========================================================== -->
+      <section class="slide" id="slide-12">
+        <div class="slide-header">
+          <h2 class="slide-title">City vs Country Comparison ⚖️</h2>
+          <p class="slide-subtitle">Tap a word chip, then tap the matching basket!</p>
+        </div>
+
+        <div class="sorting-arena">
+          <!-- Chips to Sort -->
+          <div class="cards-carousel" id="trait-chips-carousel">
+            <!-- Trait chips dynamically loaded -->
+          </div>
+
+          <!-- Two Baskets -->
+          <div class="baskets-row">
+            <!-- City Basket -->
+            <div class="basket-card city-basket" id="basket-city">
+              <div class="basket-header" style="color: #0d47a1;">
+                <span>🏙️ CITY BASKET</span>
+              </div>
+              <div class="basket-content" id="city-basket-content"></div>
+            </div>
+
+            <!-- Country Basket -->
+            <div class="basket-card country-basket" id="basket-country">
+              <div class="basket-header" style="color: #1b5e20;">
+                <span>🌳 COUNTRY BASKET</span>
+              </div>
+              <div class="basket-content" id="country-basket-content"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 13: FINAL THINKING ACTIVITY
+           ========================================================== -->
+      <section class="slide" id="slide-13">
+        <div class="slide-header">
+          <h2 class="slide-title">Which Mouse Is Happier? 💭</h2>
+          <p class="slide-subtitle">Choose a mouse and complete your sentence!</p>
+        </div>
+
+        <div class="thinking-container">
+          <div class="thinking-duo">
+            <div class="choice-mouse-card" data-mouse="City Mouse">
+              <div class="char-avatar-frame" style="width: 140px; height: 140px;">
+                <img src="assets/images/avatar_city_mouse.jpg" class="char-avatar-img" alt="City Mouse">
+              </div>
+              <div style="font-size: 24px; font-weight: 900; color: #1565c0; margin-top: 8px;">CITY MOUSE</div>
+            </div>
+
+            <div class="choice-mouse-card" data-mouse="Country Mouse">
+              <div class="char-avatar-frame" style="width: 140px; height: 140px;">
+                <img src="assets/images/avatar_country_mouse.jpg" class="char-avatar-img" alt="Country Mouse">
+              </div>
+              <div style="font-size: 24px; font-weight: 900; color: #2e7d32; margin-top: 8px;">COUNTRY MOUSE</div>
+            </div>
+          </div>
+
+          <div class="sentence-builder-box">
+            <div class="sentence-preview" id="think-sentence-preview">
+              "I choose the <span style="color: #ff9800;">[Mouse]</span> because it is <span style="color: #00796b;">[Reason]</span>."
+            </div>
+
+            <div class="adjectives-palette">
+              <button class="adj-btn" data-adj="fun">fun 🎉</button>
+              <button class="adj-btn" data-adj="exciting">exciting ⚡</button>
+              <button class="adj-btn" data-adj="quiet">quiet 🤫</button>
+              <button class="adj-btn" data-adj="peaceful">peaceful 🌿</button>
+              <button class="adj-btn" data-adj="safe">safe 🛡️</button>
+              <button class="adj-btn" data-adj="beautiful">beautiful 🌸</button>
+            </div>
+
+            <button class="big-btn big-btn-blue" id="btn-think-speak">🔊 Speak Sentence</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 14: INSTAGRAM REALITY / MODERN MORAL
+           ========================================================== -->
+      <section class="slide" id="slide-14">
+        <div class="slide-header">
+          <h2 class="slide-title">Instagram vs. Reality! 📱</h2>
+          <p class="slide-subtitle">Does the picture show everything?</p>
+        </div>
+
+        <div class="instagram-showcase">
+          <!-- Instagram Post Card -->
+          <div class="insta-phone">
+            <div class="insta-header">
+              <img src="assets/images/avatar_city_mouse.jpg" class="insta-user-pic" alt="City Mouse">
+              <div>
+                <div class="insta-username">city_mouse_charlie 🏙️</div>
+                <div style="font-size: 13px; color: #757575;">Grand City Cellar • 2m ago</div>
+              </div>
+            </div>
+
+            <div class="insta-post-img-holder">
+              <img id="insta-img" src="assets/images/feast_table.jpg" class="insta-post-img" alt="Feast">
+            </div>
+
+            <div class="insta-caption">
+              <b>city_mouse_charlie</b> AMAZING FOOD! 😍🧀🍰 #citylife #delicious #luxury
+            </div>
+
+            <div style="padding: 12px 18px; display: flex; gap: 12px; justify-content: center; background: #f9f9f9; border-top: 1px solid #eee;">
+              <button class="big-btn big-btn-orange" id="btn-reveal-cat" style="font-size: 20px; padding: 10px 24px;">
+                🐱 Reveal the Truth!
+              </button>
+            </div>
+          </div>
+
+          <!-- Moral Explanation Card -->
+          <div class="moral-explanation-card">
+            <div style="font-size: 26px; font-weight: 900; color: #3e2723; text-align: center;">
+              What is the Reality?
+            </div>
+
+            <div class="formula-box">
+              <div class="formula-row danger">
+                <span>🍰 Delicious Food + 🐱 Cat = ⚠️ DANGER!</span>
+              </div>
+              <div class="formula-row safe">
+                <span>🌾 Simple Food + 🏡 Cozy Home = 💖 PEACE &amp; SAFETY!</span>
+              </div>
+            </div>
+
+            <div class="moral-highlight">
+              💡 "Things can look wonderful, but they are not always perfect."
+            </div>
+
+            <div class="moral-highlight" style="background: #e8f5e9; border-color: #81c784; color: #1b5e20;">
+              ✨ "A simple and safe life can be a happy life." ✨
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           SLIDE 15: FINAL PERSONAL CHOICE & CERTIFICATE
+           ========================================================== -->
+      <section class="slide" id="slide-15">
+        <div class="slide-header">
+          <h2 class="slide-title">Where Would You Like to Live? 🌟</h2>
+          <p class="slide-subtitle">Make your personal choice and claim your Story Badge!</p>
+        </div>
+
+        <div class="choice-celebration">
+          <div class="choice-options-big" id="final-choice-boxes">
+            <!-- City Choice -->
+            <div class="live-choice-btn" data-choice="city">
+              <div class="zone-icon">🏙️</div>
+              <div style="font-size: 32px; font-weight: 900; color: #1565c0;">THE CITY</div>
+              <p style="font-size: 19px; font-weight: 700; color: #455a64; margin-top: 10px; text-align: center;">
+                "I choose the city because it is exciting and fun!"
+              </p>
+            </div>
+
+            <!-- Country Choice -->
+            <div class="live-choice-btn" data-choice="country">
+              <div class="zone-icon">🌳</div>
+              <div style="font-size: 32px; font-weight: 900; color: #2e7d32;">THE COUNTRY</div>
+              <p style="font-size: 19px; font-weight: 700; color: #455a64; margin-top: 10px; text-align: center;">
+                "I choose the country because it is peaceful and safe!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Celebration Certificate -->
+          <div class="certificate-banner" id="certificate-box">
+            <div style="font-size: 54px; margin-bottom: 8px;">🏆 🌟 🐭</div>
+            <h2 style="font-size: 38px; font-weight: 900; color: #3e2723;">
+              SUPER STORY EXPLORER!
+            </h2>
+            <p style="font-size: 24px; font-weight: 800; color: #e65100; margin-top: 8px;">
+              You completed "The City Mouse &amp; The Country Mouse" lesson!
+            </p>
+            <p style="font-size: 20px; font-weight: 700; color: #5d4037; margin-top: 10px;">
+              "A simple and safe life can be a happy life."
+            </p>
+            <div style="margin-top: 20px;">
+              <button class="big-btn big-btn-green" id="btn-replay-all">↺ Play Again from Start</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Teacher Control Drawer -->
+    <aside class="teacher-drawer" id="teacher-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title">Teacher Control Panel</div>
+        <button class="drawer-close" id="btn-drawer-close">✕</button>
+      </div>
+
+      <div class="teacher-grid-actions">
+        <a href="worksheet.html" target="_blank" class="teacher-action-btn" style="text-decoration: none; justify-content: center; background: #e8f5e9; border-color: #81c784; color: #1b5e20;">🖨️ Open Printable Worksheet</a>
+        <button class="teacher-action-btn" id="btn-teacher-fullscreen">⛶ Toggle Fullscreen</button>
+        <button class="teacher-action-btn" id="btn-teacher-mute">🔊 Toggle Sound Effects</button>
+        <button class="teacher-action-btn" id="btn-teacher-speech">🗣️ Toggle Voice Narration</button>
+        <button class="teacher-action-btn" id="btn-teacher-reveal">💡 Reveal Current Solution</button>
+        <button class="teacher-action-btn" id="btn-teacher-reset">↺ Reset Current Activity</button>
+      </div>
+
+      <div style="font-size: 14px; font-weight: 800; color: #78909c; text-transform: uppercase; margin-bottom: 8px;">
+        Jump to Activity:
+      </div>
+      <div class="stages-jump-list" id="teacher-jump-list">
+        <!-- Injected by JS -->
+      </div>
+    </aside>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
