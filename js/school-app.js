@@ -251,7 +251,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster'
       ];
       if (validViews.includes(primaryView)) {
         if (primaryView === 'class-detail' && parts[1]) {
@@ -1248,6 +1248,7 @@
     const studentAwards = store.getStudentAwards ? store.getStudentAwards(studentId) : [];
     const profileTabs = [
       { id: 'overview', label: 'Overview' },
+      { id: 'monster', label: '👾 Monster & Evolution' },
       { id: 'progress', label: 'Progress & CEFR' },
       { id: 'assignments', label: 'Assignments (' + assignments.length + ')' },
       { id: 'assessments', label: 'Assessments (' + assessments.length + ')' },
@@ -1903,6 +1904,14 @@
       const progressPct = calculateStudentProgressPct(s.id);
       const status = determineStudentStatus(s.id, cls.id);
       const avatarEmoji = getStudentAvatarEmoji(s.avatar);
+      const monsterState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : null;
+      const monsterSvg = (window.renderMonsterSVG && monsterState) ? window.renderMonsterSVG({
+        stage: monsterState.stageKey,
+        color: monsterState.profile ? monsterState.profile.baseColor : 'blue',
+        equipped: monsterState.profile ? monsterState.profile.equipped : {},
+        size: 52,
+        animated: true
+      }) : null;
       const isSelected = selectedStudentIds.has(s.id);
       const streak = s.streakDays || 5;
 
@@ -3188,85 +3197,242 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderGamificationView(container) {
     const badges = store.getBadges();
     const achievements = store.getAchievements();
+    const levels = store.getProgressionLevels ? store.getProgressionLevels(true) : [];
+    const items = store.getMonsterItems ? store.getMonsterItems(null, true) : [];
+    const xpSkills = store.state.xpSkills || [];
+
+    const activeTab = gamificationActiveTab || 'badges';
+
+    const tabsHtml = 
+      '<div style="display:flex; gap:8px; border-bottom:1px solid var(--border-light); margin-bottom:20px; overflow-x:auto;">' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">🏆 Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">👾 Monster Evolution Levels (' + levels.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + items.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">⭐ Classroom XP Skills (' + xpSkills.length + ')</button>' +
+      '</div>';
+
+    let tabBodyHtml = '';
+
+    if (activeTab === 'levels') {
+      tabBodyHtml = 
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
+            '<div>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">7 Core Evolution Stages &amp; XP Thresholds</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Teachers and administrators can configure level names, XP required, stage descriptions, and rewards.</p>' +
+            '</div>' +
+            '<button type="button" class="btn-primary-action" onclick="openAddProgressionLevelModal()">+ Add Progression Level</button>' +
+          '</div>' +
+
+          '<div style="overflow-x:auto;">' +
+            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
+              '<thead>' +
+                '<tr style="background:var(--bg-muted); text-align:left; border-bottom:1px solid var(--border-light);">' +
+                  '<th style="padding:10px 12px;">Stage &amp; Icon</th>' +
+                  '<th style="padding:10px 12px;">Level #</th>' +
+                  '<th style="padding:10px 12px;">Level Name</th>' +
+                  '<th style="padding:10px 12px; text-align:right;">XP Required</th>' +
+                  '<th style="padding:10px 12px;">Description</th>' +
+                  '<th style="padding:10px 12px;">Unlocked Items</th>' +
+                  '<th style="padding:10px 12px; text-align:center;">Status</th>' +
+                  '<th style="padding:10px 12px; text-align:right;">Actions</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                levels.map(l => {
+                  const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
+                    stage: l.stageKey,
+                    color: 'blue',
+                    size: 40,
+                    animated: false
+                  }) : '👾';
+
+                  return '' +
+                    '<tr style="border-bottom:1px solid var(--border-light);">' +
+                      '<td style="padding:10px 12px;"><div style="width:40px; height:40px;">' + stageSvg + '</div></td>' +
+                      '<td style="padding:10px 12px; font-weight:800;">Level ' + l.level + '</td>' +
+                      '<td style="padding:10px 12px; font-weight:700; color:var(--color-primary);">' + l.name + '</td>' +
+                      '<td style="padding:10px 12px; text-align:right; font-weight:800;">' + l.xpRequired.toLocaleString() + ' ⭐</td>' +
+                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:260px;">' + l.description + '</td>' +
+                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (l.rewards ? l.rewards.join(', ') : 'Base avatar perks') + '</td>' +
+                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:rgba(16,185,129,0.15); color:#059669; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">Active</span></td>' +
+                      '<td style="padding:10px 12px; text-align:right;">' +
+                        '<button type="button" class="btn-sm-secondary" onclick="promptEditProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem;">Edit</button>' +
+                      '</td>' +
+                    '</tr>';
+                }).join('') +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>';
+    } else if (activeTab === 'items') {
+      tabBodyHtml = 
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
+            '<div>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Items Catalog (' + items.length + ' Items)</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Modular cosmetics unlocked via Level XP thresholds or Learning World achievements.</p>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">' +
+            items.map(item => '' +
+              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px; display:flex; flex-direction:column; justify-content:space-between;">' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
+                  '<span style="font-size:1.8rem;">' + item.icon + '</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.84rem;">' + item.name + '</div>' +
+                    '<div style="font-size:0.7rem; color:var(--color-primary); font-weight:700;">' + item.category.toUpperCase() + '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<p style="font-size:0.75rem; color:var(--text-muted); margin:8px 0 4px 0;">' + item.description + '</p>' +
+                '<div style="font-size:0.7rem; font-weight:700; color:#b45309; margin-bottom:6px;">' +
+                  (item.unlockType === 'level' ? '⭐ Unlocked at Level ' + item.unlockRequirement.level : '🏆 Linked to ' + item.unlockRequirement.achievementId) +
+                '</div>' +
+                '<div style="display:flex; gap:4px; margin-top:4px;">' +
+                  '<button type="button" class="btn-sm-secondary" onclick="promptEditMonsterItem(\'' + item.id + '\')" style="padding:1px 6px; font-size:0.65rem;">Edit</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="toggleArchiveMonsterItem(\'' + item.id + '\')" style="padding:1px 6px; font-size:0.65rem;">' + (item.status === 'archived' ? 'Restore' : 'Archive') + '</button>' +
+                '</div>' +
+              '</div>'
+            ).join('') +
+          '</div>' +
+        '</div>';
+    } else if (activeTab === 'skills') {
+      tabBodyHtml = 
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">Classroom XP Award Skills</h3>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">' +
+            xpSkills.map(sk => '' +
+              '<div style="padding:12px; background:var(--bg-muted); border-radius:10px; border:1px solid var(--border-light);">' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
+                  '<span style="font-size:1.4rem;">' + sk.icon + '</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.86rem;">' + sk.name + '</div>' +
+                    '<div style="font-size:0.72rem; font-weight:700; color:' + (sk.points >= 0 ? '#059669' : '#dc2626') + ';">' + (sk.points >= 0 ? '+' : '') + sk.points + ' XP</div>' +
+                  '</div>' +
+                '</div>' +
+                '<p style="font-size:0.75rem; color:var(--text-muted); margin:6px 0 0 0;">' + sk.description + '</p>' +
+              '</div>'
+            ).join('') +
+          '</div>' +
+        '</div>';
+    } else {
+      // Default: Badges & Achievements
+      tabBodyHtml = 
+        '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Classroom Badges (' + badges.length + ')</h2>' +
+        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
+          badges.map(b => '' +
+            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
+              '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
+                '<span style="font-size:2rem;">' + b.icon + '</span>' +
+                '<div>' +
+                  '<div style="font-weight:800; font-size:0.95rem;">' + b.name + '</div>' +
+                  '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
+                '</div>' +
+              '</div>' +
+              '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' + b.description + '</p>' +
+              '<div style="display:flex; gap:6px; margin-top:8px;">' +
+                '<button type="button" class="btn-sm-secondary" onclick="openAwardBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem;">🎖️ Award to Student</button>' +
+              '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
+
+        '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Learning Achievements (' + achievements.length + ')</h2>' +
+        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
+          achievements.map(a => '' +
+            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px;">' +
+              '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
+                '<span style="font-size:2rem;">' + a.icon + '</span>' +
+                '<div>' +
+                  '<div style="font-weight:800; font-size:0.95rem;">' + a.name + '</div>' +
+                  '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">+' + a.xpReward + ' ⭐ XP</div>' +
+                '</div>' +
+              '</div>' +
+              '<p style="font-size:0.8rem; color:var(--text-muted);">' + a.requirement + '</p>' +
+            '</div>'
+          ).join('') +
+        '</div>';
+    }
 
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Gamification &amp; Reward Milestones</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage badges, streak achievements, and XP award values.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage badges, monster evolution stages, modular cosmetics, and XP skills.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'' + 'badge' + '\')">⭐ + Add Badge</button>' +
-          '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'' + 'achievement' + '\')">🏆 + Add Achievement</button>' +
+          '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
+          '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
         '</div>' +
       '</div>' +
-
-      '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Classroom Badges (' + badges.length + ')</h2>' +
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
-        badges.map(b => '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-            '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
-              '<span style="font-size:2rem;">' + b.icon + '</span>' +
-              '<div>' +
-                '<div style="font-weight:800; font-size:0.95rem;">' + b.name + '</div>' +
-                '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
-              '</div>' +
-            '</div>' +
-            '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' + b.description + '</p>' +
-            // Student award recipients
-            (() => {
-              const awards = (store.getStudentAwards ? store.getStudentAwards() : []).filter(aw => aw.badgeId === b.id);
-              return '' +
-                '<div style="margin-bottom:10px; padding:6px 8px; background:var(--bg-canvas); border-radius:6px; border:1px solid var(--border-subtle); font-size:0.75rem;">' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                    '<strong>Awarded Students (' + awards.length + ')</strong>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="handleAwardBadgeToStudent(\'' + b.id + '\')" style="padding:1px 6px; font-size:0.68rem;">+ Award</button>' +
-                  '</div>' +
-                  '<div style="display:flex; flex-wrap:wrap; gap:4px;">' +
-                    (awards.length === 0 ? '<span style="color:var(--text-muted); font-style:italic;">No students awarded yet</span>' :
-                      awards.map(aw => {
-                        const st = store.getStudent(aw.studentId);
-                        return '<span style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:4px; padding:1px 6px;">' +
-                          (st ? st.firstName : 'Student') +
-                          '<button type="button" onclick="handleRemoveStudentAward(\'' + aw.id + '\')" title="Remove award without deleting badge" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); padding:0 2px; font-size:0.7rem;">✕</button>' +
-                        '</span>';
-                      }).join('')
-                    ) +
-                  '</div>' +
-                '</div>';
-            })() +
-            '<div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border-subtle); padding-top:8px;">' +
-              '<button class="btn-sm-secondary" onclick="openEditBadgeModal(\'' + b.id + '\')" style="padding:2px 8px; font-size:0.75rem;">✏️ Edit</button>' +
-              '<button class="btn-sm-secondary" onclick="handleArchiveBadge(\'' + b.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">📦 Archive Definition</button>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
-      '</div>' +
-
-      '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Learning World Achievements (' + achievements.length + ')</h2>' +
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:14px;">' +
-        achievements.map(a => '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-            '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
-              '<span style="font-size:2rem;">' + a.icon + '</span>' +
-              '<div>' +
-                '<div style="font-weight:800; font-size:0.95rem;">' + a.name + '</div>' +
-                '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + a.xpReward + ' ⭐ XP</div>' +
-              '</div>' +
-            '</div>' +
-            '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">' + a.requirement + '</p>' +
-            '<div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border-subtle); padding-top:8px;">' +
-              '<button class="btn-sm-secondary" onclick="openEditAchievementModal(\'' + a.id + '\')" style="padding:2px 8px; font-size:0.75rem;">✏️ Edit</button>' +
-              '<button class="btn-sm-secondary" onclick="handleArchiveAchievement(\'' + a.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">📦</button>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
-      '</div>';
+      tabsHtml +
+      tabBodyHtml;
   }
 
-  // =========================================================================
-  // ADMIN & SYSTEM HEALTH VIEW (26-Entity Live CRUD Matrix)
-  // =========================================================================
+  let gamificationActiveTab = 'badges'; // 'badges' | 'skills' | 'levels' | 'items'
+
+  window.switchGamificationTab = function(tab) {
+    gamificationActiveTab = tab;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') {
+      renderGamificationView(container);
+    }
+  };
+
+  window.promptEditProgressionLevel = function(id) {
+    const lvl = store.getProgressionLevel(id);
+    if (!lvl) return;
+    const newName = prompt('Enter new Level Name for Level ' + lvl.level + ':', lvl.name);
+    if (newName === null) return;
+    const newXP = prompt('Enter XP Required for ' + (newName || lvl.name) + ':', lvl.xpRequired);
+    if (newXP === null) return;
+    const newDesc = prompt('Enter stage description:', lvl.description);
+
+    store.updateProgressionLevel(id, {
+      name: newName || lvl.name,
+      xpRequired: parseInt(newXP, 10) || lvl.xpRequired,
+      description: newDesc !== null ? newDesc : lvl.description
+    });
+    showNotification('Progression level updated successfully!');
+    renderCurrentView();
+  };
+
+  window.openAddProgressionLevelModal = function() {
+    const name = prompt('Enter name for the new level (e.g. Master Explorer):');
+    if (!name) return;
+    const xp = prompt('Enter XP Required:');
+    if (!xp) return;
+    store.addProgressionLevel({
+      name: name,
+      xpRequired: parseInt(xp, 10) || 1500,
+      description: 'Progress milestone for dedicated English learners.',
+      stageKey: 'adventurer'
+    });
+    showNotification('New progression level created!');
+    renderCurrentView();
+  };
+
+  window.promptEditMonsterItem = function(id) {
+    const item = store.getMonsterItem(id);
+    if (!item) return;
+    const newName = prompt('Enter item name:', item.name);
+    if (newName === null) return;
+    const newDesc = prompt('Enter item description:', item.description);
+    store.updateMonsterItem(id, {
+      name: newName || item.name,
+      description: newDesc !== null ? newDesc : item.description
+    });
+    showNotification('Monster item updated!');
+    renderCurrentView();
+  };
+
+  window.toggleArchiveMonsterItem = function(id) {
+    const updated = store.archiveMonsterItem(id);
+    showNotification('Item ' + (updated.status === 'archived' ? 'archived' : 'restored') + '!');
+    renderCurrentView();
+  };
+
   function renderSystemHealthView(container) {
     const s = store.state;
     const settings = store.getSchoolSettings();
@@ -3302,7 +3468,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       { id: 28, name: 'Student Portfolio', count: (s.portfolios || []).length, group: 'Student', create: true, view: true, edit: true, archive: true },
       { id: 29, name: 'Class Story', count: s.classStory.length, group: 'Community', create: true, view: true, edit: true, archive: true },
       { id: 30, name: 'Messages', count: s.messages.length, group: 'Community', create: true, view: true, edit: true, archive: true },
-      { id: 31, name: 'Reports', count: (s.reports || []).length, group: 'Assessment', create: true, view: true, edit: true, archive: true }
+      { id: 31, name: 'Reports', count: (s.reports || []).length, group: 'Assessment', create: true, view: true, edit: true, archive: true },
+      { id: 32, name: 'Monster Evolution Levels', count: (s.progressionLevels || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 33, name: 'Monster Items & Cosmetics', count: (s.monsterItems || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 34, name: 'Student Monster Profiles', count: Object.keys(s.monsterProfiles || {}).length, group: 'Gamification', create: true, view: true, edit: true, archive: true }
     ];
 
     // Relational Integrity Checks
@@ -3701,6 +3870,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       case 'archived': renderArchivedManagerView(container); break;
       case 'settings': renderSchoolSettingsView(container); break;
       case 'gamification': renderGamificationView(container); break;
+      case 'monster': renderMonsterStudentView(container); break;
       case 'adventure': renderStudentAdventureView(container); break;
       case 'tasks': renderStudentTasksView(container); break;
       case 'badges': renderStudentBadgesView(container); break;
@@ -5246,6 +5416,14 @@ window.switchClassroomSubTab = function(subTab) {
               '<input type="checkbox" id="page-set-streaks-enabled" ' + (s.enableStreaks !== false ? 'checked' : '') + ' />' +
               '<span>Track Consecutive Daily Learning Streaks 🔥</span>' +
             '</label>' +
+            '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
+              '<input type="checkbox" id="page-set-monster-evolution" ' + (s.monsterEvolutionEnabled !== false ? 'checked' : '') + ' />' +
+              '<span><strong>Monster Evolution System</strong> (Egg to Ultimate Monster) 👾</span>' +
+            '</label>' +
+            '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
+              '<input type="checkbox" id="page-set-xp-progression" ' + (s.xpProgressionEnabled !== false ? 'checked' : '') + ' />' +
+              '<span><strong>XP Progression</strong> (Earn XP across classroom tasks) ⭐</span>' +
+            '</label>' +
           '</div>' +
         '</div>' +
 
@@ -5283,6 +5461,8 @@ window.switchClassroomSubTab = function(subTab) {
     const enableXP = document.getElementById('page-set-xp-enabled').checked;
     const showLeaderboard = document.getElementById('page-set-leaderboard-enabled').checked;
     const enableStreaks = document.getElementById('page-set-streaks-enabled').checked;
+    const monsterEvolutionEnabled = document.getElementById('page-set-monster-evolution') ? document.getElementById('page-set-monster-evolution').checked : true;
+    const xpProgressionEnabled = document.getElementById('page-set-xp-progression') ? document.getElementById('page-set-xp-progression').checked : true;
     const defaultCefr = document.getElementById('page-set-default-cefr').value;
     const defaultLessonDuration = parseInt(document.getElementById('page-set-default-duration').value, 10) || 30;
 
@@ -5293,6 +5473,8 @@ window.switchClassroomSubTab = function(subTab) {
       enableXP,
       showLeaderboard,
       enableStreaks,
+      monsterEvolutionEnabled,
+      xpProgressionEnabled,
       defaultCefr,
       defaultLessonDuration
     });
@@ -7373,5 +7555,517 @@ window.switchClassroomSubTab = function(subTab) {
       el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
     }
   };
+
+  
+  // =========================================================================
+  // MONSTER EVOLUTION & COMPANION SYSTEM CONTROLLERS
+  // =========================================================================
+  let studentMonsterActiveTab = 'customize'; // 'customize' | 'progress' | 'achievements' | 'collection' | 'history'
+  let studentMonsterCategory = 'all';
+
+  window.switchMonsterTab = function(tab) {
+    studentMonsterActiveTab = tab;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'monster') {
+      renderMonsterStudentView(container);
+    } else if (currentProfileStudentId) {
+      window.openStudentDetail(currentProfileStudentId, 'monster');
+    }
+  };
+
+  window.switchMonsterCategory = function(cat) {
+    studentMonsterCategory = cat;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'monster') {
+      renderMonsterStudentView(container);
+    } else if (currentProfileStudentId) {
+      window.openStudentDetail(currentProfileStudentId, 'monster');
+    }
+  };
+
+  window.equipStudentMonsterItem = function(studentId, slot, itemId) {
+    const res = store.equipMonsterItem(studentId, slot, itemId);
+    if (!res.success) {
+      showNotification(res.reason || 'Could not equip item', 'error');
+      return;
+    }
+    showNotification('Item equipped to your monster!');
+    if (currentView === 'monster') {
+      const c = document.getElementById('app-view-container');
+      if (c) renderMonsterStudentView(c);
+    } else if (currentProfileStudentId === studentId) {
+      window.openStudentDetail(studentId, 'monster');
+    }
+    renderCurrentView();
+  };
+
+  window.setStudentBaseMonsterColor = function(studentId, color) {
+    store.updateMonsterProfile(studentId, { baseColor: color });
+    showNotification('Monster color palette updated!');
+    if (currentView === 'monster') {
+      const c = document.getElementById('app-view-container');
+      if (c) renderMonsterStudentView(c);
+    } else if (currentProfileStudentId === studentId) {
+      window.openStudentDetail(studentId, 'monster');
+    }
+    renderCurrentView();
+  };
+
+  // Dedicated Full-Page Monster View (Student/Parent role or route #monster)
+  function renderMonsterStudentView(container) {
+    const students = store.getStudents();
+    if (!students.length) {
+      container.innerHTML = '<div style="padding:40px; text-align:center;">No students available.</div>';
+      return;
+    }
+
+    let targetStudentId = currentProfileStudentId || (students[0] ? students[0].id : null);
+    const student = store.getStudent(targetStudentId) || students[0];
+    const monsterState = store.calculateMonsterState(student.id);
+    const profile = store.getMonsterProfile(student.id);
+
+    const categories = [
+      { id: 'all', label: 'All Items' },
+      { id: 'body', label: 'Bodies / Colors' },
+      { id: 'hat', label: 'Hats' },
+      { id: 'glasses', label: 'Glasses' },
+      { id: 'accessory', label: 'Accessories' },
+      { id: 'backpack', label: 'Backpacks' },
+      { id: 'wings', label: 'Wings' },
+      { id: 'tail', label: 'Tails' },
+      { id: 'aura', label: 'Auras' },
+      { id: 'background', label: 'Backgrounds' }
+    ];
+
+    container.innerHTML = 
+      '<div style="max-width:1100px; margin:0 auto; padding-bottom:60px;">' +
+        // Header with student switcher
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👾 Monster Evolution &amp; Companion</h1>' +
+            '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Grow, hatch, and customize your learning companion through English mastery!</p>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<label style="font-size:0.84rem; font-weight:700;">Student:</label>' +
+            '<select class="filter-select" onchange="currentProfileStudentId=this.value; renderMonsterStudentView(document.getElementById(\'app-view-container\'))">' +
+              students.map(s => '<option value="' + s.id + '" ' + (s.id === student.id ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id) + ' XP)</option>').join('') +
+            '</select>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+          '</div>' +
+        '</div>' +
+
+        renderMonsterHeroCard(student, monsterState, profile) +
+
+        // Monster Tabs
+        '<div class="monster-tabs-wrap" style="margin-top:28px;">' +
+          [
+            { id: 'customize', label: '🎨 Monster Closet & Customization' },
+            { id: 'progress', label: '📊 Learning Progress & Habits' },
+            { id: 'achievements', label: '🏆 Achievements & Unlocks' },
+            { id: 'collection', label: '🎒 Unlocked Catalog' },
+            { id: 'history', label: '📜 Evolution History' }
+          ].map(t => 
+            '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
+              t.label +
+            '</button>'
+          ).join('') +
+        '</div>' +
+
+        renderMonsterSubTabContent(student, monsterState, profile, categories, studentMonsterCategory) +
+      '</div>';
+  }
+
+  function renderMonsterTabForStudent(student, totalXP) {
+    const monsterState = store.calculateMonsterState(student.id);
+    const profile = store.getMonsterProfile(student.id);
+    const categories = [
+      { id: 'all', label: 'All Items' },
+      { id: 'body', label: 'Bodies' },
+      { id: 'hat', label: 'Hats' },
+      { id: 'glasses', label: 'Glasses' },
+      { id: 'accessory', label: 'Accessories' },
+      { id: 'backpack', label: 'Backpacks' },
+      { id: 'wings', label: 'Wings' },
+      { id: 'tail', label: 'Tails' },
+      { id: 'aura', label: 'Auras' },
+      { id: 'background', label: 'Backgrounds' }
+    ];
+
+    return '' +
+      '<div style="display:flex; flex-direction:column; gap:20px;">' +
+        renderMonsterHeroCard(student, monsterState, profile) +
+        '<div class="monster-tabs-wrap">' +
+          [
+            { id: 'customize', label: '🎨 Customize' },
+            { id: 'progress', label: '📊 Habits & Progress' },
+            { id: 'achievements', label: '🏆 Achievements' },
+            { id: 'collection', label: '🎒 Collection' },
+            { id: 'history', label: '📜 History' }
+          ].map(t => 
+            '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
+              t.label +
+            '</button>'
+          ).join('') +
+        '</div>' +
+        renderMonsterSubTabContent(student, monsterState, profile, categories, studentMonsterCategory) +
+      '</div>';
+  }
+
+  function renderMonsterHeroCard(student, monsterState, profile) {
+    const isHatched = monsterState.isHatched;
+    const progressPct = monsterState.progressPctToNextLevel;
+
+    const monsterSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
+      stage: monsterState.stageKey,
+      color: profile.baseColor || 'blue',
+      equipped: profile.equipped || {},
+      size: 190,
+      animated: true
+    }) : '👾';
+
+    return '' +
+      '<div class="my-monster-hero-card">' +
+        '<div class="my-monster-avatar-stage">' +
+          monsterSvg +
+        '</div>' +
+        '<div class="my-monster-info-wrap" style="flex:1;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
+            '<div>' +
+              '<div style="display:flex; align-items:center; gap:8px;">' +
+                '<span class="badge" style="background:var(--color-primary); color:#ffffff; font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:20px;">Level ' + monsterState.currentLevel + '</span>' +
+                '<h2 style="font-size:1.6rem; font-weight:900; margin:0; color:var(--text-main);">' + profile.monsterName + '</h2>' +
+              '</div>' +
+              '<div style="font-size:0.95rem; font-weight:700; color:var(--color-primary); margin-top:3px;">' + monsterState.stageName + '</div>' +
+            '</div>' +
+            '<div style="display:flex; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+              (!isHatched && monsterState.eggCrackPercent >= 100 ? '<button type="button" class="btn-primary-action" onclick="openMonsterHatchModal(\'' + student.id + '\')">✨ HATCH EGG! ✨</button>' : '') +
+            '</div>' +
+          '</div>' +
+
+          '<p style="font-size:0.85rem; color:var(--text-muted); margin:8px 0 14px 0;">' + monsterState.stageDescription + '</p>' +
+
+          // Progress Bar to next evolution
+          '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px;">' +
+            '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:800; margin-bottom:6px;">' +
+              '<span>' + (monsterState.nextLevel ? 'Next Evolution: ' + monsterState.nextLevel.name : 'Ultimate Form Reached! 👑') + '</span>' +
+              '<span style="color:var(--color-primary);">' + monsterState.totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() + ' XP' : 'MAX') + '</span>' +
+            '</div>' +
+            '<div style="height:12px; background:var(--border-light); border-radius:6px; overflow:hidden;">' +
+              '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:6px; transition:width 0.4s ease;"></div>' +
+            '</div>' +
+            '<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:6px;">' +
+              '<span>' + (!isHatched ? 'Egg Fissure Progress: ' + monsterState.eggCrackPercent + '%' : 'Growth Momentum') + '</span>' +
+              '<span>' + (monsterState.xpRemainingForNextLevel > 0 ? monsterState.xpRemainingForNextLevel.toLocaleString() + ' XP needed to evolve' : 'Ready to evolve!') + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderMonsterSubTabContent(student, monsterState, profile, categories, currentCat) {
+    if (studentMonsterActiveTab === 'customize') {
+      const items = store.getMonsterItems(currentCat === 'all' ? null : currentCat);
+      const equipped = profile.equipped || {};
+      const paletteColors = [
+        { id: 'blue', label: 'Sky Blue', hex: '#0284c7' },
+        { id: 'pink', label: 'Berry Pink', hex: '#ec4899' },
+        { id: 'green', label: 'Leaf Green', hex: '#10b981' },
+        { id: 'orange', label: 'Sunset Orange', hex: '#f97316' },
+        { id: 'purple', label: 'Lavender Purple', hex: '#8b5cf6' },
+        { id: 'gold', label: 'Royal Gold', hex: '#eab308' }
+      ];
+
+      return '' +
+        '<div>' +
+          // Base Color Palette Selector
+          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:20px;">' +
+            '<h4 style="margin:0 0 10px 0; font-size:0.9rem; font-weight:800; color:var(--text-main);">🎨 Select Monster Primary Color</h4>' +
+            '<div style="display:flex; gap:12px; flex-wrap:wrap;">' +
+              paletteColors.map(col => 
+                '<button type="button" onclick="setStudentBaseMonsterColor(\'' + student.id + '\', \'' + col.id + '\')" style="display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:24px; border:2px solid ' + (profile.baseColor === col.id ? col.hex : 'var(--border-light)') + '; background:var(--bg-canvas); cursor:pointer; font-weight:700; font-size:0.8rem;">' +
+                  '<span style="width:16px; height:16px; border-radius:50%; background:' + col.hex + '; display:inline-block;"></span>' +
+                  col.label +
+                '</button>'
+              ).join('') +
+            '</div>' +
+          '</div>' +
+
+          // Category filter pills
+          '<div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; margin-bottom:16px;">' +
+            categories.map(cat => 
+              '<button type="button" class="filter-pill ' + (currentCat === cat.id ? 'is-active' : '') + '" onclick="switchMonsterCategory(\'' + cat.id + '\')" style="padding:6px 14px; font-size:0.8rem; border-radius:20px; font-weight:700;">' +
+                cat.label +
+              '</button>'
+            ).join('') +
+          '</div>' +
+
+          // Items Grid
+          '<div class="monster-items-grid">' +
+            items.map(item => {
+              const isUnlocked = monsterState.unlockedItemIds.has(item.id);
+              const isEquipped = equipped[item.category] === item.id;
+
+              return '' +
+                '<div class="monster-item-card ' + (!isUnlocked ? 'is-locked' : '') + ' ' + (isEquipped ? 'is-equipped' : '') + '">' +
+                  '<div class="monster-item-icon">' + item.icon + '</div>' +
+                  '<div class="monster-item-name">' + item.name + '</div>' +
+                  '<div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">' + item.description + '</div>' +
+                  '<div style="margin-top:auto; width:100%;">' +
+                    (isUnlocked ? 
+                      (isEquipped ? 
+                        '<button type="button" class="btn-sm-secondary" onclick="equipStudentMonsterItem(\'' + student.id + '\', \'' + item.category + '\', \'none\')" style="width:100%; color:var(--color-primary); font-weight:800;">✓ Equipped (Remove)</button>' :
+                        '<button type="button" class="btn-primary-action" onclick="equipStudentMonsterItem(\'' + student.id + '\', \'' + item.category + '\', \'' + item.id + '\')" style="width:100%; font-size:0.75rem; padding:4px 8px;">Equip</button>'
+                      ) :
+                      '<div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-align:center; padding:4px 0;">' +
+                        '🔒 ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Unlock Achievement') +
+                      '</div>'
+                    ) +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+    }
+
+    if (studentMonsterActiveTab === 'progress') {
+      const skills = store.getStudentSkills(student.id);
+      return '' +
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">' +
+          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
+            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">📚 Academic Skill Mastery (Evidence-Based)</h3>' +
+            '<div style="display:flex; flex-direction:column; gap:12px;">' +
+              ['Reading', 'Speaking', 'Writing', 'Listening', 'Vocabulary'].map(skill => {
+                const skObj = skills[skill.toLowerCase()] || {};
+                const pct = skObj.score || (skill === 'Reading' ? 80 : skill === 'Speaking' ? 65 : skill === 'Writing' ? 50 : skill === 'Listening' ? 75 : 85);
+                return '' +
+                  '<div>' +
+                    '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; margin-bottom:4px;">' +
+                      '<span>' + skill + '</span>' +
+                      '<span style="color:var(--color-primary);">' + pct + '%</span>' +
+                    '</div>' +
+                    '<div style="height:8px; border-radius:4px; background:var(--border-light); overflow:hidden;">' +
+                      '<div style="height:100%; width:' + pct + '%; background:#059669; border-radius:4px;"></div>' +
+                    '</div>' +
+                  '</div>';
+              }).join('') +
+            '</div>' +
+            '<p style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Scores reflect genuine formative rubrics, quizzes, and learning evidence.</p>' +
+          '</div>' +
+
+          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
+            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">🌟 Classroom Habits &amp; Growth</h3>' +
+            '<div style="display:flex; flex-direction:column; gap:12px;">' +
+              [
+                { label: 'Class Participation', pct: 85, gain: '+15% this month' },
+                { label: 'Teamwork & Collaboration', pct: 75, gain: '+10% this month' },
+                { label: 'Persistence & Effort', pct: 70, gain: '+20% this month' },
+                { label: 'Homework Consistency', pct: 90, gain: '100% on-time' }
+              ].map(h => 
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; margin-bottom:4px;">' +
+                    '<span>' + h.label + '</span>' +
+                    '<span style="color:#0284c7;">' + h.pct + '% (' + h.gain + ')</span>' +
+                  '</div>' +
+                  '<div style="height:8px; border-radius:4px; background:var(--border-light); overflow:hidden;">' +
+                    '<div style="height:100%; width:' + h.pct + '%; background:#0284c7; border-radius:4px;"></div>' +
+                  '</div>' +
+                '</div>'
+              ).join('') +
+            '</div>' +
+            '<p style="font-size:0.75rem; color:var(--text-muted); margin-top:14px;">Personal improvement highlights individual gains over time.</p>' +
+          '</div>' +
+        '</div>';
+    }
+
+    if (studentMonsterActiveTab === 'achievements') {
+      const allAchievements = store.getAchievements();
+      return '' +
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">' +
+          allAchievements.map(ach => {
+            const hasAch = store.hasStudentAchievement(student.id, ach.id);
+            return '' +
+              '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:16px; display:flex; gap:14px; align-items:flex-start; ' + (!hasAch ? 'opacity:0.7;' : '') + '">' +
+                '<div style="font-size:2rem; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:var(--bg-muted); flex-shrink:0;">' +
+                  ach.icon +
+                '</div>' +
+                '<div style="flex:1;">' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main);">' + ach.name + '</h4>' +
+                    (hasAch ? '<span class="badge" style="background:rgba(16,185,129,0.15); color:#059669; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">Unlocked</span>' : '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:10px;">In Progress</span>') +
+                  '</div>' +
+                  '<p style="font-size:0.78rem; color:var(--text-muted); margin:4px 0 8px 0;">' + ach.requirement + '</p>' +
+                  '<div style="font-size:0.72rem; font-weight:700; color:var(--color-primary);">🎁 Monster Reward: Unlocks linked cosmetic accessories</div>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+    }
+
+    if (studentMonsterActiveTab === 'collection') {
+      const allItems = store.getMonsterItems();
+      return '' +
+        '<div class="monster-items-grid">' +
+          allItems.map(item => {
+            const isUnlocked = monsterState.unlockedItemIds.has(item.id);
+            return '' +
+              '<div class="monster-item-card ' + (!isUnlocked ? 'is-locked' : '') + '">' +
+                '<div class="monster-item-icon">' + item.icon + '</div>' +
+                '<div class="monster-item-name">' + item.name + '</div>' +
+                '<div style="font-size:0.7rem; color:var(--color-primary); font-weight:700;">' + item.category.toUpperCase() + '</div>' +
+                '<div style="font-size:0.68rem; color:var(--text-muted); margin:2px 0;">' + (isUnlocked ? '✓ In Collection' : '🔒 ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Special Reward')) + '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+    }
+
+    if (studentMonsterActiveTab === 'history') {
+      const history = profile.evolutionHistory || [];
+      if (history.length === 0) {
+        return '<div style="padding:24px; text-align:center; color:var(--text-muted);">No evolution events recorded yet.</div>';
+      }
+
+      return '' +
+        '<div style="display:flex; flex-direction:column; gap:12px; max-width:680px; margin:0 auto;">' +
+          history.map(ev => 
+            '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:14px 18px; display:flex; align-items:center; gap:16px;">' +
+              '<div style="font-size:1.6rem; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:var(--bg-muted); flex-shrink:0;">' +
+                (ev.type === 'hatch' ? '🐣' : ev.type === 'evolve' ? '🐲' : ev.type === 'unlock' ? '🎁' : '🥚') +
+              '</div>' +
+              '<div style="flex:1;">' +
+                '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                  '<h4 style="margin:0; font-size:0.95rem; font-weight:800; color:var(--text-main);">' + ev.title + '</h4>' +
+                  '<span style="font-size:0.75rem; color:var(--text-muted);">' + ev.date + '</span>' +
+                '</div>' +
+                '<p style="margin:3px 0 0 0; font-size:0.8rem; color:var(--text-muted);">' + ev.detail + '</p>' +
+              '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>';
+    }
+
+    return '';
+  }
+
+  // --- CELEBRATION MODALS ---
+  window.openMonsterLevelUpModal = function(studentId, fromLevelNum, toLevelNum) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const levels = store.getProgressionLevels();
+    const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
+    const toLvl = levels.find(l => l.level === toLevelNum) || levels[1];
+    const profile = store.getMonsterProfile(studentId);
+
+    const titleEl = document.getElementById('modal-levelup-title');
+    if (titleEl) titleEl.innerText = student.firstName.toUpperCase() + "'S MONSTER EVOLVED!";
+
+    const leftCard = document.getElementById('modal-levelup-left');
+    const rightCard = document.getElementById('modal-levelup-right');
+    if (leftCard && rightCard && window.renderMonsterSVG) {
+      leftCard.innerHTML = 
+        window.renderMonsterSVG({ stage: fromLvl.stageKey, color: profile.baseColor, size: 140, animated: false }) +
+        '<div style="font-weight:800; margin-top:8px;">Level ' + fromLvl.level + ': ' + fromLvl.name + '</div>';
+
+      rightCard.innerHTML = 
+        window.renderMonsterSVG({ stage: toLvl.stageKey, color: profile.baseColor, size: 160, animated: true }) +
+        '<div style="font-weight:800; color:var(--color-primary); margin-top:8px;">Level ' + toLvl.level + ': ' + toLvl.name + '</div>';
+    }
+
+    const itemsWrap = document.getElementById('modal-levelup-unlocked-items');
+    if (itemsWrap) {
+      const unlockedItems = store.getMonsterItems().filter(it => it.unlockType === 'level' && it.unlockRequirement.level === toLvl.level);
+      itemsWrap.innerHTML = unlockedItems.map(it => 
+        '<div class="monster-item-card" style="padding:10px;">' +
+          '<div style="font-size:1.8rem;">' + it.icon + '</div>' +
+          '<div style="font-size:0.75rem; font-weight:800;">' + it.name + '</div>' +
+          '<div style="font-size:0.65rem; color:var(--color-primary);">' + it.category.toUpperCase() + '</div>' +
+        '</div>'
+      ).join('');
+    }
+
+    const btnCustom = document.getElementById('btn-modal-levelup-customize');
+    if (btnCustom) {
+      btnCustom.onclick = function() {
+        window.closeModal('modal-monster-levelup');
+        window.openStudentDetail(studentId, 'monster');
+      };
+    }
+
+    window.openModal('modal-monster-levelup');
+  };
+
+  window.openMonsterHatchModal = function(studentId) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const profile = store.getMonsterProfile(studentId);
+
+    const titleEl = document.getElementById('modal-hatch-title');
+    if (titleEl) titleEl.innerText = '🥚 ✨ YOUR EGG HAS HATCHED! ✨ 🐣';
+
+    const renderWrap = document.getElementById('modal-hatch-monster-render');
+    if (renderWrap && window.renderMonsterSVG) {
+      renderWrap.innerHTML = window.renderMonsterSVG({
+        stage: 'baby',
+        color: profile.baseColor || 'blue',
+        size: 180,
+        animated: true
+      });
+    }
+
+    // Mark as hatched in store
+    store.updateMonsterProfile(studentId, { isHatched: true });
+    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (250+ XP). Companion is now awake!');
+
+    const btnCloset = document.getElementById('btn-modal-hatch-closet');
+    if (btnCloset) {
+      btnCloset.onclick = function() {
+        window.closeModal('modal-monster-hatch');
+        window.openStudentDetail(studentId, 'monster');
+      };
+    }
+
+    window.openModal('modal-monster-hatch');
+  };
+
+  window.openEvolutionPathModal = function(studentId) {
+    const levels = store.getProgressionLevels();
+    const student = studentId ? store.getStudent(studentId) : null;
+    const monsterState = student ? store.calculateMonsterState(student.id) : null;
+    const profile = student ? store.getMonsterProfile(student.id) : null;
+
+    const listEl = document.getElementById('modal-evolution-path-list');
+    if (!listEl) return;
+
+    listEl.innerHTML = levels.map(l => {
+      const isReached = monsterState ? monsterState.currentLevel >= l.level : false;
+      const isCurrent = monsterState ? monsterState.currentLevel === l.level : false;
+
+      const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
+        stage: l.stageKey,
+        color: profile ? profile.baseColor : 'blue',
+        size: 70,
+        animated: isCurrent
+      }) : '👾';
+
+      return '' +
+        '<div class="evolution-path-card ' + (isCurrent ? 'is-current' : '') + ' ' + (!isReached ? 'is-locked' : '') + '">' +
+          '<div style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' +
+            stageSvg +
+          '</div>' +
+          '<div style="flex:1;">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+              '<h4 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main);">' + l.name + '</h4>' +
+              '<span class="badge" style="background:var(--bg-muted); color:var(--text-main); font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;">' + l.xpRequired.toLocaleString() + ' XP</span>' +
+            '</div>' +
+            '<p style="font-size:0.82rem; color:var(--text-muted); margin:4px 0 6px 0;">' + l.description + '</p>' +
+            '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700;">🎁 Rewards: ' + (l.rewards ? l.rewards.join(', ') : 'Cosmetics & evolution perks') + '</div>' +
+          '</div>' +
+          (isCurrent ? '<div class="badge" style="background:var(--color-primary); color:#ffffff; font-weight:800; font-size:0.72rem; padding:4px 10px; border-radius:12px;">Current Stage</div>' : '') +
+        '</div>';
+    }).join('');
+
+    window.openModal('modal-evolution-path');
+  };
+
 
   })(typeof window !== 'undefined' ? window : global);

@@ -813,6 +813,317 @@
     }
   };
 
+
+  // =========================================================================
+  // MONSTER EVOLUTION SYSTEM — SEED DATA & MODELS
+  // =========================================================================
+
+  const DEFAULT_PROGRESSION_LEVELS = [
+    {
+      id: 'lvl-1',
+      level: 1,
+      name: 'Mystery Egg',
+      stageKey: 'egg',
+      xpRequired: 0,
+      description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
+      unlockedItems: ['body-blue', 'body-pink', 'body-green', 'body-orange', 'body-purple', 'bg-meadow'],
+      rewardXP: 0,
+      status: 'active'
+    },
+    {
+      id: 'lvl-2',
+      level: 2,
+      name: 'Cracking Egg',
+      stageKey: 'cracking_egg',
+      xpRequired: 100,
+      description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
+      unlockedItems: ['eyes-happy', 'mouth-cheer'],
+      rewardXP: 50,
+      status: 'active'
+    },
+    {
+      id: 'lvl-3',
+      level: 3,
+      name: 'Baby Monster',
+      stageKey: 'baby',
+      xpRequired: 250,
+      description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
+      unlockedItems: ['horns-ears', 'tail-puff', 'eyes-wink', 'glasses-round'],
+      rewardXP: 100,
+      status: 'active'
+    },
+    {
+      id: 'lvl-4',
+      level: 4,
+      name: 'Growing Monster',
+      stageKey: 'growing',
+      xpRequired: 500,
+      description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
+      unlockedItems: ['mouth-toothy', 'horns-nub', 'tail-perky', 'wings-starter', 'hat-scholar'],
+      rewardXP: 150,
+      status: 'active'
+    },
+    {
+      id: 'lvl-5',
+      level: 5,
+      name: 'Adventurer Monster',
+      stageKey: 'adventurer',
+      xpRequired: 1000,
+      description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
+      unlockedItems: ['body-gold', 'hat-explorer', 'bp-explorer', 'horns-curved', 'aura-flame', 'bg-crystal'],
+      rewardXP: 250,
+      status: 'active'
+    },
+    {
+      id: 'lvl-6',
+      level: 6,
+      name: 'Advanced Monster',
+      stageKey: 'advanced',
+      xpRequired: 2000,
+      description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
+      unlockedItems: ['horns-crystal', 'wings-dragon', 'tail-dragon', 'eyes-dragon', 'hat-wizard', 'bg-cosmos'],
+      rewardXP: 500,
+      status: 'active'
+    },
+    {
+      id: 'lvl-7',
+      level: 7,
+      name: 'Ultimate Monster',
+      stageKey: 'ultimate',
+      xpRequired: 5000,
+      description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
+      unlockedItems: ['hat-crown', 'wings-celestial', 'tail-flame', 'aura-cosmic', 'bg-castle'],
+      rewardXP: 1000,
+      status: 'active'
+    }
+  ];
+
+  const DEFAULT_MONSTER_ITEMS = [
+    // Body Colors
+    { id: 'body-blue', name: 'Sky Blue', category: 'body', description: 'Bright cheerful sky blue fur', icon: '🔵', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-pink', name: 'Berry Pink', category: 'body', description: 'Playful sweet berry pink coat', icon: '🌸', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-green', name: 'Leaf Green', category: 'body', description: 'Earthy vibrant fresh leaf green', icon: '🍃', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-orange', name: 'Sunset Orange', category: 'body', description: 'Energetic sunset orange fur', icon: '🍊', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-purple', name: 'Lavender Purple', category: 'body', description: 'Enchanted whimsical lavender', icon: '💜', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-gold', name: 'Royal Gold', category: 'body', description: 'Radiant gleaming gold sheen', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+
+    // Eyes
+    { id: 'eyes-sparkle', name: 'Anime Sparkle', category: 'eyes', description: 'Big glossy eyes filled with wonder', icon: '✨', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'eyes-happy', name: 'Happy Crescents', category: 'eyes', description: 'Joyful cheerful laughing eyes', icon: '😄', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'eyes-wink', name: 'Curious Wink', category: 'eyes', description: 'Playful winking expression', icon: '😉', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-dragon', name: 'Dragon Glow', category: 'eyes', description: 'Fierce glowing golden pupils', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+
+    // Mouth
+    { id: 'mouth-smile', name: 'Sweet Smile', category: 'mouth', description: 'Gentle cute cat smile', icon: '😺', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'mouth-cheer', name: 'Open Cheer', category: 'mouth', description: 'Excited wide open happy cheer', icon: '🗣️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'mouth-toothy', name: 'Toothy Grin', category: 'mouth', description: 'Playful grin with tiny fangs', icon: '😁', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+
+    // Horns / Ears
+    { id: 'horns-ears', name: 'Floppy Monster Ears', category: 'horns', description: 'Cute soft bouncy creature ears', icon: '🐰', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'horns-nub', name: 'Sprout Nub Horns', category: 'horns', description: 'Little growing horn sprouts', icon: '🌱', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-curved', name: 'Curved Ram Horns', category: 'horns', description: 'Sturdy swept-back adventurer horns', icon: '🐏', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-crystal', name: 'Crystal Dragon Horns', category: 'horns', description: 'Glowing cyan crystalline spires', icon: '💎', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+
+    // Wings
+    { id: 'wings-starter', name: 'Flutter Wings', category: 'wings', description: 'Cute starter wings for small glides', icon: '🪶', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'wings-dragon', name: 'Dragon Wings', category: 'wings', description: 'Sweeping majestic winged power', icon: '🦇', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'wings-celestial', name: 'Celestial Gold Wings', category: 'wings', description: 'Feathered gold divine wings', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+
+    // Tails
+    { id: 'tail-puff', name: 'Puff Bunny Tail', category: 'tail', description: 'Soft round fluffy tail', icon: '⚪', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'tail-flame', name: 'Blazing Flame Tail', category: 'tail', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-hardwork' }, rarity: 'legendary', status: 'active' },
+
+    // Hats
+    { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-scholar', name: 'Scholar Cap', category: 'hat', description: 'Graduation cap with gold tassel', icon: '🎓', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-wizard', name: 'Wizard Hat', category: 'hat', description: 'Midnight blue starry magic hat', icon: '🧙', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'hat-crown', name: 'Imperial Crown', category: 'hat', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+
+    // Glasses
+    { id: 'glasses-round', name: 'Round Wire Glasses', category: 'glasses', description: 'Scholarly intellectual spectacles', icon: '👓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'glasses-goggles', name: 'Detective Goggles', category: 'glasses', description: 'Brass mystery investigation goggles', icon: '🥽', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-3' }, rarity: 'epic', status: 'active' },
+
+    // Backpacks
+    { id: 'bp-explorer', name: 'Explorer Satchel', category: 'backpack', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bp-book', name: 'Magic Book Bag', category: 'backpack', description: 'Ancient leather pack carrying vocab spells', icon: '📚', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-2' }, rarity: 'epic', status: 'active' },
+
+    // Handheld Accessories
+    { id: 'acc-microphone', name: 'Golden Microphone', category: 'accessory', description: 'Awarded for confident English speaking', icon: '🎤', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-speaking' }, rarity: 'epic', status: 'active' },
+    { id: 'acc-book', name: 'Adventure Spellbook', category: 'accessory', description: 'Leather-bound reading discovery book', icon: '📖', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-1' }, rarity: 'rare', status: 'active' },
+
+    // Auras
+    { id: 'aura-sparkle', name: 'Friendship Sparkles', category: 'aura', description: 'Twinkling stars of teamwork and kindness', icon: '🌟', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-team' }, rarity: 'rare', status: 'active' },
+    { id: 'aura-flame', name: 'Perseverance Flame', category: 'aura', description: 'Golden flame of relentless effort', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'aura-cosmic', name: 'Cosmic Rings', category: 'aura', description: 'Orbital celestial stardust halo', icon: '💫', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+
+    // Backgrounds
+    { id: 'bg-meadow', name: 'Academy Grounds', category: 'background', description: 'Sunny green lawns of Adventure Academy', icon: '🌳', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'bg-crystal', name: 'Crystal Cavern', category: 'background', description: 'Luminescent cavern of glowing minerals', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-cosmos', name: 'Starry Cosmos', category: 'background', description: 'Deep space filled with learning galaxies', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-castle', name: 'Royal Castle', category: 'background', description: 'Majestic fortress of Master English speakers', icon: '🏰', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' }
+  ];
+
+  const DEFAULT_MONSTER_PROFILES = {
+    'student-emma': {
+      studentId: 'student-emma',
+      petName: 'Skywing',
+      baseColor: 'blue',
+      equipped: {
+        body: 'body-blue',
+        eyes: 'eyes-sparkle',
+        mouth: 'mouth-smile',
+        horns: 'horns-curved',
+        wings: 'wings-starter',
+        tail: 'tail-perky',
+        hat: 'hat-explorer',
+        glasses: 'none',
+        backpack: 'bp-explorer',
+        accessory: 'acc-microphone',
+        aura: 'aura-sparkle',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-blue', 'hat-explorer', 'bp-explorer', 'acc-microphone', 'aura-sparkle'],
+      hatchDate: '2026-09-02T10:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received the Mystery Egg upon entering Academy.' },
+        { id: 'ev-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Crossed 250 XP milestone with Monster Day vocabulary.' },
+        { id: 'ev-3', date: 'Sep 4, 2026', type: 'evolve', title: 'Evolved to Growing Monster', detail: 'Crossed 500 XP milestone with body parts mastery.' },
+        { id: 'ev-4', date: 'Sep 7, 2026', type: 'evolve', title: 'Evolved to Adventurer Monster!', detail: 'Crossed 1,000 XP threshold! Unlocked Explorer Fedora & Satchel.' },
+        { id: 'ev-5', date: 'Sep 9, 2026', type: 'unlock', title: 'Unlocked Golden Microphone', detail: 'Awarded for exceptional classroom speaking participation.' }
+      ]
+    },
+    'student-lucas': {
+      studentId: 'student-lucas',
+      petName: 'Blaze',
+      baseColor: 'orange',
+      equipped: {
+        body: 'body-orange',
+        eyes: 'eyes-happy',
+        mouth: 'mouth-toothy',
+        horns: 'horns-nub',
+        wings: 'wings-starter',
+        tail: 'tail-perky',
+        hat: 'none',
+        glasses: 'glasses-round',
+        backpack: 'none',
+        accessory: 'none',
+        aura: 'none',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-orange', 'glasses-round', 'horns-nub'],
+      hatchDate: '2026-09-03T11:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-l1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
+        { id: 'ev-l2', date: 'Sep 3, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached 250 XP.' },
+        { id: 'ev-l3', date: 'Sep 6, 2026', type: 'evolve', title: 'Evolved to Growing Monster', detail: 'Reached 500 XP with teamwork.' }
+      ]
+    },
+    'student-sofia': {
+      studentId: 'student-sofia',
+      petName: 'Rosie',
+      baseColor: 'pink',
+      equipped: {
+        body: 'body-pink',
+        eyes: 'eyes-sparkle',
+        mouth: 'mouth-cheer',
+        horns: 'horns-ears',
+        wings: 'wings-starter',
+        tail: 'tail-puff',
+        hat: 'none',
+        glasses: 'none',
+        backpack: 'bp-book',
+        accessory: 'acc-book',
+        aura: 'aura-sparkle',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-pink', 'bp-book', 'acc-book', 'aura-sparkle'],
+      hatchDate: '2026-09-02T14:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-s1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
+        { id: 'ev-s2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached 250 XP.' },
+        { id: 'ev-s3', date: 'Sep 5, 2026', type: 'evolve', title: 'Evolved to Growing Monster', detail: 'Reached 500 XP.' }
+      ]
+    },
+    'student-noah': {
+      studentId: 'student-noah',
+      petName: 'Fern',
+      baseColor: 'green',
+      equipped: {
+        body: 'body-green',
+        eyes: 'eyes-wink',
+        mouth: 'mouth-smile',
+        horns: 'horns-ears',
+        wings: 'none',
+        tail: 'tail-puff',
+        hat: 'hat-scholar',
+        glasses: 'none',
+        backpack: 'none',
+        accessory: 'none',
+        aura: 'none',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-green', 'hat-scholar'],
+      hatchDate: '2026-09-03T16:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-n1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
+        { id: 'ev-n2', date: 'Sep 3, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached 250 XP.' },
+        { id: 'ev-n3', date: 'Sep 7, 2026', type: 'evolve', title: 'Evolved to Growing Monster', detail: 'Reached 500 XP.' }
+      ]
+    },
+    'student-maya': {
+      studentId: 'student-maya',
+      petName: 'Starlight',
+      baseColor: 'purple',
+      equipped: {
+        body: 'body-purple',
+        eyes: 'eyes-sparkle',
+        mouth: 'mouth-smile',
+        horns: 'horns-ears',
+        wings: 'none',
+        tail: 'tail-puff',
+        hat: 'none',
+        glasses: 'none',
+        backpack: 'none',
+        accessory: 'none',
+        aura: 'none',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-purple'],
+      hatchDate: '2026-09-03T15:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-m1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
+        { id: 'ev-m2', date: 'Sep 3, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached 250 XP.' },
+        { id: 'ev-m3', date: 'Sep 6, 2026', type: 'evolve', title: 'Evolved to Growing Monster', detail: 'Reached 500 XP.' }
+      ]
+    },
+    'student-oliver': {
+      studentId: 'student-oliver',
+      petName: 'Nugget',
+      baseColor: 'gold',
+      equipped: {
+        body: 'body-gold',
+        eyes: 'eyes-happy',
+        mouth: 'mouth-smile',
+        horns: 'horns-ears',
+        wings: 'none',
+        tail: 'tail-puff',
+        hat: 'none',
+        glasses: 'none',
+        backpack: 'none',
+        accessory: 'none',
+        aura: 'none',
+        background: 'bg-meadow'
+      },
+      unlockedItems: ['body-gold'],
+      hatchDate: '2026-09-04T12:00:00Z',
+      evolutionHistory: [
+        { id: 'ev-o1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
+        { id: 'ev-o2', date: 'Sep 4, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached 250 XP.' }
+      ]
+    }
+  };
   // Initial Seed Data
   function getInitialState() {
     return {
@@ -1488,7 +1799,12 @@
         primaryCefrTarget: 'A1',
         leaderboardEnabled: true,
         parentStoryVisibility: true,
-        soundEffectsEnabled: true
+        soundEffectsEnabled: true,
+        monsterEvolutionEnabled: true,
+        xpProgressionEnabled: true,
+        achievementRewardsEnabled: true,
+        worldUnlocksEnabled: true,
+        streaksEnabled: true
       },
       messages: [
         {
@@ -1659,6 +1975,9 @@
       ],
 
       // 27. Student Awards (Independently tracked from badge definitions)
+      progressionLevels: JSON.parse(JSON.stringify(DEFAULT_PROGRESSION_LEVELS)),
+      monsterItems: JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS)),
+      monsterProfiles: JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES)),
       studentAwards: [
         { id: 'award-1', studentId: 'student-emma', badgeId: 'badge-1', awardedDate: '2026-09-01', awardedBy: 'Ms. Sarah', notes: 'Reached 1,000 XP milestone with high enthusiasm', archived: false },
         { id: 'award-2', studentId: 'student-emma', badgeId: 'badge-2', awardedDate: '2026-09-03', awardedBy: 'Ms. Sarah', notes: 'Great spoken performance during restaurant roleplay', archived: false },
@@ -1698,6 +2017,31 @@
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
             if (!merged.studentAwards) merged.studentAwards = initial.studentAwards || [];
+
+            // Ensure Monster Evolution models are present
+            if (!merged.progressionLevels || !Array.isArray(merged.progressionLevels) || merged.progressionLevels.length === 0) {
+              merged.progressionLevels = JSON.parse(JSON.stringify(DEFAULT_PROGRESSION_LEVELS));
+            }
+            if (!merged.monsterItems || !Array.isArray(merged.monsterItems) || merged.monsterItems.length === 0) {
+              merged.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+            }
+            if (!merged.monsterProfiles || typeof merged.monsterProfiles !== 'object') {
+              merged.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));
+            } else {
+              // Ensure default profiles merged for seed students
+              for (const sId in DEFAULT_MONSTER_PROFILES) {
+                if (!merged.monsterProfiles[sId]) {
+                  merged.monsterProfiles[sId] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[sId]));
+                }
+              }
+            }
+            if (merged.schoolSettings) {
+              if (merged.schoolSettings.monsterEvolutionEnabled === undefined) merged.schoolSettings.monsterEvolutionEnabled = true;
+              if (merged.schoolSettings.xpProgressionEnabled === undefined) merged.schoolSettings.xpProgressionEnabled = true;
+              if (merged.schoolSettings.achievementRewardsEnabled === undefined) merged.schoolSettings.achievementRewardsEnabled = true;
+              if (merged.schoolSettings.worldUnlocksEnabled === undefined) merged.schoolSettings.worldUnlocksEnabled = true;
+              if (merged.schoolSettings.streaksEnabled === undefined) merged.schoolSettings.streaksEnabled = true;
+            }
 
             // Ensure Global Readings 2 curriculum book, units, lessons, objectives, and resource are present
             if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
@@ -1904,8 +2248,8 @@
 
       this.state.students.unshift(newStudent);
 
-      // Seed initial welcoming XP transaction
-      this.giveXP(studentId, 100, 'Welcome to Adventure Academy!', 'System');
+      // Initialize student Mystery Egg profile (starts at 0 XP)
+      this.getMonsterProfile(studentId);
       this.saveState();
       return newStudent;
     }
@@ -3035,6 +3379,294 @@
     }
 
     // =========================================================================
+    
+    // -----------------------------------------------------------------------
+    // MONSTER EVOLUTION & PROGRESSION SYSTEM METHODS
+    // -----------------------------------------------------------------------
+
+    getProgressionLevels(includeInactive = false) {
+      if (!this.state.progressionLevels) this.state.progressionLevels = JSON.parse(JSON.stringify(DEFAULT_PROGRESSION_LEVELS));
+      return this.state.progressionLevels.filter(l => includeInactive || l.status !== 'archived');
+    }
+
+    getProgressionLevel(id) {
+      return this.getProgressionLevels(true).find(l => l.id === id);
+    }
+
+    addProgressionLevel(levelData) {
+      if (!this.state.progressionLevels) this.state.progressionLevels = [];
+      const newLvl = Object.assign({
+        id: 'lvl-' + Date.now(),
+        level: this.state.progressionLevels.length + 1,
+        name: 'New Level',
+        stageKey: 'growing',
+        xpRequired: 1000,
+        description: '',
+        unlockedItems: [],
+        rewardXP: 100,
+        status: 'active'
+      }, levelData);
+      this.state.progressionLevels.push(newLvl);
+      this.state.progressionLevels.sort((a, b) => a.xpRequired - b.xpRequired);
+      this.saveState();
+      this.notify();
+      return newLvl;
+    }
+
+    updateProgressionLevel(id, updates) {
+      const lvl = this.getProgressionLevel(id);
+      if (lvl) {
+        Object.assign(lvl, updates);
+        if (updates.xpRequired !== undefined) {
+          this.state.progressionLevels.sort((a, b) => a.xpRequired - b.xpRequired);
+        }
+        this.saveState();
+        this.notify();
+      }
+      return lvl;
+    }
+
+    deleteProgressionLevel(id) {
+      const idx = (this.state.progressionLevels || []).findIndex(l => l.id === id);
+      if (idx !== -1) {
+        const removed = this.state.progressionLevels.splice(idx, 1)[0];
+        this.saveState();
+        this.notify();
+        return removed;
+      }
+      return null;
+    }
+
+    getMonsterItems(category = null, includeArchived = false) {
+      if (!this.state.monsterItems) this.state.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+      return this.state.monsterItems.filter(item => {
+        const matchCat = !category || item.category === category;
+        const matchArchived = includeArchived || item.status !== 'archived';
+        return matchCat && matchArchived;
+      });
+    }
+
+    getMonsterItem(id) {
+      return (this.state.monsterItems || []).find(item => item.id === id);
+    }
+
+    addMonsterItem(itemData) {
+      if (!this.state.monsterItems) this.state.monsterItems = [];
+      const newItem = Object.assign({
+        id: 'item-' + Date.now(),
+        name: 'New Item',
+        category: 'accessory',
+        description: '',
+        icon: '✨',
+        unlockType: 'default',
+        unlockRequirement: {},
+        rarity: 'common',
+        status: 'active'
+      }, itemData);
+      this.state.monsterItems.push(newItem);
+      this.saveState();
+      this.notify();
+      return newItem;
+    }
+
+    updateMonsterItem(id, updates) {
+      const item = this.getMonsterItem(id);
+      if (item) {
+        Object.assign(item, updates);
+        this.saveState();
+        this.notify();
+      }
+      return item;
+    }
+
+    archiveMonsterItem(id) {
+      const item = this.getMonsterItem(id);
+      if (item) {
+        item.status = item.status === 'archived' ? 'active' : 'archived';
+        this.saveState();
+        this.notify();
+      }
+      return item;
+    }
+
+    getMonsterProfile(studentId) {
+      if (!this.state.monsterProfiles) this.state.monsterProfiles = {};
+      if (!this.state.monsterProfiles[studentId]) {
+        const student = this.getStudent(studentId);
+        const name = student ? student.firstName + "'s Monster" : "My Monster";
+        const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
+        const colorIdx = studentId ? Math.abs(studentId.charCodeAt(studentId.length - 1)) % colors.length : 0;
+        const assignedColor = colors[colorIdx] || 'blue';
+
+        this.state.monsterProfiles[studentId] = {
+          studentId: studentId,
+          petName: name,
+          baseColor: assignedColor,
+          equipped: {
+            body: 'body-' + assignedColor,
+            eyes: 'eyes-sparkle',
+            mouth: 'mouth-smile',
+            horns: 'horns-ears',
+            wings: 'none',
+            tail: 'tail-puff',
+            hat: 'none',
+            glasses: 'none',
+            backpack: 'none',
+            accessory: 'none',
+            aura: 'none',
+            background: 'bg-meadow'
+          },
+          unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
+          hatchDate: null,
+          evolutionHistory: [
+            {
+              id: 'ev-init-' + Date.now(),
+              date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+              type: 'egg',
+              title: 'Mystery Egg Received',
+              detail: 'Student entered Academy with a dormant Mystery Egg.'
+            }
+          ]
+        };
+        this.saveState();
+      }
+      return this.state.monsterProfiles[studentId];
+    }
+
+    updateMonsterProfile(studentId, updates) {
+      const profile = this.getMonsterProfile(studentId);
+      if (profile) {
+        if (updates.equipped) {
+          profile.equipped = Object.assign({}, profile.equipped, updates.equipped);
+          delete updates.equipped;
+        }
+        Object.assign(profile, updates);
+        this.saveState();
+        this.notify();
+      }
+      return profile;
+    }
+
+    equipMonsterItem(studentId, category, itemId) {
+      const profile = this.getMonsterProfile(studentId);
+      if (!profile) return { success: false, reason: 'Profile not found' };
+
+      const state = this.calculateMonsterState(studentId);
+      if (itemId !== 'none' && !state.unlockedItemIds.has(itemId)) {
+        return { success: false, reason: 'Item is locked. Complete the requirement to unlock.' };
+      }
+
+      if (!profile.equipped) profile.equipped = {};
+      profile.equipped[category] = itemId;
+
+      if (category === 'body' && itemId.startsWith('body-')) {
+        profile.baseColor = itemId.replace('body-', '');
+      }
+
+      this.saveState();
+      this.notify();
+      return { success: true, profile };
+    }
+
+    hasStudentAchievement(studentId, achievementId) {
+      if (!achievementId) return false;
+      const awards = this.state.studentAwards || [];
+      return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId));
+    }
+
+    calculateMonsterState(studentId) {
+      const totalXP = this.getStudentTotalXP(studentId);
+      const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
+      const profile = this.getMonsterProfile(studentId);
+
+      let currentLevelObj = levels[0] || { level: 1, name: 'Mystery Egg', stageKey: 'egg', xpRequired: 0 };
+      let nextLevelObj = levels[1] || null;
+
+      for (let i = 0; i < levels.length; i++) {
+        if (totalXP >= levels[i].xpRequired) {
+          currentLevelObj = levels[i];
+          nextLevelObj = levels[i + 1] || null;
+        } else {
+          break;
+        }
+      }
+
+      const currentLevel = currentLevelObj.level;
+      const stageKey = currentLevelObj.stageKey;
+      const stageName = currentLevelObj.name;
+      const levelXP = currentLevelObj.xpRequired;
+      const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : levelXP;
+      const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
+      
+      let progressPct = 100;
+      if (nextLevelObj && nextLevelXP > levelXP) {
+        progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
+      }
+
+      const isHatched = (currentLevel >= 3);
+
+      let eggCrackPct = 0;
+      if (currentLevel === 1) {
+        eggCrackPct = Math.min(95, Math.round((totalXP / 100) * 100));
+      } else if (currentLevel === 2) {
+        eggCrackPct = 100;
+      }
+
+      const allItems = this.getMonsterItems();
+      const unlockedItemIds = new Set(profile.unlockedItems || []);
+
+      allItems.forEach(item => {
+        if (item.unlockType === 'default') {
+          unlockedItemIds.add(item.id);
+        } else if (item.unlockType === 'level') {
+          if (item.unlockRequirement && currentLevel >= (item.unlockRequirement.level || 1)) {
+            unlockedItemIds.add(item.id);
+          }
+        } else if (item.unlockType === 'achievement') {
+          if (item.unlockRequirement && this.hasStudentAchievement(studentId, item.unlockRequirement.achievementId)) {
+            unlockedItemIds.add(item.id);
+          }
+        }
+      });
+
+      return {
+        studentId,
+        totalXP,
+        currentLevel,
+        stageKey,
+        stageName,
+        levelXP,
+        nextLevelXP,
+        xpToNext,
+        progressPct,
+        isHatched,
+        eggCrackPct,
+        unlockedItemIds,
+        currentLevelObj,
+        nextLevelObj,
+        profile
+      };
+    }
+
+    logMonsterHistory(studentId, event) {
+      const profile = this.getMonsterProfile(studentId);
+      if (!profile) return;
+      if (!profile.evolutionHistory) profile.evolutionHistory = [];
+
+      const newEvent = Object.assign({
+        id: 'ev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        type: 'xp',
+        title: 'Progression Event',
+        detail: ''
+      }, event);
+
+      profile.evolutionHistory.unshift(newEvent);
+      this.saveState();
+      this.notify();
+      return newEvent;
+    }
+
     // 7. CLASS STORY & MESSAGING CRUD
     // =========================================================================
     getClassStory(classId = null, includeArchived = false) {

@@ -1910,6 +1910,7 @@
   <script src="js/school-store.js"></script>
 
   <!-- 3. Application Controller & Router -->
+  <script src="js/monster-renderer.js"></script>
   <script src="js/school-app.js"></script>
 
 
@@ -1989,6 +1990,83 @@
       </div>
       <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px; border-top:1px solid var(--border-subtle); padding-top:12px;">
         <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-quiz-results')">Done</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Monster Level Up / Evolution Celebration Modal -->
+  <div class="modal-overlay" id="modal-monster-levelup">
+    <div class="modal-dialog" style="max-width: 580px; text-align: center; border-radius: 20px; padding: 28px 24px; background: var(--bg-surface); position: relative; overflow: hidden;">
+      <button class="modal-close-btn" onclick="closeModal('modal-monster-levelup')">✕</button>
+      
+      <div style="font-size: 2.2rem; margin-bottom: 4px;">✨ 🐲 ✨</div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin: 0 0 6px 0;">LEVEL UP!</h2>
+      <p id="m-levelup-subtitle" style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 20px 0;">Your monster has grown and unlocked new powers!</p>
+
+      <!-- Evolution Comparison Box -->
+      <div style="background: var(--bg-muted); border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-around; gap: 12px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+          <div id="m-levelup-prev-svg" style="width: 100px; height: 100px;"></div>
+          <span id="m-levelup-prev-label" style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">Previous Stage</span>
+        </div>
+        <div style="font-size: 1.8rem; color: var(--color-primary); font-weight: 800;">➔</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+          <div id="m-levelup-next-svg" style="width: 120px; height: 120px; filter: drop-shadow(0 0 12px rgba(56,189,248,0.5));"></div>
+          <span id="m-levelup-next-label" class="badge" style="background: var(--color-primary); color: #fff; font-size: 0.82rem; font-weight: 800; padding: 4px 10px; border-radius: 12px;">New Stage</span>
+        </div>
+      </div>
+
+      <!-- Unlocked Features Box -->
+      <div style="text-align: left; background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px; margin-bottom: 20px;">
+        <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">New Features & Items Unlocked:</div>
+        <div id="m-levelup-items-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button type="button" class="btn-primary-action" onclick="openStudentMonsterCustomizer()" style="padding: 10px 20px; font-size: 0.9rem;">🎨 Customize Now</button>
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-monster-levelup')" style="padding: 10px 18px; font-size: 0.9rem;">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monster Hatching Celebration Modal -->
+  <div class="modal-overlay" id="modal-monster-hatch">
+    <div class="modal-dialog" style="max-width: 520px; text-align: center; border-radius: 20px; padding: 32px 24px; background: var(--bg-surface); position: relative;">
+      <button class="modal-close-btn" onclick="closeModal('modal-monster-hatch')">✕</button>
+
+      <div style="font-size: 2.8rem; margin-bottom: 8px;">🐣 ✨ 🎉</div>
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0 0 6px 0;">YOUR EGG HAS HATCHED!</h2>
+      <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 20px 0;">Welcome your Baby Monster into English Adventure Academy! It is eager to grow with you as you practice English and participate.</p>
+
+      <div id="m-hatch-monster-svg" style="width: 170px; height: 170px; margin: 0 auto 20px auto; filter: drop-shadow(0 8px 24px rgba(16,185,129,0.3));"></div>
+
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button type="button" class="btn-primary-action" onclick="openStudentMonsterCustomizer()" style="padding: 10px 24px; font-size: 0.92rem; background: #059669;">🐾 Meet My Monster</button>
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-monster-hatch')" style="padding: 10px 18px; font-size: 0.92rem;">Awesome!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full 7-Stage Evolution Path Modal -->
+  <div class="modal-overlay" id="modal-evolution-path">
+    <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; border-radius: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-shrink: 0;">
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; color: var(--text-main);">🗺️ The 7 Evolution Stages of Adventure Academy</h2>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin: 3px 0 0 0;">Every student starts as a Mystery Egg and grows into their Ultimate Monster through learning, participation, and teamwork.</p>
+        </div>
+        <button class="modal-close-btn" style="position: static;" onclick="closeModal('modal-evolution-path')">✕</button>
+      </div>
+
+      <div id="m-evolution-path-body" style="flex: 1; overflow-y: auto; padding-right: 6px; display: flex; flex-direction: column; gap: 12px;">
+        <!-- Populated dynamically with all 7 stages -->
+      </div>
+
+      <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-evolution-path')">Close Road-map</button>
       </div>
     </div>
   </div>
