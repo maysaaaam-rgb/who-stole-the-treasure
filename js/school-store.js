@@ -2035,6 +2035,46 @@
                 }
               }
             }
+            // Ensure every existing student in database has a valid MonsterProfile
+            if (Array.isArray(merged.students)) {
+              const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
+              merged.students.forEach(st => {
+                if (!merged.monsterProfiles[st.id]) {
+                  const colorIdx = st.id ? Math.abs(st.id.charCodeAt(st.id.length - 1)) % colors.length : 0;
+                  const assignedColor = colors[colorIdx] || 'blue';
+                  merged.monsterProfiles[st.id] = {
+                    studentId: st.id,
+                    petName: (st.firstName ? st.firstName + "'s Monster" : "My Monster"),
+                    baseColor: assignedColor,
+                    isHatched: false,
+                    equipped: {
+                      body: 'body-' + assignedColor,
+                      eyes: 'eyes-sparkle',
+                      mouth: 'mouth-smile',
+                      horns: 'horns-ears',
+                      wings: 'none',
+                      tail: 'tail-puff',
+                      hat: 'none',
+                      glasses: 'none',
+                      backpack: 'none',
+                      accessory: 'none',
+                      aura: 'none',
+                      background: 'bg-meadow'
+                    },
+                    unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
+                    evolutionHistory: [
+                      {
+                        id: 'ev-init-' + Date.now(),
+                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                        type: 'egg',
+                        title: 'Mystery Egg Discovered',
+                        detail: 'Student entered Academy with a dormant Mystery Egg.'
+                      }
+                    ]
+                  };
+                }
+              });
+            }
             if (merged.schoolSettings) {
               if (merged.schoolSettings.monsterEvolutionEnabled === undefined) merged.schoolSettings.monsterEvolutionEnabled = true;
               if (merged.schoolSettings.xpProgressionEnabled === undefined) merged.schoolSettings.xpProgressionEnabled = true;
@@ -2343,10 +2383,52 @@
       };
 
       if (!this.state.xpTransactions) this.state.xpTransactions = [];
+      const prevMonsterState = this.calculateMonsterState(studentId);
+      const prevLevel = prevMonsterState ? prevMonsterState.currentLevel : 1;
+
       this.state.xpTransactions.push(tx);
+      const newMonsterState = this.calculateMonsterState(studentId);
+
+      let evolutionEvent = null;
+      if (newMonsterState && prevLevel && newMonsterState.currentLevel > prevLevel) {
+        const levels = this.getProgressionLevels();
+        const prevLvlObj = levels.find(l => l.level === prevLevel);
+        const newLvlObj = newMonsterState.currentLevelObj;
+        const isHatch = (newMonsterState.currentLevel >= 3 && prevLevel < 3);
+
+        const profile = this.getMonsterProfile(studentId);
+        if (isHatch && profile) {
+          profile.isHatched = true;
+        }
+
+        this.logMonsterHistory(studentId, {
+          type: isHatch ? 'hatch' : 'evolve',
+          title: isHatch ? '✨ Egg Hatched into Baby Monster!' : ('🎉 Evolved to Level ' + newMonsterState.currentLevel + ': ' + newMonsterState.stageName),
+          detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString() + ' XP.'
+        });
+
+        evolutionEvent = {
+          studentId,
+          prevLevel,
+          newLevel: newMonsterState.currentLevel,
+          isHatch,
+          newStageKey: newMonsterState.stageKey,
+          fromStage: prevLvlObj ? prevLvlObj.name : ('Level ' + prevLevel),
+          toStage: newMonsterState.stageName
+        };
+      }
+
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
-      return { transaction: tx, student: s, newTotalXP: this.getStudentTotalXP(studentId), reason: tx.reason, amount: numAmount };
+      return { 
+        transaction: tx, 
+        student: s, 
+        newTotalXP: this.getStudentTotalXP(studentId), 
+        reason: tx.reason, 
+        amount: numAmount, 
+        evolutionEvent, 
+        monsterState: newMonsterState 
+      };
     }
 
     voidXPTransaction(txId, voidReason = 'Removed by teacher') {

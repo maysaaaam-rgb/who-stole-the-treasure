@@ -351,6 +351,43 @@
   }
 
   // Helper: compute average mastery percentage across all 7 language skills
+  
+  // =========================================================================
+  // CANONICAL STUDENT MONSTER AVATAR RENDERER
+  // =========================================================================
+  window.renderStudentMonsterAvatar = function(studentId, options = {}) {
+    if (!studentId) return '🥚';
+    const size = options.size || 54;
+    const animated = options.animated !== false;
+
+    if (!window.MonsterRenderer || typeof window.MonsterRenderer.renderMonsterSVG !== 'function') {
+      return '👾';
+    }
+
+    try {
+      const monsterState = store.calculateMonsterState(studentId);
+      const profile = store.getMonsterProfile(studentId);
+      if (!monsterState || !profile) return '🥚';
+
+      return window.MonsterRenderer.renderMonsterSVG({
+        stage: monsterState.stageKey,
+        color: profile.baseColor || 'blue',
+        equipped: profile.equipped || {},
+        size: size,
+        animated: animated
+      });
+    } catch (err) {
+      console.warn('Error rendering monster for student ' + studentId, err);
+      return '👾';
+    }
+  };
+
+  // Redirect old avatar selector to Monster Customization
+  window.openAvatarSelector = function(studentId) {
+    if (!studentId) return;
+    window.openStudentDetail(studentId, 'monster');
+  };
+
   function calculateStudentProgressPct(studentId) {
     const skills = store.getStudentSkills(studentId);
     const vals = Object.values(skills).map(s => s.score);
@@ -1264,42 +1301,65 @@
       '<div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">' +
         '<button class="modal-close-btn" onclick="closeAllModals()">✕</button>' +
 
-        '<!-- Management Header Bar -->' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-light); padding-bottom:16px; margin-bottom:14px; flex-wrap:wrap; gap:12px;">' +
-          '<div style="display:flex; align-items:center; gap:14px;">' +
-            '<div class="student-profile-avatar-btn" onclick="openAvatarSelector(\'' + student.id + '\')" title="Click to customize adventure character" style="width:62px; height:62px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:36px; cursor:pointer; position:relative; box-shadow:var(--shadow-sm); border:2px solid var(--border-light); transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.08)\'" onmouseout="this.style.transform=\'scale(1)\'">' +
-              getStudentAvatarEmoji(student.avatar) +
-              '<span style="position:absolute; bottom:-2px; right:-2px; background:var(--color-primary); color:#fff; border-radius:50%; width:20px; height:20px; font-size:10px; display:flex; align-items:center; justify-content:center; border:2px solid #fff;">✏️</span>' +
-            '</div>' +
-            '<div>' +
-              '<div style="display:flex; align-items:center; gap:8px;">' +
-                '<h2 style="font-size:1.35rem; font-weight:800; color:var(--text-main);">' + student.firstName + ' ' + student.lastName + '</h2>' +
-                '<span class="badge-cefr badge-cefr-' + student.overallCefr.toLowerCase().replace('+', '-plus') + '">' + student.overallCefr + '</span>' +
-              '</div>' +
-              '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
-                'ID: <strong>' + (student.studentIdNumber || 'EAA-001') + '</strong> · ' + student.grade + ' · Age ' + student.age + ' · ⭐ ' + totalXP + ' XP' +
-              '</p>' +
-            '</div>' +
-          '</div>' +
+        '<!-- Prominent Monster Profile Hero Header -->' +
+        (() => {
+          const monsterState = store.calculateMonsterState(student.id);
+          const nextXP = monsterState.nextLevelXP || totalXP;
+          const xpToNext = monsterState.xpToNext;
+          const progressPct = monsterState.progressPct;
+          const monsterSvg = window.renderStudentMonsterAvatar(student.id, { size: 124, animated: true });
 
-          '<!-- Top Management Controls -->' +
-          '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-            '<button class="btn-primary-action" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px; background:linear-gradient(135deg, #f59e0b, #d97706); border-color:#d97706;">⭐ Award XP</button>' +
-            '<button class="btn-sm-secondary" onclick="openStudentRedeemRewardModal(\'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px;">🎁 Redeem</button>' +
-            '<button class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')">✏️ Edit</button>' +
-            '<button class="btn-sm-secondary" onclick="openAssignModal()">📝 Assign</button>' +
-            '<div class="card-more-menu-wrap" style="position:relative;">' +
-              '<button class="btn-card-more" onclick="toggleCardDropdown(\'prof-' + student.id + '\', event)" title="More Management Options">⋯</button>' +
-              '<div class="card-dropdown-menu" id="menu-prof-' + student.id + '">' +
-                '<button class="card-dropdown-item" onclick="document.getElementById(\'xp-student-select\').value=\'' + student.id + '\'; openModal(\'modal-give-xp\');">⭐ Give XP</button>' +
-                '<button class="card-dropdown-item" onclick="openReportGenerator(\'' + student.id + '\')">🖨️ Generate Report</button>' +
-                '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + student.id + '\')">Unenroll from Class</button>' +
-                '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + student.id + '\')">Archive Student</button>' +
+          return '' +
+            '<div class="student-profile-monster-hero" style="display:flex; gap:20px; align-items:center; background:linear-gradient(135deg, var(--bg-surface), var(--bg-card)); border:1px solid var(--border-light); border-radius:18px; padding:20px; margin-bottom:18px; box-shadow:var(--shadow-sm); flex-wrap:wrap;">' +
+              // Monster Stage Box
+              '<div style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; background:var(--bg-canvas); border-radius:16px; border:2px solid var(--border-light); cursor:pointer; position:relative;" onclick="switchStudentProfileTab(\'monster\')" title="Click to open Monster Customization">' +
+                monsterSvg +
+                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">🎨 Closet</span>' +
               '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
 
+              // Details & Controls
+              '<div style="flex:1; min-width:260px;">' +
+                '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
+                  '<div>' +
+                    '<div style="display:flex; align-items:center; gap:8px;">' +
+                      '<span class="badge" style="background:var(--color-primary); color:#fff; font-weight:800; font-size:0.75rem; padding:2px 10px; border-radius:12px;">Level ' + monsterState.currentLevel + '</span>' +
+                      '<h2 style="font-size:1.45rem; font-weight:900; margin:0; color:var(--text-main);">' + student.firstName.toUpperCase() + ' ' + student.lastName.toUpperCase() + '</h2>' +
+                      '<span class="badge-cefr badge-cefr-' + student.overallCefr.toLowerCase().replace('+', '-plus') + '">' + student.overallCefr + '</span>' +
+                    '</div>' +
+                    '<div style="font-size:0.95rem; font-weight:800; color:var(--color-primary); margin-top:2px;">' + monsterState.stageName + '</div>' +
+                    '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">ID: <strong>' + (student.studentIdNumber || 'EAA-001') + '</strong> · ' + student.grade + ' · Age ' + student.age + '</div>' +
+                  '</div>' +
+
+                  // Top Action Buttons
+                  '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
+                    '<button type="button" class="btn-primary-action" onclick="switchStudentProfileTab(\'monster\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">✏️ Edit</button>' +
+                    '<div class="card-more-menu-wrap" style="position:relative;">' +
+                      '<button class="btn-card-more" onclick="toggleCardDropdown(\'prof-' + student.id + '\', event)" title="More Management Options">⋯</button>' +
+                      '<div class="card-dropdown-menu" id="menu-prof-' + student.id + '">' +
+                        '<button class="card-dropdown-item" onclick="openReportGenerator(\'' + student.id + '\')">🖨️ Generate Report</button>' +
+                        '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + student.id + '\')">Unenroll from Class</button>' +
+                        '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + student.id + '\')">Archive Student</button>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+
+                // Evolution Progress Meter
+                '<div style="margin-top:12px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
+                  '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:4px;">' +
+                    '<span>⭐ ' + totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' XP</span>' +
+                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
+                  '</div>' +
+                  '<div style="height:10px; border-radius:5px; background:var(--border-light); overflow:hidden;">' +
+                    '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:5px; transition:width 0.4s ease;"></div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+        })() +
         '<!-- Profile Navigation Tabs -->' +
         '<div class="class-subnav-tabs" style="margin-top:0; margin-bottom:18px;">' +
           profileTabs.map(t => 
@@ -1336,6 +1396,9 @@
               '<div><strong>Class:</strong> ' + (store.getClass(student.classId) ? store.getClass(student.classId).name : 'Unenrolled') + '</div>' +
             '</div>' +
           '</div>';
+
+      case 'monster':
+        return renderMonsterTabForStudent(student, totalXP);
 
       case 'progress':
         return '' +
@@ -1661,11 +1724,219 @@
   // 5. VIEW CONTROLLERS (STUDENTS, CLASSES, CURRICULUM, LIBRARY, ETC.)
   // =========================================================================
 
+  
+  let studentsSearchQuery = '';
+  let studentsFilterClass = 'all';
+  let studentsFilterStage = 'all';
+  let studentsFilterProgression = 'all';
+  let studentsSortBy = 'xp_desc';
+
+  window.handleStudentsSearch = function(val) {
+    studentsSearchQuery = val;
+    renderCurrentView();
+  };
+
+  window.handleStudentsFilterClass = function(clsId) {
+    studentsFilterClass = clsId;
+    renderCurrentView();
+  };
+
+  window.handleStudentsFilterStage = function(st) {
+    studentsFilterStage = st;
+    renderCurrentView();
+  };
+
+  window.handleStudentsFilterProgression = function(prog) {
+    studentsFilterProgression = prog;
+    renderCurrentView();
+  };
+
+  window.handleStudentsSort = function(sort) {
+    studentsSortBy = sort;
+    renderCurrentView();
+  };
+
+
   function renderStudentsView(container) {
-    // Classroom Hub is the heart of student management
-    selectedClassDetailId = store.getActiveClass().id;
-    selectedClassDetailTab = 'classroom';
-    renderClassDetailView(container);
+    const allStudents = store.getStudents();
+    const classes = store.getClasses();
+
+    // Filter by class
+    let filtered = allStudents.filter(s => {
+      if (studentsFilterClass !== 'all' && s.classId !== studentsFilterClass) return false;
+      return true;
+    });
+
+    // Filter by search query
+    if (studentsSearchQuery && studentsSearchQuery.trim()) {
+      const q = studentsSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter(s => 
+        (s.firstName && s.firstName.toLowerCase().includes(q)) ||
+        (s.lastName && s.lastName.toLowerCase().includes(q)) ||
+        (s.studentIdNumber && s.studentIdNumber.toLowerCase().includes(q))
+      );
+    }
+
+    // Filter by Evolution Stage
+    if (studentsFilterStage !== 'all') {
+      filtered = filtered.filter(s => {
+        const mState = store.calculateMonsterState(s.id);
+        return mState.stageKey === studentsFilterStage;
+      });
+    }
+
+    // Filter by Progression Status
+    if (studentsFilterProgression === 'near_evolution') {
+      filtered = filtered.filter(s => {
+        const mState = store.calculateMonsterState(s.id);
+        return mState.progressPct >= 75 && mState.currentLevel < 7;
+      });
+    } else if (studentsFilterProgression === 'streak') {
+      filtered = filtered.filter(s => (s.streakDays || 0) >= 3);
+    } else if (studentsFilterProgression === 'achievements') {
+      filtered = filtered.filter(s => {
+        const achs = store.getStudentAchievements ? store.getStudentAchievements(s.id) : [];
+        return achs.length > 0;
+      });
+    }
+
+    // Sorting
+    filtered.sort((a, b) => {
+      const xpA = store.getStudentTotalXP(a.id);
+      const xpB = store.getStudentTotalXP(b.id);
+      const lvlA = store.calculateMonsterState(a.id).currentLevel;
+      const lvlB = store.calculateMonsterState(b.id).currentLevel;
+
+      if (studentsSortBy === 'xp_desc') return xpB - xpA;
+      if (studentsSortBy === 'xp_asc') return xpA - xpB;
+      if (studentsSortBy === 'level_desc') return lvlB - lvlA || xpB - xpA;
+      if (studentsSortBy === 'name_asc') return (a.firstName || '').localeCompare(b.firstName || '');
+      if (studentsSortBy === 'streak_desc') return (b.streakDays || 0) - (a.streakDays || 0);
+      return 0;
+    });
+
+    container.innerHTML = 
+      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+        // Header
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👧 Students Directory &amp; Monster Companions</h1>' +
+            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Real-time overview of all learners, their living evolving monsters, XP progress, and streaks.</p>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">📥 Export CSV</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Search & Filter Toolbar
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
+          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+            '<div style="flex:1; min-width:220px; position:relative;">' +
+              '<input type="text" class="search-input" placeholder="🔍 Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
+            '</div>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="min-width:140px;">' +
+              '<option value="all" ' + (studentsFilterClass === 'all' ? 'selected' : '') + '>All Classes (' + allStudents.length + ')</option>' +
+              classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="min-width:160px;">' +
+              '<option value="all" ' + (studentsFilterStage === 'all' ? 'selected' : '') + '>All Evolution Stages</option>' +
+              '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>🥚 Level 1: Mystery Egg</option>' +
+              '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>🥚✨ Level 2: Cracking Egg</option>' +
+              '<option value="baby" ' + (studentsFilterStage === 'baby' ? 'selected' : '') + '>🐣 Level 3: Baby Monster</option>' +
+              '<option value="growing" ' + (studentsFilterStage === 'growing' ? 'selected' : '') + '>👾 Level 4: Growing Monster</option>' +
+              '<option value="adventurer" ' + (studentsFilterStage === 'adventurer' ? 'selected' : '') + '>🧭 Level 5: Adventurer Monster</option>' +
+              '<option value="advanced" ' + (studentsFilterStage === 'advanced' ? 'selected' : '') + '>🐲 Level 6: Advanced Monster</option>' +
+              '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:150px;">' +
+              '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
+              '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
+              '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
+              '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>🏆 Has Achievements</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="min-width:140px;">' +
+              '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>⭐ XP: High to Low</option>' +
+              '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>⭐ XP: Low to High</option>' +
+              '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>👾 Level: High to Low</option>' +
+              '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>🔤 Name: A to Z</option>' +
+              '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>🔥 Streak: High to Low</option>' +
+            '</select>' +
+          '</div>' +
+          '<div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">' +
+            '<span>Showing <strong>' + filtered.length + '</strong> of ' + allStudents.length + ' registered learners</span>' +
+            '<span>Click any monster or card to view detailed learning profile &amp; closet</span>' +
+          '</div>' +
+        '</div>' +
+
+        // Students Cards Grid
+        (filtered.length === 0 ?
+          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+            '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
+            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
+            '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
+          '</div>' :
+          '<div class="students-directory-grid">' +
+            filtered.map(s => {
+              const mState = store.calculateMonsterState(s.id);
+              const totalXP = mState.totalXP;
+              const nextXP = mState.nextLevelXP || totalXP;
+              const xpToNext = mState.xpToNext;
+              const progressPct = mState.progressPct;
+              const streak = s.streakDays || 1;
+              const cls = store.getClass(s.classId);
+              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
+
+              return '' +
+                '<div class="student-directory-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
+                  '<div class="student-card-top-bar">' +
+                    '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
+                    '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                    '<span class="student-card-streak-pill" title="Daily streak">🔥 ' + streak + 'd</span>' +
+                  '</div>' +
+
+                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openStudentDetail(\'' + s.id + '\', \'monster\')" title="Click to customize monster">' +
+                    monsterSvg +
+                    '<div class="avatar-customize-pill">🎨 Customize</div>' +
+                  '</div>' +
+
+                  '<div class="student-directory-name">' + s.firstName + ' ' + s.lastName + '</div>' +
+                  '<div class="student-directory-class-sub">' + (cls ? cls.name : 'Unenrolled') + ' · ' + s.grade + '</div>' +
+
+                  '<div class="student-directory-stage-badge">' +
+                    'Level ' + mState.currentLevel + ' · ' + mState.stageName +
+                  '</div>' +
+
+                  '<div class="student-directory-xp-line">' +
+                    '<strong>⭐ ' + totalXP.toLocaleString() + ' XP</strong>' +
+                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + '</span>' +
+                  '</div>' +
+
+                  '<div class="student-directory-progress-bar" title="' + progressPct + '% to next stage">' +
+                    '<div class="student-directory-progress-fill" style="width:' + progressPct + '%;"></div>' +
+                  '</div>' +
+                  '<div class="student-directory-progress-sub">' +
+                    (!mState.isHatched ? 
+                      ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
+                      (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
+                    ) +
+                  '</div>' +
+
+                  '<div class="student-directory-card-actions" onclick="event.stopPropagation();">' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'monster\')" style="flex:1;">🎨 Monster</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ +XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'overview\')">Profile →</button>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>'
+        ) +
+      '</div>';
   }
 
   function renderClassesView(container) {
@@ -1926,12 +2197,19 @@
           '<div class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></div>' +
 
           // Avatar Frame (Clickable to change character avatar)
-          '<div class="student-avatar-frame" onclick="event.stopPropagation(); openAvatarSelector(\'' + s.id + '\')" title="Click to customize adventure character">' +
-            avatarEmoji +
+          '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openStudentDetail(\'' + s.id + '\', \'monster\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+            window.renderStudentMonsterAvatar(s.id, { size: 66, animated: true }) +
           '</div>' +
 
           // Name (Uppercase)
           '<div class="student-card-name">' + s.firstName.toUpperCase() + '</div>' +
+          '<div style="font-size:0.72rem; font-weight:800; color:var(--color-primary); margin-bottom:4px;">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
+          '<div class="student-card-progress-bar" style="margin-top:4px;" title="Evolution: ' + monsterState.progressPct + '%">' +
+            '<div class="student-card-progress-fill" style="width:' + monsterState.progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>' +
+          '</div>' +
+          '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; text-align:center;">' +
+            (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : '👑 Apex Form')) +
+          '</div>' +
 
           // Meta Row (Points + CEFR)
           '<div class="student-card-meta-row">' +
@@ -2009,7 +2287,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<div class="group-members-pills">' +
                     memberStudents.map(m => '' +
                       '<span class="group-member-pill" onclick="openStudentDetail(\'' + m.id + '\')">' +
-                        getStudentAvatarEmoji(m.avatar) + ' ' + m.firstName +
+                        window.renderStudentMonsterAvatar(m.id, { size: 28, animated: false }) + ' ' + m.firstName +
                       '</span>'
                     ).join('') +
                   '</div>' +
@@ -3726,16 +4004,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="max-width:600px; margin:0 auto; padding:20px;">' +
         '<h1 style="font-size:1.6rem; font-weight:900; text-align:center; margin-bottom:20px;">🏆 Classroom Leaderboard</h1>' +
         '<div style="display:flex; flex-direction:column; gap:10px;">' +
-          students.map((s, idx) => '' +
+          students.map((s, idx) => {
+            const mState = store.calculateMonsterState(s.id);
+            return '' +
             '<div style="display:flex; align-items:center; justify-content:space-between; padding:12px 18px; background:var(--bg-card); border-radius:12px; border:1px solid var(--border-subtle);">' +
               '<div style="display:flex; align-items:center; gap:12px;">' +
                 '<span style="font-weight:900; font-size:1.2rem; width:24px;">' + (idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1)) + '</span>' +
-                '<span style="font-size:1.6rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
-                '<span style="font-weight:800; font-size:1rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
+                '<div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">' + window.renderStudentMonsterAvatar(s.id, { size: 40, animated: true }) + '</div>' +
+                '<div>' +
+                  '<div style="font-weight:800; font-size:1rem;">' + s.firstName + ' ' + s.lastName + '</div>' +
+                  '<div style="font-size:0.75rem; font-weight:700; color:var(--color-primary);">' + mState.stageName + ' · Lvl ' + mState.currentLevel + '</div>' +
+                '</div>' +
               '</div>' +
               '<span style="font-weight:900; color:#b45309; font-size:1rem;">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
-            '</div>'
-          ).join('') +
+            '</div>';
+          }).join('') +
         '</div>' +
       '</div>';
   }
@@ -6293,7 +6576,7 @@ window.switchClassroomSubTab = function(subTab) {
     const s = store.getStudent(studentId);
     if (!s) return;
 
-    store.giveXP(studentId, 1, 'Positive Classroom Contribution', 'Teacher', {
+    const res = store.giveXP(studentId, 1, 'Positive Classroom Contribution', 'Teacher', {
       category: 'positive',
       icon: '⭐'
     });
@@ -6306,6 +6589,15 @@ window.switchClassroomSubTab = function(subTab) {
       burst.innerText = '+1 XP ⭐';
       card.appendChild(burst);
       setTimeout(() => burst.remove(), 1200);
+    }
+
+    // Check if +1 caused evolution/hatching
+    if (res && res.evolutionEvent) {
+      if (res.evolutionEvent.isHatch) {
+        window.openMonsterHatchModal(studentId);
+      } else {
+        window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+      }
     }
 
     renderCurrentView();
@@ -6395,20 +6687,33 @@ window.switchClassroomSubTab = function(subTab) {
     const fullReason = customNote ? (skill.name + ' (' + customNote + ')') : skill.name;
 
     const targets = currentXPAwardTarget.studentIds || [];
+    let firstEvolutionEvent = null;
+
     targets.forEach(sId => {
-      store.giveXP(sId, skill.points, fullReason, 'Teacher', {
+      const res = store.giveXP(sId, skill.points, fullReason, 'Teacher', {
         skillId: skill.id,
         icon: skill.icon,
         category: skill.category
       });
+      if (res && res.evolutionEvent && !firstEvolutionEvent) {
+        firstEvolutionEvent = res.evolutionEvent;
+      }
     });
 
     if (customNoteInput) customNoteInput.value = '';
     window.closeModal('modal-give-xp-skills');
     showNotification('⭐ Awarded ' + (skill.points > 0 ? '+' : '') + skill.points + ' XP for "' + skill.name + '" to ' + targets.length + ' learner(s)!');
 
+    if (firstEvolutionEvent) {
+      if (firstEvolutionEvent.isHatch) {
+        window.openMonsterHatchModal(firstEvolutionEvent.studentId);
+      } else {
+        window.openMonsterLevelUpModal(firstEvolutionEvent.studentId, firstEvolutionEvent.prevLevel, firstEvolutionEvent.newLevel);
+      }
+    }
+
     renderCurrentView();
-    if (document.getElementById('modal-student-profile')?.classList.contains('is-active') && currentProfileStudentId) {
+    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId) {
       window.openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
     }
   };
@@ -6562,6 +6867,14 @@ window.switchClassroomSubTab = function(subTab) {
   // -------------------------------------------------------------------------
 
   window.openAvatarSelector = function(studentId) {
+    if (studentId) {
+      if (typeof window.closeAllModals === 'function') window.closeAllModals();
+      window.openStudentDetail(studentId, 'monster');
+      if (typeof window.showNotification === 'function') {
+        window.showNotification("Opened Monster Companion Closet! Customizing student avatar edits their living monster companion.");
+      }
+      return;
+    }
     avatarSelectorStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
@@ -6853,7 +7166,7 @@ window.switchClassroomSubTab = function(subTab) {
     const interval = setInterval(() => {
       const rand = students[Math.floor(Math.random() * students.length)];
       spotlight.innerHTML = 
-        '<div style="font-size:64px; animation:bounce 0.15s ease;">' + getStudentAvatarEmoji(rand.avatar) + '</div>' +
+        '<div style="width:72px; height:72px; margin:0 auto; animation:bounce 0.15s ease;">' + window.renderStudentMonsterAvatar(rand.id, { size: 72, animated: false }) + '</div>' +
         '<h2 style="font-size:1.6rem; font-weight:900; color:var(--text-main); margin-top:6px;">' + rand.firstName.toUpperCase() + '</h2>' +
         '<p style="font-size:0.84rem; color:var(--text-muted);">' + rand.grade + '</p>';
       shuffles++;
@@ -6861,9 +7174,12 @@ window.switchClassroomSubTab = function(subTab) {
       if (shuffles >= maxShuffles) {
         clearInterval(interval);
         const finalWinner = students[Math.floor(Math.random() * students.length)];
+        const mState = store.calculateMonsterState(finalWinner.id);
         spotlight.innerHTML = 
-          '<div style="font-size:74px; animation:pulse 0.4s ease;">' + getStudentAvatarEmoji(finalWinner.avatar) + '</div>' +
+          '<div style="width:110px; height:110px; margin:0 auto 10px auto; animation:pulse 0.4s ease;">' + window.renderStudentMonsterAvatar(finalWinner.id, { size: 110, animated: true }) + '</div>' +
           '<h1 style="font-size:2rem; font-weight:900; color:var(--color-primary); margin-top:8px;">' + finalWinner.firstName.toUpperCase() + ' ' + finalWinner.lastName.toUpperCase() + '</h1>' +
+          '<div style="font-size:1rem; font-weight:800; color:var(--color-primary); margin-top:4px;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
+          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">⭐ ' + store.getStudentTotalXP(finalWinner.id) + ' XP</div>' +
           '<div style="margin-top:14px; display:flex; gap:8px; justify-content:center;">' +
             '<button class="btn-primary-action" onclick="handleQuickPlusOneXP(\'' + finalWinner.id + '\'); runRandomStudentPicker();">⭐ Award +1 XP & Next</button>' +
             '<button class="btn-sm-secondary" onclick="openStudentDetail(\'' + finalWinner.id + '\')">View Profile</button>' +
@@ -8067,5 +8383,11 @@ window.switchClassroomSubTab = function(subTab) {
     window.openModal('modal-evolution-path');
   };
 
+  // Expose key view renderers to window
+  window.renderStudentsView = renderStudentsView;
+  window.renderClassroomStudentsGrid = renderClassroomStudentsGrid;
+  window.renderClassroomGroupsGrid = renderClassroomGroupsGrid;
+  window.renderLeaderboardView = renderLeaderboardView;
+  window.renderToolkitRandomView = renderToolkitRandomView;
 
   })(typeof window !== 'undefined' ? window : global);
