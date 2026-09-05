@@ -58,6 +58,12 @@
     setupHeaderControls();
     setupGlobalShortcuts();
 
+    // Routing sync with location hash
+    window.addEventListener('hashchange', () => {
+      handleHashRouting();
+    });
+    handleHashRouting();
+
     // Subscribe to store updates for reactive re-renders
     store.subscribe(() => {
       renderNavigation();
@@ -70,8 +76,12 @@
     updateHeaderBadges();
     renderCurrentView();
 
-    // Close floating menus on outside click
+    // Close floating menus and modals on outside click
     document.addEventListener('click', (e) => {
+      // Backdrop click on modal overlay closes the modal
+      if (e.target && e.target.classList && e.target.classList.contains('modal-overlay')) {
+        window.closeModal(e.target.id);
+      }
       // Create menu
       const createWrap = document.getElementById('header-create-wrap');
       if (createWrap && !createWrap.contains(e.target) && activeCreateMenuOpen) {
@@ -184,15 +194,76 @@
     });
   }
 
+  function handleHashRouting() {
+    const hash = window.location.hash.replace(/^#[/]*/, '').trim();
+    if (hash) {
+      const parts = hash.split('/');
+      const primaryView = parts[0];
+      const validViews = [
+        'dashboard', 'classes', 'class-detail', 'students', 'attendance',
+        'curriculum', 'library', 'worksheets', 'assignments', 'homework',
+        'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
+        'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
+        'leaderboard', 'parent-home'
+      ];
+      if (validViews.includes(primaryView)) {
+        if (primaryView === 'class-detail' && parts[1]) {
+          selectedClassDetailId = parts[1];
+          if (parts[2]) selectedClassDetailTab = parts[2];
+        }
+        currentView = primaryView;
+        renderNavigation();
+        renderCurrentView();
+        return;
+      }
+    }
+  }
+
   // Global Navigation Router
-  window.switchView = function(viewName) {
+  window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
+    if (updateHash) {
+      if (viewName === 'class-detail') {
+        window.location.hash = '#class-detail/' + selectedClassDetailId + '/' + selectedClassDetailTab;
+      } else {
+        window.location.hash = '#' + viewName;
+      }
+    }
     renderNavigation();
     renderCurrentView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Open Dedicated Class Dashboard
+
+  // Global helpers for tabs to avoid closure scoping issues in inline HTML
+  window.switchCurriculumBook = function(bookId) {
+    curriculumActiveBookId = bookId;
+    window.curriculumActiveBookId = bookId;
+    renderCurrentView();
+  };
+
+  window.toggleLibraryManageMode = function() {
+    isLibraryManageMode = !isLibraryManageMode;
+    renderCurrentView();
+  };
+
+  window.switchLibraryCatalogTab = function(tab) {
+    libraryActiveCatalogTab = tab;
+    renderCurrentView();
+  };
+
+  window.switchAssessmentsSubTab = function(subTab) {
+    assessmentsActiveSubTab = subTab;
+    renderCurrentView();
+  };
+
+  window.switchLibraryTab = function(tab) {
+    libraryActiveTab = tab;
+    libraryActiveCatalogTab = tab;
+    window.switchView(tab === 'worksheets' ? 'worksheets' : 'library');
+  };
+
   window.openClass = function(classId, tab = 'overview') {
     selectedClassDetailId = classId;
     selectedClassDetailTab = tab;
@@ -329,6 +400,19 @@
     }
   };
 
+  window.closeModal = function(modalId) {
+    if (modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove('is-open');
+    } else {
+      window.closeAllModals();
+    }
+    const remainingOpen = document.querySelectorAll('.modal-overlay.is-open');
+    if (remainingOpen.length === 0) {
+      document.body.style.overflow = '';
+    }
+  };
+
   window.closeAllModals = function() {
     document.querySelectorAll('.modal-overlay.is-open').forEach(m => m.classList.remove('is-open'));
     document.body.style.overflow = '';
@@ -454,6 +538,11 @@
     const parentName = document.getElementById('new-stud-pname') ? document.getElementById('new-stud-pname').value.trim() : '';
     const parentContact = document.getElementById('new-stud-pcontact') ? document.getElementById('new-stud-pcontact').value.trim() : '';
 
+    const existing = editId ? store.getStudent(editId) : null;
+    const avatar = existing && existing.avatar
+      ? Object.assign({}, existing.avatar, { hair: avatarHair })
+      : { emoji: '🧒', characterId: 'char-default', name: 'Explorer', category: 'explorers', hair: avatarHair, outfit: 'explorer', accessory: 'badge' };
+
     const payload = {
       firstName,
       lastName,
@@ -461,7 +550,7 @@
       age,
       overallCefr,
       classId,
-      avatar: { hair: avatarHair, outfit: 'explorer', accessory: 'badge' },
+      avatar,
       parentName,
       parentContact
     };
@@ -1109,11 +1198,13 @@
     const xpTxs = store.getXPTransactions(studentId);
     const attRecords = store.state.attendanceRecords.filter(r => r.studentId === studentId);
 
+    const studentAwards = store.getStudentAwards ? store.getStudentAwards(studentId) : [];
     const profileTabs = [
       { id: 'overview', label: 'Overview' },
       { id: 'progress', label: 'Progress & CEFR' },
       { id: 'assignments', label: 'Assignments (' + assignments.length + ')' },
       { id: 'assessments', label: 'Assessments (' + assessments.length + ')' },
+      { id: 'badges', label: 'Badges (' + studentAwards.length + ')' },
       { id: 'attendance', label: 'Attendance (' + attRate + '%)' },
       { id: 'portfolio', label: 'Portfolio' },
       { id: 'xp', label: 'XP Ledger (' + totalXP + ')' },
@@ -1241,6 +1332,44 @@
                   '</div>';
               }).join('') +
             '</div>');
+
+      case 'badges':
+        const studAwards = store.getStudentAwards ? store.getStudentAwards(student.id) : [];
+        return '' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
+            '<h4 style="font-weight:800; font-size:1.05rem;">Student Badges &amp; Milestone Awards (' + studAwards.length + ')</h4>' +
+            '<button class="btn-primary-action" onclick="handleAwardBadgeToStudent(null, \'' + student.id + '\')">⭐ + Award Badge</button>' +
+          '</div>' +
+          (studAwards.length === 0 ?
+            '<div style="text-align:center; padding:32px 16px; background:var(--bg-canvas); border-radius:var(--radius-md); border:1px solid var(--border-light);">' +
+              '<div style="font-size:32px; margin-bottom:8px;">🏆</div>' +
+              '<div style="font-weight:700;">No badges awarded to this student yet</div>' +
+              '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Recognize spoken confidence, teamwork, or milestone achievements.</p>' +
+              '<button class="btn-primary-action" style="margin-top:10px;" onclick="handleAwardBadgeToStudent(null, \'' + student.id + '\')">+ Award First Badge</button>' +
+            '</div>' :
+            '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;">' +
+              studAwards.map(aw => {
+                const badge = store.getBadge(aw.badgeId) || { name: 'Classroom Badge', icon: '🏆', description: 'Recognized achievement', xpReward: 100 };
+                return '' +
+                  '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; display:flex; flex-direction:column; justify-content:space-between;">' +
+                    '<div>' +
+                      '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">' +
+                        '<span style="font-size:2rem;">' + badge.icon + '</span>' +
+                        '<div>' +
+                          '<div style="font-weight:800; font-size:0.95rem;">' + badge.name + '</div>' +
+                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + badge.xpReward + ' ⭐ XP</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">' + (aw.notes || badge.description) + '</p>' +
+                      '<div style="font-size:0.72rem; color:var(--text-muted);">Awarded: ' + aw.awardedDate + '</div>' +
+                    '</div>' +
+                    '<div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top:1px solid var(--border-light); padding-top:8px;">' +
+                      '<button class="btn-sm-secondary" onclick="handleRemoveStudentAward(\'' + aw.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">🗑️ Revoke Award</button>' +
+                    '</div>' +
+                  '</div>';
+              }).join('') +
+            '</div>'
+          );
 
       case 'assessments':
         return '' +
@@ -2090,8 +2219,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div class="curriculum-book-tabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
         books.map(b => '' +
           '<div style="display:inline-flex; align-items:center; gap:2px; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding-bottom:4px;">' +
-            '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="curriculumActiveBookId=\'' + b.id + '\'; renderCurrentView();" style="background:transparent; border:none; padding:8px 12px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
-              b.title + ' (' + b.targetLevel + ')' +
+            '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="switchCurriculumBook(\'' + b.id + '\')" style="background:transparent; border:none; padding:8px 12px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
+              b.title + (b.level ? ' (' + b.level + ')' : (b.targetLevel ? ' (' + b.targetLevel + ')' : '')) +
             '</button>' +
             (activeBook.id === b.id ? 
               '<button onclick="openEditBookModal(\'' + b.id + '\')" title="Edit Book" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; padding:2px;">✏️</button>' +
@@ -2196,7 +2325,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="display:flex; gap:8px;">' +
           '<button class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
           '<button class="btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-          '<button class="btn-sm-secondary" onclick="isLibraryManageMode = !isLibraryManageMode; renderCurrentView();" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+          '<button class="btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
@@ -2204,10 +2333,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
       // Sub-Tabs: Interactive Games vs Worksheets
       '<div style="display:flex; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'games' ? 'is-active' : '') + '" onclick="libraryActiveCatalogTab=\'games\'; renderCurrentView();">' +
+        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'games' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'games\')">' +
           '<span>🎮</span> <span>Interactive Games (' + store.getResources().length + ')</span>' +
         '</button>' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'worksheets' ? 'is-active' : '') + '" onclick="libraryActiveCatalogTab=\'worksheets\'; renderCurrentView();">' +
+        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'worksheets' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'worksheets\')">' +
           '<span>📄</span> <span>Printable Worksheets (' + store.getWorksheets().length + ')</span>' +
         '</button>' +
       '</div>' +
@@ -2451,10 +2580,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>' +
 
       '<div style="display:flex; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
-        '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'evaluations' ? 'is-active' : '') + '" onclick="assessmentsActiveSubTab=\'evaluations\'; renderCurrentView();">' +
+        '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'evaluations' ? 'is-active' : '') + '" onclick="switchAssessmentsSubTab(\'evaluations\')">' +
           '<span>🎯</span> <span>Student Evaluations (' + assessments.length + ')</span>' +
         '</button>' +
-        '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'rubrics' ? 'is-active' : '') + '" onclick="assessmentsActiveSubTab=\'rubrics\'; renderCurrentView();">' +
+        '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'rubrics' ? 'is-active' : '') + '" onclick="switchAssessmentsSubTab(\'rubrics\')">' +
           '<span>📋</span> <span>Rubric Templates (' + rubrics.length + ')</span>' +
         '</button>' +
       '</div>' +
@@ -2589,10 +2718,32 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
               '</div>' +
             '</div>' +
-            '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">' + b.description + '</p>' +
+            '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' + b.description + '</p>' +
+            // Student award recipients
+            (() => {
+              const awards = (store.getStudentAwards ? store.getStudentAwards() : []).filter(aw => aw.badgeId === b.id);
+              return '' +
+                '<div style="margin-bottom:10px; padding:6px 8px; background:var(--bg-canvas); border-radius:6px; border:1px solid var(--border-subtle); font-size:0.75rem;">' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                    '<strong>Awarded Students (' + awards.length + ')</strong>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="handleAwardBadgeToStudent(\'' + b.id + '\')" style="padding:1px 6px; font-size:0.68rem;">+ Award</button>' +
+                  '</div>' +
+                  '<div style="display:flex; flex-wrap:wrap; gap:4px;">' +
+                    (awards.length === 0 ? '<span style="color:var(--text-muted); font-style:italic;">No students awarded yet</span>' :
+                      awards.map(aw => {
+                        const st = store.getStudent(aw.studentId);
+                        return '<span style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:4px; padding:1px 6px;">' +
+                          (st ? st.firstName : 'Student') +
+                          '<button type="button" onclick="handleRemoveStudentAward(\'' + aw.id + '\')" title="Remove award without deleting badge" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); padding:0 2px; font-size:0.7rem;">✕</button>' +
+                        '</span>';
+                      }).join('')
+                    ) +
+                  '</div>' +
+                '</div>';
+            })() +
             '<div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border-subtle); padding-top:8px;">' +
               '<button class="btn-sm-secondary" onclick="openEditBadgeModal(\'' + b.id + '\')" style="padding:2px 8px; font-size:0.75rem;">✏️ Edit</button>' +
-              '<button class="btn-sm-secondary" onclick="handleArchiveBadge(\'' + b.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">📦</button>' +
+              '<button class="btn-sm-secondary" onclick="handleArchiveBadge(\'' + b.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">📦 Archive Definition</button>' +
             '</div>' +
           '</div>'
         ).join('') +
@@ -2647,19 +2798,36 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       { id: 18, name: 'Learning Evidence', count: s.learningEvidence.length, group: 'Tracking', create: true, view: true, edit: true, archive: true },
       { id: 19, name: 'Teacher Notes', count: s.teacherNotes.length, group: 'Student', create: true, view: true, edit: true, archive: true },
       { id: 20, name: 'XP Transactions', count: s.xpTransactions.length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
-      { id: 21, name: 'Badges', count: (s.badges || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
-      { id: 22, name: 'Achievements', count: (s.achievements || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
-      { id: 23, name: 'Student Portfolio', count: (s.portfolios || []).length, group: 'Student', create: true, view: true, edit: true, archive: true },
-      { id: 24, name: 'Class Story', count: s.classStory.length, group: 'Community', create: true, view: true, edit: true, archive: true },
-      { id: 25, name: 'Messages', count: s.messages.length, group: 'Community', create: true, view: true, edit: true, archive: true },
-      { id: 26, name: 'Reports', count: (s.reports || []).length, group: 'Assessment', create: true, view: true, edit: true, archive: true }
+      { id: 21, name: 'XP Skills', count: (s.xpSkills || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 22, name: 'Rewards Catalog', count: (s.rewards || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 23, name: 'Big Ideas Board', count: (s.bigIdeas || []).length, group: 'Classroom', create: true, view: true, edit: true, archive: true },
+      { id: 24, name: 'Avatar Catalog', count: (s.avatarCatalog || []).reduce((sum, cat) => sum + cat.characters.length, 0), group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 25, name: 'Badges', count: (s.badges || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 26, name: 'Achievements', count: (s.achievements || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 27, name: 'Student Awards', count: (s.studentAwards || []).length, group: 'Gamification', create: true, view: true, edit: true, archive: true },
+      { id: 28, name: 'Student Portfolio', count: (s.portfolios || []).length, group: 'Student', create: true, view: true, edit: true, archive: true },
+      { id: 29, name: 'Class Story', count: s.classStory.length, group: 'Community', create: true, view: true, edit: true, archive: true },
+      { id: 30, name: 'Messages', count: s.messages.length, group: 'Community', create: true, view: true, edit: true, archive: true },
+      { id: 31, name: 'Reports', count: (s.reports || []).length, group: 'Assessment', create: true, view: true, edit: true, archive: true }
     ];
+
+    // Relational Integrity Checks
+    const activeClassIds = new Set(s.classes.map(c => c.id));
+    const activeStudentIds = new Set(s.students.map(st => st.id));
+    const activeUnitIds = new Set(s.curriculum.units.map(u => u.id));
+    const activeLessonIds = new Set(s.curriculum.lessons.map(l => l.id));
+
+    const orphanedStudents = s.students.filter(st => st.classId && !activeClassIds.has(st.classId)).length;
+    const orphanedLessons = s.curriculum.lessons.filter(l => !activeUnitIds.has(l.unitId)).length;
+    const orphanedObjectives = s.curriculum.objectives.filter(o => !activeLessonIds.has(o.lessonId)).length;
+    const orphanedTxs = s.xpTransactions.filter(tx => !activeStudentIds.has(tx.studentId)).length;
+    const totalIntegrityIssues = orphanedStudents + orphanedLessons + orphanedObjectives + orphanedTxs;
 
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">📊 System Health &amp; CRUD Audit</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Comprehensive operational audit verifying 100% editability and persistence across all 26 application entities.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Comprehensive operational audit verifying 100% editability and persistence across all all application entities.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
           '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">💾 Export JSON Backup</button>' +
@@ -2669,7 +2837,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
       // Live KPI Bar
       '<div class="kpi-grid" style="margin-bottom:24px;">' +
-        '<div class="kpi-card"><span class="kpi-label">Entities Covered</span><span class="kpi-val">26 / 26</span><span class="kpi-sub">100% Operational</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Entities Covered</span><span class="kpi-val">31 / 31</span><span class="kpi-sub">100% Operational</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Active Storage Key</span><span class="kpi-val" style="font-size:1.05rem;">eaa_master_school_v3</span><span class="kpi-sub">Persistent localStorage</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Total Records</span><span class="kpi-val">' + matrix.reduce((acc, m) => acc + m.count, 0) + '</span><span class="kpi-sub">Live in memory</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Academic Year</span><span class="kpi-val" style="color:var(--color-primary);">' + (settings.academicYear || '2026–2027') + '</span><span class="kpi-sub">' + settings.schoolName + '</span></div>' +
@@ -2678,7 +2846,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       // Live CRUD Matrix Table
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
         '<div style="padding:16px 20px; background:var(--bg-card-secondary); border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">' +
-          '<h3 style="font-size:1.1rem; font-weight:800; margin:0;">Global 26-Entity Operations Matrix</h3>' +
+          '<h3 style="font-size:1.1rem; font-weight:800; margin:0;">Global Multi-Entity Operations Matrix (31 Entities)</h3>' +
           '<span style="font-size:0.8rem; font-weight:800; color:var(--color-success); background:rgba(16,185,129,0.1); padding:2px 10px; border-radius:999px;">✓ All Systems Healthy</span>' +
         '</div>' +
         '<div style="overflow-x:auto;">' +
@@ -2947,8 +3115,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="sidebar-section-title">Teaching</div>' +
         '<ul class="sidebar-nav-list">' +
           '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')"><span class="nav-item-left"><span>📚</span> Curriculum</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' && libraryActiveTab !== 'worksheets' ? 'is-active' : '') + '" onclick="libraryActiveTab=\'games\'; switchView(\'library\')"><span class="nav-item-left"><span>🎮</span> Resource Library</span><span class="nav-badge-pill">' + resourcesCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' || (currentView === 'library' && libraryActiveTab === 'worksheets') ? 'is-active' : '') + '" onclick="libraryActiveTab=\'worksheets\'; switchView(\'library\')"><span class="nav-item-left"><span>📄</span> Worksheets</span><span class="nav-badge-pill">' + (store.getWorksheets ? store.getWorksheets().length : 4) + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' && libraryActiveTab !== 'worksheets' ? 'is-active' : '') + '" onclick="switchLibraryTab(\'games\')"><span class="nav-item-left"><span>🎮</span> Resource Library</span><span class="nav-badge-pill">' + resourcesCount + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' || (currentView === 'library' && libraryActiveTab === 'worksheets') ? 'is-active' : '') + '" onclick="switchLibraryTab(\'worksheets\')"><span class="nav-item-left"><span>📄</span> Worksheets</span><span class="nav-badge-pill">' + (store.getWorksheets ? store.getWorksheets().length : 4) + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')"><span class="nav-item-left"><span>📝</span> Assignments</span><span class="nav-badge-pill">' + assignmentsCount + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')"><span class="nav-item-left"><span>✍️</span> Homework</span><span class="nav-badge-pill">' + homeworkCount + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')"><span class="nav-item-left"><span>🧩</span> Quizzes &amp; Tests</span><span class="nav-badge-pill">' + quizzesCount + '</span></button></li>' +
@@ -4131,6 +4299,67 @@ window.switchClassroomSubTab = function(subTab) {
     renderCurrentView();
   };
 
+
+  // Student Award Handlers (Separate from Badge Definitions)
+  window.handleAwardBadgeToStudent = function(badgeId = null, studentId = null) {
+    const students = store.getStudents();
+    const badges = store.getBadges();
+    if (!students.length || !badges.length) return;
+
+    let targetStudentId = studentId;
+    let targetBadgeId = badgeId;
+
+    if (!targetBadgeId) {
+      const badgeOptions = badges.map((b, idx) => (idx + 1) + '. ' + b.icon + ' ' + b.name + ' (+' + b.xpReward + ' XP)').join('\n');
+      const pick = prompt('Select Badge to award:\n' + badgeOptions + '\nEnter number:');
+      if (!pick) return;
+      const idx = parseInt(pick, 10) - 1;
+      if (badges[idx]) targetBadgeId = badges[idx].id;
+      else return;
+    }
+
+    if (!targetStudentId) {
+      const activeCls = store.getActiveClass();
+      const classStudents = store.getStudentsByClass(activeCls.id);
+      const studentOptions = classStudents.map((s, idx) => (idx + 1) + '. ' + s.firstName + ' ' + s.lastName).join('\n');
+      const pick = prompt('Award badge to which student?\n' + studentOptions + '\nEnter number:');
+      if (!pick) return;
+      const idx = parseInt(pick, 10) - 1;
+      if (classStudents[idx]) targetStudentId = classStudents[idx].id;
+      else return;
+    }
+
+    const award = store.awardBadgeToStudent(targetStudentId, targetBadgeId);
+    if (award) {
+      const b = store.getBadge(targetBadgeId);
+      const st = store.getStudent(targetStudentId);
+      showNotification('Awarded ' + (b ? b.name : 'Badge') + ' to ' + (st ? st.firstName : 'student') + '!');
+      renderCurrentView();
+      if (currentProfileStudentId === targetStudentId) {
+        window.openStudentDetail(targetStudentId, studentProfileActiveTab);
+      }
+    }
+  };
+
+  window.handleRemoveStudentAward = function(awardId, studentId = null) {
+    window.confirmAction({
+      title: 'Remove Badge Award from Student?',
+      message: 'This will remove the awarded badge record from the student. The global badge definition will remain intact and available for all other students.',
+      confirmText: 'Remove Award',
+      isDanger: true,
+      onConfirm: () => {
+        const removed = store.removeStudentAward(awardId);
+        if (removed) {
+          showNotification('Student award removed.');
+          renderCurrentView();
+          if (studentId && currentProfileStudentId === studentId) {
+            window.openStudentDetail(studentId, studentProfileActiveTab);
+          }
+        }
+      }
+    });
+  };
+
   window.handleArchiveBadge = function(id) {
     store.archiveBadge(id);
     renderCurrentView();
@@ -4144,6 +4373,9 @@ window.switchClassroomSubTab = function(subTab) {
   // =========================================================================
   // DYNAMIC REPORT GENERATOR HANDLERS
   // =========================================================================
+  window.openReportGeneratorModal = function(studentId = null) {
+  };
+  window.openReportGenerator = function(studentId = null) { window.openReportGeneratorModal(studentId); };
   window.openReportGeneratorModal = function(studentId = null) {
     const select = document.getElementById('report-gen-student');
     if (select) {

@@ -440,6 +440,7 @@
             id: 'book-1',
             title: 'English Explorer A1',
             level: 'A1',
+            targetLevel: 'A1',
             description: 'Foundational communicative English for young explorers aged 6–9.',
             archived: false
           },
@@ -447,6 +448,7 @@
             id: 'book-2',
             title: 'World Navigators A2',
             level: 'A2',
+            targetLevel: 'A2',
             description: 'Advanced communicative English featuring grammar dilemmas, past tenses, and science CLIL.',
             archived: false
           }
@@ -538,13 +540,25 @@
             gameRoute: 'restaurant/index.html',
             duration: 40,
             archived: false
+          },
+          {
+            id: 'lesson-5',
+            unitId: 'unit-5',
+            title: 'Giving Great Advice (Should & Shouldn\'t)',
+            order: 1,
+            objective: 'Students formulate recommendations with should and warnings with shouldn\'t.',
+            gameRoute: 'advice/index.html',
+            duration: 35,
+            archived: false
           }
         ],
         objectives: [
           { id: 'obj-1', lessonId: 'lesson-1', text: 'Identify and name 6 creature body parts', skill: 'Vocabulary', cefr: 'Pre-A1', archived: false },
           { id: 'obj-2', lessonId: 'lesson-1', text: 'Form sentences with "It has got..."', skill: 'Grammar', cefr: 'A1', archived: false },
           { id: 'obj-3', lessonId: 'lesson-2', text: 'State firefighter equipment functions', skill: 'Speaking', cefr: 'A1', archived: false },
-          { id: 'obj-4', lessonId: 'lesson-4', text: 'Order meals politely using "I would like"', skill: 'Speaking', cefr: 'A1', archived: false }
+          { id: 'obj-4', lessonId: 'lesson-4', text: 'Order meals politely using "I would like"', skill: 'Speaking', cefr: 'A1', archived: false },
+          { id: 'obj-5', lessonId: 'lesson-5', text: 'Form sentences using "You should..." and "You shouldn\'t..."', skill: 'Grammar', cefr: 'A2', archived: false },
+          { id: 'obj-6', lessonId: 'lesson-5', text: 'Give constructive advice for 4 daily dilemmas', skill: 'Speaking', cefr: 'A2', archived: false }
         ]
       },
 
@@ -1067,6 +1081,13 @@
             { id: 'deep_whale', name: 'Oceanic Whale', emoji: '🐳', description: 'Singing melodious phonics ballads across the deep blue' }
           ]
         }
+      ],
+
+      // 27. Student Awards (Independently tracked from badge definitions)
+      studentAwards: [
+        { id: 'award-1', studentId: 'student-emma', badgeId: 'badge-1', awardedDate: '2026-09-01', awardedBy: 'Ms. Sarah', notes: 'Reached 1,000 XP milestone with high enthusiasm', archived: false },
+        { id: 'award-2', studentId: 'student-emma', badgeId: 'badge-2', awardedDate: '2026-09-03', awardedBy: 'Ms. Sarah', notes: 'Great spoken performance during restaurant roleplay', archived: false },
+        { id: 'award-3', studentId: 'student-lucas', badgeId: 'badge-4', awardedDate: '2026-09-02', awardedBy: 'Ms. Sarah', notes: 'Excellent teamwork and helping group members', archived: false }
       ]
     };
   }
@@ -1101,6 +1122,39 @@
             if (!merged.rewards || !merged.rewards.length) merged.rewards = initial.rewards || [];
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
+            if (!merged.studentAwards) merged.studentAwards = initial.studentAwards || [];
+
+            // Ensure curriculum books have both level and targetLevel defined
+            if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
+              merged.curriculum.books.forEach(b => {
+                if (!b.targetLevel && b.level) b.targetLevel = b.level;
+                if (!b.level && b.targetLevel) b.level = b.targetLevel;
+              });
+            }
+
+            // Ensure unit-5 has its interactive lesson and objectives
+            if (merged.curriculum && Array.isArray(merged.curriculum.lessons)) {
+              if (!merged.curriculum.lessons.some(l => l.unitId === 'unit-5')) {
+                merged.curriculum.lessons.push({
+                  id: 'lesson-5',
+                  unitId: 'unit-5',
+                  title: 'Giving Great Advice (Should & Shouldn\'t)',
+                  order: 1,
+                  objective: 'Students formulate recommendations with should and warnings with shouldn\'t.',
+                  gameRoute: 'advice/index.html',
+                  duration: 35,
+                  archived: false
+                });
+              }
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.objectives)) {
+              if (!merged.curriculum.objectives.some(o => o.id === 'obj-5')) {
+                merged.curriculum.objectives.push(
+                  { id: 'obj-5', lessonId: 'lesson-5', text: 'Form sentences using "You should..." and "You shouldn\'t..."', skill: 'Grammar', cefr: 'A2', archived: false },
+                  { id: 'obj-6', lessonId: 'lesson-5', text: 'Give constructive advice for 4 daily dilemmas', skill: 'Speaking', cefr: 'A2', archived: false }
+                );
+              }
+            }
 
             // Normalize existing transactions: ensure status, category, icon, and timestamp
             if (Array.isArray(merged.xpTransactions)) {
@@ -1629,7 +1683,8 @@
       const book = {
         id: 'book-' + Date.now(),
         title: data.title || 'New Curriculum Book',
-        level: data.level || 'A1',
+        level: data.level || data.targetLevel || 'A1',
+        targetLevel: data.targetLevel || data.level || 'A1',
         description: data.description || '',
         archived: false
       };
@@ -1641,6 +1696,8 @@
     updateBook(id, data) {
       const b = this.state.curriculum.books.find(book => book.id === id);
       if (b) {
+        if (data.targetLevel && !data.level) data.level = data.targetLevel;
+        if (data.level && !data.targetLevel) data.targetLevel = data.level;
         Object.assign(b, data);
         this.saveState();
         return b;
@@ -3592,6 +3649,64 @@
       const group = this.getGroup(groupId);
       if (!group || !Array.isArray(group.studentIds)) return 0;
       return group.studentIds.reduce((total, sId) => total + this.getStudentTotalXP(sId), 0);
+    }
+
+    // =========================================================================
+    // STUDENT AWARDS (SEPARATE FROM BADGE DEFINITIONS)
+    // =========================================================================
+    getStudentAwards(studentId = null, includeArchived = false) {
+      if (!this.state.studentAwards) this.state.studentAwards = [];
+      return this.state.studentAwards.filter(a => {
+        const matchStudent = !studentId || a.studentId === studentId;
+        const matchArchived = includeArchived || !a.archived;
+        return matchStudent && matchArchived;
+      });
+    }
+
+    awardBadgeToStudent(studentId, badgeId, notes = '') {
+      if (!this.state.studentAwards) this.state.studentAwards = [];
+      const badge = this.getBadge(badgeId);
+      if (!badge) return null;
+
+      const award = {
+        id: 'saward-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId,
+        badgeId,
+        awardedDate: new Date().toISOString().split('T')[0],
+        awardedBy: 'Ms. Sarah',
+        notes: notes || ('Awarded: ' + badge.name),
+        archived: false
+      };
+
+      this.state.studentAwards.push(award);
+
+      // Award XP transaction associated with badge
+      if (badge.xpReward) {
+        this.giveXP(
+          studentId,
+          badge.xpReward,
+          'Badge Award: ' + badge.name,
+          'positive',
+          badge.id,
+          badge.icon || '🏆'
+        );
+      }
+
+      this.saveState();
+      this.notify('studentAwards', this.state.studentAwards);
+      return award;
+    }
+
+    removeStudentAward(awardId) {
+      if (!this.state.studentAwards) return false;
+      const idx = this.state.studentAwards.findIndex(a => a.id === awardId);
+      if (idx !== -1) {
+        this.state.studentAwards.splice(idx, 1);
+        this.saveState();
+        this.notify('studentAwards', this.state.studentAwards);
+        return true;
+      }
+      return false;
     }
   }
 
