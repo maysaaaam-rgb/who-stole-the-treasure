@@ -320,34 +320,12 @@
 
   // Switch tab in Class Dashboard
   
-  // Helper: map avatar hair, characterId, & emoji to character visual
+  // Deprecated helper: fallback icon (All views now use window.renderMonsterAvatar)
   function getStudentAvatarEmoji(avatar) {
-    if (!avatar) return '👧';
-    if (typeof avatar === 'string') return avatar;
-    if (avatar.emoji) return avatar.emoji;
-    if (avatar.characterId) {
-      const charMap = {
-        'dragon_emerald': '🐲', 'dragon_fire': '🐉', 'phoenix': '🦅', 'unicorn': '🦄', 'wizard': '🧙', 'knight': '🛡️',
-        'astronaut': '🧑‍🚀', 'space_cadet': '👩‍🚀', 'alien_scout': '👽', 'cosmic_rover': '🛸', 'star_voyager': '⭐', 'rocket_pilot': '🚀',
-        'cyber_bot': '🤖', 'mecha_owl': '🦉', 'pixel_cat': '🐱', 'steam_gadget': '⚙️', 'circuit_spark': '⚡',
-        'clever_fox': '🦊', 'panda_zen': '🐼', 'tiger_brave': '🐯', 'wise_owl': '🦉', 'koala_climber': '🐨', 'safari_lion': '🦁',
-        'zorgon_puff': '👾', 'chomper_green': '🦖', 'fluffy_yeti': '🐻', 'blobby_sun': '🌞', 'sparkle_beast': '✨',
-        'ocean_squid': '🦑', 'dolphin_blue': '🐬', 'coral_turtle': '🐢', 'starfish_gleam': '⭐', 'deep_whale': '🐳'
-      };
-      if (charMap[avatar.characterId]) return charMap[avatar.characterId];
+    if (avatar && avatar.studentId && typeof window.renderMonsterAvatar === 'function') {
+      return window.renderMonsterAvatar(avatar.studentId, { size: 28 });
     }
-    const hair = avatar.hair || 'girl';
-    switch (hair) {
-      case 'boy': return '👦';
-      case 'star': return '🦸';
-      case 'bear': return '🐼';
-      case 'fox': return '🦊';
-      case 'rocket': return '🚀';
-      case 'scout': return '🧒';
-      case 'lion': return '🦁';
-      case 'dolphin': return '🐬';
-      default: return '👧';
-    }
+    return '👾';
   }
 
   // Helper: compute average mastery percentage across all 7 language skills
@@ -355,37 +333,44 @@
   // =========================================================================
   // CANONICAL STUDENT MONSTER AVATAR RENDERER
   // =========================================================================
-  window.renderStudentMonsterAvatar = function(studentId, options = {}) {
-    if (!studentId) return '🥚';
+  window.renderMonsterAvatar = function(studentOrId, options = {}) {
     const size = options.size || 54;
     const animated = options.animated !== false;
+    let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
 
     if (!window.MonsterRenderer || typeof window.MonsterRenderer.renderMonsterSVG !== 'function') {
       return '👾';
     }
 
     try {
-      const monsterState = store.calculateMonsterState(studentId);
-      const profile = store.getMonsterProfile(studentId);
-      if (!monsterState || !profile) return '🥚';
+      if (!studentId) {
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+      }
+      const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
+      const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
+
+      if (!profile || !monsterState) {
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+      }
 
       return window.MonsterRenderer.renderMonsterSVG({
-        stage: monsterState.stageKey,
+        stage: monsterState.stageKey || 'baby',
         color: profile.baseColor || 'blue',
         equipped: profile.equipped || {},
         size: size,
         animated: animated
       });
     } catch (err) {
-      console.warn('Error rendering monster for student ' + studentId, err);
+      console.warn('Error in renderMonsterAvatar for ' + studentId, err);
       return '👾';
     }
   };
+  window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
 
-  // Redirect old avatar selector to Monster Customization
+  // Canonical entry point for Monster Creator
   window.openAvatarSelector = function(studentId) {
     if (!studentId) return;
-    window.openStudentDetail(studentId, 'monster');
+    window.openMonsterCreator(studentId);
   };
 
   function calculateStudentProgressPct(studentId) {
@@ -1312,9 +1297,9 @@
           return '' +
             '<div class="student-profile-monster-hero" style="display:flex; gap:20px; align-items:center; background:linear-gradient(135deg, var(--bg-surface), var(--bg-card)); border:1px solid var(--border-light); border-radius:18px; padding:20px; margin-bottom:18px; box-shadow:var(--shadow-sm); flex-wrap:wrap;">' +
               // Monster Stage Box
-              '<div style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; background:var(--bg-canvas); border-radius:16px; border:2px solid var(--border-light); cursor:pointer; position:relative;" onclick="switchStudentProfileTab(\'monster\')" title="Click to open Monster Customization">' +
+              '<div style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; background:var(--bg-canvas); border-radius:16px; border:2px solid var(--border-light); cursor:pointer; position:relative;" onclick="openMonsterCreator(\'' + student.id + '\')" title="Click to open Monster Creator">' +
                 monsterSvg +
-                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">🎨 Closet</span>' +
+                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">🎨 Creator</span>' +
               '</div>' +
 
               // Details & Controls
@@ -1332,7 +1317,7 @@
 
                   // Top Action Buttons
                   '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                    '<button type="button" class="btn-primary-action" onclick="switchStudentProfileTab(\'monster\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
+                    '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">✏️ Edit</button>' +
@@ -1900,7 +1885,7 @@
                     '<span class="student-card-streak-pill" title="Daily streak">🔥 ' + streak + 'd</span>' +
                   '</div>' +
 
-                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openStudentDetail(\'' + s.id + '\', \'monster\')" title="Click to customize monster">' +
+                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
                     monsterSvg +
                     '<div class="avatar-customize-pill">🎨 Customize</div>' +
                   '</div>' +
@@ -2174,7 +2159,7 @@
       const formattedXP = totalXP.toLocaleString();
       const progressPct = calculateStudentProgressPct(s.id);
       const status = determineStudentStatus(s.id, cls.id);
-      const avatarEmoji = getStudentAvatarEmoji(s.avatar);
+      // avatarEmoji deprecated
       const monsterState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : null;
       const monsterSvg = (window.renderMonsterSVG && monsterState) ? window.renderMonsterSVG({
         stage: monsterState.stageKey,
@@ -2197,7 +2182,7 @@
           '<div class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></div>' +
 
           // Avatar Frame (Clickable to change character avatar)
-          '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openStudentDetail(\'' + s.id + '\', \'monster\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+          '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
             window.renderStudentMonsterAvatar(s.id, { size: 66, animated: true }) +
           '</div>' +
 
@@ -2381,7 +2366,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             return '' +
               '<div style="background:var(--bg-card-secondary); border:1px solid var(--border-subtle); border-radius:12px; padding:14px; cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\', \'progress\')">' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                  '<div style="font-weight:800; font-size:0.95rem;">' + getStudentAvatarEmoji(s.avatar) + ' ' + s.firstName + ' ' + s.lastName + '</div>' +
+                  '<div style="font-weight:800; font-size:0.95rem; display:flex; align-items:center; gap:8px;">' + window.renderMonsterAvatar(s.id, { size: 28, animated: false }) + ' <span>' + s.firstName + ' ' + s.lastName + '</span></div>' +
                   '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + ' (' + avg + '%)</span>' +
                 '</div>' +
                 '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.78rem;">' +
@@ -2471,7 +2456,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             return '' +
               '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-card-secondary); border-radius:10px;">' +
                 '<div style="display:flex; align-items:center; gap:10px;">' +
-                  '<span style="font-size:1.3rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+                  '<div style="width:34px; height:34px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 32, animated: false }) + '</div>' +
                   '<span style="font-weight:700; font-size:0.92rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
                 '</div>' +
                 '<div style="display:flex; align-items:center; gap:12px;">' +
@@ -3176,7 +3161,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         return '' +
           '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
             '<div style="display:flex; align-items:center; gap:10px; min-width:160px;">' +
-              '<span style="font-size:1.8rem;">' + getStudentAvatarEmoji(st.avatar) + '</span>' +
+              '<div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(st.id, { size: 38, animated: false }) + '</div>' +
               '<div>' +
                 '<div style="font-weight:800; font-size:0.95rem;">' + st.firstName + ' ' + st.lastName + '</div>' +
                 '<div style="font-size:0.75rem; color:var(--text-muted);">CEFR ' + (st.overallCefr || 'A1') + '</div>' +
@@ -3297,7 +3282,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         return '' +
           '<tr style="border-bottom:1px solid var(--border-subtle);">' +
             '<td style="padding:10px 12px; font-weight:800; display:flex; align-items:center; gap:8px;">' +
-              '<span>' + getStudentAvatarEmoji(st.avatar) + '</span>' +
+              '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(st.id, { size: 24, animated: false }) + '</span>' +
               '<span>' + st.firstName + ' ' + st.lastName + '</span>' +
             '</td>' +
             '<td style="padding:10px 12px; text-align:center;">' + (sub.attempted || 0) + '</td>' +
@@ -3960,7 +3945,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           return '' +
             '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px; box-shadow:var(--shadow-sm); cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\', \'portfolio\')">' +
               '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' +
-                '<span style="font-size:1.8rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+                '<div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 38, animated: true }) + '</div>' +
                 '<div>' +
                   '<div style="font-weight:800; font-size:1.05rem;">' + s.firstName + ' ' + s.lastName + '</div>' +
                   '<div style="font-size:0.78rem; color:var(--text-muted);">' + items.length + ' Portfolio Artifacts</div>' +
@@ -3979,7 +3964,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const s = store.getActiveStudent();
     container.innerHTML = 
       '<div style="padding:20px; text-align:center;">' +
-        '<div style="font-size:64px; margin-bottom:12px;">' + getStudentAvatarEmoji(s.avatar) + '</div>' +
+        '<div style="width:120px; height:120px; margin:0 auto 12px auto; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 110, animated: true }) + '</div>' +
         '<h1 style="font-size:1.8rem; font-weight:900;">Welcome, ' + s.firstName + '!</h1>' +
         '<p style="color:var(--text-muted); font-size:0.95rem;">You have ⭐ ' + store.getStudentTotalXP(s.id) + ' XP · ' + (s.overallCefr || 'A1') + ' Explorer</p>' +
         '<div style="display:flex; justify-content:center; gap:12px; margin-top:20px;">' +
@@ -4244,7 +4229,7 @@ window.switchClassroomSubTab = function(subTab) {
     container.innerHTML = students.map(s => '' +
       '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; border-radius:6px; cursor:pointer; font-size:0.84rem;">' +
         '<input type="checkbox" name="quick-points-student" value="' + s.id + '" ' + (targetSet.size === 0 || targetSet.has(s.id) ? 'checked' : '') + ' />' +
-        '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+        '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
         '<strong>' + s.firstName + ' ' + s.lastName + '</strong>' +
         '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
       '</label>'
@@ -4332,7 +4317,7 @@ window.switchClassroomSubTab = function(subTab) {
         container.innerHTML = students.map(s => '' +
           '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; cursor:pointer;">' +
             '<input type="checkbox" name="group-student-member" value="' + s.id + '" ' + (memberSet.has(s.id) ? 'checked' : '') + ' />' +
-            '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
             '<span>' + s.firstName + ' ' + s.lastName + '</span>' +
           '</label>'
         ).join('');
@@ -4346,7 +4331,7 @@ window.switchClassroomSubTab = function(subTab) {
         container.innerHTML = students.map(s => '' +
           '<label style="display:flex; align-items:center; gap:8px; padding:4px 6px; cursor:pointer;">' +
             '<input type="checkbox" name="group-student-member" value="' + s.id + '" ' + (selectedStudentIds.has(s.id) ? 'checked' : '') + ' />' +
-            '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
             '<span>' + s.firstName + ' ' + s.lastName + '</span>' +
           '</label>'
         ).join('');
@@ -4406,7 +4391,7 @@ window.switchClassroomSubTab = function(subTab) {
     const name = document.getElementById('random-student-name');
     const meta = document.getElementById('random-student-meta');
     const rewardBtn = document.getElementById('btn-reward-random');
-    if (avatar) avatar.textContent = '🎲';
+    if (avatar) avatar.innerHTML = '<span style="font-size:48px;">🎲</span>';
     if (name) name.textContent = 'Ready to Pick!';
     if (meta) meta.textContent = 'Click Spin to select a random learner';
     if (rewardBtn) rewardBtn.style.display = 'none';
@@ -4442,7 +4427,7 @@ window.switchClassroomSubTab = function(subTab) {
     const emojis = ['👧', '👦', '🧒', '🦸', '🦊', '🐼', '🚀', '⭐'];
     const interval = setInterval(() => {
       const rnd = students[Math.floor(Math.random() * students.length)];
-      if (avatarEl) avatarEl.textContent = emojis[count % emojis.length];
+      if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(rnd.id, { size: 64, animated: false });
       if (nameEl) nameEl.textContent = rnd.firstName.toUpperCase();
       count++;
       if (count > 10) {
@@ -4453,8 +4438,8 @@ window.switchClassroomSubTab = function(subTab) {
           randomPickerExclusions.add(finalStudent.id);
         }
         if (avatarEl) {
-          avatarEl.textContent = getStudentAvatarEmoji(finalStudent.avatar);
-          avatarEl.style.transform = 'scale(1.2)';
+          avatarEl.innerHTML = window.renderMonsterAvatar(finalStudent.id, { size: 80, animated: true });
+          avatarEl.style.transform = 'scale(1.15)';
           setTimeout(() => { if (avatarEl) avatarEl.style.transform = 'scale(1)'; }, 300);
         }
         if (nameEl) nameEl.textContent = '🎉 ' + finalStudent.firstName.toUpperCase() + '!';
@@ -4593,7 +4578,7 @@ window.switchClassroomSubTab = function(subTab) {
       return '' +
         '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--bg-card-secondary); border-radius:10px;" data-att-student="' + s.id + '">' +
           '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<span style="font-size:1.3rem;">' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+            '<div style="width:34px; height:34px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 32, animated: false }) + '</div>' +
             '<span style="font-weight:700; font-size:0.92rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
           '</div>' +
           '<div class="classroom-view-toggle-pills" style="gap:2px;">' +
@@ -4676,7 +4661,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     select.innerHTML = students.map(s => '' +
       '<option value="' + s.id + '" ' + (studentId === s.id ? 'selected' : '') + '>' +
-        getStudentAvatarEmoji(s.avatar) + ' ' + s.firstName + ' ' + s.lastName + ' (' + (s.overallCefr || 'A1') + ')' +
+        '👾 ' + s.firstName + ' ' + s.lastName + ' (' + (s.overallCefr || 'A1') + ')' +
       '</option>'
     ).join('');
 
@@ -4715,7 +4700,7 @@ window.switchClassroomSubTab = function(subTab) {
     container.innerHTML = students.map(s => '' +
       '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:var(--bg-card); border-radius:8px; border:1px solid var(--border-subtle);">' +
         '<div style="display:flex; align-items:center; gap:8px;">' +
-          '<span>' + getStudentAvatarEmoji(s.avatar) + '</span>' +
+          '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
           '<span style="font-weight:700; font-size:0.86rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:6px;">' +
@@ -6415,7 +6400,7 @@ window.switchClassroomSubTab = function(subTab) {
       '<div class="classroom-students-grid">' +
         unenrolled.map(s => '' +
           '<div class="classroom-student-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
-            '<div class="student-avatar-frame">' + getStudentAvatarEmoji(s.avatar) + '</div>' +
+            '<div class="student-avatar-frame monster-avatar-box">' + window.renderMonsterAvatar(s.id, { size: 54, animated: true }) + '</div>' +
             '<div class="student-card-name">' + s.firstName.toUpperCase() + ' ' + s.lastName.toUpperCase() + '</div>' +
             '<div class="student-card-meta-row">' +
               '<span class="student-card-xp-badge">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
@@ -6460,8 +6445,8 @@ window.switchClassroomSubTab = function(subTab) {
             return '' +
               '<div style="display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:var(--radius-md); background:var(--bg-canvas); border:1px solid var(--border-light); cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\')">' +
                 '<span style="font-size:1.25rem; font-weight:900; width:36px; text-align:center;">' + medal + '</span>' +
-                '<div style="width:44px; height:44px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:24px;">' +
-                  getStudentAvatarEmoji(s.avatar) +
+                '<div style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; overflow:hidden;">' +
+                  window.renderMonsterAvatar(s.id, { size: 44, animated: true }) +
                 '</div>' +
                 '<div style="flex:1;">' +
                   '<div style="font-weight:800; font-size:0.96rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
@@ -6621,7 +6606,7 @@ window.switchClassroomSubTab = function(subTab) {
       const s = store.getStudent(targetId);
       if (targetTitleEl) targetTitleEl.innerText = 'Award ' + (s ? s.firstName + ' ' + s.lastName : 'Learner');
       if (targetSubEl) targetSubEl.innerText = 'Select a skill to award points · Current: ⭐ ' + (s ? store.getStudentTotalXP(s.id) : 0) + ' XP';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? getStudentAvatarEmoji(s.avatar) : '⭐';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? window.renderMonsterAvatar(s.id, { size: 54, animated: true }) : '⭐';
     } else if (targetType === 'group') {
       const g = store.getGroup(targetId);
       if (targetTitleEl) targetTitleEl.innerText = 'Award Team: ' + (g ? g.name : 'Group');
@@ -6863,130 +6848,234 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   // -------------------------------------------------------------------------
-  // 5. ORIGINAL ADVENTURE AVATAR SELECTOR CONTROLLER
+  // 5. CANONICAL MONSTER CREATOR & CUSTOMIZER CONTROLLER
   // -------------------------------------------------------------------------
 
-  window.openAvatarSelector = function(studentId) {
-    if (studentId) {
-      if (typeof window.closeAllModals === 'function') window.closeAllModals();
-      window.openStudentDetail(studentId, 'monster');
-      if (typeof window.showNotification === 'function') {
-        window.showNotification("Opened Monster Companion Closet! Customizing student avatar edits their living monster companion.");
-      }
-      return;
-    }
-    avatarSelectorStudentId = studentId;
+  let monsterCreatorStudentId = null;
+  let monsterCreatorActiveTab = 'monster'; // 'monster' | 'face' | 'features' | 'clothing' | 'world'
+  let monsterCreatorDraft = {
+    baseColor: 'blue',
+    equipped: {}
+  };
+
+  const MONSTER_CREATOR_TABS = [
+    { id: 'monster', label: 'Monster', icon: '👾', title: 'Body Color & Palette' },
+    { id: 'face', label: 'Face', icon: '👀', title: 'Eyes & Mouth Expressions' },
+    { id: 'features', label: 'Features', icon: '✨', title: 'Horns, Wings & Tail' },
+    { id: 'clothing', label: 'Clothing', icon: '🎩', title: 'Hats, Glasses, Backpacks & Gear' },
+    { id: 'world', label: 'World', icon: '🌍', title: 'Environment & Auras' }
+  ];
+
+  window.openMonsterCreator = function(studentId) {
+    if (!studentId) return;
+    monsterCreatorStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
 
-    const catalog = store.getAvatarCatalog ? store.getAvatarCatalog() : [];
-    if (!catalog.length) return;
+    const profile = store.getMonsterProfile(studentId);
 
-    avatarSelectedCategory = (student.avatar && student.avatar.category) || catalog[0].category;
-    
-    // Find current or default character
-    let foundChar = null;
-    catalog.forEach(cat => {
-      const match = cat.characters.find(c => c.id === (student.avatar && student.avatar.characterId));
-      if (match) {
-        foundChar = match;
-        avatarSelectedCategory = cat.category;
-      }
-    });
+    // Initialize draft from current profile
+    monsterCreatorDraft = {
+      baseColor: profile.baseColor || 'blue',
+      equipped: Object.assign({}, profile.equipped || {})
+    };
 
-    if (!foundChar && catalog[0] && catalog[0].characters.length) {
-      foundChar = catalog[0].characters[0];
-    }
-    avatarSelectedCharacter = foundChar;
+    monsterCreatorActiveTab = 'monster';
 
-    window.renderAvatarCategoriesNav();
-    window.renderAvatarCharactersGrid();
-    window.updateAvatarPreviewBox();
+    window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
     window.openModal('modal-avatar-selector');
   };
 
-  window.renderAvatarCategoriesNav = function() {
+  // Legacy alias
+  window.openAvatarSelector = function(studentId) {
+    window.openMonsterCreator(studentId);
+  };
+
+  window.renderMonsterCreatorNav = function() {
     const nav = document.getElementById('avatar-category-nav');
     if (!nav) return;
 
-    const catalog = store.getAvatarCatalog ? store.getAvatarCatalog() : [];
-    nav.innerHTML = catalog.map(cat => '' +
-      '<button type="button" class="classroom-nav-tab-btn ' + (avatarSelectedCategory === cat.category ? 'is-active' : '') + '" onclick="selectAvatarCategory(\'' + cat.category + '\')">' +
-        cat.icon + ' ' + cat.category +
+    nav.innerHTML = MONSTER_CREATOR_TABS.map(tab => '' +
+      '<button type="button" class="classroom-nav-tab-btn ' + (monsterCreatorActiveTab === tab.id ? 'is-active' : '') + '" onclick="selectMonsterCreatorCategory(\'' + tab.id + '\')">' +
+        tab.icon + ' ' + tab.label +
       '</button>'
     ).join('');
   };
 
-  window.selectAvatarCategory = function(catName) {
-    avatarSelectedCategory = catName;
-    window.renderAvatarCategoriesNav();
-    window.renderAvatarCharactersGrid();
+  window.selectMonsterCreatorCategory = function(tabId) {
+    monsterCreatorActiveTab = tabId;
+    window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorItems();
   };
 
-  window.renderAvatarCharactersGrid = function() {
+  window.renderMonsterCreatorItems = function() {
     const grid = document.getElementById('avatar-characters-grid');
+    const titleEl = document.getElementById('monster-creator-category-title');
     if (!grid) return;
 
-    const catalog = store.getAvatarCatalog ? store.getAvatarCatalog() : [];
-    const cat = catalog.find(c => c.category === avatarSelectedCategory) || catalog[0];
-    if (!cat) return;
+    const activeTabObj = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
+    if (titleEl) titleEl.textContent = activeTabObj.title;
 
-    grid.innerHTML = cat.characters.map(char => {
-      const isSelected = avatarSelectedCharacter && avatarSelectedCharacter.id === char.id;
+    const student = store.getStudent(monsterCreatorStudentId);
+    if (!student) return;
+    const mState = store.calculateMonsterState(monsterCreatorStudentId);
+    const unlockedSet = mState.unlockedItemIds || new Set();
+
+    let categoriesInTab = [];
+    if (monsterCreatorActiveTab === 'monster') categoriesInTab = ['body'];
+    else if (monsterCreatorActiveTab === 'face') categoriesInTab = ['eyes', 'mouth'];
+    else if (monsterCreatorActiveTab === 'features') categoriesInTab = ['horns', 'wings', 'tail'];
+    else if (monsterCreatorActiveTab === 'clothing') categoriesInTab = ['hat', 'glasses', 'backpack', 'accessory'];
+    else if (monsterCreatorActiveTab === 'world') categoriesInTab = ['background', 'aura'];
+
+    const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
+    const items = allItems.filter(item => categoriesInTab.includes(item.category));
+
+    // Optional none items for categories that can be unequipped
+    const noneOptions = [];
+    if (monsterCreatorActiveTab === 'features') {
+      noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', icon: '✕', isNone: true });
+    }
+    if (monsterCreatorActiveTab === 'clothing') {
+      noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', icon: '✕', isNone: true });
+      noneOptions.push({ id: 'glasses-none', category: 'glasses', name: 'No Glasses', icon: '✕', isNone: true });
+      noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', icon: '✕', isNone: true });
+      noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', icon: '✕', isNone: true });
+    }
+    if (monsterCreatorActiveTab === 'world') {
+      noneOptions.push({ id: 'aura-none', category: 'aura', name: 'No Aura', icon: '✕', isNone: true });
+    }
+
+    const fullList = [...noneOptions, ...items];
+
+    grid.innerHTML = fullList.map(item => {
+      const cat = item.category;
+      let isSelected = false;
+      if (item.isNone) {
+        isSelected = !monsterCreatorDraft.equipped[cat] || monsterCreatorDraft.equipped[cat] === 'none';
+      } else if (cat === 'body') {
+        isSelected = (monsterCreatorDraft.equipped.body === item.id) || (monsterCreatorDraft.baseColor === item.id.replace('body-', ''));
+      } else {
+        isSelected = (monsterCreatorDraft.equipped[cat] === item.id);
+      }
+
+      const isUnlocked = item.isNone || unlockedSet.has(item.id);
+      let lockText = '';
+      if (!isUnlocked) {
+        if (item.unlockType === 'level' && item.unlockRequirement) {
+          lockText = 'Level ' + item.unlockRequirement.level;
+        } else if (item.unlockType === 'achievement') {
+          lockText = 'Achievement';
+        } else {
+          lockText = 'Locked';
+        }
+      }
+
       return '' +
-        '<div class="avatar-char-card ' + (isSelected ? 'is-selected' : '') + '" onclick="selectAvatarCharacter(\'' + char.id + '\')" style="cursor:pointer; background:var(--bg-canvas); border:' + (isSelected ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:var(--radius-md); padding:12px 8px; text-align:center; transition:all 0.15s ease; box-shadow:' + (isSelected ? 'var(--shadow-md)' : 'none') + ';">' +
-          '<div style="font-size:40px; margin-bottom:4px;">' + char.emoji + '</div>' +
-          '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main);">' + char.name + '</div>' +
+        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" style="cursor:' + (isUnlocked ? 'pointer' : 'not-allowed') + '; background:var(--bg-canvas); border:' + (isSelected ? '2px solid var(--color-primary)' : isUnlocked ? '1.5px solid var(--border-light)' : '1.5px dashed #cbd5e1') + '; border-radius:var(--radius-md); padding:10px 8px; text-align:center; transition:all 0.15s ease; box-shadow:' + (isSelected ? 'var(--shadow-md)' : 'none') + '; position:relative; opacity:' + (isUnlocked ? '1' : '0.6') + ';">' +
+          (isUnlocked ? '' : '<span style="position:absolute; top:4px; right:4px; font-size:0.7rem; background:#fee2e2; color:#ef4444; border-radius:10px; padding:1px 5px; font-weight:800;">🔒 ' + lockText + '</span>') +
+          '<div style="font-size:32px; margin-bottom:4px;">' + (item.icon || '✨') + '</div>' +
+          '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); line-height:1.2;">' + item.name + '</div>' +
+          '<div style="font-size:0.7rem; color:var(--text-muted); text-transform:capitalize; margin-top:2px;">' + cat + '</div>' +
         '</div>';
     }).join('');
   };
 
-  window.selectAvatarCharacter = function(charId) {
-    const catalog = store.getAvatarCatalog ? store.getAvatarCatalog() : [];
-    let found = null;
-    catalog.forEach(cat => {
-      const c = cat.characters.find(item => item.id === charId);
-      if (c) found = c;
-    });
+  window.handleSelectMonsterItem = function(itemId, category, isNone) {
+    if (!monsterCreatorStudentId) return;
+    const mState = store.calculateMonsterState(monsterCreatorStudentId);
+    const unlockedSet = mState.unlockedItemIds || new Set();
 
-    if (found) {
-      avatarSelectedCharacter = found;
-      window.renderAvatarCharactersGrid();
-      window.updateAvatarPreviewBox();
+    if (!isNone && !unlockedSet.has(itemId)) {
+      const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
+      const it = allItems.find(i => i.id === itemId);
+      let reqMsg = 'this item';
+      if (it && it.unlockType === 'level' && it.unlockRequirement) {
+        reqMsg = 'Level ' + it.unlockRequirement.level;
+      } else if (it && it.unlockType === 'achievement') {
+        reqMsg = 'a special achievement';
+      }
+      showNotification('🔒 ' + (it ? it.name : 'Item') + ' is locked! Reach ' + reqMsg + ' to unlock.');
+      return;
+    }
+
+    if (isNone) {
+      monsterCreatorDraft.equipped[category] = 'none';
+    } else if (category === 'body') {
+      monsterCreatorDraft.equipped.body = itemId;
+      monsterCreatorDraft.baseColor = itemId.replace('body-', '');
+    } else {
+      monsterCreatorDraft.equipped[category] = itemId;
+    }
+
+    window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
+  };
+
+  window.updateMonsterCreatorPreview = function() {
+    if (!monsterCreatorStudentId) return;
+    const student = store.getStudent(monsterCreatorStudentId);
+    if (!student) return;
+    const mState = store.calculateMonsterState(monsterCreatorStudentId);
+    const profile = store.getMonsterProfile(monsterCreatorStudentId);
+
+    const box = document.getElementById('avatar-preview-box');
+    const nameEl = document.getElementById('avatar-preview-name');
+    const stageEl = document.getElementById('avatar-preview-category');
+    const descEl = document.getElementById('avatar-preview-desc');
+    const summaryEl = document.getElementById('monster-creator-equipped-summary');
+
+    if (box && window.MonsterRenderer) {
+      box.innerHTML = window.MonsterRenderer.renderMonsterSVG({
+        stage: mState.stageKey,
+        color: monsterCreatorDraft.baseColor,
+        equipped: monsterCreatorDraft.equipped,
+        size: 150,
+        animated: true
+      });
+    }
+
+    if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
+    if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
+    if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+
+    if (summaryEl) {
+      const eq = monsterCreatorDraft.equipped;
+      summaryEl.innerHTML = '' +
+        '<div><strong>Color:</strong> ' + monsterCreatorDraft.baseColor.toUpperCase() + '</div>' +
+        '<div><strong>Eyes:</strong> ' + (eq.eyes || 'eyes-sparkle') + ' · <strong>Mouth:</strong> ' + (eq.mouth || 'mouth-smile') + '</div>' +
+        '<div><strong>Wings:</strong> ' + (eq.wings && eq.wings !== 'none' ? eq.wings : 'None') + ' · <strong>Horns:</strong> ' + (eq.horns || 'horns-ears') + '</div>' +
+        '<div><strong>Gear:</strong> ' + (eq.hat && eq.hat !== 'none' ? eq.hat : 'None') + ', ' + (eq.glasses && eq.glasses !== 'none' ? eq.glasses : 'None') + '</div>' +
+        '<div><strong>World:</strong> ' + (eq.background || 'bg-meadow') + ' · <strong>Aura:</strong> ' + (eq.aura && eq.aura !== 'none' ? eq.aura : 'None') + '</div>';
     }
   };
 
-  window.updateAvatarPreviewBox = function() {
-    if (!avatarSelectedCharacter) return;
-    const box = document.getElementById('avatar-preview-box');
-    const name = document.getElementById('avatar-preview-name');
-    const cat = document.getElementById('avatar-preview-category');
-    const desc = document.getElementById('avatar-preview-desc');
+  window.handleConfirmSaveMonster = function() {
+    if (!monsterCreatorStudentId) return;
+    const student = store.getStudent(monsterCreatorStudentId);
+    if (!student) return;
 
-    if (box) box.innerText = avatarSelectedCharacter.emoji;
-    if (name) name.innerText = avatarSelectedCharacter.name;
-    if (cat) cat.innerText = avatarSelectedCategory;
-    if (desc) desc.innerText = avatarSelectedCharacter.description;
-  };
-
-  window.handleConfirmSaveAvatar = function() {
-    if (!avatarSelectorStudentId || !avatarSelectedCharacter) return;
-
-    store.updateStudentAvatar(avatarSelectorStudentId, {
-      characterId: avatarSelectedCharacter.id,
-      category: avatarSelectedCategory,
-      emoji: avatarSelectedCharacter.emoji,
-      label: avatarSelectedCharacter.name
+    store.updateMonsterProfile(monsterCreatorStudentId, {
+      baseColor: monsterCreatorDraft.baseColor,
+      equipped: monsterCreatorDraft.equipped
     });
 
-    showNotification('Adventure Character Avatar updated for ' + (store.getStudent(avatarSelectorStudentId)?.firstName || 'student') + '!');
+    showNotification('✓ Monster companion updated for ' + student.firstName + '!');
     window.closeModal('modal-avatar-selector');
 
     renderCurrentView();
-    if (currentProfileStudentId === avatarSelectorStudentId) {
-      window.openStudentDetail(avatarSelectorStudentId, studentProfileActiveTab);
+    if (currentProfileStudentId === monsterCreatorStudentId) {
+      window.openStudentDetail(monsterCreatorStudentId, studentProfileActiveTab || 'overview');
+    }
+
+    const monsterPreview = document.getElementById('edit-stud-monster-preview');
+    if (monsterPreview) {
+      monsterPreview.innerHTML = window.renderMonsterAvatar(monsterCreatorStudentId, { size: 44, animated: true });
     }
   };
+  window.handleConfirmSaveAvatar = window.handleConfirmSaveMonster;
 
   // -------------------------------------------------------------------------
   // 6. CLASSROOM TEACHER TOOLKIT CONTROLLER (ALL 8 TOOLS)
@@ -7250,7 +7339,7 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; border-top:4px solid ' + g.color + ';">' +
             '<div style="font-weight:800; font-size:0.92rem; color:var(--text-main); margin-bottom:8px;">' + g.name + ' (' + g.students.length + ')</div>' +
             '<div style="display:flex; flex-direction:column; gap:4px;">' +
-              g.students.map(m => '<div style="font-size:0.8rem; display:flex; align-items:center; gap:6px;">' + getStudentAvatarEmoji(m.avatar) + ' <span>' + m.firstName + ' ' + m.lastName + '</span></div>').join('') +
+              g.students.map(m => '<div style="font-size:0.8rem; display:flex; align-items:center; gap:6px;"><span style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(m.id, { size: 20, animated: false }) + '</span> <span>' + m.firstName + ' ' + m.lastName + '</span></div>').join('') +
             '</div>' +
           '</div>'
         ).join('') +

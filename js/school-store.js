@@ -996,13 +996,13 @@
     },
     'student-lucas': {
       studentId: 'student-lucas',
-      petName: 'Blaze',
-      baseColor: 'orange',
+      petName: 'Draco',
+      baseColor: 'purple',
       equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-happy',
+        body: 'body-purple',
+        eyes: 'eyes-sparkle',
         mouth: 'mouth-toothy',
-        horns: 'horns-nub',
+        horns: 'horns-curved',
         wings: 'wings-starter',
         tail: 'tail-perky',
         hat: 'none',
@@ -1012,7 +1012,7 @@
         aura: 'none',
         background: 'bg-meadow'
       },
-      unlockedItems: ['body-orange', 'glasses-round', 'horns-nub'],
+      unlockedItems: ['body-purple', 'glasses-round', 'horns-curved', 'wings-starter'],
       hatchDate: '2026-09-03T11:00:00Z',
       evolutionHistory: [
         { id: 'ev-l1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
@@ -1074,10 +1074,10 @@
     },
     'student-maya': {
       studentId: 'student-maya',
-      petName: 'Starlight',
-      baseColor: 'purple',
+      petName: 'Spark',
+      baseColor: 'orange',
       equipped: {
-        body: 'body-purple',
+        body: 'body-orange',
         eyes: 'eyes-sparkle',
         mouth: 'mouth-smile',
         horns: 'horns-ears',
@@ -1090,7 +1090,7 @@
         aura: 'none',
         background: 'bg-meadow'
       },
-      unlockedItems: ['body-purple'],
+      unlockedItems: ['body-orange'],
       hatchDate: '2026-09-03T15:00:00Z',
       evolutionHistory: [
         { id: 'ev-m1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Mystery Egg registered.' },
@@ -2028,51 +2028,69 @@
             if (!merged.monsterProfiles || typeof merged.monsterProfiles !== 'object') {
               merged.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));
             } else {
-              // Ensure default profiles merged for seed students
+              // Ensure default profiles merged or freshened for seed students
               for (const sId in DEFAULT_MONSTER_PROFILES) {
-                if (!merged.monsterProfiles[sId]) {
+                if (!merged.monsterProfiles[sId] || !merged.monsterProfiles[sId].equipped) {
                   merged.monsterProfiles[sId] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[sId]));
                 }
               }
             }
-            // Ensure every existing student in database has a valid MonsterProfile
+            // Ensure every existing student in database has a valid, synchronized MonsterProfile
             if (Array.isArray(merged.students)) {
               const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
-              merged.students.forEach(st => {
-                if (!merged.monsterProfiles[st.id]) {
-                  const colorIdx = st.id ? Math.abs(st.id.charCodeAt(st.id.length - 1)) % colors.length : 0;
-                  const assignedColor = colors[colorIdx] || 'blue';
-                  merged.monsterProfiles[st.id] = {
-                    studentId: st.id,
-                    petName: (st.firstName ? st.firstName + "'s Monster" : "My Monster"),
-                    baseColor: assignedColor,
-                    isHatched: false,
-                    equipped: {
-                      body: 'body-' + assignedColor,
-                      eyes: 'eyes-sparkle',
-                      mouth: 'mouth-smile',
-                      horns: 'horns-ears',
-                      wings: 'none',
-                      tail: 'tail-puff',
-                      hat: 'none',
-                      glasses: 'none',
-                      backpack: 'none',
-                      accessory: 'none',
-                      aura: 'none',
-                      background: 'bg-meadow'
-                    },
-                    unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
-                    evolutionHistory: [
-                      {
-                        id: 'ev-init-' + Date.now(),
-                        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                        type: 'egg',
-                        title: 'Mystery Egg Discovered',
-                        detail: 'Student entered Academy with a dormant Mystery Egg.'
-                      }
-                    ]
-                  };
+              merged.students.forEach((st, sIdx) => {
+                if (!merged.monsterProfiles[st.id] || !merged.monsterProfiles[st.id].equipped) {
+                  if (DEFAULT_MONSTER_PROFILES[st.id]) {
+                    merged.monsterProfiles[st.id] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[st.id]));
+                  } else {
+                    const colorIdx = st.id ? Math.abs(st.id.charCodeAt(st.id.length - 1)) % colors.length : (sIdx % colors.length);
+                    const assignedColor = colors[colorIdx] || 'blue';
+                    merged.monsterProfiles[st.id] = {
+                      studentId: st.id,
+                      petName: (st.firstName ? st.firstName + "'s Monster" : "My Monster"),
+                      baseColor: assignedColor,
+                      isHatched: false,
+                      equipped: {
+                        body: 'body-' + assignedColor,
+                        eyes: 'eyes-sparkle',
+                        mouth: 'mouth-smile',
+                        horns: 'horns-ears',
+                        wings: 'none',
+                        tail: 'tail-puff',
+                        hat: 'none',
+                        glasses: 'none',
+                        backpack: 'none',
+                        accessory: 'none',
+                        aura: 'none',
+                        background: 'bg-meadow'
+                      },
+                      unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
+                      evolutionHistory: [
+                        {
+                          id: 'ev-init-' + Date.now(),
+                          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                          type: 'egg',
+                          title: 'Mystery Egg Registered',
+                          detail: 'Student entered Academy with a dormant Mystery Egg.'
+                        }
+                      ]
+                    };
+                  }
                 }
+
+                // Calculate genuine XP and sync hatch status
+                const totalXP = (merged.xpTransactions || [])
+                  .filter(tx => tx.studentId === st.id && tx.status !== 'voided')
+                  .reduce((sum, tx) => sum + (parseInt(tx.amount, 10) || 0), 0);
+                if (totalXP >= 250) {
+                  merged.monsterProfiles[st.id].isHatched = true;
+                }
+
+                // Canonical link: student.monsterProfile is the single source of truth
+                st.monsterProfile = merged.monsterProfiles[st.id];
+
+                // Deprecate old legacy avatar field
+                delete st.avatar;
               });
             }
             if (merged.schoolSettings) {
@@ -2247,14 +2265,16 @@
     }
 
     // =========================================================================
-    // 1. STUDENT CRUD & COMPUTED METRICS
+    // 2. STUDENTS & ENROLLMENT (18 METHODS)
     // =========================================================================
     getStudents(classId = null, includeArchived = false) {
-      return this.state.students.filter(s => {
-        const matchClass = !classId || s.classId === classId;
-        const matchArchived = includeArchived || !s.archived;
-        return matchClass && matchArchived;
+      let list = this.state.students || [];
+      if (!includeArchived) list = list.filter(s => !s.archived);
+      if (classId) list = list.filter(s => s.classId === classId);
+      list.forEach(s => {
+        if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       });
+      return list;
     }
 
     getStudentsByClass(classId, includeArchived = false) {
@@ -2262,7 +2282,12 @@
     }
 
     getStudent(id) {
-      return this.state.students.find(s => s.id === id);
+      if (!this.state.students) return null;
+      const s = this.state.students.find(s => s.id === id);
+      if (s && !s.monsterProfile) {
+        s.monsterProfile = this.getMonsterProfile(s.id);
+      }
+      return s;
     }
 
     addStudent(data) {
@@ -2277,7 +2302,6 @@
         age: parseInt(data.age, 10) || 8,
         grade: data.grade || 'Grade 3',
         overallCefr: data.overallCefr || 'A1',
-        avatar: data.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
         parentName: data.parentName || '',
         parentContact: data.parentContact || '',
         parentEmail: data.parentEmail || '',
@@ -2286,10 +2310,10 @@
         manualCefrOverrides: {}
       };
 
-      this.state.students.unshift(newStudent);
-
       // Initialize student Mystery Egg profile (starts at 0 XP)
-      this.getMonsterProfile(studentId);
+      newStudent.monsterProfile = this.getMonsterProfile(studentId);
+
+      this.state.students.unshift(newStudent);
       this.saveState();
       return newStudent;
     }
