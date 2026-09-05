@@ -3113,15 +3113,20 @@
       if (!s) return null;
 
       const numAmount = parseInt(amount, 10) || 0;
-      const category = options.category || (numAmount < 0 ? 'needs_work' : 'positive');
+      // Canonical Rule: 1 XP = 10 points. If options.isPoints is true, amount is in points.
+      const points = options.isPoints ? numAmount : (numAmount * 10);
+      const xpVal = options.isPoints ? Math.round(numAmount / 10) : numAmount;
+      const category = options.category || (points < 0 ? 'needs_work' : 'positive');
       const tx = {
         id: 'xp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
         studentId,
-        amount: numAmount,
-        reason: reason || (numAmount >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
+        amount: points,
+        points: points,
+        xp: xpVal,
+        reason: reason || (points >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
         category,
         skillId: options.skillId || null,
-        icon: options.icon || (numAmount > 0 ? '⭐' : '💭'),
+        icon: options.icon || (points > 0 ? '⭐' : '💭'),
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         timestamp: new Date().toISOString(),
         createdBy: options.createdBy || source || 'Teacher',
@@ -3205,7 +3210,9 @@
         student: s, 
         newTotalXP: this.getStudentTotalXP(studentId), 
         reason: tx.reason, 
-        amount: numAmount, 
+        amount: points, 
+        points: points,
+        xp: xpVal,
         evolutionEvent, 
         monsterState: newMonsterState 
       };
@@ -3242,7 +3249,8 @@
         category,
         icon,
         source: teacher,
-        createdBy: teacher
+        createdBy: teacher,
+        isPoints: true
       });
 
       return Object.assign({ success: true, delta }, res);
@@ -3724,11 +3732,22 @@
     archiveUnit(id) {
       const u = this.state.curriculum.units.find(unit => unit.id === id);
       if (u) {
-        u.archived = true;
+        u.archived = !u.archived;
         this.saveState();
         return true;
       }
       return false;
+    }
+
+    deleteUnit(id) {
+      if (!this.state.curriculum || !this.state.curriculum.units) return null;
+      const idx = this.state.curriculum.units.findIndex(u => u.id === id);
+      if (idx !== -1) {
+        const removed = this.state.curriculum.units.splice(idx, 1)[0];
+        this.saveState();
+        return removed;
+      }
+      return null;
     }
 
     getLessons(unitId = null, includeArchived = false) {
@@ -3782,11 +3801,22 @@
     archiveLesson(id) {
       const l = this.state.curriculum.lessons.find(lesson => lesson.id === id);
       if (l) {
-        l.archived = true;
+        l.archived = !l.archived;
         this.saveState();
         return true;
       }
       return false;
+    }
+
+    deleteLesson(id) {
+      if (!this.state.curriculum || !this.state.curriculum.lessons) return null;
+      const idx = this.state.curriculum.lessons.findIndex(l => l.id === id);
+      if (idx !== -1) {
+        const removed = this.state.curriculum.lessons.splice(idx, 1)[0];
+        this.saveState();
+        return removed;
+      }
+      return null;
     }
 
     getObjectives(lessonId = null, includeArchived = false) {
@@ -4434,6 +4464,18 @@
         this.notify();
       }
       return item;
+    }
+
+    deleteMonsterItem(id) {
+      const cat = this.state.monsterCatalog || this.state.monsterItems || [];
+      const idx = cat.findIndex(i => i.id === id);
+      if (idx !== -1) {
+        const removed = cat.splice(idx, 1)[0];
+        this.saveState();
+        this.notify();
+        return removed;
+      }
+      return null;
     }
 
     getMonsterProfile(studentId) {
@@ -5383,6 +5425,18 @@
       return null;
     }
 
+    deleteBadge(id) {
+      if (!this.state.badges) return null;
+      const idx = this.state.badges.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        const removed = this.state.badges.splice(idx, 1)[0];
+        this.saveState();
+        this.notify('badges', this.state.badges);
+        return removed;
+      }
+      return null;
+    }
+
     getAchievements(includeArchived = false) {
       if (!this.state.achievements) this.state.achievements = [];
       return this.state.achievements.filter(a => includeArchived || !a.archived);
@@ -5432,6 +5486,18 @@
         this.saveState();
         this.notify('achievements', this.state.achievements);
         return a;
+      }
+      return null;
+    }
+
+    deleteAchievement(id) {
+      if (!this.state.achievements) return null;
+      const idx = this.state.achievements.findIndex(a => a.id === id);
+      if (idx !== -1) {
+        const removed = this.state.achievements.splice(idx, 1)[0];
+        this.saveState();
+        this.notify('achievements', this.state.achievements);
+        return removed;
       }
       return null;
     }
@@ -6267,9 +6333,8 @@
           studentId,
           badge.xpReward,
           'Badge Award: ' + badge.name,
-          'positive',
-          badge.id,
-          badge.icon || '🏆'
+          'Badge System',
+          { category: 'positive', isPoints: true, icon: badge.icon || '🏆', skillId: badge.id }
         );
       }
 
@@ -6293,6 +6358,11 @@
 
   // Export singleton instance
   const schoolStore = new MasterSchoolStore();
+  schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
+  schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
+  schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
+  schoolStore.archiveGame = schoolStore.archiveResource.bind(schoolStore);
+  schoolStore.deleteGame = schoolStore.deleteResource.bind(schoolStore);
 
   if (typeof window !== 'undefined') {
     window.SchoolStore = MasterSchoolStore;

@@ -1165,7 +1165,7 @@
 
     const res = store.giveXP(studentId, amount, reason, 'Teacher Award');
     window.closeAllModals();
-    alert('⭐ Awarded +' + amount + ' XP to ' + res.student.firstName + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
+    showNotification('⭐ Awarded +' + amount + ' XP (+' + (amount * 10) + ' pts) to ' + res.student.firstName + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
     renderCurrentView();
   };
 
@@ -7840,22 +7840,7 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   window.handleSelectMonsterItem = function(itemId, category, isNone) {
-    if (!monsterCreatorStudentId) return;
-    const mState = store.calculateMonsterState(monsterCreatorStudentId);
-    const unlockedSet = mState.unlockedItemIds || new Set();
-
-    if (!isNone && !unlockedSet.has(itemId)) {
-      const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
-      const it = allItems.find(i => i.id === itemId);
-      let reqMsg = 'this item';
-      if (it && it.unlockType === 'level' && it.unlockRequirement) {
-        reqMsg = 'Level ' + it.unlockRequirement.level;
-      } else if (it && it.unlockType === 'achievement') {
-        reqMsg = 'a special achievement';
-      }
-      showNotification('🔒 ' + (it ? it.name : 'Item') + ' is locked! Reach ' + reqMsg + ' to unlock.');
-      return;
-    }
+    if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
     if (isNone) {
       monsterCreatorDraft.equipped[category] = 'none';
@@ -9275,40 +9260,155 @@ window.switchClassroomSubTab = function(subTab) {
     return '';
   }
 
-  // --- CELEBRATION MODALS ---
+  // --- CELEBRATION MODALS & HELPERS ---
+  let currentCelebrationStudentId = null;
+
+  window.handleCelebrationMeetMonster = function() {
+    window.closeModal('modal-monster-hatch');
+    if (currentCelebrationStudentId) {
+      window.openStudentDetail(currentCelebrationStudentId, 'monster');
+    }
+  };
+
+  window.handleCelebrationAcknowledgeHatch = function() {
+    window.closeModal('modal-monster-hatch');
+  };
+
+  window.handleCelebrationCustomize = function() {
+    window.closeModal('modal-monster-levelup');
+    if (currentCelebrationStudentId) {
+      window.openStudentDetail(currentCelebrationStudentId, 'monster');
+    }
+  };
+
+  window.handleCelebrationAcknowledgeLevelUp = function() {
+    window.closeModal('modal-monster-levelup');
+  };
+
+  window.openAwardBadgeModal = function(badgeId) {
+    window.handleAwardBadgeToStudent(badgeId, null);
+  };
+
+  window.openCreateWorksheetModal = function() {
+    if (window.openWorksheetEditor) window.openWorksheetEditor(null);
+  };
+
+  window.openEditWorksheetModal = function(wsId) {
+    if (window.openWorksheetEditor) window.openWorksheetEditor(wsId);
+  };
+
+  window.handleDeleteWorksheet = function(wsId) {
+    if (store.deleteWorksheet) {
+      store.deleteWorksheet(wsId);
+      showNotification('Worksheet deleted');
+      renderCurrentView();
+    }
+  };
+
+  window.openResourceEditorModal = function(resId = null) {
+    if (window.openResourceEditor) window.openResourceEditor(resId);
+  };
+
+  window.openGameEditorModal = function(resId = null) {
+    if (window.openResourceEditor) window.openResourceEditor(resId);
+  };
+
+  window.handleSaveUnit = function(data) {
+    if (!data) return null;
+    let res = null;
+    if (data.id) {
+      res = store.updateUnit(data.id, data);
+    } else {
+      res = store.addUnit(data);
+    }
+    renderCurrentView();
+    return res;
+  };
+
+  window.handleSaveLesson = function(data) {
+    if (!data) return null;
+    let res = null;
+    if (data.id) {
+      res = store.updateLesson(data.id, data);
+    } else {
+      res = store.addLesson(data);
+    }
+    renderCurrentView();
+    return res;
+  };
+
+  window.handleDeleteUnit = function(unitId) {
+    if (store.deleteUnit) {
+      store.deleteUnit(unitId);
+      showNotification('Unit deleted');
+      renderCurrentView();
+    }
+  };
+
+  window.handleDeleteLesson = function(lessonId) {
+    if (store.deleteLesson) {
+      store.deleteLesson(lessonId);
+      showNotification('Lesson deleted');
+      renderCurrentView();
+    }
+  };
+
   window.openMonsterLevelUpModal = function(studentId, fromLevelNum, toLevelNum) {
+    currentCelebrationStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
     const levels = store.getProgressionLevels();
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
-    const toLvl = levels.find(l => l.level === toLevelNum) || levels[1];
+    const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
     const profile = store.getMonsterProfile(studentId);
 
-    const titleEl = document.getElementById('modal-levelup-title');
+    const titleEl = document.getElementById('m-levelup-title') || document.getElementById('modal-levelup-title');
     if (titleEl) titleEl.innerText = student.firstName.toUpperCase() + "'S MONSTER EVOLVED!";
 
-    const leftCard = document.getElementById('modal-levelup-left');
-    const rightCard = document.getElementById('modal-levelup-right');
-    if (leftCard && rightCard && window.renderMonsterSVG) {
-      leftCard.innerHTML = 
-        window.renderMonsterSVG({ stage: fromLvl.stageKey, color: profile.baseColor, size: 140, animated: false }) +
-        '<div style="font-weight:800; margin-top:8px;">Level ' + fromLvl.level + ': ' + fromLvl.name + '</div>';
+    const subtitleEl = document.getElementById('m-levelup-subtitle');
+    if (subtitleEl) subtitleEl.innerText = 'Congratulations! Reached Level ' + toLvl.level + ': ' + toLvl.name;
 
-      rightCard.innerHTML = 
-        window.renderMonsterSVG({ stage: toLvl.stageKey, color: profile.baseColor, size: 160, animated: true }) +
-        '<div style="font-weight:800; color:var(--color-primary); margin-top:8px;">Level ' + toLvl.level + ': ' + toLvl.name + '</div>';
+    const xpInfoEl = document.getElementById('m-levelup-xp-info');
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Reached';
+
+    const prevSvgEl = document.getElementById('m-levelup-prev-svg') || document.getElementById('modal-levelup-left');
+    if (prevSvgEl && window.renderMonsterSVG) {
+      prevSvgEl.innerHTML = window.renderMonsterSVG({ stage: fromLvl.stageKey, color: profile.baseColor, size: 90, animated: false });
     }
 
-    const itemsWrap = document.getElementById('modal-levelup-unlocked-items');
+    const prevLabelEl = document.getElementById('m-levelup-prev-label');
+    if (prevLabelEl) prevLabelEl.innerHTML = 'Level ' + fromLvl.level + '<br>' + fromLvl.name;
+
+    const nextSvgEl = document.getElementById('m-levelup-next-svg') || document.getElementById('modal-levelup-right');
+    if (nextSvgEl && window.renderMonsterSVG) {
+      nextSvgEl.innerHTML = window.renderMonsterSVG({ stage: toLvl.stageKey, color: profile.baseColor, size: 110, animated: true });
+    }
+
+    const nextLabelEl = document.getElementById('m-levelup-next-label');
+    if (nextLabelEl) nextLabelEl.innerText = 'Level ' + toLvl.level + ': ' + toLvl.name;
+
+    const nextLvl = levels.find(l => l.level > toLvl.level);
+    const teaserEl = document.getElementById('m-levelup-next-teaser');
+    if (teaserEl) {
+      teaserEl.innerText = nextLvl 
+        ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString() + ' XP (' + nextLvl.name + ')')
+        : '🌟 Maximum evolution stage achieved!';
+    }
+
+    const itemsWrap = document.getElementById('m-levelup-items-list') || document.getElementById('modal-levelup-unlocked-items');
     if (itemsWrap) {
-      const unlockedItems = store.getMonsterItems().filter(it => it.unlockType === 'level' && it.unlockRequirement.level === toLvl.level);
-      itemsWrap.innerHTML = unlockedItems.map(it => 
-        '<div class="monster-item-card" style="padding:10px;">' +
-          '<div style="font-size:1.8rem;">' + it.icon + '</div>' +
-          '<div style="font-size:0.75rem; font-weight:800;">' + it.name + '</div>' +
-          '<div style="font-size:0.65rem; color:var(--color-primary);">' + it.category.toUpperCase() + '</div>' +
-        '</div>'
-      ).join('');
+      const unlockedItems = store.getMonsterItems ? store.getMonsterItems().filter(it => it.unlockType === 'level' && it.unlockRequirement && it.unlockRequirement.level === toLvl.level) : [];
+      if (unlockedItems.length > 0) {
+        itemsWrap.innerHTML = unlockedItems.map(it => 
+          '<div class="monster-item-card" style="padding:10px; border-radius:10px; border:1px solid var(--border-light); background:var(--bg-card); display:flex; flex-direction:column; align-items:center; min-width:85px;">' +
+            '<div style="font-size:1.8rem;">' + (it.icon || '🎁') + '</div>' +
+            '<div style="font-size:0.75rem; font-weight:800; text-align:center;">' + it.name + '</div>' +
+            '<div style="font-size:0.65rem; color:var(--color-primary); text-transform:uppercase;">' + it.category + '</div>' +
+          '</div>'
+        ).join('');
+      } else {
+        itemsWrap.innerHTML = '<div style="font-size:0.82rem; color:var(--text-muted); padding:6px 0;">✨ Evolution aura and unique visual traits unlocked!</div>';
+      }
     }
 
     const btnCustom = document.getElementById('btn-modal-levelup-customize');
@@ -9323,19 +9423,23 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   window.openMonsterHatchModal = function(studentId) {
+    currentCelebrationStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
     const profile = store.getMonsterProfile(studentId);
 
-    const titleEl = document.getElementById('modal-hatch-title');
-    if (titleEl) titleEl.innerText = '🥚 ✨ YOUR EGG HAS HATCHED! ✨ 🐣';
+    const titleEl = document.getElementById('m-hatch-title') || document.getElementById('modal-hatch-title');
+    if (titleEl) titleEl.innerText = '🥚 ✨ ' + student.firstName.toUpperCase() + "'S EGG HAS HATCHED! ✨ 🐣";
 
-    const renderWrap = document.getElementById('modal-hatch-monster-render');
+    const xpInfoEl = document.getElementById('m-hatch-xp-info');
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ Level 3 Baby Monster Unlocked!';
+
+    const renderWrap = document.getElementById('m-hatch-monster-svg') || document.getElementById('modal-hatch-monster-render');
     if (renderWrap && window.renderMonsterSVG) {
       renderWrap.innerHTML = window.renderMonsterSVG({
         stage: 'baby',
         color: profile.baseColor || 'blue',
-        size: 180,
+        size: 160,
         animated: true
       });
     }
@@ -9361,7 +9465,7 @@ window.switchClassroomSubTab = function(subTab) {
     const monsterState = student ? store.calculateMonsterState(student.id) : null;
     const profile = student ? store.getMonsterProfile(student.id) : null;
 
-    const listEl = document.getElementById('modal-evolution-path-list');
+    const listEl = document.getElementById('m-evolution-path-body') || document.getElementById('modal-evolution-path-list');
     if (!listEl) return;
 
     listEl.innerHTML = levels.map(l => {
@@ -9376,7 +9480,7 @@ window.switchClassroomSubTab = function(subTab) {
       }) : '👾';
 
       return '' +
-        '<div class="evolution-path-card ' + (isCurrent ? 'is-current' : '') + ' ' + (!isReached ? 'is-locked' : '') + '">' +
+        '<div class="evolution-path-card ' + (isCurrent ? 'is-current' : '') + ' ' + (!isReached ? 'is-locked' : '') + '" style="background:var(--bg-card); border:1px solid ' + (isCurrent ? 'var(--color-primary)' : 'var(--border-light)') + '; border-radius:14px; padding:14px; display:flex; align-items:center; gap:14px;">' +
           '<div style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' +
             stageSvg +
           '</div>' +
@@ -9385,7 +9489,7 @@ window.switchClassroomSubTab = function(subTab) {
               '<h4 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main);">' + l.name + '</h4>' +
               '<span class="badge" style="background:var(--bg-muted); color:var(--text-main); font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;">' + l.xpRequired.toLocaleString() + ' XP</span>' +
             '</div>' +
-            '<p style="font-size:0.82rem; color:var(--text-muted); margin:4px 0 6px 0;">' + l.description + '</p>' +
+            '<p style="font-size:0.82rem; color:var(--text-muted); margin:4px 0 6px 0;">' + (l.description || '') + '</p>' +
             '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700;">🎁 Rewards: ' + (l.rewards ? l.rewards.join(', ') : 'Cosmetics & evolution perks') + '</div>' +
           '</div>' +
           (isCurrent ? '<div class="badge" style="background:var(--color-primary); color:#ffffff; font-weight:800; font-size:0.72rem; padding:4px 10px; border-radius:12px;">Current Stage</div>' : '') +
@@ -9401,6 +9505,16 @@ window.switchClassroomSubTab = function(subTab) {
   window.renderClassroomGroupsGrid = renderClassroomGroupsGrid;
   window.renderLeaderboardView = renderLeaderboardView;
   window.renderToolkitRandomView = renderToolkitRandomView;
+  window.initApp = initApp;
+
+  // Boot the application on page load
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  }
 
   })(typeof window !== 'undefined' ? window : global);
 

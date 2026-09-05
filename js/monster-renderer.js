@@ -369,9 +369,10 @@
 
     if (effectiveWings === 'none' || effectiveWings === 'wings-none') return '';
 
-    if (effectiveWings === 'wings-starter') {
+    if (effectiveWings === 'wings-starter' || effectiveWings === 'wings-flutter') {
       return `
-        <g fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" opacity="0.95">
+        <!-- Starter Flutter Wings -->
+        <g class="monster-wings-layer wings-starter" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" opacity="0.95">
           <path d="M 60 105 C 30 90 20 115 35 130 C 45 138 58 125 62 118 Z" />
           <path d="M 140 105 C 170 90 180 115 165 130 C 155 138 142 125 138 118 Z" />
         </g>
@@ -380,7 +381,8 @@
 
     if (effectiveWings === 'wings-dragon') {
       return `
-        <g stroke="${palette.shadow}" stroke-width="3">
+        <!-- Dragon Wings -->
+        <g class="monster-wings-layer wings-dragon" stroke="${palette.shadow}" stroke-width="3">
           <path d="M 65 110 C 25 70 10 95 15 125 C 25 115 40 120 48 135 C 55 125 60 122 68 125 Z" fill="${palette.primary}" />
           <path d="M 65 110 C 25 70 10 95 15 125" fill="none" stroke="${palette.accent}" stroke-width="3" />
           <path d="M 135 110 C 175 70 190 95 185 125 C 175 115 160 120 152 135 C 145 125 140 122 132 125 Z" fill="${palette.primary}" />
@@ -391,7 +393,8 @@
 
     if (effectiveWings === 'wings-celestial') {
       return `
-        <g filter="url(#mf-shadow)">
+        <!-- Celestial Wings -->
+        <g class="monster-wings-layer wings-celestial" filter="url(#mf-shadow)">
           <g fill="url(#mg-gold-crown)" stroke="${palette.shadow}" stroke-width="2.5">
             <path d="M 68 110 C 15 50 0 85 10 135 C 25 125 40 135 50 145 C 58 132 64 128 72 122 Z" />
             <path d="M 68 110 C 25 70 15 95 24 135" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.8" />
@@ -861,6 +864,9 @@
     palettes: MONSTER_PALETTES,
     stages: STAGE_META
   };
+
+  root.renderMonsterSVG = renderMonsterSVG;
+  root.getStageInfo = getStageInfo;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;
