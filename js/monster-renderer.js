@@ -86,15 +86,30 @@
     ultimate: { level: 7, name: 'Ultimate Monster', title: 'Level 7: Ultimate Monster', icon: '👑', desc: 'The legendary sovereign form crowned with celestial power!' }
   };
 
+  function normalizeStageKey(stage) {
+    if (!stage) return 'baby';
+    const s = String(stage).toLowerCase().trim();
+    if (s === 'mystery egg' || s === 'egg' || s === 'lvl-1' || s === 'level 1') return 'egg';
+    if (s === 'cracking egg' || s === 'cracking_egg' || s === 'cracking' || s === 'lvl-2' || s === 'level 2') return 'cracking_egg';
+    if (s === 'baby monster' || s === 'baby' || s === 'lvl-3' || s === 'level 3') return 'baby';
+    if (s === 'growing monster' || s === 'growing' || s === 'lvl-4' || s === 'level 4') return 'growing';
+    if (s === 'adventurer monster' || s === 'adventurer' || s === 'lvl-5' || s === 'level 5') return 'adventurer';
+    if (s === 'advanced monster' || s === 'advanced' || s === 'lvl-6' || s === 'level 6') return 'advanced';
+    if (s === 'ultimate monster' || s === 'ultimate' || s === 'lvl-7' || s === 'level 7') return 'ultimate';
+    if (STAGE_META[s]) return s;
+    return 'baby';
+  }
+
   /**
    * Main Render Function
    * @param {Object} options
    */
   function renderMonsterSVG(options = {}) {
-    const stage = options.stage || 'baby';
-    const colorKey = options.color || 'blue';
+    const stage = normalizeStageKey(options.stage);
+    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
-    const equipped = options.equipped || {};
+    const equipped = Object.assign({}, options.equipped || {});
     const size = options.size || 200;
     const animated = options.animated !== false;
 
@@ -150,34 +165,71 @@
     `;
 
     // 1. Background layer
-    const bgLayer = renderBackgroundLayer(equipped.background, stage);
+    let bgLayer = '';
+    try {
+      bgLayer = renderBackgroundLayer(equipped.background, stage);
+    } catch (e) {
+      bgLayer = renderBackgroundLayer('bg-meadow', stage);
+    }
 
     // 2. Aura layer (under monster)
-    const auraLayer = renderAuraLayer(equipped.aura, stage, palette);
+    let auraLayer = '';
+    try {
+      auraLayer = renderAuraLayer(equipped.aura, stage, palette);
+    } catch (e) {
+      auraLayer = '';
+    }
 
     // 3. Wings layer (behind body)
-    const wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
+    let wingsLayer = '';
+    try {
+      wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
+    } catch (e) {
+      wingsLayer = '';
+    }
 
     // 4. Tail layer (behind body)
-    const tailLayer = renderTailLayer(stage, equipped.tail, palette);
+    let tailLayer = '';
+    try {
+      tailLayer = renderTailLayer(stage, equipped.tail, palette);
+    } catch (e) {
+      tailLayer = '';
+    }
 
     // 5. Backpack layer (behind body)
-    const backpackLayer = renderBackpackLayer(stage, equipped.backpack);
+    let backpackLayer = '';
+    try {
+      backpackLayer = renderBackpackLayer(stage, equipped.backpack);
+    } catch (e) {
+      backpackLayer = '';
+    }
 
     // 6. Main monster body or egg
     let mainEntityLayer = '';
-    if (stage === 'egg') {
-      mainEntityLayer = renderEggWhole(palette, colorKey);
-    } else if (stage === 'cracking_egg') {
-      mainEntityLayer = renderEggCracking(palette, colorKey);
-    } else {
-      mainEntityLayer = renderMonsterBody(stage, palette, colorKey, equipped);
+    try {
+      if (stage === 'egg') {
+        mainEntityLayer = renderEggWhole(palette, colorKey);
+      } else if (stage === 'cracking_egg') {
+        mainEntityLayer = renderEggCracking(palette, colorKey);
+      } else {
+        mainEntityLayer = renderMonsterBody(stage, palette, colorKey, equipped);
+      }
+    } catch (e) {
+      try {
+        mainEntityLayer = renderMonsterBody('baby', palette, colorKey, {});
+      } catch (err2) {
+        mainEntityLayer = '';
+      }
     }
 
     // 7. Foreground accessories (hats, glasses, handheld items)
     let fgAccessoryLayer = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
-      fgAccessoryLayer = renderForegroundAccessories(stage, equipped, palette);
+      try {
+        fgAccessoryLayer = renderForegroundAccessories(stage, equipped, palette);
+      } catch (e) {
+        fgAccessoryLayer = '';
+      }
     }
 
     return `

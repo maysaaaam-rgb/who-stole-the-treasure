@@ -362,7 +362,11 @@
       });
     } catch (err) {
       console.warn('Error in renderMonsterAvatar for ' + studentId, err);
-      return '👾';
+      try {
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
+      } catch (e2) {
+        return '<svg viewBox="0 0 100 100" width="' + size + '" height="' + size + '"><circle cx="50" cy="50" r="40" fill="#8b5cf6"/><circle cx="38" cy="45" r="5" fill="#fff"/><circle cx="62" cy="45" r="5" fill="#fff"/><circle cx="38" cy="45" r="2.5" fill="#000"/><circle cx="62" cy="45" r="2.5" fill="#000"/><path d="M 40 65 Q 50 75 60 65" stroke="#000" stroke-width="3" fill="none"/></svg>';
+      }
     }
   };
   window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
@@ -7862,7 +7866,7 @@ window.switchClassroomSubTab = function(subTab) {
     const mState = store.calculateMonsterState(monsterCreatorStudentId);
     const profile = store.getMonsterProfile(monsterCreatorStudentId);
 
-    const box = document.getElementById('avatar-preview-box');
+    const box = document.querySelector('#modal-avatar-selector #avatar-preview-box') || document.getElementById('avatar-preview-box');
     const nameEl = document.getElementById('avatar-preview-name');
     const stageEl = document.getElementById('avatar-preview-category');
     const descEl = document.getElementById('avatar-preview-desc');

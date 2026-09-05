@@ -676,12 +676,12 @@
       <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:6px;">🎨 Customize Your Avatar</h2>
       <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px;">Choose your hairstyle, explorer outfit, and lucky badge!</p>
 
-      <div style="font-size:64px; margin-bottom:20px;" id="avatar-preview-box">👧</div>
+      <div style="font-size:64px; margin-bottom:20px;" id="legacy-avatar-preview-box">👧</div>
 
       <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
         <div>
           <label style="font-size:0.8rem; font-weight:700;">Hairstyle</label>
-          <select id="avatar-hair-select" class="filter-select" style="width:100%;" onchange="document.getElementById('avatar-preview-box').innerText = this.value === 'boy' ? '👦' : this.value === 'star' ? '🦸' : '👧';">
+          <select id="avatar-hair-select" class="filter-select" style="width:100%;" onchange="document.getElementById('legacy-avatar-preview-box').innerText = this.value === 'boy' ? '👦' : this.value === 'star' ? '🦸' : '👧';">
             <option value="girl" selected>Pigtails &amp; Ribbon</option>
             <option value="boy">Spiky Explorer</option>
             <option value="star">Superhero Cape</option>
