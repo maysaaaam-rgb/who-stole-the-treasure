@@ -1318,6 +1318,7 @@
                   // Top Action Buttons
                   '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
                     '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreenModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;" title="Open Fullscreen Monster Showcase">✨ Fullscreen</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; font-weight:700;">✏️ Edit XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
@@ -2545,210 +2546,329 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       activeBook = books.find(b => b.id === 'book-global-readings-2') || books[0];
       if (activeBook) curriculumActiveBookId = activeBook.id;
     }
-    const units = store.getUnits(activeBook.id);
+    const units = store.getUnits(activeBook ? activeBook.id : 'book-global-readings-2');
     const lessons = store.getLessons();
     const objectives = store.getObjectives();
 
+    const isGR3 = activeBook && activeBook.id === 'book-global-readings-3';
+    const isGR2 = activeBook && activeBook.id === 'book-global-readings-2';
+
     container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Curriculum Framework</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Official curriculum syllabi, scope &amp; sequence progression, and original textbook scans.</p>' +
+      '<div style="max-width:1300px; margin:0 auto; padding-bottom:60px;">' +
+        // Page Header
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
+              '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px;">Macmillan Education Anthology</span>' +
+              '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px;">4-Week Modular Syllabi</span>' +
+            '</div>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:var(--text-main); margin:0;">📚 Curriculum Framework &amp; Scanned Anthologies</h1>' +
+            '<p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">Multi-grade primary literacy syllabus, 4-week structured unit timelines, authentic textbook scans, and interactive lesson attachments.</p>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="openAddBookModal()">📖 + Add Book</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openAddUnitModal(\'' + (activeBook ? activeBook.id : '') + '\')">📑 + Add Unit</button>' +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-          '<button class="btn-sm-secondary" onclick="openAddBookModal()">📖 + Add Book</button>' +
-          '<button class="btn-primary-action" onclick="openAddUnitModal(\'' + activeBook.id + '\')">📑 + Add Unit</button>' +
+
+        // SECTION 1: Digital Textbook Library Shelf
+        '<div style="margin-bottom:28px;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
+            '<h3 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">' +
+              '<span>📖 Digital Textbook Shelf</span>' +
+              '<span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">(' + books.length + ' Core Anthologies)</span>' +
+            '</h3>' +
+            '<span style="font-size:0.78rem; color:var(--text-muted);">Select an anthology to explore its scope, sequence, and 4-week roadmap</span>' +
+          '</div>' +
+
+          '<div class="curriculum-shelf-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">' +
+            books.map(b => {
+              const isSelected = activeBook && activeBook.id === b.id;
+              const bUnits = store.getUnits(b.id);
+              const bLessons = lessons.filter(l => bUnits.some(u => u.id === l.unitId));
+              const coverImg = b.cover || (b.id === 'book-global-readings-3' ? 'assets/books/global-readings-3/cover.jpg' : 'assets/books/global-readings-2/page_01.jpg');
+
+              return '' +
+                '<div class="curriculum-book-card" onclick="switchCurriculumBook(\'' + b.id + '\')" style="background:var(--bg-surface); border:' + (isSelected ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:16px; padding:16px 18px; display:flex; gap:16px; align-items:center; cursor:pointer; box-shadow:' + (isSelected ? '0 8px 24px rgba(37,99,235,0.14)' : 'var(--shadow-xs)') + '; transition:all 0.2s ease; position:relative;">' +
+                  (isSelected ? '<span style="position:absolute; top:-10px; right:14px; background:var(--color-primary); color:#ffffff; font-size:0.68rem; font-weight:800; padding:2px 10px; border-radius:10px; box-shadow:var(--shadow-xs); letter-spacing:0.4px;">ACTIVE SYLLABUS</span>' : '') +
+                  
+                  // Book Cover Thumbnail
+                  '<div style="width:68px; height:94px; flex-shrink:0; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.15); border:1px solid var(--border-light); background:#0f172a; display:flex; align-items:center; justify-content:center;">' +
+                    '<img src="' + coverImg + '" alt="' + b.title + '" style="width:100%; height:100%; object-fit:cover;" onerror="this.src=\'assets/books/global-readings-2/page_01.jpg\'" />' +
+                  '</div>' +
+
+                  // Book Info
+                  '<div style="flex:1; min-width:0;">' +
+                    '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px;">' +
+                      '<span class="badge" style="background:' + (b.id === 'book-global-readings-3' ? 'rgba(168,85,247,0.12)' : 'rgba(37,99,235,0.12)') + '; color:' + (b.id === 'book-global-readings-3' ? '#7e22ce' : '#1d4ed8') + '; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:8px;">' + (b.level || b.targetLevel || 'Level 3') + '</span>' +
+                      '<span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">' + (b.publisher || 'Macmillan Education') + '</span>' +
+                    '</div>' +
+                    '<h4 style="font-size:1.05rem; font-weight:800; margin:0 0 4px 0; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + b.title + '</h4>' +
+                    '<p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (b.description || 'Comprehensive reading anthology.') + '</p>' +
+                    '<div style="display:flex; gap:10px; font-size:0.72rem; color:var(--text-muted);">' +
+                      '<span>📚 <strong>' + bUnits.length + '</strong> Units</span>' +
+                      '<span>🗓️ <strong>' + (bUnits.length * 4) + '</strong> Weeks</span>' +
+                      '<span>📄 <strong>' + (b.totalPages || 23) + '</strong> Scans</span>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
         '</div>' +
-      '</div>' +
 
-      // Books Tab Switcher
-      '<div class="curriculum-book-tabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-light); padding-bottom:4px; overflow-x:auto;">' +
-        books.map(b => '' +
-          '<div style="display:inline-flex; align-items:center; gap:2px; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding-bottom:4px; white-space:nowrap;">' +
-            '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="switchCurriculumBook(\'' + b.id + '\')" style="background:transparent; border:none; padding:8px 12px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
-              b.title + (b.level ? ' (' + b.level + ')' : (b.targetLevel ? ' (' + b.targetLevel + ')' : '')) +
-            '</button>' +
-            (activeBook.id === b.id ? 
-              '<button onclick="openEditBookModal(\'' + b.id + '\')" title="Edit Book" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; padding:2px;">✏️</button>' +
-              '<button onclick="handleArchiveBook(\'' + b.id + '\')" title="Archive Book" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; padding:2px; color:var(--color-danger);">🗑️</button>'
-              : '') +
-          '</div>'
-        ).join('') +
-      '</div>' +
+        // SECTION 2: Active Book Master Banner Card
+        (activeBook ? 
+          '<div class="curriculum-active-book-banner" style="background:linear-gradient(135deg, var(--bg-surface), var(--bg-card)); border:1px solid var(--border-light); border-radius:18px; padding:22px 26px; margin-bottom:28px; display:flex; gap:24px; align-items:center; flex-wrap:wrap; box-shadow:var(--shadow-sm);">' +
+            '<div style="width:84px; height:116px; flex-shrink:0; border-radius:10px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,0.18); border:1px solid var(--border-light); background:#0f172a; display:flex; align-items:center; justify-content:center;">' +
+              '<img src="' + (activeBook.cover || (isGR3 ? 'assets/books/global-readings-3/cover.jpg' : 'assets/books/global-readings-2/page_01.jpg')) + '" alt="Book Cover" style="width:100%; height:100%; object-fit:cover;" onerror="this.src=\'assets/books/global-readings-2/page_01.jpg\'" />' +
+            '</div>' +
 
-      // Active Book Banner Card
-      '<div class="curriculum-active-book-banner" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:18px 22px; margin-bottom:22px; display:flex; gap:20px; align-items:center; flex-wrap:wrap; box-shadow:var(--shadow-xs);">' +
-        (activeBook.cover ? 
-          '<div style="width:76px; height:104px; flex-shrink:0; border-radius:8px; overflow:hidden; box-shadow:var(--shadow-md); border:1px solid var(--border-light); background:#f1f5f9; display:flex; align-items:center; justify-content:center;">' +
-            '<img src="' + activeBook.cover + '" alt="Book Cover" style="width:100%; height:100%; object-fit:cover;" />' +
+            '<div style="flex:1; min-width:280px;">' +
+              '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">' +
+                '<h2 style="font-size:1.45rem; font-weight:900; margin:0; color:var(--text-main);">' + activeBook.title + '</h2>' +
+                '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.78rem; font-weight:800; padding:3px 12px; border-radius:12px;">' + (activeBook.level || activeBook.targetLevel || (isGR3 ? 'Grade 4 · Level 3' : 'Grade 3 · Level 2')) + '</span>' +
+                '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + (activeBook.publisher || 'Macmillan Education') + '</span>' +
+                '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px;">4-Week Unit Architecture</span>' +
+              '</div>' +
+              '<p style="font-size:0.88rem; color:var(--text-secondary); margin:6px 0 10px 0; max-width:880px; line-height:1.5;">' + (activeBook.description || 'Macmillan Primary Literacy Anthology with reading selections, comprehension strategies, vocabulary builders, and cross-curricular science links.') + '</p>' +
+              '<div style="display:flex; gap:18px; font-size:0.82rem; color:var(--text-muted); flex-wrap:wrap;">' +
+                '<span>📚 <strong>' + units.length + ' Units</strong> in Syllabus</span>' +
+                '<span>🗓️ <strong>' + (units.length * 4) + ' Teaching Weeks</strong> (4 Weeks/Unit)</span>' +
+                '<span>📝 <strong>' + lessons.filter(l => units.some(u => u.id === l.unitId)).length + ' Assigned Lessons</strong></span>' +
+                '<span>📄 <strong>' + (activeBook.totalPages || 23) + ' Original Textbook Pages</strong> (Upright &amp; High-Res)</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+              '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + activeBook.id + '\')" style="padding:10px 18px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:var(--shadow-sm);">' +
+                '<span>📖</span> <span>Open Textbook Viewer</span>' +
+              '</button>' +
+              '<a href="' + (activeBook.pdfUrl || (isGR3 ? 'assets/books/global-readings-3/Global-Readings-3.pdf' : 'assets/books/global-readings-2/Global-Readings-2.pdf')) + '" target="_blank" class="btn-sm-secondary" style="padding:10px 16px; font-size:0.88rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">' +
+                '<span>📥</span> <span>Open Original PDF</span>' +
+              '</a>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openEditBookModal(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem;">✏️ Edit</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="handleArchiveBook(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem; color:var(--color-danger);">🗑️</button>' +
+            '</div>' +
           '</div>' : ''
         ) +
-        '<div style="flex:1; min-width:260px;">' +
-          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-            '<h2 style="font-size:1.35rem; font-weight:800; margin:0; color:var(--text-main);">' + activeBook.title + '</h2>' +
-            '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + (activeBook.level || activeBook.targetLevel || 'Level 2') + '</span>' +
-            (activeBook.publisher ? '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + activeBook.publisher + '</span>' : '') +
-            (activeBook.bookType ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.74rem; font-weight:600; padding:3px 10px; border-radius:12px;">' + activeBook.bookType + '</span>' : '') +
-          '</div>' +
-          '<p style="font-size:0.86rem; color:var(--text-secondary); margin:6px 0 0 0; max-width:850px; line-height:1.45;">' + (activeBook.description || 'Comprehensive curriculum program.') + '</p>' +
-          '<div style="display:flex; gap:16px; margin-top:10px; font-size:0.8rem; color:var(--text-muted); flex-wrap:wrap;">' +
-            '<span>📚 <strong>' + units.length + ' Units</strong> in Syllabus</span>' +
-            '<span>📝 <strong>' + lessons.filter(l => units.some(u => u.id === l.unitId)).length + ' Lessons</strong></span>' +
-            (activeBook.totalPages ? '<span>📄 <strong>' + activeBook.totalPages + ' Textbook Pages</strong></span>' : '') +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-          '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + activeBook.id + '\')" style="padding:8px 14px; font-size:0.84rem; display:inline-flex; align-items:center; gap:6px;">📖 Open Textbook Viewer</button>' +
-          (activeBook.pdfUrl ? '<a href="' + activeBook.pdfUrl + '" target="_blank" class="btn-sm-secondary" style="padding:8px 14px; font-size:0.84rem; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">📥 Original PDF</a>' : '') +
-        '</div>' +
-      '</div>' +
 
-      // Units List
-      '<div class="curriculum-units-list" style="display:flex; flex-direction:column; gap:18px;">' +
-        units.map((u, uIdx) => {
-          const uLessons = lessons.filter(l => l.unitId === u.id).sort((a, b) => (a.order || 0) - (b.order || 0));
-          const startPage = u.pages ? parseInt(u.pages.split('–')[0], 10) : 1;
-          return '' +
-            '<div class="unit-accordion-card" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
-              // Unit Header
-              '<div style="padding:16px 20px; background:var(--bg-muted); border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">' +
-                '<div style="display:flex; align-items:flex-start; gap:12px; flex:1; min-width:300px;">' +
-                  // Reorder buttons for units
-                  '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
-                    (uIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.65rem;" onclick="handleMoveUnitUp(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Up">▲</button>' : '') +
-                    (uIdx < units.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.65rem;" onclick="handleMoveUnitDown(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Down">▼</button>' : '') +
-                  '</div>' +
-                  '<div style="display:flex; flex-direction:column; gap:6px; flex:1;">' +
-                    '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-                      '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">' + u.title + '</h3>' +
-                      (u.pages ? '<span class="badge" style="background:var(--bg-surface); color:var(--text-secondary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid var(--border-light);">📄 p. ' + u.pages + '</span>' : '') +
-                      (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;">🎯 ' + u.readingSkill + '</span>' : '') +
-                      (u.contentArea ? '<span class="badge" style="background:var(--color-purple-soft); color:var(--color-purple); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;">🔬 ' + u.contentArea + '</span>' : '') +
-                    '</div>' +
-                    (u.keyConcept ? '<div style="font-size:0.82rem; font-weight:700; color:var(--color-warning); margin-top:2px;">💡 Key Concept: "' + u.keyConcept + '"</div>' : '') +
-                    (u.reading1 || u.reading2 ? 
-                      '<div style="font-size:0.8rem; color:var(--text-muted); display:flex; gap:12px; flex-wrap:wrap; margin-top:2px;">' +
-                        (u.reading1 ? '<span><strong>Reading 1:</strong> ' + u.reading1 + '</span>' : '') +
-                        (u.reading2 ? '<span><strong>Reading 2:</strong> ' + u.reading2 + '</span>' : '') +
-                        (u.selFocus ? '<span>💖 <strong>SEL:</strong> ' + u.selFocus + '</span>' : '') +
-                      '</div>' : ''
-                    ) +
-                    '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">' +
-                      '<strong>Target Vocab:</strong> ' + (u.targetVocab || []).join(', ') +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
+        // SECTION 3: Units with 4-Week Progression Roadmap & Lessons
+        '<div class="curriculum-units-list" style="display:flex; flex-direction:column; gap:24px;">' +
+          (units.length === 0 ? 
+            '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+              '<div style="font-size:48px; margin-bottom:12px;">📑</div>' +
+              '<h3 style="font-size:1.2rem; font-weight:800; margin:0 0 6px 0;">No units in this curriculum yet</h3>' +
+              '<p style="font-size:0.88rem; color:var(--text-muted); margin:0 0 16px 0;">Click "+ Add Unit" to start building your 4-week scope and sequence.</p>' +
+              '<button type="button" class="btn-primary-action" onclick="openAddUnitModal(\'' + (activeBook ? activeBook.id : '') + '\')">+ Add First Unit</button>' +
+            '</div>' :
+            units.map((u, uIdx) => {
+              const uLessons = lessons.filter(l => l.unitId === u.id).sort((a, b) => (a.order || 0) - (b.order || 0));
+              const startPage = u.pages ? parseInt(u.pages.split('–')[0], 10) : 1;
+              const weeks = u.weeks || [
+                { weekNumber: 1, title: 'Introduction & Vocabulary', focus: 'Thematic introduction and key vocabulary' },
+                { weekNumber: 2, title: 'Main Story & Reading', focus: 'Literary text and guided comprehension' },
+                { weekNumber: 3, title: 'Explore & Language Skills', focus: 'Language mechanics and deep literacy skills' },
+                { weekNumber: 4, title: 'Science Link & Real-World Synthesis', focus: 'Cross-curricular science and communicative synthesis' }
+              ];
 
-                '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-                  (u.pages ? '<button class="btn-sm-secondary" onclick="openTextbookViewer(' + startPage + ', \'' + activeBook.id + '\')" style="font-size:0.78rem; padding:4px 10px; color:var(--color-primary); font-weight:700;" title="View scanned textbook pages">📖 View Pages</button>' : '') +
-                  '<button class="btn-sm-secondary" onclick="openAddLessonModal(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">+ Add Lesson</button>' +
-                  '<button class="btn-sm-secondary" onclick="openEditUnitModal(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">✏️ Edit</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleDuplicateUnit(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">📋</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleArchiveUnit(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px; color:var(--color-danger);">📦</button>' +
-                '</div>' +
-              '</div>' +
-
-              // Unit Lessons Body
-              '<div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">' +
-                (uLessons.length === 0 ? '<div style="font-size:0.84rem; color:var(--text-muted); font-style:italic;">No lessons in this unit yet. Click "+ Add Lesson" to create one.</div>' : '') +
-                uLessons.map((l, lIdx) => {
-                  const lObjs = objectives.filter(o => o.lessonId === l.id);
-                  const lStartPage = l.sourcePages ? parseInt(l.sourcePages.split('–')[0], 10) : startPage;
-                  const hasTasks = (l.tasks && l.tasks.length > 0) || (l.activities && l.activities.length > 0);
-
-                  return '' +
-                    '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow-xs);">' +
-                      '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">' +
-                        '<div style="display:flex; align-items:flex-start; gap:10px; flex:1; min-width:280px;">' +
-                          // Reorder buttons for lessons
-                          '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
-                            (lIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonUp(\'' + u.id + '\', \'' + l.id + '\')">▲</button>' : '') +
-                            (lIdx < uLessons.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonDown(\'' + u.id + '\', \'' + l.id + '\')">▼</button>' : '') +
-                          '</div>' +
-                          '<div style="flex:1;">' +
-                            '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-                              '<h4 style="font-size:0.98rem; font-weight:800; margin:0; color:var(--text-main);">' + l.title + '</h4>' +
-                              (l.sourcePages ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-secondary); font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:8px;">📄 p. ' + l.sourcePages + '</span>' : '') +
-                              (l.sourcePages ? '<button type="button" class="btn-sm-secondary" onclick="openTextbookViewer(' + lStartPage + ', \'' + activeBook.id + '\', \'' + l.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-primary); font-weight:700;">📖 View Page</button>' : '') +
-                              (l.gameRoute ? '<a href="' + l.gameRoute + '" class="btn-primary-action" style="padding:2px 8px; font-size:0.72rem; text-decoration:none;">▶ Play Game</a>' : '') +
-                              (hasTasks ? '<button type="button" class="btn-sm-secondary" onclick="toggleLessonActivities(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.72rem;">📝 Activities (' + ((l.activities && l.activities.length) || (l.tasks && l.tasks.length) || 0) + ')</button>' : '') +
-                            '</div>' +
-                            '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' + (l.objective || '') + '</div>' +
-                          '</div>' +
-                        '</div>' +
-
-                        '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                          '<button class="btn-sm-secondary" onclick="openAddObjectiveModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">+ Objective</button>' +
-                          '<button class="btn-sm-secondary" onclick="openEditLessonModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">✏️ Edit</button>' +
-                          '<button class="btn-sm-secondary" onclick="handleDuplicateLesson(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">📋</button>' +
-                          '<button class="btn-sm-secondary" onclick="handleArchiveLesson(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem; color:var(--color-danger);">📦</button>' +
-                        '</div>' +
+              return '' +
+                '<div class="unit-accordion-card" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:18px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
+                  // Unit Header Banner
+                  '<div style="padding:18px 24px; background:linear-gradient(90deg, var(--bg-muted), var(--bg-surface)); border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">' +
+                    '<div style="display:flex; align-items:flex-start; gap:14px; flex:1; min-width:320px;">' +
+                      // Up/Down reorder controls
+                      '<div style="display:flex; flex-direction:column; gap:3px; margin-top:2px;">' +
+                        (uIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitUp(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Up">▲</button>' : '') +
+                        (uIdx < units.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitDown(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Down">▼</button>' : '') +
                       '</div>' +
 
-                      // Objectives pills
-                      (lObjs.length > 0 ? 
-                        '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-light);">' +
-                          lObjs.map(o => 
-                            '<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-muted); border:1px solid var(--border-light); padding:2px 8px; border-radius:6px; font-size:0.75rem;">' +
-                              '<strong>' + o.skill + ':</strong> ' + o.text +
-                              (o.sourcePages ? '<span style="color:var(--text-muted); font-size:0.7rem;">(p.' + o.sourcePages + ')</span>' : '') +
-                              '<button type="button" onclick="handleDeleteObjective(\'' + o.id + '\')" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); font-size:0.72rem; padding:0 2px;">✕</button>' +
-                            '</span>'
-                          ).join('') +
-                        '</div>' : ''
-                      ) +
+                      // Unit Title & Core Meta
+                      '<div style="flex:1;">' +
+                        '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                          '<span class="badge" style="background:var(--color-primary); color:#ffffff; font-size:0.75rem; font-weight:800; padding:2px 10px; border-radius:10px;">Unit ' + (u.number || (uIdx + 1)) + '</span>' +
+                          '<h3 style="font-size:1.25rem; font-weight:900; margin:0; color:var(--text-main);">' + u.title + '</h3>' +
+                          (u.pages ? '<span class="badge" style="background:var(--bg-surface); color:var(--text-secondary); font-size:0.74rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid var(--border-light);">📄 p. ' + u.pages + '</span>' : '') +
+                          (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">🎯 ' + u.readingSkill + '</span>' : '') +
+                          (u.contentArea ? '<span class="badge" style="background:rgba(168,85,247,0.12); color:#7e22ce; font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">🔬 ' + u.contentArea + '</span>' : '') +
+                        '</div>' +
 
-                      // Expandable Activities / Tasks Panel
-                      (hasTasks ?
-                        '<div id="lesson-activities-' + l.id + '" style="display:none; margin-top:12px; padding:12px 14px; background:var(--bg-muted); border-radius:8px; border:1px solid var(--border-light); font-size:0.82rem;">' +
-                          '<div style="font-weight:800; color:var(--text-main); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">' +
-                            '<span>Structured Textbook Content &amp; Activities</span>' +
-                            '<button type="button" onclick="toggleLessonActivities(\'' + l.id + '\')" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; color:var(--text-muted);">Close ✕</button>' +
-                          '</div>' +
-                          (l.tasks ? 
-                            '<div style="display:flex; flex-direction:column; gap:6px;">' +
-                              l.tasks.map(t => '<div><strong>' + (t.label || t.pair || t.blend || 'Task') + ':</strong> ' + (t.words ? t.words.join(', ') : '') + '</div>').join('') +
-                            '</div>' : ''
-                          ) +
-                          (l.activities ?
-                            '<div style="display:flex; flex-direction:column; gap:8px;">' +
-                              l.activities.map(act => {
-                                if (act.type === 'story') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; color:var(--color-primary);">' + act.title + '</div><div style="font-style:italic; margin-top:2px;">"' + act.text + '"</div></div>';
-                                } else if (act.type === 'vocab_definitions') {
-                                  return '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:6px;">' + act.words.map(w => '<div style="background:var(--bg-surface); padding:6px 8px; border-radius:6px; border:1px solid var(--border-light);"><strong>' + w.word + ':</strong> ' + w.def + '</div>').join('') + '</div>';
-                                } else if (act.type === 'dialects') {
-                                  return '<div style="display:flex; gap:8px; flex-wrap:wrap;"><strong>Dialect Notes:</strong> ' + act.pairs.map(p => '<span class="badge" style="background:var(--bg-surface); border:1px solid var(--border-light); font-size:0.75rem;">🇺🇸 ' + p.us + ' = 🇬🇧 ' + p.uk + '</span>').join('') + '</div>';
-                                } else if (act.type === 'matching') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div>' + act.pairs.map(p => '<div style="margin:2px 0;">• <strong>' + p.invention + '</strong> ➔ ' + p.function + '</div>').join('') + '</div>';
-                                } else if (act.type === 'questions') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div>' + act.items.map(it => '<div style="margin:4px 0;"><span style="font-weight:600;">' + it.q + '</span><br/><span style="color:var(--color-success); font-weight:600;">➔ Answer: ' + it.a + '</span></div>').join('') + '</div>';
-                                } else if (act.type === 'sequence_device' || act.type === 'sequence_inventor') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div><div style="display:flex; gap:8px; flex-wrap:wrap;">' + act.steps.map(s => '<span style="background:var(--bg-muted); padding:3px 8px; border-radius:4px; font-size:0.75rem;"><strong>' + (s.signal || ('Step ' + s.order)) + ':</strong> ' + s.text + '</span>').join('') + '</div></div>';
-                                } else if (act.type === 'biomimicry') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">Biomimicry: Nature Inspired Inventions</div>' + act.examples.map(ex => '<div style="margin:2px 0;">🌿 ' + ex.nature + ' ➔ 💡 <strong>' + ex.invention + '</strong></div>').join('') + '</div>';
-                                } else if (act.type === 'design_cycle') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">5-Step Engineering Design Loop</div><div style="display:flex; gap:6px; flex-wrap:wrap;">' + act.steps.map(st => '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:700;">' + st + '</span>').join(' ➔ ') + '</div></div>';
-                                } else if (act.type === 'inventor_matrix') {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">Inventors Matrix</div>' + act.rows.map(r => '<div style="margin:2px 0;">• <strong>' + r.inventor + '</strong>: ' + r.invention + ' <em>(' + r.reason + ')</em></div>').join('') + '</div>';
-                                } else if (act.prompt) {
-                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light); font-style:italic;">💬 ' + act.prompt + '</div>';
-                                }
-                                return '';
+                        (u.keyConcept ? '<div style="font-size:0.86rem; font-weight:700; color:var(--color-warning); margin-top:5px;">💡 Key Concept: "' + u.keyConcept + '"</div>' : '') +
+
+                        (u.reading1 || u.reading2 ? 
+                          '<div style="font-size:0.82rem; color:var(--text-muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:4px;">' +
+                            (u.reading1 ? '<span><strong>Reading 1:</strong> ' + u.reading1 + '</span>' : '') +
+                            (u.reading2 ? '<span><strong>Reading 2:</strong> ' + u.reading2 + '</span>' : '') +
+                            (u.selFocus ? '<span>💖 <strong>SEL:</strong> ' + u.selFocus + '</span>' : '') +
+                          '</div>' : ''
+                        ) +
+
+                        (u.targetVocab && u.targetVocab.length > 0 ?
+                          '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">' +
+                            '<strong>Target Vocab:</strong> ' + u.targetVocab.map(v => '<span style="background:var(--bg-canvas); border:1px solid var(--border-light); padding:1px 6px; border-radius:6px; font-size:0.74rem;">' + v + '</span>').join('') +
+                          '</div>' : ''
+                        ) +
+                      '</div>' +
+                    '</div>' +
+
+                    // Unit Top Actions
+                    '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                      (u.pages ? '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + startPage + ', \'' + activeBook.id + '\')" style="font-size:0.8rem; padding:6px 14px; font-weight:800; display:inline-flex; align-items:center; gap:6px;" title="View scanned textbook pages"><span>📖</span> <span>View Pages</span></button>' : '') +
+                      '<button type="button" class="btn-sm-secondary" onclick="openAddLessonModal(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 12px; font-weight:700;">+ Add Lesson</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openEditUnitModal(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;">✏️ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleDuplicateUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;" title="Duplicate Unit">📋</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleArchiveUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px; color:var(--color-danger);" title="Archive Unit">📦</button>' +
+                    '</div>' +
+                  '</div>' +
+
+                  // 4-Week Roadmap Progression Bar
+                  '<div style="padding:14px 24px; background:var(--bg-card); border-bottom:1px solid var(--border-light);">' +
+                    '<div style="font-size:0.74rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">4-Week Modular Progression Roadmap</div>' +
+                    '<div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;" class="timeline-4weeks">' +
+                      weeks.map((w, wIdx) => {
+                        const hasLessons = uLessons.some(l => (l.weekNumber === w.weekNumber) || (!l.weekNumber && (l.order === w.weekNumber || (wIdx === 0 && uLessons.length <= 1))));
+                        return '' +
+                          '<div style="background:var(--bg-surface); border:1px solid ' + (hasLessons ? 'var(--color-primary-soft)' : 'var(--border-light)') + '; border-radius:10px; padding:8px 12px; border-left:3px solid ' + (wIdx === 0 ? '#3b82f6' : (wIdx === 1 ? '#10b981' : (wIdx === 2 ? '#8b5cf6' : '#f59e0b'))) + ';">' +
+                            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                              '<span style="font-size:0.74rem; font-weight:800; color:var(--color-primary);">WEEK ' + w.weekNumber + '</span>' +
+                              (hasLessons ? '<span style="font-size:0.65rem; background:rgba(16,185,129,0.15); color:#059669; font-weight:800; padding:1px 6px; border-radius:6px;">ACTIVE</span>' : '<span style="font-size:0.65rem; color:var(--text-muted);">PLANNED</span>') +
+                            '</div>' +
+                            '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + w.title + '</div>' +
+                            '<div style="font-size:0.72rem; color:var(--text-secondary); margin-top:2px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + w.focus + '</div>' +
+                          '</div>';
+                      }).join('') +
+                    '</div>' +
+                  '</div>' +
+
+                  // Unit Lessons Body (Grouped by 4 Weeks)
+                  '<div style="padding:20px 24px; display:flex; flex-direction:column; gap:16px;">' +
+                    (uLessons.length === 0 ? 
+                      '<div style="font-size:0.86rem; color:var(--text-muted); font-style:italic; padding:12px 0;">No lessons mapped to this unit yet. Click "+ Add Lesson" to create lessons for each week.</div>' :
+                      weeks.map(w => {
+                        // Lessons matching this weekNumber or distributed if unassigned
+                        const weekLessons = uLessons.filter(l => (l.weekNumber === w.weekNumber) || (!l.weekNumber && (l.order === w.weekNumber || (w.weekNumber === 1 && !uLessons.some(other => other.weekNumber)))));
+                        if (weekLessons.length === 0) return '';
+
+                        return '' +
+                          '<div class="week-lesson-group" style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:14px 16px;">' +
+                            '<div style="font-size:0.78rem; font-weight:800; color:var(--color-primary); margin-bottom:10px; display:flex; align-items:center; gap:8px;">' +
+                              '<span>🗓️ Week ' + w.weekNumber + ': ' + w.title + '</span>' +
+                              '<span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">(' + weekLessons.length + ' Lesson' + (weekLessons.length > 1 ? 's' : '') + ')</span>' +
+                            '</div>' +
+
+                            '<div style="display:flex; flex-direction:column; gap:12px;">' +
+                              weekLessons.map((l, lIdx) => {
+                                const lObjs = objectives.filter(o => o.lessonId === l.id);
+                                const lStartPage = l.sourcePages ? parseInt(l.sourcePages.split('–')[0], 10) : startPage;
+                                const hasTasks = (l.tasks && l.tasks.length > 0) || (l.activities && l.activities.length > 0);
+
+                                return '' +
+                                  '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow-xs);">' +
+                                    '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">' +
+                                      '<div style="display:flex; align-items:flex-start; gap:10px; flex:1; min-width:280px;">' +
+                                        // Reorder buttons
+                                        '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
+                                          (lIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonUp(\'' + u.id + '\', \'' + l.id + '\')">▲</button>' : '') +
+                                          (lIdx < weekLessons.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonDown(\'' + u.id + '\', \'' + l.id + '\')">▼</button>' : '') +
+                                        '</div>' +
+
+                                        '<div style="flex:1;">' +
+                                          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                                            '<h4 style="font-size:1.02rem; font-weight:900; margin:0; color:var(--text-main);">' + l.title + '</h4>' +
+                                            (l.sourcePages ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-secondary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:8px; border:1px solid var(--border-light);">📄 p. ' + l.sourcePages + '</span>' : '') +
+                                            (l.gameRoute ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">🎮 ' + (l.gameTitle || 'Game Attached') + '</span>' : '') +
+                                            (l.worksheetTitle ? '<span class="badge" style="background:rgba(99,102,241,0.12); color:#4f46e5; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">📄 ' + l.worksheetTitle + '</span>' : '') +
+                                          '</div>' +
+                                          '<div style="font-size:0.84rem; color:var(--text-secondary); margin-top:4px;">' + (l.objective || 'Primary literacy practice and comprehension.') + '</div>' +
+                                        '</div>' +
+                                      '</div>' +
+
+                                      // Primary Interactive Actions (View Page, Play Game, Attach Game, Attach Worksheet, Assign)
+                                      '<div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">' +
+                                        (l.sourcePages ? 
+                                          '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + lStartPage + ', \'' + activeBook.id + '\', \'' + l.id + '\')" style="padding:4px 10px; font-size:0.76rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">📖 View Page</button>' : '') +
+                                        (l.gameRoute ? 
+                                          '<a href="' + l.gameRoute + '" class="btn-sm-secondary" style="padding:4px 10px; font-size:0.76rem; font-weight:800; color:var(--color-primary); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">▶ Play Game</a>' : '') +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachGameModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach or change game">🎮 Game</button>' +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachWorksheetModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach printable worksheet">📄 Worksheet</button>' +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAssignLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700; color:#b45309;" title="Assign to Class">📝 Assign</button>' +
+                                        (hasTasks ? 
+                                          '<button type="button" class="btn-sm-secondary" onclick="toggleLessonActivities(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">📝 Tasks (' + ((l.activities && l.activities.length) || (l.tasks && l.tasks.length) || 0) + ')</button>' : '') +
+                                        '<button class="btn-sm-secondary" onclick="openAddObjectiveModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">+ Obj</button>' +
+                                        '<button class="btn-sm-secondary" onclick="openEditLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">✏️</button>' +
+                                        '<button class="btn-sm-secondary" onclick="handleDuplicateLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">📋</button>' +
+                                        '<button class="btn-sm-secondary" onclick="handleArchiveLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; color:var(--color-danger);">📦</button>' +
+                                      '</div>' +
+                                    '</div>' +
+
+                                    // Objectives pills
+                                    (lObjs.length > 0 ? 
+                                      '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-light);">' +
+                                        lObjs.map(o => 
+                                          '<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-muted); border:1px solid var(--border-light); padding:2px 8px; border-radius:6px; font-size:0.75rem;">' +
+                                            '<strong>' + o.skill + ':</strong> ' + o.text +
+                                            (o.sourcePages ? '<span style="color:var(--text-muted); font-size:0.7rem;">(p.' + o.sourcePages + ')</span>' : '') +
+                                            '<button type="button" onclick="handleDeleteObjective(\'' + o.id + '\')" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); font-size:0.72rem; padding:0 2px;">✕</button>' +
+                                          '</span>'
+                                        ).join('') +
+                                      '</div>' : ''
+                                    ) +
+
+                                    // Structured Activities / Tasks Panel
+                                    (hasTasks ?
+                                      '<div id="lesson-activities-' + l.id + '" style="display:none; margin-top:12px; padding:14px 16px; background:var(--bg-muted); border-radius:10px; border:1px solid var(--border-light); font-size:0.84rem;">' +
+                                        '<div style="font-weight:800; color:var(--text-main); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">' +
+                                          '<span>📖 Structured Scanned Content &amp; Lesson Activities</span>' +
+                                          '<button type="button" onclick="toggleLessonActivities(\'' + l.id + '\')" style="background:transparent; border:none; cursor:pointer; font-size:0.78rem; color:var(--text-muted);">Close ✕</button>' +
+                                        '</div>' +
+                                        (l.tasks ? 
+                                          '<div style="display:flex; flex-direction:column; gap:6px;">' +
+                                            l.tasks.map(t => '<div><strong>' + (t.label || t.pair || t.blend || 'Task') + ':</strong> ' + (t.words ? t.words.join(', ') : '') + '</div>').join('') +
+                                          '</div>' : ''
+                                        ) +
+                                        (l.activities ?
+                                          '<div style="display:flex; flex-direction:column; gap:8px;">' +
+                                            l.activities.map(act => {
+                                              if (act.type === 'story') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; color:var(--color-primary);">' + act.title + '</div><div style="font-style:italic; margin-top:4px; line-height:1.45;">"' + act.text + '"</div></div>';
+                                              } else if (act.type === 'vocab_definitions') {
+                                                return '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px;">' + act.words.map(w => '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);"><strong>' + w.word + ':</strong> ' + w.def + '</div>').join('') + '</div>';
+                                              } else if (act.type === 'dialects') {
+                                                return '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;"><strong>Dialect Notes:</strong> ' + act.pairs.map(p => '<span class="badge" style="background:var(--bg-surface); border:1px solid var(--border-light); font-size:0.75rem;">🇺🇸 ' + p.us + ' = 🇬🇧 ' + p.uk + '</span>').join('') + '</div>';
+                                              } else if (act.type === 'matching') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.pairs.map(p => '<div style="margin:2px 0;">• <strong>' + p.invention + '</strong> ➔ ' + p.function + '</div>').join('') + '</div>';
+                                              } else if (act.type === 'questions') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.items.map(it => '<div style="margin:4px 0;"><span style="font-weight:600;">' + it.q + '</span><br/><span style="color:var(--color-success); font-weight:700;">➔ ' + it.a + '</span></div>').join('') + '</div>';
+                                              } else if (act.type === 'sequence_device' || act.type === 'sequence_inventor') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div><div style="display:flex; gap:8px; flex-wrap:wrap;">' + act.steps.map(s => '<span style="background:var(--bg-muted); padding:4px 10px; border-radius:6px; font-size:0.75rem;"><strong>' + (s.signal || ('Step ' + s.order)) + ':</strong> ' + s.text + '</span>').join('') + '</div></div>';
+                                              } else if (act.type === 'biomimicry') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">Biomimicry: Nature Inspired Inventions</div>' + act.examples.map(ex => '<div style="margin:2px 0;">🌿 ' + ex.nature + ' ➔ 💡 <strong>' + ex.invention + '</strong></div>').join('') + '</div>';
+                                              } else if (act.type === 'design_cycle') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">5-Step Engineering Design Loop</div><div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">' + act.steps.map(st => '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:800;">' + st + '</span>').join(' ➔ ') + '</div></div>';
+                                              } else if (act.type === 'inventor_matrix') {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">Inventors Matrix</div>' + act.rows.map(r => '<div style="margin:2px 0;">• <strong>' + r.inventor + '</strong>: ' + r.invention + ' <em>(' + r.reason + ')</em></div>').join('') + '</div>';
+                                              } else if (act.prompt) {
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light); font-style:italic;">💬 ' + act.prompt + '</div>';
+                                              }
+                                              return '';
+                                            }).join('') +
+                                          '</div>' : ''
+                                        ) +
+                                      '</div>' : ''
+                                    ) +
+                                  '</div>';
                               }).join('') +
-                            '</div>' : ''
-                          ) +
-                        '</div>' : ''
-                      ) +
-                    '</div>';
-                }).join('') +
-              '</div>' +
-            '</div>';
-        }).join('') +
+                            '</div>' +
+                          '</div>';
+                      }).join('')
+                    ) +
+                  '</div>' +
+                '</div>';
+            }).join('')
+          ) +
+        '</div>' +
       '</div>';
   }
 
-  // =========================================================================
   // LESSON LIBRARY & WORKSHEETS CATALOG
   // =========================================================================
   let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets'
@@ -4398,127 +4518,191 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!sidebar) return;
 
     const role = store.getRole();
+    const counts = (store && store.getSidebarCounts) ? store.getSidebarCounts() : {
+      classes: store.getClasses().length,
+      students: store.getStudents().length,
+      curriculum: (store.getBooks ? store.getBooks().length : 2),
+      resources: store.getResources().length,
+      worksheets: (store.getWorksheets ? store.getWorksheets().length : 4),
+      assignments: store.getAssignments().length,
+      homework: store.getHomework().length,
+      quizzes: store.getQuizzes().length,
+      reports: 5,
+      messages: 3
+    };
 
     if (role === 'teacher') {
-      const classesCount = store.getClasses().length;
-      const studentsCount = store.getStudents().length;
-      const resourcesCount = store.getResources().length;
-      const assignmentsCount = store.getAssignments().length;
-      const homeworkCount = store.getHomework().length;
-      const quizzesCount = store.getQuizzes().length;
-      const reportsCount = store.getReports().length;
-
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">Dashboard</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')"><span class="nav-item-left"><span>📊</span> Overview</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
         '</ul>' +
 
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">My School</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classes' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classes\')"><span class="nav-item-left"><span>👥</span> Classes</span><span class="nav-badge-pill">' + classesCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')"><span class="nav-item-left"><span>🧒</span> Classroom Hub</span><span class="nav-badge-pill">' + studentsCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'attendance' ? 'is-active' : '') + '" onclick="switchView(\'attendance\')"><span class="nav-item-left"><span>📋</span> Attendance</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'classes' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classes\')" title="Classes"><span class="nav-item-left"><span class="nav-icon">👥</span> <span class="nav-label">Classes</span></span><span class="nav-badge-pill">' + counts.classes + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')" title="Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🧒</span> <span class="nav-label">Classroom Hub</span></span><span class="nav-badge-pill">' + counts.students + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'attendance' ? 'is-active' : '') + '" onclick="switchView(\'attendance\')" title="Attendance"><span class="nav-item-left"><span class="nav-icon">📋</span> <span class="nav-label">Attendance</span></span></button></li>' +
         '</ul>' +
 
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">Teaching</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')"><span class="nav-item-left"><span>📚</span> Curriculum</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')"><span class="nav-item-left"><span>🎮</span> Resource Library</span><span class="nav-badge-pill">' + resourcesCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')"><span class="nav-item-left"><span>📄</span> Printable Worksheets</span><span class="nav-badge-pill">' + (store.getWorksheets ? store.getWorksheets().length : 4) + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')"><span class="nav-item-left"><span>📝</span> Assignments</span><span class="nav-badge-pill">' + assignmentsCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')"><span class="nav-item-left"><span>✍️</span> Homework</span><span class="nav-badge-pill">' + homeworkCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')"><span class="nav-item-left"><span>🧩</span> Quizzes &amp; Tests</span><span class="nav-badge-pill">' + quizzesCount + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')" title="Curriculum"><span class="nav-item-left"><span class="nav-icon">📚</span> <span class="nav-label">Curriculum</span></span><span class="nav-badge-pill">' + counts.curriculum + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Resource Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Resource Library</span></span><span class="nav-badge-pill">' + counts.resources + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')" title="Printable Worksheets"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Worksheets</span></span><span class="nav-badge-pill">' + counts.worksheets + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')" title="Assignments"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">Assignments</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')" title="Homework"><span class="nav-item-left"><span class="nav-icon">✍️</span> <span class="nav-label">Homework</span></span><span class="nav-badge-pill">' + counts.homework + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')" title="Quizzes & Tests"><span class="nav-item-left"><span class="nav-icon">🧩</span> <span class="nav-label">Quizzes &amp; Tests</span></span><span class="nav-badge-pill">' + counts.quizzes + '</span></button></li>' +
         '</ul>' +
 
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">Assessment</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assessments' ? 'is-active' : '') + '" onclick="switchView(\'assessments\')"><span class="nav-item-left"><span>🎯</span> Assessments &amp; Rubrics</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress' ? 'is-active' : '') + '" onclick="switchView(\'progress\')"><span class="nav-item-left"><span>📈</span> Progress &amp; CEFR</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'reports' ? 'is-active' : '') + '" onclick="switchView(\'reports\')"><span class="nav-item-left"><span>📄</span> Reports</span><span class="nav-badge-pill">' + reportsCount + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'assessments' ? 'is-active' : '') + '" onclick="switchView(\'assessments\')" title="Assessments & Rubrics"><span class="nav-item-left"><span class="nav-icon">🎯</span> <span class="nav-label">Assessments &amp; Rubrics</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'progress' ? 'is-active' : '') + '" onclick="switchView(\'progress\')" title="Progress & CEFR"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">Progress &amp; CEFR</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'reports' ? 'is-active' : '') + '" onclick="switchView(\'reports\')" title="Reports"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Reports</span></span><span class="nav-badge-pill">' + counts.reports + '</span></button></li>' +
         '</ul>' +
 
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">Community</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'story' ? 'is-active' : '') + '" onclick="switchView(\'story\')"><span class="nav-item-left"><span>📸</span> Class Story</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'messages' ? 'is-active' : '') + '" onclick="switchView(\'messages\')"><span class="nav-item-left"><span>💬</span> Messages</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'portfolios' ? 'is-active' : '') + '" onclick="switchView(\'portfolios\')"><span class="nav-item-left"><span>🎨</span> Portfolios</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'story' ? 'is-active' : '') + '" onclick="switchView(\'story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'messages' ? 'is-active' : '') + '" onclick="switchView(\'messages\')" title="Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'portfolios' ? 'is-active' : '') + '" onclick="switchView(\'portfolios\')" title="Portfolios"><span class="nav-item-left"><span class="nav-icon">🎨</span> <span class="nav-label">Portfolios</span></span></button></li>' +
         '</ul>' +
 
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">Admin &amp; Audit</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')"><span class="nav-item-left"><span>📊</span> System Health &amp; CRUD</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')"><span class="nav-item-left"><span>🏆</span> Gamification &amp; Badges</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'archived' ? 'is-active' : '') + '" onclick="switchView(\'archived\')"><span class="nav-item-left"><span>🗄️</span> Archived &amp; Restore</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'settings' ? 'is-active' : '') + '" onclick="switchView(\'settings\')"><span class="nav-item-left"><span>⚙️</span> School Settings</span></button></li>' +
-        '</ul>';
+          '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')" title="System Health & CRUD"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">System Health</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')" title="Gamification & Badges"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Gamification</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'archived' ? 'is-active' : '') + '" onclick="switchView(\'archived\')" title="Archived Items & Restore"><span class="nav-item-left"><span class="nav-icon">🗄️</span> <span class="nav-label">Archived &amp; Restore</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'settings' ? 'is-active' : '') + '" onclick="switchView(\'settings\')" title="School Settings"><span class="nav-item-left"><span class="nav-icon">⚙️</span> <span class="nav-label">School Settings</span></span></button></li>' +
+        '</ul>' +
+
+        // Sidebar Collapse Toggle Button
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all 0.15s ease;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
+          '</button>' +
+        '</div>';
     } else if (role === 'student') {
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">My Adventure</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')"><span class="nav-item-left"><span>🗺️</span> My Journey</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')"><span class="nav-item-left"><span>🎮</span> Game Library</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')"><span class="nav-item-left"><span>📝</span> My Missions</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')"><span class="nav-item-left"><span>🏆</span> Badges &amp; XP</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')"><span class="nav-item-left"><span>⭐</span> Leaderboard</span></button></li>' +
-        '</ul>';
+          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')" title="My Journey"><span class="nav-item-left"><span class="nav-icon">🗺️</span> <span class="nav-label">My Journey</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Game Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Game Library</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
+        '</ul>' +
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
+          '</button>' +
+        '</div>';
     } else {
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">Parent Portal</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')"><span class="nav-item-left"><span>🏠</span> Child Overview</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress' ? 'is-active' : '') + '" onclick="switchView(\'progress\')"><span class="nav-item-left"><span>📈</span> CEFR Report</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'story' ? 'is-active' : '') + '" onclick="switchView(\'story\')"><span class="nav-item-left"><span>📸</span> Class Story</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'messages' ? 'is-active' : '') + '" onclick="switchView(\'messages\')"><span class="nav-item-left"><span>💬</span> Messages</span></button></li>' +
-        '</ul>';
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Child Overview</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-progress' ? 'is-active' : '') + '" onclick="switchView(\'parent-progress\')" title="CEFR Progress"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">CEFR Progress</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
+        '</ul>' +
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
+          '</button>' +
+        '</div>';
+    }
+
+    // Restore collapsed sidebar state if user toggled it
+    if (localStorage.getItem('eaa-sidebar-collapsed') === 'true') {
+      sidebar.classList.add('is-collapsed');
+      const layout = document.querySelector('.app-layout');
+      if (layout) layout.classList.add('sidebar-collapsed');
     }
   }
 
-  // =========================================================================
+  window.toggleSidebarCollapse = function() {
+    const sidebar = document.getElementById('app-sidebar-nav');
+    const layout = document.querySelector('.app-layout');
+    const isCollapsed = sidebar && sidebar.classList.contains('is-collapsed');
+    if (isCollapsed) {
+      if (sidebar) sidebar.classList.remove('is-collapsed');
+      if (layout) layout.classList.remove('sidebar-collapsed');
+      localStorage.setItem('eaa-sidebar-collapsed', 'false');
+    } else {
+      if (sidebar) sidebar.classList.add('is-collapsed');
+      if (layout) layout.classList.add('sidebar-collapsed');
+      localStorage.setItem('eaa-sidebar-collapsed', 'true');
+    }
+  };
+
   // ROUTER CONTROLLER
   // =========================================================================
   function renderCurrentView() {
     const container = document.getElementById('app-view-container');
     if (!container) return;
 
-    renderNavigation();
+    try {
+      renderNavigation();
+    } catch (navErr) {
+      console.error('Navigation Render Error:', navErr);
+    }
 
-    switch (currentView) {
-      case 'dashboard': renderTeacherDashboard(container); break;
-      case 'classes': renderClassesView(container); break;
-      case 'class-detail': renderClassDetailView(container); break;
-      case 'students': renderStudentsView(container); break;
-      case 'curriculum': renderCurriculumView(container); break;
-      case 'library': renderLibraryView(container); break;
-      case 'assignments': renderAssignmentsView(container); break;
-      case 'homework': renderHomeworkView(container); break;
-      case 'quizzes': renderQuizzesView(container); break;
-      case 'assessments': renderAssessmentsView(container); break;
-      case 'attendance': renderAttendanceView(container); break;
-      case 'progress': renderProgressView(container); break;
-      case 'analytics': renderAnalyticsView(container); break;
-      case 'reports': renderReportsView(container); break;
-      case 'story': renderClassStoryView(container); break;
-      case 'messages': renderMessagesView(container); break;
-      case 'portfolios': renderPortfoliosView(container); break;
-      case 'health':
-      case 'system-health': renderSystemHealthView(container); break;
-      case 'worksheets': renderWorksheetsView(container); break;
-      case 'archived': renderArchivedManagerView(container); break;
-      case 'settings': renderSchoolSettingsView(container); break;
-      case 'gamification': renderGamificationView(container); break;
-      case 'monster': renderMonsterStudentView(container); break;
-      case 'adventure': renderStudentAdventureView(container); break;
-      case 'tasks': renderStudentTasksView(container); break;
-      case 'badges': renderStudentBadgesView(container); break;
-      case 'leaderboard': renderLeaderboardView(container); break;
-      case 'parent-home': renderParentHomeView(container); break;
-      default: renderTeacherDashboard(container); break;
+    try {
+      switch (currentView) {
+        case 'dashboard': renderTeacherDashboard(container); break;
+        case 'classes': renderClassesView(container); break;
+        case 'class-detail': renderClassDetailView(container); break;
+        case 'students': renderStudentsView(container); break;
+        case 'curriculum': renderCurriculumView(container); break;
+        case 'library': renderLibraryView(container); break;
+        case 'assignments': renderAssignmentsView(container); break;
+        case 'homework': renderHomeworkView(container); break;
+        case 'quizzes': renderQuizzesView(container); break;
+        case 'assessments': renderAssessmentsView(container); break;
+        case 'attendance': renderAttendanceView(container); break;
+        case 'progress': renderProgressView(container); break;
+        case 'analytics': renderAnalyticsView(container); break;
+        case 'reports': renderReportsView(container); break;
+        case 'story': renderClassStoryView(container); break;
+        case 'messages': renderMessagesView(container); break;
+        case 'portfolios': renderPortfoliosView(container); break;
+        case 'health':
+        case 'system-health': renderSystemHealthView(container); break;
+        case 'worksheets': renderWorksheetsView(container); break;
+        case 'archived': renderArchivedManagerView(container); break;
+        case 'settings': renderSchoolSettingsView(container); break;
+        case 'gamification': renderGamificationView(container); break;
+        case 'monster': renderMonsterStudentView(container); break;
+        case 'adventure': renderStudentAdventureView(container); break;
+        case 'tasks': renderStudentTasksView(container); break;
+        case 'badges': renderStudentBadgesView(container); break;
+        case 'leaderboard': renderLeaderboardView(container); break;
+        case 'parent-home': renderParentHomeView(container); break;
+        default: renderTeacherDashboard(container); break;
+      }
+    } catch (viewErr) {
+      console.error('Application View Render Error in view [' + currentView + ']:', viewErr);
+      container.innerHTML = 
+        '<div class="error-boundary-box" style="padding:48px 24px; text-align:center; max-width:620px; margin:40px auto; background:var(--bg-surface); border:1px solid var(--border-light); border-radius:18px; box-shadow:var(--shadow-md);">' +
+          '<div style="font-size:3.2rem; margin-bottom:12px;">⚠️</div>' +
+          '<h2 style="font-size:1.45rem; font-weight:900; color:var(--text-main); margin:0 0 8px 0;">Something went wrong loading this page.</h2>' +
+          '<p style="font-size:0.88rem; color:var(--text-muted); margin:0 0 24px 0; line-height:1.4;">We encountered an issue rendering this section. Your student data, monster profiles, and XP transactions are completely intact.</p>' +
+          '<div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">' +
+            '<button type="button" class="btn-primary-action" onclick="renderCurrentView()" style="padding:10px 20px;">🔄 Retry</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="navigateTo(\'dashboard\')" style="padding:10px 20px;">🏠 Back to Classroom</button>' +
+          '</div>' +
+          '<details style="margin-top:20px; text-align:left; font-size:0.75rem; color:var(--text-muted); background:var(--bg-canvas); padding:10px 14px; border-radius:8px; border:1px solid var(--border-light);">' +
+            '<summary style="cursor:pointer; font-weight:700;">Technical Diagnostics</summary>' +
+            '<pre style="white-space:pre-wrap; margin-top:6px; color:#dc2626;">' + (viewErr && viewErr.stack ? viewErr.stack : String(viewErr)) + '</pre>' +
+          '</details>' +
+        '</div>';
     }
   }
 
@@ -7598,7 +7782,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (monsterCreatorActiveTab === 'monster') categoriesInTab = ['body'];
     else if (monsterCreatorActiveTab === 'face') categoriesInTab = ['eyes', 'mouth'];
     else if (monsterCreatorActiveTab === 'features') categoriesInTab = ['horns', 'wings', 'tail'];
-    else if (monsterCreatorActiveTab === 'clothing') categoriesInTab = ['hat', 'glasses', 'backpack', 'accessory'];
+    else if (monsterCreatorActiveTab === 'clothing') categoriesInTab = ['clothing', 'hat', 'glasses', 'backpack', 'accessory'];
     else if (monsterCreatorActiveTab === 'world') categoriesInTab = ['background', 'aura'];
 
     const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
@@ -7610,6 +7794,7 @@ window.switchClassroomSubTab = function(subTab) {
       noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', icon: '✕', isNone: true });
     }
     if (monsterCreatorActiveTab === 'clothing') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Clothing', icon: '✕', isNone: true });
       noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', icon: '✕', isNone: true });
       noneOptions.push({ id: 'glasses-none', category: 'glasses', name: 'No Glasses', icon: '✕', isNone: true });
       noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', icon: '✕', isNone: true });
@@ -7698,12 +7883,13 @@ window.switchClassroomSubTab = function(subTab) {
     const descEl = document.getElementById('avatar-preview-desc');
     const summaryEl = document.getElementById('monster-creator-equipped-summary');
 
-    if (box && window.MonsterRenderer) {
-      box.innerHTML = window.MonsterRenderer.renderMonsterSVG({
+    if (box && (window.MonsterRenderer || window.renderMonsterSVG)) {
+      const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
+      box.innerHTML = renderFn({
         stage: mState.stageKey,
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
-        size: 150,
+        size: 260,
         animated: true
       });
     }
@@ -7712,15 +7898,63 @@ window.switchClassroomSubTab = function(subTab) {
     if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
     if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
 
+    // Render Quick Fur Color Swatches
+    const swatchEl = document.getElementById('monster-color-swatches');
+    if (swatchEl) {
+      const colors = [
+        { id: 'blue', hex: '#3b82f6', label: 'Sky Blue' },
+        { id: 'pink', hex: '#ec4899', label: 'Berry Pink' },
+        { id: 'green', hex: '#10b981', label: 'Leaf Green' },
+        { id: 'orange', hex: '#f97316', label: 'Sunset Orange' },
+        { id: 'purple', hex: '#8b5cf6', label: 'Lavender Purple' },
+        { id: 'gold', hex: '#eab308', label: 'Royal Gold' }
+      ];
+      swatchEl.innerHTML = colors.map(c => '' +
+        '<button type="button" title="' + c.label + '" onclick="handleQuickSetColor(\'' + c.id + '\')" style="width:28px; height:28px; border-radius:50%; background:' + c.hex + '; border:' + (monsterCreatorDraft.baseColor === c.id ? '3px solid #0f172a' : '2px solid #ffffff') + '; box-shadow:var(--shadow-xs); cursor:pointer; transform:' + (monsterCreatorDraft.baseColor === c.id ? 'scale(1.15)' : 'scale(1)') + '; transition:all 0.15s ease;"></button>'
+      ).join('');
+    }
+
     if (summaryEl) {
       const eq = monsterCreatorDraft.equipped;
-      summaryEl.innerHTML = '' +
-        '<div><strong>Color:</strong> ' + monsterCreatorDraft.baseColor.toUpperCase() + '</div>' +
-        '<div><strong>Eyes:</strong> ' + (eq.eyes || 'eyes-sparkle') + ' · <strong>Mouth:</strong> ' + (eq.mouth || 'mouth-smile') + '</div>' +
-        '<div><strong>Wings:</strong> ' + (eq.wings && eq.wings !== 'none' ? eq.wings : 'None') + ' · <strong>Horns:</strong> ' + (eq.horns || 'horns-ears') + '</div>' +
-        '<div><strong>Gear:</strong> ' + (eq.hat && eq.hat !== 'none' ? eq.hat : 'None') + ', ' + (eq.glasses && eq.glasses !== 'none' ? eq.glasses : 'None') + '</div>' +
-        '<div><strong>World:</strong> ' + (eq.background || 'bg-meadow') + ' · <strong>Aura:</strong> ' + (eq.aura && eq.aura !== 'none' ? eq.aura : 'None') + '</div>';
+      const layers = [
+        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, canRemove: false },
+        { label: 'Eyes', val: eq.eyes, canRemove: false },
+        { label: 'Mouth', val: eq.mouth, canRemove: false },
+        { label: 'Horns', val: eq.horns, canRemove: true, cat: 'horns' },
+        { label: 'Wings', val: eq.wings, canRemove: true, cat: 'wings' },
+        { label: 'Tail', val: eq.tail, canRemove: true, cat: 'tail' },
+        { label: 'Clothing', val: eq.clothing, canRemove: true, cat: 'clothing' },
+        { label: 'Hat', val: eq.hat, canRemove: true, cat: 'hat' },
+        { label: 'Glasses', val: eq.glasses, canRemove: true, cat: 'glasses' },
+        { label: 'Backpack', val: eq.backpack, canRemove: true, cat: 'backpack' },
+        { label: 'Accessory', val: eq.accessory, canRemove: true, cat: 'accessory' },
+        { label: 'Aura', val: eq.aura, canRemove: true, cat: 'aura' },
+        { label: 'World', val: eq.background, canRemove: false }
+      ];
+
+      summaryEl.innerHTML = layers.filter(l => l.val && l.val !== 'none').map(l => '' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:4px 8px; font-size:0.75rem;">' +
+          '<span><strong style="color:var(--text-main);">' + l.label + ':</strong> ' + l.val + '</span>' +
+          (l.canRemove ? '<button type="button" onclick="handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip item" style="background:transparent; border:none; color:var(--color-danger); cursor:pointer; font-size:0.75rem; padding:0 4px;">✕</button>' : '') +
+        '</div>'
+      ).join('');
     }
+  };
+
+  
+  window.handleQuickSetColor = function(colorId) {
+    if (!monsterCreatorDraft) return;
+    monsterCreatorDraft.baseColor = colorId;
+    monsterCreatorDraft.equipped.body = 'body-' + colorId;
+    window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
+  };
+
+  window.handleRemoveEquippedLayer = function(category) {
+    if (!monsterCreatorDraft || !category) return;
+    monsterCreatorDraft.equipped[category] = 'none';
+    window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
   };
 
   window.handleConfirmSaveMonster = function() {
@@ -8479,10 +8713,26 @@ window.switchClassroomSubTab = function(subTab) {
     tbCurrentBookId = bookId || 'book-global-readings-2';
     tbIsZoomed = false;
 
+    const isGR3 = tbCurrentBookId === 'book-global-readings-3';
+    const pages = (store && store.getBookPages) ? store.getBookPages(tbCurrentBookId) : (isGR3 ? (window.GLOBAL_READINGS_3_PAGES || []) : (window.GLOBAL_READINGS_2_PAGES || []));
+
+    // Update modal header title & badges
+    const titleEl = document.getElementById('tb-viewer-title');
+    if (titleEl) {
+      titleEl.textContent = isGR3 ? 'Global Readings 3 (Grade 4) — Textbook Page Viewer' : 'Global Readings 2 (Grade 3) — Textbook Page Viewer';
+    }
+    const pdfLink = document.getElementById('tb-viewer-pdf-link');
+    if (pdfLink) {
+      pdfLink.href = isGR3 ? 'assets/books/global-readings-3/Global-Readings-3.pdf' : 'assets/books/global-readings-2/Global-Readings-2.pdf';
+    }
+    const totalLabel = document.getElementById('tb-total-pages-label');
+    if (totalLabel) {
+      totalLabel.textContent = 'of ' + pages.length;
+    }
+
     // Populate page select dropdown
     const select = document.getElementById('tb-page-select');
-    const pages = window.GLOBAL_READINGS_2_PAGES || [];
-    if (select && (!select.options || select.options.length === 0 || select.options.length !== pages.length)) {
+    if (select) {
       select.innerHTML = pages.map(p => 
         '<option value="' + p.page + '">Page ' + p.page + ': ' + p.title + '</option>'
       ).join('');
@@ -8493,12 +8743,13 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   function renderTextbookPage(pageNum) {
-    const pages = window.GLOBAL_READINGS_2_PAGES || [];
+    const isGR3 = tbCurrentBookId === 'book-global-readings-3';
+    const pages = (store && store.getBookPages) ? store.getBookPages(tbCurrentBookId) : (isGR3 ? (window.GLOBAL_READINGS_3_PAGES || []) : (window.GLOBAL_READINGS_2_PAGES || []));
     const pageData = pages.find(p => p.page === pageNum) || pages[0] || {
       page: pageNum,
-      file: 'assets/books/global-readings-2/page_' + String(pageNum).padStart(2, '0') + '.jpg',
+      file: (isGR3 ? 'assets/books/global-readings-3/' : 'assets/books/global-readings-2/') + 'page_' + String(pageNum).padStart(2, '0') + '.jpg',
       title: 'Page ' + pageNum,
-      unit: 'Global Readings 2',
+      unit: isGR3 ? 'Global Readings 3' : 'Global Readings 2',
       section: ''
     };
 
@@ -8605,7 +8856,8 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   window.nextTextbookPage = function() {
-    const pages = window.GLOBAL_READINGS_2_PAGES || [];
+    const isGR3 = tbCurrentBookId === 'book-global-readings-3';
+    const pages = (store && store.getBookPages) ? store.getBookPages(tbCurrentBookId) : (isGR3 ? (window.GLOBAL_READINGS_3_PAGES || []) : (window.GLOBAL_READINGS_2_PAGES || []));
     if (tbCurrentPage < pages.length) {
       renderTextbookPage(tbCurrentPage + 1);
     }
@@ -9151,3 +9403,220 @@ window.switchClassroomSubTab = function(subTab) {
   window.renderToolkitRandomView = renderToolkitRandomView;
 
   })(typeof window !== 'undefined' ? window : global);
+
+
+  // =========================================================================
+  // FULLSCREEN MONSTER SHOWCASE CONTROLLER
+  // =========================================================================
+  window.openMonsterFullscreenModal = function(studentId) {
+    if (!studentId) return;
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const monsterState = store.calculateMonsterState(studentId);
+    const profile = store.getMonsterProfile(studentId);
+    const totalXP = store.getStudentTotalXP(studentId);
+    const container = document.getElementById('fs-monster-content');
+    if (!container) return;
+
+    const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
+    const monsterSvg = renderFn({
+      stage: monsterState.stageKey,
+      color: profile.baseColor || 'blue',
+      equipped: profile.equipped || {},
+      size: 280,
+      animated: true
+    });
+
+    const equippedList = [];
+    const eq = profile.equipped || {};
+    if (eq.body) equippedList.push(eq.body.replace('body-', '') + ' fur');
+    if (eq.horns && eq.horns !== 'none') equippedList.push(eq.horns);
+    if (eq.wings && eq.wings !== 'none') equippedList.push(eq.wings);
+    if (eq.tail && eq.tail !== 'none') equippedList.push(eq.tail);
+    if (eq.clothing && eq.clothing !== 'none') equippedList.push(eq.clothing);
+    if (eq.hat && eq.hat !== 'none') equippedList.push(eq.hat);
+    if (eq.glasses && eq.glasses !== 'none') equippedList.push(eq.glasses);
+    if (eq.aura && eq.aura !== 'none') equippedList.push(eq.aura);
+
+    container.innerHTML = '' +
+      '<div style="display:flex; flex-direction:column; align-items:center; gap:14px;">' +
+        '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center;">' +
+          '<span class="badge" style="background:rgba(99,102,241,0.3); color:#a5b4fc; font-size:0.85rem; font-weight:800; padding:4px 14px; border-radius:20px; border:1px solid rgba(165,180,252,0.3);">' +
+            'Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName +
+          '</span>' +
+          '<span class="badge" style="background:rgba(16,185,129,0.3); color:#6ee7b7; font-size:0.85rem; font-weight:800; padding:4px 14px; border-radius:20px; border:1px solid rgba(110,231,183,0.3);">' +
+            student.overallCefr + ' Explorer' +
+          '</span>' +
+        '</div>' +
+
+        '<h1 style="font-size:2.1rem; font-weight:900; margin:0; color:#ffffff; letter-spacing:0.5px;">' +
+          (profile.petName || profile.monsterName || (student.firstName + "'s Monster")) +
+        '</h1>' +
+        '<div style="font-size:0.95rem; color:#cbd5e1;">' + student.firstName + ' ' + student.lastName + ' · ' + student.grade + '</div>' +
+
+        '<div style="width:300px; height:300px; border-radius:32px; background:radial-gradient(circle, rgba(99,102,241,0.25) 0%, rgba(15,23,42,0.9) 70%); display:flex; align-items:center; justify-content:center; box-shadow:0 15px 40px rgba(0,0,0,0.5); border:1px solid rgba(147,197,253,0.25);">' +
+          monsterSvg +
+        '</div>' +
+
+        '<div style="width:100%; max-width:440px; background:rgba(30,41,59,0.7); border:1px solid rgba(148,163,184,0.2); border-radius:14px; padding:14px 18px;">' +
+          '<div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:800; margin-bottom:6px;">' +
+            '<span style="color:#fde047;">⭐ ' + totalXP.toLocaleString() + ' Total XP</span>' +
+            '<span style="color:#a5b4fc;">' + (monsterState.xpToNext > 0 ? (monsterState.xpToNext.toLocaleString() + ' XP to Next Evolution') : '👑 Ultimate Stage') + '</span>' +
+          '</div>' +
+          '<div style="height:10px; border-radius:5px; background:rgba(51,65,85,0.8); overflow:hidden;">' +
+            '<div style="height:100%; width:' + monsterState.progressPct + '%; background:linear-gradient(90deg, #38bdf8, #a855f7); border-radius:5px;"></div>' +
+          '</div>' +
+        '</div>' +
+
+        (equippedList.length > 0 ? 
+          '<div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; max-width:540px;">' +
+            equippedList.map(item => '<span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:#e2e8f0;">✨ ' + item + '</span>').join('') +
+          '</div>' : ''
+        ) +
+
+        '<div style="display:flex; gap:12px; margin-top:8px;">' +
+          '<button type="button" class="btn-primary-action" style="padding:10px 20px; font-size:0.9rem; font-weight:800;" onclick="closeModal(\'modal-monster-fullscreen\'); openMonsterCreator(\'' + student.id + '\')">🎨 Customize Monster</button>' +
+          '<button type="button" class="btn-sm-secondary" style="padding:10px 18px; font-size:0.9rem; background:rgba(255,255,255,0.1); color:#ffffff; border:1px solid rgba(255,255,255,0.2);" onclick="closeModal(\'modal-monster-fullscreen\')">✕ Close</button>' +
+        '</div>' +
+      '</div>';
+
+    window.openModal('modal-monster-fullscreen');
+  };
+
+
+  // =========================================================================
+  // LESSON ATTACHMENT MODALS & CONTROLLERS (Games, Worksheets, Assignments)
+  // =========================================================================
+  let currentAttachingLessonId = null;
+
+  window.openAttachGameModal = function(lessonId) {
+    currentAttachingLessonId = lessonId;
+    const lesson = store.getLesson ? store.getLesson(lessonId) : null;
+    const titleEl = document.getElementById('attach-game-lesson-title');
+    if (titleEl) {
+      titleEl.textContent = lesson ? ('Attaching game to: ' + lesson.title) : 'Select a game from Adventure Academy library';
+    }
+
+    const listEl = document.getElementById('attach-game-list');
+    if (listEl) {
+      const standardGames = [
+        { id: 'city-mouse', title: 'City Mouse & Country Mouse', route: 'city-mouse/index.html', icon: '🐭', desc: 'Reading comprehension, town vs country vocab, and moral understanding.' },
+        { id: 'treasure', title: 'Who Stole the Treasure?', route: 'treasure/index.html', icon: '💎', desc: 'Prepositions of place, detective deduction, and crime scene mystery.' },
+        { id: 'pokemon', title: 'Pokémon Word Quest', route: 'pokemon/index.html', icon: '⚡', desc: 'Spelling, grammatical word classes, and monster catching mechanics.' },
+        { id: 'firefighter', title: 'Fire Station Adventure', route: 'firefighter/index.html', icon: '🚒', desc: 'Emergency services vocabulary, sequence ordering, and community helpers.' },
+        { id: 'jungle', title: 'Jungle Explorer Safari', route: 'jungle/index.html', icon: '🌴', desc: 'Habitats, wildlife taxonomy, animal traits, and descriptive adjectives.' },
+        { id: 'wizard-of-oz', title: 'Wizard of Oz Story Quest', route: 'wizard-of-oz/index.html', icon: '🌪️', desc: 'Classic children narrative, character emotions, and story structure.' },
+        { id: 'monster-day', title: 'Monster Day Daily Routines', route: 'monster-day/index.html', icon: '👾', desc: 'Clock time, morning-to-night routine verbs, and temporal sequencing.' },
+        { id: 'restaurant', title: 'Restaurant English Cafe', route: 'restaurant/index.html', icon: '🍽️', desc: 'Polite ordering dialogues, food vocabulary, and social communication.' },
+        { id: 'neighbourhood', title: 'Neighbourhood Town Explorer', route: 'neighbourhood/index.html', icon: '🏡', desc: 'Places in town, directional navigation, and community landmarks.' },
+        { id: 'predictions', title: 'Future Inventions Lab', route: 'predictions/index.html', icon: '🚀', desc: 'Future tense will/going to, science inventions, and creative speaking.' },
+        { id: 'advice', title: 'Doctor Visit & Health Advice', route: 'advice/index.html', icon: '🩺', desc: 'Giving health advice with should/should not, illness vocabulary.' }
+      ];
+
+      listEl.innerHTML = standardGames.map(g => '' +
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:12px; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;">' +
+          '<div style="display:flex; gap:10px; align-items:center; min-width:0;">' +
+            '<span style="font-size:1.6rem; flex-shrink:0;">' + g.icon + '</span>' +
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + g.title + '</div>' +
+              '<div style="font-size:0.74rem; color:var(--text-muted); line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + g.desc + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="btn-primary-action" onclick="handleConfirmAttachGame(\'' + g.route + '\', \'' + g.title.replace(/'/g, "\\'") + '\')" style="padding:4px 12px; font-size:0.76rem; font-weight:800; flex-shrink:0;">Attach</button>' +
+        '</div>'
+      ).join('');
+    }
+
+    window.openModal('modal-attach-game');
+  };
+
+  window.handleConfirmAttachGame = function(route, title) {
+    if (!currentAttachingLessonId) return;
+    store.updateLesson(currentAttachingLessonId, {
+      gameRoute: route,
+      gameTitle: title
+    });
+    window.closeModal('modal-attach-game');
+    renderCurrentView();
+    if (window.showToast) window.showToast('Game "' + title + '" attached to lesson!');
+    currentAttachingLessonId = null;
+  };
+
+  window.openAttachWorksheetModal = function(lessonId) {
+    currentAttachingLessonId = lessonId;
+    const lesson = store.getLesson ? store.getLesson(lessonId) : null;
+    const titleEl = document.getElementById('attach-worksheet-lesson-title');
+    if (titleEl) {
+      titleEl.textContent = lesson ? ('Attaching worksheet to: ' + lesson.title) : 'Select a printable worksheet from library';
+    }
+
+    const listEl = document.getElementById('attach-worksheet-list');
+    if (listEl) {
+      const worksheets = (store.getWorksheets ? store.getWorksheets() : []) || [];
+      const defaultSheets = [
+        { id: 'ws-inventions-1', title: 'Great Inventors & Sequencing Graphic Organizer', pages: 'p. 4–5', level: 'Grade 4 · Level 3', desc: '5-step invention loop and cause-effect worksheet.' },
+        { id: 'ws-space-1', title: 'Living in Space Comprehension & Vocab Sheet', pages: 'p. 16–17', level: 'Grade 4 · Level 3', desc: 'Microgravity science link and astronaut routines reading practice.' },
+        { id: 'ws-fox-grapes', title: 'The Fox and the Grapes Moral Analysis & Phonics', pages: 'p. 6–7', level: 'Grade 3 · Level 2', desc: 'Character motivation, moral question prompts, and ee/ea vowel sounds.' },
+        { id: 'ws-earth-changes', title: 'Earth Changes & Landforms Diagram Activity', pages: 'p. 12–13', level: 'Grade 4 · Level 3', desc: 'Volcanoes, earthquakes, and weathering science vocabulary.' }
+      ];
+      const combined = [...worksheets, ...defaultSheets.filter(d => !worksheets.some(w => w.id === d.id))];
+
+      listEl.innerHTML = combined.map(ws => '' +
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:12px; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between;">' +
+          '<div style="display:flex; gap:10px; align-items:center; min-width:0;">' +
+            '<span style="font-size:1.6rem; flex-shrink:0;">📄</span>' +
+            '<div style="min-width:0;">' +
+              '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+                '<span style="font-weight:800; font-size:0.88rem; color:var(--text-main);">' + ws.title + '</span>' +
+                (ws.level ? '<span class="badge" style="background:var(--bg-muted); font-size:0.7rem; padding:1px 6px; border-radius:6px;">' + ws.level + '</span>' : '') +
+              '</div>' +
+              '<div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">' + (ws.desc || ws.description || 'Printable classroom exercise') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<button type="button" class="btn-primary-action" onclick="handleConfirmAttachWorksheet(\'' + ws.id + '\', \'' + ws.title.replace(/'/g, "\\'") + '\')" style="padding:4px 12px; font-size:0.76rem; font-weight:800; flex-shrink:0;">Attach</button>' +
+        '</div>'
+      ).join('');
+    }
+
+    window.openModal('modal-attach-worksheet');
+  };
+
+  window.handleConfirmAttachWorksheet = function(wsId, title) {
+    if (!currentAttachingLessonId) return;
+    store.updateLesson(currentAttachingLessonId, {
+      worksheetId: wsId,
+      worksheetTitle: title
+    });
+    window.closeModal('modal-attach-worksheet');
+    renderCurrentView();
+    if (window.showToast) window.showToast('Worksheet "' + title + '" attached to lesson!');
+    currentAttachingLessonId = null;
+  };
+
+  window.openAssignLessonModal = function(lessonId) {
+    const lesson = store.getLesson ? store.getLesson(lessonId) : null;
+    if (!lesson) return;
+    window.populateModalDropdowns();
+    const titleInput = document.getElementById('new-asg-title');
+    if (titleInput) titleInput.value = lesson.title + ' — Activity';
+
+    const gameSelect = document.getElementById('new-asg-game');
+    if (gameSelect && lesson.gameRoute) {
+      for (let i = 0; i < gameSelect.options.length; i++) {
+        if (gameSelect.options[i].value === lesson.gameRoute) {
+          gameSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    const dateInput = document.getElementById('new-asg-date');
+    if (dateInput) {
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      dateInput.value = d.toISOString().split('T')[0];
+    }
+
+    window.openModal('modal-create-assignment');
+    if (window.showToast) window.showToast('Configure assignment for: ' + lesson.title);
+  };

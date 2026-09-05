@@ -328,6 +328,10 @@
       title: 'Global Readings 2',
       level: 'Level 2',
       targetLevel: 'Level 2',
+      grade: 'Grade 3',
+      gradeLevel: 'Grade 3',
+      weeksPerUnit: 4,
+      totalUnits: 10,
       bookType: "Student's Book",
       publisher: 'Macmillan Education',
       description: 'A primary literacy anthology and reading curriculum featuring 10 thematic units, phonics review, rich comprehension, sequencing, and science/social studies connections.',
@@ -350,6 +354,12 @@
         selFocus: 'Self-Correction & Confidence',
         keyConcept: 'How do letters and sounds make words?',
         targetVocab: ['cake', 'lake', 'tape', 'rain', 'tree', 'leaf', 'bike', 'kite', 'rope', 'nose', 'bone', 'cube', 'tube', 'flute', 'ship', 'shop', 'fish', 'bench', 'chips', 'star', 'nest', 'flag', 'frog'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Long Vowels a, e, i', focus: 'Decoding long vowel patterns across decodable rhymes' },
+          { weekNumber: 2, title: 'Week 2: Long Vowels o, u & Rhymes', focus: 'Sound substitution and rhythmic vowel chants' },
+          { weekNumber: 3, title: 'Week 3: Blends & Digraphs sh, st, ch', focus: 'Minimal pair contrasts (ship/chip, shop/chop) and final -st' },
+          { weekNumber: 4, title: 'Week 4: Blends pl, fl, pr, fr & Word Search', focus: 'Initial consonant blends decoding challenge' }
+        ],
         archived: false
       },
       {
@@ -365,6 +375,12 @@
         selFocus: 'Self-Awareness (strengths & limitations)',
         keyConcept: 'Why do people invent things?',
         targetVocab: ['invent', 'try again', 'change', 'mirror', 'mess', 'invention', 'machine', 'problem', 'solution', 'hexagon', 'improve', 'parachute', 'plan', 'eraser', 'tidy'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Inquiry & The After-School Inventor', focus: 'See-Think-Wonder, everyday inventions, Clara Doodle story (p. 8–15)' },
+          { weekNumber: 2, title: 'Week 2: Words in Context & Comprehension', focus: 'Action verbs, dialect differences (clean/tidy), matching & cl- blends (p. 11, 16)' },
+          { weekNumber: 3, title: 'Week 3: Sequencing & My Good Ideas Book', focus: 'First, Second, Third, Last sequence words, Thomas Edison & biomimicry (p. 17–20)' },
+          { weekNumber: 4, title: 'Week 4: Problem Solving, da Vinci & Journal', focus: '5-step design feedback cycle, Karl Benz, Round Robin & Reading Journal (p. 21–23)' }
+        ],
         archived: false
       },
       {
@@ -373,13 +389,19 @@
         title: 'Unit 2: Thank You',
         order: 2,
         pages: '24–39',
-        reading1: "Chuseok: Korea's Harvest Festival",
+        reading1: "Chuseok: Korea\'s Harvest Festival",
         reading2: 'First Harvest (-st blend)',
         readingSkill: 'Understanding Setting',
         contentArea: 'Social Studies: Communities',
         selFocus: 'Identify triggers',
         keyConcept: 'Why do we celebrate harvests?',
         targetVocab: ['harvest', 'festival', 'celebrate', 'tradition', 'feast', 'gratitude', 'first', 'crops'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Harvest Traditions Around the World', focus: 'Chuseok festival customs, autumn celebration vocabulary' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Chuseok: Korea\'s Harvest Festival', focus: 'Narrative tracking family reunions and special feast foods' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: First Harvest (-st blend)', focus: 'Setting analysis in farming narratives, decoding -st clusters' },
+          { weekNumber: 4, title: 'Week 4: Gratitude Reflections & Unit 2 Assessment', focus: 'Cultural comparison matrix and reflection journal' }
+        ],
         archived: false
       },
       {
@@ -395,6 +417,12 @@
         selFocus: 'Evaluate reactions',
         keyConcept: 'How can we make good changes in our world?',
         targetVocab: ['environment', 'pollution', 'electric', 'clean', 'change', 'protect', 'nature'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Our Changing Planet & Environmental Inquiry', focus: 'Pollution, renewable energy, eco-friendly transport terms' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Bear and I (-ng blend)', focus: 'Story tracking wildlife encounters, decoding final -ng words' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: Clean Cars (Electric Vehicles)', focus: 'Comparing gasoline vs electric cars, fact extraction' },
+          { weekNumber: 4, title: 'Week 4: Environmental Action Plan & Review', focus: 'Green living checklist and unit comprehension quiz' }
+        ],
         archived: false
       },
       {
@@ -410,6 +438,12 @@
         selFocus: 'Label emotions',
         keyConcept: 'How do events change our lives?',
         targetVocab: ['volcano', 'eruption', 'mountain', 'escape', 'ash', 'history', 'event'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Earth Events & Volcanic Mysteries', focus: 'Geological formations, natural disasters, cause and effect inquiry' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Where Is She?', focus: 'Suspense narrative following family during a sudden ash storm' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: The Angry Mountain (-nd blend)', focus: 'Nonfiction science link on active volcanoes, -nd blends' },
+          { weekNumber: 4, title: 'Week 4: Cause-Effect Mapping & Assessment', focus: 'Sequence diagrams and emotional resilience reflection' }
+        ],
         archived: false
       },
       {
@@ -425,6 +459,12 @@
         selFocus: 'Other views',
         keyConcept: 'How can we find out about the past?',
         targetVocab: ['ancient', 'time capsule', 'civilization', 'past', 'history', 'memory', 'bury'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Finding the Past & Time Keeping', focus: 'Artifacts, archaeology, time capsules, history inquiry' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Time Book (-nt blend)', focus: 'Personal journals across generations, decoding -nt words' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: Time Capsules (Ancient Civilizations)', focus: 'Main idea and detail extraction on preserved historic relics' },
+          { weekNumber: 4, title: 'Week 4: Classroom Time Capsule & Review', focus: 'Creating personal artifact letters and Unit 5 assessment' }
+        ],
         archived: false
       },
       {
@@ -434,12 +474,18 @@
         order: 6,
         pages: '88–103',
         reading1: 'The Superstar (wh- digraph)',
-        reading2: "Visit Gaudí's World",
+        reading2: "Visit Gaudí\'s World",
         readingSkill: 'Fact & Opinion',
         contentArea: 'Science: Architecture',
         selFocus: 'Work towards goals',
         keyConcept: 'Why do people make things?',
         targetVocab: ['architect', 'mosaic', 'structure', 'cathedral', 'design', 'artist', 'build'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Architects & Creative Makers', focus: 'Structural designs, creative perseverance, architecture terms' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Superstar (wh- digraph)', focus: 'Biography highlighting relentless practice, decoding wh- words' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: Visit Gaudí\'s World (Architecture)', focus: 'Fact vs opinion analysis of Antoni Gaudí\'s organic buildings' },
+          { weekNumber: 4, title: 'Week 4: Design a Landmark & Assessment', focus: 'Drafting architectural models and unit reflection journal' }
+        ],
         archived: false
       },
       {
@@ -449,12 +495,18 @@
         order: 7,
         pages: '104–119',
         reading1: 'Great Teamwork',
-        reading2: "It's Mine (-ck blend)",
+        reading2: "It\'s Mine (-ck blend)",
         readingSkill: 'Predicting Endings',
         contentArea: 'Science: Symbiotic Relationships',
         selFocus: 'Cooperative learning',
         keyConcept: 'What is good about teamwork?',
         targetVocab: ['teamwork', 'partner', 'ocean', 'symbiosis', 'together', 'help', 'cooperate'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Partnership in Nature & Human Life', focus: 'Symbiotic relationships, cooperation, mutual support inquiry' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Great Teamwork (Symbiosis)', focus: 'Ocean reef mutualism between clownfish and anemone' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: It\'s Mine (-ck blend)', focus: 'Predicting story outcomes, resolving sharing conflicts, -ck words' },
+          { weekNumber: 4, title: 'Week 4: Team Challenge Showcase & Review', focus: 'Collaborative project presentation and Unit 7 assessment' }
+        ],
         archived: false
       },
       {
@@ -470,6 +522,12 @@
         selFocus: 'Responsible decision-making',
         keyConcept: 'What makes a hero?',
         targetVocab: ['hero', 'courage', 'role model', 'inspire', 'brave', 'champion', 'achievement'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Everyday Heroes & Moral Qualities', focus: 'Courage, integrity, role models, community service inquiry' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: In First Place', focus: 'Sportsmanship narrative focusing on character under pressure' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: A New Hero (tr- blends)', focus: 'Profiles of everyday emergency responders, tr- blend decoding' },
+          { weekNumber: 4, title: 'Week 4: Hero Nomination Project & Assessment', focus: 'Writing a tribute to a real-life hero and unit quiz' }
+        ],
         archived: false
       },
       {
@@ -485,6 +543,12 @@
         selFocus: 'Regulate emotions',
         keyConcept: 'Why did people build castles?',
         targetVocab: ['castle', 'fortress', 'moat', 'king', 'kingdom', 'defense', 'stone'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Kingdoms, Castles & Fortresses', focus: 'Medieval architecture, stone defense, royalty vocabulary' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Clever King (br- blend)', focus: 'Folklore tale of wisdom overcoming force, br- blend decoding' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: Amazing Castles (Architecture)', focus: 'Scanning text for defensive features: moats, towers, gates' },
+          { weekNumber: 4, title: 'Week 4: Castle Blueprint Project & Review', focus: 'Historical timeline synthesis and unit reflection' }
+        ],
         archived: false
       },
       {
@@ -500,6 +564,12 @@
         selFocus: 'Grit & perseverance',
         keyConcept: 'Why do people travel?',
         targetVocab: ['journey', 'travel', 'explorer', 'expedition', 'adventure', 'discovery', 'globe'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Explorers & The Call of Adventure', focus: 'Navigation, global expeditions, why humans explore' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Young Nicholas (sw- blend)', focus: 'Early voyages of discovery, decoding initial sw- blends' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: The Thirty-Year Journey', focus: 'Tracing Ibn Battuta and world travellers, chronological sequence' },
+          { weekNumber: 4, title: 'Week 4: Capstone Journey & End-of-Year Celebration', focus: 'Global expedition map showcase and Grade 3 reading portfolio' }
+        ],
         archived: false
       }
     ],
@@ -814,6 +884,568 @@
   };
 
 
+
+  // =========================================================================
+  // GLOBAL READINGS 3 — LEVEL 3 STUDENT'S BOOK (MACMILLAN EDUCATION)
+  // Source: CamScanner 09-05-2026 18.11.pdf (Grade 4 Primary Literacy Anthology)
+  // Full Scope & Sequence + Literacy Review + Units 1-10 (4 Weeks per Unit)
+  // =========================================================================
+  const GLOBAL_READINGS_3_PAGES = [
+    { page: 1, file: 'assets/books/global-readings-3/page_01.jpg', title: "Cover — Global Readings 3: Level 3 Student's Book", unit: "Global Readings 3", section: "Macmillan Education Primary Literacy Anthology (Grade 4)" },
+    { page: 2, file: 'assets/books/global-readings-3/page_02.jpg', title: "Scope & Sequence (Part 1)", unit: "Scope & Sequence", section: "Literacy Review & Units 1 to 5" },
+    { page: 3, file: 'assets/books/global-readings-3/page_03.jpg', title: "Scope & Sequence (Part 2)", unit: "Scope & Sequence", section: "Units 6 to 10" },
+    { page: 4, file: 'assets/books/global-readings-3/page_04.jpg', title: "Literacy Review: Fiction — Don\'t Move", unit: "Literacy Review", section: "Reading 1: Don\'t Move & Phonics: final st, initial tr" },
+    { page: 5, file: 'assets/books/global-readings-3/page_05.jpg', title: "Literacy Review: Don\'t Move Activities", unit: "Literacy Review", section: "Comprehension & Vocabulary Practice" },
+    { page: 6, file: 'assets/books/global-readings-3/page_06.jpg', title: "Literacy Review: Nonfiction — The Monarch Butterfly's Journey", unit: "Literacy Review", section: "Reading 2: Migration & Phonics: final nd, ng" },
+    { page: 7, file: 'assets/books/global-readings-3/page_07.jpg', title: "Literacy Review: Butterfly Journey Activities", unit: "Literacy Review", section: "Sequencing & Science Link" },
+    { page: 8, file: 'assets/books/global-readings-3/page_08.jpg', title: "Unit 1: I Love Reading — Opener", unit: "Unit 1", section: "See, Think, Wonder: Libraries, books and reading" },
+    { page: 9, file: 'assets/books/global-readings-3/page_09.jpg', title: "Unit 1: I Love Reading — Key Concept", unit: "Unit 1", section: "Why is reading important? Inquiry & Discussion" },
+    { page: 10, file: 'assets/books/global-readings-3/page_10.jpg', title: "Reading 1: The Beginning of Alice\'s Adventures (Part 1)", unit: "Unit 1", section: "Alice and the White Rabbit by Lewis Carroll" },
+    { page: 11, file: 'assets/books/global-readings-3/page_11.jpg', title: "Reading 1: The Beginning of Alice\'s Adventures (Part 2)", unit: "Unit 1", section: "Words in Context: sleepy, chased, fell, shelves, corner, vest" },
+    { page: 12, file: 'assets/books/global-readings-3/page_12.jpg', title: "Reading 1: Down the Rabbit Hole (Part 3)", unit: "Unit 1", section: "Alice tumbling down the deep rabbit hole" },
+    { page: 13, file: 'assets/books/global-readings-3/page_13.jpg', title: "Reading 1: Down the Rabbit Hole (Part 4)", unit: "Unit 1", section: "Maps, cupboards, and floating jars on the way down" },
+    { page: 14, file: 'assets/books/global-readings-3/page_14.jpg', title: "Reading 1: The Golden Key & The Garden (Part 5)", unit: "Unit 1", section: "The little door and the lovely garden" },
+    { page: 15, file: 'assets/books/global-readings-3/page_15.jpg', title: "Reading 1: The Little Bottle 'Drink Me' (Part 6)", unit: "Unit 1", section: "Unexpected adventures: shrinking and growing" },
+    { page: 16, file: 'assets/books/global-readings-3/page_16.jpg', title: "Explore the Reading 1: Alice Comprehension & Sequencing", unit: "Unit 1", section: "Order events, character emotions, and dialogue" },
+    { page: 17, file: 'assets/books/global-readings-3/page_17.jpg', title: "Get Ready to Read: Skimming a Text", unit: "Unit 1", section: "Reading Skill: How to skim headings, first sentences & pictures" },
+    { page: 18, file: 'assets/books/global-readings-3/page_18.jpg', title: "Reading 2: Learning and Your Brain (Part 1)", unit: "Unit 1", section: "Nonfiction: Brain lobes, memory, and reading workouts" },
+    { page: 19, file: 'assets/books/global-readings-3/page_19.jpg', title: "Reading 2: Learning and Your Brain (Part 2)", unit: "Unit 1", section: "Words in Context: workout, cells, fibers, messages, connecting" },
+    { page: 20, file: 'assets/books/global-readings-3/page_20.jpg', title: "Reading 2: Neurons & Reading Pathways (Part 3)", unit: "Unit 1", section: "How brain cells connect when learning new words" },
+    { page: 21, file: 'assets/books/global-readings-3/page_21.jpg', title: "Reading 2: Creative Brain Power (Part 4)", unit: "Unit 1", section: "Visualizing stories and building memory power" },
+    { page: 22, file: 'assets/books/global-readings-3/page_22.jpg', title: "Explore the Reading 2: Brain Science Link & Phonics", unit: "Unit 1", section: "Brain facts check & Spelling pattern: final -er words" },
+    { page: 23, file: 'assets/books/global-readings-3/page_23.jpg', title: "Think Together: Why Is Reading Important? & Journal", unit: "Unit 1", section: "Synthesis discussion, Round Robin & My Reading Journal" }
+  ];
+
+  const GLOBAL_READINGS_3_DATA = {
+    book: {
+      id: 'book-global-readings-3',
+      title: 'Global Readings 3',
+      level: 'Level 3',
+      targetLevel: 'Level 3',
+      grade: 'Grade 4',
+      gradeLevel: 'Grade 4',
+      bookType: "Student's Book",
+      publisher: 'Macmillan Education',
+      description: 'A primary literacy anthology and reading curriculum featuring 10 thematic units structured across 4-week blocks, neuroscience and ecology connections, and comprehensive literacy review.',
+      cover: 'assets/books/global-readings-3/cover.jpg',
+      pdfUrl: 'assets/books/global-readings-3/Global-Readings-3.pdf',
+      totalPages: 23,
+      weeksPerUnit: 4,
+      totalUnits: 10,
+      archived: false
+    },
+    units: [
+      {
+        id: 'unit-gr3-review',
+        bookId: 'book-global-readings-3',
+        title: 'Literacy Review: Reading Foundations & Skills',
+        order: 0,
+        pages: '4–7',
+        reading1: "Don\'t Move (Fiction: final st and initial tr)",
+        reading2: "The Monarch Butterfly\'s Journey (Nonfiction: final nd and ng)",
+        readingSkill: "Scanning, Cause & Effect, Sequence of Events",
+        contentArea: "Foundational Literacy & Ecology",
+        selFocus: "Self-Awareness & Persistence",
+        keyConcept: "How do stories and informational texts help us learn about the world?",
+        targetVocab: ['freeze', 'still', 'branch', 'predator', 'journey', 'migration', 'monarch', 'chrysalis', 'caterpillar', 'route', 'travel'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Fiction Reading & Phonics Review', focus: 'Decode "Don\'t Move", isolate final -st and initial tr- blends' },
+          { weekNumber: 2, title: 'Week 2: Story Comprehension & Character Response', focus: 'Animal defense mechanisms and narrative details' },
+          { weekNumber: 3, title: 'Week 3: Nonfiction Migration Reading', focus: 'Monarch butterfly migration route and life cycle' },
+          { weekNumber: 4, title: 'Week 4: Sequencing, Phonics -nd/-ng & Review Assessment', focus: 'Cause and effect analysis, consonant clusters and review quiz' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-1',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 1: I Love Reading',
+        order: 1,
+        pages: '8–23',
+        reading1: "The Beginning of Alice\'s Adventures (Lewis Carroll)",
+        reading2: "Learning and Your Brain (Neuroscience)",
+        readingSkill: "Skimming a text (Headings, First Sentences, Visuals)",
+        contentArea: "Science: Neuroscience",
+        selFocus: "Self-Awareness (Emotions & Reflection)",
+        keyConcept: "Why is reading important?",
+        targetVocab: ['sleepy', 'chased', 'fell', 'shelves', 'corner', 'vest', 'waistcoat', 'lobes', 'workout', 'cells', 'fibers', 'messages', 'connecting', 'creative', 'visualize'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Introduction & Vocabulary Preparation', focus: 'Opener, See-Think-Wonder, target vocabulary, question starts (p. 8–9)' },
+          { weekNumber: 2, title: 'Week 2: Main Reading — Alice\'s Adventures', focus: 'Story tracking, Lewis Carroll fantasy, words in context (vest/waistcoat, shelves), dialogue (p. 10–15)' },
+          { weekNumber: 3, title: 'Week 3: Explore the Reading & Skimming Skills', focus: 'Chronological ordering, Alice\'s emotions, reading skill: skimming headings & visuals (p. 16–17)' },
+          { weekNumber: 4, title: 'Week 4: Learning & Your Brain + Synthesis', focus: 'Brain lobes, neuron pathways, final -er spelling, Round Robin & Reading Journal (p. 18–23)' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-2',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 2: What Lives Here?',
+        order: 2,
+        pages: '24–39',
+        reading1: 'The Secret Burrow (Animal Homes)',
+        reading2: 'Ecosystems in Balance',
+        readingSkill: 'Identifying Cause and Effect',
+        contentArea: 'Science: Ecology & Habitats',
+        selFocus: 'Responsible Decision-Making',
+        keyConcept: 'How do living things share habitats?',
+        targetVocab: ['habitat', 'burrow', 'ecosystem', 'predator', 'prey', 'shelter', 'balance', 'organism'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Habitat Habitants & Key Vocabulary', focus: 'Explore world biomes, animal shelters, and specialized vocabulary' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Secret Burrow', focus: 'Narrative reading tracking underground animal communities' },
+          { weekNumber: 3, title: 'Week 3: Explore the Reading & Cause-Effect', focus: 'Cause and effect analysis of ecological changes' },
+          { weekNumber: 4, title: 'Week 4: Ecosystem Balance & Unit 2 Assessment', focus: 'Informational text synthesis, food webs, and reflection journal' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-3',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 3: How Much Is It?',
+        order: 3,
+        pages: '40–55',
+        reading1: 'The Ancient Marketplace',
+        reading2: 'The History of Money',
+        readingSkill: 'Distinguishing Fact and Opinion',
+        contentArea: 'History: Culture & Trade',
+        selFocus: 'Responsible Decision-Making',
+        keyConcept: 'Why do we trade and use money?',
+        targetVocab: ['market', 'currency', 'barter', 'trade', 'valuable', 'merchant', 'exchange', 'economy'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Trade Traditions & Barter Systems', focus: 'Inquiry into how humans exchange goods and services' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Ancient Marketplace', focus: 'Historical fiction story set in an ancient Mediterranean port' },
+          { weekNumber: 3, title: 'Week 3: Fact vs Opinion & Economics Practice', focus: 'Evaluating commercial claims and trading scenarios' },
+          { weekNumber: 4, title: 'Week 4: Digital Currency, Budgeting & Assessment', focus: 'Modern transactions, money management, and unit quiz' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-4',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 4: We Can Do It',
+        order: 4,
+        pages: '56–71',
+        reading1: 'The Bridge Builders',
+        reading2: 'Incredible Animal Cooperation',
+        readingSkill: 'Problem and Solution',
+        contentArea: 'Social Studies: Teamwork',
+        selFocus: 'Relationship Skills & Collaboration',
+        keyConcept: 'How does cooperating help us achieve more?',
+        targetVocab: ['teamwork', 'cooperation', 'overcome', 'challenge', 'bridge', 'collective', 'support', 'unity'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: The Power of Cooperation', focus: 'Teamwork dilemmas, collaborative vocabulary, group goals' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Bridge Builders', focus: 'Story of community engineering and persevering together' },
+          { weekNumber: 3, title: 'Week 3: Problem and Solution Matrix', focus: 'Analyzing project obstacles and collaborative solutions' },
+          { weekNumber: 4, title: 'Week 4: Animal Cooperation & Team Assessment', focus: 'Ant and wolf pack cooperation, group reflection project' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-5',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 5: Make Some Noise',
+        order: 5,
+        pages: '72–87',
+        reading1: 'The Rhythm of the Jungle',
+        reading2: 'How We Hear Sound',
+        readingSkill: 'Visualizing Sensory Language',
+        contentArea: 'Arts & Humanities: Music & Sound',
+        selFocus: 'Social Awareness & Self-Expression',
+        keyConcept: 'How does music express who we are?',
+        targetVocab: ['rhythm', 'melody', 'vibration', 'pitch', 'percussion', 'tempo', 'harmony', 'acoustic'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Soundscapes & Musical Inquiry', focus: 'Exploring auditory textures, instruments, and expressive terms' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Rhythm of the Jungle', focus: 'Narrative rich in onomatopoeia, percussion, and cultural dance' },
+          { weekNumber: 3, title: 'Week 3: Sensory Visualization & Phonics Rhythm', focus: 'Visualizing acoustic descriptions and poetic structure' },
+          { weekNumber: 4, title: 'Week 4: Science of Sound Waves & Reflection', focus: 'How sound travels into the ear, musical showcase presentation' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-6',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 6: That Looks Good',
+        order: 6,
+        pages: '88–103',
+        reading1: 'The Great Baking Festival',
+        reading2: 'Flavors of the World',
+        readingSkill: 'Understanding Sequence & Process',
+        contentArea: 'Arts & Humanities: Culinary Arts',
+        selFocus: 'Responsible Decision-Making & Culture',
+        keyConcept: 'How does food bring people together?',
+        targetVocab: ['recipe', 'ingredient', 'cuisine', 'flavor', 'measure', 'tradition', 'feast', 'nourish'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Global Cuisines & Cooking Terms', focus: 'Cultural culinary traditions, measurements, recipe words' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Great Baking Festival', focus: 'Story of family baking, friendly competition, and sharing' },
+          { weekNumber: 3, title: 'Week 3: Sequence in Recipes & Instructional Writing', focus: 'Step-by-step procedural writing and transition words' },
+          { weekNumber: 4, title: 'Week 4: Nutrition Science, Flavors & Journal', focus: 'Tasting notes, balanced food groups, and personal recipe project' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-7',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 7: How Can We Help?',
+        order: 7,
+        pages: '104–119',
+        reading1: 'The Community Garden Rescue',
+        reading2: 'Young Changemakers',
+        readingSkill: 'Author\'s Purpose',
+        contentArea: 'Social Studies: Communities',
+        selFocus: 'Self-Management & Empathy',
+        keyConcept: 'How can children make a difference in their community?',
+        targetVocab: ['volunteer', 'community', 'service', 'improve', 'donate', 'neighborhood', 'organize', 'benefit'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Community Needs & Civic Action', focus: 'Identifying local challenges and volunteer vocabulary' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Community Garden Rescue', focus: 'Students revitalizing an abandoned urban lot' },
+          { weekNumber: 3, title: 'Week 3: Author\'s Purpose & Persuasive Skills', focus: 'Analyzing why texts are written: inform, persuade, entertain' },
+          { weekNumber: 4, title: 'Week 4: Global Youth Heroes & Action Plan', focus: 'Real-world changemakers case studies, classroom project' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-8',
+        bookId: 'book-global-readings-3',
+        title: 'Unit 8: Under the Sea',
+        order: 8,
+        pages: '120–135',
+        reading1: 'Voyage to the Abyss',
+        reading2: 'Coral Reef Sanctuaries',
+        readingSkill: 'Summarizing Main Ideas',
+        contentArea: 'Science: Marine Biology',
+        selFocus: 'Social Awareness & Conservation',
+        keyConcept: 'What secrets lie in the ocean depths?',
+        targetVocab: ['ocean', 'trench', 'submarine', 'bioluminescence', 'coral', 'marine', 'depth', 'species'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Ocean Zones & Marine Life', focus: 'Sunlight zone to midnight abyss, oceanographic terms' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Voyage to the Abyss', focus: 'Submersible dive encountering glowing deep-sea creatures' },
+          { weekNumber: 3, title: 'Week 3: Summarizing Information & Graphic Organizers', focus: 'Creating 3-point summaries of scientific readings' },
+          { weekNumber: 4, title: 'Week 4: Coral Protection & Marine Assessment', focus: 'Reef bleaching threats, marine conservation, unit test' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-9',
+        bookId: 'book-global-readings-3',
+        title: "Unit 9: What's the Matter?",
+        order: 9,
+        pages: '136–151',
+        reading1: 'The Mystery of the Missing Energy',
+        reading2: 'How the Immune System Protects You',
+        readingSkill: 'Comparing and Contrasting',
+        contentArea: 'Science: Health & Medicine',
+        selFocus: 'Self-Management & Wellness',
+        keyConcept: 'How do our bodies stay healthy and strong?',
+        targetVocab: ['immune', 'antibody', 'wellness', 'nutrition', 'exercise', 'energy', 'defense', 'hygiene'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Body Systems & Health Inquiry', focus: 'Sleep, nutrition, hydration, and energy cycles' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Missing Energy Mystery', focus: 'Detective story investigating habits that cause fatigue' },
+          { weekNumber: 3, title: 'Week 3: Compare & Contrast Venn Diagrams', focus: 'Comparing healthy vs unhealthy lifestyles in texts' },
+          { weekNumber: 4, title: 'Week 4: Immune System Defense & Health Guide', focus: 'White blood cells, antibodies, creating a wellness poster' }
+        ],
+        archived: false
+      },
+      {
+        id: 'unit-gr3-10',
+        bookId: 'book-global-readings-3',
+        title: "Unit 10: Don't Push the Button",
+        order: 10,
+        pages: '152–167',
+        reading1: 'The Runaway Robot',
+        reading2: 'Artificial Intelligence & Future Tech',
+        readingSkill: 'Drawing Inferences and Predictions',
+        contentArea: 'Science: Engineering & Technology',
+        selFocus: 'Self-Management & Ethics',
+        keyConcept: 'How do machines help and challenge us?',
+        targetVocab: ['robot', 'sensor', 'automate', 'code', 'intelligent', 'circuit', 'future', 'safeguard'],
+        weeks: [
+          { weekNumber: 1, title: 'Week 1: Robotics, Automation & Technology Ethics', focus: 'Emerging tech terms, sensors, automation and logic' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: The Runaway Robot', focus: 'Humorous sci-fi adventure with unintended programming glitches' },
+          { weekNumber: 3, title: 'Week 3: Inferences, Clues & Predictive Thinking', focus: 'Reading between the lines to anticipate character moves' },
+          { weekNumber: 4, title: 'Week 4: AI in Daily Life, Capstone Review & Celebration', focus: 'Ethical tech, end-of-year reading celebration & showcase' }
+        ],
+        archived: false
+      }
+    ],
+    lessons: [
+      // Literacy Review
+      {
+        id: 'lesson-gr3-rev-1',
+        unitId: 'unit-gr3-review',
+        title: 'Reading 1: Don\'t Move (Fiction) & Phonics: final -st, initial tr-',
+        order: 1,
+        weekNumber: 1,
+        sourcePages: '4–5',
+        sourceBook: 'Global Readings 3',
+        objective: 'Read story on animal camoflague, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
+        duration: 35,
+        tasks: [
+          { type: 'phonics', label: 'Final -st', words: ['nest', 'fast', 'past', 'frost', 'blast'] },
+          { type: 'phonics', label: 'Initial tr-', words: ['tree', 'trip', 'track', 'trail', 'trust'] }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-rev-2',
+        unitId: 'unit-gr3-review',
+        title: 'Reading 2: The Monarch Butterfly\'s Journey & Phonics: final -nd, -ng',
+        order: 2,
+        weekNumber: 3,
+        sourcePages: '6–7',
+        sourceBook: 'Global Readings 3',
+        objective: 'Follow informational timeline of monarch migration and decode nasal clusters (-nd, -ng).',
+        duration: 35,
+        tasks: [
+          { type: 'phonics', label: 'Final -nd', words: ['land', 'wind', 'pond', 'sand', 'blend'] },
+          { type: 'phonics', label: 'Final -ng', words: ['wing', 'song', 'long', 'spring', 'strong'] }
+        ],
+        archived: false
+      },
+
+      // Unit 1: I Love Reading Lessons (Spanning 4 Teaching Weeks)
+      {
+        id: 'lesson-gr3-1-1',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 1: See, Think, Wonder (Why Read?)',
+        order: 1,
+        weekNumber: 1,
+        sourcePages: '8–9',
+        sourceBook: 'Global Readings 3',
+        objective: 'Engage in inquiry around reading habits, book genres, and evaluate: Why is reading important?',
+        duration: 25,
+        activities: [
+          { type: 'discussion', prompt: 'Look at the library picture. What do you see? How are books organized?' },
+          { type: 'inquiry', prompt: 'Think: What kind of books do you enjoy the most — real adventures or fantasy?' },
+          { type: 'wonder', prompt: 'Wonder: How does reading change what we imagine in our heads?' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-2',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 2: Question Starts & Reading Readiness',
+        order: 2,
+        weekNumber: 1,
+        sourcePages: '9',
+        sourceBook: 'Global Readings 3',
+        objective: 'Practice question formulation using Who, What, Where, When, Why, and How before reading.',
+        duration: 30,
+        gameRoute: 'city-mouse/index.html',
+        activities: [
+          {
+            type: 'questions',
+            title: 'Question Starters Challenge',
+            items: [
+              { q: 'Who is the author of Alice\'s Adventures?', a: 'Lewis Carroll' },
+              { q: 'Where was Alice sitting at the start?', a: 'By her sister on the bank' },
+              { q: 'What caught Alice\'s curiosity?', a: 'A White Rabbit with a waistcoat pocket and watch' }
+            ]
+          }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-3',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 3: Reading 1: The Beginning of Alice\'s Adventures (Part 1)',
+        order: 3,
+        weekNumber: 2,
+        sourcePages: '10–13',
+        sourceBook: 'Global Readings 3',
+        objective: 'Read excerpts from Alice in Wonderland, identify fantasy narrative elements, and track Alice chasing the White Rabbit.',
+        duration: 35,
+        activities: [
+          { type: 'story', title: 'Part 1: The Bank & The Rabbit', text: 'Alice was beginning to get very tired of sitting by her sister on the bank, when suddenly a White Rabbit with pink eyes ran close by her.' },
+          { type: 'story', title: 'Part 2: Down the Rabbit-Hole', text: 'In another moment down went Alice after it, never once considering how in the world she was to get out again.' },
+          { type: 'story', title: 'Part 3: Floating Cupboards & Maps', text: 'Down, down, down. The sides of the well were filled with cupboards and book-shelves; here and there she saw maps and pictures hung upon pegs.' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-4',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 4: Words in Context & British English Nuances',
+        order: 4,
+        weekNumber: 2,
+        sourcePages: '11, 14–15',
+        sourceBook: 'Global Readings 3',
+        objective: 'Master target vocabulary (sleepy, chased, fell, shelves, corner, vest/waistcoat) in literary context.',
+        duration: 30,
+        activities: [
+          {
+            type: 'vocab_definitions',
+            words: [
+              { word: 'sleepy', def: 'feeling tired and ready for sleep' },
+              { word: 'chased', def: 'ran after someone or something to catch them' },
+              { word: 'fell', def: 'dropped down through the air without control' },
+              { word: 'shelves', def: 'flat boards mounted horizontally to hold books and items' },
+              { word: 'corner', def: 'the place where two walls or streets meet' },
+              { word: 'vest / waistcoat', def: 'a sleeveless upper garment with buttons down the front' }
+            ]
+          },
+          {
+            type: 'dialects',
+            pairs: [
+              { us: 'vest', uk: 'waistcoat' },
+              { us: 'closet / cabinet', uk: 'cupboard' },
+              { us: 'flashlight', uk: 'torch' }
+            ]
+          }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-5',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 5: Explore the Reading 1: Chronological Order & Feelings',
+        order: 5,
+        weekNumber: 3,
+        sourcePages: '16',
+        sourceBook: 'Global Readings 3',
+        objective: 'Order chronological events from Alice\'s fall and map character emotion shifts from boredom to astonishment.',
+        duration: 30,
+        activities: [
+          {
+            type: 'sequence_device',
+            title: 'Order Alice\'s Adventure Events',
+            steps: [
+              { order: 1, text: 'Alice sits on the river bank feeling sleepy.' },
+              { order: 2, text: 'The White Rabbit checks his pocket watch and runs past.' },
+              { order: 3, text: 'Alice chases the rabbit into the large hole.' },
+              { order: 4, text: 'Alice falls slowly past cupboards, maps, and bookshelves.' },
+              { order: 5, text: 'Alice reaches the long hallway with locked little doors.' }
+            ]
+          },
+          { type: 'discussion', prompt: 'How did Alice\'s feelings change when she saw the rabbit pull a watch out of its pocket?' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-6',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 6: Get Ready to Read: Skimming a Text',
+        order: 6,
+        weekNumber: 3,
+        sourcePages: '17',
+        sourceBook: 'Global Readings 3',
+        objective: 'Apply the reading skill of skimming: read headings, first sentences, and examine diagrams quickly before in-depth reading.',
+        duration: 25,
+        gameRoute: 'predictions/index.html',
+        activities: [
+          { type: 'skimming_guide', steps: ['1. Read the title and large headings', '2. Look at the illustrations and diagrams', '3. Read the first sentence of each paragraph', '4. Ask: What will this text teach me?'] },
+          { type: 'reflection', prompt: 'Why is skimming useful when researching in school?' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-7',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 7: Reading 2: Learning and Your Brain (Neuroscience)',
+        order: 7,
+        weekNumber: 4,
+        sourcePages: '18–21',
+        sourceBook: 'Global Readings 3',
+        objective: 'Read informational text explaining how neurons, synapses, and brain lobes strengthen when reading.',
+        duration: 35,
+        activities: [
+          { type: 'science_facts', facts: ['Your brain weighs about 1.4 kg and has 86 billion neurons.', 'Reading gives multiple brain areas an active workout at once.', 'Practicing new words creates stronger neural pathways called myelin fibers.'] },
+          { type: 'vocab_definitions', words: [
+            { word: 'lobes', def: 'curved or rounded sections of the brain responsible for specific tasks' },
+            { word: 'workout', def: 'physical or mental exercise that strengthens abilities' },
+            { word: 'neurons', def: 'specialized cells that transmit electrical nerve impulses' },
+            { word: 'fibers', def: 'thin connecting strands that send messages between brain regions' },
+            { word: 'visualize', def: 'to form a vivid mental picture or scene in your mind' }
+          ]}
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr3-1-8',
+        unitId: 'unit-gr3-1',
+        title: 'Lesson 8: Brain Facts, Final -er Spelling & Reading Journal',
+        order: 8,
+        weekNumber: 4,
+        sourcePages: '22–23',
+        sourceBook: 'Global Readings 3',
+        objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',
+        duration: 35,
+        gameRoute: 'monster day/index.html',
+        activities: [
+          { type: 'phonics_box', title: 'Spelling Pattern: Agent / Comparative final -er', words: ['reader', 'learner', 'thinker', 'writer', 'faster', 'stronger', 'helper', 'speaker'] },
+          { type: 'round_robin', topic: 'Why is reading important for your imagination, memory, and everyday life?' },
+          {
+            type: 'reading_journal',
+            prompts: [
+              'What was the most surprising thing you learned about your brain while reading?',
+              'How does imagining a story help your brain build stronger neural connections?'
+            ]
+          }
+        ],
+        archived: false
+      },
+
+      // Foundational Lessons for Units 2–10
+      { id: 'lesson-gr3-2-1', unitId: 'unit-gr3-2', title: 'Reading 1: The Secret Burrow (Animal Homes)', order: 1, weekNumber: 2, sourcePages: '24–31', sourceBook: 'Global Readings 3', objective: 'Investigate how woodland creatures construct layered underground shelters.', duration: 35, archived: false },
+      { id: 'lesson-gr3-2-2', unitId: 'unit-gr3-2', title: 'Reading 2: Ecosystems in Balance (Food Webs)', order: 2, weekNumber: 4, sourcePages: '32–39', sourceBook: 'Global Readings 3', objective: 'Map cause and effect relationships among predators, prey, and flora in habitats.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-3-1', unitId: 'unit-gr3-3', title: 'Reading 1: The Ancient Marketplace (Barter to Coinage)', order: 1, weekNumber: 2, sourcePages: '40–47', sourceBook: 'Global Readings 3', objective: 'Trace evolution of merchant trade routes and early monetary exchange.', duration: 35, archived: false },
+      { id: 'lesson-gr3-3-2', unitId: 'unit-gr3-3', title: 'Reading 2: The History of Money (Paper to Digital)', order: 2, weekNumber: 4, sourcePages: '48–55', sourceBook: 'Global Readings 3', objective: 'Evaluate fact vs opinion regarding value, wealth, and banking systems.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-4-1', unitId: 'unit-gr3-4', title: 'Reading 1: The Bridge Builders (Teamwork in Action)', order: 1, weekNumber: 2, sourcePages: '56–63', sourceBook: 'Global Readings 3', objective: 'Follow community members uniting to design and erect an essential footbridge.', duration: 35, archived: false },
+      { id: 'lesson-gr3-4-2', unitId: 'unit-gr3-4', title: 'Reading 2: Incredible Animal Cooperation', order: 2, weekNumber: 4, sourcePages: '64–71', sourceBook: 'Global Readings 3', objective: 'Analyze problem and solution frameworks in wildlife packs and colonies.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-5-1', unitId: 'unit-gr3-5', title: 'Reading 1: The Rhythm of the Jungle (Sensory Narrative)', order: 1, weekNumber: 2, sourcePages: '72–79', sourceBook: 'Global Readings 3', objective: 'Visualize auditory sensory words depicting rainforest ambient melodies.', duration: 35, archived: false },
+      { id: 'lesson-gr3-5-2', unitId: 'unit-gr3-5', title: 'Reading 2: How We Hear Sound (Auditory Anatomy)', order: 2, weekNumber: 4, sourcePages: '80–87', sourceBook: 'Global Readings 3', objective: 'Diagram sound wave propagation through the outer, middle, and inner ear.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-6-1', unitId: 'unit-gr3-6', title: 'Reading 1: The Great Baking Festival', order: 1, weekNumber: 2, sourcePages: '88–95', sourceBook: 'Global Readings 3', objective: 'Track sequential process and measurements in competitive pastry creation.', duration: 35, archived: false },
+      { id: 'lesson-gr3-6-2', unitId: 'unit-gr3-6', title: 'Reading 2: Flavors of the World (Culinary Geography)', order: 2, weekNumber: 4, sourcePages: '96–103', sourceBook: 'Global Readings 3', objective: 'Discover spice routes and cultural dining rituals worldwide.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-7-1', unitId: 'unit-gr3-7', title: 'Reading 1: The Community Garden Rescue', order: 1, weekNumber: 2, sourcePages: '104–111', sourceBook: 'Global Readings 3', objective: 'Examine youth leadership and civic engagement transforming neighborhood spaces.', duration: 35, archived: false },
+      { id: 'lesson-gr3-7-2', unitId: 'unit-gr3-7', title: 'Reading 2: Young Changemakers (Profiles in Courage)', order: 2, weekNumber: 4, sourcePages: '112–119', sourceBook: 'Global Readings 3', objective: 'Identify author\'s purpose across global child activist biographies.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-8-1', unitId: 'unit-gr3-8', title: 'Reading 1: Voyage to the Abyss (Deep Sea Exploration)', order: 1, weekNumber: 2, sourcePages: '120–127', sourceBook: 'Global Readings 3', objective: 'Explore bioluminescent organisms inhabiting bathypelagic ocean trenches.', duration: 35, archived: false },
+      { id: 'lesson-gr3-8-2', unitId: 'unit-gr3-8', title: 'Reading 2: Coral Reef Sanctuaries (Marine Ecology)', order: 2, weekNumber: 4, sourcePages: '128–135', sourceBook: 'Global Readings 3', objective: 'Summarize ecological interdependencies maintaining barrier reef health.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-9-1', unitId: 'unit-gr3-9', title: 'Reading 1: The Mystery of the Missing Energy', order: 1, weekNumber: 2, sourcePages: '136–143', sourceBook: 'Global Readings 3', objective: 'Solve sleep, nutrition, and exercise clues to restore peak stamina.', duration: 35, archived: false },
+      { id: 'lesson-gr3-9-2', unitId: 'unit-gr3-9', title: 'Reading 2: How the Immune System Protects You', order: 2, weekNumber: 4, sourcePages: '144–151', sourceBook: 'Global Readings 3', objective: 'Compare and contrast physical skin barriers with internal cellular defenses.', duration: 35, archived: false },
+
+      { id: 'lesson-gr3-10-1', unitId: 'unit-gr3-10', title: 'Reading 1: The Runaway Robot (Sci-Fi Adventure)', order: 1, weekNumber: 2, sourcePages: '152–159', sourceBook: 'Global Readings 3', objective: 'Infer character motivations and foresee comical robotic navigation errors.', duration: 35, archived: false },
+      { id: 'lesson-gr3-10-2', unitId: 'unit-gr3-10', title: 'Reading 2: Artificial Intelligence & Future Tech', order: 2, weekNumber: 4, sourcePages: '160–167', sourceBook: 'Global Readings 3', objective: 'Predict positive societal impacts and responsible stewardship of automation.', duration: 35, archived: false }
+    ],
+    objectives: [
+      { id: 'obj-gr3-rev-1', lessonId: 'lesson-gr3-rev-1', text: 'Decode words with final -st and initial tr- accurately', skill: 'Phonics', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '4–5', archived: false },
+      { id: 'obj-gr3-rev-2', lessonId: 'lesson-gr3-rev-2', text: 'Trace butterfly migration facts and decode nasal blends -nd, -ng', skill: 'Reading', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '6–7', archived: false },
+      { id: 'obj-gr3-1-1', lessonId: 'lesson-gr3-1-1', text: 'Articulate personal perspectives on reading value and book choice', skill: 'Speaking', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '8–9', archived: false },
+      { id: 'obj-gr3-1-2', lessonId: 'lesson-gr3-1-2', text: 'Construct targeted inquiry questions using 5W1H interrogatives', skill: 'Grammar', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '9', archived: false },
+      { id: 'obj-gr3-1-3', lessonId: 'lesson-gr3-1-3', text: 'Track narrative plot progression and dialogue in Alice\'s Adventures', skill: 'Reading', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '10–13', archived: false },
+      { id: 'obj-gr3-1-4', lessonId: 'lesson-gr3-1-4', text: 'Utilize story vocabulary in original spoken and written expressions', skill: 'Vocabulary', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '11, 14–15', archived: false },
+      { id: 'obj-gr3-1-5', lessonId: 'lesson-gr3-1-5', text: 'Reconstruct chronological sequence of literary story events', skill: 'Reading', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '16', archived: false },
+      { id: 'obj-gr3-1-6', lessonId: 'lesson-gr3-1-6', text: 'Demonstrate skimming techniques to predict passage topic and key facts', skill: 'Reading', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '17', archived: false },
+      { id: 'obj-gr3-1-7', lessonId: 'lesson-gr3-1-7', text: 'Explain neural network strengthening and brain lobe participation in reading', skill: 'Speaking', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '18–21', archived: false },
+      { id: 'obj-gr3-1-8', lessonId: 'lesson-gr3-1-8', text: 'Apply spelling suffix -er to form agent nouns and comparative adjectives', skill: 'Phonics', cefr: 'Level 3', sourceBook: 'Global Readings 3', sourcePages: '22–23', archived: false }
+    ],
+    resource: {
+      id: "res-global-readings-3",
+      title: "Global Readings 3: Student's Book",
+      category: "Curriculum Textbook",
+      level: "Level 3",
+      grade: "Grade 4",
+      gradeLevel: "Grade 4",
+      age: "9–11",
+      duration: 45,
+      skills: ["Reading", "Vocabulary", "Speaking", "Neuroscience", "Writing"],
+      topics: ["Literature", "Brain Science", "Habitats", "Teamwork", "Ecology"],
+      objectives: ["Skim informational and literary texts", "Identify chronological order and character feelings", "Understand brain plasticity in reading"],
+      route: "javascript:openTextbookViewer(1, 'book-global-readings-3')",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      thumbnail: "assets/books/global-readings-3/cover.jpg",
+      description: "Macmillan Education Level 3 student anthology featuring 10 units structured across 4-week blocks, literature, neuroscience, and comprehensive literacy review."
+    }
+  };
+
   // =========================================================================
   // MONSTER EVOLUTION SYSTEM — SEED DATA & MODELS
   // =========================================================================
@@ -934,6 +1566,13 @@
     { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
     { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
     { id: 'tail-flame', name: 'Blazing Flame Tail', category: 'tail', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-hardwork' }, rarity: 'legendary', status: 'active' },
+
+
+    // Clothing
+    { id: 'clothing-vest', name: 'Explorer Vest', category: 'clothing', description: 'Sturdy khaki safari utility vest with brass buttons', icon: '🦺', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-cape', name: 'Hero Cape', category: 'clothing', description: 'Flowing crimson superhero cape with gold clasp', icon: '🦸', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-scarf', name: 'Cozy Winter Scarf', category: 'clothing', description: 'Warm knitted emerald green scarf with fringe', icon: '🧣', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'clothing-robe', name: 'Wizard Robe', category: 'clothing', description: 'Midnight indigo scholar robe stitched with silver runes', icon: '👘', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
 
     // Hats
     { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
@@ -1264,12 +1903,13 @@
       ],
 
       // 3. Resources (Games & Lessons)
-      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource]),
+      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource, GLOBAL_READINGS_3_DATA.resource]),
 
       // 4. Curriculum Hierarchy
       curriculum: {
         books: [
           GLOBAL_READINGS_2_DATA.book,
+          GLOBAL_READINGS_3_DATA.book,
           {
             id: 'book-1',
             title: 'English Explorer A1',
@@ -1289,6 +1929,7 @@
         ],
         units: [
           ...GLOBAL_READINGS_2_DATA.units,
+          ...GLOBAL_READINGS_3_DATA.units,
           {
             id: 'unit-1',
             bookId: 'book-1',
@@ -1337,6 +1978,7 @@
         ],
         lessons: [
           ...GLOBAL_READINGS_2_DATA.lessons,
+          ...GLOBAL_READINGS_3_DATA.lessons,
           {
             id: 'lesson-1',
             unitId: 'unit-1',
@@ -1390,6 +2032,7 @@
         ],
         objectives: [
           ...GLOBAL_READINGS_2_DATA.objectives,
+          ...GLOBAL_READINGS_3_DATA.objectives,
           { id: 'obj-1', lessonId: 'lesson-1', text: 'Identify and name 6 creature body parts', skill: 'Vocabulary', cefr: 'Pre-A1', archived: false },
           { id: 'obj-2', lessonId: 'lesson-1', text: 'Form sentences with "It has got..."', skill: 'Grammar', cefr: 'A1', archived: false },
           { id: 'obj-3', lessonId: 'lesson-2', text: 'State firefighter equipment functions', skill: 'Speaking', cefr: 'A1', archived: false },
@@ -1517,9 +2160,9 @@
         { id: 'xp-3', studentId: 'student-emma', amount: 250, reason: 'Polite Dialogue in Restaurant Roleplay', category: 'positive', icon: '🍽️', date: 'Sep 7, 2026', timestamp: '2026-09-07T11:15:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
         { id: 'xp-4', studentId: 'student-emma', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 9, 2026', timestamp: '2026-09-09T14:00:00Z', createdBy: 'Ms. Sarah', source: 'Teacher', status: 'active' },
         { id: 'xp-5', studentId: 'student-lucas', amount: 500, reason: 'Completed Initial Explorer Orientation', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-6', studentId: 'student-lucas', amount: 320, reason: 'Restaurant Roleplay Completion', category: 'positive', icon: '🍽️', date: 'Sep 6, 2026', timestamp: '2026-09-06T10:45:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-6', studentId: 'student-lucas', amount: 327, reason: 'Restaurant Roleplay Completion', category: 'positive', icon: '🍽️', date: 'Sep 6, 2026', timestamp: '2026-09-06T10:45:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
         { id: 'xp-7', studentId: 'student-sofia', amount: 980, reason: 'Treasure Mystery Super Sleuth', category: 'positive', icon: '🗝️', date: 'Sep 8, 2026', timestamp: '2026-09-08T13:20:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
-        { id: 'xp-8', studentId: 'student-noah', amount: 620, reason: 'Firefighter Mission Accomplished', category: 'positive', icon: '🚒', date: 'Sep 5, 2026', timestamp: '2026-09-05T11:00:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
+        { id: 'xp-8', studentId: 'student-noah', amount: 622, reason: 'Firefighter Mission Accomplished', category: 'positive', icon: '🚒', date: 'Sep 5, 2026', timestamp: '2026-09-05T11:00:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
         { id: 'xp-9', studentId: 'student-maya', amount: 710, reason: 'Jungle Explorer Mission', category: 'positive', icon: '🌴', date: 'Sep 6, 2026', timestamp: '2026-09-06T14:10:00Z', createdBy: 'System', source: 'Activity', status: 'active' },
         { id: 'xp-10', studentId: 'student-oliver', amount: 450, reason: 'Super Hero Phonics Training', category: 'positive', icon: '🦸', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'System', source: 'Activity', status: 'active' }
       ],
@@ -2160,6 +2803,82 @@
               }
             }
 
+            // Ensure Global Readings 3 curriculum book, units, lessons, objectives, and resource are present in existing saved state
+            if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
+              const gr3Book = merged.curriculum.books.find(b => b.id === 'book-global-readings-3');
+              if (!gr3Book) {
+                const gr2Idx = merged.curriculum.books.findIndex(b => b.id === 'book-global-readings-2');
+                if (gr2Idx !== -1) {
+                  merged.curriculum.books.splice(gr2Idx + 1, 0, GLOBAL_READINGS_3_DATA.book);
+                } else {
+                  merged.curriculum.books.push(GLOBAL_READINGS_3_DATA.book);
+                }
+              } else {
+                Object.assign(gr3Book, GLOBAL_READINGS_3_DATA.book, {
+                  title: gr3Book.title || GLOBAL_READINGS_3_DATA.book.title,
+                  grade: 'Grade 4',
+                  gradeLevel: 'Grade 4',
+                  weeksPerUnit: 4,
+                  archived: gr3Book.archived || false
+                });
+              }
+              const gr2Book = merged.curriculum.books.find(b => b.id === 'book-global-readings-2');
+              if (gr2Book) {
+                gr2Book.grade = 'Grade 3';
+                gr2Book.gradeLevel = 'Grade 3';
+                gr2Book.weeksPerUnit = 4;
+              }
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.units)) {
+              GLOBAL_READINGS_3_DATA.units.forEach(u => {
+                const existingU = merged.curriculum.units.find(item => item.id === u.id);
+                if (!existingU) {
+                  merged.curriculum.units.push(u);
+                } else {
+                  Object.assign(existingU, {
+                    reading1: u.reading1,
+                    reading2: u.reading2,
+                    readingSkill: u.readingSkill,
+                    contentArea: u.contentArea,
+                    selFocus: u.selFocus,
+                    keyConcept: u.keyConcept,
+                    pages: u.pages,
+                    weeks: u.weeks || existingU.weeks,
+                    targetVocab: (existingU.targetVocab && existingU.targetVocab.length) ? existingU.targetVocab : u.targetVocab
+                  });
+                }
+              });
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.lessons)) {
+              GLOBAL_READINGS_3_DATA.lessons.forEach(l => {
+                const existingL = merged.curriculum.lessons.find(item => item.id === l.id);
+                if (!existingL) {
+                  merged.curriculum.lessons.push(l);
+                } else {
+                  Object.assign(existingL, {
+                    weekNumber: l.weekNumber || existingL.weekNumber,
+                    sourcePages: l.sourcePages,
+                    sourceBook: l.sourceBook,
+                    tasks: l.tasks || existingL.tasks,
+                    activities: l.activities || existingL.activities
+                  });
+                }
+              });
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.objectives)) {
+              GLOBAL_READINGS_3_DATA.objectives.forEach(o => {
+                if (!merged.curriculum.objectives.some(item => item.id === o.id)) {
+                  merged.curriculum.objectives.push(o);
+                }
+              });
+            }
+            if (Array.isArray(merged.resources)) {
+              if (!merged.resources.some(r => r.id === 'res-global-readings-3')) {
+                merged.resources.push(GLOBAL_READINGS_3_DATA.resource);
+              }
+            }
+
+
             // Ensure curriculum books have both level and targetLevel defined
             if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
               merged.curriculum.books.forEach(b => {
@@ -2413,37 +3132,70 @@
       if (!this.state.xpTransactions) this.state.xpTransactions = [];
       const prevMonsterState = this.calculateMonsterState(studentId);
       const prevLevel = prevMonsterState ? prevMonsterState.currentLevel : 1;
+      const prevStageName = prevMonsterState ? prevMonsterState.stageName : 'Mystery Egg';
+      const prevStageKey = prevMonsterState ? prevMonsterState.stageKey : 'egg';
+      const prevLevelObj = prevMonsterState ? prevMonsterState.currentLevelObj : null;
+      const profile = this.getMonsterProfile(studentId);
+      const lastCelebrated = profile.lastCelebratedLevel || prevLevel;
 
       this.state.xpTransactions.push(tx);
       const newMonsterState = this.calculateMonsterState(studentId);
+      const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
 
       let evolutionEvent = null;
-      if (newMonsterState && prevLevel && newMonsterState.currentLevel > prevLevel) {
-        const levels = this.getProgressionLevels();
-        const prevLvlObj = levels.find(l => l.level === prevLevel);
-        const newLvlObj = newMonsterState.currentLevelObj;
-        const isHatch = (newMonsterState.currentLevel >= 3 && prevLevel < 3);
+      if (newMonsterState && newLevel > prevLevel && newLevel > lastCelebrated) {
+        const isHatch = (newLevel >= 3 && prevLevel < 3);
 
-        const profile = this.getMonsterProfile(studentId);
-        if (isHatch && profile) {
+        profile.highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, newLevel);
+        if (isHatch || newLevel >= 3) {
           profile.isHatched = true;
+          if (!profile.hatchDate) profile.hatchDate = new Date().toISOString();
         }
 
         this.logMonsterHistory(studentId, {
           type: isHatch ? 'hatch' : 'evolve',
-          title: isHatch ? '✨ Egg Hatched into Baby Monster!' : ('🎉 Evolved to Level ' + newMonsterState.currentLevel + ': ' + newMonsterState.stageName),
+          title: isHatch ? '✨ Egg Hatched into Baby Monster!' : ('🎉 Evolved to Level ' + newLevel + ': ' + newMonsterState.stageName),
           detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString() + ' XP.'
         });
+
+        const allItems = this.getMonsterItems(null, true);
+        const itemsAvailableAtOldLevel = new Set(
+          allItems
+            .filter(it => it.unlockType === 'level' && it.unlockRequirement && ((it.unlockRequirement.level || 1) <= prevLevel))
+            .map(it => it.id)
+        );
+        const newlyUnlockedItems = allItems.filter(it => 
+          it.unlockType === 'level' &&
+          it.unlockRequirement &&
+          ((it.unlockRequirement.level || 1) <= newLevel) &&
+          !itemsAvailableAtOldLevel.has(it.id)
+        );
 
         evolutionEvent = {
           studentId,
           prevLevel,
-          newLevel: newMonsterState.currentLevel,
+          newLevel,
+          fromLevel: prevLevel,
+          toLevel: newLevel,
           isHatch,
-          newStageKey: newMonsterState.stageKey,
-          fromStage: prevLvlObj ? prevLvlObj.name : ('Level ' + prevLevel),
-          toStage: newMonsterState.stageName
+          previousStage: {
+            level: prevLevel,
+            name: prevStageName,
+            stageKey: prevStageKey,
+            description: prevLevelObj ? (prevLevelObj.description || '') : ''
+          },
+          newStage: {
+            level: newLevel,
+            name: newMonsterState.stageName,
+            stageKey: newMonsterState.stageKey,
+            description: newMonsterState.stageDescription || ''
+          },
+          newlyUnlockedItems,
+          totalXP: newMonsterState.totalXP,
+          nextLevelXP: newMonsterState.nextLevelObj ? newMonsterState.nextLevelObj.xpRequired : null
         };
+
+        profile.lastCelebratedLevel = newLevel;
       }
 
       this.saveState();
@@ -2855,6 +3607,30 @@
     // =========================================================================
     // 3. CURRICULUM HIERARCHY CRUD
     // =========================================================================
+
+    getBookPages(bookId = 'book-global-readings-2') {
+      if (bookId === 'book-global-readings-3') {
+        return GLOBAL_READINGS_3_PAGES;
+      }
+      return GLOBAL_READINGS_2_PAGES;
+    }
+
+    getSidebarCounts() {
+      return {
+        classes: (this.getClasses() || []).length,
+        students: (this.getStudents() || []).length,
+        curriculum: (this.getBooks() || []).length,
+        resources: (this.getResources() || []).length,
+        worksheets: (this.getWorksheets ? this.getWorksheets().length : 4),
+        assignments: (this.getAssignments() || []).length,
+        homework: (this.getHomework() || []).length,
+        quizzes: (this.getQuizzes() || []).length,
+        assessments: ((this.state && this.state.assessments) || []).filter(a => !a.archived).length,
+        reports: (this.getReports() || []).length,
+        messages: ((this.state && this.state.messages) || []).length
+      };
+    }
+
     getBooks(includeArchived = false) {
       return this.state.curriculum.books.filter(b => includeArchived || !b.archived);
     }
@@ -3664,6 +4440,19 @@
       if (!this.state.monsterProfiles) this.state.monsterProfiles = {};
       if (!this.state.monsterProfiles[studentId]) {
         const student = this.getStudent(studentId);
+        const totalXP = this.getStudentTotalXP(studentId);
+        const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
+
+        // Determine initial level from current XP
+        let initLevel = 1;
+        for (let i = 0; i < levels.length; i++) {
+          if (totalXP >= levels[i].xpRequired) {
+            initLevel = levels[i].level;
+          } else {
+            break;
+          }
+        }
+
         const name = student ? student.firstName + "'s Monster" : "My Monster";
         const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
         const colorIdx = studentId ? Math.abs(studentId.charCodeAt(studentId.length - 1)) % colors.length : 0;
@@ -3672,7 +4461,11 @@
         this.state.monsterProfiles[studentId] = {
           studentId: studentId,
           petName: name,
+          monsterName: name,
           baseColor: assignedColor,
+          highestUnlockedLevel: initLevel,
+          lastCelebratedLevel: initLevel, // Existing students start with current level acknowledged
+          isHatched: initLevel >= 3,
           equipped: {
             body: 'body-' + assignedColor,
             eyes: 'eyes-sparkle',
@@ -3688,20 +4481,52 @@
             background: 'bg-meadow'
           },
           unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
-          hatchDate: null,
+          hatchDate: initLevel >= 3 ? new Date().toISOString() : null,
           evolutionHistory: [
             {
               id: 'ev-init-' + Date.now(),
               date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-              type: 'egg',
-              title: 'Mystery Egg Received',
-              detail: 'Student entered Academy with a dormant Mystery Egg.'
+              type: initLevel >= 3 ? 'hatch' : 'egg',
+              title: initLevel >= 3 ? 'Baby Monster Companion' : 'Mystery Egg Received',
+              detail: 'Student entered Academy with Level ' + initLevel + ' companion.'
             }
           ]
         };
         this.saveState();
       }
-      return this.state.monsterProfiles[studentId];
+
+      // Safety checks for existing profiles that may lack highestUnlockedLevel or lastCelebratedLevel:
+      const prof = this.state.monsterProfiles[studentId];
+      if (!prof.highestUnlockedLevel) {
+        const totalXP = this.getStudentTotalXP(studentId);
+        const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
+        let initLevel = 1;
+        for (let i = 0; i < levels.length; i++) {
+          if (totalXP >= levels[i].xpRequired) initLevel = levels[i].level;
+          else break;
+        }
+        prof.highestUnlockedLevel = initLevel;
+        if (prof.lastCelebratedLevel === undefined) {
+          prof.lastCelebratedLevel = initLevel;
+        }
+        if (initLevel >= 3) {
+          prof.isHatched = true;
+        }
+      }
+      if (!prof.monsterName && prof.petName) {
+        prof.monsterName = prof.petName;
+      }
+      return prof;
+    }
+
+    acknowledgeCelebration(studentId, level = null) {
+      const profile = this.getMonsterProfile(studentId);
+      if (profile) {
+        const targetLevel = level || profile.highestUnlockedLevel || 1;
+        profile.lastCelebratedLevel = Math.max(profile.lastCelebratedLevel || 1, targetLevel);
+        profile.celebratedAt = new Date().toISOString();
+        this.saveState();
+      }
     }
 
     updateMonsterProfile(studentId, updates) {
@@ -3750,21 +4575,31 @@
       const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
       const profile = this.getMonsterProfile(studentId);
 
-      let currentLevelObj = levels[0] || { level: 1, name: 'Mystery Egg', stageKey: 'egg', xpRequired: 0 };
-      let nextLevelObj = levels[1] || null;
-
+      let levelFromXP = 1;
       for (let i = 0; i < levels.length; i++) {
         if (totalXP >= levels[i].xpRequired) {
-          currentLevelObj = levels[i];
-          nextLevelObj = levels[i + 1] || null;
+          levelFromXP = levels[i].level;
         } else {
           break;
         }
       }
 
+      // Permanent Evolution Rule: highestUnlockedLevel never downgrades even if XP decreases
+      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, levelFromXP);
+      if (highestUnlockedLevel > (profile.highestUnlockedLevel || 1)) {
+        profile.highestUnlockedLevel = highestUnlockedLevel;
+        if (highestUnlockedLevel >= 3) profile.isHatched = true;
+        this.saveState();
+      }
+
+      const currentDisplayedLevel = highestUnlockedLevel;
+      const currentLevelObj = levels.find(l => l.level === currentDisplayedLevel) || levels[0];
+      const nextLevelObj = levels.find(l => l.level === currentDisplayedLevel + 1) || null;
+
       const currentLevel = currentLevelObj.level;
       const stageKey = currentLevelObj.stageKey;
       const stageName = currentLevelObj.name;
+      const stageDescription = currentLevelObj.description || 'Companion in English Adventure Academy.';
       const levelXP = currentLevelObj.xpRequired;
       const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : levelXP;
       const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
@@ -3774,27 +4609,31 @@
         progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
       }
 
-      const isHatched = (currentLevel >= 3);
+      const isHatched = (currentDisplayedLevel >= 3) || !!profile.isHatched;
 
       let eggCrackPct = 0;
-      if (currentLevel === 1) {
+      if (currentDisplayedLevel === 1) {
         eggCrackPct = Math.min(95, Math.round((totalXP / 100) * 100));
-      } else if (currentLevel === 2) {
+      } else if (currentDisplayedLevel === 2) {
+        eggCrackPct = 100;
+      } else {
         eggCrackPct = 100;
       }
 
-      const allItems = this.getMonsterItems();
+      const allItems = this.getMonsterItems(null, true);
       const unlockedItemIds = new Set(profile.unlockedItems || []);
 
       allItems.forEach(item => {
         if (item.unlockType === 'default') {
           unlockedItemIds.add(item.id);
         } else if (item.unlockType === 'level') {
-          if (item.unlockRequirement && currentLevel >= (item.unlockRequirement.level || 1)) {
+          const reqLevel = (item.unlockRequirement && item.unlockRequirement.level) || 1;
+          if (currentDisplayedLevel >= reqLevel) {
             unlockedItemIds.add(item.id);
           }
         } else if (item.unlockType === 'achievement') {
-          if (item.unlockRequirement && this.hasStudentAchievement(studentId, item.unlockRequirement.achievementId)) {
+          const achId = item.unlockRequirement && item.unlockRequirement.achievementId;
+          if (achId && this.hasStudentAchievement(studentId, achId)) {
             unlockedItemIds.add(item.id);
           }
         }
@@ -3806,15 +4645,20 @@
         currentLevel,
         stageKey,
         stageName,
+        stageDescription,
         levelXP,
         nextLevelXP,
         xpToNext,
+        xpRemainingForNextLevel: xpToNext,
         progressPct,
+        progressPctToNextLevel: progressPct,
         isHatched,
         eggCrackPct,
+        eggCrackPercent: eggCrackPct,
         unlockedItemIds,
         currentLevelObj,
         nextLevelObj,
+        highestUnlockedLevel,
         profile
       };
     }
@@ -5456,9 +6300,11 @@
     window.store = schoolStore;
     window.GLOBAL_READINGS_2_PAGES = GLOBAL_READINGS_2_PAGES;
     window.GLOBAL_READINGS_2_DATA = GLOBAL_READINGS_2_DATA;
+    window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
+    window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA };
+    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
   }
 
 })(typeof window !== 'undefined' ? window : global);

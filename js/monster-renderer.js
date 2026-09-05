@@ -367,9 +367,9 @@
       else return '';
     }
 
-    if (effectiveWings === 'none') return '';
+    if (effectiveWings === 'none' || effectiveWings === 'wings-none') return '';
 
-    if (effectiveWings === 'wings-starter' || stage === 'growing') {
+    if (effectiveWings === 'wings-starter') {
       return `
         <g fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" opacity="0.95">
           <path d="M 60 105 C 30 90 20 115 35 130 C 45 138 58 125 62 118 Z" />
@@ -378,7 +378,7 @@
       `;
     }
 
-    if (effectiveWings === 'wings-dragon' || stage === 'advanced') {
+    if (effectiveWings === 'wings-dragon') {
       return `
         <g stroke="${palette.shadow}" stroke-width="3">
           <path d="M 65 110 C 25 70 10 95 15 125 C 25 115 40 120 48 135 C 55 125 60 122 68 125 Z" fill="${palette.primary}" />
@@ -389,7 +389,7 @@
       `;
     }
 
-    if (effectiveWings === 'wings-celestial' || stage === 'ultimate') {
+    if (effectiveWings === 'wings-celestial') {
       return `
         <g filter="url(#mf-shadow)">
           <g fill="url(#mg-gold-crown)" stroke="${palette.shadow}" stroke-width="2.5">
@@ -419,6 +419,8 @@
       else if (stage === 'advanced') effectiveTail = 'tail-dragon';
       else if (stage === 'ultimate') effectiveTail = 'tail-flame';
     }
+
+    if (effectiveTail === 'none' || effectiveTail === 'tail-none') return '';
 
     if (effectiveTail === 'tail-puff') {
       return `
@@ -550,21 +552,83 @@
       </g>
     `;
 
+    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette);
     const faceMarkup = renderFaceElements(stage, palette, equipped, cX, cY);
 
     return `
       ${hornsEarsMarkup}
       ${feetMarkup}
       ${torsoMarkup}
+      ${clothingMarkup}
       ${faceMarkup}
     `;
   }
 
+  // --- CLOTHING LAYER ---
+  function renderClothingLayer(clothingId, cX, cY, rx, ry, palette) {
+    if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
+
+    if (clothingId === 'clothing-vest') {
+      return `
+        <!-- Adventure Explorer Vest -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX - 12} ${cY + 4} ${cX - 12} ${cY + ry - 4} L ${cX - rx + 8} ${cY + ry - 4} Z" fill="#78350f" stroke="#451a03" stroke-width="1.8" />
+          <path d="M ${cX + rx - 4} ${cY + 2} Q ${cX + 12} ${cY + 4} ${cX + 12} ${cY + ry - 4} L ${cX + rx - 8} ${cY + ry - 4} Z" fill="#78350f" stroke="#451a03" stroke-width="1.8" />
+          <circle cx="${cX - 8}" cy="${cY + 16}" r="2" fill="#facc15" />
+          <circle cx="${cX - 8}" cy="${cY + 26}" r="2" fill="#facc15" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-cape') {
+      return `
+        <!-- Hero Cape -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 24} ${cY - 12} Q ${cX} ${cY - 6} ${cX + 24} ${cY - 12} L ${cX + 32} ${cY + ry + 10} Q ${cX} ${cY + ry + 2} ${cX - 32} ${cY + ry + 10} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" opacity="0.9" />
+          <circle cx="${cX}" cy="${cY - 8}" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-scarf') {
+      return `
+        <!-- Academy Striped Scarf -->
+        <g filter="url(#mf-shadow)">
+          <ellipse cx="${cX}" cy="${cY - 6}" rx="${rx * 0.75}" ry="7" fill="#2563eb" stroke="#1e40af" stroke-width="2" />
+          <path d="M ${cX - 12} ${cY - 4} L ${cX - 16} ${cY + 24} L ${cX - 4} ${cY + 26} L ${cX} ${cY - 4} Z" fill="#2563eb" stroke="#1e40af" stroke-width="1.5" />
+          <rect x="${cX - 15}" y="${cY + 6}" width="13" height="4" fill="#facc15" />
+          <rect x="${cX - 15}" y="${cY + 16}" width="13" height="4" fill="#facc15" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-robe') {
+      return `
+        <!-- Mystic Scholar Robe -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY} L ${cX + rx} ${cY + ry + 4} L ${cX - rx} ${cY + ry + 4} Z" fill="#4338ca" stroke="#312e81" stroke-width="2" opacity="0.88" />
+          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry + 4}" stroke="#facc15" stroke-width="2" />
+          <polygon points="${cX},${cY + 18} ${cX+2},${cY+22} ${cX+6},${cY+22} ${cX+3},${cY+25} ${cX+4},${cY+29} ${cX},${cY+26} ${cX-4},${cY+29} ${cX-3},${cY+25} ${cX-6},${cY+22} ${cX-2},${cY+22}" fill="#facc15" />
+        </g>
+      `;
+    }
+
+    return '';
+  }
+
   // --- HORNS & EARS ---
   function renderHornsAndEars(stage, palette, equipped, cX, topY, scale) {
-    const hornId = equipped.horns || 'default';
+    let hornId = equipped.horns;
+    if (!hornId || hornId === 'default') {
+      if (stage === 'ultimate') hornId = 'horns-crystal';
+      else if (stage === 'advanced') hornId = 'horns-curved';
+      else if (stage === 'adventurer') hornId = 'horns-nub';
+      else hornId = 'horns-ears';
+    }
 
-    if (stage === 'ultimate' || hornId === 'horns-crystal' || hornId === 'horns-dragon') {
+    if (hornId === 'none' || hornId === 'horns-none') return '';
+
+    if (hornId === 'horns-crystal' || hornId === 'horns-dragon') {
       return `
         <!-- Crystal Dragon Horns -->
         <g filter="url(#mf-shadow)">
@@ -574,7 +638,7 @@
       `;
     }
 
-    if (stage === 'advanced' || hornId === 'horns-curved') {
+    if (hornId === 'horns-curved') {
       return `
         <!-- Curved Ram / Dragon Horns -->
         <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.5" filter="url(#mf-shadow)">
@@ -584,7 +648,7 @@
       `;
     }
 
-    if (stage === 'adventurer' || hornId === 'horns-nub') {
+    if (hornId === 'horns-nub') {
       return `
         <!-- Sprout Nub Horns -->
         <g fill="${palette.accent}" stroke="${palette.primaryDark}" stroke-width="2">
@@ -594,6 +658,7 @@
       `;
     }
 
+    // Default Floppy Monster Ears
     return `
       <!-- Cute Floppy Monster Ears -->
       <g filter="url(#mf-shadow)">
@@ -607,7 +672,11 @@
 
   // --- FACE ELEMENTS ---
   function renderFaceElements(stage, palette, equipped, cX, cY) {
-    const eyesId = equipped.eyes || 'eyes-sparkle';
+    let eyesId = equipped.eyes;
+    if (!eyesId || eyesId === 'default') {
+      if (stage === 'advanced' || stage === 'ultimate') eyesId = 'eyes-dragon';
+      else eyesId = 'eyes-sparkle';
+    }
     const mouthId = equipped.mouth || 'mouth-smile';
 
     const eyeY = cY - 10;
@@ -631,7 +700,7 @@
         <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 8} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" fill="none" />
         <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 8} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" fill="none" />
       `;
-    } else if (eyesId === 'eyes-dragon' || stage === 'advanced' || stage === 'ultimate') {
+    } else if (eyesId === 'eyes-dragon') {
       eyesMarkup = `
         <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9" ry="12" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
         <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="3.5" ry="9" fill="#0f172a" />
@@ -641,6 +710,7 @@
         <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 4}" r="2.5" fill="#ffffff" />
       `;
     } else {
+      // eyes-sparkle (default)
       eyesMarkup = `
         <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.5" ry="12" fill="#0f172a" />
         <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
@@ -683,11 +753,17 @@
     let glassesMarkup = '';
     let accessoryMarkup = '';
 
-    const hatId = equipped.hat || (stage === 'ultimate' ? 'hat-crown' : 'none');
+    let hatId = equipped.hat;
+    if (!hatId || hatId === 'default') {
+      if (stage === 'ultimate') hatId = 'hat-crown';
+      else if (stage === 'adventurer') hatId = 'hat-explorer';
+      else hatId = 'none';
+    }
+
     const glassesId = equipped.glasses || 'none';
     const accId = equipped.accessory || 'none';
 
-    if (hatId === 'hat-crown' || stage === 'ultimate') {
+    if (hatId === 'hat-crown') {
       hatMarkup = `
         <g filter="url(#mf-shadow)">
           <polygon points="76,68 84,40 100,56 116,40 124,68" fill="url(#mg-gold-crown)" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round" />
@@ -697,7 +773,7 @@
           <circle cx="115" cy="48" r="2.5" fill="#10b981" />
         </g>
       `;
-    } else if (hatId === 'hat-explorer' || stage === 'adventurer') {
+    } else if (hatId === 'hat-explorer') {
       hatMarkup = `
         <!-- Explorer Fedora -->
         <g filter="url(#mf-shadow)">
@@ -786,8 +862,9 @@
     stages: STAGE_META
   };
 
-  if (typeof window !== 'undefined') {
-    window.renderMonsterSVG = renderMonsterSVG;
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = root.MonsterRenderer;
   }
 
 })(typeof window !== 'undefined' ? window : global);
+

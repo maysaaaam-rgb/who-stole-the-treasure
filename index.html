@@ -1985,51 +1985,122 @@
   </div>
 
   <!-- 5. Canonical Monster Creator & Customizer Gallery Modal -->
+  <!-- 5. Interactive Monster Creator & Customizer (3-Column Studio) -->
   <div class="modal-overlay" id="modal-avatar-selector">
-    <div class="modal-dialog" style="max-width: 860px; max-height: 92vh; overflow-y: auto;">
+    <div class="modal-dialog" style="max-width: 1100px; width: 95vw; max-height: 92vh; overflow-y: auto; padding: 24px; border-radius: 20px;">
       <button class="modal-close-btn" onclick="closeModal('modal-avatar-selector')">✕</button>
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
-        <span style="font-size:1.8rem;">🎨</span>
-        <div>
-          <h2 style="font-size:1.35rem; font-weight:800; margin:0; color:var(--text-main);">Monster Creator & Customizer</h2>
-          <p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Customize your evolving companion monster with unlocked colors, features & accessories</p>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border-light); padding-bottom:14px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:2rem;">🎨</span>
+          <div>
+            <h2 style="font-size:1.4rem; font-weight:800; margin:0; color:var(--text-main);">Monster Studio &amp; Customizer</h2>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Customize your evolving learning companion with unlocked skins, horns, wings, hats, clothing &amp; auras</p>
+          </div>
+        </div>
+        <!-- Category Tabs (Monster, Face, Features, Clothing, World) -->
+        <div id="avatar-category-nav" class="class-subnav-tabs" style="display:flex; gap:6px; margin:0; overflow-x:auto;">
+          <!-- Populated dynamically -->
         </div>
       </div>
 
-      <!-- Category Tabs (Monster, Face, Features, Clothing, World) -->
-      <div id="avatar-category-nav" class="class-subnav-tabs" style="margin-bottom:16px; overflow-x:auto; display:flex; gap:6px;">
-        <!-- Populated dynamically -->
-      </div>
-
-      <!-- Main Layout: Items Grid + Live Preview Panel -->
-      <div style="display:grid; grid-template-columns: 1fr 260px; gap:20px;">
-        <!-- Items Grid -->
-        <div>
-          <div id="monster-creator-category-title" style="font-size:0.82rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Select Body & Colors</div>
-          <div id="avatar-characters-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; max-height:430px; overflow-y:auto; padding:4px;">
+      <!-- 3-Column Studio Layout -->
+      <div class="monster-customizer-grid" style="display:grid; grid-template-columns: 340px 1fr 270px; gap:20px; align-items:start;">
+        <!-- Column 1: Items Grid -->
+        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div id="monster-creator-category-title" style="font-size:0.82rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Select Cosmetics</div>
+            <span id="monster-creator-item-count" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"></span>
+          </div>
+          <div id="avatar-characters-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap:10px; max-height:480px; overflow-y:auto; padding:4px;">
             <!-- Dynamically populated item cards -->
           </div>
         </div>
 
-        <!-- Live Preview Panel (160px preview) -->
-        <div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:var(--radius-lg); padding:18px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:space-between; box-shadow:var(--shadow-sm);">
-          <div style="width:100%;">
-            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Active Monster Companion</div>
-            <div id="avatar-preview-box" style="width:160px; height:160px; border-radius:var(--radius-lg); background:linear-gradient(135deg, rgba(238,242,255,0.8), rgba(243,232,255,0.8)); display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; box-shadow:var(--shadow-sm); border:1px solid rgba(99,102,241,0.15); overflow:hidden;">
-              <!-- Dynamically rendered Monster SVG (150px) -->
-            </div>
-            <h4 id="avatar-preview-name" style="font-size:1.15rem; font-weight:800; margin:0 0 4px 0; color:var(--text-main);">Draco</h4>
-            <div id="avatar-preview-category" style="font-size:0.82rem; color:var(--color-primary); font-weight:800; margin-bottom:4px;">Level 3 · Baby Monster</div>
-            <p id="avatar-preview-desc" style="font-size:0.76rem; color:var(--text-muted); line-height:1.4; margin:0 0 8px 0;">Equipped companion preview</p>
-            <div id="monster-creator-equipped-summary" style="font-size:0.73rem; color:var(--text-muted); background:var(--bg-card); border-radius:var(--radius-sm); padding:6px 8px; border:1px solid var(--border-light); line-height:1.4; text-align:left; max-height:80px; overflow-y:auto;">
-              <!-- Summary of equipped gear -->
-            </div>
+        <!-- Column 2 (Center): Large Live Monster Viewport -->
+        <div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:18px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); min-height:480px; position:relative;">
+          <div style="position:absolute; top:16px; left:20px; font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Live Interactive Preview</div>
+          <div id="avatar-preview-box" style="width:280px; height:280px; border-radius:24px; background:linear-gradient(135deg, rgba(238,242,255,0.9), rgba(243,232,255,0.9)); display:flex; align-items:center; justify-content:center; margin:20px auto 16px auto; box-shadow:var(--shadow-md); border:1.5px solid rgba(99,102,241,0.2); overflow:hidden; transition:all 0.2s ease;">
+            <!-- Dynamically rendered 260px Monster SVG -->
           </div>
-          <div style="width:100%; margin-top:14px; display:flex; flex-direction:column; gap:8px;">
-            <button type="button" class="btn-primary-action" style="width:100%; justify-content:center; padding:9px;" onclick="handleConfirmSaveMonster()">✓ Save Monster</button>
-            <button type="button" class="btn-sm-secondary" style="width:100%; justify-content:center; padding:6px;" onclick="closeModal('modal-avatar-selector')">Cancel</button>
+          <!-- Quick Color Palette Swatches -->
+          <div style="margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Quick Fur Color</div>
+            <div id="monster-color-swatches" style="display:flex; gap:8px;">
+              <!-- Swatches for blue, pink, green, orange, purple, gold -->
+            </div>
           </div>
         </div>
+
+        <!-- Column 3 (Right): Stats, Selected Gear Summary & Save Controls -->
+        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; min-height:480px; box-shadow:var(--shadow-xs);">
+          <div>
+            <div style="border-bottom:1px solid var(--border-light); padding-bottom:12px; margin-bottom:12px;">
+              <h4 id="avatar-preview-name" style="font-size:1.25rem; font-weight:800; margin:0 0 4px 0; color:var(--text-main);">Draco</h4>
+              <div id="avatar-preview-category" style="font-size:0.86rem; color:var(--color-primary); font-weight:800; margin-bottom:4px;">Level 3 · Baby Monster</div>
+              <p id="avatar-preview-desc" style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin:0;">⭐ 827 XP · Active Companion</p>
+            </div>
+
+            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Equipped Gear &amp; Style</div>
+            <div id="monster-creator-equipped-summary" style="display:flex; flex-direction:column; gap:6px; max-height:240px; overflow-y:auto; padding-right:2px;">
+              <!-- Rendered list of equipped layers with remove '✕' buttons -->
+            </div>
+          </div>
+
+          <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-light); padding-top:14px;">
+            <button type="button" class="btn-primary-action" style="width:100%; justify-content:center; padding:11px 16px; font-size:0.92rem; font-weight:800;" onclick="handleConfirmSaveMonster()">✓ Save Monster</button>
+            <button type="button" class="btn-sm-secondary" style="width:100%; justify-content:center; padding:8px; font-size:0.84rem;" onclick="closeModal('modal-avatar-selector')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Monster Showcase Modal -->
+  <div class="modal-overlay" id="modal-monster-fullscreen">
+    <div class="modal-dialog" style="max-width: 760px; width: 92vw; border-radius: 24px; padding: 32px; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); color: #ffffff; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.6); position: relative; border: 1.5px solid rgba(147, 197, 253, 0.25);">
+      <button class="modal-close-btn" style="color: #cbd5e1; font-size: 1.3rem;" onclick="closeModal('modal-monster-fullscreen')">✕</button>
+      <div id="fs-monster-content">
+        <!-- Dynamically rendered monster showcase -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Attach Game to Lesson Modal -->
+  <div class="modal-overlay" id="modal-attach-game">
+    <div class="modal-dialog" style="max-width: 680px; width: 92vw; border-radius: 16px; padding: 22px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-attach-game')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <span style="font-size:1.6rem;">🎮</span>
+        <div>
+          <h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">Attach Game to Lesson</h3>
+          <p id="attach-game-lesson-title" style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Select a game from Adventure Academy library</p>
+        </div>
+      </div>
+      <div id="attach-game-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; max-height:400px; overflow-y:auto; padding:4px;">
+        <!-- Dynamically populated games -->
+      </div>
+      <div style="margin-top:16px; text-align:right;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-attach-game')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attach Worksheet to Lesson Modal -->
+  <div class="modal-overlay" id="modal-attach-worksheet">
+    <div class="modal-dialog" style="max-width: 680px; width: 92vw; border-radius: 16px; padding: 22px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-attach-worksheet')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <span style="font-size:1.6rem;">📄</span>
+        <div>
+          <h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">Attach Worksheet to Lesson</h3>
+          <p id="attach-worksheet-lesson-title" style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Select a printable worksheet from library</p>
+        </div>
+      </div>
+      <div id="attach-worksheet-list" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding:4px;">
+        <!-- Dynamically populated worksheets -->
+      </div>
+      <div style="margin-top:16px; text-align:right;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-attach-worksheet')">Cancel</button>
       </div>
     </div>
   </div>
@@ -2260,56 +2331,70 @@
 
 
   <!-- Monster Level Up / Evolution Celebration Modal -->
-  <div class="modal-overlay" id="modal-monster-levelup">
+  <div class="modal-overlay" id="modal-monster-levelup" style="z-index: 1200;">
     <div class="modal-dialog" style="max-width: 580px; text-align: center; border-radius: 20px; padding: 28px 24px; background: var(--bg-surface); position: relative; overflow: hidden;">
-      <button class="modal-close-btn" onclick="closeModal('modal-monster-levelup')">✕</button>
+      <button class="modal-close-btn" onclick="handleCelebrationAcknowledgeLevelUp()">✕</button>
       
       <div style="font-size: 2.2rem; margin-bottom: 4px;">✨ 🐲 ✨</div>
-      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin: 0 0 6px 0;">LEVEL UP!</h2>
-      <p id="m-levelup-subtitle" style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 20px 0;">Your monster has grown and unlocked new powers!</p>
+      <h2 id="m-levelup-title" style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin: 0 0 6px 0;">LEVEL UP!</h2>
+      <p id="m-levelup-subtitle" style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 14px 0;">Your monster has grown and unlocked new powers!</p>
+
+      <!-- XP Milestone Badge -->
+      <div id="m-levelup-xp-info" style="margin-bottom: 16px; font-size: 0.88rem; font-weight: 800; color: #b45309; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); padding: 5px 14px; border-radius: 20px; display: inline-block;">
+        ⭐ 250 XP Reached
+      </div>
 
       <!-- Evolution Comparison Box -->
-      <div style="background: var(--bg-muted); border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-around; gap: 12px;">
+      <div style="background: var(--bg-muted); border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-around; gap: 12px;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
-          <div id="m-levelup-prev-svg" style="width: 100px; height: 100px;"></div>
-          <span id="m-levelup-prev-label" style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">Previous Stage</span>
+          <div id="m-levelup-prev-svg" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;"></div>
+          <span id="m-levelup-prev-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-align: center; line-height: 1.3;">Previous Stage</span>
         </div>
-        <div style="font-size: 1.8rem; color: var(--color-primary); font-weight: 800;">➔</div>
+        <div style="font-size: 2rem; color: var(--color-primary); font-weight: 800;">➔</div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
-          <div id="m-levelup-next-svg" style="width: 120px; height: 120px; filter: drop-shadow(0 0 12px rgba(56,189,248,0.5));"></div>
-          <span id="m-levelup-next-label" class="badge" style="background: var(--color-primary); color: #fff; font-size: 0.82rem; font-weight: 800; padding: 4px 10px; border-radius: 12px;">New Stage</span>
+          <div id="m-levelup-next-svg" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 14px rgba(56,189,248,0.5));"></div>
+          <span id="m-levelup-next-label" class="badge" style="background: var(--color-primary); color: #fff; font-size: 0.84rem; font-weight: 800; padding: 4px 12px; border-radius: 14px; text-align: center;">New Stage</span>
         </div>
+      </div>
+
+      <!-- Next evolution threshold teaser -->
+      <div id="m-levelup-next-teaser" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; font-weight: 600;">
+        Next evolution at 500 XP
       </div>
 
       <!-- Unlocked Features Box -->
       <div style="text-align: left; background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px; margin-bottom: 20px;">
-        <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">New Features & Items Unlocked:</div>
+        <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">🎨 New Features &amp; Items Unlocked:</div>
         <div id="m-levelup-items-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
           <!-- Populated dynamically -->
         </div>
       </div>
 
       <div style="display: flex; justify-content: center; gap: 12px;">
-        <button type="button" class="btn-primary-action" onclick="openStudentMonsterCustomizer()" style="padding: 10px 20px; font-size: 0.9rem;">🎨 Customize Now</button>
-        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-monster-levelup')" style="padding: 10px 18px; font-size: 0.9rem;">Continue</button>
+        <button type="button" class="btn-primary-action" onclick="handleCelebrationCustomize()" style="padding: 10px 22px; font-size: 0.9rem;">🎨 Customize Now</button>
+        <button type="button" class="btn-sm-secondary" onclick="handleCelebrationAcknowledgeLevelUp()" style="padding: 10px 18px; font-size: 0.9rem;">Continue</button>
       </div>
     </div>
   </div>
 
   <!-- Monster Hatching Celebration Modal -->
-  <div class="modal-overlay" id="modal-monster-hatch">
+  <div class="modal-overlay" id="modal-monster-hatch" style="z-index: 1200;">
     <div class="modal-dialog" style="max-width: 520px; text-align: center; border-radius: 20px; padding: 32px 24px; background: var(--bg-surface); position: relative;">
-      <button class="modal-close-btn" onclick="closeModal('modal-monster-hatch')">✕</button>
+      <button class="modal-close-btn" onclick="handleCelebrationAcknowledgeHatch()">✕</button>
 
       <div style="font-size: 2.8rem; margin-bottom: 8px;">🐣 ✨ 🎉</div>
-      <h2 style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0 0 6px 0;">YOUR EGG HAS HATCHED!</h2>
-      <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 20px 0;">Welcome your Baby Monster into English Adventure Academy! It is eager to grow with you as you practice English and participate.</p>
+      <h2 id="m-hatch-title" style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0 0 6px 0;">YOUR EGG HAS HATCHED!</h2>
+      <p id="m-hatch-subtitle" style="font-size: 0.92rem; color: var(--text-muted); margin: 0 0 14px 0;">Welcome your Baby Monster into English Adventure Academy! It is eager to grow with you as you practice English and participate.</p>
 
-      <div id="m-hatch-monster-svg" style="width: 170px; height: 170px; margin: 0 auto 20px auto; filter: drop-shadow(0 8px 24px rgba(16,185,129,0.3));"></div>
+      <div id="m-hatch-xp-info" style="margin-bottom: 16px; font-size: 0.86rem; font-weight: 800; color: #059669; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); padding: 5px 14px; border-radius: 20px; display: inline-block;">
+        ⭐ Level 3 Baby Monster Unlocked!
+      </div>
+
+      <div id="m-hatch-monster-svg" style="width: 170px; height: 170px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 8px 24px rgba(16,185,129,0.3));"></div>
 
       <div style="display: flex; justify-content: center; gap: 12px;">
-        <button type="button" class="btn-primary-action" onclick="openStudentMonsterCustomizer()" style="padding: 10px 24px; font-size: 0.92rem; background: #059669;">🐾 Meet My Monster</button>
-        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-monster-hatch')" style="padding: 10px 18px; font-size: 0.92rem;">Awesome!</button>
+        <button type="button" class="btn-primary-action" onclick="handleCelebrationMeetMonster()" style="padding: 10px 24px; font-size: 0.92rem; background: #059669;">🐾 Meet My Monster</button>
+        <button type="button" class="btn-sm-secondary" onclick="handleCelebrationAcknowledgeHatch()" style="padding: 10px 18px; font-size: 0.92rem;">Awesome!</button>
       </div>
     </div>
   </div>

@@ -2875,3 +2875,134 @@ body.classroom-mode-active .classroom-students-grid {
 .monster-avatar-box:hover {
   transform: scale(1.08);
 }
+
+/* ==========================================================================
+   MODERN COLLAPSIBLE SIDEBAR STYLES
+   ========================================================================== */
+.app-layout {
+  transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-layout.sidebar-collapsed {
+  grid-template-columns: 68px 1fr !important;
+}
+
+.app-sidebar {
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
+}
+
+.app-sidebar.is-collapsed {
+  padding: 16px 6px !important;
+  width: 68px !important;
+}
+
+.app-sidebar.is-collapsed .sidebar-section-title {
+  display: none !important;
+}
+
+.app-sidebar.is-collapsed .sidebar-hr {
+  margin: 10px auto !important;
+  width: 32px !important;
+  opacity: 0.6;
+}
+
+.app-sidebar.is-collapsed .nav-link-btn {
+  justify-content: center !important;
+  padding: 10px 0 !important;
+  position: relative;
+  border-radius: 10px;
+}
+
+.app-sidebar.is-collapsed .nav-item-left {
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+.app-sidebar.is-collapsed .nav-icon {
+  font-size: 1.3rem !important;
+  margin: 0 !important;
+}
+
+.app-sidebar.is-collapsed .nav-label {
+  display: none !important;
+}
+
+.app-sidebar.is-collapsed .nav-badge-pill {
+  position: absolute !important;
+  top: 4px !important;
+  right: 6px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  font-size: 0.62rem !important;
+  line-height: 16px !important;
+}
+
+.app-sidebar.is-collapsed .collapse-text {
+  display: none !important;
+}
+
+.app-sidebar.is-collapsed .collapse-icon {
+  transform: rotate(180deg);
+}
+
+.app-sidebar.is-collapsed .sidebar-collapse-wrap {
+  padding: 12px 2px 4px !important;
+}
+
+/* ==========================================================================
+   DIGITAL TEXTBOOK SHELF & 4-WEEK MODULAR ROADMAP
+   ========================================================================== */
+.curriculum-book-card {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+}
+
+.curriculum-book-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1) !important;
+}
+
+.unit-accordion-card {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.unit-accordion-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 900px) {
+  .timeline-4weeks {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .monster-customizer-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .timeline-4weeks {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
+   FULLSCREEN MONSTER SHOWCASE STYLING
+   ========================================================================== */
+#modal-monster-fullscreen {
+  backdrop-filter: blur(8px);
+}
+
+#modal-monster-fullscreen .modal-dialog {
+  animation: modalPopIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPopIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
