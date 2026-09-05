@@ -7,6 +7,38 @@
 (function(root) {
   'use strict';
 
+
+  // Toast Notification System
+  function showNotification(message, type = 'success') {
+    if (typeof document === 'undefined' || !document.body) {
+      console.log('[Notification]', message);
+      return;
+    }
+    let toast = document.getElementById('app-toast-notification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'app-toast-notification';
+      toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; background:#0f172a; color:#fff; padding:12px 20px; border-radius:10px; font-weight:700; font-size:0.9rem; box-shadow:0 10px 25px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); transition:all 0.3s ease; display:flex; align-items:center; gap:8px; opacity:0; pointer-events:none; transform:translateY(10px);';
+      document.body.appendChild(toast);
+    }
+    toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+    toast.style.opacity = '1';
+    toast.style.pointerEvents = 'auto';
+    toast.style.transform = 'translateY(0)';
+
+    if (typeof window !== 'undefined') {
+      if (window._toastTimeout) clearTimeout(window._toastTimeout);
+      window._toastTimeout = setTimeout(() => {
+        if (toast) {
+          toast.style.opacity = '0';
+          toast.style.pointerEvents = 'none';
+          toast.style.transform = 'translateY(10px)';
+        }
+      }, 3200);
+    }
+  }
+  window.showNotification = showNotification;
+
   const store = window.schoolStore;
   if (!store) {
     console.error('MasterSchoolStore not found on window!');
@@ -22,6 +54,7 @@
   let studentProfileActiveTab = 'overview';
   let currentProfileStudentId = 'student-emma';
   let isLibraryManageMode = false;
+  let libraryActiveTab = 'games';
   let activeCardMenuId = null;
   let activeCreateMenuOpen = false;
 
@@ -204,7 +237,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home'
+        'leaderboard', 'parent-home', 'archived', 'settings'
       ];
       if (validViews.includes(primaryView)) {
         if (primaryView === 'class-detail' && parts[1]) {
@@ -2434,6 +2467,175 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   // =========================================================================
+
+  // =========================================================================
+  // PRINTABLE WORKSHEETS HUB & REAL LIBRARY
+  // =========================================================================
+  let wsFilterLevel = 'all';
+  let wsFilterSkill = 'all';
+  let wsFilterSearch = '';
+
+  function renderWorksheetsView(container) {
+    const allWorksheets = store.getWorksheets();
+    let worksheets = allWorksheets;
+
+    if (wsFilterLevel !== 'all') worksheets = worksheets.filter(w => (w.level || 'A1') === wsFilterLevel);
+    if (wsFilterSkill !== 'all') worksheets = worksheets.filter(w => (w.skill || w.category || '').toLowerCase().includes(wsFilterSkill.toLowerCase()));
+    if (wsFilterSearch.trim()) {
+      const q = wsFilterSearch.toLowerCase().trim();
+      worksheets = worksheets.filter(w => (w.title + ' ' + (w.description || '') + ' ' + (w.topic || '')).toLowerCase().includes(q));
+    }
+
+    container.innerHTML = 
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+        '<div>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Printable Worksheets</h1>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + allWorksheets.length + ' worksheets available for classroom practice, independent review, and home missions.</p>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-primary-action" onclick="openWorksheetEditor()">📄 + Create Worksheet</button>' +
+        '</div>' +
+      '</div>' +
+
+      // Filters Bar
+      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
+        '<input type="text" class="search-input" placeholder="Search worksheets, topics, vocabulary... (Press /)" style="flex:1; min-width:220px;" value="' + wsFilterSearch + '" oninput="wsFilterSearch=this.value; renderCurrentView();" />' +
+        '<select class="filter-select" onchange="wsFilterLevel=this.value; renderCurrentView();">' +
+          '<option value="all" ' + (wsFilterLevel === 'all' ? 'selected' : '') + '>All CEFR Levels</option>' +
+          '<option value="Pre-A1" ' + (wsFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+          '<option value="A1" ' + (wsFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
+          '<option value="A1+" ' + (wsFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+          '<option value="A2" ' + (wsFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
+        '</select>' +
+        '<select class="filter-select" onchange="wsFilterSkill=this.value; renderCurrentView();">' +
+          '<option value="all" ' + (wsFilterSkill === 'all' ? 'selected' : '') + '>All Skills</option>' +
+          '<option value="Speaking" ' + (wsFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking &amp; Roleplay</option>' +
+          '<option value="Vocabulary" ' + (wsFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+          '<option value="Grammar" ' + (wsFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+          '<option value="Reading" ' + (wsFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+          '<option value="Writing" ' + (wsFilterSkill === 'Writing' ? 'selected' : '') + '>Writing</option>' +
+        '</select>' +
+      '</div>' +
+
+      // Worksheets Grid
+      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
+        (worksheets.length === 0 ? '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No worksheets match your filters.</div>' :
+          worksheets.map(w => {
+            const qCount = (w.questions || []).length || 4;
+            return '' +
+              '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">' +
+                    '<div style="display:flex; align-items:center; gap:6px;">' +
+                      '<span class="badge-cefr badge-cefr-' + (w.level || 'A1').toLowerCase().replace('+', '-plus') + '">' + (w.level || 'A1') + '</span>' +
+                      '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + (w.grade || 'Grade 3') + '</span>' +
+                    '</div>' +
+                    '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + (w.status || 'Ready to Print') + '</span>' +
+                  '</div>' +
+                  '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">' + w.title + '</h3>' +
+                  '<div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;"><strong>Topic:</strong> ' + (w.topic || 'General Practice') + ' · <strong>Skill:</strong> ' + (w.skill || w.category || 'General') + ' · <strong>' + (w.duration || '20 min') + '</strong></div>' +
+                  '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (w.description || 'Interactive printable practice.') + '</p>' +
+                  '<div style="font-size:0.75rem; background:var(--bg-card-secondary); padding:6px 10px; border-radius:8px; margin-bottom:14px; border:1px solid var(--border-subtle);">' +
+                    '<strong>Questions:</strong> ' + qCount + ' tasks · <strong>Created:</strong> ' + (w.createdDate || '2026-09-01') +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:8px; flex-wrap:wrap;">' +
+                  '<div style="display:flex; gap:6px;">' +
+                    '<button class="btn-primary-action" onclick="openWorksheetPreviewModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">👁️ Open</button>' +
+                    '<button class="btn-sm-secondary" onclick="openAssignModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">📝 Assign</button>' +
+                  '</div>' +
+                  '<div style="display:flex; gap:6px;">' +
+                    '<button class="btn-sm-secondary" onclick="openWorksheetEditor(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDuplicateWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleArchiveWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+          }).join('')
+        ) +
+      '</div>';
+  }
+
+  window.openWorksheetPreviewModal = function(wsId, autoPrint = false) {
+    const ws = store.getWorksheet(wsId);
+    if (!ws) return;
+
+    const badge = document.getElementById('ws-prev-badge');
+    const title = document.getElementById('ws-prev-title');
+    const topic = document.getElementById('ws-prev-topic');
+    const instructions = document.getElementById('ws-prev-instructions');
+    const body = document.getElementById('ws-prev-questions-body');
+    const answerKey = document.getElementById('ws-prev-answerkey');
+
+    if (badge) badge.textContent = (ws.level || 'A1') + ' · ' + (ws.grade || 'Grade 3') + ' · ' + (ws.duration || '20 min');
+    if (title) title.textContent = ws.title;
+    if (topic) topic.textContent = 'Topic: ' + (ws.topic || 'General') + ' · Skill: ' + (ws.skill || ws.category || 'General');
+    if (instructions) instructions.textContent = ws.instructions || ws.description || 'Answer each question carefully.';
+    if (answerKey) answerKey.textContent = ws.answerKey || 'See individual question guidelines';
+
+    const questions = ws.questions && ws.questions.length ? ws.questions : [
+      { id: 'q-1', text: 'Sample task 1 for ' + ws.title, type: 'short_answer', points: 1 }
+    ];
+
+    if (body) {
+      body.innerHTML = questions.map((q, idx) => '' +
+        '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:12px 16px;">' +
+          '<div style="display:flex; justify-content:space-between; margin-bottom:6px;">' +
+            '<strong>Question ' + (idx + 1) + ' (' + (q.points || 1) + ' pt):</strong>' +
+            '<span style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">' + q.type.replace('_', ' ') + '</span>' +
+          '</div>' +
+          '<div style="font-size:0.92rem; margin-bottom:8px; font-weight:600;">' + q.text + '</div>' +
+          (q.type === 'multiple_choice' && q.options ? 
+            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.84rem;">' +
+              q.options.map(opt => '<label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="preview-q-' + idx + '" /> ' + opt + '</label>').join('') +
+            '</div>' :
+            (q.type === 'true_false' ?
+              '<div style="display:flex; gap:16px; font-size:0.84rem;"><label><input type="radio" name="preview-q-' + idx + '" /> True</label><label><input type="radio" name="preview-q-' + idx + '" /> False</label></div>' :
+              '<div style="border-bottom:1px dashed #cbd5e1; height:32px; margin-top:8px;"></div>'
+            )
+          ) +
+        '</div>'
+      ).join('');
+    }
+
+    window.openModal('modal-worksheet-preview');
+    if (autoPrint) {
+      setTimeout(() => window.print(), 300);
+    }
+  };
+
+  window.handleDuplicateWorksheet = function(wsId) {
+    const copy = store.duplicateWorksheet(wsId);
+    if (copy) {
+      showNotification('Worksheet duplicated: ' + copy.title);
+      renderCurrentView();
+    }
+  };
+
+  window.handleAddWorksheetQuestionRow = function(qData = null) {
+    const container = document.getElementById('ws-questions-container');
+    if (!container) return;
+
+    const row = document.createElement('div');
+    row.className = 'ws-question-edit-row';
+    row.style.cssText = 'background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:6px; padding:8px; display:flex; gap:8px; align-items:center;';
+
+    const text = qData ? qData.text : '';
+    const type = qData ? qData.type : 'multiple_choice';
+
+    row.innerHTML = 
+      '<input type="text" class="filter-select ws-q-text" style="flex:2;" placeholder="Question text..." value="' + text + '" required />' +
+      '<select class="filter-select ws-q-type" style="flex:1;">' +
+        '<option value="multiple_choice" ' + (type === 'multiple_choice' ? 'selected' : '') + '>Multiple Choice</option>' +
+        '<option value="fill_blank" ' + (type === 'fill_blank' ? 'selected' : '') + '>Fill Blank</option>' +
+        '<option value="true_false" ' + (type === 'true_false' ? 'selected' : '') + '>True / False</option>' +
+        '<option value="short_answer" ' + (type === 'short_answer' ? 'selected' : '') + '>Short Answer</option>' +
+      '</select>' +
+      '<button type="button" class="btn-sm-secondary" onclick="this.closest(\'.ws-question-edit-row\').remove()" style="color:var(--color-danger); padding:2px 8px;">✕</button>';
+
+    container.appendChild(row);
+  };
+
   // ASSIGNMENTS VIEW (Complete CRUD)
   // =========================================================================
   function renderAssignmentsView(container) {
@@ -2479,43 +2681,158 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // HOMEWORK VIEW (Complete CRUD)
   // =========================================================================
+  let hwFilterStatus = 'all';
+  let hwFilterType = 'all';
+
   function renderHomeworkView(container) {
-    const homework = store.getHomework();
+    const allHomework = store.getHomework();
     const classes = store.getClasses();
+    let homework = allHomework;
+
+    if (hwFilterType !== 'all') homework = homework.filter(h => (h.type || '').toLowerCase() === hwFilterType.toLowerCase());
 
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Homework &amp; Independent Tasks</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Printable worksheets, home speaking missions, and reading logs.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + allHomework.length + ' tasks tracking student submissions, task completion, and evidence-based accuracy.</p>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
+        '</div>' +
       '</div>' +
 
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">' +
-        homework.map(h => {
-          const cls = classes.find(c => c.id === h.classId) || { name: 'Active Class' };
-          return '' +
-            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); background:rgba(79,70,229,0.1); padding:2px 8px; border-radius:999px;">' + h.type + '</span>' +
-                  '<span style="font-size:0.75rem; color:var(--text-muted);">' + cls.name + '</span>' +
+      // Filters Bar
+      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
+        '<select class="filter-select" onchange="hwFilterType=this.value; renderCurrentView();">' +
+          '<option value="all" ' + (hwFilterType === 'all' ? 'selected' : '') + '>All Task Types</option>' +
+          '<option value="Game" ' + (hwFilterType === 'Game' ? 'selected' : '') + '>Game Mission</option>' +
+          '<option value="Worksheet" ' + (hwFilterType === 'Worksheet' ? 'selected' : '') + '>Printable Worksheet</option>' +
+          '<option value="Reading" ' + (hwFilterType === 'Reading' ? 'selected' : '') + '>Reading Task</option>' +
+          '<option value="Writing" ' + (hwFilterType === 'Writing' ? 'selected' : '') + '>Writing Task</option>' +
+          '<option value="Speaking" ' + (hwFilterType === 'Speaking' ? 'selected' : '') + '>Speaking Mission</option>' +
+          '<option value="Project" ' + (hwFilterType === 'Project' ? 'selected' : '') + '>Project</option>' +
+        '</select>' +
+      '</div>' +
+
+      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
+        (homework.length === 0 ? '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No homework tasks match your filters.</div>' :
+          homework.map(h => {
+            const cls = classes.find(c => c.id === h.classId) || { name: 'Active Cohort' };
+            const classStudents = store.getStudentsByClass(cls.id);
+            const submissions = h.submissions || {};
+            const completedCount = Object.values(submissions).filter(s => s.status === 'Complete').length;
+            const inProgressCount = Object.values(submissions).filter(s => s.status === 'Partially Complete' || s.status === 'In Progress').length;
+            const totalCount = classStudents.length || 8;
+            const pct = Math.round(((completedCount + inProgressCount * 0.5) / totalCount) * 100);
+
+            return '' +
+              '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); background:rgba(79,70,229,0.1); padding:2px 8px; border-radius:999px;">' + h.type + '</span>' +
+                    '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
+                  '</div>' +
+                  '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">' + h.title + '</h3>' +
+                  '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Due: ' + (h.dueDate || 'Friday') + ' · ' + (h.questionsTotal || 10) + ' Tasks</p>' +
+                  // Completion progress bar
+                  '<div style="margin-bottom:14px;">' +
+                    '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">' +
+                      '<span>Class Submissions</span>' +
+                      '<span>' + completedCount + ' / ' + totalCount + ' completed</span>' +
+                    '</div>' +
+                    '<div class="progress-bar-wrap" style="height:8px;"><div class="progress-bar-fill" style="width:' + pct + '%;"></div></div>' +
+                  '</div>' +
                 '</div>' +
-                '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:6px;">' + h.title + '</h3>' +
-                '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Due: ' + (h.dueDate || 'Friday') + '</p>' +
-              '</div>' +
-              '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-                '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:4px 10px; font-size:0.78rem;">✏️ Edit</button>' +
-                '<div style="display:flex; gap:6px;">' +
-                  '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;">📋</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);">📦</button>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:8px;">' +
+                  '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:5px 12px; font-size:0.8rem;">👥 Submissions &amp; Grading</button>' +
+                  '<div style="display:flex; gap:6px;">' +
+                    '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
+                  '</div>' +
                 '</div>' +
-              '</div>' +
-            '</div>';
-        }).join('') +
+              '</div>';
+          }).join('')
+        ) +
       '</div>';
   }
+
+  window.openHomeworkGradingModal = function(homeworkId) {
+    const hw = store.getHomeworkItem(homeworkId);
+    if (!hw) return;
+
+    const title = document.getElementById('hw-grading-title');
+    const subtitle = document.getElementById('hw-grading-subtitle');
+    const list = document.getElementById('hw-grading-students-list');
+
+    if (title) title.textContent = '👥 ' + hw.title + ' — Submissions & Grading';
+    if (subtitle) subtitle.textContent = 'Total: ' + (hw.questionsTotal || 10) + ' tasks. Record completed questions to log official learning evidence.';
+
+    const cls = store.getClass(hw.classId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+    const submissions = hw.submissions || {};
+
+    if (list) {
+      list.innerHTML = students.map(st => {
+        const sub = submissions[st.id] || { status: 'Not Started', attempted: 0, correct: 0, completion: 0, accuracy: 0, notes: '' };
+        return '' +
+          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
+            '<div style="display:flex; align-items:center; gap:10px; min-width:160px;">' +
+              '<span style="font-size:1.8rem;">' + getStudentAvatarEmoji(st.avatar) + '</span>' +
+              '<div>' +
+                '<div style="font-weight:800; font-size:0.95rem;">' + st.firstName + ' ' + st.lastName + '</div>' +
+                '<div style="font-size:0.75rem; color:var(--text-muted);">CEFR ' + (st.overallCefr || 'A1') + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
+              '<div>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Status</label>' +
+                '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px;">' +
+                  '<option value="Not Started" ' + (sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
+                  '<option value="In Progress" ' + (sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
+                  '<option value="Partially Complete" ' + (sub.status === 'Partially Complete' ? 'selected' : '') + '>Partially Complete</option>' +
+                  '<option value="Complete" ' + (sub.status === 'Complete' ? 'selected' : '') + '>Complete</option>' +
+                  '<option value="Needs Revision" ' + (sub.status === 'Needs Revision' ? 'selected' : '') + '>Needs Revision</option>' +
+                '</select>' +
+              '</div>' +
+              '<div style="width:75px;">' +
+                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Attempted</label>' +
+                '<input type="number" class="filter-select hw-sub-attempted" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.attempted || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
+              '</div>' +
+              '<div style="width:75px;">' +
+                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Correct</label>' +
+                '<input type="number" class="filter-select hw-sub-correct" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.correct || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
+              '</div>' +
+              '<div style="text-align:center; min-width:110px; background:var(--bg-canvas); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">' +
+                '<div style="font-size:0.7rem; color:var(--text-muted);">Task: <strong>' + (sub.completion || 0) + '%</strong></div>' +
+                '<div style="font-size:0.78rem; font-weight:800; color:var(--color-primary);">Accuracy: ' + (sub.accuracy || 0) + '%</div>' +
+              '</div>' +
+              '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:4px 10px; font-size:0.78rem;">Save Grade</button>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    window.openModal('modal-homework-grading');
+  };
+
+  window.handleSaveStudentHomeworkGrading = function(hwId, studentId) {
+    const row = document.getElementById('hw-sub-row-' + studentId);
+    if (!row) return;
+
+    const status = row.querySelector('.hw-sub-status')?.value || 'Complete';
+    const attempted = parseInt(row.querySelector('.hw-sub-attempted')?.value, 10) || 0;
+    const correct = parseInt(row.querySelector('.hw-sub-correct')?.value, 10) || 0;
+
+    const sub = store.recordHomeworkSubmission(hwId, studentId, { status, attempted, correct });
+    if (sub) {
+      showNotification('Grade saved! Task: ' + sub.completion + '% · Accuracy: ' + sub.accuracy + '% (logged to learning evidence)');
+      window.openHomeworkGradingModal(hwId);
+      renderCurrentView();
+    }
+  };
+
 
   // =========================================================================
   // QUIZZES & QUESTION BUILDER VIEW (Complete CRUD)
@@ -2527,14 +2844,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Diagnostic Quizzes &amp; Tests</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage interactive questions, CEFR checkpoints, and diagnostic drills.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage interactive questions, multiple-choice, fill-in-the-blank, and speaking drills.</p>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="openModal(\'modal-quiz-builder\')">+ Create Quiz</button>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-primary-action" onclick="openModal(\'modal-quiz-builder\')">+ Create Quiz</button>' +
+        '</div>' +
       '</div>' +
 
       '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
         quizzes.map(q => {
           const qCount = (q.questions || []).length;
+          const subCount = Object.keys(q.submissions || {}).length;
           return '' +
             '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
               '<div>' +
@@ -2543,20 +2863,84 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">' + q.skill + '</span>' +
                 '</div>' +
                 '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">' + q.title + '</h3>' +
-                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">' + qCount + ' Questions · 100% Diagnostic</div>' +
+                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">' + qCount + ' Questions · ' + subCount + ' Submissions Recorded</div>' +
               '</div>' +
-              '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-                '<button class="btn-primary-action" onclick="openQuizQuestionsManager(\'' + q.id + '\')" style="padding:5px 12px; font-size:0.82rem;">🧩 Manage Questions (' + qCount + ')</button>' +
-                '<div style="display:flex; gap:6px;">' +
-                  '<button class="btn-sm-secondary" onclick="openEditQuizModal(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;">✏️</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleDuplicateQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;">📋</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleArchiveQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);">📦</button>' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:6px; flex-wrap:wrap;">' +
+                '<button class="btn-primary-action" onclick="openQuizResultsModal(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">📊 Results (' + subCount + ')</button>' +
+                '<button class="btn-sm-secondary" onclick="openQuizQuestionsManager(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">🧩 Questions (' + qCount + ')</button>' +
+                '<div style="display:flex; gap:4px;">' +
+                  '<button class="btn-sm-secondary" onclick="openEditQuizModal(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleDuplicateQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleArchiveQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
                 '</div>' +
               '</div>' +
             '</div>';
         }).join('') +
       '</div>';
   }
+
+  window.openQuizResultsModal = function(quizId) {
+    const q = store.getQuiz(quizId);
+    if (!q) return;
+
+    const title = document.getElementById('quiz-results-title');
+    const subtitle = document.getElementById('quiz-results-subtitle');
+    const tbody = document.getElementById('quiz-results-tbody');
+
+    if (title) title.textContent = '📊 ' + q.title + ' — Results & Overrides';
+    if (subtitle) subtitle.textContent = 'CEFR Level: ' + (q.targetCefr || 'A1') + ' · Skill: ' + q.skill + ' · Total Questions: ' + (q.questions || []).length;
+
+    const cls = store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+    const submissions = q.submissions || {};
+
+    if (tbody) {
+      tbody.innerHTML = students.map(st => {
+        const sub = submissions[st.id] || { attempted: (q.questions || []).length, correct: Math.floor((q.questions || []).length * 0.8), score: 8, maxScore: 10, percentage: 80, teacherNotes: '' };
+        return '' +
+          '<tr style="border-bottom:1px solid var(--border-subtle);">' +
+            '<td style="padding:10px 12px; font-weight:800; display:flex; align-items:center; gap:8px;">' +
+              '<span>' + getStudentAvatarEmoji(st.avatar) + '</span>' +
+              '<span>' + st.firstName + ' ' + st.lastName + '</span>' +
+            '</td>' +
+            '<td style="padding:10px 12px; text-align:center;">' + (sub.attempted || 0) + '</td>' +
+            '<td style="padding:10px 12px; text-align:center;">' + (sub.correct || 0) + '</td>' +
+            '<td style="padding:10px 12px; text-align:center; font-weight:700;">' + (sub.score || 0) + ' / ' + (sub.maxScore || 10) + '</td>' +
+            '<td style="padding:10px 12px; text-align:center;"><span style="font-weight:900; color:' + (sub.percentage >= 80 ? 'var(--color-success)' : sub.percentage >= 60 ? '#b45309' : 'var(--color-danger)') + ';">' + (sub.percentage || 0) + '%</span></td>' +
+            '<td style="padding:10px 12px; font-size:0.78rem; color:var(--text-muted);">' + (sub.teacherNotes || (sub.overridden ? 'Teacher override applied' : 'Standard auto-grading')) + '</td>' +
+            '<td style="padding:10px 12px; text-align:right;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="handlePromptQuizOverride(\'' + q.id + '\', \'' + st.id + '\')" style="padding:2px 8px; font-size:0.74rem;">✏️ Override</button>' +
+            '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    window.openModal('modal-quiz-results');
+  };
+
+  window.handlePromptQuizOverride = function(quizId, studentId) {
+    const q = store.getQuiz(quizId);
+    const st = store.getStudent(studentId);
+    if (!q || !st) return;
+
+    const currentSub = (q.submissions && q.submissions[studentId]) || { percentage: 80, correct: 8 };
+    const newPctStr = prompt('Override score for ' + st.firstName + ' (Percentage 0-100%):', currentSub.percentage);
+    if (newPctStr === null) return;
+    const newPct = Math.min(100, Math.max(0, parseInt(newPctStr, 10) || 0));
+
+    const notes = prompt('Teacher notes / rationale for override:', currentSub.teacherNotes || 'Teacher manual assessment');
+
+    store.overrideQuizResult(quizId, studentId, {
+      percentage: newPct,
+      score: newPct / 10,
+      notes: notes || 'Teacher score correction'
+    });
+
+    showNotification('Official quiz override saved for ' + st.firstName + '! Logged to learning evidence.');
+    window.openQuizResultsModal(quizId);
+    renderCurrentView();
+  };
+
 
   // =========================================================================
   // ASSESSMENTS & RUBRICS VIEW (Complete CRUD)
@@ -2973,25 +3357,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Two-way parent messages and student progress check-ins.</p>' +
       '</div>' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
-        threads.map(t => '' +
-          '<div style="border-bottom:1px solid var(--border-subtle); padding-bottom:14px; margin-bottom:14px;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-              '<span style="font-weight:800; font-size:1rem;">' + t.studentName + ' Family</span>' +
-              '<span style="font-size:0.78rem; color:var(--text-muted);">' + (t.messages[t.messages.length - 1] || {}).timestamp + '</span>' +
-            '</div>' +
-            '<div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">' +
-              t.messages.map(m => '' +
-                '<div style="padding:8px 12px; border-radius:8px; font-size:0.84rem; background:' + (m.sender === 'teacher' ? 'rgba(79,70,229,0.08)' : 'var(--bg-card-secondary)') + ';">' +
-                  '<strong>' + (m.sender === 'teacher' ? 'Ms. Sarah' : 'Parent') + ':</strong> ' + m.text +
-                '</div>'
-              ).join('') +
-            '</div>' +
-            '<div style="display:flex; gap:8px;">' +
-              '<input type="text" id="parent-reply-input-' + t.id + '" class="filter-select" style="flex:1;" placeholder="Type reply to ' + t.studentName + '\'s family..." />' +
-              '<button class="btn-primary-action" onclick="handleSendParentMessage(\'' + t.id + '\', \'parent-reply-input-' + t.id + '\')">Send</button>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
+        threads.map(t => {
+          const msgs = t.messages || t.threads || [];
+          const lastMsg = msgs[msgs.length - 1] || {};
+          const lastTime = lastMsg.time || lastMsg.timestamp || t.lastActivity || '';
+          return '' +
+            '<div style="border-bottom:1px solid var(--border-subtle); padding-bottom:14px; margin-bottom:14px;">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                '<span style="font-weight:800; font-size:1rem;">' + t.studentName + ' Family</span>' +
+                '<span style="font-size:0.78rem; color:var(--text-muted);">' + lastTime + '</span>' +
+              '</div>' +
+              '<div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">' +
+                msgs.map(m => {
+                  const isTeacher = (m.sender === 'teacher' || m.from === 'teacher');
+                  return '' +
+                    '<div style="padding:8px 12px; border-radius:8px; font-size:0.84rem; background:' + (isTeacher ? 'rgba(79,70,229,0.08)' : 'var(--bg-card-secondary)') + ';">' +
+                      '<strong>' + (isTeacher ? 'Ms. Sarah' : 'Parent') + ':</strong> ' + m.text +
+                    '</div>';
+                }).join('') +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<input type="text" id="parent-reply-input-' + t.id + '" class="filter-select" style="flex:1;" placeholder="Type reply to ' + t.studentName + '\'s family..." />' +
+                '<button class="btn-primary-action" onclick="handleSendParentMessage(\'' + t.id + '\', \'parent-reply-input-' + t.id + '\')">Send</button>' +
+              '</div>' +
+            '</div>';
+        }).join('') +
       '</div>';
   }
 
@@ -3115,8 +3505,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="sidebar-section-title">Teaching</div>' +
         '<ul class="sidebar-nav-list">' +
           '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')"><span class="nav-item-left"><span>📚</span> Curriculum</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' && libraryActiveTab !== 'worksheets' ? 'is-active' : '') + '" onclick="switchLibraryTab(\'games\')"><span class="nav-item-left"><span>🎮</span> Resource Library</span><span class="nav-badge-pill">' + resourcesCount + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' || (currentView === 'library' && libraryActiveTab === 'worksheets') ? 'is-active' : '') + '" onclick="switchLibraryTab(\'worksheets\')"><span class="nav-item-left"><span>📄</span> Worksheets</span><span class="nav-badge-pill">' + (store.getWorksheets ? store.getWorksheets().length : 4) + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')"><span class="nav-item-left"><span>🎮</span> Resource Library</span><span class="nav-badge-pill">' + resourcesCount + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')"><span class="nav-item-left"><span>📄</span> Printable Worksheets</span><span class="nav-badge-pill">' + (store.getWorksheets ? store.getWorksheets().length : 4) + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')"><span class="nav-item-left"><span>📝</span> Assignments</span><span class="nav-badge-pill">' + assignmentsCount + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')"><span class="nav-item-left"><span>✍️</span> Homework</span><span class="nav-badge-pill">' + homeworkCount + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')"><span class="nav-item-left"><span>🧩</span> Quizzes &amp; Tests</span><span class="nav-badge-pill">' + quizzesCount + '</span></button></li>' +
@@ -3143,8 +3533,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<ul class="sidebar-nav-list">' +
           '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')"><span class="nav-item-left"><span>📊</span> System Health &amp; CRUD</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')"><span class="nav-item-left"><span>🏆</span> Gamification &amp; Badges</span></button></li>' +
-          '<li><button class="nav-link-btn" onclick="openArchivedManagerModal()"><span class="nav-item-left"><span>🗄️</span> Archived &amp; Restore</span></button></li>' +
-          '<li><button class="nav-link-btn" onclick="openSchoolSettingsModal()"><span class="nav-item-left"><span>⚙️</span> School Settings</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'archived' ? 'is-active' : '') + '" onclick="switchView(\'archived\')"><span class="nav-item-left"><span>🗄️</span> Archived &amp; Restore</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'settings' ? 'is-active' : '') + '" onclick="switchView(\'settings\')"><span class="nav-item-left"><span>⚙️</span> School Settings</span></button></li>' +
         '</ul>';
     } else if (role === 'student') {
       sidebar.innerHTML = 
@@ -3197,7 +3587,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       case 'portfolios': renderPortfoliosView(container); break;
       case 'health':
       case 'system-health': renderSystemHealthView(container); break;
-      case 'worksheets': libraryActiveTab = 'worksheets'; renderLibraryView(container); break;
+      case 'worksheets': renderWorksheetsView(container); break;
+      case 'archived': renderArchivedManagerView(container); break;
+      case 'settings': renderSchoolSettingsView(container); break;
       case 'gamification': renderGamificationView(container); break;
       case 'adventure': renderStudentAdventureView(container); break;
       case 'tasks': renderStudentTasksView(container); break;
@@ -3851,7 +4243,7 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
 
-})(typeof window !== 'undefined' ? window : global);
+// Premature IIFE close removed to encompass full controller codebase
 
 
   // =========================================================================
@@ -3930,6 +4322,12 @@ window.switchClassroomSubTab = function(subTab) {
         store.getLessons().map(l => '<option value="' + l.id + '">' + l.title + '</option>').join('');
     }
 
+    const gradeSelect = document.getElementById('ws-grade');
+    const topicInput = document.getElementById('ws-topic');
+    const durInput = document.getElementById('ws-duration');
+    const qContainer = document.getElementById('ws-questions-container');
+    if (qContainer) qContainer.innerHTML = '';
+
     if (wsId) {
       const ws = store.getWorksheet(wsId);
       if (!ws) return;
@@ -3937,17 +4335,29 @@ window.switchClassroomSubTab = function(subTab) {
       if (idInput) idInput.value = ws.id;
       if (titleInput) titleInput.value = ws.title;
       if (levelSelect) levelSelect.value = ws.level || 'A1';
-      if (catSelect) catSelect.value = ws.category;
+      if (catSelect) catSelect.value = ws.category || 'Vocabulary & Grammar';
+      if (gradeSelect) gradeSelect.value = ws.grade || 'Grade 3';
+      if (topicInput) topicInput.value = ws.topic || '';
+      if (durInput) durInput.value = ws.duration || '25 min';
       if (lessonSelect) lessonSelect.value = ws.lessonId || '';
-      if (descInput) descInput.value = ws.description || '';
+      if (descInput) descInput.value = ws.instructions || ws.description || '';
       if (pdfInput) pdfInput.value = ws.pdfUrl || '';
       if (ansInput) ansInput.value = ws.answerKey || '';
+
+      if (ws.questions && ws.questions.length) {
+        ws.questions.forEach(q => window.handleAddWorksheetQuestionRow(q));
+      } else {
+        window.handleAddWorksheetQuestionRow();
+      }
     } else {
       if (title) title.textContent = 'Add New Worksheet';
       if (idInput) idInput.value = '';
       if (titleInput) titleInput.value = '';
+      if (topicInput) topicInput.value = '';
+      if (durInput) durInput.value = '25 min';
       if (descInput) descInput.value = '';
       if (ansInput) ansInput.value = '';
+      window.handleAddWorksheetQuestionRow();
     }
 
     window.openModal('modal-worksheet-editor');
@@ -3959,17 +4369,53 @@ window.switchClassroomSubTab = function(subTab) {
     const title = document.getElementById('ws-title').value.trim();
     const level = document.getElementById('ws-level').value;
     const category = document.getElementById('ws-category').value;
-    const lessonId = document.getElementById('ws-lesson-select').value;
+    const grade = document.getElementById('ws-grade') ? document.getElementById('ws-grade').value : 'Grade 3';
+    const topic = document.getElementById('ws-topic') ? document.getElementById('ws-topic').value.trim() : '';
+    const duration = document.getElementById('ws-duration') ? document.getElementById('ws-duration').value.trim() : '25 min';
+    const lessonId = document.getElementById('ws-lesson-select') ? document.getElementById('ws-lesson-select').value : '';
     const description = document.getElementById('ws-description').value.trim();
     const pdfUrl = document.getElementById('ws-pdfurl').value.trim();
     const answerKey = document.getElementById('ws-answerkey').value.trim();
 
-    const payload = { title, level, category, lessonId, description, pdfUrl, answerKey };
+    // Gather questions
+    const questions = [];
+    document.querySelectorAll('.ws-question-edit-row').forEach((row, idx) => {
+      const qText = row.querySelector('.ws-q-text')?.value.trim();
+      const qType = row.querySelector('.ws-q-type')?.value;
+      if (qText) {
+        questions.push({
+          id: 'q-' + (idx + 1),
+          text: qText,
+          type: qType || 'multiple_choice',
+          points: 1
+        });
+      }
+    });
+
+    const payload = {
+      title,
+      level,
+      category,
+      skill: category,
+      grade,
+      topic,
+      duration,
+      lessonId,
+      instructions: description,
+      description,
+      pdfUrl,
+      answerKey,
+      questions,
+      status: 'Ready to Print',
+      createdDate: new Date().toISOString().split('T')[0]
+    };
 
     if (editId) {
       store.updateWorksheet(editId, payload);
+      showNotification('Worksheet updated successfully!');
     } else {
       store.addWorksheet(payload);
+      showNotification('New worksheet added to library!');
     }
 
     window.closeAllModals();
@@ -4510,6 +4956,241 @@ window.switchClassroomSubTab = function(subTab) {
   // =========================================================================
   // SCHOOL SETTINGS MODAL HANDLERS
   // =========================================================================
+
+  // =========================================================================
+  // DEDICATED ARCHIVED & RESTORE FULL PAGE VIEW
+  // =========================================================================
+  let archivedViewFilter = 'all';
+
+  function renderArchivedManagerView(container) {
+    const s = store.state;
+    const archivedItems = [];
+
+    function addArchived(type, labelKey, arr) {
+      if (Array.isArray(arr)) {
+        arr.filter(item => item.archived).forEach(item => {
+          archivedItems.push({
+            type,
+            id: item.id,
+            name: item[labelKey] || item.title || item.name || 'Unnamed',
+            raw: item
+          });
+        });
+      }
+    }
+
+    addArchived('student', 'firstName', s.students);
+    addArchived('class', 'name', s.classes);
+    if (s.curriculum) {
+      addArchived('book', 'title', s.curriculum.books);
+      addArchived('unit', 'title', s.curriculum.units);
+      addArchived('lesson', 'title', s.curriculum.lessons);
+    }
+    addArchived('resource', 'title', s.resources);
+    addArchived('worksheet', 'title', s.worksheets);
+    addArchived('assignment', 'title', s.assignments);
+    addArchived('homework', 'title', s.homework);
+    addArchived('quiz', 'title', s.quizzes);
+    addArchived('rubric', 'name', s.rubrics);
+    addArchived('badge', 'name', s.badges);
+    addArchived('achievement', 'name', s.achievements);
+
+    const filtered = archivedViewFilter === 'all' 
+      ? archivedItems 
+      : archivedItems.filter(item => item.type === archivedViewFilter);
+
+    const tabs = ['all', 'student', 'class', 'book', 'unit', 'lesson', 'worksheet', 'assignment', 'homework', 'quiz', 'badge'];
+
+    container.innerHTML = 
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+        '<div>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">🗄️ Archived Records &amp; Restore Management</h1>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + archivedItems.length + ' archived items. Restore items back to active rosters or permanently delete configuration records.</p>' +
+        '</div>' +
+      '</div>' +
+
+      // Tabs filter
+      '<div class="classroom-top-nav-tabs" style="margin-bottom:20px; flex-wrap:wrap;">' +
+        tabs.map(t => 
+          '<button type="button" class="classroom-nav-tab-btn ' + (archivedViewFilter === t ? 'is-active' : '') + '" onclick="archivedViewFilter=\'' + t + '\'; renderCurrentView();">' +
+            t.charAt(0).toUpperCase() + t.slice(1) + (t === 'all' ? ' (' + archivedItems.length + ')' : '') +
+          '</button>'
+        ).join('') +
+      '</div>' +
+
+      // Table of archived items
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
+        (filtered.length === 0 ? '<div style="padding:40px; text-align:center; color:var(--text-muted);">No archived items found in this category.</div>' :
+          '<table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:left;">' +
+            '<thead>' +
+              '<tr style="background:var(--bg-card-secondary); border-bottom:1px solid var(--border-subtle);">' +
+                '<th style="padding:12px 16px;">Entity Type</th>' +
+                '<th style="padding:12px 16px;">Record Title / Name</th>' +
+                '<th style="padding:12px 16px;">Record ID</th>' +
+                '<th style="padding:12px 16px; text-align:right;">Actions</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              filtered.map(item => '' +
+                '<tr style="border-bottom:1px solid var(--border-subtle);">' +
+                  '<td style="padding:12px 16px;"><span style="background:rgba(79,70,229,0.1); color:var(--color-primary); font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:999px; text-transform:uppercase;">' + item.type + '</span></td>' +
+                  '<td style="padding:12px 16px; font-weight:700;">' + item.name + '</td>' +
+                  '<td style="padding:12px 16px; font-family:monospace; font-size:0.78rem; color:var(--text-muted);">' + item.id + '</td>' +
+                  '<td style="padding:12px 16px; text-align:right;">' +
+                    '<button class="btn-primary-action" onclick="handleRestoreEntityFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 10px; font-size:0.78rem; margin-right:6px;">♻️ Restore</button>' +
+                    '<button class="btn-sm-secondary" onclick="handlePermanentDeleteFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 8px; font-size:0.78rem; color:var(--color-danger);">🗑️ Delete Permanently</button>' +
+                  '</td>' +
+                '</tr>'
+              ).join('') +
+            '</tbody>' +
+          '</table>'
+        ) +
+      '</div>';
+  }
+
+  window.handleRestoreEntityFromPage = function(type, id) {
+    const restored = store.restoreEntity(type, id);
+    if (restored) {
+      showNotification('Successfully restored ' + type + ' to active roster!');
+      renderCurrentView();
+    }
+  };
+
+  window.handlePermanentDeleteFromPage = function(type, id) {
+    window.confirmAction({
+      title: 'Permanently Delete ' + type.toUpperCase() + '?',
+      message: 'Are you sure you want to permanently delete this record? This action cannot be undone.',
+      confirmText: 'Delete Permanently',
+      isDanger: true,
+      onConfirm: () => {
+        store.permanentDeleteEntity(type, id);
+        showNotification('Record permanently deleted.');
+        renderCurrentView();
+      }
+    });
+  };
+
+  // =========================================================================
+  // DEDICATED SCHOOL SETTINGS FULL PAGE VIEW
+  // =========================================================================
+  function renderSchoolSettingsView(container) {
+    const s = store.getSchoolSettings();
+
+    container.innerHTML = 
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+        '<div>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">⚙️ School Settings &amp; Platform Preferences</h1>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage school brand identity, academic calendar, classroom gamification controls, and data backups.</p>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">💾 Export JSON Backup</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<form onsubmit="handleSaveSchoolSettingsFromPage(event)" style="display:flex; flex-direction:column; gap:20px; max-width:840px;">' +
+        // Section 1: School Identity
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">🏫 School Identity &amp; Calendar</h3>' +
+          '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">School / Academy Name</label>' +
+              '<input type="text" id="page-set-school-name" class="filter-select" style="width:100%;" value="' + (s.schoolName || 'English Adventure Academy') + '" required />' +
+            '</div>' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Academic Year</label>' +
+              '<input type="text" id="page-set-academic-year" class="filter-select" style="width:100%;" value="' + (s.academicYear || '2026–2027') + '" required />' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Timezone</label>' +
+              '<select id="page-set-timezone" class="filter-select" style="width:100%;">' +
+                '<option value="Europe/London" ' + (s.timezone === 'Europe/London' ? 'selected' : '') + '>Europe/London (GMT)</option>' +
+                '<option value="America/New_York" ' + (s.timezone === 'America/New_York' ? 'selected' : '') + '>America/New_York (EST)</option>' +
+                '<option value="Europe/Paris" ' + (s.timezone === 'Europe/Paris' ? 'selected' : '') + '>Europe/Paris (CET)</option>' +
+                '<option value="Asia/Tokyo" ' + (s.timezone === 'Asia/Tokyo' ? 'selected' : '') + '>Asia/Tokyo (JST)</option>' +
+              '</select>' +
+            '</div>' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Interface Language</label>' +
+              '<select id="page-set-language" class="filter-select" style="width:100%;">' +
+                '<option value="English" selected>English (UK / US Standard)</option>' +
+              '</select>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Section 2: Classroom & Gamification Controls
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">🎮 Classroom &amp; Gamification Controls</h3>' +
+          '<div style="display:flex; flex-direction:column; gap:10px;">' +
+            '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
+              '<input type="checkbox" id="page-set-xp-enabled" ' + (s.enableXP !== false ? 'checked' : '') + ' />' +
+              '<span>Enable XP Points &amp; Skills System across classroom activities</span>' +
+            '</label>' +
+            '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
+              '<input type="checkbox" id="page-set-leaderboard-enabled" ' + (s.showLeaderboard !== false ? 'checked' : '') + ' />' +
+              '<span>Display Live Classroom Leaderboard</span>' +
+            '</label>' +
+            '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
+              '<input type="checkbox" id="page-set-streaks-enabled" ' + (s.enableStreaks !== false ? 'checked' : '') + ' />' +
+              '<span>Track Consecutive Daily Learning Streaks 🔥</span>' +
+            '</label>' +
+          '</div>' +
+        '</div>' +
+
+        // Section 3: Teacher Preferences
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">👩‍🏫 Teacher Pedagogical Preferences</h3>' +
+          '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Default Target CEFR</label>' +
+              '<select id="page-set-default-cefr" class="filter-select" style="width:100%;">' +
+                '<option value="Pre-A1" ' + (s.defaultCefr === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+                '<option value="A1" ' + (s.defaultCefr === 'A1' || !s.defaultCefr ? 'selected' : '') + '>A1</option>' +
+                '<option value="A1+" ' + (s.defaultCefr === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+                '<option value="A2" ' + (s.defaultCefr === 'A2' ? 'selected' : '') + '>A2</option>' +
+              '</select>' +
+            '</div>' +
+            '<div>' +
+              '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Default Lesson Duration</label>' +
+              '<input type="number" id="page-set-default-duration" class="filter-select" style="width:100%;" value="' + (s.defaultLessonDuration || 30) + '" min="10" max="90" />' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="display:flex; justify-content:flex-end; gap:8px;">' +
+          '<button type="submit" class="btn-primary-action" style="padding:10px 24px; font-size:0.95rem;">Save Settings</button>' +
+        '</div>' +
+      '</form>';
+  }
+
+  window.handleSaveSchoolSettingsFromPage = function(e) {
+    e.preventDefault();
+    const schoolName = document.getElementById('page-set-school-name').value.trim();
+    const academicYear = document.getElementById('page-set-academic-year').value.trim();
+    const timezone = document.getElementById('page-set-timezone').value;
+    const enableXP = document.getElementById('page-set-xp-enabled').checked;
+    const showLeaderboard = document.getElementById('page-set-leaderboard-enabled').checked;
+    const enableStreaks = document.getElementById('page-set-streaks-enabled').checked;
+    const defaultCefr = document.getElementById('page-set-default-cefr').value;
+    const defaultLessonDuration = parseInt(document.getElementById('page-set-default-duration').value, 10) || 30;
+
+    store.updateSchoolSettings({
+      schoolName,
+      academicYear,
+      timezone,
+      enableXP,
+      showLeaderboard,
+      enableStreaks,
+      defaultCefr,
+      defaultLessonDuration
+    });
+
+    showNotification('School settings updated and saved persistently!');
+    renderCurrentView();
+  };
+
   window.openSchoolSettingsModal = function() {
     const s = store.getSchoolSettings();
     const schoolNameInput = document.getElementById('settings-school-name');
@@ -6415,3 +7096,5 @@ window.switchClassroomSubTab = function(subTab) {
       renderCurrentView();
     }
   };
+
+})(typeof window !== 'undefined' ? window : global);

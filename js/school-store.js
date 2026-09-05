@@ -794,11 +794,24 @@
           id: 'ws-1',
           title: 'At the Restaurant: Dining Dialogue & Menu Ordering',
           level: 'A1+',
+          grade: 'Grade 3',
+          skill: 'Speaking & Roleplay',
+          topic: 'Food & Dining',
+          duration: '25 min',
+          status: 'Ready to Print',
+          createdDate: '2026-09-01',
+          instructions: 'Read the dialogue with a partner, fill in the missing customer requests, and practice acting out the order.',
+          questions: [
+            { id: 'q-1', text: 'What polite phrase is used to order food?', type: 'multiple_choice', options: ['I want food', 'I would like... please', 'Give me now', 'Food is good'], answer: 'I would like... please', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "How _____ is the chocolate cake?"', type: 'fill_blank', options: [], answer: 'much', points: 1 },
+            { id: 'q-3', text: 'True or False: In a restaurant, the person serving you is the chef.', type: 'true_false', options: ['True', 'False'], answer: 'False', points: 1 },
+            { id: 'q-4', text: 'Write two questions you can ask the waiter about the menu.', type: 'short_answer', options: [], answer: 'Can I have the menu please? How much is the soup?', points: 2 }
+          ],
           category: 'Roleplay & Speaking',
           lessonId: 'lesson-1',
           gameId: 'restaurant',
           pdfUrl: 'restaurant/worksheets.html',
-          answerKey: 'Polite requests: "I would like...", "How much is...?"',
+          answerKey: '1. I would like... please; 2. much; 3. False; 4. Can I have... / How much is...',
           description: 'Customer and waiter script practice with food vocabulary matching.',
           archived: false
         },
@@ -806,11 +819,23 @@
           id: 'ws-2',
           title: 'Fire Station Adventure: Gear & Emergency Protocol',
           level: 'A1',
+          grade: 'Grade 3',
+          skill: 'Vocabulary & Speaking',
+          topic: 'Community Heroes',
+          duration: '20 min',
+          status: 'Ready to Print',
+          createdDate: '2026-09-02',
+          instructions: 'Label firefighter tools, sequence the emergency alarm steps, and write 3 safety rules.',
+          questions: [
+            { id: 'q-1', text: 'Which tool does a firefighter use to put out a fire?', type: 'multiple_choice', options: ['Helmet', 'Hose', 'Ladder', 'Boots'], answer: 'Hose', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "Firefighters slide down the _____ pole to get to the truck quickly."', type: 'fill_blank', options: [], answer: 'fire', points: 1 },
+            { id: 'q-3', text: 'True or False: The loud sound from a fire truck is called a siren.', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
           category: 'Interactive Story',
           lessonId: 'lesson-2',
           gameId: 'firefighter',
           pdfUrl: 'firefighter/worksheet.html',
-          answerKey: 'Helmet, boots, hose, ladder, fire extinguisher matching.',
+          answerKey: '1. Hose; 2. fire; 3. True',
           description: 'Vocabulary labeling and sequencing exercise for emergency response.',
           archived: false
         },
@@ -818,11 +843,23 @@
           id: 'ws-3',
           title: 'My Neighbourhood: Prepositions of Place Map',
           level: 'A1',
+          grade: 'Grade 3',
+          skill: 'Grammar & Reading',
+          topic: 'Town & Places',
+          duration: '30 min',
+          status: 'Ready to Print',
+          createdDate: '2026-09-03',
+          instructions: 'Look at the map. Complete the sentences using next to, opposite, and between.',
+          questions: [
+            { id: 'q-1', text: 'The bakery is _____ the post office and the library.', type: 'multiple_choice', options: ['opposite', 'between', 'next to', 'under'], answer: 'between', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "There _____ a hospital across the street."', type: 'fill_blank', options: [], answer: 'is', points: 1 },
+            { id: 'q-3', text: 'True or False: "Opposite" means on the other side of the road.', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
           category: 'Grammar & Vocabulary',
           lessonId: 'lesson-3',
           gameId: 'neighbourhood',
           pdfUrl: 'neighbourhood/index.html',
-          answerKey: 'next to, opposite, between, behind town locations.',
+          answerKey: '1. between; 2. is; 3. True',
           description: 'Map navigation exercise completing "There is a..." sentences.',
           archived: false
         },
@@ -830,11 +867,23 @@
           id: 'ws-4',
           title: 'Past Simple Detective Clues Worksheet',
           level: 'A2',
+          grade: 'Grade 4',
+          skill: 'Grammar & Writing',
+          topic: 'Past Events & Mystery',
+          duration: '35 min',
+          status: 'Ready to Print',
+          createdDate: '2026-09-04',
+          instructions: 'Convert verbs into past simple regular (-ed) and irregular forms to solve the museum mystery.',
+          questions: [
+            { id: 'q-1', text: 'What is the past tense of "see"?', type: 'multiple_choice', options: ['seed', 'saw', 'seen', 'sawed'], answer: 'saw', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "Yesterday at 3 PM, the detective _____ (find) the missing key."', type: 'fill_blank', options: [], answer: 'found', points: 1 },
+            { id: 'q-3', text: 'True or False: "Walked" is a regular past tense verb.', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
           category: 'Mystery & Grammar',
           lessonId: 'lesson-4',
           gameId: 'story/hotel/index.html',
           pdfUrl: 'story/hotel/index.html',
-          answerKey: 'Regular (-ed) and irregular past tense crime investigation notes.',
+          answerKey: '1. saw; 2. found; 3. True',
           description: 'Grammar analysis matching witness statements with suspects.',
           archived: false
         }
@@ -1602,6 +1651,61 @@
       return null;
     }
 
+    recordHomeworkSubmission(homeworkId, studentId, submissionData) {
+      const hw = this.getHomeworkItem(homeworkId);
+      if (!hw) return null;
+      if (!hw.submissions) hw.submissions = {};
+
+      const totalQuestions = hw.questionsTotal || 10;
+      const attempted = Math.min(totalQuestions, Math.max(0, parseInt(submissionData.attempted, 10) || 0));
+      const correct = Math.min(attempted, Math.max(0, parseInt(submissionData.correct, 10) || 0));
+      const completion = Math.round((attempted / totalQuestions) * 100);
+      const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+      const status = submissionData.status || (completion === 100 ? 'Complete' : completion > 0 ? 'Partially Complete' : 'Not Started');
+
+      hw.submissions[studentId] = {
+        status,
+        attempted,
+        correct,
+        totalQuestions,
+        completion,
+        accuracy,
+        completedDate: submissionData.completedDate || new Date().toISOString().split('T')[0],
+        notes: submissionData.notes || ''
+      };
+
+      hw.submittedCount = Object.values(hw.submissions).filter(s => s.status === 'Complete' || s.status === 'Partially Complete').length;
+
+      // Connect to learningEvidence: accuracy reflects mastery, completion reflects task completion
+      if (attempted > 0) {
+        if (!this.state.learningEvidence) this.state.learningEvidence = [];
+        const existingEv = this.state.learningEvidence.find(e => e.studentId === studentId && e.sourceId === homeworkId);
+        if (existingEv) {
+          existingEv.score = accuracy;
+          existingEv.completion = completion;
+          existingEv.notes = 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%';
+          existingEv.date = new Date().toISOString().split('T')[0];
+        } else {
+          this.state.learningEvidence.push({
+            id: 'ev-hw-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+            studentId,
+            source: 'homework',
+            sourceId: homeworkId,
+            title: hw.title,
+            skill: hw.skill || 'General',
+            score: accuracy,
+            completion: completion,
+            notes: 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%',
+            date: new Date().toISOString().split('T')[0]
+          });
+        }
+      }
+
+      this.saveState();
+      this.notify('homework', this.state.homework);
+      return hw.submissions[studentId];
+    }
+
     archiveClass(id) {
       const c = this.getClass(id);
       if (c) {
@@ -2155,12 +2259,114 @@
         const copy = JSON.parse(JSON.stringify(original));
         copy.id = 'quiz-' + Date.now();
         copy.title = original.title + ' (Copy)';
+        copy.submissions = {};
         copy.archived = false;
         this.state.quizzes.unshift(copy);
         this.saveState();
         return copy;
       }
       return null;
+    }
+
+    recordQuizSubmission(quizId, studentId, resultData) {
+      const q = this.getQuiz(quizId);
+      if (!q) return null;
+      if (!q.submissions) q.submissions = {};
+
+      const totalQuestions = (q.questions || []).length || 5;
+      const attempted = parseInt(resultData.attempted, 10) || totalQuestions;
+      const correct = parseInt(resultData.correct, 10) || 0;
+      const incorrect = Math.max(0, attempted - correct);
+      const score = parseFloat(resultData.score) || correct;
+      const maxScore = parseFloat(resultData.maxScore) || totalQuestions;
+      const percentage = Math.round((score / maxScore) * 100);
+
+      q.submissions[studentId] = {
+        studentId,
+        score,
+        maxScore,
+        percentage,
+        attempted,
+        correct,
+        incorrect,
+        skills: [q.skill || 'Vocabulary'],
+        objectives: q.objective ? [q.objective] : ['Diagnostic Assessment'],
+        submittedDate: new Date().toISOString().split('T')[0],
+        teacherNotes: resultData.notes || '',
+        overridden: false
+      };
+
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      const evIdx = this.state.learningEvidence.findIndex(e => e.studentId === studentId && e.sourceId === quizId);
+      const evPayload = {
+        id: 'ev-qz-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        studentId,
+        source: 'quiz',
+        sourceId: quizId,
+        title: q.title,
+        skill: q.skill || 'Vocabulary',
+        score: percentage,
+        notes: 'Diagnostic Quiz: ' + correct + '/' + attempted + ' correct (' + percentage + '%)',
+        date: new Date().toISOString().split('T')[0]
+      };
+      if (evIdx !== -1) {
+        Object.assign(this.state.learningEvidence[evIdx], evPayload);
+      } else {
+        this.state.learningEvidence.push(evPayload);
+      }
+
+      this.saveState();
+      this.notify('quizzes', this.state.quizzes);
+      return q.submissions[studentId];
+    }
+
+    overrideQuizResult(quizId, studentId, overrideData) {
+      const q = this.getQuiz(quizId);
+      if (!q) return null;
+      if (!q.submissions) q.submissions = {};
+
+      const sub = q.submissions[studentId] || {
+        studentId,
+        maxScore: (q.questions || []).length || 5,
+        attempted: (q.questions || []).length || 5,
+        correct: 0,
+        incorrect: 0
+      };
+
+      if (overrideData.score !== undefined) sub.score = parseFloat(overrideData.score);
+      if (overrideData.maxScore !== undefined) sub.maxScore = parseFloat(overrideData.maxScore);
+      if (overrideData.percentage !== undefined) sub.percentage = parseFloat(overrideData.percentage);
+      else if (sub.maxScore > 0) sub.percentage = Math.round((sub.score / sub.maxScore) * 100);
+      if (overrideData.correct !== undefined) sub.correct = parseInt(overrideData.correct, 10);
+      if (overrideData.incorrect !== undefined) sub.incorrect = parseInt(overrideData.incorrect, 10);
+      if (overrideData.notes !== undefined) sub.teacherNotes = overrideData.notes;
+      sub.overridden = true;
+      sub.overrideDate = new Date().toISOString().split('T')[0];
+
+      q.submissions[studentId] = sub;
+
+      if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      const evIdx = this.state.learningEvidence.findIndex(e => e.studentId === studentId && e.sourceId === quizId);
+      if (evIdx !== -1) {
+        this.state.learningEvidence[evIdx].score = sub.percentage;
+        this.state.learningEvidence[evIdx].notes = 'Teacher Override: ' + sub.correct + '/' + sub.attempted + ' correct (' + sub.percentage + '%) - ' + (sub.teacherNotes || '');
+      } else {
+        this.state.learningEvidence.push({
+          id: 'ev-qz-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+          studentId,
+          source: 'quiz',
+          sourceId: quizId,
+          title: q.title,
+          skill: q.skill || 'Vocabulary',
+          score: sub.percentage,
+          notes: 'Teacher Override: ' + sub.correct + '/' + sub.attempted + ' correct (' + sub.percentage + '%) - ' + (sub.teacherNotes || ''),
+          date: new Date().toISOString().split('T')[0]
+        });
+      }
+
+      this.saveState();
+      this.notify('quizzes', this.state.quizzes);
+      return sub;
     }
 
     archiveQuiz(id) {
@@ -2303,7 +2509,10 @@
     }
 
     getMessageThreads() {
-      return this.state.messages;
+      return this.state.messages.map(t => {
+        if (!t.messages && t.threads) t.messages = t.threads;
+        return t;
+      });
     }
 
     sendParentMessage(threadId, text) {
@@ -2662,6 +2871,74 @@
     deleteWorksheet(id) {
       if (!this.state.worksheets) this.state.worksheets = [];
       this.state.worksheets = this.state.worksheets.filter(w => w.id !== id);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return true;
+    }
+
+    duplicateWorksheet(id) {
+      const original = this.getWorksheet(id);
+      if (!original) return null;
+      const copy = JSON.parse(JSON.stringify(original));
+      copy.id = 'ws-' + Date.now();
+      copy.title = original.title + ' (Copy)';
+      copy.createdDate = new Date().toISOString().split('T')[0];
+      copy.archived = false;
+      this.state.worksheets.unshift(copy);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return copy;
+    }
+
+    addQuestionToWorksheet(wsId, questionData) {
+      const ws = this.getWorksheet(wsId);
+      if (!ws) return null;
+      if (!ws.questions) ws.questions = [];
+      const q = {
+        id: 'q-' + Date.now(),
+        text: (questionData.text || 'New Question').trim(),
+        type: questionData.type || 'multiple_choice',
+        options: Array.isArray(questionData.options) ? questionData.options : ['Option A', 'Option B'],
+        answer: questionData.answer || '',
+        points: parseInt(questionData.points, 10) || 1
+      };
+      ws.questions.push(q);
+      this.saveState();
+      this.notify('worksheets', this.state.worksheets);
+      return q;
+    }
+
+    updateWorksheetQuestion(wsId, qId, updates) {
+      const ws = this.getWorksheet(wsId);
+      if (!ws || !ws.questions) return null;
+      const q = ws.questions.find(item => item.id === qId);
+      if (q) {
+        Object.assign(q, updates);
+        this.saveState();
+        this.notify('worksheets', this.state.worksheets);
+        return q;
+      }
+      return null;
+    }
+
+    deleteWorksheetQuestion(wsId, qId) {
+      const ws = this.getWorksheet(wsId);
+      if (!ws || !ws.questions) return false;
+      const idx = ws.questions.findIndex(item => item.id === qId);
+      if (idx !== -1) {
+        ws.questions.splice(idx, 1);
+        this.saveState();
+        this.notify('worksheets', this.state.worksheets);
+        return true;
+      }
+      return false;
+    }
+
+    reorderWorksheetQuestions(wsId, qIds) {
+      const ws = this.getWorksheet(wsId);
+      if (!ws || !ws.questions) return false;
+      const map = new Map(ws.questions.map(q => [q.id, q]));
+      ws.questions = qIds.map(id => map.get(id)).filter(Boolean);
       this.saveState();
       this.notify('worksheets', this.state.worksheets);
       return true;
@@ -3239,7 +3516,8 @@
         case 'unit': return this.restoreUnit(id);
         case 'lesson': return this.restoreLesson(id);
         case 'resource': return this.restoreResource(id);
-        case 'worksheet': return this.restoreWorksheet(id);
+        case 'worksheet':
+        case 'worksheets': return this.restoreWorksheet(id);
         case 'assignment': return this.restoreAssignment(id);
         case 'homework': return this.restoreHomework(id);
         case 'quiz': return this.restoreQuiz(id);
@@ -3248,6 +3526,48 @@
         case 'achievement': return this.restoreAchievement(id);
         default: return false;
       }
+    }
+
+    permanentDeleteEntity(type, id) {
+      const s = this.state;
+      switch (type) {
+        case 'student':
+          s.students = s.students.filter(item => item.id !== id);
+          break;
+        case 'class':
+          s.classes = s.classes.filter(item => item.id !== id);
+          break;
+        case 'resource':
+          s.resources = s.resources.filter(item => item.id !== id);
+          break;
+        case 'worksheet':
+        case 'worksheets':
+          s.worksheets = s.worksheets.filter(item => item.id !== id);
+          break;
+        case 'assignment':
+          s.assignments = s.assignments.filter(item => item.id !== id);
+          break;
+        case 'homework':
+          s.homework = s.homework.filter(item => item.id !== id);
+          break;
+        case 'quiz':
+          s.quizzes = s.quizzes.filter(item => item.id !== id);
+          break;
+        case 'rubric':
+          s.rubrics = s.rubrics.filter(item => item.id !== id);
+          break;
+        case 'badge':
+          s.badges = s.badges.filter(item => item.id !== id);
+          break;
+        case 'achievement':
+          s.achievements = s.achievements.filter(item => item.id !== id);
+          break;
+        default:
+          return false;
+      }
+      this.saveState();
+      this.notify(type + 's', s[type + 's'] || []);
+      return true;
     }
 
     // =========================================================================
@@ -3716,6 +4036,7 @@
   if (typeof window !== 'undefined') {
     window.SchoolStore = MasterSchoolStore;
     window.schoolStore = schoolStore;
+    window.store = schoolStore;
   }
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore };

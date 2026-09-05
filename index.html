@@ -678,6 +678,25 @@
           <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description &amp; Instructions</label>
           <textarea id="ws-description" class="filter-select" style="width:100%; height:54px;" placeholder="Instructions for students and teachers..."></textarea>
         </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Target Grade</label>
+            <select id="ws-grade" class="filter-select" style="width:100%;">
+              <option value="Grade 2">Grade 2</option>
+              <option value="Grade 3" selected>Grade 3</option>
+              <option value="Grade 4">Grade 4</option>
+              <option value="Grade 5">Grade 5</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Topic / Focus</label>
+            <input type="text" id="ws-topic" class="filter-select" style="width:100%;" placeholder="e.g. Food &amp; Polite Dining" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Estimated Duration</label>
+            <input type="text" id="ws-duration" class="filter-select" style="width:100%;" value="25 min" />
+          </div>
+        </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">PDF / Document URL</label>
@@ -686,6 +705,17 @@
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Answer Key / Solutions</label>
             <input type="text" id="ws-answerkey" class="filter-select" style="width:100%;" placeholder="e.g. 1. helmet, 2. boots, 3. hose" />
+          </div>
+        </div>
+        
+        <!-- Interactive Question Builder Section -->
+        <div style="border-top:1px solid var(--border-subtle); padding-top:10px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="font-size:0.85rem; font-weight:800; color:var(--text-main);">Interactive Worksheet Questions</label>
+            <button type="button" class="btn-sm-secondary" onclick="handleAddWorksheetQuestionRow()" style="font-size:0.75rem; padding:2px 8px;">+ Add Question</button>
+          </div>
+          <div id="ws-questions-container" style="display:flex; flex-direction:column; gap:8px; max-height:180px; overflow-y:auto; padding-right:4px;">
+            <!-- Rendered dynamically -->
           </div>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
@@ -1828,6 +1858,87 @@
 
   <!-- 3. Application Controller & Router -->
   <script src="js/school-app.js"></script>
+
+
+  <!-- Printable Worksheet Preview & Print Modal -->
+  <div class="modal-overlay" id="modal-worksheet-preview">
+    <div class="modal-dialog" style="max-width: 760px; max-height: 92vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-worksheet-preview')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid var(--border-light); padding-bottom:12px; margin-bottom:16px;">
+        <div>
+          <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--color-primary);" id="ws-prev-badge">CEFR A1 · Grade 3</span>
+          <h2 id="ws-prev-title" style="font-size:1.4rem; font-weight:900; margin:4px 0;">Worksheet Title</h2>
+          <p id="ws-prev-topic" style="font-size:0.84rem; color:var(--text-muted); margin:0;">Topic &amp; Skills</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-primary-action" onclick="window.print()" style="font-size:0.82rem; padding:6px 14px;">🖨️ Print Worksheet</button>
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-worksheet-preview')" style="font-size:0.82rem; padding:6px 10px;">Close</button>
+        </div>
+      </div>
+      <div style="background:var(--bg-card-secondary); padding:12px 16px; border-radius:8px; border:1px solid var(--border-subtle); margin-bottom:18px;">
+        <strong>Instructions:</strong> <span id="ws-prev-instructions">Read carefully and answer all questions.</span>
+      </div>
+      <div id="ws-prev-questions-body" style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
+        <!-- Populated dynamically -->
+      </div>
+      <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:12px; font-size:0.82rem;">
+        <strong>Teacher Answer Key:</strong> <span id="ws-prev-answerkey">Solutions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Homework Submissions & Live Evidence Grading Modal -->
+  <div class="modal-overlay" id="modal-homework-grading">
+    <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-homework-grading')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; margin-bottom:16px;">
+        <div>
+          <h2 id="hw-grading-title" style="font-size:1.35rem; font-weight:800; margin:0;">Homework Submissions &amp; Grading</h2>
+          <p id="hw-grading-subtitle" style="font-size:0.84rem; color:var(--text-muted); margin:2px 0 0 0;">Track task completion and record evidence-based mastery accuracy.</p>
+        </div>
+      </div>
+      <div id="hw-grading-students-list" style="display:flex; flex-direction:column; gap:10px;">
+        <!-- Populated dynamically -->
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px; border-top:1px solid var(--border-subtle); padding-top:12px;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-homework-grading')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Results & Teacher Overrides Modal -->
+  <div class="modal-overlay" id="modal-quiz-results">
+    <div class="modal-dialog" style="max-width: 860px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-quiz-results')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; margin-bottom:16px;">
+        <div>
+          <h2 id="quiz-results-title" style="font-size:1.35rem; font-weight:800; margin:0;">Diagnostic Quiz Results &amp; Overrides</h2>
+          <p id="quiz-results-subtitle" style="font-size:0.84rem; color:var(--text-muted); margin:2px 0 0 0;">Inspect student performance, correct questions, and record official grade overrides.</p>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.84rem;">
+          <thead>
+            <tr style="background:var(--bg-muted); text-align:left;">
+              <th style="padding:8px 12px;">Student</th>
+              <th style="padding:8px 12px; text-align:center;">Attempted</th>
+              <th style="padding:8px 12px; text-align:center;">Correct</th>
+              <th style="padding:8px 12px; text-align:center;">Score</th>
+              <th style="padding:8px 12px; text-align:center;">Accuracy %</th>
+              <th style="padding:8px 12px;">Teacher Notes / Override</th>
+              <th style="padding:8px 12px; text-align:right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="quiz-results-tbody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px; border-top:1px solid var(--border-subtle); padding-top:12px;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-quiz-results')">Done</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
