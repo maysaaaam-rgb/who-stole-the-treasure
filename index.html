@@ -1070,14 +1070,17 @@
         <!-- Points Amount Picker -->
         <div>
           <label style="font-size:0.8rem; font-weight:700; margin-bottom:6px; display:block;">Amount</label>
-          <div class="points-amount-pills" style="display:flex; gap:8px;">
-            <button type="button" class="btn-points-amount is-active" data-amount="5" onclick="setQuickPointsAmount(5, this)">+5 ⭐</button>
-            <button type="button" class="btn-points-amount" data-amount="1" onclick="setQuickPointsAmount(1, this)">+1 ⭐</button>
-            <button type="button" class="btn-points-amount" data-amount="2" onclick="setQuickPointsAmount(2, this)">+2 ⭐</button>
-            <button type="button" class="btn-points-amount" data-amount="10" onclick="setQuickPointsAmount(10, this)">+10 ⭐</button>
-            <button type="button" class="btn-points-amount" data-amount="20" onclick="setQuickPointsAmount(20, this)">+20 ⭐</button>
+          <div class="points-amount-pills" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-points-amount is-active" data-amount="10" onclick="setQuickPointsAmount(10, this)">+10 XP</button>
+            <button type="button" class="btn-points-amount" data-amount="20" onclick="setQuickPointsAmount(20, this)">+20 XP</button>
+            <button type="button" class="btn-points-amount" data-amount="50" onclick="setQuickPointsAmount(50, this)">+50 XP</button>
+            <button type="button" class="btn-points-amount" data-amount="100" onclick="setQuickPointsAmount(100, this)">+100 XP</button>
+            <button type="button" class="btn-points-amount" data-amount="custom" onclick="setQuickPointsAmount('custom', this)">Custom</button>
           </div>
-          <input type="hidden" id="quick-points-amount-val" value="5" />
+          <input type="hidden" id="quick-points-amount-val" value="10" />
+          <div id="quick-points-custom-amount-wrap" style="display:none; margin-top:8px;">
+            <input type="number" id="quick-points-custom-amount-input" class="filter-input" placeholder="Enter custom XP amount..." min="1" max="5000" style="width:100%;" oninput="document.getElementById('quick-points-amount-val').value = this.value;" />
+          </div>
         </div>
 
         <!-- Positive Reason Grid -->
@@ -1634,13 +1637,15 @@
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Point Value *</label>
             <select id="xp-skill-points-val" class="filter-select" style="width:100%;">
-              <option value="1">+1 XP</option>
-              <option value="2">+2 XP</option>
-              <option value="3">+3 XP</option>
-              <option value="4">+4 XP</option>
+              <option value="10" selected>+10 XP</option>
+              <option value="20">+20 XP</option>
+              <option value="50">+50 XP</option>
+              <option value="100">+100 XP</option>
               <option value="5">+5 XP</option>
-              <option value="-1">-1 XP (Needs Work)</option>
-              <option value="-2">-2 XP (Needs Work)</option>
+              <option value="1">+1 XP</option>
+              <option value="-10">-10 XP (Needs Work)</option>
+              <option value="-20">-20 XP (Needs Work)</option>
+              <option value="-5">-5 XP (Needs Work)</option>
             </select>
           </div>
         </div>
@@ -1727,6 +1732,253 @@
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
           <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-edit-xp-transaction')">Cancel</button>
           <button type="submit" class="btn-primary-action">Save & Recalculate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit / Correct Student XP -->
+  <div class="modal-overlay" id="modal-edit-student-xp">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-edit-student-xp')">✕</button>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <div id="edit-student-xp-avatar" style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--bg-canvas); border:1px solid var(--border-light);"></div>
+        <div>
+          <h2 id="edit-student-xp-title" style="font-size:1.25rem; font-weight:800; margin:0;">Edit Student XP</h2>
+          <div id="edit-student-xp-current" style="font-size:0.84rem; color:var(--color-primary); font-weight:700; margin-top:2px;">Current Balance: 0 XP</div>
+        </div>
+      </div>
+
+      <form onsubmit="handleSaveEditStudentXP(event)" style="display:flex; flex-direction:column; gap:14px;">
+        <input type="hidden" id="edit-student-xp-student-id" value="" />
+
+        <!-- Adjustment Mode (Add, Deduct, Set Exact) -->
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:6px;">Adjustment Mode</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+            <button type="button" class="btn-sm-secondary edit-xp-mode-btn is-active" data-mode="add" onclick="setEditXPMode('add', this)" style="padding:6px; font-weight:700; text-align:center;">+ Add XP</button>
+            <button type="button" class="btn-sm-secondary edit-xp-mode-btn" data-mode="deduct" onclick="setEditXPMode('deduct', this)" style="padding:6px; font-weight:700; text-align:center;">- Deduct XP</button>
+            <button type="button" class="btn-sm-secondary edit-xp-mode-btn" data-mode="set" onclick="setEditXPMode('set', this)" style="padding:6px; font-weight:700; text-align:center;">Set Exact Total</button>
+          </div>
+          <input type="hidden" id="edit-student-xp-mode" value="add" />
+        </div>
+
+        <!-- Amount Input -->
+        <div>
+          <label id="edit-student-xp-amount-label" style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Amount to Add (XP) *</label>
+          <input type="number" id="edit-student-xp-amount" class="filter-input" placeholder="e.g. 10" required min="1" style="width:100%; font-size:1.1rem; font-weight:800;" oninput="updateEditXPPreview()" />
+        </div>
+
+        <!-- Reason -->
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason for Adjustment *</label>
+          <select id="edit-student-xp-reason-select" class="filter-select" style="width:100%;" onchange="handleEditXPReasonChange(this.value)">
+            <option value="Teacher point correction">Teacher point correction</option>
+            <option value="Bonus challenge achievement">Bonus challenge achievement</option>
+            <option value="Participation calibration">Participation calibration</option>
+            <option value="Homework / Project credit">Homework / Project credit</option>
+            <option value="Attendance / Streak correction">Attendance / Streak correction</option>
+            <option value="Disciplinary point deduction">Disciplinary point deduction</option>
+            <option value="Other">Other custom reason...</option>
+          </select>
+          <input type="text" id="edit-student-xp-custom-reason" class="filter-input" placeholder="Specify reason..." style="width:100%; margin-top:6px; display:none;" />
+        </div>
+
+        <!-- Teacher / Author -->
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Authorized Teacher</label>
+          <input type="text" id="edit-student-xp-teacher" class="filter-input" value="Teacher" style="width:100%;" />
+        </div>
+
+        <!-- Live Calculation Preview Card -->
+        <div id="edit-student-xp-preview-card" style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; font-size:0.86rem; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">RESULTING BALANCE</div>
+            <strong id="edit-student-xp-preview-val" style="font-size:1.1rem; color:var(--color-primary);">0 XP</strong>
+          </div>
+          <div id="edit-student-xp-preview-delta" style="font-weight:800; font-size:0.88rem; color:#059669;">+0 XP</div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-edit-student-xp')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save &amp; Recalculate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Student XP Transaction Ledger & History -->
+  <div class="modal-overlay" id="modal-student-xp-history">
+    <div class="modal-dialog" style="max-width: 760px; max-height: 88vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-student-xp-history')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div id="student-xp-history-avatar" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center;"></div>
+          <div>
+            <h2 id="student-xp-history-name" style="font-size:1.25rem; font-weight:800; margin:0;">XP Ledger &amp; Audit Trail</h2>
+            <div id="student-xp-history-total" style="font-size:0.84rem; color:var(--color-primary); font-weight:700;">Active Balance: 0 XP</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-sm-secondary" id="btn-history-adjust-xp" onclick="if(window.currentHistoryStudentId) openEditStudentXPModal(window.currentHistoryStudentId)">✏️ Adjust XP</button>
+        </div>
+      </div>
+      <div id="student-xp-history-table-container" style="max-height:420px; overflow-y:auto; border:1px solid var(--border-light); border-radius:var(--radius-md);">
+        <!-- Dynamically rendered ledger -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Progression Level Editor -->
+  <div class="modal-overlay" id="modal-progression-level-editor">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-progression-level-editor')">✕</button>
+      <h2 id="progression-level-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:14px;">👾 Edit Progression Level</h2>
+      <form onsubmit="handleSaveProgressionLevel(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-prog-level-id" value="" />
+
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Level # *</label>
+            <input type="number" id="prog-level-num" class="filter-input" required min="1" max="50" style="width:100%;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Level Name *</label>
+            <input type="text" id="prog-level-name" class="filter-input" required placeholder="e.g. Baby Monster" style="width:100%;" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">XP Threshold *</label>
+            <input type="number" id="prog-level-xp" class="filter-input" required min="0" max="100000" style="width:100%;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Evolution Stage Key *</label>
+            <select id="prog-level-stage-key" class="filter-select" style="width:100%;">
+              <option value="egg">Mystery Egg</option>
+              <option value="egg_cracking">Hatching Egg</option>
+              <option value="baby">Baby Monster</option>
+              <option value="juvenile">Juvenile</option>
+              <option value="growing">Growing Explorer</option>
+              <option value="adventurer">Adventurer</option>
+              <option value="master">Master</option>
+              <option value="apex">Apex Form</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Stage Description</label>
+          <textarea id="prog-level-desc" class="filter-input" rows="2" placeholder="Description of this evolutionary milestone..." style="width:100%;"></textarea>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Unlocked Perks / Rewards (comma separated)</label>
+          <input type="text" id="prog-level-rewards" class="filter-input" placeholder="e.g. Horn accessories, Cosmic Aura" style="width:100%;" />
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Status</label>
+            <select id="prog-level-status" class="filter-select" style="width:100%;">
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Bonus XP Reward</label>
+            <input type="number" id="prog-level-reward-xp" class="filter-input" value="100" min="0" style="width:100%;" />
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-progression-level-editor')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Level</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Monster Item Catalog Editor -->
+  <div class="modal-overlay" id="modal-monster-item-editor">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-monster-item-editor')">✕</button>
+      <h2 id="monster-item-modal-title" style="font-size:1.25rem; font-weight:800; margin-bottom:14px;">🎨 Edit Monster Cosmetic Item</h2>
+      <form onsubmit="handleSaveMonsterItem(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <input type="hidden" id="edit-monster-item-id" value="" />
+
+        <div style="display:grid; grid-template-columns: 3fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Item Name *</label>
+            <input type="text" id="monster-item-name" class="filter-input" required placeholder="e.g. Wizard Hat" style="width:100%;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Icon / Emoji *</label>
+            <input type="text" id="monster-item-icon" class="filter-input" required value="✨" style="width:100%; text-align:center; font-size:1.2rem;" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Category *</label>
+            <select id="monster-item-category" class="filter-select" style="width:100%;">
+              <option value="hat">Hat / Headwear</option>
+              <option value="glasses">Glasses / Eyewear</option>
+              <option value="horns">Horns &amp; Ears</option>
+              <option value="wings">Wings</option>
+              <option value="tail">Tail</option>
+              <option value="backpack">Backpack</option>
+              <option value="body">Body Palette</option>
+              <option value="eyes">Eyes</option>
+              <option value="mouth">Mouth</option>
+              <option value="accessory">Accessory</option>
+              <option value="environment">Environment</option>
+              <option value="aura">Aura</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Rarity</label>
+            <select id="monster-item-rarity" class="filter-select" style="width:100%;">
+              <option value="common">Common</option>
+              <option value="rare">Rare</option>
+              <option value="epic">Epic</option>
+              <option value="legendary">Legendary</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Description</label>
+          <textarea id="monster-item-desc" class="filter-input" rows="2" placeholder="Description of this cosmetic..." style="width:100%;"></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Unlock Type *</label>
+            <select id="monster-item-unlock-type" class="filter-select" style="width:100%;" onchange="handleMonsterItemUnlockTypeChange(this.value)">
+              <option value="default">Default (Available to all)</option>
+              <option value="level">Level Requirement</option>
+              <option value="achievement">Achievement Requirement</option>
+            </select>
+          </div>
+          <div>
+            <label id="monster-item-req-label" style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Unlock Level #</label>
+            <input type="text" id="monster-item-req-val" class="filter-input" placeholder="e.g. 3" style="width:100%;" />
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Status</label>
+          <select id="monster-item-status" class="filter-select" style="width:100%;">
+            <option value="active">Active</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-monster-item-editor')">Cancel</button>
+          <button type="submit" class="btn-primary-action">Save Item</button>
         </div>
       </form>
     </div>

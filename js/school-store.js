@@ -2377,6 +2377,10 @@
         .reverse();
     }
 
+    getStudentXPTransactions(studentId, includeVoided = false) {
+      return this.getXPTransactions(studentId, includeVoided);
+    }
+
     getAllXPTransactions(studentId) {
       if (!this.state.xpTransactions) return [];
       return this.state.xpTransactions
@@ -2453,6 +2457,43 @@
         evolutionEvent, 
         monsterState: newMonsterState 
       };
+    }
+
+    adjustStudentXP(studentId, options = {}) {
+      const s = this.getStudent(studentId);
+      if (!s) return null;
+      const currentXP = this.getStudentTotalXP(studentId);
+      let delta = 0;
+      if (options.isAbsolute) {
+        const target = parseInt(options.targetTotal, 10) || 0;
+        delta = target - currentXP;
+      } else {
+        delta = parseInt(options.delta, 10) || 0;
+      }
+
+      if (delta === 0) {
+        return {
+          success: true,
+          delta: 0,
+          student: s,
+          newTotalXP: currentXP,
+          evolutionEvent: null
+        };
+      }
+
+      const reason = options.reason || (delta > 0 ? 'Teacher point adjustment (+)' : 'Teacher point adjustment (-)');
+      const teacher = options.teacher || 'Teacher';
+      const category = options.category || 'correction';
+      const icon = options.icon || (delta >= 0 ? '⭐' : '⚖️');
+
+      const res = this.giveXP(studentId, delta, reason, teacher, {
+        category,
+        icon,
+        source: teacher,
+        createdBy: teacher
+      });
+
+      return Object.assign({ success: true, delta }, res);
     }
 
     voidXPTransaction(txId, voidReason = 'Removed by teacher') {
@@ -3537,10 +3578,34 @@
       if (idx !== -1) {
         const removed = this.state.progressionLevels.splice(idx, 1)[0];
         this.saveState();
-        this.notify();
+        this.notify('progressionLevels', this.state.progressionLevels);
         return removed;
       }
       return null;
+    }
+
+    archiveProgressionLevel(id) {
+      const lvl = this.getProgressionLevel(id);
+      if (lvl) {
+        lvl.status = lvl.status === 'archived' ? 'active' : 'archived';
+        this.saveState();
+        this.notify('progressionLevels', this.state.progressionLevels);
+      }
+      return lvl;
+    }
+
+    reorderProgressionLevels(id, direction = 'up') {
+      if (!this.state.progressionLevels) return false;
+      const idx = this.state.progressionLevels.findIndex(l => l.id === id);
+      if (idx === -1) return false;
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= this.state.progressionLevels.length) return false;
+      const temp = this.state.progressionLevels[idx];
+      this.state.progressionLevels[idx] = this.state.progressionLevels[targetIdx];
+      this.state.progressionLevels[targetIdx] = temp;
+      this.saveState();
+      this.notify('progressionLevels', this.state.progressionLevels);
+      return true;
     }
 
     getMonsterItems(category = null, includeArchived = false) {
@@ -3946,7 +4011,8 @@
       const group = this.getGroup(groupId);
       if (!group || !Array.isArray(group.studentIds) || group.studentIds.length === 0) return [];
       const transactions = [];
-      group.studentIds.forEach(studentId => {
+      const uniqueStudentIds = Array.from(new Set(group.studentIds));
+      uniqueStudentIds.forEach(studentId => {
         const res = this.giveXP(studentId, amount, (group.name + ': ' + reason), teacherName);
         if (res && res.transaction) transactions.push(res.transaction);
       });
@@ -4457,15 +4523,20 @@
       return b;
     }
 
+    addBadge(data) {
+      return this.createBadge(data);
+    }
+
     archiveBadge(id) {
       const b = this.getBadge(id);
       if (b) {
-        b.archived = true;
+        b.archived = !b.archived;
+        b.status = b.archived ? 'archived' : 'active';
         this.saveState();
         this.notify('badges', this.state.badges);
-        return true;
+        return b;
       }
-      return false;
+      return null;
     }
 
     getAchievements(includeArchived = false) {
@@ -4487,12 +4558,17 @@
         requirement: data.requirement || '',
         category: data.category || 'General',
         xpReward: parseInt(data.xpReward, 10) || 200,
-        archived: false
+        archived: false,
+        status: 'active'
       };
       this.state.achievements.push(ach);
       this.saveState();
       this.notify('achievements', this.state.achievements);
       return ach;
+    }
+
+    addAchievement(data) {
+      return this.createAchievement(data);
     }
 
     updateAchievement(id, updates) {
@@ -4507,12 +4583,13 @@
     archiveAchievement(id) {
       const a = this.getAchievement(id);
       if (a) {
-        a.archived = true;
+        a.archived = !a.archived;
+        a.status = a.archived ? 'archived' : 'active';
         this.saveState();
         this.notify('achievements', this.state.achievements);
-        return true;
+        return a;
       }
-      return false;
+      return null;
     }
 
     // ----------------------------------------------------
@@ -5041,9 +5118,13 @@
     // =========================================================================
     // XP SKILLS MANAGEMENT (ClassDojo-style Positive & Needs Work Skills)
     // =========================================================================
-    getXPSkills(category = null) {
+    getXPSkills(category = null, includeArchived = false) {
       if (!this.state.xpSkills) return [];
-      return this.state.xpSkills.filter(s => !category || s.category === category);
+      return this.state.xpSkills.filter(s => {
+        const matchCat = !category || s.category === category;
+        const matchArchived = includeArchived || s.status !== 'archived';
+        return matchCat && matchArchived;
+      });
     }
 
     getXPSkill(id) {
@@ -5059,7 +5140,8 @@
         icon: data.icon || '⭐',
         points: parseInt(data.points, 10) || 1,
         category: data.category || (parseInt(data.points, 10) < 0 ? 'needs_work' : 'positive'),
-        description: data.description || ''
+        description: data.description || '',
+        status: data.status || 'active'
       };
       this.state.xpSkills.push(newSkill);
       this.saveState();
@@ -5076,8 +5158,20 @@
       if (updates.points !== undefined) skill.points = parseInt(updates.points, 10) || 1;
       if (updates.category !== undefined) skill.category = updates.category;
       if (updates.description !== undefined) skill.description = updates.description;
+      if (updates.status !== undefined) skill.status = updates.status;
       this.saveState();
       this.notify('xpSkills', this.state.xpSkills);
+      return skill;
+    }
+
+    archiveXPSkill(id) {
+      if (!this.state.xpSkills) return null;
+      const skill = this.state.xpSkills.find(s => s.id === id);
+      if (skill) {
+        skill.status = skill.status === 'archived' ? 'active' : 'archived';
+        this.saveState();
+        this.notify('xpSkills', this.state.xpSkills);
+      }
       return skill;
     }
 

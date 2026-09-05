@@ -531,13 +531,13 @@
 
     const gameSelect = document.getElementById('new-asg-game');
     if (gameSelect) {
-      gameSelect.innerHTML = resources.map(r => '<option value="' + r.id + '">' + r.title + ' (' + r.level + ')</option>').join('');
+      gameSelect.innerHTML = resources.map(r => '<option value="' + r.id + '">' + r.title + (r.level ? ' (' + r.level + ')' : (r.targetLevel ? ' (' + r.targetLevel + ')' : '')) + '</option>').join('');
     }
 
     ['xp-student-select', 'rubric-student-select'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
-        el.innerHTML = students.map(s => '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + ' (' + s.grade + ')</option>').join('');
+        el.innerHTML = students.map(s => '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + (s.grade ? ' (' + s.grade + ')' : '') + '</option>').join('');
       }
     });
   }
@@ -1319,6 +1319,7 @@
                   '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
                     '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; font-weight:700;">✏️ Edit XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">✏️ Edit</button>' +
                     '<div class="card-more-menu-wrap" style="position:relative;">' +
@@ -1367,7 +1368,11 @@
       case 'overview':
         return '' +
           '<div class="kpi-grid" style="margin-bottom:16px;">' +
-            '<div class="kpi-card"><span class="kpi-label">Total XP</span><span class="kpi-val">' + totalXP + '</span><span class="kpi-sub">⭐ Earned from missions</span></div>' +
+            '<div class="kpi-card" style="cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
+              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Total XP <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
+              '<span class="kpi-val">⭐ ' + totalXP.toLocaleString() + '</span>' +
+              '<span class="kpi-sub">Earned from missions · Click to manage</span>' +
+            '</div>' +
             '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">✓ Computed from roll call</span></div>' +
             '<div class="kpi-card"><span class="kpi-label">Current CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + student.overallCefr + '</span><span class="kpi-sub">Target: A1+</span></div>' +
             '<div class="kpi-card"><span class="kpi-label">Active Streak</span><span class="kpi-val">🔥 ' + student.streakDays + '</span><span class="kpi-sub">Consecutive days</span></div>' +
@@ -1549,8 +1554,11 @@
         return '' +
           '<!-- Top XP KPI Cards -->' +
           '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:16px;">' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center;">' +
-              '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">TOTAL ACTIVE XP</div>' +
+            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center; cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted); font-weight:700;">' +
+                '<span>TOTAL ACTIVE XP</span>' +
+                '<span style="color:var(--color-primary); font-size:0.7rem;">✏️ Edit</span>' +
+              '</div>' +
               '<div style="font-size:1.35rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + xpReport.totalXP.toLocaleString() + '</div>' +
             '</div>' +
             '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center;">' +
@@ -1579,6 +1587,7 @@
               '</div>' +
             '</div>' +
             '<div style="display:flex; gap:8px;">' +
+              '<button class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px; font-weight:700;">✏️ Adjust Total XP</button>' +
               '<button class="btn-primary-action" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px;">+ Award Points</button>' +
             '</div>' +
           '</div>' +
@@ -1897,9 +1906,9 @@
                     'Level ' + mState.currentLevel + ' · ' + mState.stageName +
                   '</div>' +
 
-                  '<div class="student-directory-xp-line">' +
+                  '<div class="student-directory-xp-line" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
                     '<strong>⭐ ' + totalXP.toLocaleString() + ' XP</strong>' +
-                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + '</span>' +
+                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' · ✏️ Edit</span>' +
                   '</div>' +
 
                   '<div class="student-directory-progress-bar" title="' + progressPct + '% to next stage">' +
@@ -1913,8 +1922,9 @@
                   '</div>' +
 
                   '<div class="student-directory-card-actions" onclick="event.stopPropagation();">' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'monster\')" style="flex:1;">🎨 Monster</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ +XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'overview\')">Profile →</button>' +
                   '</div>' +
                 '</div>';
@@ -2043,7 +2053,7 @@
 
         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
           '<button class="btn-primary-action" onclick="openStudentModal()" style="font-size:0.86rem; padding:8px 14px;">+ Add Student</button>' +
-          '<button class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'class\', \'' + cls.id + '\')" style="font-size:0.86rem; padding:8px 14px; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;">⭐ Points</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;" title="Award Points (+10, +20, +50, +100, Custom)">⭐ Points</button>' +
           '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:700;">🧰 Toolkit</button>' +
           '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="font-size:0.86rem; padding:8px 14px;">✓ Attendance</button>' +
           '<button class="btn-sm-secondary" onclick="toggleSmartboardMode()" style="font-size:0.86rem; padding:8px 14px;">🎓 ' + (isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode') + '</button>' +
@@ -2121,7 +2131,7 @@
           '<button class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') +
           '</button>' +
-          '<button class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'class\', \'' + cls.id + '\')" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;">⭐ Points</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;" title="Award Points (+10, +20, +50, +100, Custom)">⭐ Points</button>' +
           '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-weight:700;">🧰 Toolkit</button>' +
           (classroomActiveSubTab === 'groups' ?
             '<button class="btn-primary-action" onclick="openCreateGroupModal()">+ Create Group</button>' :
@@ -2198,15 +2208,28 @@
 
           // Meta Row (Points + CEFR)
           '<div class="student-card-meta-row">' +
-            '<span class="student-card-xp-badge" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" title="Award XP">⭐ ' + formattedXP + '</span>' +
+            '<span class="student-card-xp-badge" onclick="openStudentXPMenu(\'' + s.id + '\', this, event)" title="Click for XP Actions: Award, Edit, History">⭐ ' + formattedXP + '</span>' +
             '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
           '</div>' +
 
           // Quick 1-Click Points and Award Bar
-          '<div style="margin-top:6px; display:flex; justify-content:center; gap:6px;">' +
-            '<button class="btn-sm-secondary btn-card-quick-point" onclick="handleQuickPlusOneXP(\'' + s.id + '\', event)" title="Quick +1 Positive Point" style="padding:2px 8px; font-size:0.72rem; font-weight:800; border-radius:12px; background:rgba(16,185,129,0.1); color:#059669; border-color:rgba(16,185,129,0.3);">' +
-              '+1 XP' +
+          '<div style="margin-top:6px; display:flex; justify-content:center; align-items:center; gap:4px; flex-wrap:wrap;">' +
+            '<button class="btn-sm-secondary btn-card-quick-point" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" title="Quick +10 XP" style="padding:2px 8px; font-size:0.75rem; font-weight:800; border-radius:12px; background:rgba(16,185,129,0.12); color:#059669; border-color:rgba(16,185,129,0.3);">' +
+              '+10 XP' +
             '</button>' +
+            '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); toggleCardDropdown(\'xp-tiers-' + s.id + '\', event)" title="Quick XP Amounts (+10, +20, +50, +100, Custom)" style="padding:2px 6px; font-size:0.72rem; font-weight:800; border-radius:12px;">' +
+                '▾' +
+              '</button>' +
+              '<div class="card-dropdown-menu" id="menu-xp-tiers-' + s.id + '" style="min-width:145px; font-size:0.78rem; text-align:left;">' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event); closeAllCardMenus();">⚡ +10 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 100, event); closeAllCardMenus();">👑 +100 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\'); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
+              '</div>' +
+            '</div>' +
             '<button class="btn-sm-secondary" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" title="Open Skills Points Award" style="padding:2px 8px; font-size:0.72rem; font-weight:700; border-radius:12px;">' +
               '⭐ Award' +
             '</button>' +
@@ -3455,14 +3478,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   // =========================================================================
-  // GAMIFICATION SETTINGS VIEW (Badges & Achievements CRUD)
+  // GAMIFICATION SETTINGS VIEW (Badges, Levels, Items & XP Skills CRUD)
   // =========================================================================
+  let gamificationActiveTab = 'badges'; // 'badges' | 'levels' | 'items' | 'skills'
+  let monsterItemsFilterCategory = 'all';
+  let monsterItemsSearchQuery = '';
+  let xpSkillsFilterCategory = 'all';
+
   function renderGamificationView(container) {
-    const badges = store.getBadges();
-    const achievements = store.getAchievements();
+    const badges = store.getBadges ? store.getBadges(true) : [];
+    const achievements = store.getAchievements ? store.getAchievements(true) : [];
     const levels = store.getProgressionLevels ? store.getProgressionLevels(true) : [];
-    const items = store.getMonsterItems ? store.getMonsterItems(null, true) : [];
-    const xpSkills = store.state.xpSkills || [];
+    const allItems = store.getMonsterItems ? store.getMonsterItems(null, true) : [];
+    const allSkills = store.getXPSkills ? store.getXPSkills(null, true) : (store.state.xpSkills || []);
 
     const activeTab = gamificationActiveTab || 'badges';
 
@@ -3470,8 +3498,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; gap:8px; border-bottom:1px solid var(--border-light); margin-bottom:20px; overflow-x:auto;">' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">🏆 Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">👾 Monster Evolution Levels (' + levels.length + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + items.length + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">⭐ Classroom XP Skills (' + xpSkills.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + allItems.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">⭐ Classroom XP Skills (' + allSkills.length + ')</button>' +
       '</div>';
 
     let tabBodyHtml = '';
@@ -3481,10 +3509,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
             '<div>' +
-              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">7 Core Evolution Stages &amp; XP Thresholds</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Teachers and administrators can configure level names, XP required, stage descriptions, and rewards.</p>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Stages &amp; XP Thresholds</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Configure progression level names, XP required, stage keys, descriptions, and perks. Changes dynamically update all active students.</p>' +
             '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="openAddProgressionLevelModal()">+ Add Progression Level</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
           '</div>' +
 
           '<div style="overflow-x:auto;">' +
@@ -3496,8 +3524,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<th style="padding:10px 12px;">Level Name</th>' +
                   '<th style="padding:10px 12px; text-align:right;">XP Required</th>' +
                   '<th style="padding:10px 12px;">Description</th>' +
-                  '<th style="padding:10px 12px;">Unlocked Items</th>' +
+                  '<th style="padding:10px 12px;">Perks &amp; Rewards</th>' +
                   '<th style="padding:10px 12px; text-align:center;">Status</th>' +
+                  '<th style="padding:10px 12px; text-align:center;">Reorder</th>' +
                   '<th style="padding:10px 12px; text-align:right;">Actions</th>' +
                 '</tr>' +
               '</thead>' +
@@ -3509,18 +3538,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                     size: 40,
                     animated: false
                   }) : '👾';
+                  const isArchived = l.status === 'archived';
 
                   return '' +
-                    '<tr style="border-bottom:1px solid var(--border-light);">' +
+                    '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isArchived ? '0.6' : '1') + ';">' +
                       '<td style="padding:10px 12px;"><div style="width:40px; height:40px;">' + stageSvg + '</div></td>' +
                       '<td style="padding:10px 12px; font-weight:800;">Level ' + l.level + '</td>' +
                       '<td style="padding:10px 12px; font-weight:700; color:var(--color-primary);">' + l.name + '</td>' +
                       '<td style="padding:10px 12px; text-align:right; font-weight:800;">' + l.xpRequired.toLocaleString() + ' ⭐</td>' +
-                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:260px;">' + l.description + '</td>' +
-                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (l.rewards ? l.rewards.join(', ') : 'Base avatar perks') + '</td>' +
-                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:rgba(16,185,129,0.15); color:#059669; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">Active</span></td>' +
-                      '<td style="padding:10px 12px; text-align:right;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="promptEditProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem;">Edit</button>' +
+                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:240px;">' + (l.description || 'Evolutionary milestone') + '</td>' +
+                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (Array.isArray(l.rewards) ? l.rewards.join(', ') : (l.rewards || 'Base avatar perks')) + '</td>' +
+                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:' + (isArchived ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)') + '; color:' + (isArchived ? '#dc2626' : '#059669') + '; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">' + (isArchived ? 'Archived' : 'Active') + '</span></td>' +
+                      '<td style="padding:10px 12px; text-align:center; white-space:nowrap;">' +
+                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'up\')" title="Move Up" style="padding:1px 5px; font-size:0.7rem; margin-right:2px;">▲</button>' +
+                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'down\')" title="Move Down" style="padding:1px 5px; font-size:0.7rem;">▼</button>' +
+                      '</td>' +
+                      '<td style="padding:10px 12px; text-align:right; white-space:nowrap;">' +
+                        '<button type="button" class="btn-sm-secondary" onclick="openProgressionLevelEditorModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; margin-right:4px;">✏️ Edit</button>' +
+                        '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? '↩️ Restore' : '📦 Archive') + '</button>' +
                       '</td>' +
                     '</tr>';
                 }).join('') +
@@ -3529,92 +3564,189 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
         '</div>';
     } else if (activeTab === 'items') {
+      const categories = ['all', 'body', 'eyes', 'mouth', 'horns', 'wings', 'tail', 'hat', 'glasses', 'backpack', 'accessory', 'environment', 'aura'];
+      let filteredItems = allItems.slice();
+
+      if (monsterItemsFilterCategory && monsterItemsFilterCategory !== 'all') {
+        filteredItems = filteredItems.filter(it => it.category === monsterItemsFilterCategory);
+      }
+      if (monsterItemsSearchQuery) {
+        const q = monsterItemsSearchQuery.toLowerCase();
+        filteredItems = filteredItems.filter(it => (it.name && it.name.toLowerCase().includes(q)) || (it.description && it.description.toLowerCase().includes(q)));
+      }
+
       tabBodyHtml = 
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
             '<div>' +
-              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Items Catalog (' + items.length + ' Items)</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Modular cosmetics unlocked via Level XP thresholds or Learning World achievements.</p>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Items Catalog (' + filteredItems.length + ' / ' + allItems.length + ' Items)</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Modular cosmetics unlocked via Level XP thresholds or achievements. The Monster Creator reads from this exact catalog.</p>' +
+            '</div>' +
+            '<button type="button" class="btn-primary-action" onclick="openMonsterItemEditorModal(null)">+ Add Cosmetic Item</button>' +
+          '</div>' +
+
+          '<!-- Filter & Search Toolbar -->' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
+            '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
+              categories.map(cat => 
+                '<button type="button" class="classroom-view-pill-btn ' + (monsterItemsFilterCategory === cat ? 'is-active' : '') + '" onclick="filterMonsterItemsCategory(\'' + cat + '\')" style="padding:4px 10px; font-size:0.75rem; text-transform:capitalize;">' +
+                  (cat === 'all' ? ('All (' + allItems.length + ')') : cat) +
+                '</button>'
+              ).join('') +
+            '</div>' +
+            '<div style="min-width:200px;">' +
+              '<input type="text" class="filter-input" placeholder="🔍 Search items..." value="' + (monsterItemsSearchQuery || '') + '" oninput="searchMonsterItemsCatalog(this.value)" style="width:100%; font-size:0.82rem; padding:6px 10px;" />' +
             '</div>' +
           '</div>' +
 
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;">' +
-            items.map(item => '' +
-              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px; display:flex; flex-direction:column; justify-content:space-between;">' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span style="font-size:1.8rem;">' + item.icon + '</span>' +
-                  '<div>' +
-                    '<div style="font-weight:800; font-size:0.84rem;">' + item.name + '</div>' +
-                    '<div style="font-size:0.7rem; color:var(--color-primary); font-weight:700;">' + item.category.toUpperCase() + '</div>' +
-                  '</div>' +
-                '</div>' +
-                '<p style="font-size:0.75rem; color:var(--text-muted); margin:8px 0 4px 0;">' + item.description + '</p>' +
-                '<div style="font-size:0.7rem; font-weight:700; color:#b45309; margin-bottom:6px;">' +
-                  (item.unlockType === 'level' ? '⭐ Unlocked at Level ' + item.unlockRequirement.level : '🏆 Linked to ' + item.unlockRequirement.achievementId) +
-                '</div>' +
-                '<div style="display:flex; gap:4px; margin-top:4px;">' +
-                  '<button type="button" class="btn-sm-secondary" onclick="promptEditMonsterItem(\'' + item.id + '\')" style="padding:1px 6px; font-size:0.65rem;">Edit</button>' +
-                  '<button type="button" class="btn-sm-secondary" onclick="toggleArchiveMonsterItem(\'' + item.id + '\')" style="padding:1px 6px; font-size:0.65rem;">' + (item.status === 'archived' ? 'Restore' : 'Archive') + '</button>' +
-                '</div>' +
-              '</div>'
-            ).join('') +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px;">' +
+            (filteredItems.length === 0 ? '<div style="grid-column:1/-1; padding:32px; text-align:center; color:var(--text-muted);">No cosmetic items found matching this filter.</div>' :
+              filteredItems.map(item => {
+                const isArchived = item.status === 'archived';
+                const rarityColor = item.rarity === 'legendary' ? '#eab308' : item.rarity === 'epic' ? '#a855f7' : item.rarity === 'rare' ? '#3b82f6' : '#6b7280';
+                return '' +
+                  '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + '; transition:all 0.15s ease;">' +
+                    '<div>' +
+                      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">' +
+                        '<span style="font-size:2rem;">' + (item.icon || '✨') + '</span>' +
+                        '<span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; border:1px solid ' + rarityColor + '; color:' + rarityColor + ';">' + (item.rarity || 'common') + '</span>' +
+                      '</div>' +
+                      '<div style="font-weight:800; font-size:0.92rem; color:var(--text-main); margin-bottom:2px;">' + item.name + '</div>' +
+                      '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700; text-transform:uppercase; margin-bottom:4px;">' + item.category + '</div>' +
+                      '<p style="font-size:0.76rem; color:var(--text-muted); margin:0 0 8px 0; line-height:1.3;">' + (item.description || 'Cosmetic item') + '</p>' +
+                      '<div style="font-size:0.72rem; font-weight:700; color:#b45309; margin-bottom:8px; background:rgba(245,158,11,0.08); padding:3px 6px; border-radius:6px;">' +
+                        (item.unlockType === 'level' ? ('⭐ Reach Level ' + ((item.unlockRequirement && item.unlockRequirement.level) || 1)) :
+                         item.unlockType === 'achievement' ? ('🏆 ' + ((item.unlockRequirement && item.unlockRequirement.achievementId) || 'Achievement')) :
+                         '🔓 Default (Unlocked)') +
+                      '</div>' +
+                    '</div>' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:8px; margin-top:6px;">' +
+                      '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
+                      '<div style="display:flex; gap:4px;">' +
+                        '<button type="button" class="btn-sm-secondary" onclick="openMonsterItemEditorModal(\'' + item.id + '\')" style="padding:2px 6px; font-size:0.7rem;">✏️ Edit</button>' +
+                        '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveMonsterItem(\'' + item.id + '\')" style="padding:2px 6px; font-size:0.7rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>';
+              }).join('')
+            ) +
           '</div>' +
         '</div>';
     } else if (activeTab === 'skills') {
+      let filteredSkills = allSkills.slice();
+      if (xpSkillsFilterCategory === 'positive') filteredSkills = filteredSkills.filter(s => s.category === 'positive');
+      else if (xpSkillsFilterCategory === 'needs_work') filteredSkills = filteredSkills.filter(s => s.category === 'needs_work');
+
       tabBodyHtml = 
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
-          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">Classroom XP Award Skills</h3>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">' +
-            xpSkills.map(sk => '' +
-              '<div style="padding:12px; background:var(--bg-muted); border-radius:10px; border:1px solid var(--border-light);">' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span style="font-size:1.4rem;">' + sk.icon + '</span>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
+            '<div>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Classroom XP Award Skills (' + filteredSkills.length + ' / ' + allSkills.length + ')</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Define classroom behaviors and point values. Awarding these skills generates canonical, audited XP transactions.</p>' +
+            '</div>' +
+            '<button type="button" class="btn-primary-action" onclick="openXPSkillEditorModal(null)">⭐ + Add Skill</button>' +
+          '</div>' +
+
+          '<!-- Category Filter Pills -->' +
+          '<div style="display:flex; gap:6px; margin-bottom:16px;">' +
+            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'all' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'all\')">All (' + allSkills.length + ')</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'positive' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'positive\')">⭐ Positive (+XP)</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'needs_work' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'needs_work\')">💭 Needs Work (-XP)</button>' +
+          '</div>' +
+
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px;">' +
+            filteredSkills.map(sk => {
+              const isPos = sk.points >= 0;
+              const isArchived = sk.status === 'archived';
+              return '' +
+                '<div style="padding:14px; background:var(--bg-canvas); border-radius:12px; border:1px solid var(--border-light); display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
                   '<div>' +
-                    '<div style="font-weight:800; font-size:0.86rem;">' + sk.name + '</div>' +
-                    '<div style="font-size:0.72rem; font-weight:700; color:' + (sk.points >= 0 ? '#059669' : '#dc2626') + ';">' + (sk.points >= 0 ? '+' : '') + sk.points + ' XP</div>' +
+                    '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">' +
+                      '<span style="font-size:1.8rem;">' + (sk.icon || '⭐') + '</span>' +
+                      '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
+                        (isPos ? '+' : '') + sk.points + ' XP' +
+                      '</span>' +
+                    '</div>' +
+                    '<div style="font-weight:800; font-size:0.92rem; color:var(--text-main);">' + sk.name + '</div>' +
+                    '<p style="font-size:0.76rem; color:var(--text-muted); margin:4px 0 10px 0; line-height:1.3;">' + (sk.description || 'Classroom behavioral skill') + '</p>' +
                   '</div>' +
-                '</div>' +
-                '<p style="font-size:0.75rem; color:var(--text-muted); margin:6px 0 0 0;">' + sk.description + '</p>' +
-              '</div>'
-            ).join('') +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:8px;">' +
+                    '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
+                    '<div style="display:flex; gap:4px;">' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openXPSkillEditorModal(\'' + sk.id + '\')" style="padding:2px 6px; font-size:0.7rem;">✏️ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveXPSkill(\'' + sk.id + '\')" style="padding:2px 6px; font-size:0.7rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
           '</div>' +
         '</div>';
     } else {
-      // Default: Badges & Achievements
+      // Tab 1: Badges & Achievements
       tabBodyHtml = 
-        '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Classroom Badges (' + badges.length + ')</h2>' +
-        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
-          badges.map(b => '' +
-            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-              '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
-                '<span style="font-size:2rem;">' + b.icon + '</span>' +
-                '<div>' +
-                  '<div style="font-weight:800; font-size:0.95rem;">' + b.name + '</div>' +
-                  '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
-                '</div>' +
-              '</div>' +
-              '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' + b.description + '</p>' +
-              '<div style="display:flex; gap:6px; margin-top:8px;">' +
-                '<button type="button" class="btn-sm-secondary" onclick="openAwardBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem;">🎖️ Award to Student</button>' +
-              '</div>' +
-            '</div>'
-          ).join('') +
-        '</div>' +
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
+            '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Classroom Badges (' + badges.length + ')</h2>' +
+            '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
+            badges.map(b => {
+              const isArchived = b.status === 'archived' || b.archived;
+              return '' +
+                '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
+                  '<div>' +
+                    '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">' +
+                      '<div style="display:flex; align-items:center; gap:10px;">' +
+                        '<span style="font-size:2rem;">' + (b.icon || '⭐') + '</span>' +
+                        '<div>' +
+                          '<div style="font-weight:800; font-size:0.95rem;">' + b.name + '</div>' +
+                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
+                    '</div>' +
+                    '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">' + (b.description || '') + '</p>' +
+                  '</div>' +
+                  '<div style="display:flex; justify-content:space-between; gap:6px; border-top:1px solid var(--border-light); padding-top:10px;">' +
+                    '<div style="display:flex; gap:4px;">' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openEditBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem;">✏️ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveBadge(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
+                    '</div>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openAwardBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem; font-weight:700;">🎖️ Award</button>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
 
-        '<h2 style="font-size:1.2rem; font-weight:800; margin-bottom:12px;">Learning Achievements (' + achievements.length + ')</h2>' +
-        '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
-          achievements.map(a => '' +
-            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px;">' +
-              '<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">' +
-                '<span style="font-size:2rem;">' + a.icon + '</span>' +
-                '<div>' +
-                  '<div style="font-weight:800; font-size:0.95rem;">' + a.name + '</div>' +
-                  '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">+' + a.xpReward + ' ⭐ XP</div>' +
-                '</div>' +
-              '</div>' +
-              '<p style="font-size:0.8rem; color:var(--text-muted);">' + a.requirement + '</p>' +
-            '</div>'
-          ).join('') +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
+            '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Learning Achievements (' + achievements.length + ')</h2>' +
+            '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
+            achievements.map(a => {
+              const isArchived = a.status === 'archived' || a.archived;
+              return '' +
+                '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
+                  '<div>' +
+                    '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">' +
+                      '<div style="display:flex; align-items:center; gap:10px;">' +
+                        '<span style="font-size:2rem;">' + (a.icon || '🏆') + '</span>' +
+                        '<div>' +
+                          '<div style="font-weight:800; font-size:0.95rem;">' + a.name + '</div>' +
+                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">+' + a.xpReward + ' ⭐ XP</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
+                    '</div>' +
+                    '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">' + (a.requirement || a.description || '') + '</p>' +
+                  '</div>' +
+                  '<div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border-light); padding-top:10px;">' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditAchievementModal(\'' + a.id + '\')" style="padding:3px 8px; font-size:0.72rem;">✏️ Edit</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveAchievement(\'' + a.id + '\')" style="padding:3px 8px; font-size:0.72rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
         '</div>';
     }
 
@@ -3633,8 +3765,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       tabBodyHtml;
   }
 
-  let gamificationActiveTab = 'badges'; // 'badges' | 'skills' | 'levels' | 'items'
-
   window.switchGamificationTab = function(tab) {
     gamificationActiveTab = tab;
     const container = document.getElementById('app-view-container');
@@ -3643,57 +3773,301 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
   };
 
-  window.promptEditProgressionLevel = function(id) {
-    const lvl = store.getProgressionLevel(id);
-    if (!lvl) return;
-    const newName = prompt('Enter new Level Name for Level ' + lvl.level + ':', lvl.name);
-    if (newName === null) return;
-    const newXP = prompt('Enter XP Required for ' + (newName || lvl.name) + ':', lvl.xpRequired);
-    if (newXP === null) return;
-    const newDesc = prompt('Enter stage description:', lvl.description);
+  window.filterMonsterItemsCategory = function(cat) {
+    monsterItemsFilterCategory = cat;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') renderGamificationView(container);
+  };
 
-    store.updateProgressionLevel(id, {
-      name: newName || lvl.name,
-      xpRequired: parseInt(newXP, 10) || lvl.xpRequired,
-      description: newDesc !== null ? newDesc : lvl.description
-    });
-    showNotification('Progression level updated successfully!');
+  window.searchMonsterItemsCatalog = function(query) {
+    monsterItemsSearchQuery = query;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') renderGamificationView(container);
+  };
+
+  window.filterXPSkillsCategory = function(cat) {
+    xpSkillsFilterCategory = cat;
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') renderGamificationView(container);
+  };
+
+  window.openEditBadgeModal = function(id) {
+    window.openGamificationEditorModal('badge', id);
+  };
+
+  window.handleToggleArchiveBadge = function(id) {
+    if (store.archiveBadge) {
+      store.archiveBadge(id);
+      showNotification('Badge status updated!');
+      renderCurrentView();
+    }
+  };
+
+  window.openEditAchievementModal = function(id) {
+    window.openGamificationEditorModal('achievement', id);
+  };
+
+  window.handleToggleArchiveAchievement = function(id) {
+    if (store.archiveAchievement) {
+      store.archiveAchievement(id);
+      showNotification('Achievement status updated!');
+      renderCurrentView();
+    }
+  };
+
+  // Progression Level Modal Controller
+  window.openProgressionLevelEditorModal = function(id = null) {
+    const title = document.getElementById('progression-level-modal-title');
+    const idInput = document.getElementById('edit-prog-level-id');
+    const numInput = document.getElementById('prog-level-num');
+    const nameInput = document.getElementById('prog-level-name');
+    const xpInput = document.getElementById('prog-level-xp');
+    const stageSelect = document.getElementById('prog-level-stage-key');
+    const descInput = document.getElementById('prog-level-desc');
+    const rewardsInput = document.getElementById('prog-level-rewards');
+    const statusSelect = document.getElementById('prog-level-status');
+    const rewardXPInput = document.getElementById('prog-level-reward-xp');
+
+    if (id) {
+      const lvl = store.getProgressionLevel(id);
+      if (!lvl) return;
+      if (title) title.innerText = '👾 Edit Progression Level ' + lvl.level;
+      if (idInput) idInput.value = lvl.id;
+      if (numInput) numInput.value = String(lvl.level);
+      if (nameInput) nameInput.value = lvl.name;
+      if (xpInput) xpInput.value = String(lvl.xpRequired);
+      if (stageSelect) stageSelect.value = lvl.stageKey || 'baby';
+      if (descInput) descInput.value = lvl.description || '';
+      if (rewardsInput) rewardsInput.value = Array.isArray(lvl.rewards) ? lvl.rewards.join(', ') : (lvl.rewards || '');
+      if (statusSelect) statusSelect.value = lvl.status || 'active';
+      if (rewardXPInput) rewardXPInput.value = String(lvl.rewardXP || 100);
+    } else {
+      const allLevels = store.getProgressionLevels(true);
+      if (title) title.innerText = '👾 Add New Progression Level';
+      if (idInput) idInput.value = '';
+      if (numInput) numInput.value = String(allLevels.length + 1);
+      if (nameInput) nameInput.value = 'New Explorer Rank';
+      if (xpInput) xpInput.value = String((allLevels.length ? allLevels[allLevels.length - 1].xpRequired + 500 : 1000));
+      if (stageSelect) stageSelect.value = 'growing';
+      if (descInput) descInput.value = 'Progress milestone for dedicated English learners.';
+      if (rewardsInput) rewardsInput.value = '';
+      if (statusSelect) statusSelect.value = 'active';
+      if (rewardXPInput) rewardXPInput.value = '100';
+    }
+
+    window.openModal('modal-progression-level-editor');
+  };
+
+  window.handleSaveProgressionLevel = function(e) {
+    e.preventDefault();
+    const id = document.getElementById('edit-prog-level-id')?.value;
+    const level = parseInt(document.getElementById('prog-level-num')?.value, 10) || 1;
+    const name = document.getElementById('prog-level-name')?.value.trim();
+    const xpRequired = parseInt(document.getElementById('prog-level-xp')?.value, 10) || 0;
+    const stageKey = document.getElementById('prog-level-stage-key')?.value;
+    const description = document.getElementById('prog-level-desc')?.value.trim();
+    const rewardsRaw = document.getElementById('prog-level-rewards')?.value.trim();
+    const rewards = rewardsRaw ? rewardsRaw.split(',').map(r => r.trim()).filter(Boolean) : [];
+    const status = document.getElementById('prog-level-status')?.value || 'active';
+    const rewardXP = parseInt(document.getElementById('prog-level-reward-xp')?.value, 10) || 100;
+
+    const data = { level, name, xpRequired, stageKey, description, rewards, status, rewardXP };
+
+    if (id) {
+      store.updateProgressionLevel(id, data);
+      showNotification('Progression level updated! Evolution thresholds recalculated for all learners.');
+    } else {
+      store.addProgressionLevel(data);
+      showNotification('New progression level added!');
+    }
+
+    window.closeModal('modal-progression-level-editor');
     renderCurrentView();
   };
 
-  window.openAddProgressionLevelModal = function() {
-    const name = prompt('Enter name for the new level (e.g. Master Explorer):');
-    if (!name) return;
-    const xp = prompt('Enter XP Required:');
-    if (!xp) return;
-    store.addProgressionLevel({
-      name: name,
-      xpRequired: parseInt(xp, 10) || 1500,
-      description: 'Progress milestone for dedicated English learners.',
-      stageKey: 'adventurer'
-    });
-    showNotification('New progression level created!');
+  window.handleToggleArchiveProgressionLevel = function(id) {
+    if (store.archiveProgressionLevel) {
+      store.archiveProgressionLevel(id);
+      showNotification('Progression level status updated!');
+      renderCurrentView();
+    }
+  };
+
+  window.handleReorderProgressionLevel = function(id, direction) {
+    if (store.reorderProgressionLevels) {
+      store.reorderProgressionLevels(id, direction);
+      renderCurrentView();
+    }
+  };
+
+  // Monster Item Catalog Modal Controller
+  window.openMonsterItemEditorModal = function(id = null) {
+    const title = document.getElementById('monster-item-modal-title');
+    const idInput = document.getElementById('edit-monster-item-id');
+    const nameInput = document.getElementById('monster-item-name');
+    const iconInput = document.getElementById('monster-item-icon');
+    const catSelect = document.getElementById('monster-item-category');
+    const raritySelect = document.getElementById('monster-item-rarity');
+    const descInput = document.getElementById('monster-item-desc');
+    const unlockSelect = document.getElementById('monster-item-unlock-type');
+    const reqInput = document.getElementById('monster-item-req-val');
+    const reqLabel = document.getElementById('monster-item-req-label');
+    const statusSelect = document.getElementById('monster-item-status');
+
+    if (id) {
+      const item = store.getMonsterItem(id);
+      if (!item) return;
+      if (title) title.innerText = '🎨 Edit Monster Item: ' + item.name;
+      if (idInput) idInput.value = item.id;
+      if (nameInput) nameInput.value = item.name;
+      if (iconInput) iconInput.value = item.icon || '✨';
+      if (catSelect) catSelect.value = item.category || 'hat';
+      if (raritySelect) raritySelect.value = item.rarity || 'common';
+      if (descInput) descInput.value = item.description || '';
+      if (unlockSelect) unlockSelect.value = item.unlockType || 'default';
+      if (statusSelect) statusSelect.value = item.status || 'active';
+
+      if (item.unlockType === 'level') {
+        if (reqLabel) reqLabel.innerText = 'Unlock Level #';
+        if (reqInput) reqInput.value = String((item.unlockRequirement && item.unlockRequirement.level) || 3);
+      } else if (item.unlockType === 'achievement') {
+        if (reqLabel) reqLabel.innerText = 'Achievement ID';
+        if (reqInput) reqInput.value = String((item.unlockRequirement && item.unlockRequirement.achievementId) || '');
+      } else {
+        if (reqLabel) reqLabel.innerText = 'Unlock Requirement (N/A)';
+        if (reqInput) reqInput.value = '';
+      }
+    } else {
+      if (title) title.innerText = '🎨 Add New Monster Item';
+      if (idInput) idInput.value = '';
+      if (nameInput) nameInput.value = '';
+      if (iconInput) iconInput.value = '✨';
+      if (catSelect) catSelect.value = 'hat';
+      if (raritySelect) raritySelect.value = 'common';
+      if (descInput) descInput.value = '';
+      if (unlockSelect) unlockSelect.value = 'level';
+      if (reqLabel) reqLabel.innerText = 'Unlock Level #';
+      if (reqInput) reqInput.value = '3';
+      if (statusSelect) statusSelect.value = 'active';
+    }
+
+    window.openModal('modal-monster-item-editor');
+  };
+
+  window.handleMonsterItemUnlockTypeChange = function(type) {
+    const reqLabel = document.getElementById('monster-item-req-label');
+    const reqInput = document.getElementById('monster-item-req-val');
+    if (!reqLabel || !reqInput) return;
+    if (type === 'level') {
+      reqLabel.innerText = 'Unlock Level #';
+      reqInput.placeholder = 'e.g. 3';
+    } else if (type === 'achievement') {
+      reqLabel.innerText = 'Achievement ID';
+      reqInput.placeholder = 'e.g. dragon-master';
+    } else {
+      reqLabel.innerText = 'Unlock Requirement (N/A)';
+      reqInput.placeholder = 'None (Default)';
+    }
+  };
+
+  window.handleSaveMonsterItem = function(e) {
+    e.preventDefault();
+    const id = document.getElementById('edit-monster-item-id')?.value;
+    const name = document.getElementById('monster-item-name')?.value.trim();
+    const icon = document.getElementById('monster-item-icon')?.value.trim() || '✨';
+    const category = document.getElementById('monster-item-category')?.value || 'hat';
+    const rarity = document.getElementById('monster-item-rarity')?.value || 'common';
+    const description = document.getElementById('monster-item-desc')?.value.trim() || '';
+    const unlockType = document.getElementById('monster-item-unlock-type')?.value || 'default';
+    const reqVal = document.getElementById('monster-item-req-val')?.value.trim() || '';
+    const status = document.getElementById('monster-item-status')?.value || 'active';
+
+    const unlockRequirement = {};
+    if (unlockType === 'level') unlockRequirement.level = parseInt(reqVal, 10) || 1;
+    else if (unlockType === 'achievement') unlockRequirement.achievementId = reqVal;
+
+    const payload = { name, icon, category, rarity, description, unlockType, unlockRequirement, status };
+
+    if (id) {
+      store.updateMonsterItem(id, payload);
+      showNotification('Monster item updated!');
+    } else {
+      store.addMonsterItem(payload);
+      showNotification('New monster item added to catalog!');
+    }
+
+    window.closeModal('modal-monster-item-editor');
     renderCurrentView();
   };
 
-  window.promptEditMonsterItem = function(id) {
-    const item = store.getMonsterItem(id);
-    if (!item) return;
-    const newName = prompt('Enter item name:', item.name);
-    if (newName === null) return;
-    const newDesc = prompt('Enter item description:', item.description);
-    store.updateMonsterItem(id, {
-      name: newName || item.name,
-      description: newDesc !== null ? newDesc : item.description
-    });
-    showNotification('Monster item updated!');
+  window.handleToggleArchiveMonsterItem = function(id) {
+    if (store.archiveMonsterItem) {
+      const updated = store.archiveMonsterItem(id);
+      showNotification('Item ' + (updated.status === 'archived' ? 'archived' : 'restored') + '!');
+      renderCurrentView();
+    }
+  };
+
+  // XP Skill Modal Controller
+  window.openXPSkillEditorModal = function(id = null) {
+    const title = document.getElementById('xp-skill-editor-title');
+    const idInput = document.getElementById('xp-skill-id-val');
+    const nameInput = document.getElementById('xp-skill-name-val');
+    const iconInput = document.getElementById('xp-skill-icon-val');
+    const ptsSelect = document.getElementById('xp-skill-points-val');
+    const catSelect = document.getElementById('xp-skill-category-val');
+    const descInput = document.getElementById('xp-skill-desc-val');
+
+    if (id) {
+      const sk = store.getXPSkill ? store.getXPSkill(id) : null;
+      if (!sk) return;
+      if (title) title.innerText = '✨ Edit XP Skill: ' + sk.name;
+      if (idInput) idInput.value = sk.id;
+      if (nameInput) nameInput.value = sk.name;
+      if (iconInput) iconInput.value = sk.icon || '⭐';
+      if (ptsSelect) ptsSelect.value = String(sk.points);
+      if (catSelect) catSelect.value = sk.category || 'positive';
+      if (descInput) descInput.value = sk.description || '';
+    } else {
+      if (title) title.innerText = '✨ Create Custom XP Skill';
+      if (idInput) idInput.value = '';
+      if (nameInput) nameInput.value = '';
+      if (iconInput) iconInput.value = '⭐';
+      if (ptsSelect) ptsSelect.value = '10';
+      if (catSelect) catSelect.value = 'positive';
+      if (descInput) descInput.value = '';
+    }
+
+    window.openModal('modal-xp-skill-editor');
+  };
+
+  window.handleSaveXPSkill = function(e) {
+    e.preventDefault();
+    const id = document.getElementById('xp-skill-id-val')?.value;
+    const name = document.getElementById('xp-skill-name-val')?.value.trim();
+    const icon = document.getElementById('xp-skill-icon-val')?.value.trim() || '⭐';
+    const points = parseInt(document.getElementById('xp-skill-points-val')?.value, 10) || 10;
+    const category = document.getElementById('xp-skill-category-val')?.value || 'positive';
+    const description = document.getElementById('xp-skill-desc-val')?.value.trim() || '';
+
+    if (id && store.updateXPSkill) {
+      store.updateXPSkill(id, { name, icon, points, category, description });
+      showNotification('XP Skill updated!');
+    } else if (store.addXPSkill) {
+      store.addXPSkill({ name, icon, points, category, description });
+      showNotification('New XP Skill created!');
+    }
+
+    window.closeModal('modal-xp-skill-editor');
     renderCurrentView();
   };
 
-  window.toggleArchiveMonsterItem = function(id) {
-    const updated = store.archiveMonsterItem(id);
-    showNotification('Item ' + (updated.status === 'archived' ? 'archived' : 'restored') + '!');
-    renderCurrentView();
+  window.handleToggleArchiveXPSkill = function(id) {
+    if (store.archiveXPSkill) {
+      store.archiveXPSkill(id);
+      showNotification('XP Skill status updated!');
+      renderCurrentView();
+    }
   };
 
   function renderSystemHealthView(container) {
@@ -4231,9 +4605,23 @@ window.switchClassroomSubTab = function(subTab) {
         '<input type="checkbox" name="quick-points-student" value="' + s.id + '" ' + (targetSet.size === 0 || targetSet.has(s.id) ? 'checked' : '') + ' />' +
         '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
         '<strong>' + s.firstName + ' ' + s.lastName + '</strong>' +
-        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
+        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' XP</span>' +
       '</label>'
     ).join('');
+
+    // Reset amount to 10 XP
+    const input = document.getElementById('quick-points-amount-val');
+    if (input) input.value = '10';
+    const customWrap = document.getElementById('quick-points-custom-amount-wrap');
+    if (customWrap) customWrap.style.display = 'none';
+    const customInput = document.getElementById('quick-points-custom-amount-input');
+    if (customInput) customInput.value = '';
+
+    const buttons = document.querySelectorAll('.btn-points-amount');
+    buttons.forEach(b => {
+      if (b.getAttribute('data-amount') === '10') b.classList.add('is-active');
+      else b.classList.remove('is-active');
+    });
 
     window.openModal('modal-quick-points');
   };
@@ -4244,10 +4632,25 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.setQuickPointsAmount = function(amount, btn) {
     const input = document.getElementById('quick-points-amount-val');
+    const customWrap = document.getElementById('quick-points-custom-amount-wrap');
+    const customInput = document.getElementById('quick-points-custom-amount-input');
+
     if (input) input.value = amount;
     const buttons = document.querySelectorAll('.btn-points-amount');
     buttons.forEach(b => b.classList.remove('is-active'));
     if (btn) btn.classList.add('is-active');
+
+    if (amount === 'custom') {
+      if (customWrap) customWrap.style.display = 'block';
+      if (customInput) {
+        customInput.focus();
+        if (customInput.value && input) {
+          input.value = customInput.value;
+        }
+      }
+    } else {
+      if (customWrap) customWrap.style.display = 'none';
+    }
   };
 
   window.setQuickPointsReason = function(reason, btn) {
@@ -4269,8 +4672,15 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.handleExecuteQuickPoints = function(e) {
     e.preventDefault();
-    const amount = parseInt(document.getElementById('quick-points-amount-val').value, 10) || 5;
-    const reason = document.getElementById('quick-points-reason-val').value || '👏 Great participation';
+    const rawVal = document.getElementById('quick-points-amount-val')?.value;
+    let amount = 10;
+    if (rawVal === 'custom') {
+      amount = parseInt(document.getElementById('quick-points-custom-amount-input')?.value, 10) || 10;
+    } else {
+      amount = parseInt(rawVal, 10) || 10;
+    }
+
+    const reason = document.getElementById('quick-points-reason-val')?.value || '👏 Great participation';
     const checkedBoxes = document.querySelectorAll('#quick-points-students-list input[type="checkbox"]:checked');
     const studentIds = Array.from(checkedBoxes).map(c => c.value);
 
@@ -4279,13 +4689,28 @@ window.switchClassroomSubTab = function(subTab) {
       return;
     }
 
+    let firstEvolutionEvent = null;
     studentIds.forEach(id => {
-      store.giveXP(id, amount, reason, 'Ms. Sarah');
+      const res = store.giveXP(id, amount, reason, 'Teacher', {
+        category: 'positive',
+        icon: '⭐'
+      });
+      if (res && res.evolutionEvent && !firstEvolutionEvent) {
+        firstEvolutionEvent = res.evolutionEvent;
+      }
     });
 
     window.closeAllModals();
-    alert('✓ Awarded +' + amount + ' ⭐ to ' + studentIds.length + ' student' + (studentIds.length > 1 ? 's' : '') + ' for ' + reason + '!');
+    showNotification('✓ Awarded +' + amount + ' XP to ' + studentIds.length + ' student' + (studentIds.length > 1 ? 's' : '') + ' for ' + reason + '!');
     
+    if (firstEvolutionEvent) {
+      if (firstEvolutionEvent.isHatch) {
+        window.openMonsterHatchModal(firstEvolutionEvent.studentId);
+      } else {
+        window.openMonsterLevelUpModal(firstEvolutionEvent.studentId, firstEvolutionEvent.prevLevel, firstEvolutionEvent.newLevel);
+      }
+    }
+
     // Clear selection if applicable and re-render
     window.clearSelectedStudents();
     renderCurrentView();
@@ -6286,7 +6711,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (select) {
       select.innerHTML = 
         '<option value="">-- Mark as Unenrolled --</option>' +
-        store.getClasses().map(c => '<option value="' + c.id + '" ' + (c.id === s.classId ? 'selected' : '') + '>' + c.name + ' (' + c.grade + ')</option>').join('');
+        store.getClasses().map(c => '<option value="' + c.id + '" ' + (c.id === s.classId ? 'selected' : '') + '>' + c.name + (c.grade ? ' (' + c.grade + ')' : (c.cefrTarget ? ' (' + c.cefrTarget + ')' : '')) + '</option>').join('');
     }
 
     window.openModal('modal-move-student');
@@ -6556,27 +6981,28 @@ window.switchClassroomSubTab = function(subTab) {
   // 2. 1-CLICK XP AWARDING & XP SKILLS MODAL CONTROLLER
   // -------------------------------------------------------------------------
 
-  window.handleQuickPlusOneXP = function(studentId, event) {
+  window.handleQuickAwardXP = function(studentId, amount = 10, event) {
     if (event) event.stopPropagation();
     const s = store.getStudent(studentId);
     if (!s) return;
 
-    const res = store.giveXP(studentId, 1, 'Positive Classroom Contribution', 'Teacher', {
+    const parsedAmount = parseInt(amount, 10) || 10;
+    const res = store.giveXP(studentId, parsedAmount, 'Quick Classroom Award', 'Teacher', {
       category: 'positive',
       icon: '⭐'
     });
 
-    // Floating +1 burst animation
+    // Floating XP burst animation
     const card = document.querySelector('[data-student-id="' + studentId + '"]');
     if (card) {
       const burst = document.createElement('div');
       burst.className = 'xp-burst-float';
-      burst.innerText = '+1 XP ⭐';
+      burst.innerText = '+' + parsedAmount + ' XP ⭐';
       card.appendChild(burst);
       setTimeout(() => burst.remove(), 1200);
     }
 
-    // Check if +1 caused evolution/hatching
+    // Check if award caused evolution or hatching
     if (res && res.evolutionEvent) {
       if (res.evolutionEvent.isHatch) {
         window.openMonsterHatchModal(studentId);
@@ -6585,7 +7011,252 @@ window.switchClassroomSubTab = function(subTab) {
       }
     }
 
+    showNotification('+' + parsedAmount + ' XP awarded to ' + s.firstName + '!');
     renderCurrentView();
+
+    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
+      window.openStudentDetail(studentId, studentProfileActiveTab);
+    }
+  };
+
+  window.handleQuickPlusOneXP = function(studentId, event) {
+    // Backward-compatible alias that adheres to global +10 XP rule
+    window.handleQuickAwardXP(studentId, 10, event);
+  };
+
+  // Student Direct XP Adjustment Controller
+  window.openEditStudentXPModal = function(studentId) {
+    const s = store.getStudent(studentId);
+    if (!s) return;
+
+    const idInput = document.getElementById('edit-student-xp-student-id');
+    const avatarEl = document.getElementById('edit-student-xp-avatar');
+    const titleEl = document.getElementById('edit-student-xp-title');
+    const currentEl = document.getElementById('edit-student-xp-current');
+    const amountInput = document.getElementById('edit-student-xp-amount');
+    const reasonSelect = document.getElementById('edit-student-xp-reason-select');
+    const customReasonInput = document.getElementById('edit-student-xp-custom-reason');
+    const teacherInput = document.getElementById('edit-student-xp-teacher');
+
+    if (idInput) idInput.value = studentId;
+    if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 42, animated: false });
+    if (titleEl) titleEl.innerText = 'Edit XP: ' + s.firstName + ' ' + s.lastName;
+    const currentXP = store.getStudentTotalXP(studentId);
+    if (currentEl) currentEl.innerText = 'Current Balance: ' + currentXP.toLocaleString() + ' XP';
+    if (amountInput) amountInput.value = '10';
+    if (reasonSelect) reasonSelect.value = 'Teacher point correction';
+    if (customReasonInput) {
+      customReasonInput.value = '';
+      customReasonInput.style.display = 'none';
+    }
+    if (teacherInput) teacherInput.value = 'Teacher';
+
+    // Reset mode button to 'add'
+    const addBtn = document.querySelector('.edit-xp-mode-btn[data-mode="add"]');
+    window.setEditXPMode('add', addBtn);
+
+    window.openModal('modal-edit-student-xp');
+  };
+
+  window.setEditXPMode = function(mode, btn) {
+    const modeInput = document.getElementById('edit-student-xp-mode');
+    const label = document.getElementById('edit-student-xp-amount-label');
+    if (modeInput) modeInput.value = mode;
+
+    document.querySelectorAll('.edit-xp-mode-btn').forEach(b => b.classList.remove('is-active'));
+    if (btn) btn.classList.add('is-active');
+
+    if (label) {
+      if (mode === 'add') label.innerText = 'Amount to Add (XP) *';
+      else if (mode === 'deduct') label.innerText = 'Amount to Deduct (XP) *';
+      else label.innerText = 'New Exact Total XP *';
+    }
+
+    window.updateEditXPPreview();
+  };
+
+  window.handleEditXPReasonChange = function(val) {
+    const customReason = document.getElementById('edit-student-xp-custom-reason');
+    if (customReason) {
+      customReason.style.display = (val === 'Other') ? 'block' : 'none';
+      if (val === 'Other') customReason.focus();
+    }
+  };
+
+  window.updateEditXPPreview = function() {
+    const studentId = document.getElementById('edit-student-xp-student-id')?.value;
+    if (!studentId) return;
+
+    const currentXP = store.getStudentTotalXP(studentId);
+    const mode = document.getElementById('edit-student-xp-mode')?.value || 'add';
+    const amountVal = parseInt(document.getElementById('edit-student-xp-amount')?.value, 10);
+    const inputAmount = isNaN(amountVal) ? 0 : amountVal;
+
+    let targetTotal = currentXP;
+    let delta = 0;
+
+    if (mode === 'add') {
+      delta = inputAmount;
+      targetTotal = currentXP + delta;
+    } else if (mode === 'deduct') {
+      delta = -inputAmount;
+      targetTotal = Math.max(0, currentXP + delta);
+      delta = targetTotal - currentXP;
+    } else if (mode === 'set') {
+      targetTotal = Math.max(0, inputAmount);
+      delta = targetTotal - currentXP;
+    }
+
+    const previewVal = document.getElementById('edit-student-xp-preview-val');
+    const previewDelta = document.getElementById('edit-student-xp-preview-delta');
+
+    if (previewVal) previewVal.innerText = targetTotal.toLocaleString() + ' XP';
+    if (previewDelta) {
+      if (delta > 0) {
+        previewDelta.innerText = '+' + delta.toLocaleString() + ' XP';
+        previewDelta.style.color = '#059669';
+      } else if (delta < 0) {
+        previewDelta.innerText = delta.toLocaleString() + ' XP';
+        previewDelta.style.color = '#dc2626';
+      } else {
+        previewDelta.innerText = '±0 XP (No change)';
+        previewDelta.style.color = 'var(--text-muted)';
+      }
+    }
+  };
+
+  window.handleSaveEditStudentXP = function(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('edit-student-xp-student-id')?.value;
+    if (!studentId) return;
+
+    const mode = document.getElementById('edit-student-xp-mode')?.value || 'add';
+    const amount = parseInt(document.getElementById('edit-student-xp-amount')?.value, 10);
+    if (isNaN(amount) || amount < 0) {
+      alert('Please enter a valid amount.');
+      return;
+    }
+
+    const reasonSelect = document.getElementById('edit-student-xp-reason-select')?.value;
+    const customReason = document.getElementById('edit-student-xp-custom-reason')?.value.trim();
+    const reason = (reasonSelect === 'Other' && customReason) ? customReason : reasonSelect;
+    const teacher = document.getElementById('edit-student-xp-teacher')?.value.trim() || 'Teacher';
+
+    let options = {
+      reason,
+      teacher,
+      category: 'correction'
+    };
+
+    if (mode === 'set') {
+      options.isAbsolute = true;
+      options.targetTotal = amount;
+    } else if (mode === 'deduct') {
+      options.delta = -amount;
+      options.icon = '⚖️';
+    } else {
+      options.delta = amount;
+      options.icon = '⭐';
+    }
+
+    const res = store.adjustStudentXP(studentId, options);
+    window.closeModal('modal-edit-student-xp');
+
+    if (res) {
+      showNotification('XP updated! New total: ' + res.newTotalXP.toLocaleString() + ' XP');
+      if (res.evolutionEvent) {
+        if (res.evolutionEvent.isHatch) {
+          window.openMonsterHatchModal(studentId);
+        } else {
+          window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+        }
+      }
+    }
+
+    renderCurrentView();
+
+    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
+      window.openStudentDetail(studentId, studentProfileActiveTab);
+    }
+  };
+
+  window.openStudentXPHistoryModal = function(studentId) {
+    const s = store.getStudent(studentId);
+    if (!s) return;
+
+    window.currentHistoryStudentId = studentId;
+    const avatarEl = document.getElementById('student-xp-history-avatar');
+    const nameEl = document.getElementById('student-xp-history-name');
+    const totalEl = document.getElementById('student-xp-history-total');
+    const container = document.getElementById('student-xp-history-table-container');
+
+    if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 40, animated: false });
+    if (nameEl) nameEl.innerText = s.firstName + ' ' + s.lastName + ' — XP Ledger';
+    const totalXP = store.getStudentTotalXP(studentId);
+    if (totalEl) totalEl.innerText = 'Active Balance: ' + totalXP.toLocaleString() + ' XP';
+
+    const txs = store.getStudentXPTransactions(studentId);
+
+    if (container) {
+      if (!txs || txs.length === 0) {
+        container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--text-muted);">No XP transactions recorded yet for this student.</div>';
+      } else {
+        container.innerHTML = 
+          '<table class="styled-table" style="width:100%; margin:0; font-size:0.82rem;">' +
+            '<thead>' +
+              '<tr>' +
+                '<th style="padding:8px 10px;">Date &amp; Time</th>' +
+                '<th style="padding:8px 10px;">Type / Skill</th>' +
+                '<th style="padding:8px 10px; text-align:right;">Amount</th>' +
+                '<th style="padding:8px 10px;">Reason</th>' +
+                '<th style="padding:8px 10px;">Teacher</th>' +
+                '<th style="padding:8px 10px; text-align:center;">Action</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              txs.map(tx => {
+                const isVoided = !!tx.isVoided;
+                const isPos = tx.amount >= 0;
+                const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+                return '' +
+                  '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isVoided ? '0.5; text-decoration:line-through;' : '1') + ';">' +
+                    '<td style="padding:8px 10px; white-space:nowrap; color:var(--text-muted);">' + dateStr + '</td>' +
+                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + (tx.category || 'xp') + '</td>' +
+                    '<td style="padding:8px 10px; text-align:right; font-weight:800; color:' + (isVoided ? 'var(--text-muted)' : (isPos ? '#059669' : '#dc2626')) + ';">' +
+                      (isPos ? '+' : '') + tx.amount + ' XP' +
+                    '</td>' +
+                    '<td style="padding:8px 10px; max-width:200px;">' + (tx.reason || 'XP transaction') + '</td>' +
+                    '<td style="padding:8px 10px; color:var(--text-muted);">' + (tx.teacher || tx.source || 'Teacher') + '</td>' +
+                    '<td style="padding:8px 10px; text-align:center;">' +
+                      (!isVoided ?
+                        '<button type="button" class="btn-sm-secondary" onclick="handleVoidStudentXPTransaction(\'' + tx.id + '\', \'' + studentId + '\')" title="Void / Undo this transaction" style="padding:2px 6px; font-size:0.7rem; color:var(--color-danger);">Void</button>' :
+                        '<span style="font-size:0.7rem; color:var(--text-muted);">Voided</span>'
+                      ) +
+                    '</td>' +
+                  '</tr>';
+              }).join('') +
+            '</tbody>' +
+          '</table>';
+      }
+    }
+
+    window.openModal('modal-student-xp-history');
+  };
+
+  window.handleVoidStudentXPTransaction = function(txId, studentId) {
+    if (confirm('Are you sure you want to void this XP transaction?')) {
+      if (store.voidXPTransaction) {
+        store.voidXPTransaction(txId, 'Voided by teacher');
+        showNotification('Transaction voided and XP balance updated.');
+        window.openStudentXPHistoryModal(studentId);
+        renderCurrentView();
+      }
+    }
+  };
+
+  window.openStudentXPMenu = function(studentId, el, event) {
+    if (event) event.stopPropagation();
+    window.toggleCardDropdown('xp-tiers-' + studentId, event);
   };
 
   window.openGiveXPSkillsModal = function(targetType = 'student', targetId = null, preselectedIds = []) {
@@ -7270,7 +7941,7 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="font-size:1rem; font-weight:800; color:var(--color-primary); margin-top:4px;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">⭐ ' + store.getStudentTotalXP(finalWinner.id) + ' XP</div>' +
           '<div style="margin-top:14px; display:flex; gap:8px; justify-content:center;">' +
-            '<button class="btn-primary-action" onclick="handleQuickPlusOneXP(\'' + finalWinner.id + '\'); runRandomStudentPicker();">⭐ Award +1 XP & Next</button>' +
+            '<button class="btn-primary-action" onclick="handleQuickAwardXP(\'' + finalWinner.id + '\', 10); runRandomStudentPicker();">⭐ Award +10 XP & Next</button>' +
             '<button class="btn-sm-secondary" onclick="openStudentDetail(\'' + finalWinner.id + '\')">View Profile</button>' +
           '</div>';
         playClassroomChime();
