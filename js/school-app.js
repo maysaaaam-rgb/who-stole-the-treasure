@@ -78,7 +78,7 @@
   let libFilterDuration = 'all';
 
   // Curriculum active book
-  let curriculumActiveBookId = 'book-1';
+  let curriculumActiveBookId = 'book-global-readings-2';
 
   // Confirmation modal state
   let pendingActionCallback = null;
@@ -131,6 +131,20 @@
 
     // ESC closes modals and menus
     document.addEventListener('keydown', (e) => {
+      // Keyboard navigation for Textbook Viewer modal
+      const tbModal = document.getElementById('modal-textbook-viewer');
+      if (tbModal && tbModal.classList.contains('is-open')) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (typeof window.prevTextbookPage === 'function') window.prevTextbookPage();
+          return;
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          if (typeof window.nextTextbookPage === 'function') window.nextTextbookPage();
+          return;
+        }
+      }
+
       if (e.key === 'Escape') {
         window.closeAllModals();
         closeAllCardMenus();
@@ -2231,7 +2245,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   function renderCurriculumView(container) {
     const books = store.getBooks();
-    const activeBook = books.find(b => b.id === curriculumActiveBookId) || books[0];
+    let activeBook = books.find(b => b.id === curriculumActiveBookId);
+    if (!activeBook) {
+      activeBook = books.find(b => b.id === 'book-global-readings-2') || books[0];
+      if (activeBook) curriculumActiveBookId = activeBook.id;
+    }
     const units = store.getUnits(activeBook.id);
     const lessons = store.getLessons();
     const objectives = store.getObjectives();
@@ -2240,7 +2258,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Curriculum Framework</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Pedagogical progression from Pre-A1 to A2. Reorder, edit, and link classroom games.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Official curriculum syllabi, scope &amp; sequence progression, and original textbook scans.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
           '<button class="btn-sm-secondary" onclick="openAddBookModal()">📖 + Add Book</button>' +
@@ -2249,9 +2267,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>' +
 
       // Books Tab Switcher
-      '<div class="curriculum-book-tabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
+      '<div class="curriculum-book-tabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--border-light); padding-bottom:4px; overflow-x:auto;">' +
         books.map(b => '' +
-          '<div style="display:inline-flex; align-items:center; gap:2px; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding-bottom:4px;">' +
+          '<div style="display:inline-flex; align-items:center; gap:2px; border-bottom:3px solid ' + (activeBook.id === b.id ? 'var(--color-primary)' : 'transparent') + '; padding-bottom:4px; white-space:nowrap;">' +
             '<button class="curriculum-book-tab ' + (activeBook.id === b.id ? 'is-active' : '') + '" onclick="switchCurriculumBook(\'' + b.id + '\')" style="background:transparent; border:none; padding:8px 12px; font-weight:800; font-size:0.95rem; cursor:pointer; color:' + (activeBook.id === b.id ? 'var(--color-primary)' : 'var(--text-muted)') + ';">' +
               b.title + (b.level ? ' (' + b.level + ')' : (b.targetLevel ? ' (' + b.targetLevel + ')' : '')) +
             '</button>' +
@@ -2263,29 +2281,71 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         ).join('') +
       '</div>' +
 
+      // Active Book Banner Card
+      '<div class="curriculum-active-book-banner" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:18px 22px; margin-bottom:22px; display:flex; gap:20px; align-items:center; flex-wrap:wrap; box-shadow:var(--shadow-xs);">' +
+        (activeBook.cover ? 
+          '<div style="width:76px; height:104px; flex-shrink:0; border-radius:8px; overflow:hidden; box-shadow:var(--shadow-md); border:1px solid var(--border-light); background:#f1f5f9; display:flex; align-items:center; justify-content:center;">' +
+            '<img src="' + activeBook.cover + '" alt="Book Cover" style="width:100%; height:100%; object-fit:cover;" />' +
+          '</div>' : ''
+        ) +
+        '<div style="flex:1; min-width:260px;">' +
+          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            '<h2 style="font-size:1.35rem; font-weight:800; margin:0; color:var(--text-main);">' + activeBook.title + '</h2>' +
+            '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + (activeBook.level || activeBook.targetLevel || 'Level 2') + '</span>' +
+            (activeBook.publisher ? '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + activeBook.publisher + '</span>' : '') +
+            (activeBook.bookType ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.74rem; font-weight:600; padding:3px 10px; border-radius:12px;">' + activeBook.bookType + '</span>' : '') +
+          '</div>' +
+          '<p style="font-size:0.86rem; color:var(--text-secondary); margin:6px 0 0 0; max-width:850px; line-height:1.45;">' + (activeBook.description || 'Comprehensive curriculum program.') + '</p>' +
+          '<div style="display:flex; gap:16px; margin-top:10px; font-size:0.8rem; color:var(--text-muted); flex-wrap:wrap;">' +
+            '<span>📚 <strong>' + units.length + ' Units</strong> in Syllabus</span>' +
+            '<span>📝 <strong>' + lessons.filter(l => units.some(u => u.id === l.unitId)).length + ' Lessons</strong></span>' +
+            (activeBook.totalPages ? '<span>📄 <strong>' + activeBook.totalPages + ' Textbook Pages</strong></span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+          '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + activeBook.id + '\')" style="padding:8px 14px; font-size:0.84rem; display:inline-flex; align-items:center; gap:6px;">📖 Open Textbook Viewer</button>' +
+          (activeBook.pdfUrl ? '<a href="' + activeBook.pdfUrl + '" target="_blank" class="btn-sm-secondary" style="padding:8px 14px; font-size:0.84rem; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">📥 Original PDF</a>' : '') +
+        '</div>' +
+      '</div>' +
+
       // Units List
-      '<div class="curriculum-units-list" style="display:flex; flex-direction:column; gap:16px;">' +
+      '<div class="curriculum-units-list" style="display:flex; flex-direction:column; gap:18px;">' +
         units.map((u, uIdx) => {
           const uLessons = lessons.filter(l => l.unitId === u.id).sort((a, b) => (a.order || 0) - (b.order || 0));
+          const startPage = u.pages ? parseInt(u.pages.split('–')[0], 10) : 1;
           return '' +
-            '<div class="unit-accordion-card" style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
+            '<div class="unit-accordion-card" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
               // Unit Header
-              '<div style="padding:16px 20px; background:var(--bg-card-secondary); border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<div style="padding:16px 20px; background:var(--bg-muted); border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">' +
+                '<div style="display:flex; align-items:flex-start; gap:12px; flex:1; min-width:300px;">' +
                   // Reorder buttons for units
-                  '<div style="display:flex; flex-direction:column; gap:2px;">' +
+                  '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
                     (uIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.65rem;" onclick="handleMoveUnitUp(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Up">▲</button>' : '') +
                     (uIdx < units.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.65rem;" onclick="handleMoveUnitDown(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Down">▼</button>' : '') +
                   '</div>' +
-                  '<div>' +
-                    '<h3 style="font-size:1.15rem; font-weight:800; margin:0;">' + u.title + '</h3>' +
-                    '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
-                      'Target Vocab: ' + (u.targetVocab || []).join(', ') +
+                  '<div style="display:flex; flex-direction:column; gap:6px; flex:1;">' +
+                    '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                      '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">' + u.title + '</h3>' +
+                      (u.pages ? '<span class="badge" style="background:var(--bg-surface); color:var(--text-secondary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid var(--border-light);">📄 p. ' + u.pages + '</span>' : '') +
+                      (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;">🎯 ' + u.readingSkill + '</span>' : '') +
+                      (u.contentArea ? '<span class="badge" style="background:var(--color-purple-soft); color:var(--color-purple); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;">🔬 ' + u.contentArea + '</span>' : '') +
+                    '</div>' +
+                    (u.keyConcept ? '<div style="font-size:0.82rem; font-weight:700; color:var(--color-warning); margin-top:2px;">💡 Key Concept: "' + u.keyConcept + '"</div>' : '') +
+                    (u.reading1 || u.reading2 ? 
+                      '<div style="font-size:0.8rem; color:var(--text-muted); display:flex; gap:12px; flex-wrap:wrap; margin-top:2px;">' +
+                        (u.reading1 ? '<span><strong>Reading 1:</strong> ' + u.reading1 + '</span>' : '') +
+                        (u.reading2 ? '<span><strong>Reading 2:</strong> ' + u.reading2 + '</span>' : '') +
+                        (u.selFocus ? '<span>💖 <strong>SEL:</strong> ' + u.selFocus + '</span>' : '') +
+                      '</div>' : ''
+                    ) +
+                    '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">' +
+                      '<strong>Target Vocab:</strong> ' + (u.targetVocab || []).join(', ') +
                     '</div>' +
                   '</div>' +
                 '</div>' +
 
-                '<div style="display:flex; align-items:center; gap:6px;">' +
+                '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+                  (u.pages ? '<button class="btn-sm-secondary" onclick="openTextbookViewer(' + startPage + ', \'' + activeBook.id + '\')" style="font-size:0.78rem; padding:4px 10px; color:var(--color-primary); font-weight:700;" title="View scanned textbook pages">📖 View Pages</button>' : '') +
                   '<button class="btn-sm-secondary" onclick="openAddLessonModal(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">+ Add Lesson</button>' +
                   '<button class="btn-sm-secondary" onclick="openEditUnitModal(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">✏️ Edit</button>' +
                   '<button class="btn-sm-secondary" onclick="handleDuplicateUnit(\'' + u.id + '\')" style="font-size:0.78rem; padding:4px 10px;">📋</button>' +
@@ -2298,25 +2358,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 (uLessons.length === 0 ? '<div style="font-size:0.84rem; color:var(--text-muted); font-style:italic;">No lessons in this unit yet. Click "+ Add Lesson" to create one.</div>' : '') +
                 uLessons.map((l, lIdx) => {
                   const lObjs = objectives.filter(o => o.lessonId === l.id);
+                  const lStartPage = l.sourcePages ? parseInt(l.sourcePages.split('–')[0], 10) : startPage;
+                  const hasTasks = (l.tasks && l.tasks.length > 0) || (l.activities && l.activities.length > 0);
+
                   return '' +
-                    '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:14px 16px;">' +
+                    '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow-xs);">' +
                       '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">' +
-                        '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+                        '<div style="display:flex; align-items:flex-start; gap:10px; flex:1; min-width:280px;">' +
                           // Reorder buttons for lessons
                           '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
                             (lIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonUp(\'' + u.id + '\', \'' + l.id + '\')">▲</button>' : '') +
                             (lIdx < uLessons.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonDown(\'' + u.id + '\', \'' + l.id + '\')">▼</button>' : '') +
                           '</div>' +
-                          '<div>' +
-                            '<div style="display:flex; align-items:center; gap:8px;">' +
-                              '<h4 style="font-size:0.98rem; font-weight:800; margin:0;">' + l.title + '</h4>' +
+                          '<div style="flex:1;">' +
+                            '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                              '<h4 style="font-size:0.98rem; font-weight:800; margin:0; color:var(--text-main);">' + l.title + '</h4>' +
+                              (l.sourcePages ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-secondary); font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:8px;">📄 p. ' + l.sourcePages + '</span>' : '') +
+                              (l.sourcePages ? '<button type="button" class="btn-sm-secondary" onclick="openTextbookViewer(' + lStartPage + ', \'' + activeBook.id + '\', \'' + l.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-primary); font-weight:700;">📖 View Page</button>' : '') +
                               (l.gameRoute ? '<a href="' + l.gameRoute + '" class="btn-primary-action" style="padding:2px 8px; font-size:0.72rem; text-decoration:none;">▶ Play Game</a>' : '') +
+                              (hasTasks ? '<button type="button" class="btn-sm-secondary" onclick="toggleLessonActivities(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.72rem;">📝 Activities (' + ((l.activities && l.activities.length) || (l.tasks && l.tasks.length) || 0) + ')</button>' : '') +
                             '</div>' +
                             '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' + (l.objective || '') + '</div>' +
                           '</div>' +
                         '</div>' +
 
-                        '<div style="display:flex; gap:6px;">' +
+                        '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
                           '<button class="btn-sm-secondary" onclick="openAddObjectiveModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">+ Objective</button>' +
                           '<button class="btn-sm-secondary" onclick="openEditLessonModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">✏️ Edit</button>' +
                           '<button class="btn-sm-secondary" onclick="handleDuplicateLesson(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.74rem;">📋</button>' +
@@ -2326,13 +2392,57 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
                       // Objectives pills
                       (lObjs.length > 0 ? 
-                        '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-subtle);">' +
+                        '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-light);">' +
                           lObjs.map(o => 
-                            '<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-card-secondary); border:1px solid var(--border-subtle); padding:2px 8px; border-radius:6px; font-size:0.75rem;">' +
+                            '<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-muted); border:1px solid var(--border-light); padding:2px 8px; border-radius:6px; font-size:0.75rem;">' +
                               '<strong>' + o.skill + ':</strong> ' + o.text +
+                              (o.sourcePages ? '<span style="color:var(--text-muted); font-size:0.7rem;">(p.' + o.sourcePages + ')</span>' : '') +
                               '<button type="button" onclick="handleDeleteObjective(\'' + o.id + '\')" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); font-size:0.72rem; padding:0 2px;">✕</button>' +
                             '</span>'
                           ).join('') +
+                        '</div>' : ''
+                      ) +
+
+                      // Expandable Activities / Tasks Panel
+                      (hasTasks ?
+                        '<div id="lesson-activities-' + l.id + '" style="display:none; margin-top:12px; padding:12px 14px; background:var(--bg-muted); border-radius:8px; border:1px solid var(--border-light); font-size:0.82rem;">' +
+                          '<div style="font-weight:800; color:var(--text-main); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">' +
+                            '<span>Structured Textbook Content &amp; Activities</span>' +
+                            '<button type="button" onclick="toggleLessonActivities(\'' + l.id + '\')" style="background:transparent; border:none; cursor:pointer; font-size:0.75rem; color:var(--text-muted);">Close ✕</button>' +
+                          '</div>' +
+                          (l.tasks ? 
+                            '<div style="display:flex; flex-direction:column; gap:6px;">' +
+                              l.tasks.map(t => '<div><strong>' + (t.label || t.pair || t.blend || 'Task') + ':</strong> ' + (t.words ? t.words.join(', ') : '') + '</div>').join('') +
+                            '</div>' : ''
+                          ) +
+                          (l.activities ?
+                            '<div style="display:flex; flex-direction:column; gap:8px;">' +
+                              l.activities.map(act => {
+                                if (act.type === 'story') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; color:var(--color-primary);">' + act.title + '</div><div style="font-style:italic; margin-top:2px;">"' + act.text + '"</div></div>';
+                                } else if (act.type === 'vocab_definitions') {
+                                  return '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:6px;">' + act.words.map(w => '<div style="background:var(--bg-surface); padding:6px 8px; border-radius:6px; border:1px solid var(--border-light);"><strong>' + w.word + ':</strong> ' + w.def + '</div>').join('') + '</div>';
+                                } else if (act.type === 'dialects') {
+                                  return '<div style="display:flex; gap:8px; flex-wrap:wrap;"><strong>Dialect Notes:</strong> ' + act.pairs.map(p => '<span class="badge" style="background:var(--bg-surface); border:1px solid var(--border-light); font-size:0.75rem;">🇺🇸 ' + p.us + ' = 🇬🇧 ' + p.uk + '</span>').join('') + '</div>';
+                                } else if (act.type === 'matching') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div>' + act.pairs.map(p => '<div style="margin:2px 0;">• <strong>' + p.invention + '</strong> ➔ ' + p.function + '</div>').join('') + '</div>';
+                                } else if (act.type === 'questions') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div>' + act.items.map(it => '<div style="margin:4px 0;"><span style="font-weight:600;">' + it.q + '</span><br/><span style="color:var(--color-success); font-weight:600;">➔ Answer: ' + it.a + '</span></div>').join('') + '</div>';
+                                } else if (act.type === 'sequence_device' || act.type === 'sequence_inventor') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">' + act.title + '</div><div style="display:flex; gap:8px; flex-wrap:wrap;">' + act.steps.map(s => '<span style="background:var(--bg-muted); padding:3px 8px; border-radius:4px; font-size:0.75rem;"><strong>' + (s.signal || ('Step ' + s.order)) + ':</strong> ' + s.text + '</span>').join('') + '</div></div>';
+                                } else if (act.type === 'biomimicry') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">Biomimicry: Nature Inspired Inventions</div>' + act.examples.map(ex => '<div style="margin:2px 0;">🌿 ' + ex.nature + ' ➔ 💡 <strong>' + ex.invention + '</strong></div>').join('') + '</div>';
+                                } else if (act.type === 'design_cycle') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">5-Step Engineering Design Loop</div><div style="display:flex; gap:6px; flex-wrap:wrap;">' + act.steps.map(st => '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:700;">' + st + '</span>').join(' ➔ ') + '</div></div>';
+                                } else if (act.type === 'inventor_matrix') {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light);"><div style="font-weight:700; margin-bottom:4px;">Inventors Matrix</div>' + act.rows.map(r => '<div style="margin:2px 0;">• <strong>' + r.inventor + '</strong>: ' + r.invention + ' <em>(' + r.reason + ')</em></div>').join('') + '</div>';
+                                } else if (act.prompt) {
+                                  return '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:6px; border:1px solid var(--border-light); font-style:italic;">💬 ' + act.prompt + '</div>';
+                                }
+                                return '';
+                              }).join('') +
+                            '</div>' : ''
+                          ) +
                         '</div>' : ''
                       ) +
                     '</div>';
@@ -7097,4 +7207,171 @@ window.switchClassroomSubTab = function(subTab) {
     }
   };
 
-})(typeof window !== 'undefined' ? window : global);
+
+  // =========================================================================
+  // ORIGINAL TEXTBOOK VIEWER CONTROLLER (GLOBAL READINGS 2)
+  // =========================================================================
+  let tbCurrentPage = 1;
+  let tbCurrentBookId = 'book-global-readings-2';
+  let tbIsZoomed = false;
+  let tbIsDrawerOpen = true;
+
+  window.openTextbookViewer = function(pageNumber = 1, bookId = 'book-global-readings-2', lessonId = null) {
+    tbCurrentPage = parseInt(pageNumber, 10) || 1;
+    tbCurrentBookId = bookId || 'book-global-readings-2';
+    tbIsZoomed = false;
+
+    // Populate page select dropdown
+    const select = document.getElementById('tb-page-select');
+    const pages = window.GLOBAL_READINGS_2_PAGES || [];
+    if (select && (!select.options || select.options.length === 0 || select.options.length !== pages.length)) {
+      select.innerHTML = pages.map(p => 
+        '<option value="' + p.page + '">Page ' + p.page + ': ' + p.title + '</option>'
+      ).join('');
+    }
+
+    renderTextbookPage(tbCurrentPage);
+    window.openModal('modal-textbook-viewer');
+  };
+
+  function renderTextbookPage(pageNum) {
+    const pages = window.GLOBAL_READINGS_2_PAGES || [];
+    const pageData = pages.find(p => p.page === pageNum) || pages[0] || {
+      page: pageNum,
+      file: 'assets/books/global-readings-2/page_' + String(pageNum).padStart(2, '0') + '.jpg',
+      title: 'Page ' + pageNum,
+      unit: 'Global Readings 2',
+      section: ''
+    };
+
+    tbCurrentPage = pageData.page;
+
+    const img = document.getElementById('tb-page-image');
+    if (img) {
+      img.src = pageData.file;
+      img.alt = pageData.title;
+      img.style.maxWidth = tbIsZoomed ? '160%' : '100%';
+    }
+
+    const select = document.getElementById('tb-page-select');
+    if (select) select.value = String(tbCurrentPage);
+
+    const subtitle = document.getElementById('tb-viewer-subtitle');
+    if (subtitle) {
+      subtitle.textContent = pageData.unit + ' • ' + pageData.title + (pageData.section ? ' (' + pageData.section + ')' : '');
+    }
+
+    // Update prev/next button disabled state
+    const prevBtn = document.getElementById('tb-btn-prev');
+    const nextBtn = document.getElementById('tb-btn-next');
+    if (prevBtn) prevBtn.disabled = (tbCurrentPage <= 1);
+    if (nextBtn) nextBtn.disabled = (tbCurrentPage >= pages.length);
+
+    // Update Lesson Guide drawer content
+    renderTextbookGuideDrawer(pageData);
+  }
+  window.renderTextbookPage = renderTextbookPage;
+
+  function renderTextbookGuideDrawer(pageData) {
+    const drawer = document.getElementById('tb-guide-drawer');
+    if (!drawer) return;
+
+    // Find lessons linked to this page
+    const allLessons = store.getLessons();
+    const matchingLessons = allLessons.filter(l => {
+      if (!l.sourcePages) return false;
+      const parts = l.sourcePages.split('–').map(s => parseInt(s.trim(), 10));
+      if (parts.length === 1) return parts[0] === pageData.page;
+      if (parts.length === 2) return pageData.page >= parts[0] && pageData.page <= parts[1];
+      return false;
+    });
+
+    let html = 
+      '<div style="border-bottom:1px solid var(--border-light); padding-bottom:12px;">' +
+        '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px;">Curriculum Alignment</div>' +
+        '<h3 style="font-size:1.05rem; font-weight:800; margin:4px 0; color:var(--text-main);">' + pageData.title + '</h3>' +
+        '<div style="font-size:0.8rem; color:var(--text-muted);">' + pageData.unit + ' • ' + pageData.section + '</div>' +
+      '</div>';
+
+    if (matchingLessons.length > 0) {
+      html += matchingLessons.map(l => {
+        const objs = store.getObjectives().filter(o => o.lessonId === l.id);
+        return '' +
+          '<div style="background:var(--bg-muted); border-radius:8px; padding:12px; margin-top:8px;">' +
+            '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main); margin-bottom:4px;">' + l.title + '</div>' +
+            '<div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px;">' + (l.objective || '') + '</div>' +
+            (objs.length > 0 ? 
+              '<div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">' +
+                '<strong style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;">Objectives:</strong>' +
+                objs.map(o => '<span style="font-size:0.75rem; background:var(--bg-surface); padding:3px 6px; border-radius:4px; border:1px solid var(--border-light);">' + o.skill + ': ' + o.text + '</span>').join('') +
+              '</div>' : ''
+            ) +
+            (l.gameRoute ? '<div style="margin-top:8px;"><a href="' + l.gameRoute + '" class="btn-primary-action" style="font-size:0.72rem; padding:3px 8px; text-decoration:none;">▶ Launch Game</a></div>' : '') +
+          '</div>';
+      }).join('');
+    } else {
+      html += 
+        '<div style="font-size:0.82rem; color:var(--text-muted); padding:10px 0;">' +
+          'Scope &amp; Sequence overview and foundational reference pages for Macmillan Global Readings 2.' +
+        '</div>';
+    }
+
+    // Quick jump buttons for key sections
+    html += 
+      '<div style="margin-top:auto; padding-top:14px; border-top:1px solid var(--border-light); display:flex; flex-direction:column; gap:6px;">' +
+        '<div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Quick Jump:</div>' +
+        '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(1)">Cover</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(2)">Scope &amp; Seq</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(4)">Phonics (p.4)</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(8)">Unit 1 Opener</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(10)">Reading 1 (p.10)</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(16)">Comprehension</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(17)">Sequencing (p.17)</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(18)">Reading 2 (p.18)</button>' +
+          '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 6px;" onclick="goToTextbookPage(23)">Think Together</button>' +
+        '</div>' +
+      '</div>';
+
+    drawer.innerHTML = html;
+  }
+
+  window.goToTextbookPage = function(pageNum) {
+    renderTextbookPage(parseInt(pageNum, 10) || 1);
+  };
+
+  window.prevTextbookPage = function() {
+    if (tbCurrentPage > 1) {
+      renderTextbookPage(tbCurrentPage - 1);
+    }
+  };
+
+  window.nextTextbookPage = function() {
+    const pages = window.GLOBAL_READINGS_2_PAGES || [];
+    if (tbCurrentPage < pages.length) {
+      renderTextbookPage(tbCurrentPage + 1);
+    }
+  };
+
+  window.toggleTextbookZoom = function() {
+    tbIsZoomed = !tbIsZoomed;
+    const img = document.getElementById('tb-page-image');
+    if (img) img.style.maxWidth = tbIsZoomed ? '160%' : '100%';
+    const btn = document.getElementById('tb-zoom-btn');
+    if (btn) btn.textContent = tbIsZoomed ? '🔍 Fit Window' : '🔍 Zoom (160%)';
+  };
+
+  window.toggleTextbookDrawer = function() {
+    tbIsDrawerOpen = !tbIsDrawerOpen;
+    const drawer = document.getElementById('tb-guide-drawer');
+    if (drawer) drawer.style.display = tbIsDrawerOpen ? 'flex' : 'none';
+  };
+
+  window.toggleLessonActivities = function(lessonId) {
+    const el = document.getElementById('lesson-activities-' + lessonId);
+    if (el) {
+      el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none';
+    }
+  };
+
+  })(typeof window !== 'undefined' ? window : global);

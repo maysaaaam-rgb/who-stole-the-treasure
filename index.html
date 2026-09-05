@@ -127,6 +127,59 @@
        3. REUSABLE MODALS & DIALOGS (TRUE CRUD CONTROLS)
        ======================================================================== -->
 
+  <!-- Original Textbook Viewer Modal (Global Readings 2) -->
+  <div class="modal-overlay" id="modal-textbook-viewer">
+    <div class="modal-dialog" style="max-width: 1100px; width: 95vw; height: 92vh; max-height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 16px; background: var(--bg-surface);">
+      <!-- Header -->
+      <div style="padding: 14px 20px; background: var(--bg-muted); border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.35rem;">📖</span>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h2 id="tb-viewer-title" style="font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--text-main);">Global Readings 2 — Textbook Page Viewer</h2>
+              <span class="badge" style="background: var(--color-primary-soft); color: var(--color-primary); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px;">Level 2</span>
+              <span class="badge" style="background: var(--color-success-soft); color: var(--color-success); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px;">Macmillan Education</span>
+            </div>
+            <p id="tb-viewer-subtitle" style="font-size: 0.8rem; color: var(--text-muted); margin: 3px 0 0 0;">Unit 1: What Does It Do? • Page 10: The After-School Inventor</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a id="tb-viewer-pdf-link" href="assets/books/global-readings-2/Global-Readings-2.pdf" target="_blank" class="btn-sm-secondary" style="font-size: 0.78rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px;">📥 Open Original PDF</a>
+          <button class="modal-close-btn" style="position: static; font-size: 1.1rem; cursor: pointer; background: transparent; border: none; padding: 4px 8px; color: var(--text-muted);" onclick="closeModal('modal-textbook-viewer')">✕</button>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <div style="padding: 8px 20px; background: var(--bg-surface); border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn-sm-secondary" id="tb-btn-prev" onclick="prevTextbookPage()" style="padding: 5px 10px; font-size: 0.8rem;">◀ Prev</button>
+          <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">Page</span>
+          <select id="tb-page-select" onchange="goToTextbookPage(this.value)" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-medium); background: var(--bg-surface); font-weight: 600; font-size: 0.82rem; max-width: 320px;">
+            <!-- Populated dynamically -->
+          </select>
+          <span id="tb-total-pages-label" style="font-size: 0.82rem; color: var(--text-muted);">of 23</span>
+          <button type="button" class="btn-sm-secondary" id="tb-btn-next" onclick="nextTextbookPage()" style="padding: 5px 10px; font-size: 0.8rem;">Next ▶</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn-sm-secondary" onclick="toggleTextbookZoom()" id="tb-zoom-btn" style="padding: 5px 10px; font-size: 0.8rem;">🔍 Zoom / Fit</button>
+          <button type="button" class="btn-sm-secondary" onclick="toggleTextbookDrawer()" id="tb-drawer-toggle" style="padding: 5px 10px; font-size: 0.8rem;">📑 Lesson Guide</button>
+        </div>
+      </div>
+
+      <!-- Content Area: Image Viewport + Collapsible Lesson Guide -->
+      <div style="display: flex; flex: 1; min-height: 0; position: relative; background: #0f172a; overflow: hidden;">
+        <div id="tb-image-wrapper" style="flex: 1; min-width: 0; height: 100%; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; text-align: center;">
+          <img id="tb-page-image" src="" alt="Textbook Page Scan" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); transition: max-width 0.2s ease;" />
+        </div>
+
+        <!-- Lesson Guide Drawer -->
+        <div id="tb-guide-drawer" style="width: 340px; min-width: 300px; height: 100%; background: var(--bg-surface); border-left: 1px solid var(--border-light); overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; flex-shrink: 0;">
+          <!-- Dynamically updated per page -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Resource Editor Modal (Add & Edit) -->
   <div class="modal-overlay" id="modal-resource-editor">
     <div class="modal-dialog" style="max-width: 680px;">

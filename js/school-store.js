@@ -291,6 +291,528 @@
     }
   ];
 
+  // =========================================================================
+  // GLOBAL READINGS 2 — LEVEL 2 STUDENT'S BOOK (MACMILLAN EDUCATION)
+  // Source: CamScanner 09-05-2026 13.23.pdf
+  // Full Scope & Sequence + Phonics Review + Units 1-10 + Deep Breakdown
+  // =========================================================================
+  const GLOBAL_READINGS_2_PAGES = [
+    { page: 1, file: 'assets/books/global-readings-2/page_01.jpg', title: "Cover — Global Readings 2: Level 2 Student's Book", unit: "Global Readings 2", section: "Macmillan Education Primary Literacy Anthology" },
+    { page: 2, file: 'assets/books/global-readings-2/page_02.jpg', title: "Scope & Sequence (Part 1)", unit: "Scope & Sequence", section: "Phonics Review & Units 1 to 5" },
+    { page: 3, file: 'assets/books/global-readings-2/page_03.jpg', title: "Scope & Sequence (Part 2)", unit: "Scope & Sequence", section: "Units 6 to 10" },
+    { page: 4, file: 'assets/books/global-readings-2/page_04.jpg', title: "Phonics Review: Long a, Long e, Long i", unit: "Phonics Review", section: "Decode long vowel sounds with picture cues" },
+    { page: 5, file: 'assets/books/global-readings-2/page_05.jpg', title: "Phonics Review: Long o, Long u & Rhyme", unit: "Phonics Review", section: "Long vowels reading and rhyme chant" },
+    { page: 6, file: 'assets/books/global-readings-2/page_06.jpg', title: "Phonics Review: Blends & Digraphs (sh, st, ch)", unit: "Phonics Review", section: "Minimal pairs: sh vs ch, st endings" },
+    { page: 7, file: 'assets/books/global-readings-2/page_07.jpg', title: "Phonics Review: Blends & Digraphs (pl, fl, pr, fr)", unit: "Phonics Review", section: "Contrasts: pl vs fl, pr vs fr & Word Search" },
+    { page: 8, file: 'assets/books/global-readings-2/page_08.jpg', title: "Unit 1: What Does It Do? — Opener", unit: "Unit 1", section: "See, Think, Wonder: Technology in the classroom" },
+    { page: 9, file: 'assets/books/global-readings-2/page_09.jpg', title: "Unit 1: What Does It Do? — Key Concept", unit: "Unit 1", section: "Why do people invent things? Inquiry discussion" },
+    { page: 10, file: 'assets/books/global-readings-2/page_10.jpg', title: "Reading 1: The After-School Inventor (Clara Doodle)", unit: "Unit 1", section: "Story introduction: After-school inventor workshop" },
+    { page: 11, file: 'assets/books/global-readings-2/page_11.jpg', title: "Reading 1: The After-School Inventor (Pen Umbrella)", unit: "Unit 1", section: "Words in Context: invent, try again, change, mirror, mess, machine" },
+    { page: 12, file: 'assets/books/global-readings-2/page_12.jpg', title: "Reading 1: When I have an idea, I always make a plan", unit: "Unit 1", section: "Clara drafting plans and testing ideas" },
+    { page: 13, file: 'assets/books/global-readings-2/page_13.jpg', title: "Reading 1: Smart Eraser & Alarm Clock Pillow", unit: "Unit 1", section: "Inventions: Math error alert & Musical pillow" },
+    { page: 14, file: 'assets/books/global-readings-2/page_14.jpg', title: "Reading 1: Special Mirror (Front / Back / Menu)", unit: "Unit 1", section: "Unexpected results: Mirror changing clothes and hair!" },
+    { page: 15, file: 'assets/books/global-readings-2/page_15.jpg', title: "Reading 1: Big Clean-up Machine & Dialect Focus", unit: "Unit 1", section: "Messy room solution; clean/tidy, favorite/favourite" },
+    { page: 16, file: 'assets/books/global-readings-2/page_16.jpg', title: "Explore the Reading: Matching & Comprehension", unit: "Unit 1", section: "Match inventions to uses, answer questions & cl- blend practice" },
+    { page: 17, file: 'assets/books/global-readings-2/page_17.jpg', title: "Get Ready to Read: Identifying a Sequence of Events", unit: "Unit 1", section: "First, Second, Third, Last in instructions & inventing" },
+    { page: 18, file: 'assets/books/global-readings-2/page_18.jpg', title: "Reading 2: My Good Ideas Book (Thomas Edison)", unit: "Unit 1", section: "Nonfiction: Write ideas down; Hexagon pencils solution" },
+    { page: 19, file: 'assets/books/global-readings-2/page_19.jpg', title: "Reading 2: Biomimicry (Plants to Velcro, Kingfisher to Train)", unit: "Unit 1", section: "Words in Context: problem, solution, hexagon, improve, parachute" },
+    { page: 20, file: 'assets/books/global-readings-2/page_20.jpg', title: "Reading 2: Work on Your Idea (Leonardo da Vinci)", unit: "Unit 1", section: "Drawing ideas to test them: da Vinci sketches" },
+    { page: 21, file: 'assets/books/global-readings-2/page_21.jpg', title: "Reading 2: Improve Your Idea (Karl Benz Motorcar 1885)", unit: "Unit 1", section: "Engineering feedback cycle: Don't give up! Try again!" },
+    { page: 22, file: 'assets/books/global-readings-2/page_22.jpg', title: "Explore the Reading 2: Engineering Process & Science Link", unit: "Unit 1", section: "Sequence diagram, Good Ideas Book checklist & Discussion" },
+    { page: 23, file: 'assets/books/global-readings-2/page_23.jpg', title: "Think Together: Inventors Matrix & Reading Journal", unit: "Unit 1", section: "Match inventors to reasons, Round Robin & My Reading Journal" }
+  ];
+
+  const GLOBAL_READINGS_2_DATA = {
+    book: {
+      id: 'book-global-readings-2',
+      title: 'Global Readings 2',
+      level: 'Level 2',
+      targetLevel: 'Level 2',
+      bookType: "Student's Book",
+      publisher: 'Macmillan Education',
+      description: 'A primary literacy anthology and reading curriculum featuring 10 thematic units, phonics review, rich comprehension, sequencing, and science/social studies connections.',
+      cover: 'assets/books/global-readings-2/cover.jpg',
+      pdfUrl: 'assets/books/global-readings-2/Global-Readings-2.pdf',
+      totalPages: 23,
+      archived: false
+    },
+    units: [
+      {
+        id: 'unit-gr2-phonics',
+        bookId: 'book-global-readings-2',
+        title: 'Phonics Review: Sounds, Blends & Digraphs',
+        order: 0,
+        pages: '4–7',
+        reading1: 'Long Vowels Review (a, e, i, o, u)',
+        reading2: 'Blends & Digraphs (sh, st, ch, pl, fl, pr, fr)',
+        readingSkill: 'Phonological Awareness & Decoding',
+        contentArea: 'Foundational Literacy',
+        selFocus: 'Self-Correction & Confidence',
+        keyConcept: 'How do letters and sounds make words?',
+        targetVocab: ['cake', 'lake', 'tape', 'rain', 'tree', 'leaf', 'bike', 'kite', 'rope', 'nose', 'bone', 'cube', 'tube', 'flute', 'ship', 'shop', 'fish', 'bench', 'chips', 'star', 'nest', 'flag', 'frog'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-1',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 1: What Does It Do?',
+        order: 1,
+        pages: '8–23',
+        reading1: 'The After-School Inventor (Story, cl- blend)',
+        reading2: 'My Good Ideas Book (Instructional Text)',
+        readingSkill: 'Identifying a Sequence of Events',
+        contentArea: 'Science: Technology',
+        selFocus: 'Self-Awareness (strengths & limitations)',
+        keyConcept: 'Why do people invent things?',
+        targetVocab: ['invent', 'try again', 'change', 'mirror', 'mess', 'invention', 'machine', 'problem', 'solution', 'hexagon', 'improve', 'parachute', 'plan', 'eraser', 'tidy'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-2',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 2: Thank You',
+        order: 2,
+        pages: '24–39',
+        reading1: "Chuseok: Korea's Harvest Festival",
+        reading2: 'First Harvest (-st blend)',
+        readingSkill: 'Understanding Setting',
+        contentArea: 'Social Studies: Communities',
+        selFocus: 'Identify triggers',
+        keyConcept: 'Why do we celebrate harvests?',
+        targetVocab: ['harvest', 'festival', 'celebrate', 'tradition', 'feast', 'gratitude', 'first', 'crops'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-3',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 3: It Keeps Changing',
+        order: 3,
+        pages: '40–55',
+        reading1: 'The Bear and I (-ng blend)',
+        reading2: 'Clean Cars',
+        readingSkill: 'Comparing & Contrasting',
+        contentArea: 'Science: Environmental Science',
+        selFocus: 'Evaluate reactions',
+        keyConcept: 'How can we make good changes in our world?',
+        targetVocab: ['environment', 'pollution', 'electric', 'clean', 'change', 'protect', 'nature'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-4',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 4: What Happened?',
+        order: 4,
+        pages: '56–71',
+        reading1: 'Where Is She?',
+        reading2: 'The Angry Mountain (-nd blend)',
+        readingSkill: 'Cause & Effect',
+        contentArea: 'History: World Events',
+        selFocus: 'Label emotions',
+        keyConcept: 'How do events change our lives?',
+        targetVocab: ['volcano', 'eruption', 'mountain', 'escape', 'ash', 'history', 'event'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-5',
+        bookId: 'book-global-readings-2',
+        title: "Unit 5: Let's Go Back",
+        order: 5,
+        pages: '72–87',
+        reading1: 'The Time Book (-nt blend)',
+        reading2: 'Time Capsules',
+        readingSkill: 'Main Idea & Details',
+        contentArea: 'History: Civilizations',
+        selFocus: 'Other views',
+        keyConcept: 'How can we find out about the past?',
+        targetVocab: ['ancient', 'time capsule', 'civilization', 'past', 'history', 'memory', 'bury'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-6',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 6: Look What I Made',
+        order: 6,
+        pages: '88–103',
+        reading1: 'The Superstar (wh- digraph)',
+        reading2: "Visit Gaudí's World",
+        readingSkill: 'Fact & Opinion',
+        contentArea: 'Science: Architecture',
+        selFocus: 'Work towards goals',
+        keyConcept: 'Why do people make things?',
+        targetVocab: ['architect', 'mosaic', 'structure', 'cathedral', 'design', 'artist', 'build'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-7',
+        bookId: 'book-global-readings-2',
+        title: "Unit 7: We're a Team",
+        order: 7,
+        pages: '104–119',
+        reading1: 'Great Teamwork',
+        reading2: "It's Mine (-ck blend)",
+        readingSkill: 'Predicting Endings',
+        contentArea: 'Science: Symbiotic Relationships',
+        selFocus: 'Cooperative learning',
+        keyConcept: 'What is good about teamwork?',
+        targetVocab: ['teamwork', 'partner', 'ocean', 'symbiosis', 'together', 'help', 'cooperate'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-8',
+        bookId: 'book-global-readings-2',
+        title: "Unit 8: You're My Hero",
+        order: 8,
+        pages: '120–135',
+        reading1: 'In First Place',
+        reading2: 'A New Hero (tr- blends)',
+        readingSkill: 'Understanding Characters',
+        contentArea: 'History: Important People',
+        selFocus: 'Responsible decision-making',
+        keyConcept: 'What makes a hero?',
+        targetVocab: ['hero', 'courage', 'role model', 'inspire', 'brave', 'champion', 'achievement'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-9',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 9: Do You Live Here?',
+        order: 9,
+        pages: '136–151',
+        reading1: 'The Clever King (br- blend)',
+        reading2: 'Amazing Castles',
+        readingSkill: 'Scanning',
+        contentArea: 'Science: Architecture',
+        selFocus: 'Regulate emotions',
+        keyConcept: 'Why did people build castles?',
+        targetVocab: ['castle', 'fortress', 'moat', 'king', 'kingdom', 'defense', 'stone'],
+        archived: false
+      },
+      {
+        id: 'unit-gr2-10',
+        bookId: 'book-global-readings-2',
+        title: 'Unit 10: Are We There Yet?',
+        order: 10,
+        pages: '152–167',
+        reading1: 'Young Nicholas (sw- blend)',
+        reading2: 'The Thirty-Year Journey',
+        readingSkill: 'Sequence of Events',
+        contentArea: 'History: Important People',
+        selFocus: 'Grit & perseverance',
+        keyConcept: 'Why do people travel?',
+        targetVocab: ['journey', 'travel', 'explorer', 'expedition', 'adventure', 'discovery', 'globe'],
+        archived: false
+      }
+    ],
+    lessons: [
+      // Phonics Review
+      {
+        id: 'lesson-gr2-p1',
+        unitId: 'unit-gr2-phonics',
+        title: 'Long Vowels Review: a, e, i, o, u',
+        order: 1,
+        sourcePages: '4–5',
+        sourceBook: 'Global Readings 2',
+        objective: 'Decode and read long vowel words (a_e, ee/ea, i_e, o_e, u_e) across pictures and short rhymes.',
+        duration: 30,
+        tasks: [
+          { type: 'phonics', label: 'Long a', words: ['cake', 'lake', 'tape', 'rain', 'play'] },
+          { type: 'phonics', label: 'Long e', words: ['tree', 'bee', 'leaf', 'seat', 'green'] },
+          { type: 'phonics', label: 'Long i', words: ['bike', 'kite', 'pine', 'line', 'nine'] },
+          { type: 'phonics', label: 'Long o', words: ['rope', 'nose', 'bone', 'cone', 'rose'] },
+          { type: 'phonics', label: 'Long u', words: ['cube', 'tube', 'flute', 'mule', 'huge'] }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-p2',
+        unitId: 'unit-gr2-phonics',
+        title: 'Consonant Blends & Digraphs: sh, st, ch, pl, fl, pr, fr',
+        order: 2,
+        sourcePages: '6–7',
+        sourceBook: 'Global Readings 2',
+        objective: 'Differentiate minimal pairs and consonant digraphs (sh vs ch, pl vs fl, pr vs fr) and solve the review word search.',
+        duration: 30,
+        tasks: [
+          { type: 'contrast', pair: 'sh vs ch', words: ['ship / chip', 'shop / chop', 'wish / witch'] },
+          { type: 'contrast', pair: 'pl vs fl', words: ['play / flag', 'plane / flame', 'plum / fly'] },
+          { type: 'contrast', pair: 'pr vs fr', words: ['prize / frog', 'price / fruit', 'press / free'] },
+          { type: 'ending', blend: 'st', words: ['star', 'nest', 'fast', 'last', 'best'] }
+        ],
+        archived: false
+      },
+
+      // Unit 1 Lessons
+      {
+        id: 'lesson-gr2-1-1',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 1: See, Think, Wonder (Everyday Inventions)',
+        order: 1,
+        sourcePages: '8–9',
+        sourceBook: 'Global Readings 2',
+        objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',
+        duration: 25,
+        gameRoute: 'monster day/index.html',
+        activities: [
+          { type: 'discussion', prompt: 'Look at the picture. What do you see? What tools are they using?' },
+          { type: 'inquiry', prompt: 'Think: What problems do these tools solve in our daily life?' },
+          { type: 'wonder', prompt: 'Wonder: What kind of new invention would make your day easier?' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-2',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 2: Reading 1: The After-School Inventor',
+        order: 2,
+        sourcePages: '10–15',
+        sourceBook: 'Global Readings 2',
+        objective: "Read Clara Doodle's story aloud, track her 4 inventions, and isolate initial cl- blend sounds.",
+        duration: 35,
+        activities: [
+          { type: 'story', title: 'Part 1: The Plan', text: 'When I have an idea, I always make a plan. I draw and change, and change and draw. I do the best I can.' },
+          { type: 'story', title: 'Part 2: Smart Eraser & Alarm Pillow', text: "Here's my smart eraser. It tells me when I'm wrong. And my alarm clock pillow wakes me with a song." },
+          { type: 'story', title: 'Part 3: Special Mirror', text: 'This is my special mirror. It changes what I see. When I click this button, I see the back of me.' },
+          { type: 'story', title: 'Part 4: Big Clean-up Machine', text: "Mom says my room's a mess, but I don't like to clean. Here's my new invention ... it's a big clean-up machine." }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-3',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 3: Words in Context & Language Differences',
+        order: 3,
+        sourcePages: '11, 15',
+        sourceBook: 'Global Readings 2',
+        objective: 'Demonstrate comprehension of story action verbs and compare American vs British English vocabulary.',
+        duration: 25,
+        activities: [
+          {
+            type: 'vocab_definitions',
+            words: [
+              { word: 'invent', def: 'to make something new for the first time' },
+              { word: 'try again', def: 'to attempt something one more time after a mistake' },
+              { word: 'change', def: 'to make something different' },
+              { word: 'mirror', def: 'glass that reflects an image of what is in front of it' },
+              { word: 'mess', def: 'an untidy or dirty condition' },
+              { word: 'machine', def: 'a piece of equipment with moving parts that does work' }
+            ]
+          },
+          {
+            type: 'dialects',
+            pairs: [
+              { us: 'eraser', uk: 'rubber' },
+              { us: 'clean', uk: 'tidy' },
+              { us: 'favorite', uk: 'favourite' }
+            ]
+          }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-4',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 4: Reading Comprehension & Discussion',
+        order: 4,
+        sourcePages: '16',
+        sourceBook: 'Global Readings 2',
+        objective: 'Complete matching of inventions to functions, answer 6 recall and inference questions, and debate whether inventing is easy or difficult.',
+        duration: 30,
+        activities: [
+          {
+            type: 'matching',
+            title: 'A. Read and match',
+            pairs: [
+              { invention: 'The clean-up machine', function: 'This invention cleans.' },
+              { invention: 'The mirror', function: 'This invention has buttons.' },
+              { invention: 'The pen umbrella', function: 'This invention is for the rain.' },
+              { invention: 'The smart eraser', function: 'This invention helps Clara with her homework.' },
+              { invention: 'The alarm clock pillow', function: 'This invention sings a song.' }
+            ]
+          },
+          {
+            type: 'questions',
+            title: 'B. Read and choose the answer',
+            items: [
+              { q: '1. When does Clara invent things?', a: 'She invents things after school.' },
+              { q: '2. What does she do if her idea is not very good?', a: 'She tries again.' },
+              { q: '3. What does she do when she has a new idea?', a: 'She makes a plan.' },
+              { q: '4. Why does Clara say "Oh, no!"?', a: "The mirror doesn't work." },
+              { q: "5. Who thinks Clara's room is a mess?", a: 'Her mom does.' },
+              { q: '6. What does her new invention do?', a: 'It cleans her room.' }
+            ]
+          },
+          { type: 'phonics_box', title: 'Phonics: Initial cl- blends', words: ['climb', 'clue', 'cloud', 'close', 'clap', 'Clara', 'clean', 'clock', 'clothes', 'click'] },
+          { type: 'reflection', title: 'C. Think and discuss', prompt: 'Do you think it is easy or difficult to be an inventor? Why?' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-5',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 5: Sequencing Activity: First, Second, Third, Last',
+        order: 5,
+        sourcePages: '17',
+        sourceBook: 'Global Readings 2',
+        objective: 'Recognize and use sequence words (First, Second, Third, Last) to describe chronological order in instructions and inventing.',
+        duration: 25,
+        gameRoute: 'predictions/index.html',
+        activities: [
+          {
+            type: 'sequence_device',
+            title: 'A. Look and order: Device Instructions',
+            steps: [
+              { order: 1, text: 'Press on.' },
+              { order: 2, text: 'Type password.' },
+              { order: 3, text: 'Press play.' },
+              { order: 4, text: 'Play the game.' }
+            ]
+          },
+          {
+            type: 'sequence_inventor',
+            title: 'B. Read and put in order: Inventor Steps',
+            steps: [
+              { signal: 'First', text: 'an inventor has a good idea for an invention.' },
+              { signal: 'Second', text: 'an inventor writes down the plan for the invention.' },
+              { signal: 'Third', text: 'an inventor makes the invention.' },
+              { signal: 'Last', text: 'an inventor tests the invention.' }
+            ]
+          },
+          { type: 'discussion', prompt: 'Why do you think inventors have notebooks? (Example: Because they want to remember things.)' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-6',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 6: Reading 2: My Good Ideas Book (Nonfiction)',
+        order: 6,
+        sourcePages: '18–20',
+        sourceBook: 'Global Readings 2',
+        objective: 'Read informational text about Thomas Edison, Leonardo da Vinci, and biomimicry (burrs to Velcro, kingfisher to bullet train).',
+        duration: 35,
+        activities: [
+          { type: 'profile', name: 'Thomas Edison (1847–1931)', facts: 'Invented movie projector, sound recorder, light bulb. Had thousands of notebooks.' },
+          { type: 'problem_solution', problem: 'Pencils always roll off the table.', solution: 'Shape them like hexagons.' },
+          {
+            type: 'biomimicry',
+            examples: [
+              { nature: 'Plant burrs sticking to clothes', invention: 'Velcro shoes' },
+              { nature: 'Fast-diving Kingfisher bird beak', invention: 'Aerodynamic Bullet Train nose' }
+            ]
+          },
+          { type: 'vocab_context', words: ['problem', 'solution', 'hexagon', 'improve', 'parachute'] }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-7',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 7: Problem Solving & Improving Your Idea',
+        order: 7,
+        sourcePages: '20–22',
+        sourceBook: 'Global Readings 2',
+        objective: "Understand the 5-step engineering feedback loop and peer testing using Leonardo da Vinci's drawings and Karl Benz's motorcar.",
+        duration: 30,
+        gameRoute: 'advice/index.html',
+        activities: [
+          { type: 'design_cycle', steps: ['1. Have a good idea', '2. Make a drawing', '3. Share your idea', '4. Test your idea', '5. Try again and improve'] },
+          { type: 'history_spotlight', inventor: 'Karl Benz (1844–1929)', invention: 'First motorcar (1885)', feedback: '"No horses? Good idea!" / "Only three wheels?"' },
+          { type: 'needs_check', prompt: 'To make a Good Ideas Book, you need: ideas, time, a notebook, a pencil.' }
+        ],
+        archived: false
+      },
+      {
+        id: 'lesson-gr2-1-8',
+        unitId: 'unit-gr2-1',
+        title: 'Lesson 8: Think Together & Reading Journal Reflection',
+        order: 8,
+        sourcePages: '23',
+        sourceBook: 'Global Readings 2',
+        objective: 'Synthesize unit learning: match 4 historical inventors to their inventions and purposes, conduct Round Robin, and write in the Reading Journal.',
+        duration: 30,
+        activities: [
+          {
+            type: 'inventor_matrix',
+            rows: [
+              { inventor: 'Clara Doodle', invention: 'The alarm clock pillow', reason: 'To wake up on time' },
+              { inventor: 'Karl Benz', invention: 'The car (motorcar)', reason: 'To travel quickly with no horses' },
+              { inventor: 'Leonardo da Vinci', invention: 'The parachute / flying machine', reason: 'To travel in the air' },
+              { inventor: 'Thomas Edison', invention: 'The movie projector', reason: 'To show movies' }
+            ]
+          },
+          { type: 'round_robin', topic: 'Why are these inventions important? Give reasons: robot, TV, computer, glass.' },
+          {
+            type: 'reading_journal',
+            prompts: [
+              'Write three interesting things from this unit.',
+              'What is an invention you want to know about? How can you learn about it?'
+            ]
+          }
+        ],
+        archived: false
+      },
+
+      // Units 2 to 10 Foundational Lessons
+      { id: 'lesson-gr2-2-1', unitId: 'unit-gr2-2', title: 'Reading 1: Chuseok: Korea’s Harvest Festival', order: 1, sourcePages: '24–31', sourceBook: 'Global Readings 2', objective: 'Explore autumn harvest traditions, family feasts, and cultural celebrations in Korea.', duration: 35, archived: false },
+      { id: 'lesson-gr2-2-2', unitId: 'unit-gr2-2', title: 'Reading 2: First Harvest (-st blend)', order: 2, sourcePages: '32–39', sourceBook: 'Global Readings 2', objective: 'Apply setting analysis skills and practice -st consonant blend words in story context.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-3-1', unitId: 'unit-gr2-3', title: 'Reading 1: The Bear and I (-ng blend)', order: 1, sourcePages: '40–47', sourceBook: 'Global Readings 2', objective: 'Read narrative on wildlife encounters and decode -ng final nasal blend patterns.', duration: 35, archived: false },
+      { id: 'lesson-gr2-3-2', unitId: 'unit-gr2-3', title: 'Reading 2: Clean Cars (Environmental Science)', order: 2, sourcePages: '48–55', sourceBook: 'Global Readings 2', objective: 'Compare electric and traditional vehicles and discuss how green tech reduces pollution.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-4-1', unitId: 'unit-gr2-4', title: 'Reading 1: Where Is She?', order: 1, sourcePages: '56–63', sourceBook: 'Global Readings 2', objective: 'Follow story suspense, practice cause and effect identification, and track character actions.', duration: 35, archived: false },
+      { id: 'lesson-gr2-4-2', unitId: 'unit-gr2-4', title: 'Reading 2: The Angry Mountain (-nd blend)', order: 2, sourcePages: '64–71', sourceBook: 'Global Readings 2', objective: 'Understand how volcanic eruptions reshape geography and historical settlements.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-5-1', unitId: 'unit-gr2-5', title: "Reading 1: The Time Book (-nt blend)", order: 1, sourcePages: '72–79', sourceBook: 'Global Readings 2', objective: 'Explore personal history records and decode -nt consonant clusters.', duration: 35, archived: false },
+      { id: 'lesson-gr2-5-2', unitId: 'unit-gr2-5', title: 'Reading 2: Time Capsules (Ancient Civilizations)', order: 2, sourcePages: '80–87', sourceBook: 'Global Readings 2', objective: 'Identify main ideas and supporting details about preserved artifacts from the past.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-6-1', unitId: 'unit-gr2-6', title: 'Reading 1: The Superstar (wh- digraph)', order: 1, sourcePages: '88–95', sourceBook: 'Global Readings 2', objective: 'Read character biography highlighting perseverance and isolate wh- digraph pronunciations.', duration: 35, archived: false },
+      { id: 'lesson-gr2-6-2', unitId: 'unit-gr2-6', title: 'Reading 2: Visit Gaudí’s World (Architecture)', order: 2, sourcePages: '96–103', sourceBook: 'Global Readings 2', objective: 'Distinguish facts from opinions while exploring Antoni Gaudí’s organic architectural wonders.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-7-1', unitId: 'unit-gr2-7', title: 'Reading 1: Great Teamwork (Symbiosis)', order: 1, sourcePages: '104–111', sourceBook: 'Global Readings 2', objective: 'Analyze mutually beneficial partnerships among animal species in nature.', duration: 35, archived: false },
+      { id: 'lesson-gr2-7-2', unitId: 'unit-gr2-7', title: 'Reading 2: It’s Mine (-ck blend)', order: 2, sourcePages: '112–119', sourceBook: 'Global Readings 2', objective: 'Predict story outcomes based on character dialogue and conflict resolution.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-8-1', unitId: 'unit-gr2-8', title: 'Reading 1: In First Place', order: 1, sourcePages: '120–127', sourceBook: 'Global Readings 2', objective: 'Examine sportsmanship, character qualities, and determination in competitive events.', duration: 35, archived: false },
+      { id: 'lesson-gr2-8-2', unitId: 'unit-gr2-8', title: 'Reading 2: A New Hero (tr- blends)', order: 2, sourcePages: '128–135', sourceBook: 'Global Readings 2', objective: 'Evaluate historical heroes and articulate what makes everyday community role models.', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-9-1', unitId: 'unit-gr2-9', title: 'Reading 1: The Clever King (br- blend)', order: 1, sourcePages: '136–143', sourceBook: 'Global Readings 2', objective: 'Read folklore tale emphasizing wit and wisdom, practicing initial br- blends.', duration: 35, archived: false },
+      { id: 'lesson-gr2-9-2', unitId: 'unit-gr2-9', title: 'Reading 2: Amazing Castles (Architecture & Defense)', order: 2, sourcePages: '144–151', sourceBook: 'Global Readings 2', objective: 'Scan informational text quickly for architectural terms (moat, fortress, kingdom).', duration: 35, archived: false },
+
+      { id: 'lesson-gr2-10-1', unitId: 'unit-gr2-10', title: 'Reading 1: Young Nicholas (sw- blend)', order: 1, sourcePages: '152–159', sourceBook: 'Global Readings 2', objective: 'Follow young traveler’s early encounters, practicing sw- initial blend pronunciation.', duration: 35, archived: false },
+      { id: 'lesson-gr2-10-2', unitId: 'unit-gr2-10', title: 'Reading 2: The Thirty-Year Journey', order: 2, sourcePages: '160–167', sourceBook: 'Global Readings 2', objective: 'Chart chronological itinerary of world exploration and discuss why humans venture into the unknown.', duration: 35, archived: false }
+    ],
+    objectives: [
+      { id: 'obj-gr2-p1', lessonId: 'lesson-gr2-p1', text: 'Decode words with long vowels a, e, i, o, u in contexts', skill: 'Phonics', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '4–5', archived: false },
+      { id: 'obj-gr2-p2', lessonId: 'lesson-gr2-p2', text: 'Distinguish consonant blends and digraphs sh, st, ch, pl, fl, pr, fr', skill: 'Phonics', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '6–7', archived: false },
+      { id: 'obj-gr2-1-1', lessonId: 'lesson-gr2-1-1', text: 'Formulate inquiry questions about everyday inventions and tools', skill: 'Speaking', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '8–9', archived: false },
+      { id: 'obj-gr2-1-2', lessonId: 'lesson-gr2-1-2', text: 'Read and retell the story of The After-School Inventor', skill: 'Reading', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '10–15', archived: false },
+      { id: 'obj-gr2-1-3', lessonId: 'lesson-gr2-1-3', text: 'Use target invention vocabulary (plan, mirror, mess, machine, invent) in sentences', skill: 'Vocabulary', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '11, 15', archived: false },
+      { id: 'obj-gr2-1-4', lessonId: 'lesson-gr2-1-4', text: 'Demonstrate reading comprehension by matching inventions to functions', skill: 'Reading', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '16', archived: false },
+      { id: 'obj-gr2-1-5', lessonId: 'lesson-gr2-1-5', text: 'Identify and apply sequence transition words: First, Second, Third, Last', skill: 'Writing', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '17', archived: false },
+      { id: 'obj-gr2-1-6', lessonId: 'lesson-gr2-1-6', text: 'Extract key facts from informational text on Edison and biomimicry', skill: 'Reading', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '18–20', archived: false },
+      { id: 'obj-gr2-1-7', lessonId: 'lesson-gr2-1-7', text: 'Explain the 5-step engineering design feedback cycle', skill: 'Speaking', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '20–22', archived: false },
+      { id: 'obj-gr2-1-8', lessonId: 'lesson-gr2-1-8', text: 'Match historical inventors to their inventions and synthesize unit reflections', skill: 'Writing', cefr: 'Level 2', sourceBook: 'Global Readings 2', sourcePages: '23', archived: false }
+    ],
+    resource: {
+      id: "res-global-readings-2",
+      title: "Global Readings 2: Student's Book",
+      category: "Curriculum Textbook",
+      level: "Level 2",
+      age: "7–10",
+      grade: "Grade 2-3",
+      duration: 45,
+      skills: ["Reading", "Vocabulary", "Speaking", "Phonics", "Writing"],
+      topics: ["Inventions", "Technology", "Problem Solving", "Biomimicry", "History"],
+      objectives: ["Identify sequence of events", "Decode long vowels and blends", "Understand engineering design process"],
+      route: "javascript:openTextbookViewer(1, 'book-global-readings-2')",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      thumbnail: "assets/books/global-readings-2/cover.jpg",
+      description: "Macmillan Education Level 2 student anthology with 10 units, phonics review, and rich non-fiction and literature."
+    }
+  };
+
   // Initial Seed Data
   function getInitialState() {
     return {
@@ -431,11 +953,12 @@
       ],
 
       // 3. Resources (Games & Lessons)
-      resources: CANONICAL_GAMES,
+      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource]),
 
       // 4. Curriculum Hierarchy
       curriculum: {
         books: [
+          GLOBAL_READINGS_2_DATA.book,
           {
             id: 'book-1',
             title: 'English Explorer A1',
@@ -454,6 +977,7 @@
           }
         ],
         units: [
+          ...GLOBAL_READINGS_2_DATA.units,
           {
             id: 'unit-1',
             bookId: 'book-1',
@@ -501,6 +1025,7 @@
           }
         ],
         lessons: [
+          ...GLOBAL_READINGS_2_DATA.lessons,
           {
             id: 'lesson-1',
             unitId: 'unit-1',
@@ -553,6 +1078,7 @@
           }
         ],
         objectives: [
+          ...GLOBAL_READINGS_2_DATA.objectives,
           { id: 'obj-1', lessonId: 'lesson-1', text: 'Identify and name 6 creature body parts', skill: 'Vocabulary', cefr: 'Pre-A1', archived: false },
           { id: 'obj-2', lessonId: 'lesson-1', text: 'Form sentences with "It has got..."', skill: 'Grammar', cefr: 'A1', archived: false },
           { id: 'obj-3', lessonId: 'lesson-2', text: 'State firefighter equipment functions', skill: 'Speaking', cefr: 'A1', archived: false },
@@ -1172,6 +1698,65 @@
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
             if (!merged.studentAwards) merged.studentAwards = initial.studentAwards || [];
+
+            // Ensure Global Readings 2 curriculum book, units, lessons, objectives, and resource are present
+            if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
+              const gr2Book = merged.curriculum.books.find(b => b.id === 'book-global-readings-2');
+              if (!gr2Book) {
+                merged.curriculum.books.unshift(GLOBAL_READINGS_2_DATA.book);
+              } else {
+                Object.assign(gr2Book, GLOBAL_READINGS_2_DATA.book, {
+                  title: gr2Book.title || GLOBAL_READINGS_2_DATA.book.title,
+                  archived: gr2Book.archived || false
+                });
+              }
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.units)) {
+              GLOBAL_READINGS_2_DATA.units.forEach(u => {
+                const existingU = merged.curriculum.units.find(item => item.id === u.id);
+                if (!existingU) {
+                  merged.curriculum.units.push(u);
+                } else {
+                  Object.assign(existingU, {
+                    reading1: u.reading1,
+                    reading2: u.reading2,
+                    readingSkill: u.readingSkill,
+                    contentArea: u.contentArea,
+                    selFocus: u.selFocus,
+                    keyConcept: u.keyConcept,
+                    pages: u.pages,
+                    targetVocab: (existingU.targetVocab && existingU.targetVocab.length) ? existingU.targetVocab : u.targetVocab
+                  });
+                }
+              });
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.lessons)) {
+              GLOBAL_READINGS_2_DATA.lessons.forEach(l => {
+                const existingL = merged.curriculum.lessons.find(item => item.id === l.id);
+                if (!existingL) {
+                  merged.curriculum.lessons.push(l);
+                } else {
+                  Object.assign(existingL, {
+                    sourcePages: l.sourcePages,
+                    sourceBook: l.sourceBook,
+                    tasks: l.tasks || existingL.tasks,
+                    activities: l.activities || existingL.activities
+                  });
+                }
+              });
+            }
+            if (merged.curriculum && Array.isArray(merged.curriculum.objectives)) {
+              GLOBAL_READINGS_2_DATA.objectives.forEach(o => {
+                if (!merged.curriculum.objectives.some(item => item.id === o.id)) {
+                  merged.curriculum.objectives.push(o);
+                }
+              });
+            }
+            if (Array.isArray(merged.resources)) {
+              if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
+                merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
+              }
+            }
 
             // Ensure curriculum books have both level and targetLevel defined
             if (merged.curriculum && Array.isArray(merged.curriculum.books)) {
@@ -4037,9 +4622,11 @@
     window.SchoolStore = MasterSchoolStore;
     window.schoolStore = schoolStore;
     window.store = schoolStore;
+    window.GLOBAL_READINGS_2_PAGES = GLOBAL_READINGS_2_PAGES;
+    window.GLOBAL_READINGS_2_DATA = GLOBAL_READINGS_2_DATA;
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore };
+    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA };
   }
 
 })(typeof window !== 'undefined' ? window : global);
