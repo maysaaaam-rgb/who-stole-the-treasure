@@ -60,6 +60,11 @@
   // 1. MAIN VIEW ROUTER
   // =========================================================================
 
+  window.switchProgressCheckClass = function(classId) {
+    selectedAnalyticsClassId = classId;
+    window.renderProgressCheckView();
+  };
+
   window.renderProgressCheckView = function(container) {
     if (!container) container = document.getElementById('app-view-container');
     if (!container) return;
@@ -70,16 +75,41 @@
       return;
     }
 
+    const activeClass = store.getActiveClass();
+    if (activeClass && activeClass.id) {
+      selectedAnalyticsClassId = activeClass.id;
+    }
+
+    const currentClass = store.getClass(selectedAnalyticsClassId) || activeClass || { id: 'class-3a', name: 'Grade 3A', grade: 'Grade 3' };
+    const students = store.getStudentsByClass ? store.getStudentsByClass(currentClass.id) : [];
+
+    // Dynamically pick the right Progress Check based on grade level
     const checks = store.getProgressChecks ? store.getProgressChecks('active') : [];
-    const activeCheck = store.getProgressCheck(selectedProgressCheckId) || checks[0] || {
-      id: 'progress-check-a1',
-      title: 'English Adventure Progress Check',
-      bookTitle: 'Global Readings 2',
-      unitTitle: 'Unit 1',
-      targetGrade: 'Grade 3A'
-    };
-    const currentClass = store.getClass(selectedAnalyticsClassId) || store.getActiveClass() || { name: 'Grade 3A — The Explorers' };
-    const students = store.getStudentsByClass ? store.getStudentsByClass(selectedAnalyticsClassId) : [];
+    let activeCheck = null;
+    if (currentClass.grade === 'Grade 4') {
+      activeCheck = checks.find(c => c.id === 'progress-check-gr3-u1' || c.targetGrade === 'Grade 4' || (c.bookTitle && c.bookTitle.includes('3')));
+      if (!activeCheck) {
+        activeCheck = {
+          id: 'progress-check-gr3-u1',
+          title: 'English Adventure Progress Check — Unit 1 (Grade 4)',
+          bookTitle: 'Global Readings 3',
+          unitTitle: 'Unit 1: I Love Reading',
+          targetGrade: 'Grade 4'
+        };
+      }
+    } else {
+      activeCheck = checks.find(c => c.id === 'progress-check-a1' || c.targetGrade === 'Grade 3' || (c.bookTitle && c.bookTitle.includes('2')));
+      if (!activeCheck) {
+        activeCheck = {
+          id: 'progress-check-a1',
+          title: 'English Adventure Progress Check — Unit 1',
+          bookTitle: 'Global Readings 2',
+          unitTitle: 'Unit 1: What Does It Do?',
+          targetGrade: 'Grade 3'
+        };
+      }
+    }
+    selectedProgressCheckId = activeCheck.id;
 
     let html = '<div id="pc-main-wrapper" style="padding: 10px 0 40px 0;">';
 

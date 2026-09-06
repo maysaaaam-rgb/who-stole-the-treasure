@@ -100,6 +100,11 @@
   // 1. INITIALIZATION & GLOBAL EVENT LISTENERS
   // =========================================================================
   function initApp() {
+    const initialClass = store.getActiveClass();
+    if (initialClass && initialClass.id) {
+      studentsFilterClass = initialClass.id;
+      selectedClassDetailId = initialClass.id;
+    }
     setupRoleSwitcher();
     setupHeaderControls();
     setupGlobalShortcuts();
@@ -197,8 +202,13 @@
     if (classSelect) {
       populateHeaderClassSelect();
       classSelect.addEventListener('change', (e) => {
-        store.setActiveClass(e.target.value);
-        selectedClassDetailId = e.target.value;
+        const cId = e.target.value;
+        store.setActiveClass(cId);
+        selectedClassDetailId = cId;
+        studentsFilterClass = cId;
+        if (typeof window.switchProgressCheckClass === 'function') {
+          window.switchProgressCheckClass(cId);
+        }
         renderCurrentView();
       });
     }
@@ -1809,6 +1819,15 @@
 
   window.handleStudentsFilterClass = function(clsId) {
     studentsFilterClass = clsId;
+    if (clsId !== 'all') {
+      store.setActiveClass(clsId);
+      selectedClassDetailId = clsId;
+      const classSelect = document.getElementById('header-class-select');
+      if (classSelect) classSelect.value = clsId;
+      if (typeof window.switchProgressCheckClass === 'function') {
+        window.switchProgressCheckClass(clsId);
+      }
+    }
     renderCurrentView();
   };
 
@@ -2187,7 +2206,7 @@
   // The Live Classroom Workspace (Students visual grid | Groups view | Unenrolled)
   function renderClassroomWorkspace(cls, students) {
     const groups = store.getGroups(cls.id);
-    const unenrolled = store.getUnenrolledStudents ? store.getUnenrolledStudents() : [];
+    const grCurriculum = (cls && cls.grade === 'Grade 4') ? 'Global Readings 3 · Unit 1: I Love Reading' : 'Global Readings 2 · Unit 1: What Does It Do?';
 
     return '' +
       // Unit 1 Progress Check Banner Card
@@ -2199,7 +2218,7 @@
             '<span class="badge" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:8px;">Ready</span>' +
             '<span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:8px;">4-Week Unit Assessment</span>' +
           '</div>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Global Readings 2 · Unit 1: What Does It Do? · Whole-Class Teacher-Led Assessment</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">' + grCurriculum + ' · Whole-Class Teacher-Led Assessment</p>' +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
           '<button type="button" class="btn-primary-action" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">▶ Start Class Assessment</button>' +
@@ -3330,8 +3349,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // ASSIGNMENTS VIEW (Complete CRUD)
   // =========================================================================
   function renderAssignmentsView(container) {
-    const assignments = store.getAssignments();
+    const activeClass = store.getActiveClass();
+    const allAssignments = store.getAssignments();
     const classes = store.getClasses();
+    const assignments = allAssignments.filter(a => {
+      if (!activeClass) return true;
+      if (a.classId && a.classId !== 'all' && a.classId !== activeClass.id) return false;
+      return true;
+    });
 
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
@@ -3376,9 +3401,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   let hwFilterType = 'all';
 
   function renderHomeworkView(container) {
+    const activeClass = store.getActiveClass();
     const allHomework = store.getHomework();
     const classes = store.getClasses();
-    let homework = allHomework;
+    let homework = allHomework.filter(h => {
+      if (!activeClass) return true;
+      if (h.classId && h.classId !== 'all' && h.classId !== activeClass.id) return false;
+      return true;
+    });
 
     if (hwFilterType !== 'all') homework = homework.filter(h => (h.type || '').toLowerCase() === hwFilterType.toLowerCase());
 
@@ -3734,8 +3764,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // DYNAMIC REPORTS GENERATOR VIEW (Complete CRUD)
   // =========================================================================
   function renderReportsView(container) {
-    const reports = store.getReports();
+    const activeClass = store.getActiveClass();
+    const allReports = store.getReports();
     const students = store.getStudents();
+    const reports = allReports.filter(rep => {
+      if (!activeClass) return true;
+      if (rep.classId && rep.classId !== activeClass.id) return false;
+      const s = students.find(item => item.id === rep.studentId);
+      if (s && s.classId && s.classId !== activeClass.id) return false;
+      return true;
+    });
 
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
@@ -8361,8 +8399,9 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (box && (window.MonsterRenderer || window.renderMonsterSVG)) {
       const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
+      const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
       box.innerHTML = renderFn({
-        stage: mState.stageKey,
+        stage: previewStage,
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
         size: 260,
