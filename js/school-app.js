@@ -1399,36 +1399,59 @@
             const pcSubs = store.getStudentProgressCheckHistory ? store.getStudentProgressCheckHistory(student.id) : [];
             const latestPC = pcSubs[0];
             if (!latestPC) return '';
+            const scores = latestPC.scores || {};
+            const vocabScore = scores.vocabulary ? (scores.vocabulary.correct + ' / ' + (scores.vocabulary.total || 10)) : (latestPC.skillScores && latestPC.skillScores.vocabulary ? (latestPC.skillScores.vocabulary.correct + ' / 10') : '8 / 10');
+            const readScore = scores.reading ? (scores.reading.correct + ' / ' + (scores.reading.total || 5)) : (latestPC.skillScores && latestPC.skillScores.reading ? (latestPC.skillScores.reading.correct + ' / 5') : '4 / 5');
+            const gramScore = scores.grammar ? (scores.grammar.correct + ' / ' + (scores.grammar.total || 5)) : (latestPC.skillScores && latestPC.skillScores.grammar ? (latestPC.skillScores.grammar.correct + ' / 5') : '4 / 5');
+            const writeScore = scores.writing ? (scores.writing.correct + ' / ' + (scores.writing.total || 5)) : (latestPC.skillScores && latestPC.skillScores.writing ? (latestPC.skillScores.writing.correct + ' / 5') : '3 / 5');
+            const listenScore = scores.listening ? scores.listening.rating : (latestPC.teacherAssessment && latestPC.teacherAssessment.listening ? latestPC.teacherAssessment.listening : (latestPC.skillScores && latestPC.skillScores.listening ? latestPC.skillScores.listening.statusText : 'Developing'));
+            const speakScore = scores.speaking ? scores.speaking.rating : (latestPC.teacherAssessment && latestPC.teacherAssessment.speaking ? latestPC.teacherAssessment.speaking : (latestPC.skillScores && latestPC.skillScores.speaking ? latestPC.skillScores.speaking.statusText : 'Developing'));
+            const noteText = latestPC.notes || latestPC.teacherComment || student.latestTeacherNote || '';
+
             return '' +
-              '<div style="background:linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.06)); border:1px solid rgba(37,99,235,0.2); border-radius:14px; padding:16px; margin-bottom:16px;">' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
+              '<div style="background:#fff; border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:var(--shadow-sm);">' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border-light);">' +
                   '<div style="display:flex; align-items:center; gap:8px;">' +
-                    '<span style="font-size:1.2rem;">📊</span>' +
+                    '<span style="font-size:1.3rem;">📊</span>' +
                     '<div>' +
-                      '<div style="font-size:0.92rem; font-weight:800; color:var(--text-main);">Latest English Progress Check</div>' +
-                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + (latestPC.displayDate || latestPC.date) + ' · CEFR: ' + (latestPC.targetCefr || 'A1') + '</div>' +
+                      '<div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">English Adventure Progress Check</div>' +
+                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + (latestPC.bookTitle || 'Global Readings 2') + ' · ' + (latestPC.unitTitle || 'Unit 1') + '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<div style="display:flex; align-items:center; gap:8px;">' +
-                    '<span style="font-size:1.2rem; font-weight:900; color:#059669;">' + latestPC.overallScore + '%</span>' +
-                    '<span class="badge" style="background:rgba(16,185,129,0.1); color:#059669; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">' + (latestPC.mastery || 'Meeting') + '</span>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\');" style="font-size:0.75rem; padding:5px 12px; font-weight:700;">' +
+                    '✏️ Enter Results ➔' +
+                  '</button>' +
+                '</div>' +
+                '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px; font-size:0.8rem; margin-bottom:12px;">' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">VOCABULARY</span>' +
+                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + vocabScore + '</strong>' +
+                  '</div>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">READING</span>' +
+                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + readScore + '</strong>' +
+                  '</div>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">GRAMMAR</span>' +
+                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + gramScore + '</strong>' +
+                  '</div>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">WRITING</span>' +
+                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + writeScore + '</strong>' +
+                  '</div>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">LISTENING</span>' +
+                    '<strong style="font-size:0.88rem; color:#0369a1;">' + listenScore + '</strong>' +
+                  '</div>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
+                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">SPEAKING</span>' +
+                    '<strong style="font-size:0.88rem; color:#c2410c;">' + speakScore + '</strong>' +
                   '</div>' +
                 '</div>' +
-                '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:6px; font-size:0.76rem; font-weight:700; margin-bottom:12px;">' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌲 Vocab: ' + (latestPC.skillScores?.vocabulary?.score || 80) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">📖 Reading: ' + (latestPC.skillScores?.reading?.score || 80) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌉 Grammar: ' + (latestPC.skillScores?.grammar?.score || 80) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🎧 Listening: ' + (latestPC.skillScores?.listening?.statusText || 'Developing') + '</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🎤 Spk: ' + (latestPC.skillScores?.speaking?.statusText || 'Developing') + '</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">✏️ Writing: ' + (latestPC.skillScores?.writing?.score || 60) + '%</div>' +
-                '</div>' +
-                ((latestPC.notes || latestPC.teacherComment || student.latestTeacherNote) ?
-                  '<div style="background:#fff; border:1px solid var(--border-light); border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:0.8rem; line-height:1.5; color:var(--text-main);">' +
-                    '<strong>Teacher Progress Note:</strong> ' + (latestPC.notes || latestPC.teacherComment || student.latestTeacherNote) +
+                (noteText ?
+                  '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:10px 12px; font-size:0.82rem; line-height:1.5; color:var(--text-main);">' +
+                    '<strong>Teacher Note:</strong> ' + noteText +
                   '</div>' : '') +
-                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4); switchView(\'progress-check\');" style="font-size:0.76rem; padding:6px 12px; width:100%; justify-content:center;">' +
-                  'View &amp; Edit in Progress Check Gradebook ➔' +
-                '</button>' +
               '</div>';
           })() +
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:16px; font-size:0.86rem;">' +

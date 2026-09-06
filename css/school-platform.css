@@ -3207,3 +3207,32 @@ body.classroom-mode-active .classroom-students-grid {
     background: #fff !important;
   }
 }
+
+/* ==========================================================================
+   Simplified Whole-Class Progress Check Styles
+   ========================================================================== */
+.pc-hero-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.pc-hero-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08) !important;
+}
+
+.pc-gradebook-table th {
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.pc-gradebook-table input:focus,
+.pc-gradebook-table select:focus,
+.pc-gradebook-table textarea:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+  outline: none !important;
+}
+
+.pc-gradebook-table tr:hover {
+  background-color: rgba(59, 130, 246, 0.03) !important;
+}
