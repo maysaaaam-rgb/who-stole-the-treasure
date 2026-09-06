@@ -172,27 +172,23 @@
   <!-- ========================================================================
        0. PLATFORM PASSWORD SECURITY LOCK SCREEN
        ======================================================================== -->
-  <div id="platform-lock-screen" role="dialog" aria-modal="true" aria-label="Platform Access Lock">
+  <div id="platform-lock-screen" role="dialog" aria-modal="true" aria-label="Teacher Access Lock">
     <div class="platform-lock-card">
       <div class="platform-lock-icon-wrap">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
+        <span style="font-size: 2.2rem; user-select: none;">🔐</span>
       </div>
 
-      <h1 style="font-size: 1.45rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff; letter-spacing: -0.02em;">English Adventure Academy</h1>
-      <p style="font-size: 0.88rem; color: #94a3b8; margin: 0 0 20px 0; line-height: 1.4;">Teacher &amp; Classroom Portal · Security Lock</p>
+      <h1 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.02em;">🔐 Teacher Access</h1>
+      <p style="font-size: 0.95rem; color: #94a3b8; margin: 0 0 22px 0; line-height: 1.4;">Enter your password to continue.</p>
 
       <form id="platform-lock-form" onsubmit="handlePlatformPasswordSubmit(event)">
         <div class="platform-lock-input-wrap">
-          <label for="platform-password-input" style="display:block; font-size:0.8rem; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Platform Access Password</label>
           <div style="position:relative; width:100%;">
             <input 
               type="password" 
               id="platform-password-input" 
               class="platform-lock-input" 
-              placeholder="••••••••••" 
+              placeholder="Enter password..." 
               autocomplete="current-password" 
               required
             />
@@ -204,10 +200,7 @@
               title="Show/Hide password" 
               aria-label="Show or hide password"
             >
-              <svg id="platform-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
+              <span id="platform-eye-icon" style="font-size: 1.25rem; line-height: 1; user-select: none;">👁</span>
             </button>
           </div>
           <div id="platform-password-error" class="platform-lock-error">Incorrect password. Try again.</div>
@@ -215,16 +208,12 @@
 
         <button type="submit" id="platform-lock-submit-btn" class="platform-lock-submit-btn">
           <span>Unlock Platform</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
         </button>
       </form>
 
       <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; gap:8px; font-size:0.82rem; color:#64748b;">
         <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
-        <span>Teacher: <strong style="color:#e2e8f0;">Meysem</strong></span>
+        <span>Teacher: <strong style="color:#e2e8f0;">Mr. Maysam</strong></span>
       </div>
     </div>
   </div>
@@ -313,9 +302,9 @@
           </svg>
         </button>
 
-        <div class="user-chip" id="header-user-chip" title="Teacher Account: Meysem">
-          <div class="avatar-initials" id="header-avatar-initials">M</div>
-          <span id="header-user-name">Meysem</span>
+        <div class="user-chip" id="header-user-chip" title="Teacher Account: Mr. Maysam">
+          <div class="avatar-initials" id="header-avatar-initials">MM</div>
+          <span id="header-user-name">Mr. Maysam</span>
         </div>
 
         <button class="icon-circle-btn" onclick="lockPlatformSession()" title="Lock Platform Session (Log Out)" aria-label="Lock Platform Session" style="color:var(--text-muted);">
@@ -1325,7 +1314,7 @@
           </div>
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Name</label>
-            <input type="text" id="settings-teacher-name" class="filter-select" style="width:100%;" value="Meysem" required />
+            <input type="text" id="settings-teacher-name" class="filter-select" style="width:100%;" value="Mr. Maysam" required />
           </div>
         </div>
 
@@ -3094,7 +3083,7 @@
           }
 
           const userName = document.getElementById('header-user-name');
-          if (userName) userName.textContent = 'Meysem';
+          if (userName) userName.textContent = 'Mr. Maysam';
         } else {
           if (err) {
             err.textContent = 'Incorrect password. Try again.';
@@ -3116,12 +3105,12 @@
         if (input.type === 'password') {
           input.type = 'text';
           if (eyeIcon) {
-            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            eyeIcon.textContent = '🔒';
           }
         } else {
           input.type = 'password';
           if (eyeIcon) {
-            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            eyeIcon.textContent = '👁';
           }
         }
       };
@@ -3143,7 +3132,7 @@
           input.type = 'password';
           const eyeIcon = document.getElementById('platform-eye-icon');
           if (eyeIcon) {
-            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            eyeIcon.textContent = '👁';
           }
           setTimeout(function() { input.focus(); }, 120);
         }

@@ -4164,7 +4164,7 @@
       assessmentType: "Whole-Class Progress Check",
       createdDate: "2026-09-01",
       displayDate: "September 2026",
-      author: "Meysem",
+      author: "Mr. Maysam",
       archived: false,
       skills: ["reading", "listening", "writing", "speaking"],
       maxScore: 40,
@@ -4250,7 +4250,7 @@
       assessmentType: "Whole-Class Progress Check",
       createdDate: "2026-09-01",
       displayDate: "September 2026",
-      author: "Meysem",
+      author: "Mr. Maysam",
       archived: false,
       skills: ["reading", "listening", "writing", "speaking"],
       maxScore: 40,
@@ -4331,7 +4331,7 @@
           id: 'class-3a',
           name: 'Grade 3A',
           grade: 'Grade 3',
-          teacher: 'Meysem',
+          teacher: 'Mr. Maysam',
           primaryBookId: 'gr2-book',
           academicYear: '2026–2027',
           cefrTarget: 'A1',
@@ -4344,7 +4344,7 @@
           id: 'class-3b',
           name: 'Grade 3B',
           grade: 'Grade 3',
-          teacher: 'Meysem',
+          teacher: 'Mr. Maysam',
           primaryBookId: 'gr2-book',
           academicYear: '2026–2027',
           cefrTarget: 'A1',
@@ -4357,7 +4357,7 @@
           id: 'class-4a',
           name: 'Grade 4A',
           grade: 'Grade 4',
-          teacher: 'Meysem',
+          teacher: 'Mr. Maysam',
           primaryBookId: 'gr3-book',
           academicYear: '2026–2027',
           cefrTarget: 'A2',
@@ -4370,7 +4370,7 @@
           id: 'class-4b',
           name: 'Grade 4B',
           grade: 'Grade 4',
-          teacher: 'Meysem',
+          teacher: 'Mr. Maysam',
           primaryBookId: 'gr3-book',
           academicYear: '2026–2027',
           cefrTarget: 'A2',
@@ -6276,7 +6276,7 @@
       // 20. School & Classroom Global Settings
       schoolSettings: {
         schoolName: 'English Adventure Academy',
-        teacherName: 'Meysem',
+        teacherName: 'Mr. Maysam',
         academicYear: '2026–2027',
         term: 'Term 1',
         primaryCefrTarget: 'A1',
@@ -6366,10 +6366,10 @@
 
       // 30. Big Ideas Classroom Brainstorm Board
       bigIdeas: [
-        { id: 'idea-1', classId: 'class-3a', title: 'EAA Science Fair: Alien Planet Descriptions', description: 'Each student invents an exoplanet, draws its landscape, and gives a 2-minute English presentation describing alien flora, fauna, and weather.', category: 'Project', author: 'Meysem', votes: 14, pinned: true, tags: ['Science', 'Speaking', 'Art'], date: 'Sep 4, 2026' },
-        { id: 'idea-2', classId: 'class-3a', title: 'English Puppet Theater Show', description: 'Using paper bag puppets to perform the "Who Stole the Treasure?" mystery for the 2nd grade classes.', category: 'Drama', author: 'Meysem', votes: 19, pinned: true, tags: ['Roleplay', 'Creativity', 'Teamwork'], date: 'Sep 6, 2026' },
-        { id: 'idea-3', classId: 'class-3a', title: 'Treasure Island Illustrated Map', description: 'Students collaborate on a huge butcher paper map with compass directions, obstacles, and prepositions.', category: 'Writing', author: 'Meysem', votes: 11, pinned: false, tags: ['Writing', 'Geography'], date: 'Sep 8, 2026' },
-        { id: 'idea-4', classId: 'class-4b', title: 'Global Pen Pals Exchange', description: 'Writing letters and postcards describing hometown weather, favorite foods, and school life.', category: 'Culture', author: 'Meysem', votes: 16, pinned: true, tags: ['Culture', 'Writing'], date: 'Sep 7, 2026' }
+        { id: 'idea-1', classId: 'class-3a', title: 'EAA Science Fair: Alien Planet Descriptions', description: 'Each student invents an exoplanet, draws its landscape, and gives a 2-minute English presentation describing alien flora, fauna, and weather.', category: 'Project', author: 'Mr. Maysam', votes: 14, pinned: true, tags: ['Science', 'Speaking', 'Art'], date: 'Sep 4, 2026' },
+        { id: 'idea-2', classId: 'class-3a', title: 'English Puppet Theater Show', description: 'Using paper bag puppets to perform the "Who Stole the Treasure?" mystery for the 2nd grade classes.', category: 'Drama', author: 'Mr. Maysam', votes: 19, pinned: true, tags: ['Roleplay', 'Creativity', 'Teamwork'], date: 'Sep 6, 2026' },
+        { id: 'idea-3', classId: 'class-3a', title: 'Treasure Island Illustrated Map', description: 'Students collaborate on a huge butcher paper map with compass directions, obstacles, and prepositions.', category: 'Writing', author: 'Mr. Maysam', votes: 11, pinned: false, tags: ['Writing', 'Geography'], date: 'Sep 8, 2026' },
+        { id: 'idea-4', classId: 'class-4b', title: 'Global Pen Pals Exchange', description: 'Writing letters and postcards describing hometown weather, favorite foods, and school life.', category: 'Culture', author: 'Mr. Maysam', votes: 16, pinned: true, tags: ['Culture', 'Writing'], date: 'Sep 7, 2026' }
       ],
 
       // 31. Original Adventure Avatar Customizer Catalog (6 Categories)
@@ -6617,7 +6617,7 @@
               });
             }
             if (merged.schoolSettings) {
-              merged.schoolSettings.teacherName = 'Meysem';
+              merged.schoolSettings.teacherName = 'Mr. Maysam';
               if (merged.schoolSettings.monsterEvolutionEnabled === undefined) merged.schoolSettings.monsterEvolutionEnabled = true;
               if (merged.schoolSettings.xpProgressionEnabled === undefined) merged.schoolSettings.xpProgressionEnabled = true;
               if (merged.schoolSettings.achievementRewardsEnabled === undefined) merged.schoolSettings.achievementRewardsEnabled = true;
@@ -6626,7 +6626,7 @@
             }
             if (Array.isArray(merged.classes)) {
               merged.classes.forEach(c => {
-                c.teacher = 'Meysem';
+                c.teacher = 'Mr. Maysam';
               });
             }
 
@@ -7422,7 +7422,7 @@
       return this.state.teacherNotes.filter(n => n.studentId === studentId);
     }
 
-    addTeacherNote(studentId, text, author = 'Meysem') {
+    addTeacherNote(studentId, text, author = 'Mr. Maysam') {
       const note = {
         id: 'note-' + Date.now(),
         studentId,
@@ -8925,7 +8925,7 @@
       return true;
     }
 
-    awardGroupXP(groupId, amount, reason, teacherName = 'Meysem') {
+    awardGroupXP(groupId, amount, reason, teacherName = 'Mr. Maysam') {
       const group = this.getGroup(groupId);
       if (!group || !Array.isArray(group.studentIds) || group.studentIds.length === 0) return [];
       const transactions = [];
@@ -8984,7 +8984,7 @@
     // ----------------------------------------------------
     // QUICK ASSESSMENT & QUICK EVIDENCE (Live Classroom)
     // ----------------------------------------------------
-    recordQuickAssessment({ studentId, skill = 'Speaking', objective, rating = 'Developing', comment = '', teacherName = 'Meysem' }) {
+    recordQuickAssessment({ studentId, skill = 'Speaking', objective, rating = 'Developing', comment = '', teacherName = 'Mr. Maysam' }) {
       const scoreMap = {
         'Beginning': 50,
         'Developing': 70,
@@ -9017,7 +9017,7 @@
       return evidence;
     }
 
-    recordQuickEvidence({ classId, activityTitle, scores = [], teacherName = 'Meysem' }) {
+    recordQuickEvidence({ classId, activityTitle, scores = [], teacherName = 'Mr. Maysam' }) {
       if (!this.state.learningEvidence) this.state.learningEvidence = [];
       const results = [];
       const today = new Date().toISOString().split('T')[0];
@@ -9654,7 +9654,7 @@
       if (!this.state.schoolSettings) {
         this.state.schoolSettings = {
           schoolName: 'English Adventure Academy',
-          teacherName: 'Meysem',
+          teacherName: 'Mr. Maysam',
           academicYear: '2026–2027',
           term: 'Term 1',
           primaryCefrTarget: 'A1',
@@ -9662,6 +9662,9 @@
           parentStoryVisibility: true,
           soundEffectsEnabled: true
         };
+      }
+      if (!this.state.schoolSettings.teacherName || this.state.schoolSettings.teacherName !== 'Mr. Maysam') {
+        this.state.schoolSettings.teacherName = 'Mr. Maysam';
       }
       return this.state.schoolSettings;
     }
@@ -10201,7 +10204,7 @@
       return false;
     }
 
-    redeemReward(studentId, rewardId, teacherName = 'Meysem') {
+    redeemReward(studentId, rewardId, teacherName = 'Mr. Maysam') {
       const student = this.getStudent(studentId);
       if (!student) return { success: false, error: 'Student not found' };
 
@@ -10363,7 +10366,7 @@
         studentId,
         badgeId,
         awardedDate: new Date().toISOString().split('T')[0],
-        awardedBy: 'Meysem',
+        awardedBy: 'Mr. Maysam',
         notes: notes || ('Awarded: ' + badge.name),
         archived: false
       };
