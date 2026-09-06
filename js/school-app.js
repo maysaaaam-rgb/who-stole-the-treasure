@@ -2241,6 +2241,7 @@
   // The Live Classroom Workspace (Students visual grid | Groups view | Unenrolled)
   function renderClassroomWorkspace(cls, students) {
     const groups = store.getGroups(cls.id);
+    const unenrolled = store.getUnenrolledStudents ? store.getUnenrolledStudents() : [];
     const grCurriculum = (cls && cls.grade === 'Grade 4') ? 'Global Readings 3 · Unit 1: I Love Reading' : 'Global Readings 2 · Unit 1: What Does It Do?';
 
     return '' +
