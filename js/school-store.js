@@ -20,6 +20,29 @@
   // Canonical list of 15 audited games
   const CANONICAL_GAMES = [
     {
+      id: "phonics-hunters",
+      title: "Phonics Sound Hunters",
+      category: "Phonics & Sound Mission",
+      level: "A1",
+      age: "7–9",
+      grade: "Grade 2-3",
+      duration: 50,
+      skills: ["Phonics", "Pronunciation", "Listening", "Speaking", "Reading"],
+      topics: ["Long Vowels (A, E, I, O, U)", "Digraph SH", "Blends ST, CH, PL, FL, PR, FR"],
+      objectives: [
+        "Recognize and pronounce Long A, E, I, O, U sounds and spelling patterns",
+        "Distinguish long vowel sounds from short vowel contrasts",
+        "Identify and pronounce digraphs and blends: sh, st, ch, pl, fl, pr, fr",
+        "Decode, blend, and spell target phonics vocabulary"
+      ],
+      route: "phonics/index.html",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive sound hunter mission with team scoreboard, 5 sound monsters, movement games, and blend races."
+    },
+    {
       id: "monster-day",
       title: "Build Your Own Monster",
       category: "Classroom Game",
@@ -6629,6 +6652,10 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-hunters');
+              if (phonicsRes && !merged.resources.some(r => r.id === 'phonics-hunters')) {
+                merged.resources.unshift(phonicsRes);
+              }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
               }
