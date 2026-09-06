@@ -232,8 +232,8 @@
     const createWrap = document.getElementById('header-create-wrap');
 
     if (role === 'teacher') {
-      if (userName) userName.textContent = 'Ms. Sarah';
-      if (userInitials) userInitials.textContent = 'SJ';
+      if (userName) userName.textContent = 'Meysem';
+      if (userInitials) userInitials.textContent = 'M';
       if (classSelect) classSelect.style.display = 'inline-block';
       if (createWrap) createWrap.style.display = 'block';
     } else if (role === 'student') {
@@ -4665,7 +4665,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   const isTeacher = (m.sender === 'teacher' || m.from === 'teacher');
                   return '' +
                     '<div style="padding:8px 12px; border-radius:8px; font-size:0.84rem; background:' + (isTeacher ? 'rgba(79,70,229,0.08)' : 'var(--bg-card-secondary)') + ';">' +
-                      '<strong>' + (isTeacher ? 'Ms. Sarah' : 'Parent') + ':</strong> ' + m.text +
+                      '<strong>' + (isTeacher ? 'Meysem' : 'Parent') + ':</strong> ' + m.text +
                     '</div>';
                 }).join('') +
               '</div>' +
@@ -5654,7 +5654,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (!lastPickedStudentId) return;
     const s = store.getStudent(lastPickedStudentId);
     if (!s) return;
-    store.giveXP(s.id, 5, '🎲 Random Challenger Spotlight', 'Ms. Sarah');
+    store.giveXP(s.id, 5, '🎲 Random Challenger Spotlight', 'Meysem');
     alert('✓ Awarded +5 ⭐ to ' + s.firstName + '!');
     renderCurrentView();
   };
@@ -5883,7 +5883,7 @@ window.switchClassroomSubTab = function(subTab) {
       objective,
       rating,
       comment,
-      teacherName: 'Ms. Sarah'
+      teacherName: 'Meysem'
     });
 
     window.closeAllModals();
@@ -5932,7 +5932,7 @@ window.switchClassroomSubTab = function(subTab) {
       classId: cls.id,
       activityTitle: title,
       scores,
-      teacherName: 'Ms. Sarah'
+      teacherName: 'Meysem'
     });
 
     window.closeAllModals();
@@ -6691,7 +6691,7 @@ window.switchClassroomSubTab = function(subTab) {
 
         // Signatures Line
         '<div style="display:flex; justify-content:space-between; border-top:1px solid #cbd5e1; padding-top:20px; font-size:0.82rem;">' +
-          '<div><div style="border-bottom:1px solid #0f172a; width:180px; margin-bottom:4px;"></div>Ms. Sarah Jenkins (Head Teacher)</div>' +
+          '<div><div style="border-bottom:1px solid #0f172a; width:180px; margin-bottom:4px;"></div>Meysem (Teacher)</div>' +
           '<div><div style="border-bottom:1px solid #0f172a; width:180px; margin-bottom:4px;"></div>Principal / Academic Director</div>' +
         '</div>' +
       '</div>';

@@ -15,8 +15,219 @@
 
   <!-- School Platform Unified Stylesheet -->
   <link rel="stylesheet" href="css/school-platform.css">
+
+  <!-- Immediate Auth & Lock Check (Prevents any flash of lesson content) -->
+  <script>
+    (function() {
+      try {
+        if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true') {
+          document.documentElement.classList.add('platform-locked');
+        }
+      } catch (e) {
+        document.documentElement.classList.add('platform-locked');
+      }
+    })();
+  </script>
+  <style>
+    html.platform-locked body {
+      overflow: hidden !important;
+      background: #090d16 !important;
+    }
+    html.platform-locked .app-header,
+    html.platform-locked .app-layout,
+    html.platform-locked .modal-overlay,
+    html.platform-locked #app-toast-notification {
+      display: none !important;
+    }
+    #platform-lock-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999999;
+      background: radial-gradient(circle at 50% 25%, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: opacity 0.25s ease;
+    }
+    html.platform-locked #platform-lock-screen {
+      display: flex !important;
+    }
+    .platform-lock-card {
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 36px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      text-align: center;
+      color: #f8fafc;
+      box-sizing: border-box;
+    }
+    .platform-lock-icon-wrap {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px auto;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
+    }
+    .platform-lock-input-wrap {
+      position: relative;
+      margin: 22px 0 14px 0;
+      text-align: left;
+    }
+    .platform-lock-input {
+      width: 100%;
+      padding: 14px 46px 14px 16px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1.5px solid rgba(148, 163, 184, 0.3);
+      border-radius: 12px;
+      font-size: 1.05rem;
+      color: #ffffff;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .platform-lock-input:focus {
+      border-color: #3b82f6;
+      background: rgba(30, 41, 59, 0.95);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    .platform-lock-eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: color 0.15s ease;
+    }
+    .platform-lock-eye-btn:hover {
+      color: #ffffff;
+    }
+    .platform-lock-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .platform-lock-submit-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+    .platform-lock-submit-btn:active {
+      transform: translateY(0);
+    }
+    .platform-lock-error {
+      color: #f87171;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 8px;
+      display: none;
+      text-align: center;
+    }
+    @keyframes lockShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .input-shake {
+      animation: lockShake 0.45s ease-in-out;
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ========================================================================
+       0. PLATFORM PASSWORD SECURITY LOCK SCREEN
+       ======================================================================== -->
+  <div id="platform-lock-screen" role="dialog" aria-modal="true" aria-label="Platform Access Lock">
+    <div class="platform-lock-card">
+      <div class="platform-lock-icon-wrap">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+
+      <h1 style="font-size: 1.45rem; font-weight: 800; margin: 0 0 6px 0; color: #ffffff; letter-spacing: -0.02em;">English Adventure Academy</h1>
+      <p style="font-size: 0.88rem; color: #94a3b8; margin: 0 0 20px 0; line-height: 1.4;">Teacher &amp; Classroom Portal · Security Lock</p>
+
+      <form id="platform-lock-form" onsubmit="handlePlatformPasswordSubmit(event)">
+        <div class="platform-lock-input-wrap">
+          <label for="platform-password-input" style="display:block; font-size:0.8rem; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Platform Access Password</label>
+          <div style="position:relative; width:100%;">
+            <input 
+              type="password" 
+              id="platform-password-input" 
+              class="platform-lock-input" 
+              placeholder="••••••••••" 
+              autocomplete="current-password" 
+              required
+            />
+            <button 
+              type="button" 
+              id="platform-password-eye-btn" 
+              class="platform-lock-eye-btn" 
+              onclick="togglePlatformPasswordVisibility()" 
+              title="Show/Hide password" 
+              aria-label="Show or hide password"
+            >
+              <svg id="platform-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div id="platform-password-error" class="platform-lock-error">Incorrect password. Try again.</div>
+        </div>
+
+        <button type="submit" id="platform-lock-submit-btn" class="platform-lock-submit-btn">
+          <span>Unlock Platform</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </form>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; gap:8px; font-size:0.82rem; color:#64748b;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+        <span>Teacher: <strong style="color:#e2e8f0;">Meysem</strong></span>
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================================
        1. GLOBAL TOP HEADER & ROLE SWITCHER
@@ -91,6 +302,7 @@
             <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Admin &amp; Archive</div>
             <button class="dropdown-item-btn" onclick="openArchivedManagerModal()"><span>🗄️</span> <span>Archived Items &amp; Restore</span></button>
             <button class="dropdown-item-btn" onclick="openSchoolSettingsModal()"><span>⚙️</span> <span>School Settings</span></button>
+            <button class="dropdown-item-btn" onclick="lockPlatformSession()" style="color:#ef4444;"><span>🔒</span> <span>Lock Platform (Log Out)</span></button>
           </div>
         </div>
 
@@ -101,10 +313,17 @@
           </svg>
         </button>
 
-        <div class="user-chip" id="header-user-chip">
-          <div class="avatar-initials" id="header-avatar-initials">SJ</div>
-          <span id="header-user-name">Ms. Sarah</span>
+        <div class="user-chip" id="header-user-chip" title="Teacher Account: Meysem">
+          <div class="avatar-initials" id="header-avatar-initials">M</div>
+          <span id="header-user-name">Meysem</span>
         </div>
+
+        <button class="icon-circle-btn" onclick="lockPlatformSession()" title="Lock Platform Session (Log Out)" aria-label="Lock Platform Session" style="color:var(--text-muted);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
@@ -1106,7 +1325,7 @@
           </div>
           <div>
             <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Teacher Name</label>
-            <input type="text" id="settings-teacher-name" class="filter-select" style="width:100%;" value="Ms. Sarah Jenkins" required />
+            <input type="text" id="settings-teacher-name" class="filter-select" style="width:100%;" value="Meysem" required />
           </div>
         </div>
 
@@ -2834,5 +3053,118 @@
     </div>
   </div>
 
+  <!-- ========================================================================
+       5. PLATFORM ACCESS & AUTHENTICATION CONTROLLER
+       ======================================================================== -->
+  <script>
+    (function() {
+      'use strict';
+      const PLATFORM_ACCESS_PIN = '3515149460';
+
+      window.handlePlatformPasswordSubmit = function(event) {
+        if (event) event.preventDefault();
+        const input = document.getElementById('platform-password-input');
+        const err = document.getElementById('platform-password-error');
+        if (!input) return;
+
+        const val = input.value;
+        if (val === PLATFORM_ACCESS_PIN) {
+          try {
+            sessionStorage.setItem('eaa_auth_unlocked', 'true');
+          } catch(e) {}
+
+          if (err) err.style.display = 'none';
+          document.documentElement.classList.remove('platform-locked');
+
+          const lockScreen = document.getElementById('platform-lock-screen');
+          if (lockScreen) {
+            lockScreen.style.opacity = '0';
+            lockScreen.style.pointerEvents = 'none';
+            setTimeout(function() {
+              lockScreen.style.display = 'none';
+            }, 250);
+          }
+
+          // Open main teacher dashboard
+          if (window.schoolStore) {
+            window.schoolStore.setRole('teacher');
+          }
+          if (typeof window.switchView === 'function') {
+            window.switchView('dashboard');
+          }
+
+          const userName = document.getElementById('header-user-name');
+          if (userName) userName.textContent = 'Meysem';
+        } else {
+          if (err) {
+            err.textContent = 'Incorrect password. Try again.';
+            err.style.display = 'block';
+          }
+          input.classList.remove('input-shake');
+          void input.offsetWidth; // Force CSS reflow
+          input.classList.add('input-shake');
+          input.focus();
+          input.select();
+        }
+      };
+
+      window.togglePlatformPasswordVisibility = function() {
+        const input = document.getElementById('platform-password-input');
+        const eyeIcon = document.getElementById('platform-eye-icon');
+        if (!input) return;
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (eyeIcon) {
+            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+          }
+        } else {
+          input.type = 'password';
+          if (eyeIcon) {
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+          }
+        }
+      };
+
+      window.lockPlatformSession = function() {
+        try {
+          sessionStorage.removeItem('eaa_auth_unlocked');
+        } catch(e) {}
+        document.documentElement.classList.add('platform-locked');
+        const lockScreen = document.getElementById('platform-lock-screen');
+        if (lockScreen) {
+          lockScreen.style.display = 'flex';
+          lockScreen.style.opacity = '1';
+          lockScreen.style.pointerEvents = 'auto';
+        }
+        const input = document.getElementById('platform-password-input');
+        if (input) {
+          input.value = '';
+          input.type = 'password';
+          const eyeIcon = document.getElementById('platform-eye-icon');
+          if (eyeIcon) {
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+          }
+          setTimeout(function() { input.focus(); }, 120);
+        }
+        const err = document.getElementById('platform-password-error');
+        if (err) err.style.display = 'none';
+      };
+
+      // Auto focus password on initial load if locked
+      function checkAutoLockFocus() {
+        if (document.documentElement.classList.contains('platform-locked')) {
+          const input = document.getElementById('platform-password-input');
+          if (input) input.focus();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAutoLockFocus);
+      } else {
+        checkAutoLockFocus();
+      }
+    })();
+  </script>
 </body>
 </html>
