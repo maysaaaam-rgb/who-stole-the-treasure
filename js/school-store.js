@@ -15,7 +15,7 @@
 (function(root) {
   'use strict';
 
-  const STORAGE_KEY = 'eaa_master_school_v4';
+  const STORAGE_KEY = 'eaa_master_school_v5';
 
   // Canonical list of 15 audited games
   const CANONICAL_GAMES = [
@@ -366,6 +366,8 @@
         id: 'unit-gr2-1',
         bookId: 'book-global-readings-2',
         title: 'Unit 1: What Does It Do?',
+        durationWeeks: 4,
+        duration: '4 weeks',
         order: 1,
         pages: '8–23',
         reading1: 'The After-School Inventor (Story, cl- blend)',
@@ -960,6 +962,8 @@
         id: 'unit-gr3-1',
         bookId: 'book-global-readings-3',
         title: 'Unit 1: I Love Reading',
+        durationWeeks: 4,
+        duration: '4 weeks',
         order: 1,
         pages: '8–23',
         reading1: "The Beginning of Alice\'s Adventures (Lewis Carroll)",
@@ -1605,2155 +1609,2720 @@
   ];
 
   const DEFAULT_MONSTER_PROFILES = {
-    'student-3a-224': {
-      studentId: 'student-3a-224',
-      petName: 'Aslıhan',
-      monsterName: 'Aslıhan',
-      baseColor: 'purple',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-224-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-224-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-229': {
-      studentId: 'student-3a-229',
-      petName: 'Ateş',
-      monsterName: 'Ateş',
-      baseColor: 'orange',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-229-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-229-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-354': {
-      studentId: 'student-3a-354',
-      petName: 'Ayça',
-      monsterName: 'Ayça',
-      baseColor: 'pink',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-354-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-354-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-203': {
-      studentId: 'student-3a-203',
-      petName: 'Ayşe Mila',
-      monsterName: 'Ayşe Mila',
-      baseColor: 'blue',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-203-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-203-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-227': {
-      studentId: 'student-3a-227',
-      petName: 'Batı Mustafa',
-      monsterName: 'Batı Mustafa',
-      baseColor: 'green',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-227-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-227-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-207': {
-      studentId: 'student-3a-207',
-      petName: 'Beren',
-      monsterName: 'Beren',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-207-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-207-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-202': {
-      studentId: 'student-3a-202',
-      petName: 'Beste',
-      monsterName: 'Beste',
-      baseColor: 'gold',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-202-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-202-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-214': {
-      studentId: 'student-3a-214',
-      petName: 'Cemre',
-      monsterName: 'Cemre',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-214-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-214-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-222': {
-      studentId: 'student-3a-222',
-      petName: 'Ege',
-      monsterName: 'Ege',
-      baseColor: 'blue',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-222-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-222-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-209': {
-      studentId: 'student-3a-209',
-      petName: 'Fatih Yetkin',
-      monsterName: 'Fatih Yetkin',
-      baseColor: 'orange',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-209-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-209-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-219': {
-      studentId: 'student-3a-219',
-      petName: 'Gökçe',
-      monsterName: 'Gökçe',
-      baseColor: 'purple',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-219-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-219-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-210': {
-      studentId: 'student-3a-210',
-      petName: 'Gurur',
-      monsterName: 'Gurur',
-      baseColor: 'green',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-210-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-210-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-206': {
-      studentId: 'student-3a-206',
-      petName: 'Gülce',
-      monsterName: 'Gülce',
-      baseColor: 'pink',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-206-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-206-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-204': {
-      studentId: 'student-3a-204',
-      petName: 'Güneş Nisa',
-      monsterName: 'Güneş Nisa',
-      baseColor: 'gold',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-204-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-204-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-223': {
-      studentId: 'student-3a-223',
-      petName: 'Mavi Nil',
-      monsterName: 'Mavi Nil',
-      baseColor: 'blue',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-223-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-223-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-351': {
-      studentId: 'student-3a-351',
-      petName: 'Melis Ayşen',
-      monsterName: 'Melis Ayşen',
-      baseColor: 'purple',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-351-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-351-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3a-211': {
-      studentId: 'student-3a-211',
-      petName: 'Melodi',
-      monsterName: 'Melodi',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-211-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-211-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-353': {
-      studentId: 'student-3b-353',
-      petName: 'Ahmet',
-      monsterName: 'Ahmet',
-      baseColor: 'blue',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-353-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-353-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-200': {
-      studentId: 'student-3b-200',
-      petName: 'Ayaz',
-      monsterName: 'Ayaz',
-      baseColor: 'green',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-200-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-200-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-201': {
-      studentId: 'student-3b-201',
-      petName: 'Begüm',
-      monsterName: 'Begüm',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-201-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-201-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-221': {
-      studentId: 'student-3b-221',
-      petName: 'Buğlem',
-      monsterName: 'Buğlem',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-221-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-221-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-230': {
-      studentId: 'student-3b-230',
-      petName: 'Demir',
-      monsterName: 'Demir',
-      baseColor: 'orange',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-230-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-230-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-213': {
-      studentId: 'student-3b-213',
-      petName: 'Deniz',
-      monsterName: 'Deniz',
-      baseColor: 'blue',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-213-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-213-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-220': {
-      studentId: 'student-3b-220',
-      petName: 'Deniz',
-      monsterName: 'Deniz',
-      baseColor: 'gold',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-220-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-220-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-217': {
-      studentId: 'student-3b-217',
-      petName: 'Ece',
-      monsterName: 'Ece',
-      baseColor: 'pink',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-217-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-217-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-352': {
-      studentId: 'student-3b-352',
-      petName: 'Ece',
-      monsterName: 'Ece',
-      baseColor: 'purple',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-352-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-352-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-215': {
-      studentId: 'student-3b-215',
-      petName: 'Ecem Naz',
-      monsterName: 'Ecem Naz',
-      baseColor: 'pink',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-215-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-215-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-216': {
-      studentId: 'student-3b-216',
-      petName: 'Elif Miray',
-      monsterName: 'Elif Miray',
-      baseColor: 'gold',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-216-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-216-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-205': {
-      studentId: 'student-3b-205',
-      petName: 'İlker Mete',
-      monsterName: 'İlker Mete',
-      baseColor: 'green',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-205-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-205-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-228': {
-      studentId: 'student-3b-228',
-      petName: 'Mila',
-      monsterName: 'Mila',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-228-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-228-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-212': {
-      studentId: 'student-3b-212',
-      petName: 'Rüzgar Sarp',
-      monsterName: 'Rüzgar Sarp',
-      baseColor: 'blue',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-212-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-212-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-218': {
-      studentId: 'student-3b-218',
-      petName: 'Sena',
-      monsterName: 'Sena',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-218-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-218-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-3b-225': {
-      studentId: 'student-3b-225',
-      petName: 'Ülkü',
-      monsterName: 'Ülkü',
-      baseColor: 'gold',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-225-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-225-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-313': {
-      studentId: 'student-4a-313',
-      petName: 'Ada',
-      monsterName: 'Ada',
-      baseColor: 'purple',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-313-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-313-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-441': {
-      studentId: 'student-4a-441',
-      petName: 'Ahmet Mete',
-      monsterName: 'Ahmet Mete',
-      baseColor: 'blue',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-441-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-441-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-311': {
-      studentId: 'student-4a-311',
-      petName: 'Alya Zeynep',
-      monsterName: 'Alya Zeynep',
-      baseColor: 'pink',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-311-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-311-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-310': {
-      studentId: 'student-4a-310',
-      petName: 'Bahriye Ada',
-      monsterName: 'Bahriye Ada',
-      baseColor: 'gold',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-310-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-310-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-312': {
-      studentId: 'student-4a-312',
-      petName: 'Belis',
-      monsterName: 'Belis',
-      baseColor: 'green',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-312-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-312-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-344': {
-      studentId: 'student-4a-344',
-      petName: 'Defne',
-      monsterName: 'Defne',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-344-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-344-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-345': {
-      studentId: 'student-4a-345',
-      petName: 'Efe',
-      monsterName: 'Efe',
-      baseColor: 'orange',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-345-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-345-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-321': {
-      studentId: 'student-4a-321',
-      petName: 'Elif Su',
-      monsterName: 'Elif Su',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-321-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-321-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-315': {
-      studentId: 'student-4a-315',
-      petName: 'Emir Ali',
-      monsterName: 'Emir Ali',
-      baseColor: 'blue',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-315-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-315-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-302': {
-      studentId: 'student-4a-302',
-      petName: 'Emir',
-      monsterName: 'Emir',
-      baseColor: 'green',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-302-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-302-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-317': {
-      studentId: 'student-4a-317',
-      petName: 'Esila Nil',
-      monsterName: 'Esila Nil',
-      baseColor: 'purple',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-317-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-317-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-314': {
-      studentId: 'student-4a-314',
-      petName: 'İclal',
-      monsterName: 'İclal',
-      baseColor: 'gold',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-314-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-314-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-343': {
-      studentId: 'student-4a-343',
-      petName: 'İpek',
-      monsterName: 'İpek',
-      baseColor: 'pink',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-343-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-343-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-341': {
-      studentId: 'student-4a-341',
-      petName: 'Kemal Tahsin',
-      monsterName: 'Kemal Tahsin',
-      baseColor: 'blue',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-341-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-341-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-342': {
-      studentId: 'student-4a-342',
-      petName: 'Melik Emir',
-      monsterName: 'Melik Emir',
-      baseColor: 'orange',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-342-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-342-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-300': {
-      studentId: 'student-4a-300',
-      petName: 'Rüzgar',
-      monsterName: 'Rüzgar',
-      baseColor: 'green',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-300-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-300-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-320': {
-      studentId: 'student-4a-320',
-      petName: 'Sühan',
-      monsterName: 'Sühan',
-      baseColor: 'purple',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-320-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-320-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-319': {
-      studentId: 'student-4a-319',
-      petName: 'Şimal',
-      monsterName: 'Şimal',
-      baseColor: 'pink',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-319-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-319-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4a-109': {
-      studentId: 'student-4a-109',
-      petName: 'Zeynep Derin',
-      monsterName: 'Zeynep Derin',
-      baseColor: 'gold',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-109-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-109-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-346': {
-      studentId: 'student-4b-346',
-      petName: 'Ali İhsan',
-      monsterName: 'Ali İhsan',
-      baseColor: 'blue',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-346-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-346-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-338': {
-      studentId: 'student-4b-338',
-      petName: 'Derin',
-      monsterName: 'Derin',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-338-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-338-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-316': {
-      studentId: 'student-4b-316',
-      petName: 'Egehan',
-      monsterName: 'Egehan',
-      baseColor: 'green',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-316-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-316-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-307': {
-      studentId: 'student-4b-307',
-      petName: 'Elif Asya',
-      monsterName: 'Elif Asya',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-307-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-307-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-306': {
-      studentId: 'student-4b-306',
-      petName: 'Elif Beren',
-      monsterName: 'Elif Beren',
-      baseColor: 'gold',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-306-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-306-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-348': {
-      studentId: 'student-4b-348',
-      petName: 'Elisa Berre',
-      monsterName: 'Elisa Berre',
-      baseColor: 'pink',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-348-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-348-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-318': {
-      studentId: 'student-4b-318',
-      petName: 'Ertuğrul',
-      monsterName: 'Ertuğrul',
-      baseColor: 'orange',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-318-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-318-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-303': {
-      studentId: 'student-4b-303',
-      petName: 'İlay',
-      monsterName: 'İlay',
-      baseColor: 'purple',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-303-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-303-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-305': {
-      studentId: 'student-4b-305',
-      petName: 'Kerem',
-      monsterName: 'Kerem',
-      baseColor: 'blue',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-305-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-305-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-349': {
-      studentId: 'student-4b-349',
-      petName: 'Lina',
-      monsterName: 'Lina',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-349-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-349-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-439': {
-      studentId: 'student-4b-439',
-      petName: 'Mina',
-      monsterName: 'Mina',
-      baseColor: 'gold',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-439-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-439-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-304': {
-      studentId: 'student-4b-304',
-      petName: 'Nilda',
-      monsterName: 'Nilda',
-      baseColor: 'purple',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-purple',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-purple', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-304-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-304-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-440': {
-      studentId: 'student-4b-440',
-      petName: 'Nisa',
-      monsterName: 'Nisa',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-440-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-440-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-301': {
-      studentId: 'student-4b-301',
-      petName: 'Ozan',
-      monsterName: 'Ozan',
-      baseColor: 'green',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-301-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-301-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-208': {
-      studentId: 'student-4b-208',
-      petName: 'Ozan',
-      monsterName: 'Ozan',
-      baseColor: 'blue',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-blue',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-blue', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-208-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-208-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-322': {
-      studentId: 'student-4b-322',
-      petName: 'Öykü Çiğdem',
-      monsterName: 'Öykü Çiğdem',
-      baseColor: 'pink',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-pink',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-pink', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-322-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-322-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-339': {
-      studentId: 'student-4b-339',
-      petName: 'Uras',
-      monsterName: 'Uras',
-      baseColor: 'orange',
-      highestUnlockedLevel: 5,
-      lastCelebratedLevel: 5,
-      isHatched: true,
-      equipped: {
-        body: 'body-orange',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-orange', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-339-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-339-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-309': {
-      studentId: 'student-4b-309',
-      petName: 'Utku Efe',
-      monsterName: 'Utku Efe',
-      baseColor: 'green',
-      highestUnlockedLevel: 3,
-      lastCelebratedLevel: 3,
-      isHatched: true,
-      equipped: {
-        body: 'body-green',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'wings-starter',
-        tail: 'tail-perky',
-        hat: 'hat-scholar',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-green', 'hat-scholar', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-309-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-309-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    },
-    'student-4b-308': {
-      studentId: 'student-4b-308',
-      petName: 'Yağmur Ada',
-      monsterName: 'Yağmur Ada',
-      baseColor: 'gold',
-      highestUnlockedLevel: 4,
-      lastCelebratedLevel: 4,
-      isHatched: true,
-      equipped: {
-        body: 'body-gold',
-        eyes: 'eyes-sparkle',
-        mouth: 'mouth-smile',
-        horns: 'horns-ears',
-        wings: 'none',
-        tail: 'tail-perky',
-        hat: 'hat-explorer',
-        glasses: 'none',
-        backpack: 'none',
-        accessory: 'none',
-        aura: 'none',
-        background: 'bg-meadow',
-        clothing: 'none'
-      },
-      unlockedItems: ['body-gold', 'hat-explorer', 'hat-explorer', 'hat-scholar', 'glasses-round', 'wings-starter', 'bg-meadow'],
-      hatchDate: '2026-09-02T10:00:00Z',
-      evolutionHistory: [
-        { id: 'ev-308-1', date: 'Sep 1, 2026', type: 'egg', title: 'Egg Received', detail: 'Received Mystery Egg upon joining Academy.' },
-        { id: 'ev-308-2', date: 'Sep 2, 2026', type: 'hatch', title: 'Hatched into Baby Monster!', detail: 'Reached initial XP milestone with Unit 1 vocabulary.' }
-      ]
-    }
-  };
-  // Initial Seed Data
-  
-  // =========================================================================
-  // AUTHORITATIVE STUDENT ENGLISH PROGRESS CHECK ENGINE (DATA & CRUD)
-  // =========================================================================
+  "student-3a-224": {
+    "studentId": "student-3a-224",
+    "petName": "Aslıhan",
+    "monsterName": "Aslıhan's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-224-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-229": {
+    "studentId": "student-3a-229",
+    "petName": "Ateş",
+    "monsterName": "Ateş's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-229-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-354": {
+    "studentId": "student-3a-354",
+    "petName": "Ayça",
+    "monsterName": "Ayça's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-354-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-203": {
+    "studentId": "student-3a-203",
+    "petName": "Ayşe Mila",
+    "monsterName": "Ayşe Mila's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-203-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-227": {
+    "studentId": "student-3a-227",
+    "petName": "Batı Mustafa",
+    "monsterName": "Batı Mustafa's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-227-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-207": {
+    "studentId": "student-3a-207",
+    "petName": "Beren",
+    "monsterName": "Beren's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-207-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-202": {
+    "studentId": "student-3a-202",
+    "petName": "Beste",
+    "monsterName": "Beste's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-202-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-214": {
+    "studentId": "student-3a-214",
+    "petName": "Cemre",
+    "monsterName": "Cemre's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-214-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-222": {
+    "studentId": "student-3a-222",
+    "petName": "Ege",
+    "monsterName": "Ege's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-222-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-209": {
+    "studentId": "student-3a-209",
+    "petName": "Fatih Yetkin",
+    "monsterName": "Fatih Yetkin's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-209-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-219": {
+    "studentId": "student-3a-219",
+    "petName": "Gökçe",
+    "monsterName": "Gökçe's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-219-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-210": {
+    "studentId": "student-3a-210",
+    "petName": "Gurur",
+    "monsterName": "Gurur's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-210-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-206": {
+    "studentId": "student-3a-206",
+    "petName": "Gülce",
+    "monsterName": "Gülce's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-206-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-204": {
+    "studentId": "student-3a-204",
+    "petName": "Güneş Nisa",
+    "monsterName": "Güneş Nisa's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-204-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-223": {
+    "studentId": "student-3a-223",
+    "petName": "Mavi Nil",
+    "monsterName": "Mavi Nil's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-223-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-351": {
+    "studentId": "student-3a-351",
+    "petName": "Melis Ayşen",
+    "monsterName": "Melis Ayşen's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-351-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3a-211": {
+    "studentId": "student-3a-211",
+    "petName": "Melodi",
+    "monsterName": "Melodi's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3a-211-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-353": {
+    "studentId": "student-3b-353",
+    "petName": "Ahmet",
+    "monsterName": "Ahmet's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-353-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-200": {
+    "studentId": "student-3b-200",
+    "petName": "Ayaz",
+    "monsterName": "Ayaz's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-200-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-201": {
+    "studentId": "student-3b-201",
+    "petName": "Begüm",
+    "monsterName": "Begüm's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-201-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-221": {
+    "studentId": "student-3b-221",
+    "petName": "Buğlem",
+    "monsterName": "Buğlem's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-221-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-230": {
+    "studentId": "student-3b-230",
+    "petName": "Demir",
+    "monsterName": "Demir's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-230-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-213": {
+    "studentId": "student-3b-213",
+    "petName": "Deniz",
+    "monsterName": "Deniz's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-213-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-220": {
+    "studentId": "student-3b-220",
+    "petName": "Deniz",
+    "monsterName": "Deniz's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-220-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-217": {
+    "studentId": "student-3b-217",
+    "petName": "Ece",
+    "monsterName": "Ece's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-217-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-352": {
+    "studentId": "student-3b-352",
+    "petName": "Ece",
+    "monsterName": "Ece's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-352-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-215": {
+    "studentId": "student-3b-215",
+    "petName": "Ecem Naz",
+    "monsterName": "Ecem Naz's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-215-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-216": {
+    "studentId": "student-3b-216",
+    "petName": "Elif Miray",
+    "monsterName": "Elif Miray's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-216-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-205": {
+    "studentId": "student-3b-205",
+    "petName": "İlker Mete",
+    "monsterName": "İlker Mete's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-205-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-228": {
+    "studentId": "student-3b-228",
+    "petName": "Mila",
+    "monsterName": "Mila's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-228-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-212": {
+    "studentId": "student-3b-212",
+    "petName": "Rüzgar Sarp",
+    "monsterName": "Rüzgar Sarp's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-212-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-218": {
+    "studentId": "student-3b-218",
+    "petName": "Sena",
+    "monsterName": "Sena's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-218-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-3b-225": {
+    "studentId": "student-3b-225",
+    "petName": "Ülkü",
+    "monsterName": "Ülkü's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-3b-225-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-313": {
+    "studentId": "student-4a-313",
+    "petName": "Ada",
+    "monsterName": "Ada's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-313-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-441": {
+    "studentId": "student-4a-441",
+    "petName": "Ahmet Mete",
+    "monsterName": "Ahmet Mete's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-441-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-311": {
+    "studentId": "student-4a-311",
+    "petName": "Alya Zeynep",
+    "monsterName": "Alya Zeynep's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-311-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-310": {
+    "studentId": "student-4a-310",
+    "petName": "Bahriye Ada",
+    "monsterName": "Bahriye Ada's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-310-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-312": {
+    "studentId": "student-4a-312",
+    "petName": "Belis",
+    "monsterName": "Belis's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-312-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-344": {
+    "studentId": "student-4a-344",
+    "petName": "Defne",
+    "monsterName": "Defne's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-344-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-345": {
+    "studentId": "student-4a-345",
+    "petName": "Efe",
+    "monsterName": "Efe's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-345-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-321": {
+    "studentId": "student-4a-321",
+    "petName": "Elif Su",
+    "monsterName": "Elif Su's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-321-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-315": {
+    "studentId": "student-4a-315",
+    "petName": "Emir Ali",
+    "monsterName": "Emir Ali's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-315-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-302": {
+    "studentId": "student-4a-302",
+    "petName": "Emir",
+    "monsterName": "Emir's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-302-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-317": {
+    "studentId": "student-4a-317",
+    "petName": "Esila Nil",
+    "monsterName": "Esila Nil's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-317-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-314": {
+    "studentId": "student-4a-314",
+    "petName": "İclal",
+    "monsterName": "İclal's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-314-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-343": {
+    "studentId": "student-4a-343",
+    "petName": "İpek",
+    "monsterName": "İpek's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-343-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-341": {
+    "studentId": "student-4a-341",
+    "petName": "Kemal Tahsin",
+    "monsterName": "Kemal Tahsin's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-341-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-342": {
+    "studentId": "student-4a-342",
+    "petName": "Melik Emir",
+    "monsterName": "Melik Emir's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-342-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-300": {
+    "studentId": "student-4a-300",
+    "petName": "Rüzgar",
+    "monsterName": "Rüzgar's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-300-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-320": {
+    "studentId": "student-4a-320",
+    "petName": "Sühan",
+    "monsterName": "Sühan's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-320-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-319": {
+    "studentId": "student-4a-319",
+    "petName": "Şimal",
+    "monsterName": "Şimal's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-319-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4a-109": {
+    "studentId": "student-4a-109",
+    "petName": "Zeynep Derin",
+    "monsterName": "Zeynep Derin's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4a-109-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-346": {
+    "studentId": "student-4b-346",
+    "petName": "Ali İhsan",
+    "monsterName": "Ali İhsan's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-346-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-338": {
+    "studentId": "student-4b-338",
+    "petName": "Derin",
+    "monsterName": "Derin's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-338-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-316": {
+    "studentId": "student-4b-316",
+    "petName": "Egehan",
+    "monsterName": "Egehan's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-316-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-307": {
+    "studentId": "student-4b-307",
+    "petName": "Elif Asya",
+    "monsterName": "Elif Asya's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-307-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-306": {
+    "studentId": "student-4b-306",
+    "petName": "Elif Beren",
+    "monsterName": "Elif Beren's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-306-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-348": {
+    "studentId": "student-4b-348",
+    "petName": "Elisa Berre",
+    "monsterName": "Elisa Berre's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-348-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-318": {
+    "studentId": "student-4b-318",
+    "petName": "Ertuğrul",
+    "monsterName": "Ertuğrul's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-318-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-303": {
+    "studentId": "student-4b-303",
+    "petName": "İlay",
+    "monsterName": "İlay's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-303-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-305": {
+    "studentId": "student-4b-305",
+    "petName": "Kerem",
+    "monsterName": "Kerem's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-305-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-349": {
+    "studentId": "student-4b-349",
+    "petName": "Lina",
+    "monsterName": "Lina's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-349-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-439": {
+    "studentId": "student-4b-439",
+    "petName": "Mina",
+    "monsterName": "Mina's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-439-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-304": {
+    "studentId": "student-4b-304",
+    "petName": "Nilda",
+    "monsterName": "Nilda's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-304-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-440": {
+    "studentId": "student-4b-440",
+    "petName": "Nisa",
+    "monsterName": "Nisa's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-440-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-301": {
+    "studentId": "student-4b-301",
+    "petName": "Ozan",
+    "monsterName": "Ozan's Monster",
+    "baseColor": "gold",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-gold",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-gold",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-301-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-208": {
+    "studentId": "student-4b-208",
+    "petName": "Ozan",
+    "monsterName": "Ozan's Monster",
+    "baseColor": "blue",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-blue",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-blue",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-208-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-322": {
+    "studentId": "student-4b-322",
+    "petName": "Öykü Çiğdem",
+    "monsterName": "Öykü Çiğdem's Monster",
+    "baseColor": "pink",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-pink",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-pink",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-322-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-339": {
+    "studentId": "student-4b-339",
+    "petName": "Uras",
+    "monsterName": "Uras's Monster",
+    "baseColor": "green",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-green",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-green",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-339-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-309": {
+    "studentId": "student-4b-309",
+    "petName": "Utku Efe",
+    "monsterName": "Utku Efe's Monster",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-orange",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-orange",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-309-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  },
+  "student-4b-308": {
+    "studentId": "student-4b-308",
+    "petName": "Yağmur Ada",
+    "monsterName": "Yağmur Ada's Monster",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
+    "equipped": {
+      "body": "body-purple",
+      "eyes": "default",
+      "mouth": "mouth-smile",
+      "horns": "none",
+      "wings": "none",
+      "tail": "none",
+      "hat": "none",
+      "glasses": "none",
+      "backpack": "none",
+      "accessory": "none",
+      "aura": "none",
+      "background": "bg-meadow",
+      "clothing": "none"
+    },
+    "unlockedItems": [
+      "body-purple",
+      "bg-meadow"
+    ],
+    "evolutionHistory": [
+      {
+        "id": "ev-student-4b-308-1",
+        "date": "Sep 1, 2026",
+        "type": "egg",
+        "title": "Mystery Egg Received",
+        "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      }
+    ]
+  }
+};
+
   const DEFAULT_PROGRESS_CHECKS = [
     {
-      id: "progress-check-a1",
-      title: "English Adventure Progress Check — Unit 1",
-      subtitle: "Whole-Class Progress Check · 4-Week Unit 1 Assessment",
+      id: "progress-check-gr2-u1",
+      title: "English Adventure Progress Check — Grade 3 (A1)",
+      subtitle: "Global Readings 2 · Unit 1: What Does It Do? · 4-Week Progress Check",
       cefrTarget: "A1",
       targetGrade: "Grade 3",
       classId: "class-3a",
-      bookId: "book-gr2",
+      bookId: "book-global-readings-2",
       bookTitle: "Global Readings 2",
-      unitId: "gr2-u1",
+      unitId: "unit-gr2-1",
       unitTitle: "Unit 1: What Does It Do?",
       unitDuration: "4 weeks",
+      durationWeeks: 4,
       timeline: "End of Unit 1",
       durationMinutes: 45,
       assessmentType: "Whole-Class Progress Check",
@@ -3761,838 +4330,158 @@
       displayDate: "September 2026",
       author: "Ms. Sarah",
       archived: false,
-      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
-      stations: [
-        {
-          id: "station-vocab",
-          key: "vocabulary",
-          title: "Station 1 — Vocabulary",
-          shortTitle: "Vocabulary",
-          icon: "🧠",
-          color: "#10b981",
-          skill: "vocabulary",
-          description: "Identify familiar everyday words, objects, and actions from Unit 1.",
-          questions: [
-            { id: "vocab-1", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify common classroom and everyday objects", prompt: "Which picture shows a backpack?", imageEmoji: "🎒", options: ["backpack", "pencil", "book", "chair"], correctAnswer: "backpack", points: 2, explanation: "A backpack carries books and supplies." },
-            { id: "vocab-2", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify common animals and pets", prompt: "Which picture shows a dog?", imageEmoji: "🐶", options: ["cat", "dog", "bird", "rabbit"], correctAnswer: "dog", points: 2, explanation: "A dog is a friendly four-legged pet." },
-            { id: "vocab-3", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify healthy fruits and everyday food", prompt: "Which picture shows an apple?", imageEmoji: "🍎", options: ["apple", "banana", "bread", "orange"], correctAnswer: "apple", points: 2, explanation: "An apple is a round sweet fruit." },
-            { id: "vocab-4", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify everyday community vehicles", prompt: "Which picture shows a school bus?", imageEmoji: "🚌", options: ["bus", "car", "train", "plane"], correctAnswer: "bus", points: 2, explanation: "A bus takes children to school." },
-            { id: "vocab-5", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify community places", prompt: "Which picture shows a playground park?", imageEmoji: "🌳", options: ["park", "shop", "hospital", "kitchen"], correctAnswer: "park", points: 2, explanation: "A park has trees and a play area." }
-          ]
-        },
-        {
-          id: "station-listening",
-          key: "listening",
-          title: "Station 2 — Listening",
-          shortTitle: "Listening",
-          icon: "👂",
-          color: "#0284c7",
-          skill: "listening",
-          description: "Listen carefully to spoken sentences and identify the matching picture.",
-          questions: [
-            { id: "listen-1", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand short spoken statements with colors and objects", ttsAudio: "The boy has a red bag.", prompt: "Listen: Which picture matches what you heard?", options: ["Boy with a red bag 🎒", "Boy with a blue cap 🧢", "Girl with yellow shoes 👟", "Dog with a ball ⚽"], correctAnswer: "Boy with a red bag 🎒", points: 2.5 },
-            { id: "listen-2", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand simple spoken spatial prepositions", ttsAudio: "The cat is sleeping under the table.", prompt: "Listen: Where is the cat?", options: ["On the sofa 🛋️", "Under the table 🪑", "In the box 📦", "Behind the door 🚪"], correctAnswer: "Under the table 🪑", points: 2.5 },
-            { id: "listen-3", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand spoken actions in simple sentences", ttsAudio: "Two girls are reading books in the library.", prompt: "Listen: What are the girls doing?", options: ["Playing soccer ⚽", "Reading books 📚", "Eating lunch 🥪", "Riding bicycles 🚲"], correctAnswer: "Reading books 📚", points: 2.5 },
-            { id: "listen-4", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand short spoken quantity and numbers", ttsAudio: "There are three green apples on the plate.", prompt: "Listen: How many green apples are on the plate?", options: ["One", "Two", "Three", "Five"], correctAnswer: "Three", points: 2.5 }
-          ]
-        },
-        {
-          id: "station-reading",
-          key: "reading",
-          title: "Station 3 — Reading",
-          shortTitle: "Reading",
-          icon: "📖",
-          color: "#e11d48",
-          skill: "reading",
-          description: "Read a short illustrated text and answer comprehension questions.",
-          readingPassage: {
-            title: "The Treehouse Club",
-            text: "Leo and Mia have a wooden treehouse in their garden. It is big and strong. Leo keeps his favorite adventure books on the shelf. Mia has a box of colorful markers. Every Saturday morning, their friendly puppy Toby waits by the wooden ladder. Toby barks happily when the children climb up to read together.",
-            wordCount: 56
-          },
-          questions: [
-            { id: "read-1", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Identify key locations in short texts", prompt: "Where is the treehouse?", options: ["In the park", "In their garden", "At the school", "On a farm"], correctAnswer: "In their garden", points: 2.5 },
-            { id: "read-2", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Locate specific factual details", prompt: "What does Leo keep on the shelf?", options: ["Toy cars", "Favorite adventure books", "Snacks", "A radio"], correctAnswer: "Favorite adventure books", points: 2.5 },
-            { id: "read-3", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Identify characters and pets in a story", prompt: "Who is Toby?", options: ["Their brother", "Their friendly puppy", "A pet rabbit", "A noisy parrot"], correctAnswer: "Their friendly puppy", points: 2.5 },
-            { id: "read-4", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Determine story sequencing and time details", prompt: "When do the children go to the treehouse?", options: ["Every Saturday morning", "Every Sunday night", "On Monday afternoon", "Only in winter"], correctAnswer: "Every Saturday morning", points: 2.5 }
-          ]
-        },
-        {
-          id: "station-grammar",
-          key: "grammar",
-          title: "Station 4 — Grammar",
-          shortTitle: "Grammar",
-          icon: "🔤",
-          color: "#7c3aed",
-          skill: "grammar",
-          description: "Complete short sentences with correct present tense verbs and agreements.",
-          questions: [
-            { id: "gram-1", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Present simple 3rd person singular verb agreement", prompt: "Look at the picture. She ___ an apple.", imageContext: "Girl eating an apple 🍎", options: ["eat", "eats", "eating", "is eat"], correctAnswer: "eats", points: 2 },
-            { id: "gram-2", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "There is / There are plural noun agreement", prompt: "There ___ two books on the desk.", imageContext: "Two books on desk 📚", options: ["is", "are", "am", "be"], correctAnswer: "are", points: 2 },
-            { id: "gram-3", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Have / Has verb distinction", prompt: "Leo ___ a big wooden treehouse.", imageContext: "Leo with treehouse 🏡", options: ["have", "has", "having", "is"], correctAnswer: "has", points: 2 },
-            { id: "gram-4", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Present simple negative forms (don't / doesn't)", prompt: "They ___ like rainy days.", options: ["don't", "doesn't", "isn't", "aren't"], correctAnswer: "don't", points: 2 },
-            { id: "gram-5", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Indefinite articles a / an before vowels", prompt: "Mia has ___ orange backpack.", options: ["a", "an", "the", "two"], correctAnswer: "an", points: 2 }
-          ]
-        },
-        {
-          id: "station-speaking",
-          key: "speaking",
-          title: "Station 5 — Speaking Check",
-          shortTitle: "Speaking",
-          icon: "🗣️",
-          color: "#ea580c",
-          skill: "speaking",
-          description: "Teacher-led oral interaction using visual prompts. Teacher observes oral fluency.",
-          teacherPrompts: [
-            { id: "speak-p1", promptText: "Look at the picture. What can you see?", targetSkill: "Vocabulary & naming", suggestedTime: "30s" },
-            { id: "speak-p2", promptText: "What is this and what color is it?", targetSkill: "Describing attributes", suggestedTime: "30s" },
-            { id: "speak-p3", promptText: "What is the boy doing in the picture?", targetSkill: "Action verbs & present continuous", suggestedTime: "45s" },
-            { id: "speak-p4", promptText: "Do you like playing in the park? Why?", targetSkill: "Expressing simple preferences", suggestedTime: "45s" }
+      skills: ["reading", "listening", "writing", "speaking"],
+      maxScore: 40,
+      passingScore: 24,
+      readingScoreMax: 10,
+      listeningScoreMax: 10,
+      writingScoreMax: 10,
+      speakingScoreMax: 10,
+      readingDetails: {
+        textTitle: "The After-School Inventor",
+        passage: "Tom goes to his room every day after school. He loves making things. He uses cardboard boxes, bottle caps, plastic cups, and blue paint. Last week, Tom made a robot. It is blue with two shiny lights. The robot cannot fly, but it can move across the floor and carry small pencils. Tom is happy because his invention really works!",
+        questions: [
+          { num: 1, prompt: "What does Tom make?", options: ["a car", "a robot", "a plane"], correct: "b", key: "b robot", points: 1 },
+          { num: 2, prompt: "What color is the robot?", options: ["red", "blue", "yellow"], correct: "b", key: "b blue", points: 1 },
+          { num: 3, prompt: "What can the robot do?", options: ["fly in the air", "sing songs", "move and carry things"], correct: "c", key: "c move and carry things", points: 1.5 },
+          { num: 4, prompt: "When does Tom work on his inventions?", options: ["before school", "after school", "at night"], correct: "b", key: "b after school", points: 1.5 },
+          { num: 5, prompt: "True or False: Tom's robot works.", options: ["True", "False"], correct: "True", key: "True", points: 1 },
+          { num: 6, prompt: "Put the story events in order (1, 2, 3):", options: ["[ ] Tom tests the robot", "[ ] Tom collects materials", "[ ] Tom paints it blue"], key: "Order: 2 -> 1 -> 3", points: 2 },
+          { num: 7, prompt: "Where does Tom go after school?", answer: "Tom goes to his room", key: "Tom goes to his room", points: 1 },
+          { num: 8, prompt: "Why is Tom happy at the end?", answer: "He is happy because his robot works", key: "He is happy because his robot works", points: 1 }
+        ]
+      },
+      listeningDetails: {
+        teacherScript: {
+          partA: [
+            "Number 1: Look at the bags. Listen and circle: The red bag is on the desk.",
+            "Number 2: Look at the pictures. Listen and circle: The girl is reading her book.",
+            "Number 3: Look at the school objects. Listen and circle: I have got a yellow pencil."
           ],
-          rubricScale: [
-            { level: "Beginning", label: "Beginning (1)", description: "Speaks in isolated words or gestures; requires continuous teacher prompting." },
-            { level: "Developing", label: "Developing (2)", description: "Produces short phrases; understands questions with slight pauses; simple sentences with support." },
-            { level: "Secure", label: "Secure (3)", description: "Answers prompts in clear simple sentences; good pronunciation and familiar vocabulary." },
-            { level: "Strong", label: "Strong (4)", description: "Expresses thoughts fluently in full sentences; shows enthusiasm and natural communicative confidence." },
-            { level: "Not Assessed", label: "Not Assessed", description: "Student was absent or not yet evaluated." }
+          partB: [
+            "Number 4: Look at the classroom scene. Put the pencil next to the book.",
+            "Number 5: Look at the desk. Find the red bag. Circle the red bag.",
+            "Number 6: Look at the chair. Draw a star above the chair."
           ]
         },
-        {
-          id: "station-writing",
-          key: "writing",
-          title: "Station 6 — Writing Workshop",
-          shortTitle: "Writing",
-          icon: "✏️",
-          color: "#ca8a04",
-          skill: "writing",
-          description: "Screen introduces picture prompt and word bank. Students write 3–5 sentences on paper worksheet.",
-          writingPrompt: {
-            title: "A Sunny Day in the Park",
-            promptText: "Look at the picture. Write 3–5 sentences describing what the children and the puppy are doing.",
-            wordBank: ["boy", "girl", "puppy", "ball", "sunny", "happy", "plays", "runs", "park", "friends"],
-            instructions: "Students discuss the scene on the classroom screen, then write their sentences on Part D of their printed worksheet."
-          },
-          rubricScale: [
-            { level: "Beginning", label: "Beginning (1/5)", description: "Writes isolated words; frequent spelling or formation errors." },
-            { level: "Developing", label: "Developing (2-3/5)", description: "Writes 2-3 simple sentences; uses some word bank vocabulary with minor errors." },
-            { level: "Secure", label: "Secure (4/5)", description: "Writes 3-4 clear sentences; good punctuation and correct capitalization." },
-            { level: "Strong", label: "Strong (5/5)", description: "Writes 4-5 well-structured descriptive sentences with varied vocabulary and neat handwriting." },
-            { level: "Not Assessed", label: "Not Assessed", description: "Worksheet writing section not yet completed." }
-          ]
-        }
-      ]
-    },
-    {
-      id: "progress-check-u2",
-      title: "English Adventure Progress Check — Unit 2",
-      subtitle: "Whole-Class Progress Check · 4-Week Unit 2 Assessment",
-      cefrTarget: "A1",
-      targetGrade: "Grade 3",
-      classId: "class-3a",
-      bookId: "book-gr2",
-      bookTitle: "Global Readings 2",
-      unitId: "gr2-u2",
-      unitTitle: "Unit 2: Thank You",
-      unitDuration: "4 weeks",
-      timeline: "End of Unit 2",
-      durationMinutes: 45,
-      assessmentType: "Whole-Class Progress Check",
-      createdDate: "2026-10-01",
-      displayDate: "October 2026",
-      author: "Ms. Sarah",
-      archived: false,
-      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
-      stations: []
+        answerKey: [
+          "1. a red bag (1.5 pts)",
+          "2. b girl reading (1.5 pts)",
+          "3. c pencil (1.5 pts)",
+          "4. Put pencil next to book (1.5 pts)",
+          "5. Circle red bag (2 pts)",
+          "6. Draw star above chair (2 pts)"
+        ]
+      },
+      writingDetails: {
+        partA: [
+          "1. My name is _______________________.",
+          "2. I am _______________________ years old.",
+          "3. I like _______________________.",
+          "4. I can _______________________.",
+          "5. I have got a _______________________."
+        ],
+        partB: "Write 3 sentences about yourself or an invention you want to create.",
+        rubric: "Sentence structure (2 pts), Vocabulary & Spelling (2 pts), Punctuation & Capitalization (1 pt) = 5 pts. Part A = 5 pts. Total: 10 pts."
+      },
+      speakingDetails: {
+        criteria: [
+          { name: "Answers questions", desc: "Understands and responds to teacher prompts", max: 4 },
+          { name: "Uses simple sentences", desc: "Forms basic subject-verb sentences (I like..., It is...)", max: 4 },
+          { name: "Vocabulary", desc: "Uses Unit 1 target words correctly (robot, invent, bag, etc.)", max: 4 },
+          { name: "Pronunciation", desc: "Clarity of sounds, word stress, and intelligibility", max: 4 },
+          { name: "Confidence", desc: "Willingness to speak, eye contact, and engagement", max: 4 }
+        ],
+        maxRaw: 20,
+        scaleFormula: "Raw Points / 2 = Score /10"
+      }
     },
     {
       id: "progress-check-gr3-u1",
-      title: "English Adventure Progress Check — Unit 1 (Grade 4)",
-      subtitle: "Whole-Class Progress Check · 4-Week Unit 1 Assessment",
-      cefrTarget: "A2",
+      title: "English Adventure Progress Check — Grade 4 (A1+)",
+      subtitle: "Global Readings 3 · Unit 1: I Love Reading · 4-Week Progress Check",
+      cefrTarget: "A1+",
       targetGrade: "Grade 4",
       classId: "class-4a",
-      bookId: "book-gr3",
+      bookId: "book-global-readings-3",
       bookTitle: "Global Readings 3",
-      unitId: "gr3-u1",
+      unitId: "unit-gr3-1",
       unitTitle: "Unit 1: I Love Reading",
       unitDuration: "4 weeks",
+      durationWeeks: 4,
       timeline: "End of Unit 1",
       durationMinutes: 45,
       assessmentType: "Whole-Class Progress Check",
       createdDate: "2026-09-01",
       displayDate: "September 2026",
-      author: "Mr. David",
+      author: "Ms. Sarah",
       archived: false,
-      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
-      stations: []
+      skills: ["reading", "listening", "writing", "speaking"],
+      maxScore: 40,
+      passingScore: 24,
+      readingScoreMax: 10,
+      listeningScoreMax: 10,
+      writingScoreMax: 10,
+      speakingScoreMax: 10,
+      readingDetails: {
+        textTitle: "The Inventor's Helper",
+        passage: "Sara is a young inventor who loves reading books about technology. Last month, she designed a helper robot for her home. The robot is white with smooth wheels and a small sensor on top. Sara programmed it to tidy her room by picking up books and putting them on the shelves. Sara says reading books gave her the best ideas for her machine. Now, the helper cleans her study area every day so she has more time to read!",
+        questions: [
+          { num: 1, prompt: "What did Sara build?", options: ["a robot", "a clock", "a telescope"], correct: "a", key: "1. a robot", points: 1 },
+          { num: 2, prompt: "What is the robot's main task?", options: ["clean room", "cook dinner", "carry heavy boxes"], correct: "a", key: "2. a clean room", points: 1 },
+          { num: 3, prompt: "What color is the robot?", options: ["black", "white", "silver"], correct: "b", key: "3. b white", points: 1 },
+          { num: 4, prompt: "When did Sara finish building it?", options: ["yesterday", "last month", "last year"], correct: "b", key: "4. b last month", points: 1 },
+          { num: 5, prompt: "How does the robot help Sara?", options: ["plays music", "helps her every day", "teaches reading"], correct: "b", key: "5. b helps her every day", points: 1.5 },
+          { num: 6, prompt: "Why does Sara love reading books?", key: "Books gave her the best ideas for her inventions", points: 1.5 },
+          { num: 7, prompt: "What does the robot have on top?", key: "A small sensor", points: 1.5 },
+          { num: 8, prompt: "True or False: Sara has more time to read now.", correct: "True", key: "True", points: 1.5 }
+        ]
+      },
+      listeningDetails: {
+        teacherScript: {
+          partA: [
+            "Number 1: Look at the transport pictures. Listen: The boy rides his blue bicycle to the library.",
+            "Number 2: Look at the furniture. Listen: Look at the chair. There is a sleepy cat on the chair.",
+            "Number 3: Look at the gadgets. Listen: Maya uses her camera to take a photo of her project."
+          ],
+          partB: [
+            "Number 4: Look at the table. Draw a book on the table.",
+            "Number 5: Find the dog near the window. Circle the dog.",
+            "Number 6: Look at the chair. Draw a pen under the chair.",
+            "Number 7: Look at the window. Draw a star next to the window.",
+            "Number 8: Look at the three balls. Circle the biggest ball."
+          ]
+        },
+        answerKey: [
+          "1. a bicycle (1.5 pts)",
+          "2. b cat on chair (1.5 pts)",
+          "3. c camera (1.5 pts)",
+          "4. Draw book on table (1.1 pts)",
+          "5. Circle dog (1.1 pts)",
+          "6. Draw pen under chair (1.1 pts)",
+          "7. Draw star next to window (1.1 pts)",
+          "8. Circle biggest ball (1.1 pts)"
+        ]
+      },
+      writingDetails: {
+        prompt: "Write 5–6 connected sentences about an invention you would like to build, or how a machine helps you learn English.",
+        wordBank: ["invention", "machine", "helpful", "brain", "connect", "creative", "problem", "solve", "future"],
+        rubric: "Idea development & vocabulary (4 pts), Sentence grammar & connectivity (3 pts), Mechanics & spelling (3 pts) = 10 pts."
+      },
+      speakingDetails: {
+        criteria: [
+          { name: "Answers questions", desc: "Responds accurately and elaborates on questions", max: 4 },
+          { name: "Uses simple/connected sentences", desc: "Connects clauses using and, but, because", max: 4 },
+          { name: "Vocabulary range", desc: "Uses rich unit vocabulary (robot, machine, sensor, idea)", max: 4 },
+          { name: "Pronunciation", desc: "Clear pronunciation, intonation, and rhythm", max: 4 },
+          { name: "Confidence & fluency", desc: "Speaks smoothly without undue hesitation", max: 4 }
+        ],
+        maxRaw: 20,
+        scaleFormula: "Raw Points / 2 = Score /10"
+      }
     }
   ];
-
-  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [
-    {
-      id: "sub-student-3a-224-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-224",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 7, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Developing", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Developing", statusText: "Developing" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Developing",
-        speaking: "Developing"
-      },
-      teacherComment: "Aslıhan demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Aslıhan demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-229-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-229",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 8, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Ateş demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Ateş demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-354-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-354",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 9, total: 10 },
-        reading: { correct: 5, total: 5 },
-        grammar: { correct: 3, total: 5 },
-        writing: { correct: 4, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 90, correct: 9, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 80, correct: 4, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Ayça demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Ayça demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-203-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-203",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 10, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 100, correct: 10, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Developing"
-      },
-      teacherComment: "Ayşe Mila demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Ayşe Mila demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-227-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-227",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 7, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Developing", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Developing", statusText: "Developing" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Developing",
-        speaking: "Secure"
-      },
-      teacherComment: "Batı Mustafa demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Batı Mustafa demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-207-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-207",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 8, total: 10 },
-        reading: { correct: 5, total: 5 },
-        grammar: { correct: 3, total: 5 },
-        writing: { correct: 4, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 80, correct: 4, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Beren demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Beren demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-202-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-202",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 9, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 90, correct: 9, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Developing"
-      },
-      teacherComment: "Beste demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Beste demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-214-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-214",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 10, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 100, correct: 10, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Cemre demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Cemre demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-222-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-222",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 7, total: 10 },
-        reading: { correct: 5, total: 5 },
-        grammar: { correct: 3, total: 5 },
-        writing: { correct: 4, total: 5 },
-        listening: { rating: "Developing", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 80, correct: 4, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Developing", statusText: "Developing" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Developing",
-        speaking: "Secure"
-      },
-      teacherComment: "Ege demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Ege demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-209-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-209",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 8, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Developing"
-      },
-      teacherComment: "Fatih Yetkin demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Fatih Yetkin demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-219-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-219",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 9, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 90, correct: 9, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Gökçe demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Gökçe demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-210-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-210",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 10, total: 10 },
-        reading: { correct: 5, total: 5 },
-        grammar: { correct: 3, total: 5 },
-        writing: { correct: 4, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 100, correct: 10, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 80, correct: 4, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Gurur demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Gurur demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-206-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-206",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 7, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Developing", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Developing", statusText: "Developing" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Developing",
-        speaking: "Developing"
-      },
-      teacherComment: "Gülce demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Gülce demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-204-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-204",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 8, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Güneş Nisa demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Güneş Nisa demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-223-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-223",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 9, total: 10 },
-        reading: { correct: 5, total: 5 },
-        grammar: { correct: 3, total: 5 },
-        writing: { correct: 4, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 90, correct: 9, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 80, correct: 4, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Secure"
-      },
-      teacherComment: "Mavi Nil demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Mavi Nil demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-351-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-351",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 10, total: 10 },
-        reading: { correct: 3, total: 5 },
-        grammar: { correct: 4, total: 5 },
-        writing: { correct: 5, total: 5 },
-        listening: { rating: "Secure", score: 75 },
-        speaking: { rating: "Developing", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 100, correct: 10, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 60, correct: 3, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 100, correct: 5, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Secure", statusText: "Secure" },
-        speaking: { score: 75, mastery: "Developing", statusText: "Developing" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Secure",
-        speaking: "Developing"
-      },
-      teacherComment: "Melis Ayşen demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Melis Ayşen demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    },
-    {
-      id: "sub-student-3a-211-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-3a-211",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Secure",
-      scores: {
-        vocabulary: { correct: 7, total: 10 },
-        reading: { correct: 4, total: 5 },
-        grammar: { correct: 5, total: 5 },
-        writing: { correct: 3, total: 5 },
-        listening: { rating: "Developing", score: 75 },
-        speaking: { rating: "Secure", score: 75 }
-      },
-      skillScores: {
-        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
-        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
-        grammar: { score: 100, correct: 5, total: 5, mastery: "Secure", statusText: "Secure" },
-        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
-        listening: { score: 75, mastery: "Developing", statusText: "Developing" },
-        speaking: { score: 75, mastery: "Secure", statusText: "Secure" }
-      },
-      teacherAssessment: {
-        vocabulary: "Secure",
-        reading: "Secure",
-        grammar: "Secure",
-        writing: "Developing",
-        listening: "Developing",
-        speaking: "Secure"
-      },
-      teacherComment: "Melodi demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences.",
-      notes: "Melodi demonstrates good comprehension of Unit 1 vocabulary. Needs occasional encouragement with full spoken sentences."
-    }
-  ];
+  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [];
 
   function getInitialState() {
     return {
@@ -4671,7 +4560,7 @@
           parentName: 'Parent of Aslıhan Akın',
           parentContact: '+90 (555) 224-0001',
           parentEmail: 'parent224@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4688,7 +4577,7 @@
           parentName: 'Parent of Ateş Özenci',
           parentContact: '+90 (555) 229-0001',
           parentEmail: 'parent229@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4705,7 +4594,7 @@
           parentName: 'Parent of Ayça Koca',
           parentContact: '+90 (555) 354-0001',
           parentEmail: 'parent354@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4722,7 +4611,7 @@
           parentName: 'Parent of Ayşe Mila Yılmaz',
           parentContact: '+90 (555) 203-0001',
           parentEmail: 'parent203@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4739,7 +4628,7 @@
           parentName: 'Parent of Batı Mustafa Kır',
           parentContact: '+90 (555) 227-0001',
           parentEmail: 'parent227@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4756,7 +4645,7 @@
           parentName: 'Parent of Beren Umur',
           parentContact: '+90 (555) 207-0001',
           parentEmail: 'parent207@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4773,7 +4662,7 @@
           parentName: 'Parent of Beste Aksu',
           parentContact: '+90 (555) 202-0001',
           parentEmail: 'parent202@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4790,7 +4679,7 @@
           parentName: 'Parent of Cemre Özbay',
           parentContact: '+90 (555) 214-0001',
           parentEmail: 'parent214@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4807,7 +4696,7 @@
           parentName: 'Parent of Ege Taş',
           parentContact: '+90 (555) 222-0001',
           parentEmail: 'parent222@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4824,7 +4713,7 @@
           parentName: 'Parent of Fatih Yetkin Yılmaz',
           parentContact: '+90 (555) 209-0001',
           parentEmail: 'parent209@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4841,7 +4730,7 @@
           parentName: 'Parent of Gökçe Duman',
           parentContact: '+90 (555) 219-0001',
           parentEmail: 'parent219@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4858,7 +4747,7 @@
           parentName: 'Parent of Gurur Ürek',
           parentContact: '+90 (555) 210-0001',
           parentEmail: 'parent210@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4875,7 +4764,7 @@
           parentName: 'Parent of Gülce Çalışkan',
           parentContact: '+90 (555) 206-0001',
           parentEmail: 'parent206@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4892,7 +4781,7 @@
           parentName: 'Parent of Güneş Nisa Aydın',
           parentContact: '+90 (555) 204-0001',
           parentEmail: 'parent204@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4909,7 +4798,7 @@
           parentName: 'Parent of Mavi Nil Bozkurt',
           parentContact: '+90 (555) 223-0001',
           parentEmail: 'parent223@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4926,7 +4815,7 @@
           parentName: 'Parent of Melis Ayşen Şentürk',
           parentContact: '+90 (555) 351-0001',
           parentEmail: 'parent351@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4943,7 +4832,7 @@
           parentName: 'Parent of Melodi Karaca',
           parentContact: '+90 (555) 211-0001',
           parentEmail: 'parent211@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4960,7 +4849,7 @@
           parentName: 'Parent of Ahmet Alhasan',
           parentContact: '+90 (555) 353-0001',
           parentEmail: 'parent353@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4977,7 +4866,7 @@
           parentName: 'Parent of Ayaz Kahraman',
           parentContact: '+90 (555) 200-0001',
           parentEmail: 'parent200@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4994,7 +4883,7 @@
           parentName: 'Parent of Begüm Eren',
           parentContact: '+90 (555) 201-0001',
           parentEmail: 'parent201@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5011,7 +4900,7 @@
           parentName: 'Parent of Buğlem Ariöz',
           parentContact: '+90 (555) 221-0001',
           parentEmail: 'parent221@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5028,7 +4917,7 @@
           parentName: 'Parent of Demir Susatar',
           parentContact: '+90 (555) 230-0001',
           parentEmail: 'parent230@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5045,7 +4934,7 @@
           parentName: 'Parent of Deniz Akıncı',
           parentContact: '+90 (555) 213-0001',
           parentEmail: 'parent213@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5062,7 +4951,7 @@
           parentName: 'Parent of Deniz Kavasoğlu',
           parentContact: '+90 (555) 220-0001',
           parentEmail: 'parent220@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5079,7 +4968,7 @@
           parentName: 'Parent of Ece Aras',
           parentContact: '+90 (555) 217-0001',
           parentEmail: 'parent217@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5096,7 +4985,7 @@
           parentName: 'Parent of Ece Yaşar',
           parentContact: '+90 (555) 352-0001',
           parentEmail: 'parent352@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5113,7 +5002,7 @@
           parentName: 'Parent of Ecem Naz Yaman',
           parentContact: '+90 (555) 215-0001',
           parentEmail: 'parent215@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5130,7 +5019,7 @@
           parentName: 'Parent of Elif Miray Ata',
           parentContact: '+90 (555) 216-0001',
           parentEmail: 'parent216@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5147,7 +5036,7 @@
           parentName: 'Parent of İlker Mete Kırsaç',
           parentContact: '+90 (555) 205-0001',
           parentEmail: 'parent205@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5164,7 +5053,7 @@
           parentName: 'Parent of Mila Topçu',
           parentContact: '+90 (555) 228-0001',
           parentEmail: 'parent228@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5181,7 +5070,7 @@
           parentName: 'Parent of Rüzgar Sarp Kutlu',
           parentContact: '+90 (555) 212-0001',
           parentEmail: 'parent212@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5198,7 +5087,7 @@
           parentName: 'Parent of Sena Varaş',
           parentContact: '+90 (555) 218-0001',
           parentEmail: 'parent218@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5215,7 +5104,7 @@
           parentName: 'Parent of Ülkü Sancaklı',
           parentContact: '+90 (555) 225-0001',
           parentEmail: 'parent225@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5232,7 +5121,7 @@
           parentName: 'Parent of Ada Özcan',
           parentContact: '+90 (555) 313-0001',
           parentEmail: 'parent313@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5249,7 +5138,7 @@
           parentName: 'Parent of Ahmet Mete İnal',
           parentContact: '+90 (555) 441-0001',
           parentEmail: 'parent441@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5266,7 +5155,7 @@
           parentName: 'Parent of Alya Zeynep Aydoğmuş',
           parentContact: '+90 (555) 311-0001',
           parentEmail: 'parent311@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5283,7 +5172,7 @@
           parentName: 'Parent of Bahriye Ada Güler',
           parentContact: '+90 (555) 310-0001',
           parentEmail: 'parent310@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5300,7 +5189,7 @@
           parentName: 'Parent of Belis Erkanat',
           parentContact: '+90 (555) 312-0001',
           parentEmail: 'parent312@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5317,7 +5206,7 @@
           parentName: 'Parent of Defne Nugay',
           parentContact: '+90 (555) 344-0001',
           parentEmail: 'parent344@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5334,7 +5223,7 @@
           parentName: 'Parent of Efe Yaldız',
           parentContact: '+90 (555) 345-0001',
           parentEmail: 'parent345@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5351,7 +5240,7 @@
           parentName: 'Parent of Elif Su Yarar',
           parentContact: '+90 (555) 321-0001',
           parentEmail: 'parent321@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5368,7 +5257,7 @@
           parentName: 'Parent of Emir Ali Gökalp',
           parentContact: '+90 (555) 315-0001',
           parentEmail: 'parent315@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5385,7 +5274,7 @@
           parentName: 'Parent of Emir Ertem',
           parentContact: '+90 (555) 302-0001',
           parentEmail: 'parent302@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5402,7 +5291,7 @@
           parentName: 'Parent of Esila Nil Aslan',
           parentContact: '+90 (555) 317-0001',
           parentEmail: 'parent317@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5419,7 +5308,7 @@
           parentName: 'Parent of İclal Gökalp',
           parentContact: '+90 (555) 314-0001',
           parentEmail: 'parent314@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5436,7 +5325,7 @@
           parentName: 'Parent of İpek İlhan',
           parentContact: '+90 (555) 343-0001',
           parentEmail: 'parent343@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5453,7 +5342,7 @@
           parentName: 'Parent of Kemal Tahsin Demirtaş',
           parentContact: '+90 (555) 341-0001',
           parentEmail: 'parent341@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5470,7 +5359,7 @@
           parentName: 'Parent of Melik Emir Başara',
           parentContact: '+90 (555) 342-0001',
           parentEmail: 'parent342@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5487,7 +5376,7 @@
           parentName: 'Parent of Rüzgar Dener',
           parentContact: '+90 (555) 300-0001',
           parentEmail: 'parent300@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5504,7 +5393,7 @@
           parentName: 'Parent of Sühan Bilbey',
           parentContact: '+90 (555) 320-0001',
           parentEmail: 'parent320@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5521,7 +5410,7 @@
           parentName: 'Parent of Şimal Koyun',
           parentContact: '+90 (555) 319-0001',
           parentEmail: 'parent319@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5538,7 +5427,7 @@
           parentName: 'Parent of Zeynep Derin Kılıç',
           parentContact: '+90 (555) 109-0001',
           parentEmail: 'parent109@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5555,7 +5444,7 @@
           parentName: 'Parent of Ali İhsan Bıçakçı',
           parentContact: '+90 (555) 346-0001',
           parentEmail: 'parent346@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5572,7 +5461,7 @@
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5589,7 +5478,7 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5606,7 +5495,7 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5623,7 +5512,7 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5640,7 +5529,7 @@
           parentName: 'Parent of Elisa Berre Eşkin',
           parentContact: '+90 (555) 348-0001',
           parentEmail: 'parent348@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5657,7 +5546,7 @@
           parentName: 'Parent of Ertuğrul Turan',
           parentContact: '+90 (555) 318-0001',
           parentEmail: 'parent318@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5674,7 +5563,7 @@
           parentName: 'Parent of İlay Eşkin',
           parentContact: '+90 (555) 303-0001',
           parentEmail: 'parent303@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5691,7 +5580,7 @@
           parentName: 'Parent of Kerem Özçakmak',
           parentContact: '+90 (555) 305-0001',
           parentEmail: 'parent305@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5708,7 +5597,7 @@
           parentName: 'Parent of Lina Koca',
           parentContact: '+90 (555) 349-0001',
           parentEmail: 'parent349@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5725,7 +5614,7 @@
           parentName: 'Parent of Mina Çakar',
           parentContact: '+90 (555) 439-0001',
           parentEmail: 'parent439@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5742,7 +5631,7 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5759,7 +5648,7 @@
           parentName: 'Parent of Nisa Kömürcüoğlu',
           parentContact: '+90 (555) 440-0001',
           parentEmail: 'parent440@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5776,7 +5665,7 @@
           parentName: 'Parent of Ozan Metin',
           parentContact: '+90 (555) 301-0001',
           parentEmail: 'parent301@example.com',
-          streakDays: 8,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5793,7 +5682,7 @@
           parentName: 'Parent of Ozan Topçu',
           parentContact: '+90 (555) 208-0001',
           parentEmail: 'parent208@example.com',
-          streakDays: 3,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5810,7 +5699,7 @@
           parentName: 'Parent of Öykü Çiğdem Akar',
           parentContact: '+90 (555) 322-0001',
           parentEmail: 'parent322@example.com',
-          streakDays: 4,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5827,7 +5716,7 @@
           parentName: 'Parent of Uras Tekay',
           parentContact: '+90 (555) 339-0001',
           parentEmail: 'parent339@example.com',
-          streakDays: 5,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5844,7 +5733,7 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
-          streakDays: 6,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5861,7 +5750,7 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
-          streakDays: 7,
+          streakDays: 0,
           archived: false,
           manualCefrOverrides: {}
         }
@@ -6131,207 +6020,16 @@
       ],
 
       // 9. Real Attendance Records
-      attendanceRecords: [
-        { id: 'att-1', studentId: 'student-emma', classId: 'class-3a', date: '2026-09-01', status: 'Present' },
-        { id: 'att-2', studentId: 'student-emma', classId: 'class-3a', date: '2026-09-03', status: 'Present' },
-        { id: 'att-3', studentId: 'student-emma', classId: 'class-3a', date: '2026-09-08', status: 'Present' },
-        { id: 'att-4', studentId: 'student-emma', classId: 'class-3a', date: '2026-09-10', status: 'Present' },
-        { id: 'att-5', studentId: 'student-lucas', classId: 'class-3a', date: '2026-09-01', status: 'Present' },
-        { id: 'att-6', studentId: 'student-lucas', classId: 'class-3a', date: '2026-09-03', status: 'Late' },
-        { id: 'att-7', studentId: 'student-lucas', classId: 'class-3a', date: '2026-09-08', status: 'Present' },
-        { id: 'att-8', studentId: 'student-lucas', classId: 'class-3a', date: '2026-09-10', status: 'Present' }
-      ],
+      attendanceRecords: [],
 
       // 10. Transaction-based XP Ledger
-      xpTransactions: [
-        { id: 'xp-224-1', studentId: 'student-3a-224', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-224-2', studentId: 'student-3a-224', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-229-1', studentId: 'student-3a-229', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-229-2', studentId: 'student-3a-229', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-354-1', studentId: 'student-3a-354', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-354-2', studentId: 'student-3a-354', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-203-1', studentId: 'student-3a-203', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-203-2', studentId: 'student-3a-203', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-227-1', studentId: 'student-3a-227', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-227-2', studentId: 'student-3a-227', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-207-1', studentId: 'student-3a-207', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-207-2', studentId: 'student-3a-207', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-202-1', studentId: 'student-3a-202', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-202-2', studentId: 'student-3a-202', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-214-1', studentId: 'student-3a-214', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-214-2', studentId: 'student-3a-214', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-222-1', studentId: 'student-3a-222', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-222-2', studentId: 'student-3a-222', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-209-1', studentId: 'student-3a-209', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-209-2', studentId: 'student-3a-209', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-219-1', studentId: 'student-3a-219', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-219-2', studentId: 'student-3a-219', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-210-1', studentId: 'student-3a-210', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-210-2', studentId: 'student-3a-210', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-206-1', studentId: 'student-3a-206', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-206-2', studentId: 'student-3a-206', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-204-1', studentId: 'student-3a-204', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-204-2', studentId: 'student-3a-204', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-223-1', studentId: 'student-3a-223', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-223-2', studentId: 'student-3a-223', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-351-1', studentId: 'student-3a-351', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-351-2', studentId: 'student-3a-351', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-211-1', studentId: 'student-3a-211', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-211-2', studentId: 'student-3a-211', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-353-1', studentId: 'student-3b-353', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-353-2', studentId: 'student-3b-353', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-200-1', studentId: 'student-3b-200', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-200-2', studentId: 'student-3b-200', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-201-1', studentId: 'student-3b-201', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-201-2', studentId: 'student-3b-201', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-221-1', studentId: 'student-3b-221', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-221-2', studentId: 'student-3b-221', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-230-1', studentId: 'student-3b-230', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-230-2', studentId: 'student-3b-230', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-213-1', studentId: 'student-3b-213', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-213-2', studentId: 'student-3b-213', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-220-1', studentId: 'student-3b-220', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-220-2', studentId: 'student-3b-220', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-217-1', studentId: 'student-3b-217', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-217-2', studentId: 'student-3b-217', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-352-1', studentId: 'student-3b-352', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-352-2', studentId: 'student-3b-352', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-215-1', studentId: 'student-3b-215', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-215-2', studentId: 'student-3b-215', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-216-1', studentId: 'student-3b-216', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-216-2', studentId: 'student-3b-216', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-205-1', studentId: 'student-3b-205', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-205-2', studentId: 'student-3b-205', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-228-1', studentId: 'student-3b-228', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-228-2', studentId: 'student-3b-228', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-212-1', studentId: 'student-3b-212', amount: 300, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-212-2', studentId: 'student-3b-212', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-218-1', studentId: 'student-3b-218', amount: 400, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-218-2', studentId: 'student-3b-218', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-225-1', studentId: 'student-3b-225', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-225-2', studentId: 'student-3b-225', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-313-1', studentId: 'student-4a-313', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-313-2', studentId: 'student-4a-313', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-441-1', studentId: 'student-4a-441', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-441-2', studentId: 'student-4a-441', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-311-1', studentId: 'student-4a-311', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-311-2', studentId: 'student-4a-311', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-310-1', studentId: 'student-4a-310', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-310-2', studentId: 'student-4a-310', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-312-1', studentId: 'student-4a-312', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-312-2', studentId: 'student-4a-312', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-344-1', studentId: 'student-4a-344', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-344-2', studentId: 'student-4a-344', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-345-1', studentId: 'student-4a-345', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-345-2', studentId: 'student-4a-345', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-321-1', studentId: 'student-4a-321', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-321-2', studentId: 'student-4a-321', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-315-1', studentId: 'student-4a-315', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-315-2', studentId: 'student-4a-315', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-302-1', studentId: 'student-4a-302', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-302-2', studentId: 'student-4a-302', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-317-1', studentId: 'student-4a-317', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-317-2', studentId: 'student-4a-317', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-314-1', studentId: 'student-4a-314', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-314-2', studentId: 'student-4a-314', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-343-1', studentId: 'student-4a-343', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-343-2', studentId: 'student-4a-343', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-341-1', studentId: 'student-4a-341', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-341-2', studentId: 'student-4a-341', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-342-1', studentId: 'student-4a-342', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-342-2', studentId: 'student-4a-342', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-300-1', studentId: 'student-4a-300', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-300-2', studentId: 'student-4a-300', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-320-1', studentId: 'student-4a-320', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-320-2', studentId: 'student-4a-320', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-319-1', studentId: 'student-4a-319', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-319-2', studentId: 'student-4a-319', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-109-1', studentId: 'student-4a-109', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-109-2', studentId: 'student-4a-109', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-346-1', studentId: 'student-4b-346', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-346-2', studentId: 'student-4b-346', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-338-1', studentId: 'student-4b-338', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-338-2', studentId: 'student-4b-338', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-316-1', studentId: 'student-4b-316', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-316-2', studentId: 'student-4b-316', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-307-1', studentId: 'student-4b-307', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-307-2', studentId: 'student-4b-307', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-306-1', studentId: 'student-4b-306', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-306-2', studentId: 'student-4b-306', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-348-1', studentId: 'student-4b-348', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-348-2', studentId: 'student-4b-348', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-318-1', studentId: 'student-4b-318', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-318-2', studentId: 'student-4b-318', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-303-1', studentId: 'student-4b-303', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-303-2', studentId: 'student-4b-303', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-305-1', studentId: 'student-4b-305', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-305-2', studentId: 'student-4b-305', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-349-1', studentId: 'student-4b-349', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-349-2', studentId: 'student-4b-349', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-439-1', studentId: 'student-4b-439', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-439-2', studentId: 'student-4b-439', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-304-1', studentId: 'student-4b-304', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-304-2', studentId: 'student-4b-304', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-440-1', studentId: 'student-4b-440', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-440-2', studentId: 'student-4b-440', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-301-1', studentId: 'student-4b-301', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-301-2', studentId: 'student-4b-301', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-208-1', studentId: 'student-4b-208', amount: 600, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-208-2', studentId: 'student-4b-208', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-322-1', studentId: 'student-4b-322', amount: 700, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-322-2', studentId: 'student-4b-322', amount: 160, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-339-1', studentId: 'student-4b-339', amount: 800, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-339-2', studentId: 'student-4b-339', amount: 100, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-309-1', studentId: 'student-4b-309', amount: 900, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-309-2', studentId: 'student-4b-309', amount: 120, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' },
-        { id: 'xp-308-1', studentId: 'student-4b-308', amount: 500, reason: 'Unit 1 Explorer Orientation & Games', category: 'positive', icon: '⭐', date: 'Sep 1, 2026', timestamp: '2026-09-01T09:00:00Z', createdBy: 'System', source: 'System', status: 'active' },
-        { id: 'xp-308-2', studentId: 'student-4b-308', amount: 140, reason: 'Speaking English in Class', category: 'positive', icon: '🗣️', date: 'Sep 3, 2026', timestamp: '2026-09-03T10:00:00Z', createdBy: 'Teacher', source: 'Teacher', status: 'active' }
-      ],
+      xpTransactions: [],
 
       // 11. Learning Evidence (Progress Calculation)
-      learningEvidence: [
-        { id: 'ev-224-1', studentId: 'student-3a-224', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-229-1', studentId: 'student-3a-229', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-354-1', studentId: 'student-3a-354', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-203-1', studentId: 'student-3a-203', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-227-1', studentId: 'student-3a-227', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-207-1', studentId: 'student-3a-207', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-202-1', studentId: 'student-3a-202', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-214-1', studentId: 'student-3a-214', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-222-1', studentId: 'student-3a-222', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-209-1', studentId: 'student-3a-209', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-219-1', studentId: 'student-3a-219', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-210-1', studentId: 'student-3a-210', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-206-1', studentId: 'student-3a-206', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-204-1', studentId: 'student-3a-204', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-223-1', studentId: 'student-3a-223', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-351-1', studentId: 'student-3a-351', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-211-1', studentId: 'student-3a-211', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-353-1', studentId: 'student-3b-353', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-200-1', studentId: 'student-3b-200', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' },
-        { id: 'ev-201-1', studentId: 'student-3b-201', activityId: 'monster-day', objectiveId: 'obj-1', skillId: 'vocabulary', score: 90, maxScore: 100, date: 'Sep 4, 2026', source: 'Game' }
-      ],
+      learningEvidence: [],
 
       // 12. Persistent Private Teacher Notes
-      teacherNotes: [
-        { id: 'note-224', studentId: 'student-3a-224', text: 'Aslıhan participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-229', studentId: 'student-3a-229', text: 'Ateş participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-354', studentId: 'student-3a-354', text: 'Ayça participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-203', studentId: 'student-3a-203', text: 'Ayşe Mila participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-227', studentId: 'student-3a-227', text: 'Batı Mustafa participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-207', studentId: 'student-3a-207', text: 'Beren participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-202', studentId: 'student-3a-202', text: 'Beste participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-214', studentId: 'student-3a-214', text: 'Cemre participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-222', studentId: 'student-3a-222', text: 'Ege participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-209', studentId: 'student-3a-209', text: 'Fatih Yetkin participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-219', studentId: 'student-3a-219', text: 'Gökçe participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-210', studentId: 'student-3a-210', text: 'Gurur participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-206', studentId: 'student-3a-206', text: 'Gülce participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-204', studentId: 'student-3a-204', text: 'Güneş Nisa participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-223', studentId: 'student-3a-223', text: 'Mavi Nil participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-351', studentId: 'student-3a-351', text: 'Melis Ayşen participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' },
-        { id: 'note-211', studentId: 'student-3a-211', text: 'Melodi participates actively in English games and follows classroom instructions well.', date: 'Sep 4, 2026', author: 'Emine Öğretmen' }
-      ],
+      teacherNotes: [],
 
       // 13. Class Story Posts
       classStory: [
@@ -6396,53 +6094,8 @@
       ],
 
       // 14. Portfolios (Student Work & Multimedia Evidence)
-      portfolios: [
-        {
-          id: 'port-1',
-          studentId: 'student-emma',
-          classId: 'class-3a',
-          title: 'Monster Day: Gloop the Friendly Alien',
-          category: 'Projects',
-          type: 'image',
-          date: '2026-09-02',
-          preview: '👾',
-          notes: 'Emma used 8 body parts and 5 color adjectives accurately during show & tell.'
-        },
-        {
-          id: 'port-2',
-          studentId: 'student-emma',
-          classId: 'class-3a',
-          title: 'Fire Station Radio Call Audio',
-          category: 'Speaking',
-          type: 'audio',
-          date: '2026-09-03',
-          preview: '🎙️',
-          notes: 'Clear pronunciation of emergency vocabulary and polite request structures.'
-        },
-        {
-          id: 'port-3',
-          studentId: 'student-emma',
-          classId: 'class-3a',
-          title: 'At the Restaurant Menu Worksheet',
-          category: 'Worksheets',
-          type: 'document',
-          date: '2026-09-04',
-          preview: '📄',
-          notes: 'Scored 10/10 on food categories and dialogue writing.'
-        },
-        {
-          id: 'port-4',
-          studentId: 'student-lucas',
-          classId: 'class-3a',
-          title: 'Prepositions of Place Map Drawing',
-          category: 'Projects',
-          type: 'image',
-          date: '2026-09-03',
-          preview: '🗺️',
-          notes: 'Drawn neighbourhood layout with accurate labels for between, next to, opposite.'
-        }
-      ],
-      
+      portfolios: [],
+
       // 15. Worksheets & Printable Activity Sheets
       worksheets: [
         {
@@ -6798,11 +6451,7 @@
       progressCheckSubmissions: JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS)),
       monsterItems: JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS)),
       monsterProfiles: JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES)),
-      studentAwards: [
-        { id: 'award-1', studentId: 'student-emma', badgeId: 'badge-1', awardedDate: '2026-09-01', awardedBy: 'Ms. Sarah', notes: 'Reached 1,000 XP milestone with high enthusiasm', archived: false },
-        { id: 'award-2', studentId: 'student-emma', badgeId: 'badge-2', awardedDate: '2026-09-03', awardedBy: 'Ms. Sarah', notes: 'Great spoken performance during restaurant roleplay', archived: false },
-        { id: 'award-3', studentId: 'student-lucas', badgeId: 'badge-4', awardedDate: '2026-09-02', awardedBy: 'Ms. Sarah', notes: 'Excellent teamwork and helping group members', archived: false }
-      ]
+      studentAwards: []
     };
   }
 
@@ -6827,8 +6476,23 @@
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
               merged.progressChecks = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECKS));
             }
-            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions) || merged.progressCheckSubmissions.length === 0) {
-              merged.progressCheckSubmissions = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS));
+            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions)) {
+              merged.progressCheckSubmissions = [];
+            }
+            if (!merged.xpTransactions || !Array.isArray(merged.xpTransactions)) {
+              merged.xpTransactions = [];
+            }
+            if (!merged.attendanceRecords || !Array.isArray(merged.attendanceRecords)) {
+              merged.attendanceRecords = [];
+            }
+            if (!merged.learningEvidence || !Array.isArray(merged.learningEvidence)) {
+              merged.learningEvidence = [];
+            }
+            if (!merged.teacherNotes || !Array.isArray(merged.teacherNotes)) {
+              merged.teacherNotes = [];
+            }
+            if (!merged.studentAwards || !Array.isArray(merged.studentAwards)) {
+              merged.studentAwards = [];
             }
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
             if (!merged.worksheets) merged.worksheets = initial.worksheets || [];
@@ -6881,59 +6545,6 @@
             }
             // Ensure every existing student in database has a valid, synchronized MonsterProfile
             if (Array.isArray(merged.students)) {
-              if (!merged.students.some(s => s.id === 'student-fern' || s.firstName === 'Fern')) {
-                merged.students.push({
-                  id: 'student-fern',
-                  studentIdNumber: 'EAA-2026-007',
-                  firstName: 'Fern',
-                  lastName: 'Woods',
-                  classId: 'class-3a',
-                  age: 9,
-                  grade: 'Grade 3',
-                  overallCefr: 'A2',
-                  avatar: { hair: 'girl', outfit: 'explorer', accessory: 'badge' },
-                  parentName: 'Robin Woods',
-                  parentContact: '+1 (555) 342-9900',
-                  parentEmail: 'robin.woods@example.com',
-                  streakDays: 8,
-                  archived: false,
-                  manualCefrOverrides: {}
-                });
-              }
-
-              if (!merged.xpTransactions) merged.xpTransactions = [];
-              const fernXPTotal = merged.xpTransactions.filter(t => t.studentId === 'student-fern' && t.status !== 'voided').reduce((s, t) => s + (parseInt(t.amount, 10) || 0), 0);
-              if (fernXPTotal < 11122) {
-                merged.xpTransactions.push({
-                  id: 'xp-fern-init',
-                  studentId: 'student-fern',
-                  amount: 11122 - fernXPTotal,
-                  reason: 'Ultimate Monster Mastery & Legend Quests',
-                  category: 'positive',
-                  icon: '👑',
-                  date: 'Sep 5, 2026',
-                  timestamp: '2026-09-05T12:00:00Z',
-                  createdBy: 'System',
-                  source: 'Activity',
-                  status: 'active'
-                });
-              }
-
-              if (merged.monsterProfiles && merged.monsterProfiles['student-fern']) {
-                merged.monsterProfiles['student-fern'].highestUnlockedLevel = 7;
-                merged.monsterProfiles['student-fern'].lastCelebratedLevel = 7;
-                merged.monsterProfiles['student-fern'].isHatched = true;
-                if (!merged.monsterProfiles['student-fern'].equipped) merged.monsterProfiles['student-fern'].equipped = {};
-                const eq = merged.monsterProfiles['student-fern'].equipped;
-                if (!eq.body || eq.body === 'none') eq.body = 'body-purple';
-                if (!eq.eyes || eq.eyes === 'none') eq.eyes = 'eyes-wink';
-                if (!eq.mouth || eq.mouth === 'none') eq.mouth = 'mouth-toothy';
-                if (!eq.horns || eq.horns === 'none') eq.horns = 'horns-curved';
-                if (!eq.wings || eq.wings === 'none') eq.wings = 'wings-celestial';
-                if (!eq.tail || eq.tail === 'none') eq.tail = 'tail-puff';
-                if (!eq.hat || eq.hat === 'none') eq.hat = 'hat-explorer';
-              }
-
               const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
               merged.students.forEach((st, sIdx) => {
                 if (!merged.monsterProfiles[st.id] || !merged.monsterProfiles[st.id].equipped) {
@@ -8012,6 +7623,12 @@
         return true;
       }
       return false;
+    }
+
+    getUnit(unitId) {
+      if (!unitId) return null;
+      const all = this.getUnits(null, true);
+      return all.find(u => u.id === unitId) || null;
     }
 
     getUnits(bookId = null, includeArchived = false) {
@@ -11193,88 +10810,45 @@
         const subId = existingIdx !== -1 ? this.state.progressCheckSubmissions[existingIdx].id : ("sub-" + studentId + "-" + checkId);
 
         const skillScores = {};
-        
-        if (res.scores && res.scores.vocabulary) {
-          const v = res.scores.vocabulary;
-          if (v.total) {
-            const correct = Number(v.correct) || 0;
-            const total = Number(v.total) || 10;
-            const pct = Math.round((correct / total) * 100);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.vocabulary) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.vocabulary = { score: pct, correct, total, mastery, statusText: mastery };
-          } else if (v.score !== undefined) {
-            const pct = Number(v.score);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.vocabulary) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.vocabulary = { score: pct, correct: v.correct || 8, total: v.total || 10, mastery, statusText: mastery };
-          }
-        }
+        const fourSkills = ['reading', 'listening', 'writing', 'speaking'];
+        let totalRaw = 0;
+        let totalMax = 40;
 
-        if (res.scores && res.scores.reading) {
-          const r = res.scores.reading;
-          if (r.total) {
-            const correct = Number(r.correct) || 0;
-            const total = Number(r.total) || 5;
-            const pct = Math.round((correct / total) * 100);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.reading) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.reading = { score: pct, correct, total, mastery, statusText: mastery };
-          } else if (r.score !== undefined) {
-            const pct = Number(r.score);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.reading) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.reading = { score: pct, correct: r.correct || 4, total: r.total || 5, mastery, statusText: mastery };
-          }
-        }
+        fourSkills.forEach(skillKey => {
+          const s = (res.scores && res.scores[skillKey]) || {};
+          let correct = 0;
+          let total = 10;
 
-        if (res.scores && res.scores.grammar) {
-          const g = res.scores.grammar;
-          if (g.total) {
-            const correct = Number(g.correct) || 0;
-            const total = Number(g.total) || 5;
-            const pct = Math.round((correct / total) * 100);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.grammar) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.grammar = { score: pct, correct, total, mastery, statusText: mastery };
-          } else if (g.score !== undefined) {
-            const pct = Number(g.score);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.grammar) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.grammar = { score: pct, correct: g.correct || 4, total: g.total || 5, mastery, statusText: mastery };
+          if (typeof s === 'number') {
+            correct = s;
+          } else if (s.correct !== undefined) {
+            correct = Number(s.correct) || 0;
+            total = Number(s.total) || 10;
+          } else if (s.score !== undefined) {
+            correct = Number(s.score) || 0;
+            total = Number(s.total) || 10;
+          } else if (res[skillKey] !== undefined) {
+            correct = Number(res[skillKey]) || 0;
           }
-        }
 
-        if (res.scores && res.scores.writing) {
-          const w = res.scores.writing;
-          if (w.total) {
-            const correct = Number(w.correct) || 0;
-            const total = Number(w.total) || 5;
-            const pct = Math.round((correct / total) * 100);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.writing) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.writing = { score: pct, correct, total, mastery, statusText: mastery };
-          } else if (w.score !== undefined) {
-            const pct = Number(w.score);
-            const mastery = (res.teacherAssessment && res.teacherAssessment.writing) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
-            skillScores.writing = { score: pct, correct: w.correct || 3, total: w.total || 5, mastery, statusText: mastery };
-          }
-        }
+          correct = Math.max(0, Math.min(total, correct));
+          totalRaw += correct;
 
-        if (res.scores && res.scores.listening) {
-          const rating = res.scores.listening.rating || (res.teacherAssessment && res.teacherAssessment.listening) || "Developing";
-          const ratingMap = { "Beginning": 45, "Developing": 65, "Secure": 85, "Strong": 95, "Needs Support": 50, "Not Assessed": null };
-          const numScore = res.scores.listening.score !== undefined ? Number(res.scores.listening.score) : (ratingMap[rating] !== undefined ? ratingMap[rating] : 65);
-          if (rating !== "Not Assessed" && numScore !== null) {
-            skillScores.listening = { score: numScore, mastery: rating, statusText: rating };
-          }
-        }
+          const pct = Math.round((correct / total) * 100);
+          const teacherRating = (res.teacherAssessment && res.teacherAssessment[skillKey]) ||
+            (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : pct >= 50 ? "Developing" : "Needs Support");
 
-        if (res.scores && res.scores.speaking) {
-          const rating = res.scores.speaking.rating || (res.teacherAssessment && res.teacherAssessment.speaking) || "Developing";
-          const ratingMap = { "Beginning": 45, "Developing": 65, "Secure": 85, "Strong": 95, "Needs Support": 50, "Not Assessed": null };
-          const numScore = res.scores.speaking.score !== undefined ? Number(res.scores.speaking.score) : (ratingMap[rating] !== undefined ? ratingMap[rating] : 65);
-          if (rating !== "Not Assessed" && numScore !== null) {
-            skillScores.speaking = { score: numScore, mastery: rating, statusText: rating };
-          }
-        }
+          skillScores[skillKey] = {
+            score: pct,
+            correct: correct,
+            total: total,
+            mastery: teacherRating,
+            statusText: teacherRating
+          };
+        });
 
-        const scoredValues = Object.keys(skillScores).map(k => skillScores[k].score).filter(s => typeof s === "number");
-        const overallScore = scoredValues.length ? Math.round(scoredValues.reduce((a, b) => a + b, 0) / scoredValues.length) : 0;
-        const overallMastery = overallScore >= 85 ? "Strong" : overallScore >= 70 ? "Secure" : "Developing";
+        const overallPct = Math.round((totalRaw / totalMax) * 100);
+        const overallMastery = overallPct >= 85 ? "Strong" : overallPct >= 70 ? "Secure" : overallPct >= 50 ? "Developing" : "Needs Support";
 
         const subRecord = {
           id: subId,
@@ -11283,14 +10857,26 @@
           classId: res.classId || (student ? student.classId : "class-3a"),
           date: res.date || new Date().toISOString().split("T")[0],
           displayDate: res.displayDate || new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
-          status: res.status || "completed",
-          completionPct: res.status === "partially_completed" ? 60 : res.status === "not_assessed" ? 0 : 100,
-          accuracyPct: overallScore,
-          overallScore: overallScore,
+          status: "completed",
+          completionPct: 100,
+          rawTotal: totalRaw,
+          maxRawTotal: totalMax,
+          accuracyPct: overallPct,
+          overallScore: overallPct,
           mastery: overallMastery,
-          scores: res.scores || {},
+          scores: {
+            reading: { correct: skillScores.reading.correct, total: 10 },
+            listening: { correct: skillScores.listening.correct, total: 10 },
+            writing: { correct: skillScores.writing.correct, total: 10 },
+            speaking: { correct: skillScores.speaking.correct, total: 10 }
+          },
           skillScores: skillScores,
-          teacherAssessment: res.teacherAssessment || {},
+          teacherAssessment: {
+            reading: skillScores.reading.mastery,
+            listening: skillScores.listening.mastery,
+            writing: skillScores.writing.mastery,
+            speaking: skillScores.speaking.mastery
+          },
           teacherComment: res.notes || res.teacherComment || "",
           notes: res.notes || res.teacherComment || "",
           updatedAt: new Date().toISOString()
@@ -11304,19 +10890,23 @@
           updatedSubmissions.push(subRecord);
         }
 
-        // Create / update LearningEvidence for this student
+        // Create / update LearningEvidence for the four skills
         if (!this.state.learningEvidence) this.state.learningEvidence = [];
-        Object.keys(skillScores).forEach(skillKey => {
+        fourSkills.forEach(skillKey => {
           const sData = skillScores[skillKey];
           const evId = "ev-pc-" + studentId + "-" + checkId + "-" + skillKey;
-          const existingEvIdx = this.state.learningEvidence.findIndex(e => e.studentId === studentId && e.activityId === "progress-check-" + checkId && e.skillId === skillKey);
-          
+          const existingEvIdx = this.state.learningEvidence.findIndex(
+            e => e.studentId === studentId && e.activityId === "progress-check-" + checkId && e.skillId === skillKey
+          );
+
           const evRecord = {
             id: existingEvIdx !== -1 ? this.state.learningEvidence[existingEvIdx].id : evId,
             studentId: studentId,
             activityId: "progress-check-" + checkId,
             sourceId: subId,
             skillId: skillKey,
+            rawScore: sData.correct,
+            rawMaxScore: sData.total,
             score: sData.score,
             maxScore: 100,
             date: subRecord.date,
@@ -11326,10 +10916,11 @@
             grade: check ? (check.targetGrade === "Grade 4" ? 4 : 3) : 3,
             unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
             cefr: check ? (check.cefrTarget || "A1") : "A1",
-            mastery: sData.mastery || "Developing",
-            teacherAssessment: sData.mastery || "Developing",
-            teacherNote: res.notes || (skillKey + " assessment: " + sData.mastery + " (" + sData.score + "%)"),
-            notes: res.notes || ("Assessed in Unit 1 Progress Check. Score: " + sData.score + "%")
+            mastery: sData.mastery,
+            teacherAssessment: sData.mastery,
+            teacherNote: res.notes || (skillKey + " assessment: " + sData.correct + "/10 (" + sData.mastery + ")"),
+            notes: res.notes || ("Unit 1 Progress Check score: " + sData.correct + "/10"),
+            archived: false
           };
 
           if (existingEvIdx !== -1) {
@@ -11339,6 +10930,21 @@
           }
         });
 
+        // Award +50 XP completion reward if not already awarded
+        if (!this.state.xpTransactions) this.state.xpTransactions = [];
+        const existingTx = this.state.xpTransactions.find(
+          t => t.studentId === studentId && t.sourceId === ('pc-reward-' + checkId)
+        );
+        if (!existingTx) {
+          this.giveXP(
+            studentId,
+            50,
+            'Completed Progress Check: ' + (check ? check.title : 'Unit 1 Assessment'),
+            'assessment',
+            { isPoints: true, category: 'positive', icon: '⭐', sourceId: 'pc-reward-' + checkId }
+          );
+        }
+
         // Update Student Profile
         if (student) {
           student.lastAssessmentDate = subRecord.date;
@@ -11347,13 +10953,17 @@
             title: check ? check.title : "English Adventure Progress Check",
             book: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
             unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
-            overallScore: overallScore,
+            overallScore: overallPct,
+            rawTotal: totalRaw,
             skillScores: skillScores,
             teacherNote: res.notes || ""
           };
-          student.latestTeacherNote = res.notes || student.latestTeacherNote || "";
+          if (res.notes) {
+            student.latestTeacherNote = res.notes.trim();
+          }
         }
 
+        // Add to teacherNotes if provided
         if (res.notes && res.notes.trim()) {
           if (!this.state.teacherNotes) this.state.teacherNotes = [];
           this.state.teacherNotes.unshift({
@@ -11365,32 +10975,13 @@
             source: 'Progress Check'
           });
         }
-
-        // Award +50 XP participation reward (check if already awarded for this progress check)
-        const existingXP = this.state.xpTransactions && this.state.xpTransactions.find(
-          t => t.studentId === studentId && (t.source === checkId || (t.sourceId && t.sourceId === checkId))
-        );
-        if (!existingXP) {
-          this.giveXP(
-            studentId,
-            50,
-            "Completed " + (check ? check.title : "English Adventure Progress Check"),
-            "assessment",
-            { isPoints: true, category: 'positive', icon: '⭐', sourceId: checkId }
-          );
-        }
       });
 
       this.saveState();
-      this.notify("progressCheckSubmissions", this.state.progressCheckSubmissions);
-      this.notify("evidence", this.state.learningEvidence);
-      this.notify("students", this.state.students);
-
-      return {
-        success: true,
-        count: updatedSubmissions.length,
-        submissions: updatedSubmissions
-      };
+      this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
+      this.notify('learningEvidence', this.state.learningEvidence);
+      this.notify('students', this.state.students);
+      return { success: true, count: updatedSubmissions.length };
     }
 
     compareProgressChecks(checkId1 = "progress-check-a1", checkId2 = "progress-check-u2", classId = "class-3a") {

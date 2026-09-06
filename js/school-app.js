@@ -1410,52 +1410,54 @@
             const latestPC = pcSubs[0];
             if (!latestPC) return '';
             const scores = latestPC.scores || {};
-            const vocabScore = scores.vocabulary ? (scores.vocabulary.correct + ' / ' + (scores.vocabulary.total || 10)) : (latestPC.skillScores && latestPC.skillScores.vocabulary ? (latestPC.skillScores.vocabulary.correct + ' / 10') : '8 / 10');
-            const readScore = scores.reading ? (scores.reading.correct + ' / ' + (scores.reading.total || 5)) : (latestPC.skillScores && latestPC.skillScores.reading ? (latestPC.skillScores.reading.correct + ' / 5') : '4 / 5');
-            const gramScore = scores.grammar ? (scores.grammar.correct + ' / ' + (scores.grammar.total || 5)) : (latestPC.skillScores && latestPC.skillScores.grammar ? (latestPC.skillScores.grammar.correct + ' / 5') : '4 / 5');
-            const writeScore = scores.writing ? (scores.writing.correct + ' / ' + (scores.writing.total || 5)) : (latestPC.skillScores && latestPC.skillScores.writing ? (latestPC.skillScores.writing.correct + ' / 5') : '3 / 5');
-            const listenScore = scores.listening ? scores.listening.rating : (latestPC.teacherAssessment && latestPC.teacherAssessment.listening ? latestPC.teacherAssessment.listening : (latestPC.skillScores && latestPC.skillScores.listening ? latestPC.skillScores.listening.statusText : 'Developing'));
-            const speakScore = scores.speaking ? scores.speaking.rating : (latestPC.teacherAssessment && latestPC.teacherAssessment.speaking ? latestPC.teacherAssessment.speaking : (latestPC.skillScores && latestPC.skillScores.speaking ? latestPC.skillScores.speaking.statusText : 'Developing'));
+            const isFourSkill = scores.reading && scores.reading.total === 10 && scores.listening && scores.listening.total === 10;
+
+            const readScore = scores.reading ? (scores.reading.correct + ' / ' + (scores.reading.total || 10)) : '0 / 10';
+            const listenScore = scores.listening ? (scores.listening.correct + ' / ' + (scores.listening.total || 10)) : '0 / 10';
+            const writeScore = scores.writing ? (scores.writing.correct + ' / ' + (scores.writing.total || 10)) : '0 / 10';
+            const speakScore = scores.speaking ? (scores.speaking.correct + ' / ' + (scores.speaking.total || 10)) : '0 / 10';
+            const rawTotal = (latestPC.rawTotal !== undefined) ? latestPC.rawTotal : 0;
+            const maxTotal = (latestPC.maxRawTotal !== undefined) ? latestPC.maxRawTotal : 40;
+            const mastery = latestPC.mastery || (rawTotal >= 34 ? 'Strong' : rawTotal >= 28 ? 'Secure' : rawTotal >= 20 ? 'Developing' : 'Needs Support');
             const noteText = latestPC.notes || latestPC.teacherComment || student.latestTeacherNote || '';
 
             return '' +
               '<div style="background:#fff; border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:var(--shadow-sm);">' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border-light);">' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border-light); flex-wrap:wrap; gap:8px;">' +
                   '<div style="display:flex; align-items:center; gap:8px;">' +
                     '<span style="font-size:1.3rem;">📊</span>' +
                     '<div>' +
-                      '<div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">English Adventure Progress Check</div>' +
-                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + (latestPC.bookTitle || 'Global Readings 2') + ' · ' + (latestPC.unitTitle || 'Unit 1') + '</div>' +
+                      '<div style="display:flex; align-items:center; gap:8px;">' +
+                        '<div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Four-Skill Progress Check</div>' +
+                        '<span class="badge" style="background:' + (mastery === 'Strong' ? '#d1fae5; color:#065f46;' : mastery === 'Secure' ? '#dbeafe; color:#1e40af;' : '#fef3c7; color:#92400e;') + ' font-size:0.7rem; font-weight:800;">' + mastery + '</span>' +
+                      '</div>' +
+                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + (latestPC.bookTitle || 'Global Readings 2') + ' · ' + (latestPC.unitTitle || 'Unit 1') + ' · Total Score: <strong>' + rawTotal + ' / ' + maxTotal + '</strong></div>' +
                     '</div>' +
                   '</div>' +
                   '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\');" style="font-size:0.75rem; padding:5px 12px; font-weight:700;">' +
-                    '✏️ Enter Results ➔' +
+                    '✏️ Gradebook ➔' +
                   '</button>' +
                 '</div>' +
-                '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px; font-size:0.8rem; margin-bottom:12px;">' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">VOCABULARY</span>' +
-                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + vocabScore + '</strong>' +
+                '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:8px; font-size:0.8rem; margin-bottom:12px;">' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
+                    '<span style="color:var(--text-muted); font-size:0.7rem; display:block; font-weight:700;">📖 READING</span>' +
+                    '<strong style="font-size:1rem; color:var(--text-main);">' + readScore + '</strong>' +
                   '</div>' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">READING</span>' +
-                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + readScore + '</strong>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
+                    '<span style="color:var(--text-muted); font-size:0.7rem; display:block; font-weight:700;">👂 LISTENING</span>' +
+                    '<strong style="font-size:1rem; color:var(--text-main);">' + listenScore + '</strong>' +
                   '</div>' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">GRAMMAR</span>' +
-                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + gramScore + '</strong>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
+                    '<span style="color:var(--text-muted); font-size:0.7rem; display:block; font-weight:700;">✍️ WRITING</span>' +
+                    '<strong style="font-size:1rem; color:var(--text-main);">' + writeScore + '</strong>' +
                   '</div>' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">WRITING</span>' +
-                    '<strong style="font-size:0.95rem; color:var(--text-main);">' + writeScore + '</strong>' +
+                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
+                    '<span style="color:var(--text-muted); font-size:0.7rem; display:block; font-weight:700;">🗣️ SPEAKING</span>' +
+                    '<strong style="font-size:1rem; color:var(--text-main);">' + speakScore + '</strong>' +
                   '</div>' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">LISTENING</span>' +
-                    '<strong style="font-size:0.88rem; color:#0369a1;">' + listenScore + '</strong>' +
-                  '</div>' +
-                  '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);">' +
-                    '<span style="color:var(--text-muted); font-size:0.72rem; display:block;">SPEAKING</span>' +
-                    '<strong style="font-size:0.88rem; color:#c2410c;">' + speakScore + '</strong>' +
+                  '<div style="background:#eff6ff; padding:8px 10px; border-radius:8px; border:1px solid #bfdbfe; text-align:center;">' +
+                    '<span style="color:#1e40af; font-size:0.7rem; display:block; font-weight:800;">⭐ TOTAL</span>' +
+                    '<strong style="font-size:1.05rem; color:#1d4ed8;">' + rawTotal + ' / ' + maxTotal + '</strong>' +
                   '</div>' +
                 '</div>' +
                 (noteText ?
@@ -5106,8 +5108,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="sidebar-hr"></div>' +
         '<div class="sidebar-section-title">My School</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classes' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classes\')" title="Classes"><span class="nav-item-left"><span class="nav-icon">👥</span> <span class="nav-label">Classes</span></span><span class="nav-badge-pill">' + counts.classes + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')" title="Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🧒</span> <span class="nav-label">Classroom Hub</span></span><span class="nav-badge-pill">' + counts.students + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'classes' ? 'is-active' : '') + '" onclick="switchView(\'classes\')" title="Classes"><span class="nav-item-left"><span class="nav-icon">👥</span> <span class="nav-label">Classes</span></span><span class="nav-badge-pill">' + counts.classes + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'classroom-hub' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classroom-hub\')" title="Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Classroom Hub</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')" title="Students Directory"><span class="nav-item-left"><span class="nav-icon">🧒</span> <span class="nav-label">Students</span></span><span class="nav-badge-pill">' + counts.students + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'attendance' ? 'is-active' : '') + '" onclick="switchView(\'attendance\')" title="Attendance"><span class="nav-item-left"><span class="nav-icon">📋</span> <span class="nav-label">Attendance</span></span></button></li>' +
         '</ul>' +
 
@@ -5224,6 +5227,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       switch (currentView) {
         case 'dashboard': renderTeacherDashboard(container); break;
         case 'classes': renderClassesView(container); break;
+        case 'classroom-hub': selectedClassDetailTab = 'classroom'; renderClassDetailView(container); break;
         case 'class-detail': renderClassDetailView(container); break;
         case 'students': renderStudentsView(container); break;
         case 'curriculum': renderCurriculumView(container); break;
