@@ -15,7 +15,7 @@
 (function(root) {
   'use strict';
 
-  const STORAGE_KEY = 'eaa_master_school_v5';
+  const STORAGE_KEY = 'eaa_master_school_v6';
 
   // Canonical list of 15 audited games
   const CANONICAL_GAMES = [
@@ -1633,10 +1633,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-224-1",
@@ -1671,10 +1668,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-229-1",
@@ -1709,10 +1703,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-354-1",
@@ -1747,10 +1738,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-203-1",
@@ -1785,10 +1773,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-227-1",
@@ -1823,10 +1808,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-207-1",
@@ -1861,10 +1843,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-202-1",
@@ -1899,10 +1878,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-214-1",
@@ -1937,10 +1913,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-222-1",
@@ -1975,10 +1948,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-209-1",
@@ -2013,10 +1983,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-219-1",
@@ -2051,10 +2018,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-210-1",
@@ -2089,10 +2053,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-206-1",
@@ -2127,10 +2088,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-204-1",
@@ -2165,10 +2123,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-223-1",
@@ -2203,10 +2158,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-351-1",
@@ -2241,10 +2193,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3a-211-1",
@@ -2279,10 +2228,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-353-1",
@@ -2317,10 +2263,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-200-1",
@@ -2355,10 +2298,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-201-1",
@@ -2393,10 +2333,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-221-1",
@@ -2431,10 +2368,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-230-1",
@@ -2469,10 +2403,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-213-1",
@@ -2507,10 +2438,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-220-1",
@@ -2545,10 +2473,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-217-1",
@@ -2583,10 +2508,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-352-1",
@@ -2621,10 +2543,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-215-1",
@@ -2659,10 +2578,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-216-1",
@@ -2697,10 +2613,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-205-1",
@@ -2735,10 +2648,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-228-1",
@@ -2773,10 +2683,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-212-1",
@@ -2811,10 +2718,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-218-1",
@@ -2849,10 +2753,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-3b-225-1",
@@ -2887,10 +2788,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-313-1",
@@ -2925,10 +2823,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-441-1",
@@ -2963,10 +2858,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-311-1",
@@ -3001,10 +2893,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-310-1",
@@ -3039,10 +2928,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-312-1",
@@ -3077,10 +2963,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-344-1",
@@ -3115,10 +2998,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-345-1",
@@ -3153,10 +3033,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-321-1",
@@ -3191,10 +3068,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-315-1",
@@ -3229,10 +3103,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-302-1",
@@ -3267,10 +3138,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-317-1",
@@ -3305,10 +3173,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-314-1",
@@ -3343,10 +3208,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-343-1",
@@ -3381,10 +3243,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-341-1",
@@ -3419,10 +3278,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-342-1",
@@ -3457,10 +3313,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-300-1",
@@ -3495,10 +3348,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-320-1",
@@ -3533,10 +3383,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-319-1",
@@ -3571,10 +3418,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4a-109-1",
@@ -3609,10 +3453,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-346-1",
@@ -3647,10 +3488,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-338-1",
@@ -3685,10 +3523,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-316-1",
@@ -3723,10 +3558,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-307-1",
@@ -3761,10 +3593,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-306-1",
@@ -3799,10 +3628,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-348-1",
@@ -3837,10 +3663,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-318-1",
@@ -3875,10 +3698,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-303-1",
@@ -3913,10 +3733,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-305-1",
@@ -3951,10 +3768,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-349-1",
@@ -3989,10 +3803,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-439-1",
@@ -4027,10 +3838,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-304-1",
@@ -4065,10 +3873,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-440-1",
@@ -4103,10 +3908,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-gold",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-301-1",
@@ -4141,10 +3943,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-blue",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-208-1",
@@ -4179,10 +3978,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-pink",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-322-1",
@@ -4217,10 +4013,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-green",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-339-1",
@@ -4255,10 +4048,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-orange",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-309-1",
@@ -4293,10 +4083,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": [
-      "body-purple",
-      "bg-meadow"
-    ],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-308-1",
@@ -4560,7 +4347,10 @@
           parentName: 'Parent of Aslıhan Akın',
           parentContact: '+90 (555) 224-0001',
           parentEmail: 'parent224@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4577,7 +4367,10 @@
           parentName: 'Parent of Ateş Özenci',
           parentContact: '+90 (555) 229-0001',
           parentEmail: 'parent229@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4594,7 +4387,10 @@
           parentName: 'Parent of Ayça Koca',
           parentContact: '+90 (555) 354-0001',
           parentEmail: 'parent354@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4611,7 +4407,10 @@
           parentName: 'Parent of Ayşe Mila Yılmaz',
           parentContact: '+90 (555) 203-0001',
           parentEmail: 'parent203@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4628,7 +4427,10 @@
           parentName: 'Parent of Batı Mustafa Kır',
           parentContact: '+90 (555) 227-0001',
           parentEmail: 'parent227@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4645,7 +4447,10 @@
           parentName: 'Parent of Beren Umur',
           parentContact: '+90 (555) 207-0001',
           parentEmail: 'parent207@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4662,7 +4467,10 @@
           parentName: 'Parent of Beste Aksu',
           parentContact: '+90 (555) 202-0001',
           parentEmail: 'parent202@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4679,7 +4487,10 @@
           parentName: 'Parent of Cemre Özbay',
           parentContact: '+90 (555) 214-0001',
           parentEmail: 'parent214@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4696,7 +4507,10 @@
           parentName: 'Parent of Ege Taş',
           parentContact: '+90 (555) 222-0001',
           parentEmail: 'parent222@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4713,7 +4527,10 @@
           parentName: 'Parent of Fatih Yetkin Yılmaz',
           parentContact: '+90 (555) 209-0001',
           parentEmail: 'parent209@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4730,7 +4547,10 @@
           parentName: 'Parent of Gökçe Duman',
           parentContact: '+90 (555) 219-0001',
           parentEmail: 'parent219@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4747,7 +4567,10 @@
           parentName: 'Parent of Gurur Ürek',
           parentContact: '+90 (555) 210-0001',
           parentEmail: 'parent210@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4764,7 +4587,10 @@
           parentName: 'Parent of Gülce Çalışkan',
           parentContact: '+90 (555) 206-0001',
           parentEmail: 'parent206@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4781,7 +4607,10 @@
           parentName: 'Parent of Güneş Nisa Aydın',
           parentContact: '+90 (555) 204-0001',
           parentEmail: 'parent204@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4798,7 +4627,10 @@
           parentName: 'Parent of Mavi Nil Bozkurt',
           parentContact: '+90 (555) 223-0001',
           parentEmail: 'parent223@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4815,7 +4647,10 @@
           parentName: 'Parent of Melis Ayşen Şentürk',
           parentContact: '+90 (555) 351-0001',
           parentEmail: 'parent351@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4832,7 +4667,10 @@
           parentName: 'Parent of Melodi Karaca',
           parentContact: '+90 (555) 211-0001',
           parentEmail: 'parent211@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4849,7 +4687,10 @@
           parentName: 'Parent of Ahmet Alhasan',
           parentContact: '+90 (555) 353-0001',
           parentEmail: 'parent353@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4866,7 +4707,10 @@
           parentName: 'Parent of Ayaz Kahraman',
           parentContact: '+90 (555) 200-0001',
           parentEmail: 'parent200@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4883,7 +4727,10 @@
           parentName: 'Parent of Begüm Eren',
           parentContact: '+90 (555) 201-0001',
           parentEmail: 'parent201@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4900,7 +4747,10 @@
           parentName: 'Parent of Buğlem Ariöz',
           parentContact: '+90 (555) 221-0001',
           parentEmail: 'parent221@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4917,7 +4767,10 @@
           parentName: 'Parent of Demir Susatar',
           parentContact: '+90 (555) 230-0001',
           parentEmail: 'parent230@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4934,7 +4787,10 @@
           parentName: 'Parent of Deniz Akıncı',
           parentContact: '+90 (555) 213-0001',
           parentEmail: 'parent213@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4951,7 +4807,10 @@
           parentName: 'Parent of Deniz Kavasoğlu',
           parentContact: '+90 (555) 220-0001',
           parentEmail: 'parent220@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4968,7 +4827,10 @@
           parentName: 'Parent of Ece Aras',
           parentContact: '+90 (555) 217-0001',
           parentEmail: 'parent217@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -4985,7 +4847,10 @@
           parentName: 'Parent of Ece Yaşar',
           parentContact: '+90 (555) 352-0001',
           parentEmail: 'parent352@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5002,7 +4867,10 @@
           parentName: 'Parent of Ecem Naz Yaman',
           parentContact: '+90 (555) 215-0001',
           parentEmail: 'parent215@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5019,7 +4887,10 @@
           parentName: 'Parent of Elif Miray Ata',
           parentContact: '+90 (555) 216-0001',
           parentEmail: 'parent216@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5036,7 +4907,10 @@
           parentName: 'Parent of İlker Mete Kırsaç',
           parentContact: '+90 (555) 205-0001',
           parentEmail: 'parent205@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5053,7 +4927,10 @@
           parentName: 'Parent of Mila Topçu',
           parentContact: '+90 (555) 228-0001',
           parentEmail: 'parent228@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5070,7 +4947,10 @@
           parentName: 'Parent of Rüzgar Sarp Kutlu',
           parentContact: '+90 (555) 212-0001',
           parentEmail: 'parent212@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5087,7 +4967,10 @@
           parentName: 'Parent of Sena Varaş',
           parentContact: '+90 (555) 218-0001',
           parentEmail: 'parent218@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5104,7 +4987,10 @@
           parentName: 'Parent of Ülkü Sancaklı',
           parentContact: '+90 (555) 225-0001',
           parentEmail: 'parent225@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5121,7 +5007,10 @@
           parentName: 'Parent of Ada Özcan',
           parentContact: '+90 (555) 313-0001',
           parentEmail: 'parent313@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5138,7 +5027,10 @@
           parentName: 'Parent of Ahmet Mete İnal',
           parentContact: '+90 (555) 441-0001',
           parentEmail: 'parent441@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5155,7 +5047,10 @@
           parentName: 'Parent of Alya Zeynep Aydoğmuş',
           parentContact: '+90 (555) 311-0001',
           parentEmail: 'parent311@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5172,7 +5067,10 @@
           parentName: 'Parent of Bahriye Ada Güler',
           parentContact: '+90 (555) 310-0001',
           parentEmail: 'parent310@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5189,7 +5087,10 @@
           parentName: 'Parent of Belis Erkanat',
           parentContact: '+90 (555) 312-0001',
           parentEmail: 'parent312@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5206,7 +5107,10 @@
           parentName: 'Parent of Defne Nugay',
           parentContact: '+90 (555) 344-0001',
           parentEmail: 'parent344@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5223,7 +5127,10 @@
           parentName: 'Parent of Efe Yaldız',
           parentContact: '+90 (555) 345-0001',
           parentEmail: 'parent345@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5240,7 +5147,10 @@
           parentName: 'Parent of Elif Su Yarar',
           parentContact: '+90 (555) 321-0001',
           parentEmail: 'parent321@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5257,7 +5167,10 @@
           parentName: 'Parent of Emir Ali Gökalp',
           parentContact: '+90 (555) 315-0001',
           parentEmail: 'parent315@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5274,7 +5187,10 @@
           parentName: 'Parent of Emir Ertem',
           parentContact: '+90 (555) 302-0001',
           parentEmail: 'parent302@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5291,7 +5207,10 @@
           parentName: 'Parent of Esila Nil Aslan',
           parentContact: '+90 (555) 317-0001',
           parentEmail: 'parent317@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5308,7 +5227,10 @@
           parentName: 'Parent of İclal Gökalp',
           parentContact: '+90 (555) 314-0001',
           parentEmail: 'parent314@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5325,7 +5247,10 @@
           parentName: 'Parent of İpek İlhan',
           parentContact: '+90 (555) 343-0001',
           parentEmail: 'parent343@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5342,7 +5267,10 @@
           parentName: 'Parent of Kemal Tahsin Demirtaş',
           parentContact: '+90 (555) 341-0001',
           parentEmail: 'parent341@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5359,7 +5287,10 @@
           parentName: 'Parent of Melik Emir Başara',
           parentContact: '+90 (555) 342-0001',
           parentEmail: 'parent342@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5376,7 +5307,10 @@
           parentName: 'Parent of Rüzgar Dener',
           parentContact: '+90 (555) 300-0001',
           parentEmail: 'parent300@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5393,7 +5327,10 @@
           parentName: 'Parent of Sühan Bilbey',
           parentContact: '+90 (555) 320-0001',
           parentEmail: 'parent320@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5410,7 +5347,10 @@
           parentName: 'Parent of Şimal Koyun',
           parentContact: '+90 (555) 319-0001',
           parentEmail: 'parent319@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5427,7 +5367,10 @@
           parentName: 'Parent of Zeynep Derin Kılıç',
           parentContact: '+90 (555) 109-0001',
           parentEmail: 'parent109@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5444,7 +5387,10 @@
           parentName: 'Parent of Ali İhsan Bıçakçı',
           parentContact: '+90 (555) 346-0001',
           parentEmail: 'parent346@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5461,7 +5407,10 @@
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5478,7 +5427,10 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5495,7 +5447,10 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5512,7 +5467,10 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5529,7 +5487,10 @@
           parentName: 'Parent of Elisa Berre Eşkin',
           parentContact: '+90 (555) 348-0001',
           parentEmail: 'parent348@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5546,7 +5507,10 @@
           parentName: 'Parent of Ertuğrul Turan',
           parentContact: '+90 (555) 318-0001',
           parentEmail: 'parent318@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5563,7 +5527,10 @@
           parentName: 'Parent of İlay Eşkin',
           parentContact: '+90 (555) 303-0001',
           parentEmail: 'parent303@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5580,7 +5547,10 @@
           parentName: 'Parent of Kerem Özçakmak',
           parentContact: '+90 (555) 305-0001',
           parentEmail: 'parent305@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5597,7 +5567,10 @@
           parentName: 'Parent of Lina Koca',
           parentContact: '+90 (555) 349-0001',
           parentEmail: 'parent349@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5614,7 +5587,10 @@
           parentName: 'Parent of Mina Çakar',
           parentContact: '+90 (555) 439-0001',
           parentEmail: 'parent439@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5631,7 +5607,10 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5648,7 +5627,10 @@
           parentName: 'Parent of Nisa Kömürcüoğlu',
           parentContact: '+90 (555) 440-0001',
           parentEmail: 'parent440@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5665,7 +5647,10 @@
           parentName: 'Parent of Ozan Metin',
           parentContact: '+90 (555) 301-0001',
           parentEmail: 'parent301@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5682,7 +5667,10 @@
           parentName: 'Parent of Ozan Topçu',
           parentContact: '+90 (555) 208-0001',
           parentEmail: 'parent208@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5699,7 +5687,10 @@
           parentName: 'Parent of Öykü Çiğdem Akar',
           parentContact: '+90 (555) 322-0001',
           parentEmail: 'parent322@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5716,7 +5707,10 @@
           parentName: 'Parent of Uras Tekay',
           parentContact: '+90 (555) 339-0001',
           parentEmail: 'parent339@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5733,7 +5727,10 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -5750,7 +5747,10 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
+          xp: 0,
+          level: 1,
           streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         }
@@ -5998,26 +5998,7 @@
       ],
 
       // 8. Teacher Rubric Assessments
-      assessments: [
-        {
-          id: 'ass-1',
-          title: 'Term 1 Mid-Term Rubric Evaluation',
-          studentId: 'student-emma',
-          classId: 'class-3a',
-          date: 'Sep 10, 2026',
-          rubricScores: {
-            speaking: 80,
-            vocabulary: 85,
-            grammar: 70,
-            listening: 85,
-            reading: 75,
-            writing: 65,
-            pronunciation: 80
-          },
-          teacherComment: 'Emma demonstrates wonderful communicative confidence and enthusiasm in roleplay.',
-          archived: false
-        }
-      ],
+      assessments: [],
 
       // 9. Real Attendance Records
       attendanceRecords: [],
@@ -6241,25 +6222,7 @@
       ],
 
       // 19. Reports (Dynamic Generated Student Report Cards)
-      reports: [
-        {
-          id: 'rep-1',
-          studentId: 'student-emma',
-          classId: 'class-3a',
-          title: 'Term 1 Mid-Year Progress Report Card',
-          reportType: 'CEFR Progress Report',
-          date: '2026-09-01',
-          term: 'Term 1',
-          dataSnapshot: {
-            totalXP: 1240,
-            attendanceRate: 100,
-            overallCefr: 'A1+',
-            skills: { speaking: 80, listening: 85, vocabulary: 89, grammar: 75, reading: 80, writing: 70 }
-          },
-          teacherNotes: 'Emma shows remarkable enthusiasm during interactive speaking games and leads group discussions naturally.',
-          archived: false
-        }
-      ],
+      reports: [],
 
       // 20. School & Classroom Global Settings
       schoolSettings: {
@@ -6277,19 +6240,7 @@
         worldUnlocksEnabled: true,
         streaksEnabled: true
       },
-      messages: [
-        {
-          id: 'msg-th-1',
-          studentId: 'student-emma',
-          parentName: 'Mr. Peter Chen',
-          studentName: 'Emma Chen',
-          lastActivity: '10:30 AM',
-          threads: [
-            { from: 'teacher', text: "Hello Mr. Chen! Emma was brilliant in today's restaurant roleplay and earned +50 XP!", time: '10:15 AM' },
-            { from: 'parent', text: 'Thank you Ms. Sarah! She came home excited and was asking for dinner in English.', time: '10:30 AM' }
-          ]
-        }
-      ],
+      messages: [],
 
       // Calendar Events collection
       calendarEvents: [
@@ -6467,6 +6418,21 @@
     loadState() {
       try {
         if (typeof localStorage !== 'undefined') {
+          // Purge all legacy storage keys across previous versions
+          const LEGACY_KEYS = [
+            'eaa_master_school_v1',
+            'eaa_master_school_v2',
+            'eaa_master_school_v3',
+            'eaa_master_school_v4',
+            'eaa_master_school_v5',
+            'eaa_master_school_store',
+            'english_adventure_academy_state',
+            'eaa_student_data'
+          ];
+          LEGACY_KEYS.forEach(k => {
+            try { localStorage.removeItem(k); } catch (e) {}
+          });
+
           const raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
@@ -6805,9 +6771,45 @@
       this.notify();
     }
 
+    getStorageKey() {
+      return STORAGE_KEY;
+    }
+
     resetToDefaults() {
       this.state = getInitialState();
       this.saveState();
+      this.notify();
+    }
+
+    resetAllStudentProgress() {
+      // 1. Reset all student personal progress attributes
+      if (Array.isArray(this.state.students)) {
+        this.state.students.forEach(s => {
+          s.xp = 0;
+          s.level = 1;
+          s.streakDays = 0;
+          s.lastActive = null;
+          s.equippedMonster = 'Mystery Egg';
+          s.manualCefrOverrides = {};
+        });
+      }
+      // 2. Reset all monster profiles to Level 1 Mystery Egg with empty unlockedItems
+      this.state.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));
+      // 3. Purge all transactional and record stores
+      this.state.xpTransactions = [];
+      this.state.attendanceRecords = [];
+      this.state.learningEvidence = [];
+      this.state.assessments = [];
+      this.state.progressCheckSubmissions = [];
+      this.state.studentAwards = [];
+      this.state.teacherNotes = [];
+      this.state.reports = [];
+      this.state.messages = [];
+      this.state.portfolios = [];
+
+      this.saveState();
+      this.notify();
+      return { success: true, message: 'All student progress reset cleanly to 0.' };
     }
 
     subscribe(fn) {
@@ -6889,7 +6891,10 @@
         parentName: data.parentName || '',
         parentContact: data.parentContact || '',
         parentEmail: data.parentEmail || '',
-        streakDays: 1,
+        xp: 0,
+        level: 1,
+        streakDays: 0,
+        equippedMonster: 'Mystery Egg',
         archived: false,
         manualCefrOverrides: {}
       };
@@ -7305,21 +7310,28 @@
         // Find evidence matching this skill
         const evidence = this.state.learningEvidence.filter(e => e.studentId === studentId && (e.skillId || '').toLowerCase() === skillKey);
         
-        let calculatedScore = 70; // baseline
+        let calculatedScore = 0;
+        let hasData = false;
         if (evidence.length > 0) {
           const totalPct = evidence.reduce((acc, ev) => acc + ((ev.score / (ev.maxScore || 100)) * 100), 0);
           calculatedScore = Math.round(totalPct / evidence.length);
+          hasData = true;
         }
 
         // Check if teacher manually set assessment
         const lastAssessment = this.state.assessments.find(a => a.studentId === studentId && a.rubricScores && a.rubricScores[skillKey]);
         if (lastAssessment) {
-          calculatedScore = Math.round((calculatedScore * 0.4) + (lastAssessment.rubricScores[skillKey] * 0.6));
+          if (hasData) {
+            calculatedScore = Math.round((calculatedScore * 0.4) + (lastAssessment.rubricScores[skillKey] * 0.6));
+          } else {
+            calculatedScore = Math.round(lastAssessment.rubricScores[skillKey]);
+            hasData = true;
+          }
         }
 
         // Manual teacher CEFR override
         const overrideCefr = s.manualCefrOverrides && s.manualCefrOverrides[skillKey];
-        const cefr = overrideCefr || (calculatedScore >= 85 ? 'A2' : calculatedScore >= 75 ? 'A1+' : calculatedScore >= 60 ? 'A1' : 'Pre-A1');
+        const cefr = overrideCefr || (hasData ? (calculatedScore >= 85 ? 'A2' : calculatedScore >= 75 ? 'A1+' : calculatedScore >= 60 ? 'A1' : 'Pre-A1') : 'Unassessed');
 
         result[skillKey] = {
           score: calculatedScore,
@@ -7546,14 +7558,14 @@
 
     getClassAttendanceRate(classId) {
       const records = this.state.attendanceRecords.filter(r => r.classId === classId);
-      if (records.length === 0) return 95; // default fallback
+      if (records.length === 0) return 0;
       const presentOrLate = records.filter(r => r.status === 'Present' || r.status === 'Late').length;
       return Math.round((presentOrLate / records.length) * 100);
     }
 
     getStudentAttendanceRate(studentId) {
       const records = this.state.attendanceRecords.filter(r => r.studentId === studentId);
-      if (records.length === 0) return 96;
+      if (records.length === 0) return 0;
       const presentOrLate = records.filter(r => r.status === 'Present' || r.status === 'Late').length;
       return Math.round((presentOrLate / records.length) * 100);
     }
@@ -10998,8 +11010,8 @@
       skills.forEach(k => {
         const vals1 = subs1.map(s => s.skillScores && s.skillScores[k] ? s.skillScores[k].score : null).filter(v => typeof v === "number");
         const vals2 = subs2.map(s => s.skillScores && s.skillScores[k] ? s.skillScores[k].score : null).filter(v => typeof v === "number");
-        avg1[k] = vals1.length ? Math.round(vals1.reduce((a, b) => a + b, 0) / vals1.length) : (k === "reading" ? 72 : k === "vocabulary" ? 75 : k === "grammar" ? 68 : 65);
-        avg2[k] = vals2.length ? Math.round(vals2.reduce((a, b) => a + b, 0) / vals2.length) : (k === "reading" ? 81 : k === "vocabulary" ? 82 : k === "grammar" ? 74 : 71);
+        avg1[k] = vals1.length ? Math.round(vals1.reduce((a, b) => a + b, 0) / vals1.length) : 0;
+        avg2[k] = vals2.length ? Math.round(vals2.reduce((a, b) => a + b, 0) / vals2.length) : 0;
         deltas[k] = avg2[k] - avg1[k];
       });
 
@@ -11051,29 +11063,30 @@
       const student = this.getStudent(studentId);
       const cls = student ? this.getClass(student.classId) : null;
 
-      const skillScores = (sub && sub.skillScores) || {
-        vocabulary: { score: 80, mastery: "Secure" },
-        reading: { score: 80, mastery: "Secure" },
-        grammar: { score: 80, mastery: "Secure" },
-        writing: { score: 60, mastery: "Developing" },
-        listening: { score: 65, mastery: "Developing" },
-        speaking: { score: 65, mastery: "Developing" }
+      const defaultSkillScores = {
+        vocabulary: { score: 0, mastery: "Unassessed" },
+        reading: { score: 0, mastery: "Unassessed" },
+        grammar: { score: 0, mastery: "Unassessed" },
+        writing: { score: 0, mastery: "Unassessed" },
+        listening: { score: 0, mastery: "Unassessed" },
+        speaking: { score: 0, mastery: "Unassessed" }
       };
+      const skillScores = (sub && sub.skillScores) || defaultSkillScores;
 
       return {
-        studentName: student ? (student.firstName + " " + student.lastName) : "Emma Chen",
-        grade: student ? (student.grade || "Grade 3") : "Grade 3",
+        studentName: student ? (student.firstName + " " + student.lastName) : "Student",
+        grade: student ? (student.grade || (cls ? cls.grade : "Grade 3")) : "Grade 3",
         className: cls ? cls.name : "Grade 3A — The Explorers",
         bookTitle: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
         unitTitle: check ? (check.unitTitle || "Unit 1: What Does It Do?") : "Unit 1: What Does It Do?",
-        unitDuration: "4 weeks",
-        assessmentDate: (sub && sub.displayDate) || "September 2026",
+        unitDuration: (check && check.unitDuration) || "4 weeks",
+        assessmentDate: (sub && sub.displayDate) || "Not yet assessed",
         skillScores: skillScores,
-        overallScore: (sub && sub.overallScore) || 75,
-        mastery: (sub && sub.mastery) || "Secure",
-        strengths: "Reading comprehension, vocabulary recognition, enthusiastic participation in classroom activities.",
-        needsSupport: "Written sentence formation, independent oral production without prompts.",
-        teacherNote: (sub && sub.teacherComment) || (student && student.latestTeacherNote) || "Understands familiar vocabulary well. She can identify key information in short texts. She needs more practice producing complete spoken sentences."
+        overallScore: (sub && sub.overallScore !== undefined) ? sub.overallScore : 0,
+        mastery: (sub && sub.mastery) || "Unassessed",
+        strengths: sub ? "Reading comprehension, vocabulary recognition, enthusiastic participation in classroom activities." : "No assessment data yet recorded.",
+        needsSupport: sub ? "Written sentence formation, independent oral production without prompts." : "None yet recorded.",
+        teacherNote: (sub && sub.teacherComment) || (student && student.latestTeacherNote) || "No teacher assessment notes yet recorded."
       };
     }
 

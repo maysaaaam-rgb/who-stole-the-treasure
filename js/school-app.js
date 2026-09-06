@@ -52,7 +52,7 @@
   let selectedClassDetailId = 'class-3a';
   let selectedClassDetailTab = 'classroom';
   let studentProfileActiveTab = 'overview';
-  let currentProfileStudentId = 'student-emma';
+  let currentProfileStudentId = null;
   let isLibraryManageMode = false;
   let libraryActiveTab = 'games';
   let activeCardMenuId = null;
@@ -403,7 +403,7 @@
   function calculateStudentProgressPct(studentId) {
     const skills = store.getStudentSkills(studentId);
     const vals = Object.values(skills).map(s => s.score);
-    if (!vals.length) return 75;
+    if (!vals.length) return 0;
     const sum = vals.reduce((a, b) => a + b, 0);
     return Math.round(sum / vals.length);
   }
@@ -2007,7 +2007,7 @@
               const nextXP = mState.nextLevelXP || totalXP;
               const xpToNext = mState.xpToNext;
               const progressPct = mState.progressPct;
-              const streak = s.streakDays || 1;
+              const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
               const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
 
@@ -2137,7 +2137,7 @@
     const attRate = store.getClassAttendanceRate(cls.id);
 
     // Calculate class average mastery
-    let avgMastery = 78;
+    let avgMastery = 0;
     if (students.length > 0) {
       const sum = students.reduce((acc, s) => acc + calculateStudentProgressPct(s.id), 0);
       avgMastery = Math.round(sum / students.length);
@@ -2334,7 +2334,7 @@
         animated: true
       }) : null;
       const isSelected = selectedStudentIds.has(s.id);
-      const streak = s.streakDays || 5;
+      const streak = s.streakDays || 0;
 
       return '' +
         '<div class="classroom-student-card ' + (isSelected ? 'is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
@@ -3837,9 +3837,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">' + rep.title + '</h3>' +
                 '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (rep.className || 'Class 3A') + ' · ' + rep.reportType + '</div>' +
                 '<div style="background:var(--bg-card-secondary); border-radius:8px; padding:10px; font-size:0.8rem; margin-bottom:14px; border:1px solid var(--border-subtle);">' +
-                  '<div><strong>Total XP:</strong> ⭐ ' + ((rep.dataSnapshot || {}).totalXP || 1240) + '</div>' +
-                  '<div><strong>Attendance:</strong> ' + ((rep.dataSnapshot || {}).attendanceRate || 100) + '%</div>' +
-                  '<div><strong>CEFR Level:</strong> ' + ((rep.dataSnapshot || {}).overallCefr || 'A1') + '</div>' +
+                  '<div><strong>Total XP:</strong> ⭐ ' + ((rep.dataSnapshot || {}).totalXP || 0) + '</div>' +
+                  '<div><strong>Attendance:</strong> ' + (((rep.dataSnapshot || {}).attendanceRate !== undefined) ? (rep.dataSnapshot || {}).attendanceRate : 0) + '%</div>' +
+                  '<div><strong>CEFR Level:</strong> ' + ((rep.dataSnapshot || {}).overallCefr || 'Unassessed') + '</div>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
@@ -4515,7 +4515,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       // Live KPI Bar
       '<div class="kpi-grid" style="margin-bottom:24px;">' +
         '<div class="kpi-card"><span class="kpi-label">Entities Covered</span><span class="kpi-val">31 / 31</span><span class="kpi-sub">100% Operational</span></div>' +
-        '<div class="kpi-card"><span class="kpi-label">Active Storage Key</span><span class="kpi-val" style="font-size:1.05rem;">eaa_master_school_v3</span><span class="kpi-sub">Persistent localStorage</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Active Storage Key</span><span class="kpi-val" style="font-size:1.05rem;">' + (store.getStorageKey ? store.getStorageKey() : 'eaa_master_school_v6') + '</span><span class="kpi-sub">Persistent localStorage</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Total Records</span><span class="kpi-val">' + matrix.reduce((acc, m) => acc + m.count, 0) + '</span><span class="kpi-sub">Live in memory</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Academic Year</span><span class="kpi-val" style="color:var(--color-primary);">' + (settings.academicYear || '2026–2027') + '</span><span class="kpi-sub">' + settings.schoolName + '</span></div>' +
       '</div>' +
@@ -4712,7 +4712,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderStudentAdventureView(container) {
-    const s = store.getActiveStudent() || store.getStudent('student-emma') || (store.getStudents()[0]);
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
     if (!s) {
       container.innerHTML = '<div style="padding:40px; text-align:center;">No active student profile found.</div>';
       return;
@@ -4724,7 +4724,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const isHatched = mState.isHatched;
     const profile = store.getMonsterProfile(s.id);
     const petName = (profile && (profile.petName || profile.monsterName)) || (s.firstName + "'s Companion");
-    const streak = s.streakDays || 5;
+    const streak = s.streakDays || 0;
 
     // Grade to Macmillan Anthology Mapping:
     // Grade 3 -> Global Readings 2 (Level 2)
@@ -4902,7 +4902,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderStudentTasksView(container) {
-    const s = store.getActiveStudent() || store.getStudent('student-emma') || (store.getStudents()[0]);
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
     if (!s) return;
     const assignments = (store.getAssignments ? store.getAssignments(s.classId) : []).filter(a => !a.archived);
     const homework = (store.getHomework ? store.getHomework(s.classId) : []).filter(h => !h.archived);
@@ -4948,7 +4948,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderStudentBadgesView(container) {
-    const s = store.getActiveStudent() || store.getStudent('student-emma') || (store.getStudents()[0]);
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
     if (!s) return;
     const mState = store.calculateMonsterState(s.id);
     const levels = (store.getProgressionLevels ? store.getProgressionLevels(true) : []).slice().sort((a, b) => a.level - b.level);
@@ -6648,12 +6648,12 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div style="border:1px solid #e2e8f0; border-radius:8px; padding:14px; text-align:center;">' +
             '<div style="font-size:0.78rem; color:#64748b; font-weight:700;">TOTAL ADVENTURE XP</div>' +
-            '<div style="font-size:1.6rem; font-weight:900; color:#b45309; margin:4px 0;">⭐ ' + (snap.totalXP || 1240) + '</div>' +
+            '<div style="font-size:1.6rem; font-weight:900; color:#b45309; margin:4px 0;">⭐ ' + (snap.totalXP || 0) + '</div>' +
             '<div style="font-size:0.72rem; color:#64748b;">Gamification milestones</div>' +
           '</div>' +
           '<div style="border:1px solid #e2e8f0; border-radius:8px; padding:14px; text-align:center;">' +
             '<div style="font-size:0.78rem; color:#64748b; font-weight:700;">TARGET CEFR</div>' +
-            '<div style="font-size:1.6rem; font-weight:900; color:var(--color-primary); margin:4px 0;">' + (snap.overallCefr || 'A1') + '</div>' +
+            '<div style="font-size:1.6rem; font-weight:900; color:var(--color-primary); margin:4px 0;">' + (snap.overallCefr || 'Unassessed') + '</div>' +
             '<div style="font-size:0.72rem; color:#64748b;">Primary language benchmark</div>' +
           '</div>' +
         '</div>' +
@@ -7651,7 +7651,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '</div>' +
                 '<div style="flex:1;">' +
                   '<div style="font-weight:800; font-size:0.96rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div style="font-size:0.78rem; color:var(--text-muted);">' + s.grade + ' · 🔥 ' + (s.streakDays || 1) + '-day streak</div>' +
+                  '<div style="font-size:0.78rem; color:var(--text-muted);">' + s.grade + ' · 🔥 ' + (s.streakDays || 0) + '-day streak</div>' +
                 '</div>' +
                 '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
                 '<div style="text-align:right; font-weight:900; font-size:1.1rem; color:var(--color-primary); min-width:90px;">' +
@@ -11015,11 +11015,13 @@ window.switchClassroomSubTab = function(subTab) {
 
       // 4. XP Transaction Engine Diagnostic
       t0 = Date.now();
-      const emmaTotalBefore = store.getStudentTotalXP('student-emma');
-      const xpRes = store.giveXP('student-emma', 10, 'Diagnostic System Check', 'HealthEngine');
-      const emmaTotalAfter = store.getStudentTotalXP('student-emma');
-      const xpPass = Boolean(xpRes && xpRes.transaction && (emmaTotalAfter === emmaTotalBefore + 10));
-      // Void the diagnostic transaction
+      const diagStudent = (store.getStudents() && store.getStudents()[0]) || { id: 'student-3a-224' };
+      const diagId = diagStudent.id;
+      const totalBefore = store.getStudentTotalXP(diagId);
+      const xpRes = store.giveXP(diagId, 10, 'Diagnostic System Check', 'HealthEngine');
+      const totalAfter = store.getStudentTotalXP(diagId);
+      const xpPass = Boolean(xpRes && xpRes.transaction && (totalAfter === totalBefore + 10));
+      // Void the diagnostic transaction to restore clean 0
       if (xpRes && xpRes.transaction) {
         store.voidXPTransaction(xpRes.transaction.id, 'Diagnostic cleanup');
       }
@@ -11027,11 +11029,15 @@ window.switchClassroomSubTab = function(subTab) {
 
       // 5. Negative XP Observation Safety
       t0 = Date.now();
-      const notesBefore = store.getTeacherNotes('student-emma').length;
-      const negRes = store.giveXP('student-emma', -10, 'Health Engine Probe', 'HealthEngine', { category: 'needs_work' });
-      const notesAfter = store.getTeacherNotes('student-emma').length;
-      const emmaAfterNeg = store.getStudentTotalXP('student-emma');
-      const negPass = (negRes && negRes.observationOnly === true) && (emmaAfterNeg === emmaTotalBefore) && (notesAfter === notesBefore + 1);
+      const notesBefore = store.getTeacherNotes(diagId).length;
+      const negRes = store.giveXP(diagId, -10, 'Health Engine Probe', 'HealthEngine', { category: 'needs_work' });
+      const notesAfter = store.getTeacherNotes(diagId).length;
+      const afterNeg = store.getStudentTotalXP(diagId);
+      const negPass = (negRes && negRes.observationOnly === true) && (afterNeg === totalBefore) && (notesAfter === notesBefore + 1);
+      // Clean up the probe note to keep store completely empty
+      if (negRes && negRes.noteId && store.deleteTeacherNote) {
+        store.deleteTeacherNote(negRes.noteId);
+      }
       recordTest('Behavior Safety', 'Negative XP Suppression & Note Conversion', negPass, 'Verified negative points redirect to teacher observations without deducting student XP', Date.now() - t0);
 
       // 6. Monster Evolution & SVG Pipeline Diagnostic
@@ -11047,10 +11053,10 @@ window.switchClassroomSubTab = function(subTab) {
       // 7. LocalStorage Persistence Roundtrip Diagnostic
       t0 = Date.now();
       store.saveState();
-      const rawStored = localStorage.getItem('eaa_master_school_v3');
+      const rawStored = localStorage.getItem(store.getStorageKey ? store.getStorageKey() : 'eaa_master_school_v6');
       const parsed = JSON.parse(rawStored);
       const persistPass = Boolean(parsed && parsed.students && parsed.curriculum && parsed.schoolSettings);
-      recordTest('Persistence', 'Atomic Storage Engine', persistPass, 'Verified deep JSON serialization and retrieval under eaa_master_school_v3', Date.now() - t0);
+      recordTest('Persistence', 'Atomic Storage Engine', persistPass, 'Verified deep JSON serialization and retrieval under ' + (store.getStorageKey ? store.getStorageKey() : 'eaa_master_school_v6'), Date.now() - t0);
 
     } catch (err) {
       recordTest('Diagnostics Engine', 'Execution Fault', false, String(err), 0);
