@@ -1415,15 +1415,19 @@
                   '</div>' +
                 '</div>' +
                 '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:6px; font-size:0.76rem; font-weight:700; margin-bottom:12px;">' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌲 Vocab: ' + (latestPC.skillScores?.vocabulary?.score || 82) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">📖 Reading: ' + (latestPC.skillScores?.reading?.score || 88) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌉 Grammar: ' + (latestPC.skillScores?.grammar?.score || 74) + '%</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🎧 Listening: ' + (latestPC.skillScores?.listening?.score || 65) + '%</div>' +
+                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌲 Vocab: ' + (latestPC.skillScores?.vocabulary?.score || 80) + '%</div>' +
+                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">📖 Reading: ' + (latestPC.skillScores?.reading?.score || 80) + '%</div>' +
+                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🌉 Grammar: ' + (latestPC.skillScores?.grammar?.score || 80) + '%</div>' +
+                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🎧 Listening: ' + (latestPC.skillScores?.listening?.statusText || 'Developing') + '</div>' +
                   '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">🎤 Spk: ' + (latestPC.skillScores?.speaking?.statusText || 'Developing') + '</div>' +
-                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">✏️ Writing: ' + (latestPC.skillScores?.writing?.score || 71) + '%</div>' +
+                  '<div style="background:var(--bg-surface); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">✏️ Writing: ' + (latestPC.skillScores?.writing?.score || 60) + '%</div>' +
                 '</div>' +
-                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); switchProgressCheckStudent(\'' + student.id + '\'); switchView(\'progress-check\');" style="font-size:0.76rem; padding:5px 12px; width:100%; justify-content:center;">' +
-                  'View Complete Progress Profile &amp; Evidence ➔' +
+                ((latestPC.notes || latestPC.teacherComment || student.latestTeacherNote) ?
+                  '<div style="background:#fff; border:1px solid var(--border-light); border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:0.8rem; line-height:1.5; color:var(--text-main);">' +
+                    '<strong>Teacher Progress Note:</strong> ' + (latestPC.notes || latestPC.teacherComment || student.latestTeacherNote) +
+                  '</div>' : '') +
+                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4); switchView(\'progress-check\');" style="font-size:0.76rem; padding:6px 12px; width:100%; justify-content:center;">' +
+                  'View &amp; Edit in Progress Check Gradebook ➔' +
                 '</button>' +
               '</div>';
           })() +
@@ -2163,6 +2167,25 @@
     const unenrolled = store.getUnenrolledStudents ? store.getUnenrolledStudents() : [];
 
     return '' +
+      // Unit 1 Progress Check Banner Card
+      '<div class="card-unit-progress-check" style="background:linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border:2px solid #bfdbfe; border-radius:14px; padding:16px 20px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">' +
+        '<div>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<span style="font-size:1.6rem;">📊</span>' +
+            '<h3 style="font-size:1.2rem; font-weight:800; color:var(--text-main); margin:0;">Unit 1 Progress Check</h3>' +
+            '<span class="badge" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:8px;">Ready</span>' +
+            '<span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:8px;">4-Week Unit Assessment</span>' +
+          '</div>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Global Readings 2 · Unit 1: What Does It Do? · Whole-Class Teacher-Led Assessment</p>' +
+        '</div>' +
+        '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+          '<button type="button" class="btn-primary-action" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">▶ Start Class Assessment</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(3);" style="padding:7px 14px; font-weight:700;">🖨️ Print Worksheets</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4);" style="padding:7px 14px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">📝 Enter Results</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(5);" style="padding:7px 14px; font-weight:700;">📈 View Class Progress</button>' +
+        '</div>' +
+      '</div>' +
+
       // Subtoolbar: Students | Groups | Unenrolled + Quick Actions
       '<div class="classroom-subtoolbar">' +
         '<div class="classroom-view-toggle-pills">' +

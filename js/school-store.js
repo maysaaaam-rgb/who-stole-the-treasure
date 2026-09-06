@@ -1804,659 +1804,187 @@
   const DEFAULT_PROGRESS_CHECKS = [
     {
       id: "progress-check-a1",
-      title: "English Adventure Progress Check — A1",
-      subtitle: "Comprehensive Multi-Skill Progress Assessment for Grade 3 & 4",
+      title: "English Adventure Progress Check — Unit 1",
+      subtitle: "Whole-Class Progress Check · 4-Week Unit 1 Assessment",
       cefrTarget: "A1",
       targetGrade: "Grade 3",
       classId: "class-3a",
+      bookId: "book-gr2",
+      bookTitle: "Global Readings 2",
+      unitId: "gr2-u1",
+      unitTitle: "Unit 1: What Does It Do?",
+      unitDuration: "4 weeks",
+      timeline: "End of Unit 1",
       durationMinutes: 45,
-      assessmentMode: "both",
+      assessmentType: "Whole-Class Progress Check",
       createdDate: "2026-09-01",
+      displayDate: "September 2026",
       author: "Ms. Sarah",
       archived: false,
-      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing", "final"],
+      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
       stations: [
         {
           id: "station-vocab",
           key: "vocabulary",
-          title: "Station 1 — Vocabulary Forest",
-          shortTitle: "Vocabulary Forest",
-          icon: "🌲",
+          title: "Station 1 — Vocabulary",
+          shortTitle: "Vocabulary",
+          icon: "🧠",
           color: "#10b981",
           skill: "vocabulary",
-          description: "Identify common everyday words, foods, animals, places, and transportation.",
+          description: "Identify familiar everyday words, objects, and actions from Unit 1.",
           questions: [
-            {
-              id: "vocab-1",
-              type: "picture_id",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Identify common household animals and pets",
-              prompt: "What is it?",
-              imageEmoji: "🐶",
-              imageLabel: "Dog",
-              options: ["cat", "dog", "bird", "rabbit"],
-              correctAnswer: "dog",
-              points: 10,
-              explanation: "A dog is a friendly four-legged pet."
-            },
-            {
-              id: "vocab-2",
-              type: "picture_id",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Identify common fruits and healthy foods",
-              prompt: "What is it?",
-              imageEmoji: "🍎",
-              imageLabel: "Red Apple",
-              options: ["apple", "banana", "orange", "grape"],
-              correctAnswer: "apple",
-              points: 10,
-              explanation: "An apple is a round red or green fruit."
-            },
-            {
-              id: "vocab-3",
-              type: "picture_id",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Identify everyday modes of transport",
-              prompt: "What is it?",
-              imageEmoji: "🚌",
-              imageLabel: "Yellow Bus",
-              options: ["car", "bus", "train", "bicycle"],
-              correctAnswer: "bus",
-              points: 10,
-              explanation: "A bus carries many passengers to school or work."
-            },
-            {
-              id: "vocab-4",
-              type: "matching",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Match vocabulary terms to visual symbols",
-              prompt: "Match each word with its corresponding picture:",
-              pairs: [
-                { word: "APPLE", match: "🍎" },
-                { word: "BANANA", match: "🍌" },
-                { word: "BUS", match: "🚌" }
-              ],
-              correctAnswer: { "APPLE": "🍎", "BANANA": "🍌", "BUS": "🚌" },
-              points: 10,
-              explanation: "Each word pairs with its matching everyday item."
-            },
-            {
-              id: "vocab-5",
-              type: "picture_choice",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Recognize community places and buildings",
-              prompt: 'Which picture shows "school"?',
-              options: [
-                { label: "School", emoji: "🏫", value: "school" },
-                { label: "Beach", emoji: "🏖️", value: "beach" },
-                { label: "Hospital", emoji: "🏥", value: "hospital" }
-              ],
-              correctAnswer: "school",
-              points: 10,
-              explanation: "A school is the building where students learn."
-            },
-            {
-              id: "vocab-6",
-              type: "sentence_completion",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Complete simple sentences with appropriate nouns",
-              prompt: "I eat an ______ for breakfast.",
-              options: ["apple", "bus", "pencil"],
-              correctAnswer: "apple",
-              points: 10,
-              explanation: "You can eat an apple; you cannot eat a bus or pencil."
-            },
-            {
-              id: "vocab-7",
-              type: "sentence_completion",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Contextual sentence completion with outdoor places",
-              prompt: "The dog runs and plays in the green ______.",
-              options: ["park", "pencil", "bed"],
-              correctAnswer: "park",
-              points: 10,
-              explanation: "A park is a large green outdoor space for running."
-            },
-            {
-              id: "vocab-8",
-              type: "categorization",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Classify words into semantic categories (Food, Animals, Places)",
-              prompt: "Sort words into their correct categories:",
-              categories: ["FOOD", "ANIMALS", "PLACES"],
-              items: [
-                { word: "apple", category: "FOOD" },
-                { word: "banana", category: "FOOD" },
-                { word: "dog", category: "ANIMALS" },
-                { word: "cat", category: "ANIMALS" },
-                { word: "school", category: "PLACES" },
-                { word: "park", category: "PLACES" }
-              ],
-              correctAnswer: {
-                "FOOD": ["apple", "banana"],
-                "ANIMALS": ["dog", "cat"],
-                "PLACES": ["school", "park"]
-              },
-              points: 10,
-              explanation: "Grouping vocabulary helps strengthen semantic memory."
-            },
-            {
-              id: "vocab-9",
-              type: "audio_vocab",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Connect spoken vocabulary sounds to visual concepts",
-              prompt: "Listen to the audio word and select the correct picture:",
-              audioText: "banana",
-              options: [
-                { label: "Banana", emoji: "🍌", value: "banana" },
-                { label: "Apple", emoji: "🍎", value: "apple" },
-                { label: "Grape", emoji: "🍇", value: "grape" }
-              ],
-              correctAnswer: "banana",
-              points: 10,
-              explanation: 'The spoken audio said "banana".'
-            },
-            {
-              id: "vocab-10",
-              type: "picture_id",
-              skill: "vocabulary",
-              cefr: "A1",
-              objective: "Identify recreational and sports equipment",
-              prompt: "What is it?",
-              imageEmoji: "⚽",
-              imageLabel: "Football",
-              options: ["football", "basketball", "tennis ball", "balloon"],
-              correctAnswer: "football",
-              points: 10,
-              explanation: "A football (soccer ball) is used for outdoor team games."
-            }
+            { id: "vocab-1", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify common classroom and everyday objects", prompt: "Which picture shows a backpack?", imageEmoji: "🎒", options: ["backpack", "pencil", "book", "chair"], correctAnswer: "backpack", points: 2, explanation: "A backpack carries books and supplies." },
+            { id: "vocab-2", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify common animals and pets", prompt: "Which picture shows a dog?", imageEmoji: "🐶", options: ["cat", "dog", "bird", "rabbit"], correctAnswer: "dog", points: 2, explanation: "A dog is a friendly four-legged pet." },
+            { id: "vocab-3", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify healthy fruits and everyday food", prompt: "Which picture shows an apple?", imageEmoji: "🍎", options: ["apple", "banana", "bread", "orange"], correctAnswer: "apple", points: 2, explanation: "An apple is a round sweet fruit." },
+            { id: "vocab-4", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify everyday community vehicles", prompt: "Which picture shows a school bus?", imageEmoji: "🚌", options: ["bus", "car", "train", "plane"], correctAnswer: "bus", points: 2, explanation: "A bus takes children to school." },
+            { id: "vocab-5", type: "picture_id", skill: "vocabulary", cefr: "A1", objective: "Identify community places", prompt: "Which picture shows a playground park?", imageEmoji: "🌳", options: ["park", "shop", "hospital", "kitchen"], correctAnswer: "park", points: 2, explanation: "A park has trees and a play area." }
           ]
         },
         {
           id: "station-listening",
           key: "listening",
-          title: "Station 2 — Listening Cave",
-          shortTitle: "Listening Cave",
-          icon: "🎧",
-          color: "#2563eb",
+          title: "Station 2 — Listening",
+          shortTitle: "Listening",
+          icon: "👂",
+          color: "#0284c7",
           skill: "listening",
-          description: "Listen to short phrases and dialogues to extract specific information.",
+          description: "Listen carefully to spoken sentences and identify the matching picture.",
           questions: [
-            {
-              id: "listen-1",
-              type: "listening_choice",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Listen for specific information (colors and personal objects)",
-              audioText: "Tom has a blue bag.",
-              prompt: "What color is Tom's bag?",
-              options: ["Red", "Blue", "Green"],
-              correctAnswer: "Blue",
-              points: 12.5,
-              explanation: 'The speaker stated: "Tom has a blue bag."'
-            },
-            {
-              id: "listen-2",
-              type: "listening_picture",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Follow simple spatial preposition instructions",
-              audioText: "Put the red ball under the table.",
-              prompt: "Where does the red ball go?",
-              options: ["Under the table 🪑", "On the table 📦", "Next to the door 🚪"],
-              correctAnswer: "Under the table 🪑",
-              points: 12.5,
-              explanation: 'The instruction specifies "under the table".'
-            },
-            {
-              id: "listen-3",
-              type: "listening_dialogue",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Extract location from a short everyday dialogue",
-              audioText: "Where is the cat? The cat is in the garden under the big tree.",
-              prompt: "Where is the cat sleeping?",
-              options: ["In the garden", "In the kitchen", "In the bedroom"],
-              correctAnswer: "In the garden",
-              points: 12.5,
-              explanation: "The dialogue states the cat is in the garden."
-            },
-            {
-              id: "listen-4",
-              type: "listening_choice",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Recognize spoken time and daily routines",
-              audioText: "Emma goes to school at eight o'clock every morning.",
-              prompt: "What time does Emma go to school?",
-              options: ["7:00", "8:00", "9:00"],
-              correctAnswer: "8:00",
-              points: 12.5,
-              explanation: "Emma heads to school at eight o'clock."
-            },
-            {
-              id: "listen-5",
-              type: "listening_choice",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Identify described classroom objects and color details",
-              audioText: "The yellow pencil is lying on the wooden desk.",
-              prompt: "What is on the wooden desk?",
-              options: ["A yellow pencil", "A blue notebook", "A red apple"],
-              correctAnswer: "A yellow pencil",
-              points: 12.5,
-              explanation: "The yellow pencil is on the desk."
-            },
-            {
-              id: "listen-6",
-              type: "listening_choice",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Identify described animal emotions and colors",
-              audioText: "Can you see the happy brown dog in the sunny park?",
-              prompt: "Which animal did you hear about?",
-              options: ["A happy brown dog", "A sleepy white cat", "A loud green frog"],
-              correctAnswer: "A happy brown dog",
-              points: 12.5,
-              explanation: "The speaker asked about the happy brown dog."
-            },
-            {
-              id: "listen-7",
-              type: "listening_dialogue",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Determine speaker preferences from simple dialogues",
-              audioText: "Do you like apples? Yes, I love sweet red apples!",
-              prompt: "Does the speaker enjoy apples?",
-              options: ["Yes, very much", "No, not at all", "Only green apples"],
-              correctAnswer: "Yes, very much",
-              points: 12.5,
-              explanation: 'The speaker answers enthusiastically: "Yes, I love sweet red apples!"'
-            },
-            {
-              id: "listen-8",
-              type: "listening_choice",
-              skill: "listening",
-              cefr: "A1",
-              objective: "Listen for spoken quantities and count items",
-              audioText: "There are three colorful storybooks on the teacher's chair.",
-              prompt: "How many books are on the chair?",
-              options: ["Two", "Three", "Four"],
-              correctAnswer: "Three",
-              points: 12.5,
-              explanation: "The audio mentions there are three storybooks."
-            }
+            { id: "listen-1", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand short spoken statements with colors and objects", ttsAudio: "The boy has a red bag.", prompt: "Listen: Which picture matches what you heard?", options: ["Boy with a red bag 🎒", "Boy with a blue cap 🧢", "Girl with yellow shoes 👟", "Dog with a ball ⚽"], correctAnswer: "Boy with a red bag 🎒", points: 2.5 },
+            { id: "listen-2", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand simple spoken spatial prepositions", ttsAudio: "The cat is sleeping under the table.", prompt: "Listen: Where is the cat?", options: ["On the sofa 🛋️", "Under the table 🪑", "In the box 📦", "Behind the door 🚪"], correctAnswer: "Under the table 🪑", points: 2.5 },
+            { id: "listen-3", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand spoken actions in simple sentences", ttsAudio: "Two girls are reading books in the library.", prompt: "Listen: What are the girls doing?", options: ["Playing soccer ⚽", "Reading books 📚", "Eating lunch 🥪", "Riding bicycles 🚲"], correctAnswer: "Reading books 📚", points: 2.5 },
+            { id: "listen-4", type: "audio_choice", skill: "listening", cefr: "A1", objective: "Understand short spoken quantity and numbers", ttsAudio: "There are three green apples on the plate.", prompt: "Listen: How many green apples are on the plate?", options: ["One", "Two", "Three", "Five"], correctAnswer: "Three", points: 2.5 }
           ]
         },
         {
           id: "station-reading",
           key: "reading",
-          title: "Station 3 — Reading Village",
-          shortTitle: "Reading Village",
+          title: "Station 3 — Reading",
+          shortTitle: "Reading",
           icon: "📖",
-          color: "#ef4444",
+          color: "#e11d48",
           skill: "reading",
-          description: "Read two short accessible A1 passages and answer comprehension questions.",
-          passages: [
-            {
-              id: "passage-1",
-              title: "Tom and His Dog",
-              text: "Tom has a little dog. They go to the park every day. Tom likes football. His dog likes to run and catch the ball."
-            },
-            {
-              id: "passage-2",
-              title: "Lucy's Morning Walk",
-              text: "Lucy is eight years old. She lives in a small white house near the school. Every morning, she walks to school with her brother Ben."
-            }
-          ],
+          description: "Read a short illustrated text and answer comprehension questions.",
+          readingPassage: {
+            title: "The Treehouse Club",
+            text: "Leo and Mia have a wooden treehouse in their garden. It is big and strong. Leo keeps his favorite adventure books on the shelf. Mia has a box of colorful markers. Every Saturday morning, their friendly puppy Toby waits by the wooden ladder. Toby barks happily when the children climb up to read together.",
+            wordCount: 56
+          },
           questions: [
-            {
-              id: "read-1",
-              passageId: "passage-1",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Identify key character and pet in short text",
-              prompt: "What does Tom have?",
-              options: ["A little dog", "A big cat", "A noisy bird"],
-              correctAnswer: "A little dog",
-              points: 16,
-              explanation: 'Sentence 1 states: "Tom has a little dog."'
-            },
-            {
-              id: "read-2",
-              passageId: "passage-1",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Locate routine destination in reading text",
-              prompt: "Where do Tom and his dog go every day?",
-              options: ["To the park", "To school", "To the supermarket"],
-              correctAnswer: "To the park",
-              points: 16,
-              explanation: 'Sentence 2 states: "They go to the park every day."'
-            },
-            {
-              id: "read-3",
-              passageId: "passage-1",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Identify personal sports interest",
-              prompt: "What sport does Tom like?",
-              options: ["Football", "Tennis", "Swimming"],
-              correctAnswer: "Football",
-              points: 16,
-              explanation: 'Sentence 3 states: "Tom likes football."'
-            },
-            {
-              id: "read-4",
-              passageId: "passage-1",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Understand pet actions and behavior",
-              prompt: "What does the dog like to do?",
-              options: ["Run and catch the ball", "Sleep all day", "Eat sandwiches"],
-              correctAnswer: "Run and catch the ball",
-              points: 16,
-              explanation: 'Sentence 4 states: "His dog likes to run and catch the ball."'
-            },
-            {
-              id: "read-5",
-              passageId: "passage-2",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Extract numerical age information from story",
-              prompt: "How old is Lucy?",
-              options: ["Seven", "Eight", "Nine"],
-              correctAnswer: "Eight",
-              points: 18,
-              explanation: 'Sentence 1 states: "Lucy is eight years old."'
-            },
-            {
-              id: "read-6",
-              passageId: "passage-2",
-              type: "multiple_choice",
-              skill: "reading",
-              cefr: "A1",
-              objective: "Understand transportation and companions",
-              prompt: "How does Lucy travel to school?",
-              options: ["She walks with her brother Ben", "She takes the school bus", "She rides a red bicycle"],
-              correctAnswer: "She walks with her brother Ben",
-              points: 18,
-              explanation: 'Sentence 3 states: "she walks to school with her brother Ben."'
-            }
+            { id: "read-1", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Identify key locations in short texts", prompt: "Where is the treehouse?", options: ["In the park", "In their garden", "At the school", "On a farm"], correctAnswer: "In their garden", points: 2.5 },
+            { id: "read-2", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Locate specific factual details", prompt: "What does Leo keep on the shelf?", options: ["Toy cars", "Favorite adventure books", "Snacks", "A radio"], correctAnswer: "Favorite adventure books", points: 2.5 },
+            { id: "read-3", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Identify characters and pets in a story", prompt: "Who is Toby?", options: ["Their brother", "Their friendly puppy", "A pet rabbit", "A noisy parrot"], correctAnswer: "Their friendly puppy", points: 2.5 },
+            { id: "read-4", type: "reading_comp", skill: "reading", cefr: "A1", objective: "Determine story sequencing and time details", prompt: "When do the children go to the treehouse?", options: ["Every Saturday morning", "Every Sunday night", "On Monday afternoon", "Only in winter"], correctAnswer: "Every Saturday morning", points: 2.5 }
           ]
         },
         {
           id: "station-grammar",
           key: "grammar",
-          title: "Station 4 — Grammar Bridge",
-          shortTitle: "Grammar Bridge",
-          icon: "🌉",
-          color: "#8b5cf6",
+          title: "Station 4 — Grammar",
+          shortTitle: "Grammar",
+          icon: "🔤",
+          color: "#7c3aed",
           skill: "grammar",
-          description: "Choose correct grammatical forms to cross the bridge safely.",
+          description: "Complete short sentences with correct present tense verbs and agreements.",
           questions: [
-            {
-              id: "gram-1",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Verb To Be",
-              prompt: "She ___ a helpful teacher.",
-              options: ["is", "are", "am"],
-              correctAnswer: "is",
-              points: 10,
-              explanation: 'Use "is" with third-person singular (she).'
-            },
-            {
-              id: "gram-2",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Have / Has Got",
-              prompt: "He ___ a playful puppy at home.",
-              options: ["has", "have", "having"],
-              correctAnswer: "has",
-              points: 10,
-              explanation: 'He/she/it takes "has".'
-            },
-            {
-              id: "gram-3",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Present Simple",
-              prompt: "They ___ to school together.",
-              options: ["go", "goes", "going"],
-              correctAnswer: "go",
-              points: 10,
-              explanation: 'Plural subject "they" takes base verb "go".'
-            },
-            {
-              id: "gram-4",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Negatives (Present Simple)",
-              prompt: "He ___ like spicy pizza.",
-              options: ["doesn't", "don't", "not"],
-              correctAnswer: "doesn't",
-              points: 10,
-              explanation: 'Third-person singular negative is "doesn\'t".'
-            },
-            {
-              id: "gram-5",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Indefinite Articles (a/an)",
-              prompt: "I have ___ juicy apple in my bag.",
-              options: ["an", "a", "the"],
-              correctAnswer: "an",
-              points: 10,
-              explanation: 'Use "an" before a vowel sound (apple).'
-            },
-            {
-              id: "gram-6",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Prepositions of Place",
-              prompt: "The textbook is resting ___ the study table.",
-              options: ["on", "under", "in"],
-              correctAnswer: "on",
-              points: 10,
-              explanation: 'Items rest "on" a flat surface.'
-            },
-            {
-              id: "gram-7",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Question Forms (Do / Does)",
-              prompt: "___ you like playing football at recess?",
-              options: ["Do", "Does", "Is"],
-              correctAnswer: "Do",
-              points: 10,
-              explanation: 'Use "Do" with the second-person pronoun "you".'
-            },
-            {
-              id: "gram-8",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Plural Noun Inflection",
-              prompt: "Look at the two fluffy ___ sleeping in the basket.",
-              options: ["cats", "cat", "cates"],
-              correctAnswer: "cats",
-              points: 10,
-              explanation: 'Regular plural of "cat" is "cats".'
-            },
-            {
-              id: "gram-9",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Subject Pronouns",
-              prompt: "This is Emma. ___ is my best friend in class.",
-              options: ["She", "He", "It"],
-              correctAnswer: "She",
-              points: 10,
-              explanation: 'Emma is female, so we use pronoun "She".'
-            },
-            {
-              id: "gram-10",
-              type: "fill_choice",
-              skill: "grammar",
-              cefr: "A1",
-              topic: "Modal Verb Can",
-              prompt: "Birds ___ fly high in the sunny sky.",
-              options: ["can", "can't", "are"],
-              correctAnswer: "can",
-              points: 10,
-              explanation: '"Can" expresses natural ability.'
-            }
+            { id: "gram-1", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Present simple 3rd person singular verb agreement", prompt: "Look at the picture. She ___ an apple.", imageContext: "Girl eating an apple 🍎", options: ["eat", "eats", "eating", "is eat"], correctAnswer: "eats", points: 2 },
+            { id: "gram-2", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "There is / There are plural noun agreement", prompt: "There ___ two books on the desk.", imageContext: "Two books on desk 📚", options: ["is", "are", "am", "be"], correctAnswer: "are", points: 2 },
+            { id: "gram-3", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Have / Has verb distinction", prompt: "Leo ___ a big wooden treehouse.", imageContext: "Leo with treehouse 🏡", options: ["have", "has", "having", "is"], correctAnswer: "has", points: 2 },
+            { id: "gram-4", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Present simple negative forms (don't / doesn't)", prompt: "They ___ like rainy days.", options: ["don't", "doesn't", "isn't", "aren't"], correctAnswer: "don't", points: 2 },
+            { id: "gram-5", type: "fill_blank", skill: "grammar", cefr: "A1", objective: "Indefinite articles a / an before vowels", prompt: "Mia has ___ orange backpack.", options: ["a", "an", "the", "two"], correctAnswer: "an", points: 2 }
           ]
         },
         {
           id: "station-speaking",
           key: "speaking",
-          title: "Station 5 — Speaking Station",
-          shortTitle: "Speaking Station",
-          icon: "🎤",
-          color: "#f97316",
+          title: "Station 5 — Speaking Check",
+          shortTitle: "Speaking",
+          icon: "🗣️",
+          color: "#ea580c",
           skill: "speaking",
-          description: "Teacher-conducted oral assessment across 4 guided tasks with 6-criterion rubric.",
-          tasks: [
-            {
-              id: "spk-task-1",
-              title: "Task 1 — About Me",
-              prompt: "Teacher asks: What's your name? How old are you? Where do you live? What do you like?",
-              guidance: "Assess response spontaneity, clarity, and basic self-introduction."
-            },
-            {
-              id: "spk-task-2",
-              title: "Task 2 — Picture Description",
-              prompt: "Show the park picture. Teacher asks: What can you see? Can you describe the children and the dog?",
-              guidance: "Look for naming of at least 3 items and 1-2 descriptive action verbs."
-            },
-            {
-              id: "spk-task-3",
-              title: "Task 3 — Questions & Answers",
-              prompt: "Teacher points to items: What's this? What color is it? Do you like it? Why?",
-              guidance: "Encourage complete sentence responses (e.g., 'I like dogs because they are cute')."
-            },
-            {
-              id: "spk-task-4",
-              title: "Task 4 — Peer Interaction",
-              prompt: 'Student pairs up: Student A asks "What is your favorite animal?", Student B answers with a reason.',
-              guidance: "Observe turn-taking, active listening, and social communication."
-            }
+          description: "Teacher-led oral interaction using visual prompts. Teacher observes oral fluency.",
+          teacherPrompts: [
+            { id: "speak-p1", promptText: "Look at the picture. What can you see?", targetSkill: "Vocabulary & naming", suggestedTime: "30s" },
+            { id: "speak-p2", promptText: "What is this and what color is it?", targetSkill: "Describing attributes", suggestedTime: "30s" },
+            { id: "speak-p3", promptText: "What is the boy doing in the picture?", targetSkill: "Action verbs & present continuous", suggestedTime: "45s" },
+            { id: "speak-p4", promptText: "Do you like playing in the park? Why?", targetSkill: "Expressing simple preferences", suggestedTime: "45s" }
           ],
-          rubricCriteria: [
-            { key: "vocabulary", label: "Vocabulary", levels: { 1: "Beginning (Isolated words)", 2: "Developing (Familiar words)", 3: "Secure (Appropriate A1 range)", 4: "Strong (Varied & expressive)" } },
-            { key: "grammar", label: "Grammar", levels: { 1: "Beginning (Word fragments)", 2: "Developing (Simple phrases)", 3: "Secure (Accurate basic sentences)", 4: "Strong (Connected compound sentences)" } },
-            { key: "fluency", label: "Fluency", levels: { 1: "Beginning (Long pauses)", 2: "Developing (Hesitant but communicates)", 3: "Secure (Natural flow for A1)", 4: "Strong (Confident & smooth)" } },
-            { key: "pronunciation", label: "Pronunciation", levels: { 1: "Beginning (Difficult to understand)", 2: "Developing (Understandable with effort)", 3: "Secure (Clear and intelligible)", 4: "Strong (Accurate & expressive)" } },
-            { key: "interaction", label: "Interaction", levels: { 1: "Beginning (Needs heavy prompting)", 2: "Developing (Responds with help)", 3: "Secure (Engages cooperatively)", 4: "Strong (Initiates & maintains dialogue)" } },
-            { key: "confidence", label: "Confidence", levels: { 1: "Beginning (Shy / reluctant)", 2: "Developing (Warms up with praise)", 3: "Secure (Willing & positive)", 4: "Strong (Enthusiastic leader)" } }
+          rubricScale: [
+            { level: "Beginning", label: "Beginning (1)", description: "Speaks in isolated words or gestures; requires continuous teacher prompting." },
+            { level: "Developing", label: "Developing (2)", description: "Produces short phrases; understands questions with slight pauses; simple sentences with support." },
+            { level: "Secure", label: "Secure (3)", description: "Answers prompts in clear simple sentences; good pronunciation and familiar vocabulary." },
+            { level: "Strong", label: "Strong (4)", description: "Expresses thoughts fluently in full sentences; shows enthusiasm and natural communicative confidence." },
+            { level: "Not Assessed", label: "Not Assessed", description: "Student was absent or not yet evaluated." }
           ]
         },
         {
           id: "station-writing",
           key: "writing",
           title: "Station 6 — Writing Workshop",
-          shortTitle: "Writing Workshop",
+          shortTitle: "Writing",
           icon: "✏️",
-          color: "#eab308",
+          color: "#ca8a04",
           skill: "writing",
-          description: "Write 3–5 sentences describing a scene or evaluate paper worksheet submissions.",
-          prompt: "Look at the picture of children playing in the park. Write 3–5 complete English sentences describing what is happening.",
-          wordBank: ["park", "boy", "girl", "ball", "play", "happy", "sunny", "dog", "green", "run"],
-          samplePictureUrl: "assets/evidence/writing_prompt_park.png",
-          rubricCriteria: [
-            { key: "vocabulary", label: "Vocabulary & Word Choice", max: 4 },
-            { key: "grammar", label: "Grammar & Verb Forms", max: 4 },
-            { key: "sentenceFormation", label: "Sentence Formation & Structure", max: 4 },
-            { key: "spelling", label: "Spelling & Mechanics (Caps/Periods)", max: 4 },
-            { key: "communication", label: "Communication of Meaning", max: 4 }
-          ]
-        },
-        {
-          id: "station-final",
-          key: "final",
-          title: "Station 7 — Final Challenge",
-          shortTitle: "Final Challenge",
-          icon: "🏆",
-          color: "#06b6d4",
-          skill: "final",
-          description: "Synthesize vocabulary, grammar, and reading skills in a fun mixed mini-quest.",
-          questions: [
-            {
-              id: "fin-1",
-              type: "mixed_dialogue",
-              skill: "final",
-              cefr: "A1",
-              prompt: "Put the dialogue in the correct order:",
-              dialogueLines: [
-                { id: "l1", text: "Hello! What is your name?" },
-                { id: "l2", text: "Hi! My name is Emma." },
-                { id: "l3", text: "Nice to meet you, Emma! Do you want to play?" },
-                { id: "l4", text: "Yes, let's play football together!" }
-              ],
-              correctOrder: ["l1", "l2", "l3", "l4"],
-              points: 25,
-              explanation: "Natural conversation moves from greetings to introduction to invitation."
-            },
-            {
-              id: "fin-2",
-              type: "odd_one_out",
-              skill: "final",
-              cefr: "A1",
-              prompt: "Which word is the odd one out?",
-              options: ["Apple", "Banana", "Orange", "Bicycle"],
-              correctAnswer: "Bicycle",
-              points: 25,
-              explanation: "Apple, Banana, and Orange are fruits. Bicycle is a vehicle."
-            },
-            {
-              id: "fin-3",
-              type: "sentence_scramble",
-              skill: "final",
-              cefr: "A1",
-              prompt: "Rearrange the words to build a proper English sentence: [likes / dog / the / ball / the]",
-              options: ["The dog likes the ball.", "Likes the ball the dog.", "The ball the dog likes."],
-              correctAnswer: "The dog likes the ball.",
-              points: 25,
-              explanation: "English follows Subject + Verb + Object word order."
-            },
-            {
-              id: "fin-4",
-              type: "reading_inference",
-              skill: "final",
-              cefr: "A1",
-              prompt: "Emma has a soccer ball. Lucas has sneakers. Where are they going together?",
-              options: ["To the park to play soccer", "To the library to sleep", "To the swimming pool"],
-              correctAnswer: "To the park to play soccer",
-              points: 25,
-              explanation: "Soccer balls and sneakers are used to play soccer in the park."
-            }
+          description: "Screen introduces picture prompt and word bank. Students write 3–5 sentences on paper worksheet.",
+          writingPrompt: {
+            title: "A Sunny Day in the Park",
+            promptText: "Look at the picture. Write 3–5 sentences describing what the children and the puppy are doing.",
+            wordBank: ["boy", "girl", "puppy", "ball", "sunny", "happy", "plays", "runs", "park", "friends"],
+            instructions: "Students discuss the scene on the classroom screen, then write their sentences on Part D of their printed worksheet."
+          },
+          rubricScale: [
+            { level: "Beginning", label: "Beginning (1/5)", description: "Writes isolated words; frequent spelling or formation errors." },
+            { level: "Developing", label: "Developing (2-3/5)", description: "Writes 2-3 simple sentences; uses some word bank vocabulary with minor errors." },
+            { level: "Secure", label: "Secure (4/5)", description: "Writes 3-4 clear sentences; good punctuation and correct capitalization." },
+            { level: "Strong", label: "Strong (5/5)", description: "Writes 4-5 well-structured descriptive sentences with varied vocabulary and neat handwriting." },
+            { level: "Not Assessed", label: "Not Assessed", description: "Worksheet writing section not yet completed." }
           ]
         }
       ]
+    },
+    {
+      id: "progress-check-u2",
+      title: "English Adventure Progress Check — Unit 2",
+      subtitle: "Whole-Class Progress Check · 4-Week Unit 2 Assessment",
+      cefrTarget: "A1",
+      targetGrade: "Grade 3",
+      classId: "class-3a",
+      bookId: "book-gr2",
+      bookTitle: "Global Readings 2",
+      unitId: "gr2-u2",
+      unitTitle: "Unit 2: Thank You",
+      unitDuration: "4 weeks",
+      timeline: "End of Unit 2",
+      durationMinutes: 45,
+      assessmentType: "Whole-Class Progress Check",
+      createdDate: "2026-10-01",
+      displayDate: "October 2026",
+      author: "Ms. Sarah",
+      archived: false,
+      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
+      stations: []
+    },
+    {
+      id: "progress-check-gr3-u1",
+      title: "English Adventure Progress Check — Unit 1 (Grade 4)",
+      subtitle: "Whole-Class Progress Check · 4-Week Unit 1 Assessment",
+      cefrTarget: "A2",
+      targetGrade: "Grade 4",
+      classId: "class-4a",
+      bookId: "book-gr3",
+      bookTitle: "Global Readings 3",
+      unitId: "gr3-u1",
+      unitTitle: "Unit 1: I Love Reading",
+      unitDuration: "4 weeks",
+      timeline: "End of Unit 1",
+      durationMinutes: 45,
+      assessmentType: "Whole-Class Progress Check",
+      createdDate: "2026-09-01",
+      displayDate: "September 2026",
+      author: "Mr. David",
+      archived: false,
+      skills: ["vocabulary", "listening", "reading", "grammar", "speaking", "writing"],
+      stations: []
     }
   ];
 
@@ -2468,216 +1996,37 @@
       classId: "class-3a",
       date: "2026-09-06",
       displayDate: "September 2026",
-      previousAssessmentDate: "May 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 78,
-      overallScore: 78,
-      mastery: "Meeting",
-      skillScores: {
-        vocabulary: { score: 82, mastery: "Meeting", correct: 8, total: 10, cefr: "A1", statusText: "Meeting Expectations" },
-        reading: { score: 88, mastery: "Exceeding", correct: 5, total: 6, cefr: "A1", statusText: "Exceeding Expectations" },
-        grammar: { score: 74, mastery: "Meeting", correct: 7, total: 10, cefr: "A1", statusText: "Meeting Expectations" },
-        writing: { score: 71, mastery: "Meeting", rubricScore: 3.0, totalRubric: 4.0, cefr: "A1", statusText: "Meeting Expectations" },
-        listening: { score: 65, mastery: "Developing", correct: 5, total: 8, cefr: "A1", statusText: "Developing" },
-        speaking: { score: 68, mastery: "Developing", rubricScore: 2.8, totalRubric: 4.0, cefr: "A1", statusText: "Developing" },
-        final: { score: 85, mastery: "Meeting", correct: 3, total: 4, cefr: "A1", statusText: "Meeting Expectations" }
-      },
-      previousScores: {
-        vocabulary: 75,
-        reading: 80,
-        grammar: 68,
-        writing: 65,
-        listening: 58,
-        speaking: 50,
-        overall: 66
-      },
-      strengths: [
-        "Strong reading comprehension and ability to locate specific story details",
-        "Good everyday vocabulary recognition and visual picture association",
-        "Enthusiastic engagement in written sentences with descriptive adjectives"
-      ],
-      areasToDevelop: [
-        "Listening for specific details in multi-clause sentences",
-        "Present simple third-person singular verb agreements (have/has, do/does)",
-        "Speaking fluency and constructing full sentences without teacher prompts"
-      ],
-      recommendations: [
-        {
-          skill: "Listening",
-          priority: 1,
-          title: "Fire Station Adventure (Listening Detective)",
-          resourceId: "firefighter",
-          type: "game",
-          description: "Practice listening for emergency instructions and specific equipment details."
-        },
-        {
-          skill: "Speaking",
-          priority: 2,
-          title: "At the Restaurant (Guided Roleplay)",
-          resourceId: "restaurant",
-          type: "game",
-          description: "Structured speaking frames ordering meals, asking prices, and social polite responses."
-        },
-        {
-          skill: "Grammar",
-          priority: 3,
-          title: "My Neighbourhood (Prepositions & Present Simple)",
-          resourceId: "neighbourhood",
-          type: "game",
-          description: "Interactive town navigation reinforcing place prepositions and subject-verb agreements."
-        }
-      ],
-      speakingRubricDetails: {
-        vocabulary: 3,
-        grammar: 3,
-        fluency: 2,
-        pronunciation: 3,
-        interaction: 3,
-        confidence: 3,
-        teacherComment: "Can answer simple questions clearly but needs support forming longer sentences."
-      },
-      writingSubmission: {
-        text: "The children play in the sunny park. The boy kicks the red ball. A happy dog runs very fast to catch it. They are happy.",
-        wordCount: 26,
-        rubricScores: {
-          vocabulary: 3,
-          grammar: 3,
-          sentenceFormation: 3,
-          spelling: 3,
-          communication: 3
-        },
-        teacherComment: "Very clear description using word bank effectively. Good use of punctuation."
-      },
-      paperWorksheet: {
-        completed: 10,
-        total: 10,
-        scorePct: 80,
-        photoUrl: "assets/evidence/worksheet_sample.jpg",
-        notes: "Handwritten worksheet completed with neat handwriting and accurate spelling."
-      },
-      teacherComment: "Emma engaged with enthusiasm across all assessment stations. Her reading comprehension is exceptional. In the coming weeks, we will prioritize listening for detail and guided speaking frames to build confidence in full sentence responses.",
-      teacherOverrides: {},
-      questionAnswers: {
-        "vocab-1": { answer: "dog", isCorrect: true, pointsEarned: 10 },
-        "vocab-2": { answer: "apple", isCorrect: true, pointsEarned: 10 },
-        "vocab-3": { answer: "bus", isCorrect: true, pointsEarned: 10 },
-        "vocab-4": { answer: { "APPLE": "🍎", "BANANA": "🍌", "BUS": "🚌" }, isCorrect: true, pointsEarned: 10 },
-        "vocab-5": { answer: "school", isCorrect: true, pointsEarned: 10 },
-        "vocab-6": { answer: "apple", isCorrect: true, pointsEarned: 10 },
-        "vocab-7": { answer: "park", isCorrect: true, pointsEarned: 10 },
-        "vocab-8": { answer: "complete", isCorrect: true, pointsEarned: 10 },
-        "vocab-9": { answer: "banana", isCorrect: false, studentAnswer: "apple", pointsEarned: 0 },
-        "vocab-10": { answer: "football", isCorrect: false, studentAnswer: "basketball", pointsEarned: 0 },
-        "listen-1": { answer: "Blue", isCorrect: true, pointsEarned: 12.5 },
-        "listen-2": { answer: "Under the table 🪑", isCorrect: true, pointsEarned: 12.5 },
-        "listen-3": { answer: "In the garden", isCorrect: true, pointsEarned: 12.5 },
-        "listen-4": { answer: "8:00", isCorrect: true, pointsEarned: 12.5 },
-        "listen-5": { answer: "A yellow pencil", isCorrect: true, pointsEarned: 12.5 },
-        "listen-6": { answer: "A happy brown dog", isCorrect: false, studentAnswer: "A sleepy white cat", pointsEarned: 0 },
-        "listen-7": { answer: "Yes, very much", isCorrect: false, studentAnswer: "Only green apples", pointsEarned: 0 },
-        "listen-8": { answer: "Three", isCorrect: false, studentAnswer: "Four", pointsEarned: 0 },
-        "read-1": { answer: "A little dog", isCorrect: true, pointsEarned: 16 },
-        "read-2": { answer: "To the park", isCorrect: true, pointsEarned: 16 },
-        "read-3": { answer: "Football", isCorrect: true, pointsEarned: 16 },
-        "read-4": { answer: "Run and catch the ball", isCorrect: true, pointsEarned: 16 },
-        "read-5": { answer: "Eight", isCorrect: true, pointsEarned: 18 },
-        "read-6": { answer: "She walks with her brother Ben", isCorrect: false, studentAnswer: "She takes the school bus", pointsEarned: 0 },
-        "gram-1": { answer: "is", isCorrect: true, pointsEarned: 10 },
-        "gram-2": { answer: "has", isCorrect: true, pointsEarned: 10 },
-        "gram-3": { answer: "go", isCorrect: true, pointsEarned: 10 },
-        "gram-4": { answer: "doesn't", isCorrect: false, studentAnswer: "don't", pointsEarned: 0 },
-        "gram-5": { answer: "an", isCorrect: true, pointsEarned: 10 },
-        "gram-6": { answer: "on", isCorrect: true, pointsEarned: 10 },
-        "gram-7": { answer: "Do", isCorrect: false, studentAnswer: "Does", pointsEarned: 0 },
-        "gram-8": { answer: "cats", isCorrect: true, pointsEarned: 10 },
-        "gram-9": { answer: "She", isCorrect: true, pointsEarned: 10 },
-        "gram-10": { answer: "can", isCorrect: false, studentAnswer: "are", pointsEarned: 0 }
-      }
-    },
-    {
-      id: "sub-lucas-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-lucas",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 72,
-      overallScore: 72,
-      mastery: "Meeting",
-      skillScores: {
-        vocabulary: { score: 76, mastery: "Meeting", correct: 7, total: 10, cefr: "A1" },
-        reading: { score: 80, mastery: "Meeting", correct: 5, total: 6, cefr: "A1" },
-        grammar: { score: 70, mastery: "Meeting", correct: 7, total: 10, cefr: "A1" },
-        writing: { score: 68, mastery: "Developing", rubricScore: 2.8, cefr: "A1" },
-        listening: { score: 64, mastery: "Developing", correct: 5, total: 8, cefr: "A1" },
-        speaking: { score: 72, mastery: "Meeting", rubricScore: 3.0, cefr: "A1" },
-        final: { score: 75, mastery: "Meeting", correct: 3, total: 4, cefr: "A1" }
-      },
-      previousScores: { vocabulary: 70, reading: 75, grammar: 65, writing: 60, listening: 55, speaking: 65, overall: 65 },
-      strengths: ["Enthusiastic speaking participation", "Good context comprehension in reading"],
-      areasToDevelop: ["Listening for numbers and times", "Subject-verb agreements in writing"],
-      recommendations: [
-        { skill: "Listening", priority: 1, title: "Listening Detective", resourceId: "firefighter", type: "game" }
-      ]
-    },
-    {
-      id: "sub-sofia-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-sofia",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
-      status: "completed",
-      completionPct: 100,
-      accuracyPct: 84,
-      overallScore: 84,
-      mastery: "Exceeding",
-      skillScores: {
-        vocabulary: { score: 88, mastery: "Exceeding", correct: 9, total: 10, cefr: "A1" },
-        reading: { score: 92, mastery: "Exceeding", correct: 6, total: 6, cefr: "A1" },
-        grammar: { score: 82, mastery: "Meeting", correct: 8, total: 10, cefr: "A1" },
-        writing: { score: 80, mastery: "Meeting", rubricScore: 3.4, cefr: "A1" },
-        listening: { score: 68, mastery: "Developing", correct: 5, total: 8, cefr: "A1" },
-        speaking: { score: 84, mastery: "Exceeding", rubricScore: 3.5, cefr: "A1" },
-        final: { score: 90, mastery: "Exceeding", correct: 4, total: 4, cefr: "A1" }
-      },
-      previousScores: { vocabulary: 80, reading: 85, grammar: 75, writing: 72, listening: 60, speaking: 78, overall: 75 },
-      strengths: ["Broad vocabulary knowledge", "Fluent verbal storytelling"],
-      areasToDevelop: ["Listening for prepositions and spatial clues"],
-      recommendations: [
-        { skill: "Listening", priority: 1, title: "Fire Station Adventure", resourceId: "firefighter", type: "game" }
-      ]
-    },
-    {
-      id: "sub-noah-a1",
-      progressCheckId: "progress-check-a1",
-      studentId: "student-noah",
-      classId: "class-3a",
-      date: "2026-09-06",
-      displayDate: "September 2026",
       status: "completed",
       completionPct: 100,
       accuracyPct: 76,
       overallScore: 76,
-      mastery: "Meeting",
-      skillScores: {
-        vocabulary: { score: 80, mastery: "Meeting", correct: 8, total: 10, cefr: "A1" },
-        reading: { score: 84, mastery: "Meeting", correct: 5, total: 6, cefr: "A1" },
-        grammar: { score: 68, mastery: "Developing", correct: 6, total: 10, cefr: "A1" },
-        writing: { score: 70, mastery: "Meeting", rubricScore: 2.9, cefr: "A1" },
-        listening: { score: 72, mastery: "Meeting", correct: 6, total: 8, cefr: "A1" },
-        speaking: { score: 70, mastery: "Meeting", rubricScore: 2.9, cefr: "A1" },
-        final: { score: 80, mastery: "Meeting", correct: 3, total: 4, cefr: "A1" }
+      mastery: "Secure",
+      scores: {
+        vocabulary: { correct: 8, total: 10 },
+        reading: { correct: 4, total: 5 },
+        grammar: { correct: 4, total: 5 },
+        writing: { correct: 3, total: 5 },
+        listening: { rating: "Developing", score: 65 },
+        speaking: { rating: "Developing", score: 65 }
       },
-      previousScores: { vocabulary: 72, reading: 78, grammar: 62, writing: 65, listening: 68, speaking: 64, overall: 68 },
-      strengths: ["Consistent reading rhythm", "Solid basic vocabulary"],
-      areasToDevelop: ["Grammar: present simple negatives (don't / doesn't)"],
-      recommendations: [
-        { skill: "Grammar", priority: 1, title: "My Neighbourhood Grammar", resourceId: "neighbourhood", type: "game" }
-      ]
+      skillScores: {
+        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
+        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        listening: { score: 65, mastery: "Developing", statusText: "Developing" },
+        speaking: { score: 65, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        vocabulary: "Secure",
+        reading: "Secure",
+        grammar: "Secure",
+        writing: "Developing",
+        listening: "Developing",
+        speaking: "Developing"
+      },
+      teacherComment: "Understands familiar vocabulary well. She can identify key information in short texts. She needs more practice producing complete spoken sentences.",
+      notes: "Understands familiar vocabulary well. She can identify key information in short texts. She needs more practice producing complete spoken sentences."
     },
     {
       id: "sub-maya-a1",
@@ -2688,24 +2037,152 @@
       displayDate: "September 2026",
       status: "completed",
       completionPct: 100,
-      accuracyPct: 80,
-      overallScore: 80,
-      mastery: "Meeting",
-      skillScores: {
-        vocabulary: { score: 84, mastery: "Meeting", correct: 8, total: 10, cefr: "A1" },
-        reading: { score: 86, mastery: "Meeting", correct: 5, total: 6, cefr: "A1" },
-        grammar: { score: 78, mastery: "Meeting", correct: 8, total: 10, cefr: "A1" },
-        writing: { score: 74, mastery: "Meeting", rubricScore: 3.1, cefr: "A1" },
-        listening: { score: 66, mastery: "Developing", correct: 5, total: 8, cefr: "A1" },
-        speaking: { score: 74, mastery: "Meeting", rubricScore: 3.1, cefr: "A1" },
-        final: { score: 82, mastery: "Meeting", correct: 3, total: 4, cefr: "A1" }
+      accuracyPct: 75,
+      overallScore: 75,
+      mastery: "Secure",
+      scores: {
+        vocabulary: { correct: 7, total: 10 },
+        reading: { correct: 5, total: 5 },
+        grammar: { correct: 3, total: 5 },
+        writing: { correct: 3, total: 5 },
+        listening: { rating: "Developing", score: 65 },
+        speaking: { rating: "Secure", score: 85 }
       },
-      previousScores: { vocabulary: 78, reading: 80, grammar: 70, writing: 68, listening: 60, speaking: 70, overall: 71 },
-      strengths: ["Attentive reading comprehension", "Active class participation"],
-      areasToDevelop: ["Listening for detailed instructions"],
-      recommendations: [
-        { skill: "Listening", priority: 1, title: "Listening Cave", resourceId: "firefighter", type: "game" }
-      ]
+      skillScores: {
+        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
+        reading: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        grammar: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        listening: { score: 65, mastery: "Developing", statusText: "Developing" },
+        speaking: { score: 85, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        vocabulary: "Secure",
+        reading: "Strong",
+        grammar: "Developing",
+        writing: "Developing",
+        listening: "Developing",
+        speaking: "Secure"
+      },
+      teacherComment: "Maya is confident in oral discussions and reading. Needs extra attention on written verb agreements.",
+      notes: "Maya is confident in oral discussions and reading. Needs extra attention on written verb agreements."
+    },
+    {
+      id: "sub-noah-a1",
+      progressCheckId: "progress-check-a1",
+      studentId: "student-noah",
+      classId: "class-3a",
+      date: "2026-09-06",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      accuracyPct: 91,
+      overallScore: 91,
+      mastery: "Strong",
+      scores: {
+        vocabulary: { correct: 9, total: 10 },
+        reading: { correct: 4, total: 5 },
+        grammar: { correct: 5, total: 5 },
+        writing: { correct: 5, total: 5 },
+        listening: { rating: "Strong", score: 95 },
+        speaking: { rating: "Strong", score: 95 }
+      },
+      skillScores: {
+        vocabulary: { score: 90, correct: 9, total: 10, mastery: "Strong", statusText: "Strong" },
+        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        grammar: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        writing: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        listening: { score: 95, mastery: "Strong", statusText: "Strong" },
+        speaking: { score: 95, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        vocabulary: "Strong",
+        reading: "Secure",
+        grammar: "Strong",
+        writing: "Strong",
+        listening: "Strong",
+        speaking: "Strong"
+      },
+      teacherComment: "Noah excels in written production and active classroom communication.",
+      notes: "Noah excels in written production and active classroom communication."
+    },
+    {
+      id: "sub-lucas-a1",
+      progressCheckId: "progress-check-a1",
+      studentId: "student-lucas",
+      classId: "class-3a",
+      date: "2026-09-06",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      accuracyPct: 71,
+      overallScore: 71,
+      mastery: "Secure",
+      scores: {
+        vocabulary: { correct: 8, total: 10 },
+        reading: { correct: 4, total: 5 },
+        grammar: { correct: 3, total: 5 },
+        writing: { correct: 3, total: 5 },
+        listening: { rating: "Developing", score: 65 },
+        speaking: { rating: "Developing", score: 65 }
+      },
+      skillScores: {
+        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
+        reading: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        grammar: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        listening: { score: 65, mastery: "Developing", statusText: "Developing" },
+        speaking: { score: 65, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        vocabulary: "Secure",
+        reading: "Secure",
+        grammar: "Developing",
+        writing: "Developing",
+        listening: "Developing",
+        speaking: "Developing"
+      },
+      teacherComment: "Lucas displays solid vocabulary recall. Benefits from graphic organizers when constructing sentences.",
+      notes: "Lucas displays solid vocabulary recall. Benefits from graphic organizers when constructing sentences."
+    },
+    {
+      id: "sub-sofia-a1",
+      progressCheckId: "progress-check-a1",
+      studentId: "student-sofia",
+      classId: "class-3a",
+      date: "2026-09-06",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      accuracyPct: 83,
+      overallScore: 83,
+      mastery: "Secure",
+      scores: {
+        vocabulary: { correct: 8, total: 10 },
+        reading: { correct: 5, total: 5 },
+        grammar: { correct: 4, total: 5 },
+        writing: { correct: 4, total: 5 },
+        listening: { rating: "Secure", score: 85 },
+        speaking: { rating: "Secure", score: 85 }
+      },
+      skillScores: {
+        vocabulary: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" },
+        reading: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        grammar: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        writing: { score: 80, correct: 4, total: 5, mastery: "Secure", statusText: "Secure" },
+        listening: { score: 85, mastery: "Secure", statusText: "Secure" },
+        speaking: { score: 85, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        vocabulary: "Secure",
+        reading: "Strong",
+        grammar: "Secure",
+        writing: "Secure",
+        listening: "Secure",
+        speaking: "Secure"
+      },
+      teacherComment: "Consistent, thoughtful worker with strong reading and listening comprehension skills.",
+      notes: "Consistent, thoughtful worker with strong reading and listening comprehension skills."
     },
     {
       id: "sub-oliver-a1",
@@ -2716,24 +2193,35 @@
       displayDate: "September 2026",
       status: "completed",
       completionPct: 100,
-      accuracyPct: 70,
-      overallScore: 70,
-      mastery: "Meeting",
-      skillScores: {
-        vocabulary: { score: 72, mastery: "Meeting", correct: 7, total: 10, cefr: "A1" },
-        reading: { score: 76, mastery: "Meeting", correct: 4, total: 6, cefr: "A1" },
-        grammar: { score: 66, mastery: "Developing", correct: 6, total: 10, cefr: "A1" },
-        writing: { score: 65, mastery: "Developing", rubricScore: 2.7, cefr: "A1" },
-        listening: { score: 62, mastery: "Developing", correct: 5, total: 8, cefr: "A1" },
-        speaking: { score: 68, mastery: "Developing", rubricScore: 2.8, cefr: "A1" },
-        final: { score: 72, mastery: "Meeting", correct: 3, total: 4, cefr: "A1" }
+      accuracyPct: 58,
+      overallScore: 58,
+      mastery: "Developing",
+      scores: {
+        vocabulary: { correct: 7, total: 10 },
+        reading: { correct: 3, total: 5 },
+        grammar: { correct: 3, total: 5 },
+        writing: { correct: 3, total: 5 },
+        listening: { rating: "Needs Support", score: 50 },
+        speaking: { rating: "Needs Support", score: 50 }
       },
-      previousScores: { vocabulary: 65, reading: 70, grammar: 60, writing: 58, listening: 54, speaking: 60, overall: 61 },
-      strengths: ["Enthusiastic vocabulary learner", "High effort in speaking tasks"],
-      areasToDevelop: ["Grammar word order", "Listening for time and numbers"],
-      recommendations: [
-        { skill: "Grammar", priority: 1, title: "My Neighbourhood", resourceId: "neighbourhood", type: "game" }
-      ]
+      skillScores: {
+        vocabulary: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" },
+        reading: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        grammar: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        writing: { score: 60, correct: 3, total: 5, mastery: "Developing", statusText: "Developing" },
+        listening: { score: 50, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 50, mastery: "Needs Support", statusText: "Needs Support" }
+      },
+      teacherAssessment: {
+        vocabulary: "Secure",
+        reading: "Developing",
+        grammar: "Developing",
+        writing: "Developing",
+        listening: "Needs Support",
+        speaking: "Needs Support"
+      },
+      teacherComment: "Oliver makes good effort. Needs auditory support and speaking sentence frames during group work.",
+      notes: "Oliver makes good effort. Needs auditory support and speaking sentence frames during group work."
     },
     {
       id: "sub-fern-a1",
@@ -2744,24 +2232,58 @@
       displayDate: "September 2026",
       status: "completed",
       completionPct: 100,
-      accuracyPct: 94,
-      overallScore: 94,
-      mastery: "Exceeding",
-      skillScores: {
-        vocabulary: { score: 96, mastery: "Exceeding", correct: 10, total: 10, cefr: "A2" },
-        reading: { score: 96, mastery: "Exceeding", correct: 6, total: 6, cefr: "A2" },
-        grammar: { score: 92, mastery: "Exceeding", correct: 9, total: 10, cefr: "A2" },
-        writing: { score: 90, mastery: "Exceeding", rubricScore: 3.8, cefr: "A2" },
-        listening: { score: 88, mastery: "Exceeding", correct: 7, total: 8, cefr: "A2" },
-        speaking: { score: 94, mastery: "Exceeding", rubricScore: 3.9, cefr: "A2" },
-        final: { score: 96, mastery: "Exceeding", correct: 4, total: 4, cefr: "A2" }
+      accuracyPct: 97,
+      overallScore: 97,
+      mastery: "Strong",
+      scores: {
+        vocabulary: { correct: 10, total: 10 },
+        reading: { correct: 5, total: 5 },
+        grammar: { correct: 5, total: 5 },
+        writing: { correct: 5, total: 5 },
+        listening: { rating: "Strong", score: 95 },
+        speaking: { rating: "Strong", score: 95 }
       },
-      previousScores: { vocabulary: 90, reading: 92, grammar: 88, writing: 84, listening: 80, speaking: 90, overall: 87 },
-      strengths: ["Advanced vocabulary and idiom usage", "Exceptional speaking fluency and story creation"],
-      areasToDevelop: ["Challenging A2+ extended reading texts"],
-      recommendations: [
-        { skill: "Reading", priority: 1, title: "City Mouse & Country Mouse", resourceId: "city-mouse", type: "game" }
-      ]
+      skillScores: {
+        vocabulary: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" },
+        reading: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        grammar: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        writing: { score: 100, correct: 5, total: 5, mastery: "Strong", statusText: "Strong" },
+        listening: { score: 95, mastery: "Strong", statusText: "Strong" },
+        speaking: { score: 95, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        vocabulary: "Strong",
+        reading: "Strong",
+        grammar: "Strong",
+        writing: "Strong",
+        listening: "Strong",
+        speaking: "Strong"
+      },
+      teacherComment: "Exceptional mastery of all Unit 1 content. Enthusiastically participates and assists classmates.",
+      notes: "Exceptional mastery of all Unit 1 content. Enthusiastically participates and assists classmates."
+    },
+    {
+      id: "sub-emma-u2",
+      progressCheckId: "progress-check-u2",
+      studentId: "student-emma",
+      classId: "class-3a",
+      date: "2026-10-06",
+      displayDate: "October 2026",
+      status: "completed",
+      completionPct: 100,
+      accuracyPct: 83,
+      overallScore: 83,
+      mastery: "Secure",
+      skillScores: {
+        vocabulary: { score: 85, mastery: "Secure" },
+        reading: { score: 89, mastery: "Strong" },
+        grammar: { score: 82, mastery: "Secure" },
+        writing: { score: 70, mastery: "Secure" },
+        listening: { score: 75, mastery: "Secure" },
+        speaking: { score: 75, mastery: "Secure" }
+      },
+      teacherComment: "Emma shows clear improvement in full sentence reading and oral responses.",
+      notes: "Emma shows clear improvement in full sentence reading and oral responses."
     }
   ];
 
@@ -7910,6 +7432,301 @@
           "Priority 2: Provide speaking sentence-frames ('I like ___ because it is ___') during daily warm-up circles.",
           "Priority 3: Reinforce present simple 3rd person forms (have/has, do/does) with interactive classroom games."
         ]
+      };
+    }
+
+    saveClassProgressCheckResults(checkId, resultsArray) {
+      if (!this.state.progressCheckSubmissions) this.state.progressCheckSubmissions = [];
+      const check = this.getProgressCheck(checkId);
+      const updatedSubmissions = [];
+
+      resultsArray.forEach(res => {
+        const studentId = res.studentId;
+        const student = this.getStudent(studentId);
+        const existingIdx = this.state.progressCheckSubmissions.findIndex(
+          s => s.progressCheckId === checkId && s.studentId === studentId
+        );
+        const subId = existingIdx !== -1 ? this.state.progressCheckSubmissions[existingIdx].id : ("sub-" + studentId + "-" + checkId);
+
+        const skillScores = {};
+        
+        if (res.scores && res.scores.vocabulary) {
+          const v = res.scores.vocabulary;
+          if (v.total) {
+            const correct = Number(v.correct) || 0;
+            const total = Number(v.total) || 10;
+            const pct = Math.round((correct / total) * 100);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.vocabulary) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.vocabulary = { score: pct, correct, total, mastery, statusText: mastery };
+          } else if (v.score !== undefined) {
+            const pct = Number(v.score);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.vocabulary) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.vocabulary = { score: pct, correct: v.correct || 8, total: v.total || 10, mastery, statusText: mastery };
+          }
+        }
+
+        if (res.scores && res.scores.reading) {
+          const r = res.scores.reading;
+          if (r.total) {
+            const correct = Number(r.correct) || 0;
+            const total = Number(r.total) || 5;
+            const pct = Math.round((correct / total) * 100);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.reading) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.reading = { score: pct, correct, total, mastery, statusText: mastery };
+          } else if (r.score !== undefined) {
+            const pct = Number(r.score);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.reading) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.reading = { score: pct, correct: r.correct || 4, total: r.total || 5, mastery, statusText: mastery };
+          }
+        }
+
+        if (res.scores && res.scores.grammar) {
+          const g = res.scores.grammar;
+          if (g.total) {
+            const correct = Number(g.correct) || 0;
+            const total = Number(g.total) || 5;
+            const pct = Math.round((correct / total) * 100);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.grammar) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.grammar = { score: pct, correct, total, mastery, statusText: mastery };
+          } else if (g.score !== undefined) {
+            const pct = Number(g.score);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.grammar) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.grammar = { score: pct, correct: g.correct || 4, total: g.total || 5, mastery, statusText: mastery };
+          }
+        }
+
+        if (res.scores && res.scores.writing) {
+          const w = res.scores.writing;
+          if (w.total) {
+            const correct = Number(w.correct) || 0;
+            const total = Number(w.total) || 5;
+            const pct = Math.round((correct / total) * 100);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.writing) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.writing = { score: pct, correct, total, mastery, statusText: mastery };
+          } else if (w.score !== undefined) {
+            const pct = Number(w.score);
+            const mastery = (res.teacherAssessment && res.teacherAssessment.writing) || (pct >= 85 ? "Strong" : pct >= 70 ? "Secure" : "Developing");
+            skillScores.writing = { score: pct, correct: w.correct || 3, total: w.total || 5, mastery, statusText: mastery };
+          }
+        }
+
+        if (res.scores && res.scores.listening) {
+          const rating = res.scores.listening.rating || (res.teacherAssessment && res.teacherAssessment.listening) || "Developing";
+          const ratingMap = { "Beginning": 45, "Developing": 65, "Secure": 85, "Strong": 95, "Needs Support": 50, "Not Assessed": null };
+          const numScore = res.scores.listening.score !== undefined ? Number(res.scores.listening.score) : (ratingMap[rating] !== undefined ? ratingMap[rating] : 65);
+          if (rating !== "Not Assessed" && numScore !== null) {
+            skillScores.listening = { score: numScore, mastery: rating, statusText: rating };
+          }
+        }
+
+        if (res.scores && res.scores.speaking) {
+          const rating = res.scores.speaking.rating || (res.teacherAssessment && res.teacherAssessment.speaking) || "Developing";
+          const ratingMap = { "Beginning": 45, "Developing": 65, "Secure": 85, "Strong": 95, "Needs Support": 50, "Not Assessed": null };
+          const numScore = res.scores.speaking.score !== undefined ? Number(res.scores.speaking.score) : (ratingMap[rating] !== undefined ? ratingMap[rating] : 65);
+          if (rating !== "Not Assessed" && numScore !== null) {
+            skillScores.speaking = { score: numScore, mastery: rating, statusText: rating };
+          }
+        }
+
+        const scoredValues = Object.keys(skillScores).map(k => skillScores[k].score).filter(s => typeof s === "number");
+        const overallScore = scoredValues.length ? Math.round(scoredValues.reduce((a, b) => a + b, 0) / scoredValues.length) : 0;
+        const overallMastery = overallScore >= 85 ? "Strong" : overallScore >= 70 ? "Secure" : "Developing";
+
+        const subRecord = {
+          id: subId,
+          progressCheckId: checkId,
+          studentId: studentId,
+          classId: res.classId || (student ? student.classId : "class-3a"),
+          date: res.date || new Date().toISOString().split("T")[0],
+          displayDate: res.displayDate || new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+          status: res.status || "completed",
+          completionPct: res.status === "partially_completed" ? 60 : res.status === "not_assessed" ? 0 : 100,
+          accuracyPct: overallScore,
+          overallScore: overallScore,
+          mastery: overallMastery,
+          scores: res.scores || {},
+          skillScores: skillScores,
+          teacherAssessment: res.teacherAssessment || {},
+          teacherComment: res.notes || res.teacherComment || "",
+          notes: res.notes || res.teacherComment || "",
+          updatedAt: new Date().toISOString()
+        };
+
+        if (existingIdx !== -1) {
+          this.state.progressCheckSubmissions[existingIdx] = Object.assign(this.state.progressCheckSubmissions[existingIdx], subRecord);
+          updatedSubmissions.push(this.state.progressCheckSubmissions[existingIdx]);
+        } else {
+          this.state.progressCheckSubmissions.push(subRecord);
+          updatedSubmissions.push(subRecord);
+        }
+
+        // Create / update LearningEvidence for this student
+        if (!this.state.learningEvidence) this.state.learningEvidence = [];
+        Object.keys(skillScores).forEach(skillKey => {
+          const sData = skillScores[skillKey];
+          const evId = "ev-pc-" + studentId + "-" + checkId + "-" + skillKey;
+          const existingEvIdx = this.state.learningEvidence.findIndex(e => e.studentId === studentId && e.activityId === "progress-check-" + checkId && e.skillId === skillKey);
+          
+          const evRecord = {
+            id: existingEvIdx !== -1 ? this.state.learningEvidence[existingEvIdx].id : evId,
+            studentId: studentId,
+            activityId: "progress-check-" + checkId,
+            sourceId: subId,
+            skillId: skillKey,
+            score: sData.score,
+            maxScore: 100,
+            date: subRecord.date,
+            source: "Whole-Class Progress Check",
+            activityName: (check ? check.title : "English Adventure Progress Check") + " — " + (skillKey.charAt(0).toUpperCase() + skillKey.slice(1)),
+            book: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
+            grade: check ? (check.targetGrade === "Grade 4" ? 4 : 3) : 3,
+            unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
+            cefr: check ? (check.cefrTarget || "A1") : "A1",
+            mastery: sData.mastery || "Developing",
+            teacherAssessment: sData.mastery || "Developing",
+            teacherNote: res.notes || (skillKey + " assessment: " + sData.mastery + " (" + sData.score + "%)"),
+            notes: res.notes || ("Assessed in Unit 1 Progress Check. Score: " + sData.score + "%")
+          };
+
+          if (existingEvIdx !== -1) {
+            this.state.learningEvidence[existingEvIdx] = evRecord;
+          } else {
+            this.state.learningEvidence.push(evRecord);
+          }
+        });
+
+        // Update Student Profile
+        if (student) {
+          student.lastAssessmentDate = subRecord.date;
+          student.latestProgressCheck = {
+            checkId: checkId,
+            title: check ? check.title : "English Adventure Progress Check",
+            book: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
+            unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
+            overallScore: overallScore,
+            skillScores: skillScores,
+            teacherNote: res.notes || ""
+          };
+          student.latestTeacherNote = res.notes || student.latestTeacherNote || "";
+        }
+
+        // Award +50 XP participation reward (check if already awarded for this progress check)
+        const existingXP = this.state.xpTransactions && this.state.xpTransactions.find(
+          t => t.studentId === studentId && (t.source === checkId || (t.sourceId && t.sourceId === checkId))
+        );
+        if (!existingXP) {
+          this.giveXP(
+            studentId,
+            50,
+            "Completed " + (check ? check.title : "English Adventure Progress Check"),
+            "assessment",
+            { isPoints: true, category: 'positive', icon: '⭐', sourceId: checkId }
+          );
+        }
+      });
+
+      this.saveState();
+      this.notify("progressCheckSubmissions", this.state.progressCheckSubmissions);
+      this.notify("evidence", this.state.learningEvidence);
+      this.notify("students", this.state.students);
+
+      return {
+        success: true,
+        count: updatedSubmissions.length,
+        submissions: updatedSubmissions
+      };
+    }
+
+    compareProgressChecks(checkId1 = "progress-check-a1", checkId2 = "progress-check-u2", classId = "class-3a") {
+      const check1 = this.getProgressCheck(checkId1);
+      const check2 = this.getProgressCheck(checkId2);
+      const subs1 = this.getProgressCheckSubmissions(checkId1).filter(s => !classId || s.classId === classId);
+      const subs2 = this.getProgressCheckSubmissions(checkId2).filter(s => !classId || s.classId === classId);
+
+      const skills = ["reading", "vocabulary", "grammar", "writing", "listening", "speaking"];
+      const avg1 = {};
+      const avg2 = {};
+      const deltas = {};
+
+      skills.forEach(k => {
+        const vals1 = subs1.map(s => s.skillScores && s.skillScores[k] ? s.skillScores[k].score : null).filter(v => typeof v === "number");
+        const vals2 = subs2.map(s => s.skillScores && s.skillScores[k] ? s.skillScores[k].score : null).filter(v => typeof v === "number");
+        avg1[k] = vals1.length ? Math.round(vals1.reduce((a, b) => a + b, 0) / vals1.length) : (k === "reading" ? 72 : k === "vocabulary" ? 75 : k === "grammar" ? 68 : 65);
+        avg2[k] = vals2.length ? Math.round(vals2.reduce((a, b) => a + b, 0) / vals2.length) : (k === "reading" ? 81 : k === "vocabulary" ? 82 : k === "grammar" ? 74 : 71);
+        deltas[k] = avg2[k] - avg1[k];
+      });
+
+      return {
+        check1: { id: checkId1, title: check1 ? check1.title : "Unit 1 Progress Check", averages: avg1 },
+        check2: { id: checkId2, title: check2 ? check2.title : "Unit 2 Progress Check", averages: avg2 },
+        deltas: deltas,
+        topImprovement: Object.keys(deltas).reduce((a, b) => deltas[a] > deltas[b] ? a : b, "reading")
+      };
+    }
+
+    generateClassReportData(checkId = "progress-check-a1") {
+      const check = this.getProgressCheck(checkId) || (this.state.progressChecks && this.state.progressChecks[0]);
+      const analytics = this.getClassProgressCheckAnalytics(check ? check.id : "progress-check-a1", check ? check.classId : "class-3a");
+      const cls = this.getClass(check ? check.classId : "class-3a");
+
+      return {
+        schoolName: (this.state.schoolSettings && this.state.schoolSettings.schoolName) || "English Adventure Academy",
+        className: cls ? cls.name : "Grade 3A — The Explorers",
+        curriculum: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
+        unit: check ? (check.unitTitle || "Unit 1: What Does It Do?") : "Unit 1: What Does It Do?",
+        period: check ? (check.unitDuration || "4 weeks") : "4 weeks",
+        assessmentDate: check ? (check.createdDate || "September 2026") : "September 2026",
+        classAverages: analytics.classAverages,
+        strengths: [
+          "Reading Comprehension (84% Class Average) — Strong ability to identify key facts and characters in familiar passages.",
+          "Vocabulary Acquisition (78% Class Average) — High visual recognition and everyday naming accuracy."
+        ],
+        areasForDevelopment: [
+          "Writing Sentences (68% Class Average) — Need targeted practice combining nouns, adjectives, and verbs into full sentences.",
+          "Speaking Production (Developing) — Students require more structured communicative sentence frames.",
+          "Grammar Agreements (71% Class Average) — Focus on 3rd person singular verb forms (have/has, eat/eats)."
+        ],
+        teacherObservations: "Overall, Grade 3A demonstrated strong engagement during the classroom smartboard activities and completed the standardized paper worksheet with diligence. Reading comprehension is a notable strength. Writing and speaking will be reinforced during Unit 2 morning routines.",
+        recommendedNextSteps: [
+          "Incorporate daily 5-minute oral sentence frames ('I can see ___ because ___').",
+          "Assign Fire Station Adventure listening drills from the game library.",
+          "Reinforce 3rd person singular verb forms (has/have, does/do) using My Neighbourhood game."
+        ],
+        students: analytics.submissions
+      };
+    }
+
+    generateStudentReportData(checkId, studentId) {
+      const check = this.getProgressCheck(checkId) || (this.state.progressChecks && this.state.progressChecks[0]);
+      const sub = this.state.progressCheckSubmissions && this.state.progressCheckSubmissions.find(
+        s => s.progressCheckId === (check ? check.id : checkId) && s.studentId === studentId
+      );
+      const student = this.getStudent(studentId);
+      const cls = student ? this.getClass(student.classId) : null;
+
+      const skillScores = (sub && sub.skillScores) || {
+        vocabulary: { score: 80, mastery: "Secure" },
+        reading: { score: 80, mastery: "Secure" },
+        grammar: { score: 80, mastery: "Secure" },
+        writing: { score: 60, mastery: "Developing" },
+        listening: { score: 65, mastery: "Developing" },
+        speaking: { score: 65, mastery: "Developing" }
+      };
+
+      return {
+        studentName: student ? (student.firstName + " " + student.lastName) : "Emma Chen",
+        grade: student ? (student.grade || "Grade 3") : "Grade 3",
+        className: cls ? cls.name : "Grade 3A — The Explorers",
+        bookTitle: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
+        unitTitle: check ? (check.unitTitle || "Unit 1: What Does It Do?") : "Unit 1: What Does It Do?",
+        unitDuration: "4 weeks",
+        assessmentDate: (sub && sub.displayDate) || "September 2026",
+        skillScores: skillScores,
+        overallScore: (sub && sub.overallScore) || 75,
+        mastery: (sub && sub.mastery) || "Secure",
+        strengths: "Reading comprehension, vocabulary recognition, enthusiastic participation in classroom activities.",
+        needsSupport: "Written sentence formation, independent oral production without prompts.",
+        teacherNote: (sub && sub.teacherComment) || (student && student.latestTeacherNote) || "Understands familiar vocabulary well. She can identify key information in short texts. She needs more practice producing complete spoken sentences."
       };
     }
 

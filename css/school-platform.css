@@ -3120,6 +3120,28 @@ body.classroom-mode-active .classroom-students-grid {
   transform: translateY(0);
 }
 
+/* Whole-Class Gradebook & Progress Check Stepper */
+.pc-workflow-stepper .pc-step-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.pc-gradebook-table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-canvas);
+  z-index: 2;
+}
+
+.pc-gradebook-table tr:hover {
+  background: rgba(59, 130, 246, 0.05) !important;
+}
+
+.pc-gradebook-table .form-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
 /* Print Specific Rules for Progress Check A4 Sheets */
 @media print {
   body {
@@ -3131,7 +3153,7 @@ body.classroom-mode-active .classroom-students-grid {
   .app-header,
   .app-sidebar,
   .no-print,
-  .modal-overlay:not(#modal-printable-progress-check),
+  .modal-overlay:not(#modal-printable-progress-check):not(#modal-progress-check-class-report),
   .modal-close-btn,
   .btn-header-create,
   .class-switcher-select,
