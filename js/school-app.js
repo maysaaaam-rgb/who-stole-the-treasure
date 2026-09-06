@@ -2131,15 +2131,30 @@
   // =========================================================================
 
   function renderClassDetailView(container) {
-    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
-    const students = store.getStudentsByClass(cls.id);
-    const assignments = store.getAssignments(cls.id);
-    const attRate = store.getClassAttendanceRate(cls.id);
+    if (!container) return;
+    const cls = (store && store.getClass ? store.getClass(selectedClassDetailId) : null) || 
+                (store && store.getActiveClass ? store.getActiveClass() : null) || 
+                (store && store.getClasses && store.getClasses()[0] ? store.getClasses()[0] : null);
+    
+    if (!cls) {
+      container.innerHTML = 
+        '<div style="padding:48px 20px; text-align:center; background:var(--bg-surface); border-radius:var(--radius-lg); margin-top:20px; border:1px solid var(--border-light);">' +
+          '<div style="font-size:40px; margin-bottom:12px;">🏫</div>' +
+          '<h2 style="font-size:1.3rem; font-weight:800; color:var(--text-main);">No Class Selected</h2>' +
+          '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:18px;">Please select or create a class to open the Classroom Hub.</p>' +
+          '<button class="btn-primary-action" onclick="openClassModal()">+ Create Class</button>' +
+        '</div>';
+      return;
+    }
 
-    // Calculate class average mastery
+    const students = (store && store.getStudentsByClass) ? (store.getStudentsByClass(cls.id) || []) : [];
+    const assignments = (store && store.getAssignments) ? (store.getAssignments(cls.id) || []) : [];
+    const attRate = (store && store.getClassAttendanceRate) ? store.getClassAttendanceRate(cls.id) : 100;
+
+    // Calculate class average mastery safely
     let avgMastery = 0;
-    if (students.length > 0) {
-      const sum = students.reduce((acc, s) => acc + calculateStudentProgressPct(s.id), 0);
+    if (Array.isArray(students) && students.length > 0) {
+      const sum = students.reduce((acc, s) => acc + (typeof calculateStudentProgressPct === 'function' ? calculateStudentProgressPct(s.id) : 0), 0);
       avgMastery = Math.round(sum / students.length);
     }
 
@@ -2178,7 +2193,7 @@
             '<span class="classroom-meta-pill">👥 ' + students.length + ' Students</span>' +
             '<span class="classroom-meta-pill">📋 ' + attRate + '% Attendance</span>' +
             '<span class="classroom-meta-pill">📈 ' + avgMastery + '% Average Mastery</span>' +
-            '<span class="classroom-meta-pill">📍 ' + cls.room + ' · ' + cls.schedule + '</span>' +
+            '<span class="classroom-meta-pill">📍 ' + (cls.room || 'Room') + ' · ' + (cls.schedule || 'Regular schedule') + '</span>' +
           '</div>' +
         '</div>' +
 
@@ -2217,10 +2232,10 @@
             '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">📸 + New Post</button>' +
           '</div>' +
           '<div class="story-feed-grid">' +
-            store.getClassStory(cls.id).map(p => renderStoryPost(p)).join('') +
+            ((store.getClassStory && cls && cls.id) ? store.getClassStory(cls.id) : []).map(p => renderStoryPost(p)).join('') +
           '</div>';
       case 'assignments':
-        return renderAssignmentsTableForClass(store.getAssignments(cls.id));
+        return renderAssignmentsTableForClass((store.getAssignments && cls && cls.id) ? store.getAssignments(cls.id) : []);
       case 'progress':
         return renderClassProgressSubTab(cls, students);
       case 'assessments':
@@ -2239,9 +2254,23 @@
   }
 
   // The Live Classroom Workspace (Students visual grid | Groups view | Unenrolled)
-  function renderClassroomWorkspace(cls, students) {
-    const groups = store.getGroups(cls.id);
-    const unenrolled = store.getUnenrolledStudents ? store.getUnenrolledStudents() : [];
+  function renderClassroomWorkspace(cls, students = []) {
+    const safeStudents = Array.isArray(students) ? students : [];
+    const groups = (store && store.getGroups && cls && cls.id) ? (store.getGroups(cls.id) || []) : [];
+    
+    // Safely and accurately derive unenrolled students:
+    // Unenrolled students are active learners not currently assigned to any cohort
+    let unenrolled = [];
+    if (store && typeof store.getUnenrolledStudents === 'function') {
+      unenrolled = store.getUnenrolledStudents() || [];
+    } else if (store && typeof store.getStudents === 'function') {
+      const allStudents = store.getStudents() || [];
+      unenrolled = allStudents.filter(s => s && !s.archived && (!s.classId || s.classId === ''));
+    }
+    if (!Array.isArray(unenrolled)) {
+      unenrolled = [];
+    }
+
     const grCurriculum = (cls && cls.grade === 'Grade 4') ? 'Global Readings 3 · Unit 1: I Love Reading' : 'Global Readings 2 · Unit 1: What Does It Do?';
 
     return '' +
@@ -2268,7 +2297,7 @@
       '<div class="classroom-subtoolbar">' +
         '<div class="classroom-view-toggle-pills">' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'students' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'students\')">' +
-            '<span>🧒</span> <span>Students (' + students.length + ')</span>' +
+            '<span>🧒</span> <span>Students (' + safeStudents.length + ')</span>' +
           '</button>' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'groups' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'groups\')">' +
             '<span>👥</span> <span>Groups (' + groups.length + ')</span>' +
@@ -2283,7 +2312,7 @@
             (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') +
           '</button>' +
           (isMultiSelectMode ?
-            '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All (' + students.length + ')</button>' +
+            '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All (' + safeStudents.length + ')</button>' +
             '<button class="btn-sm-secondary" onclick="clearSelectedStudents()" style="font-weight:700;">✕ Deselect</button>' : ''
           ) +
           '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback (❤️ Helping Others, 👍 On Task, 🤝 Teamwork)">⭐ Give Feedback</button>' +
@@ -2298,25 +2327,26 @@
 
       // Body View: Students Grid, Groups Grid, or Unenrolled Grid
       (classroomActiveSubTab === 'students' ? 
-        renderClassroomStudentsGrid(cls, students) : 
+        renderClassroomStudentsGrid(cls, safeStudents) : 
         classroomActiveSubTab === 'groups' ?
-        renderClassroomGroupsGrid(cls, groups, students) :
+        renderClassroomGroupsGrid(cls, groups, safeStudents) :
         renderClassroomUnenrolledGrid(cls)
       ) +
 
       // Classroom Dashboard Summary Widgets
-      renderClassroomDashboardWidgets(cls, students);
+      renderClassroomDashboardWidgets(cls, safeStudents);
   }
 
   // 1. Students Visual Avatar Grid
   function renderClassroomStudentsGrid(cls, students) {
-    if (students.length === 0) {
+    const safeStudents = Array.isArray(students) ? students : [];
+    if (safeStudents.length === 0) {
       return '' +
-        '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px;">' +
-          '<div class="card-add-student-icon">🎓</div>' +
-          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">Your classroom is ready</h3>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student to begin tracking learning adventure.</p>' +
-          '<button class="btn-primary-action">+ Add Student</button>' +
+        '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px; text-align:center; cursor:pointer;">' +
+          '<div class="card-add-student-icon" style="font-size:36px; margin-bottom:8px;">🎓</div>' +
+          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No students enrolled in this class</h3>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student or enroll learners from the Unenrolled list to begin tracking learning adventure.</p>' +
+          '<button type="button" class="btn-primary-action">+ Add Student</button>' +
         '</div>';
     }
 
@@ -7592,15 +7622,31 @@ window.switchClassroomSubTab = function(subTab) {
   // -------------------------------------------------------------------------
 
   window.renderClassroomUnenrolledGrid = function(cls) {
-    const unenrolled = store.getUnenrolledStudents ? store.getUnenrolledStudents() : [];
+    const safeClass = cls || (store && store.getActiveClass ? store.getActiveClass() : null) || { id: '', name: 'Current Class' };
+    
+    // Correctly derive unenrolled students:
+    let unenrolled = [];
+    if (store && typeof store.getUnenrolledStudents === 'function') {
+      unenrolled = store.getUnenrolledStudents() || [];
+    } else if (store && typeof store.getStudents === 'function') {
+      const allStudents = store.getStudents() || [];
+      unenrolled = allStudents.filter(s => s && !s.archived && (!s.classId || s.classId === ''));
+    }
+    if (!Array.isArray(unenrolled)) {
+      unenrolled = [];
+    }
+
     if (unenrolled.length === 0) {
       return '' +
         '<div style="text-align:center; padding:48px 16px; background:var(--bg-surface); border-radius:var(--radius-lg); border:1px solid var(--border-light); margin-bottom:24px;">' +
           '<div style="font-size:36px; margin-bottom:10px;">✅</div>' +
-          '<h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">All students are enrolled in active cohorts</h3>' +
-          '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Students removed from classes are kept here safely with full historical records preserved.</p>' +
+          '<h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">No unenrolled students</h3>' +
+          '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">All students are enrolled in active cohorts. Students removed from classes are kept here safely with full historical records preserved.</p>' +
         '</div>';
     }
+
+    const targetClassId = safeClass.id;
+    const targetClassName = safeClass.name;
 
     return '' +
       '<div style="margin-bottom:14px;">' +
@@ -7609,27 +7655,35 @@ window.switchClassroomSubTab = function(subTab) {
         '</p>' +
       '</div>' +
       '<div class="classroom-students-grid">' +
-        unenrolled.map(s => '' +
-          '<div class="classroom-student-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
-            '<div class="student-avatar-frame monster-avatar-box">' + window.renderMonsterAvatar(s.id, { size: 54, animated: true }) + '</div>' +
-            '<div class="student-card-name">' + s.firstName.toUpperCase() + ' ' + s.lastName.toUpperCase() + '</div>' +
-            '<div class="student-card-meta-row">' +
-              '<span class="student-card-xp-badge">⭐ ' + store.getStudentTotalXP(s.id) + '</span>' +
-              '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
-            '</div>' +
-            '<div style="margin-top:10px; width:100%;">' +
-              '<button class="btn-primary-action" style="width:100%; font-size:0.78rem; padding:6px 10px;" onclick="event.stopPropagation(); handleEnrollStudentInClass(\'' + s.id + '\', \'' + cls.id + '\')">' +
-                '+ Enroll in ' + cls.name +
-              '</button>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
+        unenrolled.map(s => {
+          if (!s) return '';
+          const sName = ((s.firstName || '') + ' ' + (s.lastName || '')).trim().toUpperCase() || 'STUDENT';
+          const sXP = (store && store.getStudentTotalXP && s.id) ? store.getStudentTotalXP(s.id) : 0;
+          return '' +
+            '<div class="classroom-student-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
+              '<div class="student-avatar-frame monster-avatar-box">' + 
+                (window.renderMonsterAvatar ? window.renderMonsterAvatar(s.id, { size: 54, animated: true }) : '👾') + 
+              '</div>' +
+              '<div class="student-card-name">' + sName + '</div>' +
+              '<div class="student-card-meta-row">' +
+                '<span class="student-card-xp-badge">⭐ ' + sXP + '</span>' +
+                '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+              '</div>' +
+              '<div style="margin-top:10px; width:100%;">' +
+                '<button type="button" class="btn-primary-action" style="width:100%; font-size:0.78rem; padding:6px 10px;" onclick="event.stopPropagation(); handleEnrollStudentInClass(\'' + s.id + '\', \'' + targetClassId + '\')">' +
+                  '+ Enroll in ' + targetClassName +
+                '</button>' +
+              '</div>' +
+            '</div>';
+        }).join('') +
       '</div>';
   };
 
   window.handleEnrollStudentInClass = function(studentId, classId) {
+    if (!studentId) return;
     store.updateStudent(studentId, { classId: classId });
-    showNotification('Student successfully enrolled in ' + (store.getClass(classId)?.name || 'class') + '!');
+    const targetClass = store.getClass ? store.getClass(classId) : null;
+    showNotification('Student successfully enrolled in ' + (targetClass ? targetClass.name : 'class') + '!');
     renderCurrentView();
   };
 
