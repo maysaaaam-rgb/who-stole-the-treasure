@@ -6688,17 +6688,17 @@
 
       // 28. Editable XP Skills (Positive +1 to +3 and Needs Work -1)
       xpSkills: [
-        { id: 'skill-help', name: 'Helping others', icon: '🤝', points: 10, category: 'positive', description: 'Assisting classmates with kindness and patience' },
-        { id: 'skill-speak', name: 'Speaking English', icon: '🗣️', points: 10, category: 'positive', description: 'Making an effort to use English sentences in class' },
-        { id: 'skill-focus', name: 'On task & focused', icon: '🎯', points: 10, category: 'positive', description: 'Staying engaged and completing classroom tasks' },
-        { id: 'skill-part', name: 'Participating enthusiastically', icon: '🙋', points: 10, category: 'positive', description: 'Raising hand and actively contributing to discussions' },
-        { id: 'skill-team', name: 'Teamwork & collaboration', icon: '🌟', points: 20, category: 'positive', description: 'Working respectfully and productively in group activities' },
-        { id: 'skill-ideas', name: 'Creative ideas', icon: '💡', points: 20, category: 'positive', description: 'Sharing original thoughts, stories, and solutions' },
-        { id: 'skill-hard', name: 'Hard work & perseverance', icon: '💪', points: 20, category: 'positive', description: 'Overcoming difficult vocabulary or pronunciation hurdles' },
-        { id: 'skill-leader', name: 'Adventure leadership', icon: '👑', points: 30, category: 'positive', description: 'Leading class quests, roleplays, or helping coordinate games' },
-        { id: 'skill-distract', name: 'Off task / distracted', icon: '💭', points: -10, category: 'needs_work', description: 'Needed reminding to refocus on current exercise' },
-        { id: 'skill-interrupt', name: 'Talking out of turn', icon: '🤫', points: -10, category: 'needs_work', description: 'Speaking while others or teacher are presenting' },
-        { id: 'skill-unprepared', name: 'Unprepared for lesson', icon: '🎒', points: -10, category: 'needs_work', description: 'Missing required books, worksheets, or materials' }
+        { id: 'skill-help', name: 'Helping Others', icon: '❤️', points: 1, category: 'positive', description: 'Assisting classmates with kindness and care', status: 'active' },
+        { id: 'skill-task', name: 'On Task', icon: '👍', points: 1, category: 'positive', description: 'Staying focused and engaged on lesson activities', status: 'active' },
+        { id: 'skill-part', name: 'Participating', icon: '💡', points: 1, category: 'positive', description: 'Raising hand and actively contributing to discussions', status: 'active' },
+        { id: 'skill-persist', name: 'Persistence', icon: '🧪', points: 1, category: 'positive', description: 'Working through challenging problems and exercises', status: 'active' },
+        { id: 'skill-team', name: 'Teamwork', icon: '🤝', points: 1, category: 'positive', description: 'Collaborating respectfully with peers', status: 'active' },
+        { id: 'skill-hard', name: 'Working Hard', icon: '🌟', points: 1, category: 'positive', description: 'Demonstrating exceptional effort throughout the lesson', status: 'active' },
+        { id: 'skill-speak', name: 'Speaking English', icon: '🗣️', points: 1, category: 'positive', description: 'Making an active effort to speak in full English sentences', status: 'active' },
+        { id: 'skill-creative', name: 'Creative Thinking', icon: '🎨', points: 1, category: 'positive', description: 'Sharing imaginative ideas and original stories', status: 'active' },
+        { id: 'skill-talk', name: 'Talking Out of Turn', icon: '⚠️', points: -1, category: 'needs_work', description: 'Speaking while others or teacher are presenting', status: 'active' },
+        { id: 'skill-offtask', name: 'Off Task', icon: '💭', points: -1, category: 'needs_work', description: 'Needed reminding to refocus on current task', status: 'active' },
+        { id: 'skill-unprepared', name: 'Unprepared', icon: '🎒', points: -1, category: 'needs_work', description: 'Missing required books, worksheets, or materials', status: 'active' }
       ],
 
       // 29. Classroom Rewards Catalog & Student Redemption
@@ -6838,7 +6838,25 @@
             if (!merged.reports) merged.reports = initial.reports || [];
             if (!merged.schoolSettings) merged.schoolSettings = initial.schoolSettings || {};
             if (!merged.calendarEvents) merged.calendarEvents = initial.calendarEvents || [];
-            if (!merged.xpSkills || !merged.xpSkills.length) merged.xpSkills = initial.xpSkills || [];
+            if (!merged.xpSkills || !merged.xpSkills.length) {
+              merged.xpSkills = JSON.parse(JSON.stringify(initial.xpSkills || []));
+            } else {
+              // Ensure reference skills are present and updated in state
+              const existingMap = new Map(merged.xpSkills.map(s => [s.id, s]));
+              (initial.xpSkills || []).forEach(refSkill => {
+                if (!existingMap.has(refSkill.id)) {
+                  merged.xpSkills.push(JSON.parse(JSON.stringify(refSkill)));
+                } else {
+                  // Update reference attributes like icon and default 1 pt
+                  const existing = existingMap.get(refSkill.id);
+                  if (refSkill.points !== undefined && (refSkill.id.startsWith('skill-help') || refSkill.id.startsWith('skill-task') || refSkill.id.startsWith('skill-part') || refSkill.id.startsWith('skill-persist') || refSkill.id.startsWith('skill-team') || refSkill.id.startsWith('skill-hard'))) {
+                    existing.points = refSkill.points;
+                    existing.icon = refSkill.icon;
+                    existing.name = refSkill.name;
+                  }
+                }
+              });
+            }
             if (!merged.rewards || !merged.rewards.length) merged.rewards = initial.rewards || [];
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
@@ -7356,17 +7374,20 @@
       const tx = {
         id: 'xp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
         studentId,
+        skillId: options.skillId || null,
         amount: points,
         points: points,
+        xpAmount: points,
         xp: xpVal,
         reason: reason || (points >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
         category,
-        skillId: options.skillId || null,
         icon: options.icon || (points > 0 ? '⭐' : '💭'),
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        date: options.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         timestamp: new Date().toISOString(),
-        createdBy: options.createdBy || source || 'Teacher',
-        source: source || 'Teacher',
+        teacherId: options.teacherId || options.createdBy || 'Teacher',
+        createdBy: options.createdBy || options.teacherId || source || 'Teacher',
+        source: options.source || source || 'teacher_feedback',
+        classId: options.classId || (s ? (s.classId || s.class) : null),
         status: 'active'
       };
 
@@ -7452,6 +7473,84 @@
         evolutionEvent, 
         monsterState: newMonsterState 
       };
+    }
+
+    giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
+      if (!Array.isArray(studentIds) || studentIds.length === 0) return { success: false, count: 0, transactions: [], evolutionEvents: [] };
+      if (!Array.isArray(skillIds) || skillIds.length === 0) return { success: false, count: 0, transactions: [], evolutionEvents: [] };
+
+      const allSkills = this.getXPSkills(null, true);
+      const skillsToAward = skillIds.map(skId => {
+        if (typeof skId === 'object' && skId !== null) return skId;
+        return allSkills.find(s => s.id === skId);
+      }).filter(Boolean);
+
+      if (skillsToAward.length === 0) return { success: false, count: 0, transactions: [], evolutionEvents: [] };
+
+      const transactions = [];
+      const evolutionEvents = [];
+      const teacherName = options.teacherName || options.createdBy || 'Teacher';
+      const teacherId = options.teacherId || teacherName;
+      const customNote = options.note ? (' (' + options.note + ')') : '';
+
+      studentIds.forEach(sId => {
+        const student = this.getStudent(sId);
+        if (!student) return;
+
+        skillsToAward.forEach(skill => {
+          const reason = (skill.name || 'Classroom Skill') + customNote;
+          const res = this.giveXP(sId, skill.points, reason, 'teacher_feedback', {
+            skillId: skill.id,
+            icon: skill.icon,
+            category: skill.category,
+            teacherId: teacherId,
+            createdBy: teacherName,
+            classId: student.classId || options.classId || null,
+            source: 'teacher_feedback'
+          });
+
+          if (res) {
+            transactions.push(res.transaction);
+            if (res.evolutionEvent) {
+              evolutionEvents.push(res.evolutionEvent);
+            }
+          }
+        });
+      });
+
+      return {
+        success: true,
+        count: transactions.length,
+        studentCount: studentIds.length,
+        skillCount: skillsToAward.length,
+        totalXPAwardedPerStudent: skillsToAward.reduce((sum, sk) => sum + (parseInt(sk.points, 10) || 0), 0),
+        transactions,
+        evolutionEvents
+      };
+    }
+
+    getStudentClassroomSkillsTally(studentId) {
+      if (!this.state.xpTransactions) return [];
+      const txs = this.state.xpTransactions.filter(t => t.studentId === studentId && t.status !== 'voided');
+      const tallyMap = {};
+
+      txs.forEach(t => {
+        const key = t.skillId || t.reason;
+        if (!tallyMap[key]) {
+          tallyMap[key] = {
+            skillId: t.skillId,
+            name: t.reason,
+            icon: t.icon || '⭐',
+            category: t.category || 'positive',
+            count: 0,
+            totalXP: 0
+          };
+        }
+        tallyMap[key].count++;
+        tallyMap[key].totalXP += (parseInt(t.amount, 10) || 0);
+      });
+
+      return Object.values(tallyMap).sort((a, b) => b.count - a.count);
     }
 
     adjustStudentXP(studentId, options = {}) {
@@ -10319,7 +10418,18 @@
       if (!this.state.xpSkills) return null;
       const skill = this.state.xpSkills.find(s => s.id === id);
       if (skill) {
-        skill.status = skill.status === 'archived' ? 'active' : 'archived';
+        skill.status = 'archived';
+        this.saveState();
+        this.notify('xpSkills', this.state.xpSkills);
+      }
+      return skill;
+    }
+
+    restoreXPSkill(id) {
+      if (!this.state.xpSkills) return null;
+      const skill = this.state.xpSkills.find(s => s.id === id);
+      if (skill) {
+        skill.status = 'active';
         this.saveState();
         this.notify('xpSkills', this.state.xpSkills);
       }

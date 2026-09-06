@@ -1464,6 +1464,30 @@
                   '</div>' : '') +
               '</div>';
           })() +
+          '<!-- Dedicated Classroom Skills Breakdown -->' +
+          '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:16px; margin-bottom:16px;">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
+              '<h4 style="font-weight:800; font-size:0.98rem; margin:0; display:flex; align-items:center; gap:6px;">⭐ Classroom Feedback Skills</h4>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal(\'student\', \'' + student.id + '\')" style="font-size:0.75rem; font-weight:800; color:#b45309;">+ Give Feedback</button>' +
+            '</div>' +
+            (() => {
+              const tallies = store.getStudentClassroomSkillsTally ? store.getStudentClassroomSkillsTally(student.id) : [];
+              if (tallies.length === 0) {
+                return '<p style="font-size:0.82rem; color:var(--text-muted); margin:0;">No classroom feedback skills awarded yet.</p>';
+              }
+              return '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">' +
+                tallies.map(t => '' +
+                  '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:10px; padding:10px; text-align:center;">' +
+                    '<div style="font-size:24px;">' + (t.icon || '⭐') + '</div>' +
+                    '<div style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-top:3px;">' + t.name + '</div>' +
+                    '<div style="font-size:0.75rem; font-weight:800; color:' + (t.totalXP >= 0 ? '#059669' : '#dc2626') + '; margin-top:4px;">' +
+                      t.count + 'x (' + (t.totalXP >= 0 ? '+' : '') + t.totalXP + ' XP)' +
+                    '</div>' +
+                  '</div>'
+                ).join('') +
+              '</div>';
+            })() +
+          '</div>' +
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:16px; font-size:0.86rem;">' +
             '<h4 style="font-weight:700; margin-bottom:8px;">Family &amp; Contact Info</h4>' +
             '<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">' +
@@ -1913,7 +1937,10 @@
             '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👧 Students Directory &amp; Monster Companions</h1>' +
             '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Real-time overview of all learners, their living evolving monsters, XP progress, and streaks.</p>' +
           '</div>' +
-          '<div style="display:flex; gap:8px;">' +
+          '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+            '<button type="button" class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' + (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') + '</button>' +
+            (isMultiSelectMode ? '<button type="button" class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All</button>' : '') +
+            '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give feedback to learners">⭐ Give Feedback</button>' +
             '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">📥 Export CSV</button>' +
             '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
           '</div>' +
@@ -1982,8 +2009,14 @@
               const cls = store.getClass(s.classId);
               const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
 
+              const isSelected = selectedStudentIds.has(s.id);
               return '' +
-                '<div class="student-directory-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
+                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + s.id + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
+                  (isMultiSelectMode ?
+                    '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
+                      '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
+                    '</div>' : ''
+                  ) +
                   '<div class="student-card-top-bar">' +
                     '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
                     '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
@@ -2246,7 +2279,12 @@
           '<button class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') +
           '</button>' +
-          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;" title="Award Points (+10, +20, +50, +100, Custom)">⭐ Points</button>' +
+          (isMultiSelectMode ?
+            '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All (' + students.length + ')</button>' +
+            '<button class="btn-sm-secondary" onclick="clearSelectedStudents()" style="font-weight:700;">✕ Deselect</button>' : ''
+          ) +
+          '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback (❤️ Helping Others, 👍 On Task, 🤝 Teamwork)">⭐ Give Feedback</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:700;" title="Award Custom Points">⭐ Points</button>' +
           '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-weight:700;">🧰 Toolkit</button>' +
           (classroomActiveSubTab === 'groups' ?
             '<button class="btn-primary-action" onclick="openCreateGroupModal()">+ Create Group</button>' :
@@ -5283,13 +5321,34 @@ window.switchClassroomSubTab = function(subTab) {
   window.updateMultiSelectBar = function() {
     const bar = document.getElementById('floating-multiselect-bar');
     const badge = document.getElementById('multiselect-count-badge');
+    const totalBadge = document.getElementById('multiselect-total-class-count');
     if (!bar) return;
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls ? cls.id : null);
+    if (totalBadge && students) totalBadge.textContent = students.length;
+
     if (selectedStudentIds.size > 0) {
       bar.style.display = 'flex';
       if (badge) badge.textContent = selectedStudentIds.size;
     } else {
       bar.style.display = 'none';
     }
+  };
+
+  window.selectAllClassStudents = function() {
+    const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
+    const students = store.getStudentsByClass(cls ? cls.id : null);
+    students.forEach(s => selectedStudentIds.add(s.id));
+    isMultiSelectMode = true;
+    window.updateMultiSelectBar();
+    renderCurrentView();
+  };
+
+  window.openGiveFeedbackForSelected = function() {
+    if (selectedStudentIds.size === 0) {
+      window.selectAllClassStudents();
+    }
+    window.openGiveFeedbackModal('multiple', null, Array.from(selectedStudentIds));
   };
 
   window.clearSelectedStudents = function() {
@@ -7972,44 +8031,85 @@ window.switchClassroomSubTab = function(subTab) {
     window.toggleCardDropdown('xp-tiers-' + studentId, event);
   };
 
-  window.openGiveXPSkillsModal = function(targetType = 'student', targetId = null, preselectedIds = []) {
+  let selectedFeedbackSkillIds = new Set();
+  let currentManageSkillsTab = 'active';
+
+  window.openGiveFeedbackModal = function(targetType = null, targetId = null, preselectedIds = []) {
+    let finalTargetType = targetType;
+    let finalStudentIds = [];
+
+    if (preselectedIds && preselectedIds.length > 0) {
+      finalTargetType = 'multiple';
+      finalStudentIds = preselectedIds.slice();
+    } else if (targetType === 'student' && targetId) {
+      finalTargetType = 'student';
+      finalStudentIds = [targetId];
+    } else if (targetType === 'group' && targetId) {
+      finalTargetType = 'group';
+      finalStudentIds = store.getGroup(targetId)?.studentIds || [];
+    } else if (selectedStudentIds.size > 0 && (!targetType || targetType === 'multiple')) {
+      finalTargetType = 'multiple';
+      finalStudentIds = Array.from(selectedStudentIds);
+    } else {
+      finalTargetType = 'class';
+      const cls = (targetId && store.getClass(targetId)) || store.getActiveClass();
+      finalStudentIds = store.getStudentsByClass(cls.id).map(s => s.id);
+      targetId = cls.id;
+    }
+
     currentXPAwardTarget = {
-      type: targetType,
+      type: finalTargetType,
       id: targetId,
-      studentIds: targetType === 'student' ? [targetId] :
-                  targetType === 'multiple' ? preselectedIds :
-                  targetType === 'group' ? (store.getGroup(targetId)?.studentIds || []) :
-                  targetType === 'class' ? store.getStudentsByClass(targetId).map(s => s.id) : []
+      studentIds: finalStudentIds
     };
+
+    selectedFeedbackSkillIds.clear();
 
     const targetTitleEl = document.getElementById('xp-award-target-title');
     const targetSubEl = document.getElementById('xp-award-target-sub');
     const targetAvatarEl = document.getElementById('xp-award-target-avatar');
 
-    if (targetType === 'student') {
-      const s = store.getStudent(targetId);
-      if (targetTitleEl) targetTitleEl.innerText = 'Award ' + (s ? s.firstName + ' ' + s.lastName : 'Learner');
-      if (targetSubEl) targetSubEl.innerText = 'Select a skill to award points · Current: ⭐ ' + (s ? store.getStudentTotalXP(s.id) : 0) + ' XP';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? window.renderMonsterAvatar(s.id, { size: 54, animated: true }) : '⭐';
-    } else if (targetType === 'group') {
+    const count = finalStudentIds.length;
+    const activeClass = store.getClass(targetId) || store.getActiveClass();
+
+    if (finalTargetType === 'student') {
+      const s = store.getStudent(finalStudentIds[0]);
+      const sName = s ? s.firstName : 'Learner';
+      if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + sName;
+      if (targetSubEl) targetSubEl.innerText = 'Select skills to award · Current: ⭐ ' + (s ? store.getStudentTotalXP(s.id) : 0) + ' XP';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? window.renderStudentMonsterAvatar(s.id, { size: 48, animated: true }) : '⭐';
+    } else if (finalTargetType === 'group') {
       const g = store.getGroup(targetId);
-      if (targetTitleEl) targetTitleEl.innerText = 'Award Team: ' + (g ? g.name : 'Group');
-      if (targetSubEl) targetSubEl.innerText = 'Points will be awarded to all ' + currentXPAwardTarget.studentIds.length + ' team members';
+      if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to Team ' + (g ? g.name : 'Group') + ' (' + count + ')';
+      if (targetSubEl) targetSubEl.innerText = count + ' team members will each receive the awarded feedback & XP';
       if (targetAvatarEl) targetAvatarEl.innerHTML = '👥';
-    } else if (targetType === 'multiple') {
-      if (targetTitleEl) targetTitleEl.innerText = 'Award ' + currentXPAwardTarget.studentIds.length + ' Selected Students';
-      if (targetSubEl) targetSubEl.innerText = 'Selected students will each receive the awarded points';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = '☑️';
+    } else if (finalTargetType === 'multiple') {
+      if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + count + ' students';
+      if (targetSubEl) targetSubEl.innerText = count + ' selected students will each receive the feedback & XP';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = '👥';
     } else {
-      const cls = store.getClass(targetId) || store.getActiveClass();
-      if (targetTitleEl) targetTitleEl.innerText = 'Award Whole Class (' + (cls ? cls.name : '') + ')';
-      if (targetSubEl) targetSubEl.innerText = 'Every student in the cohort will receive the points';
+      if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + count + ' students';
+      if (targetSubEl) targetSubEl.innerText = 'Whole class · ' + (activeClass ? activeClass.name + ' (' + (activeClass.teacher || 'Teacher') + ')' : 'All enrolled');
       if (targetAvatarEl) targetAvatarEl.innerHTML = '🌍';
     }
 
     currentXPAwardTab = 'positive';
+    const posTab = document.getElementById('tab-xp-positive');
+    const needsTab = document.getElementById('tab-xp-needs-work');
+    if (posTab) posTab.classList.add('is-active');
+    if (needsTab) needsTab.classList.remove('is-active');
+
+    const customNoteInput = document.getElementById('xp-award-custom-note');
+    if (customNoteInput) customNoteInput.value = '';
+
     window.renderXPSkillsCardsGrid();
+    window.updateFeedbackAwardSummary();
     window.openModal('modal-give-xp-skills');
+  };
+
+  // Alias for backward compatibility
+  window.openGiveXPSkillsModal = function(targetType = 'student', targetId = null, preselectedIds = []) {
+    window.openGiveFeedbackModal(targetType, targetId, preselectedIds);
   };
 
   window.switchXPAwardTab = function(cat) {
@@ -8032,52 +8132,129 @@ window.switchClassroomSubTab = function(subTab) {
     const container = document.getElementById('xp-skills-grid-container');
     if (!container) return;
 
-    const skills = store.getXPSkills ? store.getXPSkills(currentXPAwardTab) : [];
-    container.innerHTML = skills.map(sk => {
+    const skills = store.getXPSkills ? store.getXPSkills(currentXPAwardTab, false) : [];
+    const targetCount = (currentXPAwardTarget && currentXPAwardTarget.studentIds) ? currentXPAwardTarget.studentIds.length : 1;
+
+    let html = skills.map(sk => {
       const isPos = sk.points > 0;
       const ptsBadge = (isPos ? '+' : '') + sk.points + ' XP';
+      const isSelected = selectedFeedbackSkillIds.has(sk.id);
+
       return '' +
-        '<div class="xp-skill-card ' + (isPos ? 'is-positive' : 'is-needs-work') + '" onclick="handleAwardXPSkill(\'' + sk.id + '\')" style="cursor:pointer; background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px 10px; text-align:center; transition:all 0.15s ease; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;">' +
-          '<div style="font-size:32px;">' + (sk.icon || '⭐') + '</div>' +
-          '<div style="font-size:0.84rem; font-weight:700; color:var(--text-main); line-height:1.2;">' + sk.name + '</div>' +
-          '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
-            ptsBadge +
-          '</span>' +
+        '<div class="xp-skill-card ' + (isPos ? 'is-positive' : 'is-needs-work') + ' ' + (isSelected ? 'is-selected' : '') + '" onclick="toggleSelectFeedbackSkill(\'' + sk.id + '\')" style="cursor:pointer; background:var(--bg-card); border:2px solid ' + (isSelected ? '#3b82f6' : 'var(--border-light)') + '; border-radius:14px; padding:16px 12px; text-align:center; transition:all 0.15s ease; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:6px; min-height:130px; position:relative;">' +
+          '<span class="skill-check-badge">' + (isSelected ? '✓' : '') + '</span>' +
+          '<div style="font-size:38px; line-height:1; margin-bottom:2px;">' + (sk.icon || '⭐') + '</div>' +
+          '<div style="font-size:0.92rem; font-weight:800; color:var(--text-main); line-height:1.2;">' + sk.name + '</div>' +
+          '<div style="display:flex; align-items:center; gap:6px; margin-top:4px;">' +
+            '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
+              ptsBadge +
+            '</span>' +
+            '<button type="button" class="btn-sm-secondary btn-card-quick-award" onclick="event.stopPropagation(); handleQuickAwardSingleSkill(\'' + sk.id + '\')" title="Award instantly to all ' + targetCount + ' students" style="font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:8px;">' +
+              '⚡ Quick' +
+            '</button>' +
+          '</div>' +
         '</div>';
     }).join('');
+
+    // Append + Add skills card
+    html += '' +
+      '<div class="xp-skill-card add-skill-card" onclick="openXPSkillEditor()" style="cursor:pointer; border-radius:14px; padding:16px 12px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:130px;">' +
+        '<div style="font-size:34px; color:var(--color-primary);">➕</div>' +
+        '<div style="font-size:0.92rem; font-weight:800; color:var(--color-primary);">+ Add skills</div>' +
+        '<span style="font-size:0.72rem; color:var(--text-muted);">Create new</span>' +
+      '</div>';
+
+    container.innerHTML = html;
   };
 
-  window.handleAwardXPSkill = function(skillId) {
-    const skill = store.getXPSkill ? store.getXPSkill(skillId) : null;
-    if (!skill) return;
+  window.toggleSelectFeedbackSkill = function(skillId) {
+    if (selectedFeedbackSkillIds.has(skillId)) {
+      selectedFeedbackSkillIds.delete(skillId);
+    } else {
+      selectedFeedbackSkillIds.add(skillId);
+    }
+    window.renderXPSkillsCardsGrid();
+    window.updateFeedbackAwardSummary();
+  };
+
+  window.selectAllVisibleSkills = function() {
+    const skills = store.getXPSkills ? store.getXPSkills(currentXPAwardTab, false) : [];
+    skills.forEach(s => selectedFeedbackSkillIds.add(s.id));
+    window.renderXPSkillsCardsGrid();
+    window.updateFeedbackAwardSummary();
+  };
+
+  window.updateFeedbackAwardSummary = function() {
+    const summaryEl = document.getElementById('xp-selected-skills-summary');
+    const btnEl = document.getElementById('btn-award-selected-feedback');
+    const targetCount = (currentXPAwardTarget && currentXPAwardTarget.studentIds) ? currentXPAwardTarget.studentIds.length : 1;
+
+    const allSkills = store.getXPSkills ? store.getXPSkills(null, true) : [];
+    const selectedSkills = Array.from(selectedFeedbackSkillIds).map(id => allSkills.find(s => s.id === id)).filter(Boolean);
+
+    if (selectedSkills.length === 0) {
+      if (summaryEl) summaryEl.innerHTML = '<span style="color:var(--text-muted);">No skills selected. Click cards above to select.</span>';
+      if (btnEl) {
+        btnEl.innerText = 'Give Feedback (' + targetCount + ')';
+        btnEl.disabled = true;
+        btnEl.style.opacity = '0.6';
+      }
+      return;
+    }
+
+    const netXP = selectedSkills.reduce((sum, sk) => sum + (parseInt(sk.points, 10) || 0), 0);
+    const sign = netXP >= 0 ? '+' : '';
+    const skillsText = selectedSkills.map(sk => (sk.icon || '⭐') + ' ' + sk.name + ' (' + (sk.points > 0 ? '+' : '') + sk.points + ')').join(', ');
+    const totalTxs = targetCount * selectedSkills.length;
+
+    if (summaryEl) {
+      summaryEl.innerHTML = '<strong>Selected (' + selectedSkills.length + '):</strong> ' + skillsText + ' &nbsp;·&nbsp; <strong style="color:' + (netXP >= 0 ? '#059669' : '#dc2626') + ';">' + sign + netXP + ' XP each</strong> (' + totalTxs + ' total txs)';
+    }
+
+    if (btnEl) {
+      btnEl.disabled = false;
+      btnEl.style.opacity = '1';
+      btnEl.innerText = 'Award to ' + targetCount + ' ' + (targetCount === 1 ? 'Student' : 'Students') + ' (' + sign + netXP + ' XP)';
+    }
+  };
+
+  window.handleApplySelectedFeedback = function() {
+    const targetIds = (currentXPAwardTarget && currentXPAwardTarget.studentIds) ? currentXPAwardTarget.studentIds : [];
+    if (targetIds.length === 0) {
+      showNotification('No target students selected.');
+      return;
+    }
+
+    const skillIds = Array.from(selectedFeedbackSkillIds);
+    if (skillIds.length === 0) {
+      showNotification('Please select at least one skill card to award.');
+      return;
+    }
 
     const customNoteInput = document.getElementById('xp-award-custom-note');
     const customNote = customNoteInput ? customNoteInput.value.trim() : '';
-    const fullReason = customNote ? (skill.name + ' (' + customNote + ')') : skill.name;
 
-    const targets = currentXPAwardTarget.studentIds || [];
-    let firstEvolutionEvent = null;
-
-    targets.forEach(sId => {
-      const res = store.giveXP(sId, skill.points, fullReason, 'Teacher', {
-        skillId: skill.id,
-        icon: skill.icon,
-        category: skill.category
-      });
-      if (res && res.evolutionEvent && !firstEvolutionEvent) {
-        firstEvolutionEvent = res.evolutionEvent;
-      }
+    const cls = store.getActiveClass();
+    const res = store.giveBatchFeedback(targetIds, skillIds, {
+      note: customNote,
+      classId: cls.id,
+      teacherName: cls.teacher
     });
 
     if (customNoteInput) customNoteInput.value = '';
+    selectedFeedbackSkillIds.clear();
     window.closeModal('modal-give-xp-skills');
-    showNotification('⭐ Awarded ' + (skill.points > 0 ? '+' : '') + skill.points + ' XP for "' + skill.name + '" to ' + targets.length + ' learner(s)!');
 
-    if (firstEvolutionEvent) {
-      if (firstEvolutionEvent.isHatch) {
-        window.openMonsterHatchModal(firstEvolutionEvent.studentId);
+    const totalAwarded = res.totalXPAwardedPerStudent;
+    const sign = totalAwarded >= 0 ? '+' : '';
+    showNotification('⭐ Awarded ' + skillIds.length + ' skill(s) (' + sign + totalAwarded + ' XP) to ' + targetIds.length + ' learner(s)!');
+
+    if (res.evolutionEvents && res.evolutionEvents.length > 0) {
+      const firstEvo = res.evolutionEvents[0];
+      if (firstEvo.isHatch) {
+        window.openMonsterHatchModal(firstEvo.studentId);
       } else {
-        window.openMonsterLevelUpModal(firstEvolutionEvent.studentId, firstEvolutionEvent.prevLevel, firstEvolutionEvent.newLevel);
+        window.openMonsterLevelUpModal(firstEvo.studentId, firstEvo.prevLevel, firstEvo.newLevel);
       }
     }
 
@@ -8085,6 +8262,50 @@ window.switchClassroomSubTab = function(subTab) {
     if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId) {
       window.openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
     }
+  };
+
+  window.handleQuickAwardSingleSkill = function(skillId) {
+    const targetIds = (currentXPAwardTarget && currentXPAwardTarget.studentIds) ? currentXPAwardTarget.studentIds : [];
+    if (targetIds.length === 0) return;
+
+    const skill = store.getXPSkill ? store.getXPSkill(skillId) : null;
+    if (!skill) return;
+
+    const customNoteInput = document.getElementById('xp-award-custom-note');
+    const customNote = customNoteInput ? customNoteInput.value.trim() : '';
+
+    const cls = store.getActiveClass();
+    const res = store.giveBatchFeedback(targetIds, [skill.id], {
+      note: customNote,
+      classId: cls.id,
+      teacherName: cls.teacher
+    });
+
+    if (customNoteInput) customNoteInput.value = '';
+    selectedFeedbackSkillIds.clear();
+    window.closeModal('modal-give-xp-skills');
+
+    const ptsSign = skill.points >= 0 ? '+' : '';
+    showNotification('✓ ' + (skill.icon || '⭐') + ' ' + skill.name + ' ' + ptsSign + skill.points + ' XP awarded to ' + targetIds.length + ' student(s)!');
+
+    if (res.evolutionEvents && res.evolutionEvents.length > 0) {
+      const firstEvo = res.evolutionEvents[0];
+      if (firstEvo.isHatch) {
+        window.openMonsterHatchModal(firstEvo.studentId);
+      } else {
+        window.openMonsterLevelUpModal(firstEvo.studentId, firstEvo.prevLevel, firstEvo.newLevel);
+      }
+    }
+
+    renderCurrentView();
+    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId) {
+      window.openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
+    }
+  };
+
+  // Backward compatibility for old single skill clicks
+  window.handleAwardXPSkill = function(skillId) {
+    window.handleQuickAwardSingleSkill(skillId);
   };
 
   // -------------------------------------------------------------------------
@@ -8140,6 +8361,95 @@ window.switchClassroomSubTab = function(subTab) {
 
     window.closeModal('modal-xp-skill-editor');
     window.renderXPSkillsCardsGrid();
+    if (window.renderManageSkillsList) window.renderManageSkillsList();
+  };
+
+  window.openManageXPSkillsModal = function() {
+    currentManageSkillsTab = 'active';
+    window.renderManageSkillsList();
+    window.openModal('modal-manage-xp-skills');
+  };
+
+  window.switchManageSkillsTab = function(tab) {
+    currentManageSkillsTab = tab;
+    const actBtn = document.getElementById('tab-manage-skills-active');
+    const archBtn = document.getElementById('tab-manage-skills-archived');
+    if (actBtn && archBtn) {
+      if (tab === 'active') {
+        actBtn.classList.add('is-active');
+        archBtn.classList.remove('is-active');
+      } else {
+        actBtn.classList.remove('is-active');
+        archBtn.classList.add('is-active');
+      }
+    }
+    window.renderManageSkillsList();
+  };
+
+  window.renderManageSkillsList = function() {
+    const container = document.getElementById('manage-skills-list-container');
+    const actCountEl = document.getElementById('manage-skills-active-count');
+    const archCountEl = document.getElementById('manage-skills-archived-count');
+    if (!container) return;
+
+    const allSkills = store.getXPSkills ? store.getXPSkills(null, true) : [];
+    const activeSkills = allSkills.filter(s => s.status !== 'archived');
+    const archivedSkills = allSkills.filter(s => s.status === 'archived');
+
+    if (actCountEl) actCountEl.innerText = activeSkills.length;
+    if (archCountEl) archCountEl.innerText = archivedSkills.length;
+
+    const targetList = currentManageSkillsTab === 'active' ? activeSkills : archivedSkills;
+
+    if (targetList.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:24px; color:var(--text-muted); font-size:0.86rem;">No ' + currentManageSkillsTab + ' skills found.</p>';
+      return;
+    }
+
+    container.innerHTML = targetList.map(sk => {
+      const isPos = sk.points > 0;
+      const ptsBadge = (isPos ? '+' : '') + sk.points + ' XP';
+      const isArchived = sk.status === 'archived';
+
+      return '' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
+          '<div style="display:flex; align-items:center; gap:12px;">' +
+            '<span style="font-size:26px;">' + (sk.icon || '⭐') + '</span>' +
+            '<div>' +
+              '<div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">' + sk.name + '</div>' +
+              '<div style="font-size:0.75rem; color:var(--text-muted);">' + (sk.description || 'Classroom skill') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
+              ptsBadge +
+            '</span>' +
+            '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-manage-xp-skills\'); openXPSkillEditor(\'' + sk.id + '\');" style="padding:4px 8px; font-size:0.72rem;">✏️ Edit</button>' +
+            (!isArchived ?
+              '<button type="button" class="btn-sm-secondary" onclick="handleArchiveSkill(\'' + sk.id + '\')" style="padding:4px 8px; font-size:0.72rem; color:var(--color-danger);" title="Archive skill">Archive</button>' :
+              '<button type="button" class="btn-sm-secondary" onclick="handleRestoreSkill(\'' + sk.id + '\')" style="padding:4px 8px; font-size:0.72rem; color:#059669;" title="Restore skill to active">↩️ Restore</button>'
+            ) +
+          '</div>' +
+        '</div>';
+    }).join('');
+  };
+
+  window.handleArchiveSkill = function(skillId) {
+    if (store.archiveXPSkill) {
+      store.archiveXPSkill(skillId);
+      showNotification('Skill archived.');
+      window.renderManageSkillsList();
+      window.renderXPSkillsCardsGrid();
+    }
+  };
+
+  window.handleRestoreSkill = function(skillId) {
+    if (store.restoreXPSkill) {
+      store.restoreXPSkill(skillId);
+      showNotification('Skill restored to active list.');
+      window.renderManageSkillsList();
+      window.renderXPSkillsCardsGrid();
+    }
   };
 
   // -------------------------------------------------------------------------
@@ -10546,18 +10856,85 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>';
     }
 
-    // 5. Check for Student progress / completion ("Which students completed Unit 1?")
-    if (q.includes('which students') || q.includes('completed') || q.includes('need more practice') || q.includes('student')) {
+    // 5A. Check for Teamwork feedback query
+    if (q.includes('teamwork')) {
+      const activeCls = store.getActiveClass();
+      const students = store.getStudentsByClass(activeCls.id);
+      const txs = store.state.xpTransactions || [];
+      const studentMap = {};
+      students.forEach(s => { studentMap[s.id] = { student: s, count: 0 }; });
+
+      txs.forEach(t => {
+        if (t.status !== 'voided' && t.reason && t.reason.toLowerCase().includes('teamwork') && studentMap[t.studentId]) {
+          studentMap[t.studentId].count++;
+        }
+      });
+
+      const sorted = Object.values(studentMap).sort((a, b) => b.count - a.count);
+      const topTeam = sorted.filter(item => item.count > 0);
+
       return '' +
-        '<div style="margin-bottom:8px;"><strong>📊 Student Progress &amp; Evidence: ' + (units[1] ? units[1].title : 'Unit 1') + '</strong></div>' +
-        '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Based on class attendance, assignment submissions, and gamification logs:</div>' +
-        '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.8rem;">' +
-          '<div>✅ <strong>Completed &amp; Mastered (3):</strong> Emma (94%), Lucas (88%), Olivia (91%)</div>' +
-          '<div>🔄 <strong>In Progress (2):</strong> Liam (Week 2 Story comprehension), Noah (Vocabulary practice)</div>' +
-          '<div>⭐ <strong>Highest XP Achiever:</strong> Fern (11,122 XP · Level 7 Ultimate Monster)</div>' +
+        '<div style="margin-bottom:8px;"><strong>🤝 Teamwork Feedback Leadership: ' + activeCls.name + '</strong></div>' +
+        '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Analysis of real classroom behavior awards:</div>' +
+        '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
+          (topTeam.length > 0 ? 
+            topTeam.slice(0, 5).map((item, idx) => '<div>' + (idx + 1) + '. <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> — 🤝 ' + item.count + 'x Teamwork award' + (item.count > 1 ? 's' : '') + '</div>').join('') :
+            '<div>No teamwork feedback records awarded yet for this class cohort. Use <strong>⭐ Give Feedback</strong> during group tasks to recognize collaboration!</div>'
+          ) +
         '</div>' +
         '<div style="margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); switchView(\'progress\')" style="padding:4px 12px; font-size:0.75rem;">📈 Open CEFR Progress View</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">⭐ Award Teamwork to Class</button>' +
+        '</div>';
+    }
+
+    // 5B. Check for Participation / Encouragement query
+    if (q.includes('participation') || q.includes('participat') || q.includes('encouragement')) {
+      const activeCls = store.getActiveClass();
+      const students = store.getStudentsByClass(activeCls.id);
+      const txs = store.state.xpTransactions || [];
+      const studentMap = {};
+      students.forEach(s => { studentMap[s.id] = { student: s, partCount: 0, totalXP: store.getStudentTotalXP(s.id) }; });
+
+      txs.forEach(t => {
+        if (t.status !== 'voided' && t.reason && t.reason.toLowerCase().includes('participat') && studentMap[t.studentId]) {
+          studentMap[t.studentId].partCount++;
+        }
+      });
+
+      const lowPart = Object.values(studentMap).filter(item => item.partCount === 0).slice(0, 5);
+
+      return '' +
+        '<div style="margin-bottom:8px;"><strong>💡 Participation &amp; Engagement Insight: ' + activeCls.name + '</strong></div>' +
+        '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Students who may benefit from structured turn-taking or gentle question prompts:</div>' +
+        '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
+          (lowPart.length > 0 ?
+            lowPart.map(item => '<div>• <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> (ID: ' + (item.student.studentIdNumber || 'N/A') + ') — Current: ⭐ ' + item.totalXP + ' XP</div>').join('') :
+            '<div>All students in ' + activeCls.name + ' have received active participation recognition!</div>'
+          ) +
+        '</div>' +
+        '<div style="margin-top:10px; display:flex; gap:8px;">' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openRandomStudentModal();" style="padding:4px 12px; font-size:0.75rem;">🎲 Pick Random Student</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">⭐ Give Feedback</button>' +
+        '</div>';
+    }
+
+    // 5C. Check for General Student Progress & Mastery
+    if (q.includes('which students') || q.includes('completed') || q.includes('need more practice') || q.includes('student') || q.includes('engagement')) {
+      const activeCls = store.getActiveClass();
+      const students = store.getStudentsByClass(activeCls.id);
+      const topStudents = students.slice().sort((a, b) => store.getStudentTotalXP(b.id) - store.getStudentTotalXP(a.id)).slice(0, 3);
+      const totalEnrolled = students.length;
+
+      return '' +
+        '<div style="margin-bottom:8px;"><strong>📊 Student Roster Progress: ' + activeCls.name + ' (' + totalEnrolled + ' Students)</strong></div>' +
+        '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Derived directly from persistent classroom records and Unit 1 curriculum tasks:</div>' +
+        '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
+          '<div>⭐ <strong>Top XP Achievers:</strong> ' + topStudents.map(s => s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id).toLocaleString() + ' XP)').join(', ') + '</div>' +
+          '<div>📚 <strong>Active Curriculum:</strong> ' + (activeCls.grade === 'Grade 4' ? 'Global Readings 3' : 'Global Readings 2') + ' · Unit 1</div>' +
+          '<div>🧑‍🤝‍🧑 <strong>Enrolled Learners:</strong> ' + totalEnrolled + ' authentic students (Emine / Batuhan / İlknur / Embiye rosters)</div>' +
+        '</div>' +
+        '<div style="margin-top:10px;">' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); switchView(\'progress-check\')" style="padding:4px 12px; font-size:0.75rem;">📈 Open Progress Check Gradebook</button>' +
         '</div>';
     }
 

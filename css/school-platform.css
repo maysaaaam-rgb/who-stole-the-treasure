@@ -2417,12 +2417,14 @@ body.classroom-mode-active .classroom-students-grid {
 
 /* XP Skill Card interactive states */
 .xp-skill-card {
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  user-select: none;
 }
 
 .xp-skill-card:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
 }
 
 .xp-skill-card:active {
@@ -2435,6 +2437,72 @@ body.classroom-mode-active .classroom-students-grid {
 
 .xp-skill-card.is-needs-work:hover {
   border-color: #ef4444 !important;
+}
+
+.xp-skill-card.is-selected {
+  border-color: #3b82f6 !important;
+  background: #eff6ff !important;
+  box-shadow: 0 0 0 2px #3b82f6, 0 8px 22px rgba(59, 130, 246, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+.xp-skill-card.is-selected.is-needs-work {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+  box-shadow: 0 0 0 2px #ef4444, 0 8px 22px rgba(239, 68, 68, 0.2) !important;
+}
+
+.xp-skill-card .skill-check-badge {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+}
+
+.xp-skill-card.is-selected.is-needs-work .skill-check-badge {
+  background: #ef4444 !important;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4) !important;
+}
+
+.xp-skill-card.is-selected .skill-check-badge {
+  display: flex !important;
+}
+
+.xp-skill-card .btn-card-quick-award {
+  opacity: 0.85;
+  transition: all 0.15s ease;
+}
+
+.xp-skill-card:hover .btn-card-quick-award {
+  opacity: 1;
+}
+
+.xp-skill-card .btn-card-quick-award:hover {
+  transform: scale(1.08);
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.xp-skill-card.add-skill-card {
+  border: 2px dashed var(--border-medium) !important;
+  background: rgba(0, 0, 0, 0.02) !important;
+  cursor: pointer;
+}
+
+.xp-skill-card.add-skill-card:hover {
+  border-color: var(--color-primary) !important;
+  background: var(--color-primary-soft) !important;
 }
 
 /* Adventure Avatar Customizer cards */

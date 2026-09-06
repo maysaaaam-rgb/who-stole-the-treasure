@@ -1411,11 +1411,11 @@
   <div id="floating-multiselect-bar" class="floating-multiselect-bar" style="display:none;">
     <div class="multiselect-count"><span id="multiselect-count-badge">0</span> selected</div>
     <div class="multiselect-actions">
-      <button type="button" class="btn-multiselect-action" onclick="openQuickPointsForSelected()">⭐ Give Points</button>
+      <button type="button" class="btn-multiselect-action" onclick="openGiveFeedbackForSelected()" style="background:#f59e0b; color:#fff; font-weight:800;">⭐ Give Feedback</button>
+      <button type="button" class="btn-multiselect-action" onclick="selectAllClassStudents()">☑ Select All (<span id="multiselect-total-class-count">19</span>)</button>
       <button type="button" class="btn-multiselect-action" onclick="openAssignModalForSelected()">📝 Assign Activity</button>
       <button type="button" class="btn-multiselect-action" onclick="openAttendanceForSelected()">✓ Take Attendance</button>
       <button type="button" class="btn-multiselect-action" onclick="openAddSelectedToGroup()">👥 Add to Group</button>
-      <button type="button" class="btn-multiselect-action" onclick="openMessageForSelected()">💬 Message Parents</button>
       <button type="button" class="btn-multiselect-action" onclick="clearSelectedStudents()">✕ Clear</button>
     </div>
   </div>
@@ -1443,9 +1443,9 @@
         <span class="toolkit-icon">✓</span>
         <span class="toolkit-label">Attendance</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openQuickPointsModal()" title="Award Classroom Points">
+      <button type="button" class="toolkit-item-btn" onclick="openGiveFeedbackModal('class')" title="Give Whole Class Feedback" style="font-weight:800; color:#b45309;">
         <span class="toolkit-icon">⭐</span>
-        <span class="toolkit-label">Points</span>
+        <span class="toolkit-label">Feedback</span>
       </button>
       <button type="button" class="toolkit-item-btn" onclick="openQuickAssessmentModal()" title="Quick Formative Assessment">
         <span class="toolkit-icon">📝</span>
@@ -1685,40 +1685,60 @@
        CLASSROOM STUDENT MANAGEMENT & TRANSACTION XP MODALS
        ======================================================================== -->
 
-  <!-- 1. ClassDojo-Style XP Skills Award Modal -->
+  <!-- 1. Whole-Class Feedback & XP Skills Award Modal (Reference Interaction Pattern) -->
   <div class="modal-overlay" id="modal-give-xp-skills">
-    <div class="modal-dialog" style="max-width: 640px; max-height: 90vh; overflow-y: auto;">
+    <div class="modal-dialog" style="max-width: 680px; max-height: 90vh; overflow-y: auto; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
       <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
-        <div id="xp-award-target-avatar" style="width:48px; height:48px; border-radius:50%; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:26px;">⭐</div>
-        <div>
-          <h2 id="xp-award-target-title" style="font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">Award Classroom Points</h2>
-          <p id="xp-award-target-sub" style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Select a positive skill or corrective feedback</p>
+      
+      <!-- Modal Header -->
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:14px;">
+        <div id="xp-award-target-avatar" style="width:52px; height:52px; border-radius:14px; background:var(--color-primary-soft); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0;">👥</div>
+        <div style="flex:1; min-width:0;">
+          <h2 id="xp-award-target-title" style="font-size:1.35rem; font-weight:900; margin:0; color:var(--text-main); line-height:1.2;">Give feedback to 19 students</h2>
+          <p id="xp-award-target-sub" style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Select one or more skills to award · Grade 4A</p>
         </div>
-        <div style="margin-left:auto;">
-          <button type="button" class="btn-sm-secondary" onclick="openXPSkillEditor()" style="font-size:0.78rem;">+ Add Custom Skill</button>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+          <button type="button" class="btn-sm-secondary" onclick="openXPSkillEditor()" style="font-size:0.8rem; font-weight:700;">+ Add skills</button>
+          <button type="button" class="btn-sm-secondary" onclick="openManageXPSkillsModal()" style="font-size:0.8rem; font-weight:700;" title="Manage and edit classroom skills">⚙️ Manage</button>
         </div>
       </div>
 
       <!-- Category Filter Tabs (Positive vs Needs Work) -->
-      <div style="display:flex; gap:8px; margin-bottom:16px;">
-        <button type="button" id="tab-xp-positive" class="classroom-view-pill-btn is-active" onclick="switchXPAwardTab('positive')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
-          <span>⭐ Positive (+XP)</span>
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button type="button" id="tab-xp-positive" class="classroom-view-pill-btn is-active" onclick="switchXPAwardTab('positive')" style="flex:1; justify-content:center; padding:10px 14px; font-weight:800; font-size:0.9rem; border-radius:10px;">
+          <span>⭐ Positive Skills (+XP)</span>
         </button>
-        <button type="button" id="tab-xp-needs-work" class="classroom-view-pill-btn" onclick="switchXPAwardTab('needs_work')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
-          <span>💭 Needs Work (-XP)</span>
+        <button type="button" id="tab-xp-needs-work" class="classroom-view-pill-btn" onclick="switchXPAwardTab('needs_work')" style="flex:1; justify-content:center; padding:10px 14px; font-weight:800; font-size:0.9rem; border-radius:10px;">
+          <span>⚠️ Needs Work (-XP)</span>
         </button>
       </div>
 
-      <!-- Skills Grid Container -->
-      <div id="xp-skills-grid-container" class="xp-skills-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
-        <!-- Dynamically rendered skills -->
+      <!-- Quick Feedback Tip Banner -->
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.18); border-radius:10px; padding:6px 12px; margin-bottom:14px; font-size:0.78rem; color:var(--text-secondary);">
+        <span>💡 Click cards to select multiple, or click <strong>⚡ Quick</strong> to award instantly.</span>
+        <button type="button" class="btn-sm-secondary" onclick="selectAllVisibleSkills()" style="padding:2px 8px; font-size:0.72rem; font-weight:700;">Select All Visible</button>
       </div>
 
-      <!-- Quick Custom Note / Optional Adjustment -->
-      <div style="background:var(--bg-muted); border-radius:var(--radius-md); padding:10px 14px; display:flex; align-items:center; gap:10px;">
+      <!-- Skills Grid Container (Cards Rendered Dynamically) -->
+      <div id="xp-skills-grid-container" class="xp-skills-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin-bottom:14px;">
+        <!-- Dynamically rendered skills + '+ Add skills' card -->
+      </div>
+
+      <!-- Optional Award Note / Detail -->
+      <div style="background:var(--bg-muted); border:1px solid var(--border-light); border-radius:10px; padding:8px 12px; display:flex; align-items:center; gap:10px; margin-bottom:14px;">
         <span style="font-size:1rem;">📝</span>
-        <input type="text" id="xp-award-custom-note" placeholder="Optional award note or specific task detail..." style="flex:1; background:transparent; border:none; font-size:0.84rem; outline:none;" />
+        <input type="text" id="xp-award-custom-note" placeholder="Optional award note (e.g. Great reading aloud, Unit 1 presentation)..." style="flex:1; background:transparent; border:none; font-size:0.84rem; outline:none;" />
+      </div>
+
+      <!-- Footer Action Strip -->
+      <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div id="xp-selected-skills-summary" style="font-size:0.86rem; font-weight:700; color:var(--text-main);">
+          No skills selected
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-give-xp-skills')" style="padding:8px 16px;">Cancel</button>
+          <button type="button" id="btn-award-selected-feedback" class="btn-primary-action" onclick="handleApplySelectedFeedback()" style="padding:8px 24px; font-weight:900; font-size:0.95rem; border-radius:10px; background:#f59e0b; border-color:#f59e0b;">Give Feedback</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1770,6 +1790,34 @@
           <button type="submit" class="btn-primary-action">Save Skill</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- 2B. Manage Classroom Skills Modal (List, Edit, Archive, Restore) -->
+  <div class="modal-overlay" id="modal-manage-xp-skills">
+    <div class="modal-dialog" style="max-width: 600px; max-height: 85vh; overflow-y: auto; border-radius: 18px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-manage-xp-skills')">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <div>
+          <h2 style="font-size:1.25rem; font-weight:800; margin:0;">⚙️ Classroom Feedback Skills</h2>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Create, edit, archive, or restore classroom skills</p>
+        </div>
+        <button type="button" class="btn-primary-action" onclick="closeModal('modal-manage-xp-skills'); openXPSkillEditor();" style="font-size:0.8rem;">+ Create Skill</button>
+      </div>
+
+      <!-- Subtabs: Active vs Archived -->
+      <div style="display:flex; gap:8px; margin-bottom:14px;">
+        <button type="button" id="tab-manage-skills-active" class="classroom-view-pill-btn is-active" onclick="switchManageSkillsTab('active')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
+          Active Skills (<span id="manage-skills-active-count">0</span>)
+        </button>
+        <button type="button" id="tab-manage-skills-archived" class="classroom-view-pill-btn" onclick="switchManageSkillsTab('archived')" style="flex:1; justify-content:center; padding:8px 12px; font-weight:800;">
+          Archived (<span id="manage-skills-archived-count">0</span>)
+        </button>
+      </div>
+
+      <div id="manage-skills-list-container" style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Rendered dynamically -->
+      </div>
     </div>
   </div>
 
