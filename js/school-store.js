@@ -20,6 +20,31 @@
   // Canonical list of 15 audited games
   const CANONICAL_GAMES = [
     {
+      id: "camp-mystery",
+      title: "The Mystery at the Camp",
+      category: "Reading Adventure & Mystery",
+      level: "A1/A1+",
+      age: "7–9",
+      grade: "Grade 3",
+      duration: 50,
+      skills: ["Reading", "Listening", "Speaking", "Prediction", "Cause & Effect", "Sequencing", "Fact vs Opinion", "Phonics"],
+      topics: ["Don't Move (Camping Story)", "Suspense & Atmosphere", "Blends ST, TR, ND, NG", "Fact vs Opinion (Monarch Butterflies)"],
+      objectives: [
+        "Understand the main events and suspense in a forest camping narrative",
+        "Identify setting, characters, and predict progressive plot developments",
+        "Analyze cause and effect relationships from story events",
+        "Sequence narrative events using First, Then, Next, Finally",
+        "Distinguish verifiable facts from personal opinions",
+        "Decode and locate target phonics clusters: ST, TR, ND, NG in a multi-directional word hunt"
+      ],
+      route: "camp-mystery/index.html",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "An interactive story adventure based on 'Don't Move'. Join Suzie and Mom in the dark windy forest, predict what makes the grunting sound outside the tent, solve cause & effect and sequencing mysteries, master fact vs opinion, and hunt phonics clues."
+    },
+    {
       id: "phonics-hunters",
       title: "Phonics Sound Hunters",
       category: "Phonics & Sound Mission",
@@ -1206,6 +1231,7 @@
         sourceBook: 'Global Readings 3',
         objective: 'Read story on animal camoflague, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
         duration: 35,
+        gameRoute: 'camp-mystery/index.html',
         tasks: [
           { type: 'phonics', label: 'Final -st', words: ['nest', 'fast', 'past', 'frost', 'blast'] },
           { type: 'phonics', label: 'Initial tr-', words: ['tree', 'trip', 'track', 'trail', 'trust'] }
@@ -6652,6 +6678,10 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const campRes = CANONICAL_GAMES.find(g => g.id === 'camp-mystery');
+              if (campRes && !merged.resources.some(r => r.id === 'camp-mystery')) {
+                merged.resources.unshift(campRes);
+              }
               const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-hunters');
               if (phonicsRes && !merged.resources.some(r => r.id === 'phonics-hunters')) {
                 merged.resources.unshift(phonicsRes);
