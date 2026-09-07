@@ -16,15 +16,128 @@
   <!-- School Platform Unified Stylesheet -->
   <link rel="stylesheet" href="css/school-platform.css">
 
-  <!-- Immediate Auth & Lock Check (Prevents any flash of lesson content) -->
+  <!-- Immediate Auth & Lock Check + Mobile/Cross-Device Controller -->
   <script>
     (function() {
+      'use strict';
+      const PLATFORM_ACCESS_PIN = '3515149460';
+
+      // Immediate lock check (prevents any flash of lesson content)
       try {
-        if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true') {
+        const isUnlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true' || window.__eaa_auth_unlocked === true;
+        if (!isUnlocked) {
           document.documentElement.classList.add('platform-locked');
         }
       } catch (e) {
         document.documentElement.classList.add('platform-locked');
+      }
+
+      window.handlePlatformPasswordSubmit = function(event) {
+        if (event) {
+          try { event.preventDefault(); } catch(e) {}
+        }
+        const input = document.getElementById('platform-password-input');
+        const err = document.getElementById('platform-password-error');
+        if (!input) return false;
+
+        const val = (input.value || '').trim();
+        if (val === PLATFORM_ACCESS_PIN) {
+          window.__eaa_auth_unlocked = true;
+          try {
+            sessionStorage.setItem('eaa_auth_unlocked', 'true');
+          } catch(e) {}
+
+          if (err) err.style.display = 'none';
+          document.documentElement.classList.remove('platform-locked');
+
+          const lockScreen = document.getElementById('platform-lock-screen');
+          if (lockScreen) {
+            lockScreen.style.opacity = '0';
+            lockScreen.style.pointerEvents = 'none';
+            setTimeout(function() {
+              lockScreen.style.display = 'none';
+            }, 250);
+          }
+
+          // Open main teacher dashboard
+          if (window.schoolStore) {
+            window.schoolStore.setRole('teacher');
+          }
+          if (typeof window.switchView === 'function') {
+            window.switchView('dashboard');
+          } else {
+            window.__pendingDashboardOpen = true;
+          }
+
+          const userName = document.getElementById('header-user-name');
+          if (userName) userName.textContent = 'Mr. Maysam';
+          return false;
+        } else {
+          if (err) {
+            err.textContent = 'Incorrect password. Try again.';
+            err.style.display = 'block';
+          }
+          input.classList.remove('input-shake');
+          void input.offsetWidth; // Force CSS reflow
+          input.classList.add('input-shake');
+          input.focus();
+          input.select();
+          return false;
+        }
+      };
+
+      window.togglePlatformPasswordVisibility = function() {
+        const input = document.getElementById('platform-password-input');
+        const eyeIcon = document.getElementById('platform-eye-icon');
+        if (!input) return;
+
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (eyeIcon) eyeIcon.textContent = '🔒';
+        } else {
+          input.type = 'password';
+          if (eyeIcon) eyeIcon.textContent = '👁';
+        }
+      };
+
+      window.lockPlatformSession = function() {
+        window.__eaa_auth_unlocked = false;
+        try {
+          sessionStorage.removeItem('eaa_auth_unlocked');
+        } catch(e) {}
+        document.documentElement.classList.add('platform-locked');
+        const lockScreen = document.getElementById('platform-lock-screen');
+        if (lockScreen) {
+          lockScreen.style.display = 'flex';
+          lockScreen.style.opacity = '1';
+          lockScreen.style.pointerEvents = 'auto';
+        }
+        const input = document.getElementById('platform-password-input');
+        if (input) {
+          input.value = '';
+          input.type = 'password';
+          const eyeIcon = document.getElementById('platform-eye-icon');
+          if (eyeIcon) eyeIcon.textContent = '👁';
+          setTimeout(function() { input.focus(); }, 120);
+        }
+        const err = document.getElementById('platform-password-error');
+        if (err) err.style.display = 'none';
+      };
+
+      // Auto focus password on initial load if locked
+      function checkAutoLockFocus() {
+        if (document.documentElement.classList.contains('platform-locked')) {
+          const input = document.getElementById('platform-password-input');
+          if (input) {
+            setTimeout(function() { input.focus(); }, 100);
+          }
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAutoLockFocus);
+      } else {
+        checkAutoLockFocus();
       }
     })();
   </script>
@@ -47,8 +160,10 @@
       background: radial-gradient(circle at 50% 25%, #1e1b4b 0%, #0f172a 55%, #020617 100%);
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 24px 16px;
       box-sizing: border-box;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       transition: opacity 0.25s ease;
     }
@@ -56,12 +171,13 @@
       display: flex !important;
     }
     .platform-lock-card {
+      margin: auto;
       background: rgba(15, 23, 42, 0.92);
       border: 1px solid rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-radius: 24px;
-      padding: 40px 36px;
+      padding: 36px 28px;
       max-width: 440px;
       width: 100%;
       box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -181,7 +297,7 @@
       <h1 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 8px 0; color: #ffffff; letter-spacing: -0.02em;">🔐 Teacher Access</h1>
       <p style="font-size: 0.95rem; color: #94a3b8; margin: 0 0 22px 0; line-height: 1.4;">Enter your password to continue.</p>
 
-      <form id="platform-lock-form" onsubmit="handlePlatformPasswordSubmit(event)">
+      <form id="platform-lock-form" onsubmit="return handlePlatformPasswordSubmit(event)">
         <div class="platform-lock-input-wrap">
           <div style="position:relative; width:100%;">
             <input 
@@ -190,6 +306,11 @@
               class="platform-lock-input" 
               placeholder="Enter password..." 
               autocomplete="current-password" 
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocorrect="off"
+              autocapitalize="none"
+              spellcheck="false"
               required
             />
             <button 
@@ -206,7 +327,7 @@
           <div id="platform-password-error" class="platform-lock-error">Incorrect password. Try again.</div>
         </div>
 
-        <button type="submit" id="platform-lock-submit-btn" class="platform-lock-submit-btn">
+        <button type="submit" id="platform-lock-submit-btn" class="platform-lock-submit-btn" onclick="handlePlatformPasswordSubmit(event)">
           <span>Unlock Platform</span>
         </button>
       </form>
@@ -3042,118 +3163,6 @@
     </div>
   </div>
 
-  <!-- ========================================================================
-       5. PLATFORM ACCESS & AUTHENTICATION CONTROLLER
-       ======================================================================== -->
-  <script>
-    (function() {
-      'use strict';
-      const PLATFORM_ACCESS_PIN = '3515149460';
-
-      window.handlePlatformPasswordSubmit = function(event) {
-        if (event) event.preventDefault();
-        const input = document.getElementById('platform-password-input');
-        const err = document.getElementById('platform-password-error');
-        if (!input) return;
-
-        const val = input.value;
-        if (val === PLATFORM_ACCESS_PIN) {
-          try {
-            sessionStorage.setItem('eaa_auth_unlocked', 'true');
-          } catch(e) {}
-
-          if (err) err.style.display = 'none';
-          document.documentElement.classList.remove('platform-locked');
-
-          const lockScreen = document.getElementById('platform-lock-screen');
-          if (lockScreen) {
-            lockScreen.style.opacity = '0';
-            lockScreen.style.pointerEvents = 'none';
-            setTimeout(function() {
-              lockScreen.style.display = 'none';
-            }, 250);
-          }
-
-          // Open main teacher dashboard
-          if (window.schoolStore) {
-            window.schoolStore.setRole('teacher');
-          }
-          if (typeof window.switchView === 'function') {
-            window.switchView('dashboard');
-          }
-
-          const userName = document.getElementById('header-user-name');
-          if (userName) userName.textContent = 'Mr. Maysam';
-        } else {
-          if (err) {
-            err.textContent = 'Incorrect password. Try again.';
-            err.style.display = 'block';
-          }
-          input.classList.remove('input-shake');
-          void input.offsetWidth; // Force CSS reflow
-          input.classList.add('input-shake');
-          input.focus();
-          input.select();
-        }
-      };
-
-      window.togglePlatformPasswordVisibility = function() {
-        const input = document.getElementById('platform-password-input');
-        const eyeIcon = document.getElementById('platform-eye-icon');
-        if (!input) return;
-
-        if (input.type === 'password') {
-          input.type = 'text';
-          if (eyeIcon) {
-            eyeIcon.textContent = '🔒';
-          }
-        } else {
-          input.type = 'password';
-          if (eyeIcon) {
-            eyeIcon.textContent = '👁';
-          }
-        }
-      };
-
-      window.lockPlatformSession = function() {
-        try {
-          sessionStorage.removeItem('eaa_auth_unlocked');
-        } catch(e) {}
-        document.documentElement.classList.add('platform-locked');
-        const lockScreen = document.getElementById('platform-lock-screen');
-        if (lockScreen) {
-          lockScreen.style.display = 'flex';
-          lockScreen.style.opacity = '1';
-          lockScreen.style.pointerEvents = 'auto';
-        }
-        const input = document.getElementById('platform-password-input');
-        if (input) {
-          input.value = '';
-          input.type = 'password';
-          const eyeIcon = document.getElementById('platform-eye-icon');
-          if (eyeIcon) {
-            eyeIcon.textContent = '👁';
-          }
-          setTimeout(function() { input.focus(); }, 120);
-        }
-        const err = document.getElementById('platform-password-error');
-        if (err) err.style.display = 'none';
-      };
-
-      // Auto focus password on initial load if locked
-      function checkAutoLockFocus() {
-        if (document.documentElement.classList.contains('platform-locked')) {
-          const input = document.getElementById('platform-password-input');
-          if (input) input.focus();
-        }
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', checkAutoLockFocus);
-      } else {
-        checkAutoLockFocus();
-      }
-    })();
-  </script>
+  <!-- Platform Access Controller is defined in head for instant cross-device execution -->
 </body>
 </html>

@@ -100,6 +100,11 @@
   // 1. INITIALIZATION & GLOBAL EVENT LISTENERS
   // =========================================================================
   function initApp() {
+    if (window.__pendingDashboardOpen) {
+      if (store) store.setRole('teacher');
+      currentView = 'dashboard';
+      window.__pendingDashboardOpen = false;
+    }
     const initialClass = store.getActiveClass();
     if (initialClass && initialClass.id) {
       studentsFilterClass = initialClass.id;
@@ -7583,7 +7588,7 @@ window.switchClassroomSubTab = function(subTab) {
   // MOBILE NAVIGATION DRAWER TOGGLE
   // =========================================================================
   window.toggleMobileSidebar = function() {
-    const sidebar = document.getElementById('app-sidebar');
+    const sidebar = document.getElementById('app-sidebar-nav') || document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
     if (sidebar) {
       sidebar.classList.toggle('is-mobile-open');
     }
