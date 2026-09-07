@@ -7067,6 +7067,7 @@
         createdBy: options.createdBy || options.teacherId || source || 'Teacher',
         source: options.source || source || 'teacher_feedback',
         classId: options.classId || (s ? (s.classId || s.class) : null),
+        sourceId: options.sourceId || null,
         status: 'active'
       };
 
@@ -10939,6 +10940,7 @@
           completionPct: 100,
           rawTotal: totalRaw,
           maxRawTotal: totalMax,
+          xpEarned: Math.round(totalRaw * 10),
           accuracyPct: overallPct,
           overallScore: overallPct,
           mastery: overallMastery,
@@ -11008,18 +11010,40 @@
           }
         });
 
-        // Award +50 XP completion reward if not already awarded
+        // Atomic Assessment XP calculation: XP Earned = totalRaw * 10
+        // Strictly prevents duplicate rewards on re-saves, reloads, or cross-device fetches
+        const xpEarned = Math.round(totalRaw * 10);
+        subRecord.xpEarned = xpEarned;
+        const assessmentSourceId = 'pc-assessment-' + checkId + '-' + studentId;
+        const legacySourceId = 'pc-reward-' + checkId;
+
         if (!this.state.xpTransactions) this.state.xpTransactions = [];
-        const existingTx = this.state.xpTransactions.find(
-          t => t.studentId === studentId && t.sourceId === ('pc-reward-' + checkId)
+        let existingTx = this.state.xpTransactions.find(
+          t => t.studentId === studentId && (t.sourceId === assessmentSourceId || t.sourceId === legacySourceId)
         );
-        if (!existingTx) {
+
+        const txReason = 'Four-Skill Assessment: ' + (check ? check.title : 'Progress Check') + ' (' + totalRaw + '/40)';
+        const txDate = subRecord.displayDate || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        if (existingTx) {
+          // Update existing transaction in-place (atomic update, zero double-reward)
+          existingTx.sourceId = assessmentSourceId;
+          existingTx.amount = xpEarned;
+          existingTx.points = xpEarned;
+          existingTx.xpAmount = xpEarned;
+          existingTx.xp = xpEarned;
+          existingTx.reason = txReason;
+          existingTx.date = txDate;
+          existingTx.timestamp = new Date().toISOString();
+          existingTx.status = 'active';
+        } else if (xpEarned > 0) {
+          // First-time grant
           this.giveXP(
             studentId,
-            50,
-            'Completed Progress Check: ' + (check ? check.title : 'Unit 1 Assessment'),
+            xpEarned,
+            txReason,
             'assessment',
-            { isPoints: true, category: 'positive', icon: '⭐', sourceId: 'pc-reward-' + checkId }
+            { isPoints: true, category: 'positive', icon: '⭐', sourceId: assessmentSourceId }
           );
         }
 
@@ -11039,6 +11063,9 @@
           if (res.notes) {
             student.latestTeacherNote = res.notes.trim();
           }
+          student.xp = this.getStudentTotalXP(studentId);
+          const mState = this.calculateMonsterState(studentId);
+          if (mState) student.level = mState.currentLevel;
         }
 
         // Add to teacherNotes if provided
@@ -11059,7 +11086,163 @@
       this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
       this.notify('learningEvidence', this.state.learningEvidence);
       this.notify('students', this.state.students);
+      this.notify('xp', this.state.xpTransactions);
+
+      // Asynchronously synchronize with shared cloud database across devices
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveAssessments(updatedSubmissions).catch(err => {
+          console.warn('[SchoolStore] Cloud sync background error:', err);
+        });
+      }
+
       return { success: true, count: updatedSubmissions.length };
+    }
+
+    mergeCloudSubmissions(cloudArray) {
+      if (!Array.isArray(cloudArray) || cloudArray.length === 0) return { success: true, count: 0 };
+      if (!this.state.progressCheckSubmissions) this.state.progressCheckSubmissions = [];
+      if (!this.state.xpTransactions) this.state.xpTransactions = [];
+
+      let modified = false;
+
+      cloudArray.forEach(cloudSub => {
+        if (!cloudSub || !cloudSub.studentId || !cloudSub.progressCheckId) return;
+
+        const studentId = cloudSub.studentId;
+        const checkId = cloudSub.progressCheckId;
+        const student = this.getStudent(studentId);
+        const check = this.getProgressCheck ? this.getProgressCheck(checkId) : null;
+
+        const existingIdx = this.state.progressCheckSubmissions.findIndex(
+          s => s.progressCheckId === checkId && s.studentId === studentId
+        );
+
+        const localSub = existingIdx !== -1 ? this.state.progressCheckSubmissions[existingIdx] : null;
+
+        const cloudTime = cloudSub.updatedAt ? new Date(cloudSub.updatedAt).getTime() : 0;
+        const localTime = (localSub && localSub.updatedAt) ? new Date(localSub.updatedAt).getTime() : 0;
+
+        if (!localSub || cloudTime >= localTime) {
+          modified = true;
+          if (existingIdx !== -1) {
+            this.state.progressCheckSubmissions[existingIdx] = Object.assign({}, localSub, cloudSub);
+          } else {
+            this.state.progressCheckSubmissions.push(cloudSub);
+          }
+
+          const rawTotal = (cloudSub.rawTotal !== undefined) ? cloudSub.rawTotal : (
+            ((cloudSub.scores && cloudSub.scores.reading && cloudSub.scores.reading.correct) || 0) +
+            ((cloudSub.scores && cloudSub.scores.listening && cloudSub.scores.listening.correct) || 0) +
+            ((cloudSub.scores && cloudSub.scores.writing && cloudSub.scores.writing.correct) || 0) +
+            ((cloudSub.scores && cloudSub.scores.speaking && cloudSub.scores.speaking.correct) || 0)
+          );
+          const xpEarned = Math.round(rawTotal * 10);
+          const assessmentSourceId = 'pc-assessment-' + checkId + '-' + studentId;
+          const legacySourceId = 'pc-reward-' + checkId;
+
+          let existingTx = this.state.xpTransactions.find(
+            t => t.studentId === studentId && (t.sourceId === assessmentSourceId || t.sourceId === legacySourceId)
+          );
+
+          const txReason = 'Four-Skill Assessment: ' + (check ? check.title : 'Progress Check') + ' (' + rawTotal + '/40)';
+          const txDate = cloudSub.displayDate || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+          if (existingTx) {
+            existingTx.sourceId = assessmentSourceId;
+            existingTx.amount = xpEarned;
+            existingTx.points = xpEarned;
+            existingTx.xpAmount = xpEarned;
+            existingTx.xp = xpEarned;
+            existingTx.reason = txReason;
+            existingTx.date = txDate;
+            existingTx.status = 'active';
+          } else if (xpEarned > 0) {
+            this.state.xpTransactions.push({
+              id: 'xp-cloud-' + studentId + '-' + checkId,
+              studentId: studentId,
+              amount: xpEarned,
+              points: xpEarned,
+              xpAmount: xpEarned,
+              xp: xpEarned,
+              reason: txReason,
+              category: 'positive',
+              icon: '⭐',
+              date: txDate,
+              timestamp: cloudSub.updatedAt || new Date().toISOString(),
+              source: 'assessment',
+              sourceId: assessmentSourceId,
+              classId: cloudSub.classId || (student ? student.classId : null),
+              status: 'active'
+            });
+          }
+
+          if (student) {
+            student.lastAssessmentDate = cloudSub.date;
+            student.latestProgressCheck = {
+              checkId: checkId,
+              title: check ? check.title : "English Adventure Progress Check",
+              book: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
+              unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
+              overallScore: cloudSub.overallScore || cloudSub.accuracyPct || 0,
+              rawTotal: rawTotal,
+              skillScores: cloudSub.skillScores || {},
+              teacherNote: cloudSub.notes || cloudSub.teacherComment || ""
+            };
+            student.xp = this.getStudentTotalXP(studentId);
+            const mState = this.calculateMonsterState(studentId);
+            if (mState) student.level = mState.currentLevel;
+          }
+        }
+      });
+
+      if (modified) {
+        this.saveState();
+        this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
+        this.notify('xp', this.state.xpTransactions);
+        this.notify('students', this.state.students);
+      }
+
+      return { success: true, count: cloudArray.length, modified };
+    }
+
+    deleteProgressCheckSubmission(studentId, checkId) {
+      if (!this.state.progressCheckSubmissions) return false;
+      const idx = this.state.progressCheckSubmissions.findIndex(
+        s => s.studentId === studentId && s.progressCheckId === checkId
+      );
+      if (idx !== -1) {
+        this.state.progressCheckSubmissions.splice(idx, 1);
+      }
+
+      const assessmentSourceId = 'pc-assessment-' + checkId + '-' + studentId;
+      const legacySourceId = 'pc-reward-' + checkId;
+      if (this.state.xpTransactions) {
+        this.state.xpTransactions.forEach(t => {
+          if (t.studentId === studentId && (t.sourceId === assessmentSourceId || t.sourceId === legacySourceId)) {
+            t.status = 'voided';
+          }
+        });
+      }
+
+      const student = this.getStudent(studentId);
+      if (student) {
+        student.xp = this.getStudentTotalXP(studentId);
+        const mState = this.calculateMonsterState(studentId);
+        if (mState) student.level = mState.currentLevel;
+      }
+
+      this.saveState();
+      this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
+      this.notify('xp', this.state.xpTransactions);
+      this.notify('students', this.state.students);
+
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.deleteAssessment(studentId, checkId).catch(err => {
+          console.warn('[SchoolStore] Cloud delete warning:', err);
+        });
+      }
+
+      return true;
     }
 
     compareProgressChecks(checkId1 = "progress-check-a1", checkId2 = "progress-check-u2", classId = "class-3a") {
@@ -11174,6 +11357,15 @@
     window.GLOBAL_READINGS_2_DATA = GLOBAL_READINGS_2_DATA;
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
+
+    // Trigger initial background cloud sync across devices
+    if (window.SchoolCloudSync) {
+      setTimeout(() => {
+        window.SchoolCloudSync.syncWithStore(schoolStore).catch(err => {
+          console.warn('[SchoolStore] Initial cloud sync warning:', err);
+        });
+      }, 300);
+    }
   }
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };

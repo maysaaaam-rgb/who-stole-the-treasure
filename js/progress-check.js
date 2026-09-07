@@ -36,9 +36,40 @@
 
   window.setProgressCheckViewMode = function(mode) {
     progressCheckViewMode = mode || 'home';
+    const store = window.schoolStore || window.store;
+    if (window.SchoolCloudSync && store && (mode === 'enter' || mode === 'view')) {
+      window.SchoolCloudSync.syncWithStore(store).then(function() {
+        if (progressCheckViewMode === mode) {
+          window.renderProgressCheckView();
+        }
+      }).catch(function(err) {
+        console.warn('Cloud sync error in setProgressCheckViewMode:', err);
+      });
+    }
     window.renderProgressCheckView();
     const el = document.getElementById('pc-main-wrapper');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  window.triggerManualCloudSync = function() {
+    const store = window.schoolStore || window.store;
+    const btn = document.getElementById('btn-cloud-sync-status');
+    if (btn) btn.innerHTML = '⏳ Syncing...';
+    if (window.SchoolCloudSync && store) {
+      window.SchoolCloudSync.syncWithStore(store).then(function() {
+        if (btn) {
+          btn.innerHTML = '✓ Cloud Synced';
+          setTimeout(() => { if (btn) btn.innerHTML = '☁️ Cloud Synced'; }, 2000);
+        }
+        window.renderProgressCheckView();
+        if (window.showToast) window.showToast('✓ Synced with Cloud Database', 'success');
+      }).catch(function(err) {
+        if (btn) btn.innerHTML = '⚠️ Sync Error';
+        if (window.showToast) window.showToast('Cloud sync error: ' + err.message, 'error');
+      });
+    } else {
+      if (btn) btn.innerHTML = '☁️ Local Storage';
+    }
   };
 
   window.switchProgressCheckSelection = function(checkId) {
@@ -264,7 +295,10 @@
           '</div>' +
 
           '<div style="display:flex; align-items:center; gap:10px;">' +
-            '<button type="button" class="btn-primary-action" onclick="saveAllGradebookResults(\'' + checkId + '\')" style="padding:10px 24px; font-size:0.95rem; font-weight:900; background:#059669; border-color:#047857; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(5,150,105,0.25); border-radius:10px;">' +
+            '<button type="button" class="btn-sm-secondary" id="btn-cloud-sync-status" onclick="triggerManualCloudSync()" style="padding:10px 16px; font-weight:800; font-size:0.85rem; background:#eff6ff; color:#1e40af; border-color:#bfdbfe; border-radius:10px; display:inline-flex; align-items:center; gap:6px;">' +
+              '<span>☁️</span> <span>Cloud Synced</span>' +
+            '</button>' +
+            '<button type="button" class="btn-primary-action" id="btn-save-all-results" onclick="saveAllGradebookResults(\'' + checkId + '\')" style="padding:10px 24px; font-size:0.95rem; font-weight:900; background:#059669; border-color:#047857; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(5,150,105,0.25); border-radius:10px;">' +
               '<span>💾</span> <span>Save All Results</span>' +
             '</button>' +
           '</div>' +
@@ -282,6 +316,7 @@
                   '<th style="padding:12px 10px; font-weight:800; min-width:95px; text-align:center;">WRITING<br><span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">( / 10 )</span></th>' +
                   '<th style="padding:12px 10px; font-weight:800; min-width:135px; text-align:center;">SPEAKING<br><span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">( / 10 )</span></th>' +
                   '<th style="padding:12px 10px; font-weight:800; min-width:85px; text-align:center;">TOTAL<br><span style="font-size:0.72rem; color:var(--color-primary); font-weight:800;">( / 40 )</span></th>' +
+                  '<th style="padding:12px 10px; font-weight:800; min-width:85px; text-align:center;">XP<br><span style="font-size:0.72rem; color:#7c3aed; font-weight:800;">(+XP)</span></th>' +
                   '<th style="padding:12px 14px; font-weight:800; min-width:240px;">TEACHER NOTE</th>' +
                   '<th style="padding:12px 10px; font-weight:800; text-align:center; min-width:80px;">ACTION</th>' +
                 '</tr>' +
@@ -345,8 +380,15 @@
 
                       // Row Total (/40)
                       '<td style="padding:8px 10px; text-align:center;">' +
-                        '<span id="cell-total-' + s.id + '" style="font-size:1.05rem; font-weight:900; color:' + (totalVal >= 24 ? '#059669' : '#b45309') + ';">' +
+                        '<span id="cell-total-' + s.id + '" style="font-size:1.05rem; font-weight:900; color:' + (totalVal >= 28 ? '#059669' : (totalVal >= 20 ? '#2563eb' : '#b45309')) + ';">' +
                           (totalVal > 0 ? totalVal : '—') +
+                        '</span>' +
+                      '</td>' +
+
+                      // XP (+XP)
+                      '<td style="padding:8px 10px; text-align:center;">' +
+                        '<span id="cell-xp-' + s.id + '" style="font-size:0.92rem; font-weight:900; color:#7c3aed;">' +
+                          (totalVal > 0 ? ('+' + Math.round(totalVal * 10) + ' XP') : '—') +
                         '</span>' +
                       '</td>' +
 
@@ -357,7 +399,7 @@
 
                       // Action (Save single)
                       '<td style="padding:8px 10px; text-align:center;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="saveSingleStudentGradebookRow(\'' + checkId + '\', \'' + s.id + '\')" style="padding:6px 12px; font-weight:800; font-size:0.78rem; background:#ecfdf5; color:#059669; border-color:#10b981; border-radius:8px;">' +
+                        '<button type="button" id="btn-save-row-' + s.id + '" class="btn-sm-secondary" onclick="saveSingleStudentGradebookRow(\'' + checkId + '\', \'' + s.id + '\')" style="padding:6px 12px; font-weight:800; font-size:0.78rem; background:#ecfdf5; color:#059669; border-color:#10b981; border-radius:8px;">' +
                           '💾 Save' +
                         '</button>' +
                       '</td>' +
@@ -383,28 +425,43 @@
       '</div>';
   }
 
-  // Live Auto-Calculation of Row Total
+  // Live Auto-Calculation of Row Total & XP with strict 0-10 validation
   window.updateRowTotal = function(studentId) {
     const rEl = document.getElementById('inp-read-' + studentId);
     const lEl = document.getElementById('inp-listen-' + studentId);
     const wEl = document.getElementById('inp-write-' + studentId);
     const sEl = document.getElementById('inp-speak-' + studentId);
     const totalEl = document.getElementById('cell-total-' + studentId);
+    const xpEl = document.getElementById('cell-xp-' + studentId);
 
-    const r = rEl ? (parseFloat(rEl.value) || 0) : 0;
-    const l = lEl ? (parseFloat(lEl.value) || 0) : 0;
-    const w = wEl ? (parseFloat(wEl.value) || 0) : 0;
-    const s = sEl ? (parseFloat(sEl.value) || 0) : 0;
+    const clamp = function(el) {
+      if (!el || el.value === '') return null;
+      let v = parseFloat(el.value);
+      if (isNaN(v)) return 0;
+      if (v < 0) { v = 0; el.value = 0; }
+      if (v > 10) { v = 10; el.value = 10; }
+      return v;
+    };
 
-    const total = Math.round((r + l + w + s) * 10) / 10;
+    const r = clamp(rEl);
+    const l = clamp(lEl);
+    const w = clamp(wEl);
+    const s = clamp(sEl);
+
+    const hasAny = (r !== null) || (l !== null) || (w !== null) || (s !== null);
+    const total = Math.round(((r || 0) + (l || 0) + (w || 0) + (s || 0)) * 10) / 10;
+    const xp = Math.round(total * 10);
 
     if (totalEl) {
-      totalEl.textContent = total > 0 ? total : '—';
-      totalEl.style.color = total >= 24 ? '#059669' : '#b45309';
+      totalEl.textContent = hasAny ? total : '—';
+      totalEl.style.color = total >= 34 ? '#059669' : (total >= 28 ? '#2563eb' : (total >= 20 ? '#d97706' : '#dc2626'));
+    }
+    if (xpEl) {
+      xpEl.textContent = hasAny ? ('+' + xp + ' XP') : '—';
     }
   };
 
-  // Helper: Read row data from gradebook DOM
+  // Helper: Read row data from gradebook DOM with 0-10 clamping
   window.getStudentGradebookRowData = function(studentId) {
     const rEl = document.getElementById('inp-read-' + studentId);
     const lEl = document.getElementById('inp-listen-' + studentId);
@@ -412,10 +469,17 @@
     const sEl = document.getElementById('inp-speak-' + studentId);
     const nEl = document.getElementById('inp-note-' + studentId);
 
-    const rVal = rEl && rEl.value !== '' ? parseFloat(rEl.value) : 0;
-    const lVal = lEl && lEl.value !== '' ? parseFloat(lEl.value) : 0;
-    const wVal = wEl && wEl.value !== '' ? parseFloat(wEl.value) : 0;
-    const sVal = sEl && sEl.value !== '' ? parseFloat(sEl.value) : 0;
+    const clampVal = function(el) {
+      if (!el || el.value === '') return 0;
+      let v = parseFloat(el.value);
+      if (isNaN(v)) return 0;
+      return Math.max(0, Math.min(10, v));
+    };
+
+    const rVal = clampVal(rEl);
+    const lVal = clampVal(lEl);
+    const wVal = clampVal(wEl);
+    const sVal = clampVal(sEl);
 
     return {
       studentId: studentId,
@@ -436,13 +500,31 @@
     const rowData = getStudentGradebookRowData(studentId);
     store.saveClassProgressCheckResults(checkId, [rowData]);
 
+    const btn = document.getElementById('btn-save-row-' + studentId);
+    if (btn) {
+      const origHtml = btn.innerHTML;
+      btn.innerHTML = '✓ Saved';
+      btn.style.background = '#10b981';
+      btn.style.color = '#fff';
+      setTimeout(function() {
+        btn.innerHTML = origHtml;
+        btn.style.background = '#ecfdf5';
+        btn.style.color = '#059669';
+      }, 1500);
+    }
+
     const rowEl = document.getElementById('row-student-' + studentId);
     if (rowEl) {
       const origBg = rowEl.style.backgroundColor;
       rowEl.style.backgroundColor = '#d1fae5';
       setTimeout(function() { rowEl.style.backgroundColor = origBg; }, 1000);
     }
-    if (window.showToast) window.showToast('✓ Result saved for ' + studentId, 'success');
+
+    const student = store.getStudent ? store.getStudent(studentId) : null;
+    const sName = student ? (student.firstName + ' ' + student.lastName) : studentId;
+    const totalScore = rowData.scores.reading.correct + rowData.scores.listening.correct + rowData.scores.writing.correct + rowData.scores.speaking.correct;
+    const earnedXP = Math.round(totalScore * 10);
+    if (window.showToast) window.showToast('✓ Saved ' + sName + ': ' + totalScore + '/40 (+' + earnedXP + ' XP synced)', 'success');
   };
 
   window.saveAllGradebookResults = function(checkId) {
@@ -455,7 +537,17 @@
     const outcome = store.saveClassProgressCheckResults(checkId, results);
     if (outcome && outcome.success) {
       if (window.showToast) {
-        window.showToast('✓ Results saved for ' + (outcome.count || students.length) + ' students.', 'success');
+        window.showToast('✓ Saved & synced results for ' + (outcome.count || students.length) + ' students to Cloud!', 'success');
+      }
+      const saveAllBtn = document.getElementById('btn-save-all-results');
+      if (saveAllBtn) {
+        const origHtml = saveAllBtn.innerHTML;
+        saveAllBtn.innerHTML = '<span>✓</span> <span>All Results Saved!</span>';
+        saveAllBtn.style.background = '#047857';
+        setTimeout(function() {
+          saveAllBtn.innerHTML = origHtml;
+          saveAllBtn.style.background = '#059669';
+        }, 2000);
       }
       students.forEach(function(s) {
         const rowEl = document.getElementById('row-student-' + s.id);
