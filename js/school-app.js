@@ -1441,7 +1441,7 @@
                       '<div style="font-size:0.72rem; color:var(--text-muted);">' + (latestPC.displayDate || latestPC.date || 'September 2026') + '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\');" style="font-size:0.75rem; padding:6px 12px; font-weight:800; background:#ecfdf5; color:#059669; border-color:#10b981;">' +
+                  '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\'); }" style="font-size:0.75rem; padding:6px 12px; font-weight:800; background:#ecfdf5; color:#059669; border-color:#10b981;">' +
                     '✏️ Gradebook ➔' +
                   '</button>' +
                 '</div>' +
@@ -1605,7 +1605,7 @@
               '<h4 style="font-weight:900; font-size:1.05rem; margin:0; display:flex; align-items:center; gap:8px;">' +
                 '<span>🎯</span> <span>Four-Skill Assessments (' + pcHistory.length + ')</span>' +
               '</h4>' +
-              '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\');" style="font-size:0.75rem; padding:5px 12px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\'); }" style="font-size:0.75rem; padding:5px 12px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">' +
                 '✏️ Open Gradebook' +
               '</button>' +
             '</div>' +
@@ -2379,10 +2379,10 @@
           '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">' + grCurriculum + ' · Whole-Class Teacher-Led Assessment</p>' +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-          '<button type="button" class="btn-primary-action" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">▶ Start Class Assessment</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(3);" style="padding:7px 14px; font-weight:700;">🖨️ Print Worksheets</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4);" style="padding:7px 14px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">📝 Enter Results</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(5);" style="padding:7px 14px; font-weight:700;">📈 View Class Progress</button>' +
+          '<button type="button" class="btn-primary-action" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">▶ Start Class Assessment</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(3);" style="padding:7px 14px; font-weight:700;">🖨️ Print Worksheets</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4); }" style="padding:7px 14px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">📝 Enter Results</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'view\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(5); }" style="padding:7px 14px; font-weight:700;">📈 View Class Progress</button>' +
         '</div>' +
       '</div>' +
 

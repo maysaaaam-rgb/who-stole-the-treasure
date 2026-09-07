@@ -105,10 +105,13 @@
       this.notify();
 
       try {
-        const response = await fetch(this.endpoint, {
+        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+        const response = await fetch(fetchUrl, {
           method: 'GET',
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
           }
         });
 
@@ -175,9 +178,14 @@
         // 1. Fetch current cloud state first to ensure deep merge
         let currentSubmissions = {};
         try {
-          const fetchRes = await fetch(this.endpoint, {
+          const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+          const fetchRes = await fetch(fetchUrl, {
             method: 'GET',
-            headers: { 'Accept': 'application/json' }
+            headers: {
+              'Accept': 'application/json',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache'
+            }
           });
           if (fetchRes.ok) {
             const json = await fetchRes.json();
@@ -196,6 +204,10 @@
             studentId: sub.studentId,
             progressCheckId: sub.progressCheckId,
             classId: sub.classId,
+            bookId: sub.bookId || (sub.progressCheckId === 'progress-check-gr3-u1' ? 'book-global-readings-3' : 'book-global-readings-2'),
+            bookTitle: sub.bookTitle || (sub.progressCheckId === 'progress-check-gr3-u1' ? 'Global Readings 3' : 'Global Readings 2'),
+            unitId: sub.unitId || (sub.progressCheckId === 'progress-check-gr3-u1' ? 'unit-gr3-1' : 'unit-gr2-1'),
+            unitTitle: sub.unitTitle || (sub.progressCheckId === 'progress-check-gr3-u1' ? 'Unit 1: I Love Reading' : 'Unit 1: What Does It Do?'),
             date: sub.date,
             displayDate: sub.displayDate,
             status: sub.status || 'completed',
@@ -283,9 +295,14 @@
 
       try {
         let currentSubmissions = {};
-        const fetchRes = await fetch(this.endpoint, {
+        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+        const fetchRes = await fetch(fetchUrl, {
           method: 'GET',
-          headers: { 'Accept': 'application/json' }
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
+          }
         });
         if (fetchRes.ok) {
           const json = await fetchRes.json();

@@ -4332,7 +4332,7 @@
           name: 'Grade 3A',
           grade: 'Grade 3',
           teacher: 'Mr. Maysam',
-          primaryBookId: 'gr2-book',
+          primaryBookId: 'book-global-readings-2',
           academicYear: '2026–2027',
           cefrTarget: 'A1',
           room: 'Room 3A',
@@ -4345,7 +4345,7 @@
           name: 'Grade 3B',
           grade: 'Grade 3',
           teacher: 'Mr. Maysam',
-          primaryBookId: 'gr2-book',
+          primaryBookId: 'book-global-readings-2',
           academicYear: '2026–2027',
           cefrTarget: 'A1',
           room: 'Room 3B',
@@ -4358,7 +4358,7 @@
           name: 'Grade 4A',
           grade: 'Grade 4',
           teacher: 'Mr. Maysam',
-          primaryBookId: 'gr3-book',
+          primaryBookId: 'book-global-readings-3',
           academicYear: '2026–2027',
           cefrTarget: 'A2',
           room: 'Room 4A',
@@ -4371,7 +4371,7 @@
           name: 'Grade 4B',
           grade: 'Grade 4',
           teacher: 'Mr. Maysam',
-          primaryBookId: 'gr3-book',
+          primaryBookId: 'book-global-readings-3',
           academicYear: '2026–2027',
           cefrTarget: 'A2',
           room: 'Room 4B',
@@ -7465,7 +7465,26 @@
     }
 
     getClass(id) {
-      return this.state.classes.find(c => c.id === id);
+      const c = this.state.classes.find(c => c.id === id);
+      if (c) {
+        if (c.primaryBookId === 'gr2-book') c.primaryBookId = 'book-global-readings-2';
+        if (c.primaryBookId === 'gr3-book') c.primaryBookId = 'book-global-readings-3';
+      }
+      return c;
+    }
+
+    getBook(id) {
+      if (!id) return null;
+      if (id === 'gr2-book') id = 'book-global-readings-2';
+      if (id === 'gr3-book') id = 'book-global-readings-3';
+      return (this.state.curriculum && this.state.curriculum.books) ?
+        this.state.curriculum.books.find(b => b.id === id) : null;
+    }
+
+    getUnit(id) {
+      if (!id) return null;
+      return (this.state.curriculum && this.state.curriculum.units) ?
+        this.state.curriculum.units.find(u => u.id === id) : null;
     }
 
     addClass(data) {
@@ -10929,11 +10948,20 @@
         const overallPct = Math.round((totalRaw / totalMax) * 100);
         const overallMastery = overallPct >= 85 ? "Strong" : overallPct >= 70 ? "Secure" : overallPct >= 50 ? "Developing" : "Needs Support";
 
+        const derivedBookId = (check && check.bookId) ? check.bookId : ((student && student.grade === 'Grade 4') ? 'book-global-readings-3' : 'book-global-readings-2');
+        const derivedBookTitle = (check && check.bookTitle) ? check.bookTitle : ((student && student.grade === 'Grade 4') ? 'Global Readings 3' : 'Global Readings 2');
+        const derivedUnitId = (check && check.unitId) ? check.unitId : ((student && student.grade === 'Grade 4') ? 'unit-gr3-1' : 'unit-gr2-1');
+        const derivedUnitTitle = (check && check.unitTitle) ? check.unitTitle : ((student && student.grade === 'Grade 4') ? 'Unit 1: I Love Reading' : 'Unit 1: What Does It Do?');
+
         const subRecord = {
           id: subId,
           progressCheckId: checkId,
           studentId: studentId,
-          classId: res.classId || (student ? student.classId : "class-3a"),
+          classId: res.classId || (student ? student.classId : (check ? check.classId : "class-3a")),
+          bookId: derivedBookId,
+          bookTitle: derivedBookTitle,
+          unitId: derivedUnitId,
+          unitTitle: derivedUnitTitle,
           date: res.date || new Date().toISOString().split("T")[0],
           displayDate: res.displayDate || new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
           status: "completed",
@@ -11124,6 +11152,16 @@
 
         if (!localSub || cloudTime >= localTime) {
           modified = true;
+          const derivedBookId = cloudSub.bookId || (check && check.bookId) || ((student && student.grade === 'Grade 4') ? 'book-global-readings-3' : 'book-global-readings-2');
+          const derivedBookTitle = cloudSub.bookTitle || (check && check.bookTitle) || ((student && student.grade === 'Grade 4') ? 'Global Readings 3' : 'Global Readings 2');
+          const derivedUnitId = cloudSub.unitId || (check && check.unitId) || ((student && student.grade === 'Grade 4') ? 'unit-gr3-1' : 'unit-gr2-1');
+          const derivedUnitTitle = cloudSub.unitTitle || (check && check.unitTitle) || ((student && student.grade === 'Grade 4') ? 'Unit 1: I Love Reading' : 'Unit 1: What Does It Do?');
+
+          cloudSub.bookId = derivedBookId;
+          cloudSub.bookTitle = derivedBookTitle;
+          cloudSub.unitId = derivedUnitId;
+          cloudSub.unitTitle = derivedUnitTitle;
+
           if (existingIdx !== -1) {
             this.state.progressCheckSubmissions[existingIdx] = Object.assign({}, localSub, cloudSub);
           } else {

@@ -78,10 +78,52 @@
   };
 
   window.switchProgressCheckClass = function(classId) {
+    if (!classId) return;
     selectedAnalyticsClassId = classId;
     const store = window.schoolStore || window.store;
-    if (store) store.setActiveClass(classId);
+    if (store) {
+      if (typeof store.setActiveClass === 'function') store.setActiveClass(classId);
+      const cls = store.getClass ? store.getClass(classId) : null;
+      if (cls && cls.grade === 'Grade 4') {
+        selectedProgressCheckId = 'progress-check-gr3-u1';
+      } else {
+        selectedProgressCheckId = 'progress-check-gr2-u1';
+      }
+    }
     window.renderProgressCheckView();
+  };
+
+  window.openProgressCheckForClass = function(classId, mode) {
+    if (classId) {
+      selectedAnalyticsClassId = classId;
+      const store = window.schoolStore || window.store;
+      if (store) {
+        if (typeof store.setActiveClass === 'function') store.setActiveClass(classId);
+        const cls = store.getClass ? store.getClass(classId) : null;
+        if (cls && cls.grade === 'Grade 4') {
+          selectedProgressCheckId = 'progress-check-gr3-u1';
+        } else {
+          selectedProgressCheckId = 'progress-check-gr2-u1';
+        }
+      }
+    }
+    progressCheckViewMode = mode || 'enter';
+    if (window.switchView) window.switchView('progress-check');
+    window.renderProgressCheckView();
+  };
+
+  window.goToProgressCheckStep = function(step) {
+    if (step === 2) {
+      if (window.openClassGameModal) window.openClassGameModal();
+    } else if (step === 3) {
+      if (window.openPrintableProgressCheck) window.openPrintableProgressCheck(selectedProgressCheckId, false);
+    } else if (step === 4) {
+      window.setProgressCheckViewMode('enter');
+    } else if (step === 5) {
+      window.setProgressCheckViewMode('view');
+    } else {
+      window.setProgressCheckViewMode('home');
+    }
   };
 
   // =========================================================================
@@ -292,6 +334,17 @@
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0;">' +
               '<strong>' + bookName + ' · ' + unitName + '</strong> — Enter scores (/10 each) for Reading, Listening, Writing, and Speaking.' +
             '</p>' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap;">' +
+              '<span style="font-size:0.80rem; font-weight:700; color:var(--text-muted);">Switch Class / Book:</span>' +
+              (store.getClasses ? store.getClasses() : []).map(function(cls) {
+                const isGrade4 = cls.grade === 'Grade 4';
+                const bookLabel = isGrade4 ? 'Global Readings 3' : 'Global Readings 2';
+                const isActive = cls.id === currentClass.id;
+                return '<button type="button" class="btn-sm-secondary ' + (isActive ? 'btn-primary-action' : '') + '" onclick="switchProgressCheckClass(\'' + cls.id + '\')" style="padding:4px 10px; font-weight:800; font-size:0.78rem; border-radius:8px;' + (isActive ? ' background:#2563eb; color:#fff; border-color:#1d4ed8;' : '') + '">' +
+                  cls.name + ' (' + bookLabel + ')' +
+                '</button>';
+              }).join('') +
+            '</div>' +
           '</div>' +
 
           '<div style="display:flex; align-items:center; gap:10px;">' +
@@ -584,6 +637,17 @@
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0;">' +
               '<strong>' + bookName + ' · ' + unitName + '</strong> — Final recorded 4-skill scores (/40).' +
             '</p>' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap;">' +
+              '<span style="font-size:0.80rem; font-weight:700; color:var(--text-muted);">Switch Class / Book:</span>' +
+              (store.getClasses ? store.getClasses() : []).map(function(cls) {
+                const isGrade4 = cls.grade === 'Grade 4';
+                const bookLabel = isGrade4 ? 'Global Readings 3' : 'Global Readings 2';
+                const isActive = cls.id === currentClass.id;
+                return '<button type="button" class="btn-sm-secondary ' + (isActive ? 'btn-primary-action' : '') + '" onclick="switchProgressCheckClass(\'' + cls.id + '\')" style="padding:4px 10px; font-weight:800; font-size:0.78rem; border-radius:8px;' + (isActive ? ' background:#2563eb; color:#fff; border-color:#1d4ed8;' : '') + '">' +
+                  cls.name + ' (' + bookLabel + ')' +
+                '</button>';
+              }).join('') +
+            '</div>' +
           '</div>' +
 
           '<div style="display:flex; align-items:center; gap:10px;">' +
