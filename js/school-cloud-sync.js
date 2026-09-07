@@ -105,9 +105,11 @@
       this.notify();
 
       try {
-        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+        const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
+        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
         const response = await fetch(fetchUrl, {
           method: 'GET',
+          cache: 'no-store',
           headers: {
             'Accept': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -178,9 +180,11 @@
         // 1. Fetch current cloud state first to ensure deep merge
         let currentSubmissions = {};
         try {
-          const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+          const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
+          const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
           const fetchRes = await fetch(fetchUrl, {
             method: 'GET',
+            cache: 'no-store',
             headers: {
               'Accept': 'application/json',
               'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -247,6 +251,7 @@
           try {
             putRes = await fetch(this.endpoint, {
               method: 'PUT',
+              cache: 'no-store',
               headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -295,9 +300,11 @@
 
       try {
         let currentSubmissions = {};
-        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+        const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
+        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
         const fetchRes = await fetch(fetchUrl, {
           method: 'GET',
+          cache: 'no-store',
           headers: {
             'Accept': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -324,6 +331,7 @@
 
         await fetch(this.endpoint, {
           method: 'PUT',
+          cache: 'no-store',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -342,12 +350,49 @@
      * Two-way sync: Pulls cloud assessments and merges into school store
      */
     async syncWithStore(store) {
-      if (!store || typeof store.mergeCloudSubmissions !== 'function') return;
+      if (!store || typeof store.mergeCloudSubmissions !== 'function') return { success: false };
 
       const cloudData = await this.fetchAssessments();
       if (cloudData && typeof cloudData === 'object') {
         const cloudArray = Object.values(cloudData);
-        store.mergeCloudSubmissions(cloudArray);
+        const mergeResult = store.mergeCloudSubmissions(cloudArray);
+        return { success: true, count: cloudArray.length, mergeResult };
+      }
+      return { success: false, reason: 'no_data' };
+    }
+
+    /**
+     * Continuous background sync & focus/visibility sync across iPad and PC
+     */
+    setupAutoSync(store) {
+      if (!store || this._autoSyncSetup) return;
+      this._autoSyncSetup = true;
+
+      // Initial immediate sync
+      this.syncWithStore(store).catch(err => {
+        console.warn('[CloudSync] Initial auto-sync warning:', err);
+      });
+
+      // 1. Sync on window focus or visibility change (iPad/PC wake or tab switch)
+      const onVisible = () => {
+        if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+          this.syncWithStore(store).catch(() => {});
+        }
+      };
+      if (typeof window !== 'undefined') {
+        window.addEventListener('focus', onVisible);
+        if (typeof document !== 'undefined') {
+          document.addEventListener('visibilitychange', onVisible);
+        }
+      }
+
+      // 2. Continuous 15-second background synchronization
+      if (typeof setInterval !== 'undefined') {
+        setInterval(() => {
+          if (typeof document !== 'undefined' && document.visibilityState === 'visible' && !this.isSyncing) {
+            this.syncWithStore(store).catch(() => {});
+          }
+        }, 15000);
       }
     }
   }

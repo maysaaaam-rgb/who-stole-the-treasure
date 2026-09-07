@@ -110,6 +110,18 @@
     progressCheckViewMode = mode || 'enter';
     if (window.switchView) window.switchView('progress-check');
     window.renderProgressCheckView();
+
+    // Pull any fresh cloud submissions in background
+    const activeStore = window.schoolStore || window.store;
+    if (window.SchoolCloudSync && activeStore) {
+      window.SchoolCloudSync.syncWithStore(activeStore).then(function() {
+        if (progressCheckViewMode === 'enter' || progressCheckViewMode === 'view') {
+          window.renderProgressCheckView();
+        }
+      }).catch(function(err) {
+        console.warn('Cloud sync error in openProgressCheckForClass:', err);
+      });
+    }
   };
 
   window.goToProgressCheckStep = function(step) {
@@ -546,24 +558,49 @@
     };
   };
 
-  window.saveSingleStudentGradebookRow = function(checkId, studentId) {
+  window.saveSingleStudentGradebookRow = async function(checkId, studentId) {
     const store = window.schoolStore || window.store;
     if (!store || !store.saveClassProgressCheckResults) return;
 
-    const rowData = getStudentGradebookRowData(studentId);
-    store.saveClassProgressCheckResults(checkId, [rowData]);
-
     const btn = document.getElementById('btn-save-row-' + studentId);
+    const syncStatusBtn = document.getElementById('btn-cloud-sync-status');
+    const origBtnHtml = btn ? btn.innerHTML : '💾 Save';
+
     if (btn) {
-      const origHtml = btn.innerHTML;
-      btn.innerHTML = '✓ Saved';
-      btn.style.background = '#10b981';
+      btn.innerHTML = '⏳ Saving...';
+      btn.style.background = '#fef3c7';
+      btn.style.color = '#92400e';
+    }
+    if (syncStatusBtn) {
+      syncStatusBtn.innerHTML = '<span>⏳</span> <span>Saving to Cloud...</span>';
+    }
+
+    const rowData = getStudentGradebookRowData(studentId);
+    const outcome = store.saveClassProgressCheckResults(checkId, [rowData]);
+
+    let cloudOk = true;
+    if (outcome && outcome.cloudPromise) {
+      try {
+        const cloudRes = await outcome.cloudPromise;
+        if (cloudRes && cloudRes.success === false) cloudOk = false;
+      } catch (e) {
+        cloudOk = false;
+      }
+    }
+
+    if (btn) {
+      btn.innerHTML = cloudOk ? '✓ Synced' : '✓ Saved';
+      btn.style.background = cloudOk ? '#10b981' : '#f59e0b';
       btn.style.color = '#fff';
       setTimeout(function() {
-        btn.innerHTML = origHtml;
+        btn.innerHTML = origBtnHtml;
         btn.style.background = '#ecfdf5';
         btn.style.color = '#059669';
-      }, 1500);
+      }, 1800);
+    }
+
+    if (syncStatusBtn) {
+      syncStatusBtn.innerHTML = cloudOk ? '<span>☁️✓</span> <span>Cloud Synced</span>' : '<span>☁️⚠️</span> <span>Local Only</span>';
     }
 
     const rowEl = document.getElementById('row-student-' + studentId);
@@ -577,39 +614,66 @@
     const sName = student ? (student.firstName + ' ' + student.lastName) : studentId;
     const totalScore = rowData.scores.reading.correct + rowData.scores.listening.correct + rowData.scores.writing.correct + rowData.scores.speaking.correct;
     const earnedXP = Math.round(totalScore * 10);
-    if (window.showToast) window.showToast('✓ Saved ' + sName + ': ' + totalScore + '/40 (+' + earnedXP + ' XP synced)', 'success');
+    if (window.showToast) {
+      window.showToast('✓ Saved ' + sName + ': ' + totalScore + '/40 (+' + earnedXP + ' XP' + (cloudOk ? ' · Cloud Synced' : '') + ')', 'success');
+    }
   };
 
-  window.saveAllGradebookResults = function(checkId) {
+  window.saveAllGradebookResults = async function(checkId) {
     const store = window.schoolStore || window.store;
     if (!store || !store.saveClassProgressCheckResults) return;
+
+    const saveAllBtn = document.getElementById('btn-save-all-results');
+    const syncStatusBtn = document.getElementById('btn-cloud-sync-status');
+    const origHtml = saveAllBtn ? saveAllBtn.innerHTML : '💾 Save All Results';
+
+    if (saveAllBtn) {
+      saveAllBtn.innerHTML = '<span>⏳</span> <span>Saving All to Cloud...</span>';
+      saveAllBtn.style.background = '#d97706';
+    }
+    if (syncStatusBtn) {
+      syncStatusBtn.innerHTML = '<span>⏳</span> <span>Saving to Cloud...</span>';
+    }
 
     const students = store.getStudentsByClass ? store.getStudentsByClass(selectedAnalyticsClassId) : [];
     const results = students.map(function(s) { return getStudentGradebookRowData(s.id); });
 
     const outcome = store.saveClassProgressCheckResults(checkId, results);
-    if (outcome && outcome.success) {
-      if (window.showToast) {
-        window.showToast('✓ Saved & synced results for ' + (outcome.count || students.length) + ' students to Cloud!', 'success');
+
+    let cloudOk = true;
+    if (outcome && outcome.cloudPromise) {
+      try {
+        const cloudRes = await outcome.cloudPromise;
+        if (cloudRes && cloudRes.success === false) cloudOk = false;
+      } catch (e) {
+        cloudOk = false;
       }
-      const saveAllBtn = document.getElementById('btn-save-all-results');
-      if (saveAllBtn) {
-        const origHtml = saveAllBtn.innerHTML;
-        saveAllBtn.innerHTML = '<span>✓</span> <span>All Results Saved!</span>';
-        saveAllBtn.style.background = '#047857';
-        setTimeout(function() {
-          saveAllBtn.innerHTML = origHtml;
-          saveAllBtn.style.background = '#059669';
-        }, 2000);
+    }
+
+    if (saveAllBtn) {
+      saveAllBtn.innerHTML = cloudOk ? '<span>✓</span> <span>All Results Cloud Synced!</span>' : '<span>⚠️</span> <span>Saved Locally (Cloud Warning)</span>';
+      saveAllBtn.style.background = cloudOk ? '#047857' : '#b45309';
+      setTimeout(function() {
+        saveAllBtn.innerHTML = origHtml;
+        saveAllBtn.style.background = '#059669';
+      }, 2200);
+    }
+
+    if (syncStatusBtn) {
+      syncStatusBtn.innerHTML = cloudOk ? '<span>☁️✓</span> <span>Cloud Synced</span>' : '<span>☁️⚠️</span> <span>Sync Warning</span>';
+    }
+
+    students.forEach(function(s) {
+      const rowEl = document.getElementById('row-student-' + s.id);
+      if (rowEl) {
+        const origBg = rowEl.style.backgroundColor;
+        rowEl.style.backgroundColor = '#d1fae5';
+        setTimeout(function() { rowEl.style.backgroundColor = origBg; }, 1200);
       }
-      students.forEach(function(s) {
-        const rowEl = document.getElementById('row-student-' + s.id);
-        if (rowEl) {
-          const origBg = rowEl.style.backgroundColor;
-          rowEl.style.backgroundColor = '#d1fae5';
-          setTimeout(function() { rowEl.style.backgroundColor = origBg; }, 1200);
-        }
-      });
+    });
+
+    if (window.showToast) {
+      window.showToast('✓ Saved & Synced results for ' + (outcome.count || students.length) + ' students to Cloud!', 'success');
     }
   };
 

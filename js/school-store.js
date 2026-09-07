@@ -7336,7 +7336,10 @@
         positive: activeTxs.filter(t => t.category === 'positive' || (!t.category && t.amount > 0)).reduce((sum, t) => sum + t.amount, 0),
         needs_work: activeTxs.filter(t => t.category === 'needs_work' || (!t.category && t.amount < 0)).reduce((sum, t) => sum + Math.abs(t.amount), 0),
         redeemed: activeTxs.filter(t => t.category === 'redeemed').reduce((sum, t) => sum + Math.abs(t.amount), 0),
-        activity: activeTxs.filter(t => t.source === 'Activity' || t.source === 'Game').reduce((sum, t) => sum + t.amount, 0)
+        activity: activeTxs.filter(t => t.source === 'Activity' || t.source === 'Game').reduce((sum, t) => sum + t.amount, 0),
+        assessment: activeTxs.filter(t => t.source === 'assessment' || (t.sourceId && t.sourceId.startsWith('pc-assessment-'))).reduce((sum, t) => sum + t.amount, 0),
+        attendance: activeTxs.filter(t => t.source === 'attendance' || (t.sourceId && t.sourceId.startsWith('attendance-'))).reduce((sum, t) => sum + t.amount, 0),
+        badge: activeTxs.filter(t => t.source === 'badge' || (t.sourceId && t.sourceId.startsWith('badge-'))).reduce((sum, t) => sum + t.amount, 0)
       };
 
       const skillCounts = {};
@@ -11117,13 +11120,15 @@
       this.notify('xp', this.state.xpTransactions);
 
       // Asynchronously synchronize with shared cloud database across devices
+      let cloudPromise = null;
       if (typeof window !== 'undefined' && window.SchoolCloudSync) {
-        window.SchoolCloudSync.saveAssessments(updatedSubmissions).catch(err => {
+        cloudPromise = window.SchoolCloudSync.saveAssessments(updatedSubmissions).catch(err => {
           console.warn('[SchoolStore] Cloud sync background error:', err);
+          return { success: false, error: err.message };
         });
       }
 
-      return { success: true, count: updatedSubmissions.length };
+      return { success: true, count: updatedSubmissions.length, cloudPromise: cloudPromise };
     }
 
     mergeCloudSubmissions(cloudArray) {
@@ -11147,10 +11152,32 @@
 
         const localSub = existingIdx !== -1 ? this.state.progressCheckSubmissions[existingIdx] : null;
 
-        const cloudTime = cloudSub.updatedAt ? new Date(cloudSub.updatedAt).getTime() : 0;
-        const localTime = (localSub && localSub.updatedAt) ? new Date(localSub.updatedAt).getTime() : 0;
+        // Content-based comparison ensures cloud state takes precedence regardless of device clock skew
+        let needsUpdate = false;
+        if (!localSub) {
+          needsUpdate = true;
+        } else {
+          const lScores = localSub.scores || {};
+          const cScores = cloudSub.scores || {};
+          const lR = (lScores.reading && lScores.reading.correct !== undefined) ? lScores.reading.correct : null;
+          const cR = (cScores.reading && cScores.reading.correct !== undefined) ? cScores.reading.correct : null;
+          const lL = (lScores.listening && lScores.listening.correct !== undefined) ? lScores.listening.correct : null;
+          const cL = (cScores.listening && cScores.listening.correct !== undefined) ? cScores.listening.correct : null;
+          const lW = (lScores.writing && lScores.writing.correct !== undefined) ? lScores.writing.correct : null;
+          const cW = (cScores.writing && cScores.writing.correct !== undefined) ? cScores.writing.correct : null;
+          const lS = (lScores.speaking && lScores.speaking.correct !== undefined) ? lScores.speaking.correct : null;
+          const cS = (cScores.speaking && cScores.speaking.correct !== undefined) ? cScores.speaking.correct : null;
 
-        if (!localSub || cloudTime >= localTime) {
+          const scoresDiff = (lR !== cR || lL !== cL || lW !== cW || lS !== cS);
+          const totalDiff = (localSub.rawTotal !== cloudSub.rawTotal);
+          const noteDiff = (localSub.notes || '') !== (cloudSub.notes || cloudSub.teacherComment || '');
+
+          if (scoresDiff || totalDiff || noteDiff) {
+            needsUpdate = true;
+          }
+        }
+
+        if (needsUpdate) {
           modified = true;
           const derivedBookId = cloudSub.bookId || (check && check.bookId) || ((student && student.grade === 'Grade 4') ? 'book-global-readings-3' : 'book-global-readings-2');
           const derivedBookTitle = cloudSub.bookTitle || (check && check.bookTitle) || ((student && student.grade === 'Grade 4') ? 'Global Readings 3' : 'Global Readings 2');
@@ -11219,8 +11246,8 @@
             student.latestProgressCheck = {
               checkId: checkId,
               title: check ? check.title : "English Adventure Progress Check",
-              book: check ? (check.bookTitle || "Global Readings 2") : "Global Readings 2",
-              unit: check ? (check.unitTitle || "Unit 1") : "Unit 1",
+              book: derivedBookTitle,
+              unit: derivedUnitTitle,
               overallScore: cloudSub.overallScore || cloudSub.accuracyPct || 0,
               rawTotal: rawTotal,
               skillScores: cloudSub.skillScores || {},
@@ -11240,7 +11267,7 @@
         this.notify('students', this.state.students);
       }
 
-      return { success: true, count: cloudArray.length, modified };
+      return { success: true, count: cloudArray.length, modified: modified };
     }
 
     deleteProgressCheckSubmission(studentId, checkId) {
@@ -11396,13 +11423,9 @@
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
 
-    // Trigger initial background cloud sync across devices
+    // Initialize continuous background cloud sync & cross-device auto-sync
     if (window.SchoolCloudSync) {
-      setTimeout(() => {
-        window.SchoolCloudSync.syncWithStore(schoolStore).catch(err => {
-          console.warn('[SchoolStore] Initial cloud sync warning:', err);
-        });
-      }, 300);
+      window.SchoolCloudSync.setupAutoSync(schoolStore);
     }
   }
   if (typeof module !== 'undefined' && module.exports) {

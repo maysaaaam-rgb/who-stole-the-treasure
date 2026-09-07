@@ -125,6 +125,10 @@
       renderNavigation();
       updateHeaderBadges();
       renderCurrentView();
+      const profModal = document.getElementById('modal-student-profile');
+      if (profModal && profModal.classList.contains('is-open') && currentProfileStudentId) {
+        openStudentDetail(currentProfileStudentId, studentProfileActiveTab);
+      }
     });
 
     // Initial render
@@ -1298,6 +1302,7 @@
     const notes = store.getTeacherNotes(studentId);
     const xpTxs = store.getXPTransactions(studentId);
     const attRecords = store.state.attendanceRecords.filter(r => r.studentId === studentId);
+    const studentAwards = store.getStudentAwards ? store.getStudentAwards(studentId) : [];
 
     const pcSubsForCount = store.getStudentProgressCheckHistory ? store.getStudentProgressCheckHistory(studentId) : [];
     const profileTabs = [
@@ -1475,6 +1480,13 @@
                   '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:10px 12px; font-size:0.82rem; line-height:1.5; color:var(--text-main);">' +
                     '<strong>Teacher Observation:</strong> ' + noteText +
                   '</div>' : '') +
+                (pcSubs.length > 1 ?
+                  '<div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-light); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
+                    '<span style="font-size:0.75rem; color:var(--text-muted);">Recorded ' + pcSubs.length + ' assessments across curriculum</span>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="switchStudentProfileTab(\'assessments\')" style="font-size:0.75rem; font-weight:800; padding:4px 10px; background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">' +
+                      '📋 View All (' + pcSubs.length + ') Assessments History ➔' +
+                    '</button>' +
+                  '</div>' : '') +
               '</div>';
           })() +
           '<!-- Dedicated Classroom Skills Breakdown -->' +
@@ -1598,20 +1610,50 @@
 
       case 'assessments':
         const pcHistory = store.getStudentProgressCheckHistory ? store.getStudentProgressCheckHistory(student.id) : [];
+        const totalAssessments = pcHistory.length;
+        const totalPCAssessmentXP = pcHistory.reduce((sum, sub) => sum + (sub.xpEarned !== undefined ? sub.xpEarned : Math.round((sub.rawTotal || 0) * 10)), 0);
+        const avgScore = totalAssessments > 0 ? (pcHistory.reduce((sum, sub) => sum + (sub.rawTotal || 0), 0) / totalAssessments).toFixed(1) : 0;
+        const avgPct = totalAssessments > 0 ? Math.round((avgScore / 40) * 100) : 0;
+
         return '' +
-          // 1. Four-Skill Assessments Section
+          // 1. Centralized All-Assessments Summary Banner
+          '<div style="background:linear-gradient(135deg, #f0fdf4, #eff6ff); border:1px solid #bbf7d0; border-radius:14px; padding:16px; margin-bottom:18px; box-shadow:0 2px 8px rgba(16,185,129,0.08);">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">' +
+              '<div>' +
+                '<div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; color:#065f46; letter-spacing:0.5px;">CENTRALIZED FOUR-SKILL ASSESSMENT HISTORY</div>' +
+                '<div style="font-size:1.15rem; font-weight:900; color:var(--text-main); margin-top:2px;">All Curriculum Units &amp; Historical Progress Checks</div>' +
+              '</div>' +
+              '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="font-size:0.78rem; padding:6px 14px; font-weight:800; background:#059669; border-color:#047857;">' +
+                '✏️ Open Whole-Class Gradebook ➔' +
+              '</button>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; text-align:center;">' +
+              '<div style="background:#fff; border:1px solid #d1fae5; border-radius:10px; padding:10px;">' +
+                '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL ASSESSMENTS</div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#065f46;">' + totalAssessments + '</div>' +
+              '</div>' +
+              '<div style="background:#fff; border:1px solid #bfdbfe; border-radius:10px; padding:10px;">' +
+                '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CUMULATIVE AVERAGE</div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#1e40af;">' + (totalAssessments > 0 ? (avgScore + ' / 40') : '—') + ' <span style="font-size:0.78rem; font-weight:700;">(' + avgPct + '%)</span></div>' +
+              '</div>' +
+              '<div style="background:#fff; border:1px solid #e9d5ff; border-radius:10px; padding:10px;">' +
+                '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL ASSESSMENT XP</div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#7e22ce;">+' + totalPCAssessmentXP.toLocaleString() + ' ⭐ XP</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          // 2. Four-Skill Assessments Section
           '<div style="margin-bottom:24px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">' +
               '<h4 style="font-weight:900; font-size:1.05rem; margin:0; display:flex; align-items:center; gap:8px;">' +
-                '<span>🎯</span> <span>Four-Skill Assessments (' + pcHistory.length + ')</span>' +
+                '<span>🎯</span> <span>Completed Assessments (' + pcHistory.length + ')</span>' +
               '</h4>' +
-              '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\'); }" style="font-size:0.75rem; padding:5px 12px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">' +
-                '✏️ Open Gradebook' +
-              '</button>' +
             '</div>' +
             (pcHistory.length === 0 ?
-              '<div style="background:var(--bg-canvas); border:1px dashed var(--border-light); border-radius:12px; padding:20px; text-align:center; color:var(--text-muted); font-size:0.85rem;">' +
-                'No Four-Skill assessments recorded yet for ' + student.firstName + '.' +
+              '<div style="background:var(--bg-canvas); border:1px dashed var(--border-light); border-radius:12px; padding:24px; text-align:center; color:var(--text-muted); font-size:0.88rem;">' +
+                'No Four-Skill assessments recorded yet for ' + student.firstName + ' across any book or unit.<br>' +
+                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="margin-top:10px; font-size:0.8rem;">✏️ Open Gradebook to Enter Scores</button>' +
               '</div>' :
               '<div style="display:flex; flex-direction:column; gap:12px;">' +
                 pcHistory.map(sub => {
@@ -1626,22 +1668,31 @@
                   const xp = (sub.xpEarned !== undefined) ? sub.xpEarned : Math.round(rawTotal * 10);
                   const mastery = sub.mastery || (rawTotal >= 34 ? 'Strong' : rawTotal >= 28 ? 'Secure' : rawTotal >= 20 ? 'Developing' : 'Needs Support');
                   const note = sub.notes || sub.teacherComment || '';
+                  const bTitle = sub.bookTitle || (check ? check.bookTitle : 'Global Readings 2');
+                  const uTitle = sub.unitTitle || (check ? check.unitTitle : 'Unit 1');
+                  const targetClassId = sub.classId || student.classId || 'class-3a';
 
                   return '' +
                     '<div style="background:#fff; border:1px solid var(--border-light); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow-sm);">' +
                       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
                         '<div>' +
-                          '<div style="font-size:0.98rem; font-weight:900; color:var(--text-main);">' +
-                            (check ? check.title : 'Unit Assessment') +
+                          '<div style="display:flex; align-items:center; gap:8px;">' +
+                            '<span style="font-size:0.72rem; font-weight:900; background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:6px;">' + bTitle + '</span>' +
+                            '<span style="font-size:0.72rem; font-weight:800; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:6px;">' + uTitle + '</span>' +
+                          '</div>' +
+                          '<div style="font-size:1rem; font-weight:900; color:var(--text-main); margin-top:4px;">' +
+                            (check ? check.title : 'Unit 4-Skill Progress Check') +
                           '</div>' +
                           '<div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">' +
-                            (check ? (check.bookTitle || 'Global Readings 2') + ' · ' + (check.unitTitle || 'Unit 1') + ' · ' : '') +
-                            (sub.displayDate || sub.date || 'September 2026') +
+                            'Recorded: ' + (sub.displayDate || sub.date || 'September 2026') +
                           '</div>' +
                         '</div>' +
                         '<div style="display:flex; align-items:center; gap:8px;">' +
                           '<span class="badge" style="background:' + (mastery === 'Strong' ? '#d1fae5; color:#065f46;' : mastery === 'Secure' ? '#dbeafe; color:#1e40af;' : '#fef3c7; color:#92400e;') + ' font-size:0.72rem; font-weight:800;">' + mastery + '</span>' +
                           '<span style="background:#f3e8ff; color:#7e22ce; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:8px; border:1px solid #e9d5ff;">+' + xp + ' XP</span>' +
+                          '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + targetClassId + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="font-size:0.72rem; padding:4px 8px; font-weight:700;">' +
+                            '✏️ Edit in Gradebook' +
+                          '</button>' +
                         '</div>' +
                       '</div>' +
                       '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(90px, 1fr)); gap:6px; font-size:0.78rem; margin-bottom:10px;">' +
@@ -1663,7 +1714,7 @@
                         '</div>' +
                         '<div style="background:#eff6ff; padding:6px 8px; border-radius:6px; text-align:center; border:1px solid #bfdbfe;">' +
                           '<div style="color:#1e40af; font-size:0.68rem; font-weight:800;">TOTAL</div>' +
-                          '<div style="font-weight:900; font-size:0.95rem; color:#1d4ed8;">' + rawTotal + ' / ' + maxTotal + '</div>' +
+                          '<div style="font-weight:900; font-size:0.95rem; color:#1d4ed8;">' + rawTotal + ' / ' + maxTotal + ' (' + Math.round((rawTotal / maxTotal) * 100) + '%)</div>' +
                         '</div>' +
                       '</div>' +
                       (note ?
@@ -1784,12 +1835,15 @@
           '<!-- Points Report Breakdown Banner -->' +
           '<div style="background:var(--bg-muted); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
             '<div>' +
-              '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); margin-bottom:4px;">Points Breakdown by Category</div>' +
-              '<div style="display:flex; gap:10px; font-size:0.78rem;">' +
-                '<span style="color:#059669; font-weight:700;">⭐ Positive: +' + xpReport.categoryBreakdown.positive + '</span>' +
-                '<span style="color:#dc2626; font-weight:700;">💭 Needs Work: -' + xpReport.categoryBreakdown.needs_work + '</span>' +
-                '<span style="color:#7c3aed; font-weight:700;">🎁 Redeemed: -' + xpReport.categoryBreakdown.redeemed + '</span>' +
+              '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">Points Breakdown by Category</div>' +
+              '<div style="display:flex; gap:12px; font-size:0.78rem; flex-wrap:wrap;">' +
+                '<span style="color:#7c3aed; font-weight:700;">📊 Assessments: +' + (xpReport.categoryBreakdown.assessment || 0) + '</span>' +
+                '<span style="color:#059669; font-weight:700;">⭐ Positive Skills: +' + xpReport.categoryBreakdown.positive + '</span>' +
                 '<span style="color:#2563eb; font-weight:700;">🎮 Quests: +' + xpReport.categoryBreakdown.activity + '</span>' +
+                '<span style="color:#b45309; font-weight:700;">🏆 Badges: +' + (xpReport.categoryBreakdown.badge || 0) + '</span>' +
+                '<span style="color:#0284c7; font-weight:700;">📅 Attendance: +' + (xpReport.categoryBreakdown.attendance || 0) + '</span>' +
+                '<span style="color:#dc2626; font-weight:700;">💭 Needs Work: -' + xpReport.categoryBreakdown.needs_work + '</span>' +
+                '<span style="color:#6b7280; font-weight:700;">🎁 Redeemed: -' + xpReport.categoryBreakdown.redeemed + '</span>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex; gap:8px;">' +
