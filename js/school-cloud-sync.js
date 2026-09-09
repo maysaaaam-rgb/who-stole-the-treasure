@@ -14,21 +14,18 @@
 (function(root) {
   'use strict';
 
-  // Primary shared cloud database endpoint (Live REST Cloud DB with CORS: *)
-  const DEFAULT_CLOUD_BIN_ID = 'dfafbcb';
-  const DEFAULT_PRIMARY_ENDPOINT = 'https://extendsclass.com/api/json-storage/bin/' + DEFAULT_CLOUD_BIN_ID;
+  // Primary shared cloud database endpoint (Live REST Cloud DB with full CORS: *)
+  const DEFAULT_CLOUD_OBJECT_ID = 'ff808181a067127101a08749b02a5ae2';
+  const DEFAULT_PRIMARY_ENDPOINT = 'https://api.restful-api.dev/objects/' + DEFAULT_CLOUD_OBJECT_ID;
   
-  // Secondary / fallback REST mirror endpoint
-  const DEFAULT_BACKUP_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08749b02a5ae2';
-
   const LOCAL_CACHE_KEY = 'eaa_cloud_master_cache_v2';
   const SETTINGS_KEY = 'eaa_cloud_sync_endpoint_v2';
 
   class SchoolCloudSyncService {
     constructor() {
       this.endpoint = this.getStoredEndpoint() || DEFAULT_PRIMARY_ENDPOINT;
-      this.backupEndpoint = DEFAULT_BACKUP_ENDPOINT;
-      this.projectId = 'eaa-prod-cloud-db-' + DEFAULT_CLOUD_BIN_ID;
+      this.backupEndpoint = null;
+      this.projectId = 'eaa-prod-cloud-db-' + DEFAULT_CLOUD_OBJECT_ID;
       this.isSyncing = false;
       this.lastSyncTime = null;
       this.lastSyncStatus = 'idle'; // 'idle' | 'syncing' | 'success' | 'error'
@@ -43,6 +40,11 @@
       try {
         if (typeof localStorage !== 'undefined') {
           const stored = localStorage.getItem(SETTINGS_KEY);
+          // Purge legacy endpoints with CORS issues
+          if (stored && stored.includes('extendsclass.com')) {
+            localStorage.removeItem(SETTINGS_KEY);
+            return null;
+          }
           if (stored && stored.trim()) {
             return stored.trim();
           }
@@ -160,18 +162,9 @@
       this.notify();
 
       try {
-        const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
-        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
+        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
 
-        const response = await fetch(fetchUrl, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
-        });
+        const response = await fetch(fetchUrl);
 
         if (!response.ok) {
           throw new Error('Database GET returned HTTP ' + response.status + ' (' + response.statusText + ')');
@@ -229,6 +222,10 @@
         updatedBy: deviceIdentifier
       });
 
+      const bodyContent = this.endpoint.includes('api.restful-api.dev')
+        ? JSON.stringify({ name: 'English Adventure Academy Production DB', data: payload })
+        : JSON.stringify(payload);
+
       let putRes = null;
       let lastErr = null;
       let attempts = 0;
@@ -238,12 +235,10 @@
         try {
           putRes = await fetch(this.endpoint, {
             method: 'PUT',
-            cache: 'no-store',
             headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload)
+            body: bodyContent
           });
           if (putRes.ok) break;
           lastErr = new Error('Database PUT returned HTTP ' + putRes.status);
