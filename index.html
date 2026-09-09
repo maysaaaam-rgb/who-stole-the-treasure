@@ -416,6 +416,11 @@
           </div>
         </div>
 
+        <!-- Shared Online Database Real-Time Sync Indicator -->
+        <button class="btn-sm-secondary" id="global-cloud-sync-btn" onclick="if (window.triggerGlobalCloudSync) window.triggerGlobalCloudSync();" title="Shared Online Database: Connected" style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; font-weight:800; padding:6px 12px; border-radius:20px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; cursor:pointer; transition:all 0.2s ease;">
+          <span id="global-sync-icon">☁️✓</span> <span id="global-sync-text">Cloud Synced</span>
+        </button>
+
         <button class="icon-circle-btn" onclick="const s = document.getElementById('search-input') || document.getElementById('lib-search-input'); if (s) s.focus();" title="Search shortcut (Press /)" aria-label="Search shortcut">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/>

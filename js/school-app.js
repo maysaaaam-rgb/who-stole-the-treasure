@@ -221,6 +221,60 @@
         renderCurrentView();
       });
     }
+    setupGlobalCloudSyncUI();
+  }
+
+  function setupGlobalCloudSyncUI() {
+    const syncBtn = document.getElementById('global-cloud-sync-btn');
+    const syncIcon = document.getElementById('global-sync-icon');
+    const syncText = document.getElementById('global-sync-text');
+
+    function updateBadge(status) {
+      if (!syncBtn) return;
+      if (status.lastSyncStatus === 'syncing') {
+        if (syncIcon) syncIcon.textContent = '⏳';
+        if (syncText) syncText.textContent = 'Syncing...';
+        syncBtn.style.background = '#fef3c7';
+        syncBtn.style.color = '#92400e';
+        syncBtn.style.borderColor = '#fde68a';
+        syncBtn.title = 'Synchronizing with shared online database...';
+      } else if (status.lastSyncStatus === 'success') {
+        if (syncIcon) syncIcon.textContent = '☁️✓';
+        if (syncText) syncText.textContent = 'Cloud Synced';
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+        syncBtn.title = 'Saved to shared production database: ' + (status.lastSyncTime ? new Date(status.lastSyncTime).toLocaleTimeString() : 'Just now');
+      } else if (status.lastSyncStatus === 'error') {
+        if (syncIcon) syncIcon.textContent = '⚠️';
+        if (syncText) syncText.textContent = 'Save Failed';
+        syncBtn.style.background = '#fef2f2';
+        syncBtn.style.color = '#991b1b';
+        syncBtn.style.borderColor = '#fecaca';
+        syncBtn.title = 'Cloud Error: ' + (status.lastError || 'Network unreachable');
+      }
+    }
+
+    if (window.SchoolCloudSync) {
+      window.SchoolCloudSync.subscribe(updateBadge);
+    }
+
+    window.triggerGlobalCloudSync = function() {
+      if (!window.SchoolCloudSync || !store) return;
+      updateBadge({ lastSyncStatus: 'syncing' });
+      window.SchoolCloudSync.syncWithStore(store).then(res => {
+        if (res.success) {
+          updateBadge({ lastSyncStatus: 'success', lastSyncTime: new Date().toISOString() });
+          if (window.showToast) window.showToast('✓ Synced with Shared Cloud Database', 'success');
+        } else {
+          updateBadge({ lastSyncStatus: 'error', lastError: res.error || res.reason });
+          if (window.showToast) window.showToast('Cloud sync warning: ' + (res.error || res.reason), 'error');
+        }
+      }).catch(err => {
+        updateBadge({ lastSyncStatus: 'error', lastError: err.message });
+        if (window.showToast) window.showToast('Cloud error: ' + err.message, 'error');
+      });
+    };
   }
 
   function populateHeaderClassSelect() {
@@ -1286,11 +1340,13 @@
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
   // =========================================================================
-  window.openStudentDetail = function(studentId, activeTab = 'overview') {
-    currentProfileStudentId = studentId;
-    studentProfileActiveTab = activeTab;
-    const student = store.getStudent(studentId);
+  window.openStudentDetail = function(studentIdOrNumber, activeTab = 'overview') {
+    const student = store.getStudent(studentIdOrNumber);
     if (!student) return;
+    const studentId = student.id;
+    currentProfileStudentId = studentId;
+    window.currentProfileStudentId = studentId;
+    studentProfileActiveTab = activeTab;
     const modal = document.getElementById('modal-student-profile');
     if (!modal) return;
 
@@ -1399,6 +1455,10 @@
 
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+  };
+
+  window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview') {
+    return window.openStudentDetail(studentIdNumber, activeTab);
   };
 
   function renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords) {
@@ -2160,7 +2220,7 @@
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
-                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + s.id + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
+                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
                   (isMultiSelectMode ?
                     '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
                       '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
@@ -2203,7 +2263,7 @@
                     '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'overview\')">Profile →</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')">Profile →</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +

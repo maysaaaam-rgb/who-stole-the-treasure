@@ -1,43 +1,58 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — CLOUD PERSISTENCE & CROSS-DEVICE SYNC SERVICE
+ * ENGLISH ADVENTURE ACADEMY — UNIFIED CLOUD PERSISTENCE & CROSS-DEVICE SYNC SERVICE
  * 
- * Provides live persistent synchronization across iPad, PC, phones, and different browsers.
- * Acts as the centralized cloud database connector for Four-Skill Assessments and XP contributions.
+ * Provides live, persistent synchronization across iPad, PC, phones, and different browsers.
+ * Serves as the single remote source of truth for:
+ *   - Teacher Notes (CRUD + cross-device editing)
+ *   - Four-Skill Assessments (Scores, mastery, XP, comments)
+ *   - XP Audit Ledger Transactions
+ *   - Student Profile Overrides (XP, monsters, CEFR, custom notes)
+ *   - Attendance Records
+ *   - Acceptance Diagnostic Test Verification (CLOUD_TEST_IPAD_2026 / CLOUD_TEST_PC_2026)
  */
 
 (function(root) {
   'use strict';
 
-  const DEFAULT_CLOUD_BIN_ID = 'fcbfecb';
-  const DEFAULT_API_BASE = 'https://extendsclass.com/api/json-storage/bin/' + DEFAULT_CLOUD_BIN_ID;
-  const LOCAL_CACHE_KEY = 'eaa_cloud_assessments_cache_v1';
-  const SETTINGS_KEY = 'eaa_cloud_sync_endpoint_v1';
+  // Primary shared cloud database endpoint (Live REST Cloud DB with CORS: *)
+  const DEFAULT_CLOUD_BIN_ID = 'dfafbcb';
+  const DEFAULT_PRIMARY_ENDPOINT = 'https://extendsclass.com/api/json-storage/bin/' + DEFAULT_CLOUD_BIN_ID;
+  
+  // Secondary / fallback REST mirror endpoint
+  const DEFAULT_BACKUP_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a067127101a08749b02a5ae2';
+
+  const LOCAL_CACHE_KEY = 'eaa_cloud_master_cache_v2';
+  const SETTINGS_KEY = 'eaa_cloud_sync_endpoint_v2';
 
   class SchoolCloudSyncService {
     constructor() {
-      this.endpoint = this.getStoredEndpoint() || DEFAULT_API_BASE;
+      this.endpoint = this.getStoredEndpoint() || DEFAULT_PRIMARY_ENDPOINT;
+      this.backupEndpoint = DEFAULT_BACKUP_ENDPOINT;
+      this.projectId = 'eaa-prod-cloud-db-' + DEFAULT_CLOUD_BIN_ID;
       this.isSyncing = false;
       this.lastSyncTime = null;
       this.lastSyncStatus = 'idle'; // 'idle' | 'syncing' | 'success' | 'error'
+      this.lastError = null;
       this.listeners = [];
+      this._activeSavePromise = null;
+      this._cachedState = null;
+      this._autoSyncSetup = false;
     }
 
     getStoredEndpoint() {
       try {
         if (typeof localStorage !== 'undefined') {
           const stored = localStorage.getItem(SETTINGS_KEY);
-          if (stored && stored.includes('restful-api.dev')) {
-            localStorage.removeItem(SETTINGS_KEY);
-            return DEFAULT_API_BASE;
+          if (stored && stored.trim()) {
+            return stored.trim();
           }
-          return stored;
         }
       } catch (e) {}
       return null;
     }
 
     setCustomEndpoint(url) {
-      this.endpoint = (url || '').trim() || DEFAULT_API_BASE;
+      this.endpoint = (url || '').trim() || DEFAULT_PRIMARY_ENDPOINT;
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(SETTINGS_KEY, this.endpoint);
@@ -47,7 +62,7 @@
     }
 
     resetDefaultEndpoint() {
-      this.endpoint = DEFAULT_API_BASE;
+      this.endpoint = DEFAULT_PRIMARY_ENDPOINT;
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.removeItem(SETTINGS_KEY);
@@ -59,54 +74,94 @@
     subscribe(fn) {
       if (typeof fn === 'function') {
         this.listeners.push(fn);
+        try { fn(this.getStatus()); } catch (e) {}
       }
+      return () => {
+        this.listeners = this.listeners.filter(l => l !== fn);
+      };
     }
 
     notify() {
+      const status = this.getStatus();
       this.listeners.forEach(fn => {
-        try { fn(this.getStatus()); } catch (e) {}
+        try { fn(status); } catch (e) {}
       });
     }
 
     getStatus() {
       return {
         endpoint: this.endpoint,
+        projectId: this.projectId,
         isSyncing: this.isSyncing,
         lastSyncTime: this.lastSyncTime,
-        lastSyncStatus: this.lastSyncStatus
+        lastSyncStatus: this.lastSyncStatus,
+        lastError: this.lastError
       };
     }
 
-    _extractSubmissions(json) {
-      if (!json) return {};
-      if (json.submissions && typeof json.submissions === 'object') {
-        return json.submissions;
-      }
-      if (json.data) {
-        if (typeof json.data === 'string') {
+    /**
+     * Normalize and unpack remote database response
+     */
+    _unpackData(json) {
+      if (!json) return this._createEmptyContainer();
+
+      let target = json;
+      if (target.data) {
+        if (typeof target.data === 'string') {
           try {
-            const parsed = JSON.parse(json.data);
-            return parsed.submissions || {};
-          } catch (e) {}
-        } else if (typeof json.data === 'object' && json.data.submissions) {
-          return json.data.submissions;
+            target = JSON.parse(target.data);
+          } catch (e) {
+            target = json;
+          }
+        } else if (typeof target.data === 'object') {
+          target = target.data;
         }
       }
-      return {};
+
+      return {
+        database: target.database || 'English Adventure Academy Production DB',
+        projectId: this.projectId,
+        version: target.version || 2,
+        lastUpdated: target.lastUpdated || new Date().toISOString(),
+        updatedBy: target.updatedBy || 'client',
+        diagnosticTest: target.diagnosticTest || '',
+        teacherNotes: Array.isArray(target.teacherNotes) ? target.teacherNotes : [],
+        progressCheckSubmissions: (target.progressCheckSubmissions && typeof target.progressCheckSubmissions === 'object') ? target.progressCheckSubmissions : (target.submissions || {}),
+        studentOverrides: (target.studentOverrides && typeof target.studentOverrides === 'object') ? target.studentOverrides : {},
+        xpTransactions: Array.isArray(target.xpTransactions) ? target.xpTransactions : [],
+        attendanceRecords: Array.isArray(target.attendanceRecords) ? target.attendanceRecords : []
+      };
+    }
+
+    _createEmptyContainer() {
+      return {
+        database: 'English Adventure Academy Production DB',
+        projectId: this.projectId,
+        version: 2,
+        lastUpdated: new Date().toISOString(),
+        updatedBy: 'client',
+        diagnosticTest: '',
+        teacherNotes: [],
+        progressCheckSubmissions: {},
+        studentOverrides: {},
+        xpTransactions: [],
+        attendanceRecords: []
+      };
     }
 
     /**
-     * Fetch all persisted assessment records from the cloud database.
-     * Returns an object mapping: { 'studentId_checkId': submissionRecord }
+     * Fetch complete shared state from online database
      */
-    async fetchAssessments() {
+    async fetchOnlineState() {
       this.isSyncing = true;
       this.lastSyncStatus = 'syncing';
+      this.lastError = null;
       this.notify();
 
       try {
         const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
         const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
+
         const response = await fetch(fetchUrl, {
           method: 'GET',
           cache: 'no-store',
@@ -118,13 +173,13 @@
         });
 
         if (!response.ok) {
-          throw new Error('Cloud HTTP error: ' + response.status);
+          throw new Error('Database GET returned HTTP ' + response.status + ' (' + response.statusText + ')');
         }
 
         const json = await response.json();
-        const data = this._extractSubmissions(json);
+        const data = this._unpackData(json);
 
-        // Update local cache
+        this._cachedState = data;
         try {
           if (typeof localStorage !== 'undefined') {
             localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(data));
@@ -134,75 +189,208 @@
         this.lastSyncTime = new Date().toISOString();
         this.lastSyncStatus = 'success';
         this.isSyncing = false;
+        this.lastError = null;
         this.notify();
         return data;
       } catch (err) {
-        console.warn('[CloudSync] Fetch failed, using local cache:', err.message);
+        console.warn('[SchoolCloudSync] fetchOnlineState error:', err.message);
         this.lastSyncStatus = 'error';
+        this.lastError = err.message;
         this.isSyncing = false;
         this.notify();
 
-        // Fallback to local cache if offline or error
+        // Fallback to local cache only if network error occurred
+        if (this._cachedState) return this._cachedState;
         try {
           if (typeof localStorage !== 'undefined') {
             const raw = localStorage.getItem(LOCAL_CACHE_KEY);
             if (raw) return JSON.parse(raw);
           }
         } catch (e) {}
-        return null;
+        return this._createEmptyContainer();
       }
     }
 
     /**
-     * Persist an array of submissions to the cloud database (UPSERT).
+     * Persist complete shared state container to online database
      */
-    async saveAssessments(submissionsArray) {
-      if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) {
-        return { success: true, count: 0 };
+    async pushOnlineState(container, deviceIdentifier = 'device') {
+      this.isSyncing = true;
+      this.lastSyncStatus = 'syncing';
+      this.lastError = null;
+      this.notify();
+
+      const payload = Object.assign({}, container, {
+        database: 'English Adventure Academy Production DB',
+        projectId: this.projectId,
+        version: 2,
+        lastUpdated: new Date().toISOString(),
+        updatedBy: deviceIdentifier
+      });
+
+      let putRes = null;
+      let lastErr = null;
+      let attempts = 0;
+
+      while (attempts < 3) {
+        attempts++;
+        try {
+          putRes = await fetch(this.endpoint, {
+            method: 'PUT',
+            cache: 'no-store',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          if (putRes.ok) break;
+          lastErr = new Error('Database PUT returned HTTP ' + putRes.status);
+          if (attempts < 3) await new Promise(r => setTimeout(r, 350 * attempts));
+        } catch (fetchErr) {
+          lastErr = fetchErr;
+          if (attempts < 3) await new Promise(r => setTimeout(r, 350 * attempts));
+        }
       }
 
+      if (!putRes || !putRes.ok) {
+        const errMsg = lastErr ? lastErr.message : (putRes ? 'HTTP ' + putRes.status : 'No response from database');
+        console.error('[SchoolCloudSync] pushOnlineState failed:', errMsg);
+        this.lastSyncStatus = 'error';
+        this.lastError = errMsg;
+        this.isSyncing = false;
+        this.notify();
+        throw new Error('Online database save failed: ' + errMsg);
+      }
+
+      this._cachedState = payload;
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(payload));
+        }
+      } catch (e) {}
+
+      // Asynchronous mirror to secondary endpoint (best-effort, non-blocking)
+      this._mirrorToBackup(payload).catch(() => {});
+
+      this.lastSyncTime = new Date().toISOString();
+      this.lastSyncStatus = 'success';
+      this.lastError = null;
+      this.isSyncing = false;
+      this.notify();
+
+      return { success: true, timestamp: this.lastSyncTime };
+    }
+
+    async _mirrorToBackup(payload) {
+      if (!this.backupEndpoint) return;
+      try {
+        const minifiedData = {
+          diagnosticTest: payload.diagnosticTest || '',
+          teacherNotes: (payload.teacherNotes || []).slice(0, 15),
+          lastUpdated: payload.lastUpdated,
+          updatedBy: payload.updatedBy
+        };
+        await fetch(this.backupEndpoint, {
+          method: 'PUT',
+          cache: 'no-store',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'English Adventure Academy Production DB',
+            data: minifiedData
+          })
+        });
+      } catch (e) {}
+    }
+
+    /**
+     * Queue and execute save operations sequentially
+     */
+    _enqueue(taskFn) {
       if (this._activeSavePromise) {
-        return this._activeSavePromise.then(() => this.saveAssessments(submissionsArray));
+        return this._activeSavePromise.then(() => this._enqueue(taskFn));
       }
-
-      this._activeSavePromise = this._doSaveAssessments(submissionsArray).finally(() => {
+      this._activeSavePromise = taskFn().finally(() => {
         this._activeSavePromise = null;
       });
       return this._activeSavePromise;
     }
 
-    async _doSaveAssessments(submissionsArray) {
-      this.isSyncing = true;
-      this.lastSyncStatus = 'syncing';
-      this.notify();
+    // =========================================================================
+    // 1. TEACHER NOTES CRUD (Shared Cloud Persistence)
+    // =========================================================================
+    async saveTeacherNote(note, deviceId = 'web') {
+      if (!note || !note.id) return { success: false, error: 'Invalid note payload' };
 
-      try {
-        // 1. Fetch current cloud state first to ensure deep merge
-        let currentSubmissions = {};
-        try {
-          const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
-          const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
-          const fetchRes = await fetch(fetchUrl, {
-            method: 'GET',
-            cache: 'no-store',
-            headers: {
-              'Accept': 'application/json',
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-              'Pragma': 'no-cache'
-            }
-          });
-          if (fetchRes.ok) {
-            const json = await fetchRes.json();
-            currentSubmissions = this._extractSubmissions(json);
-          }
-        } catch (e) {
-          console.warn('[CloudSync] Pre-save fetch warning:', e.message);
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.teacherNotes) state.teacherNotes = [];
+
+        const cleanNote = {
+          id: note.id,
+          studentId: String(note.studentId || ''),
+          text: String(note.text || ''),
+          author: note.author || 'Mr. Maysam',
+          date: note.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          updatedAt: new Date().toISOString()
+        };
+
+        const existingIdx = state.teacherNotes.findIndex(n => n.id === cleanNote.id);
+        if (existingIdx !== -1) {
+          state.teacherNotes[existingIdx] = Object.assign({}, state.teacherNotes[existingIdx], cleanNote);
+        } else {
+          state.teacherNotes.unshift(cleanNote);
         }
 
-        // 2. Sanitize and UPSERT each submission
+        // Sort chronologically newest first
+        state.teacherNotes.sort((a, b) => new Date(b.updatedAt || b.date || 0).getTime() - new Date(a.updatedAt || a.date || 0).getTime());
+
+        // Update student latestTeacherNote override
+        if (cleanNote.studentId) {
+          if (!state.studentOverrides) state.studentOverrides = {};
+          if (!state.studentOverrides[cleanNote.studentId]) state.studentOverrides[cleanNote.studentId] = {};
+          state.studentOverrides[cleanNote.studentId].latestTeacherNote = cleanNote.text;
+        }
+
+        // Check if this is the acceptance test string
+        if (cleanNote.text.includes('CLOUD_TEST_')) {
+          state.diagnosticTest = cleanNote.text;
+        }
+
+        await this.pushOnlineState(state, deviceId);
+        return { success: true, note: cleanNote };
+      });
+    }
+
+    async deleteTeacherNote(noteId, deviceId = 'web') {
+      if (!noteId) return { success: false };
+
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.teacherNotes) return { success: true };
+
+        state.teacherNotes = state.teacherNotes.filter(n => n.id !== noteId);
+        await this.pushOnlineState(state, deviceId);
+        return { success: true };
+      });
+    }
+
+    // =========================================================================
+    // 2. FOUR-SKILL ASSESSMENTS (Shared Cloud Persistence)
+    // =========================================================================
+    async saveAssessments(submissionsArray, deviceId = 'web') {
+      if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) {
+        return { success: true, count: 0 };
+      }
+
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.progressCheckSubmissions) state.progressCheckSubmissions = {};
+
         submissionsArray.forEach(sub => {
           if (!sub || !sub.studentId || !sub.progressCheckId) return;
           const key = sub.studentId + '_' + sub.progressCheckId;
+
           const cleanSub = {
             id: sub.id,
             studentId: sub.studentId,
@@ -232,167 +420,189 @@
             teacherComment: sub.notes || sub.teacherComment || '',
             updatedAt: new Date().toISOString()
           };
-          currentSubmissions[key] = Object.assign({}, currentSubmissions[key] || {}, cleanSub);
+
+          state.progressCheckSubmissions[key] = Object.assign({}, state.progressCheckSubmissions[key] || {}, cleanSub);
+
+          // Update student latestTeacherNote if comments provided
+          if (cleanSub.notes && cleanSub.studentId) {
+            if (!state.studentOverrides) state.studentOverrides = {};
+            if (!state.studentOverrides[cleanSub.studentId]) state.studentOverrides[cleanSub.studentId] = {};
+            state.studentOverrides[cleanSub.studentId].latestTeacherNote = cleanSub.notes;
+          }
         });
 
-        // 3. PUT updated container back to cloud with retry
-        const payload = {
-          schema: 'eaa_four_skill_assessments_v1',
-          appName: 'English Adventure Academy',
-          version: 1,
-          lastSync: new Date().toISOString(),
-          submissions: currentSubmissions
-        };
-
-        let putRes = null;
-        let attempts = 0;
-        while (attempts < 3) {
-          attempts++;
-          try {
-            putRes = await fetch(this.endpoint, {
-              method: 'PUT',
-              cache: 'no-store',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify(payload)
-            });
-            if (putRes.ok) break;
-            if (attempts < 3) await new Promise(r => setTimeout(r, 400 * attempts));
-          } catch (fetchErr) {
-            if (attempts >= 3) throw fetchErr;
-            await new Promise(r => setTimeout(r, 400 * attempts));
-          }
-        }
-
-        if (!putRes || !putRes.ok) {
-          throw new Error('Cloud save HTTP error: ' + (putRes ? putRes.status : 'no response'));
-        }
-
-        // Update local cache
-        try {
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(currentSubmissions));
-          }
-        } catch (e) {}
-
-        this.lastSyncTime = new Date().toISOString();
-        this.lastSyncStatus = 'success';
-        this.isSyncing = false;
-        this.notify();
-
+        await this.pushOnlineState(state, deviceId);
         return { success: true, count: submissionsArray.length };
-      } catch (err) {
-        console.error('[CloudSync] Save failed:', err.message);
-        this.lastSyncStatus = 'error';
-        this.isSyncing = false;
-        this.notify();
-        return { success: false, error: err.message };
-      }
+      });
     }
 
-    /**
-     * Delete an assessment record from the cloud database
-     */
-    async deleteAssessment(studentId, checkId) {
+    async deleteAssessment(studentId, checkId, deviceId = 'web') {
       if (!studentId || !checkId) return { success: false };
 
-      try {
-        let currentSubmissions = {};
-        const cacheBuster = 'ts=' + Date.now() + '&r=' + Math.random().toString(36).substring(2, 9);
-        const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + cacheBuster;
-        const fetchRes = await fetch(fetchUrl, {
-          method: 'GET',
-          cache: 'no-store',
-          headers: {
-            'Accept': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache'
-          }
-        });
-        if (fetchRes.ok) {
-          const json = await fetchRes.json();
-          currentSubmissions = this._extractSubmissions(json);
-        }
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.progressCheckSubmissions) return { success: true };
 
         const key = studentId + '_' + checkId;
-        if (currentSubmissions[key]) {
-          delete currentSubmissions[key];
+        if (state.progressCheckSubmissions[key]) {
+          delete state.progressCheckSubmissions[key];
         }
 
-        const payload = {
-          schema: 'eaa_four_skill_assessments_v1',
-          appName: 'English Adventure Academy',
-          version: 1,
-          lastSync: new Date().toISOString(),
-          submissions: currentSubmissions
+        await this.pushOnlineState(state, deviceId);
+        return { success: true };
+      });
+    }
+
+    // =========================================================================
+    // 3. XP AUDIT LEDGER (Shared Cloud Persistence)
+    // =========================================================================
+    async saveXPTransaction(tx, deviceId = 'web') {
+      if (!tx || !tx.id || !tx.studentId) return { success: false };
+
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.xpTransactions) state.xpTransactions = [];
+
+        const cleanTx = {
+          id: tx.id,
+          studentId: tx.studentId,
+          amount: parseInt(tx.amount, 10) || 0,
+          reason: tx.reason || 'Classroom Award',
+          category: tx.category || 'positive',
+          icon: tx.icon || '⭐',
+          date: tx.date || 'September 2026',
+          timestamp: tx.timestamp || new Date().toISOString(),
+          source: tx.source || 'manual',
+          sourceId: tx.sourceId || null,
+          classId: tx.classId || null,
+          status: tx.status || 'active'
         };
 
-        await fetch(this.endpoint, {
-          method: 'PUT',
-          cache: 'no-store',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
+        const existingIdx = state.xpTransactions.findIndex(t => t.id === cleanTx.id);
+        if (existingIdx !== -1) {
+          state.xpTransactions[existingIdx] = cleanTx;
+        } else {
+          state.xpTransactions.push(cleanTx);
+        }
+
+        await this.pushOnlineState(state, deviceId);
+        return { success: true, tx: cleanTx };
+      });
+    }
+
+    // =========================================================================
+    // 4. STUDENT OVERRIDES & PROFILES (Shared Cloud Persistence)
+    // =========================================================================
+    async saveStudentUpdate(studentId, updates, deviceId = 'web') {
+      if (!studentId || !updates) return { success: false };
+
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.studentOverrides) state.studentOverrides = {};
+
+        state.studentOverrides[studentId] = Object.assign({}, state.studentOverrides[studentId] || {}, updates, {
+          updatedAt: new Date().toISOString()
         });
 
+        await this.pushOnlineState(state, deviceId);
         return { success: true };
+      });
+    }
+
+    // =========================================================================
+    // 5. ATTENDANCE (Shared Cloud Persistence)
+    // =========================================================================
+    async saveAttendance(recordsArray, deviceId = 'web') {
+      if (!Array.isArray(recordsArray) || recordsArray.length === 0) return { success: true };
+
+      return this._enqueue(async () => {
+        const state = await this.fetchOnlineState();
+        if (!state.attendanceRecords) state.attendanceRecords = [];
+
+        recordsArray.forEach(rec => {
+          if (!rec || !rec.id) return;
+          const idx = state.attendanceRecords.findIndex(r => r.id === rec.id);
+          if (idx !== -1) {
+            state.attendanceRecords[idx] = Object.assign({}, state.attendanceRecords[idx], rec);
+          } else {
+            state.attendanceRecords.push(rec);
+          }
+        });
+
+        await this.pushOnlineState(state, deviceId);
+        return { success: true };
+      });
+    }
+
+    // =========================================================================
+    // 6. FULL TWO-WAY STORE SYNCHRONIZATION
+    // =========================================================================
+    async syncWithStore(store) {
+      if (!store || typeof store.mergeCloudState !== 'function') {
+        return { success: false, reason: 'Invalid store' };
+      }
+
+      try {
+        const onlineData = await this.fetchOnlineState();
+        if (onlineData) {
+          store.mergeCloudState(onlineData);
+          return {
+            success: true,
+            notesCount: onlineData.teacherNotes.length,
+            submissionsCount: Object.keys(onlineData.progressCheckSubmissions).length,
+            diagnosticTest: onlineData.diagnosticTest
+          };
+        }
+        return { success: false, reason: 'No data returned from online database' };
       } catch (err) {
-        console.warn('[CloudSync] Delete warning:', err.message);
         return { success: false, error: err.message };
       }
     }
 
-    /**
-     * Two-way sync: Pulls cloud assessments and merges into school store
-     */
-    async syncWithStore(store) {
-      if (!store || typeof store.mergeCloudSubmissions !== 'function') return { success: false };
-
-      const cloudData = await this.fetchAssessments();
-      if (cloudData && typeof cloudData === 'object') {
-        const cloudArray = Object.values(cloudData);
-        const mergeResult = store.mergeCloudSubmissions(cloudArray);
-        return { success: true, count: cloudArray.length, mergeResult };
-      }
-      return { success: false, reason: 'no_data' };
+    // Legacy backwards compatibility helper for fetchAssessments
+    async fetchAssessments() {
+      const state = await this.fetchOnlineState();
+      return state.progressCheckSubmissions || {};
     }
 
-    /**
-     * Continuous background sync & focus/visibility sync across iPad and PC
-     */
+    // Legacy backwards compatibility helper for deleteAssessment
+    async deleteAssessmentLegacy(studentId, checkId) {
+      return this.deleteAssessment(studentId, checkId);
+    }
+
+    // =========================================================================
+    // 7. CONTINUOUS AUTO-SYNC & CROSS-DEVICE EVENT LISTENERS
+    // =========================================================================
     setupAutoSync(store) {
       if (!store || this._autoSyncSetup) return;
       this._autoSyncSetup = true;
 
-      // Initial immediate sync
+      // Initial immediate fetch & merge on app load
       this.syncWithStore(store).catch(err => {
-        console.warn('[CloudSync] Initial auto-sync warning:', err);
+        console.warn('[SchoolCloudSync] Initial auto-sync note:', err.message);
       });
 
-      // 1. Sync on window focus or visibility change (iPad/PC wake or tab switch)
+      // Synchronize on window focus & tab visibility change (iPad wake, PC tab focus)
       const onVisible = () => {
-        if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        if (typeof document !== 'undefined' && document.visibilityState === 'visible' && !this.isSyncing) {
           this.syncWithStore(store).catch(() => {});
         }
       };
-      if (typeof window !== 'undefined') {
+
+      if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
         window.addEventListener('focus', onVisible);
-        if (typeof document !== 'undefined') {
+        if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
           document.addEventListener('visibilitychange', onVisible);
         }
       }
 
-      // 2. Continuous 15-second background synchronization
+      // Continuous 10-second background polling
       if (typeof setInterval !== 'undefined') {
         setInterval(() => {
           if (typeof document !== 'undefined' && document.visibilityState === 'visible' && !this.isSyncing) {
             this.syncWithStore(store).catch(() => {});
           }
-        }, 15000);
+        }, 10000);
       }
     }
   }

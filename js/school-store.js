@@ -3410,8 +3410,8 @@
   },
   "student-4a-319": {
     "studentId": "student-4a-319",
-    "petName": "Şimal",
-    "monsterName": "Şimal's Monster",
+    "petName": "Ozan",
+    "monsterName": "Ozan's Monster",
     "baseColor": "green",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -3970,8 +3970,8 @@
   },
   "student-4b-208": {
     "studentId": "student-4b-208",
-    "petName": "Ozan",
-    "monsterName": "Ozan's Monster",
+    "petName": "Şimal",
+    "monsterName": "Şimal's Monster",
     "baseColor": "blue",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -4317,7 +4317,828 @@
       }
     }
   ];
-  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [];
+  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [
+    {
+      id: "sub-student-4a-313-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-313",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-441-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-441",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5,
+      maxRawTotal: 40,
+      xpEarned: 50,
+      accuracyPct: 12,
+      overallScore: 12,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 50, correct: 5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-311-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-311",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-310-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-310",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-312-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-312",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 8,
+      maxRawTotal: 40,
+      xpEarned: 80,
+      accuracyPct: 20,
+      overallScore: 20,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 8, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-345-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-345",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5,
+      maxRawTotal: 40,
+      xpEarned: 50,
+      accuracyPct: 12,
+      overallScore: 12,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 50, correct: 5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-315-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-315",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5.5,
+      maxRawTotal: 40,
+      xpEarned: 55,
+      accuracyPct: 14,
+      overallScore: 14,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5.5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 55, correct: 5.5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-302-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-302",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-314-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-314",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-343-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-343",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-316-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-316",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-307-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-307",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-306-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-306",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-305-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-305",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-439-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-439",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-304-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-304",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-319-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-319",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 9,
+      maxRawTotal: 40,
+      xpEarned: 90,
+      accuracyPct: 22,
+      overallScore: 22,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 9, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 90, correct: 9, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-339-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-339",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-309-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-309",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-308-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-308",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 9,
+      maxRawTotal: 40,
+      xpEarned: 90,
+      accuracyPct: 22,
+      overallScore: 22,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 9, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 90, correct: 9, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    }
+  ];
 
   function getInitialState() {
     return {
@@ -5056,7 +5877,7 @@
           parentName: 'Parent of Ada Özcan',
           parentContact: '+90 (555) 313-0001',
           parentEmail: 'parent313@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5076,7 +5897,7 @@
           parentName: 'Parent of Ahmet Mete İnal',
           parentContact: '+90 (555) 441-0001',
           parentEmail: 'parent441@example.com',
-          xp: 0,
+          xp: 50,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5096,7 +5917,7 @@
           parentName: 'Parent of Alya Zeynep Aydoğmuş',
           parentContact: '+90 (555) 311-0001',
           parentEmail: 'parent311@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5116,7 +5937,7 @@
           parentName: 'Parent of Bahriye Ada Güler',
           parentContact: '+90 (555) 310-0001',
           parentEmail: 'parent310@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5136,7 +5957,7 @@
           parentName: 'Parent of Belis Erkanat',
           parentContact: '+90 (555) 312-0001',
           parentEmail: 'parent312@example.com',
-          xp: 0,
+          xp: 80,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5176,7 +5997,7 @@
           parentName: 'Parent of Efe Yaldız',
           parentContact: '+90 (555) 345-0001',
           parentEmail: 'parent345@example.com',
-          xp: 0,
+          xp: 50,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5216,7 +6037,7 @@
           parentName: 'Parent of Emir Ali Gökalp',
           parentContact: '+90 (555) 315-0001',
           parentEmail: 'parent315@example.com',
-          xp: 0,
+          xp: 55,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5236,7 +6057,7 @@
           parentName: 'Parent of Emir Ertem',
           parentContact: '+90 (555) 302-0001',
           parentEmail: 'parent302@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5276,7 +6097,7 @@
           parentName: 'Parent of İclal Gökalp',
           parentContact: '+90 (555) 314-0001',
           parentEmail: 'parent314@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5296,7 +6117,7 @@
           parentName: 'Parent of İpek İlhan',
           parentContact: '+90 (555) 343-0001',
           parentEmail: 'parent343@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5386,17 +6207,17 @@
         {
           id: 'student-4a-319',
           studentIdNumber: '319',
-          firstName: 'Şimal',
-          lastName: 'Koyun',
+          firstName: 'Ozan',
+          lastName: 'Topçu',
           classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Şimal Koyun',
+          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Ozan Topçu',
           parentContact: '+90 (555) 319-0001',
           parentEmail: 'parent319@example.com',
-          xp: 0,
+          xp: 90,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5428,7 +6249,7 @@
           studentIdNumber: '346',
           firstName: 'Ali İhsan',
           lastName: 'Bıçakçı',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5448,7 +6269,7 @@
           studentIdNumber: '338',
           firstName: 'Derin',
           lastName: 'Küçük',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5468,7 +6289,7 @@
           studentIdNumber: '316',
           firstName: 'Egehan',
           lastName: 'Tekin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5476,7 +6297,7 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5488,7 +6309,7 @@
           studentIdNumber: '307',
           firstName: 'Elif Asya',
           lastName: 'Durmaz',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5496,7 +6317,7 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5508,7 +6329,7 @@
           studentIdNumber: '306',
           firstName: 'Elif Beren',
           lastName: 'Alper',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5516,7 +6337,7 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5528,7 +6349,7 @@
           studentIdNumber: '348',
           firstName: 'Elisa Berre',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5548,7 +6369,7 @@
           studentIdNumber: '318',
           firstName: 'Ertuğrul',
           lastName: 'Turan',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5568,7 +6389,7 @@
           studentIdNumber: '303',
           firstName: 'İlay',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5588,7 +6409,7 @@
           studentIdNumber: '305',
           firstName: 'Kerem',
           lastName: 'Özçakmak',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5596,7 +6417,7 @@
           parentName: 'Parent of Kerem Özçakmak',
           parentContact: '+90 (555) 305-0001',
           parentEmail: 'parent305@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5608,7 +6429,7 @@
           studentIdNumber: '349',
           firstName: 'Lina',
           lastName: 'Koca',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5628,7 +6449,7 @@
           studentIdNumber: '439',
           firstName: 'Mina',
           lastName: 'Çakar',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5636,7 +6457,7 @@
           parentName: 'Parent of Mina Çakar',
           parentContact: '+90 (555) 439-0001',
           parentEmail: 'parent439@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5648,7 +6469,7 @@
           studentIdNumber: '304',
           firstName: 'Nilda',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5656,7 +6477,7 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5668,7 +6489,7 @@
           studentIdNumber: '440',
           firstName: 'Nisa',
           lastName: 'Kömürcüoğlu',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5688,7 +6509,7 @@
           studentIdNumber: '301',
           firstName: 'Ozan',
           lastName: 'Metin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5706,14 +6527,14 @@
         {
           id: 'student-4b-208',
           studentIdNumber: '208',
-          firstName: 'Ozan',
-          lastName: 'Topçu',
+          firstName: 'Şimal',
+          lastName: 'Koyun',
           classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Ozan Topçu',
+          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Şimal Koyun',
           parentContact: '+90 (555) 208-0001',
           parentEmail: 'parent208@example.com',
           xp: 0,
@@ -5728,7 +6549,7 @@
           studentIdNumber: '322',
           firstName: 'Öykü Çiğdem',
           lastName: 'Akar',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5748,7 +6569,7 @@
           studentIdNumber: '339',
           firstName: 'Uras',
           lastName: 'Tekay',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5756,7 +6577,7 @@
           parentName: 'Parent of Uras Tekay',
           parentContact: '+90 (555) 339-0001',
           parentEmail: 'parent339@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5768,7 +6589,7 @@
           studentIdNumber: '309',
           firstName: 'Utku Efe',
           lastName: 'Kulaç',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5776,7 +6597,7 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5788,7 +6609,7 @@
           studentIdNumber: '308',
           firstName: 'Yağmur Ada',
           lastName: 'Ovalı',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5796,7 +6617,7 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
-          xp: 0,
+          xp: 90,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -6053,7 +6874,348 @@
       attendanceRecords: [],
 
       // 10. Transaction-based XP Ledger
-      xpTransactions: [],
+      xpTransactions: [
+        {
+          id: 'xp-init-student-4a-313-progress-check-gr3-u1',
+          studentId: 'student-4a-313',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-313',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-441-progress-check-gr3-u1',
+          studentId: 'student-4a-441',
+          amount: 50,
+          points: 50,
+          xpAmount: 50,
+          xp: 50,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-441',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-311-progress-check-gr3-u1',
+          studentId: 'student-4a-311',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-311',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-310-progress-check-gr3-u1',
+          studentId: 'student-4a-310',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-310',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-312-progress-check-gr3-u1',
+          studentId: 'student-4a-312',
+          amount: 80,
+          points: 80,
+          xpAmount: 80,
+          xp: 80,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (8/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-312',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-345-progress-check-gr3-u1',
+          studentId: 'student-4a-345',
+          amount: 50,
+          points: 50,
+          xpAmount: 50,
+          xp: 50,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-345',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-315-progress-check-gr3-u1',
+          studentId: 'student-4a-315',
+          amount: 55,
+          points: 55,
+          xpAmount: 55,
+          xp: 55,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5.5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-315',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-302-progress-check-gr3-u1',
+          studentId: 'student-4a-302',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-302',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-314-progress-check-gr3-u1',
+          studentId: 'student-4a-314',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-314',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-343-progress-check-gr3-u1',
+          studentId: 'student-4a-343',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-343',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-316-progress-check-gr3-u1',
+          studentId: 'student-4b-316',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-316',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-307-progress-check-gr3-u1',
+          studentId: 'student-4b-307',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-307',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-306-progress-check-gr3-u1',
+          studentId: 'student-4b-306',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-306',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-305-progress-check-gr3-u1',
+          studentId: 'student-4b-305',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-305',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-439-progress-check-gr3-u1',
+          studentId: 'student-4b-439',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-439',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-304-progress-check-gr3-u1',
+          studentId: 'student-4b-304',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-304',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-319-progress-check-gr3-u1',
+          studentId: 'student-4a-319',
+          amount: 90,
+          points: 90,
+          xpAmount: 90,
+          xp: 90,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (9/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-319',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-339-progress-check-gr3-u1',
+          studentId: 'student-4b-339',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-339',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-309-progress-check-gr3-u1',
+          studentId: 'student-4b-309',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-309',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-308-progress-check-gr3-u1',
+          studentId: 'student-4b-308',
+          amount: 90,
+          points: 90,
+          xpAmount: 90,
+          xp: 90,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (9/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-308',
+          classId: 'class-4a',
+          status: 'active'
+        }
+      ],
 
       // 11. Learning Evidence (Progress Calculation)
       learningEvidence: [],
@@ -6491,11 +7653,23 @@
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
               merged.progressChecks = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECKS));
             }
-            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions)) {
-              merged.progressCheckSubmissions = [];
+            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions) || merged.progressCheckSubmissions.length === 0) {
+              merged.progressCheckSubmissions = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS));
+            } else {
+              DEFAULT_PROGRESS_CHECK_SUBMISSIONS.forEach(defSub => {
+                if (!merged.progressCheckSubmissions.some(s => s.studentId === defSub.studentId && s.progressCheckId === defSub.progressCheckId)) {
+                  merged.progressCheckSubmissions.push(JSON.parse(JSON.stringify(defSub)));
+                }
+              });
             }
-            if (!merged.xpTransactions || !Array.isArray(merged.xpTransactions)) {
-              merged.xpTransactions = [];
+            if (!merged.xpTransactions || !Array.isArray(merged.xpTransactions) || merged.xpTransactions.length === 0) {
+              merged.xpTransactions = initial.xpTransactions || [];
+            } else {
+              (initial.xpTransactions || []).forEach(initTx => {
+                if (!merged.xpTransactions.some(t => t.sourceId === initTx.sourceId)) {
+                  merged.xpTransactions.push(JSON.parse(JSON.stringify(initTx)));
+                }
+              });
             }
             if (!merged.attendanceRecords || !Array.isArray(merged.attendanceRecords)) {
               merged.attendanceRecords = [];
@@ -6931,8 +8105,9 @@
     }
 
     getStudent(id) {
-      if (!this.state.students) return null;
-      const s = this.state.students.find(s => s.id === id);
+      if (!this.state.students || !id) return null;
+      const strId = String(id).trim();
+      const s = this.state.students.find(s => s.id === strId || (s.studentIdNumber && String(s.studentIdNumber).trim() === strId));
       if (s && !s.monsterProfile) {
         s.monsterProfile = this.getMonsterProfile(s.id);
       }
@@ -7015,16 +8190,20 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!this.state.xpTransactions) return 0;
+      if (!this.state.xpTransactions || !studentId) return 0;
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
       // Strictly recalculate from active transactions only
-      const txs = this.state.xpTransactions.filter(t => t.studentId === studentId && t.status !== 'voided');
+      const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
       return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
       if (!this.state.xpTransactions) return [];
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
       return this.state.xpTransactions
-        .filter(t => t.studentId === studentId && (includeVoided || t.status !== 'voided'))
+        .filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && (includeVoided || t.status !== 'voided'))
         .slice()
         .reverse();
     }
@@ -7142,6 +8321,12 @@
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveXPTransaction(tx).catch(e => {
+          console.warn('[SchoolStore] XP cloud save warning:', e);
+        });
+      }
       return { 
         transaction: tx, 
         student: s, 
@@ -7421,40 +8606,81 @@
       return false;
     }
 
-    // Teacher Notes CRUD
+    // Teacher Notes CRUD (Shared Online Database Sync)
     getTeacherNotes(studentId) {
-      return this.state.teacherNotes.filter(n => n.studentId === studentId);
+      if (!this.state.teacherNotes) return [];
+      const s = this.getStudent(studentId);
+      const targetId = s ? s.id : studentId;
+      const targetNum = s ? s.studentIdNumber : null;
+      return this.state.teacherNotes.filter(n => n.studentId === targetId || (targetNum && n.studentId === targetNum));
     }
 
     addTeacherNote(studentId, text, author = 'Mr. Maysam') {
+      const s = this.getStudent(studentId);
+      const canonicalStudentId = s ? s.id : studentId;
+      const cleanText = (text || '').trim();
       const note = {
-        id: 'note-' + Date.now(),
-        studentId,
-        text,
+        id: 'note-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId: canonicalStudentId,
+        text: cleanText,
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        author
+        author: author || 'Mr. Maysam',
+        updatedAt: new Date().toISOString()
       };
+      if (!this.state.teacherNotes) this.state.teacherNotes = [];
       this.state.teacherNotes.unshift(note);
+      if (s) {
+        s.latestTeacherNote = cleanText;
+      }
       this.saveState();
+
+      // Transmit immediately to shared online database
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveTeacherNote(note).catch(err => {
+          console.warn('[SchoolStore] Teacher note cloud sync error:', err.message);
+        });
+      }
       return note;
     }
 
     updateTeacherNote(noteId, text) {
+      if (!this.state.teacherNotes) return null;
       const n = this.state.teacherNotes.find(note => note.id === noteId);
       if (n) {
-        n.text = text;
+        const cleanText = (text || '').trim();
+        n.text = cleanText;
         n.date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' (edited)';
+        n.updatedAt = new Date().toISOString();
+        const s = this.getStudent(n.studentId);
+        if (s) {
+          s.latestTeacherNote = cleanText;
+        }
         this.saveState();
+
+        // Transmit update immediately to shared online database
+        if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveTeacherNote(n).catch(err => {
+            console.warn('[SchoolStore] Teacher note cloud update error:', err.message);
+          });
+        }
         return n;
       }
       return null;
     }
 
     deleteTeacherNote(noteId) {
+      if (!this.state.teacherNotes) return false;
       const idx = this.state.teacherNotes.findIndex(n => n.id === noteId);
       if (idx !== -1) {
         this.state.teacherNotes.splice(idx, 1);
         this.saveState();
+
+        // Delete from shared online database
+        if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.deleteTeacherNote(noteId).catch(err => {
+            console.warn('[SchoolStore] Teacher note cloud delete error:', err.message);
+          });
+        }
         return true;
       }
       return false;
@@ -7633,6 +8859,12 @@
         }
       });
       this.saveState();
+
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveAttendance(records).catch(e => {
+          console.warn('[SchoolStore] Attendance cloud save warning:', e);
+        });
+      }
     }
 
     setStudentAttendance(studentId, status, date = null) {
@@ -10520,15 +11752,19 @@
       if (!this.state.progressCheckSubmissions) {
         this.state.progressCheckSubmissions = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS));
       }
+      const sObj = studentId ? this.getStudent(studentId) : null;
+      const resolvedStudentId = sObj ? sObj.id : studentId;
       return this.state.progressCheckSubmissions.filter(s => {
         if (checkId && s.progressCheckId !== checkId) return false;
-        if (studentId && s.studentId !== studentId) return false;
+        if (resolvedStudentId && s.studentId !== resolvedStudentId && (!sObj || s.studentId !== sObj.studentIdNumber)) return false;
         return true;
       });
     }
 
     getStudentProgressCheckHistory(studentId) {
-      return this.getProgressCheckSubmissions(null, studentId).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
+      return this.getProgressCheckSubmissions(null, resolvedId).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
     }
 
     submitProgressCheck(submissionData) {
@@ -11268,6 +12504,117 @@
       }
 
       return { success: true, count: cloudArray.length, modified: modified };
+    }
+
+    /**
+     * Complete two-way sync: Merges all cloud collections into store state
+     * (Teacher Notes, Assessments, Student Overrides, XP Ledger, Attendance)
+     */
+    mergeCloudState(cloudData) {
+      if (!cloudData || typeof cloudData !== 'object') return { success: false };
+
+      let modified = false;
+
+      // 1. Merge Teacher Notes (Single source of truth)
+      if (Array.isArray(cloudData.teacherNotes)) {
+        if (!this.state.teacherNotes) this.state.teacherNotes = [];
+        cloudData.teacherNotes.forEach(remoteNote => {
+          if (!remoteNote || !remoteNote.id) return;
+          const localIdx = this.state.teacherNotes.findIndex(n => n.id === remoteNote.id);
+          if (localIdx !== -1) {
+            const local = this.state.teacherNotes[localIdx];
+            if (local.text !== remoteNote.text || local.date !== remoteNote.date) {
+              this.state.teacherNotes[localIdx] = Object.assign({}, local, remoteNote);
+              modified = true;
+            }
+          } else {
+            this.state.teacherNotes.push(remoteNote);
+            modified = true;
+          }
+        });
+
+        // Ensure teacher notes are ordered chronologically newest first
+        this.state.teacherNotes.sort((a, b) => {
+          const timeA = new Date(a.updatedAt || a.date || 0).getTime();
+          const timeB = new Date(b.updatedAt || b.date || 0).getTime();
+          return timeB - timeA;
+        });
+
+        // Automatically sync each student's latestTeacherNote to their newest note
+        this.state.teacherNotes.forEach(n => {
+          const s = this.getStudent(n.studentId);
+          if (s && !s._noteSynced) {
+            s.latestTeacherNote = n.text;
+            s._noteSynced = true;
+          }
+        });
+        if (this.state.students) {
+          this.state.students.forEach(s => { delete s._noteSynced; });
+        }
+      }
+
+      // 2. Merge Four-Skill Assessment Submissions
+      if (cloudData.progressCheckSubmissions && typeof cloudData.progressCheckSubmissions === 'object') {
+        const subsArray = Array.isArray(cloudData.progressCheckSubmissions)
+          ? cloudData.progressCheckSubmissions
+          : Object.values(cloudData.progressCheckSubmissions);
+        if (subsArray.length > 0) {
+          const subRes = this.mergeCloudSubmissions(subsArray);
+          if (subRes && subRes.modified) modified = true;
+        }
+      }
+
+      // 3. Merge Student Profile Overrides
+      if (cloudData.studentOverrides && typeof cloudData.studentOverrides === 'object') {
+        Object.keys(cloudData.studentOverrides).forEach(sId => {
+          const s = this.getStudent(sId);
+          if (s) {
+            const overrides = cloudData.studentOverrides[sId];
+            if (overrides.latestTeacherNote) s.latestTeacherNote = overrides.latestTeacherNote;
+            if (overrides.manualCefrOverrides) s.manualCefrOverrides = Object.assign({}, s.manualCefrOverrides || {}, overrides.manualCefrOverrides);
+            modified = true;
+          }
+        });
+      }
+
+      // 4. Merge XP Transactions
+      if (Array.isArray(cloudData.xpTransactions)) {
+        if (!this.state.xpTransactions) this.state.xpTransactions = [];
+        cloudData.xpTransactions.forEach(tx => {
+          if (!tx || !tx.id) return;
+          const exists = this.state.xpTransactions.some(t => t.id === tx.id);
+          if (!exists) {
+            this.state.xpTransactions.push(tx);
+            modified = true;
+          }
+        });
+      }
+
+      // 5. Merge Attendance Records
+      if (Array.isArray(cloudData.attendanceRecords)) {
+        if (!this.state.attendanceRecords) this.state.attendanceRecords = [];
+        cloudData.attendanceRecords.forEach(rec => {
+          if (!rec || !rec.id) return;
+          const idx = this.state.attendanceRecords.findIndex(r => r.id === rec.id);
+          if (idx !== -1) {
+            this.state.attendanceRecords[idx] = Object.assign({}, this.state.attendanceRecords[idx], rec);
+          } else {
+            this.state.attendanceRecords.push(rec);
+          }
+          modified = true;
+        });
+      }
+
+      if (modified) {
+        this.saveState();
+        this.notify('teacherNotes', this.state.teacherNotes);
+        this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
+        this.notify('students', this.state.students);
+        this.notify('xp', this.state.xpTransactions);
+        this.notify('attendance', this.state.attendanceRecords);
+      }
+
+      return { success: true, modified };
     }
 
     deleteProgressCheckSubmission(studentId, checkId) {
