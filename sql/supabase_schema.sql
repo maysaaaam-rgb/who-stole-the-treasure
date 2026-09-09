@@ -101,3 +101,22 @@ ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow read access to students" ON public.students FOR SELECT USING (true);
 CREATE POLICY "Allow insert access to students" ON public.students FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow update access to students" ON public.students FOR UPDATE USING (true) WITH CHECK (true);
+
+-- 5. ATTENDANCE RECORDS TABLE
+CREATE TABLE IF NOT EXISTS public.attendance_records (
+    id TEXT PRIMARY KEY,
+    student_id TEXT NOT NULL,
+    class_id TEXT NOT NULL,
+    date TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'present',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_attendance_student ON public.attendance_records (student_id);
+CREATE INDEX IF NOT EXISTS idx_attendance_class_date ON public.attendance_records (class_id, date);
+ALTER TABLE public.attendance_records ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow read access to attendance" ON public.attendance_records FOR SELECT USING (true);
+CREATE POLICY "Allow insert access to attendance" ON public.attendance_records FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow update access to attendance" ON public.attendance_records FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow delete access to attendance" ON public.attendance_records FOR DELETE USING (true);

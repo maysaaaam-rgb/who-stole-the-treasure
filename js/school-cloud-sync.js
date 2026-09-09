@@ -89,7 +89,21 @@
     }
 
     getStatus() {
+      const isSupabase = !!(root.AdventureSupabase && root.AdventureSupabase.isConfigured);
+      if (isSupabase) {
+        const supaStatus = root.AdventureSupabase.getStatus();
+        return {
+          provider: 'Supabase PostgreSQL',
+          endpoint: supaStatus.url,
+          projectId: 'supabase-postgresql',
+          isSyncing: supaStatus.isSyncing,
+          lastSyncTime: supaStatus.lastSyncTime,
+          lastSyncStatus: supaStatus.lastSyncStatus,
+          lastError: supaStatus.lastError
+        };
+      }
       return {
+        provider: 'REST Cloud DB',
         endpoint: this.endpoint,
         projectId: this.projectId,
         isSyncing: this.isSyncing,
@@ -321,6 +335,9 @@
     // =========================================================================
     async saveTeacherNote(note, deviceId = 'web') {
       if (!note || !note.id) return { success: false, error: 'Invalid note payload' };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.saveTeacherNote(note);
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -364,6 +381,9 @@
 
     async deleteTeacherNote(noteId, deviceId = 'web') {
       if (!noteId) return { success: false };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.deleteTeacherNote(noteId);
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -381,6 +401,9 @@
     async saveAssessments(submissionsArray, deviceId = 'web') {
       if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) {
         return { success: true, count: 0 };
+      }
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.saveAssessments(submissionsArray);
       }
 
       return this._enqueue(async () => {
@@ -438,6 +461,9 @@
 
     async deleteAssessment(studentId, checkId, deviceId = 'web') {
       if (!studentId || !checkId) return { success: false };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.deleteAssessment(studentId, checkId);
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -458,6 +484,9 @@
     // =========================================================================
     async saveXPTransaction(tx, deviceId = 'web') {
       if (!tx || !tx.id || !tx.studentId) return { success: false };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.saveXPTransaction(tx);
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -495,6 +524,9 @@
     // =========================================================================
     async saveStudentUpdate(studentId, updates, deviceId = 'web') {
       if (!studentId || !updates) return { success: false };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.saveStudent(Object.assign({ id: studentId }, updates));
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -514,6 +546,9 @@
     // =========================================================================
     async saveAttendance(recordsArray, deviceId = 'web') {
       if (!Array.isArray(recordsArray) || recordsArray.length === 0) return { success: true };
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.saveAttendance(recordsArray);
+      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -540,6 +575,10 @@
     async syncWithStore(store) {
       if (!store || typeof store.mergeCloudState !== 'function') {
         return { success: false, reason: 'Invalid store' };
+      }
+
+      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
+        return root.AdventureSupabase.syncAllWithStore(store);
       }
 
       try {
