@@ -15,8 +15,8 @@
   'use strict';
 
   // Primary shared cloud database endpoint (Live REST Cloud DB with full CORS: *)
-  const DEFAULT_CLOUD_OBJECT_ID = 'ff808181a067127101a08749b02a5ae2';
-  const DEFAULT_PRIMARY_ENDPOINT = 'https://api.restful-api.dev/objects/' + DEFAULT_CLOUD_OBJECT_ID;
+  const DEFAULT_CLOUD_OBJECT_ID = '17962a8fe21e680aa4be75dcfa9ad35c';
+  const DEFAULT_PRIMARY_ENDPOINT = 'https://api.github.com/gists/' + DEFAULT_CLOUD_OBJECT_ID;
   
   const LOCAL_CACHE_KEY = 'eaa_cloud_master_cache_v2';
   const SETTINGS_KEY = 'eaa_cloud_sync_endpoint_v2';
@@ -25,7 +25,7 @@
     constructor() {
       this.endpoint = this.getStoredEndpoint() || DEFAULT_PRIMARY_ENDPOINT;
       this.backupEndpoint = null;
-      this.projectId = 'eaa-prod-cloud-db-' + DEFAULT_CLOUD_OBJECT_ID;
+      this.projectId = 'eaa-prod-cloud-db-gist-' + DEFAULT_CLOUD_OBJECT_ID;
       this.isSyncing = false;
       this.lastSyncTime = null;
       this.lastSyncStatus = 'idle'; // 'idle' | 'syncing' | 'success' | 'error'
@@ -36,12 +36,32 @@
       this._autoSyncSetup = false;
     }
 
+    _getAuthHeaders() {
+      const headers = {
+        'Accept': 'application/vnd.github.v3+json'
+      };
+      if (this.endpoint.includes('api.github.com')) {
+        let token = null;
+        try {
+          if (typeof window !== 'undefined' && window.EAA_CLOUD_TOKEN) {
+            token = window.EAA_CLOUD_TOKEN;
+          } else if (typeof localStorage !== 'undefined') {
+            token = localStorage.getItem('eaa_cloud_sync_token');
+          }
+        } catch (e) {}
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token.trim();
+        }
+      }
+      return headers;
+    }
+
     getStoredEndpoint() {
       try {
         if (typeof localStorage !== 'undefined') {
           const stored = localStorage.getItem(SETTINGS_KEY);
-          // Purge legacy endpoints with CORS issues
-          if (stored && stored.includes('extendsclass.com')) {
+          // Purge legacy endpoints with CORS or quota issues
+          if (stored && (stored.includes('extendsclass.com') || stored.includes('restful-api.dev'))) {
             localStorage.removeItem(SETTINGS_KEY);
             return null;
           }
@@ -109,7 +129,15 @@
       if (!json) return this._createEmptyContainer();
 
       let target = json;
-      if (target.data) {
+      // Extract from GitHub Gist response if wrapped
+      if (target.files && target.files['eaa_cloud_data.json'] && target.files['eaa_cloud_data.json'].content) {
+        try {
+          target = JSON.parse(target.files['eaa_cloud_data.json'].content);
+        } catch (e) {
+          console.warn('[SchoolCloudSync] Failed to parse gist content:', e);
+          target = json;
+        }
+      } else if (target.data) {
         if (typeof target.data === 'string') {
           try {
             target = JSON.parse(target.data);
@@ -121,6 +149,17 @@
         }
       }
 
+      // Normalize teacherNotes array
+      let notesArr = [];
+      if (Array.isArray(target.teacherNotes)) {
+        notesArr = target.teacherNotes;
+      } else if (target.teacherNotes && typeof target.teacherNotes === 'object') {
+        Object.values(target.teacherNotes).forEach(val => {
+          if (Array.isArray(val)) notesArr.push(...val);
+          else if (val && typeof val === 'object') notesArr.push(val);
+        });
+      }
+
       return {
         database: target.database || 'English Adventure Academy Production DB',
         projectId: this.projectId,
@@ -128,7 +167,7 @@
         lastUpdated: target.lastUpdated || new Date().toISOString(),
         updatedBy: target.updatedBy || 'client',
         diagnosticTest: target.diagnosticTest || '',
-        teacherNotes: Array.isArray(target.teacherNotes) ? target.teacherNotes : [],
+        teacherNotes: notesArr,
         progressCheckSubmissions: (target.progressCheckSubmissions && typeof target.progressCheckSubmissions === 'object') ? target.progressCheckSubmissions : (target.submissions || {}),
         studentOverrides: (target.studentOverrides && typeof target.studentOverrides === 'object') ? target.studentOverrides : {},
         xpTransactions: Array.isArray(target.xpTransactions) ? target.xpTransactions : [],
@@ -163,8 +202,12 @@
 
       try {
         const fetchUrl = this.endpoint + (this.endpoint.includes('?') ? '&' : '?') + 'ts=' + Date.now();
+        const headers = this._getAuthHeaders();
 
-        const response = await fetch(fetchUrl);
+        const response = await fetch(fetchUrl, {
+          method: 'GET',
+          headers: headers
+        });
 
         if (!response.ok) {
           throw new Error('Database GET returned HTTP ' + response.status + ' (' + response.statusText + ')');
@@ -222,9 +265,28 @@
         updatedBy: deviceIdentifier
       });
 
-      const bodyContent = this.endpoint.includes('api.restful-api.dev')
-        ? JSON.stringify({ name: 'English Adventure Academy Production DB', data: payload })
-        : JSON.stringify(payload);
+      const isGist = this.endpoint.includes('api.github.com/gists');
+      const method = isGist ? 'PATCH' : 'PUT';
+      const headers = Object.assign(
+        { 'Content-Type': 'application/json' },
+        this._getAuthHeaders()
+      );
+
+      let bodyContent;
+      if (isGist) {
+        bodyContent = JSON.stringify({
+          description: 'English Adventure Academy Production DB',
+          files: {
+            'eaa_cloud_data.json': {
+              content: JSON.stringify(payload, null, 2)
+            }
+          }
+        });
+      } else if (this.endpoint.includes('api.restful-api.dev')) {
+        bodyContent = JSON.stringify({ name: 'English Adventure Academy Production DB', data: payload });
+      } else {
+        bodyContent = JSON.stringify(payload);
+      }
 
       let putRes = null;
       let lastErr = null;
@@ -234,14 +296,12 @@
         attempts++;
         try {
           putRes = await fetch(this.endpoint, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            method: method,
+            headers: headers,
             body: bodyContent
           });
           if (putRes.ok) break;
-          lastErr = new Error('Database PUT returned HTTP ' + putRes.status);
+          lastErr = new Error('Database ' + method + ' returned HTTP ' + putRes.status);
           if (attempts < 3) await new Promise(r => setTimeout(r, 350 * attempts));
         } catch (fetchErr) {
           lastErr = fetchErr;

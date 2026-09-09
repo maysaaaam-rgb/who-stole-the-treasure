@@ -136,7 +136,7 @@
       try {
         await Promise.race([
           window.SchoolCloudSync.syncWithStore(store),
-          new Promise(r => setTimeout(r, 2000))
+          new Promise(r => setTimeout(r, 5000))
         ]);
       } catch (e) {
         console.warn('[SchoolApp] Cloud bootstrap note:', e);
