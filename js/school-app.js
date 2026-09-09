@@ -99,7 +99,7 @@
   // =========================================================================
   // 1. INITIALIZATION & GLOBAL EVENT LISTENERS
   // =========================================================================
-  function initApp() {
+  async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
       currentView = 'dashboard';
@@ -131,7 +131,19 @@
       }
     });
 
-    // Initial render
+    // Cloud First: Guarantee DATABASE -> APPLICATION STATE -> UI on page load
+    if (window.SchoolCloudSync && store) {
+      try {
+        await Promise.race([
+          window.SchoolCloudSync.syncWithStore(store),
+          new Promise(r => setTimeout(r, 2000))
+        ]);
+      } catch (e) {
+        console.warn('[SchoolApp] Cloud bootstrap note:', e);
+      }
+    }
+
+    // Initial render populated with authoritative cloud data
     renderNavigation();
     updateHeaderBadges();
     renderCurrentView();

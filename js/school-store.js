@@ -12489,6 +12489,9 @@
               skillScores: cloudSub.skillScores || {},
               teacherNote: cloudSub.notes || cloudSub.teacherComment || ""
             };
+            if (cloudSub.notes && cloudSub.notes.trim()) {
+              student.latestTeacherNote = cloudSub.notes.trim();
+            }
             student.xp = this.getStudentTotalXP(studentId);
             const mState = this.calculateMonsterState(studentId);
             if (mState) student.level = mState.currentLevel;
@@ -12546,6 +12549,14 @@
           if (s && !s._noteSynced) {
             s.latestTeacherNote = n.text;
             s._noteSynced = true;
+          }
+          if (this.state.progressCheckSubmissions) {
+            this.state.progressCheckSubmissions.forEach(sub => {
+              if (sub.studentId === n.studentId && (n.source === 'Progress Check' || !sub.notes)) {
+                sub.notes = n.text;
+                sub.teacherComment = n.text;
+              }
+            });
           }
         });
         if (this.state.students) {

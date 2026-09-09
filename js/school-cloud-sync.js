@@ -89,21 +89,8 @@
     }
 
     getStatus() {
-      const isSupabase = !!(root.AdventureSupabase && root.AdventureSupabase.isConfigured);
-      if (isSupabase) {
-        const supaStatus = root.AdventureSupabase.getStatus();
-        return {
-          provider: 'Supabase PostgreSQL',
-          endpoint: supaStatus.url,
-          projectId: 'supabase-postgresql',
-          isSyncing: supaStatus.isSyncing,
-          lastSyncTime: supaStatus.lastSyncTime,
-          lastSyncStatus: supaStatus.lastSyncStatus,
-          lastError: supaStatus.lastError
-        };
-      }
       return {
-        provider: 'REST Cloud DB',
+        provider: 'Shared Online Cloud DB',
         endpoint: this.endpoint,
         projectId: this.projectId,
         isSyncing: this.isSyncing,
@@ -335,9 +322,6 @@
     // =========================================================================
     async saveTeacherNote(note, deviceId = 'web') {
       if (!note || !note.id) return { success: false, error: 'Invalid note payload' };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.saveTeacherNote(note);
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -367,10 +351,21 @@
           if (!state.studentOverrides) state.studentOverrides = {};
           if (!state.studentOverrides[cleanNote.studentId]) state.studentOverrides[cleanNote.studentId] = {};
           state.studentOverrides[cleanNote.studentId].latestTeacherNote = cleanNote.text;
+
+          // Also synchronize with any progress check submission for this student
+          if (state.progressCheckSubmissions) {
+            Object.values(state.progressCheckSubmissions).forEach(sub => {
+              if (sub && sub.studentId === cleanNote.studentId) {
+                sub.notes = cleanNote.text;
+                sub.teacherComment = cleanNote.text;
+                sub.updatedAt = cleanNote.updatedAt;
+              }
+            });
+          }
         }
 
-        // Check if this is the acceptance test string
-        if (cleanNote.text.includes('CLOUD_TEST_')) {
+        // Check if this is a diagnostic test string
+        if (cleanNote.text.includes('CLOUD_TEST_') || cleanNote.text.includes('REAL_')) {
           state.diagnosticTest = cleanNote.text;
         }
 
@@ -381,9 +376,6 @@
 
     async deleteTeacherNote(noteId, deviceId = 'web') {
       if (!noteId) return { success: false };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.deleteTeacherNote(noteId);
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -401,9 +393,6 @@
     async saveAssessments(submissionsArray, deviceId = 'web') {
       if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) {
         return { success: true, count: 0 };
-      }
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.saveAssessments(submissionsArray);
       }
 
       return this._enqueue(async () => {
@@ -446,11 +435,32 @@
 
           state.progressCheckSubmissions[key] = Object.assign({}, state.progressCheckSubmissions[key] || {}, cleanSub);
 
-          // Update student latestTeacherNote if comments provided
+          // Update student latestTeacherNote and teacherNotes if comments provided
           if (cleanSub.notes && cleanSub.studentId) {
             if (!state.studentOverrides) state.studentOverrides = {};
             if (!state.studentOverrides[cleanSub.studentId]) state.studentOverrides[cleanSub.studentId] = {};
             state.studentOverrides[cleanSub.studentId].latestTeacherNote = cleanSub.notes;
+
+            if (!state.teacherNotes) state.teacherNotes = [];
+            const existingNoteIdx = state.teacherNotes.findIndex(n => n.studentId === cleanSub.studentId);
+            if (existingNoteIdx !== -1) {
+              state.teacherNotes[existingNoteIdx].text = cleanSub.notes;
+              state.teacherNotes[existingNoteIdx].updatedAt = cleanSub.updatedAt;
+            } else {
+              state.teacherNotes.unshift({
+                id: 'note-pc-' + cleanSub.studentId + '-' + Date.now(),
+                studentId: cleanSub.studentId,
+                text: cleanSub.notes,
+                author: 'Mr. Maysam',
+                date: cleanSub.displayDate || 'September 2026',
+                source: 'Progress Check',
+                updatedAt: cleanSub.updatedAt
+              });
+            }
+
+            if (cleanSub.notes.includes('CLOUD_TEST_') || cleanSub.notes.includes('REAL_')) {
+              state.diagnosticTest = cleanSub.notes;
+            }
           }
         });
 
@@ -461,9 +471,6 @@
 
     async deleteAssessment(studentId, checkId, deviceId = 'web') {
       if (!studentId || !checkId) return { success: false };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.deleteAssessment(studentId, checkId);
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -484,9 +491,6 @@
     // =========================================================================
     async saveXPTransaction(tx, deviceId = 'web') {
       if (!tx || !tx.id || !tx.studentId) return { success: false };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.saveXPTransaction(tx);
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -524,9 +528,6 @@
     // =========================================================================
     async saveStudentUpdate(studentId, updates, deviceId = 'web') {
       if (!studentId || !updates) return { success: false };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.saveStudent(Object.assign({ id: studentId }, updates));
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -546,9 +547,6 @@
     // =========================================================================
     async saveAttendance(recordsArray, deviceId = 'web') {
       if (!Array.isArray(recordsArray) || recordsArray.length === 0) return { success: true };
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.saveAttendance(recordsArray);
-      }
 
       return this._enqueue(async () => {
         const state = await this.fetchOnlineState();
@@ -575,10 +573,6 @@
     async syncWithStore(store) {
       if (!store || typeof store.mergeCloudState !== 'function') {
         return { success: false, reason: 'Invalid store' };
-      }
-
-      if (root.AdventureSupabase && root.AdventureSupabase.isConfigured) {
-        return root.AdventureSupabase.syncAllWithStore(store);
       }
 
       try {
