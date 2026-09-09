@@ -43,6 +43,17 @@
       if (this.endpoint.includes('api.github.com')) {
         let token = null;
         try {
+          if (typeof window !== 'undefined' && window.location && window.location.search) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryToken = urlParams.get('cloud_token') || urlParams.get('sync_token');
+            if (queryToken && queryToken.trim()) {
+              localStorage.setItem('eaa_cloud_sync_token', queryToken.trim());
+              const cleanUrl = window.location.pathname + (window.location.hash || '');
+              if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, cleanUrl);
+              }
+            }
+          }
           if (typeof window !== 'undefined' && window.EAA_CLOUD_TOKEN) {
             token = window.EAA_CLOUD_TOKEN;
           } else if (typeof localStorage !== 'undefined') {
