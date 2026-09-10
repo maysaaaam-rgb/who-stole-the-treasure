@@ -45,27 +45,26 @@
       description: "An interactive story adventure based on 'Don't Move'. Join Suzie and Mom in the dark windy forest, predict what makes the grunting sound outside the tent, solve cause & effect and sequencing mysteries, master fact vs opinion, and hunt phonics clues."
     },
     {
-      id: "phonics-hunters",
-      title: "Phonics Sound Hunters",
-      category: "Phonics & Sound Mission",
+      id: "phonics-adventure",
+      title: "Phonics Adventure – Blends & Digraphs",
+      category: "English → Phonics",
       level: "A1",
-      age: "7–9",
-      grade: "Grade 2-3",
-      duration: 50,
-      skills: ["Phonics", "Pronunciation", "Listening", "Speaking", "Reading"],
-      topics: ["Long Vowels (A, E, I, O, U)", "Digraph SH", "Blends ST, CH, PL, FL, PR, FR"],
+      age: "7–10",
+      grade: "Grade 3-4",
+      duration: 45,
+      skills: ["Phonics", "Listening", "Speaking", "Reading", "Spelling"],
+      topics: ["Sound Detectives Mission", "Digraphs SH & CH", "Blends ST, PL, FL", "Listening PR & FR", "Textbook Units 1–5"],
       objectives: [
-        "Recognize and pronounce Long A, E, I, O, U sounds and spelling patterns",
-        "Distinguish long vowel sounds from short vowel contrasts",
-        "Identify and pronounce digraphs and blends: sh, st, ch, pl, fl, pr, fr",
-        "Decode, blend, and spell target phonics vocabulary"
+        "Hear, see, say, read, build, spell, identify, and use target sounds and vocabulary",
+        "Master textbook exercises: Shells/fish/shoes, ST vs CH, unscramble PL/FL, PR vs FR listening, and interactive word search",
+        "Solve 4-lock Phonics Escape Room challenge"
       ],
       route: "phonics/index.html",
       worksheet: null,
       teacherGuide: true,
       featured: true,
       archived: false,
-      description: "Interactive sound hunter mission with team scoreboard, 5 sound monsters, movement games, and blend races."
+      description: "An interactive, game-based phonics lesson practicing SH, CH, ST, PL, FL, PR and FR through visual teaching, audio, pronunciation, storytelling, movement, listening, reading, spelling, games, textbook exercises, and an escape-room challenge."
     },
     {
       id: "monster-day",
@@ -7862,9 +7861,14 @@
               if (campRes && !merged.resources.some(r => r.id === 'camp-mystery')) {
                 merged.resources.unshift(campRes);
               }
-              const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-hunters');
-              if (phonicsRes && !merged.resources.some(r => r.id === 'phonics-hunters')) {
-                merged.resources.unshift(phonicsRes);
+              const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-adventure');
+              if (phonicsRes) {
+                const pIdx = merged.resources.findIndex(r => r.id === 'phonics-adventure' || r.id === 'phonics-hunters' || r.route === 'phonics/index.html');
+                if (pIdx !== -1) {
+                  merged.resources[pIdx] = phonicsRes;
+                } else {
+                  merged.resources.unshift(phonicsRes);
+                }
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
