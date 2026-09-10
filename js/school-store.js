@@ -17,8 +17,31 @@
 
   const STORAGE_KEY = 'eaa_master_school_v6';
 
-  // Canonical list of 15 audited games
+  // Canonical list of 16 audited games
   const CANONICAL_GAMES = [
+    {
+      id: "feelings",
+      title: "How Would You Feel?",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "7–10",
+      grade: "Grade 3",
+      duration: 45,
+      skills: ["Speaking", "Vocabulary", "Listening"],
+      topics: ["Feelings & Emotions", "Situational Reactions", "Hypothetical Speaking Chunks"],
+      objectives: [
+        "Identify and use common and A1+ feelings and emotions",
+        "Express how they would feel in real-life, funny, and challenging situations using 'I\\'d feel...'",
+        "Say what action they would take using 'I\\'d...'",
+        "Connect situations to emotions and appropriate responses"
+      ],
+      route: "feelings/index.html",
+      worksheet: "feelings/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive A1+ situational thinking lesson: evaluate real-life, funny & challenging dilemmas, choose appropriate emotions, and speak using natural chunks."
+    },
     {
       id: "camp-mystery",
       title: "The Mystery at the Camp",
@@ -7857,6 +7880,10 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const feelingsRes = CANONICAL_GAMES.find(g => g.id === 'feelings');
+              if (feelingsRes && !merged.resources.some(r => r.id === 'feelings')) {
+                merged.resources.unshift(feelingsRes);
+              }
               const campRes = CANONICAL_GAMES.find(g => g.id === 'camp-mystery');
               if (campRes && !merged.resources.some(r => r.id === 'camp-mystery')) {
                 merged.resources.unshift(campRes);

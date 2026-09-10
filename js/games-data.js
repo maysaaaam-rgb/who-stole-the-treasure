@@ -5,6 +5,38 @@
 
 const GAMES_REGISTRY = [
   {
+    id: "feelings",
+    title: "How Would You Feel?",
+    description: "Interactive A1+ situational thinking lesson: evaluate real-life, funny & challenging dilemmas, choose appropriate emotions, and speak using natural chunks.",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "A1+",
+    age: "Ages 7–10",
+    ageGroup: "7-8",
+    grade: "Grades 2–4",
+    duration: 45,
+    durationText: "45–50 min",
+    skills: ["Speaking", "Vocabulary", "Listening"],
+    topic: "Feelings, Emotions & Situational Reactions",
+    route: "feelings/index.html",
+    worksheet: "feelings/worksheet.html",
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#fef3c7"/>
+        <circle cx="65" cy="65" r="32" fill="#fbbf24"/>
+        <circle cx="56" cy="58" r="4.5" fill="#1e293b"/>
+        <circle cx="74" cy="58" r="4.5" fill="#1e293b"/>
+        <path d="M 54 75 Q 65 88 76 75" fill="none" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- Speech Bubble -->
+        <path d="M 105 35 L 180 35 Q 188 35 188 43 L 188 85 Q 188 93 180 93 L 125 93 L 110 108 L 115 93 L 105 93 Q 97 93 97 85 L 97 43 Q 97 35 105 35 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+        <text x="142" y="58" font-family="sans-serif" font-weight="900" font-size="11" fill="#b45309" text-anchor="middle">HOW WOULD</text>
+        <text x="142" y="74" font-family="sans-serif" font-weight="900" font-size="12" fill="#d97706" text-anchor="middle">YOU FEEL? 🎭</text>
+        <rect x="25" y="112" width="150" height="18" rx="4" fill="#3b82f6"/>
+        <text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">THINK • CHOOSE • REACT</text>
+      </svg>`
+  },
+  {
     id: "firefighter",
     title: "Fire Station Adventure",
     description: "Interactive story about firefighters, emergency equipment, siren audio, and a tap-to-extinguish water hose simulation.",

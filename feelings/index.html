@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎭 HOW WOULD YOU FEEL? | A1+ Interactive Feelings &amp; Emotions Lesson</title>
+  <link rel="stylesheet" href="css/feelings.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="feelings-screen-wrapper">
+    <div id="feelings-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="feelings-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.feelingsApp.renderStage(1)" title="Lesson Intro">
+            🎭 <span>How Would You Feel?</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.feelingsApp.prevStage()" title="Previous Stage">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.feelingsApp.nextStage()" title="Next Stage">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Stage Tracker Indicator -->
+          <div class="stage-tracker-pill" id="hud-stage-name">
+            1. 🎭 Mystery Face
+          </div>
+
+          <!-- Printable Worksheets Link -->
+          <a href="worksheet.html" target="_blank" class="hud-btn" title="Open 4 Printable Worksheets">
+            🖨️ <span>Worksheet</span>
+          </a>
+
+          <!-- Return to Library Hub -->
+          <a href="../index.html" class="hud-btn" title="Return to ESL Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none; font-weight:800;">
+            📚 <span>Library</span>
+          </a>
+
+          <!-- Navigation Links to Sister Games -->
+          <a href="../firefighter/index.html" class="hud-btn" title="Fire Station Adventure" style="background:#fee2e2; border-color:#fca5a5; color:#b91c1c; text-decoration:none;">
+            🚒 <span>Firefighter</span>
+          </a>
+          <a href="../restaurant/index.html" class="hud-btn" title="Restaurant Role-play" style="background:#fff3e0; border-color:#ffb74d; color:#e65100; text-decoration:none;">
+            🍽️ <span>Restaurant</span>
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Classroom Team Scoreboard -->
+          <div class="team-scoreboard">
+            <div class="team-box team-a" title="Team A Points" onclick="window.feelingsApp.addScore('teamA', 1)">
+              <span>🔵 Team A:</span>
+              <span class="team-pts" id="score-teamA">0</span>
+              <button class="team-btn-add" onclick="event.stopPropagation(); window.feelingsApp.addScore('teamA', 1)">+1</button>
+            </div>
+            <div class="team-box team-b" title="Team B Points" onclick="window.feelingsApp.addScore('teamB', 1)">
+              <span>🔴 Team B:</span>
+              <span class="team-pts" id="score-teamB">0</span>
+              <button class="team-btn-add" onclick="event.stopPropagation(); window.feelingsApp.addScore('teamB', 1)">+1</button>
+            </div>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="feel-voice-btn" onclick="toggleFeelingsSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="feel-sfx-btn" onclick="toggleFeelingsSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Control Panel Dropdown -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherMenu()" title="Teacher Navigation">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="feelings-teacher-menu">
+              <div class="menu-section-tag">--- 10-STAGE JUMP (45-50 MIN) ---</div>
+              <button onclick="window.feelingsApp.renderStage(1); toggleTeacherMenu();">1. 🎭 Mystery Face (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(2); toggleTeacherMenu();">2. 🧠 Feeling Discovery (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(3); toggleTeacherMenu();">3. 🎯 Which Feeling? (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(4); toggleTeacherMenu();">4. 🎭 How Would You Feel? (10m)</button>
+              <button onclick="window.feelingsApp.renderStage(5); toggleTeacherMenu();">5. 🤔 Harder Thinking (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(6); toggleTeacherMenu();">6. 🎡 Digital Spin &amp; React (7m)</button>
+              <button onclick="window.feelingsApp.renderStage(7); toggleTeacherMenu();">7. 🔄 Match Triplet (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(8); toggleTeacherMenu();">8. 🎵 Feelings Song (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(9); toggleTeacherMenu();">9. ⚡ Boss Challenge (5m)</button>
+              <button onclick="window.feelingsApp.renderStage(10); toggleTeacherMenu();">10. 🎫 Exit Ticket (3m)</button>
+
+              <div class="menu-section-tag">--- CLASSROOM ACTIONS ---</div>
+              <button onclick="window.feelingsApp.resetScores(); toggleTeacherMenu();">🔄 Reset Team Scores</button>
+              <a href="worksheet.html" target="_blank" style="background:#f0fdf4; color:#15803d; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block; margin-bottom:5px;">
+                🖨️ Open Printable Worksheets ➔
+              </a>
+              <a href="../advice/index.html" style="background:#e0f2fe; color:#0369a1; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block; margin-bottom:5px;">
+                🧠 The Crazy Advice Academy ➔
+              </a>
+              <a href="../predictions/index.html" style="background:#faf5ff; color:#7c3aed; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">
+                🔮 What Will Happen Next? ➔
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="feelings-viewport">
+        <!-- Dynamically injected by JavaScript -->
+      </main>
+
+      <!-- Toast Feedback -->
+      <div id="feelings-toast"></div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/feelings-audio.js"></script>
+  <script src="js/feelings-data.js"></script>
+  <script src="js/feelings-scenes.js"></script>
+  <script src="js/feelings-app.js"></script>
+
+  <script>
+    function toggleTeacherMenu() {
+      const menu = document.getElementById('feelings-teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('feelings-teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleFeelingsSpeech() {
+      const enabled = window.feelingsSound.toggleSpeech();
+      const btn = document.getElementById('feel-voice-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "Voice" : "Muted";
+      window.feelingsApp.showToast(enabled ? "🔊 Voice Narration ON" : "🔇 Voice Narration OFF");
+    }
+
+    function toggleFeelingsSfx() {
+      const enabled = window.feelingsSound.toggleSound();
+      const btn = document.getElementById('feel-sfx-btn');
+      if (btn) btn.querySelector('span').textContent = enabled ? "SFX" : "Muted";
+      window.feelingsApp.showToast(enabled ? "🎵 Sound Effects ON" : "🔇 Sound Effects OFF");
+    }
+
+    // Launch App
+    window.addEventListener('DOMContentLoaded', () => {
+      window.feelingsApp = new FeelingsApp();
+    });
+  </script>
+</body>
+</html>

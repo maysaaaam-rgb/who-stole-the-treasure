@@ -3761,7 +3761,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Educational Resource Library</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">15 Audited digital classroom games, worksheets, stories, and roleplays.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">16 Audited digital classroom games, worksheets, stories, and roleplays.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
           '<button class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +

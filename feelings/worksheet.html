@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOW WOULD YOU FEEL? | Printable Classroom Worksheets &amp; Teacher Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --border-dark: #334155;
+      --border-light: #cbd5e1;
+      --bg-page: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f1f5f9;
+      font-family: 'Nunito', sans-serif;
+      color: #0f172a;
+      line-height: 1.4;
+      padding: 24px;
+    }
+
+    .no-print-bar {
+      max-width: 820px;
+      margin: 0 auto 20px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .btn-print {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Printable Page Styles */
+    .sheet-page {
+      max-width: 820px;
+      min-height: 1060px;
+      margin: 0 auto 28px auto;
+      background: var(--bg-page);
+      border: 2px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 36px 40px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      page-break-after: always;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border-dark);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .title-block h1 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .title-block p {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .student-fields {
+      display: flex;
+      gap: 18px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field-line {
+      border-bottom: 1.5px solid var(--border-dark);
+      display: inline-block;
+      min-width: 110px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #1e3a8a;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 6px 12px;
+      margin: 16px 0 10px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .trace-text {
+      font-family: monospace;
+      color: #94a3b8;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+
+    /* Grids */
+    .emotions-trace-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .trace-card {
+      border: 1.5px solid var(--border-light);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .trace-card .face {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .comic-dilemmas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .comic-box {
+      border: 2px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .draw-space {
+      height: 90px;
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .match-columns-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+
+    .match-card {
+      border: 1.5px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sheet-footer {
+      border-top: 1.5px solid var(--border-light);
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none;
+      }
+      .sheet-page {
+        border: none;
+        box-shadow: none;
+        margin: 0;
+        padding: 20mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar (Hidden in Print) -->
+  <div class="no-print-bar">
+    <div>
+      <h3 style="font-size:16px; font-weight:900;">🖨️ "How Would You Feel?" Printable Package</h3>
+      <p style="font-size:12px; color:#64748b;">4 Complete pages: Emotion Tracing, Situational Comics, 3-Way Match &amp; Teacher Guide</p>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <a href="index.html" style="background:#f1f5f9; color:#334155; text-decoration:none; padding:8px 14px; border-radius:8px; font-weight:800; font-size:13px;">
+        🎮 Return to Game
+      </a>
+      <button class="btn-print" onclick="window.print()">Print Worksheets (4 Pages)</button>
+    </div>
+  </div>
+
+  <!-- PAGE 1: EMOTION FACES & TRACING -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🎭 HOW WOULD YOU FEEL? • Worksheet 1</h1>
+          <p>Level: A1+ • Topic: Feelings &amp; Speaking Chunks</p>
+        </div>
+        <div class="student-fields">
+          <div>Name: <span class="field-line" style="min-width:140px;"></span></div>
+          <div>Date: <span class="field-line" style="min-width:80px;"></span></div>
+        </div>
+      </div>
+
+      <div class="section-title">1. Trace the Emotion Words &amp; Practice the Gesture</div>
+      <div class="emotions-trace-grid">
+        <div class="trace-card"><div class="face">😊</div><div class="trace-text">H A P P Y</div><div style="font-size:10px; color:#64748b;">(Smile &amp; Clap)</div></div>
+        <div class="trace-card"><div class="face">😢</div><div class="trace-text">S A D</div><div style="font-size:10px; color:#64748b;">(Wipe a tear)</div></div>
+        <div class="trace-card"><div class="face">😡</div><div class="trace-text">A N G R Y</div><div style="font-size:10px; color:#64748b;">(Cross arms)</div></div>
+        <div class="trace-card"><div class="face">😨</div><div class="trace-text">S C A R E D</div><div style="font-size:10px; color:#64748b;">(Hands on cheeks)</div></div>
+        <div class="trace-card"><div class="face">😋</div><div class="trace-text">H U N G R Y</div><div style="font-size:10px; color:#64748b;">(Rub tummy)</div></div>
+        <div class="trace-card"><div class="face">😴</div><div class="trace-text">S L E E P Y</div><div style="font-size:10px; color:#64748b;">(Big yawn)</div></div>
+        <div class="trace-card"><div class="face">🤩</div><div class="trace-text">E X C I T E D</div><div style="font-size:10px; color:#64748b;">(Jump high)</div></div>
+        <div class="trace-card"><div class="face">😲</div><div class="trace-text">S U R P R I S E D</div><div style="font-size:10px; color:#64748b;">(Mouth O-shape)</div></div>
+      </div>
+
+      <div class="section-title">2. Useful Speaking Chunks • Trace &amp; Say Aloud</div>
+      <div style="background:#f8fafc; border:1.5px solid var(--border-light); border-radius:12px; padding:14px; margin-bottom:14px;">
+        <p style="font-weight:800; font-size:13px; margin-bottom:6px;">A. When someone asks: <em>"How do you feel?"</em></p>
+        <div class="trace-text" style="font-size:16px; margin-bottom:12px;">➔ I ' M &nbsp; H A P P Y . &nbsp; / &nbsp; I ' M &nbsp; T I R E D .</div>
+
+        <p style="font-weight:800; font-size:13px; margin-bottom:6px;">B. In an imaginary situation: <em>"How would you feel?"</em></p>
+        <div class="trace-text" style="font-size:16px; margin-bottom:12px;">➔ I ' D &nbsp; F E E L &nbsp; S C A R E D .</div>
+
+        <p style="font-weight:800; font-size:13px; margin-bottom:6px;">C. What you do next: <em>"What would you do?"</em></p>
+        <div class="trace-text" style="font-size:16px;">➔ I ' D &nbsp; R U N ! &nbsp; / &nbsp; I ' D &nbsp; H I D E !</div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>English Adventure Academy • A1+ Communicative English</span>
+      <span>Page 1 of 4</span>
+    </div>
+  </div>
+
+  <!-- PAGE 2: SITUATION COMICS -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🎭 SITUATIONAL THINKING • Worksheet 2</h1>
+          <p>Imagine YOU are in each situation. Draw your face and complete the sentence!</p>
+        </div>
+        <div class="student-fields">
+          <div>Name: <span class="field-line" style="min-width:140px;"></span></div>
+        </div>
+      </div>
+
+      <div class="comic-dilemmas-grid">
+        <!-- Situation 1 -->
+        <div class="comic-box">
+          <div style="font-weight:900; font-size:14px;">1. 🎁 The Giant Present</div>
+          <p style="font-size:12px; color:#475569;">It is your birthday. A delivery person leaves a giant wrapped box with your name on it!</p>
+          <div class="draw-space">[ Draw your feeling face here ]</div>
+          <div style="font-size:13px; font-weight:800;">I'd feel <span class="field-line" style="min-width:140px;"></span>.</div>
+        </div>
+
+        <!-- Situation 2 -->
+        <div class="comic-box">
+          <div style="font-weight:900; font-size:14px;">2. 🐕 The Big Dog</div>
+          <p style="font-size:12px; color:#475569;">You are walking in the park and a large dog runs right toward you!</p>
+          <div class="draw-space">[ Draw your feeling face here ]</div>
+          <div style="font-size:13px; font-weight:800;">I'd feel <span class="field-line" style="min-width:140px;"></span>.</div>
+        </div>
+
+        <!-- Situation 3 -->
+        <div class="comic-box">
+          <div style="font-weight:900; font-size:14px;">3. 🐔 Bed Chicken</div>
+          <p style="font-size:12px; color:#475569;">You wake up and a real chicken is sitting at the foot of your bed looking at you!</p>
+          <div class="draw-space">[ Draw your feeling face here ]</div>
+          <div style="font-size:13px; font-weight:800;">I'd feel <span class="field-line" style="min-width:140px;"></span>.</div>
+        </div>
+
+        <!-- Situation 4 -->
+        <div class="comic-box">
+          <div style="font-weight:900; font-size:14px;">4. 🐸 Frog on Your Head</div>
+          <p style="font-size:12px; color:#475569;">A little green frog jumps from a tree branch and lands right on your head!</p>
+          <div class="draw-space">[ Draw your feeling face here ]</div>
+          <div style="font-size:13px; font-weight:800;">I'd feel <span class="field-line" style="min-width:140px;"></span>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>English Adventure Academy • Situational Reaction Comics</span>
+      <span>Page 2 of 4</span>
+    </div>
+  </div>
+
+  <!-- PAGE 3: SITUATION -> FEELING -> ACTION CONNECTOR -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🔄 SITUATION ➔ FEELING ➔ ACTION • Worksheet 3</h1>
+          <p>Draw lines to connect the 3 matching steps!</p>
+        </div>
+        <div class="student-fields">
+          <div>Name: <span class="field-line" style="min-width:140px;"></span></div>
+        </div>
+      </div>
+
+      <div class="section-title">Connect: Situation (1) ➔ Feeling (2) ➔ Action (3)</div>
+      <div class="match-columns-grid">
+        <!-- Col 1 -->
+        <div>
+          <div style="font-weight:900; font-size:13px; margin-bottom:8px; color:#1e40af;">SITUATION:</div>
+          <div class="match-card">🐕 A big dog runs at you</div>
+          <div class="match-card">📚 Difficult test tomorrow</div>
+          <div class="match-card">🎁 Huge birthday present</div>
+          <div class="match-card">🍦 Ice cream falls down</div>
+          <div class="match-card">🌩️ Loud thunder storm</div>
+          <div class="match-card">🌙 Awake at midnight</div>
+        </div>
+
+        <!-- Col 2 -->
+        <div>
+          <div style="font-weight:900; font-size:13px; margin-bottom:8px; color:#b45309;">HOW WOULD YOU FEEL?</div>
+          <div class="match-card">🤩 Excited!</div>
+          <div class="match-card">😢 Sad.</div>
+          <div class="match-card">😨 Scared!</div>
+          <div class="match-card">😴 Sleepy.</div>
+          <div class="match-card">😰 Nervous.</div>
+          <div class="match-card">😨 Scared!</div>
+        </div>
+
+        <!-- Col 3 -->
+        <div>
+          <div style="font-weight:900; font-size:13px; margin-bottom:8px; color:#15803d;">WHAT WOULD YOU DO?</div>
+          <div class="match-card">🏃 Run away!</div>
+          <div class="match-card">📖 Study my book!</div>
+          <div class="match-card">🎉 Open the box!</div>
+          <div class="match-card">😭 Cry a little.</div>
+          <div class="match-card">🙈 Hide in room!</div>
+          <div class="match-card">🛏️ Go to sleep!</div>
+        </div>
+      </div>
+
+      <div class="section-title">Speaking Challenge</div>
+      <div style="background:#eff6ff; border:1.5px solid #93c5fd; border-radius:10px; padding:12px; font-size:13px;">
+        Pick one triplet and say the full sentence to your partner:<br>
+        <strong>"When a big dog runs at me, I'd feel scared and I'd run!"</strong>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>English Adventure Academy • Communicative Connectors</span>
+      <span>Page 3 of 4</span>
+    </div>
+  </div>
+
+  <!-- PAGE 4: TEACHER GUIDE & SPEAKING RUBRIC -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🧑‍🏫 TEACHER GUIDE &amp; SPEAKING RUBRIC</h1>
+          <p>Lesson Plan: 45–50 Minutes • Level: A1+ Young Learners</p>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:18px;">
+        <div>
+          <div class="section-title" style="margin-top:0;">Classroom Flow (10 Stages)</div>
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">1. Mystery Face (5m)</td><td>Hook with morphing emoji faces (😡, 😨).</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">2. Feeling Discovery (5m)</td><td>6 Core + 6 A1+ emotions with gestures.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">3. Which Feeling? (5m)</td><td>5-Second THINK timer before choosing.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">4. Main Activity (10m)</td><td>10 situational cartoon dilemmas.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">5. Harder Thinking (5m)</td><td>Dilemmas with multiple valid answers.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">6. Spin &amp; React (7m)</td><td>Wheel spins for situation ➔ Feel ➔ Act.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">7. Match Triplet (5m)</td><td>Connect Situation ➔ Feeling ➔ Action.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">8. Feelings Song (5m)</td><td>3 Rounds: Listen, Gesture, Predict.</td></tr>
+            <tr style="border-bottom:1px solid #cbd5e1;"><td style="font-weight:800; padding:4px 0;">9. Boss Challenge (5m)</td><td>Rapid-fire 5-second reaction drill.</td></tr>
+            <tr><td style="font-weight:800; padding:4px 0;">10. Exit Ticket (3m)</td><td>Individual spoken check &amp; awards.</td></tr>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-title" style="margin-top:0;">Differentiated Speaking Rubric</div>
+          <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:10px; margin-bottom:8px; font-size:12px;">
+            <strong style="color:#15803d;">🟢 Tier 1 (Emerging):</strong><br>
+            Understands question. Responds with emotion word or short phrase:<br>
+            <em>"Happy"</em> or <em>"I'm scared."</em>
+          </div>
+          <div style="background:#eff6ff; border:1px solid #93c5fd; border-radius:8px; padding:10px; margin-bottom:8px; font-size:12px;">
+            <strong style="color:#1d4ed8;">🟡 Tier 2 (Standard A1+):</strong><br>
+            Produces hypothetical chunk with correct emotion:<br>
+            <em>"I'd feel scared."</em>
+          </div>
+          <div style="background:#faf5ff; border:1px solid #d8b4fe; border-radius:8px; padding:10px; font-size:12px;">
+            <strong style="color:#7c3aed;">🟣 Tier 3 (Extension):</strong><br>
+            Produces full emotion + action response:<br>
+            <em>"I'd feel scared. I'd run away."</em>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:2px dashed #ca8a04; background:#fefce8; border-radius:12px; padding:16px; margin-top:20px; text-align:center;">
+        <h3 style="font-size:16px; font-weight:900; color:#854d0e;">🏆 MASTER OF EMOTIONS • CLASS AWARD</h3>
+        <p style="font-size:12px; color:#a16207; margin:4px 0 10px 0;">Awarded to the students who learned to Look, Think, Choose, and Speak Feelings in English!</p>
+        <div style="display:flex; justify-content:space-around; font-size:12px; font-weight:800; color:#713f12;">
+          <div>Class: ____________________</div>
+          <div>Teacher Signature: ____________________</div>
+          <div>Date: ____________________</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>English Adventure Academy • Teacher Support Materials</span>
+      <span>Page 4 of 4</span>
+    </div>
+  </div>
+
+</body>
+</html>
