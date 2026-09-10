@@ -1,20 +1,21 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — SUPABASE POSTGRESQL DATABASE CLIENT
+ * ENGLISH ADVENTURE ACADEMY — SUPABASE POSTGRESQL DATABASE CLIENT (v2.0)
  * 
  * Direct PostgreSQL client connecting via @supabase/supabase-js.
- * Serves as the authoritative shared online cloud database for:
- *   - teacher_notes table
- *   - assessment_results table
- *   - xp_transactions table
- *   - students table
- *   - attendance_records table
+ * Serves as the single authoritative shared online cloud database for:
+ *   - students table (complete student roster & profiles)
+ *   - teacher_notes table (notes, feedback & diagnostic evidence)
+ *   - assessment_results table (4-skill scores, mastery & comments)
+ *   - xp_transactions table (audit ledger & rewards)
+ *   - attendance_records table (daily roll calls)
+ *   - classes table (cohort metadata)
  */
 
 (function(root) {
   'use strict';
 
   // Production Supabase Configuration
-  // Can be configured here directly, via window.SUPABASE_CONFIG, or via UI settings dialog
+  // Can be configured here directly, via window.SUPABASE_CONFIG, via URL params, or via UI settings dialog
   const CONFIG = {
     url: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.url) || '',
     anonKey: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.anonKey) || ''
@@ -32,7 +33,39 @@
       this.lastSyncStatus = 'idle'; // 'idle' | 'syncing' | 'success' | 'error'
       this.lastError = null;
       this.listeners = [];
+      this._realtimeChannel = null;
+      this._activeStore = null;
+
+      // Automatically capture credentials from URL query parameters if provided (e.g. ?supabase_url=...&supabase_key=...)
+      this._detectUrlCredentials();
       this.initClient();
+    }
+
+    _detectUrlCredentials() {
+      try {
+        if (typeof window !== 'undefined' && window.location && window.location.search) {
+          const params = new URLSearchParams(window.location.search);
+          const urlParam = params.get('supabase_url') || params.get('sb_url');
+          const keyParam = params.get('supabase_key') || params.get('sb_key') || params.get('supabase_anon_key');
+
+          if (urlParam && keyParam && urlParam.trim() && keyParam.trim()) {
+            const cleanUrl = urlParam.trim();
+            const cleanKey = keyParam.trim();
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem(URL_STORAGE_KEY, cleanUrl);
+              localStorage.setItem(KEY_STORAGE_KEY, cleanKey);
+            }
+            console.log('[AdventureSupabase] Loaded credentials from URL parameter.');
+            // Clean URL query without page reload
+            if (window.history && window.history.replaceState) {
+              const cleanPath = window.location.pathname + (window.location.hash || '');
+              window.history.replaceState({}, document.title, cleanPath);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('[AdventureSupabase] URL credentials parse error:', e);
+      }
     }
 
     getStoredCredentials() {
@@ -52,7 +85,9 @@
       try {
         if (typeof localStorage !== 'undefined') {
           if (cleanUrl) localStorage.setItem(URL_STORAGE_KEY, cleanUrl);
+          else localStorage.removeItem(URL_STORAGE_KEY);
           if (cleanKey) localStorage.setItem(KEY_STORAGE_KEY, cleanKey);
+          else localStorage.removeItem(KEY_STORAGE_KEY);
         }
       } catch (e) {}
       this.initClient(cleanUrl, cleanKey);
@@ -79,6 +114,9 @@
           this.isConfigured = true;
           this.lastError = null;
           console.log('[AdventureSupabase] Initialized Supabase client for:', creds.url);
+          if (this._activeStore) {
+            this.setupRealtimeSubscriptions(this._activeStore);
+          }
         } catch (e) {
           console.error('[AdventureSupabase] Failed to initialize Supabase client:', e);
           this.client = null;
@@ -122,13 +160,186 @@
     _ensureClient() {
       if (!this.client) this.initClient();
       if (!this.client) {
-        throw new Error('Supabase client is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY.');
+        throw new Error('Supabase is not configured. Please connect your Supabase database in Settings or provide URL & Public Anon Key.');
       }
       return this.client;
     }
 
+    /**
+     * Connection health check utility
+     */
+    async testConnection(customUrl, customKey) {
+      const createClientFn = (typeof root.supabase !== 'undefined' && root.supabase.createClient) 
+        || (typeof root.createClient === 'function' ? root.createClient : null);
+
+      if (!createClientFn) {
+        return { success: false, error: 'Supabase JS SDK library not loaded' };
+      }
+
+      const url = customUrl || this.getStoredCredentials().url;
+      const key = customKey || this.getStoredCredentials().anonKey;
+      if (!url || !key) {
+        return { success: false, error: 'Missing Supabase URL or Anon Key' };
+      }
+
+      try {
+        const testClient = createClientFn(url, key, { auth: { persistSession: false } });
+        const start = Date.now();
+        const { count, error } = await testClient.from('students').select('id', { count: 'exact', head: true });
+        const latencyMs = Date.now() - start;
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        return { success: true, latencyMs, count: count || 0 };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    }
+
     // =========================================================================
-    // 1. TEACHER NOTES TABLE (PostgreSQL)
+    // 1. STUDENTS CRUD (Full student roster & attributes in PostgreSQL)
+    // =========================================================================
+    async saveStudent(student) {
+      if (!student || !student.id) return { success: false, error: 'Invalid student' };
+      const client = this._ensureClient();
+      this.isSyncing = true;
+      this.lastSyncStatus = 'syncing';
+      this.notify();
+
+      const row = {
+        id: String(student.id),
+        student_id_number: student.studentIdNumber ? String(student.studentIdNumber) : null,
+        first_name: String(student.firstName || 'Student'),
+        last_name: String(student.lastName || ''),
+        class_id: String(student.classId || 'class-3a'),
+        age: parseInt(student.age, 10) || 8,
+        grade: String(student.grade || 'Grade 3'),
+        overall_cefr: String(student.overallCefr || 'A1'),
+        avatar: student.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+        parent_name: String(student.parentName || ''),
+        parent_contact: String(student.parentContact || ''),
+        parent_email: String(student.parentEmail || ''),
+        xp: (this._activeStore && typeof this._activeStore.getStudentTotalXP === 'function')
+          ? this._activeStore.getStudentTotalXP(student.id)
+          : (parseInt(student.xp || student.totalXP, 10) || 0),
+        level: parseInt(student.level, 10) || 1,
+        streak_days: parseInt(student.streakDays, 10) || 0,
+        equipped_monster: String(student.equippedMonster || 'Mystery Egg'),
+        archived: Boolean(student.archived),
+        latest_teacher_note: String(student.latestTeacherNote || ''),
+        manual_cefr_overrides: student.manualCefrOverrides || {},
+        monster_profile: student.monsterProfile || {},
+        extra_data: {
+          lastActive: student.lastActive || null,
+          parentNotes: student.parentNotes || ''
+        },
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        const { data, error } = await client
+          .from('students')
+          .upsert(row, { onConflict: 'id' })
+          .select();
+
+        this.isSyncing = false;
+        if (error) {
+          // If error is caused by missing column in an older table schema, try fallback row
+          if (error.message && (error.message.includes('column') || error.message.includes('schema'))) {
+            const fallbackRow = {
+              id: row.id,
+              student_id_number: row.student_id_number,
+              first_name: row.first_name,
+              last_name: row.last_name,
+              class_id: row.class_id,
+              xp: row.xp,
+              level: row.level,
+              streak_days: row.streak_days,
+              latest_teacher_note: row.latest_teacher_note,
+              manual_cefr_overrides: row.manual_cefr_overrides,
+              monster_profile: row.monster_profile,
+              updated_at: row.updated_at
+            };
+            const fallbackRes = await client.from('students').upsert(fallbackRow, { onConflict: 'id' }).select();
+            if (fallbackRes.error) throw fallbackRes.error;
+          } else {
+            throw error;
+          }
+        }
+
+        this.lastSyncStatus = 'success';
+        this.lastSyncTime = new Date().toISOString();
+        this.notify();
+        return { success: true, student: data && data[0] ? data[0] : row };
+      } catch (err) {
+        this.isSyncing = false;
+        this.lastSyncStatus = 'error';
+        this.lastError = err.message;
+        this.notify();
+        console.error('[AdventureSupabase] saveStudent error:', err);
+        throw new Error('Supabase saveStudent error: ' + err.message);
+      }
+    }
+
+    async getStudents() {
+      const client = this._ensureClient();
+      const { data, error } = await client.from('students').select('*').order('first_name', { ascending: true });
+      if (error) throw new Error('Supabase getStudents error: ' + error.message);
+
+      // Transform rows to match store format
+      return (data || []).map(row => ({
+        id: row.id,
+        studentIdNumber: row.student_id_number,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        classId: row.class_id,
+        age: row.age !== undefined ? row.age : 8,
+        grade: row.grade || 'Grade 3',
+        overallCefr: row.overall_cefr || 'A1',
+        avatar: row.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+        parentName: row.parent_name || '',
+        parentContact: row.parent_contact || '',
+        parentEmail: row.parent_email || '',
+        xp: row.xp !== undefined ? row.xp : 0,
+        level: row.level !== undefined ? row.level : 1,
+        streakDays: row.streak_days !== undefined ? row.streak_days : 0,
+        equippedMonster: row.equipped_monster || 'Mystery Egg',
+        archived: Boolean(row.archived),
+        latestTeacherNote: row.latest_teacher_note || '',
+        manualCefrOverrides: row.manual_cefr_overrides || {},
+        monsterProfile: row.monster_profile || {},
+        updatedAt: row.updated_at
+      }));
+    }
+
+    async deleteStudent(studentId) {
+      if (!studentId) return { success: false };
+      const client = this._ensureClient();
+      this.isSyncing = true;
+      this.lastSyncStatus = 'syncing';
+      this.notify();
+
+      try {
+        const { error } = await client.from('students').delete().eq('id', String(studentId));
+        this.isSyncing = false;
+        if (error) throw error;
+        this.lastSyncStatus = 'success';
+        this.lastSyncTime = new Date().toISOString();
+        this.notify();
+        return { success: true };
+      } catch (err) {
+        this.isSyncing = false;
+        this.lastSyncStatus = 'error';
+        this.lastError = err.message;
+        this.notify();
+        console.error('[AdventureSupabase] deleteStudent error:', err);
+        throw new Error('Supabase deleteStudent error: ' + err.message);
+      }
+    }
+
+    // =========================================================================
+    // 2. TEACHER NOTES TABLE (PostgreSQL)
     // =========================================================================
     async saveTeacherNote(note) {
       if (!note || !note.id) return { success: false, error: 'Invalid note payload' };
@@ -185,7 +396,7 @@
     }
 
     // =========================================================================
-    // 2. ASSESSMENT RESULTS TABLE (PostgreSQL)
+    // 3. ASSESSMENT RESULTS TABLE (PostgreSQL)
     // =========================================================================
     async saveAssessments(submissionsArray) {
       if (!Array.isArray(submissionsArray) || submissionsArray.length === 0) return { success: true, count: 0 };
@@ -263,7 +474,7 @@
     }
 
     // =========================================================================
-    // 3. XP AUDIT LEDGER (PostgreSQL)
+    // 4. XP AUDIT LEDGER (PostgreSQL)
     // =========================================================================
     async saveXPTransaction(tx) {
       if (!tx || !tx.id || !tx.studentId) return { success: false };
@@ -300,37 +511,12 @@
       return data || [];
     }
 
-    // =========================================================================
-    // 4. STUDENT PROFILES (PostgreSQL)
-    // =========================================================================
-    async saveStudent(student) {
-      if (!student || !student.id) return { success: false };
+    async deleteXPTransaction(txId) {
+      if (!txId) return { success: false };
       const client = this._ensureClient();
-      const row = {
-        id: String(student.id),
-        student_id_number: student.studentIdNumber ? String(student.studentIdNumber) : null,
-        first_name: student.firstName || '',
-        last_name: student.lastName || '',
-        class_id: student.classId || 'class-4a',
-        xp: parseInt(student.xp, 10) || 0,
-        level: parseInt(student.level, 10) || 1,
-        streak_days: parseInt(student.streakDays, 10) || 0,
-        latest_teacher_note: student.latestTeacherNote || '',
-        manual_cefr_overrides: student.manualCefrOverrides || {},
-        monster_profile: student.monsterProfile || {},
-        updated_at: new Date().toISOString()
-      };
-
-      const { data, error } = await client.from('students').upsert(row, { onConflict: 'id' });
-      if (error) throw new Error('Supabase students error: ' + error.message);
+      const { error } = await client.from('xp_transactions').delete().eq('id', String(txId));
+      if (error) throw new Error('Supabase deleteXPTransaction error: ' + error.message);
       return { success: true };
-    }
-
-    async getStudents() {
-      const client = this._ensureClient();
-      const { data, error } = await client.from('students').select('*');
-      if (error) throw new Error('Supabase getStudents error: ' + error.message);
-      return data || [];
     }
 
     // =========================================================================
@@ -354,22 +540,98 @@
     }
 
     // =========================================================================
-    // 6. TWO-WAY STORE SYNCHRONIZATION
+    // 6. REALTIME MULTI-DEVICE SUBSCRIPTIONS
+    // =========================================================================
+    setupRealtimeSubscriptions(store) {
+      if (!store) return;
+      this._activeStore = store;
+      if (!this.client || !this.isConfigured) return;
+
+      // Clean up previous subscription if any
+      if (this._realtimeChannel) {
+        try { this.client.removeChannel(this._realtimeChannel); } catch (e) {}
+        this._realtimeChannel = null;
+      }
+
+      try {
+        const channel = this.client.channel('adventure-realtime-all');
+
+        // Listen to all public schema table changes
+        const tables = ['students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records'];
+        tables.forEach(tableName => {
+          channel.on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
+            console.log(`[AdventureSupabase:Realtime] ${tableName} event:`, payload.eventType);
+            // Trigger store sync when remote changes arrive
+            this.syncAllWithStore(store).catch(err => {
+              console.warn('[AdventureSupabase] Realtime sync-back error:', err);
+            });
+          });
+        });
+
+        channel.subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('[AdventureSupabase] Realtime subscriptions active for all tables.');
+          }
+        });
+
+        this._realtimeChannel = channel;
+      } catch (e) {
+        console.warn('[AdventureSupabase] Realtime subscription error:', e);
+      }
+    }
+
+    // =========================================================================
+    // 7. TWO-WAY STORE SYNCHRONIZATION (Authoritative Supabase -> Store)
     // =========================================================================
     async syncAllWithStore(store) {
       if (!this.isConfigured) return { success: false, reason: 'not_configured' };
       if (!store) return { success: false, reason: 'no_store' };
 
+      this._activeStore = store;
+      this.isSyncing = true;
+      this.lastSyncStatus = 'syncing';
+      this.notify();
+
       try {
-        const [notes, assessments, xpTxs, students, attendance] = await Promise.all([
+        const [students, notes, assessments, xpTxs, attendance] = await Promise.all([
+          this.getStudents(),
           this.getTeacherNotes(),
           this.getAssessments(),
           this.getXPTransactions(),
-          this.getStudents(),
           this._ensureClient().from('attendance_records').select('*').then(r => r.data || [])
         ]);
 
-        // Transform Supabase rows to Store format
+        // SAFE IDEMPOTENT SEEDING / MIGRATION:
+        // If Supabase has zero students, but local store has students, upload local roster to Supabase!
+        if (students.length === 0 && store.state && Array.isArray(store.state.students) && store.state.students.length > 0) {
+          console.log('[AdventureSupabase] Supabase is empty. Performing initial migration of local students to cloud...');
+          for (const s of store.state.students) {
+            try {
+              await this.saveStudent(s);
+            } catch (seedErr) {
+              console.warn('[AdventureSupabase] Migration error for student', s.id, seedErr);
+            }
+          }
+          // Also upload any initial notes, assessments, and attendance
+          if (Array.isArray(store.state.teacherNotes) && store.state.teacherNotes.length > 0) {
+            for (const n of store.state.teacherNotes) {
+              try { await this.saveTeacherNote(n); } catch (e) {}
+            }
+          }
+          if (Array.isArray(store.state.progressCheckSubmissions) && store.state.progressCheckSubmissions.length > 0) {
+            try { await this.saveAssessments(store.state.progressCheckSubmissions); } catch (e) {}
+          }
+          if (Array.isArray(store.state.attendanceRecords) && store.state.attendanceRecords.length > 0) {
+            try { await this.saveAttendance(store.state.attendanceRecords); } catch (e) {}
+          }
+          this.isSyncing = false;
+          this.lastSyncStatus = 'success';
+          this.lastSyncTime = new Date().toISOString();
+          this.notify();
+          return { success: true, migrated: true, studentCount: store.state.students.length };
+        }
+
+        // Transform Supabase notes to Store format
         const transformedNotes = (notes || []).map(n => ({
           id: n.id,
           studentId: n.student_id,
@@ -379,6 +641,7 @@
           updatedAt: n.updated_at
         }));
 
+        // Transform Supabase assessment results to Store format
         const transformedSubs = (assessments || []).map(a => ({
           id: a.id,
           studentId: a.student_id,
@@ -403,18 +666,7 @@
           updatedAt: a.updated_at
         }));
 
-        const studentOverrides = {};
-        (students || []).forEach(s => {
-          studentOverrides[s.id] = {
-            xp: s.xp,
-            level: s.level,
-            streakDays: s.streak_days,
-            latestTeacherNote: s.latest_teacher_note,
-            manualCefrOverrides: s.manual_cefr_overrides,
-            monsterProfile: s.monster_profile
-          };
-        });
-
+        // Transform Supabase XP ledger to Store format
         const transformedXP = (xpTxs || []).map(x => ({
           id: x.id,
           studentId: x.student_id,
@@ -433,6 +685,7 @@
           status: x.status
         }));
 
+        // Transform Supabase attendance records to Store format
         const transformedAtt = (attendance || []).map(att => ({
           id: att.id,
           studentId: att.student_id,
@@ -441,30 +694,48 @@
           status: att.status
         }));
 
-        // Ingest into store
+        // Ingest into store with authoritative student list
         if (typeof store.mergeCloudState === 'function') {
           store.mergeCloudState({
+            students: students,
+            isAuthoritativeList: true,
             teacherNotes: transformedNotes,
             progressCheckSubmissions: transformedSubs,
-            studentOverrides: studentOverrides,
             xpTransactions: transformedXP,
             attendanceRecords: transformedAtt
           });
         }
 
+        this.isSyncing = false;
+        this.lastSyncStatus = 'success';
+        this.lastSyncTime = new Date().toISOString();
+        this.notify();
+
         return {
           success: true,
+          studentCount: students.length,
           notesCount: transformedNotes.length,
           assessmentsCount: transformedSubs.length,
-          xpCount: transformedXP.length
+          xpCount: transformedXP.length,
+          attendanceCount: transformedAtt.length
         };
       } catch (err) {
+        this.isSyncing = false;
+        this.lastSyncStatus = 'error';
+        this.lastError = err.message;
+        this.notify();
         console.error('[AdventureSupabase] syncAllWithStore error:', err);
         return { success: false, error: err.message };
       }
+    }
+
+    async syncWithCloud(store) {
+      const targetStore = store || this._activeStore || (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
+      return this.syncAllWithStore(targetStore);
     }
   }
 
   root.AdventureSupabase = new AdventureSupabaseService();
 
 })(typeof window !== 'undefined' ? window : global);
+

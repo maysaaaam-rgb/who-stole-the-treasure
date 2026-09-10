@@ -8146,6 +8146,16 @@
 
       this.state.students.unshift(newStudent);
       this.saveState();
+
+      // Cloud Persistence: Authoritative Supabase INSERT
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveStudent(newStudent).catch(err => {
+          console.error('[SchoolStore] Supabase saveStudent error:', err);
+        });
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveStudent(newStudent).catch(() => {});
+      }
+
       return newStudent;
     }
 
@@ -8154,6 +8164,16 @@
       if (s) {
         Object.assign(s, updates);
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase updateStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return s;
       }
       return null;
@@ -8164,6 +8184,16 @@
       if (s) {
         s.archived = true;
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase archiveStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -8174,6 +8204,16 @@
       if (s) {
         s.classId = null;
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase removeStudentFromClass error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -8183,8 +8223,17 @@
       const idx = this.state.students.findIndex(s => s.id === id);
       if (idx !== -1) {
         this.state.students.splice(idx, 1);
-        // Also clean up or preserve dependent records
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase DELETE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.deleteStudent(id).catch(err => {
+            console.error('[SchoolStore] Supabase deleteStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.deleteStudent(id).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -8264,8 +8313,16 @@
       const lastCelebrated = profile.lastCelebratedLevel || prevLevel;
 
       this.state.xpTransactions.push(tx);
+      const newTotalXP = this.getStudentTotalXP(studentId);
+      if (s) {
+        s.xp = newTotalXP;
+        s.totalXP = newTotalXP;
+      }
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
+      if (s) {
+        s.level = newLevel;
+      }
 
       let evolutionEvent = null;
       if (newMonsterState && newLevel > prevLevel && newLevel > lastCelebrated) {
@@ -8326,12 +8383,16 @@
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
 
-      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
+        window.AdventureSupabase.saveStudent(s).catch(() => {});
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
         window.SchoolCloudSync.saveXPTransaction(tx).catch(e => {
           console.warn('[SchoolStore] XP cloud save warning:', e);
         });
       }
       return { 
+        success: true,
         transaction: tx, 
         student: s, 
         newTotalXP: this.getStudentTotalXP(studentId), 
@@ -8342,6 +8403,10 @@
         evolutionEvent, 
         monsterState: newMonsterState 
       };
+    }
+
+    awardXP(studentId, amount, reason, teacher, options) {
+      return this.giveXP(studentId, amount, reason, teacher, options);
     }
 
     giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
@@ -9872,6 +9937,19 @@
         Object.assign(profile, updates);
         this.saveState();
         this.notify();
+
+        // Cloud Persistence: Authoritative Supabase Student Profile Update
+        const s = this.getStudent(studentId);
+        if (s) {
+          s.monsterProfile = profile;
+          if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+            window.AdventureSupabase.saveStudent(s).catch(err => {
+              console.error('[SchoolStore] Supabase saveStudent (monster) error:', err);
+            });
+          } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+            window.SchoolCloudSync.saveStudent(s).catch(() => {});
+          }
+        }
       }
       return profile;
     }
@@ -11198,6 +11276,15 @@
         s.avatar = Object.assign({}, s.avatar || {}, avatarObj);
         this.saveState();
         this.notify('students', s);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase saveStudent (avatar) error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -11591,6 +11678,15 @@
       }
       this.saveState();
       this.notify('students', this.state.students);
+
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveStudent(student).catch(err => {
+          console.error('[SchoolStore] Supabase saveStudent (avatar) error:', err);
+        });
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveStudent(student).catch(() => {});
+      }
+
       return student;
     }
 
@@ -12521,6 +12617,48 @@
       if (!cloudData || typeof cloudData !== 'object') return { success: false };
 
       let modified = false;
+
+      // 0. Merge Complete Students Roster (Authoritative Supabase Cloud Roster)
+      if (Array.isArray(cloudData.students) && cloudData.students.length > 0) {
+        if (!this.state.students) this.state.students = [];
+        const remoteMap = new Map();
+
+        cloudData.students.forEach(remoteStudent => {
+          if (!remoteStudent || !remoteStudent.id) return;
+          remoteMap.set(remoteStudent.id, remoteStudent);
+
+          const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
+          if (localIdx !== -1) {
+            const local = this.state.students[localIdx];
+            // Supabase is authoritative source of truth: merge remote attributes
+            this.state.students[localIdx] = Object.assign({}, local, remoteStudent);
+            if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
+              this.state.monsterProfiles[remoteStudent.id] = Object.assign(
+                {},
+                this.state.monsterProfiles[remoteStudent.id] || {},
+                remoteStudent.monsterProfile
+              );
+            }
+            modified = true;
+          } else {
+            // Student added on another device: ingest into local state
+            this.state.students.push(remoteStudent);
+            if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
+              this.state.monsterProfiles[remoteStudent.id] = remoteStudent.monsterProfile;
+            }
+            modified = true;
+          }
+        });
+
+        // If authoritative cloud list, prune students that were deleted on another device
+        if (cloudData.isAuthoritativeList && remoteMap.size > 0) {
+          const beforeCount = this.state.students.length;
+          this.state.students = this.state.students.filter(s => remoteMap.has(s.id));
+          if (this.state.students.length !== beforeCount) {
+            modified = true;
+          }
+        }
+      }
 
       // 1. Merge Teacher Notes (Single source of truth)
       if (Array.isArray(cloudData.teacherNotes)) {
