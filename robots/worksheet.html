@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMAZING ROBOTS AROUND THE WORLD | Printable Classroom Worksheets &amp; Teacher Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --border-dark: #334155;
+      --border-light: #cbd5e1;
+      --bg-page: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f1f5f9;
+      font-family: 'Nunito', sans-serif;
+      color: #0f172a;
+      line-height: 1.4;
+      padding: 24px;
+    }
+
+    .no-print-bar {
+      max-width: 840px;
+      margin: 0 auto 20px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .btn-print {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-back {
+      color: #0369a1;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Printable Page Styles */
+    .sheet-page {
+      max-width: 840px;
+      min-height: 1100px;
+      margin: 0 auto 28px auto;
+      background: var(--bg-page);
+      border: 2px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 34px 38px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      page-break-after: always;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border-dark);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .title-block h1 {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .title-block p {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .student-info-box {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.8;
+      text-align: right;
+    }
+
+    .student-info-box span {
+      display: inline-block;
+      border-bottom: 1.5px solid #64748b;
+      min-width: 130px;
+      text-align: left;
+      padding-left: 6px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-top: 14px;
+      margin-bottom: 10px;
+      color: #0369a1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wh-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .wh-box {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wh-box strong {
+      color: #0284c7;
+      font-size: 13px;
+    }
+
+    .prediction-card {
+      border: 1.5px solid #94a3b8;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      background: #ffffff;
+    }
+
+    .pred-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .pred-line span {
+      color: #0284c7;
+      min-width: 80px;
+    }
+
+    .pred-line .blank {
+      flex: 1;
+      border-bottom: 1.5px dashed #64748b;
+      height: 20px;
+    }
+
+    .drawing-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 8px;
+      background: #f8fafc;
+    }
+
+    .speech-bubble {
+      border: 2px solid #0284c7;
+      border-radius: 14px;
+      padding: 14px 18px;
+      background: #f0f9ff;
+      margin-bottom: 14px;
+    }
+
+    .speech-line {
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .speech-line strong {
+      color: #0369a1;
+      font-weight: 900;
+    }
+
+    .speech-line .write-space {
+      display: inline-block;
+      border-bottom: 1.5px solid #0369a1;
+      min-width: 200px;
+    }
+
+    .reading-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
+
+    .reading-summary-table th, .reading-summary-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .reading-summary-table th {
+      background: #f1f5f9;
+      font-weight: 900;
+      color: #0369a1;
+    }
+
+    .roadmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .roadmap-table th, .roadmap-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+
+    .roadmap-table th {
+      background: #f1f5f9;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .key-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 8px;
+      font-size: 11.5px;
+      background: #f8fafc;
+    }
+
+    .key-box h4 {
+      font-size: 12px;
+      font-weight: 900;
+      color: #0284c7;
+      margin-bottom: 4px;
+    }
+
+    .page-footer {
+      border-top: 1.5px solid #cbd5e1;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet-page {
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+        page-break-after: always;
+        padding: 24px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Non-Printing Navigation Bar -->
+  <div class="no-print-bar">
+    <div>
+      <a href="index.html" class="btn-back">⬅️ Back to Interactive Screen</a>
+      <div style="font-size: 12px; color: #64748b; font-weight: 700; margin-top: 4px;">
+        Print this 4-page student companion pack on standard A4 / Letter paper.
+      </div>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      🖨️ Print All 4 Pages
+    </button>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 1: WH-QUESTION DETECTIVE & MYSTERY PREDICTION WORKSHEET             -->
+  <!-- ========================================================================= -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🤖 AMAZING ROBOTS: Detective File</h1>
+          <p>Page 1: WH-Question Detective &amp; Mystery Robot Guessing Sheet</p>
+        </div>
+        <div class="student-info-box">
+          Name: <span></span><br>
+          Group: <span></span> &nbsp; Date: <span></span>
+        </div>
+      </div>
+
+      <!-- Part A: WH-Question Rule Guide -->
+      <div class="section-title">
+        <span>Part A: WH-Question Detective Clues</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Match the question word to what it seeks</span>
+      </div>
+
+      <div class="wh-grid">
+        <div class="wh-box">
+          <strong>1. WHAT?</strong> asks for a <u>thing</u> or <u>action</u>.<br>
+          <span style="color:#64748b;">e.g. "What does it look like?"</span>
+        </div>
+        <div class="wh-box">
+          <strong>2. WHERE?</strong> asks for a <u>place</u> or <u>environment</u>.<br>
+          <span style="color:#64748b;">e.g. "Where does it swim or go?"</span>
+        </div>
+        <div class="wh-box">
+          <strong>3. WHEN?</strong> asks for a <u>time</u> or <u>year</u>.<br>
+          <span style="color:#64748b;">e.g. "When was it made?"</span>
+        </div>
+        <div class="wh-box">
+          <strong>4. WHO?</strong> asks for a <u>person</u> or <u>creator</u>.<br>
+          <span style="color:#64748b;">e.g. "Who invented or built it?"</span>
+        </div>
+        <div class="wh-box">
+          <strong>5. WHY?</strong> asks for a <u>reason</u> or <u>problem</u>.<br>
+          <span style="color:#64748b;">e.g. "Why did scientists build it?"</span>
+        </div>
+        <div class="wh-box">
+          <strong>6. HOW?</strong> asks for the <u>method</u> or <u>operation</u>.<br>
+          <span style="color:#64748b;">e.g. "How does it move?"</span>
+        </div>
+      </div>
+
+      <!-- Part B: Mystery Robot Predictions -->
+      <div class="section-title">
+        <span>Part B: Group Mystery Predictions</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Look at the screen visual. Do NOT name the robot!</span>
+      </div>
+
+      <div class="prediction-card">
+        <div class="pred-line">
+          <span>WHAT:</span>
+          <div>What kind of animal or machine does it look like?</div>
+          <div class="blank"></div>
+        </div>
+        <div class="pred-line">
+          <span>WHERE:</span>
+          <div>Where does it work? (water, sky, factory, disaster...)</div>
+          <div class="blank"></div>
+        </div>
+        <div class="pred-line">
+          <span>WHEN:</span>
+          <div>When was it developed? (recent years, future...)</div>
+          <div class="blank"></div>
+        </div>
+        <div class="pred-line">
+          <span>WHO:</span>
+          <div>Who uses it? (scientists, rescue workers, divers...)</div>
+          <div class="blank"></div>
+        </div>
+        <div class="pred-line">
+          <span>WHY:</span>
+          <div>Why did humans invent it? What problem does it solve?</div>
+          <div class="blank"></div>
+        </div>
+        <div class="pred-line">
+          <span>HOW:</span>
+          <div>How does it move or operate without getting stuck?</div>
+          <div class="blank"></div>
+        </div>
+      </div>
+
+      <!-- Part C: Robot Sketch Box -->
+      <div style="font-size: 12px; font-weight: 800; color: #334155; margin-top: 6px;">
+        ✏️ Sketch your group's mystery robot below. Label 2 interesting parts (e.g. camera, legs, fin, joints):
+      </div>
+      <div class="drawing-box">
+        [ Draw your mystery robot here &amp; label its special features ]
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>Amazing Robots Around the World • A1–A2 ESL Lesson</span>
+      <span>Worksheet Page 1 of 4</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 2: ROBOT READING DOSSIERS & COMPREHENSION CHECK                     -->
+  <!-- ========================================================================= -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>📖 OFFICIAL ROBOT READING FILES</h1>
+          <p>Page 2: Group Dossier &amp; 6 WH-Comprehension Questions</p>
+        </div>
+        <div class="student-info-box">
+          Name: <span></span><br>
+          Group Robot: <span></span>
+        </div>
+      </div>
+
+      <!-- Part A: Quick Reading Reference Overview -->
+      <div class="section-title">
+        <span>Part A: The 5 Global Robot Inventions</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Find your group's robot summary below</span>
+      </div>
+
+      <table class="reading-summary-table">
+        <thead>
+          <tr>
+            <th style="width: 18%;">Robot</th>
+            <th style="width: 20%;">Environment</th>
+            <th style="width: 32%;">Real Purpose</th>
+            <th style="width: 30%;">Amazing Fact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🐟 Robot Fish</strong><br>(Prof. Porfiri, NYU)</td>
+            <td>Rivers, lakes, water channels</td>
+            <td>Guides live fish away from dangerous turbine dams &amp; toxic spills.</td>
+            <td>Live fish actually follow it as an underwater school leader!</td>
+          </tr>
+          <tr>
+            <td><strong>🪼 Robot Jellyfish</strong><br>(FAU / Max Planck)</td>
+            <td>Coral reefs, delicate oceans</td>
+            <td>Monitors coral health without propellers or blades that cut reefs.</td>
+            <td>Swims gently using soft water pulses and silicon flaps.</td>
+          </tr>
+          <tr>
+            <td><strong>🐝 Robotic Bee</strong><br>(Harvard RoboBee)</td>
+            <td>Crumpled buildings, flowers</td>
+            <td>Flies into tiny gaps for rescue inspection &amp; micro-sensors.</td>
+            <td>Flaps wings 120 times per second; weighs less than 1 penny!</td>
+          </tr>
+          <tr>
+            <td><strong>🐍 Snake Robot</strong><br>(CMU Biorobotics)</td>
+            <td>Disaster rubble, pipes</td>
+            <td>Slithers through tight earthquake ruins to find survivors.</td>
+            <td>Has many flexible motor joints; can climb stairs &amp; tree poles!</td>
+          </tr>
+          <tr>
+            <td><strong>🐕 Robot Dog</strong><br>(Spot, Boston Dyn.)</td>
+            <td>Industrial plants, rubble</td>
+            <td>Inspects dangerous radioactive sites, gas leaks, and mines.</td>
+            <td>Climbs stairs, balances if pushed, and walks automatically.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Part B: 6 WH Comprehension Questions -->
+      <div class="section-title">
+        <span>Part B: Find the Answers (6 WH Comprehension Questions)</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Answer based ONLY on your robot's official file</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: 700;">
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>1. [WHAT]</strong> What is your robot designed to look and move like?
+          <div style="margin-top: 4px; display: flex; gap: 12px; color: #334155;">
+            <label><input type="checkbox"> An animal (biomimetic)</label>
+            <label><input type="checkbox"> A flying rocket</label>
+            <label><input type="checkbox"> A human chef</label>
+          </div>
+        </div>
+
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>2. [WHERE]</strong> Where does this robot perform its real-world job?
+          <div style="margin-top: 4px; border-bottom: 1.5px dashed #94a3b8; height: 18px;"></div>
+        </div>
+
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>3. [WHEN]</strong> When was this robot developed by researchers?
+          <div style="margin-top: 4px; display: flex; gap: 12px; color: #334155;">
+            <label><input type="checkbox"> In recent years (2000s–2020s)</label>
+            <label><input type="checkbox"> Over 300 years ago</label>
+          </div>
+        </div>
+
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>4. [WHO]</strong> Who built or created this robot?
+          <div style="margin-top: 4px; border-bottom: 1.5px dashed #94a3b8; height: 18px;"></div>
+        </div>
+
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>5. [WHY]</strong> Why did people create this robot? What danger or problem does it solve?
+          <div style="margin-top: 4px; border-bottom: 1.5px dashed #94a3b8; height: 18px;"></div>
+        </div>
+
+        <div style="border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 6px 10px;">
+          <strong>6. [HOW]</strong> How does it move or operate without breaking or failing?
+          <div style="margin-top: 4px; border-bottom: 1.5px dashed #94a3b8; height: 18px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>Amazing Robots Around the World • A1–A2 ESL Lesson</span>
+      <span>Worksheet Page 2 of 4</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 3: PRESENTATION BUILDER & CLASS DISCUSSION                          -->
+  <!-- ========================================================================= -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🎤 PRESENTATION PREP &amp; REFLECTION</h1>
+          <p>Page 3: Group Speech Frame &amp; Whole-Class Science Discussion</p>
+        </div>
+        <div class="student-info-box">
+          Speakers: <span></span><br>
+          Group Number: <span></span>
+        </div>
+      </div>
+
+      <!-- Part A: Presentation Speech Frame -->
+      <div class="section-title">
+        <span>Part A: Group Presentation Speech Builder</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Practice presenting together (each student says 2 lines!)</span>
+      </div>
+
+      <div class="speech-bubble">
+        <div class="speech-line">
+          <strong>1. INTRO:</strong> "Good morning everyone! Our group robot is called the 
+          <span class="write-space"></span>."
+        </div>
+        <div class="speech-line">
+          <strong>2. WHERE:</strong> "It works in 
+          <span class="write-space"></span>."
+        </div>
+        <div class="speech-line">
+          <strong>3. WHO &amp; WHEN:</strong> "It was developed by scientists at 
+          <span class="write-space" style="min-width: 150px;"></span> in recent years."
+        </div>
+        <div class="speech-line">
+          <strong>4. WHY:</strong> "Scientists made it because 
+          <span class="write-space" style="min-width: 280px;"></span>."
+        </div>
+        <div class="speech-line">
+          <strong>5. HOW:</strong> "It moves and operates by 
+          <span class="write-space" style="min-width: 280px;"></span>."
+        </div>
+        <div class="speech-line">
+          <strong>6. AMAZING FACT:</strong> "The most amazing fact is that 
+          <span class="write-space" style="min-width: 250px;"></span>!"
+        </div>
+        <div class="speech-line">
+          <strong>7. OUR OPINION:</strong> "We think this robot is useful because 
+          <span class="write-space" style="min-width: 240px;"></span>. Thank you!"
+        </div>
+      </div>
+
+      <!-- Part B: Team Reflection & Class Poll -->
+      <div class="section-title">
+        <span>Part B: Team Reflection &amp; Class Poll</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Discuss with your teammates</span>
+      </div>
+
+      <div style="border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12.5px; font-weight: 700;">
+        <div style="font-size: 13px; font-weight: 900; color: #0284c7; margin-bottom: 6px;">
+          🤔 1. Would your team want to use or operate this robot in real life?
+        </div>
+        <div style="display: flex; gap: 18px; margin-bottom: 6px;">
+          <label><input type="radio" name="use-choice"> [ ] YES, definitely!</label>
+          <label><input type="radio" name="use-choice"> [ ] NO, it looks scary/difficult</label>
+          <label><input type="radio" name="use-choice"> [ ] MAYBE, for a special mission</label>
+        </div>
+        <div>Because: <span style="display: inline-block; border-bottom: 1.5px dashed #94a3b8; width: 85%; height: 18px;"></span></div>
+      </div>
+
+      <div style="border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 12px; font-size: 12.5px; font-weight: 700;">
+        <div style="font-size: 13px; font-weight: 900; color: #d97706; margin-bottom: 6px;">
+          💭 2. Listening to all 5 groups, which robot was...
+        </div>
+        <div style="margin-bottom: 8px;">
+          <strong>• The MOST USEFUL robot for society or nature:</strong> 
+          <span style="display: inline-block; border-bottom: 1.5px dashed #94a3b8; width: 50%; height: 18px;"></span>
+        </div>
+        <div>
+          <strong>• The MOST SURPRISING robot you learned about:</strong> 
+          <span style="display: inline-block; border-bottom: 1.5px dashed #94a3b8; width: 50%; height: 18px;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>Amazing Robots Around the World • A1–A2 ESL Lesson</span>
+      <span>Worksheet Page 3 of 4</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 4: TEACHER GUIDE, ROADMAP & COMPLETE ANSWER KEY                     -->
+  <!-- ========================================================================= -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="title-block">
+          <h1>🧑‍🏫 TEACHER GUIDE &amp; ANSWER KEY</h1>
+          <p>Page 4: 60–70 Minute Lesson Plan &amp; Factual Verification</p>
+        </div>
+        <div class="student-info-box">
+          Level: A1–A2 (Ages 9–12)<br>
+          Format: Team-based (3–4 students)
+        </div>
+      </div>
+
+      <!-- Part A: 60–70 Min Roadmap -->
+      <div class="section-title">
+        <span>Lesson Roadmap (60–70 Minutes)</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">9 Structured Phases</span>
+      </div>
+
+      <table class="roadmap-table">
+        <thead>
+          <tr>
+            <th style="width: 12%;">Phase</th>
+            <th style="width: 14%;">Timing</th>
+            <th style="width: 37%;">Teacher Actions &amp; Smartboard</th>
+            <th style="width: 37%;">Student Team Tasks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Welcome</strong></td>
+            <td>5 min</td>
+            <td>Introduce 5 missions. Assign groups of 3–4. Emphasize teamwork, not competition.</td>
+            <td>Join group, receive worksheet, pick roles (Reader, Writer, Spokesperson).</td>
+          </tr>
+          <tr>
+            <td><strong>2. Mystery</strong></td>
+            <td>8–10 min</td>
+            <td>Show Stage 2 visual. Do NOT reveal robot name! Elicit WH predictions.</td>
+            <td>Fill in Worksheet Page 1 with 6 WH guesses. Sketch the robot.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Detective</strong></td>
+            <td>6–8 min</td>
+            <td>Stage 3 interactive matching: What, Where, When, Who, Why, How.</td>
+            <td>Master WH question meanings; practice pronunciation aloud.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Dossiers</strong></td>
+            <td>10 min</td>
+            <td>Display official reading text (100–140 words). Play audio narration.</td>
+            <td>Read group dossier, underline answers to the 6 WH questions.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Answers</strong></td>
+            <td>8 min</td>
+            <td>Guide comprehension checks on Stage 5. Use "Peek at Reading" drawer.</td>
+            <td>Answer Worksheet Page 2 questions; check scores together.</td>
+          </tr>
+          <tr>
+            <td><strong>6. Fact/Guess</strong></td>
+            <td>6–8 min</td>
+            <td>Display Stage 6 statements. Prompt humorous vs real science debate.</td>
+            <td>Vote REAL or GUESS; learn surprising scientific facts.</td>
+          </tr>
+          <tr>
+            <td><strong>7. Prep</strong></td>
+            <td>10 min</td>
+            <td>Model presentation frame. Ensure every student has a speaking turn.</td>
+            <td>Complete Page 3 speech bubble; rehearse team presentation.</td>
+          </tr>
+          <tr>
+            <td><strong>8. Reveal</strong></td>
+            <td>10 min</td>
+            <td>Invite groups to present (1–2 min each). Reveal authentic science and jobs.</td>
+            <td>Present to class; listen to peers and note uses on Page 3.</td>
+          </tr>
+          <tr>
+            <td><strong>9. Reflection</strong></td>
+            <td>5 min</td>
+            <td>Facilitate whole-class vote: Most useful? Most surprising? Award badges.</td>
+            <td>Vote on favorites; complete exit reflection; celebrate learning!</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Part B: Complete Teacher Answer Key -->
+      <div class="section-title">
+        <span>Complete Answer Key (All 5 Robots)</span>
+        <span style="font-size: 11px; text-transform: none; color: #64748b;">Strict real-world science</span>
+      </div>
+
+      <div class="key-box">
+        <h4>🐟 Group 1: Fish Robot (NYU Biomimetic Swimmer)</h4>
+        <div>• <strong>What:</strong> A robotic fish with jointed tail • <strong>Where:</strong> Rivers and water channels • <strong>When:</strong> 2010s • <strong>Who:</strong> Prof. Maurizio Porfiri (NYU) • <strong>Why:</strong> Guide fish away from dangerous turbine dams and toxic spills • <strong>How:</strong> Swims with rhythmic tail movements that live fish recognize as a leader • <strong>Fact/Guess:</strong> Leader fish = REAL; underwater pizza = GUESS.</div>
+      </div>
+
+      <div class="key-box">
+        <h4>🪼 Group 2: Robotic Jellyfish (FAU / Max Planck Soft Explorer)</h4>
+        <div>• <strong>What:</strong> A soft translucent robot with flexible silicone tentacles • <strong>Where:</strong> Coral reefs and coastal waters • <strong>When:</strong> 2018–2020s • <strong>Who:</strong> Florida Atlantic University &amp; Max Planck Institute • <strong>Why:</strong> Study fragile marine life without chopping them with propeller blades • <strong>How:</strong> Water hydraulic pulses through rubber channels • <strong>Fact/Guess:</strong> No blades = REAL; laser party lights = GUESS.</div>
+      </div>
+
+      <div class="key-box">
+        <h4>🐝 Group 3: Robotic Bee (Harvard RoboBee)</h4>
+        <div>• <strong>What:</strong> A micro-robot the size of a paperclip • <strong>Where:</strong> Small crevices, disaster sites, flowers • <strong>When:</strong> 2013 • <strong>Who:</strong> Harvard Microrobotics Lab • <strong>Why:</strong> Search collapsed spaces and study tiny aerodynamics • <strong>How:</strong> Piezoelectric artificial muscles flapping 120 times/sec • <strong>Fact/Guess:</strong> Flaps 120 times/sec = REAL; makes strawberry honey = GUESS.</div>
+      </div>
+
+      <div class="key-box">
+        <h4>🐍 Group 4: Snake Robot (Carnegie Mellon Search &amp; Rescue)</h4>
+        <div>• <strong>What:</strong> A modular multi-jointed robot • <strong>Where:</strong> Earthquake ruins and industrial pipes • <strong>When:</strong> 2000s–present • <strong>Who:</strong> CMU Biorobotics Lab • <strong>Why:</strong> Locate trapped disaster survivors where humans/dogs cannot fit • <strong>How:</strong> Sinusoidal wave slithering with camera/light in its head • <strong>Fact/Guess:</strong> Climbs trees &amp; pipes = REAL; dances to flute music = GUESS.</div>
+      </div>
+
+      <div class="key-box">
+        <h4>🐕 Group 5: Robot Dog (Boston Dynamics / Spot)</h4>
+        <div>• <strong>What:</strong> A four-legged agile mobile robot • <strong>Where:</strong> Power stations, mines, construction sites • <strong>When:</strong> 2015–present • <strong>Who:</strong> Boston Dynamics engineers • <strong>Why:</strong> Inspect hazardous locations and radioactive/gas zones • <strong>How:</strong> 4 articulating legs with lidar sensors and dynamic self-balancing • <strong>Fact/Guess:</strong> Climbs stairs &amp; balances = REAL; sleeps in doghouse = GUESS.</div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>Amazing Robots Around the World • A1–A2 ESL Lesson</span>
+      <span>Teacher Guide Page 4 of 4</span>
+    </div>
+  </div>
+
+</body>
+</html>

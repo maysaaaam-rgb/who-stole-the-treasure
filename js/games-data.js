@@ -5,6 +5,45 @@
 
 const GAMES_REGISTRY = [
   {
+    id: "robots",
+    title: "Amazing Robots Around the World",
+    description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries.",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "A1–A2",
+    age: "Ages 9–12",
+    ageGroup: "9-12",
+    grade: "Grades 4–6",
+    duration: 65,
+    durationText: "60–70 min",
+    skills: ["Reading", "Speaking", "Listening", "Vocabulary", "Teamwork"],
+    topic: "WH-Questions & Real-World Robotics",
+    route: "robots/index.html",
+    worksheet: "robots/worksheet.html",
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#0f172a"/>
+        <!-- Circuit traces -->
+        <path d="M 10 30 L 50 30 L 70 50 L 130 50 L 150 30 L 190 30" stroke="#0284c7" stroke-width="2" fill="none" opacity="0.6"/>
+        <path d="M 20 110 L 60 110 L 80 90 L 120 90 L 140 110 L 180 110" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.6"/>
+        <!-- Robot Face/Eye -->
+        <rect x="55" y="42" width="90" height="56" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+        <circle cx="80" cy="70" r="10" fill="#0284c7"/>
+        <circle cx="80" cy="70" r="5" fill="#38bdf8"/>
+        <circle cx="80" cy="70" r="2" fill="#ffffff"/>
+        <circle cx="120" cy="70" r="10" fill="#0284c7"/>
+        <circle cx="120" cy="70" r="5" fill="#38bdf8"/>
+        <circle cx="120" cy="70" r="2" fill="#ffffff"/>
+        <!-- Antenna -->
+        <line x1="100" y1="42" x2="100" y2="24" stroke="#38bdf8" stroke-width="3"/>
+        <circle cx="100" cy="20" r="5" fill="#f59e0b"/>
+        <!-- Badge -->
+        <rect x="25" y="112" width="150" height="18" rx="4" fill="#0284c7"/>
+        <text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">AMAZING ROBOTS 🤖</text>
+      </svg>`
+  },
+  {
     id: "feelings",
     title: "How Would You Feel?",
     description: "Interactive A1+ situational thinking lesson: evaluate real-life, funny & challenging dilemmas, choose appropriate emotions, and speak using natural chunks.",

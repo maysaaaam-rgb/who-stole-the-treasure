@@ -17,8 +17,31 @@
 
   const STORAGE_KEY = 'eaa_master_school_v6';
 
-  // Canonical list of 16 audited games
+  // Canonical list of audited games
   const CANONICAL_GAMES = [
+    {
+      id: "robots",
+      title: "Amazing Robots Around the World",
+      category: "Speaking Games",
+      level: "A1–A2",
+      age: "9–12",
+      grade: "Grade 4",
+      duration: 65,
+      skills: ["Reading", "Speaking", "Listening", "Vocabulary", "Teamwork"],
+      topics: ["WH-Questions", "Real-World Robotics", "Biomimetic Science", "Search & Rescue"],
+      objectives: [
+        "Master the 6 WH-questions (What, Where, When, Who, Why, How)",
+        "Read and extract factual information from real scientific robot files",
+        "Differentiate real scientific capabilities from imaginary guesses",
+        "Collaborate in teams of 3–4 to present a discovery to the class"
+      ],
+      route: "robots/index.html",
+      worksheet: "robots/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries."
+    },
     {
       id: "feelings",
       title: "How Would You Feel?",
@@ -7880,6 +7903,10 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const robotsRes = CANONICAL_GAMES.find(g => g.id === 'robots');
+              if (robotsRes && !merged.resources.some(r => r.id === 'robots')) {
+                merged.resources.unshift(robotsRes);
+              }
               const feelingsRes = CANONICAL_GAMES.find(g => g.id === 'feelings');
               if (feelingsRes && !merged.resources.some(r => r.id === 'feelings')) {
                 merged.resources.unshift(feelingsRes);
