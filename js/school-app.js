@@ -321,31 +321,28 @@
   // =========================================================================
   // SUPABASE CLOUD DATABASE CONFIGURATION & MANAGEMENT MODAL CONTROLLER
   // =========================================================================
+  window.toggleCloudKeyVisibility = function() {
+    const input = document.getElementById('cloud-input-key');
+    if (!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+  };
+
   window.openCloudDatabaseModal = function() {
     const sb = window.AdventureSupabase;
     const creds = sb && sb.getStoredCredentials ? sb.getStoredCredentials() : { url: '', anonKey: '' };
-    const status = sb && sb.getStatus ? sb.getStatus() : { isConfigured: false };
+    const isConn = Boolean(sb && sb.isConfigured);
 
     const urlInput = document.getElementById('cloud-input-url');
     const keyInput = document.getElementById('cloud-input-key');
     if (urlInput) urlInput.value = creds.url || '';
     if (keyInput) keyInput.value = creds.anonKey || '';
 
-    // Update Counts Metrics
-    const sCount = store.state.students ? store.state.students.length : 0;
-    const nCount = store.state.teacherNotes ? store.state.teacherNotes.length : 0;
-    const aCount = store.state.progressCheckSubmissions ? store.state.progressCheckSubmissions.length : 0;
-    const xCount = store.state.xpTransactions ? store.state.xpTransactions.length : 0;
-
-    const statS = document.getElementById('cloud-stat-students');
-    const statN = document.getElementById('cloud-stat-notes');
-    const statA = document.getElementById('cloud-stat-assessments');
-    const statX = document.getElementById('cloud-stat-xp');
-
-    if (statS) statS.textContent = sCount;
-    if (statN) statN.textContent = nCount;
-    if (statA) statA.textContent = aCount;
-    if (statX) statX.textContent = xCount;
+    // Clear previous inline feedback
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'none';
+      feedback.textContent = '';
+    }
 
     // Update Status Pill
     const pill = document.getElementById('cloud-status-pill');
@@ -353,62 +350,176 @@
     const text = document.getElementById('cloud-status-text');
     const latencyBadge = document.getElementById('cloud-latency-badge');
 
-    if (status.isConfigured) {
+    if (isConn) {
       if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
       if (indicator) indicator.textContent = '🟢';
-      if (text) text.textContent = 'Connected: ' + (creds.url ? creds.url.replace(/^https?:\/\//, '').split('/')[0] : 'Supabase');
-      if (latencyBadge) latencyBadge.textContent = 'Ready';
-
-      // Test latency in background
-      if (sb && sb.testConnection) {
-        sb.testConnection().then(res => {
-          if (res.success && latencyBadge) {
-            latencyBadge.textContent = `${res.latencyMs}ms latency · ${res.count} cloud records`;
-          }
-        }).catch(() => {});
-      }
+      if (text) text.textContent = 'Connected';
+      if (latencyBadge) latencyBadge.textContent = creds.url ? creds.url.replace(/^https?:\/\//, '').split('/')[0] : '';
     } else {
-      if (pill) { pill.style.background = '#fef2f2'; pill.style.color = '#991b1b'; }
+      if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
       if (indicator) indicator.textContent = '⚪';
-      if (text) text.textContent = 'Not Connected (Local Only)';
+      if (text) text.textContent = 'Not connected';
       if (latencyBadge) latencyBadge.textContent = '';
     }
 
+    // Update School Settings badge if open
+    const schoolSettingsBadge = document.getElementById('settings-cloud-status-badge');
+    if (schoolSettingsBadge) {
+      schoolSettingsBadge.style.color = isConn ? '#059669' : '#dc2626';
+      schoolSettingsBadge.textContent = isConn ? 'Connected' : 'Not connected';
+    }
+
     window.openModal('modal-cloud-sync');
+  };
+
+  window.handleTestCloudConnection = async function() {
+    const urlInput = document.getElementById('cloud-input-url');
+    const keyInput = document.getElementById('cloud-input-key');
+    const url = (urlInput && urlInput.value.trim()) || '';
+    const anonKey = (keyInput && keyInput.value.trim()) || '';
+    const feedback = document.getElementById('cloud-test-feedback');
+    const pill = document.getElementById('cloud-status-pill');
+    const indicator = document.getElementById('cloud-status-indicator');
+    const text = document.getElementById('cloud-status-text');
+    const latencyBadge = document.getElementById('cloud-latency-badge');
+
+    if (!url || !anonKey) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Please enter both Project URL and Public Anon Key.';
+      }
+      return;
+    }
+
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#f1f5f9';
+      feedback.style.color = '#334155';
+      feedback.style.border = '1px solid #cbd5e1';
+      feedback.textContent = 'Testing connection...';
+    }
+    if (indicator) indicator.textContent = '⏳';
+    if (text) text.textContent = 'Testing connection...';
+
+    const sb = window.AdventureSupabase;
+    if (!sb || typeof sb.testConnection !== 'function') {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
+      }
+      return;
+    }
+
+    try {
+      const res = await sb.testConnection(url, anonKey);
+      if (res.success) {
+        if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
+        if (indicator) indicator.textContent = '🟢';
+        if (text) text.textContent = 'Connected';
+        if (latencyBadge) latencyBadge.textContent = `${res.latencyMs}ms latency · ${res.count} records`;
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#ecfdf5';
+          feedback.style.color = '#065f46';
+          feedback.style.border = '1px solid #a7f3d0';
+          feedback.textContent = `✓ Connection successful (${res.latencyMs}ms latency · ${res.count} cloud records verified)`;
+        }
+        showNotification(`✓ Connection successful (${res.latencyMs}ms)`, 'success');
+      } else {
+        if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
+        if (indicator) indicator.textContent = '⚪';
+        if (text) text.textContent = 'Not connected';
+        if (latencyBadge) latencyBadge.textContent = '';
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#fef2f2';
+          feedback.style.color = '#991b1b';
+          feedback.style.border = '1px solid #fecaca';
+          feedback.textContent = `✕ Connection failed: ${res.error || 'Unable to connect to Supabase'}`;
+        }
+        showNotification(`✕ Connection failed`, 'error');
+      }
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Connection failed: ${err.message}`;
+      }
+      showNotification(`✕ Connection failed: ${err.message}`, 'error');
+    }
   };
 
   window.handleSaveCloudConfig = async function(event) {
     if (event) event.preventDefault();
     const urlInput = document.getElementById('cloud-input-url');
     const keyInput = document.getElementById('cloud-input-key');
+    const feedback = document.getElementById('cloud-test-feedback');
     if (!urlInput || !keyInput) return;
 
     const url = urlInput.value.trim();
     const anonKey = keyInput.value.trim();
 
     if (!url || !anonKey) {
-      alert('Please provide both the Supabase Project URL and Public Anon Key.');
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Please provide both Supabase Project URL and Public Anon Key.';
+      }
       return;
     }
 
-    if (!url.startsWith('https://')) {
-      alert('Supabase Project URL must start with https://');
+    if (!url.startsWith('https://') && !url.startsWith('http://localhost') && !url.startsWith('http://127.0.0.1')) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase Project URL must start with https://';
+      }
       return;
     }
 
     const sb = window.AdventureSupabase;
     if (!sb) {
-      alert('Supabase client module is not loaded.');
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
+      }
       return;
     }
 
-    const latencyBadge = document.getElementById('cloud-latency-badge');
-    if (latencyBadge) latencyBadge.textContent = 'Testing connection...';
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#f1f5f9';
+      feedback.style.color = '#334155';
+      feedback.style.border = '1px solid #cbd5e1';
+      feedback.textContent = 'Testing connection before saving...';
+    }
 
+    // Test connection before saving
     const testRes = await sb.testConnection(url, anonKey);
     if (!testRes.success) {
-      if (latencyBadge) latencyBadge.textContent = 'Error';
-      alert('Failed to connect to Supabase database:\n' + testRes.error + '\n\nPlease check your Project URL and Anon Key and ensure Row Level Security policies are enabled.');
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Connection failed: ${testRes.error || 'Could not verify credentials'}`;
+      }
+      showNotification('✕ Connection failed: ' + testRes.error, 'error');
       return;
     }
 
@@ -420,54 +531,29 @@
 
     // Trigger full initial two-way sync
     const syncRes = await sb.syncAllWithStore(store);
-    window.closeModal('modal-cloud-sync');
 
-    if (window.showToast) {
-      window.showToast('✓ Connected to Supabase PostgreSQL Database! (' + (syncRes.studentCount || store.state.students.length) + ' students synced)', 'success');
-    } else {
-      alert('✓ Connected to Supabase PostgreSQL Database! Data synchronized successfully.');
+    // Update School Settings badge
+    const schoolSettingsBadge = document.getElementById('settings-cloud-status-badge');
+    if (schoolSettingsBadge) {
+      schoolSettingsBadge.style.color = '#059669';
+      schoolSettingsBadge.textContent = 'Connected';
     }
 
+    window.closeModal('modal-cloud-sync');
+    showNotification('✓ Cloud connected! ' + (syncRes.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students synchronized.', 'success');
     renderCurrentView();
   };
 
-  window.handleTestCloudConnection = async function() {
-    const urlInput = document.getElementById('cloud-input-url');
-    const keyInput = document.getElementById('cloud-input-key');
-    const url = (urlInput && urlInput.value.trim()) || '';
-    const anonKey = (keyInput && keyInput.value.trim()) || '';
-
-    const sb = window.AdventureSupabase;
-    if (!sb) {
-      alert('Supabase client module not available.');
-      return;
-    }
-
-    const pill = document.getElementById('cloud-status-pill');
-    const indicator = document.getElementById('cloud-status-indicator');
-    const text = document.getElementById('cloud-status-text');
-    const latencyBadge = document.getElementById('cloud-latency-badge');
-
-    if (indicator) indicator.textContent = '⏳';
-    if (text) text.textContent = 'Testing connection...';
-    if (latencyBadge) latencyBadge.textContent = '';
-
-    const res = await sb.testConnection(url || undefined, anonKey || undefined);
-
-    if (res.success) {
-      if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
-      if (indicator) indicator.textContent = '🟢';
-      if (text) text.textContent = 'Connection Verified!';
-      if (latencyBadge) latencyBadge.textContent = `${res.latencyMs}ms latency · ${res.count} records`;
-      if (window.showToast) window.showToast(`✓ Supabase connection verified! (${res.latencyMs}ms)`, 'success');
-    } else {
-      if (pill) { pill.style.background = '#fef2f2'; pill.style.color = '#991b1b'; }
-      if (indicator) indicator.textContent = '🔴';
-      if (text) text.textContent = 'Connection Failed';
-      if (latencyBadge) latencyBadge.textContent = 'Error';
-      alert('Connection test failed:\n' + res.error);
-    }
-  };
+  // Global Event Delegation: ensures clicking Configure Cloud DB ALWAYS works across rerenders
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('#btn-configure-cloud-db, [data-action="open-cloud-db"]');
+      if (btn) {
+        e.preventDefault();
+        window.openCloudDatabaseModal();
+      }
+    });
+  }
 
   window.handleCopyQuickConnectUrl = function() {
     const sb = window.AdventureSupabase;
@@ -479,7 +565,7 @@
     const key = (keyInput && keyInput.value.trim()) || creds.anonKey;
 
     if (!url || !key) {
-      alert('Please configure and save your Supabase URL and Anon Key first.');
+      showNotification('Please configure and save your Supabase URL and Anon Key first.', 'error');
       return;
     }
 
@@ -488,11 +574,7 @@
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(fullConnectUrl).then(() => {
-        if (window.showToast) {
-          window.showToast('✓ 1-Click Setup Link copied to clipboard! Open it on iPad or phone.', 'success');
-        } else {
-          alert('✓ 1-Click Link copied to clipboard!\n\nOpen this link on your iPad, iPhone, or secondary device to connect automatically.');
-        }
+        showNotification('✓ Quick-Connect link copied to clipboard! Open on iPad or phone.', 'success');
       }).catch(() => {
         prompt('Copy this 1-click connect URL for iPad/phone:', fullConnectUrl);
       });
@@ -7539,6 +7621,15 @@ window.switchClassroomSubTab = function(subTab) {
     if (lbCheck) lbCheck.checked = s.leaderboardEnabled !== false;
     if (pvCheck) pvCheck.checked = s.parentStoryVisibility !== false;
     if (sndCheck) sndCheck.checked = s.soundEffectsEnabled !== false;
+
+    // Dynamically update cloud connection status badge in School Settings
+    const sb = window.AdventureSupabase;
+    const isConn = Boolean(sb && sb.isConfigured);
+    const cloudBadge = document.getElementById('settings-cloud-status-badge');
+    if (cloudBadge) {
+      cloudBadge.style.color = isConn ? '#059669' : '#dc2626';
+      cloudBadge.textContent = isConn ? 'Connected' : 'Not connected';
+    }
 
     window.openModal('modal-school-settings');
   };
