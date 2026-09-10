@@ -2807,6 +2807,24 @@
           </button>
         </div>
       </div>
+
+      <!-- Cloud Synchronization & Safe Local Roster Uploader -->
+      <div id="cloud-data-actions-container" style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; padding: 12px 16px; margin-top: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">☁️ Database Synchronization</div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 1px;">Safely push all local students and history to cloud, or pull latest changes.</div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btn-upload-local-roster" class="btn-sm-secondary" onclick="handleUploadLocalDataToCloud()" style="font-size: 0.78rem; padding: 6px 12px; font-weight: 700; background: #ecfdf5; color: #065f46; border-color: #a7f3d0;">
+              ⬆️ Upload Local to Cloud
+            </button>
+            <button type="button" id="btn-pull-cloud-data" class="btn-sm-secondary" onclick="handlePullCloudDataToLocal()" style="font-size: 0.78rem; padding: 6px 12px; font-weight: 700;">
+              ⬇️ Pull Cloud Data
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

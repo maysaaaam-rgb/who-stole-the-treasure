@@ -8119,7 +8119,7 @@
     }
 
     addStudent(data) {
-      const studentId = 'student-' + Date.now();
+      const studentId = data.id || ('student-' + Date.now());
       const studentIdNumber = data.studentIdNumber || ('EAA-' + new Date().getFullYear() + '-' + String(this.state.students.length + 1).padStart(3, '0'));
       const newStudent = {
         id: studentId,
@@ -8130,15 +8130,16 @@
         age: parseInt(data.age, 10) || 8,
         grade: data.grade || 'Grade 3',
         overallCefr: data.overallCefr || 'A1',
+        avatar: data.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
         parentName: data.parentName || '',
         parentContact: data.parentContact || '',
         parentEmail: data.parentEmail || '',
-        xp: 0,
-        level: 1,
-        streakDays: 0,
-        equippedMonster: 'Mystery Egg',
-        archived: false,
-        manualCefrOverrides: {}
+        xp: parseInt(data.xp, 10) || 0,
+        level: parseInt(data.level, 10) || 1,
+        streakDays: parseInt(data.streakDays, 10) || 0,
+        equippedMonster: data.equippedMonster || 'Mystery Egg',
+        archived: Boolean(data.archived),
+        manualCefrOverrides: data.manualCefrOverrides || {}
       };
 
       // Initialize student Mystery Egg profile (starts at 0 XP)
@@ -8799,6 +8800,11 @@
       };
       this.state.classes.push(newClass);
       this.saveState();
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveClass(newClass).catch(err => {
+          console.error('[SchoolStore] Supabase saveClass error:', err);
+        });
+      }
       return newClass;
     }
 
@@ -8807,6 +8813,11 @@
       if (c) {
         Object.assign(c, updates);
         this.saveState();
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveClass(c).catch(err => {
+            console.error('[SchoolStore] Supabase updateClass error:', err);
+          });
+        }
         return c;
       }
       return null;
@@ -8896,6 +8907,11 @@
       if (idx !== -1) {
         this.state.classes.splice(idx, 1);
         this.saveState();
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.deleteClass(id).catch(err => {
+            console.error('[SchoolStore] Supabase deleteClass error:', err);
+          });
+        }
         return true;
       }
       return false;
@@ -12617,6 +12633,21 @@
       if (!cloudData || typeof cloudData !== 'object') return { success: false };
 
       let modified = false;
+
+      // -1. Merge Classes Roster
+      if (Array.isArray(cloudData.classes) && cloudData.classes.length > 0) {
+        if (!this.state.classes) this.state.classes = [];
+        cloudData.classes.forEach(remoteClass => {
+          if (!remoteClass || !remoteClass.id) return;
+          const localIdx = this.state.classes.findIndex(c => c.id === remoteClass.id);
+          if (localIdx !== -1) {
+            this.state.classes[localIdx] = Object.assign({}, this.state.classes[localIdx], remoteClass);
+          } else {
+            this.state.classes.push(remoteClass);
+          }
+          modified = true;
+        });
+      }
 
       // 0. Merge Complete Students Roster (Authoritative Supabase Cloud Roster)
       if (Array.isArray(cloudData.students) && cloudData.students.length > 0) {

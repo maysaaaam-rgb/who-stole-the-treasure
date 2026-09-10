@@ -185,13 +185,28 @@
       try {
         const testClient = createClientFn(url, key, { auth: { persistSession: false } });
         const start = Date.now();
-        const { count, error } = await testClient.from('students').select('id', { count: 'exact', head: true });
+        const { data, count, error, status } = await testClient.from('students').select('id', { count: 'exact' }).limit(1);
         const latencyMs = Date.now() - start;
 
-        if (error) {
-          return { success: false, error: error.message };
+        if (error || (status && status >= 400)) {
+          const errCode = error && error.code ? `[${error.code}] ` : '';
+          const errMsg = error && error.message ? error.message : `HTTP status ${status}`;
+          const errDetails = error && error.details ? ` (${error.details})` : '';
+          const errHint = error && error.hint ? ` Hint: ${error.hint}` : '';
+          let guidance = '';
+          if (error && (error.code === 'PGRST205' || errMsg.includes('schema cache'))) {
+            guidance = ' · Table "public.students" does not exist in Supabase. Run sql/supabase_schema.sql in Supabase SQL Editor.';
+          } else if (error && (error.code === '42501' || errMsg.includes('permission denied'))) {
+            guidance = ' · Permission denied under Row Level Security. Run RLS policies in sql/supabase_schema.sql.';
+          }
+          return { 
+            success: false, 
+            error: `${errCode}${errMsg}${errDetails}${errHint}${guidance}`,
+            code: error ? error.code : null,
+            status 
+          };
         }
-        return { success: true, latencyMs, count: count || 0 };
+        return { success: true, latencyMs, count: typeof count === 'number' ? count : (data ? data.length : 0) };
       } catch (err) {
         return { success: false, error: err.message };
       }
@@ -275,17 +290,23 @@
       } catch (err) {
         this.isSyncing = false;
         this.lastSyncStatus = 'error';
-        this.lastError = err.message;
+        const errDetails = err.details ? ` (${err.details})` : '';
+        const errHint = err.hint ? ` Hint: ${err.hint}` : '';
+        const fullErrMsg = (err.code ? `[${err.code}] ` : '') + (err.message || 'Unknown Supabase error') + errDetails + errHint;
+        this.lastError = fullErrMsg;
         this.notify();
-        console.error('[AdventureSupabase] saveStudent error:', err);
-        throw new Error('Supabase saveStudent error: ' + err.message);
+        console.error('[AdventureSupabase] saveStudent error:', fullErrMsg, err);
+        throw new Error('Supabase saveStudent error: ' + fullErrMsg);
       }
     }
 
     async getStudents() {
       const client = this._ensureClient();
       const { data, error } = await client.from('students').select('*').order('first_name', { ascending: true });
-      if (error) throw new Error('Supabase getStudents error: ' + error.message);
+      if (error) {
+        const fullErrMsg = (error.code ? `[${error.code}] ` : '') + (error.message || 'Error fetching students');
+        throw new Error('Supabase getStudents error: ' + fullErrMsg);
+      }
 
       // Transform rows to match store format
       return (data || []).map(row => ({
@@ -309,6 +330,7 @@
         latestTeacherNote: row.latest_teacher_note || '',
         manualCefrOverrides: row.manual_cefr_overrides || {},
         monsterProfile: row.monster_profile || {},
+        extraData: row.extra_data || {},
         updatedAt: row.updated_at
       }));
     }
@@ -331,10 +353,13 @@
       } catch (err) {
         this.isSyncing = false;
         this.lastSyncStatus = 'error';
-        this.lastError = err.message;
+        const errDetails = err.details ? ` (${err.details})` : '';
+        const errHint = err.hint ? ` Hint: ${err.hint}` : '';
+        const fullErrMsg = (err.code ? `[${err.code}] ` : '') + (err.message || 'Unknown Supabase error') + errDetails + errHint;
+        this.lastError = fullErrMsg;
         this.notify();
-        console.error('[AdventureSupabase] deleteStudent error:', err);
-        throw new Error('Supabase deleteStudent error: ' + err.message);
+        console.error('[AdventureSupabase] deleteStudent error:', fullErrMsg, err);
+        throw new Error('Supabase deleteStudent error: ' + fullErrMsg);
       }
     }
 
@@ -519,6 +544,28 @@
       return { success: true };
     }
 
+    async saveXPTransactions(transactionsArray) {
+      if (!Array.isArray(transactionsArray) || transactionsArray.length === 0) return { success: true, count: 0 };
+      const client = this._ensureClient();
+      const rows = transactionsArray.map(tx => ({
+        id: String(tx.id),
+        student_id: String(tx.studentId),
+        amount: parseInt(tx.amount || tx.points || tx.xp, 10) || 0,
+        reason: tx.reason || 'Classroom award',
+        category: tx.category || 'positive',
+        icon: tx.icon || '⭐',
+        date: tx.date || 'September 2026',
+        timestamp: tx.timestamp || new Date().toISOString(),
+        source: tx.source || 'manual',
+        source_id: tx.sourceId || null,
+        class_id: tx.classId || null,
+        status: tx.status || 'active'
+      }));
+      const { error } = await client.from('xp_transactions').upsert(rows, { onConflict: 'id' });
+      if (error) throw new Error('Supabase xp_transactions error: ' + error.message);
+      return { success: true, count: rows.length };
+    }
+
     // =========================================================================
     // 5. ATTENDANCE (PostgreSQL)
     // =========================================================================
@@ -540,6 +587,61 @@
     }
 
     // =========================================================================
+    // 5B. CLASSES COHORT TABLE (PostgreSQL)
+    // =========================================================================
+    async saveClass(cls) {
+      if (!cls || !cls.id) return { success: false, error: 'Invalid class' };
+      const client = this._ensureClient();
+      const row = {
+        id: String(cls.id),
+        name: String(cls.name || 'Class'),
+        grade: String(cls.grade || 'Grade 3'),
+        teacher: String(cls.teacher || 'Mr. Maysam'),
+        primary_book_id: String(cls.primaryBookId || ''),
+        academic_year: String(cls.academicYear || '2026–2027'),
+        cefr_target: String(cls.cefrTarget || 'A1'),
+        room: String(cls.room || ''),
+        schedule: String(cls.schedule || ''),
+        description: String(cls.description || ''),
+        archived: Boolean(cls.archived),
+        updated_at: new Date().toISOString()
+      };
+      const { data, error } = await client.from('classes').upsert(row, { onConflict: 'id' }).select();
+      if (error) {
+        const fullErrMsg = (error.code ? `[${error.code}] ` : '') + (error.message || 'Error saving class');
+        throw new Error('Supabase saveClass error: ' + fullErrMsg);
+      }
+      return { success: true, class: data && data[0] ? data[0] : row };
+    }
+
+    async getClasses() {
+      const client = this._ensureClient();
+      const { data, error } = await client.from('classes').select('*').order('name', { ascending: true });
+      if (error) throw new Error('Supabase getClasses error: ' + error.message);
+      return (data || []).map(row => ({
+        id: row.id,
+        name: row.name,
+        grade: row.grade,
+        teacher: row.teacher,
+        primaryBookId: row.primary_book_id,
+        academicYear: row.academic_year,
+        cefrTarget: row.cefr_target,
+        room: row.room,
+        schedule: row.schedule,
+        description: row.description,
+        archived: Boolean(row.archived)
+      }));
+    }
+
+    async deleteClass(classId) {
+      if (!classId) return { success: false };
+      const client = this._ensureClient();
+      const { error } = await client.from('classes').delete().eq('id', String(classId));
+      if (error) throw new Error('Supabase deleteClass error: ' + error.message);
+      return { success: true };
+    }
+
+    // =========================================================================
     // 6. REALTIME MULTI-DEVICE SUBSCRIPTIONS
     // =========================================================================
     setupRealtimeSubscriptions(store) {
@@ -557,7 +659,7 @@
         const channel = this.client.channel('adventure-realtime-all');
 
         // Listen to all public schema table changes
-        const tables = ['students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records'];
+        const tables = ['classes', 'students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records'];
         tables.forEach(tableName => {
           channel.on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
             console.log(`[AdventureSupabase:Realtime] ${tableName} event:`, payload.eventType);
@@ -593,7 +695,8 @@
       this.notify();
 
       try {
-        const [students, notes, assessments, xpTxs, attendance] = await Promise.all([
+        const [classes, students, notes, assessments, xpTxs, attendance] = await Promise.all([
+          this.getClasses().catch(() => []),
           this.getStudents(),
           this.getTeacherNotes(),
           this.getAssessments(),
@@ -605,30 +708,7 @@
         // If Supabase has zero students, but local store has students, upload local roster to Supabase!
         if (students.length === 0 && store.state && Array.isArray(store.state.students) && store.state.students.length > 0) {
           console.log('[AdventureSupabase] Supabase is empty. Performing initial migration of local students to cloud...');
-          for (const s of store.state.students) {
-            try {
-              await this.saveStudent(s);
-            } catch (seedErr) {
-              console.warn('[AdventureSupabase] Migration error for student', s.id, seedErr);
-            }
-          }
-          // Also upload any initial notes, assessments, and attendance
-          if (Array.isArray(store.state.teacherNotes) && store.state.teacherNotes.length > 0) {
-            for (const n of store.state.teacherNotes) {
-              try { await this.saveTeacherNote(n); } catch (e) {}
-            }
-          }
-          if (Array.isArray(store.state.progressCheckSubmissions) && store.state.progressCheckSubmissions.length > 0) {
-            try { await this.saveAssessments(store.state.progressCheckSubmissions); } catch (e) {}
-          }
-          if (Array.isArray(store.state.attendanceRecords) && store.state.attendanceRecords.length > 0) {
-            try { await this.saveAttendance(store.state.attendanceRecords); } catch (e) {}
-          }
-          this.isSyncing = false;
-          this.lastSyncStatus = 'success';
-          this.lastSyncTime = new Date().toISOString();
-          this.notify();
-          return { success: true, migrated: true, studentCount: store.state.students.length };
+          return this.migrateLocalRosterToCloud(store);
         }
 
         // Transform Supabase notes to Store format
@@ -694,9 +774,10 @@
           status: att.status
         }));
 
-        // Ingest into store with authoritative student list
+        // Ingest into store with authoritative student & class lists
         if (typeof store.mergeCloudState === 'function') {
           store.mergeCloudState({
+            classes: classes,
             students: students,
             isAuthoritativeList: true,
             teacherNotes: transformedNotes,
@@ -713,6 +794,7 @@
 
         return {
           success: true,
+          classCount: classes.length,
           studentCount: students.length,
           notesCount: transformedNotes.length,
           assessmentsCount: transformedSubs.length,
@@ -722,10 +804,121 @@
       } catch (err) {
         this.isSyncing = false;
         this.lastSyncStatus = 'error';
+        const errDetails = err.details ? ` (${err.details})` : '';
+        const fullErrMsg = (err.code ? `[${err.code}] ` : '') + (err.message || 'Unknown Supabase error') + errDetails;
+        this.lastError = fullErrMsg;
+        this.notify();
+        console.error('[AdventureSupabase] syncAllWithStore error:', fullErrMsg, err);
+        return { success: false, error: fullErrMsg };
+      }
+    }
+
+    async uploadLocalStudentsToCloud(store) {
+      return this.migrateLocalRosterToCloud(store);
+    }
+
+    async migrateLocalRosterToCloud(store) {
+      const targetStore = store || this._activeStore || (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
+      if (!targetStore || !targetStore.state) throw new Error('School store is not available.');
+
+      this.isSyncing = true;
+      this.lastSyncStatus = 'syncing';
+      this.notify();
+
+      const results = {
+        classesCount: 0,
+        studentsCount: 0,
+        notesCount: 0,
+        assessmentsCount: 0,
+        xpCount: 0,
+        attendanceCount: 0,
+        errors: []
+      };
+
+      try {
+        // 1. Upload Classes first
+        if (Array.isArray(targetStore.state.classes) && targetStore.state.classes.length > 0) {
+          for (const c of targetStore.state.classes) {
+            try {
+              await this.saveClass(c);
+              results.classesCount++;
+            } catch (e) {
+              console.warn('[AdventureSupabase] upload class error:', c.id, e);
+              results.errors.push(`Class ${c.id}: ${e.message}`);
+            }
+          }
+        }
+
+        // 2. Upload Students (idempotent upsert - NEVER deletes or alters local state)
+        if (Array.isArray(targetStore.state.students) && targetStore.state.students.length > 0) {
+          for (const s of targetStore.state.students) {
+            try {
+              await this.saveStudent(s);
+              results.studentsCount++;
+            } catch (e) {
+              console.warn('[AdventureSupabase] upload student error:', s.id, e);
+              results.errors.push(`Student ${s.id}: ${e.message}`);
+            }
+          }
+        }
+
+        // 3. Upload Teacher Notes
+        if (Array.isArray(targetStore.state.teacherNotes) && targetStore.state.teacherNotes.length > 0) {
+          for (const n of targetStore.state.teacherNotes) {
+            try {
+              await this.saveTeacherNote(n);
+              results.notesCount++;
+            } catch (e) {
+              results.errors.push(`Note ${n.id}: ${e.message}`);
+            }
+          }
+        }
+
+        // 4. Upload Assessments
+        if (Array.isArray(targetStore.state.progressCheckSubmissions) && targetStore.state.progressCheckSubmissions.length > 0) {
+          try {
+            await this.saveAssessments(targetStore.state.progressCheckSubmissions);
+            results.assessmentsCount += targetStore.state.progressCheckSubmissions.length;
+          } catch (e) {
+            results.errors.push(`Assessments: ${e.message}`);
+          }
+        }
+
+        // 5. Upload XP Transactions
+        if (Array.isArray(targetStore.state.xpTransactions) && targetStore.state.xpTransactions.length > 0) {
+          try {
+            await this.saveXPTransactions(targetStore.state.xpTransactions);
+            results.xpCount += targetStore.state.xpTransactions.length;
+          } catch (e) {
+            results.errors.push(`XP: ${e.message}`);
+          }
+        }
+
+        // 6. Upload Attendance
+        if (Array.isArray(targetStore.state.attendanceRecords) && targetStore.state.attendanceRecords.length > 0) {
+          try {
+            await this.saveAttendance(targetStore.state.attendanceRecords);
+            results.attendanceCount += targetStore.state.attendanceRecords.length;
+          } catch (e) {
+            results.errors.push(`Attendance: ${e.message}`);
+          }
+        }
+
+        this.isSyncing = false;
+        this.lastSyncStatus = 'success';
+        this.lastSyncTime = new Date().toISOString();
+        this.notify();
+
+        return {
+          success: results.errors.length === 0,
+          ...results
+        };
+      } catch (err) {
+        this.isSyncing = false;
+        this.lastSyncStatus = 'error';
         this.lastError = err.message;
         this.notify();
-        console.error('[AdventureSupabase] syncAllWithStore error:', err);
-        return { success: false, error: err.message };
+        throw err;
       }
     }
 

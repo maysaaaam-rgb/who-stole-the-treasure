@@ -591,76 +591,91 @@
     }, 1000);
   };
 
-  window.handleManualCloudUploadAll = async function() {
-    const sb = window.AdventureSupabase;
+  window.handleUploadLocalDataToCloud = window.handleManualCloudUploadAll = async function() {
+    const sb = window.AdventureSupabase || window.SchoolCloudSync;
     if (!sb || !sb.isConfigured) {
-      alert('Please connect to Supabase first before uploading data.');
+      showNotification('Please connect to Supabase first before uploading data.', 'error');
       return;
     }
 
     const students = store.state.students || [];
-    if (!confirm('Upload ' + students.length + ' local students and all records to Supabase? (Existing remote records will be updated idempotently).')) {
+    if (!confirm('Upload ' + students.length + ' local students, ' + (store.state.classes ? store.state.classes.length : 0) + ' classes, and all history to Supabase? (Existing remote records will be updated idempotently).')) {
       return;
     }
 
-    let uploaded = 0;
-    for (const s of students) {
-      try {
-        await sb.saveStudent(s);
-        uploaded++;
-      } catch (err) {
-        console.warn('Upload student error:', err);
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#eff6ff';
+      feedback.style.color = '#1e40af';
+      feedback.style.border = '1px solid #bfdbfe';
+      feedback.textContent = 'Uploading local data to Supabase...';
+    }
+
+    try {
+      const res = await (sb.uploadLocalStudentsToCloud ? sb.uploadLocalStudentsToCloud(store) : sb.migrateLocalRosterToCloud(store));
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#ecfdf5';
+        feedback.style.color = '#065f46';
+        feedback.style.border = '1px solid #a7f3d0';
+        feedback.textContent = `✓ Uploaded ${res.studentsCount || res.studentCount || 0} students and ${res.classesCount || 0} classes to Supabase!`;
       }
-    }
-
-    // Upload notes
-    if (Array.isArray(store.state.teacherNotes)) {
-      for (const n of store.state.teacherNotes) {
-        try { await sb.saveTeacherNote(n); } catch (e) {}
+      showNotification('✓ Uploaded ' + (res.studentsCount || res.studentCount || 0) + ' students and ' + (res.classesCount || 0) + ' classes to Supabase!', 'success');
+      const latencyBadge = document.getElementById('cloud-latency-badge');
+      if (latencyBadge) latencyBadge.textContent = `${res.studentsCount || 0} cloud students`;
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Upload failed: ${err.message}`;
       }
+      showNotification('✕ Upload failed: ' + err.message, 'error');
     }
-
-    // Upload assessments
-    if (Array.isArray(store.state.progressCheckSubmissions) && store.state.progressCheckSubmissions.length > 0) {
-      try { await sb.saveAssessments(store.state.progressCheckSubmissions); } catch (e) {}
-    }
-
-    // Upload attendance
-    if (Array.isArray(store.state.attendanceRecords) && store.state.attendanceRecords.length > 0) {
-      try { await sb.saveAttendance(store.state.attendanceRecords); } catch (e) {}
-    }
-
-    if (window.showToast) {
-      window.showToast('✓ Uploaded ' + uploaded + ' students and all records to Supabase!', 'success');
-    } else {
-      alert('✓ Uploaded ' + uploaded + ' students and all records to Supabase!');
-    }
-
-    window.openCloudDatabaseModal();
   };
 
-  window.handleManualForcePullCloud = async function() {
-    const sb = window.AdventureSupabase;
+  window.handlePullCloudDataToLocal = window.handleManualForcePullCloud = async function() {
+    const sb = window.AdventureSupabase || window.SchoolCloudSync;
     if (!sb || !sb.isConfigured) {
-      alert('Please connect to Supabase first.');
+      showNotification('Please connect to Supabase first.', 'error');
       return;
     }
 
-    if (!confirm('Download latest data from Supabase and replace local cache?')) {
-      return;
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#eff6ff';
+      feedback.style.color = '#1e40af';
+      feedback.style.border = '1px solid #bfdbfe';
+      feedback.textContent = 'Pulling latest data from Supabase...';
     }
 
-    const res = await sb.syncAllWithStore(store);
-    if (res.success) {
-      window.closeModal('modal-cloud-sync');
-      if (window.showToast) {
-        window.showToast('✓ Successfully pulled ' + res.studentCount + ' students from Supabase!', 'success');
+    try {
+      const res = await (sb.syncAllWithStore ? sb.syncAllWithStore(store) : sb.syncWithStore(store));
+      if (res.success) {
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#ecfdf5';
+          feedback.style.color = '#065f46';
+          feedback.style.border = '1px solid #a7f3d0';
+          feedback.textContent = `✓ Pulled ${res.studentCount || 0} students and ${res.notesCount || 0} notes from cloud!`;
+        }
+        showNotification('✓ Synchronized ' + (res.studentCount || 0) + ' students from Supabase!', 'success');
+        renderCurrentView();
       } else {
-        alert('✓ Successfully pulled ' + res.studentCount + ' students from Supabase!');
+        throw new Error(res.error || 'Failed to pull cloud data');
       }
-      renderCurrentView();
-    } else {
-      alert('Failed to pull from Supabase: ' + res.error);
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Pull failed: ${err.message}`;
+      }
+      showNotification('✕ Pull failed: ' + err.message, 'error');
     }
   };
 

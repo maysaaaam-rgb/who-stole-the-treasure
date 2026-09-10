@@ -143,8 +143,36 @@
     }
 
     // =========================================================================
-    // 6. TWO-WAY STORE SYNCHRONIZATION
+    // 5B. CLASSES CRUD (Supabase Authoritative Persistence)
     // =========================================================================
+    async saveClass(cls) {
+      if (!root.AdventureSupabase) return { success: false };
+      return root.AdventureSupabase.saveClass(cls);
+    }
+
+    async getClasses() {
+      if (!root.AdventureSupabase) return [];
+      return root.AdventureSupabase.getClasses();
+    }
+
+    async deleteClass(classId) {
+      if (!root.AdventureSupabase) return { success: false };
+      return root.AdventureSupabase.deleteClass(classId);
+    }
+
+    // =========================================================================
+    // 6. TWO-WAY STORE SYNCHRONIZATION & SAFE ROSTER MIGRATION
+    // =========================================================================
+    async uploadLocalStudentsToCloud(store) {
+      if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not loaded' };
+      return root.AdventureSupabase.uploadLocalStudentsToCloud(store);
+    }
+
+    async migrateLocalRosterToCloud(store) {
+      if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not loaded' };
+      return root.AdventureSupabase.migrateLocalRosterToCloud(store);
+    }
+
     async syncWithStore(store) {
       if (!store) return { success: false, reason: 'Invalid store' };
       this._activeStore = store;
