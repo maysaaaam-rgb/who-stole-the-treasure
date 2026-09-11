@@ -5085,6 +5085,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
           '</div>' +
 
+          '<!-- Horizontal Monster Evolution Progression Timeline -->' +
+          '<div class="monster-evolution-timeline">' +
+            levels.map((l, idx) => {
+              const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
+                stage: l.stageKey,
+                color: 'blue',
+                size: 80,
+                animated: false
+              }) : '👾';
+              const isLast = idx === levels.length - 1;
+              const chevronHtml = !isLast ? (
+                '<div class="evolution-timeline-chevron" title="Evolution Step">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<polyline points="9 18 15 12 9 6"></polyline>' +
+                  '</svg>' +
+                '</div>'
+              ) : '';
+
+              return '' +
+                '<div class="evolution-stage-card">' +
+                  '<div style="font-size:0.68rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Level ' + l.level + '</div>' +
+                  '<div style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' +
+                    stageSvg +
+                  '</div>' +
+                  '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); margin-bottom:4px; line-height:1.2;">' + l.name + '</div>' +
+                  '<div style="font-size:0.72rem; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); padding:2px 8px; border-radius:10px; white-space:nowrap;">' + l.xpRequired.toLocaleString() + ' ⭐ XP</div>' +
+                '</div>' +
+                chevronHtml;
+            }).join('') +
+          '</div>' +
+
           '<div style="overflow-x:auto;">' +
             '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
               '<thead>' +
