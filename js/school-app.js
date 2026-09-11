@@ -9841,18 +9841,71 @@ window.switchClassroomSubTab = function(subTab) {
   // -------------------------------------------------------------------------
 
   let monsterCreatorStudentId = null;
-  let monsterCreatorActiveTab = 'monster'; // 'monster' | 'face' | 'features' | 'clothing' | 'world'
+  let monsterCreatorActiveTab = 'features'; // 'monster' | 'face' | 'features' | 'clothing' | 'world'
+  let monsterCreatorActiveSubTab = 'horns';
+  let monsterCreatorIsAnimated = true;
   let monsterCreatorDraft = {
     baseColor: 'blue',
     equipped: {}
   };
 
   const MONSTER_CREATOR_TABS = [
-    { id: 'monster', label: 'Monster', icon: '👾', title: 'Body Color & Palette' },
-    { id: 'face', label: 'Face', icon: '👀', title: 'Eyes & Mouth Expressions' },
-    { id: 'features', label: 'Features', icon: '✨', title: 'Horns, Wings & Tail' },
-    { id: 'clothing', label: 'Clothing', icon: '🎩', title: 'Hats, Glasses, Backpacks & Gear' },
-    { id: 'world', label: 'World', icon: '🌍', title: 'Environment & Auras' }
+    {
+      id: 'monster',
+      label: 'Monster',
+      icon: '👾',
+      title: 'Fur Colors & Palette',
+      subCategories: [
+        { id: 'colors', label: 'Fur Colors', icon: '🎨', title: 'Fur Colors & Palette' }
+      ]
+    },
+    {
+      id: 'face',
+      label: 'Face',
+      icon: '👀',
+      title: 'Eyes & Mouth Expressions',
+      subCategories: [
+        { id: 'eyes', label: 'Eyes', icon: '👀', title: 'Eye Expressions' },
+        { id: 'mouths', label: 'Mouths', icon: '👄', title: 'Mouth Expressions' }
+      ]
+    },
+    {
+      id: 'features',
+      label: 'Features',
+      icon: '🪶',
+      title: 'Horns, Wings, Tail & Gear',
+      subCategories: [
+        { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
+        { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings' },
+        { id: 'tails', label: 'Tails', icon: '🦎', title: 'Tails' },
+        { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
+        { id: 'backpacks', label: 'Backpacks', icon: '🎒', title: 'Backpacks & Bags' },
+        { id: 'accessories', label: 'Accessories', icon: '🎀', title: 'Accessories & Held' },
+        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
+      ]
+    },
+    {
+      id: 'clothing',
+      label: 'Clothing',
+      icon: '👔',
+      title: 'Clothing & Outfits',
+      subCategories: [
+        { id: 'adventure', label: 'Adventure', icon: '🧭', title: 'Adventure Gear' },
+        { id: 'school', label: 'School', icon: '🏫', title: 'School Uniforms' },
+        { id: 'special', label: 'Special', icon: '✨', title: 'Special Outfits' },
+        { id: 'fantasy', label: 'Fantasy', icon: '🛡️', title: 'Fantasy & Armor' }
+      ]
+    },
+    {
+      id: 'world',
+      label: 'World',
+      icon: '🌍',
+      title: 'Environment Worlds & Auras',
+      subCategories: [
+        { id: 'worlds', label: 'Worlds', icon: '🌍', title: 'Adventure Worlds' },
+        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
+      ]
+    }
   ];
 
   window.openMonsterCreator = function(studentId) {
@@ -9869,9 +9922,20 @@ window.switchClassroomSubTab = function(subTab) {
       equipped: Object.assign({}, profile.equipped || {})
     };
 
-    monsterCreatorActiveTab = 'monster';
+    monsterCreatorActiveTab = 'features';
+    monsterCreatorActiveSubTab = 'horns';
+    monsterCreatorIsAnimated = true;
+
+    // Reset animate button UI
+    const animBtn = document.getElementById('btn-monster-preview-animate');
+    const animIcon = document.getElementById('monster-animate-icon');
+    const animLabel = document.getElementById('monster-animate-label');
+    if (animBtn) animBtn.classList.add('is-active');
+    if (animIcon) animIcon.textContent = '⏸';
+    if (animLabel) animLabel.textContent = 'Pause';
 
     window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
     window.renderMonsterCreatorItems();
     window.updateMonsterCreatorPreview();
     window.openModal('modal-avatar-selector');
@@ -9895,58 +9959,122 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.selectMonsterCreatorCategory = function(tabId) {
     monsterCreatorActiveTab = tabId;
+    const tabObj = MONSTER_CREATOR_TABS.find(t => t.id === tabId) || MONSTER_CREATOR_TABS[0];
+    if (tabObj && tabObj.subCategories && tabObj.subCategories.length > 0) {
+      monsterCreatorActiveSubTab = tabObj.subCategories[0].id;
+    }
     window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
+    window.renderMonsterCreatorItems();
+  };
+
+  window.renderMonsterCreatorSubNav = function() {
+    const subNavEl = document.getElementById('monster-subcategory-nav');
+    if (!subNavEl) return;
+
+    const currentTab = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
+    const subCats = currentTab.subCategories || [];
+
+    subNavEl.innerHTML = subCats.map(sub => '' +
+      '<button type="button" class="monster-subnav-btn ' + (monsterCreatorActiveSubTab === sub.id ? 'is-active' : '') + '" onclick="selectMonsterCreatorSubTab(\'' + sub.id + '\')">' +
+        '<span>' + sub.icon + '</span>' +
+        '<span>' + sub.label + '</span>' +
+      '</button>'
+    ).join('');
+  };
+
+  window.selectMonsterCreatorSubTab = function(subId) {
+    monsterCreatorActiveSubTab = subId;
+    window.renderMonsterCreatorSubNav();
     window.renderMonsterCreatorItems();
   };
 
   window.renderMonsterCreatorItems = function() {
     const grid = document.getElementById('avatar-characters-grid');
     const titleEl = document.getElementById('monster-creator-category-title');
+    const countEl = document.getElementById('monster-creator-item-count');
     if (!grid) return;
 
     const activeTabObj = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
-    if (titleEl) titleEl.textContent = activeTabObj.title;
+    const activeSubObj = (activeTabObj.subCategories || []).find(s => s.id === monsterCreatorActiveSubTab) || (activeTabObj.subCategories && activeTabObj.subCategories[0]) || { id: 'all', title: activeTabObj.title };
+
+    if (titleEl) titleEl.textContent = activeSubObj.title || activeTabObj.title;
 
     const student = store.getStudent(monsterCreatorStudentId);
     if (!student) return;
     const mState = store.calculateMonsterState(monsterCreatorStudentId);
     const unlockedSet = mState.unlockedItemIds || new Set();
 
-    let categoriesInTab = [];
-    if (monsterCreatorActiveTab === 'monster') categoriesInTab = ['body'];
-    else if (monsterCreatorActiveTab === 'face') categoriesInTab = ['eyes', 'mouth'];
-    else if (monsterCreatorActiveTab === 'features') categoriesInTab = ['horns', 'wings', 'tail'];
-    else if (monsterCreatorActiveTab === 'clothing') categoriesInTab = ['clothing', 'hat', 'glasses', 'backpack', 'accessory'];
-    else if (monsterCreatorActiveTab === 'world') categoriesInTab = ['background', 'aura'];
-
     const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
-    const items = allItems.filter(item => categoriesInTab.includes(item.category));
-
-    // Optional none items for categories that can be unequipped
+    let items = [];
     const noneOptions = [];
-    if (monsterCreatorActiveTab === 'features') {
-      noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', icon: '✕', isNone: true });
-    }
-    if (monsterCreatorActiveTab === 'clothing') {
-      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Clothing', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'glasses-none', category: 'glasses', name: 'No Glasses', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', icon: '✕', isNone: true });
-    }
-    if (monsterCreatorActiveTab === 'world') {
-      noneOptions.push({ id: 'aura-none', category: 'aura', name: 'No Aura', icon: '✕', isNone: true });
+
+    const sub = monsterCreatorActiveSubTab;
+    if (sub === 'colors') {
+      items = allItems.filter(i => i.category === 'body');
+    } else if (sub === 'eyes') {
+      items = allItems.filter(i => i.category === 'eyes');
+    } else if (sub === 'mouths') {
+      items = allItems.filter(i => i.category === 'mouth');
+    } else if (sub === 'horns') {
+      items = allItems.filter(i => i.category === 'horns');
+    } else if (sub === 'wings') {
+      noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', isNone: true });
+      items = allItems.filter(i => i.category === 'wings');
+    } else if (sub === 'tails') {
+      items = allItems.filter(i => i.category === 'tail');
+    } else if (sub === 'hats') {
+      noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', isNone: true });
+      items = allItems.filter(i => i.category === 'hat');
+    } else if (sub === 'backpacks') {
+      noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', isNone: true });
+      items = allItems.filter(i => i.category === 'backpack');
+    } else if (sub === 'accessories') {
+      noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', isNone: true });
+      items = allItems.filter(i => i.category === 'accessory' || i.category === 'glasses');
+    } else if (sub === 'adventure') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'adventure' || ['clothing-vest', 'clothing-cape', 'clothing-adv-jacket', 'clothing-travel-coat'].includes(i.id)));
+    } else if (sub === 'school') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'school' || ['clothing-scarf', 'clothing-uniform', 'clothing-hoodie', 'clothing-school-jacket', 'clothing-scholar'].includes(i.id)));
+    } else if (sub === 'special') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'special' || ['clothing-royal-robe', 'clothing-robe', 'clothing-space', 'clothing-hero', 'clothing-winter'].includes(i.id)));
+    } else if (sub === 'fantasy') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'fantasy' || ['clothing-dragon-armor', 'clothing-knight-armor', 'clothing-magic-robe', 'clothing-royal'].includes(i.id)));
+    } else if (sub === 'worlds') {
+      items = allItems.filter(i => i.category === 'background');
+    } else if (sub === 'auras') {
+      noneOptions.push({ id: 'aura-none', category: 'aura', name: 'No Aura', isNone: true });
+      items = allItems.filter(i => i.category === 'aura');
+    } else {
+      items = allItems.filter(i => i.category === sub);
     }
 
     const fullList = [...noneOptions, ...items];
+    if (countEl) countEl.textContent = fullList.length + ' Items';
+
+    const thumbRenderer = window.MonsterRenderer && window.MonsterRenderer.renderMonsterItemThumbnail ?
+      window.MonsterRenderer.renderMonsterItemThumbnail :
+      (window.renderMonsterItemThumbnail || null);
 
     grid.innerHTML = fullList.map(item => {
       const cat = item.category;
       let isSelected = false;
+
       if (item.isNone) {
-        isSelected = !monsterCreatorDraft.equipped[cat] || monsterCreatorDraft.equipped[cat] === 'none';
+        if (cat === 'accessory') {
+          isSelected = (!monsterCreatorDraft.equipped.accessory || monsterCreatorDraft.equipped.accessory === 'none') &&
+                       (!monsterCreatorDraft.equipped.glasses || monsterCreatorDraft.equipped.glasses === 'none');
+        } else {
+          isSelected = !monsterCreatorDraft.equipped[cat] || monsterCreatorDraft.equipped[cat] === 'none';
+        }
       } else if (cat === 'body') {
         isSelected = (monsterCreatorDraft.equipped.body === item.id) || (monsterCreatorDraft.baseColor === item.id.replace('body-', ''));
+      } else if (cat === 'accessory' || cat === 'glasses') {
+        isSelected = (monsterCreatorDraft.equipped.accessory === item.id || monsterCreatorDraft.equipped.glasses === item.id);
       } else {
         isSelected = (monsterCreatorDraft.equipped[cat] === item.id);
       }
@@ -9954,7 +10082,7 @@ window.switchClassroomSubTab = function(subTab) {
       const isUnlocked = item.isNone || unlockedSet.has(item.id);
       let lockText = '';
       if (!isUnlocked) {
-        if (item.unlockType === 'level' && item.unlockRequirement) {
+        if (item.unlockType === 'level' && item.unlockRequirement && item.unlockRequirement.level) {
           lockText = 'Level ' + item.unlockRequirement.level;
         } else if (item.unlockType === 'achievement') {
           lockText = 'Achievement';
@@ -9963,12 +10091,26 @@ window.switchClassroomSubTab = function(subTab) {
         }
       }
 
+      const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
+
+      let rarityBadge = '';
+      if (item.rarity && item.rarity !== 'common' && !item.isNone) {
+        rarityBadge = '<span class="monster-item-rarity-pill is-' + item.rarity + '">' + item.rarity + '</span>';
+      }
+
       return '' +
-        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" style="cursor:' + (isUnlocked ? 'pointer' : 'not-allowed') + '; background:var(--bg-canvas); border:' + (isSelected ? '2px solid var(--color-primary)' : isUnlocked ? '1.5px solid var(--border-light)' : '1.5px dashed #cbd5e1') + '; border-radius:var(--radius-md); padding:10px 8px; text-align:center; transition:all 0.15s ease; box-shadow:' + (isSelected ? 'var(--shadow-md)' : 'none') + '; position:relative; opacity:' + (isUnlocked ? '1' : '0.6') + ';">' +
-          (isUnlocked ? '' : '<span style="position:absolute; top:4px; right:4px; font-size:0.7rem; background:#fee2e2; color:#ef4444; border-radius:10px; padding:1px 5px; font-weight:800;">🔒 ' + lockText + '</span>') +
-          '<div style="font-size:32px; margin-bottom:4px;">' + (item.icon || '✨') + '</div>' +
-          '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); line-height:1.2;">' + item.name + '</div>' +
-          '<div style="font-size:0.7rem; color:var(--text-muted); text-transform:capitalize; margin-top:2px;">' + cat + '</div>' +
+        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" ' +
+             'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ' +
+             'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
+          (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
+          (!isUnlocked ? '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>' : '') +
+          '<div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:2px auto;">' +
+            thumbSvg +
+          '</div>' +
+          '<div style="width:100%; text-align:center;">' +
+            '<div class="monster-item-card-title">' + item.name + '</div>' +
+            rarityBadge +
+          '</div>' +
         '</div>';
     }).join('');
   };
@@ -9977,15 +10119,44 @@ window.switchClassroomSubTab = function(subTab) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
     if (isNone) {
-      monsterCreatorDraft.equipped[category] = 'none';
+      if (category === 'accessory') {
+        monsterCreatorDraft.equipped.accessory = 'none';
+        monsterCreatorDraft.equipped.glasses = 'none';
+      } else {
+        monsterCreatorDraft.equipped[category] = 'none';
+      }
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
+    } else if (category === 'glasses') {
+      monsterCreatorDraft.equipped.glasses = itemId;
+      if (monsterCreatorDraft.equipped.accessory === 'none') monsterCreatorDraft.equipped.accessory = '';
     } else {
       monsterCreatorDraft.equipped[category] = itemId;
     }
 
     window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
+  };
+
+  window.toggleMonsterCreatorAnimation = function() {
+    monsterCreatorIsAnimated = !monsterCreatorIsAnimated;
+    const btn = document.getElementById('btn-monster-preview-animate');
+    const iconEl = document.getElementById('monster-animate-icon');
+    const labelEl = document.getElementById('monster-animate-label');
+
+    if (btn) {
+      if (monsterCreatorIsAnimated) {
+        btn.classList.add('is-active');
+        if (iconEl) iconEl.textContent = '⏸';
+        if (labelEl) labelEl.textContent = 'Pause';
+      } else {
+        btn.classList.remove('is-active');
+        if (iconEl) iconEl.textContent = '▶';
+        if (labelEl) labelEl.textContent = 'Animate';
+      }
+    }
+
     window.updateMonsterCreatorPreview();
   };
 
@@ -9997,26 +10168,60 @@ window.switchClassroomSubTab = function(subTab) {
     const profile = store.getMonsterProfile(monsterCreatorStudentId);
 
     const box = document.querySelector('#modal-avatar-selector #avatar-preview-box') || document.getElementById('avatar-preview-box');
+    const miniAvatarBox = document.getElementById('monster-creator-mini-avatar');
     const nameEl = document.getElementById('avatar-preview-name');
     const stageEl = document.getElementById('avatar-preview-category');
     const descEl = document.getElementById('avatar-preview-desc');
     const summaryEl = document.getElementById('monster-creator-equipped-summary');
+    const countSummaryEl = document.getElementById('monster-creator-equipped-count');
 
-    if (box && (window.MonsterRenderer || window.renderMonsterSVG)) {
-      const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
-      const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+    const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
+    const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+
+    if (box && renderFn) {
       box.innerHTML = renderFn({
         stage: previewStage,
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
-        size: 260,
-        animated: true
+        size: 270,
+        animated: monsterCreatorIsAnimated
+      });
+    }
+
+    if (miniAvatarBox && renderFn) {
+      miniAvatarBox.innerHTML = renderFn({
+        stage: previewStage,
+        color: monsterCreatorDraft.baseColor,
+        equipped: monsterCreatorDraft.equipped,
+        size: 46,
+        animated: false
       });
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
     if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
     if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+
+    // Render Preview Background Swatches
+    const bgSwatchesEl = document.getElementById('monster-preview-bg-swatches');
+    if (bgSwatchesEl) {
+      const bgs = [
+        { id: 'bg-meadow', icon: '🏕️', label: 'Explorer Camp', bg: '#dcfce7' },
+        { id: 'bg-castle', icon: '🏰', label: 'Academy Castle', bg: '#fef3c7' },
+        { id: 'bg-forest', icon: '🌲', label: 'Enchanted Forest', bg: '#064e3b' },
+        { id: 'bg-volcano', icon: '🌋', label: 'Volcano Island', bg: '#451a03' },
+        { id: 'bg-beach', icon: '🏖️', label: 'Adventure Beach', bg: '#e0f2fe' },
+        { id: 'bg-cosmos', icon: '🚀', label: 'Space World', bg: '#090d16' }
+      ];
+      const curBg = monsterCreatorDraft.equipped.background || 'bg-meadow';
+      bgSwatchesEl.innerHTML = bgs.map(b => '' +
+        '<button type="button" class="monster-preview-bg-dot ' + (curBg === b.id ? 'is-active' : '') + '" ' +
+                'title="' + b.label + '" onclick="handleSelectMonsterItem(\'' + b.id + '\', \'background\', false)" ' +
+                'style="background:' + b.bg + ';">' +
+          b.icon +
+        '</button>'
+      ).join('');
+    }
 
     // Render Quick Fur Color Swatches
     const swatchEl = document.getElementById('monster-color-swatches');
@@ -10030,38 +10235,64 @@ window.switchClassroomSubTab = function(subTab) {
         { id: 'gold', hex: '#eab308', label: 'Royal Gold' }
       ];
       swatchEl.innerHTML = colors.map(c => '' +
-        '<button type="button" title="' + c.label + '" onclick="handleQuickSetColor(\'' + c.id + '\')" style="width:28px; height:28px; border-radius:50%; background:' + c.hex + '; border:' + (monsterCreatorDraft.baseColor === c.id ? '3px solid #0f172a' : '2px solid #ffffff') + '; box-shadow:var(--shadow-xs); cursor:pointer; transform:' + (monsterCreatorDraft.baseColor === c.id ? 'scale(1.15)' : 'scale(1)') + '; transition:all 0.15s ease;"></button>'
+        '<button type="button" title="' + c.label + '" onclick="handleQuickSetColor(\'' + c.id + '\')" style="width:26px; height:26px; border-radius:50%; background:' + c.hex + '; border:' + (monsterCreatorDraft.baseColor === c.id ? '3px solid #0f172a' : '2px solid #ffffff') + '; box-shadow:var(--shadow-xs); cursor:pointer; transform:' + (monsterCreatorDraft.baseColor === c.id ? 'scale(1.15)' : 'scale(1)') + '; transition:all 0.15s ease;"></button>'
       ).join('');
     }
 
+    // Render Equipped Features Summary in Column 3
     if (summaryEl) {
       const eq = monsterCreatorDraft.equipped;
+      const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
+      const getItemName = function(id, fallback) {
+        const found = allItems.find(i => i.id === id);
+        return found ? found.name : fallback || id;
+      };
+
       const layers = [
-        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, canRemove: false },
-        { label: 'Eyes', val: eq.eyes, canRemove: false },
-        { label: 'Mouth', val: eq.mouth, canRemove: false },
-        { label: 'Horns', val: eq.horns, canRemove: true, cat: 'horns' },
-        { label: 'Wings', val: eq.wings, canRemove: true, cat: 'wings' },
-        { label: 'Tail', val: eq.tail, canRemove: true, cat: 'tail' },
-        { label: 'Clothing', val: eq.clothing, canRemove: true, cat: 'clothing' },
-        { label: 'Hat', val: eq.hat, canRemove: true, cat: 'hat' },
-        { label: 'Glasses', val: eq.glasses, canRemove: true, cat: 'glasses' },
-        { label: 'Backpack', val: eq.backpack, canRemove: true, cat: 'backpack' },
-        { label: 'Accessory', val: eq.accessory, canRemove: true, cat: 'accessory' },
-        { label: 'Aura', val: eq.aura, canRemove: true, cat: 'aura' },
-        { label: 'World', val: eq.background, canRemove: false }
+        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, name: monsterCreatorDraft.baseColor.charAt(0).toUpperCase() + monsterCreatorDraft.baseColor.slice(1), icon: '🎨', tab: 'monster', sub: 'colors', canRemove: false },
+        { label: 'Eyes', val: eq.eyes, name: getItemName(eq.eyes, 'Default Eyes'), icon: '👀', tab: 'face', sub: 'eyes', canRemove: false },
+        { label: 'Mouth', val: eq.mouth, name: getItemName(eq.mouth, 'Default Smile'), icon: '👄', tab: 'face', sub: 'mouths', canRemove: false },
+        { label: 'Horns', val: eq.horns, name: getItemName(eq.horns, 'Signature Ears'), icon: '🪶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },
+        { label: 'Wings', val: eq.wings, name: getItemName(eq.wings, 'None'), icon: '🪽', tab: 'features', sub: 'wings', canRemove: true, cat: 'wings' },
+        { label: 'Tail', val: eq.tail, name: getItemName(eq.tail, 'Puff Tail'), icon: '🦎', tab: 'features', sub: 'tails', canRemove: true, cat: 'tail' },
+        { label: 'Clothing', val: eq.clothing, name: getItemName(eq.clothing, 'Explorer Vest'), icon: '👔', tab: 'clothing', sub: 'adventure', canRemove: true, cat: 'clothing' },
+        { label: 'Hat', val: eq.hat, name: getItemName(eq.hat, 'None'), icon: '🎩', tab: 'features', sub: 'hats', canRemove: true, cat: 'hat' },
+        { label: 'Glasses', val: eq.glasses, name: getItemName(eq.glasses, 'None'), icon: '👓', tab: 'features', sub: 'accessories', canRemove: true, cat: 'glasses' },
+        { label: 'Backpack', val: eq.backpack, name: getItemName(eq.backpack, 'None'), icon: '🎒', tab: 'features', sub: 'backpacks', canRemove: true, cat: 'backpack' },
+        { label: 'Accessory', val: eq.accessory, name: getItemName(eq.accessory, 'None'), icon: '🎀', tab: 'features', sub: 'accessories', canRemove: true, cat: 'accessory' },
+        { label: 'Aura', val: eq.aura, name: getItemName(eq.aura, 'None'), icon: '✨', tab: 'features', sub: 'auras', canRemove: true, cat: 'aura' },
+        { label: 'World', val: eq.background, name: getItemName(eq.background, 'Explorer Camp'), icon: '🌍', tab: 'world', sub: 'worlds', canRemove: false }
       ];
 
-      summaryEl.innerHTML = layers.filter(l => l.val && l.val !== 'none').map(l => '' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:4px 8px; font-size:0.75rem;">' +
-          '<span><strong style="color:var(--text-main);">' + l.label + ':</strong> ' + l.val + '</span>' +
-          (l.canRemove ? '<button type="button" onclick="handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip item" style="background:transparent; border:none; color:var(--color-danger); cursor:pointer; font-size:0.75rem; padding:0 4px;">✕</button>' : '') +
+      const activeLayers = layers.filter(l => l.val && l.val !== 'none');
+      if (countSummaryEl) countSummaryEl.textContent = '(' + activeLayers.length + ')';
+
+      summaryEl.innerHTML = activeLayers.map(l => '' +
+        '<div class="monster-equipped-row" onclick="navigateToEquippedFeature(\'' + l.tab + '\', \'' + l.sub + '\')" title="Jump to ' + l.label + ' in customizer">' +
+          '<div class="monster-equipped-row-left">' +
+            '<span class="monster-equipped-row-icon">' + l.icon + '</span>' +
+            '<div>' +
+              '<div class="monster-equipped-row-label">' + l.label + '</div>' +
+              '<div class="monster-equipped-row-val">' + l.name + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="monster-equipped-row-actions">' +
+            (l.canRemove ? '<button type="button" class="monster-unequip-btn" onclick="event.stopPropagation(); handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip">✕</button>' : '') +
+            '<span class="monster-equipped-chevron">›</span>' +
+          '</div>' +
         '</div>'
       ).join('');
     }
   };
 
-  
+  window.navigateToEquippedFeature = function(tabId, subId) {
+    monsterCreatorActiveTab = tabId;
+    monsterCreatorActiveSubTab = subId;
+    window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
+    window.renderMonsterCreatorItems();
+  };
+
   window.handleQuickSetColor = function(colorId) {
     if (!monsterCreatorDraft) return;
     monsterCreatorDraft.baseColor = colorId;

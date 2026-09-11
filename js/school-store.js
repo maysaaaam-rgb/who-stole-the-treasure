@@ -1630,76 +1630,141 @@
 
   const DEFAULT_MONSTER_ITEMS = [
     // Body Colors
-    { id: 'body-blue', name: 'Sky Blue', category: 'body', description: 'Bright cheerful sky blue fur', icon: '🔵', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-pink', name: 'Berry Pink', category: 'body', description: 'Playful sweet berry pink coat', icon: '🌸', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-green', name: 'Leaf Green', category: 'body', description: 'Earthy vibrant fresh leaf green', icon: '🍃', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-orange', name: 'Sunset Orange', category: 'body', description: 'Energetic sunset orange fur', icon: '🍊', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-purple', name: 'Lavender Purple', category: 'body', description: 'Enchanted whimsical lavender', icon: '💜', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-gold', name: 'Royal Gold', category: 'body', description: 'Radiant gleaming gold sheen', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'body-blue', name: 'Sky Blue', category: 'body', subCategory: 'colors', description: 'Bright cheerful sky blue fur', icon: '🔵', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-pink', name: 'Berry Pink', category: 'body', subCategory: 'colors', description: 'Playful sweet berry pink coat', icon: '🌸', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-green', name: 'Leaf Green', category: 'body', subCategory: 'colors', description: 'Earthy vibrant fresh leaf green', icon: '🍃', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-orange', name: 'Sunset Orange', category: 'body', subCategory: 'colors', description: 'Energetic sunset orange fur', icon: '🍊', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-purple', name: 'Lavender Purple', category: 'body', subCategory: 'colors', description: 'Enchanted whimsical lavender', icon: '💜', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-gold', name: 'Royal Gold', category: 'body', subCategory: 'colors', description: 'Radiant gleaming gold sheen', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Eyes
-    { id: 'eyes-sparkle', name: 'Anime Sparkle', category: 'eyes', description: 'Big glossy eyes filled with wonder', icon: '✨', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'eyes-happy', name: 'Happy Crescents', category: 'eyes', description: 'Joyful cheerful laughing eyes', icon: '😄', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
-    { id: 'eyes-wink', name: 'Curious Wink', category: 'eyes', description: 'Playful winking expression', icon: '😉', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
-    { id: 'eyes-dragon', name: 'Dragon Glow', category: 'eyes', description: 'Fierce glowing golden pupils', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    // Face - Eyes
+    { id: 'eyes-sparkle', name: 'Anime Sparkle', category: 'eyes', subCategory: 'eyes', description: 'Big glossy eyes filled with wonder', icon: '✨', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'eyes-happy', name: 'Happy Crescents', category: 'eyes', subCategory: 'eyes', description: 'Joyful cheerful laughing eyes', icon: '😄', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'eyes-wink', name: 'Curious Wink', category: 'eyes', subCategory: 'eyes', description: 'Playful winking expression', icon: '😉', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-brave', name: 'Brave Eyes', category: 'eyes', subCategory: 'eyes', description: 'Determined courageous heroic gaze', icon: '😎', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-sleepy', name: 'Sleepy Eyes', category: 'eyes', subCategory: 'eyes', description: 'Cozy relaxed drooping eyelids', icon: '😴', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'eyes-star', name: 'Starry Eyes', category: 'eyes', subCategory: 'eyes', description: 'Glittering golden star pupils', icon: '🤩', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-dragon', name: 'Dragon Glow', category: 'eyes', subCategory: 'eyes', description: 'Fierce glowing golden dragon pupils', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'eyes-galaxy', name: 'Galaxy Eyes', category: 'eyes', subCategory: 'eyes', description: 'Cosmic nebula swirling in deep pupils', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
-    // Mouth
-    { id: 'mouth-smile', name: 'Sweet Smile', category: 'mouth', description: 'Gentle cute cat smile', icon: '😺', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'mouth-cheer', name: 'Open Cheer', category: 'mouth', description: 'Excited wide open happy cheer', icon: '🗣️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
-    { id: 'mouth-toothy', name: 'Toothy Grin', category: 'mouth', description: 'Playful grin with tiny fangs', icon: '😁', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    // Face - Mouths
+    { id: 'mouth-smile', name: 'Happy Smile', category: 'mouth', subCategory: 'mouths', description: 'Gentle cute cat smile', icon: '😺', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'mouth-cheer', name: 'Open Cheer', category: 'mouth', subCategory: 'mouths', description: 'Excited wide open happy cheer', icon: '🗣️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'mouth-toothy', name: 'Toothy Grin', category: 'mouth', subCategory: 'mouths', description: 'Playful grin with tiny fangs', icon: '😁', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-tiny', name: 'Tiny Smile', category: 'mouth', subCategory: 'mouths', description: 'Subtle sweet little creature smile', icon: '🙂', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'mouth-excited', name: 'Excited Smile', category: 'mouth', subCategory: 'mouths', description: 'Wide cheerful grin of pure excitement', icon: '😃', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'mouth-brave', name: 'Brave Smile', category: 'mouth', subCategory: 'mouths', description: 'Confident heroic half-smile', icon: '😏', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-laughing', name: 'Laughing', category: 'mouth', subCategory: 'mouths', description: 'Big hearty laughing mouth', icon: '😆', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-surprise', name: 'Surprise', category: 'mouth', subCategory: 'mouths', description: 'Adorable round open-mouthed wonder', icon: '😮', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
 
-    // Horns / Ears
-    { id: 'horns-ears', name: 'Floppy Monster Ears', category: 'horns', description: 'Cute soft bouncy creature ears', icon: '🐰', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'horns-nub', name: 'Sprout Nub Horns', category: 'horns', description: 'Little growing horn sprouts', icon: '🌱', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'horns-curved', name: 'Curved Ram Horns', category: 'horns', description: 'Sturdy swept-back adventurer horns', icon: '🐏', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'horns-crystal', name: 'Crystal Dragon Horns', category: 'horns', description: 'Glowing cyan crystalline spires', icon: '💎', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    // Features - Horns
+    { id: 'horns-ears', name: 'Monster Ears', category: 'horns', subCategory: 'horns', description: 'Cute soft bouncy creature ears', icon: '🐰', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'horns-nub', name: 'Small Horns', category: 'horns', subCategory: 'horns', description: 'Cute little curved starter horns', icon: '🌱', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'horns-curved', name: 'Curved Horns', category: 'horns', subCategory: 'horns', description: 'Sturdy swept-back adventurer horns', icon: '🐏', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-crystal', name: 'Crystal Horns', category: 'horns', subCategory: 'horns', description: 'Glowing amethyst crystalline spires', icon: '💎', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'horns-gold', name: 'Gold Horns', category: 'horns', subCategory: 'horns', description: 'Pure shimmering golden horns', icon: '👑', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'horns-nature', name: 'Nature Horns', category: 'horns', subCategory: 'horns', description: 'Sprouting leaf horns of the forest', icon: '🍃', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-star', name: 'Star Horns', category: 'horns', subCategory: 'horns', description: 'Gleaming twin star tips', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-ice', name: 'Ice Horns', category: 'horns', subCategory: 'horns', description: 'Sharp frosted glacier spires', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'horns-flame', name: 'Flame Horns', category: 'horns', subCategory: 'horns', description: 'Blazing horn flares of fiery passion', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
 
-    // Wings
-    { id: 'wings-starter', name: 'Flutter Wings', category: 'wings', description: 'Cute starter wings for small glides', icon: '🪶', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'wings-dragon', name: 'Dragon Wings', category: 'wings', description: 'Sweeping majestic winged power', icon: '🦇', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'wings-celestial', name: 'Celestial Gold Wings', category: 'wings', description: 'Feathered gold divine wings', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    // Features - Wings
+    { id: 'wings-starter', name: 'Flutter Wings', category: 'wings', subCategory: 'wings', description: 'Cute starter wings for small glides', icon: '🪶', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'wings-dragon', name: 'Dragon Wings', category: 'wings', subCategory: 'wings', description: 'Sweeping majestic winged power', icon: '🦇', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'wings-celestial', name: 'Golden Wings', category: 'wings', subCategory: 'wings', description: 'Feathered gold divine wings', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'wings-fairy', name: 'Fairy Wings', category: 'wings', subCategory: 'wings', description: 'Translucent glittering emerald fairy wings', icon: '🧚', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'wings-bat', name: 'Shadow Wings', category: 'wings', subCategory: 'wings', description: 'Midnight indigo bat wings', icon: '🌙', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
 
-    // Tails
-    { id: 'tail-puff', name: 'Puff Bunny Tail', category: 'tail', description: 'Soft round fluffy tail', icon: '⚪', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'tail-flame', name: 'Blazing Flame Tail', category: 'tail', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-hardwork' }, rarity: 'legendary', status: 'active' },
+    // Features - Tails
+    { id: 'tail-puff', name: 'Puff Bunny Tail', category: 'tail', subCategory: 'tails', description: 'Soft round fluffy tail', icon: '⚪', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', subCategory: 'tails', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', subCategory: 'tails', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'tail-flame', name: 'Flame Tail', category: 'tail', subCategory: 'tails', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'tail-star', name: 'Star Tail', category: 'tail', subCategory: 'tails', description: 'Glowing star-tipped adventurer tail', icon: '🌟', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
+    // Features - Hats & Head Accessories
+    { id: 'hat-crown', name: 'Royal Crown', category: 'hat', subCategory: 'hats', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', subCategory: 'hats', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-scholar', name: 'Scholar Cap', category: 'hat', subCategory: 'hats', description: 'Graduation cap with gold tassel', icon: '🎓', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-wizard', name: 'Wizard Hat', category: 'hat', subCategory: 'hats', description: 'Midnight blue starry magic hat', icon: '🧙', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'hat-bow', name: 'Cute Bow', category: 'hat', subCategory: 'hats', description: 'Charming pastel pink ribbon bow', icon: '🎀', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-star-clip', name: 'Star Clip', category: 'hat', subCategory: 'hats', description: 'Gleaming golden star hair clip', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'hat-flower', name: 'Blossom Flower', category: 'hat', subCategory: 'hats', description: 'Fresh blooming cherry blossom', icon: '🌸', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-headband', name: 'Hero Headband', category: 'hat', subCategory: 'hats', description: 'Red heroic training headband', icon: '🎗️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
 
-    // Clothing
-    { id: 'clothing-vest', name: 'Explorer Vest', category: 'clothing', description: 'Sturdy khaki safari utility vest with brass buttons', icon: '🦺', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'clothing-cape', name: 'Hero Cape', category: 'clothing', description: 'Flowing crimson superhero cape with gold clasp', icon: '🦸', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'clothing-scarf', name: 'Cozy Winter Scarf', category: 'clothing', description: 'Warm knitted emerald green scarf with fringe', icon: '🧣', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'clothing-robe', name: 'Wizard Robe', category: 'clothing', description: 'Midnight indigo scholar robe stitched with silver runes', icon: '👘', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    // Features - Backpacks
+    { id: 'bp-explorer', name: 'Explorer Backpack', category: 'backpack', subCategory: 'backpacks', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bp-book', name: 'Magic Backpack', category: 'backpack', subCategory: 'backpacks', description: 'Ancient leather pack carrying vocab spells', icon: '📚', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bp-mini-wings', name: 'Mini Wings', category: 'backpack', subCategory: 'backpacks', description: 'Cute lightweight decorative wings pack', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bp-adv-bag', name: 'Adventure Bag', category: 'backpack', subCategory: 'backpacks', description: 'Compact adventurer satchel', icon: '👜', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
 
-    // Hats
-    { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'hat-scholar', name: 'Scholar Cap', category: 'hat', description: 'Graduation cap with gold tassel', icon: '🎓', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'hat-wizard', name: 'Wizard Hat', category: 'hat', description: 'Midnight blue starry magic hat', icon: '🧙', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'hat-crown', name: 'Imperial Crown', category: 'hat', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    // Features - Accessories (Hand, Neck, Special, Glasses)
+    { id: 'neck-star', name: 'Star Necklace', category: 'accessory', subCategory: 'accessories', description: 'Delicate gold chain with shining star pendant', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'neck-medal', name: 'Adventure Medal', category: 'accessory', subCategory: 'accessories', description: 'Bronze medallion of the English Explorer guild', icon: '🏅', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'neck-pendant', name: 'Magic Pendant', category: 'accessory', subCategory: 'accessories', description: 'Luminescent sapphire amulet that pulses gently', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'neck-badge', name: 'Academy Badge', category: 'accessory', subCategory: 'accessories', description: 'Official crest pin of Adventure Academy', icon: '🔰', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'acc-book', name: 'Adventure Spellbook', category: 'accessory', subCategory: 'accessories', description: 'Leather-bound reading discovery book', icon: '📖', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'acc-wand', name: 'Magic Wand', category: 'accessory', subCategory: 'accessories', description: 'Carved elder wand capped with a star crystal', icon: '🪄', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'acc-compass', name: 'Explorer Compass', category: 'accessory', subCategory: 'accessories', description: 'Precision brass compass pointing toward adventure', icon: '🧭', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'acc-trophy', name: 'Golden Trophy', category: 'accessory', subCategory: 'accessories', description: 'Championship cup of English Academy mastery', icon: '🏆', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'acc-microphone', name: 'Golden Microphone', category: 'accessory', subCategory: 'accessories', description: 'Awarded for confident English speaking', icon: '🎤', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-speaking' }, rarity: 'epic', status: 'active' },
+    { id: 'acc-floating-stars', name: 'Floating Stars', category: 'accessory', subCategory: 'accessories', description: 'Constellation of tiny playful stars hovering around', icon: '✨', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'acc-companion', name: 'Tiny Companion', category: 'accessory', subCategory: 'accessories', description: 'Miniature floating sprite friend', icon: '🐣', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'acc-confetti', name: 'Celebration Confetti', category: 'accessory', subCategory: 'accessories', description: 'Burst of joyous colorful academy ribbons', icon: '🎉', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'glasses-round', name: 'Round Glasses', category: 'glasses', subCategory: 'accessories', description: 'Scholarly intellectual spectacles', icon: '👓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'glasses-goggles', name: 'Detective Goggles', category: 'glasses', subCategory: 'accessories', description: 'Brass mystery investigation goggles', icon: '🥽', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-3' }, rarity: 'epic', status: 'active' },
 
-    // Glasses
-    { id: 'glasses-round', name: 'Round Wire Glasses', category: 'glasses', description: 'Scholarly intellectual spectacles', icon: '👓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
-    { id: 'glasses-goggles', name: 'Detective Goggles', category: 'glasses', description: 'Brass mystery investigation goggles', icon: '🥽', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-3' }, rarity: 'epic', status: 'active' },
+    // Clothing - Adventure
+    { id: 'clothing-vest', name: 'Explorer Vest', category: 'clothing', subCategory: 'adventure', description: 'Sturdy khaki safari utility vest with brass buttons', icon: '🦺', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-cape', name: 'Adventure Cape', category: 'clothing', subCategory: 'adventure', description: 'Flowing crimson superhero cape with gold clasp', icon: '🦸', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-adv-jacket', name: 'Explorer Jacket', category: 'clothing', subCategory: 'adventure', description: 'Tough leather aviator jacket with fur collar', icon: '🧥', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-travel-coat', name: 'Travel Coat', category: 'clothing', subCategory: 'adventure', description: 'Weatherproof emerald explorer duster with bronze buckles', icon: '🥾', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Backpacks
-    { id: 'bp-explorer', name: 'Explorer Satchel', category: 'backpack', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'bp-book', name: 'Magic Book Bag', category: 'backpack', description: 'Ancient leather pack carrying vocab spells', icon: '📚', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-2' }, rarity: 'epic', status: 'active' },
+    // Clothing - School
+    { id: 'clothing-scarf', name: 'Academy Uniform', category: 'clothing', subCategory: 'school', description: 'Official academy navy sweater with striped gold scarf', icon: '🧣', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'clothing-hoodie', name: 'Student Hoodie', category: 'clothing', subCategory: 'school', description: 'Cozy pastel teal fleece hoodie with pouch pocket', icon: '👕', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'clothing-school-jacket', name: 'School Jacket', category: 'clothing', subCategory: 'school', description: 'Varsity jacket stitched with the Adventure Academy crest', icon: '🥋', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-scholar', name: 'Scholar Outfit', category: 'clothing', subCategory: 'school', description: 'Refined blazer with golden piping and necktie', icon: '👔', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Handheld Accessories
-    { id: 'acc-microphone', name: 'Golden Microphone', category: 'accessory', description: 'Awarded for confident English speaking', icon: '🎤', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-speaking' }, rarity: 'epic', status: 'active' },
-    { id: 'acc-book', name: 'Adventure Spellbook', category: 'accessory', description: 'Leather-bound reading discovery book', icon: '📖', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-1' }, rarity: 'rare', status: 'active' },
+    // Clothing - Special
+    { id: 'clothing-royal-robe', name: 'Royal Robe', category: 'clothing', subCategory: 'special', description: 'Crimson velvet robe edged in royal ermine fur', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-robe', name: 'Wizard Outfit', category: 'clothing', subCategory: 'special', description: 'Midnight indigo scholar robe stitched with silver runes', icon: '👘', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-space', name: 'Space Suit', category: 'clothing', subCategory: 'special', description: 'Hi-tech cosmic suit with glowing chest display', icon: '👨‍🚀', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-hero', name: 'Hero Costume', category: 'clothing', subCategory: 'special', description: 'Sleek superhero bodysuit with lightning chest insignia', icon: '⚡', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-winter', name: 'Winter Outfit', category: 'clothing', subCategory: 'special', description: 'Puffy sky blue parka with warm fleece lining', icon: '🧤', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+
+    // Clothing - Fantasy
+    { id: 'clothing-dragon-armor', name: 'Dragon Armor', category: 'clothing', subCategory: 'fantasy', description: 'Scalemail armor forged from iridescent dragon scales', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-knight-armor', name: 'Knight Armor', category: 'clothing', subCategory: 'fantasy', description: 'Polished silver breastplate with sapphire crest', icon: '🛡️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-magic-robe', name: 'Magical Robe', category: 'clothing', subCategory: 'fantasy', description: 'Flowing starlight tunic interwoven with celestial thread', icon: '✨', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-royal', name: 'Royal Outfit', category: 'clothing', subCategory: 'fantasy', description: 'Ceremonial coronation tunic embroidered with golden thread', icon: '💎', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
     // Auras
-    { id: 'aura-sparkle', name: 'Friendship Sparkles', category: 'aura', description: 'Twinkling stars of teamwork and kindness', icon: '🌟', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-team' }, rarity: 'rare', status: 'active' },
-    { id: 'aura-flame', name: 'Perseverance Flame', category: 'aura', description: 'Golden flame of relentless effort', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
-    { id: 'aura-cosmic', name: 'Cosmic Rings', category: 'aura', description: 'Orbital celestial stardust halo', icon: '💫', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-sparkle', name: 'Sparkle Aura', category: 'aura', subCategory: 'auras', description: 'Twinkling golden friendship stars', icon: '🌟', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'aura-flame', name: 'Flame Aura', category: 'aura', subCategory: 'auras', description: 'Warm orange flames of relentless effort', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-ice', name: 'Ice Aura', category: 'aura', subCategory: 'auras', description: 'Glittering snowflakes and frosty crystalline glow', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-rainbow', name: 'Rainbow Aura', category: 'aura', subCategory: 'auras', description: 'Radiant prismatic halo of colorful joy', icon: '🌈', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'aura-cosmic', name: 'Galaxy Aura', category: 'aura', subCategory: 'auras', description: 'Orbital celestial stardust and nebula rings', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-lightning', name: 'Lightning Aura', category: 'aura', subCategory: 'auras', description: 'Crackling electric blue sparks of energy', icon: '⚡', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'aura-blossom', name: 'Blossom Aura', category: 'aura', subCategory: 'auras', description: 'Swirling pastel pink cherry blossom petals', icon: '🌸', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-star', name: 'Star Aura', category: 'aura', subCategory: 'auras', description: 'Burst of dancing yellow and amber stars', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-dragon', name: 'Dragon Glow', category: 'aura', subCategory: 'auras', description: 'Fierce mystical dragon embers with golden crests', icon: '🐉', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-royal', name: 'Royal Glow', category: 'aura', subCategory: 'auras', description: 'Divine sovereign golden radiance and sparkles', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
-    // Backgrounds
-    { id: 'bg-meadow', name: 'Academy Grounds', category: 'background', description: 'Sunny green lawns of Adventure Academy', icon: '🌳', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'bg-crystal', name: 'Crystal Cavern', category: 'background', description: 'Luminescent cavern of glowing minerals', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'bg-cosmos', name: 'Starry Cosmos', category: 'background', description: 'Deep space filled with learning galaxies', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'bg-castle', name: 'Royal Castle', category: 'background', description: 'Majestic fortress of Master English speakers', icon: '🏰', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' }
+    // World - Environments
+    { id: 'bg-meadow', name: 'Explorer Camp', category: 'background', subCategory: 'worlds', description: 'Sunny meadow camp of Adventure Academy', icon: '🏕️', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'bg-castle', name: 'Academy Castle', category: 'background', subCategory: 'worlds', description: 'Majestic fairytale castle with towers and flags', icon: '🏰', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'bg-forest', name: 'Enchanted Forest', category: 'background', subCategory: 'worlds', description: 'Misty woodland filled with glowing flora and fireflies', icon: '🌲', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'bg-volcano', name: 'Volcano Island', category: 'background', subCategory: 'worlds', description: 'Dramatic volcanic peaks with warm golden sunsets', icon: '🌋', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-beach', name: 'Adventure Beach', category: 'background', subCategory: 'worlds', description: 'Tropical shoreline with palm trees and gentle waves', icon: '🏖️', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'bg-moonlit', name: 'Moonlit Kingdom', category: 'background', subCategory: 'worlds', description: 'Enchanted starry night under a glowing crescent moon', icon: '🌙', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-winter', name: 'Winter Wonderland', category: 'background', subCategory: 'worlds', description: 'Glistening snowy pines and frozen crystal lakes', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-cosmos', name: 'Space World', category: 'background', subCategory: 'worlds', description: 'Deep starry cosmos with vibrant nebula clouds', icon: '🚀', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-desert', name: 'Desert Adventure', category: 'background', subCategory: 'worlds', description: 'Golden sand dunes under a warm sunny sky', icon: '🏜️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-underwater', name: 'Underwater Kingdom', category: 'background', subCategory: 'worlds', description: 'Deep ocean coral reef with shimmering sunbeams', icon: '🐠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-rainbow', name: 'Rainbow Valley', category: 'background', subCategory: 'worlds', description: 'Pastel valley crowned with a double rainbow', icon: '🌈', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-cloud', name: 'Cloud Kingdom', category: 'background', subCategory: 'worlds', description: 'Dreamy kingdom perched atop soft pink and gold clouds', icon: '☁️', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'bg-crystal', name: 'Crystal Cavern', category: 'background', subCategory: 'worlds', description: 'Luminescent cavern of glowing minerals', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' }
   ];
 
   const DEFAULT_MONSTER_PROFILES = {
@@ -7766,6 +7831,14 @@
             }
             if (!merged.monsterItems || !Array.isArray(merged.monsterItems) || merged.monsterItems.length === 0) {
               merged.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+            } else {
+              const existingItemIds = new Set(merged.monsterItems.map(it => it.id));
+              DEFAULT_MONSTER_ITEMS.forEach(defItem => {
+                if (!existingItemIds.has(defItem.id)) {
+                  merged.monsterItems.push(JSON.parse(JSON.stringify(defItem)));
+                  existingItemIds.add(defItem.id);
+                }
+              });
             }
             if (!merged.monsterProfiles || typeof merged.monsterProfiles !== 'object') {
               merged.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));

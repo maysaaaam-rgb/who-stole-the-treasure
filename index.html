@@ -2486,7 +2486,7 @@
   <!-- 5. Canonical Monster Creator & Customizer Gallery Modal -->
   <!-- 5. Interactive Monster Creator & Customizer (3-Column Studio) -->
   <div class="modal-overlay" id="modal-avatar-selector">
-    <div class="modal-dialog" style="max-width: 1100px; width: 95vw; max-height: 92vh; overflow-y: auto; padding: 24px; border-radius: 20px;">
+    <div class="modal-dialog" style="max-width: 1180px; width: 96vw; max-height: 94vh; overflow-y: auto; padding: 24px; border-radius: 20px;">
       <button class="modal-close-btn" onclick="closeModal('modal-avatar-selector')">✕</button>
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border-light); padding-bottom:14px; flex-wrap:wrap; gap:12px;">
         <div style="display:flex; align-items:center; gap:12px;">
@@ -2503,52 +2503,96 @@
       </div>
 
       <!-- 3-Column Studio Layout -->
-      <div class="monster-customizer-grid" style="display:grid; grid-template-columns: 340px 1fr 270px; gap:20px; align-items:start;">
-        <!-- Column 1: Items Grid -->
-        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:10px;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div id="monster-creator-category-title" style="font-size:0.82rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Select Cosmetics</div>
-            <span id="monster-creator-item-count" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"></span>
+      <div class="monster-customizer-grid" style="display:grid; grid-template-columns: 468px 1fr 280px; gap:18px; align-items:start;">
+        <!-- Column 1: Subcategory Sidebar Rail + Items Grid -->
+        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:10px; min-height:510px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-light); padding-bottom:8px;">
+            <div id="monster-creator-category-title" style="font-size:0.82rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Horns &amp; Crests</div>
+            <span id="monster-creator-item-count" style="font-size:0.75rem; color:var(--text-muted); font-weight:700;"></span>
           </div>
-          <div id="avatar-characters-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap:10px; max-height:480px; overflow-y:auto; padding:4px;">
-            <!-- Dynamically populated item cards -->
+          <div style="display:flex; gap:12px; flex:1; min-height:430px;">
+            <!-- Subcategory Vertical Rail -->
+            <div id="monster-subcategory-nav" class="monster-subnav-rail">
+              <!-- Populated dynamically -->
+            </div>
+            <!-- Item Cards Grid (3 Columns) -->
+            <div id="avatar-characters-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; align-content:start; flex:1; max-height:460px; overflow-y:auto; padding:2px 4px 6px 2px;">
+              <!-- Dynamically populated item cards -->
+            </div>
           </div>
         </div>
 
         <!-- Column 2 (Center): Large Live Monster Viewport -->
-        <div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:18px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); min-height:480px; position:relative;">
-          <div style="position:absolute; top:16px; left:20px; font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Live Interactive Preview</div>
-          <div id="avatar-preview-box" style="width:280px; height:280px; border-radius:24px; background:linear-gradient(135deg, rgba(238,242,255,0.9), rgba(243,232,255,0.9)); display:flex; align-items:center; justify-content:center; margin:20px auto 16px auto; box-shadow:var(--shadow-md); border:1.5px solid rgba(99,102,241,0.2); overflow:hidden; transition:all 0.2s ease;">
-            <!-- Dynamically rendered 260px Monster SVG -->
+        <div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:18px; padding:20px 18px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:space-between; box-shadow:var(--shadow-sm); min-height:510px; position:relative;">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Live Interactive Preview</div>
+            <button type="button" id="btn-monster-preview-animate" class="btn-monster-animate is-active" onclick="toggleMonsterCreatorAnimation()" title="Toggle live idle animation">
+              <span id="monster-animate-icon">▶</span> <span id="monster-animate-label">Animate</span>
+            </button>
           </div>
-          <!-- Quick Color Palette Swatches -->
-          <div style="margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;">
-            <div style="font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Quick Fur Color</div>
-            <div id="monster-color-swatches" style="display:flex; gap:8px;">
-              <!-- Swatches for blue, pink, green, orange, purple, gold -->
+
+          <div id="avatar-preview-box" style="width:280px; height:280px; border-radius:22px; background:linear-gradient(135deg, rgba(238,242,255,0.9), rgba(243,232,255,0.9)); display:flex; align-items:center; justify-content:center; margin:10px auto; box-shadow:var(--shadow-md); border:1.5px solid rgba(99,102,241,0.2); overflow:hidden; transition:all 0.2s ease; position:relative;">
+            <!-- Dynamically rendered Monster SVG -->
+          </div>
+
+          <!-- Bottom Preview Controls: World Backgrounds & Quick Fur Color -->
+          <div style="width:100%; display:flex; flex-direction:column; gap:10px; margin-top:4px;">
+            <div>
+              <div style="font-size:0.7rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Preview Background</div>
+              <div id="monster-preview-bg-swatches" style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                <!-- Dynamically rendered circular environment swatches -->
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:0.7rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Quick Fur Color</div>
+              <div id="monster-color-swatches" style="display:flex; justify-content:center; gap:8px;">
+                <!-- Swatches for blue, pink, green, orange, purple, gold -->
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Column 3 (Right): Stats, Selected Gear Summary & Save Controls -->
-        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; min-height:480px; box-shadow:var(--shadow-xs);">
+        <!-- Column 3 (Right): Student Card, Equipped Features List & Actions -->
+        <div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; min-height:510px; box-shadow:var(--shadow-xs);">
           <div>
-            <div style="border-bottom:1px solid var(--border-light); padding-bottom:12px; margin-bottom:12px;">
-              <h4 id="avatar-preview-name" style="font-size:1.25rem; font-weight:800; margin:0 0 4px 0; color:var(--text-main);">Draco</h4>
-              <div id="avatar-preview-category" style="font-size:0.86rem; color:var(--color-primary); font-weight:800; margin-bottom:4px;">Level 3 · Baby Monster</div>
-              <p id="avatar-preview-desc" style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin:0;">⭐ 827 XP · Active Companion</p>
+            <!-- Student Mini Profile Card -->
+            <div style="display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border-light); padding-bottom:12px; margin-bottom:12px;">
+              <div id="monster-creator-mini-avatar" style="width:48px; height:48px; border-radius:14px; background:var(--bg-canvas); border:1.5px solid var(--border-light); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                <!-- Mini companion avatar -->
+              </div>
+              <div style="min-width:0;">
+                <h4 id="avatar-preview-name" style="font-size:1.1rem; font-weight:800; margin:0 0 2px 0; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Draco</h4>
+                <div id="avatar-preview-category" style="font-size:0.8rem; color:var(--color-primary); font-weight:800; margin-bottom:2px;">Level 3 · Baby Monster</div>
+                <p id="avatar-preview-desc" style="font-size:0.74rem; color:var(--text-muted); line-height:1.3; margin:0;">⭐ 827 XP · Active Companion</p>
+              </div>
             </div>
 
-            <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Equipped Gear &amp; Style</div>
-            <div id="monster-creator-equipped-summary" style="display:flex; flex-direction:column; gap:6px; max-height:240px; overflow-y:auto; padding-right:2px;">
-              <!-- Rendered list of equipped layers with remove '✕' buttons -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Equipped Features</div>
+              <span id="monster-creator-equipped-count" style="font-size:0.72rem; color:var(--text-muted); font-weight:700;"></span>
+            </div>
+            <div id="monster-creator-equipped-summary" style="display:flex; flex-direction:column; gap:6px; max-height:250px; overflow-y:auto; padding-right:2px;">
+              <!-- Rendered list of equipped rows with chevron '>' and unequip '✕' -->
             </div>
           </div>
 
-          <div style="margin-top:16px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-light); padding-top:14px;">
+          <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-light); padding-top:12px;">
             <button type="button" class="btn-primary-action" style="width:100%; justify-content:center; padding:11px 16px; font-size:0.92rem; font-weight:800;" onclick="handleConfirmSaveMonster()">✓ Save Monster</button>
             <button type="button" class="btn-sm-secondary" style="width:100%; justify-content:center; padding:8px; font-size:0.84rem;" onclick="closeModal('modal-avatar-selector')">Cancel</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Studio Modal Footer: Pro Tip & Unlock Legend -->
+      <div class="monster-creator-footer-bar" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:var(--text-muted);">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>💡</span>
+          <span><strong>Pro Tip:</strong> Complete lessons and assignments to level up your monster and unlock rare cosmetic items!</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>🔒</span>
+          <span>Locked items unlock automatically as your companion levels up</span>
         </div>
       </div>
     </div>

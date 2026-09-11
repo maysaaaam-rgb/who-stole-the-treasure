@@ -4034,3 +4034,307 @@ body.classroom-mode-active .classroom-students-grid {
 .pc-gradebook-table tr:hover {
   background-color: rgba(59, 130, 246, 0.03) !important;
 }
+
+/* ==========================================================================
+   MONSTER STUDIO & CUSTOMIZER (ALL CATEGORIES VISUAL SYSTEM)
+   Matches media_1789159508053.png
+   ========================================================================== */
+
+.monster-subnav-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 120px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-light);
+  padding-right: 8px;
+  overflow-y: auto;
+  max-height: 460px;
+}
+
+.monster-subnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.monster-subnav-btn:hover {
+  background: var(--bg-muted);
+  color: var(--text-main);
+}
+
+.monster-subnav-btn.is-active {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+}
+
+.monster-item-card {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 8px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 112px;
+  box-sizing: border-box;
+}
+
+.monster-item-card:hover:not(.is-locked) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
+  border-color: #93c5fd;
+}
+
+.monster-item-card.is-selected {
+  border: 2px solid #2563eb !important;
+  background: #eff6ff !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+}
+
+.monster-item-card.is-locked {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+}
+
+.monster-item-check-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 900;
+  box-shadow: 0 2px 5px rgba(16, 185, 129, 0.45);
+  border: 2px solid #ffffff;
+  z-index: 3;
+}
+
+.monster-item-lock-pill {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  z-index: 3;
+  line-height: 1.3;
+}
+
+.monster-item-card-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.monster-item-rarity-pill {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 5px;
+  border-radius: 6px;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.monster-item-rarity-pill.is-common {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.monster-item-rarity-pill.is-rare {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.monster-item-rarity-pill.is-epic {
+  background: #fae8ff;
+  color: #a855f7;
+}
+
+.monster-item-rarity-pill.is-legendary {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.btn-monster-animate {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-monster-animate:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.btn-monster-animate.is-active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.monster-preview-bg-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.monster-preview-bg-dot:hover {
+  transform: scale(1.15);
+}
+
+.monster-preview-bg-dot.is-active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2.5px #2563eb, 0 3px 8px rgba(37, 99, 235, 0.35);
+}
+
+.monster-equipped-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.monster-equipped-row:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  transform: translateX(2px);
+}
+
+.monster-equipped-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.monster-equipped-row-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-equipped-row-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
+}
+
+.monster-equipped-row-val {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.monster-equipped-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.monster-equipped-chevron {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #94a3b8;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.monster-equipped-row:hover .monster-equipped-chevron {
+  color: #2563eb;
+  transform: translateX(2px);
+}
+
+.monster-unequip-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: background 0.12s ease;
+  line-height: 1;
+}
+
+.monster-unequip-btn:hover {
+  background: #fee2e2;
+}
+
