@@ -78,7 +78,8 @@
   let libFilterTopic = 'all';
   let libFilterCategory = 'all';
   let libFilterDuration = 'all';
-  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'featured'
+  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'stories' | 'roleplays' | 'featured'
+  let libSortOrder = 'default'; // 'default' | 'title-asc' | 'title-desc' | 'level' | 'duration'
   let navSectionsCollapsed = {};
   try {
     const savedNav = localStorage.getItem('eaa-nav-sections-collapsed');
@@ -3774,6 +3775,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       all = all.filter(r => !r.isWorksheet);
     } else if (libActiveTab === 'worksheets') {
       all = all.filter(r => r.isWorksheet);
+    } else if (libActiveTab === 'stories') {
+      all = all.filter(r => (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+    } else if (libActiveTab === 'roleplays') {
+      all = all.filter(r => (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
     } else if (libActiveTab === 'featured') {
       all = all.filter(r => r.featured === true);
     }
@@ -3845,7 +3850,199 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       });
     }
 
-    return all;
+    return getSortedResources(all);
+  }
+
+  function getSortedResources(items) {
+    if (!items || items.length === 0) return items;
+    const sorted = items.slice();
+    if (libSortOrder === 'title-asc') {
+      sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    } else if (libSortOrder === 'title-desc') {
+      sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+    } else if (libSortOrder === 'level') {
+      const order = { 'pre-a1': 1, 'a1': 2, 'a1+': 3, 'a1plus': 3, 'a2': 4, 'b1': 5 };
+      sorted.sort((a, b) => {
+        const lvlA = (a.level || '').toLowerCase();
+        const lvlB = (b.level || '').toLowerCase();
+        return (order[lvlA] || 99) - (order[lvlB] || 99);
+      });
+    } else if (libSortOrder === 'duration') {
+      const getMin = r => {
+        if (typeof r.duration === 'number') return r.duration;
+        if (typeof r.duration === 'string') {
+          const m = parseInt(r.duration, 10);
+          if (!isNaN(m)) return m;
+        }
+        return r.isWorksheet ? 20 : 30;
+      };
+      sorted.sort((a, b) => getMin(a) - getMin(b));
+    } else {
+      // default: featured items first, then original order
+      sorted.sort((a, b) => {
+        if (Boolean(b.featured) !== Boolean(a.featured)) {
+          return b.featured ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sorted;
+  }
+
+  function getPlaceholderSvg(item) {
+    const cat = (item.category || '').toLowerCase();
+    const title = item.title || '';
+    const id = item.id || '';
+
+    if (id === 'phonics-adventure' || cat.includes('phonics')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-phonics" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#312e81"/><stop offset="100%" stop-color="#4338ca"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-phonics)"/>' +
+        '<rect x="22" y="38" width="44" height="44" rx="8" fill="#f59e0b"/>' +
+        '<text x="44" y="67" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">SH</text>' +
+        '<rect x="78" y="30" width="44" height="44" rx="8" fill="#ec4899"/>' +
+        '<text x="100" y="59" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">CH</text>' +
+        '<rect x="134" y="38" width="44" height="44" rx="8" fill="#10b981"/>' +
+        '<text x="156" y="67" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">ST</text>' +
+        '<path d="M 40 100 Q 100 85 160 100" stroke="#a5b4fc" stroke-width="2.5" fill="none" opacity="0.7"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#0284c7"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">PHONICS ADVENTURE 🔤</text>' +
+      '</svg>';
+    }
+
+    if (id === 'res-global-readings-2') {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-gr2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-gr2)"/>' +
+        '<rect x="55" y="20" width="90" height="82" rx="6" fill="#ffffff"/>' +
+        '<rect x="55" y="20" width="14" height="82" fill="#1e40af"/>' +
+        '<rect x="75" y="32" width="62" height="8" rx="2" fill="#f59e0b"/>' +
+        '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">GLOBAL</text>' +
+        '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">READINGS 2</text>' +
+        '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fef3c7"/>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#b45309" text-anchor="middle">GRADE 3 • A1+</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e40af"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
+      '</svg>';
+    }
+
+    if (id === 'res-global-readings-3') {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-gr3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#831843"/><stop offset="100%" stop-color="#be185d"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-gr3)"/>' +
+        '<rect x="55" y="20" width="90" height="82" rx="6" fill="#ffffff"/>' +
+        '<rect x="55" y="20" width="14" height="82" fill="#9d174d"/>' +
+        '<rect x="75" y="32" width="62" height="8" rx="2" fill="#f59e0b"/>' +
+        '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">GLOBAL</text>' +
+        '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">READINGS 3</text>' +
+        '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fce7f3"/>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#9d174d" text-anchor="middle">GRADE 4 • A2</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#9d174d"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
+      '</svg>';
+    }
+
+    if (id === 'hero' || title.includes('Hero')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-hero" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-hero)"/>' +
+        '<path d="M 100 24 L 140 40 L 140 76 Q 100 106 100 106 Q 60 76 60 76 L 60 40 Z" fill="#fbbf24" stroke="#ffffff" stroke-width="2.5"/>' +
+        '<path d="M 100 32 L 132 46 L 132 72 Q 100 96 100 96 Q 68 72 68 72 L 68 46 Z" fill="#dc2626"/>' +
+        '<polygon points="100,48 104,59 116,59 106,66 110,78 100,71 90,78 94,66 84,59 96,59" fill="#fbbf24"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#dc2626"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SUPER HERO ACADEMY 🦸</text>' +
+      '</svg>';
+    }
+
+    if (id === 'space' || title.includes('Space')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-space" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#050814"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-space)"/>' +
+        '<circle cx="100" cy="65" r="26" fill="#f59e0b"/>' +
+        '<ellipse cx="100" cy="65" rx="44" ry="12" fill="none" stroke="#38bdf8" stroke-width="3.5" transform="rotate(-18 100 65)"/>' +
+        '<circle cx="35" cy="35" r="1.8" fill="#ffffff"/><circle cx="165" cy="40" r="2.2" fill="#ffffff"/>' +
+        '<circle cx="50" cy="95" r="1.5" fill="#ffffff"/><circle cx="155" cy="90" r="2" fill="#ffffff"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#4f46e5"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SPACE EXPLORER 🚀</text>' +
+      '</svg>';
+    }
+
+    if (id === 'garden' || title.includes('Garden')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-garden" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-garden)"/>' +
+        '<circle cx="160" cy="35" r="16" fill="#fbbf24" opacity="0.85"/>' +
+        '<circle cx="70" cy="70" r="12" fill="#f43f5e"/><circle cx="70" cy="70" r="5" fill="#fbbf24"/>' +
+        '<line x1="70" y1="82" x2="70" y2="104" stroke="#a7f3d0" stroke-width="3"/>' +
+        '<circle cx="120" cy="62" r="14" fill="#a855f7"/><circle cx="120" cy="62" r="6" fill="#fef08a"/>' +
+        '<line x1="120" y1="76" x2="120" y2="104" stroke="#a7f3d0" stroke-width="3"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#047857"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">MAGIC GARDEN 🌸</text>' +
+      '</svg>';
+    }
+
+    if (id === 'story-school' || title.includes('School')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-school" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#78350f"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-school)"/>' +
+        '<rect x="55" y="32" width="90" height="66" rx="6" fill="#fef3c7" stroke="#ffffff" stroke-width="2"/>' +
+        '<circle cx="100" cy="52" r="12" fill="#f59e0b"/>' +
+        '<line x1="100" y1="52" x2="100" y2="44" stroke="#ffffff" stroke-width="2"/>' +
+        '<line x1="100" y1="52" x2="106" y2="52" stroke="#ffffff" stroke-width="2"/>' +
+        '<text x="100" y="84" font-family="sans-serif" font-weight="900" font-size="10" fill="#78350f" text-anchor="middle">DAILY ROUTINES</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#b45309"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SCHOOL DAY STORY 🏫</text>' +
+      '</svg>';
+    }
+
+    if (item.isWorksheet || id.startsWith('ws-')) {
+      const wsThemes = {
+        'ws-1': { bg: ['#7c2d12', '#ea580c'], icon: '🍽️', label: 'RESTAURANT DRILL' },
+        'ws-2': { bg: ['#881337', '#e11d48'], icon: '🚒', label: 'FIRE STATION DRILL' },
+        'ws-3': { bg: ['#134e4a', '#0d9488'], icon: '🗺️', label: 'NEIGHBOURHOOD MAP' },
+        'ws-4': { bg: ['#1e1b4b', '#4f46e5'], icon: '🕵️', label: 'DETECTIVE CLUES' }
+      };
+      const t = wsThemes[id] || { bg: ['#0f172a', '#3b82f6'], icon: '📄', label: 'PRACTICE WORKSHEET' };
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-' + id + '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="' + t.bg[0] + '"/><stop offset="100%" stop-color="' + t.bg[1] + '"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-' + id + ')"/>' +
+        '<rect x="65" y="22" width="70" height="78" rx="6" fill="#ffffff"/>' +
+        '<rect x="82" y="16" width="36" height="10" rx="3" fill="#cbd5e1"/>' +
+        '<circle cx="100" cy="21" r="2" fill="#475569"/>' +
+        '<text x="100" y="46" font-size="16" text-anchor="middle">' + t.icon + '</text>' +
+        '<line x1="75" y1="60" x2="125" y2="60" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>' +
+        '<line x1="75" y1="70" x2="120" y2="70" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
+        '<line x1="75" y1="80" x2="110" y2="80" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e293b"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="9" fill="#ffffff" text-anchor="middle">' + t.label + ' 📝</text>' +
+      '</svg>';
+    }
+
+    return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect width="200" height="140" fill="#1e293b"/>' +
+      '<circle cx="100" cy="60" r="28" fill="#3b82f6" opacity="0.8"/>' +
+      '<text x="100" y="68" font-size="24" text-anchor="middle">🎮</text>' +
+      '<rect x="25" y="112" width="150" height="18" rx="4" fill="#2563eb"/>' +
+      '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">ADVENTURE LESSON</text>' +
+    '</svg>';
+  }
+
+  function getResourceThumbnail(item) {
+    const id = item.id || '';
+    const aliasMap = {
+      'camp-mystery': 'detective-prep',
+      'mouse': 'city-mouse'
+    };
+    const targetId = aliasMap[id] || id;
+
+    if (window.GAMES_REGISTRY && Array.isArray(window.GAMES_REGISTRY)) {
+      const found = window.GAMES_REGISTRY.find(g => g.id === targetId || g.id === id);
+      if (found && found.thumbnailSvg) {
+        return found.thumbnailSvg.trim();
+      }
+    }
+    if (item.thumbnailSvg) return item.thumbnailSvg.trim();
+    return getPlaceholderSvg(item).trim();
   }
 
   function renderResourceCard(item) {
@@ -3876,8 +4073,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     const topicText = (Array.isArray(item.topics) && item.topics.length > 0) ? item.topics[0] : (item.topic || item.category || 'Classroom Practice');
     const durationText = item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min');
-    const gradeText = item.grade || 'Grade 3–4';
-    const skillsList = Array.isArray(item.skills) && item.skills.length > 0 ? item.skills.slice(0, 4) : (item.skill ? [item.skill] : ['Speaking', 'Vocabulary']);
+    const primarySkill = (Array.isArray(item.skills) && item.skills.length > 0) ? item.skills[0] : (item.skill || 'Speaking');
 
     let primaryActionHtml = '';
     if (isWs) {
@@ -3915,39 +4111,38 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>'
     );
 
+    const thumbnailSvg = getResourceThumbnail(item);
+
     return '' +
       '<div class="resource-card ' + (isFeatured ? 'is-featured' : '') + '" id="resource-card-' + item.id + '">' +
-        '<div class="resource-card-header">' +
-          '<div class="resource-header-left">' +
-            '<span class="resource-type-pill">' + typeIcon + ' ' + typeLabel + '</span>' +
-            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
+        '<div class="card-thumbnail-banner">' +
+          '<div class="card-thumb-art">' +
+            thumbnailSvg +
+            '<div class="card-thumb-gradient-overlay"></div>' +
           '</div>' +
-          '<div class="resource-header-right">' +
-            '<button type="button" class="btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
-            '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
-              dropdownMenuHtml +
-            '</div>' +
+          '<div class="card-thumb-badges">' +
+            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
+            '<span class="thumb-type-badge">' + typeIcon + ' ' + typeLabel + '</span>' +
+          '</div>' +
+          '<button type="button" class="card-thumb-kebab btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
+          '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
+            dropdownMenuHtml +
           '</div>' +
         '</div>' +
 
-        '<div class="resource-card-body">' +
-          '<h3 class="resource-card-title">' + item.title + '</h3>' +
-          '<div class="resource-topic-line">' +
-            '<span><strong>Topic:</strong> ' + topicText + '</span>' +
-            '<span>•</span>' +
-            '<span>' + gradeText + '</span>' +
-            '<span>•</span>' +
-            '<span>' + durationText + '</span>' +
-          '</div>' +
-          '<p class="resource-card-desc">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
-          '<div class="resource-skills-row">' +
-            skillsList.map(s => '<span class="skill-pill">' + s + '</span>').join('') +
+        '<div class="card-body-content">' +
+          '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '">' + item.title + '</h3>' +
+          '<p class="resource-card-desc" title="' + (item.description || '').replace(/"/g, '&quot;') + '">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
+          '<div class="card-pills-row">' +
+            '<span class="card-pill skill-pill">🎯 ' + primarySkill + '</span>' +
+            '<span class="card-pill topic-pill">💡 ' + topicText + '</span>' +
+            '<span class="card-pill meta-pill">⏱️ ' + durationText + '</span>' +
           '</div>' +
         '</div>' +
 
         '<div class="resource-card-footer">' +
           primaryActionHtml +
-          '<button type="button" class="btn-resource-secondary" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
+          '<button type="button" class="btn-resource-secondary btn-card-assign" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
             '<span>📝</span> <span>Assign</span>' +
           '</button>' +
         '</div>' +
@@ -3962,8 +4157,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
     const totalResources = allGames.length + allWorksheets.length;
-    const auditedCount = allGames.filter(r => r.teacherGuide || (r.objectives && r.objectives.length > 0)).length;
-    const featuredCount = allGames.filter(r => r.featured).length + allWorksheets.filter(w => w.featured).length;
+    const allCombined = allGames.concat(allWorksheets);
+
+    const storiesCount = allCombined.filter(r => {
+      const cat = (r.category || '').toLowerCase();
+      return cat.includes('story') || cat.includes('reading');
+    }).length;
+
+    const roleplaysCount = allCombined.filter(r => {
+      const cat = (r.category || '').toLowerCase();
+      return cat.includes('roleplay') || cat.includes('speaking');
+    }).length;
 
     // Collect topics dynamically
     const topicSet = new Set();
@@ -3980,20 +4184,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
     const filteredItems = getFilteredResources();
 
+    let tabHeading = 'All Resources';
+    if (libActiveTab === 'games') tabHeading = 'Interactive Games';
+    else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
+    else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
+    else if (libActiveTab === 'roleplays') tabHeading = 'Roleplay Missions';
+    else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
+
     container.innerHTML = 
       // 1. Compact Header
       '<div class="library-header-compact">' +
         '<div class="library-title-wrap">' +
-          '<div class="library-headline-row">' +
-            '<h1 class="library-title-main">Educational Resource Library</h1>' +
-            '<span class="library-count-pill">' + totalResources + ' Resources • ' + auditedCount + ' Quality-Audited</span>' +
-          '</div>' +
-          '<p class="library-subtitle">Interactive digital classroom games, worksheets, stories, and roleplay missions.</p>' +
+          '<h1 class="library-title-main">Educational Resource Library</h1>' +
+          '<p class="library-subtitle">Find, create, and launch engaging classroom resources.</p>' +
         '</div>' +
         '<div class="library-header-actions">' +
-          '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
-          '<button type="button" class="btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
+          '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
@@ -4008,9 +4216,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
         '<div class="library-filters-row">' +
           '<div class="filter-dropdown-wrap">' +
-            '<span class="filter-mini-label">Level:</span>' +
             '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
-              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All CEFR Levels</option>' +
+              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
               '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
               '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
               '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
@@ -4019,21 +4226,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
-            '<span class="filter-mini-label">Type:</span>' +
             '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
-              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>All Types</option>' +
+              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
               '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
               '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
-              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📖 Story &amp; Reading</option>' +
+              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
               '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
-              '<option value="curriculum" ' + (libFilterType === 'curriculum' ? 'selected' : '') + '>📚 Textbook &amp; CLIL</option>' +
+              '<option value="curriculum" ' + (libFilterType === 'curriculum' ? 'selected' : '') + '>📖 Textbook &amp; CLIL</option>' +
               '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
-            '<span class="filter-mini-label">Skill:</span>' +
             '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
-              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>All Skills</option>' +
+              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill ▾</option>' +
               '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
               '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
               '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
@@ -4044,9 +4249,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
-            '<span class="filter-mini-label">Topic:</span>' +
             '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
-              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>All Topics</option>' +
+              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
               availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
             '</select>' +
           '</div>' +
@@ -4056,29 +4260,51 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
-      // 3. Organization Tabs Row
-      '<div class="library-nav-tabs-row">' +
-        '<div class="library-nav-tabs">' +
-          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'all' ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
-            '<span>📚 All Resources</span>' +
-            '<span class="tab-count-badge">' + totalResources + '</span>' +
+      // 3. Category Tabs Row
+      '<div class="library-category-tabs-row library-nav-tabs-row">' +
+        '<div class="library-category-tabs library-nav-tabs">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
+            '<span>All Resources</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
             '<span>🎮 Interactive Games</span>' +
-            '<span class="tab-count-badge">' + allGames.length + '</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + allGames.length + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
-            '<span>📄 Printable Worksheets</span>' +
-            '<span class="tab-count-badge">' + allWorksheets.length + '</span>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
+            '<span>📄 Worksheets</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + allWorksheets.length + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'featured' ? 'is-active' : '') + '" onclick="setLibTab(\'featured\')">' +
-            '<span>⭐ Featured</span>' +
-            '<span class="tab-count-badge">' + featuredCount + '</span>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
+            '<span>📚 Stories</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')">' +
+            '<span>🎭 Roleplays</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
           '</button>' +
         '</div>' +
       '</div>' +
 
-      // 4. Resource Grid Container
+      // 4. Section Header Row
+      '<div class="library-section-header-row">' +
+        '<div class="library-section-left">' +
+          '<h2 class="section-heading">' + tabHeading + '</h2>' +
+          '<span id="lib-count-badge" class="section-count-badge library-count-pill">' + filteredItems.length + ' resources</span>' +
+        '</div>' +
+        '<div class="library-section-right">' +
+          '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
+          '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
+            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default ▾</option>' +
+            '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
+            '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
+            '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
+            '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+
+      // 5. Resource Grid Container
       '<div id="library-resource-grid" class="resource-library-grid">' +
         (filteredItems.length === 0 ? 
           '<div class="library-empty-state">' +
@@ -4129,6 +4355,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     else renderCurrentView();
   };
 
+  window.setLibSort = function(sortKey) {
+    libSortOrder = sortKey;
+    updateLibraryGrid();
+  };
+
   window.clearAllLibFilters = function() {
     libSearchQuery = '';
     libFilterLevel = 'all';
@@ -4163,6 +4394,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>';
     } else {
       grid.innerHTML = filtered.map(r => renderResourceCard(r)).join('');
+    }
+
+    const countBadge = document.getElementById('lib-count-badge');
+    if (countBadge) {
+      countBadge.textContent = filtered.length + ' resources';
     }
 
     const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
