@@ -70,12 +70,20 @@
   let lastPickedStudentId = null;
   let isClassroomSmartboardMode = false;
 
-  // Library filters
+  // Library filters & organization state
   let libSearchQuery = '';
   let libFilterLevel = 'all';
+  let libFilterType = 'all';
   let libFilterSkill = 'all';
+  let libFilterTopic = 'all';
   let libFilterCategory = 'all';
   let libFilterDuration = 'all';
+  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'featured'
+  let navSectionsCollapsed = {};
+  try {
+    const savedNav = localStorage.getItem('eaa-nav-sections-collapsed');
+    if (savedNav) navSectionsCollapsed = JSON.parse(savedNav);
+  } catch (e) {}
 
   // Curriculum active book & filters
   let curriculumActiveBookId = 'book-global-readings-2';
@@ -3756,122 +3764,416 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets'
 
-  function renderLibraryView(container) {
-    container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Educational Resource Library</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">16 Audited digital classroom games, worksheets, stories, and roleplays.</p>' +
+  function getFilteredResources() {
+    const games = (store.getResources() || []).filter(r => !r.archived).map(r => ({ ...r, isWorksheet: false }));
+    const worksheets = (store.getWorksheets() || []).filter(w => !w.archived).map(w => ({ ...w, isWorksheet: true }));
+    let all = games.concat(worksheets);
+
+    // Tab filter
+    if (libActiveTab === 'games') {
+      all = all.filter(r => !r.isWorksheet);
+    } else if (libActiveTab === 'worksheets') {
+      all = all.filter(r => r.isWorksheet);
+    } else if (libActiveTab === 'featured') {
+      all = all.filter(r => r.featured === true);
+    }
+
+    // Search query
+    if (libSearchQuery && libSearchQuery.trim()) {
+      const q = libSearchQuery.toLowerCase().trim();
+      all = all.filter(item => {
+        const inTitle = (item.title || '').toLowerCase().includes(q);
+        const inDesc = (item.description || '').toLowerCase().includes(q);
+        const inCategory = (item.category || '').toLowerCase().includes(q);
+        const inLevel = (item.level || '').toLowerCase().includes(q);
+        const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase().includes(q)) : (item.topic || '').toLowerCase().includes(q);
+        const inObjectives = Array.isArray(item.objectives) ? item.objectives.some(o => o.toLowerCase().includes(q)) : false;
+        const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(q)) : (item.skill || '').toLowerCase().includes(q);
+        return inTitle || inDesc || inCategory || inLevel || inTopics || inObjectives || inSkills;
+      });
+    }
+
+    // Level filter
+    if (libFilterLevel !== 'all') {
+      const lvl = libFilterLevel.toLowerCase();
+      all = all.filter(item => {
+        const itemLvl = (item.level || '').toLowerCase();
+        if (lvl === 'pre-a1') return itemLvl.includes('pre-a1');
+        if (lvl === 'a1') return itemLvl.includes('a1') && !itemLvl.includes('pre-a1');
+        if (lvl === 'a1+') return itemLvl.includes('a1+') || itemLvl.includes('a1/a1+');
+        if (lvl === 'a2') return itemLvl.includes('a2');
+        if (lvl === 'b1') return itemLvl.includes('b1');
+        return itemLvl.includes(lvl);
+      });
+    }
+
+    // Type filter
+    if (libFilterType !== 'all') {
+      if (libFilterType === 'game') {
+        all = all.filter(r => !r.isWorksheet);
+      } else if (libFilterType === 'worksheet') {
+        all = all.filter(r => r.isWorksheet);
+      } else if (libFilterType === 'story') {
+        all = all.filter(r => (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+      } else if (libFilterType === 'roleplay') {
+        all = all.filter(r => (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
+      } else if (libFilterType === 'curriculum') {
+        all = all.filter(r => (r.category || '').toLowerCase().includes('curriculum') || (r.category || '').toLowerCase().includes('clil') || (r.category || '').toLowerCase().includes('textbook'));
+      } else if (libFilterType === 'phonics') {
+        all = all.filter(r => (r.category || '').toLowerCase().includes('phonics'));
+      }
+    }
+
+    // Skill filter
+    if (libFilterSkill !== 'all') {
+      const sk = libFilterSkill.toLowerCase();
+      all = all.filter(item => {
+        const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(sk)) : false;
+        const inSkill = (item.skill || '').toLowerCase().includes(sk);
+        const inCat = (item.category || '').toLowerCase().includes(sk);
+        return inSkills || inSkill || inCat;
+      });
+    }
+
+    // Topic filter
+    if (libFilterTopic !== 'all') {
+      const tp = libFilterTopic.toLowerCase();
+      all = all.filter(item => {
+        const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase() === tp) : false;
+        const inTopic = (item.topic || '').toLowerCase() === tp;
+        return inTopics || inTopic;
+      });
+    }
+
+    return all;
+  }
+
+  function renderResourceCard(item) {
+    const isWs = Boolean(item.isWorksheet);
+    const isFeatured = Boolean(item.featured);
+    const rawLevel = item.level || 'A1';
+    const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+    let typeIcon = '🎮';
+    let typeLabel = 'Game';
+    const catLower = (item.category || '').toLowerCase();
+    if (isWs) {
+      typeIcon = '📄';
+      typeLabel = 'Worksheet';
+    } else if (catLower.includes('story') || catLower.includes('reading')) {
+      typeIcon = '📖';
+      typeLabel = 'Story';
+    } else if (catLower.includes('roleplay')) {
+      typeIcon = '🎭';
+      typeLabel = 'Roleplay';
+    } else if (catLower.includes('phonics')) {
+      typeIcon = '🔤';
+      typeLabel = 'Phonics';
+    } else if (catLower.includes('curriculum') || catLower.includes('clil') || catLower.includes('textbook')) {
+      typeIcon = '📚';
+      typeLabel = 'CLIL Lesson';
+    }
+
+    const topicText = (Array.isArray(item.topics) && item.topics.length > 0) ? item.topics[0] : (item.topic || item.category || 'Classroom Practice');
+    const durationText = item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min');
+    const gradeText = item.grade || 'Grade 3–4';
+    const skillsList = Array.isArray(item.skills) && item.skills.length > 0 ? item.skills.slice(0, 4) : (item.skill ? [item.skill] : ['Speaking', 'Vocabulary']);
+
+    let primaryActionHtml = '';
+    if (isWs) {
+      primaryActionHtml = 
+        '<a href="' + (item.pdfUrl || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
+          '<span>📄</span> <span>Open Worksheet</span>' +
+        '</a>';
+    } else if (catLower.includes('story') || catLower.includes('reading')) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Read ' + item.title + '">' +
+          '<span>📖</span> <span>Read Story</span>' +
+        '</a>';
+    } else if (catLower.includes('curriculum') || catLower.includes('clil') || catLower.includes('textbook')) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + '">' +
+          '<span>📚</span> <span>Start Lesson</span>' +
+        '</a>';
+    } else {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + ' in full screen">' +
+          '<span>▶</span> <span>Start Game</span>' +
+        '</a>';
+    }
+
+    const dropdownMenuHtml = isWs ? (
+      '<button type="button" class="dropdown-item-btn" onclick="openWorksheetEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Worksheet</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateWorksheet(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveWorksheet(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Worksheet</span></button>'
+    ) : (
+      '<button type="button" class="dropdown-item-btn" onclick="openResourceEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Featured') + '</span></button>' +
+      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>'
+    );
+
+    return '' +
+      '<div class="resource-card ' + (isFeatured ? 'is-featured' : '') + '" id="resource-card-' + item.id + '">' +
+        '<div class="resource-card-header">' +
+          '<div class="resource-header-left">' +
+            '<span class="resource-type-pill">' + typeIcon + ' ' + typeLabel + '</span>' +
+            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
+          '</div>' +
+          '<div class="resource-header-right">' +
+            '<button type="button" class="btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
+            '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
+              dropdownMenuHtml +
+            '</div>' +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
-          '<button class="btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-          '<button class="btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+
+        '<div class="resource-card-body">' +
+          '<h3 class="resource-card-title">' + item.title + '</h3>' +
+          '<div class="resource-topic-line">' +
+            '<span><strong>Topic:</strong> ' + topicText + '</span>' +
+            '<span>•</span>' +
+            '<span>' + gradeText + '</span>' +
+            '<span>•</span>' +
+            '<span>' + durationText + '</span>' +
+          '</div>' +
+          '<p class="resource-card-desc">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
+          '<div class="resource-skills-row">' +
+            skillsList.map(s => '<span class="skill-pill">' + s + '</span>').join('') +
+          '</div>' +
+        '</div>' +
+
+        '<div class="resource-card-footer">' +
+          primaryActionHtml +
+          '<button type="button" class="btn-resource-secondary" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
+            '<span>📝</span> <span>Assign</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderGameCard(r) {
+    return renderResourceCard(r);
+  }
+
+  function renderLibraryView(container) {
+    const allGames = (store.getResources() || []).filter(r => !r.archived);
+    const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
+    const totalResources = allGames.length + allWorksheets.length;
+    const auditedCount = allGames.filter(r => r.teacherGuide || (r.objectives && r.objectives.length > 0)).length;
+    const featuredCount = allGames.filter(r => r.featured).length + allWorksheets.filter(w => w.featured).length;
+
+    // Collect topics dynamically
+    const topicSet = new Set();
+    allGames.forEach(r => {
+      if (Array.isArray(r.topics)) r.topics.forEach(t => topicSet.add(t));
+      else if (r.topic) topicSet.add(r.topic);
+    });
+    allWorksheets.forEach(w => {
+      if (Array.isArray(w.topics)) w.topics.forEach(t => topicSet.add(t));
+      else if (w.topic) topicSet.add(w.topic);
+    });
+    const availableTopics = Array.from(topicSet).sort();
+
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
+    const filteredItems = getFilteredResources();
+
+    container.innerHTML = 
+      // 1. Compact Header
+      '<div class="library-header-compact">' +
+        '<div class="library-title-wrap">' +
+          '<div class="library-headline-row">' +
+            '<h1 class="library-title-main">Educational Resource Library</h1>' +
+            '<span class="library-count-pill">' + totalResources + ' Resources • ' + auditedCount + ' Quality-Audited</span>' +
+          '</div>' +
+          '<p class="library-subtitle">Interactive digital classroom games, worksheets, stories, and roleplay missions.</p>' +
+        '</div>' +
+        '<div class="library-header-actions">' +
+          '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+          '<button type="button" class="btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
       '</div>' +
 
-      // Sub-Tabs: Interactive Games vs Worksheets
-      '<div style="display:flex; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'games' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'games\')">' +
-          '<span>🎮</span> <span>Interactive Games (' + store.getResources().length + ')</span>' +
-        '</button>' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'worksheets' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'worksheets\')">' +
-          '<span>📄</span> <span>Printable Worksheets (' + store.getWorksheets().length + ')</span>' +
-        '</button>' +
+      // 2. Prominent Search & Filters Bar
+      '<div class="library-controls-bar">' +
+        '<div class="library-search-wrap">' +
+          '<span class="library-search-icon">🔍</span>' +
+          '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search resources, vocabulary, grammar, topics... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" />' +
+          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
+        '</div>' +
+        '<div class="library-filters-row">' +
+          '<div class="filter-dropdown-wrap">' +
+            '<span class="filter-mini-label">Level:</span>' +
+            '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
+              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All CEFR Levels</option>' +
+              '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+              '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
+              '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+              '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
+              '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<span class="filter-mini-label">Type:</span>' +
+            '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
+              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>All Types</option>' +
+              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
+              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
+              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📖 Story &amp; Reading</option>' +
+              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
+              '<option value="curriculum" ' + (libFilterType === 'curriculum' ? 'selected' : '') + '>📚 Textbook &amp; CLIL</option>' +
+              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<span class="filter-mini-label">Skill:</span>' +
+            '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
+              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>All Skills</option>' +
+              '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
+              '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
+              '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+              '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>Writing</option>' +
+              '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+              '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+              '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>Phonics</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<span class="filter-mini-label">Topic:</span>' +
+            '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
+              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>All Topics</option>' +
+              availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+          '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
+            '<span>↺</span> <span>Clear filters</span>' +
+          '</button>' +
+        '</div>' +
       '</div>' +
 
-      (libraryActiveCatalogTab === 'games' ? renderGamesCatalogHTML() : renderWorksheetsCatalogHTML());
+      // 3. Organization Tabs Row
+      '<div class="library-nav-tabs-row">' +
+        '<div class="library-nav-tabs">' +
+          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'all' ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
+            '<span>📚 All Resources</span>' +
+            '<span class="tab-count-badge">' + totalResources + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
+            '<span>🎮 Interactive Games</span>' +
+            '<span class="tab-count-badge">' + allGames.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
+            '<span>📄 Printable Worksheets</span>' +
+            '<span class="tab-count-badge">' + allWorksheets.length + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-tab-btn ' + (libActiveTab === 'featured' ? 'is-active' : '') + '" onclick="setLibTab(\'featured\')">' +
+            '<span>⭐ Featured</span>' +
+            '<span class="tab-count-badge">' + featuredCount + '</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+
+      // 4. Resource Grid Container
+      '<div id="library-resource-grid" class="resource-library-grid">' +
+        (filteredItems.length === 0 ? 
+          '<div class="library-empty-state">' +
+            '<div class="library-empty-icon">🔍</div>' +
+            '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+            '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+            '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+              '<span>↺</span> <span>Clear all filters</span>' +
+            '</button>' +
+          '</div>' :
+          filteredItems.map(r => renderResourceCard(r)).join('')
+        ) +
+      '</div>';
+  }
+
+  window.handleLibSearch = function(query) {
+    libSearchQuery = query;
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.toggle('is-visible', Boolean(query && query.trim()));
+    updateLibraryGrid();
+  };
+
+  window.clearLibSearch = function() {
+    libSearchQuery = '';
+    const input = document.getElementById('lib-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('is-visible');
+    updateLibraryGrid();
+  };
+
+  window.setLibFilter = function(filterKey, value) {
+    if (filterKey === 'level') libFilterLevel = value;
+    else if (filterKey === 'type') libFilterType = value;
+    else if (filterKey === 'skill') libFilterSkill = value;
+    else if (filterKey === 'topic') libFilterTopic = value;
+    updateLibraryGrid();
+  };
+
+  window.setLibTab = function(tabName) {
+    libActiveTab = tabName;
+    libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
+    const container = document.getElementById('app-main-content');
+    if (container) renderLibraryView(container);
+    else renderCurrentView();
+  };
+
+  window.clearAllLibFilters = function() {
+    libSearchQuery = '';
+    libFilterLevel = 'all';
+    libFilterType = 'all';
+    libFilterSkill = 'all';
+    libFilterTopic = 'all';
+    const input = document.getElementById('lib-search-input');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('is-visible');
+    const selects = document.querySelectorAll('.library-select');
+    selects.forEach(s => s.value = 'all');
+    updateLibraryGrid();
+  };
+
+  function updateLibraryGrid() {
+    const grid = document.getElementById('library-resource-grid');
+    if (!grid) {
+      renderCurrentView();
+      return;
+    }
+    const filtered = getFilteredResources();
+    if (filtered.length === 0) {
+      grid.innerHTML = 
+        '<div class="library-empty-state">' +
+          '<div class="library-empty-icon">🔍</div>' +
+          '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+          '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+          '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+            '<span>↺</span> <span>Clear all filters</span>' +
+          '</button>' +
+        '</div>';
+    } else {
+      grid.innerHTML = filtered.map(r => renderResourceCard(r)).join('');
+    }
+
+    const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
+    const clearRowBtn = document.getElementById('lib-clear-filters-btn');
+    if (clearRowBtn) {
+      clearRowBtn.style.display = hasActive ? 'inline-flex' : 'none';
+    }
   }
 
   function renderGamesCatalogHTML() {
-    const resources = store.getResources();
-    return '' +
-      // Search & Filters bar
-      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
-        '<input type="text" id="lib-search-input" class="search-input" placeholder="Search games, vocabulary, topics... (Press /)" style="flex:1; min-width:220px;" value="' + libSearchQuery + '" oninput="libSearchQuery=this.value; renderCurrentView();" />' +
-        '<select class="filter-select" onchange="libFilterLevel=this.value; renderCurrentView();">' +
-          '<option value="all">All CEFR Levels</option>' +
-          '<option value="Pre-A1" ' + (libFilterLevel==='Pre-A1'?'selected':'') + '>Pre-A1</option>' +
-          '<option value="A1" ' + (libFilterLevel==='A1'?'selected':'') + '>A1</option>' +
-          '<option value="A1+" ' + (libFilterLevel==='A1+'?'selected':'') + '>A1+</option>' +
-          '<option value="A2" ' + (libFilterLevel==='A2'?'selected':'') + '>A2</option>' +
-        '</select>' +
-      '</div>' +
-
-      '<div class="games-grid">' +
-        resources.filter(r => {
-          const matchQuery = !libSearchQuery || r.title.toLowerCase().includes(libSearchQuery.toLowerCase()) || (r.description || '').toLowerCase().includes(libSearchQuery.toLowerCase());
-          const matchLevel = libFilterLevel === 'all' || r.level === libFilterLevel;
-          return matchQuery && matchLevel;
-        }).map(r => renderGameCard(r)).join('') +
-      '</div>';
-  }
-
-  function renderWorksheetsCatalogHTML() {
-    const worksheets = store.getWorksheets();
-    return '' +
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:18px;">' +
-        worksheets.map(w => '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
-            '<div>' +
-              '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">' +
-                '<span class="badge-cefr badge-cefr-' + (w.level || 'A1').toLowerCase().replace('+', '-plus') + '">' + w.level + '</span>' +
-                '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + w.category + '</span>' +
-              '</div>' +
-              '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:6px;">' + w.title + '</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (w.description || 'Classroom worksheet drill.') + '</p>' +
-              (w.answerKey ? '<div style="font-size:0.75rem; background:var(--bg-card-secondary); padding:4px 8px; border-radius:6px; margin-bottom:12px; border:1px solid var(--border-subtle);"><strong>Answer Key:</strong> ' + w.answerKey + '</div>' : '') +
-            '</div>' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-              '<a href="' + w.pdfUrl + '" class="btn-primary-action" style="text-decoration:none; padding:4px 12px; font-size:0.8rem;" target="_blank">📄 View / Print</a>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<button class="btn-sm-secondary" onclick="openWorksheetEditor(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;">✏️ Edit</button>' +
-                '<button class="btn-sm-secondary" onclick="handleArchiveWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);">📦</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
-      '</div>';
-  }
-
-  function renderGameCard(r) {
-    const isFeatured = r.featured;
-    return '' +
-      '<div class="game-resource-card ' + (isFeatured ? 'is-featured' : '') + '">' +
-        '<div class="game-card-top-row">' +
-          '<span class="badge-cefr badge-cefr-' + (r.level || 'A1').toLowerCase().replace('+', '-plus') + '">' + (r.level || 'A1') + '</span>' +
-          '<div style="display:flex; align-items:center; gap:6px;">' +
-            '<span class="game-card-category-pill">' + (r.category || 'Classroom Game') + '</span>' +
-            '<button class="card-kebab-btn" onclick="toggleCardMenu(\'' + r.id + '\', event)" title="Resource Actions">⋯</button>' +
-            '<div class="card-dropdown-menu ' + (activeCardMenuId === r.id ? 'is-open' : '') + '" id="card-menu-' + r.id + '">' +
-              '<button class="dropdown-item-btn" onclick="openResourceEditor(\'' + r.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
-              '<button class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + r.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-              '<button class="dropdown-item-btn" onclick="openAssignModal(\'' + r.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
-              '<button class="dropdown-item-btn" onclick="handleToggleFavorite(\'' + r.id + '\')"><span>⭐</span> <span>' + (r.featured ? 'Unfavorite' : 'Mark Featured') + '</span></button>' +
-              '<button class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + r.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="game-card-body">' +
-          '<h3 class="game-card-title">' + r.title + '</h3>' +
-          '<p class="game-card-description">' + (r.description || 'Interactive classroom lesson.') + '</p>' +
-          '<div class="game-card-skills-row">' +
-            (r.skills || ['Speaking']).map(s => '<span class="skill-tag-pill">' + s + '</span>').join('') +
-          '</div>' +
-        '</div>' +
-
-        '<div class="game-card-footer">' +
-          '<a href="' + r.route + '" class="btn-game-play" title="Launch ' + r.title + ' in full screen">' +
-            '<span>▶</span> <span>START GAME</span>' +
-          '</a>' +
-          '<button class="btn-game-assign" onclick="openAssignModal(\'' + r.id + '\')" title="Assign to Class">' +
-            'Assign' +
-          '</button>' +
-        '</div>' +
-      '</div>';
+    return (document.getElementById('app-main-content') ? renderLibraryView(document.getElementById('app-main-content')) : '');
   }
 
   // =========================================================================
@@ -5766,57 +6068,71 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     };
 
     if (role === 'teacher') {
+      function renderNavGroup(slug, title, items, sectionViews) {
+        const containsActive = (sectionViews || []).includes(currentView) || items.some(i => i.isActive);
+        const isCollapsed = containsActive ? false : Boolean(navSectionsCollapsed[slug]);
+        return '' +
+          '<div class="sidebar-group ' + (isCollapsed ? 'is-collapsed' : '') + '" id="nav-group-' + slug + '">' +
+            '<button type="button" class="sidebar-section-header" onclick="toggleNavSection(\'' + slug + '\')" title="Toggle ' + title + '">' +
+              '<span class="sidebar-section-title">' + title + '</span>' +
+              '<span class="sidebar-section-chevron">▾</span>' +
+            '</button>' +
+            '<ul class="sidebar-nav-list">' +
+              items.map(item => '' +
+                '<li>' +
+                  '<button class="nav-link-btn ' + (item.isActive ? 'is-active' : '') + '" onclick="switchView(\'' + item.view + '\')" title="' + item.title + '">' +
+                    '<span class="nav-item-left">' +
+                      '<span class="nav-icon">' + item.icon + '</span> ' +
+                      '<span class="nav-label">' + item.label + '</span>' +
+                    '</span>' +
+                    (item.badge !== undefined && item.badge !== null ? '<span class="nav-badge-pill">' + item.badge + '</span>' : '') +
+                  '</button>' +
+                '</li>'
+              ).join('') +
+            '</ul>' +
+          '</div>';
+      }
+
       sidebar.innerHTML = 
-        '<div class="sidebar-section-title">Dashboard</div>' +
-        '<ul class="sidebar-nav-list">' +
+        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
           '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
         '</ul>' +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">My School</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classes' ? 'is-active' : '') + '" onclick="switchView(\'classes\')" title="Classes"><span class="nav-item-left"><span class="nav-icon">👥</span> <span class="nav-label">Classes</span></span><span class="nav-badge-pill">' + counts.classes + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classroom-hub' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classroom-hub\')" title="Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Classroom Hub</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')" title="Students Directory"><span class="nav-item-left"><span class="nav-icon">🧒</span> <span class="nav-label">Students</span></span><span class="nav-badge-pill">' + counts.students + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'attendance' ? 'is-active' : '') + '" onclick="switchView(\'attendance\')" title="Attendance"><span class="nav-item-left"><span class="nav-icon">📋</span> <span class="nav-label">Attendance</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('my-school', 'My School', [
+          { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
+          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
+          { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
+          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
+        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Teaching</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')" title="Curriculum"><span class="nav-item-left"><span class="nav-icon">📚</span> <span class="nav-label">Curriculum</span></span><span class="nav-badge-pill">' + counts.curriculum + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Resource Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Resource Library</span></span><span class="nav-badge-pill">' + counts.resources + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')" title="Printable Worksheets"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Worksheets</span></span><span class="nav-badge-pill">' + counts.worksheets + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')" title="Assignments"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">Assignments</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')" title="Homework"><span class="nav-item-left"><span class="nav-icon">✍️</span> <span class="nav-label">Homework</span></span><span class="nav-badge-pill">' + counts.homework + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')" title="Quizzes & Tests"><span class="nav-item-left"><span class="nav-icon">🧩</span> <span class="nav-label">Quizzes &amp; Tests</span></span><span class="nav-badge-pill">' + counts.quizzes + '</span></button></li>' +
-        '</ul>' +
+        renderNavGroup('teaching', 'Teaching', [
+          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
+          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
+          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
+          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
+          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
+        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Assessment</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assessments' ? 'is-active' : '') + '" onclick="switchView(\'assessments\')" title="Assessments & Rubrics"><span class="nav-item-left"><span class="nav-icon">🎯</span> <span class="nav-label">Assessments &amp; Rubrics</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress' ? 'is-active' : '') + '" onclick="switchView(\'progress\')" title="Progress & CEFR"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">Progress &amp; CEFR</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'reports' ? 'is-active' : '') + '" onclick="switchView(\'reports\')" title="Reports"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Reports</span></span><span class="nav-badge-pill">' + counts.reports + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress-check' ? 'is-active' : '') + '" onclick="switchView(\'progress-check\')" title="English Progress Check"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">English Progress Check</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('assessment', 'Assessment', [
+          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
+          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
+          { view: 'reports', label: 'Reports', icon: '📄', title: 'Reports', isActive: currentView === 'reports', badge: counts.reports },
+          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
+        ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Community</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'story' ? 'is-active' : '') + '" onclick="switchView(\'story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'messages' ? 'is-active' : '') + '" onclick="switchView(\'messages\')" title="Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'portfolios' ? 'is-active' : '') + '" onclick="switchView(\'portfolios\')" title="Portfolios"><span class="nav-item-left"><span class="nav-icon">🎨</span> <span class="nav-label">Portfolios</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('community', 'Community', [
+          { view: 'story', label: 'Class Story', icon: '📸', title: 'Class Story', isActive: currentView === 'story' },
+          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages },
+          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
+        ], ['story', 'messages', 'portfolios']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Admin &amp; Audit</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')" title="System Health & CRUD"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">System Health</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')" title="Gamification & Badges"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Gamification</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'archived' ? 'is-active' : '') + '" onclick="switchView(\'archived\')" title="Archived Items & Restore"><span class="nav-item-left"><span class="nav-icon">🗄️</span> <span class="nav-label">Archived &amp; Restore</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'settings' ? 'is-active' : '') + '" onclick="switchView(\'settings\')" title="School Settings"><span class="nav-item-left"><span class="nav-icon">⚙️</span> <span class="nav-label">School Settings</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('admin', 'Admin & Audit', [
+          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
+          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+          { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
+          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
+        ], ['health', 'gamification', 'archived', 'settings']) +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
@@ -5862,6 +6178,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (layout) layout.classList.add('sidebar-collapsed');
     }
   }
+
+  window.toggleNavSection = function(slug) {
+    navSectionsCollapsed[slug] = !navSectionsCollapsed[slug];
+    try {
+      localStorage.setItem('eaa-nav-sections-collapsed', JSON.stringify(navSectionsCollapsed));
+    } catch (e) {}
+    renderNavigation();
+  };
 
   window.toggleSidebarCollapse = function() {
     const sidebar = document.getElementById('app-sidebar-nav');
