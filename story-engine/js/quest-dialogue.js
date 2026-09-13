@@ -326,8 +326,11 @@
 
       this.containerEl.classList.add('is-visible');
 
-      // Play Spoken Audio via Web Speech API in SoundEngine
-      if (root.StoryBridge && root.StoryBridge.speak) {
+      // Play Spoken Voice via StoryAudioEngine (synchronizes speaker talking animation)
+      const speakerEntity = this.currentConversation.speaker;
+      if (root.StoryAudioEngine && root.StoryAudioEngine.playVoice) {
+        root.StoryAudioEngine.playVoice(node, speakerEntity);
+      } else if (root.StoryBridge && root.StoryBridge.speak) {
         root.StoryBridge.speak(node.text);
       }
 
@@ -349,6 +352,9 @@
     }
 
     closeDialogue() {
+      if (this.currentConversation && this.currentConversation.speaker) {
+        this.currentConversation.speaker.isTalking = false;
+      }
       this.isOpen = false;
       this.currentConversation = null;
       this.currentNodeIndex = 0;

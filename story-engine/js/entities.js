@@ -157,8 +157,19 @@
         this.footstepSoundTimer += dt;
         if (this.footstepSoundTimer > 0.32) {
           this.footstepSoundTimer = 0;
-          if (root.StoryBridge && root.StoryBridge.playFootstep) {
-            root.StoryBridge.playFootstep();
+          // Surface detection based on position
+          let surface = 'grass';
+          if (this.y >= 440 && this.y <= 580) {
+            surface = (this.x > 1200) ? 'stone' : 'dirt';
+          }
+          if (root.StoryGame && root.StoryGame.events) {
+            root.StoryGame.events.emit('PLAYER_FOOTSTEP', {
+              x: this.x,
+              y: this.y,
+              surface
+            });
+          } else if (root.StoryBridge && root.StoryBridge.playFootstep) {
+            root.StoryBridge.playFootstep(surface);
           }
         }
 

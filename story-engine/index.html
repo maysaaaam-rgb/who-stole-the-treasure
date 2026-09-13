@@ -129,11 +129,13 @@
   <script src="../js/school-cloud-sync.js"></script>
   <script src="../js/school-store.js"></script>
 
-  <!-- STORY ENGINE ASSETS (Art & Audio) -->
+  <!-- STORY ENGINE ASSETS (Art & Audio Packs) -->
   <script src="js/assets/art-system.js"></script>
   <script src="js/assets/audio-system.js"></script>
+  <script src="js/assets/forest-audio-pack.js"></script>
 
   <!-- STORY ENGINE SCRIPTS -->
+  <script src="js/audio-engine.js"></script>
   <script src="js/engine-core.js"></script>
   <script src="js/world.js"></script>
   <script src="js/entities.js"></script>
@@ -147,17 +149,6 @@
     (function() {
       'use strict';
 
-      // Start ambient forest audio on first user gesture
-      const startAudioOnce = () => {
-        if (window.StoryAudio && window.StoryAudio.startForestAmbience) {
-          window.StoryAudio.startForestAmbience();
-        }
-        window.removeEventListener('pointerdown', startAudioOnce);
-        window.removeEventListener('keydown', startAudioOnce);
-      };
-      window.addEventListener('pointerdown', startAudioOnce);
-      window.addEventListener('keydown', startAudioOnce);
-
       // 1. Initialize Canvas & Viewport
       const canvas = document.getElementById('story-canvas');
       const input = new StoryEngineCore.InputManager(canvas);
@@ -170,6 +161,28 @@
       const quests = new StorySystems.QuestSystem(events);
       const dialogue = new StorySystems.DialogueSystem();
       const learning = new StorySystems.LearningEventBus(events);
+
+      // Initialize Core Audio Engine & Load ForestAudioPack
+      if (window.StoryAudioEngine) {
+        window.StoryAudioEngine.bindEventBus(events);
+        if (window.ForestAudioPack) {
+          window.StoryAudioEngine.loadAudioPack(window.ForestAudioPack);
+        }
+      }
+
+      // Unlock AudioContext on first user gesture
+      const startAudioOnce = () => {
+        if (window.StoryAudioEngine) {
+          window.StoryAudioEngine.initContext();
+          if (window.ForestAudioPack) {
+            window.StoryAudioEngine.setState('exploration');
+          }
+        }
+        window.removeEventListener('pointerdown', startAudioOnce);
+        window.removeEventListener('keydown', startAudioOnce);
+      };
+      window.addEventListener('pointerdown', startAudioOnce);
+      window.addEventListener('keydown', startAudioOnce);
 
       dialogue.init(document.getElementById('story-dialogue-container'));
       window.StoryDialogue = dialogue;
@@ -219,11 +232,12 @@
         const fade = document.getElementById('story-fade-overlay');
         if (fade) fade.classList.add('is-faded');
 
-        // Play portal chime
-        StoryBridge.playSound('clue');
+        // Emit area transition events to Audio Engine
+        events.emit('STORY_TRANSITION', { targetAreaId, targetSpawn });
 
         setTimeout(() => {
           world.loadArea(targetAreaId, targetSpawn);
+          events.emit('AREA_ENTERED', { areaId: targetAreaId });
           const areaBadge = document.getElementById('story-area-name-badge');
           if (areaBadge && world.activeArea) {
             areaBadge.textContent = world.activeArea.name;
@@ -385,11 +399,14 @@
       // Audio Toggle Function
       window.toggleStorySound = function() {
         const icon = document.getElementById('story-sound-icon');
-        const se = window.soundEngine;
-        if (se) {
-          se.soundEnabled = !se.soundEnabled;
-          if (icon) icon.textContent = se.soundEnabled ? '🔊' : '🔇';
+        let enabled = true;
+        if (window.StoryAudioEngine) {
+          enabled = window.StoryAudioEngine.toggleSound();
+        } else if (window.soundEngine) {
+          window.soundEngine.soundEnabled = !window.soundEngine.soundEnabled;
+          enabled = window.soundEngine.soundEnabled;
         }
+        if (icon) icon.textContent = enabled ? '🔊' : '🔇';
       };
 
     })();

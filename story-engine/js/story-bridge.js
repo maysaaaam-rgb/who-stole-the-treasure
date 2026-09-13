@@ -68,8 +68,21 @@
       }, 3500);
     },
 
-    // 3. Play Procedural Sound Effect
+    // 3. Play Sound Effect (Routes to StoryAudioEngine with fallback)
     playSound(type) {
+      if (root.StoryAudioEngine && root.StoryAudioEngine.soundEnabled) {
+        if (type === 'correct') {
+          root.StoryAudioEngine.handleEvent('QUEST_COMPLETED');
+          return;
+        } else if (type === 'clue') {
+          root.StoryAudioEngine.handleEvent('ITEM_PICKED_UP', { itemId: 'golden_key' });
+          return;
+        } else if (type === 'lock') {
+          root.StoryAudioEngine.handleEvent('DOOR_UNLOCKED');
+          return;
+        }
+      }
+
       const se = root.soundEngine || localSoundEngine;
       if (!se) return;
 
@@ -88,7 +101,12 @@
     },
 
     // 4. Footstep Procedural Sound
-    playFootstep() {
+    playFootstep(surface = 'dirt') {
+      if (root.StoryAudioEngine && root.StoryAudioEngine.soundEnabled) {
+        root.StoryAudioEngine.handleEvent('PLAYER_FOOTSTEP', { surface });
+        return;
+      }
+
       const se = root.soundEngine || localSoundEngine;
       if (!se || !se.audioCtx) return;
 
