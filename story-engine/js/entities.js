@@ -85,10 +85,19 @@
       this.walkTimer = 0;
       this.footstepSoundTimer = 0;
       this.characterName = config.name || 'Explorer';
+      this.isCelebrating = false;
+      this.celebrateTimer = 0;
     }
 
     update(dt, input, solidObstacles, worldBounds) {
       super.update(dt);
+
+      if (this.isCelebrating) {
+        this.celebrateTimer -= dt;
+        if (this.celebrateTimer <= 0) {
+          this.isCelebrating = false;
+        }
+      }
 
       let moveX = 0;
       let moveY = 0;
@@ -152,12 +161,30 @@
             root.StoryBridge.playFootstep();
           }
         }
+
+        // Footstep dust puff particles
+        if (root.StoryGame && root.StoryGame.renderer && Math.random() > 0.5) {
+          root.StoryGame.renderer.addParticle({
+            x: this.x + this.width / 2 + (Math.random() - 0.5) * 8,
+            y: this.y + this.height - 2,
+            vx: (Math.random() - 0.5) * 6,
+            vy: -4 - Math.random() * 4,
+            size: 1.5 + Math.random() * 1.5,
+            color: '#d4b996',
+            life: 0.35,
+            maxLife: 0.35
+          });
+        }
       } else {
         this.walkTimer = 0;
       }
     }
 
     render(ctx) {
+      if (root.StoryArt && root.StoryArt.CharacterRenderer) {
+        root.StoryArt.CharacterRenderer.renderPlayer(ctx, this);
+        return;
+      }
       const centerX = this.x + this.width / 2;
       const footY = this.y + this.height;
 
@@ -278,6 +305,10 @@
     }
 
     render(ctx) {
+      if (root.StoryArt && root.StoryArt.CharacterRenderer) {
+        root.StoryArt.CharacterRenderer.renderNPC(ctx, this);
+        return;
+      }
       // 1. Shadow
       this.renderShadow(ctx, 18, 8, 0.3);
 
@@ -420,8 +451,14 @@
         });
       }
 
-      // 2. Play Sound
-      if (root.StoryBridge && root.StoryBridge.playSound) {
+      // 2. Play Sound & Celebration
+      if (player) {
+        player.isCelebrating = true;
+        player.celebrateTimer = 2.5;
+      }
+      if (root.StoryAudio && root.StoryAudio.playKeyGlissando) {
+        root.StoryAudio.playKeyGlissando();
+      } else if (root.StoryBridge && root.StoryBridge.playSound) {
         root.StoryBridge.playSound('clue');
       }
 
@@ -464,6 +501,11 @@
 
     render(ctx) {
       if (this.isCollected) return;
+
+      if (root.StoryArt && root.StoryArt.ObjectRenderer) {
+        root.StoryArt.ObjectRenderer.renderGoldenKey(ctx, this.x, this.y, this.width, this.height, this.animTime);
+        return;
+      }
 
       // Subtle shadow on ground
       this.renderShadow(ctx, 12, 5, 0.2);
@@ -533,6 +575,14 @@
       this.isOpen = Boolean(config.isOpen);
       this.targetArea = config.targetArea || 'sunny_meadow';
       this.targetSpawn = config.targetSpawn || 'from_gate';
+      this.openProgress = this.isOpen ? 1.0 : 0.0;
+    }
+
+    update(dt) {
+      super.update(dt);
+      if (this.isOpen && this.openProgress < 1.0) {
+        this.openProgress = Math.min(1.0, this.openProgress + dt * 2.2);
+      }
     }
 
     onInteract(player, world) {
@@ -554,7 +604,10 @@
         this.isSolid = false;
         this.interactionPrompt = 'Enter';
 
-        // Play Mechanical Unlock Chime
+        // Play Mechanical Unlock Chime & Stone Gate Grind
+        if (root.StoryAudio && root.StoryAudio.playGateGrind) {
+          root.StoryAudio.playGateGrind();
+        }
         if (root.StoryBridge && root.StoryBridge.playSound) {
           root.StoryBridge.playSound('lock');
         }
@@ -584,6 +637,10 @@
     }
 
     render(ctx) {
+      if (root.StoryArt && root.StoryArt.ObjectRenderer) {
+        root.StoryArt.ObjectRenderer.renderAncientGate(ctx, this);
+        return;
+      }
       ctx.save();
       ctx.translate(this.x, this.y);
 
@@ -668,7 +725,10 @@
         hitboxOffset: config.hitboxOffset || { x: 8, y: 44, w: 44, h: 24 }
       });
 
-      this.propType = config.propType || 'tree'; // 'tree' | 'rock' | 'bush' | 'signpost'
+      this.propType = config.propType || 'tree'; // 'tree' | 'rock' | 'bush' | 'signpost' | 'flora'
+      this.treeType = config.treeType || 'oak'; // 'oak' | 'birch'
+      this.signTitle = config.signTitle || 'ANCIENT GATE';
+      this.floraType = config.floraType || 'flower';
       this.signText = config.signText || null;
     }
 
@@ -679,6 +739,24 @@
     }
 
     render(ctx) {
+      if (root.StoryArt && root.StoryArt.EnvironmentRenderer) {
+        if (this.propType === 'tree') {
+          root.StoryArt.EnvironmentRenderer.renderTree(ctx, this.x, this.y, this.width, this.height, this.treeType, this.animTime);
+          return;
+        }
+        if (this.propType === 'rock') {
+          root.StoryArt.EnvironmentRenderer.renderRock(ctx, this.x, this.y, this.width, this.height);
+          return;
+        }
+        if (this.propType === 'signpost') {
+          root.StoryArt.EnvironmentRenderer.renderSignpost(ctx, this.x, this.y, this.width, this.height, this.signTitle);
+          return;
+        }
+        if (this.propType === 'flora') {
+          root.StoryArt.EnvironmentRenderer.renderFlora(ctx, this.x, this.y, this.floraType, this.animTime);
+          return;
+        }
+      }
       ctx.save();
       ctx.translate(this.x, this.y);
 

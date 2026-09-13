@@ -253,6 +253,7 @@
       this.ctx = canvas.getContext('2d', { alpha: false });
       this.particles = [];
       this.destinationPulse = 0;
+      this.renderTime = 0;
     }
 
     resize(width, height) {
@@ -267,6 +268,22 @@
     }
 
     updateParticles(dt) {
+      this.renderTime += dt;
+
+      // Maintain gentle ambient forest pollen & firefly particles
+      if (this.particles.length < 24) {
+        this.particles.push({
+          x: Math.random() * 1600,
+          y: Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 15,
+          vy: -8 - Math.random() * 14,
+          size: 2 + Math.random() * 2.5,
+          color: Math.random() > 0.4 ? '#fef08a' : '#86efac',
+          life: 3 + Math.random() * 4,
+          maxLife: 7
+        });
+      }
+
       for (let i = this.particles.length - 1; i >= 0; i--) {
         const p = this.particles[i];
         p.x += p.vx * dt;
@@ -284,9 +301,13 @@
       const viewH = camera.viewportHeight;
       const offset = camera.getViewOffset();
 
-      // 1. Clear Frame
-      ctx.fillStyle = '#06101e';
-      ctx.fillRect(0, 0, viewW, viewH);
+      // 1. Clear & Render Storybook Parallax Background
+      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+        root.StoryArt.AtmosphereRenderer.renderParallaxBackground(ctx, offset.x, offset.y, viewW, viewH);
+      } else {
+        ctx.fillStyle = '#06101e';
+        ctx.fillRect(0, 0, viewW, viewH);
+      }
 
       ctx.save();
       // Apply Camera Transform
@@ -308,7 +329,7 @@
         ctx.arc(input.moveTarget.x, input.moveTarget.y, radius, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
         ctx.beginPath();
         ctx.arc(input.moveTarget.x, input.moveTarget.y, 4, 0, Math.PI * 2);
         ctx.fill();
@@ -324,37 +345,49 @@
       for (let i = 0; i < entities.length; i++) {
         const ent = entities[i];
         // Culling: only draw if within viewport range
-        if (ent.x + ent.width >= offset.x - 100 &&
-            ent.x <= offset.x + viewW + 100 &&
-            ent.y + ent.height >= offset.y - 100 &&
-            ent.y <= offset.y + viewH + 100) {
+        if (ent.x + ent.width >= offset.x - 120 &&
+            ent.x <= offset.x + viewW + 120 &&
+            ent.y + ent.height >= offset.y - 120 &&
+            ent.y <= offset.y + viewH + 120) {
           ent.render(ctx);
         }
       }
 
-      // 6. Render Ambient Particles
+      // 6. Render Ambient Pollen & Fireflies in World Space
       for (let i = 0; i < this.particles.length; i++) {
         const p = this.particles[i];
         ctx.save();
-        ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+        const alpha = Math.max(0, Math.min(1, p.life / (p.maxLife * 0.5)));
+        ctx.globalAlpha = alpha;
+        // Glowing halo
         ctx.fillStyle = p.color || '#fef08a';
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size || 3, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size || 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
 
-      // 7. Render Canopy / Foreground Overlays
+      // 7. Atmospheric Directional God Rays
+      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+        root.StoryArt.AtmosphereRenderer.renderGodRays(ctx, offset.x, offset.y, viewW, viewH, this.renderTime);
+      }
+
+      // 8. Render Area Foreground if specified
       if (world && world.activeArea) {
         world.activeArea.renderForeground(ctx, offset.x, offset.y, viewW, viewH);
       }
 
-      // 8. Debug Wireframes (if Debug Mode is Active)
+      // 9. Debug Wireframes (if Debug Mode is Active)
       if (root.StoryGame && root.StoryGame.debug && root.StoryGame.debug.showHitboxes) {
         this._renderDebugWireframes(ctx, world);
       }
 
       ctx.restore();
+
+      // 10. Screen-Space Overhanging Foreground Canopy Framing
+      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+        root.StoryArt.AtmosphereRenderer.renderForegroundCanopy(ctx, offset.x, offset.y, viewW, viewH, this.renderTime);
+      }
     }
 
     _renderDebugWireframes(ctx, world) {

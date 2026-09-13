@@ -129,6 +129,10 @@
   <script src="../js/school-cloud-sync.js"></script>
   <script src="../js/school-store.js"></script>
 
+  <!-- STORY ENGINE ASSETS (Art & Audio) -->
+  <script src="js/assets/art-system.js"></script>
+  <script src="js/assets/audio-system.js"></script>
+
   <!-- STORY ENGINE SCRIPTS -->
   <script src="js/engine-core.js"></script>
   <script src="js/world.js"></script>
@@ -142,6 +146,17 @@
   <script>
     (function() {
       'use strict';
+
+      // Start ambient forest audio on first user gesture
+      const startAudioOnce = () => {
+        if (window.StoryAudio && window.StoryAudio.startForestAmbience) {
+          window.StoryAudio.startForestAmbience();
+        }
+        window.removeEventListener('pointerdown', startAudioOnce);
+        window.removeEventListener('keydown', startAudioOnce);
+      };
+      window.addEventListener('pointerdown', startAudioOnce);
+      window.addEventListener('keydown', startAudioOnce);
 
       // 1. Initialize Canvas & Viewport
       const canvas = document.getElementById('story-canvas');

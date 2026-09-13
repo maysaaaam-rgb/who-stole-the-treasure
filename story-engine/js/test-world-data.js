@@ -1,12 +1,13 @@
 /**
  * ============================================================================
- * INTERACTIVE STORY GAME ENGINE — TEST WORLD DATA (v1.0)
+ * INTERACTIVE STORY GAME ENGINE — TEST WORLD DATA (v2.5 High-Fidelity)
  * 
- * Vertical Slice Test Content for Engine Validation (Step 25):
- * - Area 1: "Forest Clearing" (Ranger NPC, Hidden Golden Key, Ancient Gate)
- * - Area 2: "Sunny Meadow" (Scene Transition Target)
- * - Quest: "The Gatekeeper's Key"
- * Completely decoupled from the generic engine core.
+ * High-Fidelity Storybook World Data for Test Slice:
+ * - Area 1: "The Forest Clearing" (Ancient Oaks, Silver Birches, Stream, Winding Cobblestone Road)
+ * - Area 2: "The Sunny Meadow" (Sunlit Flower Fields & Celebration Arch)
+ * - Characters & Relics: Forest Ranger NPC, Ornate Golden Relic Key, Ancient Stone Gate
+ * - Quests & Pedagogical Vocabulary Events
+ * 100% decoupled from engine runtime.
  * ============================================================================
  */
 
@@ -33,66 +34,91 @@
         from_meadow: { x: 1200, y: 580 }
       },
       renderTerrain(ctx, area, camX, camY, viewW, viewH) {
-        // Lush Forest Floor
-        const grad = ctx.createLinearGradient(0, 0, 0, area.height);
-        grad.addColorStop(0, '#064e3b');
-        grad.addColorStop(0.5, '#047857');
-        grad.addColorStop(1, '#064e3b');
-        ctx.fillStyle = grad;
+        const time = (root.StoryGame && root.StoryGame.renderer) ? root.StoryGame.renderer.renderTime : 0;
+
+        // 1. Rich Layered Woodland Floor (Dark forest green with sun-dappled patches)
+        const baseGrad = ctx.createLinearGradient(0, 0, 0, area.height);
+        baseGrad.addColorStop(0, '#0f3d2a');
+        baseGrad.addColorStop(0.3, '#14532d');
+        baseGrad.addColorStop(0.7, '#166534');
+        baseGrad.addColorStop(1, '#064e3b');
+        ctx.fillStyle = baseGrad;
         ctx.fillRect(0, 0, area.width, area.height);
 
-        // Winding Dirt Pathway
+        // Soft Dappled Moss & Light Clearings
+        ctx.fillStyle = 'rgba(34, 197, 94, 0.12)';
+        const dappleLocs = [
+          [350, 480, 160, 80], [600, 360, 180, 90], [820, 520, 200, 100],
+          [1100, 260, 140, 70], [450, 680, 170, 80], [980, 650, 190, 85]
+        ];
+        for (const [dx, dy, dw, dh] of dappleLocs) {
+          ctx.beginPath();
+          ctx.ellipse(dx, dy, dw, dh, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 2. Organic Winding Cobblestone & Dirt Road
+        // Path Border: Worn earth & scalloped grass fringing
         ctx.save();
-        ctx.strokeStyle = '#78350f';
-        ctx.lineWidth = 64;
+        ctx.strokeStyle = '#451a03'; // Deep loam dirt border
+        ctx.lineWidth = 72;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.moveTo(100, 500);
-        ctx.quadraticCurveTo(400, 520, 700, 480);
-        ctx.quadraticCurveTo(1000, 440, 1260, 590);
+        ctx.moveTo(80, 500);
+        ctx.quadraticCurveTo(400, 525, 700, 480);
+        ctx.quadraticCurveTo(1000, 435, 1260, 590);
         ctx.stroke();
 
-        // Cobblestone Pebbles inside Path
+        // Inner Path: Sandy earthen trail
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 58;
+        ctx.stroke();
+
+        // Fine Gravel & Cobblestone Centers
         ctx.strokeStyle = '#92400e';
-        ctx.lineWidth = 48;
+        ctx.lineWidth = 42;
         ctx.stroke();
-        ctx.restore();
 
-        // Forest Stream / Pond on Bottom Left
-        ctx.save();
-        ctx.fillStyle = '#0284c7';
-        ctx.beginPath();
-        ctx.ellipse(320, 820, 140, 65, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#38bdf8';
-        ctx.beginPath();
-        ctx.ellipse(310, 815, 110, 45, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-
-        // Wildflowers Scattered Across Clearing
-        ctx.fillStyle = '#fde047'; // Yellow buttercups
-        const flowerLocs = [
-          [220, 380], [280, 420], [480, 390], [540, 430], [740, 360],
-          [820, 410], [920, 370], [980, 420], [450, 620], [520, 660],
-          [680, 630], [760, 680], [860, 640], [960, 690], [1080, 340]
+        // Individual Hand-Laid River Cobblestones
+        ctx.fillStyle = '#a16207';
+        const cobbleCoords = [
+          [160, 502], [220, 506], [290, 514], [370, 516], [450, 505],
+          [530, 492], [610, 484], [690, 480], [770, 470], [850, 458],
+          [930, 450], [1010, 465], [1080, 495], [1150, 532], [1210, 565]
         ];
-        for (const [fx, fy] of flowerLocs) {
+        for (const [cx, cy] of cobbleCoords) {
           ctx.beginPath();
-          ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+          ctx.ellipse(cx, cy, 7, 4.5, 0.3, 0, Math.PI * 2);
           ctx.fill();
+          ctx.fillStyle = '#ca8a04';
+          ctx.beginPath();
+          ctx.ellipse(cx - 1, cy - 1, 4, 2, 0.3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#a16207';
         }
-      },
-      renderForeground(ctx, area, camX, camY, viewW, viewH) {
-        // Canopy Vignette on top edges
-        ctx.save();
-        const vig = ctx.createLinearGradient(0, 0, 0, 120);
-        vig.addColorStop(0, 'rgba(2, 44, 34, 0.6)');
-        vig.addColorStop(1, 'rgba(2, 44, 34, 0)');
-        ctx.fillStyle = vig;
-        ctx.fillRect(0, 0, area.width, 120);
         ctx.restore();
+
+        // 3. Living Animated Forest Stream / Pond on Bottom Left
+        if (root.StoryArt && root.StoryArt.EnvironmentRenderer) {
+          root.StoryArt.EnvironmentRenderer.renderWater(ctx, 160, 720, 360, 180, time);
+        }
+
+        // 4. Wildflowers & Undergrowth Scattered Across Clearing
+        if (root.StoryArt && root.StoryArt.EnvironmentRenderer) {
+          const floraField = [
+            [220, 380, 'buttercup'], [260, 420, 'bluebell'], [300, 390, 'mushroom'],
+            [460, 390, 'buttercup'], [510, 430, 'bluebell'], [580, 410, 'buttercup'],
+            [720, 370, 'bluebell'], [780, 410, 'buttercup'], [860, 380, 'mushroom'],
+            [440, 610, 'buttercup'], [490, 660, 'bluebell'], [560, 640, 'mushroom'],
+            [670, 620, 'buttercup'], [740, 670, 'bluebell'], [810, 630, 'buttercup'],
+            [890, 650, 'mushroom'], [970, 680, 'bluebell'], [1070, 350, 'buttercup'],
+            [1140, 380, 'bluebell'], [1190, 330, 'mushroom']
+          ];
+          for (const [fx, fy, ftype] of floraField) {
+            root.StoryArt.EnvironmentRenderer.renderFlora(ctx, fx, fy, ftype, time);
+          }
+        }
       }
     });
 
@@ -102,91 +128,97 @@
     forestArea.addObstacle({ x: 0, y: 0, width: 50, height: 1000 }); // Left border
     forestArea.addObstacle({ x: 1350, y: 0, width: 50, height: 1000 }); // Right border
 
-    // Outer Boundary Tree Obstacles (Prevent walking out of world bounds)
+    // Outer Boundary Trees (Mix of Majestic Ancient Oaks & Silver Birches)
     // Top border trees
-    for (let x = 0; x < 1400; x += 90) {
+    for (let x = 0; x < 1400; x += 95) {
       forestArea.addEntity(new SceneryProp({
         id: `tree-top-${x}`,
         x,
-        y: 30,
+        y: 25,
         propType: 'tree',
-        width: 70,
-        height: 90
+        treeType: (x % 190 === 0 ? 'birch' : 'oak'),
+        width: 80,
+        height: 105
       }));
     }
     // Bottom border trees
-    for (let x = 0; x < 1400; x += 110) {
+    for (let x = 0; x < 1400; x += 105) {
       forestArea.addEntity(new SceneryProp({
         id: `tree-bot-${x}`,
         x,
-        y: 880,
+        y: 870,
         propType: 'tree',
-        width: 70,
-        height: 90
+        treeType: (x % 210 === 0 ? 'birch' : 'oak'),
+        width: 85,
+        height: 105
       }));
     }
     // Left border trees
-    for (let y = 140; y < 860; y += 120) {
-      if (y < 420 || y > 560) { // Leave gap for path
+    for (let y = 130; y < 860; y += 120) {
+      if (y < 420 || y > 560) { // Keep path entrance open
         forestArea.addEntity(new SceneryProp({
           id: `tree-left-${y}`,
           x: 20,
           y,
           propType: 'tree',
-          width: 70,
-          height: 90
+          treeType: (y % 240 === 0 ? 'birch' : 'oak'),
+          width: 80,
+          height: 105
         }));
       }
     }
 
-    // Mossy Rocks & Decorative Trees inside the clearing
+    // Faceted Mossy Boulders inside the clearing
     forestArea.addEntity(new SceneryProp({
       id: 'rock-1',
       x: 580,
-      y: 350,
+      y: 340,
       propType: 'rock',
-      width: 55,
-      height: 40
+      width: 65,
+      height: 48
     }));
 
     forestArea.addEntity(new SceneryProp({
       id: 'rock-2',
       x: 840,
-      y: 620,
+      y: 610,
       propType: 'rock',
-      width: 60,
-      height: 45
+      width: 72,
+      height: 52
     }));
 
     // Oak Cluster Hiding the Golden Key to the North
     forestArea.addEntity(new SceneryProp({
       id: 'oak-cluster-1',
-      x: 1040,
-      y: 190,
+      x: 1030,
+      y: 180,
       propType: 'tree',
-      width: 85,
-      height: 110
+      treeType: 'oak',
+      width: 95,
+      height: 125
     }));
 
     forestArea.addEntity(new SceneryProp({
       id: 'oak-cluster-2',
       x: 1190,
-      y: 190,
+      y: 180,
       propType: 'tree',
-      width: 85,
-      height: 110
+      treeType: 'birch',
+      width: 90,
+      height: 125
     }));
 
-    // Signpost near path
+    // Carved Wooden Signpost near path
     forestArea.addEntity(new SceneryProp({
       id: 'signpost-clearing',
       x: 950,
       y: 490,
       propType: 'signpost',
-      width: 50,
-      height: 50,
+      signTitle: 'ANCIENT GATE',
+      width: 55,
+      height: 52,
       isInteractable: true,
-      signText: '🧭 Ancient Stone Gate ahead. Only the Golden Key can open it!'
+      signText: '🧭 Ancient Stone Gate ahead. Only the Golden Key can unlock it!'
     }));
 
     // NPC: Forest Ranger
@@ -207,7 +239,7 @@
       itemId: 'golden_key',
       itemName: 'Golden Key',
       itemIcon: '🗝️',
-      description: 'An ornate golden key engraved with oak leaves.',
+      description: 'An ornate filigree golden key engraved with oak leaves.',
       x: 1130,
       y: 240,
       vocabulary: 'key'
@@ -242,21 +274,34 @@
         default: { x: 180, y: 400 }
       },
       renderTerrain(ctx, area, camX, camY, viewW, viewH) {
-        // Bright Sunny Green Grass
-        const grad = ctx.createRadialGradient(area.width / 2, area.height / 2, 80, area.width / 2, area.height / 2, 700);
-        grad.addColorStop(0, '#4ade80');
-        grad.addColorStop(1, '#16a34a');
-        ctx.fillStyle = grad;
+        const time = (root.StoryGame && root.StoryGame.renderer) ? root.StoryGame.renderer.renderTime : 0;
+
+        // Radiant Golden-Green Meadow Hills
+        const meadowGrad = ctx.createLinearGradient(0, 0, 0, area.height);
+        meadowGrad.addColorStop(0, '#86efac'); // Morning sunlit horizon
+        meadowGrad.addColorStop(0.3, '#4ade80');
+        meadowGrad.addColorStop(0.7, '#22c55e');
+        meadowGrad.addColorStop(1, '#16a34a');
+        ctx.fillStyle = meadowGrad;
         ctx.fillRect(0, 0, area.width, area.height);
 
-        // Sunny flower meadow patches
-        ctx.fillStyle = '#f472b6'; // Pink blossoms
-        for (let i = 0; i < 40; i++) {
-          const fx = (i * 97) % area.width;
-          const fy = (i * 127) % area.height;
-          ctx.beginPath();
-          ctx.arc(fx, fy, 3.5, 0, Math.PI * 2);
-          ctx.fill();
+        // Rolling Hillock Arcs
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.beginPath();
+        ctx.arc(350, 600, 320, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(850, 550, 380, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Thousands of Tiny Wild Meadow Blossoms (Pink & Yellow)
+        if (root.StoryArt && root.StoryArt.EnvironmentRenderer) {
+          for (let i = 0; i < 35; i++) {
+            const fx = (i * 97 + 50) % (area.width - 100);
+            const fy = (i * 127 + 60) % (area.height - 120);
+            const flowerType = (i % 2 === 0 ? 'buttercup' : 'bluebell');
+            root.StoryArt.EnvironmentRenderer.renderFlora(ctx, fx, fy, flowerType, time);
+          }
         }
       }
     });
@@ -267,10 +312,11 @@
       x: 520,
       y: 360,
       propType: 'signpost',
+      signTitle: 'VICTORY!',
       width: 70,
       height: 60,
       isInteractable: true,
-      signText: '🏆 SUCCESS! You completed the quest, opened the gate, and verified the engine foundation!'
+      signText: '🏆 SUCCESS! You completed the quest, opened the Ancient Gate, and explored the new world!'
     }));
 
     world.registerArea(meadowArea);
@@ -299,12 +345,12 @@
       },
       {
         speaker: 'Forest Ranger',
-        text: 'The Ancient Stone Gate to the east is locked tight, and I lost my Golden Key!',
+        text: 'The Ancient Stone Gate to the east leads to the Sunny Meadow, but it is locked tight.',
         startQuest: 'gatekeeper_key'
       },
       {
         speaker: 'Forest Ranger',
-        text: 'Can you search near the great oak trees to the north and bring the key to the gate?'
+        text: 'I lost my Golden Key somewhere near the oak trees to the north. Could you help me find it?'
       }
     ];
 
