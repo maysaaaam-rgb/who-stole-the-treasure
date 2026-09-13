@@ -161,6 +161,29 @@
     }
 
     // =========================================================================
+    // 5C. EDUCATIONAL RESOURCES & LIBRARY (Supabase Authoritative Persistence)
+    // =========================================================================
+    async saveResource(resource) {
+      if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
+      return root.AdventureSupabase.saveResource(resource);
+    }
+
+    async getResources(includeArchived = false) {
+      if (!root.AdventureSupabase) return [];
+      return root.AdventureSupabase.getResources(includeArchived);
+    }
+
+    async deleteResource(resourceId) {
+      if (!root.AdventureSupabase) return { success: false };
+      return root.AdventureSupabase.deleteResource(resourceId);
+    }
+
+    async migrateLocalResourcesToCloud(store) {
+      if (!root.AdventureSupabase) return { success: false, error: 'Supabase client not initialized' };
+      return root.AdventureSupabase.migrateLocalResourcesToCloud(store);
+    }
+
+    // =========================================================================
     // 6. TWO-WAY STORE SYNCHRONIZATION & SAFE ROSTER MIGRATION
     // =========================================================================
     async uploadLocalStudentsToCloud(store) {

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🕵️ YESTERDAY DETECTIVES: The Case of the Missing Memory | Interactive ESL Lesson (A1+)</title>
+  <link rel="stylesheet" href="css/detectives.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive Shell -->
+  <div id="detectives-screen-wrapper">
+    <div id="detectives-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="detectives-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.detectivesApp.renderStage(1)" title="Lesson Introduction">
+            🕵️ <span>Yesterday Detectives</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.detectivesApp.prevStage()" title="Previous Stage">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.detectivesApp.nextStage()" title="Next Stage">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Stage Tracker Indicator -->
+          <div class="stage-tracker-pill" id="hud-stage-name">
+            1. 🕵️ Case Introduction
+          </div>
+
+          <!-- Printable Worksheets Link -->
+          <a href="worksheet.html" target="_blank" class="hud-btn" title="Open Printable Case File">
+            🖨️ <span>Worksheet</span>
+          </a>
+
+          <!-- Return to Library Hub -->
+          <a href="../index.html#library" class="hud-btn" title="Return to ESL Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none; font-weight:800;">
+            📚 <span>Library</span>
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Classroom Team Scoreboard -->
+          <div class="team-scoreboard">
+            <div class="team-box team-a" title="Team A Points" onclick="window.detectivesApp.addScore('teamA', 1)">
+              <span>🔵 Team A:</span>
+              <span class="team-pts" id="score-teamA">0</span>
+              <button class="team-btn-add" onclick="event.stopPropagation(); window.detectivesApp.addScore('teamA', 1)">+1</button>
+            </div>
+            <div class="team-box team-b" title="Team B Points" onclick="window.detectivesApp.addScore('teamB', 1)">
+              <span>🔴 Team B:</span>
+              <span class="team-pts" id="score-teamB">0</span>
+              <button class="team-btn-add" onclick="event.stopPropagation(); window.detectivesApp.addScore('teamB', 1)">+1</button>
+            </div>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="det-voice-btn" onclick="toggleDetectivesSpeech()" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="det-sfx-btn" onclick="toggleDetectivesSfx()" title="Toggle Sound Effects">
+            🔔 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Control Panel Dropdown -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherMenu()" title="Teacher Navigation">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="detectives-teacher-menu">
+              <div class="menu-section-tag">--- 14-STAGE DIRECT JUMP ---</div>
+              <button onclick="window.detectivesApp.renderStage(1); toggleTeacherMenu();">1. 🕵️ Case Briefing (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(2); toggleTeacherMenu();">2. 📚 Vocabulary Discovery (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(3); toggleTeacherMenu();">3. 🕰️ Discover The Past (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(4); toggleTeacherMenu();">4. 🎯 Easy Practice &amp; Sort (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(5); toggleTeacherMenu();">5. 🧠 Memory Thief (7m)</button>
+              <button onclick="window.detectivesApp.renderStage(6); toggleTeacherMenu();">6. ⚡ Grammar Challenge: DID (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(7); toggleTeacherMenu();">7. 🤥 Story Has A Lie (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(8); toggleTeacherMenu();">8. 🧾 Physical Evidence (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(9); toggleTeacherMenu();">9. 🔍 Interrogate Suspect (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(10); toggleTeacherMenu();">10. ✍️ Build The Story (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(11); toggleTeacherMenu();">11. 🤥 Create Your Own Lie (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(12); toggleTeacherMenu();">12. 🏆 Detective Mode (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(13); toggleTeacherMenu();">13. ⚡ Hard Mode Mystery (5m)</button>
+              <button onclick="window.detectivesApp.renderStage(14); toggleTeacherMenu();">14. 🎓 Final Assessment (5m)</button>
+
+              <div class="menu-section-tag">--- CLASSROOM ACTIONS ---</div>
+              <button onclick="window.detectivesApp.resetScores(); toggleTeacherMenu();">🔄 Reset Team Scores</button>
+              <a href="worksheet.html" target="_blank" style="background:#f0fdf4; color:#15803d; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block; margin-bottom:5px;">
+                🖨️ Printable Case Dossier ➔
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="detectives-viewport">
+        <!-- Injected dynamically by DetectivesScenes -->
+      </main>
+
+      <!-- Toast Feedback -->
+      <div id="detectives-toast"></div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/detectives-audio.js"></script>
+  <script src="js/detectives-data.js"></script>
+  <script src="js/detectives-scenes.js"></script>
+  <script src="js/detectives-app.js"></script>
+
+  <script>
+    function toggleTeacherMenu() {
+      const menu = document.getElementById('detectives-teacher-menu');
+      if (menu) menu.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrap = document.querySelector('.teacher-dropdown-wrap');
+      const menu = document.getElementById('detectives-teacher-menu');
+      if (wrap && !wrap.contains(e.target) && menu) {
+        menu.classList.remove('show');
+      }
+    });
+
+    function toggleDetectivesSpeech() {
+      const enabled = window.detectivesSound.toggleSpeech();
+      const btn = document.getElementById('det-voice-btn');
+      if (btn) {
+        btn.innerHTML = enabled ? '🔊 <span>Voice</span>' : '🔇 <span>Muted</span>';
+      }
+    }
+
+    function toggleDetectivesSfx() {
+      const enabled = window.detectivesSound.toggleSfx();
+      const btn = document.getElementById('det-sfx-btn');
+      if (btn) {
+        btn.innerHTML = enabled ? '🔔 <span>SFX</span>' : '🔕 <span>Quiet</span>';
+      }
+    }
+  </script>
+</body>
+</html>

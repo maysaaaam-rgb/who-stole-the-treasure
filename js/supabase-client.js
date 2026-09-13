@@ -17,8 +17,9 @@
   // Production Supabase Configuration
   // Can be configured here directly, via window.SUPABASE_CONFIG, via URL params, or via UI settings dialog
   const CONFIG = {
-    url: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.url) || '',
-    anonKey: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.anonKey) || ''
+    url: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.url) || 'https://raraoopavipwypvgpuhe.supabase.co',
+    anonKey: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.anonKey) || 'sb_publishable_8A_Nu2aZRvySm4fzlcOA_A_L_sFckGO',
+    projectId: (root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.projectId) || 'raraoopavipwypvgpuhe'
   };
 
   const URL_STORAGE_KEY = 'eaa_supabase_url_v1';
@@ -32,6 +33,7 @@
       this.lastSyncTime = null;
       this.lastSyncStatus = 'idle'; // 'idle' | 'syncing' | 'success' | 'error'
       this.lastError = null;
+      this.liveStatus = 'checking'; // 'connected' | 'offline' | 'error' | 'checking' | 'unconfigured'
       this.listeners = [];
       this._realtimeChannel = null;
       this._activeStore = null;
@@ -39,6 +41,7 @@
       // Automatically capture credentials from URL query parameters if provided (e.g. ?supabase_url=...&supabase_key=...)
       this._detectUrlCredentials();
       this.initClient();
+      setTimeout(() => { this.checkLiveStatus(); }, 100);
     }
 
     _detectUrlCredentials() {
@@ -150,11 +153,50 @@
       return {
         isConfigured: this.isConfigured,
         url: creds.url,
+        projectId: CONFIG.projectId || 'raraoopavipwypvgpuhe',
+        liveStatus: this.liveStatus || (this.isConfigured ? 'connected' : 'unconfigured'),
         isSyncing: this.isSyncing,
         lastSyncTime: this.lastSyncTime,
         lastSyncStatus: this.lastSyncStatus,
         lastError: this.lastError
       };
+    }
+
+    /**
+     * Actively pings the remote database to verify connectivity.
+     * Updates this.liveStatus and notifies all subscribers.
+     */
+    async checkLiveStatus() {
+      if (!this.isConfigured || !this.client) {
+        this.liveStatus = 'unconfigured';
+        this.notify();
+        return this.liveStatus;
+      }
+
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        this.liveStatus = 'offline';
+        this.notify();
+        return this.liveStatus;
+      }
+
+      try {
+        const { data, error, status } = await this.client.from('classes').select('id').limit(1);
+        if (error || (status && status >= 400)) {
+          console.warn('[AdventureSupabase] Live check returned error:', error);
+          this.liveStatus = 'error';
+          this.lastError = error ? error.message : `HTTP ${status}`;
+        } else {
+          this.liveStatus = 'connected';
+          this.lastError = null;
+        }
+      } catch (err) {
+        console.warn('[AdventureSupabase] Live check exception:', err);
+        this.liveStatus = (typeof navigator !== 'undefined' && !navigator.onLine) ? 'offline' : 'error';
+        this.lastError = err.message;
+      }
+
+      this.notify();
+      return this.liveStatus;
     }
 
     _ensureClient() {
@@ -642,7 +684,238 @@
     }
 
     // =========================================================================
-    // 6. REALTIME MULTI-DEVICE SUBSCRIPTIONS
+    // 6. EDUCATIONAL RESOURCES & LIBRARY (PostgreSQL / Supabase)
+    // =========================================================================
+    async saveResource(resource) {
+      if (!resource) return { success: false, error: 'Invalid resource' };
+      const client = this._ensureClient();
+      const stableId = resource.id || ('res-' + Date.now());
+
+      const row = {
+        id: String(stableId),
+        title: String(resource.title || 'Untitled Resource'),
+        type: String(resource.type || 'game'),
+        category: String(resource.category || 'Classroom Game'),
+        description: String(resource.description || ''),
+        cefr_level: String(resource.cefr_level || resource.level || 'A1'),
+        target_age: String(resource.target_age || resource.age || resource.ages || '7–9'),
+        grade: String(resource.grade || 'Grade 3'),
+        duration: parseInt(resource.duration, 10) || 30,
+        topic: String(resource.topic || (Array.isArray(resource.topics) && resource.topics[0]) || ''),
+        topics: Array.isArray(resource.topics) ? resource.topics : (resource.topic ? [resource.topic] : []),
+        route: String(resource.route || ''),
+        skills: Array.isArray(resource.skills) ? resource.skills : ['Speaking', 'Vocabulary'],
+        objectives: Array.isArray(resource.objectives) ? resource.objectives : ['Communicative practice'],
+        thumbnail: resource.thumbnail || null,
+        worksheet: resource.worksheet || null,
+        teacher_guide: Boolean(resource.teacherGuide || resource.teacher_guide),
+        featured: Boolean(resource.featured),
+        archived: Boolean(resource.archived),
+        created_at: resource.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: resource.created_by || 'teacher',
+        status: resource.status || 'active',
+        extra_data: resource.extra_data || {}
+      };
+
+      // 1. Attempt writing to dedicated public.resources table
+      try {
+        const { data, error } = await client.from('resources').upsert(row, { onConflict: 'id' }).select();
+        if (!error) {
+          console.log('[AdventureSupabase] Successfully saved resource to public.resources:', stableId);
+          return { success: true, resource: row, table: 'resources' };
+        }
+        if (error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
+          console.error('[AdventureSupabase] saveResource error:', error);
+          throw new Error('Supabase saveResource error: ' + error.message);
+        }
+      } catch (err) {
+        if (!err.message.includes('PGRST205') && !err.message.includes('schema cache')) {
+          throw err;
+        }
+      }
+
+      // 2. Resilient fallback adapter: save to shared cloud cohort so cross-device sync works immediately
+      console.warn('[AdventureSupabase] public.resources table not yet in schema cache. Using resilient shared cloud cohort adapter.');
+      await this._saveResourceToSharedCohort(row);
+      return { success: true, resource: row, table: 'shared_cohort_fallback', fallback: true };
+    }
+
+    async _saveResourceToSharedCohort(row) {
+      const client = this._ensureClient();
+      const SYNC_ID = 'class-cloud-library-sync';
+      let existingResources = [];
+      try {
+        const { data } = await client.from('classes').select('description').eq('id', SYNC_ID).maybeSingle();
+        if (data && data.description) {
+          existingResources = JSON.parse(data.description);
+          if (!Array.isArray(existingResources)) existingResources = [];
+        }
+      } catch (e) {
+        existingResources = [];
+      }
+
+      const idx = existingResources.findIndex(r => r.id === row.id);
+      if (idx !== -1) {
+        existingResources[idx] = row;
+      } else {
+        existingResources.unshift(row);
+      }
+
+      const syncRow = {
+        id: SYNC_ID,
+        name: 'Cloud Library Shared Store',
+        grade: 'System',
+        teacher: 'System',
+        description: JSON.stringify(existingResources),
+        archived: true,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await client.from('classes').upsert(syncRow, { onConflict: 'id' });
+      if (error) {
+        throw new Error('Fallback cloud cohort save failed: ' + error.message);
+      }
+      return { success: true };
+    }
+
+    async getResources(includeArchived = false) {
+      const client = this._ensureClient();
+      try {
+        let query = client.from('resources').select('*');
+        if (!includeArchived) query = query.eq('archived', false);
+        const { data, error } = await query;
+        if (!error && Array.isArray(data)) {
+          return data;
+        }
+        if (error && error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
+          console.warn('[AdventureSupabase] getResources error:', error);
+          throw new Error('Supabase getResources error: ' + error.message);
+        }
+      } catch (err) {
+        if (!err.message.includes('PGRST205') && !err.message.includes('schema cache')) {
+          throw err;
+        }
+      }
+
+      // Fallback adapter
+      return this._getResourcesFromSharedCohort(includeArchived);
+    }
+
+    async _getResourcesFromSharedCohort(includeArchived = false) {
+      const client = this._ensureClient();
+      const SYNC_ID = 'class-cloud-library-sync';
+      try {
+        const { data, error } = await client.from('classes').select('description').eq('id', SYNC_ID).maybeSingle();
+        if (error || !data || !data.description) return [];
+        const items = JSON.parse(data.description);
+        if (!Array.isArray(items)) return [];
+        return includeArchived ? items : items.filter(r => !r.archived);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    async deleteResource(id) {
+      if (!id) return { success: false };
+      const client = this._ensureClient();
+      try {
+        await client.from('resources').delete().eq('id', String(id));
+      } catch (e) {}
+      // Also update fallback cohort if present
+      try {
+        const SYNC_ID = 'class-cloud-library-sync';
+        const { data } = await client.from('classes').select('description').eq('id', SYNC_ID).maybeSingle();
+        if (data && data.description) {
+          let items = JSON.parse(data.description);
+          if (Array.isArray(items)) {
+            items = items.filter(r => r.id !== String(id));
+            await client.from('classes').upsert({
+              id: SYNC_ID,
+              name: 'Cloud Library Shared Store',
+              grade: 'System',
+              teacher: 'System',
+              description: JSON.stringify(items),
+              archived: true,
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'id' });
+          }
+        }
+      } catch (e) {}
+      return { success: true };
+    }
+
+    async archiveResource(id) {
+      return this.saveResource({ id, archived: true });
+    }
+
+    async migrateLocalResourcesToCloud(store) {
+      const targetStore = store || this._activeStore || (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
+      if (!targetStore) return { success: false, reason: 'no_store' };
+
+      const localResources = targetStore.getResources ? targetStore.getResources(true) : [];
+      const stats = {
+        found: localResources.length,
+        alreadyOnline: 0,
+        newUploads: 0,
+        updated: 0,
+        failed: 0,
+        errors: []
+      };
+
+      const BUILTIN_IDS = new Set([
+        'story-engine-alice', 'alice', 'yesterday-detectives', 'detectives',
+        'inventor-lab', 'robots', 'feelings', 'camp-mystery', 'phonics-adventure',
+        'monster-day', 'story-space', 'mouse', 'pokemon', 'firefighter', 'restaurant',
+        'predictions', 'advice', 'neighbourhood', 'wizard-of-oz', 'simon-says-classroom',
+        'book-global-readings-2-unit-1', 'book-global-readings-3-unit-1',
+        'resource-global-readings-2', 'resource-global-readings-3'
+      ]);
+
+      let cloudResources = [];
+      try {
+        cloudResources = await this.getResources(true);
+      } catch (e) {
+        cloudResources = [];
+      }
+      const cloudMap = new Map((cloudResources || []).map(r => [r.id, r]));
+
+      for (const res of localResources) {
+        if (BUILTIN_IDS.has(res.id) && !res.customModified) {
+          stats.alreadyOnline++;
+          continue;
+        }
+
+        if (cloudMap.has(res.id)) {
+          stats.alreadyOnline++;
+          continue;
+        }
+
+        try {
+          await this.saveResource(res);
+          stats.newUploads++;
+          if (res) {
+            res.cloudStatus = 'saved';
+            res.cloudSyncedAt = new Date().toISOString();
+          }
+        } catch (err) {
+          stats.failed++;
+          stats.errors.push(`${res.title || res.id}: ${err.message}`);
+        }
+      }
+
+      if (typeof targetStore.saveState === 'function') {
+        targetStore.saveState();
+      }
+
+      return {
+        success: stats.failed === 0,
+        ...stats
+      };
+    }
+
+    // =========================================================================
+    // 7. REALTIME MULTI-DEVICE SUBSCRIPTIONS
     // =========================================================================
     setupRealtimeSubscriptions(store) {
       if (!store) return;
@@ -658,8 +931,8 @@
       try {
         const channel = this.client.channel('adventure-realtime-all');
 
-        // Listen to all public schema table changes
-        const tables = ['classes', 'students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records'];
+        // Listen to all public schema table changes including resources
+        const tables = ['classes', 'students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records', 'resources'];
         tables.forEach(tableName => {
           channel.on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
             console.log(`[AdventureSupabase:Realtime] ${tableName} event:`, payload.eventType);
@@ -695,13 +968,14 @@
       this.notify();
 
       try {
-        const [classes, students, notes, assessments, xpTxs, attendance] = await Promise.all([
+        const [classes, students, notes, assessments, xpTxs, attendance, cloudResources] = await Promise.all([
           this.getClasses().catch(() => []),
           this.getStudents(),
           this.getTeacherNotes(),
           this.getAssessments(),
           this.getXPTransactions(),
-          this._ensureClient().from('attendance_records').select('*').then(r => r.data || [])
+          this._ensureClient().from('attendance_records').select('*').then(r => r.data || []),
+          this.getResources(false).catch(() => [])
         ]);
 
         // SAFE IDEMPOTENT SEEDING / MIGRATION:
@@ -774,7 +1048,36 @@
           status: att.status
         }));
 
-        // Ingest into store with authoritative student & class lists
+        // Transform Supabase resources to Store format
+        const transformedResources = (cloudResources || []).map(r => ({
+          id: r.id,
+          title: r.title,
+          type: r.type || 'game',
+          category: r.category || 'Classroom Game',
+          description: r.description || '',
+          level: r.cefr_level || 'A1',
+          cefr_level: r.cefr_level || 'A1',
+          age: r.target_age || '7–9',
+          target_age: r.target_age || '7–9',
+          grade: r.grade || 'Grade 3',
+          duration: r.duration || 30,
+          topic: r.topic || '',
+          topics: Array.isArray(r.topics) ? r.topics : (r.topic ? [r.topic] : []),
+          route: r.route || '',
+          skills: Array.isArray(r.skills) ? r.skills : ['Speaking', 'Vocabulary'],
+          objectives: Array.isArray(r.objectives) ? r.objectives : ['Communicative practice'],
+          thumbnail: r.thumbnail || null,
+          worksheet: r.worksheet || null,
+          teacherGuide: Boolean(r.teacher_guide),
+          featured: Boolean(r.featured),
+          archived: Boolean(r.archived),
+          created_at: r.created_at,
+          updated_at: r.updated_at,
+          cloudStatus: 'saved',
+          cloudSyncedAt: r.updated_at
+        }));
+
+        // Ingest into store with authoritative student, class & resource lists
         if (typeof store.mergeCloudState === 'function') {
           store.mergeCloudState({
             classes: classes,
@@ -783,7 +1086,8 @@
             teacherNotes: transformedNotes,
             progressCheckSubmissions: transformedSubs,
             xpTransactions: transformedXP,
-            attendanceRecords: transformedAtt
+            attendanceRecords: transformedAtt,
+            resources: transformedResources
           });
         }
 
@@ -902,6 +1206,17 @@
           } catch (e) {
             results.errors.push(`Attendance: ${e.message}`);
           }
+        }
+
+        // 7. Upload Custom Library Resources
+        try {
+          const migrationRes = await this.migrateLocalResourcesToCloud(targetStore);
+          results.resourcesCount = migrationRes.newUploads || 0;
+          if (migrationRes.errors && migrationRes.errors.length) {
+            results.errors.push(...migrationRes.errors);
+          }
+        } catch (e) {
+          results.errors.push(`Resources: ${e.message}`);
         }
 
         this.isSyncing = false;

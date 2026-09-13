@@ -20,6 +20,29 @@
   // Canonical list of audited games
   const RAW_CANONICAL_GAMES = [
     {
+      id: "story-engine-alice",
+      title: "Alice in Wonderland: The Story Adventure",
+      category: "Interactive Stories",
+      level: "A1–A1+",
+      age: "7–12",
+      grade: "Grade 3",
+      duration: 45,
+      skills: ["Reading", "Listening", "Speaking", "Vocabulary", "Exploration", "Problem Solving"],
+      topics: ["Action Verbs", "Spatial Directions", "Size Transformations", "Contextual Dialogue", "Speaking Challenges"],
+      objectives: [
+        "Follow narrative instructions given by Wonderland characters in authentic contexts",
+        "Demonstrate behavioral comprehension through direct in-world physical actions",
+        "Participate in spoken dialogue moments using character voice and target phrases",
+        "Develop durable vocabulary mastery across multiple story chapters (A1–A1+ CEFR)"
+      ],
+      route: "story-engine/index.html?story=alice",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Full 9-chapter playable children's adventure with invisible adaptive AI learning: follow the White Rabbit, fall down the well, shrink & grow in the Hall of Doors, solve Caterpillar & Cheshire Cat riddles, join the Mad Tea Party, and stand your ground at the Royal Court!"
+    },
+    {
       id: "robots",
       title: "Amazing Robots Around the World",
       category: "Speaking Games",
@@ -381,6 +404,52 @@
       featured: false,
       archived: false,
       description: "Interplanetary journey comparing planet sizes, distances, and atmosphere."
+    },
+    {
+      id: "yesterday-detectives",
+      title: "Yesterday Detectives: The Case of the Missing Memory",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 55,
+      skills: ["Grammar", "Listening", "Speaking", "Reading", "Vocabulary", "Deduction"],
+      topics: ["Past Simple", "Regular Verbs", "Irregular Verbs", "Questions with Did"],
+      objectives: [
+        "Master past simple affirmative, questions with Did, and negatives with Didn't",
+        "Deduce facts, interrogate suspects, and catch lies"
+      ],
+      route: "detectives/index.html",
+      worksheet: "detectives/worksheet.html",
+      worksheetRoute: "detectives/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive 14-stage mystery adventure teaching the Past Simple."
+    },
+    {
+      id: "inventor-lab",
+      title: "Inventor Lab: What Does It Take to Be an Inventor?",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 50,
+      skills: ["Speaking", "Reading", "Vocabulary", "Prediction", "Critical Thinking", "Reasoning"],
+      topics: ["Invention Cycle", "See Think Wonder", "Clara Doodle", "Try Again Mindset", "Persistence", "Problem Solving"],
+      objectives: [
+        "Distinguish direct observations from inferences and wonder questions",
+        "Understand the 5-stage invention cycle (Idea, Plan, Build, Change, Solve)",
+        "Locate exact textual evidence in Clara Doodle's story",
+        "Design and pitch an original invention using structured frames"
+      ],
+      route: "inventor-lab/index.html",
+      worksheet: "inventor-lab/worksheet.html",
+      worksheetRoute: "inventor-lab/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive classroom ESL lesson based on Global Readings Unit 1: investigate mystery clues, test machines, explore Clara Doodle's inventions, and build an original creation."
     }
   ];
 
@@ -7687,6 +7756,13 @@
 
       // 18. Achievements (Unlockable Challenges)
       achievements: [
+        { id: 'ach-alice-1', name: 'White Rabbit Finder', icon: '🐇', requirement: 'Follow the White Rabbit into the deep woods and find the lost Pocket Watch.', category: 'Wonderland Story', xpReward: 100, archived: false },
+        { id: 'ach-alice-2', name: 'Watch Keeper', icon: '⌚', requirement: 'Return the gold pocket watch to the White Rabbit before time runs out.', category: 'Wonderland Story', xpReward: 150, archived: false },
+        { id: 'ach-alice-3', name: 'Tiny Door Explorer', icon: '🚪', requirement: 'Drink from the bottle and find the golden key to unlock the tiny garden door.', category: 'Wonderland Story', xpReward: 200, archived: false },
+        { id: 'ach-alice-4', name: 'Mushroom Explorer', icon: '🍄', requirement: 'Speak with the Caterpillar and master the magic mushroom sizes.', category: 'Wonderland Story', xpReward: 200, archived: false },
+        { id: 'ach-alice-5', name: 'Tea Party Guest', icon: '🎩', requirement: "Solve the riddle of the Clean Cup at the Mad Hatter's tea table.", category: 'Wonderland Story', xpReward: 250, archived: false },
+        { id: 'ach-alice-6', name: "Queen's Garden", icon: '🌹', requirement: 'Help the Card Gardeners paint the white roses red.', category: 'Wonderland Story', xpReward: 250, archived: false },
+        { id: 'ach-alice-7', name: 'Wonderland Champion', icon: '👑', requirement: "Stand your ground at the Royal Court and complete Alice's adventure!", category: 'Wonderland Story', xpReward: 500, archived: false },
         { id: 'ach-1', name: 'World Traveler', icon: '🌍', requirement: 'Unlock 3 distinct interactive learning worlds.', category: 'Exploration', xpReward: 300, archived: false },
         { id: 'ach-2', name: 'Vocabulary Collector', icon: '📚', requirement: 'Master 100 core vocabulary words across units.', category: 'Vocabulary', xpReward: 350, archived: false },
         { id: 'ach-3', name: 'Mystery Solver', icon: '🕵️', requirement: 'Complete the Mystery Hotel investigation story.', category: 'Reading & Logic', xpReward: 250, archived: false }
@@ -8010,6 +8086,17 @@
             if (!merged.rewards || !merged.rewards.length) merged.rewards = initial.rewards || [];
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
+                        // Synchronize canonical & Wonderland achievements (ensure all 10 achievements are available)
+            if (!merged.achievements || !merged.achievements.length) {
+              merged.achievements = JSON.parse(JSON.stringify(initial.achievements || []));
+            } else {
+              const existingAchMap = new Map(merged.achievements.map(a => [a.id, a]));
+              (initial.achievements || []).forEach(refAch => {
+                if (!existingAchMap.has(refAch.id)) {
+                  merged.achievements.push(JSON.parse(JSON.stringify(refAch)));
+                }
+              });
+            }
             if (!merged.studentAwards) merged.studentAwards = initial.studentAwards || [];
 
             // Ensure Monster Evolution models are present
@@ -8183,6 +8270,14 @@
                 } else {
                   merged.resources.unshift(phonicsRes);
                 }
+              }
+              const inventorRes = CANONICAL_GAMES.find(g => g.id === 'inventor-lab');
+              if (inventorRes && !merged.resources.some(r => r.id === 'inventor-lab')) {
+                merged.resources.unshift(inventorRes);
+              }
+              const detRes = CANONICAL_GAMES.find(g => g.id === 'yesterday-detectives');
+              if (detRes && !merged.resources.some(r => r.id === 'yesterday-detectives')) {
+                merged.resources.unshift(detRes);
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
@@ -9558,6 +9653,7 @@
       const resource = {
         id: newId,
         title: data.title || 'New ESL Game',
+        type: data.type || 'game',
         description: data.description || 'Interactive communicative activity',
         category: data.category || 'Classroom Game',
         level: data.level || 'A1',
@@ -9572,18 +9668,52 @@
         worksheet: data.worksheet || null,
         teacherGuide: !!data.teacherGuide,
         featured: !!data.featured,
-        archived: false
+        archived: false,
+        cloudStatus: 'pending',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
       this.state.resources.unshift(resource);
       this.saveState();
+      if (this.notify) this.notify('resources', this.state.resources);
+
+      // Asynchronously trigger authoritative Supabase cloud persistence
+      if (typeof window !== 'undefined' && window.AdventureSupabase) {
+        window.AdventureSupabase.saveResource(resource).then(res => {
+          if (res && res.success) {
+            resource.cloudStatus = 'saved';
+            resource.cloudSyncedAt = new Date().toISOString();
+            this.saveState();
+          }
+        }).catch(err => {
+          console.warn('[SchoolStore] Cloud saveResource warning:', err);
+          resource.cloudStatus = 'failed';
+          resource.cloudError = err.message;
+        });
+      }
+
       return resource;
     }
 
     updateResource(id, updates) {
       const res = this.getResource(id);
       if (res) {
-        Object.assign(res, updates);
+        Object.assign(res, updates, { updated_at: new Date().toISOString(), cloudStatus: 'pending' });
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.saveResource(res).then(saveRes => {
+            if (saveRes && saveRes.success) {
+              res.cloudStatus = 'saved';
+              res.cloudSyncedAt = new Date().toISOString();
+              this.saveState();
+            }
+          }).catch(err => {
+            res.cloudStatus = 'failed';
+            res.cloudError = err.message;
+          });
+        }
         return res;
       }
       return null;
@@ -9597,8 +9727,16 @@
         copy.title = original.title + ' (Copy)';
         copy.featured = false;
         copy.archived = false;
+        copy.cloudStatus = 'pending';
+        copy.created_at = new Date().toISOString();
+        copy.updated_at = new Date().toISOString();
         this.state.resources.unshift(copy);
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.saveResource(copy).catch(() => {});
+        }
         return copy;
       }
       return null;
@@ -9608,7 +9746,12 @@
       const res = this.getResource(id);
       if (res) {
         res.archived = true;
+        res.updated_at = new Date().toISOString();
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.archiveResource(id).catch(() => {});
+        }
         return true;
       }
       return false;
@@ -9619,9 +9762,29 @@
       if (idx !== -1) {
         this.state.resources.splice(idx, 1);
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.deleteResource(id).catch(() => {});
+        }
         return true;
       }
       return false;
+    }
+
+    async syncLocalLibraryToCloud() {
+      if (typeof window !== 'undefined' && window.AdventureSupabase) {
+        const result = await window.AdventureSupabase.migrateLocalResourcesToCloud(this);
+        this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        return result;
+      }
+      return { success: false, reason: 'AdventureSupabase client not loaded' };
+    }
+
+    loadLibrary() {
+      const allGames = (this.getResources(false) || []);
+      const allWorksheets = (this.getWorksheets ? this.getWorksheets(false) : []) || [];
+      return this.getStandardizedResources ? this.getStandardizedResources(false) : allGames.concat(allWorksheets);
     }
 
     toggleFavoriteResource(id) {
@@ -9771,7 +9934,8 @@
         id: 'asg-' + Date.now(),
         title: data.title || 'New Class Assignment',
         classId: data.classId || this.state.activeClassId,
-        activityId: data.activityId || 'monster-day',
+        activityId: data.activityId || data.gameId || 'monster-day',
+        gameId: data.gameId || data.activityId || 'monster-day',
         studentIds: data.studentIds || 'all',
         dueDate: data.dueDate || 'Sep 25, 2026',
         instructions: data.instructions || '',
@@ -10435,7 +10599,7 @@
     hasStudentAchievement(studentId, achievementId) {
       if (!achievementId) return false;
       const awards = this.state.studentAwards || [];
-      return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId));
+      return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId || a.badgeId === achievementId));
     }
 
     calculateMonsterState(studentId) {
@@ -11272,6 +11436,42 @@
       if (!this.state.achievements) this.state.achievements = [];
       return this.state.achievements.find(a => a.id === id) || null;
     }
+
+    unlockAchievement(studentId, achievementId) {
+      if (!studentId || !achievementId) return null;
+      if (!this.state.studentAwards) this.state.studentAwards = [];
+      const ach = this.getAchievement(achievementId);
+      if (!ach) return null;
+      if (this.hasStudentAchievement(studentId, achievementId)) {
+        return null; // Already unlocked
+      }
+      const award = {
+        id: 'saward-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId: studentId,
+        achievementId: achievementId,
+        badgeId: achievementId,
+        name: ach.name,
+        icon: ach.icon || '🏆',
+        category: ach.category || 'Wonderland Story',
+        requirement: ach.requirement || '',
+        xpReward: ach.xpReward || 100,
+        awardedAt: new Date().toISOString()
+      };
+      this.state.studentAwards.push(award);
+      if (ach.xpReward) {
+        this.giveXP(
+          studentId,
+          ach.xpReward,
+          `Achievement Unlocked: ${ach.name}`,
+          'achievement',
+          achievementId
+        );
+      }
+      this.saveState();
+      this.notify('studentAwards', this.state.studentAwards);
+      return award;
+    }
+
 
     createAchievement(data) {
       if (!this.state.achievements) this.state.achievements = [];
@@ -13230,6 +13430,21 @@
         });
       }
 
+      // 6. Merge Authoritative Cloud Educational Resources
+      if (Array.isArray(cloudData.resources) && cloudData.resources.length > 0) {
+        if (!this.state.resources) this.state.resources = [];
+        cloudData.resources.forEach(remoteRes => {
+          if (!remoteRes || !remoteRes.id) return;
+          const localIdx = this.state.resources.findIndex(r => r.id === remoteRes.id);
+          if (localIdx !== -1) {
+            this.state.resources[localIdx] = Object.assign({}, this.state.resources[localIdx], remoteRes);
+          } else {
+            this.state.resources.unshift(remoteRes);
+          }
+          modified = true;
+        });
+      }
+
       if (modified) {
         this.saveState();
         this.notify('teacherNotes', this.state.teacherNotes);
@@ -13237,6 +13452,7 @@
         this.notify('students', this.state.students);
         this.notify('xp', this.state.xpTransactions);
         this.notify('attendance', this.state.attendanceRecords);
+        this.notify('resources', this.state.resources);
       }
 
       return { success: true, modified };

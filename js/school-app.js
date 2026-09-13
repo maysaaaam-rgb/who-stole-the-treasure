@@ -254,34 +254,45 @@
 
     function updateBadge(status) {
       if (!syncBtn) return;
-      if (!status.isConfigured) {
-        if (syncIcon) syncIcon.textContent = '⚙️';
-        if (syncText) syncText.textContent = 'Connect Cloud DB';
-        syncBtn.style.background = '#f1f5f9';
-        syncBtn.style.color = '#475569';
-        syncBtn.style.borderColor = '#cbd5e1';
-        syncBtn.title = 'Click to connect your Supabase PostgreSQL cloud database';
-      } else if (status.lastSyncStatus === 'syncing') {
-        if (syncIcon) syncIcon.textContent = '⏳';
-        if (syncText) syncText.textContent = 'Saving to Cloud...';
+      const live = status.liveStatus || (status.isConfigured ? 'connected' : 'unconfigured');
+      const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) || live === 'offline';
+
+      if (isOffline) {
+        if (syncIcon) syncIcon.textContent = '⚠️';
+        if (syncText) syncText.textContent = 'Offline / Local Mode';
         syncBtn.style.background = '#fef3c7';
         syncBtn.style.color = '#92400e';
         syncBtn.style.borderColor = '#fde68a';
-        syncBtn.title = 'Synchronizing with Supabase PostgreSQL database...';
-      } else if (status.lastSyncStatus === 'success') {
-        if (syncIcon) syncIcon.textContent = '☁️✓';
-        if (syncText) syncText.textContent = 'Saved to Cloud';
-        syncBtn.style.background = '#ecfdf5';
-        syncBtn.style.color = '#065f46';
-        syncBtn.style.borderColor = '#a7f3d0';
-        syncBtn.title = 'Authoritative Supabase database synchronized: ' + (status.lastSyncTime ? new Date(status.lastSyncTime).toLocaleTimeString() : 'Just now');
-      } else if (status.lastSyncStatus === 'error') {
+        syncBtn.title = 'Running in offline mode. Local changes are cached safely.';
+      } else if (!status.isConfigured || live === 'unconfigured') {
         if (syncIcon) syncIcon.textContent = '⚠️';
-        if (syncText) syncText.textContent = 'Cloud Save Failed';
+        if (syncText) syncText.textContent = 'Offline / Local Mode';
+        syncBtn.style.background = '#f1f5f9';
+        syncBtn.style.color = '#475569';
+        syncBtn.style.borderColor = '#cbd5e1';
+        syncBtn.title = 'Database not configured. Click to configure cloud database.';
+      } else if (live === 'error' || status.lastSyncStatus === 'error') {
+        if (syncIcon) syncIcon.textContent = '❌';
+        if (syncText) syncText.textContent = 'Cloud Connection Failed';
         syncBtn.style.background = '#fef2f2';
         syncBtn.style.color = '#991b1b';
         syncBtn.style.borderColor = '#fecaca';
         syncBtn.title = 'Supabase Error: ' + (status.lastError || 'Network unreachable');
+      } else if (status.lastSyncStatus === 'syncing') {
+        if (syncIcon) syncIcon.textContent = '⏳';
+        if (syncText) syncText.textContent = 'Syncing...';
+        syncBtn.style.background = '#eff6ff';
+        syncBtn.style.color = '#1e40af';
+        syncBtn.style.borderColor = '#bfdbfe';
+        syncBtn.title = 'Synchronizing with Supabase PostgreSQL cloud database...';
+      } else {
+        // Live connected
+        if (syncIcon) syncIcon.textContent = '☁️';
+        if (syncText) syncText.textContent = 'Cloud Connected';
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+        syncBtn.title = 'Authoritative Supabase database connected (Project: ' + (status.projectId || 'raraoopavipwypvgpuhe') + ')';
       }
     }
 
@@ -361,15 +372,28 @@
     const text = document.getElementById('cloud-status-text');
     const latencyBadge = document.getElementById('cloud-latency-badge');
 
-    if (isConn) {
+    const live = (sb && sb.liveStatus) || (isConn ? 'connected' : 'unconfigured');
+    const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) || live === 'offline';
+
+    if (isOffline) {
+      if (pill) { pill.style.background = '#fef3c7'; pill.style.color = '#92400e'; }
+      if (indicator) indicator.textContent = '⚠️';
+      if (text) text.textContent = 'Offline / Local Mode';
+      if (latencyBadge) latencyBadge.textContent = 'Local Cache Active';
+    } else if (live === 'error') {
+      if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
+      if (indicator) indicator.textContent = '❌';
+      if (text) text.textContent = 'Cloud Connection Failed';
+      if (latencyBadge) latencyBadge.textContent = sb.lastError || '';
+    } else if (isConn) {
       if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
       if (indicator) indicator.textContent = '🟢';
-      if (text) text.textContent = 'Connected';
+      if (text) text.textContent = 'Cloud Connected';
       if (latencyBadge) latencyBadge.textContent = creds.url ? creds.url.replace(/^https?:\/\//, '').split('/')[0] : '';
     } else {
-      if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
-      if (indicator) indicator.textContent = '⚪';
-      if (text) text.textContent = 'Not connected';
+      if (pill) { pill.style.background = '#f1f5f9'; pill.style.color = '#475569'; }
+      if (indicator) indicator.textContent = '⚠️';
+      if (text) text.textContent = 'Offline / Local Mode';
       if (latencyBadge) latencyBadge.textContent = '';
     }
 
@@ -377,7 +401,7 @@
     const schoolSettingsBadge = document.getElementById('settings-cloud-status-badge');
     if (schoolSettingsBadge) {
       schoolSettingsBadge.style.color = isConn ? '#059669' : '#dc2626';
-      schoolSettingsBadge.textContent = isConn ? 'Connected' : 'Not connected';
+      schoolSettingsBadge.textContent = isConn ? 'Cloud Connected' : 'Offline / Local Mode';
     }
 
     window.openModal('modal-cloud-sync');
@@ -761,6 +785,12 @@
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
         'leaderboard', 'parent-home', 'archived', 'settings', 'monster'
       ];
+      if (primaryView === 'simon-says' || primaryView === 'simon') {
+        if (typeof window.openSimonSaysModal === 'function') {
+          window.openSimonSaysModal();
+          return;
+        }
+      }
       if (validViews.includes(primaryView)) {
         if (primaryView === 'class-detail' && parts[1]) {
           selectedClassDetailId = parts[1];
@@ -775,6 +805,59 @@
   }
 
   // Global Navigation Router
+  // =========================================================================
+  // GLOBAL GAME LAUNCHER ROUTING
+  // =========================================================================
+  window.launchGame = function(gameOrActivityId) {
+    if (!gameOrActivityId) {
+      window.location.href = 'story-engine/index.html?story=alice';
+      return;
+    }
+    let res = (typeof store !== 'undefined' && store.getResource) ? store.getResource(gameOrActivityId) : null;
+    if (!res && typeof GAMES_REGISTRY !== 'undefined' && Array.isArray(GAMES_REGISTRY)) {
+      res = GAMES_REGISTRY.find(g => g.id === gameOrActivityId);
+    }
+    if (gameOrActivityId === 'simon-says-classroom' || gameOrActivityId === 'simon-says') {
+      if (typeof window.openSimonSaysModal === 'function') {
+        window.openSimonSaysModal();
+        return;
+      }
+    }
+    if (res && res.route) {
+      if (res.route === '#simon-says') {
+        if (typeof window.openSimonSaysModal === 'function') {
+          window.openSimonSaysModal();
+          return;
+        }
+      }
+      window.location.href = window.resolveSafeRoute ? window.resolveSafeRoute(res.route) : res.route;
+      return;
+    }
+    const routeMap = {
+      'story-engine-alice': 'story-engine/index.html?story=alice',
+      'alice': 'story-engine/index.html?story=alice',
+      'robots': 'robots/index.html',
+      'feelings': 'feelings/index.html',
+      'monster-day': 'monster day/index.html',
+      'story-space': 'story/space/index.html',
+      'mouse': 'mouse/index.html',
+      'pokemon': 'pokemon/index.html',
+      'firefighter': 'firefighter/index.html',
+      'nh': 'NH/index.html',
+      'yesterday-detectives': 'detectives/index.html',
+      'inventor-lab': 'inventor-lab/index.html'
+    };
+    if (routeMap[gameOrActivityId]) {
+      window.location.href = routeMap[gameOrActivityId];
+      return;
+    }
+    if (typeof gameOrActivityId === 'string' && gameOrActivityId.startsWith('story-engine')) {
+      window.location.href = 'story-engine/index.html?story=alice';
+    } else if (typeof window.switchView === 'function') {
+      window.switchView('library');
+    }
+  };
+
   window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
     if (updateHash) {
@@ -1334,15 +1417,37 @@
     window.openModal('modal-resource-editor');
   };
 
-  window.handleSaveResource = function(e) {
-    e.preventDefault();
+  window.resolveSafeRoute = function(route) {
+    if (!route) return '';
+    const trimmed = String(route).trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('#') || trimmed.startsWith('javascript:')) {
+      return trimmed;
+    }
+    // Strip accidental leading slashes so relative paths resolve cleanly on both localhost and GitHub Pages
+    return trimmed.replace(/^\/+/, '');
+  };
+
+  window.handleSaveResource = async function(e) {
+    if (e) e.preventDefault();
     const editId = document.getElementById('res-edit-id').value;
+    const titleInput = document.getElementById('res-title');
+    const titleVal = titleInput ? titleInput.value.trim() : '';
+
+    if (!titleVal) {
+      window.showNotification('Resource Title is required', 'error');
+      if (titleInput) titleInput.focus();
+      return;
+    }
+
     const skills = Array.from(document.querySelectorAll('input[name="res-skills"]:checked')).map(cb => cb.value);
     const objectives = document.getElementById('res-objectives').value.split(',').map(s => s.trim()).filter(Boolean);
     const topics = document.getElementById('res-topic').value.split(',').map(s => s.trim()).filter(Boolean);
+    const rawRoute = document.getElementById('res-route').value.trim();
+    const safeRoute = window.resolveSafeRoute(rawRoute);
 
     const resourceData = {
-      title: document.getElementById('res-title').value.trim(),
+      title: titleVal,
+      type: 'game',
       category: document.getElementById('res-category').value,
       description: document.getElementById('res-description').value.trim(),
       level: document.getElementById('res-level').value,
@@ -1350,7 +1455,7 @@
       grade: document.getElementById('res-grade').value.trim(),
       duration: parseInt(document.getElementById('res-duration').value, 10) || 30,
       topics: topics.length ? topics : ['Classroom English'],
-      route: document.getElementById('res-route').value.trim(),
+      route: safeRoute,
       skills: skills.length ? skills : ['Speaking', 'Vocabulary'],
       objectives: objectives.length ? objectives : ['Communicative practice'],
       worksheet: document.getElementById('res-worksheet').checked ? 'Included' : null,
@@ -1358,13 +1463,57 @@
       featured: document.getElementById('res-featured').checked
     };
 
+    let savedResource = null;
     if (editId) {
-      store.updateResource(editId, resourceData);
+      savedResource = store.updateResource(editId, resourceData);
     } else {
-      store.addResource(resourceData);
+      savedResource = store.addResource(resourceData);
     }
 
     window.closeAllModals();
+    renderCurrentView();
+
+    // Verify Cloud Persistence & Render Feedback
+    const sb = window.AdventureSupabase;
+    if (sb && sb.isConfigured) {
+      try {
+        const res = await sb.saveResource(savedResource);
+        if (res && res.success) {
+          window.showNotification('☁️ Saved to Cloud: ' + titleVal, 'success');
+          if (savedResource) {
+            savedResource.cloudStatus = 'saved';
+            savedResource.cloudSyncedAt = new Date().toISOString();
+            store.saveState();
+          }
+        } else {
+          window.showNotification('❌ Cloud save failed: ' + (res.error || 'Database rejected write'), 'error');
+        }
+      } catch (err) {
+        console.error('[handleSaveResource] Cloud error:', err);
+        window.showNotification('❌ Cloud save failed: ' + err.message, 'error');
+      }
+    } else {
+      window.showNotification('⚠️ Saved locally (Supabase offline / not connected)', 'warning');
+    }
+
+    renderCurrentView();
+  };
+
+  window.handleSyncLocalLibraryToCloud = async function() {
+    window.showNotification('☁️ Syncing Library with Supabase cloud...', 'info');
+    try {
+      const res = await store.syncLocalLibraryToCloud();
+      if (res && res.success) {
+        const msg = `✓ Cloud Sync: ${res.newUploads} uploaded, ${res.alreadyOnline} already online.`;
+        window.showNotification(msg, 'success');
+        if (window.showToast) window.showToast(msg, 'success');
+      } else {
+        const msg = `⚠️ Sync completed with issues: ${res.failed} failed.`;
+        window.showNotification(msg, 'error');
+      }
+    } catch (err) {
+      window.showNotification('❌ Library sync error: ' + err.message, 'error');
+    }
     renderCurrentView();
   };
 
@@ -4121,6 +4270,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<a href="' + (item.pdfUrl || item.route || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
           '<span>📄</span> <span>Open Worksheet</span>' +
         '</a>';
+    } else if (item.type === 'story_adventure' || item.id === 'story-engine-alice' || (item.id && item.id.startsWith('story-engine'))) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || 'story-engine/index.html?story=alice') + '" class="btn-resource-primary" style="background:linear-gradient(135deg, #10b981, #059669); font-weight:800;" title="Play Interactive Adventure: ' + item.title + '">' +
+          '<span>🚀</span> <span>Play Adventure</span>' +
+        '</a>';
     } else if (catLower.includes('story') || catLower.includes('reading')) {
       primaryActionHtml = 
         '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Read ' + item.title + '">' +
@@ -4257,6 +4411,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
             '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
           '</button>' +
+          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
           '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
           '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
           '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
@@ -4264,6 +4419,22 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</button>' +
         '</div>' +
       '</div>' +
+
+      // Manage Mode & Cloud Diagnostics Banner
+      (isLibraryManageMode ? 
+        '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+          '<div>' +
+            '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
+            '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
+              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> · ' +
+              'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
+          '</div>' +
+        '</div>' : '') +
 
       // 2. Prominent Multi-Faceted Controls Bar
       '<div class="library-controls-bar">' +
@@ -6440,8 +6611,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<span style="font-weight:800; font-size:0.84rem; color:#059669; background:rgba(16,185,129,0.1); padding:4px 10px; border-radius:10px;">+' + (task.xpReward || 30) + ' XP</span>' +
                 (task.pdfUrl ?
                   '<a href="' + task.pdfUrl + '" target="_blank" class="btn-primary-action" style="font-size:0.82rem; padding:6px 14px; text-decoration:none;">Open Worksheet 📄</a>' :
-                  (task.gameId ?
-                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + task.gameId + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission 🚀</button>' :
+                  ((task.gameId || task.activityId) ?
+                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + (task.gameId || task.activityId) + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission 🚀</button>' :
                     '<button type="button" class="btn-primary-action" onclick="switchView(\'library\')" style="font-size:0.82rem; padding:6px 14px;">Start Quest 🚀</button>'
                   )
                 ) +
@@ -10646,6 +10817,11 @@ window.switchClassroomSubTab = function(subTab) {
         break;
       case 'instructions':
         container.innerHTML = renderToolkitInstructionsView();
+        break;
+      case 'simon':
+        if (typeof window.renderToolkitSimonView === 'function') {
+          container.innerHTML = window.renderToolkitSimonView();
+        }
         break;
       default:
         container.innerHTML = renderToolkitTimerView();

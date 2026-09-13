@@ -6,6 +6,48 @@
 
 const GAMES_REGISTRY = [
   {
+    id: "story-engine-alice",
+    title: "Alice in Wonderland: The Story Adventure",
+    description: "Full 9-chapter playable children's adventure with invisible adaptive AI learning: follow the White Rabbit, fall down the well, shrink & grow in the Hall of Doors, solve Caterpillar & Cheshire Cat riddles, join the Mad Tea Party, and stand your ground at the Royal Court!",
+    type: "story_adventure",
+    category: "Interactive Stories",
+    categoryLabel: "📖 Interactive Stories",
+    level: "A1–A1+",
+    cefrLevel: "A1–A1+",
+    age: "Ages 7–12",
+    ageGroup: "7-12",
+    grade: "Grades 2–6",
+    grades: ["Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 45,
+    durationText: "40–50 min",
+    estimatedMinutes: 45,
+    xp: 300,
+    skills: ["Reading", "Listening", "Speaking", "Vocabulary", "Exploration", "Problem Solving"],
+    topic: "Alice in Wonderland & Adaptive English Learning",
+    topics: ["Action Verbs", "Spatial Directions", "Size Transformations", "Contextual Dialogue", "Speaking Challenges"],
+    languageFocus: "Target Verbs (follow, fall, drink, eat, paint, stand), Adjectives (small, big, tall, short, clean, late), Questions (Who are you? Which way?)",
+    activityMode: "Playable 2.5D Adventure Game",
+    interactionType: "Real 2D/2.5D Player Movement, NPC Dialogue, Adaptive Hints, In-Game Speaking",
+    difficulty: "Adaptive (Supportive / Standard / Challenging)",
+    tags: ["alice", "wonderland", "adventure", "story", "adaptive", "ai-director", "speaking", "listening", "vocabulary", "cefr-a1"],
+    learningObjectives: [
+      "Follow narrative instructions given by Wonderland characters in authentic contexts",
+      "Demonstrate behavioral comprehension through direct in-world physical actions",
+      "Participate in spoken dialogue moments using character voice and target phrases",
+      "Develop durable vocabulary mastery across multiple story chapters (A1–A1+ CEFR)"
+    ],
+    teacherInstructions: "Assign directly to classes or individual learners. The AI Game Director automatically tracks vocabulary, listening, and speaking competencies without quizzes.",
+    studentInstructions: "Explore Wonderland as Alice! Follow the White Rabbit, solve magical puzzles, and talk with friends along the path!",
+    route: "story-engine/index.html?story=alice",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `<svg viewBox="0 0 400 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="aliceBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="50%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/></linearGradient><linearGradient id="clockGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fef08a"/><stop offset="100%" stop-color="#ca8a04"/></linearGradient></defs><rect width="400" height="220" fill="url(#aliceBg)"/><circle cx="200" cy="100" r="70" fill="#38bdf8" opacity="0.15"/><circle cx="200" cy="100" r="42" fill="url(#clockGold)" stroke="#fef08a" stroke-width="3"/><circle cx="200" cy="100" r="35" fill="#fefce8"/><line x1="200" y1="100" x2="200" y2="76" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/><line x1="200" y1="100" x2="218" y2="108" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/><circle cx="200" cy="54" r="6" stroke="#ca8a04" stroke-width="2.5" fill="none"/><text x="120" y="140" font-size="34">🐇</text><text x="270" y="140" font-size="34">🍄</text><text x="200" y="192" font-family="Plus Jakarta Sans, sans-serif" font-size="15" font-weight="800" fill="#fef08a" text-anchor="middle" letter-spacing="1">ALICE IN WONDERLAND</text><text x="200" y="210" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="0.5">ADAPTIVE AI STORY ADVENTURE • CEFR A1/A1+</text></svg>`
+  },
+  {
     id: "story-engine-forest",
     title: "Interactive Story Adventure: Forest Clearing",
     description: "2.5D playable story adventure foundation: control an explorer character, navigate forest obstacles, talk to the Forest Ranger, solve the Golden Key quest, and unlock the Ancient Gate.",
@@ -45,6 +87,175 @@ const GAMES_REGISTRY = [
     supportsAssignment: true,
     featured: true,
     thumbnailSvg: `<svg viewBox="0 0 400 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="forestTh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/></linearGradient></defs><rect width="400" height="220" fill="url(#forestTh)"/><circle cx="200" cy="110" r="80" fill="#047857" opacity="0.4"/><path d="M 60 170 Q 200 130 340 170" stroke="#78350f" stroke-width="32" stroke-linecap="round" fill="none"/><circle cx="90" cy="80" r="38" fill="#15803d"/><circle cx="310" cy="90" r="42" fill="#166534"/><circle cx="200" cy="90" r="24" fill="#f59e0b" opacity="0.3"/><text x="200" y="100" font-size="34" text-anchor="middle">🗝️</text><text x="200" y="185" font-family="sans-serif" font-size="14" font-weight="800" fill="#fef08a" text-anchor="middle" letter-spacing="1">PLAYABLE ADVENTURE</text></svg>`
+  },
+  {
+    id: "simon-says-classroom",
+    title: "Simon Says: Physical Classroom Game",
+    description: "Teacher-led physical listening and reaction activity for the interactive smartboard. Features massive projector-friendly command displays, valid vs trick logic, procedural audio cues, natural TTS speech pronunciation, and +25 XP champion celebration.",
+    type: "game",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "Pre-A1–A2",
+    cefrLevel: "Pre-A1–A2",
+    age: "Ages 5–12",
+    ageGroup: "5-12",
+    grade: "Grades 1–6",
+    grades: ["Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 20,
+    durationText: "15–20 min",
+    estimatedMinutes: 20,
+    xp: 25,
+    skills: ["Listening", "Physical Response", "Vocabulary", "Focus", "Action Verbs"],
+    topic: "Action Verbs, Body Parts & Imperatives",
+    topics: ["Body Parts", "Action Verbs", "Movement Commands", "Classroom Instructions", "Imperative Grammar"],
+    languageFocus: "Imperatives (Touch, Jump, Turn, Raise, Freeze) & Simon Says Conditional Rules",
+    activityMode: "Classroom / Physical Whole Group",
+    interactionType: "Teacher-Led Smartboard Physical Activity",
+    difficulty: "All Levels (Adaptive Speed)",
+    tags: ["simon-says", "listening", "speaking", "total-physical-response", "tpr", "movement", "smartboard", "projector", "toolkit"],
+    learningObjectives: [
+      "Follow spoken imperative instructions with instant Total Physical Response (TPR)",
+      "Distinguish between valid commands ('Simon says...') and trick commands",
+      "Reinforce vocabulary for body parts, classroom actions, and spatial directions",
+      "Build joyful whole-class listening focus and kinesthetic energy"
+    ],
+    teacherInstructions: "Launch on your interactive whiteboard or projector. Have all students stand up. Tap any student to eliminate them when you observe them moving on a trick or performing the wrong action.",
+    studentInstructions: "Listen carefully! Only do the action if Simon says! If you move without Simon says, you are out!",
+    route: "#simon-says",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="simonCardBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#064e3b"/>
+            <stop offset="100%" stop-color="#022c22"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#simonCardBg)"/>
+        <rect x="20" y="20" width="160" height="100" rx="14" fill="#042f2e" stroke="#10b981" stroke-width="2.5"/>
+        <circle cx="100" cy="55" r="22" fill="#10b981" opacity="0.25"/>
+        <text x="100" y="62" font-size="28" text-anchor="middle">🗣️</text>
+        <rect x="35" y="86" width="130" height="22" rx="11" fill="#059669"/>
+        <text x="100" y="101" font-family="sans-serif" font-weight="900" font-size="11" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">SIMON SAYS 🏆</text>
+      </svg>`
+  },
+  {
+    id: "yesterday-detectives",
+    title: "Yesterday Detectives: The Case of the Missing Memory",
+    description: "Interactive 14-stage mystery adventure teaching the Past Simple (Regular vs Irregular verbs, Questions with Did, Short answers, and Negatives with Didn't). Students investigate clues, inspect evidence, interrogate suspects, catch lies, and create their own case story.",
+    type: "game",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "A1+",
+    cefrLevel: "A1+",
+    age: "Ages 8–12",
+    ageGroup: "8-12",
+    grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 55,
+    durationText: "50–60 min",
+    estimatedMinutes: 55,
+    xp: 150,
+    skills: ["Grammar", "Listening", "Speaking", "Reading", "Vocabulary", "Deduction"],
+    topic: "Past Simple Tense & Mystery Investigation",
+    topics: ["Past Simple", "Regular Verbs (-ED)", "Irregular Verbs", "Questions with Did", "Negatives with Didn't", "Timeline Deductions"],
+    languageFocus: "Past Simple Affirmative (played, went, ate), Questions (Did you go?), Negatives (didn't eat), and Did + base verb rule",
+    activityMode: "Interactive Whole Group / Pair Investigation",
+    interactionType: "Interactive Game-Based Lesson with Team Scoreboard & Evidence System",
+    difficulty: "Scaffolded (A1+ to Hard Mode)",
+    tags: ["past-simple", "detective", "grammar", "mystery", "did", "irregular-verbs", "regular-verbs", "speaking", "listening", "interactive-lesson"],
+    learningObjectives: [
+      "Differentiate and use regular (-ED) and irregular past simple verbs in authentic contexts",
+      "Form affirmative, negative (didn't + base verb), and question (Did + base verb) structures accurately",
+      "Apply past tense knowledge to interrogate suspects, evaluate evidence, and detect factual lies",
+      "Produce a structured 5-event personal narrative containing believable past statements"
+    ],
+    teacherInstructions: "Launch on the smartboard or assign to student teams. Use the teacher control panel to jump between the 14 scaffolded stages and manage team points.",
+    studentInstructions: "Grab your magnifying glass, Detective! Examine clues from yesterday, catch the suspect's lies, and crack the case of the missing memory!",
+    route: "detectives/index.html",
+    worksheet: "detectives/worksheet.html",
+    worksheetRoute: "detectives/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="detThumbBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#1e293b"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#detThumbBg)"/>
+        <rect x="15" y="15" width="170" height="110" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="6,4"/>
+        <circle cx="100" cy="55" r="28" fill="#f59e0b" opacity="0.2"/>
+        <text x="100" y="66" font-size="34" text-anchor="middle">🕵️</text>
+        <rect x="25" y="90" width="150" height="22" rx="11" fill="#f59e0b"/>
+        <text x="100" y="105" font-family="sans-serif" font-weight="900" font-size="10" fill="#000000" text-anchor="middle" letter-spacing="0.5">YESTERDAY DETECTIVES</text>
+      </svg>`
+  },
+  {
+    id: "inventor-lab",
+    title: "Inventor Lab: What Does It Take to Be an Inventor?",
+    description: "Interactive classroom ESL lesson based on Global Readings Unit 1. Students become junior inventors, investigate a mystery room with clickable hotspots, practice See/Think/Wonder, read Clara Doodle's story with evidence highlighting, test inventor mindsets, and engineer their own invention.",
+    type: "game",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "A1+",
+    cefrLevel: "A1+/A2",
+    age: "Ages 8–12",
+    ageGroup: "8-12",
+    grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 50,
+    durationText: "45–50 min",
+    estimatedMinutes: 50,
+    xp: 150,
+    skills: ["Speaking", "Reading", "Vocabulary", "Prediction", "Critical Thinking", "Reasoning"],
+    topic: "Invention, Problem Solving & Clara Doodle",
+    topics: ["Invention Cycle", "See Think Wonder", "Clara Doodle", "Try Again Mindset", "Persistence", "Problem Solving"],
+    languageFocus: "I see..., I think..., Maybe..., I think [X] because [Y], It can [verb], It helps [noun]",
+    activityMode: "Interactive Whole Group / Team Lab",
+    interactionType: "Interactive Smartboard Lesson with Dual-Team Scoreboard & Studio Builder",
+    difficulty: "Scaffolded (A1+ to A2)",
+    tags: ["inventor", "reading", "speaking", "global-readings", "clara-doodle", "see-think-wonder", "problem-solving", "stem"],
+    learningObjectives: [
+      "Distinguish direct observations (I SEE) from inferences (I THINK) and speculations (MAYBE)",
+      "Understand and explain the 5-stage invention cycle (Idea, Plan, Build, Change, Solve)",
+      "Read Clara Doodle's story and locate exact textual evidence to answer questions",
+      "Adopt an inventor's persistence mindset: make changes and always try again",
+      "Design an original invention and present it using structured pitch frames"
+    ],
+    teacherInstructions: "Launch on the smartboard for whole-class engagement. Use the dual-team scoreboard to reward speaking participation. Guide students to discover the core concept: inventors make changes and try again!",
+    studentInstructions: "Welcome to the Inventor Lab! Inspect clues, help Clara Doodle test her inventions, and design your own machine!",
+    route: "inventor-lab/index.html",
+    worksheet: "inventor-lab/worksheet.html",
+    worksheetRoute: "inventor-lab/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="invThumbBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0b1329"/>
+            <stop offset="100%" stop-color="#152754"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#invThumbBg)"/>
+        <rect x="15" y="15" width="170" height="110" rx="12" fill="#132247" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5,3"/>
+        <circle cx="100" cy="55" r="26" fill="#06b6d4" opacity="0.2"/>
+        <text x="100" y="66" font-size="34" text-anchor="middle">💡</text>
+        <rect x="25" y="90" width="150" height="22" rx="11" fill="#f59e0b"/>
+        <text x="100" y="105" font-family="sans-serif" font-weight="900" font-size="10" fill="#0b1329" text-anchor="middle" letter-spacing="0.5">INVENTOR LAB ⚙️</text>
+      </svg>`
   },
   {
     id: "robots",

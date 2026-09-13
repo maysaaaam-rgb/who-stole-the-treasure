@@ -121,6 +121,34 @@ CREATE TABLE IF NOT EXISTS public.attendance_records (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 7. EDUCATIONAL RESOURCES & LIBRARY ITEMS TABLE
+CREATE TABLE IF NOT EXISTS public.resources (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'game',
+    category TEXT NOT NULL DEFAULT 'Classroom Game',
+    description TEXT DEFAULT '',
+    cefr_level TEXT DEFAULT 'A1',
+    target_age TEXT DEFAULT '7–9',
+    grade TEXT DEFAULT 'Grade 3',
+    duration INTEGER DEFAULT 30,
+    topic TEXT DEFAULT '',
+    topics JSONB DEFAULT '[]'::jsonb,
+    route TEXT DEFAULT '',
+    skills JSONB DEFAULT '[]'::jsonb,
+    objectives JSONB DEFAULT '[]'::jsonb,
+    thumbnail TEXT DEFAULT '',
+    worksheet TEXT DEFAULT '',
+    teacher_guide BOOLEAN DEFAULT false,
+    featured BOOLEAN DEFAULT false,
+    archived BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT DEFAULT 'teacher',
+    status TEXT DEFAULT 'active',
+    extra_data JSONB DEFAULT '{}'::jsonb
+);
+
 -- Indices for high performance
 CREATE INDEX IF NOT EXISTS idx_student_number ON public.students (student_id_number);
 CREATE INDEX IF NOT EXISTS idx_student_class ON public.students (class_id);
@@ -129,6 +157,9 @@ CREATE INDEX IF NOT EXISTS idx_teacher_notes_student ON public.teacher_notes (st
 CREATE INDEX IF NOT EXISTS idx_assessment_student ON public.assessment_results (student_id);
 CREATE INDEX IF NOT EXISTS idx_assessment_class ON public.assessment_results (class_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_student ON public.attendance_records (student_id);
+CREATE INDEX IF NOT EXISTS idx_resources_category ON public.resources (category);
+CREATE INDEX IF NOT EXISTS idx_resources_grade ON public.resources (grade);
+CREATE INDEX IF NOT EXISTS idx_resources_featured ON public.resources (featured);
 
 -- Enable Row Level Security (RLS) on all tables
 ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
@@ -137,6 +168,7 @@ ALTER TABLE public.xp_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.teacher_notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assessment_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.resources ENABLE ROW LEVEL SECURITY;
 
 -- Clean existing policies safely
 DO $$
@@ -144,7 +176,7 @@ DECLARE
   t text;
   pol text;
 BEGIN
-  FOR t IN SELECT unnest(ARRAY['classes', 'students', 'xp_transactions', 'teacher_notes', 'assessment_results', 'attendance_records']) LOOP
+  FOR t IN SELECT unnest(ARRAY['classes', 'students', 'xp_transactions', 'teacher_notes', 'assessment_results', 'attendance_records', 'resources']) LOOP
     FOR pol IN SELECT policyname FROM pg_policies WHERE schemaname = 'public' AND tablename = t LOOP
       EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', pol, t);
     END LOOP;
@@ -158,6 +190,7 @@ CREATE POLICY "Allow all access to xp_transactions" ON public.xp_transactions FO
 CREATE POLICY "Allow all access to teacher_notes" ON public.teacher_notes FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all access to assessment_results" ON public.assessment_results FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all access to attendance_records" ON public.attendance_records FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all access to resources" ON public.resources FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- Explicitly grant permissions on all tables to anon, authenticated, and service_role
 GRANT ALL ON TABLE public.classes TO anon, authenticated, service_role;
@@ -166,6 +199,7 @@ GRANT ALL ON TABLE public.xp_transactions TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.teacher_notes TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.assessment_results TO anon, authenticated, service_role;
 GRANT ALL ON TABLE public.attendance_records TO anon, authenticated, service_role;
+GRANT ALL ON TABLE public.resources TO anon, authenticated, service_role;
 
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role;
@@ -175,7 +209,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authen
 DO $$
 BEGIN
   BEGIN
-    ALTER PUBLICATION supabase_realtime ADD TABLE public.classes, public.students, public.xp_transactions, public.teacher_notes, public.assessment_results, public.attendance_records;
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.classes, public.students, public.xp_transactions, public.teacher_notes, public.assessment_results, public.attendance_records, public.resources;
   EXCEPTION WHEN others THEN
     NULL;
   END;

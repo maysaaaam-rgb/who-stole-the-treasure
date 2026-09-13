@@ -1773,6 +1773,10 @@
         <span class="toolkit-icon">🧰</span>
         <span class="toolkit-label">Toolkit</span>
       </button>
+      <button type="button" class="toolkit-item-btn" onclick="openSimonSaysModal()" title="Simon Says Physical Classroom Game" style="font-weight:800; color:#059669;">
+        <span class="toolkit-icon">🗣️</span>
+        <span class="toolkit-label">Simon Says</span>
+      </button>
       <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
         <span class="toolkit-icon">🎲</span>
         <span class="toolkit-label">Random</span>
@@ -2669,6 +2673,7 @@
         <button type="button" id="tab-tool-dice" class="classroom-nav-tab-btn" onclick="switchToolkitTool('dice')">🎲 Dice Roller</button>
         <button type="button" id="tab-tool-spinner" class="classroom-nav-tab-btn" onclick="switchToolkitTool('spinner')">🎡 Spinner Wheel</button>
         <button type="button" id="tab-tool-instructions" class="classroom-nav-tab-btn" onclick="switchToolkitTool('instructions')">📝 Smartboard Note</button>
+        <button type="button" id="tab-tool-simon" class="classroom-nav-tab-btn" onclick="switchToolkitTool('simon')">🗣️ Simon Says</button>
       </div>
 
       <!-- Tool Body Views -->
@@ -2880,7 +2885,8 @@
 
   <!-- Supabase PostgreSQL Client SDK (Authoritative Shared Database) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+  <script src="js/supabase-config.js?v=2.2"></script>
+  <script src="js/supabase-client.js?v=2.2"></script>
 
   <!-- 2. Cloud Persistence & Cross-Device Sync Service (Single Online Cloud DB) -->
   <script src="js/school-cloud-sync.js"></script>
@@ -2892,7 +2898,63 @@
   <script src="js/monster-renderer.js"></script>
   <script src="js/progress-check.js"></script>
   <script src="js/school-app.js"></script>
+  <script src="js/simon-says-game.js"></script>
 
+
+  <!-- Simon Says Dedicated Classroom Projector Modal -->
+  <div class="modal-overlay" id="modal-simon-says">
+    <div class="modal-dialog simon-projector-dialog">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-light); padding-bottom:12px; margin-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.8rem;">🗣️</span>
+          <div>
+            <h2 style="font-size:1.3rem; font-weight:900; margin:0; color:var(--text-main);">Simon Says: Classroom Live</h2>
+            <div style="display:flex; gap:12px; font-size:0.82rem; font-weight:700; color:var(--text-muted); margin-top:2px;">
+              <span>Active: <strong id="simon-stat-active" style="color:#059669;">-</strong></span>
+              <span>Round: <strong id="simon-stat-round" style="color:#2563eb;">-</strong></span>
+              <span>Out: <strong id="simon-stat-out" style="color:#dc2626;">0</strong></span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="display:flex; align-items:center; gap:4px; font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-right:6px; cursor:pointer;" title="Toggle voice pronunciation">
+            <input type="checkbox" id="simon-speech-toggle" checked onchange="window.simonGame.toggleSpeech(this.checked)">
+            <span>🗣️ Speech</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:4px; font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-right:8px; cursor:pointer;" title="Toggle sound effects">
+            <input type="checkbox" id="simon-sfx-toggle" checked onchange="window.simonGame.toggleMuteAudio(!this.checked)">
+            <span>🔔 SFX</span>
+          </label>
+          <button type="button" class="btn-sm-secondary" onclick="window.simonGame.closeModal(); window.openClassroomToolkitModal('simon');" style="font-size:0.82rem; padding:6px 12px;" title="Back to Toolkit">
+            🧰 Toolkit
+          </button>
+          <button class="modal-close-btn" style="position:static; margin-left:4px;" onclick="window.simonGame.closeModal()" title="Close Game">✕</button>
+        </div>
+      </div>
+
+      <!-- Permanent Rules Bar (Visible at all times during game) -->
+      <div class="simon-permanent-rules-bar">
+        <div class="simon-rule-pill valid">
+          <span style="font-size:1.1rem;">🟢</span>
+          <span><strong>“Simon says…”</strong> + action &rarr; <u>DO IT!</u></span>
+        </div>
+        <div class="simon-rule-pill trick">
+          <span style="font-size:1.1rem;">🔴</span>
+          <span><strong>No “Simon says…”</strong> &rarr; <u>DON'T MOVE!</u></span>
+        </div>
+        <div class="simon-rule-pill elim">
+          <span style="font-size:1.1rem;">❌</span>
+          <span><strong>Wrong action / moving on trick</strong> &rarr; <u>OUT!</u></span>
+        </div>
+      </div>
+
+      <!-- Main Simon Says Dynamic Stage Container -->
+      <div id="simon-game-main-container" style="min-height:480px; position:relative;">
+        <!-- Canvas Confetti Overlay for Victory Celebration -->
+        <canvas id="simon-confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;"></canvas>
+      </div>
+    </div>
+  </div>
 
   <!-- Printable Worksheet Preview & Print Modal -->
   <div class="modal-overlay" id="modal-worksheet-preview">

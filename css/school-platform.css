@@ -4748,3 +4748,106 @@ body.classroom-mode-active .classroom-students-grid {
   background: #fee2e2;
 }
 
+/* ==========================================================================
+   SIMON SAYS — PROJECTOR-OPTIMIZED CLASSROOM PHYSICAL GAME STYLES
+   ========================================================================== */
+
+@keyframes simonBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes simonPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.modal-dialog.simon-projector-dialog {
+  max-width: 1040px;
+  width: 96vw;
+  max-height: 94vh;
+  padding: 24px 28px;
+  border-radius: 28px;
+  background: var(--bg-surface, #ffffff);
+  border: 2px solid var(--border-light, #e2e8f0);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Permanent Rules Bar */
+.simon-permanent-rules-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.08) 50%, rgba(239, 68, 68, 0.1) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.25);
+  border-radius: 14px;
+  padding: 8px 18px;
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  flex-wrap: wrap;
+}
+
+.simon-rule-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.simon-rule-pill.valid {
+  color: #065f46;
+}
+
+.simon-rule-pill.trick {
+  color: #991b1b;
+}
+
+.simon-rule-pill.elim {
+  color: #b45309;
+}
+
+/* Student tile interactions */
+.simon-student-tile {
+  background: var(--bg-canvas, #f8fafc);
+  border: 1.5px solid var(--border-light, #e2e8f0);
+  border-radius: 14px;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.simon-student-tile:hover {
+  transform: translateY(-2px);
+  border-color: #ef4444;
+  background: #fef2f2;
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.15);
+}
+
+.simon-student-tile:hover .simon-tile-hover-out {
+  opacity: 1 !important;
+}
+
+.simon-command-card.is-valid {
+  animation: simonCardValidEntry 0.3s ease-out;
+}
+
+.simon-command-card.is-trick {
+  animation: simonCardTrickEntry 0.3s ease-out;
+}
+
+@keyframes simonCardValidEntry {
+  from { transform: scale(0.97); opacity: 0.8; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes simonCardTrickEntry {
+  0% { transform: scale(0.97); }
+  35% { transform: scale(1.02) rotate(-0.5deg); }
+  70% { transform: scale(1.01) rotate(0.5deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+
