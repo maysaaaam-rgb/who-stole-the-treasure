@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Interactive Story Adventure Engine | Adventure Academy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
+  <link rel="stylesheet" href="css/story-engine.css" />
+</head>
+<body>
+
+  <!-- GAME VIEWPORT -->
+  <div id="story-game-viewport">
+    
+    <!-- TOP APP BAR -->
+    <header class="story-top-bar">
+      <div class="story-top-left">
+        <a href="../index.html" class="story-btn-icon" title="Return to Educational Resource Library">
+          <span>📚</span> <span>Library</span>
+        </a>
+        <div class="story-badge-pill">
+          <span style="font-size:1.1rem;">🌲</span>
+          <span id="story-area-name-badge">The Forest Clearing</span>
+        </div>
+      </div>
+
+      <div class="story-top-right">
+        <div class="story-badge-pill" id="story-student-pill">
+          <span style="font-size:1.1rem;">🧑‍🎓</span>
+          <span id="story-student-name">Explorer</span>
+        </div>
+        <button type="button" class="story-btn-icon" id="story-btn-sound" onclick="toggleStorySound()" title="Toggle Audio (M)">
+          <span id="story-sound-icon">🔊</span>
+        </button>
+        <button type="button" class="story-btn-icon" id="story-btn-debug" onclick="window.StoryDebug.toggle()" title="Toggle Developer Diagnostics (~)">
+          <span>⚙️</span> <span>Debug</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN GAME CANVAS -->
+    <canvas id="story-canvas"></canvas>
+
+    <!-- PROXIMITY INTERACTION PROMPT BUBBLE -->
+    <div id="story-interaction-bubble" class="story-interaction-bubble" style="display: none;">
+      <div class="story-interaction-bubble-inner">
+        <span class="prompt-key-badge">E</span>
+        <span id="story-prompt-text">Interact</span>
+      </div>
+      <div class="prompt-arrow-down"></div>
+    </div>
+
+    <!-- QUEST TRACKER HUD -->
+    <aside id="story-quest-tracker" class="story-quest-tracker">
+      <div class="quest-tracker-header">
+        <span class="quest-header-title">📜 Active Quest</span>
+        <span id="story-quest-xp-reward" style="font-size: 0.72rem; color: #fef08a; font-weight: 800;">⭐ 50 XP</span>
+      </div>
+      <h3 id="story-quest-title" class="quest-title-text">No active quest</h3>
+      <ul id="story-quest-objectives" class="quest-objectives-list">
+        <li class="quest-obj-item">
+          <span class="quest-obj-checkbox"></span>
+          <span>Talk to the Forest Ranger</span>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- INVENTORY TRAY HUD -->
+    <div id="story-inventory-tray" class="story-inventory-tray">
+      <div class="inventory-slot" id="inv-slot-0" title="Slot 1"></div>
+      <div class="inventory-slot" id="inv-slot-1" title="Slot 2"></div>
+      <div class="inventory-slot" id="inv-slot-2" title="Slot 3"></div>
+      <div class="inventory-slot" id="inv-slot-3" title="Slot 4"></div>
+    </div>
+
+    <!-- DIALOGUE BUBBLE BOX -->
+    <div id="story-dialogue-container" class="story-dialogue-container">
+      <div class="story-dialogue-speaker-tag">🗣️ Guide</div>
+      <div class="story-dialogue-text">...</div>
+      <div class="story-dialogue-footer">
+        <span class="story-dialogue-hint">Press [E] or Space to continue</span>
+        <button type="button" class="story-dialogue-action-btn">Next ↵</button>
+      </div>
+    </div>
+
+    <!-- MOBILE / TOUCH CONTROLS -->
+    <div id="story-touch-controls" class="story-touch-controls">
+      <div class="story-virtual-joystick" id="story-virtual-joystick">
+        <div class="joystick-thumb" id="joystick-thumb"></div>
+      </div>
+      <button type="button" class="story-touch-action-btn" id="story-touch-action-btn">
+        <span>A</span>
+      </button>
+    </div>
+
+    <!-- DEVELOPER DEBUG OVERLAY -->
+    <div id="story-debug-overlay" class="story-debug-overlay">
+      <div class="debug-title">
+        <span>ENGINE DIAGNOSTICS</span>
+        <span style="cursor:pointer;" onclick="window.StoryDebug.toggle()">✕</span>
+      </div>
+      <div class="debug-row"><span>FPS:</span> <span id="debug-val-fps">60</span></div>
+      <div class="debug-row"><span>Player:</span> <span id="debug-val-player-pos">(0, 0)</span></div>
+      <div class="debug-row"><span>Camera:</span> <span id="debug-val-cam-pos">(0, 0)</span></div>
+      <div class="debug-row"><span>Quest:</span> <span id="debug-val-quest">None</span></div>
+      <div class="debug-row"><span>Inventory:</span> <span id="debug-val-inventory">Empty</span></div>
+      <div class="debug-actions">
+        <button type="button" class="debug-btn" id="debug-toggle-hitboxes">Hitboxes: OFF</button>
+        <button type="button" class="debug-btn" id="debug-teleport-key">Go to Key</button>
+        <button type="button" class="debug-btn" id="debug-teleport-gate">Go to Gate</button>
+      </div>
+      <div style="margin-top: 6px;">
+        <button type="button" class="debug-btn" id="debug-reset-progress" style="width: 100%; color: #f87171;">Reset Progress</button>
+      </div>
+    </div>
+
+    <!-- CINEMATIC TRANSITION FADE OVERLAY -->
+    <div id="story-fade-overlay" class="story-fade-overlay"></div>
+
+  </div>
+
+  <!-- PLATFORM SCRIPTS -->
+  <script src="../js/audio.js"></script>
+  <script src="../js/school-cloud-sync.js"></script>
+  <script src="../js/school-store.js"></script>
+
+  <!-- STORY ENGINE SCRIPTS -->
+  <script src="js/engine-core.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/quest-dialogue.js"></script>
+  <script src="js/story-bridge.js"></script>
+  <script src="js/debug.js"></script>
+  <script src="js/test-world-data.js"></script>
+
+  <!-- ENGINE BOOTSTRAPPER -->
+  <script>
+    (function() {
+      'use strict';
+
+      // 1. Initialize Canvas & Viewport
+      const canvas = document.getElementById('story-canvas');
+      const input = new StoryEngineCore.InputManager(canvas);
+      const camera = new StoryEngineCore.Camera2D(window.innerWidth, window.innerHeight);
+      const renderer = new StoryEngineCore.Renderer2D(canvas);
+
+      // 2. Systems: EventBus, Inventory, Quest, Dialogue, Learning
+      const events = new StorySystems.EventBus();
+      const inventory = new StorySystems.InventorySystem();
+      const quests = new StorySystems.QuestSystem(events);
+      const dialogue = new StorySystems.DialogueSystem();
+      const learning = new StorySystems.LearningEventBus(events);
+
+      dialogue.init(document.getElementById('story-dialogue-container'));
+      window.StoryDialogue = dialogue;
+
+      // 3. Create Player Entity
+      const student = StoryBridge.getActiveStudent();
+      const player = new StoryEntities.Player({
+        name: student ? (student.firstName || student.name) : 'Explorer',
+        x: 180,
+        y: 500
+      });
+
+      // 4. Build Test World Data
+      const testData = StoryTestData.createTestWorld();
+      const world = testData.world;
+      world.setPlayer(player);
+
+      // Register Quests & Dialogues
+      for (const q of testData.quests) {
+        quests.registerQuest(q);
+      }
+      for (const [key, tree] of Object.entries(testData.dialogues)) {
+        dialogue.registerDialogue(key, tree);
+      }
+
+      // 5. Global StoryGame Reference
+      window.StoryGame = {
+        canvas,
+        input,
+        camera,
+        renderer,
+        events,
+        inventory,
+        quests,
+        dialogue,
+        learning,
+        player,
+        world,
+        debug: window.StoryDebug
+      };
+
+      // 6. Connect Debug Overlay
+      window.StoryDebug.init(document.getElementById('story-debug-overlay'));
+
+      // 7. Connect Scene Transition Handler
+      world.onTransition = function(targetAreaId, targetSpawn) {
+        const fade = document.getElementById('story-fade-overlay');
+        if (fade) fade.classList.add('is-faded');
+
+        // Play portal chime
+        StoryBridge.playSound('clue');
+
+        setTimeout(() => {
+          world.loadArea(targetAreaId, targetSpawn);
+          const areaBadge = document.getElementById('story-area-name-badge');
+          if (areaBadge && world.activeArea) {
+            areaBadge.textContent = world.activeArea.name;
+          }
+
+          setTimeout(() => {
+            if (fade) fade.classList.remove('is-faded');
+          }, 150);
+        }, 350);
+      };
+
+      // Load initial area
+      world.loadArea('forest_clearing', 'default', true);
+
+      // 8. Connect Reactive HUD Updates
+      // Quest HUD Subscription
+      quests.subscribe((activeQuest) => {
+        const titleEl = document.getElementById('story-quest-title');
+        const listEl = document.getElementById('story-quest-objectives');
+        const xpEl = document.getElementById('story-quest-xp-reward');
+        if (!titleEl || !listEl) return;
+
+        if (!activeQuest) {
+          titleEl.textContent = 'Explore the Forest';
+          listEl.innerHTML = '<li class="quest-obj-item is-active"><span class="quest-obj-checkbox"></span> <span>Talk to the Forest Ranger</span></li>';
+          if (xpEl) xpEl.textContent = '⭐ 50 XP';
+        } else {
+          titleEl.textContent = activeQuest.title;
+          if (xpEl) xpEl.textContent = `⭐ ${activeQuest.rewardXP} XP`;
+          listEl.innerHTML = activeQuest.objectives.map(o => `
+            <li class="quest-obj-item ${o.isCompleted ? 'is-completed' : 'is-active'}">
+              <span class="quest-obj-checkbox">${o.isCompleted ? '✓' : ''}</span>
+              <span>${o.text}</span>
+            </li>
+          `).join('');
+        }
+      });
+
+      // Inventory HUD Subscription
+      inventory.subscribe((items) => {
+        for (let i = 0; i < 4; i++) {
+          const slot = document.getElementById(`inv-slot-${i}`);
+          if (!slot) continue;
+          if (i < items.length) {
+            const item = items[i];
+            slot.classList.add('has-item');
+            slot.innerHTML = `<span>${item.icon}</span><span class="inventory-item-count">${item.count}</span>`;
+            slot.title = `${item.name}: ${item.description}`;
+          } else {
+            slot.classList.remove('has-item');
+            slot.innerHTML = '';
+            slot.title = `Slot ${i + 1}`;
+          }
+        }
+      });
+
+      // Set Student Pill Name
+      const nameEl = document.getElementById('story-student-name');
+      if (nameEl && student) {
+        nameEl.textContent = student.firstName || student.name || 'Explorer';
+      }
+
+      // 9. Resize Handler
+      function handleResize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        renderer.resize(w, h);
+        camera.resize(w, h);
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      // 10. Touch Joystick Setup for Tablets / Phones
+      const joystickEl = document.getElementById('story-virtual-joystick');
+      const thumbEl = document.getElementById('joystick-thumb');
+      const touchControlsEl = document.getElementById('story-touch-controls');
+      const actionBtn = document.getElementById('story-touch-action-btn');
+
+      if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        touchControlsEl.classList.add('is-touch-device');
+
+        let touchOrigin = null;
+
+        joystickEl.addEventListener('touchstart', (e) => {
+          const t = e.touches[0];
+          touchOrigin = { x: t.clientX, y: t.clientY };
+        }, { passive: false });
+
+        joystickEl.addEventListener('touchmove', (e) => {
+          if (!touchOrigin) return;
+          e.preventDefault();
+          const t = e.touches[0];
+          const dx = t.clientX - touchOrigin.x;
+          const dy = t.clientY - touchOrigin.y;
+          const dist = Math.hypot(dx, dy);
+          const maxRadius = 38;
+
+          const clampedX = dist > maxRadius ? (dx / dist) * maxRadius : dx;
+          const clampedY = dist > maxRadius ? (dy / dist) * maxRadius : dy;
+
+          thumbEl.style.transform = `translate(calc(-50% + ${clampedX}px), calc(-50% + ${clampedY}px))`;
+          input.setVirtualAxis(clampedX / maxRadius, clampedY / maxRadius);
+        }, { passive: false });
+
+        const endTouch = () => {
+          touchOrigin = null;
+          thumbEl.style.transform = 'translate(-50%, -50%)';
+          input.setVirtualAxis(0, 0);
+        };
+        joystickEl.addEventListener('touchend', endTouch);
+        joystickEl.addEventListener('touchcancel', endTouch);
+
+        if (actionBtn) {
+          actionBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            input.triggerInteract();
+          });
+        }
+      }
+
+      // 11. Interaction Bubble Position Updater
+      const promptBubble = document.getElementById('story-interaction-bubble');
+      const promptText = document.getElementById('story-prompt-text');
+
+      // 12. Core Game Loop
+      const loop = new StoryEngineCore.GameLoop(
+        // Update Physics & World
+        function(dt) {
+          world.update(dt, input);
+          camera.follow(player.x + player.width / 2, player.y + player.height / 2);
+          camera.update(dt);
+          renderer.updateParticles(dt);
+
+          // Update Proximity Interaction Bubble
+          if (world.activeInteractable && !dialogue.isOpen) {
+            const ent = world.activeInteractable;
+            const screenPos = camera.worldToScreen(ent.x + ent.width / 2, ent.y);
+            promptBubble.style.left = `${Math.round(screenPos.x)}px`;
+            promptBubble.style.top = `${Math.round(screenPos.y - 12)}px`;
+            promptText.textContent = ent.interactionPrompt || 'Interact';
+            promptBubble.style.display = 'flex';
+          } else {
+            promptBubble.style.display = 'none';
+          }
+
+          // Debug overlay
+          window.StoryDebug.update(loop.fps, player, camera, quests, inventory);
+
+          input.clearPerFrameInputs();
+        },
+        // Render Frame
+        function(delta) {
+          renderer.render(world, camera, input);
+        }
+      );
+
+      loop.start();
+
+      // Audio Toggle Function
+      window.toggleStorySound = function() {
+        const icon = document.getElementById('story-sound-icon');
+        const se = window.soundEngine;
+        if (se) {
+          se.soundEnabled = !se.soundEnabled;
+          if (icon) icon.textContent = se.soundEnabled ? '🔊' : '🔇';
+        }
+      };
+
+    })();
+  </script>
+</body>
+</html>
