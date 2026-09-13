@@ -18,7 +18,7 @@
   const STORAGE_KEY = 'eaa_master_school_v6';
 
   // Canonical list of audited games
-  const CANONICAL_GAMES = [
+  const RAW_CANONICAL_GAMES = [
     {
       id: "robots",
       title: "Amazing Robots Around the World",
@@ -383,6 +383,10 @@
       description: "Interplanetary journey comparing planet sizes, distances, and atmosphere."
     }
   ];
+
+  const CANONICAL_GAMES = (typeof root !== 'undefined' && Array.isArray(root.GAMES_REGISTRY) && root.GAMES_REGISTRY.length > 0)
+    ? root.GAMES_REGISTRY.filter(g => !g.id.startsWith('res-global'))
+    : RAW_CANONICAL_GAMES;
 
   // =========================================================================
   // GLOBAL READINGS 2 — LEVEL 2 STUDENT'S BOOK (MACMILLAN EDUCATION)
@@ -7496,6 +7500,152 @@
           answerKey: '1. saw; 2. found; 3. True',
           description: 'Grammar analysis matching witness statements with suspects.',
           archived: false
+        },
+        {
+          id: 'ws-robots',
+          title: 'Amazing Robots: WH-Questions & Scientific Dossier',
+          level: 'A1–A2',
+          cefrLevel: 'A1–A2',
+          grade: 'Grade 4',
+          grades: ['Grade 4', 'Grade 5'],
+          skill: 'Reading & Writing',
+          skills: ['Reading', 'Writing', 'Grammar', 'Science'],
+          topic: 'WH-Questions & Robotics',
+          topics: ['WH-Questions', 'Robotics', 'Science Dossier'],
+          duration: '30 min',
+          estimatedMinutes: 30,
+          xp: 45,
+          status: 'Ready to Print',
+          createdDate: '2026-09-05',
+          instructions: 'Read the robot files, write the correct WH-question words (What, Where, When, Who, Why, How), and label the robot features.',
+          questions: [
+            { id: 'q-1', text: 'Which WH-question asks for a place or location?', type: 'multiple_choice', options: ['What', 'Where', 'When', 'Who'], answer: 'Where', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "_____ made this rescue robot?"', type: 'fill_blank', options: [], answer: 'Who', points: 1 },
+            { id: 'q-3', text: 'True or False: A biomimetic robot copies movements found in real animals.', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
+          category: 'Speaking & STEM',
+          gameId: 'robots',
+          pdfUrl: 'robots/worksheet.html',
+          worksheetRoute: 'robots/worksheet.html',
+          answerKey: '1. Where; 2. Who; 3. True',
+          description: 'WH-question formation drills and scientific dossier comprehension.',
+          archived: false
+        },
+        {
+          id: 'ws-feelings',
+          title: 'How Would You Feel? Situational Reactions Worksheet',
+          level: 'A1+',
+          cefrLevel: 'A1+',
+          grade: 'Grade 3',
+          grades: ['Grade 2', 'Grade 3', 'Grade 4'],
+          skill: 'Speaking & Vocabulary',
+          skills: ['Speaking', 'Vocabulary', 'Listening'],
+          topic: 'Feelings & Emotions',
+          topics: ['Feelings', 'Emotions', 'Situational Reactions'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-06',
+          instructions: 'Read each dilemma situation, circle the emotion face that matches how you would feel, and write your action sentence.',
+          questions: [
+            { id: 'q-1', text: 'If you lost your favorite toy at the playground, how would you feel?', type: 'multiple_choice', options: ['Excited', 'Upset', 'Proud', 'Sleepy'], answer: 'Upset', points: 1 },
+            { id: 'q-2', text: 'Complete the sentence: "I would feel happy because _____."', type: 'short_answer', options: [], answer: 'I won the game / I helped my friend', points: 2 }
+          ],
+          category: 'Speaking & SEL',
+          gameId: 'feelings',
+          pdfUrl: 'feelings/worksheet.html',
+          worksheetRoute: 'feelings/worksheet.html',
+          answerKey: '1. Upset; 2. (Student emotional rationale)',
+          description: 'Dilemma analysis and emotional response justification practice.',
+          archived: false
+        },
+        {
+          id: 'ws-advice',
+          title: 'The Crazy Advice Academy: Modal Verbs Worksheet',
+          level: 'A2',
+          cefrLevel: 'A2',
+          grade: 'Grade 4',
+          grades: ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
+          skill: 'Grammar & Writing',
+          skills: ['Grammar', 'Writing', 'Speaking'],
+          topic: 'Modal Verbs Should & Shouldn\'t',
+          topics: ['Modal Verbs', 'Advice', 'Problem Solving'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-07',
+          instructions: 'Read the funny everyday problems. Write advice using "You should..." or "You shouldn\'t...".',
+          questions: [
+            { id: 'q-1', text: 'Your friend has a test tomorrow. What advice should you give?', type: 'multiple_choice', options: ['You should play games all night', 'You should study and sleep early', 'You shouldn\'t open your book'], answer: 'You should study and sleep early', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "You _____ eat too much candy before dinner."', type: 'fill_blank', options: [], answer: 'shouldn\'t', points: 1 }
+          ],
+          category: 'Grammar Challenges',
+          gameId: 'advice',
+          pdfUrl: 'advice/worksheets.html',
+          worksheetRoute: 'advice/worksheets.html',
+          answerKey: '1. You should study and sleep early; 2. shouldn\'t',
+          description: 'Formulating affirmative and negative advice using modal verbs.',
+          archived: false
+        },
+        {
+          id: 'ws-predictions',
+          title: 'What Will Happen Next? Predictions with WILL & WON\'T',
+          level: 'A2',
+          cefrLevel: 'A2',
+          grade: 'Grade 4',
+          grades: ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
+          skill: 'Grammar & Reading',
+          skills: ['Grammar', 'Reading', 'Writing'],
+          topic: 'Future Predictions with Will & Won\'t',
+          topics: ['Future Tense', 'Predictions', 'Comic Cliffhangers'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-08',
+          instructions: 'Look at the comic cliffhanger pictures. Write your prediction using "will" or "won\'t".',
+          questions: [
+            { id: 'q-1', text: 'Look at the dark clouds! Complete: "It _____ rain very soon."', type: 'multiple_choice', options: ['will', 'won\'t', 'is', 'was'], answer: 'will', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "He _____ drop the ice cream because he is holding it tightly."', type: 'fill_blank', options: [], answer: 'won\'t', points: 1 }
+          ],
+          category: 'Grammar Challenges',
+          gameId: 'predictions',
+          pdfUrl: 'predictions/worksheets.html',
+          worksheetRoute: 'predictions/worksheets.html',
+          answerKey: '1. will; 2. won\'t',
+          description: 'Practicing future tense predictions and negative statements with will/won\'t.',
+          archived: false
+        },
+        {
+          id: 'ws-city-mouse',
+          title: 'The City Mouse & Country Mouse: Fable & Comparatives',
+          level: 'A1',
+          cefrLevel: 'A1',
+          grade: 'Grade 2-3',
+          grades: ['Grade 2', 'Grade 3'],
+          skill: 'Reading & Vocabulary',
+          skills: ['Reading', 'Vocabulary', 'Grammar'],
+          topic: 'City vs Country & Comparatives',
+          topics: ['Town vs Country', 'Comparatives', 'Fables'],
+          duration: '20 min',
+          estimatedMinutes: 20,
+          xp: 35,
+          status: 'Ready to Print',
+          createdDate: '2026-09-09',
+          instructions: 'Read the fable sentences, match the city and country vocabulary, and circle the comparative adjectives.',
+          questions: [
+            { id: 'q-1', text: 'Which adjective compares two things?', type: 'multiple_choice', options: ['Quiet', 'Quieter', 'Quietly'], answer: 'Quieter', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "The city buildings are _____ (tall) than the country barn."', type: 'fill_blank', options: [], answer: 'taller', points: 1 }
+          ],
+          category: 'Interactive Stories',
+          gameId: 'city-mouse',
+          pdfUrl: 'city-mouse/worksheet.html',
+          worksheetRoute: 'city-mouse/worksheet.html',
+          answerKey: '1. Quieter; 2. taller',
+          description: 'Reading comprehension and comparative adjective practice based on Aesop\'s fable.',
+          archived: false
         }
       ],
 
@@ -7794,7 +7944,44 @@
               merged.studentAwards = [];
             }
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
-            if (!merged.worksheets) merged.worksheets = initial.worksheets || [];
+            
+            // Synchronize canonical resources (ensure all 21 games & textbooks are available)
+            if (!merged.resources || !merged.resources.length) {
+              merged.resources = JSON.parse(JSON.stringify(initial.resources || []));
+            } else {
+              const existingResMap = new Map(merged.resources.map(r => [r.id, r]));
+              (initial.resources || []).forEach(refRes => {
+                if (!existingResMap.has(refRes.id)) {
+                  merged.resources.push(JSON.parse(JSON.stringify(refRes)));
+                } else {
+                  const existing = existingResMap.get(refRes.id);
+                  ['type', 'cefrLevel', 'grades', 'languageFocus', 'topics', 'activityMode', 'interactionType', 'difficulty', 'estimatedMinutes', 'xp', 'tags', 'learningObjectives', 'teacherInstructions', 'studentInstructions', 'worksheetRoute', 'supportsAssignment', 'supportsProgress'].forEach(f => {
+                    if (refRes[f] !== undefined && (existing[f] === undefined || existing[f] === null || f === 'learningObjectives' || f === 'worksheetRoute' || f === 'xp')) {
+                      existing[f] = refRes[f];
+                    }
+                  });
+                }
+              });
+            }
+
+            // Synchronize canonical worksheets (ensure all 10 worksheets are available)
+            if (!merged.worksheets || !merged.worksheets.length) {
+              merged.worksheets = JSON.parse(JSON.stringify(initial.worksheets || []));
+            } else {
+              const existingWsMap = new Map(merged.worksheets.map(w => [w.id, w]));
+              (initial.worksheets || []).forEach(refWs => {
+                if (!existingWsMap.has(refWs.id)) {
+                  merged.worksheets.push(JSON.parse(JSON.stringify(refWs)));
+                } else {
+                  const existing = existingWsMap.get(refWs.id);
+                  ['cefrLevel', 'grades', 'estimatedMinutes', 'xp', 'skills', 'topics', 'worksheetRoute', 'pdfUrl'].forEach(f => {
+                    if (refWs[f] !== undefined && existing[f] === undefined) {
+                      existing[f] = refWs[f];
+                    }
+                  });
+                }
+              });
+            }
             if (!merged.rubrics) merged.rubrics = initial.rubrics || [];
             if (!merged.badges) merged.badges = initial.badges || [];
             if (!merged.achievements) merged.achievements = initial.achievements || [];
@@ -9435,6 +9622,133 @@
         return true;
       }
       return false;
+    }
+
+    toggleFavoriteResource(id) {
+      let item = this.getResource(id);
+      let isWs = false;
+      if (!item) {
+        item = this.getWorksheet ? this.getWorksheet(id) : null;
+        isWs = true;
+      }
+      if (item) {
+        item.featured = !item.featured;
+        this.saveState();
+        if (isWs && this.notify) this.notify('worksheets', this.state.worksheets);
+        else if (this.notify) this.notify('resources', this.state.resources);
+        return item;
+      }
+      return null;
+    }
+
+    isFavorite(id) {
+      const item = this.getResource(id) || (this.getWorksheet ? this.getWorksheet(id) : null);
+      return Boolean(item && item.featured);
+    }
+
+    getStandardizedResources(includeArchived = false) {
+      const games = (this.getResources(includeArchived) || []).map(r => ({
+        ...r,
+        isWorksheet: false,
+        type: r.type || (r.category && r.category.toLowerCase().includes('story') ? 'story' : (r.category && r.category.toLowerCase().includes('textbook') ? 'textbook' : (r.category && r.category.toLowerCase().includes('roleplay') ? 'roleplay' : 'game'))),
+        cefrLevel: r.cefrLevel || r.level || 'A1',
+        grades: r.grades || (r.grade ? [r.grade] : ['Grade 3']),
+        estimatedMinutes: r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || 30,
+        xp: r.xp || 50,
+        worksheetRoute: r.worksheetRoute || r.worksheet || null,
+        learningObjectives: r.learningObjectives || r.objectives || []
+      }));
+
+      const worksheets = (this.getWorksheets ? this.getWorksheets(includeArchived) : []).map(w => ({
+        ...w,
+        isWorksheet: true,
+        type: 'worksheet',
+        cefrLevel: w.cefrLevel || w.level || 'A1',
+        grades: w.grades || (w.grade ? [w.grade] : ['Grade 3']),
+        estimatedMinutes: w.estimatedMinutes || (typeof w.duration === 'number' ? w.duration : parseInt(w.duration, 10)) || 25,
+        xp: w.xp || 40,
+        route: w.pdfUrl || w.route || '#',
+        worksheetRoute: w.pdfUrl || w.route || null,
+        skills: w.skills || (w.skill ? [w.skill] : ['Writing']),
+        topics: w.topics || (w.topic ? [w.topic] : ['Worksheet Practice']),
+        learningObjectives: w.learningObjectives || w.objectives || [w.instructions || 'Complete classroom worksheet activities']
+      }));
+
+      return games.concat(worksheets);
+    }
+
+    filterResources(criteria = {}) {
+      let items = this.getStandardizedResources(false);
+      const { search, type, cefrLevel, grade, skill, topic, duration, favoritesOnly } = criteria;
+
+      if (favoritesOnly) {
+        items = items.filter(r => Boolean(r.featured));
+      }
+
+      if (type && type !== 'all') {
+        items = items.filter(r => {
+          if (type === 'game') return !r.isWorksheet && r.type !== 'story' && r.type !== 'textbook' && r.type !== 'roleplay';
+          if (type === 'worksheet') return r.isWorksheet;
+          if (type === 'story') return (r.type === 'story' || (r.category || '').toLowerCase().includes('story'));
+          if (type === 'roleplay') return (r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
+          if (type === 'textbook') return (r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook'));
+          return r.type === type;
+        });
+      }
+
+      if (cefrLevel && cefrLevel !== 'all') {
+        const lvl = cefrLevel.toLowerCase();
+        items = items.filter(r => (r.cefrLevel || r.level || '').toLowerCase().includes(lvl));
+      }
+
+      if (grade && grade !== 'all') {
+        items = items.filter(r => {
+          if (Array.isArray(r.grades)) return r.grades.some(g => g.toLowerCase().includes(grade.toLowerCase()));
+          return (r.grade || '').toLowerCase().includes(grade.toLowerCase());
+        });
+      }
+
+      if (skill && skill !== 'all') {
+        const sk = skill.toLowerCase();
+        items = items.filter(r => {
+          if (Array.isArray(r.skills)) return r.skills.some(s => s.toLowerCase().includes(sk));
+          return (r.skill || '').toLowerCase().includes(sk);
+        });
+      }
+
+      if (topic && topic !== 'all') {
+        const tp = topic.toLowerCase();
+        items = items.filter(r => {
+          if (Array.isArray(r.topics)) return r.topics.some(t => t.toLowerCase() === tp);
+          return (r.topic || '').toLowerCase() === tp;
+        });
+      }
+
+      if (duration && duration !== 'all') {
+        items = items.filter(r => {
+          const mins = r.estimatedMinutes || 30;
+          if (duration === 'short') return mins < 25;
+          if (duration === 'medium') return mins >= 25 && mins <= 40;
+          if (duration === 'long') return mins > 40;
+          return true;
+        });
+      }
+
+      if (search && search.trim()) {
+        const q = search.toLowerCase().trim();
+        items = items.filter(r => {
+          const inTitle = (r.title || '').toLowerCase().includes(q);
+          const inDesc = (r.description || '').toLowerCase().includes(q);
+          const inLang = (r.languageFocus || '').toLowerCase().includes(q);
+          const inTags = Array.isArray(r.tags) && r.tags.some(t => t.toLowerCase().includes(q));
+          const inSkills = Array.isArray(r.skills) && r.skills.some(s => s.toLowerCase().includes(q));
+          const inTopics = Array.isArray(r.topics) && r.topics.some(t => t.toLowerCase().includes(q));
+          const inObjs = Array.isArray(r.learningObjectives) && r.learningObjectives.some(o => o.toLowerCase().includes(q));
+          return inTitle || inDesc || inLang || inTags || inSkills || inTopics || inObjs;
+        });
+      }
+
+      return items;
     }
 
     // =========================================================================

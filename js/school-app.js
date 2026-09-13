@@ -77,9 +77,11 @@
   let libFilterSkill = 'all';
   let libFilterTopic = 'all';
   let libFilterCategory = 'all';
+  let libFilterGrade = 'all';
   let libFilterDuration = 'all';
-  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'stories' | 'roleplays' | 'featured'
-  let libSortOrder = 'default'; // 'default' | 'title-asc' | 'title-desc' | 'level' | 'duration'
+  let libFilterFavoritesOnly = false;
+  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'stories' | 'roleplays' | 'textbooks' | 'favorites'
+  let libSortOrder = 'default'; // 'default' | 'title-asc' | 'title-desc' | 'level' | 'duration' | 'xp'
   let navSectionsCollapsed = {};
   try {
     const savedNav = localStorage.getItem('eaa-nav-sections-collapsed');
@@ -3766,21 +3768,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets'
 
   function getFilteredResources() {
-    const games = (store.getResources() || []).filter(r => !r.archived).map(r => ({ ...r, isWorksheet: false }));
-    const worksheets = (store.getWorksheets() || []).filter(w => !w.archived).map(w => ({ ...w, isWorksheet: true }));
-    let all = games.concat(worksheets);
+    let all = store.getStandardizedResources ? store.getStandardizedResources(false) : [];
+    if (!all || all.length === 0) {
+      const games = (store.getResources() || []).filter(r => !r.archived).map(r => ({ ...r, isWorksheet: false }));
+      const worksheets = (store.getWorksheets() || []).filter(w => !w.archived).map(w => ({ ...w, isWorksheet: true }));
+      all = games.concat(worksheets);
+    }
+
+    // Favorites Only Toggle
+    if (libFilterFavoritesOnly) {
+      all = all.filter(r => Boolean(r.featured));
+    }
 
     // Tab filter
     if (libActiveTab === 'games') {
-      all = all.filter(r => !r.isWorksheet);
+      all = all.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story');
     } else if (libActiveTab === 'worksheets') {
       all = all.filter(r => r.isWorksheet);
     } else if (libActiveTab === 'stories') {
-      all = all.filter(r => (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+      all = all.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
     } else if (libActiveTab === 'roleplays') {
-      all = all.filter(r => (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
-    } else if (libActiveTab === 'featured') {
-      all = all.filter(r => r.featured === true);
+      all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
+    } else if (libActiveTab === 'textbooks') {
+      all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook') || (r.category || '').toLowerCase().includes('curriculum'));
+    } else if (libActiveTab === 'favorites' || libActiveTab === 'featured') {
+      all = all.filter(r => Boolean(r.featured));
     }
 
     // Search query
@@ -3790,11 +3802,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         const inTitle = (item.title || '').toLowerCase().includes(q);
         const inDesc = (item.description || '').toLowerCase().includes(q);
         const inCategory = (item.category || '').toLowerCase().includes(q);
-        const inLevel = (item.level || '').toLowerCase().includes(q);
+        const inLevel = (item.cefrLevel || item.level || '').toLowerCase().includes(q);
+        const inLang = (item.languageFocus || '').toLowerCase().includes(q);
         const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase().includes(q)) : (item.topic || '').toLowerCase().includes(q);
-        const inObjectives = Array.isArray(item.objectives) ? item.objectives.some(o => o.toLowerCase().includes(q)) : false;
+        const inObjectives = Array.isArray(item.learningObjectives) ? item.learningObjectives.some(o => o.toLowerCase().includes(q)) : (Array.isArray(item.objectives) ? item.objectives.some(o => o.toLowerCase().includes(q)) : false);
         const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(q)) : (item.skill || '').toLowerCase().includes(q);
-        return inTitle || inDesc || inCategory || inLevel || inTopics || inObjectives || inSkills;
+        const inTags = Array.isArray(item.tags) ? item.tags.some(t => t.toLowerCase().includes(q)) : false;
+        return inTitle || inDesc || inCategory || inLevel || inLang || inTopics || inObjectives || inSkills || inTags;
       });
     }
 
@@ -3802,11 +3816,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (libFilterLevel !== 'all') {
       const lvl = libFilterLevel.toLowerCase();
       all = all.filter(item => {
-        const itemLvl = (item.level || '').toLowerCase();
+        const itemLvl = (item.cefrLevel || item.level || '').toLowerCase();
         if (lvl === 'pre-a1') return itemLvl.includes('pre-a1');
         if (lvl === 'a1') return itemLvl.includes('a1') && !itemLvl.includes('pre-a1');
-        if (lvl === 'a1+') return itemLvl.includes('a1+') || itemLvl.includes('a1/a1+');
-        if (lvl === 'a2') return itemLvl.includes('a2');
+        if (lvl === 'a1+') return itemLvl.includes('a1+') || itemLvl.includes('a1/a1+') || itemLvl.includes('level 2');
+        if (lvl === 'a2') return itemLvl.includes('a2') || itemLvl.includes('level 3');
         if (lvl === 'b1') return itemLvl.includes('b1');
         return itemLvl.includes(lvl);
       });
@@ -3815,18 +3829,29 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Type filter
     if (libFilterType !== 'all') {
       if (libFilterType === 'game') {
-        all = all.filter(r => !r.isWorksheet);
+        all = all.filter(r => !r.isWorksheet && r.type !== 'story' && r.type !== 'textbook');
       } else if (libFilterType === 'worksheet') {
         all = all.filter(r => r.isWorksheet);
       } else if (libFilterType === 'story') {
-        all = all.filter(r => (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+        all = all.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
       } else if (libFilterType === 'roleplay') {
-        all = all.filter(r => (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
-      } else if (libFilterType === 'curriculum') {
-        all = all.filter(r => (r.category || '').toLowerCase().includes('curriculum') || (r.category || '').toLowerCase().includes('clil') || (r.category || '').toLowerCase().includes('textbook'));
+        all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
+      } else if (libFilterType === 'textbook' || libFilterType === 'curriculum') {
+        all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('curriculum') || (r.category || '').toLowerCase().includes('textbook'));
       } else if (libFilterType === 'phonics') {
-        all = all.filter(r => (r.category || '').toLowerCase().includes('phonics'));
+        all = all.filter(r => r.type === 'phonics' || (r.category || '').toLowerCase().includes('phonics'));
+      } else if (libFilterType === 'clil') {
+        all = all.filter(r => r.type === 'clil' || (r.category || '').toLowerCase().includes('clil'));
       }
+    }
+
+    // Grade filter
+    if (libFilterGrade !== 'all') {
+      const gMatch = libFilterGrade.toLowerCase();
+      all = all.filter(item => {
+        if (Array.isArray(item.grades)) return item.grades.some(g => g.toLowerCase().includes(gMatch));
+        return (item.grade || '').toLowerCase().includes(gMatch);
+      });
     }
 
     // Skill filter
@@ -3850,6 +3875,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       });
     }
 
+    // Duration filter
+    if (libFilterDuration !== 'all') {
+      all = all.filter(item => {
+        const mins = item.estimatedMinutes || (typeof item.duration === 'number' ? item.duration : parseInt(item.duration, 10)) || 30;
+        if (libFilterDuration === 'short') return mins < 25;
+        if (libFilterDuration === 'medium') return mins >= 25 && mins <= 40;
+        if (libFilterDuration === 'long') return mins > 40;
+        return true;
+      });
+    }
+
     return getSortedResources(all);
   }
 
@@ -3861,22 +3897,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     } else if (libSortOrder === 'title-desc') {
       sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
     } else if (libSortOrder === 'level') {
-      const order = { 'pre-a1': 1, 'a1': 2, 'a1+': 3, 'a1plus': 3, 'a2': 4, 'b1': 5 };
+      const order = { 'pre-a1': 1, 'a1': 2, 'a1+': 3, 'a1plus': 3, 'level 2': 3, 'a2': 4, 'level 3': 4, 'b1': 5 };
       sorted.sort((a, b) => {
-        const lvlA = (a.level || '').toLowerCase();
-        const lvlB = (b.level || '').toLowerCase();
+        const lvlA = (a.cefrLevel || a.level || '').toLowerCase();
+        const lvlB = (b.cefrLevel || b.level || '').toLowerCase();
         return (order[lvlA] || 99) - (order[lvlB] || 99);
       });
     } else if (libSortOrder === 'duration') {
-      const getMin = r => {
-        if (typeof r.duration === 'number') return r.duration;
-        if (typeof r.duration === 'string') {
-          const m = parseInt(r.duration, 10);
-          if (!isNaN(m)) return m;
-        }
-        return r.isWorksheet ? 20 : 30;
-      };
+      const getMin = r => r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || (r.isWorksheet ? 20 : 30);
       sorted.sort((a, b) => getMin(a) - getMin(b));
+    } else if (libSortOrder === 'xp') {
+      const getXP = r => r.xp || (r.isWorksheet ? 40 : 50);
+      sorted.sort((a, b) => getXP(b) - getXP(a));
     } else {
       // default: featured items first, then original order
       sorted.sort((a, b) => {
@@ -4048,12 +4080,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderResourceCard(item) {
     const isWs = Boolean(item.isWorksheet);
     const isFeatured = Boolean(item.featured);
-    const rawLevel = item.level || 'A1';
+    const rawLevel = item.cefrLevel || item.level || 'A1';
     const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
     let typeIcon = '🎮';
     let typeLabel = 'Game';
-    const catLower = (item.category || '').toLowerCase();
+    const catLower = (item.type || item.category || '').toLowerCase();
     if (isWs) {
       typeIcon = '📄';
       typeLabel = 'Worksheet';
@@ -4066,19 +4098,27 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     } else if (catLower.includes('phonics')) {
       typeIcon = '🔤';
       typeLabel = 'Phonics';
-    } else if (catLower.includes('curriculum') || catLower.includes('clil') || catLower.includes('textbook')) {
+    } else if (catLower.includes('textbook') || catLower.includes('curriculum')) {
       typeIcon = '📚';
-      typeLabel = 'CLIL Lesson';
+      typeLabel = 'Textbook';
+    } else if (catLower.includes('clil') || catLower.includes('science')) {
+      typeIcon = '🌍';
+      typeLabel = 'CLIL';
+    } else if (catLower.includes('warmup') || catLower.includes('prep')) {
+      typeIcon = '⚡';
+      typeLabel = 'Warm-up';
     }
 
     const topicText = (Array.isArray(item.topics) && item.topics.length > 0) ? item.topics[0] : (item.topic || item.category || 'Classroom Practice');
-    const durationText = item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min');
+    const durationText = item.estimatedMinutes ? (item.estimatedMinutes + ' min') : (item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min'));
     const primarySkill = (Array.isArray(item.skills) && item.skills.length > 0) ? item.skills[0] : (item.skill || 'Speaking');
+    const langFocus = item.languageFocus || null;
+    const xpAmount = item.xp || (isWs ? 40 : 50);
 
     let primaryActionHtml = '';
     if (isWs) {
       primaryActionHtml = 
-        '<a href="' + (item.pdfUrl || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
+        '<a href="' + (item.pdfUrl || item.route || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
           '<span>📄</span> <span>Open Worksheet</span>' +
         '</a>';
     } else if (catLower.includes('story') || catLower.includes('reading')) {
@@ -4086,7 +4126,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Read ' + item.title + '">' +
           '<span>📖</span> <span>Read Story</span>' +
         '</a>';
-    } else if (catLower.includes('curriculum') || catLower.includes('clil') || catLower.includes('textbook')) {
+    } else if (catLower.includes('curriculum') || catLower.includes('textbook')) {
       primaryActionHtml = 
         '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + '">' +
           '<span>📚</span> <span>Start Lesson</span>' +
@@ -4098,16 +4138,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</a>';
     }
 
+    const companionWsBtn = (!isWs && item.worksheetRoute) ? (
+      '<a href="' + item.worksheetRoute + '" class="btn-resource-secondary btn-companion-ws" target="_blank" rel="noopener" title="Open companion printable worksheet">' +
+        '<span>📄 WS</span>' +
+      '</a>'
+    ) : '';
+
     const dropdownMenuHtml = isWs ? (
+      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openWorksheetEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Worksheet</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateWorksheet(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
       '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveWorksheet(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Worksheet</span></button>'
     ) : (
+      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openResourceEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Featured') + '</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Favorite') + '</span></button>' +
       '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>'
     );
 
@@ -4123,7 +4171,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div class="card-thumb-badges">' +
             '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
             '<span class="thumb-type-badge">' + typeIcon + ' ' + typeLabel + '</span>' +
+            '<span class="thumb-time-badge">⏱️ ' + durationText + '</span>' +
+            '<span class="thumb-xp-badge">⭐ ' + xpAmount + ' XP</span>' +
           '</div>' +
+          '<button type="button" class="btn-card-fav ' + (isFeatured ? 'is-favorited' : '') + '" onclick="handleToggleFavoriteCard(\'' + item.id + '\', event)" title="' + (isFeatured ? 'Remove from favorites' : 'Add to favorites') + '">' +
+            (isFeatured ? '★' : '☆') +
+          '</button>' +
           '<button type="button" class="card-thumb-kebab btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
           '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
             dropdownMenuHtml +
@@ -4131,20 +4184,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
 
         '<div class="card-body-content">' +
-          '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '">' + item.title + '</h3>' +
+          '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '" onclick="openResourcePreviewModal(\'' + item.id + '\')">' + item.title + '</h3>' +
           '<p class="resource-card-desc" title="' + (item.description || '').replace(/"/g, '&quot;') + '">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
           '<div class="card-pills-row">' +
             '<span class="card-pill skill-pill">🎯 ' + primarySkill + '</span>' +
-            '<span class="card-pill topic-pill">💡 ' + topicText + '</span>' +
-            '<span class="card-pill meta-pill">⏱️ ' + durationText + '</span>' +
+            '<span class="card-pill topic-pill">📌 ' + topicText + '</span>' +
+            (langFocus ? '<span class="card-pill lang-pill" title="Language Focus">💡 ' + langFocus + '</span>' : '') +
           '</div>' +
         '</div>' +
 
         '<div class="resource-card-footer">' +
           primaryActionHtml +
-          '<button type="button" class="btn-resource-secondary btn-card-assign" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
-            '<span>📝</span> <span>Assign</span>' +
+          '<button type="button" class="btn-resource-secondary btn-card-preview" onclick="openResourcePreviewModal(\'' + item.id + '\')" title="Preview details & objectives">' +
+            '<span>👁️</span> <span>Preview</span>' +
           '</button>' +
+          '<button type="button" class="btn-resource-secondary btn-card-assign" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
+            '<span>📋</span> <span>Assign</span>' +
+          '</button>' +
+          companionWsBtn +
         '</div>' +
       '</div>';
   }
@@ -4156,49 +4213,50 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderLibraryView(container) {
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
-    const totalResources = allGames.length + allWorksheets.length;
-    const allCombined = allGames.concat(allWorksheets);
+    const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
+    const totalResources = allCombined.length;
 
-    const storiesCount = allCombined.filter(r => {
-      const cat = (r.category || '').toLowerCase();
-      return cat.includes('story') || cat.includes('reading');
-    }).length;
-
-    const roleplaysCount = allCombined.filter(r => {
-      const cat = (r.category || '').toLowerCase();
-      return cat.includes('roleplay') || cat.includes('speaking');
-    }).length;
+    const gamesCount = allCombined.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story').length;
+    const worksheetsCount = allCombined.filter(r => r.isWorksheet).length;
+    const storiesCount = allCombined.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading')).length;
+    const roleplaysCount = allCombined.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay')).length;
+    const textbooksCount = allCombined.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook')).length;
+    const favoritesCount = allCombined.filter(r => Boolean(r.featured)).length;
 
     // Collect topics dynamically
     const topicSet = new Set();
-    allGames.forEach(r => {
+    allCombined.forEach(r => {
       if (Array.isArray(r.topics)) r.topics.forEach(t => topicSet.add(t));
       else if (r.topic) topicSet.add(r.topic);
     });
-    allWorksheets.forEach(w => {
-      if (Array.isArray(w.topics)) w.topics.forEach(t => topicSet.add(t));
-      else if (w.topic) topicSet.add(w.topic);
-    });
     const availableTopics = Array.from(topicSet).sort();
 
-    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
     const filteredItems = getFilteredResources();
 
     let tabHeading = 'All Resources';
-    if (libActiveTab === 'games') tabHeading = 'Interactive Games';
+    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
     else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
     else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
     else if (libActiveTab === 'roleplays') tabHeading = 'Roleplay Missions';
+    else if (libActiveTab === 'textbooks') tabHeading = 'Curriculum Textbooks';
     else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
 
     container.innerHTML = 
-      // 1. Compact Header
+      // 1. Professional Header
       '<div class="library-header-compact">' +
         '<div class="library-title-wrap">' +
-          '<h1 class="library-title-main">Educational Resource Library</h1>' +
-          '<p class="library-subtitle">Find, create, and launch engaging classroom resources.</p>' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<h1 class="library-title-main">Educational Resource Library</h1>' +
+            '<span class="library-verified-badge" title="All curriculum resources audited and verified">✓ Curated</span>' +
+          '</div>' +
+          '<p class="library-subtitle">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
         '</div>' +
         '<div class="library-header-actions">' +
+          '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
+            '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
+          '</button>' +
           '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
           '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
           '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
@@ -4207,7 +4265,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
-      // 2. Prominent Search & Filters Bar
+      // 2. Prominent Multi-Faceted Controls Bar
       '<div class="library-controls-bar">' +
         '<div class="library-search-wrap">' +
           '<span class="library-search-icon">🔍</span>' +
@@ -4232,8 +4290,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
               '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
               '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
-              '<option value="curriculum" ' + (libFilterType === 'curriculum' ? 'selected' : '') + '>📖 Textbook &amp; CLIL</option>' +
+              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
               '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)">' +
+              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
+              '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
+              '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
+              '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
+              '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
+              '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
+              '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
@@ -4246,12 +4316,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
               '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
               '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>Phonics</option>' +
+              '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>CLIL</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
               '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
               availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)">' +
+              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
+              '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
+              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
+              '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
             '</select>' +
           '</div>' +
           '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
@@ -4263,17 +4342,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       // 3. Category Tabs Row
       '<div class="library-category-tabs-row library-nav-tabs-row">' +
         '<div class="library-category-tabs library-nav-tabs">' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
             '<span>All Resources</span>' +
             '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
-            '<span>🎮 Interactive Games</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + allGames.length + '</span>' +
+            '<span>🎮 Games</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + gamesCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
             '<span>📄 Worksheets</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + allWorksheets.length + '</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
             '<span>📚 Stories</span>' +
@@ -4283,6 +4362,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>🎭 Roleplays</span>' +
             '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
           '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')">' +
+            '<span>📖 Textbooks</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + textbooksCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
+            '<span>⭐ Favorites</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
+          '</button>' +
         '</div>' +
       '</div>' +
 
@@ -4290,16 +4377,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div class="library-section-header-row">' +
         '<div class="library-section-left">' +
           '<h2 class="section-heading">' + tabHeading + '</h2>' +
-          '<span id="lib-count-badge" class="section-count-badge library-count-pill">' + filteredItems.length + ' resources</span>' +
+          '<span id="lib-count-badge" class="section-count-badge library-count-pill">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
         '</div>' +
         '<div class="library-section-right">' +
           '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
           '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
-            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default ▾</option>' +
+            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
             '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
             '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
             '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
             '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
+            '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
           '</select>' +
         '</div>' +
       '</div>' +
@@ -4327,6 +4415,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     updateLibraryGrid();
   };
 
+  window.handleLibSearchInput = function(e) {
+    const val = (e && e.target) ? e.target.value : (typeof e === 'string' ? e : '');
+    window.handleLibSearch(val);
+  };
+
   window.clearLibSearch = function() {
     libSearchQuery = '';
     const input = document.getElementById('lib-search-input');
@@ -4344,12 +4437,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     else if (filterKey === 'type') libFilterType = value;
     else if (filterKey === 'skill') libFilterSkill = value;
     else if (filterKey === 'topic') libFilterTopic = value;
+    else if (filterKey === 'grade') libFilterGrade = value;
+    else if (filterKey === 'duration') libFilterDuration = value;
     updateLibraryGrid();
   };
 
   window.setLibTab = function(tabName) {
     libActiveTab = tabName;
-    libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
+    if (tabName === 'favorites') {
+      libFilterFavoritesOnly = true;
+    } else {
+      libFilterFavoritesOnly = false;
+      libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
+    }
     const container = document.getElementById('app-main-content');
     if (container) renderLibraryView(container);
     else renderCurrentView();
@@ -4360,12 +4460,38 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     updateLibraryGrid();
   };
 
+  window.toggleLibFavoritesOnly = function() {
+    libFilterFavoritesOnly = !libFilterFavoritesOnly;
+    if (libFilterFavoritesOnly) libActiveTab = 'favorites';
+    else if (libActiveTab === 'favorites') libActiveTab = 'all';
+    const container = document.getElementById('app-main-content');
+    if (container) renderLibraryView(container);
+    else updateLibraryGrid();
+  };
+
+  window.handleToggleFavoriteCard = function(resourceId, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (store.toggleFavoriteResource) {
+      store.toggleFavoriteResource(resourceId);
+    } else {
+      const res = store.getResource(resourceId);
+      if (res) store.updateResource(resourceId, { featured: !res.featured });
+    }
+    updateLibraryGrid();
+  };
+
   window.clearAllLibFilters = function() {
     libSearchQuery = '';
     libFilterLevel = 'all';
     libFilterType = 'all';
     libFilterSkill = 'all';
     libFilterTopic = 'all';
+    libFilterGrade = 'all';
+    libFilterDuration = 'all';
+    libFilterFavoritesOnly = false;
     const input = document.getElementById('lib-search-input');
     if (input) input.value = '';
     const clearBtn = document.getElementById('lib-search-clear-btn');
@@ -4398,15 +4524,158 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     const countBadge = document.getElementById('lib-count-badge');
     if (countBadge) {
-      countBadge.textContent = filtered.length + ' resources';
+      const totalAll = (store.getStandardizedResources ? store.getStandardizedResources(false) : []).length || (store.getResources().length + (store.getWorksheets ? store.getWorksheets().length : 0));
+      countBadge.textContent = 'Showing ' + filtered.length + ' of ' + totalAll + ' resources';
     }
 
-    const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all';
+    const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
     const clearRowBtn = document.getElementById('lib-clear-filters-btn');
     if (clearRowBtn) {
       clearRowBtn.style.display = hasActive ? 'inline-flex' : 'none';
     }
   }
+
+  // =========================================================================
+  // DETAILED PEDAGOGICAL RESOURCE PREVIEW MODAL
+  // =========================================================================
+  window.openResourcePreviewModal = function(resourceId) {
+    closeAllCardMenus();
+    let res = null;
+    if (store.getStandardizedResources) {
+      res = store.getStandardizedResources(true).find(r => r.id === resourceId);
+    }
+    if (!res && window.GAMES_REGISTRY) {
+      res = window.GAMES_REGISTRY.find(g => g.id === resourceId);
+    }
+    if (!res) {
+      res = store.getResource(resourceId) || (store.getWorksheet ? store.getWorksheet(resourceId) : null);
+    }
+    if (!res) return;
+
+    let modalOverlay = document.getElementById('modal-resource-preview');
+    if (!modalOverlay) {
+      modalOverlay = document.createElement('div');
+      modalOverlay.className = 'modal-overlay';
+      modalOverlay.id = 'modal-resource-preview';
+      modalOverlay.innerHTML = '<div class="modal-dialog resource-preview-dialog" id="resource-preview-dialog-content"></div>';
+      document.body.appendChild(modalOverlay);
+    }
+
+    const contentBox = document.getElementById('resource-preview-dialog-content');
+    if (!contentBox) return;
+
+    const isWs = Boolean(res.isWorksheet);
+    const rawLevel = res.cefrLevel || res.level || 'A1';
+    const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    const gradeText = Array.isArray(res.grades) ? res.grades.join(', ') : (res.grade || 'Grades 2–4');
+    const durationText = res.estimatedMinutes ? (res.estimatedMinutes + ' min') : (res.duration ? (typeof res.duration === 'number' ? res.duration + ' min' : res.duration) : (isWs ? '20 min' : '35 min'));
+    const xpText = (res.xp || (isWs ? 40 : 50)) + ' XP';
+    const skillsText = Array.isArray(res.skills) ? res.skills.join(', ') : (res.skill || 'Speaking & Communicative Practice');
+    const langFocus = res.languageFocus || res.topic || (Array.isArray(res.topics) ? res.topics[0] : 'Classroom Communication');
+    const objectives = Array.isArray(res.learningObjectives) && res.learningObjectives.length > 0
+      ? res.learningObjectives
+      : (Array.isArray(res.objectives) && res.objectives.length > 0 ? res.objectives : [res.instructions || 'Practice core communicative skills and vocabulary.']);
+    const teacherGuide = res.teacherInstructions || 'Lead communicative interaction, model key pronunciation phrases, and encourage full-sentence student responses.';
+    const studentMission = res.studentInstructions || 'Follow classroom instructions, complete interactive tasks, and earn XP!';
+    const companionWs = res.worksheetRoute || res.worksheet || null;
+    const thumbnailSvg = getResourceThumbnail(res);
+    const isFav = store.isFavorite ? store.isFavorite(res.id) : Boolean(res.featured);
+
+    let launchBtnText = '▶ Start Game';
+    if (isWs) {
+      launchBtnText = '📄 Open Worksheet';
+    } else if ((res.type || '').includes('story') || (res.category || '').toLowerCase().includes('story')) {
+      launchBtnText = '📖 Read Story';
+    } else if ((res.type || '').includes('textbook') || (res.category || '').toLowerCase().includes('textbook')) {
+      launchBtnText = '📚 Launch Lesson';
+    }
+
+    contentBox.innerHTML = 
+      '<button class="modal-close-btn" onclick="closeModal(\'modal-resource-preview\')" title="Close Preview">✕</button>' +
+      
+      // Modal Hero Header
+      '<div class="preview-hero-banner">' +
+        '<div class="preview-hero-art">' +
+          thumbnailSvg +
+        '</div>' +
+        '<div class="preview-hero-info">' +
+          '<div class="preview-hero-badges">' +
+            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr">' + rawLevel + '</span>' +
+            '<span class="preview-grade-badge">🎓 ' + gradeText + '</span>' +
+            '<span class="preview-time-badge">⏱️ ' + durationText + '</span>' +
+            '<span class="preview-xp-badge">⭐ ' + xpText + '</span>' +
+          '</div>' +
+          '<h2 class="preview-title">' + res.title + '</h2>' +
+          '<p class="preview-category-tag">' + (res.categoryLabel || res.category || 'Classroom Activity') + ' • ' + (res.activityMode || 'Interactive Classroom Activity') + '</p>' +
+        '</div>' +
+      '</div>' +
+
+      // Modal Body
+      '<div class="preview-modal-body">' +
+        // Overview
+        '<div class="preview-section">' +
+          '<h4 class="preview-section-title">📋 Overview &amp; Curriculum Focus</h4>' +
+          '<p class="preview-desc-text">' + (res.description || 'Interactive educational classroom lesson and student practice drill.') + '</p>' +
+          '<div class="preview-focus-pill-box">' +
+            '<span class="preview-pill"><strong>🎯 Target Skills:</strong> ' + skillsText + '</span>' +
+            '<span class="preview-pill"><strong>💡 Language Focus:</strong> ' + langFocus + '</span>' +
+          '</div>' +
+        '</div>' +
+
+        // Learning Objectives
+        '<div class="preview-section">' +
+          '<h4 class="preview-section-title">🎯 Pedagogical Learning Objectives</h4>' +
+          '<ul class="preview-objectives-list">' +
+            objectives.map(obj => '<li><span class="obj-check">✓</span> <span>' + obj + '</span></li>').join('') +
+          '</ul>' +
+        '</div>' +
+
+        // Teacher Guide
+        '<div class="preview-section preview-guide-box">' +
+          '<h4 class="preview-section-title">🧑‍🏫 Teacher Implementation Guide</h4>' +
+          '<p class="preview-guide-text">' + teacherGuide + '</p>' +
+        '</div>' +
+
+        // Student Mission
+        '<div class="preview-section preview-mission-box">' +
+          '<h4 class="preview-section-title">🚀 Student Mission Instructions</h4>' +
+          '<p class="preview-mission-text">' + studentMission + '</p>' +
+        '</div>' +
+
+        // Companion Worksheet Banner if applicable
+        (companionWs && !isWs ? (
+          '<div class="preview-companion-banner">' +
+            '<div>' +
+              '<strong>📄 Printable Worksheet Available</strong>' +
+              '<p style="margin:2px 0 0 0; font-size:0.8rem; color:var(--text-muted);">This lesson includes a printable companion worksheet for student practice.</p>' +
+            '</div>' +
+            '<a href="' + companionWs + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="white-space:nowrap;">📄 Open Worksheet</a>' +
+          '</div>'
+        ) : '') +
+      '</div>' +
+
+      // Action Footer
+      '<div class="preview-modal-footer">' +
+        '<div class="preview-footer-left">' +
+          '<button type="button" class="btn-preview-fav ' + (isFav ? 'is-favorited' : '') + '" onclick="togglePreviewFavorite(\'' + res.id + '\')">' +
+            '<span>' + (isFav ? '★ Favorited' : '☆ Add to Favorites') + '</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="preview-footer-right">' +
+          '<button type="button" class="btn-secondary" onclick="closeModal(\'modal-resource-preview\')">Close</button>' +
+          '<button type="button" class="btn-secondary btn-preview-assign" onclick="closeModal(\'modal-resource-preview\'); openAssignModal(\'' + res.id + '\')">📋 Assign to Class</button>' +
+          '<a href="' + (res.route || res.pdfUrl || '#') + '" class="btn-primary-action btn-preview-launch" ' + (isWs ? 'target="_blank" rel="noopener"' : '') + '>' + launchBtnText + '</a>' +
+        '</div>' +
+      '</div>';
+
+    window.openModal('modal-resource-preview');
+  };
+
+  window.togglePreviewFavorite = function(resourceId) {
+    if (store.toggleFavoriteResource) store.toggleFavoriteResource(resourceId);
+    openResourcePreviewModal(resourceId);
+    updateLibraryGrid();
+  };
 
   function renderGamesCatalogHTML() {
     return (document.getElementById('app-main-content') ? renderLibraryView(document.getElementById('app-main-content')) : '');

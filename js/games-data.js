@@ -1,6 +1,7 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — CENTRAL GAME REGISTRY
- * Single Source of Truth for all 15 playable classroom games.
+ * ENGLISH ADVENTURE ACADEMY — STANDARDIZED EDUCATIONAL RESOURCE REGISTRY
+ * Authoritative Single Source of Truth for all 21 classroom games, stories, CLIL modules, and textbooks.
+ * Preserves 100% legacy compatibility while exposing standardized pedagogical schema.
  */
 
 const GAMES_REGISTRY = [
@@ -8,26 +9,47 @@ const GAMES_REGISTRY = [
     id: "robots",
     title: "Amazing Robots Around the World",
     description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries.",
+    type: "game",
     category: "Speaking Games",
     categoryLabel: "🗣️ Speaking Games",
     level: "A1–A2",
+    cefrLevel: "A1–A2",
     age: "Ages 9–12",
     ageGroup: "9-12",
     grade: "Grades 4–6",
+    grades: ["Grade 4", "Grade 5", "Grade 6"],
     duration: 65,
     durationText: "60–70 min",
+    estimatedMinutes: 65,
+    xp: 100,
     skills: ["Reading", "Speaking", "Listening", "Vocabulary", "Teamwork"],
     topic: "WH-Questions & Real-World Robotics",
+    topics: ["WH-Questions", "Real-World Robotics", "Biomimetic Science", "Search & Rescue"],
+    languageFocus: "WH-Questions (What, Where, When, Who, Why, How)",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Interactive STEM Dossier & Presentation",
+    difficulty: "Intermediate",
+    tags: ["robots", "science", "stem", "questions", "wh-questions", "dossier", "teamwork"],
+    learningObjectives: [
+      "Master the 6 WH-question forms (What, Where, When, Who, Why, How)",
+      "Read and extract factual information from real scientific robot dossiers",
+      "Differentiate real engineering capabilities from imaginary guesses",
+      "Collaborate in teams of 3–4 to present a discovery to the class"
+    ],
+    teacherInstructions: "Group students into research squads. Assign one robot dossier to each squad, have them complete the WH-matrix, and conduct a 2-minute press conference presentation.",
+    studentInstructions: "Explore the secret robot files, find answers to the WH-questions, and present your team's robot to the class!",
     route: "robots/index.html",
     worksheet: "robots/worksheet.html",
+    worksheetRoute: "robots/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: true,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="140" fill="#0f172a"/>
-        <!-- Circuit traces -->
         <path d="M 10 30 L 50 30 L 70 50 L 130 50 L 150 30 L 190 30" stroke="#0284c7" stroke-width="2" fill="none" opacity="0.6"/>
         <path d="M 20 110 L 60 110 L 80 90 L 120 90 L 140 110 L 180 110" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.6"/>
-        <!-- Robot Face/Eye -->
         <rect x="55" y="42" width="90" height="56" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
         <circle cx="80" cy="70" r="10" fill="#0284c7"/>
         <circle cx="80" cy="70" r="5" fill="#38bdf8"/>
@@ -35,10 +57,8 @@ const GAMES_REGISTRY = [
         <circle cx="120" cy="70" r="10" fill="#0284c7"/>
         <circle cx="120" cy="70" r="5" fill="#38bdf8"/>
         <circle cx="120" cy="70" r="2" fill="#ffffff"/>
-        <!-- Antenna -->
         <line x1="100" y1="42" x2="100" y2="24" stroke="#38bdf8" stroke-width="3"/>
         <circle cx="100" cy="20" r="5" fill="#f59e0b"/>
-        <!-- Badge -->
         <rect x="25" y="112" width="150" height="18" rx="4" fill="#0284c7"/>
         <text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">AMAZING ROBOTS 🤖</text>
       </svg>`
@@ -47,18 +67,41 @@ const GAMES_REGISTRY = [
     id: "feelings",
     title: "How Would You Feel?",
     description: "Interactive A1+ situational thinking lesson: evaluate real-life, funny & challenging dilemmas, choose appropriate emotions, and speak using natural chunks.",
+    type: "game",
     category: "Speaking Games",
     categoryLabel: "🗣️ Speaking Games",
     level: "A1+",
+    cefrLevel: "A1+",
     age: "Ages 7–10",
     ageGroup: "7-8",
     grade: "Grades 2–4",
+    grades: ["Grade 2", "Grade 3", "Grade 4"],
     duration: 45,
     durationText: "45–50 min",
+    estimatedMinutes: 45,
+    xp: 75,
     skills: ["Speaking", "Vocabulary", "Listening"],
     topic: "Feelings, Emotions & Situational Reactions",
+    topics: ["Feelings & Emotions", "Situational Reactions", "Hypothetical Speaking Chunks"],
+    languageFocus: "I'd feel... / I would feel [emotion] because...",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Situational Dilemma & Voting Stage",
+    difficulty: "Elementary",
+    tags: ["feelings", "emotions", "speaking", "reactions", "chunks", "sel"],
+    learningObjectives: [
+      "Identify and use common and A1+ feelings and emotions",
+      "Express emotional reactions using 'I'd feel...'",
+      "Formulate justified actions using 'I'd... because...'",
+      "Connect authentic dilemmas to appropriate emotional coping strategies"
+    ],
+    teacherInstructions: "Project each dilemma on the whiteboard. Prompt students to vote using thumbs up/down or emoji cards, then call on pairs to explain their emotional rationale.",
+    studentInstructions: "Read the story dilemma, choose how you would feel, and tell your partner what you would do next!",
     route: "feelings/index.html",
     worksheet: "feelings/worksheet.html",
+    worksheetRoute: "feelings/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: true,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -67,7 +110,6 @@ const GAMES_REGISTRY = [
         <circle cx="56" cy="58" r="4.5" fill="#1e293b"/>
         <circle cx="74" cy="58" r="4.5" fill="#1e293b"/>
         <path d="M 54 75 Q 65 88 76 75" fill="none" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/>
-        <!-- Speech Bubble -->
         <path d="M 105 35 L 180 35 Q 188 35 188 43 L 188 85 Q 188 93 180 93 L 125 93 L 110 108 L 115 93 L 105 93 Q 97 93 97 85 L 97 43 Q 97 35 105 35 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
         <text x="142" y="58" font-family="sans-serif" font-weight="900" font-size="11" fill="#b45309" text-anchor="middle">HOW WOULD</text>
         <text x="142" y="74" font-family="sans-serif" font-weight="900" font-size="12" fill="#d97706" text-anchor="middle">YOU FEEL? 🎭</text>
@@ -79,20 +121,41 @@ const GAMES_REGISTRY = [
     id: "firefighter",
     title: "Fire Station Adventure",
     description: "Interactive story about firefighters, emergency equipment, siren audio, and a tap-to-extinguish water hose simulation.",
+    type: "story",
     category: "Interactive Stories",
     categoryLabel: "📖 Interactive Stories",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 7–9",
     ageGroup: "7-8",
     grade: "Grades 2–4",
+    grades: ["Grade 2", "Grade 3", "Grade 4"],
     duration: 35,
     durationText: "35 min",
+    estimatedMinutes: 35,
+    xp: 60,
     skills: ["Speaking", "Listening", "Vocabulary"],
     topic: "Community Helpers & Emergencies",
+    topics: ["Community Helpers", "Emergencies", "Action Verbs", "Safety Equipment"],
+    languageFocus: "Action verbs & Community Helper vocabulary (hose, helmet, alarm, rescue)",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Interactive Story & Hose Drill",
+    difficulty: "Beginner",
+    tags: ["firefighter", "emergency", "community", "story", "listening", "safety"],
+    learningObjectives: [
+      "Identify and name 6 key firefighter emergency tools",
+      "Follow and recite step-by-step emergency evacuation instructions",
+      "Use present action verbs (spraying water, climbing the ladder, sounding the siren)"
+    ],
+    teacherInstructions: "Lead whole-class choral drill of emergency action verbs. Let students take turns operating the interactive water hose simulator.",
+    studentInstructions: "Sound the fire alarm, put on your gear, and work with your squad to put out the fire!",
     route: "firefighter/index.html",
     worksheet: "firefighter/worksheet.html",
+    worksheetRoute: "firefighter/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: true,
-    progress: "70% complete",
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="140" fill="#fee2e2"/>
@@ -103,54 +166,255 @@ const GAMES_REGISTRY = [
         <line x1="50" y1="125" x2="150" y2="125" stroke="#dc2626" stroke-width="2"/>
         <rect x="68" y="85" width="64" height="42" rx="4" fill="#b91c1c"/>
         <rect x="74" y="90" width="52" height="16" rx="2" fill="#bae6fd"/>
-        <circle x="80" y="122" r="6" fill="#1e293b"/>
-        <circle x="120" y="122" r="6" fill="#1e293b"/>
+        <circle cx="80" cy="122" r="6" fill="#1e293b"/>
+        <circle cx="120" cy="122" r="6" fill="#1e293b"/>
         <rect x="94" y="80" width="12" height="5" rx="1" fill="#38bdf8"/>
       </svg>`
   },
   {
-    id: "story",
-    title: "The Wizard of Oz",
-    description: "11-scene dramatized reader's theater stage following Dorothy, Scarecrow, Tin Woodman, and Lion down the Yellow Brick Road.",
-    category: "Interactive Stories",
-    categoryLabel: "📖 Interactive Stories",
-    level: "A1",
-    age: "Ages 7–9",
+    id: "camp-mystery",
+    title: "The Mystery at the Camp",
+    description: "An interactive story adventure based on 'Don't Move'. Join Suzie and Mom in the dark windy forest, predict plot twists, solve cause & effect mysteries, and hunt phonics clues.",
+    type: "story",
+    category: "Reading Adventure & Mystery",
+    categoryLabel: "📖 Reading Adventure",
+    level: "A1/A1+",
+    cefrLevel: "A1+",
+    age: "Ages 7–10",
     ageGroup: "7-8",
-    grade: "Grades 3–5",
-    duration: 40,
-    durationText: "40 min",
-    skills: ["Reading", "Speaking", "Listening"],
-    topic: "Classic Storytelling & Emotions",
-    route: "story/index.html",
+    grade: "Grade 3",
+    grades: ["Grade 3", "Grade 4"],
+    duration: 50,
+    durationText: "45–55 min",
+    estimatedMinutes: 50,
+    xp: 85,
+    skills: ["Reading", "Listening", "Speaking", "Prediction", "Phonics"],
+    topic: "Camping Mystery & Forest Animals",
+    topics: ["Camping Narrative", "Atmosphere & Suspense", "Blends ST, TR, ND, NG", "Fact vs Opinion"],
+    languageFocus: "Sequencing (First, Then, Next, Finally), Fact vs Opinion, Consonant Blends",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Interactive Reading & Investigation",
+    difficulty: "Elementary",
+    tags: ["mystery", "camp", "forest", "story", "blends", "phonics", "reading", "sequencing"],
+    learningObjectives: [
+      "Understand main narrative events and identify clues in a forest camping story",
+      "Analyze cause-and-effect relationships and sequence events accurately",
+      "Distinguish verifiable factual statements from subjective opinions",
+      "Locate and decode phonics clusters (ST, TR, ND, NG) in context"
+    ],
+    teacherInstructions: "Read each scene aloud with expressive tension. Pause at the prediction points to have students vote on what is making the strange grunting sound.",
+    studentInstructions: "Look for clues in the dark forest, sequence the story events, and solve the mystery of the campsite visitor!",
+    route: "camp-mystery/index.html",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: true,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="140" fill="#ede9fe"/>
-        <path d="M 0 140 Q 80 100 100 70 Q 120 40 140 15 L 160 15 Q 140 50 120 80 Q 90 120 0 140 Z" fill="#fde047"/>
-        <rect x="130" y="25" width="16" height="45" rx="2" fill="#10b981"/>
-        <polygon points="138,12 130,25 146,25" fill="#059669"/>
-        <rect x="150" y="35" width="18" height="35" rx="2" fill="#059669"/>
-        <polygon points="159,22 150,35 168,35" fill="#047857"/>
+        <rect width="200" height="140" fill="#0f172a"/>
+        <polygon points="100,20 40,110 160,110" fill="#1e293b"/>
+        <polygon points="100,25 45,105 155,105" fill="#0f766e"/>
+        <polygon points="100,55 70,105 130,105" fill="#134e4a"/>
+        <polygon points="100,75 85,105 115,105" fill="#facc15" opacity="0.8"/>
+        <circle cx="165" cy="35" r="14" fill="#fef08a"/>
+        <circle cx="160" cy="32" r="12" fill="#0f172a"/>
+        <polygon points="25,60 10,110 40,110" fill="#064e3b"/>
+        <polygon points="175,65 160,115 190,115" fill="#064e3b"/>
+        <rect x="25" y="116" width="150" height="18" rx="4" fill="#0f766e"/>
+        <text x="100" y="129" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">CAMP MYSTERY 🏕️</text>
+      </svg>`
+  },
+  {
+    id: "phonics-adventure",
+    title: "Phonics Adventure: Blends & Digraphs",
+    description: "Interactive sound detectives mission practicing SH, CH, ST, PL, FL, PR, and FR through audio recognition, reading, spelling challenges, and a 4-lock escape room.",
+    type: "phonics",
+    category: "Phonics & Literacy",
+    categoryLabel: "🔤 Phonics & Literacy",
+    level: "A1",
+    cefrLevel: "A1",
+    age: "Ages 7–10",
+    ageGroup: "7-8",
+    grade: "Grades 3–4",
+    grades: ["Grade 3", "Grade 4"],
+    duration: 45,
+    durationText: "40–50 min",
+    estimatedMinutes: 45,
+    xp: 80,
+    skills: ["Phonics", "Listening", "Speaking", "Reading", "Spelling"],
+    topic: "Digraphs & Consonant Blends",
+    topics: ["Digraphs SH & CH", "Initial Blends ST, PL, FL", "Auditory Pairs PR & FR", "Phonics Escape Room"],
+    languageFocus: "Digraphs (SH, CH) and Consonant Blends (ST, PL, FL, PR, FR)",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Audio Soundboard & Escape Room Challenge",
+    difficulty: "Elementary",
+    tags: ["phonics", "blends", "digraphs", "reading", "spelling", "escape-room", "audio"],
+    learningObjectives: [
+      "Hear, identify, and contrast minimal pairs (ship/chip, flag/frog)",
+      "Unscramble target sound words and apply correct blend spellings",
+      "Crack 4 security locks in the Sound Detectives Escape Room challenge"
+    ],
+    teacherInstructions: "Use the interactive audio soundboard for whole-class listening drills, then divide into small groups to crack the 4 Phonics Escape Room locks.",
+    studentInstructions: "Listen carefully to the target sounds, spot the correct blends, and unlock the escape room chest!",
+    route: "phonics/index.html",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#312e81"/>
+        <circle cx="100" cy="65" r="38" fill="#4338ca"/>
+        <circle cx="90" cy="55" r="26" fill="#6366f1" stroke="#fbbf24" stroke-width="4"/>
+        <line x1="110" y1="75" x2="135" y2="100" stroke="#fbbf24" stroke-width="8" stroke-linecap="round"/>
+        <text x="90" y="64" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">SH</text>
+        <rect x="25" y="114" width="150" height="18" rx="4" fill="#f59e0b"/>
+        <text x="100" y="127" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">PHONICS DETECTIVE 🔤</text>
+      </svg>`
+  },
+  {
+    id: "monster-day",
+    title: "Build Your Own Monster",
+    description: "Real-time SVG creator workshop practicing body parts, numbers, colors, descriptive adjective order, and 'I have got / It has got...'",
+    type: "game",
+    category: "Classroom Games",
+    categoryLabel: "🎮 Classroom Games",
+    level: "Pre-A1",
+    cefrLevel: "Pre-A1",
+    age: "Ages 5–8",
+    ageGroup: "5-6",
+    grade: "Grades 1–3",
+    grades: ["Grade 1", "Grade 2", "Grade 3"],
+    duration: 30,
+    durationText: "25–35 min",
+    estimatedMinutes: 30,
+    xp: 50,
+    skills: ["Speaking", "Vocabulary", "Writing"],
+    topic: "Body Parts & Descriptive Adjectives",
+    topics: ["Body Parts", "Colors", "Have Got / Has Got", "Descriptive Adjectives"],
+    languageFocus: "It has got [number] [color] [body parts]",
+    activityMode: "Single Player / Whiteboard",
+    interactionType: "Custom SVG Avatar Builder",
+    difficulty: "Beginner",
+    tags: ["monster", "body-parts", "colors", "have-got", "adjectives", "creative"],
+    learningObjectives: [
+      "Name 8 monster body parts (eyes, horns, wings, legs, teeth, fur)",
+      "Form complete sentences with 'It has got...' and 'I have got...'",
+      "Apply correct adjective order: Number + Color + Noun"
+    ],
+    teacherInstructions: "Have students dictate monster features to a student operator at the whiteboard, then have everyone write a 3-sentence description in their notebooks.",
+    studentInstructions: "Choose eyes, horns, colors, and accessories to build your custom monster, then describe what it has got!",
+    route: "monster-day/index.html",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: false,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#f5f3ff"/>
+        <rect x="68" y="40" width="64" height="70" rx="28" fill="#a855f7"/>
+        <polygon points="68,44 58,22 80,36" fill="#fbbf24"/>
+        <polygon points="132,44 142,22 120,36" fill="#fbbf24"/>
+        <circle cx="84" cy="60" r="8" fill="#ffffff"/><circle cx="84" cy="60" r="3.5" fill="#0f172a"/>
+        <circle cx="100" cy="55" r="10" fill="#ffffff"/><circle cx="100" cy="55" r="4.5" fill="#0f172a"/>
+        <circle cx="116" cy="60" r="8" fill="#ffffff"/><circle cx="116" cy="60" r="3.5" fill="#0f172a"/>
+        <path d="M 86 85 Q 100 98 114 85" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+      </svg>`
+  },
+  {
+    id: "restaurant",
+    title: "At the Restaurant",
+    description: "Interactive dining role-play practicing 'I would like...', menu ordering, secret challenge cards, polite requests, and bill calculation.",
+    type: "roleplay",
+    category: "Role Plays",
+    categoryLabel: "🎭 Role Plays",
+    level: "A1+",
+    cefrLevel: "A1+",
+    age: "Ages 7–11",
+    ageGroup: "7-8",
+    grade: "Grades 2–5",
+    grades: ["Grade 2", "Grade 3", "Grade 4", "Grade 5"],
+    duration: 40,
+    durationText: "40 min",
+    estimatedMinutes: 40,
+    xp: 75,
+    skills: ["Speaking", "Vocabulary", "Roleplay"],
+    topic: "Food & Polite Requests",
+    topics: ["Food & Drink", "Polite Requests", "Prices", "Restaurant Dialogue"],
+    languageFocus: "I would like [food] please / How much is...?",
+    activityMode: "Turn-taking & Pairs",
+    interactionType: "Interactive Restaurant Stage & Bill Calculator",
+    difficulty: "Elementary",
+    tags: ["restaurant", "food", "roleplay", "polite", "ordering", "dialogue", "math"],
+    learningObjectives: [
+      "Order food politely using 'I would like... please'",
+      "Ask for prices using 'How much is the...?'",
+      "Act out natural waiter and customer conversational turns"
+    ],
+    teacherInstructions: "Distribute secret menu challenge cards to students. Pair students up as Waiter and Customer to perform interactive dialogues.",
+    studentInstructions: "Look at the menu, decide what you want to eat, and politely place your order with the waiter!",
+    route: "restaurant/index.html",
+    worksheet: "restaurant/worksheets.html",
+    worksheetRoute: "restaurant/worksheets.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#ffedd5"/>
+        <ellipse cx="100" cy="105" rx="60" ry="22" fill="#fed7aa"/>
+        <rect x="94" y="105" width="12" height="28" fill="#c2410c"/>
+        <ellipse cx="100" cy="90" rx="26" ry="9" fill="#e2e8f0"/>
+        <path d="M 80 90 A 20 20 0 0 1 120 90 Z" fill="#94a3b8"/>
+        <circle cx="100" cy="70" r="3" fill="#64748b"/>
+        <rect x="45" y="50" width="24" height="34" rx="2" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
       </svg>`
   },
   {
     id: "neighbourhood",
     title: "My Neighbourhood",
-    description: "Living town exploration where students identify community locations, practice prepositions, and give walking tour directions.",
+    description: "Living town exploration where students identify community locations, practice prepositions of place, and give walking tour directions.",
+    type: "game",
     category: "Speaking Games",
     categoryLabel: "🗣️ Speaking Games",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 6–9",
     ageGroup: "7-8",
     grade: "Grades 1–3",
+    grades: ["Grade 1", "Grade 2", "Grade 3"],
     duration: 30,
     durationText: "30 min",
+    estimatedMinutes: 30,
+    xp: 50,
     skills: ["Speaking", "Vocabulary", "Grammar"],
     topic: "Town Places & Prepositions",
+    topics: ["Places in Town", "Prepositions of Place", "Directions", "There is / There are"],
+    languageFocus: "Prepositions of place (next to, opposite, between, behind)",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Interactive Town Map & Coordinate Quests",
+    difficulty: "Beginner",
+    tags: ["town", "neighbourhood", "prepositions", "places", "map", "directions"],
+    learningObjectives: [
+      "Use spatial prepositions (next to, opposite, between) to describe locations",
+      "Form complete sentences with 'There is a...' and 'There are...'",
+      "Give simple 2-step walking directions across town"
+    ],
+    teacherInstructions: "Display the town map. Call out a starting point and destination, prompting students to formulate direction sentences.",
+    studentInstructions: "Navigate the neighbourhood map, find the community buildings, and describe where they are located!",
     route: "neighbourhood/index.html",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -166,49 +430,43 @@ const GAMES_REGISTRY = [
       </svg>`
   },
   {
-    id: "restaurant",
-    title: "At the Restaurant",
-    description: "Interactive dining role-play practicing 'I'd like...', menu ordering, secret challenge cards, and bill calculation.",
-    category: "Role Plays",
-    categoryLabel: "🎭 Role Plays",
-    level: "A1+",
-    age: "Ages 7–11",
-    ageGroup: "7-8",
-    grade: "Grades 2–5",
-    duration: 40,
-    durationText: "40 min",
-    skills: ["Speaking", "Vocabulary"],
-    topic: "Food & Polite Requests",
-    route: "restaurant/index.html",
-    worksheet: "restaurant/worksheets.html",
-    featured: true,
-    thumbnailSvg: `
-      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="140" fill="#ffedd5"/>
-        <ellipse cx="100" cy="105" rx="60" ry="22" fill="#fed7aa"/>
-        <rect x="94" y="105" width="12" height="28" fill="#c2410c"/>
-        <ellipse cx="100" cy="90" rx="26" ry="9" fill="#e2e8f0"/>
-        <path d="M 80 90 A 20 20 0 0 1 120 90 Z" fill="#94a3b8"/>
-        <circle cx="100" cy="70" r="3" fill="#64748b"/>
-        <rect x="45" y="50" width="24" height="34" rx="2" fill="#ffffff" stroke="#ea580c" stroke-width="1.5"/>
-      </svg>`
-  },
-  {
     id: "advice",
     title: "The Crazy Advice Academy",
     description: "Practice modal verbs 'should' and 'shouldn't' by solving 10 hilarious everyday dilemmas with Professor Should.",
+    type: "grammar",
     category: "Grammar Games",
     categoryLabel: "📚 Grammar Games",
     level: "A2",
+    cefrLevel: "A2",
     age: "Ages 8–12",
     ageGroup: "9-10",
     grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
     duration: 35,
     durationText: "35 min",
-    skills: ["Grammar", "Speaking"],
+    estimatedMinutes: 35,
+    xp: 70,
+    skills: ["Grammar", "Speaking", "Problem Solving"],
     topic: "Modal Verbs: Should & Shouldn't",
+    topics: ["Modal Verbs Should & Shouldn't", "Problem Solving", "Giving Recommendations"],
+    languageFocus: "Modal verbs: You should [verb] / You shouldn't [verb]",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Dilemma Decision Tree & Advice Matrix",
+    difficulty: "Intermediate",
+    tags: ["advice", "grammar", "should", "modal-verbs", "problem-solving", "dilemmas"],
+    learningObjectives: [
+      "Form affirmative advice using 'You should...'",
+      "Form negative warnings using 'You shouldn't...'",
+      "Explain the rationale behind advice using 'because...'"
+    ],
+    teacherInstructions: "Present each dilemma to the class. Have students write down their best advice on whiteboards before revealing Professor Should's funny solution.",
+    studentInstructions: "Help characters solve their wacky problems by giving them smart advice with 'should' and 'shouldn't'!",
     route: "advice/index.html",
     worksheet: "advice/worksheets.html",
+    worksheetRoute: "advice/worksheets.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -226,18 +484,40 @@ const GAMES_REGISTRY = [
     id: "predictions",
     title: "What Will Happen Next?",
     description: "Dramatic frozen cliffhangers where students predict future outcomes with WILL and WON'T before comic reveals.",
+    type: "grammar",
     category: "Grammar Games",
     categoryLabel: "📚 Grammar Games",
     level: "A2",
+    cefrLevel: "A2",
     age: "Ages 8–12",
     ageGroup: "9-10",
     grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
     duration: 30,
     durationText: "30 min",
-    skills: ["Grammar", "Speaking"],
+    estimatedMinutes: 30,
+    xp: 65,
+    skills: ["Grammar", "Reading", "Speaking"],
     topic: "Future Predictions with WILL",
+    topics: ["Future with Will & Won't", "Hypotheses", "Cause & Effect"],
+    languageFocus: "Future predictions: It will... / He won't...",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Comic Cliffhanger & Reveal Stage",
+    difficulty: "Intermediate",
+    tags: ["predictions", "grammar", "will", "future", "won't", "comic", "cliffhanger"],
+    learningObjectives: [
+      "Formulate future predictions using 'will + base verb'",
+      "Formulate negative predictions using 'won't + base verb'",
+      "Defend hypotheses with evidence from visual scene clues"
+    ],
+    teacherInstructions: "Freeze each comic strip at the cliffhanger. Ask students to make predictions using 'I think he will...' before advancing to the reveal.",
+    studentInstructions: "Examine the comic clues, predict what will happen next, and see if you guessed right!",
     route: "predictions/index.html",
     worksheet: "predictions/worksheets.html",
+    worksheetRoute: "predictions/worksheets.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -249,50 +529,43 @@ const GAMES_REGISTRY = [
       </svg>`
   },
   {
-    id: "monster-day",
-    title: "Build Your Own Monster",
-    description: "Real-time SVG creator workshop practicing body parts, numbers, colors, and descriptive adjective order.",
-    category: "Classroom Games",
-    categoryLabel: "🎮 Classroom Games",
-    level: "A1",
-    age: "Ages 6–8",
-    ageGroup: "5-6",
-    grade: "Grades 1–4",
-    duration: 30,
-    durationText: "30 min",
-    skills: ["Speaking", "Vocabulary", "Writing"],
-    topic: "Body Parts & Descriptive Adjectives",
-    route: "monster-day/index.html",
-    worksheet: null,
-    featured: false,
-    thumbnailSvg: `
-      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="140" fill="#f5f3ff"/>
-        <rect x="68" y="40" width="64" height="70" rx="28" fill="#a855f7"/>
-        <polygon points="68,44 58,22 80,36" fill="#fbbf24"/>
-        <polygon points="132,44 142,22 120,36" fill="#fbbf24"/>
-        <circle cx="84" cy="60" r="8" fill="#ffffff"/><circle cx="84" cy="60" r="3.5" fill="#0f172a"/>
-        <circle cx="100" cy="55" r="10" fill="#ffffff"/><circle cx="100" cy="55" r="4.5" fill="#0f172a"/>
-        <circle cx="116" cy="60" r="8" fill="#ffffff"/><circle cx="116" cy="60" r="3.5" fill="#0f172a"/>
-        <path d="M 86 85 Q 100 98 114 85" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-      </svg>`
-  },
-  {
     id: "city-mouse",
     title: "The City Mouse & The Country Mouse",
     description: "Interactive Aesop's fable contrasting urban skyscrapers with calm country fields and comparative adjectives.",
+    type: "story",
     category: "Interactive Stories",
     categoryLabel: "📖 Interactive Stories",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 7–10",
     ageGroup: "7-8",
     grade: "Grades 2–4",
+    grades: ["Grade 2", "Grade 3", "Grade 4"],
     duration: 35,
     durationText: "35 min",
-    skills: ["Reading", "Speaking"],
+    estimatedMinutes: 35,
+    xp: 60,
+    skills: ["Reading", "Speaking", "Vocabulary"],
     topic: "Town vs Country & Comparatives",
+    topics: ["City vs Country", "Contrasts", "Lifestyles", "Comparative Adjectives"],
+    languageFocus: "Comparative adjectives: bigger, quieter, faster, cleaner",
+    activityMode: "Classroom / Whole Group",
+    interactionType: "Interactive Fable & Contrast Hotspots",
+    difficulty: "Beginner",
+    tags: ["fable", "city-mouse", "country-mouse", "reading", "comparatives", "story"],
+    learningObjectives: [
+      "Compare city and countryside environments using comparative adjectives",
+      "Identify sensory adjectives in context (noisy, peaceful, dangerous, tasty)",
+      "Retell the fable events and discuss moral choices"
+    ],
+    teacherInstructions: "Engage students in a Venn diagram activity comparing the two mice's houses and food.",
+    studentInstructions: "Follow the mice to town and country, tap on hidden items, and compare city life with country life!",
     route: "city-mouse/index.html",
     worksheet: "city-mouse/worksheet.html",
+    worksheetRoute: "city-mouse/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -306,21 +579,91 @@ const GAMES_REGISTRY = [
       </svg>`
   },
   {
+    id: "story",
+    title: "The Wizard of Oz",
+    description: "11-scene dramatized reader's theater stage following Dorothy, Scarecrow, Tin Woodman, and Lion down the Yellow Brick Road.",
+    type: "story",
+    category: "Interactive Stories",
+    categoryLabel: "📖 Interactive Stories",
+    level: "A1+",
+    cefrLevel: "A1+",
+    age: "Ages 7–10",
+    ageGroup: "7-8",
+    grade: "Grades 3–5",
+    grades: ["Grade 3", "Grade 4", "Grade 5"],
+    duration: 40,
+    durationText: "40 min",
+    estimatedMinutes: 40,
+    xp: 75,
+    skills: ["Reading", "Speaking", "Listening", "Roleplay"],
+    topic: "Classic Storytelling & Emotions",
+    topics: ["Classic Literature", "Yellow Brick Road", "Character Traits & Feelings"],
+    languageFocus: "Dialogue reading, Character feelings, Narrative past tense",
+    activityMode: "Reader's Theater & Whole Group",
+    interactionType: "11-Scene Dramatized Classroom Stage",
+    difficulty: "Elementary",
+    tags: ["wizard-of-oz", "story", "theater", "reading", "dorothy", "drama"],
+    learningObjectives: [
+      "Read dialogue aloud with expressive character intonation",
+      "Sequence the 11 journey scenes from Kansas to the Emerald City",
+      "Describe character motivations (brain, heart, courage, home)"
+    ],
+    teacherInstructions: "Assign roles to student actors (Dorothy, Scarecrow, Tin Woodman, Lion, Narrator). Advance scenes as students act out their lines.",
+    studentInstructions: "Step into the story, choose your character role, and follow the Yellow Brick Road to meet the Wizard!",
+    route: "story/index.html",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#ede9fe"/>
+        <path d="M 0 140 Q 80 100 100 70 Q 120 40 140 15 L 160 15 Q 140 50 120 80 Q 90 120 0 140 Z" fill="#fde047"/>
+        <rect x="130" y="25" width="16" height="45" rx="2" fill="#10b981"/>
+        <polygon points="138,12 130,25 146,25" fill="#059669"/>
+        <rect x="150" y="35" width="18" height="35" rx="2" fill="#059669"/>
+        <polygon points="159,22 150,35 168,35" fill="#047857"/>
+      </svg>`
+  },
+  {
     id: "detective-prep",
     title: "Detective Prep",
     description: "Rapid-fire 10-minute whiteboard warm-up drilling Wh-questions (Who, Where, What) before the detective mystery.",
+    type: "warmup",
     category: "Quick Warm-ups",
     categoryLabel: "⚡ Quick Warm-ups",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 8–9",
     ageGroup: "9-10",
     grade: "Grade 3",
+    grades: ["Grade 3", "Grade 4"],
     duration: 10,
     durationText: "10 min",
+    estimatedMinutes: 10,
+    xp: 25,
     skills: ["Speaking", "Grammar"],
     topic: "Wh-Questions & Interrogation",
+    topics: ["Wh-Questions", "Detective Warm-up", "Interrogation"],
+    languageFocus: "Interrogative syntax: Who / What / Where / When",
+    activityMode: "Fast-Paced Whole Group Drill",
+    interactionType: "Rapid Interactive Quiz",
+    difficulty: "Beginner",
+    tags: ["warmup", "detective", "questions", "wh-questions", "fast"],
+    learningObjectives: [
+      "Select the correct WH-question word based on answer clues",
+      "Form rapid question structures under timed conditions"
+    ],
+    teacherInstructions: "Use this 10-minute warm-up immediately prior to starting the Treasure Mystery.",
+    studentInstructions: "Answer the quick detective questions and earn your junior investigator badge!",
     route: "treasure/index.html#prep-intro",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -333,20 +676,42 @@ const GAMES_REGISTRY = [
   {
     id: "treasure",
     title: "Treasure Mystery",
-    description: "Solve the royal theft with a 4-team live scoreboard. Cross-examine suspects and evaluate clues.",
+    description: "Solve the royal theft with a 4-team live scoreboard. Cross-examine suspects and evaluate clues using the past continuous tense.",
+    type: "game",
     category: "Mystery & Detective",
     categoryLabel: "🕵️ Mystery & Detective",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 8–10",
     ageGroup: "9-10",
     grade: "Grade 3",
+    grades: ["Grade 3", "Grade 4"],
     duration: 40,
     durationText: "40 min",
-    skills: ["Speaking", "Listening", "Vocabulary"],
+    estimatedMinutes: 40,
+    xp: 80,
+    skills: ["Speaking", "Listening", "Vocabulary", "Grammar"],
     topic: "Past Continuous & Detective Clues",
+    topics: ["Past Continuous", "Interrogatives", "Evidence Evaluation", "Team Scoreboard"],
+    languageFocus: "What were you doing at [time]? / I was [verb-ing]",
+    activityMode: "4-Team Competition",
+    interactionType: "Live Scoreboard Whodunit Investigation",
+    difficulty: "Elementary",
+    tags: ["treasure", "mystery", "detective", "past-continuous", "teams", "investigation"],
+    learningObjectives: [
+      "Ask interrogative past continuous questions ('What were you doing at 3 PM?')",
+      "Answer with appropriate continuous structures ('I was baking a pie in the kitchen')",
+      "Cross-examine witness testimonies to expose contradictory alibis"
+    ],
+    teacherInstructions: "Divide class into 4 detective teams. Award points on the live scoreboard as teams uncover evidence and evaluate suspect alibis.",
+    studentInstructions: "Question the suspects, check their alibis, and identify who stole the royal treasure!",
     route: "treasure/index.html#intro",
     worksheet: null,
-    featured: false,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="140" fill="#fef3c7"/>
@@ -360,19 +725,40 @@ const GAMES_REGISTRY = [
   {
     id: "room-rescue",
     title: "Room Rescue",
-    description: "Restore disorganized rooms by placing furniture items according to precise coordinate clues.",
+    description: "Restore disorganized rooms by placing furniture items according to precise coordinate and spatial prepositions clues.",
+    type: "game",
     category: "Classroom Games",
     categoryLabel: "🎮 Classroom Games",
     level: "A1",
+    cefrLevel: "A1",
     age: "Ages 9–10",
     ageGroup: "9-10",
     grade: "Grade 4",
+    grades: ["Grade 3", "Grade 4"],
     duration: 30,
     durationText: "25–35 min",
+    estimatedMinutes: 30,
+    xp: 50,
     skills: ["Vocabulary", "Speaking", "Grammar"],
     topic: "Furniture & Spatial Prepositions",
+    topics: ["Furniture Vocabulary", "Spatial Prepositions", "Coordinate Placement"],
+    languageFocus: "Place the [item] next to / above / under / between the [item]",
+    activityMode: "Turn-taking & Pairs",
+    interactionType: "Drag-and-Drop Room Staging Challenge",
+    difficulty: "Beginner",
+    tags: ["room", "furniture", "prepositions", "placement", "coordinates"],
+    learningObjectives: [
+      "Name 10 common bedroom and living room furniture items",
+      "Follow audio and written spatial placement instructions accurately"
+    ],
+    teacherInstructions: "Have one student give verbal placement directions while another places items on the interactive board.",
+    studentInstructions: "Listen to the clues and put all the messy furniture in the right spots!",
     route: "treasure/index.html#room-rescue",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -387,19 +773,41 @@ const GAMES_REGISTRY = [
   {
     id: "clil-lab",
     title: "CLIL Crime Lab",
-    description: "Integrate English with science! Examine microscope fibers, compare fingerprint patterns, and test pH.",
+    description: "Integrate English with science! Examine microscope fibers, compare fingerprint patterns, and test pH chemistry.",
+    type: "clil",
     category: "CLIL",
     categoryLabel: "🌍 CLIL",
     level: "A1+",
+    cefrLevel: "A1+",
     age: "Ages 9–10",
     ageGroup: "9-10",
     grade: "Grade 4",
+    grades: ["Grade 4", "Grade 5"],
     duration: 35,
     durationText: "35 min",
+    estimatedMinutes: 35,
+    xp: 70,
     skills: ["CLIL", "Vocabulary", "Reading"],
     topic: "Forensic Science & Investigation",
+    topics: ["Forensic Science", "Microscope Analysis", "Fingerprint Patterns", "Chemical pH"],
+    languageFocus: "Scientific observation chunks: It looks like... / It contains...",
+    activityMode: "Interactive Science Exploration",
+    interactionType: "Virtual Science Lab Simulation",
+    difficulty: "Intermediate",
+    tags: ["clil", "science", "forensics", "microscope", "chemistry", "reading"],
+    learningObjectives: [
+      "Identify scientific lab equipment (microscope, test tube, dropper)",
+      "Compare 3 fingerprint patterns (loop, arch, whorl) in English",
+      "Form conclusions based on chemical test reactions"
+    ],
+    teacherInstructions: "Guide students through the 3 forensic stations, connecting science concepts directly to descriptive language.",
+    studentInstructions: "Put on your lab coat, analyze the evidence under the microscope, and find the forensic match!",
     route: "treasure/index.html#clil-lab",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -415,19 +823,40 @@ const GAMES_REGISTRY = [
   {
     id: "expedition",
     title: "The Last Expedition",
-    description: "Explore world biomes from rainforests to the Arctic, practicing wildlife terms and compass directions.",
+    description: "Explore world biomes from rainforests to the Arctic, practicing wildlife terms, compass directions, and survival gear.",
+    type: "clil",
     category: "CLIL",
     categoryLabel: "🌍 CLIL",
     level: "A1+",
+    cefrLevel: "A1+",
     age: "Ages 9–10",
     ageGroup: "9-10",
     grade: "Grade 4",
+    grades: ["Grade 4", "Grade 5"],
     duration: 35,
     durationText: "30–40 min",
+    estimatedMinutes: 35,
+    xp: 70,
     skills: ["CLIL", "Speaking", "Listening"],
     topic: "Global Biomes & Navigation",
+    topics: ["World Biomes", "Compass Navigation", "Wildlife Adaptations", "Survival Gear"],
+    languageFocus: "Compass directions (North, South, East, West) & Habitat vocabulary",
+    activityMode: "Whole Group Expedition",
+    interactionType: "Interactive Biome Map & Navigation Challenge",
+    difficulty: "Intermediate",
+    tags: ["clil", "geography", "biomes", "compass", "navigation", "expedition"],
+    learningObjectives: [
+      "Use compass directions to plot journey courses",
+      "Identify adaptational traits of animals in Arctic and Desert biomes"
+    ],
+    teacherInstructions: "Have students work in navigation pairs to chart courses across biomes using compass bearings.",
+    studentInstructions: "Pack your expedition backpack, use your compass, and lead your team across the extreme biomes!",
     route: "treasure/index.html#expedition",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -443,18 +872,40 @@ const GAMES_REGISTRY = [
     id: "pokemon",
     title: "Pokémon Trainer Battle",
     description: "Gamified arena showdown where answering grammar challenges powers up attacks and defenses with animated HP bars.",
+    type: "game",
     category: "Classroom Games",
     categoryLabel: "🎮 Classroom Games",
-    level: "A2",
+    level: "A1–A2",
+    cefrLevel: "A1–A2",
     age: "Ages 8–12",
     ageGroup: "9-10",
     grade: "Grades 3–6",
-    duration: 45,
-    durationText: "45 min",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 40,
+    durationText: "40 min",
+    estimatedMinutes: 40,
+    xp: 80,
     skills: ["Grammar", "Speaking", "Vocabulary"],
-    topic: "Action Verbs & Creature Stats",
+    topic: "Action Verbs & Ability with Can",
+    topics: ["Action Verbs", "Ability with Can / Can't", "Creature Stats", "Turn-Based Battles"],
+    languageFocus: "Modal ability (can / can't) and action verb commands",
+    activityMode: "Team Arena Battle",
+    interactionType: "Gamified Battle Arena with Animated HP Bars",
+    difficulty: "Elementary",
+    tags: ["pokemon", "battle", "can", "verbs", "game", "competition"],
+    learningObjectives: [
+      "Use 'can' and 'can't' to describe attack moves and special abilities",
+      "Formulate rapid grammatical responses to power up attacks",
+      "Engage in supportive team competition"
+    ],
+    teacherInstructions: "Split the classroom into Red and Blue Trainer Gyms. Teams take turns answering grammar prompts to unleash attacks.",
+    studentInstructions: "Pick your Pokémon companion, answer grammar questions correctly, and battle to become the champion!",
     route: "pokemon/index.html",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -471,18 +922,40 @@ const GAMES_REGISTRY = [
     id: "jungle",
     title: "Life in the Jungle",
     description: "Join wildlife rangers on conservation missions! Spot jungle animals and evaluate ecosystem health with audio soundscapes.",
+    type: "clil",
     category: "CLIL",
     categoryLabel: "🌍 CLIL",
     level: "A1+",
+    cefrLevel: "A1+",
     age: "Ages 7–11",
     ageGroup: "7-8",
     grade: "Grades 2–5",
-    duration: 40,
-    durationText: "40 min",
+    grades: ["Grade 2", "Grade 3", "Grade 4", "Grade 5"],
+    duration: 35,
+    durationText: "35 min",
+    estimatedMinutes: 35,
+    xp: 65,
     skills: ["CLIL", "Vocabulary", "Listening"],
     topic: "Rainforest Wildlife & Modal Can",
+    topics: ["Rainforest Animals", "Canopy Layers", "Food Chains", "Wildlife Conservation"],
+    languageFocus: "Rainforest habitats, animal diets (carnivore/herbivore), ability with can",
+    activityMode: "Interactive Wildlife Tour",
+    interactionType: "Audio Soundscape & Canopy Explorer",
+    difficulty: "Elementary",
+    tags: ["jungle", "animals", "clil", "rainforest", "science", "listening"],
+    learningObjectives: [
+      "Name 8 rainforest animals and their canopy habitats",
+      "Describe animal diets and abilities using 'It can climb/fly/hunt'",
+      "Identify rainforest layers (emergent, canopy, understory, forest floor)"
+    ],
+    teacherInstructions: "Play jungle audio soundscapes. Have students guess animal sounds before revealing them in their respective canopy layers.",
+    studentInstructions: "Climb through the jungle trees, listen to animal calls, and identify where each creature lives!",
     route: "jungle/index.html",
     worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
     featured: false,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -495,6 +968,112 @@ const GAMES_REGISTRY = [
         <rect x="145" y="70" width="10" height="60" fill="#78350f"/>
         <path d="M 0 140 Q 40 95 80 140 Z" fill="#065f46"/>
         <path d="M 120 140 Q 160 100 200 140 Z" fill="#065f46"/>
+      </svg>`
+  },
+  {
+    id: "res-global-readings-2",
+    title: "Global Readings 2: Student's Book",
+    description: "Macmillan Primary Literacy Anthology featuring 10 thematic units, phonics review, sequencing, Clara Doodle's inventions, Chuseok festival, and science connections.",
+    type: "textbook",
+    category: "Curriculum Textbook",
+    categoryLabel: "📖 Curriculum Textbook",
+    level: "Level 2",
+    cefrLevel: "A1+",
+    age: "Ages 7–10",
+    ageGroup: "7-8",
+    grade: "Grade 2-3",
+    grades: ["Grade 2", "Grade 3"],
+    duration: 45,
+    durationText: "45 min",
+    estimatedMinutes: 45,
+    xp: 60,
+    skills: ["Reading", "Vocabulary", "Speaking", "Phonics", "Writing"],
+    topic: "Inventions, Technology & Culture",
+    topics: ["Inventions", "Technology", "Problem Solving", "Biomimicry", "Culture & Harvest"],
+    languageFocus: "Identifying sequence of events, Long vowels & blends, Action verbs in context",
+    activityMode: "Whole Class Reading & Anthologies",
+    interactionType: "Digital Textbook Reader & Interactive Annotator",
+    difficulty: "Elementary",
+    tags: ["textbook", "macmillan", "reading", "inventions", "phonics", "anthology"],
+    learningObjectives: [
+      "Identify chronological sequence of events (First, Second, Third, Last)",
+      "Decode long vowels and consonant blend minimal pairs",
+      "Analyze the 5-step engineering process: Think -> Plan -> Test -> Improve"
+    ],
+    teacherInstructions: "Launch the textbook reader to display authentic high-resolution page scans, accompanying phonics drills, and discussion questions.",
+    studentInstructions: "Turn the pages, read about real-life inventors and celebrations, and solve the reading comprehension challenges!",
+    route: "javascript:openTextbookViewer(1, 'book-global-readings-2')",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#fef3c7"/>
+        <rect x="45" y="20" width="110" height="95" rx="6" fill="#3b82f6" stroke="#1d4ed8" stroke-width="2"/>
+        <path d="M 100 20 L 100 115" stroke="#ffffff" stroke-width="3"/>
+        <rect x="55" y="32" width="36" height="6" rx="2" fill="#ffffff" opacity="0.9"/>
+        <rect x="55" y="44" width="30" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="55" y="52" width="32" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="110" y="32" width="36" height="6" rx="2" fill="#facc15"/>
+        <rect x="110" y="44" width="30" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="110" y="52" width="32" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="25" y="116" width="150" height="18" rx="4" fill="#1d4ed8"/>
+        <text x="100" y="129" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">GLOBAL READINGS 2 📚</text>
+      </svg>`
+  },
+  {
+    id: "res-global-readings-3",
+    title: "Global Readings 3: Student's Book",
+    description: "Macmillan Primary Literacy Anthology featuring 10 advanced units on neuroscience, wildlife habitats, teamwork, ecology, and literature.",
+    type: "textbook",
+    category: "Curriculum Textbook",
+    categoryLabel: "📖 Curriculum Textbook",
+    level: "Level 3",
+    cefrLevel: "A2",
+    age: "Ages 9–11",
+    ageGroup: "9-10",
+    grade: "Grade 4",
+    grades: ["Grade 4", "Grade 5"],
+    duration: 45,
+    durationText: "45 min",
+    estimatedMinutes: 45,
+    xp: 75,
+    skills: ["Reading", "Vocabulary", "Speaking", "Neuroscience", "Writing"],
+    topic: "Literature, Brain Science & Ecology",
+    topics: ["Literature", "Brain Science", "Habitats", "Teamwork", "Ecology"],
+    languageFocus: "Skimming, Scanning, Chronological order, Cause and effect, Character analysis",
+    activityMode: "Whole Class Reading & Anthologies",
+    interactionType: "Digital Textbook Reader & Interactive Annotator",
+    difficulty: "Intermediate",
+    tags: ["textbook", "macmillan", "brain", "habitats", "literature", "advanced"],
+    learningObjectives: [
+      "Skim informational and literary texts for main themes and specific details",
+      "Identify chronological order and character motivations",
+      "Understand brain growth and learning plasticity through reading"
+    ],
+    teacherInstructions: "Open the digital anthology viewer for Grade 4 units. Use reading check exercises for collaborative literature circles.",
+    studentInstructions: "Explore advanced stories, discover how your brain learns new languages, and answer the reading comprehension challenges!",
+    route: "javascript:openTextbookViewer(1, 'book-global-readings-3')",
+    worksheet: null,
+    worksheetRoute: null,
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#f0fdf4"/>
+        <rect x="45" y="20" width="110" height="95" rx="6" fill="#10b981" stroke="#047857" stroke-width="2"/>
+        <path d="M 100 20 L 100 115" stroke="#ffffff" stroke-width="3"/>
+        <circle cx="75" cy="50" r="14" fill="#d1fae5"/>
+        <rect x="110" y="32" width="36" height="6" rx="2" fill="#fbbf24"/>
+        <rect x="110" y="44" width="30" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="110" y="52" width="32" height="4" rx="1" fill="#ffffff" opacity="0.7"/>
+        <rect x="25" y="116" width="150" height="18" rx="4" fill="#047857"/>
+        <text x="100" y="129" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">GLOBAL READINGS 3 📚</text>
       </svg>`
   }
 ];
