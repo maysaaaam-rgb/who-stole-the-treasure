@@ -1,0 +1,1404 @@
+/* ==========================================================================
+   CLARA'S INVENTOR MYSTERY & THE INVENTOR CHALLENGE
+   A1+ Young Learners Laboratory Stylesheet
+   ========================================================================== */
+
+:root {
+  --lab-bg: #0a1124;
+  --lab-canvas: #0f1c38;
+  --lab-surface: #17274d;
+  --lab-surface-light: #213566;
+  --lab-border: #2e4780;
+  --lab-border-highlight: #38bdf8;
+  --lab-text: #f8fafc;
+  --lab-text-muted: #94a3b8;
+  --lab-cyan: #38bdf8;
+  --lab-gold: #fbbf24;
+  --lab-gold-dark: #d97706;
+  --lab-green: #34d399;
+  --lab-purple: #a855f7;
+  --lab-red: #f87171;
+  --team-alpha: #3b82f6;
+  --team-beta: #eab308;
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--lab-bg);
+  background-image: 
+    radial-gradient(rgba(56, 189, 248, 0.08) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(251, 191, 36, 0.04) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+  color: var(--lab-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+#clara-app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ==========================================================================
+   TOP PERSISTENT HUD
+   ========================================================================== */
+
+#clara-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: rgba(15, 28, 56, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--lab-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hud-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--lab-gold);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.hud-brand:hover {
+  background: rgba(251, 191, 36, 0.15);
+}
+
+.lesson-tabs {
+  display: flex;
+  background: var(--lab-canvas);
+  border: 1.5px solid var(--lab-border);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.lesson-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--lab-text-muted);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.lesson-tab-btn:hover {
+  color: var(--lab-text);
+}
+
+.lesson-tab-btn.active {
+  background: var(--lab-cyan);
+  color: #041226;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.35);
+}
+
+.lesson-tab-btn.gold.active {
+  background: var(--lab-gold);
+  color: #261604;
+}
+
+.stage-tracker-pill {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.88rem;
+  background: var(--lab-surface);
+  border: 1.5px solid var(--lab-cyan);
+  color: var(--lab-cyan);
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-btn {
+  background: var(--lab-surface);
+  border: 1.5px solid var(--lab-border);
+  color: var(--lab-text);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 7px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  min-height: 38px;
+}
+
+.hud-btn:hover {
+  background: var(--lab-surface-light);
+  border-color: var(--lab-cyan);
+  transform: translateY(-1px);
+}
+
+.hud-btn.primary {
+  background: var(--lab-cyan);
+  border-color: var(--lab-cyan);
+  color: #041226;
+  font-weight: 800;
+}
+
+.hud-btn.primary:hover {
+  background: #7dd3fc;
+}
+
+.hud-btn.gold {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: var(--lab-gold);
+  color: var(--lab-gold);
+}
+
+.hud-btn.gold:hover {
+  background: var(--lab-gold);
+  color: #261604;
+}
+
+/* Dual-Team Classroom Scoreboard */
+.team-scoreboard {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--lab-canvas);
+  border: 1.5px solid var(--lab-border);
+  border-radius: 12px;
+  padding: 3px 6px;
+}
+
+.team-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+.team-pill.team-alpha {
+  background: rgba(59, 130, 246, 0.18);
+  color: #93c5fd;
+}
+
+.team-pill.team-beta {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fde047;
+}
+
+.team-score-num {
+  font-size: 0.95rem;
+  font-weight: 900;
+  min-width: 18px;
+  text-align: center;
+}
+
+.team-btn-add {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: inherit;
+  font-weight: 900;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.team-btn-add:hover {
+  transform: scale(1.15);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* XP Tracker Pill */
+.xp-tracker-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3));
+  border: 1.5px solid var(--lab-gold);
+  color: var(--lab-gold);
+  padding: 5px 12px;
+  border-radius: 12px;
+}
+
+/* ==========================================================================
+   MAIN CONTENT STAGE
+   ========================================================================== */
+
+#clara-stage-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.scene-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeInStage 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInStage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stage Header */
+.stage-header {
+  background: var(--lab-surface);
+  border: 1.5px solid var(--lab-border);
+  border-radius: 20px;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stage-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stage-tagline {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--lab-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stage-main-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.stage-instruction {
+  font-size: 1.05rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Speaking Prompts Banner */
+.speaking-banner {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(168, 85, 247, 0.12));
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 14px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.speaking-banner .speak-text {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.speaking-banner .speak-text span.highlight {
+  color: var(--lab-gold);
+}
+
+/* Big Action Buttons */
+.action-btn {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 12px 24px;
+  border-radius: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 52px;
+}
+
+.action-btn:hover {
+  border-color: var(--lab-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.2);
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #38bdf8;
+}
+
+.action-btn.gold {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #fbbf24;
+}
+
+.action-btn.green {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #34d399;
+}
+
+.action-btn.red {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: #f87171;
+}
+
+/* ==========================================================================
+   PART 1: MYSTERY MASHUP CARDS (LESSON 1)
+   ========================================================================== */
+
+.mystery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.mystery-card {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mystery-card:hover {
+  border-color: var(--lab-cyan);
+  transform: translateY(-4px);
+  background: var(--lab-surface-light);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.mystery-card.revealed {
+  border-color: var(--lab-gold);
+  background: linear-gradient(180deg, var(--lab-surface), #261f42);
+}
+
+.mystery-equation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 2.4rem;
+  margin-bottom: 6px;
+}
+
+.mystery-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.mystery-desc {
+  font-size: 0.95rem;
+  color: var(--lab-text-muted);
+  line-height: 1.4;
+}
+
+.mystery-answer {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--lab-cyan);
+  color: #e0f2fe;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+/* Junior Inventor Badge Banner */
+.badge-hero-banner {
+  background: linear-gradient(135deg, #1e1b4b, #0f274a);
+  border: 2px solid var(--lab-gold);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 12px 40px rgba(251, 191, 36, 0.15);
+  flex-wrap: wrap;
+}
+
+.badge-graphic {
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle, #fbbf24 30%, #d97706 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.4);
+  flex-shrink: 0;
+}
+
+.badge-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.badge-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--lab-gold);
+}
+
+.badge-desc {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   PART 2: WHAT DOES IT DO? (5 INVENTIONS)
+   ========================================================================== */
+
+.inventions-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.invention-card {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.invention-card:hover {
+  border-color: var(--lab-cyan);
+  transform: translateY(-3px);
+  background: var(--lab-surface-light);
+}
+
+.invention-card.selected {
+  border-color: var(--lab-gold);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.invention-card.correct {
+  border-color: var(--lab-green) !important;
+  background: rgba(52, 211, 153, 0.12) !important;
+}
+
+.invention-card.wrong {
+  border-color: var(--lab-red) !important;
+  animation: shakeCard 0.4s ease;
+}
+
+@keyframes shakeCard {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.inv-icon-box {
+  width: 72px;
+  height: 72px;
+  background: var(--lab-canvas);
+  border-radius: 16px;
+  border: 1.5px solid var(--lab-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+}
+
+.inv-name {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.inv-textbook-quote {
+  font-size: 0.85rem;
+  color: var(--lab-cyan);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.clue-box {
+  background: linear-gradient(135deg, #182848, #2a3b63);
+  border: 2px solid var(--lab-cyan);
+  border-radius: 18px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.clue-text-big {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   PART 3: READING DETECTIVES (6 MISSIONS)
+   ========================================================================== */
+
+.detective-mission-card {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mission-breadcrumbs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mission-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--lab-canvas);
+  border: 1.5px solid var(--lab-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--lab-text-muted);
+  cursor: pointer;
+}
+
+.mission-dot.active {
+  background: var(--lab-cyan);
+  border-color: var(--lab-cyan);
+  color: #041226;
+}
+
+.mission-dot.done {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: var(--lab-green);
+  color: var(--lab-green);
+}
+
+.mission-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 860px) {
+  .mission-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.story-chunk-box {
+  background: #091326;
+  border: 2px solid var(--lab-border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.story-chunk-page-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--lab-gold);
+  text-transform: uppercase;
+}
+
+.story-sentence {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.story-sentence.highlight {
+  background: rgba(251, 191, 36, 0.22);
+  border-left: 4px solid var(--lab-gold);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.mission-questions-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mission-q-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-choice-btn {
+  background: var(--lab-surface-light);
+  border: 2px solid var(--lab-border);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 14px 18px;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.18s ease;
+}
+
+.option-choice-btn:hover {
+  border-color: var(--lab-cyan);
+  background: #2b4582;
+  transform: translateX(4px);
+}
+
+.option-choice-btn.correct {
+  border-color: var(--lab-green) !important;
+  background: rgba(52, 211, 153, 0.2) !important;
+  color: #6ee7b7;
+}
+
+.option-choice-btn.wrong {
+  border-color: var(--lab-red) !important;
+  background: rgba(248, 113, 113, 0.2) !important;
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   PART 4: 4-CORNERS TRUE / FALSE (LESSON 1)
+   ========================================================================== */
+
+.four-corners-box {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 24px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+  position: relative;
+}
+
+.statement-display {
+  background: #091326;
+  border: 2px solid var(--lab-cyan);
+  border-radius: 18px;
+  padding: 28px 20px;
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.tf-choice-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.tf-giant-btn {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 28px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 3px solid transparent;
+}
+
+.tf-giant-btn.true-btn {
+  background: linear-gradient(145deg, #059669, #047857);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+}
+
+.tf-giant-btn.true-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+}
+
+.tf-giant-btn.false-btn {
+  background: linear-gradient(145deg, #dc2626, #b91c1c);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
+}
+
+.tf-giant-btn.false-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 35px rgba(239, 68, 68, 0.4);
+}
+
+.kinesthetic-banner {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1.5px dashed var(--lab-gold);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: var(--lab-gold);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   PART 5: BUILD CLARA'S STORY (DRAG & DROP SEQUENCING)
+   ========================================================================== */
+
+.story-timeline-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.timeline-slot {
+  background: rgba(9, 19, 38, 0.7);
+  border: 2px dashed var(--lab-border);
+  border-radius: 16px;
+  padding: 14px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.timeline-slot.over {
+  border-color: var(--lab-cyan);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.slot-label {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--lab-cyan);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.story-draggable-card {
+  background: var(--lab-surface);
+  border: 1.5px solid var(--lab-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  cursor: grab;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.story-draggable-card:active {
+  cursor: grabbing;
+}
+
+.story-draggable-card:hover {
+  border-color: var(--lab-cyan);
+  transform: translateY(-2px);
+  background: var(--lab-surface-light);
+}
+
+.story-draggable-card.in-slot {
+  background: #1e293b;
+  border-color: var(--lab-gold);
+}
+
+/* ==========================================================================
+   PART 6: MY INVENTION STUDIO & BADGES
+   ========================================================================== */
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 860px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.studio-picker-box {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mashup-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mashup-chip {
+  background: var(--lab-canvas);
+  border: 1.5px solid var(--lab-border);
+  color: var(--lab-text);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mashup-chip:hover {
+  border-color: var(--lab-cyan);
+  color: #ffffff;
+}
+
+.mashup-chip.selected {
+  background: var(--lab-purple);
+  border-color: #d8b4fe;
+  color: #ffffff;
+}
+
+.blueprint-preview-box {
+  background: #061129;
+  border: 2px solid #0284c7;
+  border-radius: 20px;
+  padding: 24px;
+  background-image: linear-gradient(rgba(2, 132, 199, 0.15) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(2, 132, 199, 0.15) 1px, transparent 1px);
+  background-size: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.blueprint-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  padding-bottom: 10px;
+}
+
+.blueprint-stamp {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--lab-cyan);
+  border: 1.5px solid var(--lab-cyan);
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+.blueprint-screen {
+  min-height: 180px;
+  border: 1.5px dashed rgba(56, 189, 248, 0.4);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  gap: 10px;
+}
+
+.blueprint-speech-output {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid var(--lab-gold);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: #f8fafc;
+}
+
+/* ==========================================================================
+   LESSON 2: THE HUMAN TABLET SIMULATOR
+   ========================================================================== */
+
+.tablet-container {
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.tablet-frame {
+  width: 100%;
+  max-width: 540px;
+  background: #1e293b;
+  border: 12px solid #0f172a;
+  border-radius: 36px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.tablet-power-btn {
+  position: absolute;
+  top: -14px;
+  right: 48px;
+  background: #334155;
+  border: 2px solid #64748b;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tablet-power-btn.powered {
+  background: var(--lab-green);
+  border-color: #6ee7b7;
+  color: #041226;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+}
+
+.tablet-screen {
+  background: #020617;
+  border-radius: 20px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #1e293b;
+}
+
+.tablet-screen.screen-off {
+  background: #020617;
+  color: #475569;
+}
+
+.password-display {
+  font-family: monospace;
+  font-size: 2rem;
+  letter-spacing: 8px;
+  color: var(--lab-cyan);
+  margin-bottom: 12px;
+}
+
+.tablet-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 220px;
+}
+
+.keypad-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.keypad-btn:hover {
+  background: #334155;
+  border-color: var(--lab-cyan);
+}
+
+/* Playable Mini Bunny Game on Tablet */
+.bunny-game-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.bunny-canvas-area {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(180deg, #38bdf8 0%, #86efac 70%, #22c55e 100%);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bunny-sprite {
+  font-size: 3.5rem;
+  transition: transform 0.15s ease;
+}
+
+.carrot-sprite {
+  font-size: 2.2rem;
+  position: absolute;
+  top: 30px;
+  animation: floatCarrot 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes floatCarrot {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+/* ==========================================================================
+   LESSON 2: 4-STAGE INVENTOR PROCESS (IDEA, PLAN, MAKE, TEST)
+   ========================================================================== */
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.process-card {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.process-order-tag {
+  background: var(--lab-cyan);
+  color: #041226;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.process-card.gold-tag .process-order-tag {
+  background: var(--lab-gold);
+}
+
+.process-card.green-tag .process-order-tag {
+  background: var(--lab-green);
+}
+
+.process-card.purple-tag .process-order-tag {
+  background: var(--lab-purple);
+  color: #ffffff;
+}
+
+.process-icon-box {
+  width: 80px;
+  height: 80px;
+  background: var(--lab-canvas);
+  border: 2px solid var(--lab-border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+}
+
+.process-action-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.process-action-desc {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* Sequence Relay Timer Banner */
+.relay-timer-bar {
+  background: linear-gradient(135deg, #1e1b4b, #2e1065);
+  border: 2px solid var(--lab-purple);
+  border-radius: 18px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.relay-timer-num {
+  font-family: monospace;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #facc15;
+}
+
+/* ==========================================================================
+   PHONICS STATION: CL / cl- BLENDS
+   ========================================================================== */
+
+.phonics-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.phonics-card {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.phonics-card:hover {
+  border-color: var(--lab-cyan);
+  transform: translateY(-3px);
+  background: var(--lab-surface-light);
+}
+
+.phonics-word {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.phonics-word span.cl-blend {
+  color: var(--lab-gold);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   TEACHER CONTROL MODAL
+   ========================================================================== */
+
+.clara-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 24, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.clara-modal-box {
+  background: var(--lab-surface);
+  border: 2px solid var(--lab-border);
+  border-radius: 24px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--lab-canvas);
+  border: 1px solid var(--lab-border);
+  color: var(--lab-text);
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  background: var(--lab-red);
+  color: #ffffff;
+}
+
+/* Toast Notification */
+#clara-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid var(--lab-cyan);
+  color: #ffffff;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 300;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+#clara-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   PRINT MEDIA RULES (WORKSHEETS & CLASSROOM CARDS)
+   ========================================================================== */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  #clara-hud, .team-scoreboard, .action-btn, #clara-toast {
+    display: none !important;
+  }
+}

@@ -865,7 +865,7 @@
 
       const BUILTIN_IDS = new Set([
         'story-engine-alice', 'alice', 'yesterday-detectives', 'detectives',
-        'inventor-lab', 'robots', 'feelings', 'camp-mystery', 'phonics-adventure',
+        'inventor-lab', 'clara-inventor', 'robots', 'feelings', 'camp-mystery', 'phonics-adventure',
         'monster-day', 'story-space', 'mouse', 'pokemon', 'firefighter', 'restaurant',
         'predictions', 'advice', 'neighbourhood', 'wizard-of-oz', 'simon-says-classroom',
         'book-global-readings-2-unit-1', 'book-global-readings-3-unit-1',

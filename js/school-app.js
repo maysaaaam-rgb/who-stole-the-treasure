@@ -845,7 +845,8 @@
       'firefighter': 'firefighter/index.html',
       'nh': 'NH/index.html',
       'yesterday-detectives': 'detectives/index.html',
-      'inventor-lab': 'inventor-lab/index.html'
+      'inventor-lab': 'inventor-lab/index.html',
+      'clara-inventor': 'clara-inventor/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

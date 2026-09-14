@@ -258,6 +258,65 @@ const GAMES_REGISTRY = [
       </svg>`
   },
   {
+    id: "clara-inventor",
+    title: "Clara's Inventor Mystery & The Inventor Challenge",
+    description: "Two energetic, interactive 35-minute ESL lessons based on Global Readings 2 (pp. 10–17). Lesson 1 explores Clara's workshop, 5 bizarre inventions, 6 reading detective missions, and 4-Corners True/False. Lesson 2 teaches SEQUENCE (First, Second, Third, Last), the Human Tablet game, and the 4-Stage Inventor Process.",
+    type: "game",
+    category: "Speaking Games",
+    categoryLabel: "🗣️ Speaking Games",
+    level: "A1+",
+    cefrLevel: "A1+",
+    age: "Ages 8–12",
+    ageGroup: "8-12",
+    grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 70,
+    durationText: "2 × 35 min",
+    estimatedMinutes: 70,
+    xp: 250,
+    skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Deduction", "Phonics"],
+    topic: "Inventions, Sequence & Problem Solving",
+    topics: ["Inventions", "Clara Doodle", "Sequence Words", "First Second Third Last", "4 Stages of Inventing", "Phonics CL"],
+    languageFocus: "First, Second, Third, Last, It can [verb], This invention is for [noun], What does it do?",
+    activityMode: "Interactive Whole Group / Pair Investigation / Kinesthetic 4-Corners",
+    interactionType: "Interactive Game-Based Lessons with Dual-Team Scoreboard, Tablet Simulator & Pitch Stage",
+    difficulty: "Scaffolded (A1+ to Hard Mode)",
+    tags: ["clara-doodle", "inventions", "sequence", "first-second-third-last", "reading-detective", "four-corners", "phonics-cl", "stem"],
+    learningObjectives: [
+      "Understand Clara Doodle's story and locate textual evidence for 6 reading missions",
+      "Identify 5 wacky inventions and explain their primary functions in simple sentences",
+      "Master temporal sequencing words: First, Second, Third, and Last in oral and written tasks",
+      "Apply the 4-stage inventor process (Idea, Plan, Make, Test) to solve real-world dilemmas",
+      "Pronounce and identify initial CL- consonant blends (climb, clue, cloud, close, clap)"
+    ],
+    teacherInstructions: "Launch on the smartboard for whole-class engagement. Switch between Lesson 1 (35m) and Lesson 2 (35m) using the top HUD tabs. Utilize the dual-team scoreboard and printable companion worksheet.",
+    studentInstructions: "Join Clara Doodle's workshop! Crack 6 reading mysteries, test the Human Tablet, arrange the 4-stage sequence, and build your own wacky invention!",
+    route: "clara-inventor/index.html",
+    worksheet: "clara-inventor/worksheet.html",
+    worksheetRoute: "clara-inventor/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="claraThumbBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0a1124"/>
+            <stop offset="100%" stop-color="#1e293b"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#claraThumbBg)"/>
+        <rect x="15" y="15" width="170" height="110" rx="12" fill="#0f1c38" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5,3"/>
+        <circle cx="70" cy="52" r="22" fill="#38bdf8" opacity="0.2"/>
+        <text x="70" y="62" font-size="28" text-anchor="middle">💡</text>
+        <circle cx="130" cy="52" r="22" fill="#fbbf24" opacity="0.2"/>
+        <text x="130" y="62" font-size="28" text-anchor="middle">📱</text>
+        <rect x="25" y="90" width="150" height="22" rx="11" fill="#38bdf8"/>
+        <text x="100" y="105" font-family="sans-serif" font-weight="900" font-size="9" fill="#041226" text-anchor="middle" letter-spacing="0.5">CLARA'S INVENTOR MYSTERY 🚀</text>
+      </svg>`
+  },
+  {
     id: "robots",
     title: "Amazing Robots Around the World",
     description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries.",

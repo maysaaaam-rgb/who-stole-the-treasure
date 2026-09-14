@@ -450,6 +450,31 @@
       featured: true,
       archived: false,
       description: "Interactive classroom ESL lesson based on Global Readings Unit 1: investigate mystery clues, test machines, explore Clara Doodle's inventions, and build an original creation."
+    },
+    {
+      id: "clara-inventor",
+      title: "Clara's Inventor Mystery & The Inventor Challenge",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 70,
+      skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Deduction", "Phonics"],
+      topics: ["Inventions", "Clara Doodle", "Sequence Words", "First Second Third Last", "4 Stages of Inventing", "Phonics CL"],
+      objectives: [
+        "Understand Clara Doodle's story and locate textual evidence for 6 reading missions",
+        "Identify 5 wacky inventions and explain their primary functions in simple sentences",
+        "Master temporal sequencing words: First, Second, Third, and Last in oral and written tasks",
+        "Apply the 4-stage inventor process (Idea, Plan, Make, Test) to solve real-world dilemmas",
+        "Pronounce and identify initial CL- consonant blends (climb, clue, cloud, close, clap)"
+      ],
+      route: "clara-inventor/index.html",
+      worksheet: "clara-inventor/worksheet.html",
+      worksheetRoute: "clara-inventor/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Two energetic, interactive 35-minute ESL lessons based on Global Readings 2 (pp. 10–17). Lesson 1 explores Clara's workshop, 5 bizarre inventions, 6 reading detective missions, and 4-Corners True/False. Lesson 2 teaches SEQUENCE (First, Second, Third, Last), the Human Tablet game, and the 4-Stage Inventor Process."
     }
   ];
 
@@ -8278,6 +8303,10 @@
               const detRes = CANONICAL_GAMES.find(g => g.id === 'yesterday-detectives');
               if (detRes && !merged.resources.some(r => r.id === 'yesterday-detectives')) {
                 merged.resources.unshift(detRes);
+              }
+              const claraRes = CANONICAL_GAMES.find(g => g.id === 'clara-inventor');
+              if (claraRes && !merged.resources.some(r => r.id === 'clara-inventor')) {
+                merged.resources.unshift(claraRes);
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>💡 Clara's Inventor Mystery & The Inventor Challenge | Interactive ESL Lessons (A1+)</title>
+  <link rel="stylesheet" href="css/clara.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive App Wrapper -->
+  <div id="clara-app-wrapper">
+
+    <!-- Top Persistent HUD -->
+    <header id="clara-hud">
+      <div class="hud-group">
+        <button class="hud-brand" onclick="window.claraApp.goToStage('lesson1', 1)" title="Return to Lesson 1 Induction">
+          💡 <span>Clara's Workshop</span>
+        </button>
+
+        <!-- Lesson Selector Tabs -->
+        <div class="lesson-tabs">
+          <button class="lesson-tab-btn active" data-lesson="lesson1" onclick="window.claraApp.switchLesson('lesson1')">
+            L1: Mystery (35m)
+          </button>
+          <button class="lesson-tab-btn gold" data-lesson="lesson2" onclick="window.claraApp.switchLesson('lesson2')">
+            L2: Challenge (35m)
+          </button>
+          <button class="lesson-tab-btn" data-lesson="phonics" onclick="window.claraApp.switchLesson('phonics')">
+            🔤 Phonics CL
+          </button>
+        </div>
+
+        <button class="hud-btn" onclick="window.claraApp.prevStage()" title="Previous Stage">
+          ⬅️ <span>Prev</span>
+        </button>
+
+        <button class="hud-btn" onclick="window.claraApp.nextStage()" title="Next Stage">
+          <span>Next</span> ➡️
+        </button>
+
+        <!-- Stage Tracker Pill -->
+        <div class="stage-tracker-pill" id="hud-stage-tracker">
+          1. 🔍 Wacky Mystery Warm-up
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <!-- Dual-Team Classroom Scoreboard -->
+        <div class="team-scoreboard">
+          <div class="team-pill team-alpha" title="Team Alpha Points">
+            <span>🔵 Alpha:</span>
+            <span class="team-score-num" id="score-teamA">0</span>
+            <button class="team-btn-add" onclick="window.claraApp.addScore('teamA', 1)">+1</button>
+          </div>
+          <div class="team-pill team-beta" title="Team Beta Points">
+            <span>🟡 Beta:</span>
+            <span class="team-score-num" id="score-teamB">0</span>
+            <button class="team-btn-add" onclick="window.claraApp.addScore('teamB', 1)">+1</button>
+          </div>
+        </div>
+
+        <!-- XP Tracker Pill -->
+        <div class="xp-tracker-pill" title="Total Accumulated Experience Points">
+          <span>🌟</span>
+          <span id="hud-xp-val">0</span>
+          <span>XP</span>
+        </div>
+
+        <!-- Audio Toggles -->
+        <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.claraAudio.toggleSfx(); this.textContent = on ? '🔊 SFX' : '🔇 SFX';" title="Toggle Sound Effects">
+          🔊 SFX
+        </button>
+        <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.claraAudio.toggleSpeech(); this.textContent = on ? '🗣️ TTS' : '🤐 TTS';" title="Toggle Speech Read-Aloud">
+          🗣️ TTS
+        </button>
+
+        <!-- Teacher Control Center -->
+        <button class="hud-btn" onclick="window.claraApp.openTeacherModal()" title="Teacher Navigation & Guide">
+          ⚙️ <span>Teacher</span>
+        </button>
+
+        <!-- Printable Companion -->
+        <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Open Printable Classroom Kit">
+          🖨️ <span>Worksheet</span>
+        </a>
+
+        <!-- Return to Library -->
+        <a href="../index.html#library" class="hud-btn" title="Back to Library">
+          📚 <span>Library</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Stage Area -->
+    <main id="clara-stage-container">
+      <!-- Injected dynamically by clara-scenes.js -->
+    </main>
+
+  </div>
+
+  <!-- Reusable Teacher Control Center Modal -->
+  <div class="clara-modal-overlay" id="clara-modal" style="display:none;" onclick="if(event.target === this) window.claraApp.closeModal();">
+    <div class="clara-modal-box">
+      <button class="modal-close-btn" onclick="window.claraApp.closeModal()">✕</button>
+      <div id="modal-content-area"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Bar -->
+  <div id="clara-toast"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/clara-audio.js"></script>
+  <script src="js/clara-data.js"></script>
+  <script src="js/clara-scenes.js"></script>
+  <script src="js/clara-app.js"></script>
+</body>
+</html>
