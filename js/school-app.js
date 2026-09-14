@@ -838,7 +838,7 @@
       'alice': 'story-engine/index.html?story=alice',
       'robots': 'robots/index.html',
       'feelings': 'feelings/index.html',
-      'monster-day': 'monster day/index.html',
+      'monster-day': 'monster-day/index.html',
       'story-space': 'story/space/index.html',
       'mouse': 'mouse/index.html',
       'pokemon': 'pokemon/index.html',
@@ -3482,7 +3482,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + ' · Game: ' + a.gameId + '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
+                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster-day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
               '</div>' +
             '</div>'
           ).join('') +
@@ -4134,6 +4134,23 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<polygon points="100,48 104,59 116,59 106,66 110,78 100,71 90,78 94,66 84,59 96,59" fill="#fbbf24"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#dc2626"/>' +
         '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SUPER HERO ACADEMY 🦸</text>' +
+      '</svg>';
+    }
+
+    if (id === 'monster-day' || id === 'monster' || title.includes('Monster')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-monster" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4c1d95"/><stop offset="50%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#db2777"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-monster)"/>' +
+        '<polygon points="68,38 52,14 80,28" fill="#fbbf24"/>' +
+        '<polygon points="132,38 148,14 120,28" fill="#fbbf24"/>' +
+        '<rect x="55" y="30" width="90" height="74" rx="36" fill="#a855f7" stroke="#ffffff" stroke-width="2.5"/>' +
+        '<circle cx="76" cy="52" r="10" fill="#ffffff"/><circle cx="76" cy="52" r="4.5" fill="#0f172a"/>' +
+        '<circle cx="100" cy="46" r="13" fill="#ffffff"/><circle cx="100" cy="46" r="6" fill="#0f172a"/>' +
+        '<circle cx="124" cy="52" r="10" fill="#ffffff"/><circle cx="124" cy="52" r="4.5" fill="#0f172a"/>' +
+        '<path d="M 76 76 Q 100 96 124 76" fill="#4c1d95" stroke="#ffffff" stroke-width="2"/>' +
+        '<polygon points="86,77 92,86 98,78" fill="#ffffff"/><polygon points="102,78 108,86 114,77" fill="#ffffff"/>' +
+        '<rect x="25" y="112" width="150" height="20" rx="10" fill="#fde047"/>' +
+        '<text x="100" y="126" font-family="sans-serif" font-weight="900" font-size="9.5" fill="#581c87" text-anchor="middle" letter-spacing="0.5">BUILD YOUR MONSTER! 👾</text>' +
       '</svg>';
     }
 

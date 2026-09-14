@@ -649,53 +649,69 @@ const GAMES_REGISTRY = [
   },
   {
     id: "monster-day",
-    title: "Build Your Own Monster",
-    description: "Real-time SVG creator workshop practicing body parts, numbers, colors, descriptive adjective order, and 'I have got / It has got...'",
+    title: "Build Your Own Monster!",
+    description: "Interactive real-time SVG monster creator workshop practicing body parts, colors, numbers, and 'It has got / I have got...' with speaking, listening, and secret monster modes.",
     type: "game",
     category: "Classroom Games",
     categoryLabel: "🎮 Classroom Games",
-    level: "Pre-A1",
-    cefrLevel: "Pre-A1",
-    age: "Ages 5–8",
-    ageGroup: "5-6",
-    grade: "Grades 1–3",
-    grades: ["Grade 1", "Grade 2", "Grade 3"],
+    level: "Pre-A1–A1+",
+    cefrLevel: "A1",
+    age: "Ages 5–9",
+    ageGroup: "5-8",
+    grade: "Grades 1–4",
+    grades: ["Grade 1", "Grade 2", "Grade 3", "Grade 4"],
     duration: 30,
     durationText: "25–35 min",
     estimatedMinutes: 30,
-    xp: 50,
-    skills: ["Speaking", "Vocabulary", "Writing"],
+    xp: 60,
+    skills: ["Speaking", "Vocabulary", "Listening", "Writing"],
     topic: "Body Parts & Descriptive Adjectives",
     topics: ["Body Parts", "Colors", "Have Got / Has Got", "Descriptive Adjectives"],
-    languageFocus: "It has got [number] [color] [body parts]",
-    activityMode: "Single Player / Whiteboard",
-    interactionType: "Custom SVG Avatar Builder",
-    difficulty: "Beginner",
-    tags: ["monster", "body-parts", "colors", "have-got", "adjectives", "creative"],
+    languageFocus: "It has got [number] [color] [body parts] / I have got...",
+    activityMode: "Interactive Creator Wizard / Whiteboard / Partner Challenges",
+    interactionType: "Real-Time SVG Monster Builder with 12-Step Customizer & Speech Engine",
+    difficulty: "Scaffolded (Pre-A1 to A1+)",
+    tags: ["monster", "body-parts", "colors", "have-got", "adjectives", "creative", "speaking", "listening"],
     learningObjectives: [
-      "Name 8 monster body parts (eyes, horns, wings, legs, teeth, fur)",
-      "Form complete sentences with 'It has got...' and 'I have got...'",
-      "Apply correct adjective order: Number + Color + Noun"
+      "Name 8 monster body parts (eyes, horns, wings, legs, teeth, fur, ears, mouth)",
+      "Form complete spoken sentences with 'It has got...' and 'I have got...'",
+      "Apply correct adjective order: Number + Color + Noun in description missions"
     ],
     teacherInstructions: "Have students dictate monster features to a student operator at the whiteboard, then have everyone write a 3-sentence description in their notebooks.",
-    studentInstructions: "Choose eyes, horns, colors, and accessories to build your custom monster, then describe what it has got!",
+    studentInstructions: "Choose body, eyes, horns, colors, and accessories to build your custom monster, then describe what it has got!",
     route: "monster-day/index.html",
     worksheet: null,
     worksheetRoute: null,
     teacherGuide: true,
     supportsAssignment: true,
     supportsProgress: true,
-    featured: false,
+    featured: true,
     thumbnailSvg: `
       <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="140" fill="#f5f3ff"/>
-        <rect x="68" y="40" width="64" height="70" rx="28" fill="#a855f7"/>
-        <polygon points="68,44 58,22 80,36" fill="#fbbf24"/>
-        <polygon points="132,44 142,22 120,36" fill="#fbbf24"/>
-        <circle cx="84" cy="60" r="8" fill="#ffffff"/><circle cx="84" cy="60" r="3.5" fill="#0f172a"/>
-        <circle cx="100" cy="55" r="10" fill="#ffffff"/><circle cx="100" cy="55" r="4.5" fill="#0f172a"/>
-        <circle cx="116" cy="60" r="8" fill="#ffffff"/><circle cx="116" cy="60" r="3.5" fill="#0f172a"/>
-        <path d="M 86 85 Q 100 98 114 85" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="monsterThumbBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4c1d95"/>
+            <stop offset="50%" stop-color="#7c3aed"/>
+            <stop offset="100%" stop-color="#db2777"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#monsterThumbBg)"/>
+        <!-- Horns -->
+        <polygon points="68,38 52,14 80,28" fill="#fbbf24"/>
+        <polygon points="132,38 148,14 120,28" fill="#fbbf24"/>
+        <!-- Monster Body -->
+        <rect x="55" y="30" width="90" height="74" rx="36" fill="#a855f7" stroke="#ffffff" stroke-width="2.5"/>
+        <!-- 3 Eyes -->
+        <circle cx="76" cy="52" r="10" fill="#ffffff"/><circle cx="76" cy="52" r="4.5" fill="#0f172a"/><circle cx="74" cy="50" r="1.5" fill="#ffffff"/>
+        <circle cx="100" cy="46" r="13" fill="#ffffff"/><circle cx="100" cy="46" r="6" fill="#0f172a"/><circle cx="98" cy="43" r="2" fill="#ffffff"/>
+        <circle cx="124" cy="52" r="10" fill="#ffffff"/><circle cx="124" cy="52" r="4.5" fill="#0f172a"/><circle cx="122" cy="50" r="1.5" fill="#ffffff"/>
+        <!-- Smile & Teeth -->
+        <path d="M 76 76 Q 100 96 124 76" fill="#4c1d95" stroke="#ffffff" stroke-width="2"/>
+        <polygon points="86,77 92,86 98,78" fill="#ffffff"/>
+        <polygon points="102,78 108,86 114,77" fill="#ffffff"/>
+        <!-- Label Badge -->
+        <rect x="25" y="112" width="150" height="20" rx="10" fill="#fde047"/>
+        <text x="100" y="126" font-family="sans-serif" font-weight="900" font-size="9.5" fill="#581c87" text-anchor="middle" letter-spacing="0.5">BUILD YOUR MONSTER! 👾</text>
       </svg>`
   },
   {

@@ -137,21 +137,22 @@
     },
     {
       id: "monster-day",
-      title: "Build Your Own Monster",
+      title: "Build Your Own Monster!",
       category: "Classroom Game",
-      level: "Pre-A1",
-      age: "5–8",
-      grade: "Grade 1-2",
-      duration: 25,
-      skills: ["Speaking", "Vocabulary", "Listening"],
-      topics: ["Body Parts", "Colors", "Have Got"],
-      objectives: ["Name 6 body parts", "Use have got / has got", "Describe monster colors"],
-      route: "monster day/index.html",
+      level: "Pre-A1–A1+",
+      cefrLevel: "A1",
+      age: "5–9",
+      grade: "Grades 1–4",
+      duration: 30,
+      skills: ["Speaking", "Vocabulary", "Listening", "Writing"],
+      topics: ["Body Parts", "Colors", "Have Got", "Descriptive Adjectives"],
+      objectives: ["Name 8 monster body parts", "Form complete sentences with have got / has got", "Describe colors, numbers and body parts"],
+      route: "monster-day/index.html",
       worksheet: null,
       teacherGuide: true,
       featured: true,
       archived: false,
-      description: "Interactive monster builder practicing body parts, colors, and 'I have got...'"
+      description: "Interactive real-time SVG monster creator workshop practicing body parts, colors, numbers, and 'It has got / I have got...' with speaking, listening, and secret monster modes."
     },
     {
       id: "restaurant",
@@ -839,7 +840,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',
         duration: 25,
-        gameRoute: 'monster day/index.html',
+        gameRoute: 'monster-day/index.html',
         activities: [
           { type: 'discussion', prompt: 'Look at the picture. What do you see? What tools are they using?' },
           { type: 'inquiry', prompt: 'Think: What problems do these tools solve in our daily life?' },
@@ -1590,7 +1591,7 @@
         sourceBook: 'Global Readings 3',
         objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',
         duration: 35,
-        gameRoute: 'monster day/index.html',
+        gameRoute: 'monster-day/index.html',
         activities: [
           { type: 'phonics_box', title: 'Spelling Pattern: Agent / Comparative final -er', words: ['reader', 'learner', 'thinker', 'writer', 'faster', 'stronger', 'helper', 'speaker'] },
           { type: 'round_robin', topic: 'Why is reading important for your imagination, memory, and everyday life?' },
@@ -6942,7 +6943,7 @@
             title: 'Monster Maker Challenge',
             order: 1,
             objective: 'Students can name 6 monster body parts and use has got accurately.',
-            gameRoute: 'monster day/index.html',
+            gameRoute: 'monster-day/index.html',
             duration: 25,
             archived: false
           },
@@ -8336,6 +8337,24 @@
               const aliceRes = CANONICAL_GAMES.find(g => g.id === 'alice-quest');
               if (aliceRes && !merged.resources.some(r => r.id === 'alice-quest')) {
                 merged.resources.unshift(aliceRes);
+              }
+              const monsterRes = CANONICAL_GAMES.find(g => g.id === 'monster-day');
+              if (monsterRes) {
+                const existingMonster = merged.resources.find(r => r.id === 'monster-day');
+                if (!existingMonster) {
+                  merged.resources.unshift(monsterRes);
+                } else {
+                  existingMonster.title = monsterRes.title || 'Build Your Own Monster!';
+                  existingMonster.route = 'monster-day/index.html';
+                  existingMonster.featured = true;
+                  existingMonster.archived = false;
+                  existingMonster.cefrLevel = monsterRes.cefrLevel || 'A1';
+                  existingMonster.level = monsterRes.level || 'Pre-A1–A1+';
+                  existingMonster.grades = monsterRes.grades || ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4'];
+                  if (monsterRes.thumbnailSvg) {
+                    existingMonster.thumbnailSvg = monsterRes.thumbnailSvg;
+                  }
+                }
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
