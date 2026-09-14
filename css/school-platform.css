@@ -1215,11 +1215,13 @@ button, input, select, textarea {
   position: absolute;
   top: 10px;
   left: 10px;
+  max-width: calc(100% - 86px);
   display: flex;
   align-items: center;
   gap: 6px;
   z-index: 2;
   pointer-events: auto;
+  flex-wrap: wrap;
 }
 
 .thumb-type-badge {
@@ -1612,6 +1614,39 @@ button, input, select, textarea {
 .thumb-xp-badge {
   color: #fef08a;
   border-color: rgba(254, 240, 138, 0.4);
+}
+
+.thumb-cloud-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  z-index: 2;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.thumb-cloud-badge.is-synced {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+  color: #ffffff;
+  border: 1px solid rgba(167, 243, 208, 0.6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.thumb-cloud-badge.is-pending {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9));
+  color: #ffffff;
+  border: 1px solid rgba(254, 215, 170, 0.6);
 }
 
 .card-pill.lang-pill {

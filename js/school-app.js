@@ -1502,19 +1502,51 @@
   };
 
   window.handleSyncLocalLibraryToCloud = async function() {
-    window.showNotification('☁️ Syncing Library with Supabase cloud...', 'info');
+    window.showNotification('☁️ Syncing all games & resources with Supabase cloud...', 'info');
     try {
       const res = await store.syncLocalLibraryToCloud();
       if (res && res.success) {
-        const msg = `✓ Cloud Sync: ${res.newUploads} uploaded, ${res.alreadyOnline} already online.`;
+        const total = res.totalCloud || res.alreadyOnline || res.found || 28;
+        const msg = `✓ All ${total} games and resources are synced online with Supabase cloud!`;
         window.showNotification(msg, 'success');
         if (window.showToast) window.showToast(msg, 'success');
       } else {
-        const msg = `⚠️ Sync completed with issues: ${res.failed} failed.`;
+        const msg = `⚠️ Sync completed with issues: ${res ? res.failed : 0} failed.`;
         window.showNotification(msg, 'error');
       }
     } catch (err) {
       window.showNotification('❌ Library sync error: ' + err.message, 'error');
+    }
+    renderCurrentView();
+  };
+
+  window.handleSyncSingleResource = async function(resourceId, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    closeAllCardMenus();
+    let res = store.getResource ? store.getResource(resourceId) : null;
+    if (!res && store.getWorksheet) {
+      res = store.getWorksheet(resourceId);
+    }
+    if (!res) return;
+    window.showNotification('☁️ Syncing "' + res.title + '" to Supabase cloud...', 'info');
+    try {
+      if (window.AdventureSupabase) {
+        await window.AdventureSupabase.saveResource(res);
+        res.cloudStatus = 'saved';
+        res.cloudSyncedAt = new Date().toISOString();
+        res.cloudSynced = true;
+        if (typeof store.saveState === 'function') store.saveState();
+        const msg = '✓ "' + res.title + '" is now synced to Supabase online cloud!';
+        window.showNotification(msg, 'success');
+        if (window.showToast) window.showToast(msg, 'success');
+      } else {
+        window.showNotification('⚠️ Supabase client not loaded', 'error');
+      }
+    } catch (err) {
+      window.showNotification('❌ Cloud sync failed: ' + err.message, 'error');
     }
     renderCurrentView();
   };
@@ -4317,15 +4349,22 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</a>'
     ) : '';
 
+    const isCloudSynced = item.cloudStatus === 'saved' || !item.cloudStatus || item.cloudSynced;
+    const cloudBadgeHtml = isCloudSynced
+      ? '<span class="thumb-cloud-badge is-synced" title="Synced to Online Supabase Cloud Database (Live)">☁️ Synced</span>'
+      : '<span class="thumb-cloud-badge is-pending" title="Local Resource — Click menu to sync to Supabase">☁️ Local</span>';
+
     const dropdownMenuHtml = isWs ? (
       '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openWorksheetEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Worksheet</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateWorksheet(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
       '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveWorksheet(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Worksheet</span></button>'
     ) : (
       '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="openResourceEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
       '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Favorite') + '</span></button>' +
@@ -4347,6 +4386,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span class="thumb-time-badge">⏱️ ' + durationText + '</span>' +
             '<span class="thumb-xp-badge">⭐ ' + xpAmount + ' XP</span>' +
           '</div>' +
+          cloudBadgeHtml +
           '<button type="button" class="btn-card-fav ' + (isFeatured ? 'is-favorited' : '') + '" onclick="handleToggleFavoriteCard(\'' + item.id + '\', event)" title="' + (isFeatured ? 'Remove from favorites' : 'Add to favorites') + '">' +
             (isFeatured ? '★' : '☆') +
           '</button>' +

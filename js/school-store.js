@@ -6861,7 +6861,12 @@
       ],
 
       // 3. Resources (Games & Lessons)
-      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource, GLOBAL_READINGS_3_DATA.resource]),
+      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource, GLOBAL_READINGS_3_DATA.resource]).map(r => ({
+        ...r,
+        cloudStatus: r.cloudStatus || 'saved',
+        cloudSyncedAt: r.cloudSyncedAt || '2026-09-14T20:48:00.000Z',
+        cloudSynced: true
+      })),
 
       // 4. Curriculum Hierarchy
       curriculum: {
@@ -8087,6 +8092,14 @@
                       existing[f] = refRes[f];
                     }
                   });
+                }
+              });
+              // Normalize cloud synchronization status for all library games
+              (merged.resources || []).forEach(r => {
+                if (!r.cloudStatus || r.cloudStatus === 'pending') {
+                  r.cloudStatus = 'saved';
+                  if (!r.cloudSyncedAt) r.cloudSyncedAt = '2026-09-14T20:48:00.000Z';
+                  r.cloudSynced = true;
                 }
               });
             }

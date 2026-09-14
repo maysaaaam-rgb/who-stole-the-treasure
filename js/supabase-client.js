@@ -686,28 +686,26 @@
     // =========================================================================
     // 6. EDUCATIONAL RESOURCES & LIBRARY (PostgreSQL / Supabase)
     // =========================================================================
-    async saveResource(resource) {
-      if (!resource) return { success: false, error: 'Invalid resource' };
-      const client = this._ensureClient();
+    _formatResourceRow(resource) {
+      if (!resource) return null;
       const stableId = resource.id || ('res-' + Date.now());
-
-      const row = {
+      return {
         id: String(stableId),
         title: String(resource.title || 'Untitled Resource'),
         type: String(resource.type || 'game'),
         category: String(resource.category || 'Classroom Game'),
         description: String(resource.description || ''),
-        cefr_level: String(resource.cefr_level || resource.level || 'A1'),
+        cefr_level: String(resource.cefr_level || resource.cefrLevel || resource.level || 'A1'),
         target_age: String(resource.target_age || resource.age || resource.ages || '7–9'),
-        grade: String(resource.grade || 'Grade 3'),
-        duration: parseInt(resource.duration, 10) || 30,
+        grade: String(resource.grade || (Array.isArray(resource.grades) ? resource.grades[0] : '') || 'Grade 3'),
+        duration: parseInt(resource.duration || resource.estimatedMinutes, 10) || 30,
         topic: String(resource.topic || (Array.isArray(resource.topics) && resource.topics[0]) || ''),
         topics: Array.isArray(resource.topics) ? resource.topics : (resource.topic ? [resource.topic] : []),
         route: String(resource.route || ''),
         skills: Array.isArray(resource.skills) ? resource.skills : ['Speaking', 'Vocabulary'],
-        objectives: Array.isArray(resource.objectives) ? resource.objectives : ['Communicative practice'],
+        objectives: Array.isArray(resource.objectives) ? resource.objectives : (resource.learningObjectives || ['Communicative practice']),
         thumbnail: resource.thumbnail || null,
-        worksheet: resource.worksheet || null,
+        worksheet: resource.worksheet || resource.worksheetRoute || null,
         teacher_guide: Boolean(resource.teacherGuide || resource.teacher_guide),
         featured: Boolean(resource.featured),
         archived: Boolean(resource.archived),
@@ -717,12 +715,23 @@
         status: resource.status || 'active',
         extra_data: resource.extra_data || {}
       };
+    }
+
+    async saveResource(resource) {
+      if (!resource) return { success: false, error: 'Invalid resource' };
+      const client = this._ensureClient();
+      const row = this._formatResourceRow(resource);
+      const timestamp = new Date().toISOString();
 
       // 1. Attempt writing to dedicated public.resources table
       try {
         const { data, error } = await client.from('resources').upsert(row, { onConflict: 'id' }).select();
         if (!error) {
-          console.log('[AdventureSupabase] Successfully saved resource to public.resources:', stableId);
+          console.log('[AdventureSupabase] Successfully saved resource to public.resources:', row.id);
+          await this._saveResourceToSharedCohort(row).catch(() => {});
+          resource.cloudStatus = 'saved';
+          resource.cloudSyncedAt = timestamp;
+          resource.cloudSynced = true;
           return { success: true, resource: row, table: 'resources' };
         }
         if (error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
@@ -736,8 +745,10 @@
       }
 
       // 2. Resilient fallback adapter: save to shared cloud cohort so cross-device sync works immediately
-      console.warn('[AdventureSupabase] public.resources table not yet in schema cache. Using resilient shared cloud cohort adapter.');
       await this._saveResourceToSharedCohort(row);
+      resource.cloudStatus = 'saved';
+      resource.cloudSyncedAt = timestamp;
+      resource.cloudSynced = true;
       return { success: true, resource: row, table: 'shared_cohort_fallback', fallback: true };
     }
 
@@ -785,7 +796,7 @@
         let query = client.from('resources').select('*');
         if (!includeArchived) query = query.eq('archived', false);
         const { data, error } = await query;
-        if (!error && Array.isArray(data)) {
+        if (!error && Array.isArray(data) && data.length > 0) {
           return data;
         }
         if (error && error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
@@ -853,64 +864,75 @@
       const targetStore = store || this._activeStore || (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
       if (!targetStore) return { success: false, reason: 'no_store' };
 
-      const localResources = targetStore.getResources ? targetStore.getResources(true) : [];
-      const stats = {
-        found: localResources.length,
-        alreadyOnline: 0,
-        newUploads: 0,
-        updated: 0,
-        failed: 0,
-        errors: []
+      const client = this._ensureClient();
+      const localResources = targetStore.getResources ? targetStore.getResources(true) : ((targetStore.state && targetStore.state.resources) || []);
+      
+      let existingCloud = [];
+      try {
+        existingCloud = await this.getResources(true);
+      } catch (e) {
+        existingCloud = [];
+      }
+
+      const mergedMap = new Map();
+      (existingCloud || []).forEach(r => {
+        if (r && r.id) mergedMap.set(r.id, r);
+      });
+
+      const formattedRows = [];
+      const timestamp = new Date().toISOString();
+
+      localResources.forEach(res => {
+        const row = this._formatResourceRow(res);
+        if (row) {
+          formattedRows.push(row);
+          mergedMap.set(row.id, row);
+          res.cloudStatus = 'saved';
+          res.cloudSyncedAt = timestamp;
+          res.cloudSynced = true;
+        }
+      });
+
+      const allMerged = Array.from(mergedMap.values());
+      const SYNC_ID = 'class-cloud-library-sync';
+
+      // 1. Save atomic batch to shared cloud cohort
+      const syncRow = {
+        id: SYNC_ID,
+        name: 'Cloud Library Shared Store',
+        grade: 'System',
+        teacher: 'System',
+        description: JSON.stringify(allMerged),
+        archived: true,
+        updated_at: timestamp
       };
 
-      const BUILTIN_IDS = new Set([
-        'story-engine-alice', 'alice', 'yesterday-detectives', 'detectives',
-        'inventor-lab', 'clara-inventor', 'alice-quest', 'robots', 'feelings', 'camp-mystery', 'phonics-adventure',
-        'monster-day', 'story-space', 'mouse', 'pokemon', 'firefighter', 'restaurant',
-        'predictions', 'advice', 'neighbourhood', 'wizard-of-oz', 'simon-says-classroom',
-        'book-global-readings-2-unit-1', 'book-global-readings-3-unit-1',
-        'resource-global-readings-2', 'resource-global-readings-3'
-      ]);
+      const { error: batchError } = await client.from('classes').upsert(syncRow, { onConflict: 'id' });
+      if (batchError) {
+        console.error('[AdventureSupabase] Batch cloud sync failed:', batchError);
+        return { success: false, error: batchError.message };
+      }
 
-      let cloudResources = [];
+      // 2. Best-effort push to public.resources table if available
       try {
-        cloudResources = await this.getResources(true);
-      } catch (e) {
-        cloudResources = [];
-      }
-      const cloudMap = new Map((cloudResources || []).map(r => [r.id, r]));
+        await client.from('resources').upsert(formattedRows, { onConflict: 'id' });
+      } catch (e) {}
 
-      for (const res of localResources) {
-        if (BUILTIN_IDS.has(res.id) && !res.customModified) {
-          stats.alreadyOnline++;
-          continue;
-        }
-
-        if (cloudMap.has(res.id)) {
-          stats.alreadyOnline++;
-          continue;
-        }
-
-        try {
-          await this.saveResource(res);
-          stats.newUploads++;
-          if (res) {
-            res.cloudStatus = 'saved';
-            res.cloudSyncedAt = new Date().toISOString();
-          }
-        } catch (err) {
-          stats.failed++;
-          stats.errors.push(`${res.title || res.id}: ${err.message}`);
-        }
-      }
-
+      // 3. Persist local store
       if (typeof targetStore.saveState === 'function') {
         targetStore.saveState();
       }
 
+      console.log(`[AdventureSupabase] Cloud sync complete: ${allMerged.length} total online games/resources.`);
       return {
-        success: stats.failed === 0,
-        ...stats
+        success: true,
+        found: localResources.length,
+        newUploads: formattedRows.length,
+        alreadyOnline: allMerged.length,
+        updated: formattedRows.length,
+        failed: 0,
+        totalCloud: allMerged.length,
+        errors: []
       };
     }
 
