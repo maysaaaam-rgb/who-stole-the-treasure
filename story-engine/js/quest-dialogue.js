@@ -151,7 +151,8 @@
           isCompleted: false
         })),
         isCompleted: false,
-        isActive: false
+        isActive: false,
+        state: 'not_started'
       });
     }
 
@@ -159,6 +160,7 @@
       const q = this.quests.get(questId);
       if (!q || q.isCompleted) return;
 
+      q.state = 'active';
       q.isActive = true;
       this.activeQuest = q;
       this._notify();
@@ -179,6 +181,16 @@
     completeObjective(questId, objectiveId) {
       const q = this.quests.get(questId);
       if (!q) return;
+
+      // Sequential objective gating: cannot skip prerequisite objectives
+      const objIdx = q.objectives.findIndex(o => o.id === objectiveId);
+      if (objIdx > 0) {
+        const prevObj = q.objectives[objIdx - 1];
+        if (prevObj && !prevObj.isCompleted) {
+          console.warn(`[QuestSystem] Objective "${objectiveId}" in quest "${questId}" blocked: prerequisite "${prevObj.id}" is not completed.`);
+          return;
+        }
+      }
 
       const obj = q.objectives.find(o => o.id === objectiveId);
       if (obj && !obj.isCompleted) {
@@ -205,6 +217,7 @@
       const q = this.quests.get(questId);
       if (!q || q.isCompleted) return;
 
+      q.state = 'completed';
       q.isCompleted = true;
       q.isActive = false;
       this.completedQuests.add(questId);
@@ -232,6 +245,9 @@
           amount: q.rewardXP,
           reason: q.title
         });
+        if (q.id === 'rabbit_watch') {
+          this.events.emit('RABBIT_HOLE_UNLOCKED', { questId: q.id });
+        }
       }
     }
 
@@ -243,11 +259,44 @@
         if (data.itemId === 'golden_key' && this.activeQuest && this.activeQuest.id === 'gatekeeper_key') {
           this.completeObjective('gatekeeper_key', 'find_key');
         }
+        if (data.itemId === 'pocket_watch' && this.activeQuest && this.activeQuest.id === 'rabbit_watch') {
+          this.completeObjective('rabbit_watch', 'find_watch');
+        }
       });
 
       this.events.on('DOOR_UNLOCKED', (data) => {
         if (data.doorId === 'gate-ancient' && this.activeQuest && this.activeQuest.id === 'gatekeeper_key') {
           this.completeObjective('gatekeeper_key', 'unlock_gate');
+        }
+      });
+
+      this.events.on('WATCH_DROPPED', () => {
+        if (this.activeQuest && this.activeQuest.id === 'rabbit_watch') {
+          this.completeObjective('rabbit_watch', 'follow_rabbit');
+        }
+      });
+
+      this.events.on('WATCH_RETURNED', () => {
+        if (this.activeQuest && this.activeQuest.id === 'rabbit_watch') {
+          this.completeObjective('rabbit_watch', 'return_watch');
+        }
+      });
+
+      this.events.on('GATE_UNLOCKED', () => {
+        if (this.activeQuest && this.activeQuest.id === 'rabbit_fall') {
+          this.completeObjective('rabbit_fall', 'unlock_gate');
+        }
+      });
+
+      this.events.on('LANDED_ON_LEAVES', () => {
+        if (this.activeQuest && this.activeQuest.id === 'rabbit_fall') {
+          this.completeObjective('rabbit_fall', 'drift_down');
+        }
+      });
+
+      this.events.on('HALL_DOOR_ENTERED', () => {
+        if (this.activeQuest && this.activeQuest.id === 'rabbit_fall') {
+          this.completeObjective('rabbit_fall', 'reach_hall');
         }
       });
     }
@@ -343,6 +392,10 @@
     advanceDialogue() {
       if (!this.currentConversation) return;
 
+      if (root.StoryAudioEngine && root.StoryAudioEngine.playVariation) {
+        root.StoryAudioEngine.playVariation('ui_click', { volume: 0.5 });
+      }
+
       this.currentNodeIndex++;
       if (this.currentNodeIndex < this.currentConversation.nodes.length) {
         this._renderCurrentNode();
@@ -352,6 +405,9 @@
     }
 
     closeDialogue() {
+      if (root.StoryAudioEngine && root.StoryAudioEngine.playVariation) {
+        root.StoryAudioEngine.playVariation('ui_click', { volume: 0.4 });
+      }
       if (this.currentConversation && this.currentConversation.speaker) {
         this.currentConversation.speaker.isTalking = false;
       }

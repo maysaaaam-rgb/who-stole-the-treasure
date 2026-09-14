@@ -107,9 +107,20 @@
       this.foregroundDrawer = config.renderForeground || null;
       this.backgroundColor = config.backgroundColor || '#14532d';
       this.ambientType = config.ambientType || 'forest'; // 'forest' | 'meadow' | 'indoor'
+      this.movementMode = config.movementMode || 'standard'; // 'standard' | 'falling' | 'frozen'
+      this.hasSkyBackdrop = config.hasSkyBackdrop !== undefined ? config.hasSkyBackdrop : (this.id === 'rabbit_woods' || this.id === 'forest_clearing');
 
       // Pre-baked offscreen canvas for complex terrain performance
       this._terrainCanvas = null;
+      this.footprints = []; // Rabbit tracks and environmental footprints
+    }
+
+    addFootprint(fp) {
+      if (!this.footprints) this.footprints = [];
+      this.footprints.push(fp);
+      if (this.footprints.length > 120) {
+        this.footprints.shift();
+      }
     }
 
     addObstacle(rect) {
@@ -186,53 +197,107 @@
       this.player = playerEntity;
     }
 
-    loadArea(areaId, spawnName = 'default', immediate = false) {
+    loadArea(areaId, spawnName = 'default', immediate = true) {
       const area = this.areas.get(areaId);
       if (!area) {
-        console.error(`Area "${areaId}" not found in World.`);
+        console.error(`[World] Area "${areaId}" not found in World.`);
         return false;
       }
 
-      // Remove player from previous area if present
+      // 1. Deactivate previous area & clear interactions
+      this.activeInteractable = null;
       if (this.activeArea && this.player) {
         this.activeArea.removeEntity(this.player.id);
       }
 
+      // Clear any lingering environment particles from the previous scene
+      if (root.StoryGame && root.StoryGame.renderer && root.StoryGame.renderer.clearParticles) {
+        root.StoryGame.renderer.clearParticles();
+      }
+
+      // 2. Activate new area
       this.activeArea = area;
 
-      // Position player at designated spawn point
-      const spawn = area.spawnPoints[spawnName] || area.spawnPoints.default || { x: 200, y: 200 };
+      // 3. Resolve Walkable Spawn Position
+      const spawn = (area.spawnPoints && area.spawnPoints[spawnName]) ||
+                    (area.spawnPoints && area.spawnPoints.default) ||
+                    { x: 200, y: 200 };
+
+      let spawnX = spawn.x;
+      let spawnY = spawn.y;
+
       if (this.player) {
-        this.player.x = spawn.x;
-        this.player.y = spawn.y;
-        this.player.vx = 0;
-        this.player.vy = 0;
+        const obstacles = area.getSolidObstacles();
+        const hbOffset = this.player.hitboxOffset || { x: 6, y: 34, w: 32, h: 20 };
+        const testHitbox = {
+          x: spawnX + hbOffset.x,
+          y: spawnY + hbOffset.y,
+          width: hbOffset.w,
+          height: hbOffset.h
+        };
+
+        // If spawn point collides with an obstacle, nudge into clear space
+        for (const obs of obstacles) {
+          if (Collision.checkAABB(testHitbox, obs)) {
+            console.warn(`[World] Spawn (${spawnX}, ${spawnY}) collided with obstacle in area "${areaId}". Nudging to clear zone.`);
+            if (spawnY < area.height / 2) {
+              spawnY = obs.y + obs.height + 12;
+            } else {
+              spawnY = obs.y - hbOffset.y - hbOffset.h - 12;
+            }
+            break;
+          }
+        }
+
+        // Clamp safely inside room perimeter
+        spawnX = Math.max(60, Math.min(area.width - 60 - this.player.width, spawnX));
+        spawnY = Math.max(60, Math.min(area.height - 60 - this.player.height, spawnY));
+
+        // 4. Initialize Player Controller via resetForScene
+        const targetMode = area.movementMode || 'standard';
+        this.player.resetForScene(spawnX, spawnY, targetMode, spawn.facing || 'down');
         area.addEntity(this.player);
       }
 
-      // Setup Camera Bounds
+      // 5. Reset Input Buffers
+      if (root.StoryGame && root.StoryGame.input) {
+        root.StoryGame.input.reset();
+        root.StoryGame.input.ensureFocus();
+      }
+
+      // 6. Setup Camera Bounds and Immediate Alignment
       if (root.StoryGame && root.StoryGame.camera) {
         root.StoryGame.camera.setBounds(0, 0, area.width, area.height);
         if (this.player) {
-          root.StoryGame.camera.follow(this.player.x, this.player.y, immediate);
+          root.StoryGame.camera.follow(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, immediate);
         }
       }
 
-      // Update Area Name Badge in Top Bar
+      // 7. Update Area Name Badge in Top Bar
       const areaBadge = document.getElementById('story-area-name-badge');
       if (areaBadge) {
         areaBadge.textContent = area.name;
       }
 
-      // Trigger event
+      // 8. Trigger lifecycle events
       if (root.StoryGame && root.StoryGame.events) {
         root.StoryGame.events.emit('PLAYER_ENTER_AREA', {
+          areaId: area.id,
+          areaName: area.name
+        });
+        root.StoryGame.events.emit('SCENE_INITIALIZED', {
           areaId: area.id,
           areaName: area.name
         });
       }
 
       return true;
+    }
+
+    addParticle(p) {
+      if (root.StoryGame && root.StoryGame.renderer) {
+        root.StoryGame.renderer.addParticle(p);
+      }
     }
 
     update(dt, input) {
@@ -247,7 +312,7 @@
       // 2. Update Other Entities (NPCs, Collectibles, Doors)
       for (const ent of this.activeArea.entities) {
         if (ent !== this.player) {
-          ent.update(dt);
+          ent.update(dt, this);
         }
       }
 
@@ -285,6 +350,11 @@
             break;
           }
         }
+      }
+    }
+    addFootprint(fp) {
+      if (this.activeArea && this.activeArea.addFootprint) {
+        this.activeArea.addFootprint(fp);
       }
     }
   }

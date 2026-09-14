@@ -317,6 +317,66 @@ const GAMES_REGISTRY = [
       </svg>`
   },
   {
+    id: "alice-quest",
+    title: "Alice's Wonderland Reading Quest & The Skimming Detectives",
+    description: "Two energetic, interactive 35-minute ESL lessons based on Reading Book 3 (pp. 16–17). Lesson 1 explores the 6-event story sequence, 4 feeling monsters (worried, bored, surprised, interested), and the Mystery Door creative studio. Lesson 2 trains Eagle Eye Skimming Detectives (38 cm, golden key, garden), Skim vs. Read Carefully, and the 'Learning and Your Brain' superpower challenge.",
+    type: "game",
+    category: "Reading Games",
+    categoryLabel: "📖 Reading Games",
+    level: "A1+",
+    cefrLevel: "A1+",
+    age: "Ages 8–12",
+    ageGroup: "8-12",
+    grade: "Grades 3–6",
+    grades: ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    duration: 70,
+    durationText: "2 × 35 min",
+    estimatedMinutes: 70,
+    xp: 250,
+    skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Feelings & Emotions", "Skimming", "Creative Writing"],
+    topic: "Story Sequence, Feelings, Skimming & Brain Power",
+    topics: ["Alice in Wonderland", "Story Sequence", "Feelings: Worried Bored Surprised Interested", "Skimming", "Main Idea", "Learning and Your Brain", "Mystery Door"],
+    languageFocus: "First / Then / Next / Finally, Alice felt [feeling] because [reason], Look quickly! Don't read every word! Behind the door there is [noun]",
+    activityMode: "Interactive Whole Group / Pair Skim Relay / Kinesthetic Rabbit Jump",
+    interactionType: "Interactive Game-Based Lessons with Timed Skim Drills, Feeling Monster Morphing, Story Card Drag-Drop & Boss Battles",
+    difficulty: "Scaffolded (A1+ to Hard Mode)",
+    tags: ["alice-in-wonderland", "reading-book-3", "sequence", "feelings", "skimming", "speed-skim", "brain-power", "mystery-door"],
+    learningObjectives: [
+      "Sequence the 6 canonical events of Alice in Wonderland chronologically from memory and textual clues",
+      "Identify and use 4 key feelings: worried, bored, surprised, and interested with 'because' causal frames",
+      "Master the reading strategy of skimming: look quickly to find main ideas and specific details without reading every word",
+      "Locate target details (38 cm, golden key, garden) in under 10 seconds using Eagle Eye scanning",
+      "Express creative ideas using the Mystery Door studio: 'Behind my door there is a...'"
+    ],
+    teacherInstructions: "Launch on the smartboard for whole-class engagement. Switch between Lesson 1 (35m) and Lesson 2 (35m) using the top HUD tabs. Utilize the 8-dimension Teacher HUD modal and printable companion worksheet.",
+    studentInstructions: "Join Alice down the rabbit hole! Put the story in order, feed the feeling monsters, master the 5-second Speed Skim challenge, and unlock the secret garden!",
+    route: "alice-quest/index.html",
+    worksheet: "alice-quest/worksheet.html",
+    worksheetRoute: "alice-quest/worksheet.html",
+    teacherGuide: true,
+    supportsAssignment: true,
+    supportsProgress: true,
+    featured: true,
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="aliceThumbBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#022c22"/>
+            <stop offset="50%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#311042"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#aliceThumbBg)"/>
+        <rect x="15" y="15" width="170" height="110" rx="12" fill="#061f1c" stroke="#2dd4bf" stroke-width="2.5" stroke-dasharray="5,3"/>
+        <circle cx="65" cy="52" r="22" fill="#2dd4bf" opacity="0.25"/>
+        <text x="65" y="62" font-size="28" text-anchor="middle">🐇</text>
+        <circle cx="135" cy="52" r="22" fill="#fbbf24" opacity="0.25"/>
+        <text x="135" y="62" font-size="28" text-anchor="middle">🔑</text>
+        <rect x="25" y="90" width="150" height="22" rx="11" fill="#2dd4bf"/>
+        <text x="100" y="105" font-family="sans-serif" font-weight="900" font-size="9" fill="#041226" text-anchor="middle" letter-spacing="0.5">ALICE'S READING QUEST 📖</text>
+      </svg>`
+  },
+  {
     id: "robots",
     title: "Amazing Robots Around the World",
     description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries.",

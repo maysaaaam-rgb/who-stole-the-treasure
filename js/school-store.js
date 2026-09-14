@@ -475,6 +475,31 @@
       featured: true,
       archived: false,
       description: "Two energetic, interactive 35-minute ESL lessons based on Global Readings 2 (pp. 10–17). Lesson 1 explores Clara's workshop, 5 bizarre inventions, 6 reading detective missions, and 4-Corners True/False. Lesson 2 teaches SEQUENCE (First, Second, Third, Last), the Human Tablet game, and the 4-Stage Inventor Process."
+    },
+    {
+      id: "alice-quest",
+      title: "Alice's Wonderland Reading Quest & The Skimming Detectives",
+      category: "Reading Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 70,
+      skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Feelings & Emotions", "Skimming", "Creative Writing"],
+      topics: ["Alice in Wonderland", "Story Sequence", "Feelings: Worried Bored Surprised Interested", "Skimming", "Main Idea", "Learning and Your Brain", "Mystery Door"],
+      objectives: [
+        "Sequence the 6 canonical events of Alice in Wonderland chronologically from memory and textual clues",
+        "Identify and use 4 key feelings: worried, bored, surprised, and interested with 'because' causal frames",
+        "Master the reading strategy of skimming: look quickly to find main ideas and specific details without reading every word",
+        "Locate target details (38 cm, golden key, garden) in under 10 seconds using Eagle Eye scanning",
+        "Express creative ideas using the Mystery Door studio: 'Behind my door there is a...'"
+      ],
+      route: "alice-quest/index.html",
+      worksheet: "alice-quest/worksheet.html",
+      worksheetRoute: "alice-quest/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Two energetic, interactive 35-minute ESL lessons based on Reading Book 3 (pp. 16–17). Lesson 1 explores the 6-event story sequence, 4 feeling monsters (worried, bored, surprised, interested), and the Mystery Door creative studio. Lesson 2 trains Eagle Eye Skimming Detectives (38 cm, golden key, garden), Skim vs. Read Carefully, and the 'Learning and Your Brain' superpower challenge."
     }
   ];
 
@@ -8307,6 +8332,10 @@
               const claraRes = CANONICAL_GAMES.find(g => g.id === 'clara-inventor');
               if (claraRes && !merged.resources.some(r => r.id === 'clara-inventor')) {
                 merged.resources.unshift(claraRes);
+              }
+              const aliceRes = CANONICAL_GAMES.find(g => g.id === 'alice-quest');
+              if (aliceRes && !merged.resources.some(r => r.id === 'alice-quest')) {
+                merged.resources.unshift(aliceRes);
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);

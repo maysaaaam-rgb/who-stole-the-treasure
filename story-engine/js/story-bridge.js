@@ -144,17 +144,21 @@
     },
 
     // 6. Save & Load Adventure Progress
-    saveProgress(progressData) {
+    saveProgress(storyKeyOrData, maybeData) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+        const key = (typeof storyKeyOrData === 'string') ? `story_adventure_progress_${storyKeyOrData}` : STORAGE_KEY;
+        const data = (typeof storyKeyOrData === 'string') ? maybeData : storyKeyOrData;
+        localStorage.setItem(key, JSON.stringify(data));
+        console.log(`[StoryBridge] Saved adventure state to ${key}`);
       } catch (e) {
         console.warn('[StoryBridge] Failed to write progress to localStorage', e);
       }
     },
 
-    loadProgress() {
+    loadProgress(storyKey = 'alice') {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const key = typeof storyKey === 'string' ? `story_adventure_progress_${storyKey}` : STORAGE_KEY;
+        const raw = localStorage.getItem(key) || localStorage.getItem(STORAGE_KEY);
         if (raw) return JSON.parse(raw);
       } catch (e) {
         console.warn('[StoryBridge] Failed to read progress from localStorage', e);
@@ -162,10 +166,80 @@
       return null;
     },
 
-    clearProgress() {
+    clearProgress(storyKey = 'alice') {
       try {
+        const key = typeof storyKey === 'string' ? `story_adventure_progress_${storyKey}` : STORAGE_KEY;
+        localStorage.removeItem(key);
         localStorage.removeItem(STORAGE_KEY);
+        console.log(`[StoryBridge] Cleared progress for ${key}`);
       } catch (e) {}
+    },
+
+    // 7. Wonderland & Educational Story Achievements
+    unlockAchievement(achievementId) {
+      const student = this.getActiveStudent();
+      const studentId = student ? student.id : 'student-3a-224';
+
+      console.log(`[StoryBridge] Unlocking achievement "${achievementId}" for student: ${studentId}`);
+
+      let award = null;
+      if (root.schoolStore && typeof root.schoolStore.unlockAchievement === 'function') {
+        award = root.schoolStore.unlockAchievement(studentId, achievementId);
+      }
+
+      if (award) {
+        this.showAchievementToast(award);
+      }
+      return award;
+    },
+
+    showAchievementToast(award) {
+      let achToast = document.getElementById('story-achievement-toast');
+      if (!achToast) {
+        achToast = document.createElement('div');
+        achToast.id = 'story-achievement-toast';
+        achToast.className = 'story-achievement-banner';
+        achToast.style.cssText = `
+          position: fixed;
+          top: 65px;
+          left: 50%;
+          transform: translateX(-50%) translateY(-20px);
+          background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(15, 23, 42, 0.95));
+          border: 2px solid #ca8a04;
+          box-shadow: 0 10px 30px rgba(202, 138, 4, 0.4), 0 0 20px rgba(254, 240, 138, 0.2);
+          border-radius: 16px;
+          padding: 12px 24px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          z-index: 10000;
+          opacity: 0;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+        `;
+        document.body.appendChild(achToast);
+      }
+
+      achToast.innerHTML = `
+        <span style="font-size: 2.2rem; filter: drop-shadow(0 2px 8px rgba(254,240,138,0.5));">${award.icon || '🏆'}</span>
+        <div>
+          <div style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #fef08a;">Achievement Unlocked!</div>
+          <div style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-top: 1px;">${award.name}</div>
+          <div style="font-size: 0.76rem; color: #a7f3d0; margin-top: 2px;">+${award.xpReward || 100} XP Awarded</div>
+        </div>
+      `;
+
+      requestAnimationFrame(() => {
+        achToast.style.opacity = '1';
+        achToast.style.transform = 'translateX(-50%) translateY(0)';
+      });
+
+      this.playSound('correct');
+
+      setTimeout(() => {
+        achToast.style.opacity = '0';
+        achToast.style.transform = 'translateX(-50%) translateY(-20px)';
+      }, 4500);
     }
   };
 

@@ -1,0 +1,881 @@
+/* =============================================================================
+   ALICE'S WONDERLAND READING QUEST — STYLESHEET
+   A1+ Young Learner Interactive Smartboard & Classroom ESL Theme
+   ============================================================================= */
+
+:root {
+  /* Whimsical Wonderland Palette */
+  --alice-bg: #0b1120;
+  --alice-canvas: #0f1c34;
+  --alice-surface: #17284b;
+  --alice-surface-hover: #1e3564;
+  --alice-border: #2c497f;
+  --alice-text: #f8fafc;
+  --alice-text-muted: #94a3b8;
+
+  /* Wonderland Accents */
+  --alice-teal: #06b6d4;
+  --alice-teal-glow: rgba(6, 182, 212, 0.35);
+  --alice-purple: #a855f7;
+  --alice-purple-glow: rgba(168, 85, 247, 0.35);
+  --alice-gold: #fbbf24;
+  --alice-gold-glow: rgba(251, 191, 36, 0.35);
+  --alice-rose: #f43f5e;
+  --alice-rose-glow: rgba(244, 63, 94, 0.35);
+  --alice-green: #10b981;
+  --alice-green-glow: rgba(16, 185, 129, 0.35);
+
+  /* Fonts */
+  --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'Nunito', system-ui, -apple-system, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--alice-bg);
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+  color: var(--alice-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* App Wrapper */
+#alice-app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Persistent Smartboard HUD */
+#alice-hud {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 28, 52, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 2px solid var(--alice-border);
+  padding: 10px 18px;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.hud-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hud-brand {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 0 12px var(--alice-teal-glow);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.hud-brand:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Navigation Tabs */
+.lesson-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(11, 17, 32, 0.8);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--alice-border);
+}
+
+.lesson-tab-btn {
+  background: transparent;
+  color: var(--alice-text-muted);
+  border: none;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lesson-tab-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lesson-tab-btn.active {
+  background: var(--alice-teal);
+  color: #041226;
+  box-shadow: 0 0 14px var(--alice-teal-glow);
+}
+
+.lesson-tab-btn.active.gold {
+  background: var(--alice-gold);
+  color: #041226;
+  box-shadow: 0 0 14px var(--alice-gold-glow);
+}
+
+/* HUD Control Buttons */
+.hud-btn {
+  background: var(--alice-surface);
+  color: var(--alice-text);
+  border: 1px solid var(--alice-border);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.hud-btn:hover {
+  background: var(--alice-surface-hover);
+  border-color: var(--alice-teal);
+  transform: translateY(-1px);
+}
+
+.hud-btn.primary {
+  background: var(--alice-teal);
+  color: #041226;
+  border-color: var(--alice-teal);
+}
+
+.hud-btn.gold {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: var(--alice-gold);
+  color: var(--alice-gold);
+}
+
+.hud-btn.gold:hover {
+  background: var(--alice-gold);
+  color: #041226;
+}
+
+/* Status Badges in HUD */
+.stage-tracker-pill {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid var(--alice-teal);
+  color: var(--alice-teal);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adventure-score-pill {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(244, 63, 94, 0.2));
+  border: 1.5px solid var(--alice-gold);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.9rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 12px var(--alice-gold-glow);
+}
+
+.hud-stat-pill {
+  background: var(--alice-surface);
+  border: 1px solid var(--alice-border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.combo-fire-pill {
+  background: rgba(244, 63, 94, 0.2);
+  border: 1px solid var(--alice-rose);
+  color: var(--alice-rose);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: none;
+  animation: pulseCombo 0.8s infinite alternate;
+}
+
+@keyframes pulseCombo {
+  0% { transform: scale(1); box-shadow: 0 0 4px var(--alice-rose-glow); }
+  100% { transform: scale(1.08); box-shadow: 0 0 14px var(--alice-rose-glow); }
+}
+
+/* Main Content Container */
+#alice-stage-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+/* Stage Header & Common Elements */
+.stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stage-title-wrap {
+  flex: 1;
+  min-width: 260px;
+}
+
+.stage-tagline {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--alice-teal);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stage-main-title {
+  font-family: var(--font-heading);
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.stage-instruction {
+  font-size: 1.05rem;
+  color: var(--alice-text-muted);
+  margin-top: 6px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Interactive Action Buttons */
+.action-btn {
+  background: var(--alice-surface);
+  color: #ffffff;
+  border: 1.5px solid var(--alice-border);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--alice-teal);
+  box-shadow: 0 6px 18px var(--alice-teal-glow);
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #06b6d4, #0284c7);
+  color: #041226;
+  border: none;
+}
+
+.action-btn.gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #041226;
+  border: none;
+}
+
+.action-btn.purple {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  color: #ffffff;
+  border: none;
+}
+
+.action-btn.green {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+}
+
+.action-btn.red {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: #ffffff;
+  border: none;
+}
+
+/* Banners */
+.speaking-banner {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1.5px solid var(--alice-purple);
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 16px var(--alice-purple-glow);
+}
+
+.speak-text {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.speak-text .highlight {
+  color: var(--alice-gold);
+}
+
+.kinesthetic-banner {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1.5px dashed var(--alice-teal);
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--alice-teal);
+  text-align: center;
+}
+
+/* =============================================================================
+   LESSON 1: SPECIFIC STAGE STYLES
+   ============================================================================= */
+
+/* Mission 1: Follow the Rabbit Field */
+.rabbit-field-container {
+  background: linear-gradient(180deg, #132549 0%, #0d1a33 100%);
+  border: 2px solid var(--alice-border);
+  border-radius: 20px;
+  height: 420px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+}
+
+.river-backdrop {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.15), rgba(2, 132, 199, 0.4));
+  border-top: 2px dashed rgba(6, 182, 212, 0.4);
+  pointer-events: none;
+}
+
+.rabbit-runner {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+
+.rabbit-runner .rabbit-icon {
+  font-size: 4rem;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+  transition: transform 0.2s ease;
+}
+
+.rabbit-runner:hover .rabbit-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.speech-bubble-pop {
+  background: #ffffff;
+  color: #041226;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+  white-space: nowrap;
+}
+
+.rabbit-hole-target {
+  position: absolute;
+  bottom: 24px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hole-graphic {
+  width: 130px;
+  height: 60px;
+  background: radial-gradient(ellipse at center, #000000 0%, #17284b 80%, transparent 100%);
+  border: 3px dashed var(--alice-purple);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 0 24px var(--alice-purple-glow);
+  animation: holePulse 2s infinite ease-in-out;
+}
+
+@keyframes holePulse {
+  0%, 100% { transform: scale(1); border-color: var(--alice-purple); }
+  50% { transform: scale(1.08); border-color: var(--alice-teal); }
+}
+
+/* Mission 2 & 3: Story Cards Sequencing */
+.story-timeline-slots {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.story-slot {
+  background: rgba(15, 28, 52, 0.7);
+  border: 2px dashed var(--alice-border);
+  border-radius: 14px;
+  min-height: 160px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.story-slot.filled {
+  border-style: solid;
+  border-color: var(--alice-teal);
+  background: rgba(6, 182, 212, 0.1);
+  box-shadow: 0 0 16px var(--alice-teal-glow);
+}
+
+.story-slot-tag {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--alice-gold);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.story-cards-pool {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.story-picture-card {
+  background: var(--alice-canvas);
+  border: 2px solid var(--alice-border);
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+.story-picture-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--alice-teal);
+  box-shadow: 0 8px 24px var(--alice-teal-glow);
+}
+
+.story-picture-card.assigned {
+  opacity: 0.35;
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.story-card-icon {
+  font-size: 3rem;
+}
+
+.story-card-desc {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+/* Mission 4: Feeling Monster */
+.feeling-monster-stage {
+  background: var(--alice-canvas);
+  border: 2px solid var(--alice-border);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.monster-avatar-box {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.monster-face-emoji {
+  font-size: 5.5rem;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 6px 20px rgba(168, 85, 247, 0.4));
+}
+
+.feeling-choices-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.feeling-btn {
+  background: var(--alice-surface);
+  border: 2px solid var(--alice-border);
+  border-radius: 16px;
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feeling-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--alice-purple);
+  box-shadow: 0 6px 20px var(--alice-purple-glow);
+}
+
+.feeling-btn.correct {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--alice-green);
+  box-shadow: 0 0 20px var(--alice-green-glow);
+}
+
+.feeling-btn.incorrect {
+  border-color: var(--alice-rose);
+  opacity: 0.6;
+}
+
+/* Mission 6: Mystery Door & Worlds */
+.door-worlds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.door-world-card {
+  background: var(--alice-surface);
+  border: 2px solid var(--alice-border);
+  border-radius: 14px;
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.door-world-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--alice-gold);
+  box-shadow: 0 6px 18px var(--alice-gold-glow);
+}
+
+.door-world-card.selected {
+  background: rgba(251, 191, 36, 0.18);
+  border-color: var(--alice-gold);
+  box-shadow: 0 0 20px var(--alice-gold-glow);
+}
+
+/* =============================================================================
+   LESSON 2: SKIMMING STYLES
+   ============================================================================= */
+
+.skimming-box-container {
+  background: var(--alice-canvas);
+  border: 2px solid var(--alice-border);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.speed-timer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(11, 17, 32, 0.8);
+  border: 1px solid var(--alice-border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  margin-bottom: 18px;
+}
+
+.speed-countdown-num {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.6rem;
+  color: var(--alice-gold);
+}
+
+.reading-passage-text {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--alice-border);
+  border-radius: 14px;
+  padding: 22px;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.reading-passage-text.blurred {
+  filter: blur(8px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.skimming-questions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.skimming-card {
+  background: var(--alice-surface);
+  border: 2px solid var(--alice-border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skimming-card .choice-btn {
+  background: rgba(15, 28, 52, 0.8);
+  border: 1px solid var(--alice-border);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skimming-card .choice-btn:hover {
+  background: var(--alice-surface-hover);
+  border-color: var(--alice-teal);
+}
+
+.skimming-card .choice-btn.correct {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--alice-green);
+  color: var(--alice-green);
+}
+
+.skimming-card .choice-btn.incorrect {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: var(--alice-rose);
+  color: var(--alice-rose);
+}
+
+/* Modal Overlay */
+.alice-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 18, 38, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.alice-modal-box {
+  background: var(--alice-canvas);
+  border: 2px solid var(--alice-teal);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 820px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow: 0 0 40px var(--alice-teal-glow);
+  position: relative;
+}
+
+.alice-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: var(--alice-surface);
+  color: #ffffff;
+  border: 1px solid var(--alice-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Toast Notifications */
+#alice-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 28, 52, 0.95);
+  border: 2px solid var(--alice-gold);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 8px 24px var(--alice-gold-glow);
+  z-index: 3000;
+  display: none;
+  animation: slideUpToast 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUpToast {
+  from { transform: translate(-50%, 30px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* Responsive Rules */
+@media (max-width: 900px) {
+  .story-timeline-slots {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .feeling-choices-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .skimming-questions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .story-timeline-slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .story-cards-pool {
+    grid-template-columns: 1fr;
+  }
+}

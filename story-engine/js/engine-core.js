@@ -134,6 +134,26 @@
     clearPerFrameInputs() {
       this.justPressedKeys = {};
     }
+
+    reset() {
+      this.keys = {};
+      this.justPressedKeys = {};
+      this.moveTarget = null;
+      this.virtualAxis = { x: 0, y: 0 };
+      this.isInteracting = false;
+      this.justInteracted = false;
+    }
+
+    ensureFocus() {
+      try {
+        if (this.canvas) {
+          this.canvas.focus();
+        }
+        if (typeof window !== 'undefined') {
+          window.focus();
+        }
+      } catch (e) {}
+    }
   }
 
   // =========================================================================
@@ -267,11 +287,16 @@
       this.particles.push(particle);
     }
 
-    updateParticles(dt) {
+    clearParticles() {
+      this.particles = [];
+    }
+
+    updateParticles(dt, activeArea = null) {
       this.renderTime += dt;
 
-      // Maintain gentle ambient forest pollen & firefly particles
-      if (this.particles.length < 24) {
+      // Maintain gentle ambient forest pollen & firefly particles ONLY in outdoor areas
+      const isOutdoor = !activeArea || (activeArea.ambientType !== 'indoor' && activeArea.hasSkyBackdrop !== false && activeArea.id !== 'rabbit_hole' && activeArea.id !== 'hall_of_doors');
+      if (isOutdoor && this.particles.length < 24) {
         this.particles.push({
           x: Math.random() * 1600,
           y: Math.random() * 1200,
@@ -301,11 +326,17 @@
       const viewH = camera.viewportHeight;
       const offset = camera.getViewOffset();
 
-      // 1. Clear & Render Storybook Parallax Background
-      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+      // Reset transform to identity for clean frame start
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      // 1. Clear & Render Background
+      const activeArea = world ? world.activeArea : null;
+      const hasSky = activeArea ? (activeArea.hasSkyBackdrop !== false && activeArea.id !== 'rabbit_hole' && activeArea.id !== 'hall_of_doors') : true;
+
+      if (hasSky && root.StoryArt && root.StoryArt.AtmosphereRenderer) {
         root.StoryArt.AtmosphereRenderer.renderParallaxBackground(ctx, offset.x, offset.y, viewW, viewH);
       } else {
-        ctx.fillStyle = '#06101e';
+        ctx.fillStyle = (activeArea && activeArea.backgroundColor) ? activeArea.backgroundColor : '#070a16';
         ctx.fillRect(0, 0, viewW, viewH);
       }
 
@@ -316,6 +347,9 @@
       // 2. Render Ground & Terrain Layer
       if (world && world.activeArea) {
         world.activeArea.renderTerrain(ctx, offset.x, offset.y, viewW, viewH);
+        if (world.activeArea.footprints && world.activeArea.footprints.length > 0) {
+          this._renderFootprints(ctx, world.activeArea.footprints, offset, viewW, viewH);
+        }
       }
 
       // 3. Render Click-to-Move Destination Indicator
@@ -353,22 +387,45 @@
         }
       }
 
-      // 6. Render Ambient Pollen & Fireflies in World Space
+      // 5b. Render In-World Speech & Thought Bubbles
+      for (let i = 0; i < entities.length; i++) {
+        const ent = entities[i];
+        if (ent.speechBark && ent.speechBark.text) {
+          this._renderSpeechBark(ctx, ent);
+        }
+      }
+
+      // 6. Render Ambient Pollen, Footstep Dust, & Sparkles in World Space
       for (let i = 0; i < this.particles.length; i++) {
         const p = this.particles[i];
         ctx.save();
         const alpha = Math.max(0, Math.min(1, p.life / (p.maxLife * 0.5)));
         ctx.globalAlpha = alpha;
-        // Glowing halo
         ctx.fillStyle = p.color || '#fef08a';
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size || 2.5, 0, Math.PI * 2);
-        ctx.fill();
+
+        if (p.isStar) {
+          const s = (p.size || 3) * (0.8 + 0.4 * Math.sin(this.renderTime * 8));
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y - s);
+          ctx.lineTo(p.x + s * 0.3, p.y - s * 0.3);
+          ctx.lineTo(p.x + s, p.y);
+          ctx.lineTo(p.x + s * 0.3, p.y + s * 0.3);
+          ctx.lineTo(p.x, p.y + s);
+          ctx.lineTo(p.x - s * 0.3, p.y + s * 0.3);
+          ctx.lineTo(p.x - s, p.y);
+          ctx.lineTo(p.x - s * 0.3, p.y - s * 0.3);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size || 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
         ctx.restore();
       }
 
-      // 7. Atmospheric Directional God Rays
-      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+      // 7. Atmospheric Directional God Rays (Only in outdoor sky areas)
+      if (hasSky && root.StoryArt && root.StoryArt.AtmosphereRenderer) {
         root.StoryArt.AtmosphereRenderer.renderGodRays(ctx, offset.x, offset.y, viewW, viewH, this.renderTime);
       }
 
@@ -384,8 +441,8 @@
 
       ctx.restore();
 
-      // 10. Screen-Space Overhanging Foreground Canopy Framing
-      if (root.StoryArt && root.StoryArt.AtmosphereRenderer) {
+      // 10. Screen-Space Overhanging Foreground Canopy Framing (Only in outdoor forest areas)
+      if (hasSky && root.StoryArt && root.StoryArt.AtmosphereRenderer) {
         root.StoryArt.AtmosphereRenderer.renderForegroundCanopy(ctx, offset.x, offset.y, viewW, viewH, this.renderTime);
       }
     }
@@ -414,6 +471,153 @@
           ctx.stroke();
         }
       }
+    }
+
+    _renderSpeechBark(ctx, ent) {
+      const bark = ent.speechBark;
+      if (!bark || !bark.text) return;
+
+      const centerX = ent.x + ent.width / 2;
+      const topY = ent.y - 18;
+
+      // Animate scale on entrance and gentle float
+      const progress = Math.min(1, (bark.maxTimer - bark.timer) / 0.16);
+      const fadeOut = Math.min(1, bark.timer / 0.22);
+      const scale = progress;
+      const floatY = Math.sin((ent.animTime || 0) * 3.5) * 2;
+
+      ctx.save();
+      ctx.globalAlpha = fadeOut;
+      ctx.translate(centerX, topY + floatY);
+      ctx.scale(scale, scale);
+
+      ctx.font = 'bold 12px "Quicksand", system-ui, -apple-system, sans-serif';
+
+      // Multi-line word wrapping if needed
+      const words = bark.text.split(' ');
+      const lines = [];
+      let curLine = '';
+      const maxLineWidth = 155;
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = curLine ? (curLine + ' ' + words[i]) : words[i];
+        if (ctx.measureText(testLine).width > maxLineWidth && curLine) {
+          lines.push(curLine);
+          curLine = words[i];
+        } else {
+          curLine = testLine;
+        }
+      }
+      if (curLine) lines.push(curLine);
+
+      const lineHeight = 16;
+      let maxW = 0;
+      for (const line of lines) {
+        const w = ctx.measureText(line).width;
+        if (w > maxW) maxW = w;
+      }
+
+      const padX = 12;
+      const padY = 8;
+      const boxW = Math.max(64, maxW + padX * 2);
+      const boxH = Math.max(26, lines.length * lineHeight + padY * 2);
+      const boxX = -boxW / 2;
+      const boxY = -boxH - 12;
+
+      // Drop shadow
+      ctx.shadowColor = 'rgba(20, 10, 5, 0.3)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 3;
+
+      // Bubble Background (Ivory storybook parchment)
+      ctx.fillStyle = bark.isThought ? '#f8fafc' : '#fffdf5';
+      ctx.beginPath();
+      ctx.roundRect(boxX, boxY, boxW, boxH, [10, 10, 10, 10]);
+      ctx.fill();
+
+      // Bubble Border
+      ctx.shadowColor = 'transparent';
+      ctx.lineWidth = 1.8;
+      ctx.strokeStyle = bark.isThought ? '#475569' : '#78350f';
+      ctx.stroke();
+
+      // Tail or Thought Circles
+      if (bark.isThought) {
+        ctx.fillStyle = '#f8fafc';
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1.5;
+        const bubbles = [[0, -8, 4], [3, -3, 2.5], [5, 1, 1.5]];
+        for (const [bx, by, br] of bubbles) {
+          ctx.beginPath();
+          ctx.arc(bx, by, br, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      } else {
+        // Speech tail pointing down towards character head
+        ctx.fillStyle = '#fffdf5';
+        ctx.beginPath();
+        ctx.moveTo(-5, boxY + boxH - 0.5);
+        ctx.lineTo(5, boxY + boxH - 0.5);
+        ctx.lineTo(0, boxY + boxH + 8);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(-5, boxY + boxH - 1);
+        ctx.lineTo(0, boxY + boxH + 8);
+        ctx.lineTo(5, boxY + boxH - 1);
+        ctx.stroke();
+      }
+
+      // Render Text Lines
+      ctx.fillStyle = bark.isThought ? '#0f172a' : '#451a03';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const startTextY = boxY + padY + lineHeight / 2;
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], 0, startTextY + i * lineHeight);
+      }
+
+      ctx.restore();
+    }
+
+    _renderFootprints(ctx, footprints, offset, viewW, viewH) {
+      if (!footprints || footprints.length === 0) return;
+      ctx.save();
+      for (let i = 0; i < footprints.length; i++) {
+        const fp = footprints[i];
+        if (fp.x < offset.x - 30 || fp.x > offset.x + viewW + 30 ||
+            fp.y < offset.y - 30 || fp.y > offset.y + viewH + 30) continue;
+
+        ctx.save();
+        ctx.translate(fp.x, fp.y);
+        if (fp.angle) ctx.rotate(fp.angle);
+
+        // Rabbit pawprint: two front elongated pads and one rounded heel pad
+        const alpha = Math.max(0.12, Math.min(0.55, fp.alpha !== undefined ? fp.alpha : 0.45));
+        ctx.fillStyle = `rgba(80, 42, 16, ${alpha})`;
+
+        // Heel pad
+        ctx.beginPath();
+        ctx.ellipse(0, 2.5, 3.2, 2.2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Left front toe pad
+        ctx.beginPath();
+        ctx.ellipse(-2.5, -3, 1.6, 2.8, -0.25, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Right front toe pad
+        ctx.beginPath();
+        ctx.ellipse(2.5, -3, 1.6, 2.8, 0.25, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+      ctx.restore();
     }
   }
 
