@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Found &amp; Routing | English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at top, #1e293b, #0f172a 75%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .error-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      border-radius: 24px;
+      max-width: 620px;
+      width: 100%;
+      padding: 40px 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+    }
+    .badge-icon {
+      font-size: 4rem;
+      margin-bottom: 12px;
+      display: inline-block;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #f59e0b;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .redirect-status {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      color: #38bdf8;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: #f59e0b;
+      color: #000000;
+    }
+    .btn-primary:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="error-card">
+    <div class="badge-icon">🕵️</div>
+    <h1>Detective Navigation Hub</h1>
+    <p>Looking for a lesson or game? We're redirecting you to the right place...</p>
+
+    <div class="redirect-status" id="redirect-msg">
+      🔍 Analyzing destination link...
+    </div>
+
+    <div class="links-grid">
+      <a href="detectives/index.html" class="link-btn btn-primary" id="btn-detectives">
+        🕵️ The Mystery of Yesterday
+      </a>
+      <a href="index.html#library" class="link-btn btn-secondary" id="btn-library">
+        📚 Games &amp; ESL Library
+      </a>
+      <a href="detectives/worksheet.html" class="link-btn btn-secondary" id="btn-worksheet">
+        🖨️ Printable Case Dossier
+      </a>
+      <a href="story-engine/index.html?story=alice" class="link-btn btn-secondary" id="btn-story">
+        📖 Alice Story Engine
+      </a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const pathname = window.location.pathname.toLowerCase();
+      const href = window.location.href.toLowerCase();
+      const statusEl = document.getElementById('redirect-msg');
+
+      // Determine Base Path (supports localhost or GitHub Pages repo /who-stole-the-treasure/)
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      const basePrefix = isGitHubPages ? '/who-stole-the-treasure/' : '/';
+
+      // Update static button hrefs with correct base
+      document.getElementById('btn-detectives').href = basePrefix + 'detectives/index.html';
+      document.getElementById('btn-library').href = basePrefix + 'index.html#library';
+      document.getElementById('btn-worksheet').href = basePrefix + 'detectives/worksheet.html';
+      document.getElementById('btn-story').href = basePrefix + 'story-engine/index.html?story=alice';
+
+      let targetUrl = null;
+      let targetName = '';
+
+      if (pathname.includes('detective') || pathname.includes('yesterday') || pathname.includes('mystery')) {
+        targetUrl = basePrefix + 'detectives/index.html';
+        targetName = 'The Mystery of Yesterday';
+      } else if (pathname.includes('city-mouse') || pathname.includes('mouse')) {
+        targetUrl = basePrefix + 'city-mouse/index.html';
+        targetName = 'City Mouse Adventure';
+      } else if (pathname.includes('nh') || pathname.includes('neighbourhood')) {
+        targetUrl = basePrefix + 'neighbourhood/index.html';
+        targetName = 'Neighbourhood Heroes';
+      } else if (pathname.includes('pokemon')) {
+        targetUrl = basePrefix + 'pokemon/index.html';
+        targetName = 'Pokemon Adventure';
+      } else if (pathname.includes('firefighter')) {
+        targetUrl = basePrefix + 'firefighter/index.html';
+        targetName = 'Firefighter Academy';
+      } else if (pathname.includes('monster')) {
+        targetUrl = basePrefix + 'monster-day/index.html';
+        targetName = 'Monster Day';
+      } else if (pathname.includes('clara') || pathname.includes('inventor')) {
+        targetUrl = basePrefix + 'inventor-lab/index.html';
+        targetName = 'Inventor Lab';
+      } else if (pathname.includes('alice')) {
+        targetUrl = basePrefix + 'alice-quest/index.html';
+        targetName = "Alice's Reading Quest";
+      } else if (pathname.includes('library')) {
+        targetUrl = basePrefix + 'index.html#library';
+        targetName = 'ESL Academy Library';
+      }
+
+      if (targetUrl) {
+        statusEl.textContent = '🚀 Heading to ' + targetName + ' in 1 second...';
+        setTimeout(function() {
+          window.location.replace(targetUrl);
+        }, 800);
+      } else {
+        statusEl.textContent = 'Please choose a destination above to continue your adventure!';
+      }
+    })();
+  </script>
+</body>
+</html>
