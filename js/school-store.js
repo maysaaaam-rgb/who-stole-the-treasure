@@ -408,12 +408,12 @@
     },
     {
       id: "yesterday-detectives",
-      title: "Yesterday Detectives: The Case of the Missing Memory",
+      title: "The Mystery of Yesterday: A Past Simple Detective Adventure",
       category: "Speaking Games",
-      level: "A1+",
-      age: "8–12",
-      grade: "Grade 4",
-      duration: 55,
+      level: "A1/A1+",
+      age: "8–10",
+      grade: "Grade 3–4",
+      duration: 35,
       skills: ["Grammar", "Listening", "Speaking", "Reading", "Vocabulary", "Deduction"],
       topics: ["Past Simple", "Regular Verbs", "Irregular Verbs", "Questions with Did"],
       objectives: [

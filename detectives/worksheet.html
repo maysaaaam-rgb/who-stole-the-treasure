@@ -3,118 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🕵️ Yesterday Detectives: Case Dossier &amp; Worksheet | Past Simple A1+</title>
+  <title>🕵️ The Mystery of Yesterday: Official Detective Case Dossier | Past Simple A1/A1+</title>
   <style>
     @page {
       size: A4 portrait;
-      margin: 14mm 14mm 14mm 14mm;
+      margin: 12mm 12mm 12mm 12mm;
     }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
     body {
-      background: #ffffff;
+      background: #f8fafc;
       color: #0f172a;
       line-height: 1.4;
-      padding: 10px;
+      padding: 12px;
     }
     .print-bar {
       background: #0f172a;
       color: #ffffff;
-      padding: 12px 20px;
+      padding: 14px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      border-radius: 8px;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
     .print-btn {
       background: #f59e0b;
       color: #000000;
       border: none;
-      padding: 8px 18px;
-      font-size: 0.95rem;
+      padding: 10px 22px;
+      font-size: 1rem;
       font-weight: 800;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn:hover {
+      background: #d97706;
+    }
+    .back-btn {
+      background: #334155;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
     }
     .page {
-      border: 2px solid #0f172a;
+      background: #ffffff;
+      border: 2.5px solid #0f172a;
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 30px;
+      margin: 0 auto 30px auto;
+      max-width: 800px;
       page-break-after: always;
       position: relative;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
     }
     .page:last-child {
       page-break-after: auto;
+      margin-bottom: 0;
     }
-    .header-box {
-      border-bottom: 2px solid #0f172a;
+    .page-header {
+      border-bottom: 2.5px solid #0f172a;
       padding-bottom: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
     }
-    .meta-fields {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
-      font-size: 0.9rem;
-      font-weight: 700;
+    .dossier-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .field-line {
-      border-bottom: 1.5px solid #64748b;
-      display: inline-block;
-      width: 100%;
-      height: 20px;
+    .page-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      background: #0f172a;
+      color: #f59e0b;
+      padding: 4px 10px;
+      border-radius: 20px;
     }
-    .exercise-title {
-      font-size: 1.1rem;
+    .section-title {
+      font-size: 1.05rem;
       font-weight: 900;
       background: #f1f5f9;
       padding: 6px 12px;
-      border-left: 5px solid #0f172a;
+      border-left: 5px solid #f59e0b;
       margin: 16px 0 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .verb-table {
+    .badge-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      border: 2px dashed #0f172a;
+      border-radius: 10px;
+      padding: 14px;
+      background: #f8fafc;
+      margin-bottom: 16px;
+    }
+    .badge-photo-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      text-align: center;
+      background: #ffffff;
+    }
+    .field-row {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .line-fill {
+      border-bottom: 1.5px solid #64748b;
+      display: inline-block;
+      width: 60%;
+      height: 18px;
+    }
+    .verb-match-grid {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 10px;
+      margin: 14px 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .verb-pill {
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .table-dossier {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 14px;
+      margin: 12px 0;
+      font-size: 0.88rem;
     }
-    .verb-table th, .verb-table td {
+    .table-dossier th, .table-dossier td {
       border: 1.5px solid #cbd5e1;
-      padding: 8px 12px;
-      font-size: 0.9rem;
+      padding: 8px 10px;
       text-align: left;
     }
-    .verb-table th {
-      background: #f8fafc;
+    .table-dossier th {
+      background: #0f172a;
+      color: #ffffff;
       font-weight: 800;
     }
-    .write-box {
-      border: 1.5px dashed #94a3b8;
+    .rule-callout {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
       border-radius: 8px;
-      padding: 14px;
-      min-height: 80px;
-      margin-bottom: 14px;
-      background: #f8fafc;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 0.88rem;
+    }
+    .cutout-card {
+      border: 2px dashed #64748b;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      background: #ffffff;
+      margin-bottom: 10px;
     }
     @media print {
       .print-bar {
-        display: none;
+        display: none !important;
       }
       body {
-        padding: 0;
+        padding: 0 !important;
+        background: #ffffff !important;
       }
       .page {
-        margin: 0;
-        border: 2px solid #000000;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: 2px solid #000000 !important;
       }
     }
   </style>
@@ -124,192 +211,227 @@
   <!-- Screen Top Bar -->
   <div class="print-bar">
     <div>
-      <h2 style="font-size: 1.15rem; font-weight: 900; margin:0;">🕵️ YESTERDAY DETECTIVES: Printable Case Dossier</h2>
-      <p style="font-size: 0.8rem; color: #cbd5e1; margin: 2px 0 0 0;">CEFR A1+ Past Simple Activity Workbook (4 Pages)</p>
+      <h2 style="font-size:1.25rem; font-weight:900; margin:0;">🕵️ THE MYSTERY OF YESTERDAY · Student Case Dossier</h2>
+      <p style="font-size:0.85rem; color:#cbd5e1; margin-top:2px;">Grade 3–4 (A1/A1+) Past Simple Printable Activity Pack (4 Pages)</p>
     </div>
-    <button class="print-btn" onclick="window.print()">🖨️ Print Student Dossier</button>
+    <div style="display:flex; gap:10px;">
+      <a href="index.html" class="back-btn">⬅️ Back to Interactive Lesson</a>
+      <button class="print-btn" onclick="window.print()">🖨️ Print Student Dossier</button>
+    </div>
   </div>
 
-  <!-- PAGE 1: VOCABULARY & MATCHING -->
+  <!-- PAGE 1: DETECTIVE BADGE & CASE BRIEFING -->
   <div class="page">
-    <div class="header-box">
+    <div class="page-header">
+      <div class="dossier-title">🕵️ TOP SECRET · CASE DOSSIER #2026-PS</div>
+      <div class="page-tag">PAGE 1 OF 4</div>
+    </div>
+
+    <!-- Official Detective ID -->
+    <div class="badge-card">
+      <div class="badge-photo-box">
+        <span style="font-size:2rem; margin-bottom:4px;">🕵️‍♂️</span>
+        DRAW YOUR<br>DETECTIVE FACE
+      </div>
       <div>
-        <h1 style="font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px;">🕵️ CASE FILE: MISSING MEMORY</h1>
-        <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">CONFIDENTIAL JUNIOR DETECTIVE INVESTIGATION</div>
-      </div>
-      <div style="text-align: right; font-size: 0.85rem; font-weight: 800;">
-        PAGE 1 OF 4<br>CEFR A1+
+        <div style="font-size:1.1rem; font-weight:900; color:#0f172a; margin-bottom:6px;">
+          JUNIOR DETECTIVE ACADEMY ID
+        </div>
+        <div class="field-row">Detective Code Name: <span class="line-fill" style="width:50%;"></span></div>
+        <div class="field-row">Class / Grade: <span class="line-fill" style="width:25%;"></span> &nbsp; Date: <span class="line-fill" style="width:30%;"></span></div>
+        <div class="field-row">Partner Detective: <span class="line-fill" style="width:55%;"></span></div>
       </div>
     </div>
 
-    <div class="meta-fields">
-      <div>Detective Name: <span class="field-line"></span></div>
-      <div>Class: <span class="field-line"></span></div>
-      <div>Date: <span class="field-line"></span></div>
+    <div class="section-title">
+      <span>📦 LEVEL 1: THE MYSTERY NOTE</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Warm-Up &amp; Noticing</span>
     </div>
 
-    <div class="exercise-title">Part 1: Match Present Verbs to Past Actions</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 8px;">Draw a line from the present base verb to its correct Past Simple form:</p>
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:10px;">
+      A strange wooden box arrived at your detective agency. Read the secret note found inside:
+    </p>
 
-    <table class="verb-table">
+    <div style="background:#fffbeb; border:2px dashed #d97706; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-style:italic; font-size:0.95rem; line-height:1.6;">
+      "Dear Junior Detectives, Yesterday was NOT a normal day. Someone <strong>ate</strong> my homework, <strong>went</strong> into the magical garden, and <strong>saw</strong> a mysterious creature! Can you discover the truth? Open the clues to unlock the secret code!"
+    </div>
+
+    <div class="section-title">
+      <span>🔍 TIME DETECTIVE: TODAY VS. YESTERDAY</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Target Verbs</span>
+    </div>
+
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:10px;">
+      Circle whether the sentence happened <strong>TODAY (Now)</strong> or <strong>YESTERDAY (Past)</strong>:
+    </p>
+
+    <div style="line-height:2.2; font-size:0.92rem;">
+      1. Barnaby <strong>ate</strong> seven blue berries. ➔ &nbsp; [ &nbsp; TODAY &nbsp; / &nbsp; <strong>YESTERDAY</strong> &nbsp; ]<br>
+      2. I <strong>go</strong> to school by bicycle every morning. ➔ &nbsp; [ &nbsp; <strong>TODAY</strong> &nbsp; / &nbsp; YESTERDAY &nbsp; ]<br>
+      3. Mia <strong>saw</strong> a green flying lizard in the tree. ➔ &nbsp; [ &nbsp; TODAY &nbsp; / &nbsp; <strong>YESTERDAY</strong> &nbsp; ]<br>
+      4. The children <strong>played</strong> football in the rain. ➔ &nbsp; [ &nbsp; TODAY &nbsp; / &nbsp; <strong>YESTERDAY</strong> &nbsp; ]<br>
+      5. We <strong>had</strong> a secret detective meeting yesterday afternoon. ➔ &nbsp; [ &nbsp; TODAY &nbsp; / &nbsp; <strong>YESTERDAY</strong> &nbsp; ]
+    </div>
+  </div>
+
+  <!-- PAGE 2: VERB SPRINT MAZE & TARGET FORM PRACTICE -->
+  <div class="page">
+    <div class="page-header">
+      <div class="dossier-title">🏃 LEVEL 2: RUN TO THE ANSWER VERB SPRINT</div>
+      <div class="page-tag">PAGE 2 OF 4</div>
+    </div>
+
+    <div class="section-title">
+      <span>⚡ PART A: CONNECT THE PRESENT TO THE PAST</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">8 Core Action Verbs</span>
+    </div>
+
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:10px;">
+      Draw an arrow from the present base verb on the left to its past form on the right:
+    </p>
+
+    <table class="table-dossier">
       <thead>
         <tr>
-          <th>Today (Base Form)</th>
+          <th>Today (Base Verb)</th>
           <th>Type</th>
           <th>Yesterday (Past Simple)</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>1. play ⚽</td><td>Regular</td><td>a) went 🚌</td></tr>
-        <tr><td>2. go 🚌</td><td>Irregular</td><td>b) ate 🍕</td></tr>
-        <tr><td>3. watch 📺</td><td>Regular</td><td>c) played ⚽</td></tr>
-        <tr><td>4. eat 🍕</td><td>Irregular</td><td>d) watched 📺</td></tr>
-        <tr><td>5. see 🦁</td><td>Irregular</td><td>e) walked 🚶</td></tr>
-        <tr><td>6. walk 🚶</td><td>Regular</td><td>f) saw 🦁</td></tr>
-        <tr><td>7. ride 🚲</td><td>Irregular</td><td>g) cleaned 🧹</td></tr>
-        <tr><td>8. clean 🧹</td><td>Regular</td><td>h) rode 🚲</td></tr>
+        <tr><td>1. 🏃 go</td><td>Irregular</td><td>a) watched 📺</td></tr>
+        <tr><td>2. 🍕 eat</td><td>Irregular</td><td>b) played ⚽</td></tr>
+        <tr><td>3. 👁️ see</td><td>Irregular</td><td>c) went 🏃</td></tr>
+        <tr><td>4. ⚽ play</td><td>Regular (+ed)</td><td>d) ate 🍕</td></tr>
+        <tr><td>5. 📺 watch</td><td>Regular (+ed)</td><td>e) had 🎁</td></tr>
+        <tr><td>6. 🏰 visit</td><td>Regular (+ed)</td><td>f) saw 👁️</td></tr>
+        <tr><td>7. 🎁 have</td><td>Irregular</td><td>g) ran 👟</td></tr>
+        <tr><td>8. 👟 run</td><td>Irregular</td><td>h) visited 🏰</td></tr>
       </tbody>
     </table>
 
-    <div class="exercise-title">Part 2: Sort the Time Evidence</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 8px;">Write these 6 verbs into the correct detective filing cabinet:</p>
-    <div style="background:#f1f5f9; padding:8px; border-radius:6px; font-weight:700; text-align:center; margin-bottom:12px;">
-      [ visited &nbsp;·&nbsp; had &nbsp;·&nbsp; found &nbsp;·&nbsp; jumped &nbsp;·&nbsp; cleaned &nbsp;·&nbsp; rode ]
+    <div class="section-title">
+      <span>🧩 PART B: DETECTIVE VERB MAZE</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Regular vs Irregular</span>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-      <div class="write-box">
-        <strong>🟢 REGULAR (+ED):</strong><br><br>
-        1. ________________________<br>
-        2. ________________________<br>
-        3. ________________________
-      </div>
-      <div class="write-box">
-        <strong>🟣 IRREGULAR (Word Changes):</strong><br><br>
-        1. ________________________<br>
-        2. ________________________<br>
-        3. ________________________
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE 2: TIMELINE & SENTENCE COMPLETION -->
-  <div class="page">
-    <div class="header-box">
-      <div>
-        <h1 style="font-size: 1.6rem; font-weight: 900;">🕵️ EVIDENCE LOG: THE TIMELINE</h1>
-        <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">STAGE 3 &amp; 4: TIMELINE DEDUCTIONS</div>
-      </div>
-      <div style="text-align: right; font-size: 0.85rem; font-weight: 800;">PAGE 2 OF 4</div>
-    </div>
-
-    <div class="exercise-title">Part 3: Complete the Suspect’s Day</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">Fill in the blanks using the Past Simple of the verb in parentheses <strong>( )</strong>:</p>
-
-    <div style="line-height: 2.2; font-size: 0.95rem;">
-      1. Yesterday morning, I ___________________ (walk) to the bus stop at 8:00 AM.<br>
-      2. I ___________________ (go) to the city zoo with my school group.<br>
-      3. In the animal sanctuary, we ___________________ (see) a giant African lion.<br>
-      4. At lunchtime, the students ___________________ (eat) two big cheese pizzas.<br>
-      5. After lunch, Leo ___________________ (play) football on the lawn.<br>
-      6. In the evening, Maya ___________________ (watch) her favorite mystery cartoon.<br>
-      7. Before going to bed, Tom ___________________ (clean) his detective desk.
-    </div>
-
-    <div class="exercise-title">Part 4: Choose the Correct Clue</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">Circle the correct option:</p>
-
-    <div style="font-size: 0.9rem; line-height: 2;">
-      1. Yesterday, she ( <strong>ride</strong> / <strong>rode</strong> / <strong>riding</strong> ) her bicycle across the park.<br>
-      2. They ( <strong>find</strong> / <strong>found</strong> / <strong>finded</strong> ) a mysterious gold coin in the grass.<br>
-      3. We ( <strong>have</strong> / <strong>haded</strong> / <strong>had</strong> ) an exciting investigation meeting.<br>
-      4. The puppy ( <strong>jump</strong> / <strong>jumped</strong> / <strong>jumping</strong> ) over the garden fence.
-    </div>
-  </div>
-
-  <!-- PAGE 3: FIX THE DETECTIVE (DID / DIDN'T) -->
-  <div class="page">
-    <div class="header-box">
-      <div>
-        <h1 style="font-size: 1.6rem; font-weight: 900;">🕵️ INTERROGATION RULES: DID &amp; DIDN'T</h1>
-        <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">STAGE 6 &amp; 9: QUESTIONING AND NEGATIVES</div>
-      </div>
-      <div style="text-align: right; font-size: 0.85rem; font-weight: 800;">PAGE 3 OF 4</div>
-    </div>
-
-    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
-      <strong style="color: #b45309;">⚠️ THE GOLDEN DETECTIVE RULE:</strong><br>
-      When you use <strong>DID</strong> in questions or <strong>DIDN'T</strong> in negatives, the verb goes back to its base form!<br>
-      ❌ <em>Did you went?</em> ➔ ✅ <strong>Did you go?</strong><br>
-      ❌ <em>I didn't ate pizza.</em> ➔ ✅ <strong>I didn't eat pizza.</strong>
-    </div>
-
-    <div class="exercise-title">Part 5: Fix The Detective’s Broken Sentences</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">Cross out the mistake and rewrite the sentence correctly:</p>
-
-    <div style="font-size: 0.95rem; line-height: 2.2;">
-      1. ❌ <em>Did you went to the cinema yesterday?</em><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;✅ ____________________________________________________________________________<br><br>
-      2. ❌ <em>She didn't ate her lunch.</em><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;✅ ____________________________________________________________________________<br><br>
-      3. ❌ <em>Did they saw the footprints in the mud?</em><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;✅ ____________________________________________________________________________<br><br>
-      4. ❌ <em>I didn't played video games yesterday.</em><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;✅ ____________________________________________________________________________
-    </div>
-
-    <div class="exercise-title">Part 6: Interrogate the Suspect (Short Answers)</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">Answer with <em>"Yes, I did."</em> or <em>"No, I didn't."</em>:</p>
-
-    <div style="font-size: 0.9rem; line-height: 2;">
-      1. Detective: "Did you go to the museum yesterday?" ➔ Suspect (Yes): __________________________<br>
-      2. Detective: "Did you eat the chocolate cake?" ➔ Suspect (No): __________________________<br>
-      3. Detective: "Did you clean your room?" ➔ Suspect (Yes): __________________________
-    </div>
-  </div>
-
-  <!-- PAGE 4: CREATE YOUR OWN LIE DOSSIER -->
-  <div class="page">
-    <div class="header-box">
-      <div>
-        <h1 style="font-size: 1.6rem; font-weight: 900;">🕵️ CASE REPORT: CREATE YOUR OWN LIE</h1>
-        <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">STAGE 11 &amp; 12: FINAL PRODUCTION TASK</div>
-      </div>
-      <div style="text-align: right; font-size: 0.85rem; font-weight: 800;">PAGE 4 OF 4</div>
-    </div>
-
-    <div class="exercise-title">Part 7: Write 4 Truths and 1 Believable Lie</div>
-    <p style="font-size: 0.85rem; color: #475569; margin-bottom: 14px;">
-      Write 5 things you did yesterday. <strong>4 must be TRUE</strong>, and <strong>1 must be a believable LIE</strong>!<br>
-      Keep the lie a secret from your partner!
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:10px;">
+      Help Detective Alex reach the evidence box! Color ONLY the boxes that contain <strong>PAST SIMPLE</strong> verbs:
     </p>
 
-    <div class="write-box" style="line-height: 2.4; font-size: 0.95rem;">
-      1. Yesterday, I _______________________________________________________________<br>
-      2. Then I ___________________________________________________________________<br>
-      3. In the afternoon, I _________________________________________________________<br>
-      4. I also ____________________________________________________________________<br>
-      5. Finally, I _________________________________________________________________
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; text-align:center; font-weight:800; font-size:0.9rem; margin-bottom:14px;">
+      <div style="background:#e2e8f0; padding:10px; border-radius:6px;">START ➔</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">WENT ✅</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">eat</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">see</div>
+
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">play</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">ATE ✅</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">SAW ✅</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">go</div>
+
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">run</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">watch</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">PLAYED ✅</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">HAD ✅</div>
+
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">clean</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">swim</div>
+      <div style="background:#f1f5f9; border:1.5px solid #cbd5e1; padding:10px; border-radius:6px;">VISITED ✅</div>
+      <div style="background:#fef3c7; border:2px solid #f59e0b; padding:10px; border-radius:6px;">📦 UNLOCKED!</div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: TWO TRUTHS & ONE LIE + SUSPECT INTERROGATION -->
+  <div class="page">
+    <div class="page-header">
+      <div class="dossier-title">🤥 LEVEL 3 &amp; 4: CATCH THE LIE &amp; INTERROGATE</div>
+      <div class="page-tag">PAGE 3 OF 4</div>
     </div>
 
-    <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 14px;">
-      <strong>🤫 SECRET LIE REVEAL:</strong> Statement # _____ is my lie!<br>
-      The real truth is: _____________________________________________________________
+    <div class="rule-callout">
+      <strong style="color:#b45309; font-size:0.95rem;">⚡ THE GOLDEN INTERROGATION RULE (DID &amp; DIDN'T):</strong><br>
+      When you ask a question with <strong>DID</strong>, the verb changes back to its BASE form!<br>
+      ❌ <em>Did you went to the park?</em> ➔ ✅ <strong>Did you go to the park?</strong><br>
+      Suspect answers: <strong>"Yes, I did."</strong> or <strong>"No, I didn't."</strong>
     </div>
 
-    <div class="exercise-title">Part 8: Detective Scorecard &amp; Teacher Stamp</div>
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px; align-items: center;">
-      <div style="font-size: 0.85rem; line-height: 1.8;">
-        ☑ Vocabulary Mastery (A1+ Actions): 5 / 5<br>
-        ☑ Regular Verbs (+ED ending): 5 / 5<br>
-        ☑ Irregular Verbs (Shape changes): 5 / 5<br>
-        ☑ Questions with DID (Did + base verb): 5 / 5<br>
-        ☑ Negatives with DIDN'T (Didn't + base verb): 5 / 5
+    <div class="section-title">
+      <span>🕵️ PART A: BARNABY'S TESTIMONY</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Two Truths and One Lie</span>
+    </div>
+
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:8px;">
+      Barnaby the Berry Monster gave 3 statements. Circle the <strong>LIE</strong>:
+    </p>
+
+    <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:8px; padding:12px; margin-bottom:14px; line-height:2;">
+      [ &nbsp; ] <strong>Statement 1:</strong> "Yesterday morning, I ate forty purple berries."<br>
+      [ &nbsp; ] <strong>Statement 2:</strong> "In the afternoon, I flew to the moon on a giant skateboard."<br>
+      [ &nbsp; ] <strong>Statement 3:</strong> "At night, I watched funny monster videos on TV."<br>
+      <div style="margin-top:6px; font-weight:800; color:#e11d48;">
+        Which statement is the LIE? # _____ &nbsp; (Why is it impossible?) ___________________________
       </div>
-      <div style="border: 3px double #f59e0b; border-radius: 12px; padding: 16px; text-align: center;">
-        <div style="font-size: 2rem;">🎖️</div>
-        <strong style="font-size: 0.9rem;">MASTER DETECTIVE</strong><br>
-        <span style="font-size: 0.75rem; color: #475569;">CASE SOLVED 100%</span>
+    </div>
+
+    <div class="section-title">
+      <span>🔍 PART B: QUESTION DRILL (DID YOU...?)</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Speaking &amp; Writing Practice</span>
+    </div>
+
+    <div style="line-height:2.2; font-size:0.92rem;">
+      1. Detective: "<strong>Did you go</strong> to the candy shop yesterday?"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Suspect (Yes): "______________________________________________________"<br><br>
+      2. Detective: "<strong>Did you eat</strong> the dinosaur's giant pizza?"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Suspect (No): "______________________________________________________"<br><br>
+      3. Detective: "<strong>Did you see</strong> the blue alien in the tree?"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;Suspect (Yes): "______________________________________________________"
+    </div>
+  </div>
+
+  <!-- PAGE 4: STUDENT SUSPECT EVIDENCE BUILDER (CUT & PASTE) -->
+  <div class="page">
+    <div class="page-header">
+      <div class="dossier-title">🎭 LEVEL 5 &amp; 6: STUDENT SUSPECTS BUILDER</div>
+      <div class="page-tag">PAGE 4 OF 4</div>
+    </div>
+
+    <div class="section-title">
+      <span>✂️ CREATE YOUR OWN TWO TRUTHS &amp; ONE LIE</span>
+      <span style="font-size:0.8rem; font-weight:700; color:#64748b;">Classroom Pair Activity</span>
+    </div>
+
+    <p style="font-size:0.88rem; color:#475569; margin-bottom:10px;">
+      Write 3 things you did yesterday. Two must be <strong>TRUE</strong> and one must be a clever <strong>LIE</strong>! Don't let your partner see your secret answer!
+    </p>
+
+    <div style="border:2px solid #0f172a; border-radius:10px; padding:16px; background:#f8fafc; margin-bottom:16px; line-height:2.4; font-size:0.95rem;">
+      <strong>1. Yesterday, I</strong> ______________________________________________________________<br>
+      <strong>2. Then I</strong> ___________________________________________________________________<br>
+      <strong>3. Later, I</strong> __________________________________________________________________
+    </div>
+
+    <div style="background:#fef2f2; border:2px dashed #e11d48; border-radius:8px; padding:12px; margin-bottom:16px;">
+      <strong style="color:#be123c;">🤫 SECRET DETECTIVE ANSWER (Fold this flap over!):</strong><br>
+      My secret LIE is statement # <strong>[ &nbsp;&nbsp;&nbsp; ]</strong>.<br>
+      What really happened: ______________________________________________________________
+    </div>
+
+    <div class="section-title">
+      <span>🏆 OFFICIAL MASTER DETECTIVE CERTIFICATE</span>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px; align-items:center; border:2px solid #f59e0b; border-radius:10px; padding:14px; background:#fffbeb;">
+      <div style="font-size:0.88rem; line-height:1.8;">
+        ✅ Can name 8 Past Simple action verbs (+100 XP)<br>
+        ✅ Can form questions with "Did you...?" (+50 XP)<br>
+        ✅ Can answer with "Yes, I did / No, I didn't" (+50 XP)<br>
+        ✅ Caught Barnaby's lie and solved the mystery (+100 XP)
+      </div>
+      <div style="text-align:center; border:2.5px double #d97706; border-radius:10px; padding:12px; background:#ffffff;">
+        <div style="font-size:2.4rem;">🎖️</div>
+        <div style="font-weight:900; font-size:0.9rem; color:#0f172a;">MASTER DETECTIVE</div>
+        <div style="font-size:0.75rem; color:#64748b;">APPROVED BY TEACHER</div>
       </div>
     </div>
   </div>

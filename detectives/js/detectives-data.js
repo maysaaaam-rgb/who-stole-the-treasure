@@ -1,446 +1,395 @@
 /**
- * YESTERDAY DETECTIVES — PEDAGOGICAL DATA & MYSTERY ASSETS
- * Authoritative learning repository for Past Simple ESL (A1+ CEFR)
+ * THE MYSTERY OF YESTERDAY — PEDAGOGICAL DATA & ADVENTURE ASSETS
+ * Authoritative learning repository for 35-Minute Past Simple Lesson (A1/A1+ CEFR)
  */
 
 (function(root) {
   'use strict';
 
   // =========================================================================
-  // 1. VERBS DATA: REGULAR & IRREGULAR
+  // 1. TARGET PAST SIMPLE VERBS (A1 / A1+)
   // =========================================================================
-
-  const REGULAR_VERBS = [
-    {
-      base: 'play',
-      past: 'played',
-      type: 'regular',
-      icon: '⚽',
-      category: 'Sports & Games',
-      examplePresent: 'I play football today.',
-      examplePast: 'I played football yesterday.',
-      question: 'Did you play football yesterday?',
-      negative: "I didn't play football yesterday.",
-      imageDesc: 'A child kicking a soccer ball'
-    },
-    {
-      base: 'watch',
-      past: 'watched',
-      type: 'regular',
-      icon: '📺',
-      category: 'Home & Media',
-      examplePresent: 'She watches TV today.',
-      examplePast: 'She watched TV yesterday.',
-      question: 'Did she watch TV yesterday?',
-      negative: "She didn't watch TV yesterday.",
-      imageDesc: 'Watching an exciting movie on television'
-    },
-    {
-      base: 'visit',
-      past: 'visited',
-      type: 'regular',
-      icon: '🏡',
-      category: 'Family & Friends',
-      examplePresent: 'We visit grandma today.',
-      examplePast: 'We visited grandma yesterday.',
-      question: 'Did you visit grandma yesterday?',
-      negative: "We didn't visit grandma yesterday.",
-      imageDesc: 'Visiting grandparents at their house'
-    },
-    {
-      base: 'clean',
-      past: 'cleaned',
-      type: 'regular',
-      icon: '🧹',
-      category: 'Chore',
-      examplePresent: 'He cleans his room today.',
-      examplePast: 'He cleaned his room yesterday.',
-      question: 'Did he clean his room yesterday?',
-      negative: "He didn't clean his room yesterday.",
-      imageDesc: 'Sweeping and tidying up a bedroom'
-    },
-    {
-      base: 'walk',
-      past: 'walked',
-      type: 'regular',
-      icon: '🚶',
-      category: 'Movement',
-      examplePresent: 'They walk to the park today.',
-      examplePast: 'They walked to the park yesterday.',
-      question: 'Did they walk to the park yesterday?',
-      negative: "They didn't walk to the park yesterday.",
-      imageDesc: 'Walking down a sunny park path'
-    },
-    {
-      base: 'jump',
-      past: 'jumped',
-      type: 'regular',
-      icon: '🦘',
-      category: 'Action',
-      examplePresent: 'The puppy jumps high today.',
-      examplePast: 'The puppy jumped high yesterday.',
-      question: 'Did the puppy jump high yesterday?',
-      negative: "The puppy didn't jump high yesterday.",
-      imageDesc: 'A playful puppy jumping in the air'
-    }
-  ];
-
-  const IRREGULAR_VERBS = [
-    {
-      base: 'go',
-      past: 'went',
-      type: 'irregular',
-      icon: '🚌',
-      category: 'Travel',
-      examplePresent: 'I go to the zoo today.',
-      examplePast: 'I went to the zoo yesterday.',
-      question: 'Did you go to the zoo yesterday?',
-      negative: "I didn't go to the zoo yesterday.",
-      imageDesc: 'Riding a big yellow bus to the zoo'
-    },
-    {
-      base: 'eat',
-      past: 'ate',
-      type: 'irregular',
-      icon: '🍕',
-      category: 'Food',
-      examplePresent: 'They eat delicious pizza today.',
-      examplePast: 'They ate delicious pizza yesterday.',
-      question: 'Did they eat pizza yesterday?',
-      negative: "They didn't eat pizza yesterday.",
-      imageDesc: 'Enjoying a slice of hot cheese pizza'
-    },
-    {
-      base: 'see',
-      past: 'saw',
-      type: 'irregular',
-      icon: '🦁',
-      category: 'Observation',
-      examplePresent: 'I see a wild lion today.',
-      examplePast: 'I saw a wild lion yesterday.',
-      question: 'Did you see a wild lion yesterday?',
-      negative: "I didn't see a wild lion yesterday.",
-      imageDesc: 'Looking through binoculars at a golden lion'
-    },
-    {
-      base: 'ride',
-      past: 'rode',
-      type: 'irregular',
-      icon: '🚲',
-      category: 'Movement',
-      examplePresent: 'She rides her bicycle today.',
-      examplePast: 'She rode her bicycle yesterday.',
-      question: 'Did she ride her bicycle yesterday?',
-      negative: "She didn't ride her bicycle yesterday.",
-      imageDesc: 'Pedaling happily on a red bicycle'
-    },
-    {
-      base: 'have',
-      past: 'had',
-      type: 'irregular',
-      icon: '🎈',
-      category: 'Experience',
-      examplePresent: 'We have a great party today.',
-      examplePast: 'We had a great party yesterday.',
-      question: 'Did you have a party yesterday?',
-      negative: "We didn't have a party yesterday.",
-      imageDesc: 'Celebrating with balloons and party hats'
-    },
-    {
-      base: 'find',
-      past: 'found',
-      type: 'irregular',
-      icon: '🔍',
-      category: 'Discovery',
-      examplePresent: 'The detective finds a secret clue.',
-      examplePast: 'The detective found a secret clue.',
-      question: 'Did the detective find a clue?',
-      negative: "The detective didn't find a clue.",
-      imageDesc: 'Using a magnifying glass to inspect footprints'
-    }
-  ];
-
-  const ALL_VERBS = [...REGULAR_VERBS, ...IRREGULAR_VERBS];
-
-  // =========================================================================
-  // 2. STAGE 5: MEMORY THIEF 10-CARD DECK
-  // =========================================================================
-
-  const MEMORY_THIEF_DECK = [
-    { id: 'c1', label: 'Pizza', icon: '🍕', pastAction: 'ate pizza', sentence: 'The detective ate pizza.' },
-    { id: 'c2', label: 'Lion', icon: '🦁', pastAction: 'saw a lion', sentence: 'The girl saw a lion.' },
-    { id: 'c3', label: 'Football', icon: '⚽', pastAction: 'played football', sentence: 'The boy played football.' },
-    { id: 'c4', label: 'Guitar', icon: '🎸', pastAction: 'played guitar', sentence: 'The detective played the guitar.' },
-    { id: 'c5', label: 'Bus', icon: '🚌', pastAction: 'went on a bus', sentence: 'They went on a bus.' },
-    { id: 'c6', label: 'Ice Cream', icon: '🍦', pastAction: 'ate ice cream', sentence: 'She ate cold ice cream.' },
-    { id: 'c7', label: 'Dog', icon: '🐶', pastAction: 'saw a dog', sentence: 'He saw a playful dog.' },
-    { id: 'c8', label: 'Bicycle', icon: '🚲', pastAction: 'rode a bicycle', sentence: 'She rode her bicycle.' },
-    { id: 'c9', label: 'Book', icon: '📚', pastAction: 'read a book', sentence: 'He read a mystery book.' },
-    { id: 'c10', label: 'Cake', icon: '🎂', pastAction: 'had a birthday cake', sentence: 'They had a delicious cake.' }
-  ];
-
-  const MEMORY_ROUNDS = [
-    { round: 1, title: 'Round 1 (Warm Up)', hideCount: 2, desc: 'Remember the cards! 2 cards will disappear!' },
-    { round: 2, title: 'Round 2 (Challenging)', hideCount: 3, desc: 'Careful! 3 cards will disappear this time!' },
-    { round: 3, title: 'Round 3 (Shuffle Shift)', hideCount: 2, shuffle: true, desc: 'The cards shifted positions AND 2 vanished!' },
-    { round: 4, title: 'Round 4 (The Imposter Swapper)', isSwap: true, desc: 'HARD: One card was secretly replaced by an imposter object!' }
+  const TARGET_VERBS = [
+    { base: 'go', past: 'went', type: 'irregular', icon: '🏃', sentence: 'Yesterday I went to school.', question: 'Did you go to school?' },
+    { base: 'eat', past: 'ate', type: 'irregular', icon: '🍕', sentence: 'Yesterday I ate pizza.', question: 'Did you eat pizza?' },
+    { base: 'see', past: 'saw', type: 'irregular', icon: '👀', sentence: 'Yesterday I saw a dinosaur.', question: 'Did you see a dinosaur?' },
+    { base: 'play', past: 'played', type: 'regular', icon: '⚽', sentence: 'Yesterday I played football.', question: 'Did you play football?' },
+    { base: 'watch', past: 'watched', type: 'regular', icon: '📺', sentence: 'Yesterday I watched a cartoon.', question: 'Did you watch a cartoon?' },
+    { base: 'visit', past: 'visited', type: 'regular', icon: '🏡', sentence: 'Yesterday I visited my grandma.', question: 'Did you visit your grandma?' },
+    { base: 'have', past: 'had', type: 'irregular', icon: '🎒', sentence: 'Yesterday I had an English lesson.', question: 'Did you have an English lesson?' },
+    { base: 'run', past: 'ran', type: 'irregular', icon: '⚡', sentence: 'Yesterday I ran in the park.', question: 'Did you run in the park?' }
   ];
 
   // =========================================================================
-  // 3. STAGE 6: FIX THE DETECTIVE MISTAKE REPAIR BANK
+  // 2. LEVEL 1: THE MYSTERY BEGINS (0–5 MIN)
   // =========================================================================
-
-  const FIX_DETECTIVE_CHALLENGES = [
-    {
-      broken: 'Did you went to the park?',
-      correctVerb: 'go',
-      options: ['go', 'went', 'going'],
-      fullFixed: 'Did you go to the park?',
-      rule: 'Remember: DID steals the past tense! DID + GO (base form).'
+  const LEVEL1_DATA = {
+    title: 'The Mystery Begins',
+    time: '0–5 min',
+    boxStory: {
+      headline: 'Mystery at Adventure School!',
+      text: 'Yesterday, something strange happened at Adventure School...\nThe teacher found a mysterious box. 📦\nThere was a note inside:',
+      noteSnippet: '"I did THREE things yesterday.\nTWO are TRUE.\nONE is a LIE.\nFind the lie and open the box!"'
     },
-    {
-      broken: 'Did she ate pizza yesterday?',
-      correctVerb: 'eat',
-      options: ['eat', 'ate', 'eating'],
-      fullFixed: 'Did she eat pizza yesterday?',
-      rule: 'Remember: After DID, the verb goes back to normal: DID SHE EAT?'
-    },
-    {
-      broken: "I didn't went home after school.",
-      correctVerb: 'go',
-      options: ['go', 'went', 'gone'],
-      fullFixed: "I didn't go home after school.",
-      rule: "Remember: DIDN'T + base verb! ❌ didn't went ➔ ✅ didn't go."
-    },
-    {
-      broken: 'Did they played football in the rain?',
-      correctVerb: 'play',
-      options: ['play', 'played', 'playing'],
-      fullFixed: 'Did they play football in the rain?',
-      rule: 'Remove the -ED after DID! DID THEY PLAY?'
-    },
-    {
-      broken: "He didn't saw the secret note.",
-      correctVerb: 'see',
-      options: ['see', 'saw', 'seen'],
-      fullFixed: "He didn't see the secret note.",
-      rule: "Negative form: DIDN'T + SEE! The verb returns to base form."
-    }
-  ];
-
-  // =========================================================================
-  // 4. STAGES 7 & 8: SUSPECT STORIES WITH EVIDENCE & LIES
-  // =========================================================================
-
-  const SUSPECT_STORIES = [
-    {
-      id: 'story1',
-      suspectName: 'Inspector Sneaky Sam',
-      avatar: '🕵️‍♂️',
-      intro: 'Yesterday was a very busy day for me, Detective! Here is what I did:',
-      statements: [
-        { id: 's1', text: 'I went to the zoo.', icon: '🚌', isLie: false },
-        { id: 's2', text: 'I saw a big lion.', icon: '🦁', isLie: false },
-        { id: 's3', text: 'I ate hot pizza.', icon: '🍕', isLie: false },
-        { id: 's4', text: 'I rode a wild horse.', icon: '🐎', isLie: true }
+    visualVerbs: [
+      { base: 'GO', past: 'WENT', icon: '🏃', label: 'Go → Went', actionText: 'Yesterday I went to school.' },
+      { base: 'EAT', past: 'ATE', icon: '🍕', label: 'Eat → Ate', actionText: 'Yesterday I ate pizza.' },
+      { base: 'SEE', past: 'SAW', icon: '🦖', label: 'See → Saw', actionText: 'Yesterday I saw a dinosaur!' }
+    ],
+    teacherStatements: [
+      { id: 's1', text: '1. Yesterday I went to school. 🏫', isLie: false, tag: 'TRUE' },
+      { id: 's2', text: '2. Yesterday I ate pizza. 🍕', isLie: false, tag: 'TRUE' },
+      { id: 's3', text: '3. Yesterday I saw a dinosaur! 🦖', isLie: true, tag: 'LIE' }
+    ],
+    dinosaurQuestion: {
+      prompt: "Did the teacher really see a dinosaur yesterday?",
+      options: [
+        { text: "👍 YES, you did!", value: "yes", isCorrect: false, feedback: "Wait a second! Dinosaurs lived millions of years ago! Dinosaurs are extinct!" },
+        { text: "👎 NO, you didn't!", value: "no", isCorrect: true, feedback: "Spot on, Detective! That was the LIE! Dinosaurs lived millions of years ago!" }
       ],
-      evidence: [
-        { type: 'ticket', name: 'Zoo Entry Ticket', icon: '🎟️', details: 'Valid: Yesterday 10:30 AM · City Zoo', confirms: 'went to the zoo' },
-        { type: 'photo', name: 'Camera Photo', icon: '📸', details: 'Timestamp: 11:15 AM · Big golden lion behind fence', confirms: 'saw a lion' },
-        { type: 'receipt', name: 'Luigi’s Pizza Receipt', icon: '🧾', details: 'Timestamp: 1:20 PM · 1x Pepperoni Slice ($3.50)', confirms: 'ate pizza' },
-        { type: 'bus', name: 'Bus Ride Card', icon: '🚌', details: 'Timestamp: 2:15 PM · Bus #14 Zoo ➔ Downtown', confirms: 'bus transport' }
-      ],
-      missingEvidence: 'No horse stables at the zoo, and no horse receipt or photo exists!',
-      truthCorrection: "I didn't ride a horse."
-    },
-    {
-      id: 'story2',
-      suspectName: 'Clever Chloe',
-      avatar: '👩‍🎤',
-      intro: 'Detectives, my memory is crystal clear! Yesterday I had a productive afternoon:',
-      statements: [
-        { id: 's1', text: 'I walked to the public library.', icon: '🚶', isLie: false },
-        { id: 's2', text: 'I found an ancient mystery book.', icon: '📚', isLie: false },
-        { id: 's3', text: 'I cleaned my entire bedroom.', icon: '🧹', isLie: true },
-        { id: 's4', text: 'I visited my friend Leo.', icon: '🏡', isLie: false }
-      ],
-      evidence: [
-        { type: 'receipt', name: 'Library Borrow Card', icon: '📖', details: 'Item: Secrets of Sherlock · Return in 14 days', confirms: 'found a book & walked there' },
-        { type: 'photo', name: 'Selfie with Leo', icon: '🤳', details: 'Timestamp: 4:30 PM · Leo’s front porch', confirms: 'visited Leo' },
-        { type: 'note', name: 'Mom’s Note', icon: '📝', details: 'Note on desk: "Chloe, your bedroom floor is still messy!"', confirms: 'did not clean room' }
-      ],
-      missingEvidence: 'Mom’s note proves the bedroom was never cleaned!',
-      truthCorrection: "She didn't clean her bedroom."
+      ruleDiscovery: "💡 DETECTIVE DISCOVERY: We use Past Simple (went, ate, saw) for actions completed YESTERDAY!"
     }
-  ];
+  };
 
   // =========================================================================
-  // 5. STAGE 9: INTERROGATION ROOM (DETECTIVE QUESTIONING)
+  // 3. LEVEL 2: RUN TO THE ANSWER (5–10 MIN)
   // =========================================================================
-
-  const INTERROGATION_SUSPECT = {
-    name: 'Barnaby the Butler',
-    avatar: '🤵',
-    initialSpeech: "Ask me anything, Detectives! I have nothing to hide about yesterday!",
-    cluesFound: [],
+  const LEVEL2_DATA = {
+    title: 'Run to the Answer!',
+    time: '5–10 min',
+    instructions: 'Look at the Smart Board! Move or point to the correct Past Simple verb!',
     questions: [
       {
         id: 'q1',
-        text: 'Did you go to the kitchen yesterday?',
-        answerSpeech: 'Yes, I did! I went to the kitchen at 8:00 AM.',
-        answerType: 'yes',
-        clue: 'Kitchen attendance confirmed at 8:00 AM.'
+        prompt: 'Yesterday I ___ pizza.',
+        icon: '🍕',
+        options: ['GO', 'EAT', 'ATE'],
+        correctIndex: 2,
+        correctVerb: 'ATE',
+        speech: 'Yesterday I ate pizza.',
+        explanation: 'Eat becomes ATE in the past! Super job!'
       },
       {
         id: 'q2',
-        text: 'Did you eat the chocolate cake in the fridge?',
-        answerSpeech: "No, I didn't! I never eat sweets on weekdays!",
-        answerType: 'no',
-        clue: 'Claims he did not eat the chocolate cake (Chocolate stains on sleeve!).'
+        prompt: 'Yesterday I ___ to the park.',
+        icon: '🌳',
+        options: ['GO', 'WENT', 'SEE'],
+        correctIndex: 1,
+        correctVerb: 'WENT',
+        speech: 'Yesterday I went to the park.',
+        explanation: 'Go becomes WENT in the past! Fantastic!'
       },
       {
         id: 'q3',
-        text: 'Did you clean the silver spoons?',
-        answerSpeech: 'Yes, I did! All twenty spoons were polished before lunch.',
-        answerType: 'yes',
-        clue: 'Silver spoons are sparkling clean in the dining room.'
+        prompt: 'Yesterday I ___ a funny dog.',
+        icon: '🐶',
+        options: ['SAW', 'SEE', 'EAT'],
+        correctIndex: 0,
+        correctVerb: 'SAW',
+        speech: 'Yesterday I saw a funny dog.',
+        explanation: 'See becomes SAW in the past! Sharp eyes, Detective!'
       },
       {
         id: 'q4',
-        text: 'Did you see who opened the safe?',
-        answerSpeech: "No, I didn't! The office door was firmly closed all afternoon.",
-        answerType: 'no',
-        clue: 'Denies seeing the open safe.'
+        prompt: 'Yesterday I ___ football with my friends.',
+        icon: '⚽',
+        options: ['PLAY', 'PLAYED', 'WATCH'],
+        correctIndex: 1,
+        correctVerb: 'PLAYED',
+        speech: 'Yesterday I played football with my friends.',
+        explanation: 'For regular verbs, we add -ED! Play becomes PLAYED!'
       },
       {
         id: 'q5',
-        text: 'Where did you go at 3:00 PM?',
-        answerSpeech: 'I walked in the garden to trim the rose bushes.',
-        answerType: 'yes',
-        clue: 'Garden shears were found in his coat pocket.'
+        prompt: 'Yesterday I ___ an exciting movie on TV.',
+        icon: '📺',
+        options: ['WATCH', 'WATCHED', 'VISITED'],
+        correctIndex: 1,
+        correctVerb: 'WATCHED',
+        speech: 'Yesterday I watched an exciting movie on TV.',
+        explanation: 'Watch becomes WATCHED! Five in a row! Detective streak!'
       }
-    ],
-    hiddenLieQuestionId: 'q2',
-    lieExplanation: 'Barnaby said "No, I didn\'t eat chocolate cake", BUT look at the chocolate frosting on his cuffs! He DID eat the cake!'
+    ]
   };
 
   // =========================================================================
-  // 6. STAGE 10: BUILD THE STORY (EVENT CARDS)
+  // 4. LEVEL 3: TWO TRUTHS & ONE LIE (10–18 MIN)
   // =========================================================================
-
-  const STORY_BUILDER_EVENTS = [
-    { id: 'ev1', verbBase: 'play', verbPast: 'played', object: 'football in the park', icon: '⚽', label: 'Play football' },
-    { id: 'ev2', verbBase: 'eat', verbPast: 'ate', object: 'a pepperoni pizza', icon: '🍕', label: 'Eat pizza' },
-    { id: 'ev3', verbBase: 'see', verbPast: 'saw', object: 'a stray puppy', icon: '🐶', label: 'See a dog' },
-    { id: 'ev4', verbBase: 'go', verbPast: 'went', object: 'on the city bus', icon: '🚌', label: 'Ride the bus' },
-    { id: 'ev5', verbBase: 'play', verbPast: 'played', object: 'my red electric guitar', icon: '🎸', label: 'Play guitar' },
-    { id: 'ev6', verbBase: 'visit', verbPast: 'visited', object: 'my best friend', icon: '🏡', label: 'Visit friend' },
-    { id: 'ev7', verbBase: 'find', verbPast: 'found', object: 'a gold coin on the sidewalk', icon: '🪙', label: 'Find a coin' }
-  ];
-
-  // =========================================================================
-  // 7. STAGE 13: HARD MODE MYSTERY (5-EVENT CHALLENGE)
-  // =========================================================================
-
-  const HARD_MODE_CASE = {
-    storyText: [
-      'Yesterday, Mia visited her grandmother in the morning.',
-      'She played with her cute dog in the sunny backyard.',
-      'She ate three slices of cheese pizza for lunch.',
-      "She didn't watch TV all afternoon.",
-      'Finally, she went to the park to meet her friends.'
-    ],
-    challenges: [
+  const LEVEL3_DATA = {
+    title: 'Two Truths & One Lie',
+    time: '10–18 min',
+    tagline: 'TWO are TRUE. ONE is a LIE. Vote 1️⃣, 2️⃣, or 3️⃣!',
+    rounds: [
       {
-        id: 'h1',
-        title: 'Challenge 1: What did Mia do?',
-        prompt: 'Which of these did Mia ACTUALLY do yesterday?',
-        options: ['She watched TV', 'She visited her grandmother', 'She rode a horse'],
-        correctIndex: 1,
-        feedback: 'Correct! "Mia visited her grandmother" is one of the completed actions!'
-      },
-      {
-        id: 'h2',
-        title: "Challenge 2: What didn't she do?",
-        prompt: 'Look at the negative sentence with DIDN\'T:',
-        options: ["She didn't eat pizza", "She didn't watch TV", "She didn't play with her dog"],
-        correctIndex: 1,
-        feedback: 'Sharp eye! "She didn\'t watch TV" is the exact negative structure used!'
-      },
-      {
-        id: 'h3',
-        title: 'Challenge 3: Which verbs are IRREGULAR?',
-        prompt: 'Identify the two irregular verbs in Mia\'s story:',
-        options: ['visited & played', 'ate & went', 'played & watched'],
-        correctIndex: 1,
-        feedback: 'Brilliant grammar deduction! ATE (eat ➔ ate) and WENT (go ➔ went) are irregular!'
-      },
-      {
-        id: 'h4',
-        title: 'Challenge 4: Event Timeline Order',
-        prompt: 'What did Mia do right before meeting her friends at the park?',
-        options: ['She visited grandma', 'She had lunch (ate pizza)', 'She played with the dog'],
-        correctIndex: 1,
-        feedback: 'Spot on! Lunch happened before heading out to the park!'
-      },
-      {
-        id: 'h5',
-        title: 'Challenge 5: The Sneaky Inconsistency',
-        prompt: 'If Mia\'s grandmother says: "Mia was glued to cartoons on my living room screen all afternoon", what is the lie?',
-        options: [
-          'Mia lied when she claimed: "I didn\'t watch TV."',
-          'Mia lied about visiting grandma.',
-          'Mia did not eat pizza.'
+        roundNumber: 1,
+        theme: "Space Adventure",
+        difficulty: "Easy (Absurd Lie)",
+        cards: [
+          { num: 1, text: "Yesterday, I played football.", icon: "⚽", isLie: false, tag: "TRUE" },
+          { num: 2, text: "Yesterday, I ate pizza.", icon: "🍕", isLie: false, tag: "TRUE" },
+          { num: 3, text: "Yesterday, I flew to the moon on a rocket!", icon: "🚀", isLie: true, tag: "LIE" }
         ],
-        correctIndex: 0,
-        feedback: 'Case solved! Grandmother caught the lie: Mia claimed she didn\'t watch TV, but she did!'
+        lieIndex: 2,
+        explanation: "Number 3 was the LIE! You did not fly to the moon yesterday! You were in class!",
+        didQuestion: "Did you fly to the moon? → No, I didn't!"
+      },
+      {
+        roundNumber: 2,
+        theme: "Animal Magic",
+        difficulty: "Medium (Silly Lie)",
+        cards: [
+          { num: 1, text: "Yesterday, I saw a brown bird in the garden.", icon: "🐦", isLie: false, tag: "TRUE" },
+          { num: 2, text: "Yesterday, I talked to a pink dancing elephant.", icon: "🐘", isLie: true, tag: "LIE" },
+          { num: 3, text: "Yesterday, I drank a glass of orange juice.", icon: "🍊", isLie: false, tag: "TRUE" }
+        ],
+        lieIndex: 1,
+        explanation: "Number 2 was the LIE! Elephants don't wear pink dresses or speak English!",
+        didQuestion: "Did you talk to an elephant? → No, I didn't!"
+      },
+      {
+        roundNumber: 3,
+        theme: "Greedy Monster Lunch",
+        difficulty: "Medium (Hyperbolic Lie)",
+        cards: [
+          { num: 1, text: "Yesterday, I ate twenty giant hamburgers for lunch!", icon: "🍔", isLie: true, tag: "LIE" },
+          { num: 2, text: "Yesterday, I watched a movie with my family.", icon: "🎬", isLie: false, tag: "TRUE" },
+          { num: 3, text: "Yesterday, I went to sleep at nine o'clock.", icon: "😴", isLie: false, tag: "TRUE" }
+        ],
+        lieIndex: 0,
+        explanation: "Number 1 was the LIE! Twenty giant hamburgers would make your tummy explode!",
+        didQuestion: "Did you eat twenty hamburgers? → No, I didn't!"
+      },
+      {
+        roundNumber: 4,
+        theme: "Clever Weekend",
+        difficulty: "Hard (Believable Lie - Listen Carefully!)",
+        cards: [
+          { num: 1, text: "Yesterday, I watched TV in the evening.", icon: "📺", isLie: false, tag: "TRUE" },
+          { num: 2, text: "Yesterday, I played football in the afternoon.", icon: "⚽", isLie: false, tag: "TRUE" },
+          { num: 3, text: "Yesterday, I visited my grandmother in Antarctica!", icon: "❄️", isLie: true, tag: "LIE" }
+        ],
+        lieIndex: 2,
+        explanation: "Number 3 was the LIE! Grandmother lives in town, not with the penguins in Antarctica!",
+        didQuestion: "Did you visit grandma in Antarctica? → No, I didn't!"
       }
     ]
   };
 
   // =========================================================================
-  // 8. STAGE 14: FINAL ASSESSMENT 5-PART RUBRIC
+  // 5. LEVEL 4: CRAZY SUSPECT (18–25 MIN)
   // =========================================================================
+  const LEVEL4_DATA = {
+    title: "Crazy Suspect: The Monster!",
+    time: "18–25 min",
+    suspectName: "Barnaby the Berry Monster 🧟",
+    suspectDescription: "A friendly blue-green furry monster caught near the mystery box.",
+    introSpeech: "Grrr! Hello Detectives! I did three things yesterday! Which one is my LIE?",
+    monsterStatements: [
+      { id: "m1", text: "1. Yesterday I went to school. 🏫", isLie: false },
+      { id: "m2", text: "2. Yesterday I ate five pizzas. 🍕", isLie: false },
+      { id: "m3", text: "3. Yesterday I saw a dinosaur. 🦖", isLie: true }
+    ],
+    interrogationQuestions: [
+      {
+        id: "q1",
+        text: "Did you go to school?",
+        response: "YES, I DID! 😄",
+        responseSpeech: "Yes, I did! I love English school! I sat at the big desk!",
+        monsterEmotion: "happy",
+        isLieQuestion: false
+      },
+      {
+        id: "q2",
+        text: "Did you eat pizza?",
+        response: "YES, I DID! 😋",
+        responseSpeech: "Yes, I did! I was super hungry! Mushroom, cheese, and berry pizza! Delicious!",
+        monsterEmotion: "laughing",
+        isLieQuestion: false
+      },
+      {
+        id: "q3",
+        text: "Did you see a dinosaur?",
+        response: "NO, I DIDN'T! 😈",
+        responseSpeech: "No, I didn't! You caught me! It was just a little green lizard in the grass! That was my LIE!",
+        monsterEmotion: "caught",
+        isLieQuestion: true
+      }
+    ],
+    dialogueDrill: {
+      prompt: "Practice with your detective partner:",
+      frameQuestion: "A: Did you [verb] yesterday?",
+      frameAnswerYes: "B: Yes, I did!",
+      frameAnswerNo: "B: No, I didn't!"
+    }
+  };
 
-  const FINAL_ASSESSMENT_DATA = {
-    part1: [
-      { prompt: 'A boy pedaling a bike:', options: ['ride', 'clean', 'jump'], correct: 'ride', icon: '🚲' },
-      { prompt: 'Holding a slice of pizza:', options: ['eat', 'walk', 'visit'], correct: 'eat', icon: '🍕' },
-      { prompt: 'Kicking a soccer ball:', options: ['play', 'go', 'find'], correct: 'play', icon: '⚽' },
-      { prompt: 'Looking through binoculars:', options: ['see', 'clean', 'ride'], correct: 'see', icon: '🦁' },
-      { prompt: 'Sweeping with a broom:', options: ['clean', 'jump', 'watch'], correct: 'clean', icon: '🧹' }
+  // =========================================================================
+  // 6. LEVEL 5: STUDENTS BECOME SUSPECTS (25–31 MIN)
+  // =========================================================================
+  const LEVEL5_DATA = {
+    title: "Students Become Suspects",
+    time: "25–31 min",
+    instructions: "Choose THREE action cards. Pick ONE to be your secret LIE! Then challenge Team B!",
+    actionPalette: [
+      { id: "act-go", base: "go", past: "went", icon: "🏃", options: ["to the park", "to the zoo", "to the moon", "to school"] },
+      { id: "act-eat", base: "eat", past: "ate", icon: "🍕", options: ["a big pizza", "strawberry ice cream", "ten burgers", "a smelly shoe"] },
+      { id: "act-play", base: "play", past: "played", icon: "⚽", options: ["football", "computer games", "with a robot", "basketball"] },
+      { id: "act-watch", base: "watch", past: "watched", icon: "📺", options: ["a funny cartoon", "a movie", "TV with grandma", "a football match"] },
+      { id: "act-see", base: "see", past: "saw", icon: "🐶", options: ["a cute dog", "a flying pig", "a golden spaceship", "a rainbow"] },
+      { id: "act-visit", base: "visit", past: "visited", icon: "🏡", options: ["my grandparents", "a dinosaur museum", "planet Mars", "my best friend"] },
+      { id: "act-sleep", base: "sleep", past: "slept", icon: "😴", options: ["for ten hours", "in a cozy tent", "on the classroom roof", "in bed"] },
+      { id: "act-run", base: "run", past: "ran", icon: "⚡", options: ["very fast", "in the school race", "away from a bee", "in the rain"] }
     ],
-    part2: [
-      { sentence: 'Yesterday, I ___ to the museum.', options: ['went', 'go', 'going'], correct: 'went' },
-      { sentence: 'She ___ her grandmother last Sunday.', options: ['visited', 'visit', 'visiting'], correct: 'visited' },
-      { sentence: 'We ___ two wild lions at the sanctuary.', options: ['saw', 'see', 'seen'], correct: 'saw' },
-      { sentence: 'They ___ pizza for dinner.', options: ['ate', 'eat', 'eating'], correct: 'ate' }
-    ],
-    part3: [
-      { broken: 'Did you went to the cinema?', options: ['Did you go', 'Did you went', 'Did you going'], correct: 'Did you go' },
-      { broken: "I didn't ate breakfast today.", options: ["I didn't eat", "I didn't ate", "I not ate"], correct: "I didn't eat" },
-      { broken: 'Did she saw the detective?', options: ['Did she see', 'Did she saw', 'Did she seen'], correct: 'Did she see' }
-    ],
-    part4: [
-      { subject: 'He', verb: 'play', obj: 'guitar', icon: '🎸', expected: 'He played guitar yesterday.' },
-      { subject: 'They', verb: 'go', obj: 'to the zoo', icon: '🚌', expected: 'They went to the zoo yesterday.' },
-      { subject: 'She', verb: 'find', obj: 'a clue', icon: '🔍', expected: 'She found a clue yesterday.' }
+    presetChallenges: [
+      {
+        author: "Detective Sam",
+        s1: "Yesterday I went to the park. 🌳",
+        s2: "Yesterday I played football with my cat. 🐱",
+        s3: "Yesterday I ate chocolate cake. 🎂",
+        lieSlot: 2,
+        explanation: "Cats don't play football!"
+      },
+      {
+        author: "Detective Lily",
+        s1: "Yesterday I watched TV. 📺",
+        s2: "Yesterday I saw a spaceship in my kitchen. 🛸",
+        s3: "Yesterday I visited my grandma. 🏡",
+        lieSlot: 2,
+        explanation: "Spaceships don't land in kitchens!"
+      }
     ]
+  };
+
+  // =========================================================================
+  // 7. LEVEL 6: FINAL DETECTIVE CHALLENGE (31–35 MIN)
+  // =========================================================================
+  const LEVEL6_DATA = {
+    title: "Final Detective Challenge",
+    time: "31–35 min",
+    caseTitle: "The Mystery of Mia's Sunday",
+    storyPassage: [
+      "Yesterday, Mia went to the park. 🌳",
+      "She played football with her friends. ⚽",
+      "She ate delicious ice cream. 🍦",
+      "She saw a giant purple dragon breathing fire! 🐉"
+    ],
+    challenge1: {
+      question: "Which sentence is the LIE?",
+      options: [
+        "1. Mia went to the park.",
+        "2. She played football.",
+        "3. She ate ice cream.",
+        "4. She saw a giant purple dragon! 🐉"
+      ],
+      correctIndex: 3,
+      explanation: "Sentence 4 is the LIE! Dragons are mythical creatures!"
+    },
+    challenge2: {
+      question: 'Detective Question: "Did Mia see a dragon yesterday?"',
+      options: [
+        "Yes, she did. 😄",
+        "No, she didn't. 🕵️"
+      ],
+      correctIndex: 1,
+      correctSpeech: "No, she didn't! Dragons do not exist!",
+      explanation: "Grammar Rule: Did Mia see...? → No, she didn't!"
+    },
+    unlockReward: {
+      xpBonus: 100,
+      badgeName: "MASTER DETECTIVE 🏆",
+      badgeDesc: "Official Past Simple Detective Certificate & Golden Magnifying Glass",
+      finalMessage: "🎉 MYSTERY SOLVED! The mysterious box is open! You have mastered the Past Simple!"
+    }
+  };
+
+  // =========================================================================
+  // 8. 8-DIMENSION TEACHER HUD REPOSITORIES (35-MIN LESSON PLAN)
+  // =========================================================================
+  const TEACHER_HUD_GUIDES = {
+    1: {
+      level: 1,
+      name: "The Mystery Begins (0–5 min)",
+      objective: "Hook learners via curiosity; notice Past Simple forms (went, ate, saw) without explicit grammar lecturing.",
+      timing: "00:00 – 05:00 (5 minutes)",
+      teacherScript: "Good morning Detectives! Look at this mysterious box on my desk... It arrived yesterday! Let's tap it to see what's inside!",
+      physicalAction: "Students tap their desks like drums to build suspense, then vote YES/NO with thumbs up/down.",
+      formFocus: "Past affirmative: went, ate, saw. Notice that these describe YESTERDAY.",
+      commonErrors: "Saying 'Yesterday I go' or 'Yesterday I see'. Remind: 'Yesterday = different word!'",
+      smartBoardTip: "Touch the box to make it shake. Give classroom points for confident voting.",
+      differentiation: "Support: Use picture flashcards for go/eat/see. Challenge: Ask 'Why is the dinosaur a lie?'"
+    },
+    2: {
+      level: 2,
+      name: "Run to the Answer (5–10 min)",
+      objective: "Kinesthetic retrieval practice of high-frequency Past Simple irregular and regular verbs.",
+      timing: "05:00 – 10:00 (5 minutes)",
+      teacherScript: "Detectives on your feet! When you see the missing word, point or take two steps toward the correct answer!",
+      physicalAction: "Whole-class movement: Point left, center, or right (or sprint in designated classroom zones).",
+      formFocus: "Verb transformation: eat → ate, go → went, see → saw, play → played, watch → watched.",
+      commonErrors: "Confusing base form and past form (e.g. choosing 'eat' instead of 'ate').",
+      smartBoardTip: "Tap the answer card to reveal instant feedback and hear the audio pronunciation.",
+      differentiation: "Support: Underline the clue 'Yesterday'. Challenge: Have students repeat the full sentence in a detective voice."
+    },
+    3: {
+      level: 3,
+      name: "Two Truths & One Lie (10–18 min)",
+      objective: "Core communicative game: listen critically, identify the false statement, and formulate 'Did you...?' questions.",
+      timing: "10:00 – 18:00 (8 minutes)",
+      teacherScript: "Two are TRUE. One is a LIE. Read with me... Which one is completely impossible? Ready? 3, 2, 1... VOTE!",
+      physicalAction: "Hold up 1, 2, or 3 fingers. Dramatic countdown chant: '3... 2... 1... CATCH THE LIE!'",
+      formFocus: "Discourse context and real-world logic: evaluating plausibility using Past Simple sentences.",
+      commonErrors: "Voting before hearing all three options. Insist: 'Listen to 1, listen to 2, listen to 3 first!'",
+      smartBoardTip: "Press the Countdown button to trigger suspense sound before stamping the LIE in red.",
+      differentiation: "Support: Visual icons on cards clarify meaning. Challenge: Students explain WHY it is a lie."
+    },
+    4: {
+      level: 4,
+      name: "Crazy Suspect Interrogation (18–25 min)",
+      objective: "Interactive questioning with 'Did you...?' and short answers 'Yes, I did / No, I didn't'.",
+      timing: "18:00 – 25:00 (7 minutes)",
+      teacherScript: "We have a suspect! Barnaby the Berry Monster! Let's interrogate him. Ask him: 'Did you go to school?'",
+      physicalAction: "Students raise magnifying glasses (or hands shaped like binoculars) and speak to the monster in unison.",
+      formFocus: "Question inversion: 'Did you [base verb]...?' (Notice: Did you GO, not Did you went!). Short answers: 'Yes, I did / No, I didn't'.",
+      commonErrors: "Saying 'Did you went?' or 'Did you saw?'. Rule chant: 'DID steals the past! Verb stays base!'",
+      smartBoardTip: "Click the questions on screen to trigger the monster's dynamic voice and emotional animations.",
+      differentiation: "Support: Display sentence frame: 'Did you + [verb]?'. Challenge: Students invent a 4th question for Barnaby."
+    },
+    5: {
+      level: 5,
+      name: "Students Become Suspects (25–31 min)",
+      objective: "Productive sentence synthesis: build 2 Truths + 1 Lie and engage in peer interrogation.",
+      timing: "25:00 – 31:00 (6 minutes)",
+      teacherScript: "Now YOU are the suspects! Team A builds 3 sentences. One must be a sneaky lie. Team B will interrogate you!",
+      physicalAction: "Pair or team stand-up challenge: Team A reads; Team B whispers, confers, and stamps TRUE or LIE.",
+      formFocus: "First-person production: 'Yesterday I [went / ate / played / watched / visited]...'",
+      commonErrors: "Mixing tenses (e.g. 'Yesterday I play'). Prompt: 'What does play become in the past? -ED!'",
+      smartBoardTip: "Use the interactive sentence builder to create and display a team's live challenge on the Smart Board.",
+      differentiation: "Support: Use pre-built cards from the palette. Challenge: Students create their own sentences on paper."
+    },
+    6: {
+      level: 6,
+      name: "Final Detective Challenge (31–35 min)",
+      objective: "Consolidation, reading comprehension, mastery check, and celebratory gamified payoff.",
+      timing: "31:00 – 35:00 (4 minutes)",
+      teacherScript: "Final case file, Detectives! Look at Mia's Sunday... Which sentence opens the mystery box?",
+      physicalAction: "Drumroll on desks, hands up for the final vote, celebration cheer when the box unlocks!",
+      formFocus: "Complete mastery check: 3rd person Past Simple ('She went, she played, she ate, she saw') and short answer ('No, she didn't').",
+      commonErrors: "Rushing without reading all sentences. Encourage scanning for the impossible detail.",
+      smartBoardTip: "Click 'UNLOCK THE BOX' to fire gold particles, confetti, and play the victory fanfare.",
+      differentiation: "Support: Point to the dragon icon. Challenge: Hand out the printable Detective Certificate from the worksheet."
+    }
   };
 
   // Export to global scope
   root.DETECTIVES_DATA = {
-    REGULAR_VERBS,
-    IRREGULAR_VERBS,
-    ALL_VERBS,
-    MEMORY_THIEF_DECK,
-    MEMORY_ROUNDS,
-    FIX_DETECTIVE_CHALLENGES,
-    SUSPECT_STORIES,
-    INTERROGATION_SUSPECT,
-    STORY_BUILDER_EVENTS,
-    HARD_MODE_CASE,
-    FINAL_ASSESSMENT_DATA
+    TARGET_VERBS,
+    LEVEL1_DATA,
+    LEVEL2_DATA,
+    LEVEL3_DATA,
+    LEVEL4_DATA,
+    LEVEL5_DATA,
+    LEVEL6_DATA,
+    TEACHER_HUD_GUIDES
   };
 
 })(typeof window !== 'undefined' ? window : global);

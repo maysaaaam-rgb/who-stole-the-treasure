@@ -1,5 +1,6 @@
 /**
- * YESTERDAY DETECTIVES — APPLICATION CONTROLLER & STATE MACHINE
+ * THE MYSTERY OF YESTERDAY — CONTROLLER & STATE MACHINE
+ * Version 2.0 (35-Minute Interactive ESL Detective Adventure)
  */
 
 (function(root) {
@@ -11,534 +12,518 @@
       this.data = root.DETECTIVES_DATA;
       this.scenes = new root.DetectivesScenes(this);
 
-      // Application State
+      // Core Game State
       this.currentStage = 1;
-      this.totalStages = 14;
+      this.totalStages = 6;
       this.xp = 0;
+      this.streak = 0;
       this.teamA = 0;
       this.teamB = 0;
 
-      // Sub-activity states
-      this.selectedSortCard = null;
-      this.memoryRound = 1;
-      this.memoryTimer = null;
-      this.memoryRemaining = 30;
-      this.memorySelectedMissing = [];
-      this.fixDetectiveIndex = 0;
-      this.selectedLieId = null;
-      this.lastSuspectQuestion = null;
-      this.assembledStoryEvents = [];
-      this.hardModeIndex = 0;
-      this.assessmentScores = { 1: false, 2: false, 3: false, 4: false };
+      // Sub-activity States
+      this.state = {
+        level1Shaking: false,
+        level1NoteOpen: false,
+        level1Vote: null,
+
+        level2Index: 0,
+        level2Answers: {},
+
+        level3Round: 0,
+        level3ChosenCard: null,
+        level3Revealed: false,
+
+        level4MonsterEmotion: 'happy',
+        level4Speech: null,
+        level4Asked: {},
+
+        studentSlots: [null, null, null],
+        studentLieSlot: null,
+
+        finalC1Solved: false,
+        finalC2Solved: false,
+        mysterySolved: false
+      };
 
       this.stageTitles = [
-        '1. 🕵️ Case Introduction (5m)',
-        '2. 📚 Vocabulary Discovery (5m)',
-        '3. 🕰️ Discover The Past (5m)',
-        '4. 🎯 Easy Grammar Practice (5m)',
-        '5. 🧠 The Memory Thief (7m)',
-        '6. ⚡ Grammar Challenge: DID (5m)',
-        '7. 🤥 Story Has A Lie (5m)',
-        '8. 🧾 Physical Evidence (5m)',
-        '9. 🔍 Interrogate Suspect (5m)',
-        '10. ✍️ Build The Story (5m)',
-        '11. 🤥 Create Your Own Lie (5m)',
-        '12. 🏆 Detective Mode (5m)',
-        '13. ⚡ Hard Mode Mystery (5m)',
-        '14. 🎓 Final Assessment (5m)'
+        '1. 📦 The Mystery Begins (5m)',
+        '2. 🏃 Run to the Answer (5m)',
+        '3. 🕵️ Two Truths & One Lie (8m)',
+        '4. 🧟 Crazy Suspect: Monster (7m)',
+        '5. 🗣️ Students Are Suspects (6m)',
+        '6. 🏆 Final Detective Challenge (4m)'
       ];
     }
 
     init() {
+      this.bindKeyboardShortcuts();
       this.renderStage(1);
     }
 
-    // --- Navigation ---
+    bindKeyboardShortcuts() {
+      if (typeof window === 'undefined') return;
+      window.addEventListener('keydown', (e) => {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        if (e.key === 't' || e.key === 'T') {
+          this.openTeacherModal();
+        } else if (e.key === 'ArrowRight') {
+          this.nextStage();
+        } else if (e.key === 'ArrowLeft') {
+          this.prevStage();
+        } else if (e.key === '1') {
+          if (this.currentStage === 3) this.selectLevel3Card(0);
+        } else if (e.key === '2') {
+          if (this.currentStage === 3) this.selectLevel3Card(1);
+        } else if (e.key === '3') {
+          if (this.currentStage === 3) this.selectLevel3Card(2);
+        }
+      });
+    }
+
+    // --- Navigation & Rendering ---
 
     renderStage(stageNum) {
       if (stageNum < 1) stageNum = 1;
       if (stageNum > this.totalStages) stageNum = this.totalStages;
       this.currentStage = stageNum;
 
-      const viewport = document.getElementById('detectives-viewport');
-      const stageNameEl = document.getElementById('hud-stage-name');
+      this.updateHud();
 
-      if (stageNameEl) {
-        stageNameEl.innerText = this.stageTitles[stageNum - 1] || ('Stage ' + stageNum);
+      const mount = document.getElementById('detectives-stage-content');
+      if (!mount) return;
+
+      mount.scrollTop = 0;
+
+      switch (this.currentStage) {
+        case 1:
+          this.scenes.renderLevel1(mount);
+          break;
+        case 2:
+          this.scenes.renderLevel2(mount);
+          break;
+        case 3:
+          this.scenes.renderLevel3(mount);
+          break;
+        case 4:
+          this.scenes.renderLevel4(mount);
+          break;
+        case 5:
+          this.scenes.renderLevel5(mount);
+          break;
+        case 6:
+          this.scenes.renderLevel6(mount);
+          break;
+        default:
+          this.scenes.renderLevel1(mount);
       }
-
-      if (!viewport) return;
-
-      const methodName = 'renderStage' + stageNum;
-      if (typeof this.scenes[methodName] === 'function') {
-        viewport.innerHTML = this.scenes[methodName]();
-      }
-
-      this.sound.playTick();
-    }
-
-    nextStage() {
-      this.renderStage(this.currentStage + 1);
     }
 
     prevStage() {
-      this.renderStage(this.currentStage - 1);
+      if (this.currentStage > 1) {
+        this.renderStage(this.currentStage - 1);
+      }
     }
 
-    // --- HUD Scoreboard & Toast ---
-
-    addScore(team, delta = 1) {
-      if (team === 'teamA') {
-        this.teamA += delta;
-        const el = document.getElementById('score-teamA');
-        if (el) el.innerText = this.teamA;
-      } else if (team === 'teamB') {
-        this.teamB += delta;
-        const el = document.getElementById('score-teamB');
-        if (el) el.innerText = this.teamB;
+    nextStage() {
+      if (this.currentStage < this.totalStages) {
+        this.renderStage(this.currentStage + 1);
       }
-      this.sound.playSuccess();
-      this.showToast(`⭐ +${delta} Point awarded!`);
+    }
+
+    updateHud() {
+      const nameEl = document.getElementById('hud-stage-name');
+      if (nameEl) {
+        nameEl.textContent = this.stageTitles[this.currentStage - 1] || `Stage ${this.currentStage}`;
+      }
+
+      const xpEl = document.getElementById('hud-xp-pts');
+      if (xpEl) xpEl.textContent = this.xp + ' XP';
+
+      const teamAEl = document.getElementById('score-teamA');
+      if (teamAEl) teamAEl.textContent = this.teamA;
+
+      const teamBEl = document.getElementById('score-teamB');
+      if (teamBEl) teamBEl.textContent = this.teamB;
+
+      const streakEl = document.getElementById('hud-streak-pill');
+      if (streakEl) {
+        if (this.streak >= 2) {
+          streakEl.style.display = 'inline-flex';
+          streakEl.textContent = `🔥 ${this.streak} Streak!`;
+        } else {
+          streakEl.style.display = 'none';
+        }
+      }
+    }
+
+    addXp(amount) {
+      this.xp += amount;
+      this.updateHud();
+      this.showToast(`+${amount} Detective XP!`);
+    }
+
+    incrementStreak() {
+      this.streak++;
+      this.updateHud();
+    }
+
+    resetStreak() {
+      this.streak = 0;
+      this.updateHud();
+    }
+
+    addScore(team, delta) {
+      if (team === 'teamA') {
+        this.teamA = Math.max(0, this.teamA + delta);
+      } else if (team === 'teamB') {
+        this.teamB = Math.max(0, this.teamB + delta);
+      }
+      this.sound.playClick();
+      this.updateHud();
     }
 
     resetScores() {
       this.teamA = 0;
       this.teamB = 0;
-      const elA = document.getElementById('score-teamA');
-      const elB = document.getElementById('score-teamB');
-      if (elA) elA.innerText = '0';
-      if (elB) elB.innerText = '0';
-      this.showToast('Scores reset to 0');
+      this.updateHud();
+      this.showToast('Team scores reset to 0');
     }
 
-    showToast(message) {
+    showToast(msg) {
       const toast = document.getElementById('detectives-toast');
       if (!toast) return;
-      toast.innerText = message;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
+      toast.textContent = msg;
+      toast.classList.add('is-active');
+      clearTimeout(this._toastTimeout);
+      this._toastTimeout = setTimeout(() => {
+        toast.classList.remove('is-active');
       }, 2600);
     }
 
-    addXP(pts) {
-      this.xp += pts;
-      this.showToast(`🌟 +${pts} XP earned! Total: ${this.xp} XP`);
+    // =========================================================================
+    // LEVEL 1 ACTIONS
+    // =========================================================================
+
+    shakeAndOpenBox() {
+      if (this.state.level1Shaking || this.state.level1NoteOpen) return;
+      this.state.level1Shaking = true;
+      this.sound.playBoxRumble();
+      this.renderStage(1);
+
+      setTimeout(() => {
+        this.state.level1Shaking = false;
+        this.state.level1NoteOpen = true;
+        this.sound.playUnlockFanfare();
+        this.addXp(15);
+        this.renderStage(1);
+        this.sound.speakTeacher("Look! There is a note inside the mysterious box!");
+      }, 700);
     }
 
-    // --- Stage 1 Handlers ---
+    handleLevel1Vote(choice) {
+      this.state.level1Vote = choice;
+      if (choice === 'no') {
+        this.sound.playCorrectChime();
+        this.addXp(20);
+        this.sound.speakTeacher("Spot on, Detective! Dinosaurs are extinct! That was the LIE!");
+      } else {
+        this.sound.playWrongBuzzer();
+        this.sound.speakTeacher("Wait a second! Dinosaurs lived millions of years ago! It was a LIE!");
+      }
+      this.renderStage(1);
+    }
 
-    inspectIntroClue(type) {
-      const box = document.getElementById('intro-clue-detail-box');
-      this.sound.playClueChime();
-      const messages = {
-        glass: '🔍 Magnifying Glass: Look at the tiny scratches near the clock. Someone was here at 3:00 PM yesterday!',
-        footprints: '👣 Footprints: Size 36 sneakers walked towards the kitchen and into the backyard.',
-        backpack: '🎒 Lost Backpack: A red backpack containing a bus schedule and a half-eaten pizza slice!',
-        note: '📝 Mystery Note: "I ate the pizza and went to the zoo. But one thing is not true..."',
-        clock: '🕰️ Old Clock: Stopped ticking at exactly 4:15 PM yesterday.',
-        photo: '📸 Polaroid Photo: Shows a happy suspect standing near the golden lion enclosure!'
+    // =========================================================================
+    // LEVEL 2 ACTIONS (RUN TO THE ANSWER)
+    // =========================================================================
+
+    handleLevel2Answer(choiceIndex) {
+      const qIndex = this.state.level2Index || 0;
+      const currentQ = this.data.LEVEL2_DATA.questions[qIndex];
+      if (!currentQ || this.state.level2Answers[qIndex]) return;
+
+      const isCorrect = choiceIndex === currentQ.correctIndex;
+      this.state.level2Answers[qIndex] = {
+        chosenIndex: choiceIndex,
+        selectedVerb: currentQ.options[choiceIndex],
+        isCorrect
       };
-      if (box) {
-        box.innerText = messages[type] || 'Clue analyzed!';
-      }
-    }
 
-    // --- Stage 2 Handlers ---
-
-    playWordSpeech(word) {
-      this.sound.playClueChime();
-      this.sound.speak(word);
-      this.showToast(`🗣️ Pronouncing: "${word}"`);
-    }
-
-    checkActionQuiz(chosen) {
-      if (chosen === 'eat') {
-        this.sound.playSuccess();
-        this.addXP(10);
-        this.showToast('✅ Correct! "eat" is the action of having food!');
-        const box = document.getElementById('quiz-action-prompt');
-        if (box) {
-          box.innerHTML = '🎉 Excellent Detective Work! <strong>eat</strong> is correct! 🍕';
-          box.style.color = '#34d399';
-        }
-      } else {
-        this.sound.playError();
-        this.showToast('❌ Look closely at the picture: Eating pizza is "eat"!');
-      }
-    }
-
-    // --- Stage 3 Handlers ---
-
-    showTimelineVerb(present, past, type) {
-      this.sound.playClueChime();
-      const presBox = document.getElementById('timeline-present-verb');
-      const pastBox = document.getElementById('timeline-past-verb');
-      if (presBox) presBox.innerText = `I ${present}...`;
-      if (pastBox) pastBox.innerText = `I ${past}...`;
-      this.sound.speak(`${present} becomes ${past}`);
-    }
-
-    // --- Stage 4 Handlers ---
-
-    checkMCQPractice(ans, isCorrect) {
       if (isCorrect) {
-        this.sound.playSuccess();
-        this.addXP(10);
-        this.showToast('✅ Great! "Yesterday, I played football."');
+        this.sound.playCorrectChime();
+        this.addXp(20);
+        this.incrementStreak();
+        this.sound.speakTeacher(currentQ.speech);
       } else {
-        this.sound.playError();
-        this.showToast('❌ Yesterday means past time! Use "played" (+ED).');
+        this.sound.playWrongBuzzer();
+        this.resetStreak();
+        this.sound.speakTeacher(currentQ.explanation);
       }
+      this.renderStage(2);
     }
 
-    pickSortCard(el) {
-      this.sound.playClueChime();
-      document.querySelectorAll('.sortable-card').forEach(c => c.style.outline = 'none');
-      el.style.outline = '3px solid var(--det-gold)';
-      this.selectedSortCard = el;
-      this.showToast(`Selected: "${el.innerText}" — Now tap Regular or Irregular!`);
+    nextLevel2Question() {
+      this.state.level2Index = (this.state.level2Index || 0) + 1;
+      this.sound.playFootstep();
+      this.renderStage(2);
     }
 
-    depositSortCard(trayType) {
-      if (!this.selectedSortCard) {
-        this.showToast('👆 Tap a word card first!');
-        return;
+    resetLevel2() {
+      this.state.level2Index = 0;
+      this.state.level2Answers = {};
+      this.renderStage(2);
+    }
+
+    // =========================================================================
+    // LEVEL 3 ACTIONS (TWO TRUTHS & ONE LIE)
+    // =========================================================================
+
+    selectLevel3Card(cardIndex) {
+      this.state.level3ChosenCard = cardIndex;
+      this.sound.playClick();
+      const round = this.data.LEVEL3_DATA.rounds[this.state.level3Round || 0];
+      if (round && round.cards[cardIndex]) {
+        this.sound.speakTeacher(round.cards[cardIndex].text);
       }
-      const cardType = this.selectedSortCard.dataset.type;
-      if (cardType === trayType) {
-        this.sound.playSuccess();
-        this.addXP(5);
-        const tray = document.getElementById(`tray-${trayType}-contents`);
-        if (tray) {
-          this.selectedSortCard.style.outline = 'none';
-          this.selectedSortCard.onclick = null;
-          this.selectedSortCard.style.cursor = 'default';
-          tray.appendChild(this.selectedSortCard);
+      this.renderStage(3);
+    }
+
+    revealLevel3Lie() {
+      if (this.state.level3Revealed) return;
+      this.state.level3Revealed = true;
+      this.sound.playSuspenseDrum();
+
+      setTimeout(() => {
+        this.sound.playStampThud();
+        const round = this.data.LEVEL3_DATA.rounds[this.state.level3Round || 0];
+        const isUserCorrect = this.state.level3ChosenCard === round.lieIndex;
+        if (isUserCorrect) {
+          this.addXp(25);
+          this.incrementStreak();
         }
-        this.showToast(`✅ Correct sort: ${this.selectedSortCard.innerText} is ${trayType.toUpperCase()}!`);
-        this.selectedSortCard = null;
-      } else {
-        this.sound.playError();
-        this.showToast(`❌ Oops! Look at the ending: Regular verbs end with -ED!`);
-      }
+        this.renderStage(3);
+        this.sound.speakTeacher(round.explanation);
+      }, 500);
     }
 
-    // --- Stage 5 Handlers (Memory Thief) ---
-
-    startMemoryCountdown() {
-      const btn = document.getElementById('btn-memory-start');
-      if (btn) btn.style.display = 'none';
-
-      this.memoryRemaining = 15; // 15 seconds brisk countdown for fun pacing
-      this.sound.playClueChime();
-
-      if (this.memoryTimer) clearInterval(this.memoryTimer);
-      this.memoryTimer = setInterval(() => {
-        this.memoryRemaining--;
-        const digits = document.getElementById('memory-timer-digits');
-        const fill = document.getElementById('memory-timer-fill');
-        if (digits) digits.innerText = `⏱️ ${this.memoryRemaining}s`;
-        if (fill) fill.style.width = `${(this.memoryRemaining / 15) * 100}%`;
-
-        if (this.memoryRemaining <= 0) {
-          clearInterval(this.memoryTimer);
-          this.executeMemoryDisappearance();
-        } else {
-          this.sound.playTick();
-        }
-      }, 1000);
+    nextLevel3Round() {
+      this.state.level3Round = (this.state.level3Round || 0) + 1;
+      this.state.level3ChosenCard = null;
+      this.state.level3Revealed = false;
+      this.sound.playFootstep();
+      this.renderStage(3);
     }
 
-    executeMemoryDisappearance() {
-      this.sound.playDisappear();
-      this.showToast('💨 POOF! The Memory Thief hid some cards!');
+    // =========================================================================
+    // LEVEL 4 ACTIONS (CRAZY MONSTER INTERROGATION)
+    // =========================================================================
 
-      // Hide cards: Pizza & Lion
-      const c1 = document.getElementById('mem-card-c1');
-      const c2 = document.getElementById('mem-card-c2');
-      if (c1) {
-        c1.classList.add('disappeared');
-        c1.innerHTML = '<span style="font-size:2rem;">❓</span><span style="font-size:0.8rem; font-weight:800; color:var(--det-gold);">VANISHED</span>';
-      }
-      if (c2) {
-        c2.classList.add('disappeared');
-        c2.innerHTML = '<span style="font-size:2rem;">❓</span><span style="font-size:0.8rem; font-weight:800; color:var(--det-gold);">VANISHED</span>';
-      }
-
-      const panel = document.getElementById('memory-deduction-panel');
-      if (panel) panel.style.display = 'block';
-    }
-
-    clickMemoryCard(id) {
-      if (id === 'c1' || id === 'c2') {
-        if (!this.memorySelectedMissing.includes(id)) {
-          this.memorySelectedMissing.push(id);
-          this.sound.playClueChime();
-        }
-        const summary = document.getElementById('memory-selection-summary');
-        if (summary) {
-          const names = this.memorySelectedMissing.map(item => item === 'c1' ? '🍕 Pizza (ate pizza)' : '🦁 Lion (saw a lion)').join(' + ');
-          summary.innerHTML = `Identified: <strong>${names}</strong>`;
-        }
-      }
-    }
-
-    checkMemoryDeduction() {
-      if (this.memorySelectedMissing.length >= 1) {
-        this.sound.playSuccess();
-        this.addXP(20);
-        this.showToast('🎉 Memory Solved! "The boy ate pizza" & "The girl saw a lion!"');
-      } else {
-        this.sound.playError();
-        this.showToast('Tap the mystery cards with ❓ to identify them!');
-      }
-    }
-
-    // --- Stage 6 Handlers ---
-
-    checkFixDetective(chosen) {
-      const ch = this.data.FIX_DETECTIVE_CHALLENGES[this.fixDetectiveIndex];
-      if (chosen === ch.correctVerb) {
-        this.sound.playSuccess();
-        this.addXP(15);
-        this.showToast(`✅ Fixed! "${ch.fullFixed}"`);
-        this.fixDetectiveIndex = (this.fixDetectiveIndex + 1) % this.data.FIX_DETECTIVE_CHALLENGES.length;
-        setTimeout(() => this.renderStage(6), 800);
-      } else {
-        this.sound.playError();
-        this.showToast(`❌ Remember: After DID, use the base form ("${ch.correctVerb}")!`);
-      }
-    }
-
-    // --- Stage 7 Handlers ---
-
-    selectLieCandidate(id) {
-      this.sound.playClueChime();
-      document.querySelectorAll('.statement-row').forEach(r => r.style.borderColor = 'rgba(255,255,255,0.15)');
-      const el = document.getElementById(`stmt-${id}`);
-      if (el) {
-        el.style.borderColor = 'var(--det-gold)';
-        el.style.background = 'rgba(245, 158, 11, 0.15)';
-      }
-      this.selectedLieId = id;
-      this.showToast(`You suspect statement #${id.replace('s', '')} is the lie!`);
-    }
-
-    revealLieResult() {
-      this.sound.playFanfare();
-      const story = this.data.SUSPECT_STORIES[0];
-      const lieRow = document.getElementById('stmt-s4');
-      if (lieRow) {
-        lieRow.classList.add('is-lie');
-        lieRow.innerHTML = `
-          <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-size:2rem;">❌</span>
-            <span style="font-size:1.15rem; font-weight:900; color:#ef4444;">
-              LIE CAUGHT: “I rode a horse.” ➔ TRUTH: "${story.truthCorrection}"
-            </span>
-          </div>
-        `;
-      }
-      this.addXP(25);
-      this.showToast('🚨 LIE EXPOSED! Inspector Sam did NOT ride a horse!');
-    }
-
-    // --- Stage 8 Handlers ---
-
-    inspectEvidenceItem(name, details) {
-      this.sound.playCameraClick();
-      this.showToast(`📸 Evidence Analyzed: ${name} (${details})`);
-    }
-
-    concludeEvidenceStage() {
-      this.sound.playSuccess();
-      this.addXP(20);
-      this.showToast('✅ Case Solid: "He went to the zoo, saw a lion, ate pizza, but DIDN\'T ride a horse!"');
-      setTimeout(() => this.nextStage(), 1000);
-    }
-
-    // --- Stage 9 Handlers (Interrogation) ---
-
-    askSuspectQuestion(qid) {
-      const q = this.data.INTERROGATION_SUSPECT.questions.find(item => item.id === qid);
+    askMonsterQuestion(qId) {
+      const q = this.data.LEVEL4_DATA.interrogationQuestions.find(item => item.id === qId);
       if (!q) return;
 
-      this.lastSuspectQuestion = q;
-      this.sound.playClueChime();
+      this.state.level4Asked[qId] = true;
+      this.state.level4MonsterEmotion = q.monsterEmotion;
+      this.state.level4Speech = q.responseSpeech;
 
-      const bubble = document.getElementById('suspect-speech-text');
-      if (bubble) {
-        bubble.innerText = `“${q.answerSpeech}”`;
-        bubble.style.border = q.answerType === 'no' ? '2px solid #ef4444' : '2px solid #38bdf8';
-      }
-
-      this.sound.speak(q.answerSpeech, { pitch: 0.9, rate: 0.88 });
-
-      const logBox = document.getElementById('interrogation-log-box');
-      if (logBox) {
-        logBox.innerHTML = `
-          <div><strong>Q:</strong> "${q.text}"</div>
-          <div style="color:${q.answerType === 'no' ? '#f87171' : '#7dd3fc'}; margin-top:2px;">
-            <strong>A:</strong> "${q.answerSpeech}" (${q.clue})
-          </div>
-        `;
-      }
-
-      if (qid === 'q2') {
-        setTimeout(() => {
-          this.sound.playFanfare();
-          this.showToast('🕵️ CONTRADICTION! Chocolate frosting on sleeve proves he ATE the cake!');
-        }, 1200);
-      }
-    }
-
-    replaySuspectSpeech() {
-      if (this.lastSuspectQuestion) {
-        this.sound.speak(this.lastSuspectQuestion.answerSpeech, { pitch: 0.9, rate: 0.88 });
-      }
-    }
-
-    // --- Stage 10 Handlers ---
-
-    selectStoryEvent(evId) {
-      const ev = this.data.STORY_BUILDER_EVENTS.find(e => e.id === evId);
-      if (!ev) return;
-
-      this.sound.playClueChime();
-      if (!this.assembledStoryEvents.includes(ev)) {
-        this.assembledStoryEvents.push(ev);
-      }
-
-      const connectors = ['Yesterday, I', 'Then I', 'After that, I', 'Finally, I'];
-      const container = document.getElementById('story-assembled-container');
-
-      if (container) {
-        container.innerHTML = this.assembledStoryEvents.map((item, idx) => {
-          const conn = connectors[idx] || 'Next, I';
-          return `
-            <div style="background:var(--det-bg-card); padding:8px 14px; border-radius:12px; border:1px solid var(--det-gold); font-size:1.05rem; font-weight:800;">
-              <span style="color:var(--det-gold);">${conn}</span> <strong>${item.verbPast}</strong> ${item.object} ${item.icon}
-            </div>
-          `;
-        }).join('');
-      }
-    }
-
-    resetStoryBuilder() {
-      this.assembledStoryEvents = [];
-      const container = document.getElementById('story-assembled-container');
-      if (container) {
-        container.innerHTML = '<div style="color:var(--det-text-muted); font-size:1.1rem; width:100%; text-align:center;">Tap events above to slot into the story timeline!</div>';
-      }
-    }
-
-    speakAssembledStory() {
-      if (!this.assembledStoryEvents.length) return;
-      const connectors = ['Yesterday, I', 'Then I', 'After that, I', 'Finally, I'];
-      const text = this.assembledStoryEvents.map((item, idx) => {
-        const conn = connectors[idx] || 'Next, I';
-        return `${conn} ${item.verbPast} ${item.object}.`;
-      }).join(' ');
-
-      this.sound.speak(text);
-      this.addXP(15);
-      this.showToast('📖 Reading assembled Past Simple story!');
-    }
-
-    // --- Stage 11 Handlers ---
-
-    saveAndPublishDossier() {
-      this.sound.playSuccess();
-      this.addXP(25);
-      this.showToast('📁 Dossier Published! Ready for classroom cross-examination!');
-    }
-
-    // --- Stage 12 Handlers ---
-
-    awardMasterBadge() {
-      this.sound.playFanfare();
-      this.addXP(50);
-      this.showToast('🎖️ MASTER DETECTIVE BADGE AWARDED! Outstanding listening and deduction!');
-    }
-
-    // --- Stage 13 Handlers ---
-
-    checkHardChallenge(optIdx) {
-      const cur = this.data.HARD_MODE_CASE.challenges[this.hardModeIndex];
-      if (optIdx === cur.correctIndex) {
-        this.sound.playSuccess();
-        this.addXP(20);
-        this.showToast(`✅ ${cur.feedback}`);
-        this.hardModeIndex = (this.hardModeIndex + 1) % this.data.HARD_MODE_CASE.challenges.length;
-        setTimeout(() => this.renderStage(13), 1000);
+      if (q.isLieQuestion) {
+        this.sound.playStampThud();
+        this.addXp(30);
       } else {
-        this.sound.playError();
-        this.showToast('❌ Re-read Mia’s statement carefully!');
+        this.sound.playCorrectChime();
+        this.addXp(15);
       }
+
+      this.renderStage(4);
+      this.sound.speakMonster(q.responseSpeech);
     }
 
-    // --- Stage 14 Handlers ---
+    // =========================================================================
+    // LEVEL 5 ACTIONS (STUDENTS BECOME SUSPECTS)
+    // =========================================================================
 
-    scoreAssessment(partNum, isCorrect) {
-      this.assessmentScores[partNum] = isCorrect;
-      if (isCorrect) {
-        this.sound.playSuccess();
-        this.addXP(10);
-        this.showToast(`✅ Part ${partNum} passed!`);
+    addSentenceFromAction(actionId) {
+      const act = this.data.LEVEL5_DATA.actionPalette.find(a => a.id === actionId);
+      if (!act) return;
+
+      // Find first empty slot, or replace slot 0
+      let emptyIdx = this.state.studentSlots.findIndex(s => s === null);
+      if (emptyIdx === -1) emptyIdx = 0;
+
+      // Randomly pick one option for variety
+      const randomDetail = act.options[Math.floor(Math.random() * act.options.length)];
+      const sentence = `Yesterday I ${act.past} ${randomDetail}.`;
+
+      this.state.studentSlots[emptyIdx] = sentence;
+      this.sound.playClick();
+      this.renderStage(5);
+      this.sound.speakTeacher(sentence);
+    }
+
+    toggleLieSlot(slotIndex) {
+      this.state.studentLieSlot = this.state.studentLieSlot === slotIndex ? null : slotIndex;
+      this.sound.playClick();
+      this.renderStage(5);
+    }
+
+    loadStudentDemo(demoIndex) {
+      const demo = this.data.LEVEL5_DATA.presetChallenges[demoIndex];
+      if (!demo) return;
+      this.state.studentSlots = [demo.s1, demo.s2, demo.s3];
+      this.state.studentLieSlot = demo.lieSlot;
+      this.sound.playUnlockFanfare();
+      this.showToast(`Loaded ${demo.author}'s Challenge!`);
+      this.renderStage(5);
+    }
+
+    clearStudentSlots() {
+      this.state.studentSlots = [null, null, null];
+      this.state.studentLieSlot = null;
+      this.sound.playClick();
+      this.renderStage(5);
+    }
+
+    // =========================================================================
+    // LEVEL 6 ACTIONS (FINAL DETECTIVE CHALLENGE)
+    // =========================================================================
+
+    handleFinalC1(choiceIndex) {
+      const correct = choiceIndex === this.data.LEVEL6_DATA.challenge1.correctIndex;
+      if (correct) {
+        this.state.finalC1Solved = true;
+        this.sound.playCorrectChime();
+        this.addXp(30);
+        this.sound.speakTeacher("Spot on! Dragons are not real!");
       } else {
-        this.sound.playError();
-        this.showToast(`❌ Try again on Part ${partNum}!`);
+        this.sound.playWrongBuzzer();
+        this.sound.speakTeacher("Check again! Look for the mythical creature!");
       }
+      this.renderStage(6);
     }
 
-    generateCertificate() {
-      this.sound.playFanfare();
-      const viewport = document.getElementById('detectives-viewport');
-      if (!viewport) return;
+    handleFinalC2(choiceIndex) {
+      const correct = choiceIndex === this.data.LEVEL6_DATA.challenge2.correctIndex;
+      if (correct) {
+        this.state.finalC2Solved = true;
+        this.state.mysterySolved = true;
+        this.sound.playUnlockFanfare();
+        this.addXp(100);
+        this.sound.speakTeacher("Mystery Solved! No, she didn't! You are now a Master Detective!");
+      } else {
+        this.sound.playWrongBuzzer();
+        this.sound.speakTeacher("Remember the short answer: No, she didn't!");
+      }
+      this.renderStage(6);
+    }
 
-      viewport.innerHTML = `
-        <div style="background:linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); border:4px double var(--det-gold); border-radius:24px; padding:36px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.7); max-width:800px; margin:0 auto;">
-          <div style="font-size:3.8rem; margin-bottom:8px;">🏆</div>
-          <div style="font-size:1.1rem; font-weight:900; letter-spacing:2px; text-transform:uppercase; color:var(--det-gold); margin-bottom:6px;">
-            OFFICIAL CEFR A1+ PROFICIENCY AWARD
-          </div>
-          <h1 style="font-size:2.8rem; font-weight:900; color:#ffffff; margin:0 0 14px 0;">
-            CERTIFICATE OF DEDUCTION
-          </h1>
-          <p style="font-size:1.2rem; color:#cbd5e1; margin-bottom:20px;">
-            This certifies that the <strong>Junior Yesterday Detective</strong> has demonstrated full command of the <strong>Past Simple (Regular &amp; Irregular Verbs, Questions with Did, Negatives with Didn’t)</strong>!
-          </p>
+    restartGame() {
+      this.currentStage = 1;
+      this.xp = 0;
+      this.streak = 0;
+      this.state = {
+        level1Shaking: false,
+        level1NoteOpen: false,
+        level1Vote: null,
+        level2Index: 0,
+        level2Answers: {},
+        level3Round: 0,
+        level3ChosenCard: null,
+        level3Revealed: false,
+        level4MonsterEmotion: 'happy',
+        level4Speech: null,
+        level4Asked: {},
+        studentSlots: [null, null, null],
+        studentLieSlot: null,
+        finalC1Solved: false,
+        finalC2Solved: false,
+        mysterySolved: false
+      };
+      this.sound.playClick();
+      this.renderStage(1);
+      this.showToast('Game restarted at Level 1');
+    }
 
-          <div style="display:flex; justify-content:center; gap:24px; margin-bottom:28px;">
-            <div style="background:rgba(255,255,255,0.08); padding:12px 24px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);">
-              <div style="font-size:0.8rem; text-transform:uppercase; color:var(--det-gold); font-weight:800;">Rank</div>
-              <div style="font-size:1.5rem; font-weight:900; color:#ffffff;">Master Detective</div>
-            </div>
-            <div style="background:rgba(255,255,255,0.08); padding:12px 24px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);">
-              <div style="font-size:0.8rem; text-transform:uppercase; color:#34d399; font-weight:800;">Score</div>
-              <div style="font-size:1.5rem; font-weight:900; color:#ffffff;">100% Case Solved</div>
-            </div>
-          </div>
+    // =========================================================================
+    // TEACHER HUD MODAL
+    // =========================================================================
 
-          <div style="display:flex; justify-content:center; gap:14px;">
-            <button class="hud-btn primary" onclick="window.print()" style="font-size:1.05rem; padding:10px 26px; border-radius:20px;">
-              🖨️ Print Certificate
+    openTeacherModal() {
+      const modal = document.getElementById('detectives-modal');
+      const content = document.getElementById('modal-content-area');
+      if (!modal || !content) return;
+
+      const guide = this.data.TEACHER_HUD_GUIDES[this.currentStage] || this.data.TEACHER_HUD_GUIDES[1];
+
+      content.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+          <h3 style="font-size:1.4rem; color:#f59e0b; font-weight:900;">
+            🧑‍🏫 Teacher Guide · Level ${this.currentStage}
+          </h3>
+          <span class="stage-tracker-pill">${guide.timing}</span>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;">
+          ${[1, 2, 3, 4, 5, 6].map(lvl => `
+            <button type="button" class="hud-btn ${lvl === this.currentStage ? 'primary' : ''}" onclick="window.detectivesApp.renderStage(${lvl}); window.detectivesApp.openTeacherModal();">
+              L${lvl}
             </button>
-            <a href="../index.html#library" class="hud-btn" style="font-size:1.05rem; padding:10px 26px; border-radius:20px; text-decoration:none;">
-              📚 Return to Library
-            </a>
+          `).join('')}
+        </div>
+
+        <div class="hud-guide-grid">
+          <div class="hud-guide-card">
+            <h4>🎯 Pedagogical Objective</h4>
+            <p>${guide.objective}</p>
+          </div>
+
+          <div class="hud-guide-card">
+            <h4>🗣️ Teacher Spoken Script</h4>
+            <p style="font-style:italic; color:#fef08a;">${guide.teacherScript}</p>
+          </div>
+
+          <div class="hud-guide-card">
+            <h4>🏃 Student Physical Action</h4>
+            <p>${guide.physicalAction}</p>
+          </div>
+
+          <div class="hud-guide-card">
+            <h4>💡 Grammar & Form Focus</h4>
+            <p>${guide.formFocus}</p>
+          </div>
+
+          <div class="hud-guide-card">
+            <h4>⚠️ Common Errors & Remediation</h4>
+            <p>${guide.commonErrors}</p>
+          </div>
+
+          <div class="hud-guide-card">
+            <h4>📱 Smart Board Interaction Tip</h4>
+            <p>${guide.smartBoardTip}</p>
           </div>
         </div>
+
+        <div style="margin-top:20px; text-align:right;">
+          <button type="button" class="box-action-prompt" style="padding:8px 20px; font-size:0.95rem; display:inline-flex;" onclick="window.detectivesApp.closeModal()">
+            Close Guide (ESC)
+          </button>
+        </div>
       `;
+
+      modal.style.display = 'flex';
+      this.sound.playClick();
+    }
+
+    closeModal() {
+      const modal = document.getElementById('detectives-modal');
+      if (modal) modal.style.display = 'none';
     }
   }
 
   root.detectivesApp = new DetectivesApp();
 
-  if (typeof document !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', () => {
-      root.detectivesApp.init();
+  if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+      window.detectivesApp.init();
     });
   }
 
