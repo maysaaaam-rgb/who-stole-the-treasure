@@ -6,6 +6,77 @@
 
 const GAMES_REGISTRY = [
   {
+  "id": "young-inventor",
+  "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
+  "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",
+  "type": "game",
+  "category": "CLIL & STEM Games",
+  "categoryLabel": "💡 CLIL & STEM Games",
+  "level": "A1+",
+  "cefrLevel": "A1+",
+  "age": "Ages 8–11",
+  "ageGroup": "8-11",
+  "grade": "Grade 4",
+  "grades": [
+    "Grade 4"
+  ],
+  "duration": 40,
+  "durationText": "40 min",
+  "estimatedMinutes": 40,
+  "xp": 120,
+  "skills": [
+    "Speaking",
+    "CLIL",
+    "Grammar",
+    "Creative Thinking",
+    "Vocabulary"
+  ],
+  "topic": "The Small Inventor & STEM Design",
+  "topics": [
+    "The Small Inventor",
+    "Young Inventor Academy",
+    "Inventions",
+    "CAN and CAN'T",
+    "Biomimicry",
+    "Problem Solving",
+    "Expo Presentation"
+  ],
+  "languageFocus": "Modals of ability CAN / CAN'T + verb (It can fly, It can't swim), HAS / HAVE (It has two wheels), IS / ARE, sequencing (First, Then, Finally), problem/solution (The problem is..., The solution is...)",
+  "activityMode": "Whole Class Smart Board Interactive / Team Inventor Challenge",
+  "interactionType": "Touch Drawing Canvas, Modular Assembly Pod, Stress Test Chamber, Ability Selector, 5-Minute Pitch Timer, Audience Detective Scoring",
+  "difficulty": "Grade 4 Scaffolded A1+",
+  "tags": [
+    "inventor",
+    "small-inventor",
+    "young-inventor",
+    "stem",
+    "clil",
+    "can-cant",
+    "grade-4",
+    "presentation",
+    "expo",
+    "biomimicry",
+    "good-ideas-book"
+  ],
+  "learningObjectives": [
+    "Identify real-world problems and formulate creative solutions using scaffolded English structures",
+    "Express functional capabilities and limitations using CAN and CAN'T + base verb",
+    "Describe invention features and parts using HAS / HAVE and component vocabulary",
+    "Sequence operational steps using imperatives and sequencing adverbs (First, Then, Finally)",
+    "Deliver a structured 5-minute capstone Expo presentation with visual slide cues and self/peer assessment"
+  ],
+  "teacherInstructions": "Project on Smart Board. Guide young inventors through 10 interactive missions: problem detection, biomimicry inspiration, canvas blueprinting, modular assembly, ability verification, chamber testing, upgrades, and the Capstone Expo pitch.",
+  "studentInstructions": "Join the Young Inventor Academy! Discover problems, invent high-tech gadgets, test them in the lab, upgrade your prototype, and present your invention at the Grand Expo!",
+  "route": "young-inventor/index.html",
+  "worksheet": "young-inventor/worksheet.html",
+  "worksheetRoute": "young-inventor/worksheet.html",
+  "teacherGuide": true,
+  "supportsAssignment": true,
+  "supportsProgress": true,
+  "featured": true,
+  "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"yiThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#083344\"/><stop offset=\"50%\" stop-color=\"#0e7490\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#yiThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.75\" stroke=\"#06b6d4\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#06b6d4\" opacity=\"0.25\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">🚀</text><rect x=\"16\" y=\"92\" width=\"168\" height=\"22\" rx=\"11\" fill=\"#06b6d4\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"9\" fill=\"#0f172a\" text-anchor=\"middle\" letter-spacing=\"0.5\">YOUNG INVENTOR ACADEMY</text></svg>"
+},
+  {
   "id": "wonderland-lesson3",
   "title": "We Are the Wonderland Story! — Lesson 3: Theatre & Prop Performance",
   "description": "Spectacular 11-screen interactive theatre and storytelling adventure for Grade 3 (A1). Students sequence the story, practice character voices, play Freeze Frame Theatre, build mini-scripts, equip workshop props, perform on the Wonderland stage, and complete their 4-page Actor Dossier.",

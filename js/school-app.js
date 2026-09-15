@@ -854,6 +854,10 @@
       'time-machine': 'wonderland-time-machine/index.html',
       'welcome-to-wonderland': 'wonderland/index.html',
       'wonderland': 'wonderland/index.html',
+            'young-inventor': 'young-inventor/index.html',
+      'small-inventor': 'young-inventor/index.html',
+      'the-small-inventor': 'young-inventor/index.html',
+      'young-inventor-academy': 'young-inventor/index.html',
       'inventor-lab': 'inventor-lab/index.html',
       'clara-inventor': 'clara-inventor/index.html',
       'alice-quest': 'alice-quest/index.html'
@@ -3983,6 +3987,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
     } else if (libActiveTab === 'textbooks') {
       all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook') || (r.category || '').toLowerCase().includes('curriculum'));
+    } else if (libActiveTab === 'inventor') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        const tags = Array.isArray(r.tags) ? r.tags.join(' ').toLowerCase() : '';
+        return id.includes('inventor') || title.includes('inventor') || desc.includes('inventor') || topics.includes('inventor') || tags.includes('inventor');
+      });
     } else if (libActiveTab === 'alice') {
       all = all.filter(r => {
         const title = (r.title || '').toLowerCase();
@@ -4466,6 +4479,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     let tabHeading = 'All Resources';
     if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
     else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
     else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
     else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
@@ -4601,6 +4615,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📄 Worksheets</span>' +
             '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
           '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
             '<span>📚 Stories</span>' +
             '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
@@ -4638,6 +4653,80 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</select>' +
         '</div>' +
       '</div>' +
+
+            
+      // The Small Inventor Series Showcase Shelf
+      ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor • Young Inventor Academy</h2>' +
+                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+) · 10 Interactive Missions &amp; Capstone Expo</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🚀 Young Inventor Academy</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem → Idea → Invention → Improvement → Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(6,182,212,0.2); color:#67e8f9; border:1px solid rgba(6,182,212,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">CAN / CAN\'T</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">HAS / HAVE</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(168,85,247,0.2); color:#e9d5ff; border:1px solid rgba(168,85,247,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Biomimicry</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">5-Min Expo Pitch</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">▶ Enter Inventor Lab</a>' +
+                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The After-School Inventor</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine. Practice vocabulary and problem-solution pairs.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Reading 1</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Global Readings 2</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
+                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 My Good Ideas Book</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Thomas Edison notebooks, Leonardo da Vinci parachute sketches, Kingfisher biomimicry, and Karl Benz motorcar.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Primary Source</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
 
             // Alice in Wonderland Series Showcase Shelf
       ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?

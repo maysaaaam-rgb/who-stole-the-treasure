@@ -20,6 +20,30 @@
   // Canonical list of audited games
   const RAW_CANONICAL_GAMES = [
     {
+      id: "young-inventor",
+      title: "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
+      category: "CLIL & STEM Games",
+      level: "A1+",
+      age: "8–11",
+      grade: "Grade 4",
+      duration: 40,
+      skills: ["Speaking", "CLIL", "Grammar", "Creative Thinking", "Vocabulary"],
+      topics: ["The Small Inventor", "Inventions", "CAN and CAN'T", "Biomimicry", "Problem Solving", "Expo Presentation"],
+      objectives: [
+        "Identify classroom problems and formulate creative solutions using scaffolded English",
+        "Express abilities and limitations using CAN and CAN'T + base verb",
+        "Describe features and parts using HAS / HAVE and component vocabulary",
+        "Deliver a 5-minute capstone Expo presentation with visual slide cues"
+      ],
+      route: "young-inventor/index.html",
+      worksheet: "young-inventor/worksheet.html",
+      worksheetRoute: "young-inventor/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Spectacular 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21)."
+    },
+    {
       id: "wonderland-lesson2",
       title: "The Wonderland Time Machine — Lesson 2: Past Simple Adventure",
       category: "Grammar & Story Games",
