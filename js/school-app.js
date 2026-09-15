@@ -846,6 +846,9 @@
       'nh': 'NH/index.html',
       'yesterday-detectives': 'detectives/index.html',
       'wonderland-lesson1': 'wonderland/index.html',
+      'wonderland-lesson3': 'wonderland-story/index.html',
+      'wonderland-story': 'wonderland-story/index.html',
+      'we-are-the-story': 'wonderland-story/index.html',
       'wonderland-lesson2': 'wonderland-time-machine/index.html',
       'wonderland-time-machine': 'wonderland-time-machine/index.html',
       'time-machine': 'wonderland-time-machine/index.html',
@@ -4703,13 +4706,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
-            '<div style="background:rgba(15,23,42,0.6); border:1.5px dashed rgba(255,255,255,0.2); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:6px;">' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
               '<div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:#94a3b8;">UPCOMING IN UNIT</span>' +
-                '<h4 style="font-size:0.95rem; font-weight:800; color:#cbd5e1; margin:4px 0 2px 0;">🎭 L3: We Are the Story &amp; Play</h4>' +
-                '<p style="font-size:0.75rem; color:#64748b; margin:0;">Crafting prop workshop &amp; student stage performances.</p>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · FINALE 🎭</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
               '</div>' +
-              '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">✨ Prepared by Lesson 2</span>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
+                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>' : '') +

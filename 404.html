@@ -148,7 +148,13 @@
       let targetUrl = null;
       let targetName = '';
 
-      if (pathname.includes('wonderland') || pathname.includes('welcome-to-wonderland')) {
+      if (pathname.includes('wonderland-story') || pathname.includes('we-are-the-story') || pathname.includes('lesson3') || pathname.includes('lesson-3')) {
+        targetUrl = basePrefix + 'wonderland-story/index.html';
+        targetName = 'We Are the Wonderland Story (Lesson 3)';
+      } else if (pathname.includes('time-machine') || pathname.includes('lesson2') || pathname.includes('lesson-2')) {
+        targetUrl = basePrefix + 'wonderland-time-machine/index.html';
+        targetName = 'The Wonderland Time Machine (Lesson 2)';
+      } else if (pathname.includes('wonderland') || pathname.includes('welcome-to-wonderland')) {
         targetUrl = basePrefix + 'wonderland/index.html';
         targetName = 'Welcome to Wonderland';
       } else if (pathname.includes('detective') || pathname.includes('yesterday') || pathname.includes('mystery')) {

@@ -6,6 +6,76 @@
 
 const GAMES_REGISTRY = [
   {
+  "id": "wonderland-lesson3",
+  "title": "We Are the Wonderland Story! — Lesson 3: Theatre & Prop Performance",
+  "description": "Spectacular 11-screen interactive theatre and storytelling adventure for Grade 3 (A1). Students sequence the story, practice character voices, play Freeze Frame Theatre, build mini-scripts, equip workshop props, perform on the Wonderland stage, and complete their 4-page Actor Dossier.",
+  "type": "game",
+  "category": "Speaking & Drama Games",
+  "categoryLabel": "🎭 Speaking & Drama Games",
+  "level": "A1",
+  "cefrLevel": "A1",
+  "age": "Ages 7–10",
+  "ageGroup": "7-10",
+  "grade": "Grade 3",
+  "grades": [
+    "Grade 3"
+  ],
+  "duration": 35,
+  "durationText": "35 min",
+  "estimatedMinutes": 35,
+  "xp": 105,
+  "skills": [
+    "Speaking",
+    "Drama / Theatre",
+    "Storytelling",
+    "Listening",
+    "TPR"
+  ],
+  "topic": "Alice in Wonderland Theatre & Prop Workshop",
+  "topics": [
+    "Alice in Wonderland",
+    "Story Retelling",
+    "Character Voices",
+    "Freeze Frame Theatre",
+    "Prop Workshop",
+    "Drama"
+  ],
+  "languageFocus": "Oral storytelling using Past Simple verbs (saw, followed, opened, found, met, drank), character dialogue lines, theatre expressions",
+  "activityMode": "Whole Class Smart Board Interactive / Team Drama Challenge",
+  "interactionType": "Stage Curtain, Timeline Sequencer, Voice Mimic Challenge, Freeze Frame Whistle, Mini-Script Rehearsal & Prop Chest",
+  "difficulty": "Scaffolded A1",
+  "tags": [
+    "wonderland",
+    "alice",
+    "theatre",
+    "drama",
+    "props",
+    "past-simple",
+    "freeze-frame",
+    "speaking",
+    "lesson-3",
+    "grade-3"
+  ],
+  "learningObjectives": [
+    "Sequence 4 core narrative events of the Wonderland story using past simple verbs",
+    "Express character dialogue with expressive intonation, pacing, and gesture",
+    "Respond physically to oral freeze frame prompts answering 'What happened?'",
+    "Cooperatively rehearse and perform a scaffolded 4-line mini-script",
+    "Identify and associate 11 classroom theatre props with their narrative functions"
+  ],
+  "teacherInstructions": "Project on Interactive Board. Guide students through sequencing, voice practice, freeze game, script builder, and prop equipping for the class play.",
+  "studentInstructions": "Step onto the Wonderland Stage! Become Alice, the Rabbit, or the Mad Hatter, freeze when the whistle blows, pick your props, and perform our story!",
+  "route": "wonderland-story/index.html",
+  "worksheet": "wonderland-story/worksheet.html",
+  "worksheetRoute": "wonderland-story/worksheet.html",
+  "teacherGuide": true,
+  "supportsAssignment": true,
+  "supportsProgress": true,
+  "featured": true,
+  "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"wsThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#450a0a\"/><stop offset=\"50%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#wsThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.6\" stroke=\"#ec4899\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#ec4899\" opacity=\"0.3\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">🎭</text><rect x=\"20\" y=\"92\" width=\"160\" height=\"22\" rx=\"11\" fill=\"#ec4899\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"10\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">WONDERLAND STORY L3</text></svg>"
+},
+
+  {
   "id": "wonderland-lesson2",
   "title": "The Wonderland Time Machine — Lesson 2: Past Simple Adventure",
   "description": "Fast-paced 14-screen interactive Past Simple time travel adventure for Grade 3 (A1). Students spin the Victorian clock machine, sort NOW vs YESTERDAY, transform regular/irregular verbs, sequence Alice's story, solve Mad Hatter's lie, act out past actions, and defeat the friendly Time Monster.",
