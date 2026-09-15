@@ -845,6 +845,9 @@
       'firefighter': 'firefighter/index.html',
       'nh': 'NH/index.html',
       'yesterday-detectives': 'detectives/index.html',
+      'wonderland-lesson1': 'wonderland/index.html',
+      'welcome-to-wonderland': 'wonderland/index.html',
+      'wonderland': 'wonderland/index.html',
       'inventor-lab': 'inventor-lab/index.html',
       'clara-inventor': 'clara-inventor/index.html',
       'alice-quest': 'alice-quest/index.html'
@@ -3974,6 +3977,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
     } else if (libActiveTab === 'textbooks') {
       all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook') || (r.category || '').toLowerCase().includes('curriculum'));
+    } else if (libActiveTab === 'alice') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        return id.includes('alice') || id.includes('wonderland') || title.includes('alice') || title.includes('wonderland') || desc.includes('wonderland') || topics.includes('wonderland');
+      });
     } else if (libActiveTab === 'favorites' || libActiveTab === 'featured') {
       all = all.filter(r => Boolean(r.featured));
     }
@@ -4584,7 +4595,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📄 Worksheets</span>' +
             '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
             '<span>📚 Stories</span>' +
             '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
           '</button>' +
@@ -4622,6 +4633,70 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
+            // Alice in Wonderland Series Showcase Shelf
+      ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<span style="font-size:2rem;">🐇</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
+                '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · NEW ⚡</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, Past Simple discovery, and workshop chest reveal.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
+                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">READING QUEST</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🔍 The Skimming Detectives</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">6-event story sequence, 4 feeling monsters, and Eagle Eye Skimming challenge.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Quest</a>' +
+                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#c084fc;">STORY THEATRE</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">40 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">📖 Alice Story Engine</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Interactive branching story stages with audio narration and character dialogues.</p>' +
+              '</div>' +
+              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Open Story Theatre</a>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.6); border:1.5px dashed rgba(255,255,255,0.2); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:6px;">' +
+              '<div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:#94a3b8;">UPCOMING IN UNIT</span>' +
+                '<h4 style="font-size:0.95rem; font-weight:800; color:#cbd5e1; margin:4px 0 2px 0;">⏰ L2: Wonderland Time Machine</h4>' +
+                '<h4 style="font-size:0.95rem; font-weight:800; color:#cbd5e1; margin:0 0 4px 0;">🎭 L3: We Are the Story &amp; Play</h4>' +
+                '<p style="font-size:0.75rem; color:#64748b; margin:0;">Crafting prop workshop &amp; student stage performances.</p>' +
+              '</div>' +
+              '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">✨ Prepared by Lesson 1</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
       // 5. Resource Grid Container
       '<div id="library-resource-grid" class="resource-library-grid">' +
         (filteredItems.length === 0 ? 

@@ -148,7 +148,10 @@
       let targetUrl = null;
       let targetName = '';
 
-      if (pathname.includes('detective') || pathname.includes('yesterday') || pathname.includes('mystery')) {
+      if (pathname.includes('wonderland') || pathname.includes('welcome-to-wonderland')) {
+        targetUrl = basePrefix + 'wonderland/index.html';
+        targetName = 'Welcome to Wonderland';
+      } else if (pathname.includes('detective') || pathname.includes('yesterday') || pathname.includes('mystery')) {
         targetUrl = basePrefix + 'detectives/index.html';
         targetName = 'The Mystery of Yesterday';
       } else if (pathname.includes('city-mouse') || pathname.includes('mouse')) {

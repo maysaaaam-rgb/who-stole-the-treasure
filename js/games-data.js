@@ -6,6 +6,74 @@
 
 const GAMES_REGISTRY = [
   {
+  "id": "wonderland-lesson1",
+  "title": "Welcome to Wonderland — Lesson 1: Play & Prop Prep",
+  "description": "Magical 12-screen interactive adventure for Grade 3 (A1). Students explore the enchanted forest, meet 9 Wonderland characters, match signature theatre props, discover the Past Simple with the Time Machine, practice physical TPR acting, and unlock the Workshop Chest for their upcoming classroom play.",
+  "type": "game",
+  "category": "Speaking Games",
+  "categoryLabel": "🗣️ Speaking Games",
+  "level": "A1",
+  "cefrLevel": "A1",
+  "age": "Ages 7–10",
+  "ageGroup": "7-10",
+  "grade": "Grade 3",
+  "grades": [
+    "Grade 3"
+  ],
+  "duration": 35,
+  "durationText": "35 min",
+  "estimatedMinutes": 35,
+  "xp": 100,
+  "skills": [
+    "Speaking",
+    "Listening",
+    "Vocabulary",
+    "Grammar",
+    "TPR / Drama"
+  ],
+  "topic": "Alice in Wonderland & Classroom Play Prep",
+  "topics": [
+    "Alice in Wonderland",
+    "Theatre Props",
+    "Characters",
+    "Past Simple",
+    "TPR Drama"
+  ],
+  "languageFocus": "Wonderland Characters & Props, Past Simple affirmative (went, saw, opened, found, met), Now vs Yesterday contrast",
+  "activityMode": "Whole Class Smart Board Interactive / Drama Workshop Prep",
+  "interactionType": "Interactive Story Stage with Scavenger Hunt, Prop Match, Time Machine & Workshop Chest",
+  "difficulty": "Scaffolded A1",
+  "tags": [
+    "wonderland",
+    "alice",
+    "play",
+    "props",
+    "past-simple",
+    "tpr",
+    "speaking",
+    "listening",
+    "interactive-lesson",
+    "grade-3"
+  ],
+  "learningObjectives": [
+    "Identify 9 core Alice in Wonderland characters and their single A1 descriptions",
+    "Connect 5 signature theatre props (hat, clock, heart, cat mask, key) to characters in preparation for play workshop",
+    "Recognize completed past actions using high-frequency verbs: went, saw, opened, found, met",
+    "Perform physical TPR drama gestures representing story events and produce an oral exit ticket sentence"
+  ],
+  "teacherInstructions": "Launch on the Smart Board. Use touch interactions for Scavenger Hunt, matching, Time Machine, and chest opening. Press T anytime for the teacher guide.",
+  "studentInstructions": "Step into Wonderland! Meet the White Rabbit, find hidden treasures, match theatre props, and get ready for our classroom play!",
+  "route": "wonderland/index.html",
+  "worksheet": "wonderland/worksheet.html",
+  "worksheetRoute": "wonderland/worksheet.html",
+  "teacherGuide": true,
+  "supportsAssignment": true,
+  "supportsProgress": true,
+  "featured": true,
+  "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"wlThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e1b4b\"/><stop offset=\"60%\" stop-color=\"#2e1065\"/><stop offset=\"100%\" stop-color=\"#064e3b\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#wlThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.6\" stroke=\"#f59e0b\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#f59e0b\" opacity=\"0.25\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">🐇</text><rect x=\"25\" y=\"92\" width=\"150\" height=\"22\" rx=\"11\" fill=\"#f59e0b\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"10\" fill=\"#000000\" text-anchor=\"middle\" letter-spacing=\"0.5\">WONDERLAND PLAY 1</text></svg>"
+},
+
+  {
     id: "story-engine-alice",
     title: "Alice in Wonderland: The Story Adventure",
     description: "Full 9-chapter playable children's adventure with invisible adaptive AI learning: follow the White Rabbit, fall down the well, shrink & grow in the Hall of Doors, solve Caterpillar & Cheshire Cat riddles, join the Mad Tea Party, and stand your ground at the Royal Court!",
