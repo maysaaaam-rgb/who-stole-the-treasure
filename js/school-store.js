@@ -20,6 +20,29 @@
   // Canonical list of audited games
   const RAW_CANONICAL_GAMES = [
     {
+      id: "wonderland-lesson2",
+      title: "The Wonderland Time Machine — Lesson 2: Past Simple Adventure",
+      category: "Grammar & Story Games",
+      level: "A1",
+      age: "7–10",
+      grade: "Grade 3",
+      duration: 35,
+      skills: ["Speaking", "Listening", "Grammar", "Vocabulary", "TPR / Drama"],
+      topics: ["Alice in Wonderland", "Time Machine", "Past Simple", "Two Truths & One Lie", "TPR Drama"],
+      objectives: [
+        "Distinguish NOW vs YESTERDAY in affirmative sentences",
+        "Recognize and produce past simple verbs: went, saw, opened, found, met, had, ate, drank",
+        "Sequence 6 events and detect an impossible statement in Two Truths and One Lie"
+      ],
+      route: "wonderland-time-machine/index.html",
+      worksheet: "wonderland-time-machine/worksheet.html",
+      worksheetRoute: "wonderland-time-machine/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Fast-paced 14-screen interactive Past Simple adventure for Grade 3 (A1) featuring the Time Machine, Verb Transformer, Story Sequencer, Mad Hatter Lie Game, and Boss Battle."
+    },
+    {
       id: "story-engine-alice",
       title: "Alice in Wonderland: The Story Adventure",
       category: "Interactive Stories",

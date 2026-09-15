@@ -6,6 +6,75 @@
 
 const GAMES_REGISTRY = [
   {
+  "id": "wonderland-lesson2",
+  "title": "The Wonderland Time Machine — Lesson 2: Past Simple Adventure",
+  "description": "Fast-paced 14-screen interactive Past Simple time travel adventure for Grade 3 (A1). Students spin the Victorian clock machine, sort NOW vs YESTERDAY, transform regular/irregular verbs, sequence Alice's story, solve Mad Hatter's lie, act out past actions, and defeat the friendly Time Monster.",
+  "type": "game",
+  "category": "Grammar & Story Games",
+  "categoryLabel": "⏰ Grammar & Story Games",
+  "level": "A1",
+  "cefrLevel": "A1",
+  "age": "Ages 7–10",
+  "ageGroup": "7-10",
+  "grade": "Grade 3",
+  "grades": [
+    "Grade 3"
+  ],
+  "duration": 35,
+  "durationText": "35 min",
+  "estimatedMinutes": 35,
+  "xp": 100,
+  "skills": [
+    "Speaking",
+    "Listening",
+    "Grammar",
+    "Vocabulary",
+    "TPR / Drama"
+  ],
+  "topic": "Past Simple & Time Machine Adventure",
+  "topics": [
+    "Alice in Wonderland",
+    "Time Machine",
+    "Past Simple",
+    "Two Truths & One Lie",
+    "TPR Drama"
+  ],
+  "languageFocus": "Past Simple affirmative (went, saw, opened, found, met, had, ate, drank, played, looked), Regular vs Irregular, Now vs Yesterday contrast",
+  "activityMode": "Whole Class Smart Board Interactive / Team Time Travel Challenge",
+  "interactionType": "Interactive Time Machine with Countdown, Verb Transformer, Story Sequencer, Mad Hatter Lie Game & Boss Battle",
+  "difficulty": "Scaffolded A1 (Level A Support / Level B Challenge)",
+  "tags": [
+    "wonderland",
+    "time-machine",
+    "past-simple",
+    "regular-irregular",
+    "storytelling",
+    "tpr",
+    "speaking",
+    "lesson-2",
+    "grade-3"
+  ],
+  "learningObjectives": [
+    "Understand that Past Simple describes completed past events",
+    "Distinguish NOW vs YESTERDAY in simple affirmative sentences",
+    "Recognize and form target past simple verbs: went, saw, opened, found, met, had, ate, drank",
+    "Identify regular (+ed) vs irregular past changes without heavy terminology",
+    "Sequence 6 chronological story events and detect an impossible statement in Two Truths and One Lie",
+    "Perform 7 physical TPR actions corresponding to story events and defeat the Time Monster"
+  ],
+  "teacherInstructions": "Launch on the Smart Board. Use countdown, verb transformer, story sequence, Lie voting, and Time Monster battle. Press T anytime for Teacher Mode.",
+  "studentInstructions": "Step into the Time Machine! Spin the clock hands backward, change words to yesterday, catch the Mad Hatter's lie, and save the Time Machine!",
+  "route": "wonderland-time-machine/index.html",
+  "worksheet": "wonderland-time-machine/worksheet.html",
+  "worksheetRoute": "wonderland-time-machine/worksheet.html",
+  "teacherGuide": true,
+  "supportsAssignment": true,
+  "supportsProgress": true,
+  "featured": true,
+  "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"tmThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"50%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#78350f\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#tmThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.6\" stroke=\"#f59e0b\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#f59e0b\" opacity=\"0.3\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">⏰</text><rect x=\"20\" y=\"92\" width=\"160\" height=\"22\" rx=\"11\" fill=\"#f59e0b\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"10\" fill=\"#000000\" text-anchor=\"middle\" letter-spacing=\"0.5\">TIME MACHINE L2</text></svg>"
+},
+
+  {
   "id": "wonderland-lesson1",
   "title": "Welcome to Wonderland — Lesson 1: Play & Prop Prep",
   "description": "Magical 12-screen interactive adventure for Grade 3 (A1). Students explore the enchanted forest, meet 9 Wonderland characters, match signature theatre props, discover the Past Simple with the Time Machine, practice physical TPR acting, and unlock the Workshop Chest for their upcoming classroom play.",
