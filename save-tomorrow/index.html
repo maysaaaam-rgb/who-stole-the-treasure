@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🚀 The Invention That Must Save Tomorrow | 60-Minute Master ESL Lab</title>
+  <meta name="description" content="A 55–60 minute interactive ESL STEM learning adventure for Grade 4 (A1+). Save the future by learning invention vocabulary, biomimicry, creative design, and scientific presenting.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/save-tomorrow.css">
+  <style>
+    #stm-drawer-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 998;
+      display: none;
+    }
+    #stm-drawer-backdrop.open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen App Wrapper -->
+  <div id="stm-wrapper">
+
+    <!-- Top Persistent HUD -->
+    <header id="stm-hud">
+      <!-- Left: Library link + Phase & XP Indicators -->
+      <div class="hud-group-left">
+        <a href="../index.html" class="hud-btn" title="Return to Library">
+          <span>←</span>
+          <span>Library</span>
+        </a>
+        <div id="hud-phase-indicator" class="hud-pill hud-phase-pill">Phase 1 of 15</div>
+        <div id="hud-xp-display" class="hud-pill hud-xp-pill">⭐ 0 / 100 XP</div>
+      </div>
+
+      <!-- Center: 10-Node Energy Conduit Progress Track -->
+      <nav id="stm-progress-conduit" title="10-Node Energy Conduit Progress">
+        <!-- Injected dynamically by SaveTomorrowApp.renderProgressConduit -->
+      </nav>
+
+      <!-- Right: Navigation, Audio, Dossier, Teacher Guide -->
+      <div class="hud-group-right">
+        <button id="btn-nav-prev" class="hud-btn" title="Previous Phase (Left Arrow)">◀</button>
+        <button id="btn-nav-next" class="hud-btn primary" title="Next Phase (Right Arrow)">Next ▶</button>
+        <button id="stm-btn-sound" class="hud-btn" title="Toggle Sound SFX" aria-label="Toggle Sound">
+          <span id="stm-sound-icon">🔊</span>
+        </button>
+        <button id="stm-btn-speech" class="hud-btn" title="Toggle Voice Narration" aria-label="Toggle Voice">
+          <span id="stm-speech-icon">🎙️</span>
+        </button>
+        <a href="worksheet.html" target="_blank" class="hud-btn amber" title="Printable Lab Dossier">
+          <span>📋</span>
+          <span>Dossier</span>
+        </a>
+        <button id="stm-btn-teacher" class="hud-btn teacher" title="Open Teacher Guide (Key: T)">
+          <span>🧑‍🏫</span>
+          <span>Guide</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Stage Viewport -->
+    <main id="stm-stage-content">
+      <!-- Phase scenes rendered here dynamically by SaveTomorrowScenes -->
+    </main>
+
+    <!-- Teacher Drawer Modal -->
+    <aside id="stm-teacher-drawer" class="teacher-drawer-modal" aria-label="Teacher Lesson Guide">
+      <!-- Rendered dynamically by SaveTomorrowScenes.renderTeacherDrawer -->
+    </aside>
+    <div id="stm-drawer-backdrop"></div>
+
+    <!-- Toast Notification Mount -->
+    <div id="stm-toast"></div>
+
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="js/save-tomorrow-audio.js"></script>
+  <script src="js/save-tomorrow-data.js"></script>
+  <script src="js/save-tomorrow-scenes.js"></script>
+  <script src="js/save-tomorrow-app.js"></script>
+</body>
+</html>

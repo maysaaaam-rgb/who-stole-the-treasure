@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 Official STEM Lab Dossier & Printable Worksheets | Save Tomorrow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --accent: #f59e0b;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --bg-page: #f8fafc;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Screen UI Controls */
+    .no-print-bar {
+      width: 100%;
+      max-width: 850px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 16px 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    .no-print-bar h2 {
+      color: #38bdf8;
+      font-size: 1.25rem;
+      font-family: 'Chakra Petch', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-print {
+      background: #06b6d4;
+      color: #042f2e;
+    }
+    .btn-print:hover {
+      background: #22d3ee;
+      transform: translateY(-2px);
+    }
+    .btn-back {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-back:hover {
+      background: #475569;
+    }
+
+    /* Worksheet Page Container */
+    .sheet-page {
+      width: 850px;
+      min-height: 1100px;
+      background: #ffffff;
+      padding: 40px;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .sheet-header {
+      border-bottom: 3px solid #0284c7;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sheet-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sheet-brand-icon {
+      width: 48px;
+      height: 48px;
+      background: #e0f2fe;
+      border: 2px solid #0284c7;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .sheet-brand-text h1 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.3rem;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sheet-brand-text p {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .student-fields {
+      display: flex;
+      gap: 16px;
+      font-size: 0.9rem;
+    }
+    .field-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .field-line span.underline {
+      display: inline-block;
+      width: 140px;
+      border-bottom: 1.5px solid #64748b;
+    }
+
+    /* Section Styles */
+    .sheet-section {
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.05rem;
+      color: #0284c7;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid #0284c7;
+      padding-left: 10px;
+    }
+    .section-desc {
+      font-size: 0.9rem;
+      color: #475569;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    /* Grid & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .match-box {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+    .match-box strong {
+      display: block;
+      color: #0f172a;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .match-box p {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    /* Drawing Box */
+    .draw-box {
+      border: 2px dashed #0284c7;
+      border-radius: 12px;
+      height: 280px;
+      background: #f0f9ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .draw-hint {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 0.78rem;
+      color: #0369a1;
+      font-weight: 600;
+    }
+    .lines-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .fill-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+    .fill-line span.blank {
+      flex: 1;
+      border-bottom: 1.5px solid #64748b;
+      min-height: 20px;
+    }
+
+    /* Certificate */
+    .cert-frame {
+      border: 8px double #0284c7;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      background: #f8fafc;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cert-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.8rem;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .cert-badge {
+      font-size: 4rem;
+      margin: 10px 0;
+    }
+    .cert-text {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #334155;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .cert-student-name {
+      display: inline-block;
+      min-width: 320px;
+      border-bottom: 2px solid #0369a1;
+      font-weight: 800;
+      color: #0284c7;
+      font-size: 1.3rem;
+      padding-bottom: 4px;
+      margin: 10px 0;
+    }
+    .cert-footer {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1.5px dashed #cbd5e1;
+    }
+    .signature-block {
+      text-align: center;
+    }
+    .sig-line {
+      width: 180px;
+      border-bottom: 1.5px solid #475569;
+      margin-bottom: 6px;
+    }
+    .sig-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet-page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+        border-radius: 0;
+        width: 100%;
+        height: 100%;
+        padding: 30px;
+      }
+      .sheet-page:last-child {
+        page-break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Top Bar -->
+  <div class="no-print-bar">
+    <h2>🚀 THE INVENTION THAT MUST SAVE TOMORROW — Official Lab Dossier</h2>
+    <div class="btn-group">
+      <button class="btn btn-print" onclick="window.print()">🖨️ Print All Pages (4 Pages)</button>
+      <a href="index.html" class="btn btn-back">← Back to Digital Lab</a>
+    </div>
+  </div>
+
+  <!-- PAGE 1: Mission Briefing & Problem Matcher -->
+  <section class="sheet-page">
+    <header class="sheet-header">
+      <div class="sheet-brand">
+        <div class="sheet-brand-icon">⚡</div>
+        <div class="sheet-brand-text">
+          <h1>FUTURE LAB 2045: DOSSIER #1</h1>
+          <p>Stage 1–3: Emergency Briefing & Real World Problems</p>
+        </div>
+      </div>
+      <div class="student-fields">
+        <div class="field-line">Name: <span class="underline"></span></div>
+        <div class="field-line">Date: <span class="underline"></span></div>
+      </div>
+    </header>
+
+    <div class="sheet-section">
+      <h2 class="section-title">Mission 1: The Inventor's Mindset</h2>
+      <p class="section-desc">Every great invention begins with a problem! Read the problems below and draw a line to match each one to the best inventor's solution.</p>
+      
+      <div class="grid-2" style="margin-top: 16px;">
+        <div class="match-box">
+          <strong>1. Dark Roads at Night 🌑</strong>
+          <p>People cannot see when riding bicycles after sunset.</p>
+        </div>
+        <div class="match-box">
+          <strong>A. Eco-Clean Trash Bin 🗑️</strong>
+          <p>Uses sensors to sort bottles and cans automatically.</p>
+        </div>
+
+        <div class="match-box">
+          <strong>2. Dirty River Plastic 🌊</strong>
+          <p>Trash enters our rivers and harms fish and water.</p>
+        </div>
+        <div class="match-box">
+          <strong>B. Solar-Powered Helmet Light 🚴</strong>
+          <p>Charges during the day and lights up the street at night.</p>
+        </div>
+
+        <div class="match-box">
+          <strong>3. Lost Backpack in School 🎒</strong>
+          <p>Students forget where they put their bag in the gym.</p>
+        </div>
+        <div class="match-box">
+          <strong>C. Whistle-Finder Beep Tag 🏷️</strong>
+          <p>Whistle loudly and the tag sings a happy tune to guide you.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-section" style="margin-top: 24px;">
+      <h2 class="section-title">Mission 2: Sentence Scaffolding Practice</h2>
+      <p class="section-desc">Write complete sentences using the inventor sentence stems. Practice saying them aloud with a partner!</p>
+      
+      <div class="lines-group" style="margin-top: 16px;">
+        <div class="fill-line">
+          <span>The problem is that</span>
+          <span class="blank"></span>
+        </div>
+        <div class="fill-line">
+          <span>My invention is called</span>
+          <span class="blank"></span>
+        </div>
+        <div class="fill-line">
+          <span>It has</span>
+          <span class="blank"></span>
+          <span>and it can</span>
+          <span class="blank"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-section" style="margin-top: 24px;">
+      <h2 class="section-title">Mission 3: Partner Discussion Log</h2>
+      <p class="section-desc">Talk to your teammate. Check the boxes when you both speak English:</p>
+      <div style="display: flex; gap: 24px; margin-top: 10px; font-size: 0.9rem;">
+        <label><input type="checkbox"> I asked: "What is your idea?"</label>
+        <label><input type="checkbox"> I listened carefully</label>
+        <label><input type="checkbox"> I said: "Good idea! How does it work?"</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 2: Nature's Secrets & The Idea Mixer -->
+  <section class="sheet-page">
+    <header class="sheet-header">
+      <div class="sheet-brand">
+        <div class="sheet-brand-icon">🦎</div>
+        <div class="sheet-brand-text">
+          <h1>FUTURE LAB 2045: DOSSIER #2</h1>
+          <p>Stage 4–5: Biomimicry Secrets & The Creative Idea Mixer</p>
+        </div>
+      </div>
+      <div class="student-fields">
+        <div class="field-line">Name: <span class="underline"></span></div>
+        <div class="field-line">Date: <span class="underline"></span></div>
+      </div>
+    </header>
+
+    <div class="sheet-section">
+      <h2 class="section-title">Mission 4: Biomimicry Detective</h2>
+      <p class="section-desc">Nature is the greatest teacher! Connect each animal superpower to the human invention it inspired:</p>
+      
+      <div class="grid-3" style="margin-top: 16px;">
+        <div class="match-box" style="text-align: center;">
+          <div style="font-size: 2rem;">🦎</div>
+          <strong>Gecko Toes</strong>
+          <p>Micro-hairs stick to slippery walls without glue.</p>
+          <div style="margin-top: 10px; font-weight: bold; color: #0284c7;">→ Inspires: _________</div>
+        </div>
+        <div class="match-box" style="text-align: center;">
+          <div style="font-size: 2rem;">🌱</div>
+          <strong>Burdock Hooks</strong>
+          <p>Tiny hooks catch onto dog fur and clothes.</p>
+          <div style="margin-top: 10px; font-weight: bold; color: #0284c7;">→ Inspires: _________</div>
+        </div>
+        <div class="match-box" style="text-align: center;">
+          <div style="font-size: 2rem;">🦅</div>
+          <strong>Eagle Wingtips</strong>
+          <p>Curved feather tips save wind energy in flight.</p>
+          <div style="margin-top: 10px; font-weight: bold; color: #0284c7;">→ Inspires: _________</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-section" style="margin-top: 24px;">
+      <h2 class="section-title">Mission 5: The Crazy Idea Mixer (Combination Math)</h2>
+      <p class="section-desc">Inventors combine TWO ordinary objects into ONE extraordinary invention! Complete the equation and draw your new invention:</p>
+
+      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 10px; font-size: 1.05rem; font-weight: 700; text-align: center;">
+        [ Umbrella ☂️ ] + [ Solar Fan 🌀 ] = [ The Super Breeze Shield! ☀️💨 ]
+      </div>
+
+      <div class="draw-box" style="margin-top: 16px; height: 320px;">
+        <div class="draw-hint">DRAW YOUR MIXED INVENTION HERE 🎨</div>
+      </div>
+
+      <div class="lines-group">
+        <div class="fill-line">
+          <span>Name of Mixed Invention:</span>
+          <span class="blank"></span>
+        </div>
+        <div class="fill-line">
+          <span>It helps people by:</span>
+          <span class="blank"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 3: Da Vinci Blueprint & Karl Benz Lab -->
+  <section class="sheet-page">
+    <header class="sheet-header">
+      <div class="sheet-brand">
+        <div class="sheet-brand-icon">📐</div>
+        <div class="sheet-brand-text">
+          <h1>FUTURE LAB 2045: DOSSIER #3</h1>
+          <p>Stage 6–8: Da Vinci Blueprint & Karl Benz Testing Chamber</p>
+        </div>
+      </div>
+      <div class="student-fields">
+        <div class="field-line">Name: <span class="underline"></span></div>
+        <div class="field-line">Date: <span class="underline"></span></div>
+      </div>
+    </header>
+
+    <div class="sheet-section">
+      <h2 class="section-title">Mission 6: Da Vinci Master Blueprint</h2>
+      <p class="section-desc">Draw your master blueprint. Remember Leonardo Da Vinci's rule: <strong>Label at least 3 parts!</strong></p>
+
+      <div class="draw-box" style="height: 380px;">
+        <div class="draw-hint">BLUEPRINT GRID (LABEL 3 PARTS WITH ARROWS)</div>
+      </div>
+
+      <div class="grid-3" style="margin-top: 12px;">
+        <div class="fill-line">1. Part: <span class="blank"></span></div>
+        <div class="fill-line">2. Part: <span class="blank"></span></div>
+        <div class="fill-line">3. Part: <span class="blank"></span></div>
+      </div>
+    </div>
+
+    <div class="sheet-section" style="margin-top: 24px;">
+      <h2 class="section-title">Mission 7: The Karl Benz Test & Improvement Protocol</h2>
+      <p class="section-desc">Remember: <em>"A broken prototype is just the first step to success!"</em> What happened during testing?</p>
+
+      <div class="lines-group" style="margin-top: 10px;">
+        <div class="fill-line">
+          <span>Test Result: [ &nbsp; ] Passed &nbsp;&nbsp; [ &nbsp; ] Needed Improvements!</span>
+        </div>
+        <div class="fill-line">
+          <span>What was the problem?</span>
+          <span class="blank"></span>
+        </div>
+        <div class="fill-line">
+          <span>Karl Benz Improvement: How did you make it stronger/faster?</span>
+          <span class="blank"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 4: Expo Speech Card & Certificate of Tomorrow -->
+  <section class="sheet-page">
+    <header class="sheet-header">
+      <div class="sheet-brand">
+        <div class="sheet-brand-icon">🏆</div>
+        <div class="sheet-brand-text">
+          <h1>FUTURE LAB 2045: DOSSIER #4</h1>
+          <p>Stage 9–10: The Tomorrow Expo & Junior Inventor Certificate</p>
+        </div>
+      </div>
+      <div class="student-fields">
+        <div class="field-line">Name: <span class="underline"></span></div>
+        <div class="field-line">Date: <span class="underline"></span></div>
+      </div>
+    </header>
+
+    <div class="sheet-section">
+      <h2 class="section-title">Mission 8: 60-Second Expo Speech Script</h2>
+      <p class="section-desc">Use this official speech template to present your invention to the class:</p>
+
+      <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 18px; line-height: 2; font-size: 0.95rem;">
+        <p><strong>1. Introduction:</strong> "Hello, everyone! My name is _______________________."</p>
+        <p><strong>2. Invention Name:</strong> "This is my invention. Its name is _______________________."</p>
+        <p><strong>3. Materials & Parts:</strong> "It is made of _______________________ and it has _______________________."</p>
+        <p><strong>4. Problem Solved:</strong> "It solves the problem of _______________________."</p>
+        <p><strong>5. Super Feature:</strong> "The most special feature is that it can _______________________!"</p>
+        <p><strong>6. Conclusion:</strong> "Thank you for listening! Do you have any questions?"</p>
+      </div>
+    </div>
+
+    <!-- Official Certificate Frame -->
+    <div class="cert-frame" style="margin-top: 24px;">
+      <div>
+        <div class="cert-badge">🏅</div>
+        <h2 class="cert-title">OFFICIAL JUNIOR INVENTOR OF TOMORROW</h2>
+        <p style="font-size: 0.9rem; color: #0284c7; font-weight: 700; margin-top: 4px;">CERTIFICATE OF EXCELLENCE • YEAR 2045</p>
+      </div>
+
+      <div class="cert-text">
+        This is to certify that Junior Inventor<br>
+        <div class="cert-student-name"></div><br>
+        has successfully repaired the Future Machine, engineered a working prototype, mastered biomimicry and problem solving, and presented to the Science Expo.
+      </div>
+
+      <div class="cert-footer">
+        <div class="signature-block">
+          <div class="sig-line"></div>
+          <div class="sig-label">Nova & EDI (Lab Mentors)</div>
+        </div>
+        <div style="font-size: 2.2rem;">⚡</div>
+        <div class="signature-block">
+          <div class="sig-line"></div>
+          <div class="sig-label">Classroom Teacher</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

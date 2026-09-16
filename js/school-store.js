@@ -77,6 +77,30 @@
       description: "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, and record their speech to save their brain!"
     },
     {
+      id: "save-tomorrow",
+      title: "The Invention That Must Save Tomorrow: 60-Minute Master ESL Lab",
+      category: "CLIL & STEM Games",
+      level: "A1+",
+      age: "8–11",
+      grade: "Grade 4",
+      duration: 60,
+      skills: ["Speaking", "CLIL", "Grammar", "Creative Thinking", "Vocabulary"],
+      topics: ["The Small Inventor", "Inventions", "CAN and CAN'T", "Biomimicry", "Problem Solving", "Expo Presentation"],
+      objectives: [
+        "Identify real-world problems and formulate creative solutions using scaffolded English",
+        "Express abilities and limitations using CAN and CAN'T + base verb",
+        "Describe features and parts using HAS / HAVE and component vocabulary",
+        "Apply biomimicry principles and deliver an Expo presentation to save tomorrow"
+      ],
+      route: "save-tomorrow/index.html",
+      worksheet: "save-tomorrow/worksheet.html",
+      worksheetRoute: "save-tomorrow/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Master 55–60 minute interactive ESL STEM epic for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). 15 phases, 10 energy conduits, Da Vinci blueprint canvas, and Karl Benz testing chamber."
+    },
+    {
       id: "young-inventor",
       title: "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
       category: "CLIL & STEM Games",
@@ -5480,6 +5504,160 @@
     }
   ];
 
+  
+  const DEFAULT_ENGLISH_CHALLENGES = [
+    {
+      id: 'ch-daily-1',
+      title: 'Speed Skimmer: 30s Mission',
+      type: 'daily',
+      skill: 'Reading',
+      cefr: 'A1+',
+      difficulty: 'Easy',
+      xpReward: 50,
+      badgeReward: 'badge-6',
+      icon: '⚡',
+      durationMinutes: 5,
+      instructions: 'Skim the informational text in 30 seconds and locate 3 bold keywords without reading every word.',
+      successCriteria: 'Locate 3 keywords in under 30 seconds',
+      archived: false
+    },
+    {
+      id: 'ch-daily-2',
+      title: 'CAN & CAN\'T Detective',
+      type: 'daily',
+      skill: 'Speaking',
+      cefr: 'A1+',
+      difficulty: 'Normal',
+      xpReward: 75,
+      badgeReward: 'badge-9',
+      icon: '🎙️',
+      durationMinutes: 10,
+      instructions: 'Speak 3 complete sentences aloud: "It CAN [verb]...", "It CAN\'T [verb]..." and "It HAS [noun]".',
+      successCriteria: 'Record or speak 3 grammatically accurate sentences',
+      archived: false
+    },
+    {
+      id: 'ch-daily-3',
+      title: 'Invention Vocabulary Hunter',
+      type: 'daily',
+      skill: 'Vocabulary',
+      cefr: 'A1+',
+      difficulty: 'Easy',
+      xpReward: 50,
+      badgeReward: null,
+      icon: '🔍',
+      durationMinutes: 5,
+      instructions: 'Match 5 invention components (sensor, solar panel, propeller, gear, conduit) to their blueprint functions.',
+      successCriteria: '5/5 vocabulary matches',
+      archived: false
+    },
+    {
+      id: 'ch-daily-4',
+      title: 'Nature Biomimicry Link',
+      type: 'daily',
+      skill: 'Speaking',
+      cefr: 'A1+',
+      difficulty: 'Challenge',
+      xpReward: 80,
+      badgeReward: 'badge-7',
+      icon: '🦅',
+      durationMinutes: 8,
+      instructions: 'Explain to your partner how the kingfisher\'s beak helped engineers make bullet trains quiet and fast.',
+      successCriteria: 'Spoken explanation with connection between nature and tech',
+      archived: false
+    },
+    {
+      id: 'ch-weekly-1',
+      title: 'The Capstone Science Expo Pitch',
+      type: 'weekly',
+      skill: 'Speaking',
+      cefr: 'A1+',
+      difficulty: 'Epic',
+      xpReward: 200,
+      badgeReward: 'badge-10',
+      icon: '🚀',
+      durationMinutes: 20,
+      instructions: 'Deliver a 2-minute spoken Expo presentation explaining your invention\'s problem, features, and test results.',
+      successCriteria: 'Deliver full 4-part pitch to class or teacher',
+      archived: false
+    },
+    {
+      id: 'ch-weekly-2',
+      title: 'Wonderland Woods Retelling',
+      type: 'weekly',
+      skill: 'Reading',
+      cefr: 'A2',
+      difficulty: 'Challenge',
+      xpReward: 180,
+      badgeReward: null,
+      icon: '🍄',
+      durationMinutes: 15,
+      instructions: 'Retell Alice\'s tea party riddle using at least 4 past tense verbs (asked, answered, laughed, sat).',
+      successCriteria: 'Accurate past tense usage in story sequencing',
+      archived: false
+    },
+    {
+      id: 'ch-weekly-3',
+      title: 'Grammar Architect: Compound Power',
+      type: 'weekly',
+      skill: 'Grammar',
+      cefr: 'A1+',
+      difficulty: 'Normal',
+      xpReward: 120,
+      badgeReward: null,
+      icon: '📐',
+      durationMinutes: 12,
+      instructions: 'Combine 4 pairs of simple sentences using "because" and "so" in your Inventor Notebook.',
+      successCriteria: 'Write 4 correct compound sentences',
+      archived: false
+    },
+    {
+      id: 'ch-skill-1',
+      title: 'Phonics Blend: /dr/ & /tr/ Precision',
+      type: 'skill',
+      skill: 'Pronunciation',
+      cefr: 'A1',
+      difficulty: 'Easy',
+      xpReward: 60,
+      badgeReward: null,
+      icon: '🗣️',
+      durationMinutes: 5,
+      instructions: 'Pronounce the tongue-twister: "Twelve tiny trains travel through tricky trees." 3 times cleanly.',
+      successCriteria: 'Clean phonemic articulation',
+      archived: false
+    },
+    {
+      id: 'ch-skill-2',
+      title: 'Karl Benz Chamber Partner Test',
+      type: 'skill',
+      skill: 'Teamwork',
+      cefr: 'A1+',
+      difficulty: 'Challenge',
+      xpReward: 100,
+      badgeReward: null,
+      icon: '🤝',
+      durationMinutes: 15,
+      instructions: 'Conduct 3 environmental stress tests with your laboratory partner and write feedback cards.',
+      successCriteria: 'Completed partner testing dossier',
+      archived: false
+    },
+    {
+      id: 'ch-skill-3',
+      title: 'Creative Clean Ocean Machine',
+      type: 'skill',
+      skill: 'Creativity',
+      cefr: 'A1+',
+      difficulty: 'Epic',
+      xpReward: 150,
+      badgeReward: 'badge-8',
+      icon: '🌊',
+      durationMinutes: 20,
+      instructions: 'Design a Da Vinci blueprint for an invention that uses whale or turtle biology to filter ocean plastic.',
+      successCriteria: 'Blueprint diagram + 3 explanatory sentences',
+      archived: false
+    }
+  ];
+
   function getInitialState() {
     return {
       currentRole: 'teacher',
@@ -7942,7 +8120,12 @@
         { id: 'badge-2', name: 'Spoken Fluent', icon: '🗣️', description: 'Spoke English with high confidence in 5 classroom sessions.', category: 'Speaking', xpReward: 150, archived: false },
         { id: 'badge-3', name: 'Grammar Wizard', icon: '🪄', description: 'Mastered 3 consecutive grammar challenges with 90%+ accuracy.', category: 'Grammar', xpReward: 200, archived: false },
         { id: 'badge-4', name: 'Team Helper', icon: '🤝', description: 'Assisted classmates during pairwork and group challenges.', category: 'Social', xpReward: 100, archived: false },
-        { id: 'badge-5', name: 'Streak Champion', icon: '🔥', description: 'Maintained a 7-day learning streak in digital activities.', category: 'Consistency', xpReward: 250, archived: false }
+{ id: 'badge-5', name: 'Streak Champion', icon: '🔥', description: 'Maintained a 7-day learning streak in digital activities.', category: 'Consistency', xpReward: 250, archived: false },
+        { id: 'badge-6', name: 'Speed Skimmer', icon: '⚡', description: 'Mastered 30-second skimming to unlock secret reading clues.', category: 'Reading', xpReward: 150, archived: false },
+        { id: 'badge-7', name: 'Biomimicry Specialist', icon: '🦅', description: 'Connected nature adaptations to modern technological inventions.', category: 'CLIL', xpReward: 200, archived: false },
+        { id: 'badge-8', name: 'Master Inventor', icon: '🚀', description: 'Completed all 15 phases of The Invention That Must Save Tomorrow.', category: 'STEM', xpReward: 300, archived: false },
+        { id: 'badge-9', name: 'CAN & CAN\'T Champion', icon: '⚙️', description: 'Expressed abilities and limitations with 100% grammatical precision.', category: 'Grammar', xpReward: 180, archived: false },
+        { id: 'badge-10', name: 'Expo Orator', icon: '🎙️', description: 'Delivered an engaging Capstone Expo presentation with visual slides.', category: 'Speaking', xpReward: 250, archived: false }
       ],
 
       // 18. Achievements (Unlockable Challenges)
@@ -8140,7 +8323,9 @@
       progressCheckSubmissions: JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS)),
       monsterItems: JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS)),
       monsterProfiles: JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES)),
-      studentAwards: []
+      studentAwards: [],
+      englishChallenges: JSON.parse(JSON.stringify(DEFAULT_ENGLISH_CHALLENGES)),
+      classroomMoods: { "class-3a": "focused", "class-3b": "energetic", "class-4a": "creative", "class-4b": "inquisitive" }
     };
   }
 
@@ -8148,6 +8333,94 @@
   // CORE STORE ENGINE CLASS
   // =========================================================================
   class MasterSchoolStore {
+
+    getEnglishChallenges(filter) {
+      let list = (this.state.englishChallenges || []).filter(c => !c.archived);
+      if (filter && filter.type) list = list.filter(c => c.type === filter.type);
+      if (filter && filter.skill) list = list.filter(c => c.skill === filter.skill);
+      if (filter && filter.difficulty) list = list.filter(c => c.difficulty === filter.difficulty);
+      return list;
+    }
+
+    getEnglishChallenge(id) {
+      return (this.state.englishChallenges || []).find(c => c.id === id) || null;
+    }
+
+    completeEnglishChallenge(studentId, challengeId, notes) {
+      const challenge = this.getEnglishChallenge(challengeId);
+      if (!challenge) return false;
+      const student = this.getStudent(studentId);
+      if (!student) return false;
+
+      this.awardXP(studentId, challenge.xpReward || 50, 'Completed English Challenge: ' + challenge.title, 'challenge');
+
+      this.recordEvidence({
+        studentId: studentId,
+        activityId: challenge.id,
+        activityTitle: challenge.title,
+        skill: challenge.skill || 'Speaking',
+        percentage: 100,
+        score: challenge.xpReward,
+        maxScore: challenge.xpReward,
+        notes: notes || ('Completed challenge ' + challenge.title)
+      });
+
+      if (challenge.badgeReward) {
+        this.awardBadgeToStudent(studentId, challenge.badgeReward);
+      }
+
+      this.saveState();
+      this.notify();
+      return true;
+    }
+
+    getDailyMission(classId) {
+      const challenges = this.getEnglishChallenges({ type: 'daily' });
+      return challenges.length ? challenges[0] : null;
+    }
+
+    getWeeklyQuest(classId) {
+      const challenges = this.getEnglishChallenges({ type: 'weekly' });
+      return challenges.length ? challenges[0] : null;
+    }
+
+    getClassroomMood(classId) {
+      if (!this.state.classroomMoods) this.state.classroomMoods = {};
+      return this.state.classroomMoods[classId] || 'focused';
+    }
+
+    setClassroomMood(classId, mood) {
+      if (!this.state.classroomMoods) this.state.classroomMoods = {};
+      this.state.classroomMoods[classId] = mood;
+      this.saveState();
+      this.notify();
+      return mood;
+    }
+
+    getWorldProgression(classId) {
+      const students = this.getStudentsByClass(classId);
+      const totalXP = students.reduce((acc, s) => acc + this.getStudentTotalXP(s.id), 0);
+      const worlds = [
+        { id: 'world-1', name: 'Meadow Academy', minXP: 0, maxXP: 1000, icon: '🌲', unlocked: true },
+        { id: 'world-2', name: 'Wonderland Woods', minXP: 1000, maxXP: 3000, icon: '🍄', unlocked: totalXP >= 1000 },
+        { id: 'world-3', name: 'Oceanic Depths', minXP: 3000, maxXP: 6000, icon: '🌊', unlocked: totalXP >= 3000 },
+        { id: 'world-4', name: 'The Invention Lab', minXP: 6000, maxXP: 10000, icon: '🚀', unlocked: totalXP >= 6000 },
+        { id: 'world-5', name: 'Celestial Cosmos', minXP: 10000, maxXP: 20000, icon: '✨', unlocked: totalXP >= 10000 }
+      ];
+      const currentWorld = worlds.filter(w => w.unlocked).pop() || worlds[0];
+      const nextWorld = worlds.find(w => !w.unlocked) || worlds[worlds.length - 1];
+      const progressXP = Math.max(0, totalXP - currentWorld.minXP);
+      const rangeXP = (nextWorld.minXP - currentWorld.minXP) || 1000;
+      const pct = Math.min(100, Math.round((progressXP / rangeXP) * 100));
+      return {
+        totalClassXP: totalXP,
+        currentWorld: currentWorld,
+        nextWorld: nextWorld,
+        pct: pct,
+        worlds: worlds
+      };
+    }
+
     constructor() {
       this.state = this.loadState();
       this.listeners = [];
@@ -8207,6 +8480,13 @@
             }
             if (!merged.teacherNotes || !Array.isArray(merged.teacherNotes)) {
               merged.teacherNotes = [];
+            }
+            
+            if (!merged.englishChallenges || !Array.isArray(merged.englishChallenges) || merged.englishChallenges.length === 0) {
+              merged.englishChallenges = JSON.parse(JSON.stringify(DEFAULT_ENGLISH_CHALLENGES));
+            }
+            if (!merged.classroomMoods) {
+              merged.classroomMoods = { 'class-3a': 'focused', 'class-3b': 'energetic', 'class-4a': 'creative', 'class-4b': 'inquisitive' };
             }
             if (!merged.studentAwards || !Array.isArray(merged.studentAwards)) {
               merged.studentAwards = [];

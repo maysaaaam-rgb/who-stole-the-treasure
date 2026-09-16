@@ -15,6 +15,8 @@
 
   <!-- School Platform Unified Stylesheet -->
   <link rel="stylesheet" href="css/school-platform.css">
+  <!-- Master Adventure Theme & Ecosystem Stylesheet -->
+  <link rel="stylesheet" href="css/adventure-theme.css">
 
   <!-- Immediate Auth & Lock Check + Mobile/Cross-Device Controller -->
   <script>
@@ -346,14 +348,17 @@
     <div class="header-inner">
       <div class="brand-section">
         <button class="mobile-nav-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle navigation" style="display:none; background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-main); padding:4px 8px; margin-right:8px;">☰</button>
-        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy">
+        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy — Learn • Play • Grow">
           <div class="brand-icon-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
               <path d="M6 12v5c3 3 9 3 12 0v-5"/>
             </svg>
           </div>
-          <span>Adventure Academy</span>
+          <div class="eaa-brand-text" style="display:flex; flex-direction:column;">
+            <span style="font-weight:900; font-size:1.05rem; line-height:1.1;">Adventure Academy</span>
+            <span class="eaa-tagline" style="font-size:0.64rem; font-weight:800; color:#06b6d4; letter-spacing:0.8px;">LEARN • PLAY • GROW</span>
+          </div>
         </div>
 
         <!-- Role Switcher (Teacher · Student · Parent) -->
@@ -368,6 +373,13 @@
             <span>👨‍👩‍👧</span> <span>Parent</span>
           </button>
         </nav>
+      </div>
+
+      <!-- Center Omnisearch -->
+      <div class="eaa-omnisearch-wrap" style="margin: 0 16px;">
+        <span class="eaa-omnisearch-icon">🔍</span>
+        <input type="text" id="global-search-input" class="eaa-omnisearch-input" placeholder="Search students, lessons, resources... (Press /)" oninput="if(window.handleGlobalOmnisearch) window.handleGlobalOmnisearch(this.value)">
+        <span class="eaa-omnisearch-kbd">/</span>
       </div>
 
       <!-- Right Controls -->
@@ -3386,6 +3398,30 @@
       </form>
     </div>
   </div>
+
+  <!-- Mobile Bottom Navigation (Visible only on mobile screens <= 768px) -->
+  <nav class="eaa-mobile-nav" aria-label="Mobile Navigation">
+    <button type="button" class="eaa-mobile-tab-btn is-active" onclick="switchView('dashboard')">
+      <span style="font-size:1.2rem;">📊</span>
+      <span>Home</span>
+    </button>
+    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('library')">
+      <span style="font-size:1.2rem;">🎮</span>
+      <span>Lessons</span>
+    </button>
+    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('gamification')">
+      <span style="font-size:1.2rem;">🏆</span>
+      <span>Quests</span>
+    </button>
+    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('monster')">
+      <span style="font-size:1.2rem;">👾</span>
+      <span>Monsters</span>
+    </button>
+    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('progress')">
+      <span style="font-size:1.2rem;">📈</span>
+      <span>Progress</span>
+    </button>
+  </nav>
 
   <!-- Platform Access Controller is defined in head for instant cross-device execution -->
 </body>
