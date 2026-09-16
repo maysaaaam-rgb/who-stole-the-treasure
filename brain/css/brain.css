@@ -1,0 +1,1396 @@
+/* ==========================================================================
+   🧠 THE DAY YOUR BRAIN QUIT! — Interactive ESL Lesson Stylesheet
+   Grade 4 ESL (A1–A1+, Age 9–10) | Unit 1 p17 RG2 (Reading - Skimming)
+   16:9 Auto-Scaling Shell, Glassmorphism, 3D Animated UI, Smart Board Ready
+   ========================================================================== */
+
+:root {
+  --primary-glow: #06b6d4;
+  --secondary-glow: #8b5cf6;
+  --accent-pink: #ec4899;
+  --accent-gold: #f59e0b;
+  --accent-green: #10b981;
+  --dark-bg: #0b0f19;
+  --panel-bg: rgba(15, 23, 42, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.15);
+  --glass-highlight: rgba(255, 255, 255, 0.1);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-display: 'Comic Neue', 'Nunito', cursive, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #030712;
+  font-family: var(--font-family);
+  color: var(--text-main);
+}
+
+/* ================= 16:9 SHELL & STAGE ================= */
+#brain-screen-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+}
+
+#brain-stage {
+  width: 1200px;
+  height: 675px;
+  min-width: 1200px;
+  min-height: 675px;
+  max-width: 1200px;
+  max-height: 675px;
+  background: #0f172a;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: center center;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ================= PERSISTENT TOP HUD ================= */
+#brain-hud {
+  height: 66px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-bottom: 3px solid rgba(139, 92, 246, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 50;
+  flex-shrink: 0;
+  backdrop-filter: blur(12px);
+}
+
+.hud-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--primary-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+}
+
+.hud-btn:active {
+  transform: translateY(0);
+}
+
+.hud-btn.primary {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  border-color: #67e8f9;
+  color: #fff;
+}
+
+.hud-btn.gold {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: #fde68a;
+  color: #fff;
+}
+
+/* Clue Progress Bar in HUD */
+.hud-clues-tracker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 5px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.clue-badge {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  border: 1px dashed #475569;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clue-badge.unlocked {
+  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  color: #fff;
+  border: 1px solid #a5f3fc;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+  transform: scale(1.05);
+}
+
+.clue-badge.pulse {
+  animation: cluePulse 1.2s infinite;
+}
+
+@keyframes cluePulse {
+  0%, 100% { transform: scale(1.05); box-shadow: 0 0 10px rgba(6, 182, 212, 0.6); }
+  50% { transform: scale(1.15); box-shadow: 0 0 20px rgba(236, 72, 153, 0.8); }
+}
+
+/* XP Stars Pill */
+.xp-pill {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.4) 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 14px;
+  padding: 6px 12px;
+  font-weight: 900;
+  font-size: 15px;
+  color: #fef08a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Teacher Modal Dropdown */
+.teacher-dropdown-wrap {
+  position: relative;
+}
+
+.teacher-panel-modal {
+  display: none;
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 320px;
+  background: #0f172a;
+  border: 2px solid #a855f7;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(168, 85, 247, 0.4);
+  z-index: 100;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.teacher-panel-modal.show {
+  display: block;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-section-tag {
+  font-size: 11px;
+  font-weight: 900;
+  color: #c084fc;
+  letter-spacing: 1px;
+  margin: 10px 0 6px;
+  text-transform: uppercase;
+}
+
+.teacher-panel-modal button {
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.teacher-panel-modal button:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: #a855f7;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+/* ================= MAIN SCENE CONTAINER ================= */
+#scene-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+.scene-pane {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-in-out;
+  background-size: cover;
+  background-position: center;
+}
+
+.scene-pane.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Glass panel component */
+.glass-panel {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================= SCREEN 1: THE MYSTERIOUS MESSAGE ================= */
+.screen1-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: url('../assets/brain_tired_hero.jpg') center/cover no-repeat;
+  padding: 30px 40px;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.screen1-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.85) 60%);
+}
+
+.letter-panel {
+  width: 580px;
+  background: #fffbf0;
+  color: #1e293b;
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 0 8px rgba(245, 158, 11, 0.2);
+  position: relative;
+  z-index: 10;
+  animation: letterFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes letterFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+.letter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px dashed #cbd5e1;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.letter-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+
+.letter-body {
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 18px;
+}
+
+.letter-body p {
+  margin-bottom: 6px;
+}
+
+.letter-sign {
+  font-size: 20px;
+  font-weight: 900;
+  color: #7c3aed;
+  text-align: right;
+  margin-top: 10px;
+}
+
+.screen1-question-box {
+  background: #f1f5f9;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+.screen1-question-box h4 {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.choice-bubble-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-btn {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.choice-btn:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  transform: translateX(4px);
+}
+
+.choice-btn.selected {
+  border-color: #10b981;
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.reaction-banner {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  color: #92400e;
+  font-weight: 800;
+  font-size: 15px;
+  display: none;
+}
+
+.start-mission-btn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  transition: all 0.2s;
+}
+
+.start-mission-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.6);
+}
+
+/* ================= SCREEN 2: BRAIN EMERGENCY MEETING ================= */
+.screen2-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/brain_lab_meeting.jpg') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 36px;
+  position: relative;
+}
+
+.screen2-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.3) 0%, rgba(3, 7, 18, 0.88) 100%);
+}
+
+.screen2-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.screen-header-bar {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.screen-header-bar h2 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+}
+
+.screen-header-bar p {
+  font-size: 18px;
+  color: #93c5fd;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  flex: 1;
+  align-items: center;
+}
+
+.node-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(12px);
+  position: relative;
+  height: 310px;
+}
+
+.node-card:hover {
+  transform: translateY(-8px) scale(1.03);
+}
+
+.node-card.active {
+  border-color: var(--node-color, #06b6d4);
+  box-shadow: 0 0 30px var(--node-color, #06b6d4);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.node-icon-wrap {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  margin-bottom: 12px;
+  border: 2px solid var(--node-color, #06b6d4);
+  box-shadow: 0 0 20px var(--node-color, rgba(6, 182, 212, 0.4));
+}
+
+.node-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.node-headline {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--node-color, #38bdf8);
+  margin-bottom: 10px;
+}
+
+.node-example {
+  font-size: 13px;
+  font-weight: 700;
+  color: #cbd5e1;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-top: auto;
+}
+
+/* ================= SCREEN 3: SKIM LIKE A DETECTIVE ================= */
+.screen3-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 20px;
+  padding: 20px 24px;
+  background: #090d16;
+}
+
+.screen3-left {
+  width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detective-intro-box {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  border-radius: 16px;
+  padding: 12px 16px;
+}
+
+.detective-avatar-mini {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f59e0b;
+  flex-shrink: 0;
+}
+
+.detective-speech {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f1f5f9;
+  line-height: 1.35;
+}
+
+.timer-box {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(185, 28, 28, 0.3) 100%);
+  border: 2px solid #ef4444;
+  border-radius: 16px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timer-digits {
+  font-size: 34px;
+  font-weight: 900;
+  color: #fca5a5;
+  font-family: monospace;
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+}
+
+.timer-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.rules-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 14px 18px;
+  flex: 1;
+}
+
+.rules-card h3 {
+  font-size: 17px;
+  font-weight: 900;
+  color: #f59e0b;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rules-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rules-list li {
+  font-size: 13px;
+  font-weight: 800;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+.rules-list li.highlight-rule {
+  color: #f43f5e;
+  font-weight: 900;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+.screen3-right {
+  flex: 1;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+  background: #000;
+}
+
+.textbook-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Hotspot tags on textbook */
+.hotspot-tag {
+  position: absolute;
+  background: rgba(6, 182, 212, 0.85);
+  color: #fff;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 2px solid #a5f3fc;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
+  cursor: pointer;
+  animation: bounceTag 2s infinite ease-in-out;
+}
+
+@keyframes bounceTag {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.hotspot-tag.title-pos { top: 38px; left: 180px; }
+.hotspot-tag.pic-pos { top: 120px; left: 240px; }
+.hotspot-tag.words-pos { bottom: 80px; right: 80px; }
+
+/* ================= SCREEN 4: THE FOUR DOORS ================= */
+.screen4-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/four_doors_sci_fi.jpg') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 32px;
+  position: relative;
+}
+
+.screen4-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.7);
+}
+
+.screen4-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.doors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  flex: 1;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.door-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  height: 330px;
+  position: relative;
+}
+
+.door-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  border-color: #38bdf8;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+}
+
+.door-letter-badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 2px solid #93c5fd;
+}
+
+.door-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.door-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.35;
+}
+
+.door-card.correct {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.8);
+}
+
+.door-card.wrong {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.25);
+  opacity: 0.6;
+}
+
+/* Metacognition Modal */
+.metacog-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.9);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 30px;
+}
+
+.metacog-modal.show {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+.metacog-card {
+  width: 620px;
+  background: #0f172a;
+  border: 3px solid #06b6d4;
+  border-radius: 20px;
+  padding: 28px 34px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(6, 182, 212, 0.5);
+}
+
+.metacog-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.metacog-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.metacog-btn:hover {
+  background: rgba(6, 182, 212, 0.25);
+  border-color: #06b6d4;
+  transform: scale(1.03);
+}
+
+/* ================= SCREEN 5: FIND THE EVIDENCE ================= */
+.screen5-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/evidence_board_bg.jpg') center/cover no-repeat;
+  display: flex;
+  padding: 24px 34px;
+  gap: 24px;
+  position: relative;
+}
+
+.screen5-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.evidence-slots-column {
+  flex: 1;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+}
+
+.evidence-slot-card {
+  background: rgba(255, 251, 240, 0.92);
+  color: #1e293b;
+  border-radius: 16px;
+  padding: 14px 20px;
+  border: 2px solid #cbd5e1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 100px;
+  transition: all 0.2s;
+}
+
+.evidence-slot-card.filled {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.evidence-slot-label {
+  font-size: 14px;
+  font-weight: 900;
+  color: #dc2626;
+  text-transform: uppercase;
+}
+
+.evidence-dropzone {
+  min-height: 48px;
+  border: 2px dashed #94a3b8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.evidence-cards-column {
+  width: 440px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.evidence-card {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 800;
+  border: 2px solid #3b82f6;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+}
+
+.evidence-card:hover {
+  transform: translateX(-6px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.evidence-card.placed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ================= SCREEN 6: BRAIN JOB APPLICATION ================= */
+.screen6-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/brain_job_application.jpg') center/cover no-repeat;
+  display: flex;
+  padding: 24px 34px;
+  gap: 24px;
+  position: relative;
+}
+
+.screen6-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(3, 7, 18, 0.85) 0%, rgba(3, 7, 18, 0.4) 100%);
+}
+
+.job-app-panel {
+  width: 620px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border-radius: 20px;
+  padding: 24px 28px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.job-skills-pool {
+  flex: 1;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.skill-chip {
+  background: #0f172a;
+  color: #fff;
+  border: 2px solid #38bdf8;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.skill-chip:hover {
+  background: #1e293b;
+  transform: translateX(-4px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+}
+
+.skill-chip.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ================= SCREEN 7: LIFE WITHOUT A BRAIN? ================= */
+.screen7-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/comic_scenarios_grid.jpg') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 30px;
+  position: relative;
+}
+
+.screen7-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.75);
+}
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  flex: 1;
+  position: relative;
+  z-index: 10;
+  margin: 10px 0;
+}
+
+.scenario-card {
+  background: rgba(15, 23, 42, 0.88);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
+
+.scenario-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scenario-emoji {
+  font-size: 38px;
+}
+
+.scenario-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.scenario-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.yes-no-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.yes-no-btn.yes { background: #10b981; color: #fff; }
+.yes-no-btn.no { background: #ef4444; color: #fff; }
+
+.yes-no-btn:hover {
+  transform: scale(1.05);
+}
+
+.scenario-reaction-bubble {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(6, 182, 212, 0.2);
+  border: 1px solid #06b6d4;
+  color: #67e8f9;
+  font-size: 13px;
+  font-weight: 800;
+  display: none;
+}
+
+/* ================= SCREEN 8: CONVINCE YOUR BRAIN ================= */
+.screen8-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/brain_listening_happy.jpg') center/cover no-repeat;
+  display: flex;
+  padding: 24px 34px;
+  gap: 24px;
+  position: relative;
+}
+
+.screen8-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(3, 7, 18, 0.88) 0%, rgba(3, 7, 18, 0.3) 100%);
+}
+
+.convince-panel {
+  width: 640px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sentence-builder-card {
+  background: rgba(15, 23, 42, 0.88);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 12px 18px;
+}
+
+.sentence-prefix {
+  font-size: 15px;
+  font-weight: 900;
+  color: #38bdf8;
+  margin-bottom: 6px;
+}
+
+.word-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.word-option-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.word-option-chip.active {
+  background: #ec4899;
+  border-color: #f472b6;
+}
+
+.mic-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mic-btn {
+  background: #ec4899;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.mic-btn.recording {
+  animation: pulseMic 1s infinite;
+  background: #ef4444;
+}
+
+@keyframes pulseMic {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 10px #ef4444; }
+  50% { transform: scale(1.15); box-shadow: 0 0 25px #ef4444; }
+}
+
+#waveCanvas {
+  flex: 1;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ================= SCREEN 9: MISSION COMPLETE! ================= */
+.screen9-wrap {
+  width: 100%;
+  height: 100%;
+  background: url('../assets/brain_celebration_crown.jpg') center/cover no-repeat;
+  display: flex;
+  padding: 24px 34px;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.screen9-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(3, 7, 18, 0.2) 0%, rgba(3, 7, 18, 0.88) 55%);
+}
+
+.victory-panel {
+  width: 560px;
+  position: relative;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.92);
+  border: 3px solid #f59e0b;
+  border-radius: 24px;
+  padding: 28px 34px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.victory-panel h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #f59e0b;
+  text-align: center;
+}
+
+.checklist-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checklist-item {
+  font-size: 15px;
+  font-weight: 800;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ================= SCREEN 10: EXIT TICKET ================= */
+.screen10-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
+  padding: 24px;
+}
+
+.exit-notebook {
+  width: 700px;
+  background: #fffdf5;
+  color: #1e293b;
+  border-radius: 20px;
+  padding: 30px 40px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+  border-left: 18px solid #b45309;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exit-notebook h2 {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1e293b;
+  border-bottom: 2px dashed #cbd5e1;
+  padding-bottom: 10px;
+}
+
+.exit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exit-field label {
+  font-size: 16px;
+  font-weight: 900;
+  color: #334155;
+}
+
+.exit-select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 2px solid #cbd5e1;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Modal Certificate */
+.cert-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.cert-modal.show {
+  display: flex;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.cert-frame {
+  width: 780px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 10px double #d97706;
+  border-radius: 20px;
+  padding: 36px 48px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+}
+
+.cert-frame h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #b45309;
+  letter-spacing: 1px;
+}
+
+/* Animations & Confetti */
+#confettiCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 80;
+}

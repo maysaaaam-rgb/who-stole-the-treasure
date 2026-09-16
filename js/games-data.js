@@ -6,6 +6,92 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "brain-quit",
+    "title": "🧠 The Day Your Brain Quit! — Can You Save Your Brain?",
+    "description": "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students receive an urgent letter from their tired brain, race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, test life without a brain, and record their speech to save their brain!",
+    "type": "reading",
+    "category": "Reading & Stories",
+    "categoryLabel": "📖 Reading & Stories",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 100,
+    "skills": [
+      "Reading",
+      "Speaking",
+      "Vocabulary",
+      "Critical Thinking"
+    ],
+    "topic": "Reading – Skimming & The Human Brain",
+    "topics": [
+      "Skimming Strategies",
+      "Main Idea",
+      "How Your Brain Learns",
+      "Parts of the Brain",
+      "Think, Learn, Remember, Imagine",
+      "Unit 1 Page 17 (RG2)"
+    ],
+    "languageFocus": "Skimming rules (title, pictures, important words), Can / Can't, Function verbs (think, learn, remember, imagine), Body & mind vocabulary",
+    "activityMode": "Whole Class Smart Board Interactive / Team Detective Challenge",
+    "interactionType": "30-Second Timed Skimming Challenge, 4 Sci-Fi Doors, Interactive Evidence Board, Brain Job Application Form, Humorous Reaction Comics, Microphone Voice Recorder",
+    "difficulty": "Grade 4 A1–A1+",
+    "tags": [
+      "brain",
+      "brain-quit",
+      "skimming",
+      "reading",
+      "grade-4",
+      "unit-1",
+      "rg2",
+      "detective",
+      "memory",
+      "learning"
+    ],
+    "learningObjectives": [
+      "Skim an informational text in 30 seconds without reading every word",
+      "Use titles, diagrams, and bold keywords to identify the main idea",
+      "Categorize the four core brain powers: Think, Learn, Remember, and Imagine",
+      "Construct spoken and written sentences describing the brain's abilities",
+      "Complete the 5-clue mission to earn the Brain Defender Gold Badge"
+    ],
+    "teacherInstructions": "Project on Smart Board. Guide student detectives through the 10-screen mission: urgent letter, 30s skimming countdown, four doors check, evidence board, job application, humorous comic test, and voice speech recording.",
+    "studentInstructions": "Your brain is tired and wants to quit! Use your detective eyes to skim the textbook page in 30 seconds, collect 5 evidence clues, and convince your brain to stay!",
+    "route": "brain/index.html",
+    "worksheet": "brain/worksheets.html",
+    "worksheetRoute": "brain/worksheets.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bqGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1e1b4b"/>
+          <stop offset="50%" stop-color="#312e81"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#bqGrad)"/>
+      <circle cx="100" cy="55" r="32" fill="#ec4899" opacity="0.25"/>
+      <circle cx="100" cy="55" r="24" fill="#f472b6"/>
+      <path d="M 88 50 Q 100 42 112 50 Q 100 62 88 50" fill="none" stroke="#be185d" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="94" cy="53" r="3" fill="#0f172a"/>
+      <circle cx="106" cy="53" r="3" fill="#0f172a"/>
+      <circle cx="130" cy="40" r="14" fill="none" stroke="#f59e0b" stroke-width="3"/>
+      <line x1="140" y1="50" x2="152" y2="62" stroke="#d97706" stroke-width="4" stroke-linecap="round"/>
+      <rect x="14" y="94" width="172" height="26" rx="13" fill="#ec4899"/>
+      <text x="100" y="111" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">THE DAY YOUR BRAIN QUIT! 🧠</text>
+    </svg>`
+  },
+  {
   "id": "young-inventor",
   "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
   "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",

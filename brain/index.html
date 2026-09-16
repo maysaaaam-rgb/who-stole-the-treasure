@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🧠 The Day Your Brain Quit! | Grade 4 ESL Interactive Reading Lesson</title>
+  <link rel="stylesheet" href="css/brain.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="brain-screen-wrapper">
+    <div id="brain-stage">
+
+      <!-- Persistent Top HUD -->
+      <header id="brain-hud">
+        <div class="hud-group">
+          <a href="../index.html" class="hud-btn" title="Back to All Lessons" style="text-decoration:none;">
+            🏠 <span>Hub</span>
+          </a>
+
+          <button class="hud-btn" id="hud-prev-btn" title="Previous Screen">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" id="hud-next-btn" title="Next Screen">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Current Stage Pill -->
+          <div class="hud-btn primary" id="hud-stage-name" style="cursor: default;">
+            🧠 1. The Mysterious Message (0–3 min)
+          </div>
+        </div>
+
+        <!-- 5 Clues Progress Bar -->
+        <div class="hud-clues-tracker" title="Clues Collected">
+          <span style="font-size:12px; font-weight:900; color:#38bdf8; margin-right:4px;">MISSION:</span>
+          <div class="clue-badge" id="clue-badge-1">🔒 Clue 1</div>
+          <div class="clue-badge" id="clue-badge-2">🔒 Clue 2</div>
+          <div class="clue-badge" id="clue-badge-3">🔒 Clue 3</div>
+          <div class="clue-badge" id="clue-badge-4">🔒 Clue 4</div>
+          <div class="clue-badge" id="clue-badge-5">🔒 Clue 5</div>
+        </div>
+
+        <div class="hud-group">
+          <!-- XP Counter -->
+          <div class="xp-pill" title="Detective XP">
+            <span>⭐</span>
+            <span id="hud-xp-count">0 XP</span>
+          </div>
+
+          <!-- Printable Worksheets -->
+          <a href="worksheets.html" target="_blank" class="hud-btn" title="Open 5 Printable Student Worksheets" style="text-decoration:none; background:#ecfdf5; border-color:#6ee7b7; color:#065f46;">
+            🖨️ <span>Worksheets</span>
+          </a>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="hud-voice-btn" title="Toggle Voice Narration">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="hud-sfx-btn" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+          <button class="hud-btn" id="hud-music-btn" title="Toggle Ambient Synth Music">
+            🎶 <span>Music</span>
+          </button>
+
+          <!-- Teacher Control Menu -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn gold" id="hud-teacher-btn" title="Teacher Control Panel">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="teacher-menu-modal">
+              <div class="menu-section-tag">--- SCAFFOLDING / LEVEL ---</div>
+              <button onclick="window.brainApp.setDifficulty('a1'); window.brainApp.toggleTeacherMenu();">🟢 A1 Mode (Clickable Word Banks & Clues)</button>
+              <button onclick="window.brainApp.setDifficulty('a1_plus'); window.brainApp.toggleTeacherMenu();">🟡 A1+ Mode (Independent Challenge)</button>
+
+              <div class="menu-section-tag">--- QUICK CONTROLS ---</div>
+              <button onclick="window.brainApp.unlockClue(1); window.brainApp.unlockClue(2); window.brainApp.unlockClue(3); window.brainApp.unlockClue(4); window.brainApp.unlockClue(5); window.brainApp.toggleTeacherMenu();">💡 Unlock All 5 Clues</button>
+              <button onclick="window.brainApp.resetProgress(); window.brainApp.toggleTeacherMenu();">🔄 Reset Mission Progress</button>
+
+              <div class="menu-section-tag">--- 10-SCREEN DIRECT JUMP (35 MIN) ---</div>
+              <button onclick="window.brainApp.goToStage(1); window.brainApp.toggleTeacherMenu();">1. 🚨 The Mysterious Message (3m)</button>
+              <button onclick="window.brainApp.goToStage(2); window.brainApp.toggleTeacherMenu();">2. 🧬 Brain Emergency Meeting (3m)</button>
+              <button onclick="window.brainApp.goToStage(3); window.brainApp.toggleTeacherMenu();">3. ⏱️ Skim Like a Detective (4m)</button>
+              <button onclick="window.brainApp.goToStage(4); window.brainApp.toggleTeacherMenu();">4. 🚪 The Four Doors - Main Idea (4m)</button>
+              <button onclick="window.brainApp.goToStage(5); window.brainApp.toggleTeacherMenu();">5. 🔎 Find the Evidence Board (4m)</button>
+              <button onclick="window.brainApp.goToStage(6); window.brainApp.toggleTeacherMenu();">6. 📄 Brain's Job Application (5m)</button>
+              <button onclick="window.brainApp.goToStage(7); window.brainApp.toggleTeacherMenu();">7. 🍕 Life Without a Brain? (4m)</button>
+              <button onclick="window.brainApp.goToStage(8); window.brainApp.toggleTeacherMenu();">8. 💬 Convince Your Brain (4m)</button>
+              <button onclick="window.brainApp.goToStage(9); window.brainApp.toggleTeacherMenu();">9. 🎉 Mission Complete! (3m)</button>
+              <button onclick="window.brainApp.goToStage(10); window.brainApp.toggleTeacherMenu();">10. 📓 Exit Ticket & Certificate (1m)</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Interactive Viewport -->
+      <main id="scene-viewport"></main>
+
+    </div>
+  </div>
+
+  <!-- Lesson Scripts -->
+  <script src="js/brain-data.js"></script>
+  <script src="js/brain-audio.js"></script>
+  <script src="js/brain-scenes.js"></script>
+  <script src="js/brain-app.js"></script>
+</body>
+</html>

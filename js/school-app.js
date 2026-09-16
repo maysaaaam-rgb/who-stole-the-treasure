@@ -860,7 +860,10 @@
       'young-inventor-academy': 'young-inventor/index.html',
       'inventor-lab': 'inventor-lab/index.html',
       'clara-inventor': 'clara-inventor/index.html',
-      'alice-quest': 'alice-quest/index.html'
+      'alice-quest': 'alice-quest/index.html',
+      'brain-quit': 'brain/index.html',
+      'the-day-your-brain-quit': 'brain/index.html',
+      'brain': 'brain/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];
@@ -4004,6 +4007,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
         return id.includes('alice') || id.includes('wonderland') || title.includes('alice') || title.includes('wonderland') || desc.includes('wonderland') || topics.includes('wonderland');
       });
+    } else if (libActiveTab === 'brain') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        const tags = Array.isArray(r.tags) ? r.tags.join(' ').toLowerCase() : '';
+        return id.includes('brain') || title.includes('brain') || desc.includes('brain') || topics.includes('brain') || tags.includes('brain') || id.includes('skimming') || title.includes('skimming');
+      });
     } else if (libActiveTab === 'favorites' || libActiveTab === 'featured') {
       all = all.filter(r => Boolean(r.featured));
     }
@@ -4480,6 +4492,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabHeading = 'All Resources';
     if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
     else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
+    else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
     else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
     else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
     else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
@@ -4615,6 +4628,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📄 Worksheets</span>' +
             '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
           '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
             '<span>📚 Stories</span>' +
@@ -4655,6 +4669,77 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>' +
 
             
+      // The Day Your Brain Quit! Series Showcase Shelf
+      ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
+                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 (CEFR A1/A1+) · 35 min</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🧠 Interactive 10-Screen Story Adventure</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(236,72,153,0.2); color:#fbcfe8; border:1px solid rgba(236,72,153,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Skimming</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think · Learn · Remember · Imagine</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Voice Recorder</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">▶ Play Brain Adventure</a>' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📄 5-Part Detective Workbook</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Brain Defender Gold Certificate.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Print Ready</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Smart Board Compatible</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 Global Readings 3</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules (headings, pictures, first sentences) &amp; Learning and Your Brain neuroscience text.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan RG3</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Unit 1 p.17</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+
       // The Small Inventor Series Showcase Shelf
       ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
         '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +

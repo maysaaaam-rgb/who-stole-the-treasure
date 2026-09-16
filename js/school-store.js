@@ -20,6 +20,63 @@
   // Canonical list of audited games
   const RAW_CANONICAL_GAMES = [
     {
+      id: "brain-quit",
+      title: "🧠 The Day Your Brain Quit! — Can You Save Your Brain?",
+      category: "Reading & Stories",
+      level: "A1",
+      cefrLevel: "A1",
+      age: "9–10",
+      ages: "9–10",
+      grade: "Grade 4",
+      grades: ["Grade 4"],
+      duration: 35,
+      estimatedMinutes: 35,
+      xp: 100,
+      skills: ["Reading", "Speaking", "Vocabulary", "Critical Thinking"],
+      topic: "Reading – Skimming & The Human Brain",
+      topics: ["Skimming Strategies", "Main Idea", "How Your Brain Learns", "Parts of the Brain", "Think, Learn, Remember, Imagine", "Unit 1 Page 17 (RG2)"],
+      objectives: [
+        "Skim an informational text in 30 seconds without reading every word",
+        "Use titles, diagrams, and bold keywords to identify the main idea",
+        "Categorize the four core brain powers: Think, Learn, Remember, and Imagine",
+        "Construct spoken and written sentences describing the brain's abilities",
+        "Complete the 5-clue mission to earn the Brain Defender Gold Badge"
+      ],
+      learningObjectives: [
+        "Skim an informational text in 30 seconds without reading every word",
+        "Use titles, diagrams, and bold keywords to identify the main idea",
+        "Categorize the four core brain powers: Think, Learn, Remember, and Imagine",
+        "Construct spoken and written sentences describing the brain's abilities",
+        "Complete the 5-clue mission to earn the Brain Defender Gold Badge"
+      ],
+      route: "brain/index.html",
+      worksheet: "brain/worksheets.html",
+      worksheetRoute: "brain/worksheets.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      thumbnailSvg: `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bqGradStore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1e1b4b"/>
+            <stop offset="50%" stop-color="#312e81"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#bqGradStore)"/>
+        <circle cx="100" cy="55" r="32" fill="#ec4899" opacity="0.25"/>
+        <circle cx="100" cy="55" r="24" fill="#f472b6"/>
+        <path d="M 88 50 Q 100 42 112 50 Q 100 62 88 50" fill="none" stroke="#be185d" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="94" cy="53" r="3" fill="#0f172a"/>
+        <circle cx="106" cy="53" r="3" fill="#0f172a"/>
+        <circle cx="130" cy="40" r="14" fill="none" stroke="#f59e0b" stroke-width="3"/>
+        <line x1="140" y1="50" x2="152" y2="62" stroke="#d97706" stroke-width="4" stroke-linecap="round"/>
+        <rect x="14" y="94" width="172" height="26" rx="13" fill="#ec4899"/>
+        <text x="100" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">🧠 SAVE YOUR BRAIN</text>
+      </svg>`,
+      description: "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, and record their speech to save their brain!"
+    },
+    {
       id: "young-inventor",
       title: "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
       category: "CLIL & STEM Games",
@@ -1598,8 +1655,10 @@
         sourcePages: '17',
         sourceBook: 'Global Readings 3',
         objective: 'Apply the reading skill of skimming: read headings, first sentences, and examine diagrams quickly before in-depth reading.',
-        duration: 25,
-        gameRoute: 'predictions/index.html',
+        duration: 35,
+        gameRoute: 'brain/index.html',
+        worksheetRoute: 'brain/worksheets.html',
+        gameId: 'brain-quit',
         activities: [
           { type: 'skimming_guide', steps: ['1. Read the title and large headings', '2. Look at the illustrations and diagrams', '3. Read the first sentence of each paragraph', '4. Ask: What will this text teach me?'] },
           { type: 'reflection', prompt: 'Why is skimming useful when researching in school?' }
@@ -7791,6 +7850,35 @@
           archived: false
         },
         {
+          id: 'ws-brain-quit',
+          title: 'The Day Your Brain Quit: 5-Part Detective Skimming Workbook',
+          level: 'A1',
+          cefrLevel: 'A1',
+          grade: 'Grade 4',
+          grades: ['Grade 4'],
+          skill: 'Reading & Critical Thinking',
+          skills: ['Reading', 'Skimming', 'Speaking', 'Critical Thinking'],
+          topic: 'How Your Brain Learns & Skimming (Unit 1 p17)',
+          topics: ['Skimming Strategies', 'Main Idea', 'Brain Parts', 'Think, Learn, Remember, Imagine'],
+          duration: '35 min',
+          estimatedMinutes: 35,
+          xp: 100,
+          status: 'Ready to Print',
+          createdDate: '2026-09-16',
+          instructions: 'Skim the text in 30 seconds. Look at the title, pictures, and keywords. Fill in the detective log and brain job application.',
+          questions: [
+            { id: 'q-1', text: 'What is the title of the textbook reading?', type: 'multiple_choice', options: ['How Your Brain Learns', 'The Size of the Brain', 'Making Pizza', 'Flying Elephants'], answer: 'How Your Brain Learns', points: 1 },
+            { id: 'q-2', text: 'What are the four key jobs of the brain?', type: 'multiple_choice', options: ['Think, Learn, Remember, Imagine', 'Run, Jump, Sleep, Eat', 'Cook, Bake, Fry, Boil', 'Sing, Dance, Draw, Color'], answer: 'Think, Learn, Remember, Imagine', points: 1 }
+          ],
+          category: 'Reading Explorers',
+          gameId: 'brain-quit',
+          pdfUrl: 'brain/worksheets.html',
+          worksheetRoute: 'brain/worksheets.html',
+          answerKey: '1. How Your Brain Learns; 2. Think, Learn, Remember, Imagine',
+          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (RG2).',
+          archived: false
+        },
+        {
           id: 'ws-city-mouse',
           title: 'The City Mouse & Country Mouse: Fable & Comparatives',
           level: 'A1',
@@ -8063,6 +8151,7 @@
     constructor() {
       this.state = this.loadState();
       this.listeners = [];
+      try { this.saveState(); } catch (e) {}
     }
 
     loadState() {
@@ -8345,8 +8434,12 @@
                   merged.curriculum.lessons.push(l);
                 } else {
                   Object.assign(existingL, {
+                    weekNumber: l.weekNumber || existingL.weekNumber,
                     sourcePages: l.sourcePages,
                     sourceBook: l.sourceBook,
+                    gameRoute: l.gameRoute || existingL.gameRoute,
+                    worksheetRoute: l.worksheetRoute || existingL.worksheetRoute,
+                    gameId: l.gameId || existingL.gameId,
                     tasks: l.tasks || existingL.tasks,
                     activities: l.activities || existingL.activities
                   });
@@ -8361,6 +8454,21 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const brainRes = CANONICAL_GAMES.find(g => g.id === 'brain-quit');
+              if (brainRes) {
+                const bIdx = merged.resources.findIndex(r => r.id === 'brain-quit');
+                if (bIdx === -1) {
+                  merged.resources.unshift(brainRes);
+                } else {
+                  merged.resources[bIdx] = Object.assign({}, brainRes, merged.resources[bIdx], {
+                    route: 'brain/index.html',
+                    worksheet: 'brain/worksheets.html',
+                    worksheetRoute: 'brain/worksheets.html',
+                    archived: false,
+                    featured: true
+                  });
+                }
+              }
               const robotsRes = CANONICAL_GAMES.find(g => g.id === 'robots');
               if (robotsRes && !merged.resources.some(r => r.id === 'robots')) {
                 merged.resources.unshift(robotsRes);
@@ -8477,6 +8585,9 @@
                     weekNumber: l.weekNumber || existingL.weekNumber,
                     sourcePages: l.sourcePages,
                     sourceBook: l.sourceBook,
+                    gameRoute: l.gameRoute || existingL.gameRoute,
+                    worksheetRoute: l.worksheetRoute || existingL.worksheetRoute,
+                    gameId: l.gameId || existingL.gameId,
                     tasks: l.tasks || existingL.tasks,
                     activities: l.activities || existingL.activities
                   });
