@@ -2192,3 +2192,1069 @@ body.classroom-mode-active .eaa-student-name {
   font-size: 26px;
   filter: drop-shadow(0 2px 8px rgba(250, 204, 21, 0.4));
 }
+
+/* ==========================================================================
+   RADICAL UX/UI REDESIGN: ENGLISH LEARNING ADVENTURE WORLD
+   ========================================================================== */
+
+/* 1. Full-Width Adventure World Layout (Zero Tall Left Sidebar) */
+.app-layout.eaa-world-layout {
+  display: block !important;
+  width: 100% !important;
+  max-width: 1540px !important;
+  margin: 0 auto !important;
+  padding: 18px 24px 70px !important;
+  box-sizing: border-box !important;
+  grid-template-columns: 1fr !important;
+}
+
+.app-main.eaa-world-main {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 2. Top Command & Navigation Bar */
+.app-header.eaa-command-bar {
+  background: rgba(11, 15, 25, 0.94) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  padding: 10px 20px !important;
+  height: auto !important;
+}
+
+.eaa-brand-title {
+  background: linear-gradient(135deg, #ffffff 0%, #38bdf8 60%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+}
+
+.eaa-top-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 4px;
+}
+.eaa-top-nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.eaa-nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.eaa-nav-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.3);
+  transform: translateY(-1px);
+}
+
+.eaa-nav-pill.is-active {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+}
+
+.nav-pill-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.eaa-smartboard-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+  transition: all 0.2s ease;
+}
+.eaa-smartboard-quick-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+/* 3. Contextual Action Drawer */
+.eaa-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+}
+.eaa-drawer-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.eaa-action-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 90vw;
+  background: linear-gradient(180deg, #0f172a 0%, #0b0f19 100%);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.65);
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 28px 24px;
+  color: #f8fafc;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.eaa-action-drawer.is-open {
+  transform: translateX(0);
+}
+
+.eaa-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+.eaa-drawer-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eaa-drawer-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.eaa-drawer-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.eaa-drawer-hero-stage {
+  text-align: center;
+  background: radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px 16px;
+  position: relative;
+}
+.eaa-drawer-monster-avatar {
+  margin: 0 auto 12px;
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 10px 20px rgba(56, 189, 248, 0.35));
+}
+.eaa-drawer-student-name {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+.eaa-drawer-student-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.eaa-drawer-energy-bar-wrap {
+  margin-top: 14px;
+}
+.eaa-drawer-energy-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+.eaa-drawer-energy-track {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.eaa-drawer-energy-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8 0%, #3b82f6 50%, #a855f7 100%);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+.eaa-drawer-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.eaa-drawer-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.eaa-drawer-btn-energy {
+  background: linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+.eaa-drawer-btn-energy:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+}
+.eaa-drawer-btn-badge {
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: #ffffff;
+  border-color: rgba(168, 85, 247, 0.4);
+}
+.eaa-drawer-btn-mission {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  border-color: rgba(52, 211, 153, 0.4);
+}
+.eaa-drawer-btn-speaking {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  color: #ffffff;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+.eaa-drawer-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+}
+.eaa-drawer-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* 4. Command Center Home Experience */
+.eaa-command-center {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.eaa-command-hero {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: radial-gradient(circle at 70% 30%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  padding: 36px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.eaa-hero-bg-accent {
+  position: absolute;
+  right: -50px;
+  top: -50px;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+}
+.eaa-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+.eaa-hero-world-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.eaa-hero-world-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.eaa-hero-mission-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  margin: 0 0 14px 0;
+}
+.eaa-hero-mission-title strong {
+  color: #fbbf24;
+}
+.eaa-hero-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.eaa-hero-stats-row span strong {
+  color: #ffffff;
+}
+.eaa-hero-enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.eaa-hero-enter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.55);
+}
+.eaa-hero-artwork-box {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.eaa-hero-mascot-img {
+  max-width: 240px;
+  height: auto;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+  animation: monsterFloat 4s ease-in-out infinite;
+}
+
+/* Teach Now Quick Launcher */
+.eaa-teach-now-section {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+.eaa-section-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.eaa-section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eaa-teach-now-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+.eaa-teach-pill-btn {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+.eaa-teach-pill-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(56, 189, 248, 0.2);
+}
+.eaa-teach-pill-btn span:first-child {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+/* Class Quest Banner */
+.eaa-class-quest-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.eaa-quest-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.eaa-quest-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+.eaa-quest-criteria-row {
+  display: flex;
+  gap: 16px;
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.eaa-quest-progress-track {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.eaa-quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
+  border-radius: 12px;
+}
+.eaa-quest-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+/* Who Needs a Boost? (Actionable Interventions) */
+.eaa-boost-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.eaa-boost-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+.eaa-boost-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  transform: translateY(-2px);
+}
+.eaa-boost-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.eaa-boost-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.eaa-boost-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+.eaa-boost-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 3px 0 0 0;
+}
+.eaa-boost-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+.eaa-boost-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+/* 5. Classroom World Map Canvas */
+.eaa-classroom-world-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.eaa-world-view-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  border-radius: 14px;
+  width: fit-content;
+}
+.eaa-view-switch-btn {
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.eaa-view-switch-btn.is-active {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+.eaa-world-map-canvas {
+  position: relative;
+  min-height: 580px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 35%, #1e293b 0%, #0f172a 65%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+/* Map Landmarks */
+.eaa-map-landmark {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.eaa-landmark-icon {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5));
+}
+.eaa-landmark-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(15, 23, 42, 0.75);
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+/* Explorer Pin */
+.eaa-explorer-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+}
+.eaa-explorer-pin:hover {
+  transform: translate(-50%, -60%) scale(1.12);
+  z-index: 25;
+}
+.eaa-explorer-avatar-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(15, 23, 42, 0.9) 80%);
+  border: 2px solid #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.35);
+  animation: monsterFloat 3.5s ease-in-out infinite;
+}
+.eaa-explorer-name-pill {
+  margin-top: 6px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.eaa-explorer-level-tag {
+  color: #fbbf24;
+  margin-left: 3px;
+}
+
+/* 6. Explorer Directory (Compact Hybrid Tiles) */
+.eaa-explorer-directory-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.eaa-directory-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 12px 18px;
+  flex-wrap: wrap;
+}
+.eaa-filter-input {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-size: 0.84rem;
+  outline: none;
+  font-family: inherit;
+}
+.eaa-filter-select {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 0.84rem;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.eaa-explorer-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+.eaa-explorer-tile {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+.eaa-explorer-tile:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3);
+}
+.eaa-tile-avatar-box {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+}
+.eaa-tile-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+.eaa-tile-badges-row {
+  display: flex;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.eaa-tile-level-pill {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.eaa-tile-cefr-pill {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.eaa-tile-skills-row {
+  display: flex;
+  gap: 8px;
+  font-size: 0.74rem;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* 7. English Challenge Board */
+.eaa-challenges-board {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.eaa-challenge-categories-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.eaa-challenge-cat-btn {
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.eaa-challenge-cat-btn.is-active {
+  background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.eaa-missions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.eaa-mission-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  transition: all 0.22s ease;
+}
+.eaa-mission-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.eaa-mission-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.eaa-mission-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 6px 0 4px 0;
+}
+.eaa-mission-desc {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin: 0;
+}
+.eaa-mission-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+.eaa-mission-xp-tag {
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 0.92rem;
+}
+.eaa-mission-start-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.eaa-mission-start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+}
+
+/* 8. English Achievement Wall */
+.eaa-achievement-wall-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.eaa-relics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.eaa-relic-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.22s ease;
+}
+.eaa-relic-card:hover {
+  border-color: rgba(250, 204, 21, 0.4);
+  transform: translateY(-2px);
+}
+.eaa-relic-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.2) 0%, rgba(30, 41, 59, 0.9) 70%);
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+.eaa-relic-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+.eaa-relic-criteria {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+.eaa-relic-action-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  color: #facc15;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s ease;
+}
+.eaa-relic-action-btn:hover {
+  background: #eab308;
+  color: #713f12;
+}
+
+/* 9. Adventure Library Portals */
+.eaa-library-portals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+.eaa-portal-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  padding: 26px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 180px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.eaa-portal-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+.eaa-portal-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+.eaa-portal-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 8px 0 4px 0;
+}
+.eaa-portal-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* 10. 3-Stage Cinematic Evolution Journey */
+.eaa-evolution-journey-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.eaa-evolution-journey-stage {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr 1fr;
+  gap: 24px;
+  align-items: center;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 70%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65);
+}
+.eaa-evolution-pillar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+.eaa-evolution-pillar.is-current {
+  background: rgba(30, 41, 59, 0.6);
+  border: 2px solid #38bdf8;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.25);
+}
+.eaa-evolution-silhouette-box {
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: brightness(0) invert(1) opacity(0.25) drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
+}
+.eaa-evolve-btn {
+  padding: 12px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+  transition: all 0.2s ease;
+}
+.eaa-evolve-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
+}
+
+@media (max-width: 900px) {
+  .eaa-evolution-journey-stage {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -14125,6 +14125,7 @@
   // Export singleton instance
   const schoolStore = new MasterSchoolStore();
   schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
+  schoolStore.addStudentXP = function(id, amt, reason = 'Learning Energy') { return this.awardXP(id, amt, reason, 'Mr. Maysam'); };
   schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
   schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
   schoolStore.archiveGame = schoolStore.archiveResource.bind(schoolStore);

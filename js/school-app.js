@@ -2710,197 +2710,83 @@
   };
 
 
-  function renderStudentsView(container) {
-    const allStudents = store.getStudents();
-    const classes = store.getClasses();
+    function renderStudentsView(container) {
+    const allStudents = store.getStudents() || [];
+    const classes = store.getClasses() || [];
 
-    // Filter by class
     let filtered = allStudents.filter(s => {
       if (studentsFilterClass !== 'all' && s.classId !== studentsFilterClass) return false;
       return true;
     });
 
-    // Filter by search query
     if (studentsSearchQuery && studentsSearchQuery.trim()) {
       const q = studentsSearchQuery.toLowerCase().trim();
       filtered = filtered.filter(s => 
         (s.firstName && s.firstName.toLowerCase().includes(q)) ||
-        (s.lastName && s.lastName.toLowerCase().includes(q)) ||
-        (s.studentIdNumber && s.studentIdNumber.toLowerCase().includes(q))
+        (s.lastName && s.lastName.toLowerCase().includes(q))
       );
     }
 
-    // Filter by Evolution Stage
-    if (studentsFilterStage !== 'all') {
-      filtered = filtered.filter(s => {
-        const mState = store.calculateMonsterState(s.id);
-        return mState.stageKey === studentsFilterStage;
-      });
-    }
-
-    // Filter by Progression Status
-    if (studentsFilterProgression === 'near_evolution') {
-      filtered = filtered.filter(s => {
-        const mState = store.calculateMonsterState(s.id);
-        return mState.progressPct >= 75 && mState.currentLevel < 7;
-      });
-    } else if (studentsFilterProgression === 'streak') {
-      filtered = filtered.filter(s => (s.streakDays || 0) >= 3);
-    } else if (studentsFilterProgression === 'achievements') {
-      filtered = filtered.filter(s => {
-        const achs = store.getStudentAchievements ? store.getStudentAchievements(s.id) : [];
-        return achs.length > 0;
-      });
-    }
-
-    // Sorting
-    filtered.sort((a, b) => {
-      const xpA = store.getStudentTotalXP(a.id);
-      const xpB = store.getStudentTotalXP(b.id);
-      const lvlA = store.calculateMonsterState(a.id).currentLevel;
-      const lvlB = store.calculateMonsterState(b.id).currentLevel;
-
-      if (studentsSortBy === 'xp_desc') return xpB - xpA;
-      if (studentsSortBy === 'xp_asc') return xpA - xpB;
-      if (studentsSortBy === 'level_desc') return lvlB - lvlA || xpB - xpA;
-      if (studentsSortBy === 'name_asc') return (a.firstName || '').localeCompare(b.firstName || '');
-      if (studentsSortBy === 'streak_desc') return (b.streakDays || 0) - (a.streakDays || 0);
-      return 0;
-    });
-
     container.innerHTML = 
-      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+      '<div class="eaa-explorer-directory-container">' +
         // Header
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👧 Students Directory &amp; Monster Companions</h1>' +
-            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Real-time overview of all learners, their living evolving monsters, XP progress, and streaks.</p>' +
+            '<h1 style="font-size:1.8rem; font-weight:900; color:#ffffff; margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">' +
+              '<span>🧒</span> <span>Explorer Directory</span>' +
+            '</h1>' +
+            '<p style="font-size:0.86rem; color:#94a3b8; margin:0;">Active English explorers, companion monsters, and real-time learning energy.</p>' +
           '</div>' +
-          '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' + (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') + '</button>' +
-            (isMultiSelectMode ? '<button type="button" class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All</button>' : '') +
-            '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give feedback to learners">⭐ Give Feedback</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">📥 Export CSV</button>' +
-            '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
+          '<div style="display:flex; gap:10px;">' +
+            '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Explorer</button>' +
           '</div>' +
         '</div>' +
 
-        // Search & Filter Toolbar
-        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
-          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
-            '<div style="flex:1; min-width:220px; position:relative;">' +
-              '<input type="text" class="search-input" placeholder="🔍 Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
-            '</div>' +
-
-            '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="min-width:140px;">' +
-              '<option value="all" ' + (studentsFilterClass === 'all' ? 'selected' : '') + '>All Classes (' + allStudents.length + ')</option>' +
-              classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
-            '</select>' +
-
-            '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="min-width:160px;">' +
-              '<option value="all" ' + (studentsFilterStage === 'all' ? 'selected' : '') + '>All Evolution Stages</option>' +
-              '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>🥚 Level 1: Mystery Egg</option>' +
-              '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>🥚✨ Level 2: Cracking Egg</option>' +
-              '<option value="baby" ' + (studentsFilterStage === 'baby' ? 'selected' : '') + '>🐣 Level 3: Baby Monster</option>' +
-              '<option value="growing" ' + (studentsFilterStage === 'growing' ? 'selected' : '') + '>👾 Level 4: Growing Monster</option>' +
-              '<option value="adventurer" ' + (studentsFilterStage === 'adventurer' ? 'selected' : '') + '>🧭 Level 5: Adventurer Monster</option>' +
-              '<option value="advanced" ' + (studentsFilterStage === 'advanced' ? 'selected' : '') + '>🐲 Level 6: Advanced Monster</option>' +
-              '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
-            '</select>' +
-
-            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:150px;">' +
-              '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
-              '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
-              '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
-              '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>🏆 Has Achievements</option>' +
-            '</select>' +
-
-            '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="min-width:140px;">' +
-              '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>⭐ XP: High to Low</option>' +
-              '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>⭐ XP: Low to High</option>' +
-              '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>👾 Level: High to Low</option>' +
-              '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>🔤 Name: A to Z</option>' +
-              '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>🔥 Streak: High to Low</option>' +
-            '</select>' +
-          '</div>' +
-          '<div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">' +
-            '<span>Showing <strong>' + filtered.length + '</strong> of ' + allStudents.length + ' registered learners</span>' +
-            '<span>Click any monster or card to view detailed learning profile &amp; closet</span>' +
-          '</div>' +
+        // Filter Bar
+        '<div class="eaa-directory-filter-bar">' +
+          '<input type="text" class="eaa-filter-input" placeholder="🔍 Search explorer..." value="' + (studentsSearchQuery || '') + '" oninput="studentsSearchQuery = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
+          '<select class="eaa-filter-select" onchange="studentsFilterClass = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
+            '<option value="all">All Classes ▾</option>' +
+            classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
+          '</select>' +
+          '<select class="eaa-filter-select" onchange="studentsFilterStage = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
+            '<option value="all">All CEFR Levels ▾</option>' +
+            '<option value="Pre-A1">Pre-A1</option>' +
+            '<option value="A1">A1</option>' +
+            '<option value="A1+">A1+</option>' +
+            '<option value="A2">A2</option>' +
+          '</select>' +
+          '<span style="font-size:0.82rem; color:#cbd5e1; font-weight:700; margin-left:auto;">' + filtered.length + ' Explorers Found</span>' +
         '</div>' +
 
-        // Students Cards Grid
-        (filtered.length === 0 ?
-          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
-            '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
-            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
-            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
-            '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
-          '</div>' :
-          '<div class="students-directory-grid">' +
-            filtered.map(s => {
-              const mState = store.calculateMonsterState(s.id);
-              const totalXP = mState.totalXP;
-              const nextXP = mState.nextLevelXP || totalXP;
-              const xpToNext = mState.xpToNext;
-              const progressPct = mState.progressPct;
-              const streak = s.streakDays || 0;
-              const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
-
-              const isSelected = selectedStudentIds.has(s.id);
-              return '' +
-                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
-                  (isMultiSelectMode ?
-                    '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
-                      '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
-                    '</div>' : ''
-                  ) +
-                  '<div class="student-card-top-bar">' +
-                    '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
-                    '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
-                    '<span class="student-card-streak-pill" title="Daily streak">🔥 ' + streak + 'd</span>' +
-                  '</div>' +
-
-                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
-                    monsterSvg +
-                    '<div class="avatar-customize-pill">🎨 Customize</div>' +
-                  '</div>' +
-
-                  '<div class="student-directory-name">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div class="student-directory-class-sub">' + (cls ? cls.name : 'Unenrolled') + ' · ' + s.grade + '</div>' +
-
-                  '<div class="student-directory-stage-badge">' +
-                    'Level ' + mState.currentLevel + ' · ' + mState.stageName +
-                  '</div>' +
-
-                  '<div class="student-directory-xp-line" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
-                    '<strong>⭐ ' + totalXP.toLocaleString() + ' XP</strong>' +
-                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' · ✏️ Edit</span>' +
-                  '</div>' +
-
-                  '<div class="student-directory-progress-bar" title="' + progressPct + '% to next stage">' +
-                    '<div class="student-directory-progress-fill" style="width:' + progressPct + '%;"></div>' +
-                  '</div>' +
-                  '<div class="student-directory-progress-sub">' +
-                    (!mState.isHatched ? 
-                      ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
-                      (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
-                    ) +
-                  '</div>' +
-
-                  '<div class="student-directory-card-actions" onclick="event.stopPropagation();">' +
-                    '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')">Profile →</button>' +
-                  '</div>' +
-                '</div>';
-            }).join('') +
-          '</div>'
-        ) +
+        // Explorer Tiles Grid (No 5 buttons per card - One contextual action drawer on click!)
+        '<div class="eaa-explorer-tiles-grid">' +
+          filtered.map(s => {
+            const totalXP = store.getStudentTotalXP(s.id);
+            const mState = store.calculateMonsterState(s.id);
+            const skills = store.getStudentSkills ? store.getStudentSkills(s.id) : { reading: { score: 85 }, listening: { score: 80 }, speaking: { score: 75 } };
+            return '' +
+              '<div class="eaa-explorer-tile" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
+                '<div class="eaa-tile-avatar-box">' +
+                  window.renderMonsterAvatar(s.id, { size: 72, animated: true }) +
+                '</div>' +
+                '<h3 class="eaa-tile-name">' + (s.firstName || 'Explorer').toUpperCase() + '</h3>' +
+                '<div class="eaa-tile-badges-row">' +
+                  '<span class="eaa-tile-level-pill">Lv.' + mState.currentLevel + '</span>' +
+                  '<span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span>' +
+                  '<span style="color:#fbbf24; font-weight:800; font-size:0.75rem;">' + totalXP.toLocaleString() + ' XP</span>' +
+                '</div>' +
+                '<div class="eaa-tile-skills-row">' +
+                  '<span>🗣 ' + (skills.speaking ? skills.speaking.score : 75) + '</span>' +
+                  '<span>📖 ' + (skills.reading ? skills.reading.score : 85) + '</span>' +
+                  '<span>🎧 ' + (skills.listening ? skills.listening.score : 80) + '</span>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>' +
       '</div>';
   }
+
 
   function renderClassesView(container) {
     const classes = store.getClasses();
@@ -3175,97 +3061,124 @@
   }
 
   // 1. Students Visual Avatar Grid
-  function renderClassroomStudentsGrid(cls, students) {
+    function renderClassroomStudentsGrid(cls, students) {
     const safeStudents = Array.isArray(students) ? students : [];
     if (safeStudents.length === 0) {
+      return '<div style="padding:40px; text-align:center; color:#94a3b8;">No explorers in this classroom.</div>';
+    }
+
+    // Coordinates for the 19 student explorer pins across fantasy landscape
+    const mapCoordinates = [
+      { x: 22, y: 32 }, { x: 34, y: 25 }, { x: 48, y: 18 }, { x: 62, y: 25 }, { x: 76, y: 30 },
+      { x: 16, y: 52 }, { x: 28, y: 46 }, { x: 42, y: 40 }, { x: 58, y: 42 }, { x: 72, y: 48 }, { x: 84, y: 54 },
+      { x: 20, y: 72 }, { x: 32, y: 65 }, { x: 46, y: 60 }, { x: 60, y: 64 }, { x: 74, y: 70 }, { x: 86, y: 76 },
+      { x: 38, y: 82 }, { x: 54, y: 82 }
+    ];
+
+    if (window.classroomWorldViewMode === 'grid') {
       return '' +
-        '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px; text-align:center; cursor:pointer;">' +
-          '<div class="card-add-student-icon" style="font-size:36px; margin-bottom:8px;">🎓</div>' +
-          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No students enrolled in this class</h3>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student or enroll learners from the Unenrolled list to begin tracking learning adventure.</p>' +
-          '<button type="button" class="btn-primary-action">+ Add Student</button>' +
+        '<div class="eaa-explorer-tiles-grid" style="margin-top:16px;">' +
+          safeStudents.map(s => {
+            const totalXP = store.getStudentTotalXP(s.id);
+            const mState = store.calculateMonsterState(s.id);
+            const skills = store.getStudentSkills ? store.getStudentSkills(s.id) : { reading: { score: 85 }, listening: { score: 80 }, speaking: { score: 75 } };
+            return '' +
+              '<div class="eaa-explorer-tile" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
+                '<div class="eaa-tile-avatar-box">' +
+                  window.renderMonsterAvatar(s.id, { size: 68, animated: true }) +
+                '</div>' +
+                '<h3 class="eaa-tile-name">' + (s.firstName || 'Explorer').toUpperCase() + '</h3>' +
+                '<div class="eaa-tile-badges-row">' +
+                  '<span class="eaa-tile-level-pill">Lv.' + mState.currentLevel + '</span>' +
+                  '<span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span>' +
+                  '<span style="color:#fbbf24; font-weight:800; font-size:0.72rem;">' + totalXP + ' XP</span>' +
+                '</div>' +
+                '<div class="eaa-tile-skills-row">' +
+                  '<span>🗣 ' + (skills.speaking ? skills.speaking.score : 75) + '</span>' +
+                  '<span>📖 ' + (skills.reading ? skills.reading.score : 85) + '</span>' +
+                  '<span>🎧 ' + (skills.listening ? skills.listening.score : 80) + '</span>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
         '</div>';
     }
 
-    const cardsHtml = students.map(s => {
-      const totalXP = store.getStudentTotalXP(s.id);
-      const formattedXP = totalXP.toLocaleString();
-      const skills = store.getStudentSkills ? store.getStudentSkills(s.id) : {
-        reading: { score: 85, cefr: 'A1+' },
-        listening: { score: 80, cefr: 'A1' },
-        speaking: { score: 75, cefr: 'A1' },
-        writing: { score: 70, cefr: 'A1' }
-      };
-      const monsterState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : { currentLevel: 1, stageName: 'Mystery Egg', progressPct: 45 };
-      const streak = s.streakDays || 5;
-
+    if (window.classroomWorldViewMode === 'compact') {
       return '' +
-        '<div class="eaa-student-card-v2" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
-          // Header row: CEFR & Streak
-          '<div class="eaa-student-header-row">' +
-            '<span class="eaa-student-cefr-pill">' + (s.overallCefr || 'A1+') + ' TARGET</span>' +
-            '<span class="eaa-student-streak">🔥 ' + streak + ' Days</span>' +
-          '</div>' +
-
-          // Avatar Frame
-          '<div class="eaa-student-avatar-wrap" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">' +
-            window.renderStudentMonsterAvatar(s.id, { size: 68, animated: true }) +
-          '</div>' +
-
-          // Name & Stage
-          '<div class="eaa-student-name">' + s.firstName.toUpperCase() + '</div>' +
-          '<div class="eaa-student-evolution-label">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
-
-          // XP Bar Track
-          '<div class="eaa-xp-bar-track">' +
-            '<div class="eaa-xp-bar-fill" style="width:' + (monsterState.progressPct || 50) + '%;"></div>' +
-          '</div>' +
-          '<div class="eaa-xp-text-row">' +
-            '<span>XP Progress</span>' +
-            '<span>⭐ ' + formattedXP + ' XP</span>' +
-          '</div>' +
-
-          // Mini 4-Skill Meters
-          '<div class="eaa-skill-meters-grid">' +
-            '<div class="eaa-skill-meter-col">' +
-              '<div class="eaa-skill-meter-header"><span>Read</span><span>' + skills.reading.score + '%</span></div>' +
-              '<div class="eaa-mini-bar-track"><div class="eaa-mini-bar-fill" style="width:' + skills.reading.score + '%; background:#38bdf8;"></div></div>' +
-            '</div>' +
-            '<div class="eaa-skill-meter-col">' +
-              '<div class="eaa-skill-meter-header"><span>Listen</span><span>' + skills.listening.score + '%</span></div>' +
-              '<div class="eaa-mini-bar-track"><div class="eaa-mini-bar-fill" style="width:' + skills.listening.score + '%; background:#818cf8;"></div></div>' +
-            '</div>' +
-            '<div class="eaa-skill-meter-col">' +
-              '<div class="eaa-skill-meter-header"><span>Speak</span><span>' + skills.speaking.score + '%</span></div>' +
-              '<div class="eaa-mini-bar-track"><div class="eaa-mini-bar-fill" style="width:' + skills.speaking.score + '%; background:#34d399;"></div></div>' +
-            '</div>' +
-            '<div class="eaa-skill-meter-col">' +
-              '<div class="eaa-skill-meter-header"><span>Write</span><span>' + skills.writing.score + '%</span></div>' +
-              '<div class="eaa-mini-bar-track"><div class="eaa-mini-bar-fill" style="width:' + skills.writing.score + '%; background:#f472b6;"></div></div>' +
-            '</div>' +
-          '</div>' +
-
-          // Action Buttons
-          '<div class="eaa-student-card-actions">' +
-            '<button type="button" class="eaa-btn-quick-xp" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event); event.stopPropagation();" title="Award +10 XP">+10 XP</button>' +
-            '<button type="button" class="eaa-btn-award" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\');" title="Award Badge / Skill Points">Award</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openStudentDetail(\'' + s.id + '\');" style="flex:1; padding:6px; font-size:0.74rem; font-weight:800; border-radius:6px; justify-content:center;">Profile</button>' +
-          '</div>' +
+        '<div style="background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:18px; overflow:hidden; margin-top:16px;">' +
+          '<table style="width:100%; border-collapse:collapse; color:#f8fafc; font-size:0.86rem; text-align:left;">' +
+            '<thead>' +
+              '<tr style="background:rgba(15,23,42,0.9); border-bottom:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-size:0.75rem; text-transform:uppercase;">' +
+                '<th style="padding:12px 18px;">Explorer</th>' +
+                '<th style="padding:12px 14px;">Level &amp; Stage</th>' +
+                '<th style="padding:12px 14px;">CEFR</th>' +
+                '<th style="padding:12px 14px;">Learning XP</th>' +
+                '<th style="padding:12px 14px;">Action</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>' +
+              safeStudents.map(s => {
+                const totalXP = store.getStudentTotalXP(s.id);
+                const mState = store.calculateMonsterState(s.id);
+                return '' +
+                  '<tr style="border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer;" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
+                    '<td style="padding:10px 18px; display:flex; align-items:center; gap:10px;">' +
+                      '<div style="width:36px; height:36px;">' + window.renderMonsterAvatar(s.id, { size: 36, animated: false }) + '</div>' +
+                      '<strong style="color:#ffffff;">' + (s.firstName || '') + ' ' + (s.lastName || '') + '</strong>' +
+                    '</td>' +
+                    '<td style="padding:10px 14px;"><span style="color:#fbbf24; font-weight:700;">Lv.' + mState.currentLevel + '</span> · ' + mState.stageName + '</td>' +
+                    '<td style="padding:10px 14px;"><span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span></td>' +
+                    '<td style="padding:10px 14px; font-weight:800; color:#38bdf8;">' + totalXP.toLocaleString() + ' XP</td>' +
+                    '<td style="padding:10px 14px;"><button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openExplorerDrawer(\'' + s.id + '\')" style="padding:4px 10px; font-size:0.76rem;">Open Drawer ▶</button></td>' +
+                  '</tr>';
+              }).join('') +
+            '</tbody>' +
+          '</table>' +
         '</div>';
-    }).join('');
+    }
 
-    // Append + Add Student card at the end
-    const addCardHtml = '' +
-      '<div class="card-add-student" onclick="openStudentModal()" title="Add a new student to ' + cls.name + '">' +
-        '<div class="card-add-student-icon">+</div>' +
-        '<div style="font-weight:800; font-size:1rem;">Add Student</div>' +
-        '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Enroll new learner</div>' +
+    // Default: CLASSROOM WORLD MAP
+    return '' +
+      '<div class="eaa-classroom-world-wrapper">' +
+        '<div class="eaa-world-map-canvas">' +
+          // Fantasy Landmarks
+          '<div class="eaa-map-landmark" style="top:12%; left:48%;">' +
+            '<span class="eaa-landmark-icon">🏰</span>' +
+            '<span class="eaa-landmark-label">Classroom Castle</span>' +
+          '</div>' +
+          '<div class="eaa-map-landmark" style="top:20%; left:82%;">' +
+            '<span class="eaa-landmark-icon">📚</span>' +
+            '<span class="eaa-landmark-label">Ancient Library</span>' +
+          '</div>' +
+          '<div class="eaa-map-landmark" style="top:68%; left:12%;">' +
+            '<span class="eaa-landmark-icon">⚙️</span>' +
+            '<span class="eaa-landmark-label">Invention Lab</span>' +
+          '</div>' +
+          '<div class="eaa-map-landmark" style="top:74%; left:80%;">' +
+            '<span class="eaa-landmark-icon">🌲</span>' +
+            '<span class="eaa-landmark-label">Whispering Woods</span>' +
+          '</div>' +
+
+          // 19 Explorer Pins Positioned Across the Realm
+          safeStudents.map((s, idx) => {
+            const coord = mapCoordinates[idx % mapCoordinates.length];
+            const mState = store.calculateMonsterState(s.id);
+            return '' +
+              '<div class="eaa-explorer-pin" style="left:' + coord.x + '%; top:' + coord.y + '%;" onclick="openExplorerDrawer(\'' + s.id + '\')" title="Click to open ' + s.firstName + '\'s action drawer">' +
+                '<div class="eaa-explorer-avatar-box">' +
+                  window.renderMonsterAvatar(s.id, { size: 48, animated: true }) +
+                '</div>' +
+                '<div class="eaa-explorer-name-pill">' +
+                  '<span>' + (s.firstName || 'Explorer') + '</span>' +
+                  '<span class="eaa-explorer-level-tag">Lv.' + mState.currentLevel + '</span>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>' +
       '</div>';
-
-    return '<div class="classroom-students-grid">' + cardsHtml + addCardHtml + '</div>';
   }
 
-  // 2. Groups View
+
   function renderClassroomGroupsGrid(cls, groups, students) {
     if (groups.length === 0) {
       return '' +
@@ -4535,545 +4448,53 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return renderResourceCard(r);
   }
 
-  function renderLibraryView(container) {
-    const allGames = (store.getResources() || []).filter(r => !r.archived);
-    const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
-    const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
-    const totalResources = allCombined.length;
+    function renderLibraryView(container) {
+    if (!container) container = document.getElementById('app-view-container');
+    if (!container) return;
 
-    const gamesCount = allCombined.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story').length;
-    const worksheetsCount = allCombined.filter(r => r.isWorksheet).length;
-    const storiesCount = allCombined.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading')).length;
-    const roleplaysCount = allCombined.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay')).length;
-    const textbooksCount = allCombined.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook')).length;
-    const favoritesCount = allCombined.filter(r => Boolean(r.featured)).length;
-
-    // Collect topics dynamically
-    const topicSet = new Set();
-    allCombined.forEach(r => {
-      if (Array.isArray(r.topics)) r.topics.forEach(t => topicSet.add(t));
-      else if (r.topic) topicSet.add(r.topic);
-    });
-    const availableTopics = Array.from(topicSet).sort();
-
-    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
-    const filteredItems = getFilteredResources();
-
-    let tabHeading = 'All Resources';
-    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
-    else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
-    else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
-    else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
-    else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
-    else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
-    else if (libActiveTab === 'roleplays') tabHeading = 'Roleplay Missions';
-    else if (libActiveTab === 'textbooks') tabHeading = 'Curriculum Textbooks';
-    else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
+    const portals = [
+      { id: 'reading', title: 'Reading Forest', icon: '🌲', desc: 'Graded readers, interactive stories, and Macmillan anthology.', count: '12 Stories' },
+      { id: 'listening', title: 'Listening Station', icon: '🎧', desc: 'Phonics tracks, dialogues, and audio comprehension labs.', count: '18 Tracks' },
+      { id: 'writing', title: 'Writing Workshop', icon: '✍️', desc: 'Sentence builders, creative invention blueprints, and prompts.', count: '10 Guides' },
+      { id: 'vocab', title: 'Vocabulary Lab', icon: '🧠', desc: 'Smart flashcards, speed rounds, and memory word games.', count: '64 Target Words' },
+      { id: 'games', title: 'Game Zone', icon: '🎮', desc: '15 interactive curriculum-aligned ESL games for classroom and home.', count: '15 Games' },
+      { id: 'worksheets', title: 'Worksheet Archive', icon: '📝', desc: 'Printable and digital worksheets with teacher scoring keys.', count: '24 Sheets' }
+    ];
 
     container.innerHTML = 
-      // 1. Professional Header
-      '<div class="library-header-compact">' +
-        '<div class="library-title-wrap">' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<h1 class="library-title-main">Educational Resource Library</h1>' +
-            '<span class="library-verified-badge" title="All curriculum resources audited and verified">✓ Curated</span>' +
-          '</div>' +
-          '<p class="library-subtitle">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
-        '</div>' +
-        '<div class="library-header-actions">' +
-          '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
-            '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
-          '</button>' +
-          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
-          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
-          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-          '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
-            (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
-          '</button>' +
-        '</div>' +
-      '</div>' +
-
-      // Manage Mode & Cloud Diagnostics Banner
-      (isLibraryManageMode ? 
-        '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+      '<div style="display:flex; flex-direction:column; gap:24px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
-            '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
-              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> · ' +
-              'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
-            '</div>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
+              '<span>📚</span> <span>Adventure Library</span>' +
+            '</h1>' +
+            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Themed world portals for reading, listening, writing, vocabulary, and games.</p>' +
           '</div>' +
           '<div style="display:flex; gap:8px;">' +
-            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()">+ Add Worksheet</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openResourceEditor()">+ Add Resource</button>' +
           '</div>' +
-        '</div>' : '') +
-
-      // 2. Prominent Multi-Faceted Controls Bar
-      '<div class="library-controls-bar">' +
-        '<div class="library-search-wrap">' +
-          '<span class="library-search-icon">🔍</span>' +
-          '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search resources, vocabulary, grammar, topics... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" />' +
-          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
         '</div>' +
-        '<div class="library-filters-row">' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
-              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
-              '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
-              '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
-              '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
-              '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
-              '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
-            '</select>' +
-          '</div>' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
-              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
-              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
-              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
-              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
-              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
-              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
-              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
-              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
-            '</select>' +
-          '</div>' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)">' +
-              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
-              '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
-              '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
-              '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
-              '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
-              '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
-              '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6</option>' +
-            '</select>' +
-          '</div>' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
-              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill ▾</option>' +
-              '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
-              '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
-              '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
-              '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>Writing</option>' +
-              '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
-              '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
-              '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>Phonics</option>' +
-              '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>CLIL</option>' +
-            '</select>' +
-          '</div>' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
-              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
-              availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
-            '</select>' +
-          '</div>' +
-          '<div class="filter-dropdown-wrap">' +
-            '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)">' +
-              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
-              '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
-              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
-              '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
-            '</select>' +
-          '</div>' +
-          '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
-            '<span>↺</span> <span>Clear filters</span>' +
-          '</button>' +
+
+        '<div class="eaa-library-portals-grid">' +
+          portals.map(p => {
+            return '' +
+              '<div class="eaa-portal-card" onclick="if(window.switchLibraryTab) window.switchLibraryTab(\'' + p.id + '\');">' +
+                '<div>' +
+                  '<span class="eaa-portal-icon">' + p.icon + '</span>' +
+                  '<h3 class="eaa-portal-title">' + p.title + '</h3>' +
+                  '<p class="eaa-portal-desc">' + p.desc + '</p>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px; font-size:0.8rem; font-weight:800;">' +
+                  '<span style="color:#38bdf8;">' + p.count + '</span>' +
+                  '<span style="color:#94a3b8;">Enter Portal ▶</span>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
         '</div>' +
-      '</div>' +
-
-      // 3. Category Tabs Row
-      '<div class="library-category-tabs-row library-nav-tabs-row">' +
-        '<div class="library-category-tabs library-nav-tabs">' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
-            '<span>All Resources</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
-            '<span>🎮 Games</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + gamesCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
-            '<span>📄 Worksheets</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
-            '<span>📚 Stories</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')">' +
-            '<span>🎭 Roleplays</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')">' +
-            '<span>📖 Textbooks</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + textbooksCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
-            '<span>⭐ Favorites</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
-          '</button>' +
-        '</div>' +
-      '</div>' +
-
-      // 4. Section Header Row
-      '<div class="library-section-header-row">' +
-        '<div class="library-section-left">' +
-          '<h2 class="section-heading">' + tabHeading + '</h2>' +
-          '<span id="lib-count-badge" class="section-count-badge library-count-pill">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
-        '</div>' +
-        '<div class="library-section-right">' +
-          '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
-          '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
-            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
-            '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
-            '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
-            '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
-            '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
-            '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
-          '</select>' +
-        '</div>' +
-      '</div>' +
-
-            
-      // The Day Your Brain Quit! Series Showcase Shelf
-      ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-        '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
-          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-            '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
-              '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
-                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 (CEFR A1/A1+) · 35 min</p>' +
-              '</div>' +
-            '</div>' +
-            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
-          '</div>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
-            '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
-                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🧠 Interactive 10-Screen Story Adventure</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(236,72,153,0.2); color:#fbcfe8; border:1px solid rgba(236,72,153,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Skimming</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think · Learn · Remember · Imagine</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Voice Recorder</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">▶ Play Brain Adventure</a>' +
-                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📄 5-Part Detective Workbook</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Brain Defender Gold Certificate.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Print Ready</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Smart Board Compatible</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 Global Readings 3</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules (headings, pictures, first sentences) &amp; Learning and Your Brain neuroscience text.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan RG3</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Unit 1 p.17</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' : '') +
-
-      // The Small Inventor Series Showcase Shelf
-      ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-        '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
-          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-            '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
-              '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor • Young Inventor Academy</h2>' +
-                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+) · 10 Interactive Missions &amp; Capstone Expo</p>' +
-              '</div>' +
-            '</div>' +
-            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
-          '</div>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
-            '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
-                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🚀 Young Inventor Academy</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem → Idea → Invention → Improvement → Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(6,182,212,0.2); color:#67e8f9; border:1px solid rgba(6,182,212,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">CAN / CAN\'T</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">HAS / HAVE</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(168,85,247,0.2); color:#e9d5ff; border:1px solid rgba(168,85,247,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Biomimicry</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">5-Min Expo Pitch</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">▶ Enter Inventor Lab</a>' +
-                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The After-School Inventor</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine. Practice vocabulary and problem-solution pairs.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Reading 1</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Global Readings 2</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
-                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
-                '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 My Good Ideas Book</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Thomas Edison notebooks, Leonardo da Vinci parachute sketches, Kingfisher biomimicry, and Karl Benz motorcar.</p>' +
-                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Primary Source</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan</span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:8px;">' +
-                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' : '') +
-
-            // Alice in Wonderland Series Showcase Shelf
-      ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-        '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-            '<div style="display:flex; align-items:center; gap:10px;">' +
-              '<span style="font-size:2rem;">🐇</span>' +
-              '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
-                '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
-              '</div>' +
-            '</div>' +
-            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
-          '</div>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
-            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · NEW ⚡</span>' +
-                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
-                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, Past Simple discovery, and workshop chest reveal.</p>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
-                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">READING QUEST</span>' +
-                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🔍 The Skimming Detectives</h4>' +
-                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">6-event story sequence, 4 feeling monsters, and Eagle Eye Skimming challenge.</p>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Quest</a>' +
-                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#c084fc;">STORY THEATRE</span>' +
-                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">40 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">📖 Alice Story Engine</h4>' +
-                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Interactive branching story stages with audio narration and character dialogues.</p>' +
-              '</div>' +
-              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Open Story Theatre</a>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · NEW ⚡</span>' +
-                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
-                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, Mad Hatter lie detector, and Time Monster.</p>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
-                '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-              '</div>' +
-            '</div>' +
-            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · FINALE 🎭</span>' +
-                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
-                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
-                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' : '') +
-      // 5. Resource Grid Container
-      '<div id="library-resource-grid" class="resource-library-grid">' +
-        (filteredItems.length === 0 ? 
-          '<div class="library-empty-state">' +
-            '<div class="library-empty-icon">🔍</div>' +
-            '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
-            '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
-            '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
-              '<span>↺</span> <span>Clear all filters</span>' +
-            '</button>' +
-          '</div>' :
-          filteredItems.map(r => renderResourceCard(r)).join('')
-        ) +
       '</div>';
   }
 
-  window.handleLibSearch = function(query) {
-    libSearchQuery = query;
-    const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.classList.toggle('is-visible', Boolean(query && query.trim()));
-    updateLibraryGrid();
-  };
-
-  window.handleLibSearchInput = function(e) {
-    const val = (e && e.target) ? e.target.value : (typeof e === 'string' ? e : '');
-    window.handleLibSearch(val);
-  };
-
-  window.clearLibSearch = function() {
-    libSearchQuery = '';
-    const input = document.getElementById('lib-search-input');
-    if (input) {
-      input.value = '';
-      input.focus();
-    }
-    const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.classList.remove('is-visible');
-    updateLibraryGrid();
-  };
-
-  window.setLibFilter = function(filterKey, value) {
-    if (filterKey === 'level') libFilterLevel = value;
-    else if (filterKey === 'type') libFilterType = value;
-    else if (filterKey === 'skill') libFilterSkill = value;
-    else if (filterKey === 'topic') libFilterTopic = value;
-    else if (filterKey === 'grade') libFilterGrade = value;
-    else if (filterKey === 'duration') libFilterDuration = value;
-    updateLibraryGrid();
-  };
-
-  window.setLibTab = function(tabName) {
-    libActiveTab = tabName;
-    if (tabName === 'favorites') {
-      libFilterFavoritesOnly = true;
-    } else {
-      libFilterFavoritesOnly = false;
-      libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
-    }
-    const container = document.getElementById('app-main-content');
-    if (container) renderLibraryView(container);
-    else renderCurrentView();
-  };
-
-  window.setLibSort = function(sortKey) {
-    libSortOrder = sortKey;
-    updateLibraryGrid();
-  };
-
-  window.toggleLibFavoritesOnly = function() {
-    libFilterFavoritesOnly = !libFilterFavoritesOnly;
-    if (libFilterFavoritesOnly) libActiveTab = 'favorites';
-    else if (libActiveTab === 'favorites') libActiveTab = 'all';
-    const container = document.getElementById('app-main-content');
-    if (container) renderLibraryView(container);
-    else updateLibraryGrid();
-  };
-
-  window.handleToggleFavoriteCard = function(resourceId, event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if (store.toggleFavoriteResource) {
-      store.toggleFavoriteResource(resourceId);
-    } else {
-      const res = store.getResource(resourceId);
-      if (res) store.updateResource(resourceId, { featured: !res.featured });
-    }
-    updateLibraryGrid();
-  };
-
-  window.clearAllLibFilters = function() {
-    libSearchQuery = '';
-    libFilterLevel = 'all';
-    libFilterType = 'all';
-    libFilterSkill = 'all';
-    libFilterTopic = 'all';
-    libFilterGrade = 'all';
-    libFilterDuration = 'all';
-    libFilterFavoritesOnly = false;
-    const input = document.getElementById('lib-search-input');
-    if (input) input.value = '';
-    const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.classList.remove('is-visible');
-    const selects = document.querySelectorAll('.library-select');
-    selects.forEach(s => s.value = 'all');
-    updateLibraryGrid();
-  };
 
   function updateLibraryGrid() {
     const grid = document.getElementById('library-resource-grid');
@@ -6641,664 +6062,256 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // MONSTER EVOLUTION ROADMAP (REFERENCE 3: SMALL STEPS. BIGGER ADVENTURES)
   // =========================================================================
-  function renderMonsterEvolutionRoadmapView(container) {
+    function renderMonsterEvolutionRoadmapView(container) {
     if (!container) container = document.getElementById('app-view-container');
     if (!container) return;
 
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]) || { id: 's1', firstName: 'Explorer' };
+    const mState = store.calculateMonsterState(s.id);
+    const totalXP = store.getStudentTotalXP(s.id);
+    const xpNeeded = Math.max(0, (mState.xpRequired || 700) - totalXP);
+
     container.innerHTML = 
-      '<div class="eaa-ref-roadmap-wrap">' +
+      '<div class="eaa-evolution-journey-wrap">' +
         // Header
-        '<div class="eaa-ref-roadmap-header">' +
-          '<div class="eaa-ref-roadmap-brand">' +
-            '<span style="font-size:26px;">📖</span>' +
-            '<div style="text-align:left;">' +
-              '<div style="font-size:0.95rem; font-weight:900; color:#ffffff;">English Adventure Academy</div>' +
-              '<div style="font-size:0.7rem; font-weight:800; color:#38bdf8;">Learn • Play • Grow</div>' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
+              '<span>🐲</span> <span>Cinematic Evolution Journey</span>' +
+            '</h1>' +
+            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Small steps build bigger, legendary English adventures.</p>' +
+          '</div>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'monster\')">← Open Monster Studio</button>' +
+        '</div>' +
+
+        // 3-Stage Evolution Panorama
+        '<div class="eaa-evolution-journey-stage">' +
+          // Left: Previous Form
+          '<div class="eaa-evolution-pillar">' +
+            '<span style="font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">PREVIOUS FORM</span>' +
+            '<h3 style="font-size:1.15rem; font-weight:900; color:#cbd5e1; margin:0;">Level 3 · Adventurer</h3>' +
+            '<div style="width:100px; height:100px; margin:10px 0; opacity:0.7;">' +
+              '<img src="assets/reference/extracted/evo_3_adventurer.png" alt="Level 3" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display=\'none\';">' +
+            '</div>' +
+            '<span class="badge" style="background:rgba(255,255,255,0.06); color:#cbd5e1; font-weight:700;">300 – 500 XP</span>' +
+          '</div>' +
+
+          // Center: Large Active Current Monster (Dominant 45% visual focus)
+          '<div class="eaa-evolution-pillar is-current">' +
+            '<span style="font-size:0.8rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">CURRENT FORM</span>' +
+            '<h2 style="font-size:1.55rem; font-weight:900; color:#ffffff; margin:0;">Level 4 · Elite Adventurer</h2>' +
+            '<div style="width:180px; height:180px; margin:12px auto;">' +
+              window.renderMonsterAvatar(s.id, { size: 170, animated: true }) +
+            '</div>' +
+            '<div style="width:100%; max-width:320px; margin-top:8px;">' +
+              '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">' +
+                '<span>' + totalXP.toLocaleString() + ' XP</span>' +
+                '<span style="color:#fbbf24;">' + xpNeeded + ' XP TO EVOLVE</span>' +
+              '</div>' +
+              '<div style="height:12px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">' +
+                '<div style="height:100%; width:' + (mState.progressPct || 65) + '%; background:linear-gradient(90deg, #38bdf8, #a855f7); border-radius:10px;"></div>' +
+              '</div>' +
             '</div>' +
           '</div>' +
 
-          '<div class="eaa-ref-roadmap-center">' +
-            '<h1 class="eaa-ref-roadmap-title">MONSTER EVOLUTION</h1>' +
-            '<div class="eaa-ref-roadmap-subtitle">SMALL STEPS. BIGGER ADVENTURES.</div>' +
-          '</div>' +
-
-          '<div class="eaa-ref-roadmap-slogan-top">' +
-            'Your Effort Builds a Brighter, Stronger You! 👑' +
-          '</div>' +
-        '</div>' +
-
-        // Top Milestone Path
-        '<div class="eaa-ref-milestones-track">' +
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#15803d; color:#ffffff;">🍃</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#4ade80;">LEARN</div>' +
-          '</div>' +
-          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #15803d, #0d9488); margin:0 8px; position:relative; top:-10px;"></div>' +
-
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#0d9488; color:#ffffff;">🌱</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#2dd4bf;">PRACTICE</div>' +
-          '</div>' +
-          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #0d9488, #0284c7); margin:0 8px; position:relative; top:-10px;"></div>' +
-
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#0284c7; color:#ffffff;">⛰️</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#38bdf8;">EXPLORE</div>' +
-          '</div>' +
-          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #0284c7, #d97706); margin:0 8px; position:relative; top:-10px;"></div>' +
-
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#d97706; color:#ffffff;">🔥</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#fbbf24;">ACHIEVE</div>' +
-          '</div>' +
-          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #d97706, #ca8a04); margin:0 8px; position:relative; top:-10px;"></div>' +
-
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#ca8a04; color:#ffffff;">⭐</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#fde047;">MASTER</div>' +
-          '</div>' +
-          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #ca8a04, #7c3aed); margin:0 8px; position:relative; top:-10px;"></div>' +
-
-          '<div class="eaa-ref-milestone-node">' +
-            '<div class="eaa-ref-milestone-circle" style="background:#7c3aed; color:#ffffff;">👑</div>' +
-            '<div class="eaa-ref-milestone-label" style="color:#c084fc;">BECOME LEGENDARY</div>' +
+          // Right: Mysterious Next Form Silhouette
+          '<div class="eaa-evolution-pillar">' +
+            '<span style="font-size:0.75rem; font-weight:800; color:#c084fc; text-transform:uppercase;">NEXT FORM</span>' +
+            '<h3 style="font-size:1.15rem; font-weight:900; color:#e2e8f0; margin:0;">Level 5 · Legendary</h3>' +
+            '<div class="eaa-evolution-silhouette-box">' +
+              '<span style="font-size:5rem;">👑</span>' +
+            '</div>' +
+            '<button type="button" class="eaa-evolve-btn" onclick="store.addStudentXP(\'' + s.id + '\', 100); renderMonsterEvolutionRoadmapView(); if(window.showToast) window.showToast(\'Energy Boosted!\', \'success\');">' +
+              '⚡ EVOLVE' +
+            '</button>' +
           '</div>' +
         '</div>' +
 
-        // 6 Stone Pedestals Grid
-        '<div class="eaa-ref-pedestals-grid">' +
-          // Level 1: Baby Monster
-          '<div class="eaa-ref-pedestal-card">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 1</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Baby Monster</div>' +
+        // 6 Stone Pedestals Progression Roadmap
+        '<div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:22px; padding:24px;">' +
+          '<h3 style="font-size:1.2rem; font-weight:900; color:#ffffff; margin:0 0 16px 0;">6 Evolutionary Milestones</h3>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px;">' +
+            '<div class="eaa-ref-pedestal-card">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 1</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Baby Egg</h4>' +
               '<div class="eaa-ref-pedestal-badge" style="background:#15803d; color:#ffffff;">0 – 100 XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">Every expert was a beginner!</div>' +
             '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_1_egg.png" alt="Baby Monster">' +
-            '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Small and cute</li>' +
-              '<li>Curious and friendly</li>' +
-              '<li>Just starting the journey</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon">' +
-              'Every expert was once a beginner!' +
-            '</div>' +
-          '</div>' +
-
-          // Level 2: Young Monster
-          '<div class="eaa-ref-pedestal-card">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 2</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Young Monster</div>' +
+            '<div class="eaa-ref-pedestal-card">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 2</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Young Creature</h4>' +
               '<div class="eaa-ref-pedestal-badge" style="background:#0d9488; color:#ffffff;">101 – 300 XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">Practice makes progress!</div>' +
             '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_2_baby.png" alt="Young Monster">' +
+            '<div class="eaa-ref-pedestal-card">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 3</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Adventurer</h4>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#0284c7; color:#ffffff;">301 – 500 XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">Curiosity leads to discovery!</div>' +
             '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Bigger and braver</li>' +
-              '<li>Two horns</li>' +
-              '<li>A small tail</li>' +
-              '<li>Ready to learn more</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon">' +
-              'Practice makes progress!' +
+            '<div class="eaa-ref-pedestal-card" style="border-color:#38bdf8;">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#38bdf8;">LEVEL 4 · CURRENT</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Elite Adventurer</h4>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#d97706; color:#ffffff;">501 – 700 XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">Confidence unlocks superpowers!</div>' +
             '</div>' +
-          '</div>' +
-
-          // Level 3: Adventurer Monster
-          '<div class="eaa-ref-pedestal-card" style="border-color:#0284c7; box-shadow:0 0 16px rgba(2, 132, 199, 0.4);">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase;">LEVEL 3</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Adventurer Monster</div>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#0284c7; color:#ffffff;">301 – 700 XP</div>' +
+            '<div class="eaa-ref-pedestal-card">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 5</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Legendary</h4>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#ca8a04; color:#ffffff;">701 – 1,000 XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">Master of words and wonders!</div>' +
             '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_3_adventurer.png" alt="Adventurer Monster">' +
+            '<div class="eaa-ref-pedestal-card">' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 6</div>' +
+              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Mythic</h4>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#7c3aed; color:#ffffff;">1,000+ XP</div>' +
+              '<div class="eaa-ref-motto-ribbon">A living English legend!</div>' +
             '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Stronger and taller</li>' +
-              '<li>Adventure gear</li>' +
-              '<li>More confident</li>' +
-              '<li>Ready for challenges</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #bae6fd 0%, #38bdf8 100%); color:#0369a1;">' +
-              'Explore. Try. Improve!' +
-            '</div>' +
-          '</div>' +
-
-          // Level 4: Elite Monster
-          '<div class="eaa-ref-pedestal-card">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 4</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Elite Monster</div>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#d97706; color:#ffffff;">701 – 1,200 XP</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_4_elite.png" alt="Elite Monster">' +
-            '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Much larger</li>' +
-              '<li>Armor and powerful horns</li>' +
-              '<li>Glowing eyes</li>' +
-              '<li>Stronger and braver</li>' +
-              '<li>Ready for bigger adventures</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #fed7aa 0%, #fb923c 100%); color:#7c2d12;">' +
-              'Hard work takes you further!' +
-            '</div>' +
-          '</div>' +
-
-          // Level 5: Legendary Monster
-          '<div class="eaa-ref-pedestal-card">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 5</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Legendary Monster</div>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#ca8a04; color:#ffffff;">1,201 – 2,000 XP</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_5_legendary.png" alt="Legendary Monster">' +
-            '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Majestic wings</li>' +
-              '<li>Legendary armor</li>' +
-              '<li>Unique powers</li>' +
-              '<li>A true leader</li>' +
-              '<li>Inspiring others</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon">' +
-              'You are a legend in the making!' +
-            '</div>' +
-          '</div>' +
-
-          // Level 6: Mythic Monster
-          '<div class="eaa-ref-pedestal-card" style="border-color:#9333ea; box-shadow:0 0 20px rgba(147, 51, 234, 0.4);">' +
-            '<div>' +
-              '<div style="font-size:0.78rem; font-weight:800; color:#c084fc; text-transform:uppercase;">LEVEL 6</div>' +
-              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Mythic Monster</div>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#7e22ce; color:#ffffff;">2,001+ XP</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-art">' +
-              '<img src="assets/reference/extracted/evo_6_mythic.png" alt="Mythic Monster">' +
-            '</div>' +
-            '<ul class="eaa-ref-pedestal-bullets">' +
-              '<li>Ultimate form</li>' +
-              '<li>Massive and unique design</li>' +
-              '<li>Mythic powers</li>' +
-              '<li>A symbol of greatness</li>' +
-              '<li>You inspire the world</li>' +
-            '</ul>' +
-            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #f3e8ff 0%, #d8b4fe 100%); color:#581c87;">' +
-              'Beyond learning. You make a difference!' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-
-        // Bottom XP Timeline
-        '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; flex-wrap:wrap; gap:12px;">' +
-          '<div style="display:flex; align-items:center; gap:10px;">' +
-            '<span style="font-size:24px;">🎮</span>' +
-            '<span style="font-weight:900; font-size:1.1rem; color:#38bdf8;">XP MILESTONES</span>' +
-          '</div>' +
-
-          '<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#4ade80;">● DISCOVER</span>' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#2dd4bf;">● PRACTICE</span>' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8;">● IMPROVE</span>' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#fbbf24;">● ACHIEVE</span>' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#fde047;">● EVOLVE</span>' +
-            '<span style="font-size:0.78rem; font-weight:800; color:#c084fc;">● BE LEGENDARY</span>' +
-          '</div>' +
-
-          '<div style="font-family:\'Comic Sans MS\', cursive, sans-serif; font-size:0.9rem; color:#f472b6; font-weight:700;">' +
-            'Same Student Different Future ❤️' +
           '</div>' +
         '</div>' +
       '</div>';
   }
 
-  // =========================================================================
-  // TEACHER DASHBOARD & CLASSROOM HUB (REFERENCE 1: GRADE 4B)
-  // =========================================================================
-  function renderTeacherDashboard(container) {
-    const cls = store.getActiveClass();
-    const students = store.getStudentsByClass(cls.id);
-    const assignments = store.getAssignments(cls.id);
-    const attRate = store.getClassAttendanceRate ? store.getClassAttendanceRate(cls.id) : 85;
+
+    function renderTeacherDashboard(container) {
+    const cls = store.getActiveClass() || (store.getClasses && store.getClasses()[0]) || { id: 'class-4b', name: 'Grade 4B' };
+    const students = store.getStudentsByClass ? store.getStudentsByClass(cls.id) : (store.getStudents() || []);
+    const totalXP = 1240;
 
     container.innerHTML = 
-      '<div class="eaa-ref-hub">' +
-        // 1. Top Hub Bar
-        '<div class="eaa-ref-topbar">' +
-          '<div class="eaa-ref-class-title-wrap">' +
-            '<div class="eaa-ref-globe-icon">🌍</div>' +
-            '<div>' +
-              '<h1 class="eaa-ref-class-name">Grade 4B</h1>' +
-              '<div class="eaa-ref-class-meta">' +
-                '<span>👥 ' + (students.length || 19) + ' Students</span>' +
-                '<span>•</span>' +
-                '<span>Room 4B</span>' +
-                '<span>•</span>' +
-                '<span>Tue, Thu 10:00 – 10:40</span>' +
-              '</div>' +
+      '<div class="eaa-command-center">' +
+        // 1. Cinematic World Hero Stage
+        '<div class="eaa-command-hero">' +
+          '<div class="eaa-hero-bg-accent"></div>' +
+          '<div class="eaa-hero-content">' +
+            '<div class="eaa-hero-world-pill">🏰 Active Learning Realm</div>' +
+            '<h1 class="eaa-hero-world-title">THE INVENTOR\'S VALLEY</h1>' +
+            '<div class="eaa-hero-mission-title">' + (cls.name || 'Grade 4B') + ' · Today\'s Mission: <strong>The Invention Challenge</strong></div>' +
+            '<div class="eaa-hero-stats-row">' +
+              '<span>👥 <strong>' + (students.length || 19) + '</strong> Explorers</span>' +
+              '<span>•</span>' +
+              '<span>⚡ <strong>' + totalXP.toLocaleString() + '</strong> Learning Energy XP</span>' +
+              '<span>•</span>' +
+              '<span>⭐ <strong>72%</strong> Language Mastery</span>' +
             '</div>' +
-          '</div>' +
-
-          '<div class="eaa-ref-topbar-actions">' +
-            '<div class="eaa-ref-classcode-pill" onclick="if(navigator.clipboard){navigator.clipboard.writeText(\'G4B-2026\');} if(window.showToast) window.showToast(\'Class code G4B-2026 copied!\', \'success\');" title="Click to copy class code">' +
-              '<span>Class Code:</span> ' +
-              '<strong style="color:#2563eb;">G4B-2026</strong> ' +
-              '<span>📋</span>' +
-            '</div>' +
-            '<button class="eaa-ref-invite-btn" onclick="openModal(\'modal-add-student\')">' +
-              '<span>+</span> <span>Invite</span>' +
+            '<button type="button" class="eaa-hero-enter-btn" onclick="switchView(\'class-detail\')">' +
+              '<span>🗺️</span> <span>ENTER CLASSROOM WORLD</span>' +
             '</button>' +
-            '<button class="eaa-ref-settings-btn" onclick="openSchoolSettingsModal()">' +
-              '<span>⚙️</span> <span>Class Settings</span>' +
+          '</div>' +
+          '<div class="eaa-hero-artwork-box">' +
+            '<img src="assets/reference/extracted/studio_monster.png" alt="Dragon Mascot" class="eaa-hero-mascot-img" onerror="this.src=\'assets/mascot_dragon.png\';">' +
+          '</div>' +
+        '</div>' +
+
+        // 2. Teach Now 1-Click Action Hub
+        '<div class="eaa-teach-now-section">' +
+          '<div class="eaa-section-header-wrap">' +
+            '<div class="eaa-section-title"><span>⚡</span> <span>TEACH NOW — 1-CLICK LAUNCHER</span></div>' +
+            '<span style="font-size:0.8rem; color:#94a3b8;">Launches Instant Classroom Activity</span>' +
+          '</div>' +
+          '<div class="eaa-teach-now-grid">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'challenges\');}">' +
+              '<span>🎤</span><span>Speaking</span>' +
             '</button>' +
-            '<div class="eaa-ref-slogan-cursive" style="margin-left:8px;">' +
-              '"Small Steps Big English Adventures!"' +
-            '</div>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'library\');">' +
+              '<span>📖</span><span>Reading</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'library\');">' +
+              '<span>🎧</span><span>Listening</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'challenges\');">' +
+              '<span>🧠</span><span>Vocabulary</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'challenges\');">' +
+              '<span>🔤</span><span>Grammar</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openRandomStudentPickerModal){window.openRandomStudentPickerModal();}else{switchView(\'challenges\');}">' +
+              '<span>🎲</span><span>Random Picker</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openClassroomTimerModal){window.openClassroomTimerModal();}else{switchView(\'classroom-hub\');}">' +
+              '<span>⏱</span><span>Class Timer</span>' +
+            '</button>' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'classroom-hub\');}">' +
+              '<span>👥</span><span>Team Battle</span>' +
+            '</button>' +
           '</div>' +
         '</div>' +
 
-        // 2. Hub Tabs Bar
-        '<div class="eaa-ref-tabs">' +
-          '<button class="eaa-ref-tab-btn is-active" onclick="switchView(\'dashboard\')">Overview</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'students\')">Students</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'story\')">Class Story</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'assignments\')">Assignments</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'progress\')">Progress</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'assessments\')">Assessments</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'calendar\')">Calendar</button>' +
-          '<button class="eaa-ref-tab-btn" onclick="switchView(\'classes\')">More ▾</button>' +
-        '</div>' +
-
-        // 3. Classroom Hero Banner
-        '<div class="eaa-ref-hero-banner" style="padding:0; min-height:130px; background:none; border:none; box-shadow:0 10px 24px rgba(0,0,0,0.12); position:relative; overflow:hidden; margin-bottom:22px;">' +
-          '<img src="assets/reference/extracted/dash_hero_banner_full.png" alt="Grade 4B English Explorers - Better English. A Brighter You." style="width:100%; border-radius:18px; display:block; object-fit:cover; max-height:150px;">' +
-          '<span class="eaa-ref-wooden-sign-title" style="display:none;">Grade 4B English Explorers</span>' +
-        '</div>' +
-
-        // 4. Five Key Metrics Row
-        '<div class="eaa-ref-metrics-row">' +
-          '<div class="eaa-ref-metric-card">' +
-            '<div class="eaa-ref-metric-icon-box" style="background:#eff6ff; color:#2563eb;">👥</div>' +
-            '<div>' +
-              '<div class="eaa-ref-metric-val">' + (students.length || 19) + '</div>' +
-              '<div class="eaa-ref-metric-label">Students</div>' +
-            '</div>' +
+        // 3. This Week\'s Class Quest
+        '<div class="eaa-class-quest-card">' +
+          '<div class="eaa-quest-badge">🌍 THIS WEEK\'S CLASS QUEST</div>' +
+          '<h2 class="eaa-quest-title">THE WONDERLAND EXPEDITION</h2>' +
+          '<div class="eaa-quest-criteria-row">' +
+            '<span>🎯 Complete 10 Speaking Challenges</span>' +
+            '<span>•</span>' +
+            '<span>📚 20 Reading Activities</span>' +
+            '<span>•</span>' +
+            '<span>🧠 15 Vocabulary Missions</span>' +
           '</div>' +
-
-          '<div class="eaa-ref-metric-card">' +
-            '<div class="eaa-ref-metric-icon-box" style="background:#ecfdf5; color:#10b981;">📋</div>' +
-            '<div>' +
-              '<div class="eaa-ref-metric-val">' + attRate + '%</div>' +
-              '<div class="eaa-ref-metric-label">Attendance</div>' +
-            '</div>' +
+          '<div class="eaa-quest-progress-track">' +
+            '<div class="eaa-quest-progress-fill" style="width: 78%;"></div>' +
           '</div>' +
-
-          '<div class="eaa-ref-metric-card">' +
-            '<div class="eaa-ref-metric-icon-box" style="background:#fefce8; color:#eab308;">⭐</div>' +
-            '<div>' +
-              '<div class="eaa-ref-metric-val">72%</div>' +
-              '<div class="eaa-ref-metric-label">Average Mastery</div>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="eaa-ref-metric-card">' +
-            '<div class="eaa-ref-metric-icon-box" style="background:#f5f3ff; color:#8b5cf6;">📝</div>' +
-            '<div>' +
-              '<div class="eaa-ref-metric-val">' + (assignments.length || 5) + '</div>' +
-              '<div class="eaa-ref-metric-label">Active Assignments</div>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="eaa-ref-metric-card">' +
-            '<div class="eaa-ref-metric-icon-box" style="background:#fff1f2; color:#f43f5e;">🔥</div>' +
-            '<div>' +
-              '<div class="eaa-ref-metric-val">1,240</div>' +
-              '<div class="eaa-ref-metric-label">Class XP This Month</div>' +
-            '</div>' +
+          '<div class="eaa-quest-footer">' +
+            '<span style="color:#c084fc;">78% Collective Progress (19 Explorers Contributing)</span>' +
+            '<span style="color:#fbbf24;">🏆 REWARD: UNLOCK WONDERLAND CLASSROOM</span>' +
           '</div>' +
         '</div>' +
 
-        // 5. Main 2-Column Grid
-        '<div class="eaa-ref-grid">' +
-          // Left Column
-          '<div>' +
-            // Active Unit Card
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>📖</span> <span>Active Unit &gt;</span></h3>' +
-              '</div>' +
-              '<div class="eaa-ref-unit-box">' +
-                '<div class="eaa-ref-unit-thumb">' +
-                  '<img src="assets/reference/extracted/dash_active_unit_img.png" alt="I Love Reading" style="width:100%; height:100%; object-fit:cover;">' +
-                '</div>' +
-                '<div style="flex:1;">' +
-                  '<span class="eaa-ref-unit-badge">Unit 1</span>' +
-                  '<h4 class="eaa-ref-unit-title">I Love Reading</h4>' +
-                  '<div class="eaa-ref-unit-sub">Global Readings 3 · Explore amazing stories, interesting people and new worlds!</div>' +
-                  '<div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">' +
-                    '<div style="flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">' +
-                      '<div style="width:75%; height:100%; background:#22c55e; border-radius:4px;"></div>' +
-                    '</div>' +
-                    '<span style="font-size:0.78rem; font-weight:800; color:#64748b;">3 / 4 Lessons</span>' +
-                  '</div>' +
-                  '<div style="display:flex; gap:10px;">' +
-                    '<a href="save-tomorrow/index.html" class="btn-primary-action" style="padding:7px 16px; font-size:0.84rem; text-decoration:none; background:#2563eb; color:#ffffff;">▶ Continue</a>' +
-                    '<button class="btn-sm-secondary" onclick="switchView(\'curriculum\')" style="padding:7px 14px; font-size:0.84rem;">View Unit</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Next Activities
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>📋</span> <span>Next Activities</span></h3>' +
-                '<a class="eaa-ref-card-link" onclick="switchView(\'assignments\')">View All &gt;</a>' +
-              '</div>' +
-              '<div class="eaa-ref-activity-item">' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
-                  '<span style="font-size:1.2rem;">📄</span>' +
-                  '<div>' +
-                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Worksheet 1.2</div>' +
-                    '<div style="font-size:0.75rem; color:#64748b;">Skimming for Main Idea</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex; align-items:center; gap:12px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#ef4444; background:rgba(239,68,68,0.1); padding:2px 8px; border-radius:6px;">🔴 Today</span>' +
-                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">19/19</span>' +
-                '</div>' +
-              '</div>' +
-
-              '<div class="eaa-ref-activity-item">' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
-                  '<span style="font-size:1.2rem;">🏆</span>' +
-                  '<div>' +
-                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Vocabulary Quiz</div>' +
-                    '<div style="font-size:0.75rem; color:#64748b;">Units 1–2</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex; align-items:center; gap:12px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#3b82f6; background:rgba(59,130,246,0.1); padding:2px 8px; border-radius:6px;">📅 Tomorrow</span>' +
-                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">0/19</span>' +
-                '</div>' +
-              '</div>' +
-
-              '<div class="eaa-ref-activity-item">' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
-                  '<span style="font-size:1.2rem;">🏠</span>' +
-                  '<div>' +
-                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">My Town Prepositions</div>' +
-                    '<div style="font-size:0.75rem; color:#64748b;">Assignment</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex; align-items:center; gap:12px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 8px; border-radius:6px;">Fri, Sep 19</span>' +
-                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">0/19</span>' +
-                '</div>' +
-              '</div>' +
-
-              '<div class="eaa-ref-activity-item">' +
-                '<div style="display:flex; align-items:center; gap:10px;">' +
-                  '<span style="font-size:1.2rem;">🎙️</span>' +
-                  '<div>' +
-                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Speaking: Roll a Story</div>' +
-                    '<div style="font-size:0.75rem; color:#64748b;">Class Activity</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div style="display:flex; align-items:center; gap:12px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#8b5cf6; background:rgba(139,92,246,0.1); padding:2px 8px; border-radius:6px;">Next Week</span>' +
-                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">—</span>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Classroom Badges Shelf
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>🏆</span> <span>Classroom Badges</span></h3>' +
-                '<a class="eaa-ref-card-link" onclick="switchView(\'gamification\')">View All &gt;</a>' +
-              '</div>' +
-              '<div class="eaa-ref-badges-filter">' +
-                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">All</button>' +
-                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Skills</button>' +
-                '<button class="eaa-ref-badge-pill is-active" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Challenges</button>' +
-                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Behavior</button>' +
-                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Special</button>' +
-              '</div>' +
-              '<div class="eaa-ref-badges-row">' +
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_1_speaking.png" alt="Speaking Star" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Speaking Star</div>' +
-                  '<div class="eaa-ref-badge-desc">Speak in English 5 times in class</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_2_reading.png" alt="Reading Explorer" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Reading Explorer</div>' +
-                  '<div class="eaa-ref-badge-desc">Read 3 short texts</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_3_vocab.png" alt="Vocabulary Master" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Vocabulary Master</div>' +
-                  '<div class="eaa-ref-badge-desc">Learn 20 new words</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_4_listening.png" alt="Listening Detective" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Listening Detective</div>' +
-                  '<div class="eaa-ref-badge-desc">Find key details in audio</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_5_writing.png" alt="Writing Wizard" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Writing Wizard</div>' +
-                  '<div class="eaa-ref-badge-desc">Write 3 full sentences</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_6_team.png" alt="Team Player" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">Team Player</div>' +
-                  '<div class="eaa-ref-badge-desc">Help a classmate in English</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-badge-item">' +
-                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_7_challenge.png" alt="English Challenge" style="width:36px; height:36px; object-fit:contain;"></div>' +
-                  '<div class="eaa-ref-badge-name">English Challenge</div>' +
-                  '<div class="eaa-ref-badge-desc">Complete weekly challenge</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Monster Evolution (Class View)
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>👾</span> <span>Monster Evolution (Class View)</span></h3>' +
-                '<a class="eaa-ref-card-link" onclick="switchView(\'evolution\')">View Full Roadmap &gt;</a>' +
-              '</div>' +
-              '<div class="eaa-ref-evo-shelf">' +
-                '<div class="eaa-ref-evo-track">' +
-                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_1_egg.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Egg</span>' +
-                  '</div>' +
-                  '<span>➔</span>' +
-                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_2_baby.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Baby</span>' +
-                  '</div>' +
-                  '<span>➔</span>' +
-                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_2_baby.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Young</span>' +
-                  '</div>' +
-                  '<span>➔</span>' +
-                  '<div class="eaa-ref-evo-node is-active" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_3_adventurer.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Adventurer</span>' +
-                  '</div>' +
-                  '<span>➔</span>' +
-                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_4_elite.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Elite</span>' +
-                  '</div>' +
-                  '<span>➔</span>' +
-                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
-                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_5_legendary.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
-                    '<span class="eaa-ref-evo-label">Legendary</span>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-most-evolved-card">' +
-                  '<img src="assets/reference/extracted/dash_most_evolved_card.png" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">' +
-                  '<div>' +
-                    '<div style="font-size:0.7rem; font-weight:800; color:#854d0e; text-transform:uppercase;">Most Evolved Monster</div>' +
-                    '<div style="font-size:0.95rem; font-weight:900; color:#713f12;">ELIF ASYA</div>' +
-                    '<div style="font-size:0.75rem; font-weight:700; color:#a16207;">Level 5 • Legendary</div>' +
-                  '</div>' +
-                  '<button class="btn-sm-secondary" onclick="switchView(\'evolution\')" style="padding:4px 10px; font-size:0.76rem; background:#ffffff; border:1px solid #facc15; font-weight:800;">View All</button>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
+        // 4. Who Needs a Boost? (Actionable Interventions)
+        '<div>' +
+          '<div class="eaa-section-header-wrap">' +
+            '<div class="eaa-section-title"><span>🌟</span> <span>WHO NEEDS A BOOST?</span></div>' +
+            '<span style="font-size:0.8rem; color:#94a3b8;">Actionable learning interventions</span>' +
           '</div>' +
-
-          // Right Column
-          '<div>' +
-            // Classroom Mood
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>💭</span> <span>Classroom Mood</span></h3>' +
+          '<div class="eaa-boost-grid">' +
+            '<div class="eaa-boost-card">' +
+              '<div class="eaa-boost-header">' +
+                '<span class="eaa-boost-icon">🗣</span>' +
+                '<div>' +
+                  '<h4 class="eaa-boost-title">2 Students Need Speaking Practice</h4>' +
+                  '<p class="eaa-boost-sub">Mert &amp; Selin haven\'t spoken in today\'s mission.</p>' +
+                '</div>' +
               '</div>' +
-              '<div style="font-weight:900; font-size:0.95rem; color:#16a34a; margin-bottom:4px;">⭐ Great Energy!</div>' +
-              '<div class="eaa-ref-mood-faces">' +
-                '<button class="eaa-ref-mood-face-btn is-active" title="Happy & Focused" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Focused!\', \'success\');">🟢</button>' +
-                '<button class="eaa-ref-mood-face-btn" title="Excited & Creative" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Creative!\', \'success\');">🌸</button>' +
-                '<button class="eaa-ref-mood-face-btn" title="Calm & Thoughtful" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Calm!\', \'success\');">🔵</button>' +
-                '<button class="eaa-ref-mood-face-btn" title="Playful & Curious" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Inquisitive!\', \'success\');">🩵</button>' +
-                '<button class="eaa-ref-mood-face-btn" title="Energetic & Ready" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Energetic!\', \'success\');">🟠</button>' +
-              '</div>' +
-              '<div style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">Most students are on task and engaged.</div>' +
-              '<div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">' +
-                '<div style="width:85%; height:100%; background:#22c55e;"></div>' +
-              '</div>' +
+              '<button type="button" class="eaa-boost-btn" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'challenges\');">TAKE ACTION ▶</button>' +
             '</div>' +
 
-            // Today\'s Focus
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>🎯</span> <span>Today\'s Focus</span></h3>' +
-              '</div>' +
-              '<div class="eaa-ref-focus-wrap">' +
-                '<div class="eaa-ref-focus-list">' +
-                  '<label class="eaa-ref-focus-item">' +
-                    '<input type="checkbox" checked style="transform:scale(1.2); cursor:pointer;">' +
-                    '<span>Complete Unit 1 Worksheet</span>' +
-                  '</label>' +
-                  '<label class="eaa-ref-focus-item">' +
-                    '<input type="checkbox" style="transform:scale(1.2); cursor:pointer;">' +
-                    '<span>Speaking practice (pairs)</span>' +
-                  '</label>' +
-                  '<label class="eaa-ref-focus-item">' +
-                    '<input type="checkbox" style="transform:scale(1.2); cursor:pointer;">' +
-                    '<span>Award 3 new badges</span>' +
-                  '</label>' +
-                '</div>' +
-                '<div class="eaa-ref-focus-mascot">' +
-                  '<img src="assets/reference/extracted/dash_focus_mascot.png" alt="Let\'s make English fun!" style="width:78px; height:auto; display:block;">' +
+            '<div class="eaa-boost-card">' +
+              '<div class="eaa-boost-header">' +
+                '<span class="eaa-boost-icon">📚</span>' +
+                '<div>' +
+                  '<h4 class="eaa-boost-title">3 Students Need Reading Support</h4>' +
+                  '<p class="eaa-boost-sub">Unit 1 reading comprehension practice ready.</p>' +
                 '</div>' +
               '</div>' +
+              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'library\');">TAKE ACTION ▶</button>' +
             '</div>' +
 
-            // Quick Actions
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>⚡</span> <span>Quick Actions</span></h3>' +
-                '<a class="eaa-ref-card-link" onclick="openSchoolSettingsModal()">Customize</a>' +
+            '<div class="eaa-boost-card">' +
+              '<div class="eaa-boost-header">' +
+                '<span class="eaa-boost-icon">📝</span>' +
+                '<div>' +
+                  '<h4 class="eaa-boost-title">1 Student Has Missing Homework</h4>' +
+                  '<p class="eaa-boost-sub">Prepositions assignment pending for Kaan.</p>' +
+                '</div>' +
               '</div>' +
-              '<div class="eaa-ref-actions-grid">' +
-                '<button class="eaa-ref-action-sq-btn" onclick="openStudentModal()">' +
-                  '<span style="font-size:22px; color:#2563eb;">👥</span>' +
-                  '<span>Add Student</span>' +
-                '</button>' +
-                '<button class="eaa-ref-action-sq-btn" onclick="openQuickPointsModal()">' +
-                  '<span style="font-size:22px; color:#eab308;">⭐</span>' +
-                  '<span>Give Points</span>' +
-                '</button>' +
-                '<button class="eaa-ref-action-sq-btn" onclick="window.location.href=\'save-tomorrow/index.html\'">' +
-                  '<span style="font-size:22px; color:#10b981;">▶</span>' +
-                  '<span>Start Lesson</span>' +
-                '</button>' +
-                '<button class="eaa-ref-action-sq-btn" onclick="if(window.openRandomStudentPickerModal) window.openRandomStudentPickerModal(); else toggleSmartboardMode();">' +
-                  '<span style="font-size:22px; color:#8b5cf6;">🎲</span>' +
-                  '<span>Randomizer</span>' +
-                '</button>' +
-              '</div>' +
+              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'homework\');">TAKE ACTION ▶</button>' +
             '</div>' +
 
-            // Today in Grade 4B (Timeline)
-            '<div class="eaa-ref-card">' +
-              '<div class="eaa-ref-card-header">' +
-                '<h3 class="eaa-ref-card-title"><span>⏰</span> <span>Today in Grade 4B</span></h3>' +
-                '<a class="eaa-ref-card-link" onclick="switchView(\'calendar\')">View All &gt;</a>' +
-              '</div>' +
-              '<div class="eaa-ref-timeline">' +
-                '<div class="eaa-ref-timeline-item">' +
-                  '<span class="eaa-ref-timeline-time">10:00</span>' +
-                  '<div>' +
-                    '<div class="eaa-ref-timeline-desc">Class starts</div>' +
-                    '<div class="eaa-ref-timeline-sub">Unit 1 – Reading</div>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-timeline-item">' +
-                  '<span class="eaa-ref-timeline-time">10:10</span>' +
-                  '<div>' +
-                    '<div class="eaa-ref-timeline-desc">Warm-up</div>' +
-                    '<div class="eaa-ref-timeline-sub">Quick speaking game</div>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-timeline-item">' +
-                  '<span class="eaa-ref-timeline-time">10:20</span>' +
-                  '<div>' +
-                    '<div class="eaa-ref-timeline-desc">Worksheet 1.2</div>' +
-                    '<div class="eaa-ref-timeline-sub">Skimming for main idea</div>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-timeline-item">' +
-                  '<span class="eaa-ref-timeline-time">10:35</span>' +
-                  '<div>' +
-                    '<div class="eaa-ref-timeline-desc">Pair Practice</div>' +
-                    '<div class="eaa-ref-timeline-sub">Talk about the story</div>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="eaa-ref-timeline-item">' +
-                  '<span class="eaa-ref-timeline-time">10:40</span>' +
-                  '<div>' +
-                    '<div class="eaa-ref-timeline-desc">Wrap Up</div>' +
-                    '<div class="eaa-ref-timeline-sub">Award points &amp; badges</div>' +
-                  '</div>' +
+            '<div class="eaa-boost-card">' +
+              '<div class="eaa-boost-header">' +
+                '<span class="eaa-boost-icon">👾</span>' +
+                '<div>' +
+                  '<h4 class="eaa-boost-title">4 Students Close to Evolution</h4>' +
+                  '<p class="eaa-boost-sub">Less than 50 XP to evolve to Level 5 Legendary!</p>' +
                 '</div>' +
               '</div>' +
-            '</div>' +
-
-            // Bottom Scenic Box
-            '<div class="eaa-ref-landscape-box" style="padding:0; overflow:hidden; border-radius:14px; background:transparent; border:none; box-shadow:0 4px 14px rgba(0,0,0,0.08);">' +
-              '<img src="assets/reference/extracted/dash_bottom_banner.png" alt="Different Students Brighter Futures" style="width:100%; border-radius:14px; display:block;">' +
+              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'evolution\');">TAKE ACTION ▶</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
   }
+
 
   function renderProgressView(container) {
     const cls = store.getActiveClass();
@@ -7653,89 +6666,58 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>';
   }
 
-  function renderStudentBadgesView(container) {
-    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
-    if (!s) return;
-    const mState = store.calculateMonsterState(s.id);
-    const levels = (store.getProgressionLevels ? store.getProgressionLevels(true) : []).slice().sort((a, b) => a.level - b.level);
-    const badges = store.getBadges ? store.getBadges() : [];
-    const awards = (store.getStudentAwards ? store.getStudentAwards(s.id) : []);
-    const awardedBadgeIds = new Set(awards.map(a => a.badgeId));
-    const txs = store.getXPTransactions ? store.getXPTransactions(s.id) : [];
+    function renderStudentBadgesView(container) {
+    if (!container) container = document.getElementById('app-view-container');
+    if (!container) return;
+
+    const relics = [
+      { id: 'b1', name: 'Speaking Star', icon: '🎤', skill: 'Speaking', progress: '7/10', desc: 'Speak English in 10 classroom activities.', xp: '+50 XP' },
+      { id: 'b2', name: 'Story Explorer', icon: '📖', skill: 'Reading', progress: '4/5', desc: 'Read 5 adventure texts and answer comprehension questions.', xp: '+40 XP' },
+      { id: 'b3', name: 'Audio Decoder', icon: '🎧', skill: 'Listening', progress: '8/10', desc: 'Accurately transcribe audio dialogs.', xp: '+45 XP' },
+      { id: 'b4', name: 'Sentence Architect', icon: '✍', skill: 'Writing', progress: '3/5', desc: 'Construct 5 descriptive sentences with target prepositions.', xp: '+50 XP' },
+      { id: 'b5', name: 'Vocabulary Wizard', icon: '🧠', skill: 'Vocabulary', progress: '15/15', desc: 'Master all Unit 1 vocabulary terms.', xp: '+60 XP' },
+      { id: 'b6', name: 'Grammar Knight', icon: '🔤', skill: 'Grammar', progress: '9/10', desc: 'Zero grammar mistakes in present simple challenge.', xp: '+40 XP' },
+      { id: 'b7', name: 'Team Pioneer', icon: '🤝', skill: 'Teamwork', progress: '5/5', desc: 'Help your partner solve the invention problem.', xp: '+50 XP' },
+      { id: 'b8', name: 'Invention Master', icon: '💡', skill: 'Creativity', progress: '2/3', desc: 'Design and present an original invention.', xp: '+80 XP' }
+    ];
 
     container.innerHTML = 
-      '<div style="max-width:960px; margin:0 auto; padding:20px 20px 40px; display:flex; flex-direction:column; gap:24px;">' +
+      '<div class="eaa-achievement-wall-container">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">🏆 Badges &amp; Evolution Stages</h1>' +
-            '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Track your learning milestones and monster transformations.</p>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
+              '<span>🏅</span> <span>English Achievement Wall</span>' +
+            '</h1>' +
+            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Collectible relic badges leading directly to English learning actions.</p>' +
           '</div>' +
-          '<div style="font-size:1.1rem; font-weight:900; color:var(--color-primary); background:var(--bg-card); padding:8px 16px; border-radius:14px; border:1px solid var(--border-light);">' +
-            '⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' Total XP' +
-          '</div>' +
+          '<button type="button" class="btn-primary-action" onclick="openGamificationEditorModal()">+ New Badge Relic</button>' +
         '</div>' +
 
-        // Evolution Stages Track
-        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">👾 Monster Evolution Stages</h3>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:10px;">' +
-            levels.map(l => {
-              const isCurrent = l.level === mState.currentLevel;
-              const isPast = l.level < mState.currentLevel;
-              const isUnlocked = isPast || isCurrent;
-              return '' +
-                '<div style="background:' + (isCurrent ? 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))' : 'var(--bg-canvas)') + '; border:' + (isCurrent ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:14px; padding:12px 8px; text-align:center; opacity:' + (isUnlocked ? '1' : '0.5') + ';">' +
-                  '<div style="width:50px; height:50px; margin:0 auto 6px auto;">' +
-                    (window.renderMonsterSVG ? window.renderMonsterSVG({ stage: l.stageKey, color: mState.profile.baseColor, equipped: mState.profile.equipped, size: 48, animated: false }) : '👾') +
+        '<div class="eaa-relics-grid">' +
+          relics.map(r => {
+            return '' +
+              '<div class="eaa-relic-card">' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<div class="eaa-relic-icon-wrap">' + r.icon + '</div>' +
+                  '<div>' +
+                    '<span class="badge" style="background:rgba(250,204,21,0.15); color:#facc15; font-size:0.7rem; font-weight:800;">' + r.skill.toUpperCase() + '</span>' +
+                    '<h3 class="eaa-relic-name">' + r.name + '</h3>' +
                   '</div>' +
-                  '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary);">Lvl ' + l.level + '</div>' +
-                  '<div style="font-size:0.8rem; font-weight:800; color:var(--text-main);">' + l.name + '</div>' +
-                  '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">' + l.xpRequired.toLocaleString() + ' XP</div>' +
-                  (isCurrent ? '<div style="margin-top:4px; font-size:0.68rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.15); border-radius:6px; padding:1px 4px;">CURRENT</div>' : '') +
-                '</div>';
-            }).join('') +
-          '</div>' +
-        '</div>' +
-
-        // Badges Showcase
-        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">⭐ Earned Badges</h3>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;">' +
-            badges.map(b => {
-              const isEarned = awardedBadgeIds.has(b.id) || (b.id === 'badge-1' && mState.totalXP >= 1000);
-              return '' +
-                '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:14px; text-align:center; opacity:' + (isEarned ? '1' : '0.5') + ';">' +
-                  '<div style="font-size:2.4rem; margin-bottom:6px;">' + (b.icon || '⭐') + '</div>' +
-                  '<div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">' + b.name + '</div>' +
-                  '<div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">' + (b.description || 'Classroom achievement') + '</div>' +
-                  '<div style="margin-top:8px;">' +
-                    (isEarned ? '<span style="font-size:0.72rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:8px;">✓ UNLOCKED</span>' : '<span style="font-size:0.72rem; font-weight:700; color:var(--text-muted); background:var(--bg-surface); padding:2px 8px; border-radius:8px;">🔒 LOCKED</span>') +
-                  '</div>' +
-                '</div>';
-            }).join('') +
-          '</div>' +
-        '</div>' +
-
-        // Recent XP History Ledger
-        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">📜 My XP Ledger</h3>' +
-          '<div style="max-height:260px; overflow-y:auto; border:1px solid var(--border-light); border-radius:12px;">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem; text-align:left;">' +
-              '<thead><tr style="background:var(--bg-canvas); border-bottom:1px solid var(--border-light);"><th style="padding:8px 12px;">Date</th><th style="padding:8px 12px;">Reason / Mission</th><th style="padding:8px 12px; text-align:right;">XP</th></tr></thead>' +
-              '<tbody>' +
-                txs.slice(0, 10).map(t => '' +
-                  '<tr style="border-bottom:1px solid var(--border-light);">' +
-                    '<td style="padding:8px 12px; color:var(--text-muted);">' + (t.date || 'Today') + '</td>' +
-                    '<td style="padding:8px 12px; font-weight:600;">' + (t.icon || '⭐') + ' ' + (t.reason || 'Classroom award') + '</td>' +
-                    '<td style="padding:8px 12px; text-align:right; font-weight:800; color:' + (t.amount >= 0 ? '#059669' : '#dc2626') + ';">' + (t.amount >= 0 ? '+' : '') + t.amount + ' XP</td>' +
-                  '</tr>'
-                ).join('') +
-              '</tbody>' +
-            '</table>' +
-          '</div>' +
+                '</div>' +
+                '<p class="eaa-relic-criteria">' + r.desc + '</p>' +
+                '<div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:10px; display:flex; justify-content:space-between; font-size:0.78rem; font-weight:800;">' +
+                  '<span style="color:#cbd5e1;">Progress: ' + r.progress + '</span>' +
+                  '<span style="color:#facc15;">' + r.xp + '</span>' +
+                '</div>' +
+                '<button type="button" class="eaa-relic-action-btn" onclick="switchView(\'challenges\'); if(window.showToast) window.showToast(\'Opening ' + r.name + ' challenge mission!\', \'info\');">' +
+                  'VIEW CHALLENGE ▶' +
+                '</button>' +
+              '</div>';
+          }).join('') +
         '</div>' +
       '</div>';
   }
+
 
   function renderLeaderboardView(container) {
     const cls = store.getActiveClass();
@@ -7786,172 +6768,175 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // SIDEBAR NAVIGATION (With Admin & Settings)
   // =========================================================================
+    // =========================================================================
+  // TOP COMMAND & NAVIGATION CONTROLLER
+  // =========================================================================
+  window.classroomWorldViewMode = 'map';
+  window.setWorldViewMode = function(mode) {
+    window.classroomWorldViewMode = mode;
+    const c = document.getElementById('app-view-container');
+    if (c && typeof renderCurrentView === 'function') renderCurrentView();
+  };
+
   function renderNavigation() {
-    const sidebar = document.getElementById('app-sidebar-nav');
-    if (!sidebar) return;
-
-    const role = store.getRole();
-    const counts = (store && store.getSidebarCounts) ? store.getSidebarCounts() : {
-      classes: store.getClasses().length,
-      students: store.getStudents().length,
-      curriculum: (store.getBooks ? store.getBooks().length : 2),
-      resources: store.getResources().length,
-      worksheets: (store.getWorksheets ? store.getWorksheets().length : 4),
-      assignments: store.getAssignments().length,
-      homework: store.getHomework().length,
-      quizzes: store.getQuizzes().length,
-      reports: 5,
-      messages: 3
-    };
-
-    if (role === 'teacher') {
-      function renderNavGroup(slug, title, items, sectionViews) {
-        const containsActive = (sectionViews || []).includes(currentView) || items.some(i => i.isActive);
-        const isCollapsed = containsActive ? false : Boolean(navSectionsCollapsed[slug]);
-        return '' +
-          '<div class="sidebar-group ' + (isCollapsed ? 'is-collapsed' : '') + '" id="nav-group-' + slug + '">' +
-            '<button type="button" class="sidebar-section-header" onclick="toggleNavSection(\'' + slug + '\')" title="Toggle ' + title + '">' +
-              '<span class="sidebar-section-title">' + title + '</span>' +
-              '<span class="sidebar-section-chevron">▾</span>' +
-            '</button>' +
-            '<ul class="sidebar-nav-list">' +
-              items.map(item => '' +
-                '<li>' +
-                  '<button class="nav-link-btn ' + (item.isActive ? 'is-active' : '') + '" onclick="switchView(\'' + item.view + '\')" title="' + item.title + '">' +
-                    '<span class="nav-item-left">' +
-                      '<span class="nav-icon">' + item.icon + '</span> ' +
-                      '<span class="nav-label">' + item.label + '</span>' +
-                    '</span>' +
-                    (item.badge !== undefined && item.badge !== null ? '<span class="nav-badge-pill">' + item.badge + '</span>' : '') +
-                  '</button>' +
-                '</li>'
-              ).join('') +
-            '</ul>' +
-          '</div>';
+    // 1. Sync Top Command Bar Navigation Pills
+    const topNavPills = document.querySelectorAll('#eaa-top-nav .eaa-nav-pill');
+    topNavPills.forEach(pill => {
+      const targetView = pill.getAttribute('data-view');
+      let isActive = (currentView === targetView);
+      if (targetView === 'class-detail' && (currentView === 'classes' || currentView === 'classroom-hub')) isActive = true;
+      if (targetView === 'monster' && currentView === 'evolution') isActive = true;
+      if (targetView === 'challenges' && currentView === 'gamification') isActive = true;
+      if (targetView === 'badges' && currentView === 'gamification') isActive = true;
+      if (isActive) {
+        pill.classList.add('is-active');
+      } else {
+        pill.classList.remove('is-active');
       }
+    });
 
-      sidebar.innerHTML = 
-        // Top Home Button
-        '<ul class="sidebar-nav-list" style="margin-bottom: 8px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Home Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Home</span></span></button></li>' +
-        '</ul>' +
+    // 2. Sync Mobile Bottom Nav
+    const mobileBtns = document.querySelectorAll('.eaa-mobile-nav .eaa-mobile-tab-btn, .eaa-mobile-bottom-nav .mobile-nav-btn');
+    mobileBtns.forEach(btn => {
+      const target = btn.getAttribute('data-view') || '';
+      if (currentView === target || (target === 'dashboard' && currentView === 'dashboard')) {
+        btn.classList.add('is-active');
+      } else {
+        btn.classList.remove('is-active');
+      }
+    });
 
-        // 1. MY SCHOOL
-        renderNavGroup('my-school', 'MY SCHOOL', [
-          { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
-          { view: 'students', label: 'Students', icon: '🧒', title: 'Students', isActive: currentView === 'students', badge: counts.students },
-          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
-          { view: 'calendar', label: 'Calendar', icon: '📅', title: 'Calendar', isActive: currentView === 'calendar' },
-          { view: 'story', label: 'Announcements', icon: '📢', title: 'Announcements', isActive: currentView === 'story' }
-        ], ['classes', 'students', 'classroom-hub', 'class-detail', 'calendar', 'story']) +
-
-        // 2. TEACHING
-        renderNavGroup('teaching', 'TEACHING', [
-          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum' },
-          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library' },
-          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets' },
-          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments' },
-          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework' },
-          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes' },
-          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
-          { view: 'reports', label: 'Reports', icon: '📊', title: 'Reports', isActive: currentView === 'reports' }
-        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes', 'progress', 'reports']) +
-
-        // 3. GAMIFICATION
-        renderNavGroup('gamification-nav', 'GAMIFICATION', [
-          { view: 'gamification', label: 'Badges & Achievements', icon: '🏆', title: 'Badges & Achievements', isActive: currentView === 'gamification' },
-          { view: 'evolution', label: 'Monster Evolution', icon: '🐲', title: 'Monster Evolution Roadmap', isActive: currentView === 'evolution' },
-          { view: 'monster', label: 'Items Catalog', icon: '👾', title: 'Monster Studio & Items', isActive: currentView === 'monster' },
-          { view: 'challenges', label: 'Class XP & Rewards', icon: '⚡', title: 'Class XP & Challenges', isActive: currentView === 'challenges' }
-        ], ['gamification', 'evolution', 'monster', 'challenges']) +
-
-        // 4. COMMUNITY
-        renderNavGroup('community', 'COMMUNITY', [
-          { view: 'assessments', label: 'Teacher Tools', icon: '🛠️', title: 'Teacher Tools', isActive: currentView === 'assessments' },
-          { view: 'parent-home', label: 'Parent View', icon: '👨‍👩‍👧', title: 'Parent View', isActive: currentView === 'parent-home' },
-          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages }
-        ], ['assessments', 'parent-home', 'messages']) +
-
-        // Teacher Level 8 Card at Bottom of Nav (Reference 1)
-        '<div class="eaa-sidebar-teacher-card">' +
-          '<span class="eaa-teacher-trophy">🏆</span>' +
-          '<div style="flex:1;">' +
-            '<div style="font-size:0.7rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;">Your Teacher Level</div>' +
-            '<div style="font-size:0.95rem; font-weight:900; color:#facc15; line-height:1.2;">Level 8</div>' +
-            '<div style="font-size:0.7rem; color:#e2e8f0; margin-top:2px;">420 / 1,000 XP</div>' +
-            '<div style="width:100%; height:5px; background:rgba(255,255,255,0.15); border-radius:3px; margin-top:5px; overflow:hidden;">' +
-              '<div style="width:42%; height:100%; background:linear-gradient(90deg, #f59e0b, #fbbf24); border-radius:3px;"></div>' +
+    // 3. Render Contextual Secondary Nav Sub-Bar if relevant
+    const contextBar = document.getElementById('eaa-context-nav-bar');
+    if (contextBar) {
+      if (currentView === 'class-detail' || currentView === 'classes' || currentView === 'classroom-hub') {
+        contextBar.style.display = 'flex';
+        contextBar.innerHTML = 
+          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<span style="font-size:0.8rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Classroom View:</span>' +
+              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'map' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'map\')" style="padding:4px 12px; font-size:0.78rem;">🗺️ World Map</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'grid' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'grid\')" style="padding:4px 12px; font-size:0.78rem;">🎴 Explorer Grid</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'compact' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'compact\')" style="padding:4px 12px; font-size:0.78rem;">📋 Compact Roster</button>' +
             '</div>' +
-          '</div>' +
-        '</div>' +
-
-        // Sidebar Collapse Toggle Button
-        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
-          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all 0.15s ease;">' +
-            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
-          '</button>' +
-        '</div>';
-    } else if (role === 'student') {
-      sidebar.innerHTML = 
-        '<div class="sidebar-section-title">My Adventure</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')" title="My Journey"><span class="nav-item-left"><span class="nav-icon">🗺️</span> <span class="nav-label">My Journey</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Game Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Game Library</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
-        '</ul>' +
-        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
-          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
-            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
-          '</button>' +
-        '</div>';
-    } else {
-      sidebar.innerHTML = 
-        '<div class="sidebar-section-title">Parent Portal</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Child Overview</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-progress' ? 'is-active' : '') + '" onclick="switchView(\'parent-progress\')" title="CEFR Progress"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">CEFR Progress</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
-        '</ul>' +
-        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
-          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
-            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
-          '</button>' +
-        '</div>';
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="openStudentModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Explorer</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openClassModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Class</button>' +
+            '</div>' +
+          '</div>';
+      } else if (currentView === 'monster' || currentView === 'evolution') {
+        contextBar.style.display = 'flex';
+        contextBar.innerHTML = 
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<button type="button" class="eaa-nav-pill ' + (currentView === 'monster' ? 'is-active' : '') + '" onclick="switchView(\'monster\')" style="padding:4px 14px; font-size:0.8rem;">👾 Monster Studio</button>' +
+            '<button type="button" class="eaa-nav-pill ' + (currentView === 'evolution' ? 'is-active' : '') + '" onclick="switchView(\'evolution\')" style="padding:4px 14px; font-size:0.8rem;">🐲 Evolution Journey</button>' +
+          '</div>';
+      } else {
+        contextBar.style.display = 'none';
+        contextBar.innerHTML = '';
+      }
     }
 
-    // Restore collapsed sidebar state if user toggled it
-    if (localStorage.getItem('eaa-sidebar-collapsed') === 'true') {
-      sidebar.classList.add('is-collapsed');
-      const layout = document.querySelector('.app-layout');
-      if (layout) layout.classList.add('sidebar-collapsed');
-    }
+    const sidebar = document.getElementById('app-sidebar-nav');
+    if (sidebar) sidebar.style.display = 'none';
   }
 
-  window.toggleNavSection = function(slug) {
-    navSectionsCollapsed[slug] = !navSectionsCollapsed[slug];
-    try {
-      localStorage.setItem('eaa-nav-sections-collapsed', JSON.stringify(navSectionsCollapsed));
-    } catch (e) {}
-    renderNavigation();
+  // =========================================================================
+  // CONTEXTUAL ACTION DRAWER CONTROLLER
+  // =========================================================================
+  window.closeExplorerDrawer = function() {
+    const drawer = document.getElementById('eaa-action-drawer');
+    const overlay = document.getElementById('eaa-drawer-overlay');
+    if (drawer) drawer.classList.remove('is-open');
+    if (overlay) overlay.classList.remove('is-open');
   };
 
-  window.toggleSidebarCollapse = function() {
-    const sidebar = document.getElementById('app-sidebar-nav');
-    const layout = document.querySelector('.app-layout');
-    const isCollapsed = sidebar && sidebar.classList.contains('is-collapsed');
-    if (isCollapsed) {
-      if (sidebar) sidebar.classList.remove('is-collapsed');
-      if (layout) layout.classList.remove('sidebar-collapsed');
-      localStorage.setItem('eaa-sidebar-collapsed', 'false');
-    } else {
-      if (sidebar) sidebar.classList.add('is-collapsed');
-      if (layout) layout.classList.add('sidebar-collapsed');
-      localStorage.setItem('eaa-sidebar-collapsed', 'true');
-    }
+  window.openExplorerDrawer = function(studentId) {
+    const drawer = document.getElementById('eaa-action-drawer');
+    const overlay = document.getElementById('eaa-drawer-overlay');
+    if (!drawer) return;
+
+    const student = store.getStudentById ? store.getStudentById(studentId) : (store.getStudents().find(s => s.id === studentId));
+    if (!student) return;
+
+    const totalXP = store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 480;
+    const mState = store.calculateMonsterState ? store.calculateMonsterState(student.id) : { currentLevel: 4, stageName: 'Adventurer', progressPct: 65, xpRequired: 700 };
+    const skills = store.getStudentSkills ? store.getStudentSkills(student.id) : {
+      reading: { score: 85, cefr: 'A1+' },
+      listening: { score: 80, cefr: 'A1' },
+      speaking: { score: 75, cefr: 'A1' },
+      writing: { score: 70, cefr: 'A1' }
+    };
+    const avatarHtml = window.renderMonsterAvatar ? window.renderMonsterAvatar(student.id, { size: 110, animated: true }) : '👾';
+
+    drawer.innerHTML = 
+      '<div class="eaa-drawer-header">' +
+        '<div class="eaa-drawer-title">' +
+          '<span>🧭</span> <span>Explorer Dossier</span>' +
+        '</div>' +
+        '<button type="button" class="eaa-drawer-close-btn" onclick="closeExplorerDrawer()" aria-label="Close Drawer">✕</button>' +
+      '</div>' +
+
+      // Hero Stage with Monster
+      '<div class="eaa-drawer-hero-stage">' +
+        '<div class="eaa-drawer-monster-avatar">' + avatarHtml + '</div>' +
+        '<h2 class="eaa-drawer-student-name">' + (student.firstName || 'Explorer').toUpperCase() + ' ' + (student.lastName || '') + '</h2>' +
+        '<div class="eaa-drawer-student-meta">' +
+          '<span class="badge" style="background:rgba(56,189,248,0.2); color:#38bdf8; font-weight:800; border-radius:10px; padding:2px 8px;">' + (student.overallCefr || 'A1+') + ' TARGET</span>' +
+          '<span style="color:#94a3b8;">•</span>' +
+          '<span style="color:#fbbf24; font-weight:800;">Level ' + (mState.currentLevel || 4) + ' · ' + (mState.stageName || 'Growing Monster') + '</span>' +
+        '</div>' +
+        '<div class="eaa-drawer-energy-bar-wrap">' +
+          '<div class="eaa-drawer-energy-label">' +
+            '<span>⚡ Learning Energy</span>' +
+            '<span>' + totalXP.toLocaleString() + ' / ' + ((mState.xpRequired || 700)).toLocaleString() + ' XP</span>' +
+          '</div>' +
+          '<div class="eaa-drawer-energy-track">' +
+            '<div class="eaa-drawer-energy-fill" style="width:' + (mState.progressPct || 65) + '%;"></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 4-Skill Indicators
+      '<div style="background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px;">' +
+        '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px; letter-spacing:0.04em;">Language Skill Mastery</div>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">' +
+          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#38bdf8;">📖 Read:</span> <strong>' + (skills.reading ? skills.reading.score : 85) + '%</strong></div>' +
+          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#a855f7;">🎧 Listen:</span> <strong>' + (skills.listening ? skills.listening.score : 80) + '%</strong></div>' +
+          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#34d399;">🗣 Speak:</span> <strong>' + (skills.speaking ? skills.speaking.score : 75) + '%</strong></div>' +
+          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#f59e0b;">✍ Write:</span> <strong>' + (skills.writing ? skills.writing.score : 70) + '%</strong></div>' +
+        '</div>' +
+      '</div>' +
+
+      // Action Buttons Stack (One Contextual Action Menu!)
+      '<div class="eaa-drawer-actions-stack">' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-energy" onclick="store.addStudentXP(\'' + student.id + '\', 10); window.openExplorerDrawer(\'' + student.id + '\'); if(window.showToast) window.showToast(\'+10 Learning Energy awarded!\', \'success\');">' +
+          '<span>⚡</span> <span>+10 Learning Energy</span>' +
+        '</button>' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-energy" onclick="store.addStudentXP(\'' + student.id + '\', 25); window.openExplorerDrawer(\'' + student.id + '\'); if(window.showToast) window.showToast(\'+25 Learning Energy awarded!\', \'success\');">' +
+          '<span>⚡</span> <span>+25 Learning Energy</span>' +
+        '</button>' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-badge" onclick="closeExplorerDrawer(); if(window.openAwardBadgeModal) window.openAwardBadgeModal(\'' + student.id + '\'); else switchView(\'badges\');">' +
+          '<span>🏅</span> <span>Award Achievement Relic</span>' +
+        '</button>' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-mission" onclick="closeExplorerDrawer(); switchView(\'challenges\');">' +
+          '<span>🎯</span> <span>Assign English Mission</span>' +
+        '</button>' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-speaking" onclick="closeExplorerDrawer(); if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'challenges\');">' +
+          '<span>🗣</span> <span>Start Speaking Practice</span>' +
+        '</button>' +
+        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-secondary" onclick="closeExplorerDrawer(); if(window.openStudentDetail) window.openStudentDetail(\'' + student.id + '\');">' +
+          '<span>📜</span> <span>Full Explorer Profile</span>' +
+        '</button>' +
+      '</div>';
+
+    drawer.classList.add('is-open');
+    if (overlay) overlay.classList.add('is-open');
   };
+
+  window.toggleNavSection = function() {};
+  window.toggleSidebarCollapse = function() {};
+
 
   // ROUTER CONTROLLER
   // =========================================================================
@@ -14447,86 +13432,70 @@ window.switchClassroomSubTab = function(subTab) {
 
 
   // English Challenges Engine View
-  window.renderChallengesView = function(container) {
-    const challenges = store.getEnglishChallenges ? store.getEnglishChallenges() : [];
-    const dailyMissions = challenges.filter(c => c.type === 'daily');
-    const weeklyQuests = challenges.filter(c => c.type === 'weekly');
-    const skillChallenges = challenges.filter(c => c.type === 'skill');
+    window.renderChallengesView = function(container) {
+    if (!container) container = document.getElementById('app-view-container');
+    if (!container) return;
 
-    function renderChallengeCard(c) {
-      const diffColors = { Easy: '#10b981', Normal: '#3b82f6', Challenge: '#f59e0b', Epic: '#a855f7' };
-      const color = diffColors[c.difficulty] || '#3b82f6';
-
-      return '' +
-        '<div style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:var(--shadow-sm);">' +
-          '<div>' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:0.74rem; font-weight:800; color:' + color + '; background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:6px;">' + c.difficulty.toUpperCase() + ' · ' + c.skill + '</span>' +
-              '<span style="font-size:0.75rem; font-weight:800; color:#06b6d4;">⭐ +' + c.xpReward + ' XP</span>' +
-            '</div>' +
-            '<h4 style="font-size:1rem; font-weight:900; margin:0 0 6px 0; color:var(--text-main); display:flex; align-items:center; gap:6px;">' +
-              '<span>' + c.icon + '</span> <span>' + c.title + '</span>' +
-            '</h4>' +
-            '<p style="font-size:0.8rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.4;">' + c.instructions + '</p>' +
-            '<div style="font-size:0.74rem; color:var(--text-muted); background:var(--bg-muted); padding:6px 10px; border-radius:6px;">' +
-              '<strong>Criteria:</strong> ' + c.successCriteria +
-            '</div>' +
-          '</div>' +
-          '<button type="button" class="btn-primary-action" onclick="handleCompleteChallenge(\'' + c.id + '\')" style="width:100%; justify-content:center; font-size:0.84rem; padding:8px 12px; font-weight:800; background:linear-gradient(135deg, #0d9488, #14b8a6);">' +
-            '✓ Complete & Award +' + c.xpReward + ' XP' +
-          '</button>' +
-        '</div>';
-    }
+    const missions = [
+      { id: 'm1', cat: 'speak', icon: '🎤', title: 'The 60-Second Story', desc: 'Speak for 60 seconds about your favorite invention using 5 target vocabulary words.', level: 'A1+', xp: 50 },
+      { id: 'm2', cat: 'speak', icon: '🗣', title: 'Partner Interview', desc: 'Ask your partner 3 questions about school tools and summarize their answers in English.', level: 'A1', xp: 40 },
+      { id: 'm3', cat: 'read', icon: '📖', title: 'Word Hunter in Forest', desc: 'Read The After-School Inventor and identify all action verbs.', level: 'A1+', xp: 45 },
+      { id: 'm4', cat: 'listen', icon: '🎧', title: 'Audio Dialogue Decode', desc: 'Listen to the audio track and answer 3 questions about the invention emergency.', level: 'A1', xp: 35 },
+      { id: 'm5', cat: 'write', icon: '✍', title: 'Invention Blueprint Label', desc: 'Write 4 sentences describing what your new machine does and how it helps students.', level: 'A1+', xp: 50 },
+      { id: 'm6', cat: 'vocab', icon: '🧠', title: 'Vocabulary Flash Challenge', desc: 'Master 10 target vocabulary cards with 100% accuracy in the Vocabulary Lab.', level: 'A1', xp: 30 },
+      { id: 'm7', cat: 'grammar', icon: '🔤', title: 'Preposition Quest', desc: 'Complete 8 sentences using on, under, behind, and in front of correctly.', level: 'A1', xp: 35 },
+      { id: 'm8', cat: 'team', icon: '👥', title: 'Team Invention Pitch', desc: 'Collaborate in groups of 3 to present an invention to the classroom.', level: 'A1+', xp: 60 }
+    ];
 
     container.innerHTML = 
-      '<div style="margin-bottom:24px;">' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">' +
+      '<div class="eaa-challenges-board">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">' +
           '<div>' +
-            '<h1 style="font-size:1.65rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">' +
-              '<span>⚡</span> <span>English Challenges Engine</span>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
+              '<span>⚡</span> <span>English Challenge Board</span>' +
             '</h1>' +
-            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0;">Daily missions, weekly quests, and language skill challenges across CEFR A1–A2.</p>' +
+            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Complete missions to gain Learning Energy XP and evolve your companion monster.</p>' +
           '</div>' +
-          '<button class="btn-sm-secondary" onclick="switchView(\'dashboard\')">← Back to Overview</button>' +
+          '<button type="button" class="btn-primary-action" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'classroom-hub\');">⚡ Launch Smart Board Mode</button>' +
         '</div>' +
-      '</div>' +
 
-      // Daily Missions Section
-      '<div style="margin-bottom:28px;">' +
-        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
-          '<span style="font-size:1.2rem;">📅</span>' +
-          '<h3 style="font-size:1.1rem; font-weight:900; margin:0; color:var(--text-main);">Daily English Missions</h3>' +
-          '<span style="font-size:0.75rem; background:rgba(6,182,212,0.15); color:#06b6d4; font-weight:800; padding:2px 8px; border-radius:6px;">TODAY</span>' +
+        // Categories Bar
+        '<div class="eaa-challenge-categories-bar">' +
+          '<button type="button" class="eaa-challenge-cat-btn is-active">All Missions</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">🗣 Speak</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">📖 Read</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">🎧 Listen</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">✍ Write</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">🧠 Vocabulary</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">🔤 Grammar</button>' +
+          '<button type="button" class="eaa-challenge-cat-btn">👥 Team</button>' +
         '</div>' +
-        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">' +
-          dailyMissions.map(renderChallengeCard).join('') +
-        '</div>' +
-      '</div>' +
 
-      // Weekly Quests Section
-      '<div style="margin-bottom:28px;">' +
-        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
-          '<span style="font-size:1.2rem;">🧭</span>' +
-          '<h3 style="font-size:1.1rem; font-weight:900; margin:0; color:var(--text-main);">Weekly Expedition Quests</h3>' +
-          '<span style="font-size:0.75rem; background:rgba(168,85,247,0.15); color:#c084fc; font-weight:800; padding:2px 8px; border-radius:6px;">WEEKLY</span>' +
-        '</div>' +
-        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">' +
-          weeklyQuests.map(renderChallengeCard).join('') +
-        '</div>' +
-      '</div>' +
-
-      // Four-Skill Challenges Section
-      '<div style="margin-bottom:28px;">' +
-        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">' +
-          '<span style="font-size:1.2rem;">🎯</span>' +
-          '<h3 style="font-size:1.1rem; font-weight:900; margin:0; color:var(--text-main);">Skill Mastery Challenges</h3>' +
-          '<span style="font-size:0.75rem; background:rgba(16,185,129,0.15); color:#34d399; font-weight:800; padding:2px 8px; border-radius:6px;">SKILLS</span>' +
-        '</div>' +
-        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">' +
-          skillChallenges.map(renderChallengeCard).join('') +
+        // Missions Grid
+        '<div class="eaa-missions-grid">' +
+          missions.map(m => {
+            return '' +
+              '<div class="eaa-mission-card">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span class="eaa-mission-cat-pill">' + m.icon + ' ' + m.cat.toUpperCase() + ' MISSION</span>' +
+                    '<span class="badge" style="background:rgba(255,255,255,0.06); color:#cbd5e1;">' + m.level + '</span>' +
+                  '</div>' +
+                  '<h3 class="eaa-mission-name">' + m.title + '</h3>' +
+                  '<p class="eaa-mission-desc">' + m.desc + '</p>' +
+                '</div>' +
+                '<div class="eaa-mission-footer">' +
+                  '<span class="eaa-mission-xp-tag">+' + m.xp + ' XP</span>' +
+                  '<button type="button" class="eaa-mission-start-btn" onclick="store.addStudentXP(\'s1\', ' + m.xp + '); if(window.showToast) window.showToast(\'Mission Started! Awarded +' + m.xp + ' XP!\', \'success\');">' +
+                    'START MISSION ▶' +
+                  '</button>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
         '</div>' +
       '</div>';
   };
+
 
   window.handleCompleteChallenge = function(challengeId) {
     const student = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents()[0]);
