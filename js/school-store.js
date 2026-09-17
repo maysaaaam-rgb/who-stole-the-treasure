@@ -14126,6 +14126,10 @@
   const schoolStore = new MasterSchoolStore();
   schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
   schoolStore.addStudentXP = function(id, amt, reason = 'Learning Energy') { return this.awardXP(id, amt, reason, 'Mr. Maysam'); };
+  schoolStore.completeEnglishChallenge = function(studentId, challengeId, xp = 50, challengeTitle = '') {
+    const reason = challengeTitle ? ('Challenge: ' + challengeTitle) : ('English Challenge: ' + challengeId);
+    return this.awardXP(studentId, xp, reason, 'Mr. Maysam');
+  };
   schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
   schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
   schoolStore.archiveGame = schoolStore.archiveResource.bind(schoolStore);

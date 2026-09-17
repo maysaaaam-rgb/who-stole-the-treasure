@@ -917,6 +917,21 @@
   window.switchLibraryTab = function(tab) {
     libraryActiveTab = tab;
     libraryActiveCatalogTab = tab;
+    libActiveTab = tab;
+    if (tab === 'worksheets') {
+      libFilterType = 'worksheet';
+    } else if (tab === 'games') {
+      libFilterType = 'game';
+    } else if (tab === 'reading') {
+      libFilterSkill = 'Reading';
+      libActiveTab = 'stories';
+    } else if (tab === 'listening') {
+      libFilterSkill = 'Listening';
+    } else if (tab === 'writing') {
+      libFilterSkill = 'Writing';
+    } else if (tab === 'vocab') {
+      libFilterSkill = 'Vocabulary';
+    }
     window.switchView(tab === 'worksheets' ? 'worksheets' : 'library');
   };
 
@@ -4448,52 +4463,541 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return renderResourceCard(r);
   }
 
-    function renderLibraryView(container) {
+  function renderLibraryView(container) {
     if (!container) container = document.getElementById('app-view-container');
     if (!container) return;
 
+    const allGames = (store.getResources() || []).filter(r => !r.archived);
+    const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
+    const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
+    const totalResources = allCombined.length;
+
+    const gamesCount = allCombined.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story').length;
+    const worksheetsCount = allCombined.filter(r => r.isWorksheet).length;
+    const storiesCount = allCombined.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading')).length;
+    const roleplaysCount = allCombined.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay')).length;
+    const textbooksCount = allCombined.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook')).length;
+    const favoritesCount = allCombined.filter(r => Boolean(r.featured)).length;
+
+    // Collect topics dynamically
+    const topicSet = new Set();
+    allCombined.forEach(r => {
+      if (Array.isArray(r.topics)) r.topics.forEach(t => topicSet.add(t));
+      else if (r.topic) topicSet.add(r.topic);
+    });
+    const availableTopics = Array.from(topicSet).sort();
+
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const filteredItems = getFilteredResources();
+
+    let tabHeading = 'All Resources';
+    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
+    else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
+    else if (libActiveTab === 'alice') tabHeading = '🐇 Alice in Wonderland Play & Prop Unit';
+    else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
+    else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
+    else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
+    else if (libActiveTab === 'roleplays') tabHeading = 'Roleplay Missions';
+    else if (libActiveTab === 'textbooks') tabHeading = 'Curriculum Textbooks';
+    else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
+
     const portals = [
-      { id: 'reading', title: 'Reading Forest', icon: '🌲', desc: 'Graded readers, interactive stories, and Macmillan anthology.', count: '12 Stories' },
-      { id: 'listening', title: 'Listening Station', icon: '🎧', desc: 'Phonics tracks, dialogues, and audio comprehension labs.', count: '18 Tracks' },
-      { id: 'writing', title: 'Writing Workshop', icon: '✍️', desc: 'Sentence builders, creative invention blueprints, and prompts.', count: '10 Guides' },
-      { id: 'vocab', title: 'Vocabulary Lab', icon: '🧠', desc: 'Smart flashcards, speed rounds, and memory word games.', count: '64 Target Words' },
-      { id: 'games', title: 'Game Zone', icon: '🎮', desc: '15 interactive curriculum-aligned ESL games for classroom and home.', count: '15 Games' },
-      { id: 'worksheets', title: 'Worksheet Archive', icon: '📝', desc: 'Printable and digital worksheets with teacher scoring keys.', count: '24 Sheets' }
+      { id: 'reading', title: 'Reading Forest', icon: '🌲', desc: 'Graded readers, stories & skimming.', count: storiesCount + ' Stories', action: "setLibFilter('skill', 'Reading')" },
+      { id: 'listening', title: 'Listening Station', icon: '🎧', desc: 'Phonics tracks & dialogues.', count: '18 Tracks', action: "setLibFilter('skill', 'Listening')" },
+      { id: 'writing', title: 'Writing Workshop', icon: '✍️', desc: 'Sentence builders & blueprints.', count: '10 Guides', action: "setLibFilter('skill', 'Writing')" },
+      { id: 'vocab', title: 'Vocabulary Lab', icon: '🧠', desc: 'Flashcards & memory challenges.', count: '64 Target Words', action: "setLibFilter('skill', 'Vocabulary')" },
+      { id: 'games', title: 'Game Zone', icon: '🎮', desc: '15 interactive curriculum games.', count: gamesCount + ' Games', action: "setLibTab('games')" },
+      { id: 'worksheets', title: 'Worksheet Archive', icon: '📝', desc: 'Printable & digital sheets.', count: worksheetsCount + ' Sheets', action: "setLibTab('worksheets')" }
     ];
 
     container.innerHTML = 
-      '<div style="display:flex; flex-direction:column; gap:24px;">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
-          '<div>' +
-            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
-              '<span>📚</span> <span>Adventure Library</span>' +
-            '</h1>' +
-            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Themed world portals for reading, listening, writing, vocabulary, and games.</p>' +
+      '<div style="display:flex; flex-direction:column; gap:20px;">' +
+        // 1. Professional Header
+        '<div class="library-header-compact" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:18px; padding:20px 24px;">' +
+          '<div class="library-title-wrap">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<h1 class="library-title-main" style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
+                '<span>📚</span> <span>Adventure Resource Library</span>' +
+              '</h1>' +
+              '<span class="library-verified-badge" title="All curriculum resources audited and verified" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:20px;">✓ Curated</span>' +
+            '</div>' +
+            '<p class="library-subtitle" style="font-size:0.88rem; color:#94a3b8; margin:6px 0 0 0;">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
           '</div>' +
-          '<div style="display:flex; gap:8px;">' +
-            '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()">+ Add Worksheet</button>' +
-            '<button type="button" class="btn-primary-action" onclick="openResourceEditor()">+ Add Resource</button>' +
+          '<div class="library-header-actions" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
+              '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
+            '</button>' +
+            '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="if(window.handleSyncLocalLibraryToCloud) handleSyncLocalLibraryToCloud(); else if(window.triggerGlobalCloudSync) triggerGlobalCloudSync();" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
+            '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+            '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
+            '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+              (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
+            '</button>' +
           '</div>' +
         '</div>' +
 
-        '<div class="eaa-library-portals-grid">' +
+        // 2. Themed World Portals Strip (Clickable 1-Click Portals)
+        '<div class="eaa-library-portals-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">' +
           portals.map(p => {
             return '' +
-              '<div class="eaa-portal-card" onclick="if(window.switchLibraryTab) window.switchLibraryTab(\'' + p.id + '\');">' +
-                '<div>' +
-                  '<span class="eaa-portal-icon">' + p.icon + '</span>' +
-                  '<h3 class="eaa-portal-title">' + p.title + '</h3>' +
-                  '<p class="eaa-portal-desc">' + p.desc + '</p>' +
+              '<div class="eaa-portal-card" onclick="' + p.action + '" style="cursor:pointer; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; transition:all 0.2s ease;">' +
+                '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">' +
+                  '<span class="eaa-portal-icon" style="font-size:1.6rem;">' + p.icon + '</span>' +
+                  '<div>' +
+                    '<h4 class="eaa-portal-title" style="font-size:0.95rem; font-weight:800; color:#fff; margin:0;">' + p.title + '</h4>' +
+                    '<span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">' + p.count + '</span>' +
+                  '</div>' +
                 '</div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px; font-size:0.8rem; font-weight:800;">' +
-                  '<span style="color:#38bdf8;">' + p.count + '</span>' +
-                  '<span style="color:#94a3b8;">Enter Portal ▶</span>' +
-                '</div>' +
+                '<p class="eaa-portal-desc" style="font-size:0.76rem; color:#94a3b8; margin:0; line-height:1.3;">' + p.desc + '</p>' +
               '</div>';
           }).join('') +
         '</div>' +
+
+        // Manage Mode & Cloud Diagnostics Banner
+        (isLibraryManageMode ? 
+          '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+            '<div>' +
+              '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
+              '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
+                'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected' : 'Local Storage Mode') + '</span> · ' +
+                'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="if(window.handleSyncLocalLibraryToCloud) handleSyncLocalLibraryToCloud();" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
+            '</div>' +
+          '</div>' : '') +
+
+        // 3. Prominent Multi-Faceted Controls Bar
+        '<div class="library-controls-bar" style="background:rgba(30,41,59,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px 20px; display:flex; flex-direction:column; gap:14px;">' +
+          '<div class="library-search-wrap" style="position:relative; width:100%;">' +
+            '<span class="library-search-icon" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.1rem; color:#94a3b8;">🔍</span>' +
+            '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search lessons, worksheets, games... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" style="width:100%; padding:12px 42px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:#0f172a; color:#ffffff; font-size:0.95rem; box-sizing:border-box;" />' +
+            '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:#94a3b8; font-size:1.1rem; cursor:pointer;' + (libSearchQuery ? '' : 'display:none;') + '">✕</button>' +
+          '</div>' +
+          '<div class="library-filters-row" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'level\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
+                '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+                '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
+                '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+                '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
+                '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
+                '<option value="B2" ' + (libFilterLevel === 'B2' ? 'selected' : '') + '>B2</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'type\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
+                '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
+                '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
+                '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
+                '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
+                '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
+                '<option value="quiz" ' + (libFilterType === 'quiz' ? 'selected' : '') + '>🧩 Quiz</option>' +
+                '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+                '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
+                '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
+                '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
+                '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
+                '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
+                '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
+                '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6+</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>All Skills ▾</option>' +
+                '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>🗣 Speaking</option>' +
+                '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>🎧 Listening</option>' +
+                '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>📖 Reading</option>' +
+                '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>✍ Writing</option>' +
+                '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>🧠 Vocabulary</option>' +
+                '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>🔤 Grammar</option>' +
+                '<option value="Pronunciation" ' + (libFilterSkill === 'Pronunciation' ? 'selected' : '') + '>📢 Pronunciation</option>' +
+                '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>🔡 Phonics</option>' +
+                '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>🌍 CLIL</option>' +
+              '</select>' +
+            '</div>' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>All Topics ▾</option>' +
+                availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
+              '</select>' +
+            '</div>' +
+            '<div class="filter-dropdown-wrap">' +
+              '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
+                '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
+                '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
+                '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
+                '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
+              '</select>' +
+            '</div>' +
+            '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + ' padding:8px 14px; border-radius:8px; background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4); font-size:0.82rem; font-weight:700; cursor:pointer; align-items:center; gap:6px;">' +
+              '<span>↺</span> <span>Clear filters</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+
+        // 4. Category Tabs Row
+        '<div class="library-category-tabs-row library-nav-tabs-row" style="display:flex; overflow-x:auto; gap:8px; padding-bottom:6px;">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>All Resources</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + totalResources + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'games' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>🎮 Games</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + gamesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'worksheets' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>📄 Worksheets</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + worksheetsCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + '; color:#fce7f3; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>🧠 The Day Your Brain Quit!</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; padding:2px 7px; border-radius:12px; font-size:0.75rem;">RG2 p.17</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + '; color:#cffafe; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>⚙️ The Small Inventor</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:2px 7px; border-radius:12px; font-size:0.75rem;">Series</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + '; color:#f3e8ff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>🐇 Alice Wonderland</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff; padding:2px 7px; border-radius:12px; font-size:0.75rem;">Series</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'stories' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>📚 Stories</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + storiesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'roleplays' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>🎭 Roleplays</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + roleplaysCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'textbooks' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>📖 Textbooks</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + textbooksCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? '#f59e0b' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
+            '<span>⭐ Favorites</span>' +
+            '<span class="cat-pill-count tab-count-badge" style="background:rgba(0,0,0,0.3); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + favoritesCount + '</span>' +
+          '</button>' +
+        '</div>' +
+
+        // 5. Section Header Row (Heading + Count + Sort)
+        '<div class="library-section-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:4px;">' +
+          '<div class="library-section-left" style="display:flex; align-items:center; gap:12px;">' +
+            '<h2 class="section-heading" style="font-size:1.25rem; font-weight:900; color:#ffffff; margin:0;">' + tabHeading + '</h2>' +
+            '<span id="lib-count-badge" class="section-count-badge library-count-pill" style="font-size:0.78rem; font-weight:700; color:#94a3b8; background:rgba(255,255,255,0.08); padding:3px 10px; border-radius:20px;">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
+          '</div>' +
+          '<div class="library-section-right" style="display:flex; align-items:center; gap:8px;">' +
+            '<label for="lib-sort-select" class="sort-label" style="font-size:0.8rem; font-weight:700; color:#94a3b8;">Sort:</label>' +
+            '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:6px 12px; font-size:0.8rem;">' +
+              '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
+              '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
+              '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
+              '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
+              '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
+              '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+
+        // 6. The Day Your Brain Quit! Showcase Shelf
+        ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+          '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
+            '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+              '<div style="display:flex; align-items:center; gap:12px;">' +
+                '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
+                '<div>' +
+                  '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
+                  '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 · 35 min</p>' +
+                '</div>' +
+              '</div>' +
+              '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+              '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
+                    '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0;">🧠 Interactive 10-Screen Story Adventure</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none;">▶ Play Brain Adventure</a>' +
+                  '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
+                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📄 5-Part Detective Workbook</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Certificate.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
+                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📖 Global Readings 3</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules &amp; Learning and Your Brain neuroscience text.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' : '') +
+
+        // 7. The Small Inventor Showcase Shelf
+        ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+          '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
+            '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+              '<div style="display:flex; align-items:center; gap:12px;">' +
+                '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
+                '<div>' +
+                  '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0;">The Small Inventor • Young Inventor Academy</h2>' +
+                  '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+)</p>' +
+                '</div>' +
+              '</div>' +
+              '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+              '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
+                    '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0;">🚀 Young Inventor Academy</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">10 connected missions with blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none;">▶ Enter Inventor Lab</a>' +
+                  '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
+                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">💡 The After-School Inventor</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
+                  '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
+                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📖 My Good Ideas Book</h4>' +
+                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Edison notebooks, Da Vinci sketches, and Kingfisher biomimicry.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:8px;">' +
+                  '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' : '') +
+
+        // 8. Alice in Wonderland Showcase Shelf
+        ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+          '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+              '<div style="display:flex; align-items:center; gap:10px;">' +
+                '<span style="font-size:2rem;">🐇</span>' +
+                '<div>' +
+                  '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
+                  '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
+                '</div>' +
+              '</div>' +
+              '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
+            '</div>' +
+            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
+              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · PLAY</span>' +
+                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
+                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, and workshop chest reveal.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:6px;">' +
+                  '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
+                  '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · PAST SIMPLE</span>' +
+                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
+                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, and Mad Hatter lie detector.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:6px;">' +
+                  '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
+                  '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+                '</div>' +
+              '</div>' +
+              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · THEATRE</span>' +
+                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                  '</div>' +
+                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
+                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
+                '</div>' +
+                '<div style="display:flex; gap:6px;">' +
+                  '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
+                  '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' : '') +
+
+        // 9. Resource Grid Container (Where all interactive resource cards render!)
+        '<div id="library-resource-grid" class="resource-library-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:18px;">' +
+          (filteredItems.length === 0 ? 
+            '<div class="library-empty-state" style="grid-column:1/-1; text-align:center; padding:60px 20px; background:rgba(30,41,59,0.5); border:1px dashed rgba(255,255,255,0.15); border-radius:18px;">' +
+              '<div class="library-empty-icon" style="font-size:3rem; margin-bottom:12px;">🔍</div>' +
+              '<h3 class="library-empty-title" style="font-size:1.2rem; font-weight:800; color:#fff; margin:0 0 8px 0;">No resources match your search or filters</h3>' +
+              '<p class="library-empty-desc" style="font-size:0.86rem; color:#94a3b8; margin:0 0 16px 0;">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+              '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="padding:8px 18px; border-radius:8px; background:#2563eb; color:#fff; border:none; font-weight:700; cursor:pointer;">' +
+                '<span>↺</span> <span>Clear all filters</span>' +
+              '</button>' +
+            '</div>' :
+            filteredItems.map(r => renderResourceCard(r)).join('')
+          ) +
+        '</div>' +
       '</div>';
   }
+
+  window.handleLibSearch = function(query) {
+    libSearchQuery = query;
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.style.display = (query && query.trim()) ? 'block' : 'none';
+    updateLibraryGrid();
+  };
+
+  window.handleLibSearchInput = function(e) {
+    const val = (e && e.target) ? e.target.value : (typeof e === 'string' ? e : '');
+    window.handleLibSearch(val);
+  };
+
+  window.clearLibSearch = function() {
+    libSearchQuery = '';
+    const input = document.getElementById('lib-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'none';
+    updateLibraryGrid();
+  };
+
+  window.setLibFilter = function(filterKey, value) {
+    if (filterKey === 'level') libFilterLevel = value;
+    else if (filterKey === 'type') libFilterType = value;
+    else if (filterKey === 'skill') libFilterSkill = value;
+    else if (filterKey === 'topic') libFilterTopic = value;
+    else if (filterKey === 'grade') libFilterGrade = value;
+    else if (filterKey === 'duration') libFilterDuration = value;
+    updateLibraryGrid();
+  };
+
+  window.setLibTab = function(tabName) {
+    libActiveTab = tabName;
+    if (tabName === 'favorites') {
+      libFilterFavoritesOnly = true;
+    } else {
+      libFilterFavoritesOnly = false;
+      if (tabName === 'worksheets') libFilterType = 'worksheet';
+      else if (tabName === 'games') libFilterType = 'game';
+      else libFilterType = 'all';
+    }
+    const container = document.getElementById('app-view-container');
+    if (container) renderLibraryView(container);
+    else renderCurrentView();
+  };
+
+  window.setLibSort = function(sortKey) {
+    libSortOrder = sortKey;
+    updateLibraryGrid();
+  };
+
+  window.toggleLibFavoritesOnly = function() {
+    libFilterFavoritesOnly = !libFilterFavoritesOnly;
+    if (libFilterFavoritesOnly) libActiveTab = 'favorites';
+    else if (libActiveTab === 'favorites') libActiveTab = 'all';
+    const container = document.getElementById('app-view-container');
+    if (container) renderLibraryView(container);
+    else updateLibraryGrid();
+  };
+
+  window.handleToggleFavoriteCard = function(resourceId, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (store.toggleFavoriteResource) {
+      store.toggleFavoriteResource(resourceId);
+    } else {
+      const res = store.getResource(resourceId);
+      if (res) store.updateResource(resourceId, { featured: !res.featured });
+    }
+    updateLibraryGrid();
+  };
+
+  window.clearAllLibFilters = function() {
+    libSearchQuery = '';
+    libFilterLevel = 'all';
+    libFilterType = 'all';
+    libFilterSkill = 'all';
+    libFilterTopic = 'all';
+    libFilterGrade = 'all';
+    libFilterDuration = 'all';
+    libFilterFavoritesOnly = false;
+    const input = document.getElementById('lib-search-input');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'none';
+    const selects = document.querySelectorAll('.library-select');
+    selects.forEach(s => s.value = 'all');
+    updateLibraryGrid();
+  };
+
 
 
   function updateLibraryGrid() {
@@ -6210,19 +6714,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.8rem; color:#94a3b8;">Launches Instant Classroom Activity</span>' +
           '</div>' +
           '<div class="eaa-teach-now-grid">' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'challenges\');}">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'speak\'); switchView(\'challenges\');">' +
               '<span>🎤</span><span>Speaking</span>' +
             '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'library\');">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'reading\'); switchView(\'library\');">' +
               '<span>📖</span><span>Reading</span>' +
             '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'library\');">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'listening\'); switchView(\'library\');">' +
               '<span>🎧</span><span>Listening</span>' +
             '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'challenges\');">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'vocab\'); switchView(\'challenges\');">' +
               '<span>🧠</span><span>Vocabulary</span>' +
             '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="switchView(\'challenges\');">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'grammar\'); switchView(\'challenges\');">' +
               '<span>🔤</span><span>Grammar</span>' +
             '</button>' +
             '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openRandomStudentPickerModal){window.openRandomStudentPickerModal();}else{switchView(\'challenges\');}">' +
@@ -6231,7 +6735,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openClassroomTimerModal){window.openClassroomTimerModal();}else{switchView(\'classroom-hub\');}">' +
               '<span>⏱</span><span>Class Timer</span>' +
             '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'classroom-hub\');}">' +
+            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openClassroomToolkitModal){window.openClassroomToolkitModal(\'scoreboard\');}else if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'classroom-hub\');}">' +
               '<span>👥</span><span>Team Battle</span>' +
             '</button>' +
           '</div>' +
@@ -6272,7 +6776,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<p class="eaa-boost-sub">Mert &amp; Selin haven\'t spoken in today\'s mission.</p>' +
                 '</div>' +
               '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'challenges\');">TAKE ACTION ▶</button>' +
+              '<button type="button" class="eaa-boost-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'speak\'); switchView(\'challenges\');">TAKE ACTION ▶</button>' +
             '</div>' +
 
             '<div class="eaa-boost-card">' +
@@ -6283,7 +6787,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<p class="eaa-boost-sub">Unit 1 reading comprehension practice ready.</p>' +
                 '</div>' +
               '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'library\');">TAKE ACTION ▶</button>' +
+              '<button type="button" class="eaa-boost-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'reading\'); switchView(\'library\');">TAKE ACTION ▶</button>' +
             '</div>' +
 
             '<div class="eaa-boost-card">' +
@@ -6778,16 +7282,40 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (c && typeof renderCurrentView === 'function') renderCurrentView();
   };
 
+  // Helper Launchers for Teach Now and Smart Board Mode
+  window.openSmartBoardMode = function() {
+    if (typeof window.toggleSmartboardMode === 'function') {
+      if (!isClassroomSmartboardMode) window.toggleSmartboardMode();
+    }
+  };
+
+  window.openRandomStudentPickerModal = function() {
+    if (typeof window.openClassroomToolkitModal === 'function') {
+      window.openClassroomToolkitModal('random');
+    } else if (typeof window.openModal === 'function') {
+      window.openModal('modal-random-selector');
+    }
+  };
+
+  window.openClassroomTimerModal = function() {
+    if (typeof window.openClassroomToolkitModal === 'function') {
+      window.openClassroomToolkitModal('timer');
+    }
+  };
+
   function renderNavigation() {
     // 1. Sync Top Command Bar Navigation Pills
     const topNavPills = document.querySelectorAll('#eaa-top-nav .eaa-nav-pill');
     topNavPills.forEach(pill => {
       const targetView = pill.getAttribute('data-view');
       let isActive = (currentView === targetView);
-      if (targetView === 'class-detail' && (currentView === 'classes' || currentView === 'classroom-hub')) isActive = true;
-      if (targetView === 'monster' && currentView === 'evolution') isActive = true;
-      if (targetView === 'challenges' && currentView === 'gamification') isActive = true;
-      if (targetView === 'badges' && currentView === 'gamification') isActive = true;
+      if (targetView === 'class-detail' && (currentView === 'classes' || currentView === 'classroom-hub' || currentView === 'class-detail')) isActive = true;
+      if (targetView === 'monster' && currentView === 'monster') isActive = true;
+      if (targetView === 'evolution' && currentView === 'evolution') isActive = true;
+      if (targetView === 'challenges' && currentView === 'challenges') isActive = true;
+      if (targetView === 'badges' && (currentView === 'badges' || currentView === 'gamification')) isActive = true;
+      if (targetView === 'progress' && (currentView === 'progress' || currentView === 'progress-check' || currentView === 'analytics')) isActive = true;
+      if (targetView === 'smartboard' && isClassroomSmartboardMode) isActive = true;
       if (isActive) {
         pill.classList.add('is-active');
       } else {
@@ -6806,30 +7334,62 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       }
     });
 
-    // 3. Render Contextual Secondary Nav Sub-Bar if relevant
+    // 3. Render Contextual Secondary Nav Sub-Bar
     const contextBar = document.getElementById('eaa-context-nav-bar');
     if (contextBar) {
       if (currentView === 'class-detail' || currentView === 'classes' || currentView === 'classroom-hub') {
         contextBar.style.display = 'flex';
         contextBar.innerHTML = 
           '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
-            '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<span style="font-size:0.8rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Classroom View:</span>' +
+            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Classroom:</span>' +
               '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'map' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'map\')" style="padding:4px 12px; font-size:0.78rem;">🗺️ World Map</button>' +
               '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'grid' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'grid\')" style="padding:4px 12px; font-size:0.78rem;">🎴 Explorer Grid</button>' +
               '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'compact' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'compact\')" style="padding:4px 12px; font-size:0.78rem;">📋 Compact Roster</button>' +
+              '<span style="color:rgba(255,255,255,0.2); margin:0 4px;">|</span>' +
+              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'classroom' ? 'is-active' : '') + '" onclick="switchClassTab(\'classroom\')" style="padding:4px 10px; font-size:0.76rem;">Hub</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'students' ? 'is-active' : '') + '" onclick="switchClassTab(\'students\')" style="padding:4px 10px; font-size:0.76rem;">Roster</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'assignments' ? 'is-active' : '') + '" onclick="switchClassTab(\'assignments\')" style="padding:4px 10px; font-size:0.76rem;">Tasks</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'progress' ? 'is-active' : '') + '" onclick="switchClassTab(\'progress\')" style="padding:4px 10px; font-size:0.76rem;">CEFR</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'story' ? 'is-active' : '') + '" onclick="switchClassTab(\'story\')" style="padding:4px 10px; font-size:0.76rem;">Story</button>' +
             '</div>' +
             '<div style="display:flex; align-items:center; gap:8px;">' +
               '<button type="button" class="btn-sm-secondary" onclick="openStudentModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Explorer</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openClassModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Class</button>' +
             '</div>' +
           '</div>';
-      } else if (currentView === 'monster' || currentView === 'evolution') {
+      } else if (currentView === 'curriculum' || currentView === 'library' || currentView === 'worksheets' || currentView === 'assignments' || currentView === 'homework' || currentView === 'quizzes') {
         contextBar.style.display = 'flex';
         contextBar.innerHTML = 
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<button type="button" class="eaa-nav-pill ' + (currentView === 'monster' ? 'is-active' : '') + '" onclick="switchView(\'monster\')" style="padding:4px 14px; font-size:0.8rem;">👾 Monster Studio</button>' +
-            '<button type="button" class="eaa-nav-pill ' + (currentView === 'evolution' ? 'is-active' : '') + '" onclick="switchView(\'evolution\')" style="padding:4px 14px; font-size:0.8rem;">🐲 Evolution Journey</button>' +
+          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
+            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Teaching:</span>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')" style="padding:4px 12px; font-size:0.78rem;">📖 Curriculum</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" style="padding:4px 12px; font-size:0.78rem;">📚 Resource Library</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')" style="padding:4px 12px; font-size:0.78rem;">📄 Worksheets</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')" style="padding:4px 12px; font-size:0.78rem;">📝 Assignments</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')" style="padding:4px 12px; font-size:0.78rem;">✍️ Homework</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')" style="padding:4px 12px; font-size:0.78rem;">🧩 Quizzes</button>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()" style="font-size:0.78rem; padding:4px 12px;">+ Add Worksheet</button>' +
+              '<button type="button" class="btn-primary-action" onclick="openResourceEditor()" style="font-size:0.78rem; padding:4px 12px;">+ Add Resource</button>' +
+            '</div>' +
+          '</div>';
+      } else if (currentView === 'challenges' || currentView === 'badges' || currentView === 'gamification' || currentView === 'monster' || currentView === 'evolution') {
+        contextBar.style.display = 'flex';
+        contextBar.innerHTML = 
+          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
+            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Gamification:</span>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'challenges' ? 'is-active' : '') + '" onclick="switchView(\'challenges\')" style="padding:4px 12px; font-size:0.78rem;">🎯 English Challenges</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'badges' || currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" style="padding:4px 12px; font-size:0.78rem;">🏆 Achievement Wall</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'monster' ? 'is-active' : '') + '" onclick="switchView(\'monster\')" style="padding:4px 12px; font-size:0.78rem;">👾 Monster Studio</button>' +
+              '<button type="button" class="eaa-nav-pill ' + (currentView === 'evolution' ? 'is-active' : '') + '" onclick="switchView(\'evolution\')" style="padding:4px 12px; font-size:0.78rem;">🐲 Evolution Journey</button>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="openGamificationEditorModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Badge</button>' +
+            '</div>' +
           '</div>';
       } else {
         contextBar.style.display = 'none';
@@ -13430,11 +13990,93 @@ window.switchClassroomSubTab = function(subTab) {
     }
   };
 
-
   // English Challenges Engine View
-    window.renderChallengesView = function(container) {
+  window._activeChallengeCat = 'all';
+  window._activeChallengeStudentId = null;
+
+  window.setChallengeCategory = function(cat) {
+    window._activeChallengeCat = cat || 'all';
+    const container = document.getElementById('app-view-container');
+    if (container && window.currentView === 'challenges') {
+      window.renderChallengesView(container);
+    }
+  };
+
+  window.setChallengeTargetStudent = function(studentId) {
+    window._activeChallengeStudentId = studentId;
+    const container = document.getElementById('app-view-container');
+    if (container && window.currentView === 'challenges') {
+      window.renderChallengesView(container);
+    }
+  };
+
+  window.pickRandomChallengeStudent = function() {
+    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]);
+    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
+    if (!students || !students.length) return;
+    const randomIdx = Math.floor(Math.random() * students.length);
+    const chosen = students[randomIdx];
+    window._activeChallengeStudentId = chosen.id;
+    if (window.showToast) window.showToast('🎲 Selected Explorer: ' + chosen.firstName + ' ' + (chosen.lastName || '') + '!', 'info');
+    const container = document.getElementById('app-view-container');
+    if (container && window.currentView === 'challenges') {
+      window.renderChallengesView(container);
+    }
+  };
+
+
+  window.handleCompleteChallenge = function(challengeId, studentId, xpAmount, challengeTitle) {
+    const student = (studentId && store.getStudent) ? store.getStudent(studentId) : (store.getActiveStudent ? store.getActiveStudent() : (store.getStudents()[0]));
+    if (!student) {
+      if (window.showToast) window.showToast('Please select an explorer first.', 'warning');
+      return;
+    }
+    const xp = parseInt(xpAmount, 10) || 50;
+    const title = challengeTitle || ('Challenge ' + challengeId);
+    if (store.completeEnglishChallenge) {
+      store.completeEnglishChallenge(student.id, challengeId, xp, title);
+    } else if (store.addStudentXP) {
+      store.addStudentXP(student.id, xp, 'Challenge: ' + title);
+    }
+    if (window.playCelebrationSound) {
+      try { window.playCelebrationSound(); } catch (e) {}
+    }
+    if (window.showToast) {
+      window.showToast('🎉 ' + student.firstName + ' completed ' + title + '! +' + xp + ' Learning Energy XP awarded!', 'success');
+    }
+    const c = document.getElementById('app-view-container');
+    if (c && window.currentView === 'challenges') window.renderChallengesView(c);
+  };
+
+  window.handleAwardClassChallenge = function(challengeId, xpAmount, challengeTitle) {
+    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]);
+    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
+    if (!students || !students.length) return;
+    const xp = parseInt(xpAmount, 10) || 40;
+    const title = challengeTitle || ('Team Mission ' + challengeId);
+    students.forEach(s => {
+      if (store.addStudentXP) store.addStudentXP(s.id, xp, 'Team Mission: ' + title);
+    });
+    if (window.playCelebrationSound) {
+      try { window.playCelebrationSound(); } catch (e) {}
+    }
+    if (window.showToast) {
+      window.showToast('🏆 All ' + students.length + ' Explorers in ' + (cls ? cls.name : 'Class') + ' earned +' + xp + ' XP for ' + title + '!', 'success');
+    }
+    const c = document.getElementById('app-view-container');
+    if (c && window.currentView === 'challenges') window.renderChallengesView(c);
+  };
+
+  window.renderChallengesView = function(container) {
     if (!container) container = document.getElementById('app-view-container');
     if (!container) return;
+
+    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]) || { id: 'class-4b', name: 'Grade 4B' };
+    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
+    let targetStudent = (window._activeChallengeStudentId && store.getStudent) ? store.getStudent(window._activeChallengeStudentId) : null;
+    if (!targetStudent && store.getActiveStudent) targetStudent = store.getActiveStudent();
+    if (!targetStudent && students.length) targetStudent = students[0];
+    if (targetStudent) window._activeChallengeStudentId = targetStudent.id;
 
     const missions = [
       { id: 'm1', cat: 'speak', icon: '🎤', title: 'The 60-Second Story', desc: 'Speak for 60 seconds about your favorite invention using 5 target vocabulary words.', level: 'A1+', xp: 50 },
@@ -13447,33 +14089,56 @@ window.switchClassroomSubTab = function(subTab) {
       { id: 'm8', cat: 'team', icon: '👥', title: 'Team Invention Pitch', desc: 'Collaborate in groups of 3 to present an invention to the classroom.', level: 'A1+', xp: 60 }
     ];
 
+    const categories = [
+      { id: 'all', label: 'All Missions' },
+      { id: 'speak', label: '🗣 Speak' },
+      { id: 'read', label: '📖 Read' },
+      { id: 'listen', label: '🎧 Listen' },
+      { id: 'write', label: '✍ Write' },
+      { id: 'vocab', label: '🧠 Vocabulary' },
+      { id: 'grammar', label: '🔤 Grammar' },
+      { id: 'team', label: '👥 Team' }
+    ];
+
+    const activeCat = window._activeChallengeCat || 'all';
+    const visibleMissions = (activeCat === 'all')
+      ? missions
+      : missions.filter(m => m.cat === activeCat);
+
     container.innerHTML = 
       '<div class="eaa-challenges-board">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:18px;">' +
           '<div>' +
             '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
               '<span>⚡</span> <span>English Challenge Board</span>' +
             '</h1>' +
             '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Complete missions to gain Learning Energy XP and evolve your companion monster.</p>' +
           '</div>' +
-          '<button type="button" class="btn-primary-action" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'classroom-hub\');">⚡ Launch Smart Board Mode</button>' +
+          '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
+            '<div style="display:flex; align-items:center; gap:6px; background:rgba(30,41,59,0.85); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:4px 10px;">' +
+              '<span style="font-size:0.82rem; color:#38bdf8; font-weight:700;">🎯 Target Explorer:</span>' +
+              '<select onchange="window.setChallengeTargetStudent(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px; font-size:0.82rem; cursor:pointer;">' +
+                students.map(s => '<option value="' + s.id + '"' + (targetStudent && targetStudent.id === s.id ? ' selected' : '') + '>' + s.firstName + ' ' + (s.lastName || '') + ' (' + (s.xp || 0) + ' XP)</option>').join('') +
+              '</select>' +
+              '<button type="button" class="btn-sm-secondary" onclick="window.pickRandomChallengeStudent()" title="Pick random student" style="padding:3px 8px; font-size:0.78rem;">🎲 Random</button>' +
+            '</div>' +
+            '<button type="button" class="btn-primary-action" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'classroom-hub\');">⚡ Launch Smart Board Mode</button>' +
+          '</div>' +
         '</div>' +
 
         // Categories Bar
         '<div class="eaa-challenge-categories-bar">' +
-          '<button type="button" class="eaa-challenge-cat-btn is-active">All Missions</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">🗣 Speak</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">📖 Read</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">🎧 Listen</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">✍ Write</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">🧠 Vocabulary</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">🔤 Grammar</button>' +
-          '<button type="button" class="eaa-challenge-cat-btn">👥 Team</button>' +
+          categories.map(c => {
+            const isActive = (activeCat === c.id);
+            return '<button type="button" class="eaa-challenge-cat-btn' + (isActive ? ' is-active' : '') + '" onclick="window.setChallengeCategory(\'' + c.id + '\')">' + c.label + '</button>';
+          }).join('') +
         '</div>' +
 
         // Missions Grid
         '<div class="eaa-missions-grid">' +
-          missions.map(m => {
+          visibleMissions.map(m => {
+            const safeTitle = m.title.replace(/'/g, "\\'");
+            const isTeam = (m.cat === 'team');
             return '' +
               '<div class="eaa-mission-card">' +
                 '<div>' +
@@ -13484,31 +14149,26 @@ window.switchClassroomSubTab = function(subTab) {
                   '<h3 class="eaa-mission-name">' + m.title + '</h3>' +
                   '<p class="eaa-mission-desc">' + m.desc + '</p>' +
                 '</div>' +
-                '<div class="eaa-mission-footer">' +
-                  '<span class="eaa-mission-xp-tag">+' + m.xp + ' XP</span>' +
-                  '<button type="button" class="eaa-mission-start-btn" onclick="store.addStudentXP(\'s1\', ' + m.xp + '); if(window.showToast) window.showToast(\'Mission Started! Awarded +' + m.xp + ' XP!\', \'success\');">' +
-                    'START MISSION ▶' +
-                  '</button>' +
+                '<div class="eaa-mission-footer" style="display:flex; flex-direction:column; gap:8px; align-items:stretch;">' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span class="eaa-mission-xp-tag">+' + m.xp + ' XP</span>' +
+                    '<span style="font-size:0.75rem; color:#94a3b8;">' + (targetStudent ? ('Explorer: ' + targetStudent.firstName) : '') + '</span>' +
+                  '</div>' +
+                  '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
+                    '<button type="button" class="eaa-mission-start-btn" style="flex:1;" onclick="if(window.showToast) window.showToast(\'⚡ Mission ' + safeTitle + ' started for ' + (targetStudent ? targetStudent.firstName : 'Explorer') + '!\', \'info\'); if(window.openSmartBoardMode) window.openSmartBoardMode();">' +
+                      'START ▶' +
+                    '</button>' +
+                    '<button type="button" class="eaa-mission-start-btn" style="flex:1.2; background:linear-gradient(135deg, #10b981, #059669); border-color:#34d399;" onclick="window.handleCompleteChallenge(\'' + m.id + '\', \'' + (targetStudent ? targetStudent.id : '') + '\', ' + m.xp + ', \'' + safeTitle + '\')">' +
+                      '✓ Complete (+' + m.xp + ')' +
+                    '</button>' +
+                    (isTeam ? '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 8px; width:100%;" onclick="window.handleAwardClassChallenge(\'' + m.id + '\', ' + m.xp + ', \'' + safeTitle + '\')">👥 Award to Entire Class</button>' : '') +
+                  '</div>' +
                 '</div>' +
               '</div>';
           }).join('') +
         '</div>' +
       '</div>';
   };
-
-
-  window.handleCompleteChallenge = function(challengeId) {
-    const student = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents()[0]);
-    if (!student) return;
-    if (store.completeEnglishChallenge) {
-      store.completeEnglishChallenge(student.id, challengeId);
-    }
-    if (window.playCelebrationSound) window.playCelebrationSound();
-    alert('🎉 Challenge Completed! Awarded XP & Evidence logged for ' + student.firstName + '!');
-    const c = document.getElementById('app-view-container');
-    if (c) window.renderChallengesView(c);
-  };
-
 
   window.handleGlobalOmnisearch = function(query) {
     const q = (query || '').trim().toLowerCase();

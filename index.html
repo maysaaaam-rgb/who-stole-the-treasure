@@ -377,33 +377,64 @@
 
       <!-- Main Unified Top Navigation Pills -->
       <nav class="eaa-top-nav-links" id="eaa-top-nav" aria-label="Main Navigation">
-        <button type="button" class="eaa-nav-pill is-active" data-view="dashboard" onclick="switchView('dashboard')">
+        <button type="button" class="eaa-nav-pill is-active" data-view="dashboard" onclick="switchView('dashboard')" title="Teacher Command Center">
           <span class="nav-pill-icon">🏠</span> <span>Home</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="class-detail" onclick="switchView('class-detail')">
+        <button type="button" class="eaa-nav-pill" data-view="class-detail" onclick="switchView('class-detail')" title="Classroom World & Explorers">
           <span class="nav-pill-icon">🗺️</span> <span>Classes</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="students" onclick="switchView('students')">
+        <button type="button" class="eaa-nav-pill" data-view="students" onclick="switchView('students')" title="Student Directory & Dossiers">
           <span class="nav-pill-icon">🧒</span> <span>Explorers</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="challenges" onclick="switchView('challenges')">
+        <button type="button" class="eaa-nav-pill" data-view="library" onclick="switchView('library')" title="Adventure Resource Library — 1-Click Curated Lessons, Games & Worksheets" style="background:rgba(59,130,246,0.15); border-color:#3b82f6;">
+          <span class="nav-pill-icon">📚</span> <span style="font-weight:800; color:#60a5fa;">Resource Library</span>
+        </button>
+        <button type="button" class="eaa-nav-pill" data-view="curriculum" onclick="switchView('curriculum')" title="Macmillan Anthology & Scope & Sequence">
+          <span class="nav-pill-icon">📖</span> <span>Curriculum</span>
+        </button>
+        <button type="button" class="eaa-nav-pill" data-view="worksheets" onclick="switchView('worksheets')" title="Printable & Digital Worksheets">
+          <span class="nav-pill-icon">📄</span> <span>Worksheets</span>
+        </button>
+        <button type="button" class="eaa-nav-pill" data-view="assignments" onclick="switchView('assignments')" title="Assignments & Class Tasks">
+          <span class="nav-pill-icon">📝</span> <span>Assignments</span>
+        </button>
+        <button type="button" class="eaa-nav-pill" data-view="challenges" onclick="switchView('challenges')" title="Daily Missions & Weekly English Quests">
           <span class="nav-pill-icon">⚡</span> <span>Quests</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="monster" onclick="switchView('monster')">
+        <button type="button" class="eaa-nav-pill" data-view="monster" onclick="switchView('monster')" title="Monster Studio & Creature Customizer">
           <span class="nav-pill-icon">👾</span> <span>Monsters</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="curriculum" onclick="switchView('curriculum')">
-          <span class="nav-pill-icon">📖</span> <span>Learn</span>
+        <button type="button" class="eaa-nav-pill" data-view="evolution" onclick="switchView('evolution')" title="Monster Evolution Journey">
+          <span class="nav-pill-icon">🐲</span> <span>Evolution</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="badges" onclick="switchView('badges')">
+        <button type="button" class="eaa-nav-pill" data-view="badges" onclick="switchView('badges')" title="Achievement Wall & Relics">
           <span class="nav-pill-icon">🏅</span> <span>Badges</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="progress" onclick="switchView('progress')">
+        <button type="button" class="eaa-nav-pill" data-view="progress" onclick="switchView('progress')" title="CEFR Skill Mastery Diagnostics">
           <span class="nav-pill-icon">📊</span> <span>Progress</span>
         </button>
-        <button type="button" class="eaa-nav-pill" data-view="library" onclick="switchView('library')">
-          <span class="nav-pill-icon">📚</span> <span>Library</span>
+        <button type="button" class="eaa-nav-pill" data-view="smartboard" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView('classroom-hub');}" title="Fullscreen Smart Board Classroom Mode">
+          <span class="nav-pill-icon">⚡</span> <span>Smart Board</span>
         </button>
+        
+        <!-- More Destinations Dropdown -->
+        <div class="eaa-nav-more-wrap" style="position:relative; display:inline-block;">
+          <button type="button" class="eaa-nav-pill" onclick="const m = document.getElementById('eaa-nav-more-menu'); if(m) m.style.display = (m.style.display === 'block' ? 'none' : 'block');" title="More Destinations">
+            <span>⋯ More</span>
+          </button>
+          <div id="eaa-nav-more-menu" class="create-dropdown-menu" style="display:none; position:absolute; right:0; top:calc(100% + 6px); z-index:9999; min-width:210px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.5); padding:6px;">
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('homework')"><span>✍️</span> <span>Homework</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('quizzes')"><span>🧩</span> <span>Quizzes &amp; Tests</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('assessments')"><span>🎯</span> <span>Assessments &amp; Rubrics</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('progress-check')"><span>📈</span> <span>Progress Check</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('reports')"><span>📊</span> <span>Reports &amp; Exports</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('messages')"><span>💬</span> <span>Messages</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('timer')"><span>⏱️</span> <span>Classroom Timer</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('archived')"><span>🗄️</span> <span>Archived Items</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('settings')"><span>⚙️</span> <span>School Settings</span></button>
+            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('system-health')"><span>🩺</span> <span>System Health</span></button>
+          </div>
+        </div>
       </nav>
 
       <!-- Center Omnisearch -->
