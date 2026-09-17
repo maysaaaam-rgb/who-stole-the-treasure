@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 The Brain Hackers: Mission Unlock Your Brain | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/brain-hackers.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- TOP HUD HEADER -->
+  <header class="hacker-hud-header">
+    <div class="hud-left">
+      <a href="../index.html#library" class="hud-back-btn" title="Return to Resource Library">
+        <span>🏛️</span> <span class="btn-text">Academy Library</span>
+      </a>
+      <div class="hud-branding">
+        <span class="hud-logo-icon">🧠</span>
+        <div>
+          <div class="hud-app-title">THE BRAIN HACKERS</div>
+          <div class="hud-sub-title">MISSION: UNLOCK YOUR BRAIN</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Team Chips -->
+    <div class="hud-teams" id="teamScoresBar">
+      <!-- Populated dynamically by app.js -->
+    </div>
+
+    <div class="hud-right">
+      <div class="xp-badge-pill" id="xpCount">0 XP</div>
+      <button class="hud-btn" id="soundToggle" title="Toggle audio and speech">🔊 Sound: ON</button>
+      <a href="worksheets.html" target="_blank" class="hud-btn worksheet-btn" title="Open printable 4-page student dossier">📄 Student Dossier</a>
+      <button class="hud-btn teacher-hud-btn" id="btnToggleHud" title="Open Teacher HUD (F1)">⚙️ Teacher HUD</button>
+    </div>
+  </header>
+
+  <!-- OVERALL PROGRESS TRACKER -->
+  <div class="overall-progress-track">
+    <div class="overall-progress-bar" id="headerProgressBar" style="width: 12%;"></div>
+  </div>
+
+  <!-- MISSION NAVIGATION STRIP -->
+  <nav class="mission-navbar-strip" id="missionNav">
+    <!-- Populated dynamically -->
+  </nav>
+
+  <!-- MAIN VIEWPORT STAGE -->
+  <main class="main-mission-stage">
+    <!-- Mission Header Info -->
+    <div class="active-mission-banner">
+      <div class="mission-tag-row">
+        <span class="badge mission-badge" id="missionBadge">MISSION 1 OF 8</span>
+        <span class="badge level-badge">LEVEL: A1+ / A2</span>
+        <span class="badge textbook-badge">📖 GLOBAL READINGS 3 • UNIT 1</span>
+      </div>
+      <h1 class="mission-display-title" id="missionTitle">Detect the Brain</h1>
+      <p class="mission-display-desc" id="missionDesc">Discover how different lobes power hearing, seeing, speaking, and thinking.</p>
+    </div>
+
+    <!-- Dynamic Mission Container -->
+    <div class="mission-content-box" id="missionContainer">
+      <!-- Loaded dynamically by brain-hackers-app.js -->
+    </div>
+
+    <!-- Bottom Navigation Footer -->
+    <div class="stage-footer-nav">
+      <button class="stage-nav-btn prev" id="btnPrevMission">◀ Previous Mission</button>
+      <div class="keyboard-tip">💡 Smart Board Tip: Touch nodes and buttons directly or press F1 for Teacher Controls</div>
+      <button class="stage-nav-btn next" id="btnNextMission">Next Mission ▶</button>
+    </div>
+  </main>
+
+  <!-- TEACHER HUD DRAWER / MODAL -->
+  <aside class="teacher-hud-drawer" id="teacherHud">
+    <div class="drawer-header">
+      <h3>🛠️ TEACHER CONTROLS & HUD</h3>
+      <button class="btn-close-hud" onclick="document.getElementById('teacherHud').classList.remove('active')">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="hud-section">
+        <h4>🚀 JUMP TO MISSION</h4>
+        <div class="jump-grid">
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(1)">M1: Detect Brain</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(2)">M2: Neurons</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(3)">M3: Message Relay</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(4)">M4: Visualization</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(5)">M5: Creativity</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(6)">M6: Subject Portals</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(7)">M7: Save Brain</button>
+          <button class="jump-btn" onclick="window.BrainApp.loadMission(8)">M8: Graduation</button>
+        </div>
+      </div>
+
+      <div class="hud-section">
+        <h4>⚡ CLASSROOM ACTIONS</h4>
+        <button class="hud-action-btn" onclick="window.BrainApp.completeCurrentMission()">🏆 Instant Complete Mission (+XP)</button>
+        <button class="hud-action-btn" onclick="window.BrainAudio.playSuccess()">🎵 Test Victory Chime</button>
+        <button class="hud-action-btn" onclick="window.print()">🖨️ Print Student Certificate</button>
+      </div>
+
+      <div class="hud-section">
+        <h4>🏆 TEAM XP CONTROLS</h4>
+        <p class="subtext">Tap +/- to award team points for good questions or participation:</p>
+        <div class="team-xp-rows">
+          <div class="team-xp-ctrl">
+            <span>🧠 Team Brain</span>
+            <div>
+              <button onclick="window.BrainApp.addTeamScore('brain', 10)">+10</button>
+              <button onclick="window.BrainApp.addTeamScore('brain', -5)">-5</button>
+            </div>
+          </div>
+          <div class="team-xp-ctrl">
+            <span>⚡ Team Neuron</span>
+            <div>
+              <button onclick="window.BrainApp.addTeamScore('neuron', 10)">+10</button>
+              <button onclick="window.BrainApp.addTeamScore('neuron', -5)">-5</button>
+            </div>
+          </div>
+          <div class="team-xp-ctrl">
+            <span>💡 Team Genius</span>
+            <div>
+              <button onclick="window.BrainApp.addTeamScore('genius', 10)">+10</button>
+              <button onclick="window.BrainApp.addTeamScore('genius', -5)">-5</button>
+            </div>
+          </div>
+          <div class="team-xp-ctrl">
+            <span>🚀 Team Explorer</span>
+            <div>
+              <button onclick="window.BrainApp.addTeamScore('explorer', 10)">+10</button>
+              <button onclick="window.BrainApp.addTeamScore('explorer', -5)">-5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SCRIPTS -->
+  <script src="js/brain-hackers-audio.js"></script>
+  <script src="js/brain-hackers-data.js"></script>
+  <script src="js/brain-hackers-app.js"></script>
+</body>
+</html>

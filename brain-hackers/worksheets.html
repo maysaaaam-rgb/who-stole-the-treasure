@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Student Science Dossier | The Brain Hackers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink-color: #111827;
+      --bg-white: #ffffff;
+      --border-gray: #374151;
+      --accent: #2563eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f3f4f6;
+      font-family: 'Outfit', sans-serif;
+      color: var(--ink-color);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .print-controls-bar {
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e293b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+    }
+    .btn-print {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .btn-return {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .dossier-page {
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      background: var(--bg-white);
+      padding: 40px;
+      border: 2px solid #94a3b8;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--ink-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .page-title {
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    .page-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .agent-id-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .field-line {
+      border-bottom: 1px dashed #64748b;
+      margin-top: 4px;
+      height: 18px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      background: #e2e8f0;
+      padding: 6px 12px;
+      border-left: 4px solid var(--accent);
+      margin: 18px 0 12px 0;
+    }
+    .vocab-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .vocab-chip {
+      background: white;
+      border: 1px solid #93c5fd;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .exercise-box {
+      margin-bottom: 20px;
+    }
+    .exercise-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin-top: 10px;
+    }
+    .exercise-table th, .exercise-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .exercise-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+    .svg-print-box {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .svg-print-box svg {
+      max-width: 480px;
+      height: auto;
+    }
+    .drawing-prompt-frame {
+      border: 2px dashed #94a3b8;
+      border-radius: 6px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-style: italic;
+      margin: 15px 0;
+    }
+    .cert-frame {
+      border: 4px double #1e293b;
+      padding: 24px;
+      text-align: center;
+      border-radius: 8px;
+      background: #fdfdfd;
+      margin-top: 15px;
+    }
+    .cert-seal {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+    .cert-h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e3a8a;
+      letter-spacing: 1px;
+    }
+    .cert-lines {
+      margin: 20px 0;
+      font-size: 15px;
+      line-height: 2;
+    }
+    .page-number {
+      position: absolute;
+      bottom: 15px;
+      right: 25px;
+      font-size: 11px;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .print-controls-bar { display: none; }
+      .dossier-page {
+        box-shadow: none;
+        border: 1px solid #666;
+        margin: 0;
+        padding: 30px;
+        page-break-after: always;
+        height: 100vh;
+      }
+      .dossier-page:last-child {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-controls-bar">
+    <div>
+      <strong>🧠 The Brain Hackers Science Dossier (4 Pages)</strong>
+      <span style="opacity: 0.8; font-size: 13px; margin-left: 10px;">Macmillan Global Readings 3 • Unit 1</span>
+    </div>
+    <div>
+      <button class="btn-print" onclick="window.print()">🖨️ Print All 4 Pages</button>
+      <a href="index.html" class="btn-return" style="margin-left: 15px;">➔ Open Interactive Lesson</a>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 1: DOSSIER COVER & MISSION 1 (DETECT THE BRAIN) -->
+  <!-- ======================================================== -->
+  <div class="dossier-page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">🧠 Brain Hackers Science Dossier</div>
+        <div class="page-subtitle">Mission: Unlock Your Brain • Student Lab Notebook</div>
+      </div>
+      <div class="page-badge">DOSSIER PAGE 1 / 4</div>
+    </div>
+
+    <div class="agent-id-grid">
+      <div>
+        <label>Student Scientist Name:</label>
+        <div class="field-line"></div>
+      </div>
+      <div>
+        <label>Hacker Codename:</label>
+        <div class="field-line"></div>
+      </div>
+      <div>
+        <label>Date:</label>
+        <div class="field-line"></div>
+      </div>
+      <div>
+        <label>Team:</label>
+        <div class="field-line"></div>
+      </div>
+    </div>
+
+    <div class="vocab-bank">
+      <span style="font-weight: 700; margin-right: 4px;">🔤 Vocabulary Bank:</span>
+      <span class="vocab-chip">Cerebrum</span>
+      <span class="vocab-chip">Frontal Lobe</span>
+      <span class="vocab-chip">Temporal Lobe</span>
+      <span class="vocab-chip">Occipital Lobe</span>
+      <span class="vocab-chip">Parietal Lobe</span>
+      <span class="vocab-chip">Hearing</span>
+      <span class="vocab-chip">Seeing</span>
+      <span class="vocab-chip">Speaking</span>
+    </div>
+
+    <div class="section-title">MISSION 1: DETECT THE 4 BRAIN LOBES</div>
+    <p style="font-size: 13.5px; margin-bottom: 12px;">
+      1. Write the correct <strong>Lobe Name</strong> next to each number on the diagram below:
+    </p>
+
+    <div class="svg-print-box">
+      <svg viewBox="0 0 500 240" style="border: 1px solid #cbd5e1; border-radius: 6px; background: #fff;">
+        <path d="M 120 150 C 100 100, 140 30, 250 25 C 350 20, 420 70, 430 130 C 440 180, 390 220, 320 225 C 260 230, 240 210, 200 215 C 150 220, 110 180, 120 150 Z" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+        <!-- Frontal -->
+        <text x="170" y="90" font-weight="bold" font-size="14">① [ FRONT ]</text>
+        <!-- Parietal -->
+        <text x="290" y="60" font-weight="bold" font-size="14">② [ TOP ]</text>
+        <!-- Occipital -->
+        <text x="360" y="140" font-weight="bold" font-size="14">③ [ BACK ]</text>
+        <!-- Temporal -->
+        <text x="230" y="160" font-weight="bold" font-size="14">④ [ SIDE ]</text>
+      </svg>
+    </div>
+
+    <div class="exercise-box">
+      <table class="exercise-table">
+        <thead>
+          <tr>
+            <th>Brain Region</th>
+            <th>Primary Sense / Activity</th>
+            <th>Color on PET Scan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>① Frontal Lobe</td>
+            <td>Thinking, Planning & __________________</td>
+            <td>Red / Warm</td>
+          </tr>
+          <tr>
+            <td>② Parietal Lobe</td>
+            <td>Touch, Spatial Sense & Movement</td>
+            <td>Yellow / Orange</td>
+          </tr>
+          <tr>
+            <td>③ Occipital Lobe</td>
+            <td>Vision & __________________</td>
+            <td>Green</td>
+          </tr>
+          <tr>
+            <td>④ Temporal Lobe</td>
+            <td>Hearing, Sounds & __________________</td>
+            <td>Blue / Purple</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-number">PAGE 1</div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 2: MISSION 2 & 3 (NEURONS & MESSAGE RELAY) -->
+  <!-- ======================================================== -->
+  <div class="dossier-page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">⚡ Neural Highways & Pathways</div>
+        <div class="page-subtitle">Mission 2 & 3: Anatomy of a Neuron & High-Speed Chain</div>
+      </div>
+      <div class="page-badge">DOSSIER PAGE 2 / 4</div>
+    </div>
+
+    <div class="vocab-bank">
+      <span style="font-weight: 700; margin-right: 4px;">🔤 Keywords:</span>
+      <span class="vocab-chip">Neuron</span>
+      <span class="vocab-chip">Cell Body</span>
+      <span class="vocab-chip">Dendrites</span>
+      <span class="vocab-chip">Axon</span>
+      <span class="vocab-chip">Synapse (Connection)</span>
+      <span class="vocab-chip">Electrical Message</span>
+    </div>
+
+    <div class="section-title">MISSION 2: NEURON ANATOMY (PARTS & ROLES)</div>
+    <p style="font-size: 13.5px;">Match each part of the neuron with its scientific definition:</p>
+
+    <table class="exercise-table">
+      <thead>
+        <tr>
+          <th>Neuron Part</th>
+          <th>Letter</th>
+          <th>What does it do?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Cell Body (Soma)</strong></td>
+          <td>[ &nbsp;&nbsp;&nbsp; ]</td>
+          <td><strong>A.</strong> The junction gap where messages jump from one neuron to the next.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Dendrites</strong></td>
+          <td>[ &nbsp;&nbsp;&nbsp; ]</td>
+          <td><strong>B.</strong> The long cable pathway that carries electrical signals away at 250 mph.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Axon</strong></td>
+          <td>[ &nbsp;&nbsp;&nbsp; ]</td>
+          <td><strong>C.</strong> The main center command station containing the nucleus.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Synapse</strong></td>
+          <td>[ &nbsp;&nbsp;&nbsp; ]</td>
+          <td><strong>D.</strong> Branch-like antennas that receive incoming messages from other cells.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">MISSION 3: THE HUMAN NEURON RELAY RACE</div>
+    <p style="font-size: 13.5px; margin-bottom: 8px;">
+      In class, you formed a human neuron chain! Trace the words in order to show how signals jump from cell to cell:
+    </p>
+
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 14px; border-radius: 6px; font-size: 14px; line-height: 1.8;">
+      <p>⚡ <strong>Chain #1:</strong> [ SENSOR: Dog ] ➔ [ INTER-NEURON: ____________ ] ➔ [ MOTOR ACTION: Fast ]</p>
+      <p>⚡ <strong>Chain #2:</strong> [ SENSOR: Robot ] ➔ [ INTER-NEURON: Talk ] ➔ [ MOTOR ACTION: ____________ ]</p>
+      <p>⚡ <strong>Chain #3:</strong> [ Practice ] ➔ [ Makes ] ➔ [ ________________________ ]</p>
+    </div>
+
+    <div style="margin-top: 16px; background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 14px; font-size: 13.5px;">
+      <strong>💡 Science Principle (Unit 1):</strong>
+      <em>"When you practice a skill again and again, your brain builds thicker neural highways. The electrical signals travel FASTER and EASIER!"</em>
+    </div>
+
+    <div class="page-number">PAGE 2</div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 3: MISSION 4 & 5 (VISUALIZATION & CREATIVITY) -->
+  <!-- ======================================================== -->
+  <div class="dossier-page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">🎨 Visualization & Creativity Matrix</div>
+        <div class="page-subtitle">Mission 4 & 5: Mental Pictures & Unique Human Imagination</div>
+      </div>
+      <div class="page-badge">DOSSIER PAGE 3 / 4</div>
+    </div>
+
+    <div class="section-title">MISSION 4: VISUALIZE THE INVISIBLE</div>
+    <p style="font-size: 13.5px;">
+      In textbook Unit 1, the author writes: <em>"To visualize means to make a picture in your mind of something you cannot see with your eyes."</em>
+    </p>
+
+    <div style="margin-top: 10px; font-size: 13.5px;">
+      <strong>What 4 details did you visualize during the listening story?</strong>
+      <ol style="margin-left: 24px; margin-top: 6px; line-height: 1.8;">
+        <li>House color: __________________________________________________</li>
+        <li>Roof shape & material: _________________________________________</li>
+        <li>Windows (shape & count): ________________________________________</li>
+        <li>Chimney top detail: ____________________________________________</li>
+      </ol>
+    </div>
+
+    <div class="section-title">MISSION 5: THE INVISIBLE PICTURE (CREATIVITY CHALLENGE)</div>
+    <p style="font-size: 13px;">
+      Prompt: <em>"Draw a creature or machine powered by pure brain electricity!"</em>
+    </p>
+
+    <div class="drawing-prompt-frame">
+      [ SCIENTIST DRAWING CANVAS - DRAW YOUR CREATIVE VISION HERE ]
+    </div>
+
+    <div style="font-size: 13.5px; margin-top: 10px;">
+      <strong>Scientist Reflection:</strong> Look at your partner's drawing. Did they draw the exact same thing as you?
+      <br>
+      Why does each person imagine something different?
+      <div class="field-line" style="margin-top: 8px;"></div>
+      <div class="field-line" style="margin-top: 8px;"></div>
+    </div>
+
+    <div class="page-number">PAGE 3</div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PAGE 4: MISSION 6, 7 & 8 (BRAIN FUEL & GRADUATION) -->
+  <!-- ======================================================== -->
+  <div class="dossier-page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">🏆 Brain Power & Official Graduation</div>
+        <div class="page-subtitle">Mission 6, 7 & 8: Daily Habits & Academy Honors</div>
+      </div>
+      <div class="page-badge">DOSSIER PAGE 4 / 4</div>
+    </div>
+
+    <div class="section-title">MISSION 7: BRAIN SUPER-FUELS VS BRAIN DRAINS</div>
+    <p style="font-size: 13.5px;">Check the 5 habits that give your brain +20% SUPER POWER:</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13.5px; margin-top: 8px;">
+      <div>[ &nbsp; ] 💤 8 to 10 hours of deep sleep</div>
+      <div>[ &nbsp; ] 📱 Staring at phone screen all night</div>
+      <div>[ &nbsp; ] 💧 Drinking plenty of clean water</div>
+      <div>[ &nbsp; ] 🏃 30 minutes of physical exercise</div>
+      <div>[ &nbsp; ] 🍬 Eating 10 packs of candy for lunch</div>
+      <div>[ &nbsp; ] 📚 Reading books & learning English daily</div>
+    </div>
+
+    <div class="section-title">MISSION 8: OFFICIAL SCIENTIST ID CERTIFICATE</div>
+
+    <div class="cert-frame">
+      <div class="cert-seal">🧠⚡</div>
+      <div class="cert-h1">CERTIFIED BRAIN HACKER</div>
+      <div style="font-size: 13px; font-weight: 700; color: #4b5563; margin-top: 4px;">ENGLISH ADVENTURE ACADEMY • SCIENCE EXPLORATION DIVISION</div>
+      
+      <div class="cert-lines">
+        This certifies that Student Scientist <strong>____________________________________</strong><br>
+        has mastered the cerebrum, connected neural pathways, and unlocked the secrets of human imagination!
+      </div>
+
+      <div style="display: flex; justify-content: space-around; margin-top: 24px; font-size: 13px;">
+        <div>
+          <div style="border-bottom: 1px solid #111; width: 180px; margin-bottom: 4px;"></div>
+          Teacher Signature
+        </div>
+        <div>
+          <div style="border-bottom: 1px solid #111; width: 180px; margin-bottom: 4px;"></div>
+          Master Brain Hacker Stamp
+        </div>
+      </div>
+    </div>
+
+    <div class="page-number">PAGE 4</div>
+  </div>
+
+</body>
+</html>

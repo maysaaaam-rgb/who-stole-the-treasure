@@ -6,6 +6,99 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "brain-hackers",
+    "title": "🧠 The Brain Hackers: Mission Unlock Your Brain",
+    "description": "Premium 8-mission interactive ESL science adventure based on Global Readings 3 Unit 1 (pp. 18–21). Students become Brain Scientists to detect cerebrum lobes on PET scans, zoom into 10,000x microscopic neurons, assemble dendrites & axons, conduct high-speed human neuron message chains, visualize invisible concepts, unleash creative drawing, test subject lobe heatmaps, charge brain energy habits to 100%, and earn the Certified Brain Scientist diploma!",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "🧠 CLIL & STEM Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–11",
+    "ageGroup": "8-11",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 100,
+    "skills": [
+      "Science & CLIL",
+      "Speaking",
+      "Reading",
+      "Vocabulary",
+      "Critical Thinking"
+    ],
+    "topic": "The Brain, Neurons & Creativity (Global Readings 3 Unit 1)",
+    "topics": [
+      "Brain Lobes",
+      "PET Scan Senses",
+      "Neuron Anatomy",
+      "Neural Pathways",
+      "Visualization",
+      "Creativity",
+      "Brain Habits"
+    ],
+    "languageFocus": "Brain lobes & senses (hearing, seeing, speaking, thinking), Neuron parts (cell body, dendrites, axon, synapse), Action & habit verbs, Descriptive language for imagination",
+    "activityMode": "Whole Class Smart Board Interactive / Team Relay Challenge",
+    "interactionType": "Interactive PET Lobe Scanner, Microscopic Neuron Assembly, Real-Time Message Relay Chain, Spot-the-Difference Imagination Matrix, Neon Drawing Canvas, Multi-Lobe Heatmap, Energy Core Charging, Cloze Statement Graduation",
+    "difficulty": "Grade 4 A1+/A2",
+    "tags": [
+      "brain",
+      "neurons",
+      "brain-hackers",
+      "science",
+      "clil",
+      "global-readings",
+      "grade-4",
+      "unit-1",
+      "creativity",
+      "habits"
+    ],
+    "learningObjectives": [
+      "Identify 4 cerebrum lobes and correlate them with hearing, seeing, speaking, and thinking",
+      "Assemble and label a neuron: cell body, dendrites, axon, and synapse",
+      "Demonstrate electrical signal transmission in rapid sentence chains (e.g. DOG RUN FAST)",
+      "Practice visualization: listen to descriptive text and spot discrepancies in an image",
+      "Express creative ideas through drawing and explain why different brains imagine different things",
+      "Evaluate daily brain super-fuels (sleep, water, exercise) vs brain drains"
+    ],
+    "teacherInstructions": "Project on Smart Board. Guide student teams (Team Brain, Team Neuron, Team Genius, Team Explorer) through the 8 sequential missions. Use the built-in Teacher HUD (F1) to jump missions, award XP, and print the 4-page student lab dossier.",
+    "studentInstructions": "Become an elite Brain Hacker! Complete 8 missions to unlock how your brain learns, builds neural connections, and imagines creative ideas!",
+    "route": "brain-hackers/index.html",
+    "worksheet": "brain-hackers/worksheets.html",
+    "worksheetRoute": "brain-hackers/worksheets.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bhGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#050c1a"/>
+          <stop offset="50%" stop-color="#0a192f"/>
+          <stop offset="100%" stop-color="#020813"/>
+        </linearGradient>
+        <linearGradient id="bhNeon" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#00ffff"/>
+          <stop offset="100%" stop-color="#ff007f"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#bhGrad)"/>
+      <circle cx="100" cy="55" r="34" fill="#00ffff" opacity="0.15"/>
+      <path d="M 75 60 C 65 45, 80 25, 100 25 C 120 25, 135 45, 125 60 C 135 75, 120 90, 100 90 C 80 90, 65 75, 75 60 Z" fill="none" stroke="#00ffff" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="90" cy="45" r="4" fill="#ff007f"/>
+      <circle cx="110" cy="45" r="4" fill="#ffff00"/>
+      <circle cx="100" cy="65" r="5" fill="#00ff88"/>
+      <line x1="90" y1="45" x2="100" y2="65" stroke="#00ffff" stroke-width="2"/>
+      <line x1="110" y1="45" x2="100" y2="65" stroke="#00ffff" stroke-width="2"/>
+      <rect x="14" y="98" width="172" height="26" rx="13" fill="url(#bhNeon)"/>
+      <text x="100" y="115" font-family="system-ui, sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">THE BRAIN HACKERS 🧠⚡</text>
+    </svg>`
+  },
+  {
     "id": "brain-quit",
     "title": "🧠 The Day Your Brain Quit! — Can You Save Your Brain?",
     "description": "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students receive an urgent letter from their tired brain, race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, test life without a brain, and record their speech to save their brain!",
