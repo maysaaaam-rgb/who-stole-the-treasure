@@ -917,21 +917,6 @@
   window.switchLibraryTab = function(tab) {
     libraryActiveTab = tab;
     libraryActiveCatalogTab = tab;
-    libActiveTab = tab;
-    if (tab === 'worksheets') {
-      libFilterType = 'worksheet';
-    } else if (tab === 'games') {
-      libFilterType = 'game';
-    } else if (tab === 'reading') {
-      libFilterSkill = 'Reading';
-      libActiveTab = 'stories';
-    } else if (tab === 'listening') {
-      libFilterSkill = 'Listening';
-    } else if (tab === 'writing') {
-      libFilterSkill = 'Writing';
-    } else if (tab === 'vocab') {
-      libFilterSkill = 'Vocabulary';
-    }
     window.switchView(tab === 'worksheets' ? 'worksheets' : 'library');
   };
 
@@ -2725,83 +2710,197 @@
   };
 
 
-    function renderStudentsView(container) {
-    const allStudents = store.getStudents() || [];
-    const classes = store.getClasses() || [];
+  function renderStudentsView(container) {
+    const allStudents = store.getStudents();
+    const classes = store.getClasses();
 
+    // Filter by class
     let filtered = allStudents.filter(s => {
       if (studentsFilterClass !== 'all' && s.classId !== studentsFilterClass) return false;
       return true;
     });
 
+    // Filter by search query
     if (studentsSearchQuery && studentsSearchQuery.trim()) {
       const q = studentsSearchQuery.toLowerCase().trim();
       filtered = filtered.filter(s => 
         (s.firstName && s.firstName.toLowerCase().includes(q)) ||
-        (s.lastName && s.lastName.toLowerCase().includes(q))
+        (s.lastName && s.lastName.toLowerCase().includes(q)) ||
+        (s.studentIdNumber && s.studentIdNumber.toLowerCase().includes(q))
       );
     }
 
+    // Filter by Evolution Stage
+    if (studentsFilterStage !== 'all') {
+      filtered = filtered.filter(s => {
+        const mState = store.calculateMonsterState(s.id);
+        return mState.stageKey === studentsFilterStage;
+      });
+    }
+
+    // Filter by Progression Status
+    if (studentsFilterProgression === 'near_evolution') {
+      filtered = filtered.filter(s => {
+        const mState = store.calculateMonsterState(s.id);
+        return mState.progressPct >= 75 && mState.currentLevel < 7;
+      });
+    } else if (studentsFilterProgression === 'streak') {
+      filtered = filtered.filter(s => (s.streakDays || 0) >= 3);
+    } else if (studentsFilterProgression === 'achievements') {
+      filtered = filtered.filter(s => {
+        const achs = store.getStudentAchievements ? store.getStudentAchievements(s.id) : [];
+        return achs.length > 0;
+      });
+    }
+
+    // Sorting
+    filtered.sort((a, b) => {
+      const xpA = store.getStudentTotalXP(a.id);
+      const xpB = store.getStudentTotalXP(b.id);
+      const lvlA = store.calculateMonsterState(a.id).currentLevel;
+      const lvlB = store.calculateMonsterState(b.id).currentLevel;
+
+      if (studentsSortBy === 'xp_desc') return xpB - xpA;
+      if (studentsSortBy === 'xp_asc') return xpA - xpB;
+      if (studentsSortBy === 'level_desc') return lvlB - lvlA || xpB - xpA;
+      if (studentsSortBy === 'name_asc') return (a.firstName || '').localeCompare(b.firstName || '');
+      if (studentsSortBy === 'streak_desc') return (b.streakDays || 0) - (a.streakDays || 0);
+      return 0;
+    });
+
     container.innerHTML = 
-      '<div class="eaa-explorer-directory-container">' +
+      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
         // Header
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<h1 style="font-size:1.8rem; font-weight:900; color:#ffffff; margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">' +
-              '<span>🧒</span> <span>Explorer Directory</span>' +
-            '</h1>' +
-            '<p style="font-size:0.86rem; color:#94a3b8; margin:0;">Active English explorers, companion monsters, and real-time learning energy.</p>' +
+            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👧 Students Directory &amp; Monster Companions</h1>' +
+            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Real-time overview of all learners, their living evolving monsters, XP progress, and streaks.</p>' +
           '</div>' +
-          '<div style="display:flex; gap:10px;">' +
-            '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Explorer</button>' +
+          '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+            '<button type="button" class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' + (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') + '</button>' +
+            (isMultiSelectMode ? '<button type="button" class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All</button>' : '') +
+            '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give feedback to learners">⭐ Give Feedback</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">📥 Export CSV</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
           '</div>' +
         '</div>' +
 
-        // Filter Bar
-        '<div class="eaa-directory-filter-bar">' +
-          '<input type="text" class="eaa-filter-input" placeholder="🔍 Search explorer..." value="' + (studentsSearchQuery || '') + '" oninput="studentsSearchQuery = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
-          '<select class="eaa-filter-select" onchange="studentsFilterClass = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
-            '<option value="all">All Classes ▾</option>' +
-            classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
-          '</select>' +
-          '<select class="eaa-filter-select" onchange="studentsFilterStage = this.value; renderStudentsView(document.getElementById(\'app-view-container\'));">' +
-            '<option value="all">All CEFR Levels ▾</option>' +
-            '<option value="Pre-A1">Pre-A1</option>' +
-            '<option value="A1">A1</option>' +
-            '<option value="A1+">A1+</option>' +
-            '<option value="A2">A2</option>' +
-          '</select>' +
-          '<span style="font-size:0.82rem; color:#cbd5e1; font-weight:700; margin-left:auto;">' + filtered.length + ' Explorers Found</span>' +
+        // Search & Filter Toolbar
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
+          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+            '<div style="flex:1; min-width:220px; position:relative;">' +
+              '<input type="text" class="search-input" placeholder="🔍 Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
+            '</div>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="min-width:140px;">' +
+              '<option value="all" ' + (studentsFilterClass === 'all' ? 'selected' : '') + '>All Classes (' + allStudents.length + ')</option>' +
+              classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="min-width:160px;">' +
+              '<option value="all" ' + (studentsFilterStage === 'all' ? 'selected' : '') + '>All Evolution Stages</option>' +
+              '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>🥚 Level 1: Mystery Egg</option>' +
+              '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>🥚✨ Level 2: Cracking Egg</option>' +
+              '<option value="baby" ' + (studentsFilterStage === 'baby' ? 'selected' : '') + '>🐣 Level 3: Baby Monster</option>' +
+              '<option value="growing" ' + (studentsFilterStage === 'growing' ? 'selected' : '') + '>👾 Level 4: Growing Monster</option>' +
+              '<option value="adventurer" ' + (studentsFilterStage === 'adventurer' ? 'selected' : '') + '>🧭 Level 5: Adventurer Monster</option>' +
+              '<option value="advanced" ' + (studentsFilterStage === 'advanced' ? 'selected' : '') + '>🐲 Level 6: Advanced Monster</option>' +
+              '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:150px;">' +
+              '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
+              '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
+              '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
+              '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>🏆 Has Achievements</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="min-width:140px;">' +
+              '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>⭐ XP: High to Low</option>' +
+              '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>⭐ XP: Low to High</option>' +
+              '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>👾 Level: High to Low</option>' +
+              '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>🔤 Name: A to Z</option>' +
+              '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>🔥 Streak: High to Low</option>' +
+            '</select>' +
+          '</div>' +
+          '<div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">' +
+            '<span>Showing <strong>' + filtered.length + '</strong> of ' + allStudents.length + ' registered learners</span>' +
+            '<span>Click any monster or card to view detailed learning profile &amp; closet</span>' +
+          '</div>' +
         '</div>' +
 
-        // Explorer Tiles Grid (No 5 buttons per card - One contextual action drawer on click!)
-        '<div class="eaa-explorer-tiles-grid">' +
-          filtered.map(s => {
-            const totalXP = store.getStudentTotalXP(s.id);
-            const mState = store.calculateMonsterState(s.id);
-            const skills = store.getStudentSkills ? store.getStudentSkills(s.id) : { reading: { score: 85 }, listening: { score: 80 }, speaking: { score: 75 } };
-            return '' +
-              '<div class="eaa-explorer-tile" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
-                '<div class="eaa-tile-avatar-box">' +
-                  window.renderMonsterAvatar(s.id, { size: 72, animated: true }) +
-                '</div>' +
-                '<h3 class="eaa-tile-name">' + (s.firstName || 'Explorer').toUpperCase() + '</h3>' +
-                '<div class="eaa-tile-badges-row">' +
-                  '<span class="eaa-tile-level-pill">Lv.' + mState.currentLevel + '</span>' +
-                  '<span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span>' +
-                  '<span style="color:#fbbf24; font-weight:800; font-size:0.75rem;">' + totalXP.toLocaleString() + ' XP</span>' +
-                '</div>' +
-                '<div class="eaa-tile-skills-row">' +
-                  '<span>🗣 ' + (skills.speaking ? skills.speaking.score : 75) + '</span>' +
-                  '<span>📖 ' + (skills.reading ? skills.reading.score : 85) + '</span>' +
-                  '<span>🎧 ' + (skills.listening ? skills.listening.score : 80) + '</span>' +
-                '</div>' +
-              '</div>';
-          }).join('') +
-        '</div>' +
+        // Students Cards Grid
+        (filtered.length === 0 ?
+          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+            '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
+            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
+            '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
+          '</div>' :
+          '<div class="students-directory-grid">' +
+            filtered.map(s => {
+              const mState = store.calculateMonsterState(s.id);
+              const totalXP = mState.totalXP;
+              const nextXP = mState.nextLevelXP || totalXP;
+              const xpToNext = mState.xpToNext;
+              const progressPct = mState.progressPct;
+              const streak = s.streakDays || 0;
+              const cls = store.getClass(s.classId);
+              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
+
+              const isSelected = selectedStudentIds.has(s.id);
+              return '' +
+                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
+                  (isMultiSelectMode ?
+                    '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
+                      '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
+                    '</div>' : ''
+                  ) +
+                  '<div class="student-card-top-bar">' +
+                    '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
+                    '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                    '<span class="student-card-streak-pill" title="Daily streak">🔥 ' + streak + 'd</span>' +
+                  '</div>' +
+
+                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
+                    monsterSvg +
+                    '<div class="avatar-customize-pill">🎨 Customize</div>' +
+                  '</div>' +
+
+                  '<div class="student-directory-name">' + s.firstName + ' ' + s.lastName + '</div>' +
+                  '<div class="student-directory-class-sub">' + (cls ? cls.name : 'Unenrolled') + ' · ' + s.grade + '</div>' +
+
+                  '<div class="student-directory-stage-badge">' +
+                    'Level ' + mState.currentLevel + ' · ' + mState.stageName +
+                  '</div>' +
+
+                  '<div class="student-directory-xp-line" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
+                    '<strong>⭐ ' + totalXP.toLocaleString() + ' XP</strong>' +
+                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' · ✏️ Edit</span>' +
+                  '</div>' +
+
+                  '<div class="student-directory-progress-bar" title="' + progressPct + '% to next stage">' +
+                    '<div class="student-directory-progress-fill" style="width:' + progressPct + '%;"></div>' +
+                  '</div>' +
+                  '<div class="student-directory-progress-sub">' +
+                    (!mState.isHatched ? 
+                      ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
+                      (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
+                    ) +
+                  '</div>' +
+
+                  '<div class="student-directory-card-actions" onclick="event.stopPropagation();">' +
+                    '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')">Profile →</button>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>'
+        ) +
       '</div>';
   }
-
 
   function renderClassesView(container) {
     const classes = store.getClasses();
@@ -3076,124 +3175,111 @@
   }
 
   // 1. Students Visual Avatar Grid
-    function renderClassroomStudentsGrid(cls, students) {
+  function renderClassroomStudentsGrid(cls, students) {
     const safeStudents = Array.isArray(students) ? students : [];
     if (safeStudents.length === 0) {
-      return '<div style="padding:40px; text-align:center; color:#94a3b8;">No explorers in this classroom.</div>';
-    }
-
-    // Coordinates for the 19 student explorer pins across fantasy landscape
-    const mapCoordinates = [
-      { x: 22, y: 32 }, { x: 34, y: 25 }, { x: 48, y: 18 }, { x: 62, y: 25 }, { x: 76, y: 30 },
-      { x: 16, y: 52 }, { x: 28, y: 46 }, { x: 42, y: 40 }, { x: 58, y: 42 }, { x: 72, y: 48 }, { x: 84, y: 54 },
-      { x: 20, y: 72 }, { x: 32, y: 65 }, { x: 46, y: 60 }, { x: 60, y: 64 }, { x: 74, y: 70 }, { x: 86, y: 76 },
-      { x: 38, y: 82 }, { x: 54, y: 82 }
-    ];
-
-    if (window.classroomWorldViewMode === 'grid') {
       return '' +
-        '<div class="eaa-explorer-tiles-grid" style="margin-top:16px;">' +
-          safeStudents.map(s => {
-            const totalXP = store.getStudentTotalXP(s.id);
-            const mState = store.calculateMonsterState(s.id);
-            const skills = store.getStudentSkills ? store.getStudentSkills(s.id) : { reading: { score: 85 }, listening: { score: 80 }, speaking: { score: 75 } };
-            return '' +
-              '<div class="eaa-explorer-tile" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
-                '<div class="eaa-tile-avatar-box">' +
-                  window.renderMonsterAvatar(s.id, { size: 68, animated: true }) +
-                '</div>' +
-                '<h3 class="eaa-tile-name">' + (s.firstName || 'Explorer').toUpperCase() + '</h3>' +
-                '<div class="eaa-tile-badges-row">' +
-                  '<span class="eaa-tile-level-pill">Lv.' + mState.currentLevel + '</span>' +
-                  '<span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span>' +
-                  '<span style="color:#fbbf24; font-weight:800; font-size:0.72rem;">' + totalXP + ' XP</span>' +
-                '</div>' +
-                '<div class="eaa-tile-skills-row">' +
-                  '<span>🗣 ' + (skills.speaking ? skills.speaking.score : 75) + '</span>' +
-                  '<span>📖 ' + (skills.reading ? skills.reading.score : 85) + '</span>' +
-                  '<span>🎧 ' + (skills.listening ? skills.listening.score : 80) + '</span>' +
-                '</div>' +
-              '</div>';
-          }).join('') +
+        '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px; text-align:center; cursor:pointer;">' +
+          '<div class="card-add-student-icon" style="font-size:36px; margin-bottom:8px;">🎓</div>' +
+          '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No students enrolled in this class</h3>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student or enroll learners from the Unenrolled list to begin tracking learning adventure.</p>' +
+          '<button type="button" class="btn-primary-action">+ Add Student</button>' +
         '</div>';
     }
 
-    if (window.classroomWorldViewMode === 'compact') {
+    const cardsHtml = students.map(s => {
+      const totalXP = store.getStudentTotalXP(s.id);
+      const formattedXP = totalXP.toLocaleString();
+      const progressPct = calculateStudentProgressPct(s.id);
+      const status = determineStudentStatus(s.id, cls.id);
+      // avatarEmoji deprecated
+      const monsterState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : null;
+      const monsterSvg = (window.renderMonsterSVG && monsterState) ? window.renderMonsterSVG({
+        stage: monsterState.stageKey,
+        color: monsterState.profile ? monsterState.profile.baseColor : 'blue',
+        equipped: monsterState.profile ? monsterState.profile.equipped : {},
+        size: 52,
+        animated: true
+      }) : null;
+      const isSelected = selectedStudentIds.has(s.id);
+      const streak = s.streakDays || 0;
+
       return '' +
-        '<div style="background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:18px; overflow:hidden; margin-top:16px;">' +
-          '<table style="width:100%; border-collapse:collapse; color:#f8fafc; font-size:0.86rem; text-align:left;">' +
-            '<thead>' +
-              '<tr style="background:rgba(15,23,42,0.9); border-bottom:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-size:0.75rem; text-transform:uppercase;">' +
-                '<th style="padding:12px 18px;">Explorer</th>' +
-                '<th style="padding:12px 14px;">Level &amp; Stage</th>' +
-                '<th style="padding:12px 14px;">CEFR</th>' +
-                '<th style="padding:12px 14px;">Learning XP</th>' +
-                '<th style="padding:12px 14px;">Action</th>' +
-              '</tr>' +
-            '</thead>' +
-            '<tbody>' +
-              safeStudents.map(s => {
-                const totalXP = store.getStudentTotalXP(s.id);
-                const mState = store.calculateMonsterState(s.id);
-                return '' +
-                  '<tr style="border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer;" onclick="openExplorerDrawer(\'' + s.id + '\')">' +
-                    '<td style="padding:10px 18px; display:flex; align-items:center; gap:10px;">' +
-                      '<div style="width:36px; height:36px;">' + window.renderMonsterAvatar(s.id, { size: 36, animated: false }) + '</div>' +
-                      '<strong style="color:#ffffff;">' + (s.firstName || '') + ' ' + (s.lastName || '') + '</strong>' +
-                    '</td>' +
-                    '<td style="padding:10px 14px;"><span style="color:#fbbf24; font-weight:700;">Lv.' + mState.currentLevel + '</span> · ' + mState.stageName + '</td>' +
-                    '<td style="padding:10px 14px;"><span class="eaa-tile-cefr-pill">' + (s.overallCefr || 'A1+') + '</span></td>' +
-                    '<td style="padding:10px 14px; font-weight:800; color:#38bdf8;">' + totalXP.toLocaleString() + ' XP</td>' +
-                    '<td style="padding:10px 14px;"><button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openExplorerDrawer(\'' + s.id + '\')" style="padding:4px 10px; font-size:0.76rem;">Open Drawer ▶</button></td>' +
-                  '</tr>';
-              }).join('') +
-            '</tbody>' +
-          '</table>' +
+        '<div class="classroom-student-card ' + (isSelected ? 'is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+          // Checkbox
+          '<div class="student-card-check-wrap" style="' + (isMultiSelectMode ? 'display:block;' : '') + '">' +
+            '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
+          '</div>' +
+
+          // Status Dot
+          '<div class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></div>' +
+
+          // Avatar Frame (Clickable to change character avatar)
+          '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+            window.renderStudentMonsterAvatar(s.id, { size: 66, animated: true }) +
+          '</div>' +
+
+          // Name (Uppercase)
+          '<div class="student-card-name">' + s.firstName.toUpperCase() + '</div>' +
+          '<div style="font-size:0.72rem; font-weight:800; color:var(--color-primary); margin-bottom:4px;">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
+          '<div class="student-card-progress-bar" style="margin-top:4px;" title="Evolution: ' + monsterState.progressPct + '%">' +
+            '<div class="student-card-progress-fill" style="width:' + monsterState.progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>' +
+          '</div>' +
+          '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; text-align:center;">' +
+            (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : '👑 Apex Form')) +
+          '</div>' +
+
+          // Meta Row (Points + CEFR)
+          '<div class="student-card-meta-row">' +
+            '<span class="student-card-xp-badge" onclick="openStudentXPMenu(\'' + s.id + '\', this, event)" title="Click for XP Actions: Award, Edit, History">⭐ ' + formattedXP + '</span>' +
+            '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+          '</div>' +
+
+          // Quick 1-Click Points and Award Bar
+          '<div style="margin-top:6px; display:flex; justify-content:center; align-items:center; gap:4px; flex-wrap:wrap;">' +
+            '<button class="btn-sm-secondary btn-card-quick-point" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" title="Quick +10 XP" style="padding:2px 8px; font-size:0.75rem; font-weight:800; border-radius:12px; background:rgba(16,185,129,0.12); color:#059669; border-color:rgba(16,185,129,0.3);">' +
+              '+10 XP' +
+            '</button>' +
+            '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); toggleCardDropdown(\'xp-tiers-' + s.id + '\', event)" title="Quick XP Amounts (+10, +20, +50, +100, Custom)" style="padding:2px 6px; font-size:0.72rem; font-weight:800; border-radius:12px;">' +
+                '▾' +
+              '</button>' +
+              '<div class="card-dropdown-menu" id="menu-xp-tiers-' + s.id + '" style="min-width:145px; font-size:0.78rem; text-align:left;">' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event); closeAllCardMenus();">⚡ +10 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 100, event); closeAllCardMenus();">👑 +100 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\'); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
+              '</div>' +
+            '</div>' +
+            '<button class="btn-sm-secondary" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" title="Open Skills Points Award" style="padding:2px 8px; font-size:0.72rem; font-weight:700; border-radius:12px;">' +
+              '⭐ Award' +
+            '</button>' +
+          '</div>' +
+
+          // Streak
+          '<div class="student-card-streak-badge" style="margin-top:6px;">🔥 ' + streak + '-day streak</div>' +
+
+          // Progress Bar
+          '<div class="student-card-progress-bar" title="Curriculum Mastery: ' + progressPct + '%">' +
+            '<div class="student-card-progress-fill" style="width:' + progressPct + '%;"></div>' +
+          '</div>' +
         '</div>';
-    }
+    }).join('');
 
-    // Default: CLASSROOM WORLD MAP
-    return '' +
-      '<div class="eaa-classroom-world-wrapper">' +
-        '<div class="eaa-world-map-canvas">' +
-          // Fantasy Landmarks
-          '<div class="eaa-map-landmark" style="top:12%; left:48%;">' +
-            '<span class="eaa-landmark-icon">🏰</span>' +
-            '<span class="eaa-landmark-label">Classroom Castle</span>' +
-          '</div>' +
-          '<div class="eaa-map-landmark" style="top:20%; left:82%;">' +
-            '<span class="eaa-landmark-icon">📚</span>' +
-            '<span class="eaa-landmark-label">Ancient Library</span>' +
-          '</div>' +
-          '<div class="eaa-map-landmark" style="top:68%; left:12%;">' +
-            '<span class="eaa-landmark-icon">⚙️</span>' +
-            '<span class="eaa-landmark-label">Invention Lab</span>' +
-          '</div>' +
-          '<div class="eaa-map-landmark" style="top:74%; left:80%;">' +
-            '<span class="eaa-landmark-icon">🌲</span>' +
-            '<span class="eaa-landmark-label">Whispering Woods</span>' +
-          '</div>' +
-
-          // 19 Explorer Pins Positioned Across the Realm
-          safeStudents.map((s, idx) => {
-            const coord = mapCoordinates[idx % mapCoordinates.length];
-            const mState = store.calculateMonsterState(s.id);
-            return '' +
-              '<div class="eaa-explorer-pin" style="left:' + coord.x + '%; top:' + coord.y + '%;" onclick="openExplorerDrawer(\'' + s.id + '\')" title="Click to open ' + s.firstName + '\'s action drawer">' +
-                '<div class="eaa-explorer-avatar-box">' +
-                  window.renderMonsterAvatar(s.id, { size: 48, animated: true }) +
-                '</div>' +
-                '<div class="eaa-explorer-name-pill">' +
-                  '<span>' + (s.firstName || 'Explorer') + '</span>' +
-                  '<span class="eaa-explorer-level-tag">Lv.' + mState.currentLevel + '</span>' +
-                '</div>' +
-              '</div>';
-          }).join('') +
-        '</div>' +
+    // Append + Add Student card at the end
+    const addCardHtml = '' +
+      '<div class="card-add-student" onclick="openStudentModal()" title="Add a new student to ' + cls.name + '">' +
+        '<div class="card-add-student-icon">+</div>' +
+        '<div style="font-weight:800; font-size:1rem;">Add Student</div>' +
+        '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Enroll new learner</div>' +
       '</div>';
+
+    return '<div class="classroom-students-grid">' + cardsHtml + addCardHtml + '</div>';
   }
 
-
+  // 2. Groups View
   function renderClassroomGroupsGrid(cls, groups, students) {
     if (groups.length === 0) {
       return '' +
@@ -3261,139 +3347,55 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   // 3. Classroom Dashboard Summary Widgets (Today's Classroom + Needs Attention)
   function renderClassroomDashboardWidgets(cls, students) {
-    const worldProg = store.getWorldProgression ? store.getWorldProgression(cls.id) : { totalClassXP: 4850, currentWorld: { name: 'Meadow Academy', icon: '🌲' }, nextWorld: { name: 'The Invention Lab', icon: '🚀' }, pct: 68 };
+    const today = new Date().toISOString().split('T')[0];
+    const attRecords = store.getAttendanceRecords(cls.id);
+    const todayAttCount = attRecords.filter(r => r.date === today).length;
+    const attStatusText = todayAttCount > 0 ? 'Completed for today (' + todayAttCount + ' logged)' : 'Roll call needed today';
 
     return '' +
-      // Row 1: Today's Mission Checklist & Needs Attention Hub
-      '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:20px; margin-bottom:24px;">' +
-        
-        // Mission Checklist Panel
-        '<div class="eaa-mission-card" style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:18px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-            '<h3 style="font-size:1.08rem; font-weight:900; margin:0; display:flex; align-items:center; gap:8px; color:var(--text-main);">' +
-              '<span>🎯</span> <span># TODAY\'S MISSION CHECKLIST</span>' +
-            '</h3>' +
-            '<span style="font-size:0.72rem; background:rgba(6,182,212,0.15); color:#06b6d4; font-weight:800; padding:2px 8px; border-radius:8px;">DAILY EXPEDITION</span>' +
-          '</div>' +
-          '<div style="display:flex; flex-direction:column; gap:10px;">' +
-            '<label style="display:flex; align-items:flex-start; gap:10px; font-size:0.86rem; padding:10px 12px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">' +
-              '<input type="checkbox" onchange="if(this.checked){ store.awardXP(\'' + (students[0] ? students[0].id : '') + '\', 50, \'Speed Skimmer Daily Mission\'); if(window.playCelebrationSound) window.playCelebrationSound(); this.disabled=true; this.parentElement.style.opacity=\'0.7\'; }" style="margin-top:3px; transform:scale(1.2); cursor:pointer;" />' +
-              '<div>' +
-                '<div style="font-weight:800; color:var(--text-main);">⚡ Speed Skimmer (30s Mission)</div>' +
-                '<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">Skim informational text in under 30s and locate 3 bold clues. <span style="color:#10b981; font-weight:800;">+50 XP</span></div>' +
-              '</div>' +
-            '</label>' +
-
-            '<label style="display:flex; align-items:flex-start; gap:10px; font-size:0.86rem; padding:10px 12px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">' +
-              '<input type="checkbox" onchange="if(this.checked){ store.awardXP(\'' + (students[0] ? students[0].id : '') + '\', 75, \'CAN & CAN\'T Detective Mission\'); if(window.playCelebrationSound) window.playCelebrationSound(); this.disabled=true; this.parentElement.style.opacity=\'0.7\'; }" style="margin-top:3px; transform:scale(1.2); cursor:pointer;" />' +
-              '<div>' +
-                '<div style="font-weight:800; color:var(--text-main);">🎙️ CAN &amp; CAN\'T Detective (Speaking)</div>' +
-                '<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">Speak 3 sentences aloud with ability and limitation verbs. <span style="color:#10b981; font-weight:800;">+75 XP</span></div>' +
-              '</div>' +
-            '</label>' +
-
-            '<label style="display:flex; align-items:flex-start; gap:10px; font-size:0.86rem; padding:10px 12px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle); cursor:pointer;">' +
-              '<input type="checkbox" onchange="if(this.checked){ store.awardXP(\'' + (students[0] ? students[0].id : '') + '\', 80, \'Nature Biomimicry Link Mission\'); if(window.playCelebrationSound) window.playCelebrationSound(); this.disabled=true; this.parentElement.style.opacity=\'0.7\'; }" style="margin-top:3px; transform:scale(1.2); cursor:pointer;" />' +
-              '<div>' +
-                '<div style="font-weight:800; color:var(--text-main);">🦅 Nature Biomimicry Link (CLIL)</div>' +
-                '<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">Connect kingfisher beak adaptation to high-speed bullet train. <span style="color:#10b981; font-weight:800;">+80 XP</span></div>' +
-              '</div>' +
-            '</label>' +
-          '</div>' +
-        '</div>' +
-
-        // Needs Attention Smart Hub
-        '<div class="eaa-needs-attention" style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:18px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-            '<h3 style="font-size:1.08rem; font-weight:900; margin:0; display:flex; align-items:center; gap:8px; color:var(--text-main);">' +
-              '<span>⚠️</span> <span># NEEDS ATTENTION HUB</span>' +
-            '</h3>' +
-            '<span style="font-size:0.72rem; background:rgba(239,68,68,0.15); color:#ef4444; font-weight:800; padding:2px 8px; border-radius:8px;">ACTIONABLE</span>' +
-          '</div>' +
-          '<div style="display:flex; flex-direction:column; gap:10px;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:rgba(239,68,68,0.06); border-radius:10px; border-left:3px solid var(--color-danger);">' +
-              '<div style="font-size:0.84rem; font-weight:700;">🗣️ 2 students need speaking practice</div>' +
-              '<button class="btn-sm-secondary" onclick="switchView(\'challenges\')" style="font-size:0.75rem; padding:4px 10px; font-weight:800; color:var(--color-danger); border-color:var(--color-danger);">Launch Prompt</button>' +
-            '</div>' +
-
-            '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:rgba(245,158,11,0.06); border-radius:10px; border-left:3px solid var(--color-warning);">' +
-              '<div style="font-size:0.84rem; font-weight:700;">✍️ 1 homework submission pending</div>' +
-              '<button class="btn-sm-secondary" onclick="switchView(\'homework\')" style="font-size:0.75rem; padding:4px 10px; font-weight:800; color:var(--color-warning); border-color:var(--color-warning);">Review</button>' +
-            '</div>' +
-
-            '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:rgba(16,185,129,0.06); border-radius:10px; border-left:3px solid var(--color-success);">' +
-              '<div style="font-size:0.84rem; font-weight:700;">🚀 5 students close to monster evolution</div>' +
-              '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-size:0.75rem; padding:4px 10px; font-weight:800; color:var(--color-success); border-color:var(--color-success);">Award Bonus</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-
-      // Row 2: Quick Launch Flagship Activities & Toolkit
-      '<div style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:18px; padding:20px; margin-bottom:24px; box-shadow:var(--shadow-sm);">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
-          '<h3 style="font-size:1.08rem; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">' +
-            '<span>🚀</span> <span>FLAGSHIP EXPEDITIONS &amp; QUICK LAUNCH</span>' +
+      '<div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-top:16px;">' +
+        // Today's Classroom
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+          '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:8px;">' +
+            '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
           '</h3>' +
-          '<span style="font-size:0.78rem; color:var(--text-muted);">Launch interactive student adventures in 1 click</span>' +
-        '</div>' +
-        '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px;">' +
-          
-          // Card 1: Save Tomorrow
-          '<div style="background:linear-gradient(135deg, rgba(2,44,34,0.7) 0%, rgba(15,23,42,0.9) 100%); border:1.5px solid #14b8a6; border-radius:14px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-            '<div>' +
-              '<div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; color:#5eead4; margin-bottom:4px;">' +
-                '<span>GRADE 4 · STEM MASTER LAB</span>' +
-                '<span>⏱️ 55–60 min</span>' +
-              '</div>' +
-              '<div style="font-size:0.95rem; font-weight:900; color:#ffffff; margin-bottom:4px;">🚀 The Invention That Must Save Tomorrow</div>' +
-              '<div style="font-size:0.78rem; color:#94a3b8; line-height:1.3;">15 interactive phases, biomimicry, Da Vinci blueprint &amp; Karl Benz lab chamber.</div>' +
+          '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">' +
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Next Lesson</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">Fire Station Adventure</div>' +
+              '<a href="firefighter/index.html" class="btn-primary-action" style="padding:4px 10px; font-size:0.76rem; text-decoration:none; display:inline-flex; margin-top:4px;">▶ Start Lesson</a>' +
             '</div>' +
-            '<a href="save-tomorrow/index.html" class="btn-primary-action" style="padding:8px 12px; font-size:0.82rem; font-weight:800; text-decoration:none; justify-content:center; background:#14b8a6; color:#042f2e;">▶ Launch 60-Min Lab</a>' +
-          '</div>' +
 
-          // Card 2: Brain Quit
-          '<div style="background:linear-gradient(135deg, rgba(30,27,75,0.7) 0%, rgba(15,23,42,0.9) 100%); border:1.5px solid #6366f1; border-radius:14px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-            '<div>' +
-              '<div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; color:#a5b4fc; margin-bottom:4px;">' +
-                '<span>GRADE 4 · READING SKIM LAB</span>' +
-                '<span>⏱️ 35 min</span>' +
-              '</div>' +
-              '<div style="font-size:0.95rem; font-weight:900; color:#ffffff; margin-bottom:4px;">🧠 The Day Your Brain Quit!</div>' +
-              '<div style="font-size:0.78rem; color:#94a3b8; line-height:1.3;">30-second skimming clock, 4 sci-fi doors &amp; brain detective corkboard.</div>' +
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Active Assignment</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">My Town Prepositions</div>' +
+              '<div style="font-size:0.78rem; color:var(--text-muted);">' + students.length + ' Assigned · Due Friday</div>' +
             '</div>' +
-            '<a href="brain/index.html" class="btn-primary-action" style="padding:8px 12px; font-size:0.82rem; font-weight:800; text-decoration:none; justify-content:center; background:#6366f1; color:#ffffff;">▶ Launch Reading</a>' +
-          '</div>' +
 
-          // Card 3: Classroom Toolkit Quick Launch
-          '<div style="background:linear-gradient(135deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.9) 100%); border:1.5px solid #06b6d4; border-radius:14px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-            '<div>' +
-              '<div style="font-size:0.72rem; font-weight:800; color:#38bdf8; margin-bottom:4px;">SMART BOARD INTERACTIVE DOCK</div>' +
-              '<div style="font-size:0.95rem; font-weight:900; color:#ffffff; margin-bottom:4px;">🎓 Smart Board Classroom Toolkit</div>' +
-              '<div style="font-size:0.78rem; color:#94a3b8; line-height:1.3;">High-visibility timers, random selector wheel &amp; team scoreboard.</div>' +
+            '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:14px; border:1px solid var(--border-subtle);">' +
+              '<div style="font-size:0.76rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Attendance Status</div>' +
+              '<div style="font-size:0.96rem; font-weight:800; margin:4px 0;">' + attStatusText + '</div>' +
+              '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="padding:4px 10px; font-size:0.76rem; margin-top:4px;">📋 Open Roll Call</button>' +
             '</div>' +
-            '<button class="btn-primary-action" onclick="toggleSmartboardMode()" style="padding:8px 12px; font-size:0.82rem; font-weight:800; justify-content:center; background:#06b6d4; color:#0f172a;">🎓 Launch Smart Board</button>' +
           '</div>' +
         '</div>' +
-      '</div>' +
 
-      // Row 3: World Map Story Progression
-      '<div style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:18px; padding:20px; box-shadow:var(--shadow-sm);">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
-          '<div style="display:flex; align-items:center; gap:8px;">' +
-            '<span style="font-size:1.4rem;">🗺️</span>' +
-            '<span style="font-size:1rem; font-weight:900; color:var(--text-main);">World Map Adventure: Unlocking ' + worldProg.nextWorld.name + '</span>' +
+        // Needs Attention
+        '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
+          '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:14px; display:flex; align-items:center; gap:8px;">' +
+            '<span>⚠️</span> <span>Needs Attention</span>' +
+          '</h3>' +
+          '<div style="display:flex; flex-direction:column; gap:10px;">' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(239,68,68,0.06); border-radius:8px; border-left:3px solid var(--color-danger);">' +
+              '<span>🗣</span> <span>2 students need extra speaking practice</span>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(245,158,11,0.06); border-radius:8px; border-left:3px solid var(--color-warning);">' +
+              '<span>✍️</span> <span>1 homework submission awaiting review</span>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px; font-size:0.84rem; padding:8px 10px; background:rgba(79,70,229,0.06); border-radius:8px; border-left:3px solid var(--color-primary);">' +
+              '<span>🎯</span> <span>Prepositions quiz scheduled for Thursday</span>' +
+            '</div>' +
           '</div>' +
-          '<span style="font-size:0.82rem; font-weight:800; color:#06b6d4;">' + worldProg.totalClassXP.toLocaleString() + ' / 10,000 Class XP (' + worldProg.pct + '%)</span>' +
-        '</div>' +
-        '<div style="width:100%; height:12px; background:rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; position:relative; margin-bottom:8px;">' +
-          '<div style="width:' + worldProg.pct + '%; height:100%; background:linear-gradient(90deg, #06b6d4, #10b981, #f59e0b); border-radius:6px; transition:width 0.5s ease;"></div>' +
-        '</div>' +
-        '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; color:var(--text-muted);">' +
-          '<span>🌲 Meadow Academy (Unlocked)</span>' +
-          '<span>🍄 Wonderland Woods (Unlocked)</span>' +
-          '<span>🌊 Oceanic Depths (Unlocked)</span>' +
-          '<span style="color:#f59e0b;">🚀 The Invention Lab (In Progress)</span>' +
         '</div>' +
       '</div>';
   }
@@ -4464,9 +4466,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderLibraryView(container) {
-    if (!container) container = document.getElementById('app-view-container');
-    if (!container) return;
-
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
     const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
@@ -4494,7 +4493,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
     else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
     else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
-    else if (libActiveTab === 'alice') tabHeading = '🐇 Alice in Wonderland Play & Prop Unit';
     else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
     else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
     else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
@@ -4502,411 +4500,422 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     else if (libActiveTab === 'textbooks') tabHeading = 'Curriculum Textbooks';
     else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
 
-    const portals = [
-      { id: 'reading', title: 'Reading Forest', icon: '🌲', desc: 'Graded readers, stories & skimming.', count: storiesCount + ' Stories', action: "setLibFilter('skill', 'Reading')" },
-      { id: 'listening', title: 'Listening Station', icon: '🎧', desc: 'Phonics tracks & dialogues.', count: '18 Tracks', action: "setLibFilter('skill', 'Listening')" },
-      { id: 'writing', title: 'Writing Workshop', icon: '✍️', desc: 'Sentence builders & blueprints.', count: '10 Guides', action: "setLibFilter('skill', 'Writing')" },
-      { id: 'vocab', title: 'Vocabulary Lab', icon: '🧠', desc: 'Flashcards & memory challenges.', count: '64 Target Words', action: "setLibFilter('skill', 'Vocabulary')" },
-      { id: 'games', title: 'Game Zone', icon: '🎮', desc: '15 interactive curriculum games.', count: gamesCount + ' Games', action: "setLibTab('games')" },
-      { id: 'worksheets', title: 'Worksheet Archive', icon: '📝', desc: 'Printable & digital sheets.', count: worksheetsCount + ' Sheets', action: "setLibTab('worksheets')" }
-    ];
-
     container.innerHTML = 
-      '<div style="display:flex; flex-direction:column; gap:20px;">' +
-        // 1. Professional Header
-        '<div class="library-header-compact" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:18px; padding:20px 24px;">' +
-          '<div class="library-title-wrap">' +
-            '<div style="display:flex; align-items:center; gap:10px;">' +
-              '<h1 class="library-title-main" style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
-                '<span>📚</span> <span>Adventure Resource Library</span>' +
-              '</h1>' +
-              '<span class="library-verified-badge" title="All curriculum resources audited and verified" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:20px;">✓ Curated</span>' +
-            '</div>' +
-            '<p class="library-subtitle" style="font-size:0.88rem; color:#94a3b8; margin:6px 0 0 0;">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
+      // 1. Professional Header
+      '<div class="library-header-compact">' +
+        '<div class="library-title-wrap">' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<h1 class="library-title-main">Educational Resource Library</h1>' +
+            '<span class="library-verified-badge" title="All curriculum resources audited and verified">✓ Curated</span>' +
           '</div>' +
-          '<div class="library-header-actions" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
-              '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
-            '</button>' +
-            '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="if(window.handleSyncLocalLibraryToCloud) handleSyncLocalLibraryToCloud(); else if(window.triggerGlobalCloudSync) triggerGlobalCloudSync();" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
-            '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
-            '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-            '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
-              (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
-            '</button>' +
-          '</div>' +
+          '<p class="library-subtitle">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
         '</div>' +
-
-        // 2. Themed World Portals Strip (Clickable 1-Click Portals)
-        '<div class="eaa-library-portals-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">' +
-          portals.map(p => {
-            return '' +
-              '<div class="eaa-portal-card" onclick="' + p.action + '" style="cursor:pointer; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; transition:all 0.2s ease;">' +
-                '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">' +
-                  '<span class="eaa-portal-icon" style="font-size:1.6rem;">' + p.icon + '</span>' +
-                  '<div>' +
-                    '<h4 class="eaa-portal-title" style="font-size:0.95rem; font-weight:800; color:#fff; margin:0;">' + p.title + '</h4>' +
-                    '<span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">' + p.count + '</span>' +
-                  '</div>' +
-                '</div>' +
-                '<p class="eaa-portal-desc" style="font-size:0.76rem; color:#94a3b8; margin:0; line-height:1.3;">' + p.desc + '</p>' +
-              '</div>';
-          }).join('') +
-        '</div>' +
-
-        // Manage Mode & Cloud Diagnostics Banner
-        (isLibraryManageMode ? 
-          '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
-            '<div>' +
-              '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
-              '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
-                'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected' : 'Local Storage Mode') + '</span> · ' +
-                'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
-              '</div>' +
-            '</div>' +
-            '<div style="display:flex; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="if(window.handleSyncLocalLibraryToCloud) handleSyncLocalLibraryToCloud();" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
-            '</div>' +
-          '</div>' : '') +
-
-        // 3. Prominent Multi-Faceted Controls Bar
-        '<div class="library-controls-bar" style="background:rgba(30,41,59,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px 20px; display:flex; flex-direction:column; gap:14px;">' +
-          '<div class="library-search-wrap" style="position:relative; width:100%;">' +
-            '<span class="library-search-icon" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1.1rem; color:#94a3b8;">🔍</span>' +
-            '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search lessons, worksheets, games... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" style="width:100%; padding:12px 42px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:#0f172a; color:#ffffff; font-size:0.95rem; box-sizing:border-box;" />' +
-            '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:#94a3b8; font-size:1.1rem; cursor:pointer;' + (libSearchQuery ? '' : 'display:none;') + '">✕</button>' +
-          '</div>' +
-          '<div class="library-filters-row" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'level\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
-                '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
-                '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
-                '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
-                '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
-                '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
-                '<option value="B2" ' + (libFilterLevel === 'B2' ? 'selected' : '') + '>B2</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'type\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
-                '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
-                '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
-                '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
-                '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
-                '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
-                '<option value="quiz" ' + (libFilterType === 'quiz' ? 'selected' : '') + '>🧩 Quiz</option>' +
-                '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
-                '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
-                '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
-                '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
-                '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
-                '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
-                '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
-                '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6+</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>All Skills ▾</option>' +
-                '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>🗣 Speaking</option>' +
-                '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>🎧 Listening</option>' +
-                '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>📖 Reading</option>' +
-                '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>✍ Writing</option>' +
-                '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>🧠 Vocabulary</option>' +
-                '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>🔤 Grammar</option>' +
-                '<option value="Pronunciation" ' + (libFilterSkill === 'Pronunciation' ? 'selected' : '') + '>📢 Pronunciation</option>' +
-                '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>🔡 Phonics</option>' +
-                '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>🌍 CLIL</option>' +
-              '</select>' +
-            '</div>' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>All Topics ▾</option>' +
-                availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
-              '</select>' +
-            '</div>' +
-            '<div class="filter-dropdown-wrap">' +
-              '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 12px; font-size:0.84rem;">' +
-                '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
-                '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
-                '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
-                '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
-              '</select>' +
-            '</div>' +
-            '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + ' padding:8px 14px; border-radius:8px; background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.4); font-size:0.82rem; font-weight:700; cursor:pointer; align-items:center; gap:6px;">' +
-              '<span>↺</span> <span>Clear filters</span>' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-
-        // 4. Category Tabs Row
-        '<div class="library-category-tabs-row library-nav-tabs-row" style="display:flex; overflow-x:auto; gap:8px; padding-bottom:6px;">' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>All Resources</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + totalResources + '</span>' +
+        '<div class="library-header-actions">' +
+          '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
+            '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'games' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>🎮 Games</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + gamesCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'worksheets' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>📄 Worksheets</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + worksheetsCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + '; color:#fce7f3; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>🧠 The Day Your Brain Quit!</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; padding:2px 7px; border-radius:12px; font-size:0.75rem;">RG2 p.17</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + '; color:#cffafe; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>⚙️ The Small Inventor</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:2px 7px; border-radius:12px; font-size:0.75rem;">Series</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + '; color:#f3e8ff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>🐇 Alice Wonderland</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff; padding:2px 7px; border-radius:12px; font-size:0.75rem;">Series</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'stories' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>📚 Stories</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + storiesCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'roleplays' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>🎭 Roleplays</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + roleplaysCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'textbooks' ? '#2563eb' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>📖 Textbooks</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(255,255,255,0.2); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + textbooksCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')" style="padding:8px 16px; border-radius:10px; font-weight:800; font-size:0.84rem; cursor:pointer; border:1px solid rgba(255,255,255,0.1); background:' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? '#f59e0b' : 'rgba(30,41,59,0.7)') + '; color:#fff; display:flex; align-items:center; gap:8px; white-space:nowrap;">' +
-            '<span>⭐ Favorites</span>' +
-            '<span class="cat-pill-count tab-count-badge" style="background:rgba(0,0,0,0.3); padding:2px 7px; border-radius:12px; font-size:0.75rem;">' + favoritesCount + '</span>' +
+          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
+          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
+          '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+            (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
+      '</div>' +
 
-        // 5. Section Header Row (Heading + Count + Sort)
-        '<div class="library-section-header-row" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:4px;">' +
-          '<div class="library-section-left" style="display:flex; align-items:center; gap:12px;">' +
-            '<h2 class="section-heading" style="font-size:1.25rem; font-weight:900; color:#ffffff; margin:0;">' + tabHeading + '</h2>' +
-            '<span id="lib-count-badge" class="section-count-badge library-count-pill" style="font-size:0.78rem; font-weight:700; color:#94a3b8; background:rgba(255,255,255,0.08); padding:3px 10px; border-radius:20px;">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
+      // Manage Mode & Cloud Diagnostics Banner
+      (isLibraryManageMode ? 
+        '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+          '<div>' +
+            '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
+            '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
+              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> · ' +
+              'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
+            '</div>' +
           '</div>' +
-          '<div class="library-section-right" style="display:flex; align-items:center; gap:8px;">' +
-            '<label for="lib-sort-select" class="sort-label" style="font-size:0.8rem; font-weight:700; color:#94a3b8;">Sort:</label>' +
-            '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:6px 12px; font-size:0.8rem;">' +
-              '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
-              '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
-              '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
-              '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
-              '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
-              '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
+          '</div>' +
+        '</div>' : '') +
+
+      // 2. Prominent Multi-Faceted Controls Bar
+      '<div class="library-controls-bar">' +
+        '<div class="library-search-wrap">' +
+          '<span class="library-search-icon">🔍</span>' +
+          '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search resources, vocabulary, grammar, topics... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" />' +
+          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
+        '</div>' +
+        '<div class="library-filters-row">' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
+              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
+              '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+              '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
+              '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+              '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
+              '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
             '</select>' +
           '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
+              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
+              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
+              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
+              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
+              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
+              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
+              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)">' +
+              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
+              '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
+              '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
+              '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
+              '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
+              '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
+              '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
+              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill ▾</option>' +
+              '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
+              '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
+              '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+              '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>Writing</option>' +
+              '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+              '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+              '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>Phonics</option>' +
+              '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>CLIL</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
+              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
+              availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)">' +
+              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
+              '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
+              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
+              '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
+            '</select>' +
+          '</div>' +
+          '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
+            '<span>↺</span> <span>Clear filters</span>' +
+          '</button>' +
         '</div>' +
+      '</div>' +
 
-        // 6. The Day Your Brain Quit! Showcase Shelf
-        ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-          '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
-            '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-              '<div style="display:flex; align-items:center; gap:12px;">' +
-                '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
-                '<div>' +
-                  '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
-                  '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 · 35 min</p>' +
-                '</div>' +
-              '</div>' +
-              '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
-            '</div>' +
-            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
-              '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
-                    '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0;">🧠 Interactive 10-Screen Story Adventure</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none;">▶ Play Brain Adventure</a>' +
-                  '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
-                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📄 5-Part Detective Workbook</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Certificate.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
-                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📖 Global Readings 3</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules &amp; Learning and Your Brain neuroscience text.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' : '') +
-
-        // 7. The Small Inventor Showcase Shelf
-        ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-          '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
-            '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-              '<div style="display:flex; align-items:center; gap:12px;">' +
-                '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
-                '<div>' +
-                  '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0;">The Small Inventor • Young Inventor Academy</h2>' +
-                  '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+)</p>' +
-                '</div>' +
-              '</div>' +
-              '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
-            '</div>' +
-            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
-              '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
-                    '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0;">🚀 Young Inventor Academy</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">10 connected missions with blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none;">▶ Enter Inventor Lab</a>' +
-                  '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
-                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">💡 The After-School Inventor</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
-                  '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
-                    '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0;">📖 My Good Ideas Book</h4>' +
-                  '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Edison notebooks, Da Vinci sketches, and Kingfisher biomimicry.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:8px;">' +
-                  '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' : '') +
-
-        // 8. Alice in Wonderland Showcase Shelf
-        ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
-          '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
-              '<div style="display:flex; align-items:center; gap:10px;">' +
-                '<span style="font-size:2rem;">🐇</span>' +
-                '<div>' +
-                  '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
-                  '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
-                '</div>' +
-              '</div>' +
-              '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
-            '</div>' +
-            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
-              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · PLAY</span>' +
-                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
-                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, and workshop chest reveal.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:6px;">' +
-                  '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
-                  '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · PAST SIMPLE</span>' +
-                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
-                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, and Mad Hatter lie detector.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:6px;">' +
-                  '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
-                  '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-                '</div>' +
-              '</div>' +
-              '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · THEATRE</span>' +
-                    '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
-                  '</div>' +
-                  '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
-                  '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
-                '</div>' +
-                '<div style="display:flex; gap:6px;">' +
-                  '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
-                  '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' : '') +
-
-        // 9. Resource Grid Container (Where all interactive resource cards render!)
-        '<div id="library-resource-grid" class="resource-library-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:18px;">' +
-          (filteredItems.length === 0 ? 
-            '<div class="library-empty-state" style="grid-column:1/-1; text-align:center; padding:60px 20px; background:rgba(30,41,59,0.5); border:1px dashed rgba(255,255,255,0.15); border-radius:18px;">' +
-              '<div class="library-empty-icon" style="font-size:3rem; margin-bottom:12px;">🔍</div>' +
-              '<h3 class="library-empty-title" style="font-size:1.2rem; font-weight:800; color:#fff; margin:0 0 8px 0;">No resources match your search or filters</h3>' +
-              '<p class="library-empty-desc" style="font-size:0.86rem; color:#94a3b8; margin:0 0 16px 0;">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
-              '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="padding:8px 18px; border-radius:8px; background:#2563eb; color:#fff; border:none; font-weight:700; cursor:pointer;">' +
-                '<span>↺</span> <span>Clear all filters</span>' +
-              '</button>' +
-            '</div>' :
-            filteredItems.map(r => renderResourceCard(r)).join('')
-          ) +
+      // 3. Category Tabs Row
+      '<div class="library-category-tabs-row library-nav-tabs-row">' +
+        '<div class="library-category-tabs library-nav-tabs">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
+            '<span>All Resources</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
+            '<span>🎮 Games</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + gamesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
+            '<span>📄 Worksheets</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
+            '<span>📚 Stories</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')">' +
+            '<span>🎭 Roleplays</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')">' +
+            '<span>📖 Textbooks</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + textbooksCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
+            '<span>⭐ Favorites</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
+          '</button>' +
         '</div>' +
+      '</div>' +
+
+      // 4. Section Header Row
+      '<div class="library-section-header-row">' +
+        '<div class="library-section-left">' +
+          '<h2 class="section-heading">' + tabHeading + '</h2>' +
+          '<span id="lib-count-badge" class="section-count-badge library-count-pill">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
+        '</div>' +
+        '<div class="library-section-right">' +
+          '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
+          '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
+            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
+            '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
+            '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
+            '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
+            '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
+            '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+
+            
+      // The Day Your Brain Quit! Series Showcase Shelf
+      ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
+                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 (CEFR A1/A1+) · 35 min</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🧠 Interactive 10-Screen Story Adventure</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(236,72,153,0.2); color:#fbcfe8; border:1px solid rgba(236,72,153,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Skimming</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think · Learn · Remember · Imagine</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Voice Recorder</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">▶ Play Brain Adventure</a>' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📄 5-Part Detective Workbook</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Brain Defender Gold Certificate.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Print Ready</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Smart Board Compatible</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 Global Readings 3</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules (headings, pictures, first sentences) &amp; Learning and Your Brain neuroscience text.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan RG3</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Unit 1 p.17</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+
+      // The Small Inventor Series Showcase Shelf
+      ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor • Young Inventor Academy</h2>' +
+                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+) · 10 Interactive Missions &amp; Capstone Expo</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🚀 Young Inventor Academy</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem → Idea → Invention → Improvement → Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(6,182,212,0.2); color:#67e8f9; border:1px solid rgba(6,182,212,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">CAN / CAN\'T</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">HAS / HAVE</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(168,85,247,0.2); color:#e9d5ff; border:1px solid rgba(168,85,247,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Biomimicry</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">5-Min Expo Pitch</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">▶ Enter Inventor Lab</a>' +
+                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The After-School Inventor</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine. Practice vocabulary and problem-solution pairs.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Reading 1</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Global Readings 2</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
+                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 My Good Ideas Book</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Thomas Edison notebooks, Leonardo da Vinci parachute sketches, Kingfisher biomimicry, and Karl Benz motorcar.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Primary Source</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+
+            // Alice in Wonderland Series Showcase Shelf
+      ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<span style="font-size:2rem;">🐇</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
+                '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · NEW ⚡</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, Past Simple discovery, and workshop chest reveal.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
+                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">READING QUEST</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🔍 The Skimming Detectives</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">6-event story sequence, 4 feeling monsters, and Eagle Eye Skimming challenge.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Quest</a>' +
+                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#c084fc;">STORY THEATRE</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">40 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">📖 Alice Story Engine</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Interactive branching story stages with audio narration and character dialogues.</p>' +
+              '</div>' +
+              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Open Story Theatre</a>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · NEW ⚡</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, Mad Hatter lie detector, and Time Monster.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
+                '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · FINALE 🎭</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
+                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+      // 5. Resource Grid Container
+      '<div id="library-resource-grid" class="resource-library-grid">' +
+        (filteredItems.length === 0 ? 
+          '<div class="library-empty-state">' +
+            '<div class="library-empty-icon">🔍</div>' +
+            '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+            '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+            '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+              '<span>↺</span> <span>Clear all filters</span>' +
+            '</button>' +
+          '</div>' :
+          filteredItems.map(r => renderResourceCard(r)).join('')
+        ) +
       '</div>';
   }
 
   window.handleLibSearch = function(query) {
     libSearchQuery = query;
     const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.style.display = (query && query.trim()) ? 'block' : 'none';
+    if (clearBtn) clearBtn.classList.toggle('is-visible', Boolean(query && query.trim()));
     updateLibraryGrid();
   };
 
@@ -4923,7 +4932,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       input.focus();
     }
     const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.style.display = 'none';
+    if (clearBtn) clearBtn.classList.remove('is-visible');
     updateLibraryGrid();
   };
 
@@ -4943,11 +4952,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       libFilterFavoritesOnly = true;
     } else {
       libFilterFavoritesOnly = false;
-      if (tabName === 'worksheets') libFilterType = 'worksheet';
-      else if (tabName === 'games') libFilterType = 'game';
-      else libFilterType = 'all';
+      libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
     }
-    const container = document.getElementById('app-view-container');
+    const container = document.getElementById('app-main-content');
     if (container) renderLibraryView(container);
     else renderCurrentView();
   };
@@ -4961,7 +4968,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     libFilterFavoritesOnly = !libFilterFavoritesOnly;
     if (libFilterFavoritesOnly) libActiveTab = 'favorites';
     else if (libActiveTab === 'favorites') libActiveTab = 'all';
-    const container = document.getElementById('app-view-container');
+    const container = document.getElementById('app-main-content');
     if (container) renderLibraryView(container);
     else updateLibraryGrid();
   };
@@ -4992,13 +4999,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const input = document.getElementById('lib-search-input');
     if (input) input.value = '';
     const clearBtn = document.getElementById('lib-search-clear-btn');
-    if (clearBtn) clearBtn.style.display = 'none';
+    if (clearBtn) clearBtn.classList.remove('is-visible');
     const selects = document.querySelectorAll('.library-select');
     selects.forEach(s => s.value = 'all');
     updateLibraryGrid();
   };
-
-
 
   function updateLibraryGrid() {
     const grid = document.getElementById('library-resource-grid');
@@ -5834,7 +5839,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     const tabsHtml = 
       '<div style="display:flex; gap:8px; border-bottom:1px solid var(--border-light); margin-bottom:20px; overflow-x:auto;">' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'challenges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'challenges\')">⚡ English Challenges</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">🏆 Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">👾 Monster Evolution Levels (' + levels.length + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + allItems.length + ')</button>' +
@@ -6563,259 +6567,41 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     renderAttendanceTableForClass(cls, students);
   }
 
-  // =========================================================================
-  // MONSTER EVOLUTION ROADMAP (REFERENCE 3: SMALL STEPS. BIGGER ADVENTURES)
-  // =========================================================================
-    function renderMonsterEvolutionRoadmapView(container) {
-    if (!container) container = document.getElementById('app-view-container');
-    if (!container) return;
+  function renderTeacherDashboard(container) {
+    const cls = store.getActiveClass();
+    const students = store.getStudentsByClass(cls.id);
+    const assignments = store.getAssignments(cls.id);
+    const attRate = store.getClassAttendanceRate(cls.id);
 
-    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]) || { id: 's1', firstName: 'Explorer' };
-    const mState = store.calculateMonsterState(s.id);
-    const totalXP = store.getStudentTotalXP(s.id);
-    const xpNeeded = Math.max(0, (mState.xpRequired || 700) - totalXP);
-
-    container.innerHTML = 
-      '<div class="eaa-evolution-journey-wrap">' +
-        // Header
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
-          '<div>' +
-            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
-              '<span>🐲</span> <span>Cinematic Evolution Journey</span>' +
-            '</h1>' +
-            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Small steps build bigger, legendary English adventures.</p>' +
-          '</div>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'monster\')">← Open Monster Studio</button>' +
-        '</div>' +
-
-        // 3-Stage Evolution Panorama
-        '<div class="eaa-evolution-journey-stage">' +
-          // Left: Previous Form
-          '<div class="eaa-evolution-pillar">' +
-            '<span style="font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">PREVIOUS FORM</span>' +
-            '<h3 style="font-size:1.15rem; font-weight:900; color:#cbd5e1; margin:0;">Level 3 · Adventurer</h3>' +
-            '<div style="width:100px; height:100px; margin:10px 0; opacity:0.7;">' +
-              '<img src="assets/reference/extracted/evo_3_adventurer.png" alt="Level 3" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display=\'none\';">' +
-            '</div>' +
-            '<span class="badge" style="background:rgba(255,255,255,0.06); color:#cbd5e1; font-weight:700;">300 – 500 XP</span>' +
-          '</div>' +
-
-          // Center: Large Active Current Monster (Dominant 45% visual focus)
-          '<div class="eaa-evolution-pillar is-current">' +
-            '<span style="font-size:0.8rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">CURRENT FORM</span>' +
-            '<h2 style="font-size:1.55rem; font-weight:900; color:#ffffff; margin:0;">Level 4 · Elite Adventurer</h2>' +
-            '<div style="width:180px; height:180px; margin:12px auto;">' +
-              window.renderMonsterAvatar(s.id, { size: 170, animated: true }) +
-            '</div>' +
-            '<div style="width:100%; max-width:320px; margin-top:8px;">' +
-              '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">' +
-                '<span>' + totalXP.toLocaleString() + ' XP</span>' +
-                '<span style="color:#fbbf24;">' + xpNeeded + ' XP TO EVOLVE</span>' +
-              '</div>' +
-              '<div style="height:12px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">' +
-                '<div style="height:100%; width:' + (mState.progressPct || 65) + '%; background:linear-gradient(90deg, #38bdf8, #a855f7); border-radius:10px;"></div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-
-          // Right: Mysterious Next Form Silhouette
-          '<div class="eaa-evolution-pillar">' +
-            '<span style="font-size:0.75rem; font-weight:800; color:#c084fc; text-transform:uppercase;">NEXT FORM</span>' +
-            '<h3 style="font-size:1.15rem; font-weight:900; color:#e2e8f0; margin:0;">Level 5 · Legendary</h3>' +
-            '<div class="eaa-evolution-silhouette-box">' +
-              '<span style="font-size:5rem;">👑</span>' +
-            '</div>' +
-            '<button type="button" class="eaa-evolve-btn" onclick="store.addStudentXP(\'' + s.id + '\', 100); renderMonsterEvolutionRoadmapView(); if(window.showToast) window.showToast(\'Energy Boosted!\', \'success\');">' +
-              '⚡ EVOLVE' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-
-        // 6 Stone Pedestals Progression Roadmap
-        '<div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:22px; padding:24px;">' +
-          '<h3 style="font-size:1.2rem; font-weight:900; color:#ffffff; margin:0 0 16px 0;">6 Evolutionary Milestones</h3>' +
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px;">' +
-            '<div class="eaa-ref-pedestal-card">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 1</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Baby Egg</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#15803d; color:#ffffff;">0 – 100 XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">Every expert was a beginner!</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-card">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 2</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Young Creature</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#0d9488; color:#ffffff;">101 – 300 XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">Practice makes progress!</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-card">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 3</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Adventurer</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#0284c7; color:#ffffff;">301 – 500 XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">Curiosity leads to discovery!</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-card" style="border-color:#38bdf8;">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#38bdf8;">LEVEL 4 · CURRENT</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Elite Adventurer</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#d97706; color:#ffffff;">501 – 700 XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">Confidence unlocks superpowers!</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-card">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 5</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Legendary</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#ca8a04; color:#ffffff;">701 – 1,000 XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">Master of words and wonders!</div>' +
-            '</div>' +
-            '<div class="eaa-ref-pedestal-card">' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8;">LEVEL 6</div>' +
-              '<h4 style="font-size:1rem; font-weight:900; color:#ffffff; margin:2px 0;">Mythic</h4>' +
-              '<div class="eaa-ref-pedestal-badge" style="background:#7c3aed; color:#ffffff;">1,000+ XP</div>' +
-              '<div class="eaa-ref-motto-ribbon">A living English legend!</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-  }
-
-
-    function renderTeacherDashboard(container) {
-    const cls = store.getActiveClass() || (store.getClasses && store.getClasses()[0]) || { id: 'class-4b', name: 'Grade 4B' };
-    const students = store.getStudentsByClass ? store.getStudentsByClass(cls.id) : (store.getStudents() || []);
-    const totalXP = 1240;
+    const currentHour = new Date().getHours();
+    let timeGreeting = 'Good morning';
+    if (currentHour >= 12 && currentHour < 18) {
+      timeGreeting = 'Good afternoon';
+    } else if (currentHour >= 18 || currentHour < 5) {
+      timeGreeting = 'Good evening';
+    }
+    const teacherDisplayName = (store.getSchoolSettings && store.getSchoolSettings().teacherName) || 'Mr. Maysam';
 
     container.innerHTML = 
-      '<div class="eaa-command-center">' +
-        // 1. Cinematic World Hero Stage
-        '<div class="eaa-command-hero">' +
-          '<div class="eaa-hero-bg-accent"></div>' +
-          '<div class="eaa-hero-content">' +
-            '<div class="eaa-hero-world-pill">🏰 Active Learning Realm</div>' +
-            '<h1 class="eaa-hero-world-title">THE INVENTOR\'S VALLEY</h1>' +
-            '<div class="eaa-hero-mission-title">' + (cls.name || 'Grade 4B') + ' · Today\'s Mission: <strong>The Invention Challenge</strong></div>' +
-            '<div class="eaa-hero-stats-row">' +
-              '<span>👥 <strong>' + (students.length || 19) + '</strong> Explorers</span>' +
-              '<span>•</span>' +
-              '<span>⚡ <strong>' + totalXP.toLocaleString() + '</strong> Learning Energy XP</span>' +
-              '<span>•</span>' +
-              '<span>⭐ <strong>72%</strong> Language Mastery</span>' +
-            '</div>' +
-            '<button type="button" class="eaa-hero-enter-btn" onclick="switchView(\'class-detail\')">' +
-              '<span>🗺️</span> <span>ENTER CLASSROOM WORLD</span>' +
-            '</button>' +
-          '</div>' +
-          '<div class="eaa-hero-artwork-box">' +
-            '<img src="assets/reference/extracted/studio_monster.png" alt="Dragon Mascot" class="eaa-hero-mascot-img" onerror="this.src=\'assets/mascot_dragon.png\';">' +
-          '</div>' +
-        '</div>' +
-
-        // 2. Teach Now 1-Click Action Hub
-        '<div class="eaa-teach-now-section">' +
-          '<div class="eaa-section-header-wrap">' +
-            '<div class="eaa-section-title"><span>⚡</span> <span>TEACH NOW — 1-CLICK LAUNCHER</span></div>' +
-            '<span style="font-size:0.8rem; color:#94a3b8;">Launches Instant Classroom Activity</span>' +
-          '</div>' +
-          '<div class="eaa-teach-now-grid">' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'speak\'); switchView(\'challenges\');">' +
-              '<span>🎤</span><span>Speaking</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'reading\'); switchView(\'library\');">' +
-              '<span>📖</span><span>Reading</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'listening\'); switchView(\'library\');">' +
-              '<span>🎧</span><span>Listening</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'vocab\'); switchView(\'challenges\');">' +
-              '<span>🧠</span><span>Vocabulary</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'grammar\'); switchView(\'challenges\');">' +
-              '<span>🔤</span><span>Grammar</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openRandomStudentPickerModal){window.openRandomStudentPickerModal();}else{switchView(\'challenges\');}">' +
-              '<span>🎲</span><span>Random Picker</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openClassroomTimerModal){window.openClassroomTimerModal();}else{switchView(\'classroom-hub\');}">' +
-              '<span>⏱</span><span>Class Timer</span>' +
-            '</button>' +
-            '<button type="button" class="eaa-teach-pill-btn" onclick="if(window.openClassroomToolkitModal){window.openClassroomToolkitModal(\'scoreboard\');}else if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView(\'classroom-hub\');}">' +
-              '<span>👥</span><span>Team Battle</span>' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-
-        // 3. This Week\'s Class Quest
-        '<div class="eaa-class-quest-card">' +
-          '<div class="eaa-quest-badge">🌍 THIS WEEK\'S CLASS QUEST</div>' +
-          '<h2 class="eaa-quest-title">THE WONDERLAND EXPEDITION</h2>' +
-          '<div class="eaa-quest-criteria-row">' +
-            '<span>🎯 Complete 10 Speaking Challenges</span>' +
-            '<span>•</span>' +
-            '<span>📚 20 Reading Activities</span>' +
-            '<span>•</span>' +
-            '<span>🧠 15 Vocabulary Missions</span>' +
-          '</div>' +
-          '<div class="eaa-quest-progress-track">' +
-            '<div class="eaa-quest-progress-fill" style="width: 78%;"></div>' +
-          '</div>' +
-          '<div class="eaa-quest-footer">' +
-            '<span style="color:#c084fc;">78% Collective Progress (19 Explorers Contributing)</span>' +
-            '<span style="color:#fbbf24;">🏆 REWARD: UNLOCK WONDERLAND CLASSROOM</span>' +
-          '</div>' +
-        '</div>' +
-
-        // 4. Who Needs a Boost? (Actionable Interventions)
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<div class="eaa-section-header-wrap">' +
-            '<div class="eaa-section-title"><span>🌟</span> <span>WHO NEEDS A BOOST?</span></div>' +
-            '<span style="font-size:0.8rem; color:#94a3b8;">Actionable learning interventions</span>' +
-          '</div>' +
-          '<div class="eaa-boost-grid">' +
-            '<div class="eaa-boost-card">' +
-              '<div class="eaa-boost-header">' +
-                '<span class="eaa-boost-icon">🗣</span>' +
-                '<div>' +
-                  '<h4 class="eaa-boost-title">2 Students Need Speaking Practice</h4>' +
-                  '<p class="eaa-boost-sub">Mert &amp; Selin haven\'t spoken in today\'s mission.</p>' +
-                '</div>' +
-              '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="if(window.setChallengeCategory) window.setChallengeCategory(\'speak\'); switchView(\'challenges\');">TAKE ACTION ▶</button>' +
-            '</div>' +
-
-            '<div class="eaa-boost-card">' +
-              '<div class="eaa-boost-header">' +
-                '<span class="eaa-boost-icon">📚</span>' +
-                '<div>' +
-                  '<h4 class="eaa-boost-title">3 Students Need Reading Support</h4>' +
-                  '<p class="eaa-boost-sub">Unit 1 reading comprehension practice ready.</p>' +
-                '</div>' +
-              '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="if(window.setLibFilter) window.setLibFilter(\'type\', \'reading\'); switchView(\'library\');">TAKE ACTION ▶</button>' +
-            '</div>' +
-
-            '<div class="eaa-boost-card">' +
-              '<div class="eaa-boost-header">' +
-                '<span class="eaa-boost-icon">📝</span>' +
-                '<div>' +
-                  '<h4 class="eaa-boost-title">1 Student Has Missing Homework</h4>' +
-                  '<p class="eaa-boost-sub">Prepositions assignment pending for Kaan.</p>' +
-                '</div>' +
-              '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'homework\');">TAKE ACTION ▶</button>' +
-            '</div>' +
-
-            '<div class="eaa-boost-card">' +
-              '<div class="eaa-boost-header">' +
-                '<span class="eaa-boost-icon">👾</span>' +
-                '<div>' +
-                  '<h4 class="eaa-boost-title">4 Students Close to Evolution</h4>' +
-                  '<p class="eaa-boost-sub">Less than 50 XP to evolve to Level 5 Legendary!</p>' +
-                '</div>' +
-              '</div>' +
-              '<button type="button" class="eaa-boost-btn" onclick="switchView(\'evolution\');">TAKE ACTION ▶</button>' +
-            '</div>' +
-          '</div>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">' + timeGreeting + ', ' + teacherDisplayName + ' 👋</h1>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Here is your live classroom command summary for ' + cls.name + '.</p>' +
         '</div>' +
-      '</div>';
-  }
+        '<div style="display:flex; gap:8px;">' +
+          '<button class="btn-primary-action" onclick="openClass(\'' + cls.id + '\', \'classroom\')">🏫 Open Classroom Hub</button>' +
+        '</div>' +
+      '</div>' +
 
+      '<div class="kpi-grid" style="margin-bottom:24px;">' +
+        '<div class="kpi-card"><span class="kpi-label">Enrolled Learners</span><span class="kpi-val">' + students.length + '</span><span class="kpi-sub">' + cls.name + '</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">✓ Live attendance rate</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Active Assignments</span><span class="kpi-val">' + assignments.length + '</span><span class="kpi-sub">Pending completion</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Target CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span><span class="kpi-sub">' + (cls.academicYear || '2026–2027') + '</span></div>' +
+      '</div>' +
+
+      renderClassroomDashboardWidgets(cls, students);
+  }
 
   function renderProgressView(container) {
     const cls = store.getActiveClass();
@@ -7170,58 +6956,89 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>';
   }
 
-    function renderStudentBadgesView(container) {
-    if (!container) container = document.getElementById('app-view-container');
-    if (!container) return;
-
-    const relics = [
-      { id: 'b1', name: 'Speaking Star', icon: '🎤', skill: 'Speaking', progress: '7/10', desc: 'Speak English in 10 classroom activities.', xp: '+50 XP' },
-      { id: 'b2', name: 'Story Explorer', icon: '📖', skill: 'Reading', progress: '4/5', desc: 'Read 5 adventure texts and answer comprehension questions.', xp: '+40 XP' },
-      { id: 'b3', name: 'Audio Decoder', icon: '🎧', skill: 'Listening', progress: '8/10', desc: 'Accurately transcribe audio dialogs.', xp: '+45 XP' },
-      { id: 'b4', name: 'Sentence Architect', icon: '✍', skill: 'Writing', progress: '3/5', desc: 'Construct 5 descriptive sentences with target prepositions.', xp: '+50 XP' },
-      { id: 'b5', name: 'Vocabulary Wizard', icon: '🧠', skill: 'Vocabulary', progress: '15/15', desc: 'Master all Unit 1 vocabulary terms.', xp: '+60 XP' },
-      { id: 'b6', name: 'Grammar Knight', icon: '🔤', skill: 'Grammar', progress: '9/10', desc: 'Zero grammar mistakes in present simple challenge.', xp: '+40 XP' },
-      { id: 'b7', name: 'Team Pioneer', icon: '🤝', skill: 'Teamwork', progress: '5/5', desc: 'Help your partner solve the invention problem.', xp: '+50 XP' },
-      { id: 'b8', name: 'Invention Master', icon: '💡', skill: 'Creativity', progress: '2/3', desc: 'Design and present an original invention.', xp: '+80 XP' }
-    ];
+  function renderStudentBadgesView(container) {
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
+    if (!s) return;
+    const mState = store.calculateMonsterState(s.id);
+    const levels = (store.getProgressionLevels ? store.getProgressionLevels(true) : []).slice().sort((a, b) => a.level - b.level);
+    const badges = store.getBadges ? store.getBadges() : [];
+    const awards = (store.getStudentAwards ? store.getStudentAwards(s.id) : []);
+    const awardedBadgeIds = new Set(awards.map(a => a.badgeId));
+    const txs = store.getXPTransactions ? store.getXPTransactions(s.id) : [];
 
     container.innerHTML = 
-      '<div class="eaa-achievement-wall-container">' +
+      '<div style="max-width:960px; margin:0 auto; padding:20px 20px 40px; display:flex; flex-direction:column; gap:24px;">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
-              '<span>🏅</span> <span>English Achievement Wall</span>' +
-            '</h1>' +
-            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Collectible relic badges leading directly to English learning actions.</p>' +
+            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">🏆 Badges &amp; Evolution Stages</h1>' +
+            '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Track your learning milestones and monster transformations.</p>' +
           '</div>' +
-          '<button type="button" class="btn-primary-action" onclick="openGamificationEditorModal()">+ New Badge Relic</button>' +
+          '<div style="font-size:1.1rem; font-weight:900; color:var(--color-primary); background:var(--bg-card); padding:8px 16px; border-radius:14px; border:1px solid var(--border-light);">' +
+            '⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' Total XP' +
+          '</div>' +
         '</div>' +
 
-        '<div class="eaa-relics-grid">' +
-          relics.map(r => {
-            return '' +
-              '<div class="eaa-relic-card">' +
-                '<div style="display:flex; align-items:center; gap:12px;">' +
-                  '<div class="eaa-relic-icon-wrap">' + r.icon + '</div>' +
-                  '<div>' +
-                    '<span class="badge" style="background:rgba(250,204,21,0.15); color:#facc15; font-size:0.7rem; font-weight:800;">' + r.skill.toUpperCase() + '</span>' +
-                    '<h3 class="eaa-relic-name">' + r.name + '</h3>' +
+        // Evolution Stages Track
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">👾 Monster Evolution Stages</h3>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:10px;">' +
+            levels.map(l => {
+              const isCurrent = l.level === mState.currentLevel;
+              const isPast = l.level < mState.currentLevel;
+              const isUnlocked = isPast || isCurrent;
+              return '' +
+                '<div style="background:' + (isCurrent ? 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))' : 'var(--bg-canvas)') + '; border:' + (isCurrent ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:14px; padding:12px 8px; text-align:center; opacity:' + (isUnlocked ? '1' : '0.5') + ';">' +
+                  '<div style="width:50px; height:50px; margin:0 auto 6px auto;">' +
+                    (window.renderMonsterSVG ? window.renderMonsterSVG({ stage: l.stageKey, color: mState.profile.baseColor, equipped: mState.profile.equipped, size: 48, animated: false }) : '👾') +
                   '</div>' +
-                '</div>' +
-                '<p class="eaa-relic-criteria">' + r.desc + '</p>' +
-                '<div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:10px; display:flex; justify-content:space-between; font-size:0.78rem; font-weight:800;">' +
-                  '<span style="color:#cbd5e1;">Progress: ' + r.progress + '</span>' +
-                  '<span style="color:#facc15;">' + r.xp + '</span>' +
-                '</div>' +
-                '<button type="button" class="eaa-relic-action-btn" onclick="switchView(\'challenges\'); if(window.showToast) window.showToast(\'Opening ' + r.name + ' challenge mission!\', \'info\');">' +
-                  'VIEW CHALLENGE ▶' +
-                '</button>' +
-              '</div>';
-          }).join('') +
+                  '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary);">Lvl ' + l.level + '</div>' +
+                  '<div style="font-size:0.8rem; font-weight:800; color:var(--text-main);">' + l.name + '</div>' +
+                  '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">' + l.xpRequired.toLocaleString() + ' XP</div>' +
+                  (isCurrent ? '<div style="margin-top:4px; font-size:0.68rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.15); border-radius:6px; padding:1px 4px;">CURRENT</div>' : '') +
+                '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+
+        // Badges Showcase
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">⭐ Earned Badges</h3>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;">' +
+            badges.map(b => {
+              const isEarned = awardedBadgeIds.has(b.id) || (b.id === 'badge-1' && mState.totalXP >= 1000);
+              return '' +
+                '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:14px; text-align:center; opacity:' + (isEarned ? '1' : '0.5') + ';">' +
+                  '<div style="font-size:2.4rem; margin-bottom:6px;">' + (b.icon || '⭐') + '</div>' +
+                  '<div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">' + b.name + '</div>' +
+                  '<div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">' + (b.description || 'Classroom achievement') + '</div>' +
+                  '<div style="margin-top:8px;">' +
+                    (isEarned ? '<span style="font-size:0.72rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:8px;">✓ UNLOCKED</span>' : '<span style="font-size:0.72rem; font-weight:700; color:var(--text-muted); background:var(--bg-surface); padding:2px 8px; border-radius:8px;">🔒 LOCKED</span>') +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+
+        // Recent XP History Ledger
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">📜 My XP Ledger</h3>' +
+          '<div style="max-height:260px; overflow-y:auto; border:1px solid var(--border-light); border-radius:12px;">' +
+            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem; text-align:left;">' +
+              '<thead><tr style="background:var(--bg-canvas); border-bottom:1px solid var(--border-light);"><th style="padding:8px 12px;">Date</th><th style="padding:8px 12px;">Reason / Mission</th><th style="padding:8px 12px; text-align:right;">XP</th></tr></thead>' +
+              '<tbody>' +
+                txs.slice(0, 10).map(t => '' +
+                  '<tr style="border-bottom:1px solid var(--border-light);">' +
+                    '<td style="padding:8px 12px; color:var(--text-muted);">' + (t.date || 'Today') + '</td>' +
+                    '<td style="padding:8px 12px; font-weight:600;">' + (t.icon || '⭐') + ' ' + (t.reason || 'Classroom award') + '</td>' +
+                    '<td style="padding:8px 12px; text-align:right; font-weight:800; color:' + (t.amount >= 0 ? '#059669' : '#dc2626') + ';">' + (t.amount >= 0 ? '+' : '') + t.amount + ' XP</td>' +
+                  '</tr>'
+                ).join('') +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
         '</div>' +
       '</div>';
   }
-
 
   function renderLeaderboardView(container) {
     const cls = store.getActiveClass();
@@ -7272,231 +7089,158 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // SIDEBAR NAVIGATION (With Admin & Settings)
   // =========================================================================
-    // =========================================================================
-  // TOP COMMAND & NAVIGATION CONTROLLER
-  // =========================================================================
-  window.classroomWorldViewMode = 'map';
-  window.setWorldViewMode = function(mode) {
-    window.classroomWorldViewMode = mode;
-    const c = document.getElementById('app-view-container');
-    if (c && typeof renderCurrentView === 'function') renderCurrentView();
-  };
-
-  // Helper Launchers for Teach Now and Smart Board Mode
-  window.openSmartBoardMode = function() {
-    if (typeof window.toggleSmartboardMode === 'function') {
-      if (!isClassroomSmartboardMode) window.toggleSmartboardMode();
-    }
-  };
-
-  window.openRandomStudentPickerModal = function() {
-    if (typeof window.openClassroomToolkitModal === 'function') {
-      window.openClassroomToolkitModal('random');
-    } else if (typeof window.openModal === 'function') {
-      window.openModal('modal-random-selector');
-    }
-  };
-
-  window.openClassroomTimerModal = function() {
-    if (typeof window.openClassroomToolkitModal === 'function') {
-      window.openClassroomToolkitModal('timer');
-    }
-  };
-
   function renderNavigation() {
-    // 1. Sync Top Command Bar Navigation Pills
-    const topNavPills = document.querySelectorAll('#eaa-top-nav .eaa-nav-pill');
-    topNavPills.forEach(pill => {
-      const targetView = pill.getAttribute('data-view');
-      let isActive = (currentView === targetView);
-      if (targetView === 'class-detail' && (currentView === 'classes' || currentView === 'classroom-hub' || currentView === 'class-detail')) isActive = true;
-      if (targetView === 'monster' && currentView === 'monster') isActive = true;
-      if (targetView === 'evolution' && currentView === 'evolution') isActive = true;
-      if (targetView === 'challenges' && currentView === 'challenges') isActive = true;
-      if (targetView === 'badges' && (currentView === 'badges' || currentView === 'gamification')) isActive = true;
-      if (targetView === 'progress' && (currentView === 'progress' || currentView === 'progress-check' || currentView === 'analytics')) isActive = true;
-      if (targetView === 'smartboard' && isClassroomSmartboardMode) isActive = true;
-      if (isActive) {
-        pill.classList.add('is-active');
-      } else {
-        pill.classList.remove('is-active');
-      }
-    });
+    const sidebar = document.getElementById('app-sidebar-nav');
+    if (!sidebar) return;
 
-    // 2. Sync Mobile Bottom Nav
-    const mobileBtns = document.querySelectorAll('.eaa-mobile-nav .eaa-mobile-tab-btn, .eaa-mobile-bottom-nav .mobile-nav-btn');
-    mobileBtns.forEach(btn => {
-      const target = btn.getAttribute('data-view') || '';
-      if (currentView === target || (target === 'dashboard' && currentView === 'dashboard')) {
-        btn.classList.add('is-active');
-      } else {
-        btn.classList.remove('is-active');
-      }
-    });
+    const role = store.getRole();
+    const counts = (store && store.getSidebarCounts) ? store.getSidebarCounts() : {
+      classes: store.getClasses().length,
+      students: store.getStudents().length,
+      curriculum: (store.getBooks ? store.getBooks().length : 2),
+      resources: store.getResources().length,
+      worksheets: (store.getWorksheets ? store.getWorksheets().length : 4),
+      assignments: store.getAssignments().length,
+      homework: store.getHomework().length,
+      quizzes: store.getQuizzes().length,
+      reports: 5,
+      messages: 3
+    };
 
-    // 3. Render Contextual Secondary Nav Sub-Bar
-    const contextBar = document.getElementById('eaa-context-nav-bar');
-    if (contextBar) {
-      if (currentView === 'class-detail' || currentView === 'classes' || currentView === 'classroom-hub') {
-        contextBar.style.display = 'flex';
-        contextBar.innerHTML = 
-          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
-            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Classroom:</span>' +
-              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'map' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'map\')" style="padding:4px 12px; font-size:0.78rem;">🗺️ World Map</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'grid' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'grid\')" style="padding:4px 12px; font-size:0.78rem;">🎴 Explorer Grid</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (window.classroomWorldViewMode === 'compact' ? 'is-active' : '') + '" onclick="setWorldViewMode(\'compact\')" style="padding:4px 12px; font-size:0.78rem;">📋 Compact Roster</button>' +
-              '<span style="color:rgba(255,255,255,0.2); margin:0 4px;">|</span>' +
-              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'classroom' ? 'is-active' : '') + '" onclick="switchClassTab(\'classroom\')" style="padding:4px 10px; font-size:0.76rem;">Hub</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'students' ? 'is-active' : '') + '" onclick="switchClassTab(\'students\')" style="padding:4px 10px; font-size:0.76rem;">Roster</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'assignments' ? 'is-active' : '') + '" onclick="switchClassTab(\'assignments\')" style="padding:4px 10px; font-size:0.76rem;">Tasks</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'progress' ? 'is-active' : '') + '" onclick="switchClassTab(\'progress\')" style="padding:4px 10px; font-size:0.76rem;">CEFR</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (selectedClassDetailTab === 'story' ? 'is-active' : '') + '" onclick="switchClassTab(\'story\')" style="padding:4px 10px; font-size:0.76rem;">Story</button>' +
-            '</div>' +
-            '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openStudentModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Explorer</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openClassModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Class</button>' +
-            '</div>' +
+    if (role === 'teacher') {
+      function renderNavGroup(slug, title, items, sectionViews) {
+        const containsActive = (sectionViews || []).includes(currentView) || items.some(i => i.isActive);
+        const isCollapsed = containsActive ? false : Boolean(navSectionsCollapsed[slug]);
+        return '' +
+          '<div class="sidebar-group ' + (isCollapsed ? 'is-collapsed' : '') + '" id="nav-group-' + slug + '">' +
+            '<button type="button" class="sidebar-section-header" onclick="toggleNavSection(\'' + slug + '\')" title="Toggle ' + title + '">' +
+              '<span class="sidebar-section-title">' + title + '</span>' +
+              '<span class="sidebar-section-chevron">▾</span>' +
+            '</button>' +
+            '<ul class="sidebar-nav-list">' +
+              items.map(item => '' +
+                '<li>' +
+                  '<button class="nav-link-btn ' + (item.isActive ? 'is-active' : '') + '" onclick="switchView(\'' + item.view + '\')" title="' + item.title + '">' +
+                    '<span class="nav-item-left">' +
+                      '<span class="nav-icon">' + item.icon + '</span> ' +
+                      '<span class="nav-label">' + item.label + '</span>' +
+                    '</span>' +
+                    (item.badge !== undefined && item.badge !== null ? '<span class="nav-badge-pill">' + item.badge + '</span>' : '') +
+                  '</button>' +
+                '</li>'
+              ).join('') +
+            '</ul>' +
           '</div>';
-      } else if (currentView === 'curriculum' || currentView === 'library' || currentView === 'worksheets' || currentView === 'assignments' || currentView === 'homework' || currentView === 'quizzes') {
-        contextBar.style.display = 'flex';
-        contextBar.innerHTML = 
-          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
-            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Teaching:</span>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')" style="padding:4px 12px; font-size:0.78rem;">📖 Curriculum</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" style="padding:4px 12px; font-size:0.78rem;">📚 Resource Library</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')" style="padding:4px 12px; font-size:0.78rem;">📄 Worksheets</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')" style="padding:4px 12px; font-size:0.78rem;">📝 Assignments</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')" style="padding:4px 12px; font-size:0.78rem;">✍️ Homework</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')" style="padding:4px 12px; font-size:0.78rem;">🧩 Quizzes</button>' +
-            '</div>' +
-            '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openWorksheetEditor()" style="font-size:0.78rem; padding:4px 12px;">+ Add Worksheet</button>' +
-              '<button type="button" class="btn-primary-action" onclick="openResourceEditor()" style="font-size:0.78rem; padding:4px 12px;">+ Add Resource</button>' +
-            '</div>' +
-          '</div>';
-      } else if (currentView === 'challenges' || currentView === 'badges' || currentView === 'gamification' || currentView === 'monster' || currentView === 'evolution') {
-        contextBar.style.display = 'flex';
-        contextBar.innerHTML = 
-          '<div style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between; flex-wrap:wrap;">' +
-            '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-              '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px;">Gamification:</span>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'challenges' ? 'is-active' : '') + '" onclick="switchView(\'challenges\')" style="padding:4px 12px; font-size:0.78rem;">🎯 English Challenges</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'badges' || currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" style="padding:4px 12px; font-size:0.78rem;">🏆 Achievement Wall</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'monster' ? 'is-active' : '') + '" onclick="switchView(\'monster\')" style="padding:4px 12px; font-size:0.78rem;">👾 Monster Studio</button>' +
-              '<button type="button" class="eaa-nav-pill ' + (currentView === 'evolution' ? 'is-active' : '') + '" onclick="switchView(\'evolution\')" style="padding:4px 12px; font-size:0.78rem;">🐲 Evolution Journey</button>' +
-            '</div>' +
-            '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openGamificationEditorModal()" style="font-size:0.78rem; padding:4px 12px;">+ Add Badge</button>' +
-            '</div>' +
-          '</div>';
-      } else {
-        contextBar.style.display = 'none';
-        contextBar.innerHTML = '';
       }
+
+      sidebar.innerHTML = 
+        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
+          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
+        '</ul>' +
+
+        renderNavGroup('my-school', 'My School', [
+          { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
+          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
+          { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
+          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
+        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
+
+        renderNavGroup('teaching', 'Teaching', [
+          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
+          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
+          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
+          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
+          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
+        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
+
+        renderNavGroup('assessment', 'Assessment', [
+          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
+          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
+          { view: 'reports', label: 'Reports', icon: '📄', title: 'Reports', isActive: currentView === 'reports', badge: counts.reports },
+          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
+        ], ['assessments', 'progress', 'reports', 'progress-check']) +
+
+        renderNavGroup('community', 'Community', [
+          { view: 'story', label: 'Class Story', icon: '📸', title: 'Class Story', isActive: currentView === 'story' },
+          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages },
+          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
+        ], ['story', 'messages', 'portfolios']) +
+
+        renderNavGroup('admin', 'Admin & Audit', [
+          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
+          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+          { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
+          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
+        ], ['health', 'gamification', 'archived', 'settings']) +
+
+        // Sidebar Collapse Toggle Button
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all 0.15s ease;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
+          '</button>' +
+        '</div>';
+    } else if (role === 'student') {
+      sidebar.innerHTML = 
+        '<div class="sidebar-section-title">My Adventure</div>' +
+        '<ul class="sidebar-nav-list">' +
+          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')" title="My Journey"><span class="nav-item-left"><span class="nav-icon">🗺️</span> <span class="nav-label">My Journey</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Game Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Game Library</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
+        '</ul>' +
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
+          '</button>' +
+        '</div>';
+    } else {
+      sidebar.innerHTML = 
+        '<div class="sidebar-section-title">Parent Portal</div>' +
+        '<ul class="sidebar-nav-list">' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Child Overview</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-progress' ? 'is-active' : '') + '" onclick="switchView(\'parent-progress\')" title="CEFR Progress"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">CEFR Progress</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
+        '</ul>' +
+        '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
+          '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
+          '</button>' +
+        '</div>';
     }
 
-    const sidebar = document.getElementById('app-sidebar-nav');
-    if (sidebar) sidebar.style.display = 'none';
+    // Restore collapsed sidebar state if user toggled it
+    if (localStorage.getItem('eaa-sidebar-collapsed') === 'true') {
+      sidebar.classList.add('is-collapsed');
+      const layout = document.querySelector('.app-layout');
+      if (layout) layout.classList.add('sidebar-collapsed');
+    }
   }
 
-  // =========================================================================
-  // CONTEXTUAL ACTION DRAWER CONTROLLER
-  // =========================================================================
-  window.closeExplorerDrawer = function() {
-    const drawer = document.getElementById('eaa-action-drawer');
-    const overlay = document.getElementById('eaa-drawer-overlay');
-    if (drawer) drawer.classList.remove('is-open');
-    if (overlay) overlay.classList.remove('is-open');
+  window.toggleNavSection = function(slug) {
+    navSectionsCollapsed[slug] = !navSectionsCollapsed[slug];
+    try {
+      localStorage.setItem('eaa-nav-sections-collapsed', JSON.stringify(navSectionsCollapsed));
+    } catch (e) {}
+    renderNavigation();
   };
 
-  window.openExplorerDrawer = function(studentId) {
-    const drawer = document.getElementById('eaa-action-drawer');
-    const overlay = document.getElementById('eaa-drawer-overlay');
-    if (!drawer) return;
-
-    const student = store.getStudentById ? store.getStudentById(studentId) : (store.getStudents().find(s => s.id === studentId));
-    if (!student) return;
-
-    const totalXP = store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 480;
-    const mState = store.calculateMonsterState ? store.calculateMonsterState(student.id) : { currentLevel: 4, stageName: 'Adventurer', progressPct: 65, xpRequired: 700 };
-    const skills = store.getStudentSkills ? store.getStudentSkills(student.id) : {
-      reading: { score: 85, cefr: 'A1+' },
-      listening: { score: 80, cefr: 'A1' },
-      speaking: { score: 75, cefr: 'A1' },
-      writing: { score: 70, cefr: 'A1' }
-    };
-    const avatarHtml = window.renderMonsterAvatar ? window.renderMonsterAvatar(student.id, { size: 110, animated: true }) : '👾';
-
-    drawer.innerHTML = 
-      '<div class="eaa-drawer-header">' +
-        '<div class="eaa-drawer-title">' +
-          '<span>🧭</span> <span>Explorer Dossier</span>' +
-        '</div>' +
-        '<button type="button" class="eaa-drawer-close-btn" onclick="closeExplorerDrawer()" aria-label="Close Drawer">✕</button>' +
-      '</div>' +
-
-      // Hero Stage with Monster
-      '<div class="eaa-drawer-hero-stage">' +
-        '<div class="eaa-drawer-monster-avatar">' + avatarHtml + '</div>' +
-        '<h2 class="eaa-drawer-student-name">' + (student.firstName || 'Explorer').toUpperCase() + ' ' + (student.lastName || '') + '</h2>' +
-        '<div class="eaa-drawer-student-meta">' +
-          '<span class="badge" style="background:rgba(56,189,248,0.2); color:#38bdf8; font-weight:800; border-radius:10px; padding:2px 8px;">' + (student.overallCefr || 'A1+') + ' TARGET</span>' +
-          '<span style="color:#94a3b8;">•</span>' +
-          '<span style="color:#fbbf24; font-weight:800;">Level ' + (mState.currentLevel || 4) + ' · ' + (mState.stageName || 'Growing Monster') + '</span>' +
-        '</div>' +
-        '<div class="eaa-drawer-energy-bar-wrap">' +
-          '<div class="eaa-drawer-energy-label">' +
-            '<span>⚡ Learning Energy</span>' +
-            '<span>' + totalXP.toLocaleString() + ' / ' + ((mState.xpRequired || 700)).toLocaleString() + ' XP</span>' +
-          '</div>' +
-          '<div class="eaa-drawer-energy-track">' +
-            '<div class="eaa-drawer-energy-fill" style="width:' + (mState.progressPct || 65) + '%;"></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-
-      // 4-Skill Indicators
-      '<div style="background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px;">' +
-        '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px; letter-spacing:0.04em;">Language Skill Mastery</div>' +
-        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">' +
-          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#38bdf8;">📖 Read:</span> <strong>' + (skills.reading ? skills.reading.score : 85) + '%</strong></div>' +
-          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#a855f7;">🎧 Listen:</span> <strong>' + (skills.listening ? skills.listening.score : 80) + '%</strong></div>' +
-          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#34d399;">🗣 Speak:</span> <strong>' + (skills.speaking ? skills.speaking.score : 75) + '%</strong></div>' +
-          '<div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:10px; font-size:0.8rem;"><span style="color:#f59e0b;">✍ Write:</span> <strong>' + (skills.writing ? skills.writing.score : 70) + '%</strong></div>' +
-        '</div>' +
-      '</div>' +
-
-      // Action Buttons Stack (One Contextual Action Menu!)
-      '<div class="eaa-drawer-actions-stack">' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-energy" onclick="store.addStudentXP(\'' + student.id + '\', 10); window.openExplorerDrawer(\'' + student.id + '\'); if(window.showToast) window.showToast(\'+10 Learning Energy awarded!\', \'success\');">' +
-          '<span>⚡</span> <span>+10 Learning Energy</span>' +
-        '</button>' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-energy" onclick="store.addStudentXP(\'' + student.id + '\', 25); window.openExplorerDrawer(\'' + student.id + '\'); if(window.showToast) window.showToast(\'+25 Learning Energy awarded!\', \'success\');">' +
-          '<span>⚡</span> <span>+25 Learning Energy</span>' +
-        '</button>' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-badge" onclick="closeExplorerDrawer(); if(window.openAwardBadgeModal) window.openAwardBadgeModal(\'' + student.id + '\'); else switchView(\'badges\');">' +
-          '<span>🏅</span> <span>Award Achievement Relic</span>' +
-        '</button>' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-mission" onclick="closeExplorerDrawer(); switchView(\'challenges\');">' +
-          '<span>🎯</span> <span>Assign English Mission</span>' +
-        '</button>' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-speaking" onclick="closeExplorerDrawer(); if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'challenges\');">' +
-          '<span>🗣</span> <span>Start Speaking Practice</span>' +
-        '</button>' +
-        '<button type="button" class="eaa-drawer-btn eaa-drawer-btn-secondary" onclick="closeExplorerDrawer(); if(window.openStudentDetail) window.openStudentDetail(\'' + student.id + '\');">' +
-          '<span>📜</span> <span>Full Explorer Profile</span>' +
-        '</button>' +
-      '</div>';
-
-    drawer.classList.add('is-open');
-    if (overlay) overlay.classList.add('is-open');
+  window.toggleSidebarCollapse = function() {
+    const sidebar = document.getElementById('app-sidebar-nav');
+    const layout = document.querySelector('.app-layout');
+    const isCollapsed = sidebar && sidebar.classList.contains('is-collapsed');
+    if (isCollapsed) {
+      if (sidebar) sidebar.classList.remove('is-collapsed');
+      if (layout) layout.classList.remove('sidebar-collapsed');
+      localStorage.setItem('eaa-sidebar-collapsed', 'false');
+    } else {
+      if (sidebar) sidebar.classList.add('is-collapsed');
+      if (layout) layout.classList.add('sidebar-collapsed');
+      localStorage.setItem('eaa-sidebar-collapsed', 'true');
+    }
   };
-
-  window.toggleNavSection = function() {};
-  window.toggleSidebarCollapse = function() {};
-
 
   // ROUTER CONTROLLER
   // =========================================================================
@@ -7517,8 +7261,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'classroom-hub': selectedClassDetailTab = 'classroom'; renderClassDetailView(container); break;
         case 'class-detail': renderClassDetailView(container); break;
         case 'students': renderStudentsView(container); break;
-        case 'challenges': renderChallengesView(container); break;
-        case 'classroom-hub': window.switchView('class-detail'); break;
         case 'curriculum': renderCurriculumView(container); break;
         case 'library': renderLibraryView(container); break;
         case 'assignments': renderAssignmentsView(container); break;
@@ -7540,7 +7282,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'settings': renderSchoolSettingsView(container); break;
         case 'gamification': renderGamificationView(container); break;
         case 'monster': renderMonsterStudentView(container); break;
-        case 'evolution': renderMonsterEvolutionRoadmapView(container); break;
         case 'adventure': renderStudentAdventureView(container); break;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
@@ -8233,26 +7974,10 @@ window.switchClassroomSubTab = function(subTab) {
   // Smartboard / 🎓 Classroom Mode Toggle
   window.toggleSmartboardMode = function() {
     isClassroomSmartboardMode = !isClassroomSmartboardMode;
-    window.isClassroomSmartboardMode = isClassroomSmartboardMode;
     if (isClassroomSmartboardMode) {
       document.body.classList.add('classroom-mode-active');
-      let dock = document.getElementById('eaa-smartboard-dock-bar');
-      if (!dock) {
-        dock = document.createElement('div');
-        dock.id = 'eaa-smartboard-dock-bar';
-        dock.className = 'eaa-smartboard-dock';
-        dock.innerHTML = 
-          '<button class="eaa-dock-btn" onclick="openClassroomToolkitModal(\'timer\')">⏱️ Timer</button>' +
-          '<button class="eaa-dock-btn" onclick="openClassroomToolkitModal(\'random\')">🎲 Random</button>' +
-          '<button class="eaa-dock-btn" onclick="openQuickPointsModal()">⭐ Points</button>' +
-          '<button class="eaa-dock-btn" onclick="switchView(\'challenges\')">📢 Missions</button>' +
-          '<button class="eaa-dock-btn" onclick="toggleSmartboardMode()" style="background:#ef4444; color:#fff; border-color:#dc2626;">✕ Exit</button>';
-        document.body.appendChild(dock);
-      }
     } else {
       document.body.classList.remove('classroom-mode-active');
-      const dock = document.getElementById('eaa-smartboard-dock-bar');
-      if (dock) dock.remove();
     }
     const label = document.getElementById('label-smartboard-mode');
     if (label) label.textContent = isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode';
@@ -10899,27 +10624,9 @@ window.switchClassroomSubTab = function(subTab) {
 
   const MONSTER_CREATOR_TABS = [
     {
-      id: 'archetype',
-      label: 'Creature Type',
-      icon: '🐲',
-      title: 'Monster Species Archetypes',
-      subCategories: [
-        { id: 'types', label: '10 Archetypes', icon: '🐲', title: '10 Inclusive Monster Archetypes' }
-      ]
-    },
-    {
-      id: 'bodystyle',
-      label: 'Body Style',
-      icon: '🧍',
-      title: 'Body Shape & Proportions',
-      subCategories: [
-        { id: 'bodystyles', label: '8 Body Styles', icon: '🧍', title: '8 Anatomical Body Proportions' }
-      ]
-    },
-    {
       id: 'monster',
-      label: 'Fur Colors',
-      icon: '🎨',
+      label: 'Monster',
+      icon: '👾',
       title: 'Fur Colors & Palette',
       subCategories: [
         { id: 'colors', label: 'Fur Colors', icon: '🎨', title: 'Fur Colors & Palette' }
@@ -11076,31 +10783,7 @@ window.switchClassroomSubTab = function(subTab) {
     const noneOptions = [];
 
     const sub = monsterCreatorActiveSubTab;
-    if (sub === 'types') {
-      items = [
-        { id: 'archetype-dragon', name: 'Dragon Explorer', category: 'archetype', icon: '🐲', description: 'Ancient courage and fiery determination' },
-        { id: 'archetype-dino', name: 'Dino Challenger', category: 'archetype', icon: '🦖', description: 'Sturdy, inquisitive and playful companion' },
-        { id: 'archetype-fox', name: 'Fox Clever', category: 'archetype', icon: '🦊', description: 'Quick-thinking master of riddles and puzzles' },
-        { id: 'archetype-cat', name: 'Cat Inquisitive', category: 'archetype', icon: '🐱', description: 'Curious explorer with keen sharp eyes' },
-        { id: 'archetype-bear', name: 'Bear Braveheart', category: 'archetype', icon: '🐻', description: 'Gentle giant who supports all team members' },
-        { id: 'archetype-rabbit', name: 'Rabbit Swift', category: 'archetype', icon: '🐰', description: 'Super-fast reader and agile adventurer' },
-        { id: 'archetype-fantasy', name: 'Fantasy Creature', category: 'archetype', icon: '🦄', description: 'Celestial horn, sparkling eyes, and starry wings' },
-        { id: 'archetype-elemental', name: 'Elemental Creature', category: 'archetype', icon: '🔥', description: 'Charged with crackling plasma and clean energy' },
-        { id: 'archetype-bird', name: 'Bird-like Sovereign', category: 'archetype', icon: '🦅', description: 'Aerodynamic biomimicry feather wings' },
-        { id: 'archetype-magical', name: 'Magical Sprite', category: 'archetype', icon: '✨', description: 'Enchanted runes, glowing sigils and charms' }
-      ];
-    } else if (sub === 'bodystyles') {
-      items = [
-        { id: 'body-small', name: 'Small & Compact', category: 'bodyStyle', icon: '🌱', description: 'Light on feet, super agile' },
-        { id: 'body-round', name: 'Round & Chubby', category: 'bodyStyle', icon: '🎈', description: 'Extra bouncy and friendly' },
-        { id: 'body-tall', name: 'Tall & Slender', category: 'bodyStyle', icon: '🦒', description: 'Elegantly proportioned silhouette' },
-        { id: 'body-strong', name: 'Strong & Sturdy', category: 'bodyStyle', icon: '🛡️', description: 'Powerful athletic posture' },
-        { id: 'body-slim', name: 'Slim & Sleek', category: 'bodyStyle', icon: '⚡', description: 'Fast moving and nimble' },
-        { id: 'body-cute', name: 'Cute & Chibi', category: 'bodyStyle', icon: '🥺', description: 'Big expressive eyes, endearing charm' },
-        { id: 'body-adventurer', name: 'Adventurer Stance', category: 'bodyStyle', icon: '🧭', description: 'Ready for expeditions into uncharted lands' },
-        { id: 'body-fantasy', name: 'Fantasy Ethereal', category: 'bodyStyle', icon: '✨', description: 'Levitating silhouette with cosmic particles' }
-      ];
-    } else if (sub === 'colors') {
+    if (sub === 'colors') {
       items = allItems.filter(i => i.category === 'body');
     } else if (sub === 'eyes') {
       items = allItems.filter(i => i.category === 'eyes');
@@ -11215,10 +10898,6 @@ window.switchClassroomSubTab = function(subTab) {
       } else {
         monsterCreatorDraft.equipped[category] = 'none';
       }
-    } else if (category === 'archetype') {
-      monsterCreatorDraft.equipped.archetype = itemId.replace('archetype-', '');
-    } else if (category === 'bodyStyle') {
-      monsterCreatorDraft.equipped.bodyStyle = itemId.replace('body-', '');
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
@@ -12392,337 +12071,64 @@ window.switchClassroomSubTab = function(subTab) {
   // Dedicated Full-Page Monster View (Student/Parent role or route #monster)
   function renderMonsterStudentView(container) {
     const students = store.getStudents();
-    const student = students.find(s => s.id === currentProfileStudentId) || students[0] || { firstName: 'ilay', id: 's1' };
-    const xp = store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 480;
+    if (!students.length) {
+      container.innerHTML = '<div style="padding:40px; text-align:center;">No students available.</div>';
+      return;
+    }
+
+    let targetStudentId = currentProfileStudentId || (students[0] ? students[0].id : null);
+    const student = store.getStudent(targetStudentId) || students[0];
+    const monsterState = store.calculateMonsterState(student.id);
+    const profile = store.getMonsterProfile(student.id);
+
+    const categories = [
+      { id: 'all', label: 'All Items' },
+      { id: 'body', label: 'Bodies / Colors' },
+      { id: 'hat', label: 'Hats' },
+      { id: 'glasses', label: 'Glasses' },
+      { id: 'accessory', label: 'Accessories' },
+      { id: 'backpack', label: 'Backpacks' },
+      { id: 'wings', label: 'Wings' },
+      { id: 'tail', label: 'Tails' },
+      { id: 'aura', label: 'Auras' },
+      { id: 'background', label: 'Backgrounds' }
+    ];
 
     container.innerHTML = 
-      '<div class="eaa-ref-studio-wrap">' +
-        // Header
-        '<div class="eaa-ref-studio-header">' +
-          '<div class="eaa-ref-sign-left">' +
-            '<span>✨</span>' +
-            '<span>Same Student Different Future!</span>' +
+      '<div style="max-width:1100px; margin:0 auto; padding-bottom:60px;">' +
+        // Header with student switcher
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👾 Monster Evolution &amp; Companion</h1>' +
+            '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Grow, hatch, and customize your learning companion through English mastery!</p>' +
           '</div>' +
-
-          '<div class="eaa-ref-studio-center">' +
-            '<h1 class="eaa-ref-studio-title">Monster Studio &amp; Customizer</h1>' +
-            '<div class="eaa-ref-studio-sub">Create. Customize. Evolve.</div>' +
-            '<p class="eaa-ref-studio-desc">Design your learning companion with unique looks, items and powers!</p>' +
-          '</div>' +
-
-          '<div class="eaa-ref-sign-right">' +
-            '<span style="font-size:22px;">🦉</span>' +
-            '<span>LEARN PLAY CUSTOMIZE EVOLVE BELONG 👑</span>' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<label style="font-size:0.84rem; font-weight:700;">Student:</label>' +
+            '<select class="filter-select" onchange="currentProfileStudentId=this.value; renderMonsterStudentView(document.getElementById(\'app-view-container\'))">' +
+              students.map(s => '<option value="' + s.id + '" ' + (s.id === student.id ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id) + ' XP)</option>').join('') +
+            '</select>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
           '</div>' +
         '</div>' +
 
-        // Category Nav Pills
-        '<div class="eaa-ref-studio-nav">' +
-          '<button class="eaa-ref-category-btn is-active">👾 Monster</button>' +
-          '<button class="eaa-ref-category-btn">🐸 Face</button>' +
-          '<button class="eaa-ref-category-btn">🪶 Features</button>' +
-          '<button class="eaa-ref-category-btn">🥋 Clothing</button>' +
-          '<button class="eaa-ref-category-btn">🎀 Accessories</button>' +
-          '<button class="eaa-ref-category-btn">🌍 World</button>' +
-          '<button class="eaa-ref-category-btn">✨ Auras</button>' +
+        renderMonsterHeroCard(student, monsterState, profile) +
+
+        // Monster Tabs
+        '<div class="monster-tabs-wrap" style="margin-top:28px;">' +
+          [
+            { id: 'customize', label: '🎨 Monster Closet & Customization' },
+            { id: 'progress', label: '📊 Learning Progress & Habits' },
+            { id: 'achievements', label: '🏆 Achievements & Unlocks' },
+            { id: 'collection', label: '🎒 Unlocked Catalog' },
+            { id: 'history', label: '📜 Evolution History' }
+          ].map(t => 
+            '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
+              t.label +
+            '</button>'
+          ).join('') +
         '</div>' +
 
-        // 3-Column Studio Grid
-        '<div class="eaa-ref-studio-grid">' +
-          // Left Column: Catalog
-          '<div class="eaa-ref-catalog-panel">' +
-            '<div class="eaa-ref-subrail">' +
-              '<div style="font-size:0.68rem; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Choose a Category</div>' +
-              '<button class="eaa-ref-subrail-btn is-active">🔲 All Items</button>' +
-              '<button class="eaa-ref-subrail-btn">🪶 Horns</button>' +
-              '<button class="eaa-ref-subrail-btn">🪽 Wings</button>' +
-              '<button class="eaa-ref-subrail-btn">🦎 Tails</button>' +
-              '<button class="eaa-ref-subrail-btn">🎩 Hats</button>' +
-              '<button class="eaa-ref-subrail-btn">🥋 Clothing</button>' +
-              '<button class="eaa-ref-subrail-btn">🎒 Backpacks</button>' +
-              '<button class="eaa-ref-subrail-btn">🎀 Accessories</button>' +
-              '<button class="eaa-ref-subrail-btn">✨ Auras</button>' +
-              '<button class="eaa-ref-subrail-btn">🌟 Special</button>' +
-            '</div>' +
-
-            '<div class="eaa-ref-items-catalog">' +
-              '<div class="eaa-ref-catalog-controls">' +
-                '<input type="text" class="eaa-ref-search-input" placeholder="Search items...">' +
-                '<select class="eaa-ref-rarity-select">' +
-                  '<option>Rarity ▾</option>' +
-                  '<option>Common</option>' +
-                  '<option>Rare</option>' +
-                  '<option>Epic</option>' +
-                  '<option>Legendary</option>' +
-                '</select>' +
-              '</div>' +
-
-              '<div class="eaa-ref-items-grid">' +
-                // Item 1
-                '<div class="eaa-ref-item-card is-equipped" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Leaf Horns!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🍃</div>' +
-                  '<div class="eaa-ref-item-name">Leaf Horns</div>' +
-                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
-                '</div>' +
-
-                // Item 2
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Crystal Horns!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">💎</div>' +
-                  '<div class="eaa-ref-item-name">Crystal Horns</div>' +
-                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
-                '</div>' +
-
-                // Item 3
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Flame Horns!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🔥</div>' +
-                  '<div class="eaa-ref-item-name">Flame Horns</div>' +
-                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
-                '</div>' +
-
-                // Item 4
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Angel Wings!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🪽</div>' +
-                  '<div class="eaa-ref-item-name">Angel Wings</div>' +
-                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
-                '</div>' +
-
-                // Item 5
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Shadow Wings!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🦇</div>' +
-                  '<div class="eaa-ref-item-name">Shadow Wings</div>' +
-                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
-                '</div>' +
-
-                // Item 6
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Rainbow Wings!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🌈</div>' +
-                  '<div class="eaa-ref-item-name">Rainbow Wings</div>' +
-                  '<span class="eaa-ref-rarity-pill legendary">Legendary</span>' +
-                '</div>' +
-
-                // Item 7
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Explorer Hat!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🧭</div>' +
-                  '<div class="eaa-ref-item-name">Explorer Hat</div>' +
-                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
-                '</div>' +
-
-                // Item 8
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Wizard Hat!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🧙‍♂️</div>' +
-                  '<div class="eaa-ref-item-name">Wizard Hat</div>' +
-                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
-                '</div>' +
-
-                // Item 9
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Royal Crown!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">👑</div>' +
-                  '<div class="eaa-ref-item-name">Royal Crown</div>' +
-                  '<span class="eaa-ref-rarity-pill legendary">Legendary</span>' +
-                '</div>' +
-
-                // Item 10
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped School Backpack!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🎒</div>' +
-                  '<div class="eaa-ref-item-name">School Backpack</div>' +
-                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
-                '</div>' +
-
-                // Item 11
-                '<div class="eaa-ref-item-card is-equipped" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Adventure Pack!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">🧳</div>' +
-                  '<div class="eaa-ref-item-name">Adventure Pack</div>' +
-                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
-                '</div>' +
-
-                // Item 12
-                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Crystal Pack!\', \'success\');">' +
-                  '<div class="eaa-ref-item-icon">💠</div>' +
-                  '<div class="eaa-ref-item-name">Crystal Pack</div>' +
-                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-
-          // Center Column: Stage
-          '<div class="eaa-ref-stage-panel">' +
-            '<div class="eaa-ref-nametag-plaque">' +
-              '<div class="eaa-ref-nametag-name">' +
-                '<span>' + (student.firstName || 'ilay') + '</span> ' +
-                '<span style="font-size:14px; cursor:pointer;" onclick="const n = prompt(\'Enter companion name:\', \'' + (student.firstName || 'ilay') + '\'); if(n) this.previousElementSibling.textContent=n;">✏️</span>' +
-              '</div>' +
-              '<div class="eaa-ref-nametag-level">Level 4 • Growing Monster</div>' +
-              '<div style="font-size:0.72rem; color:#bae6fd; margin-top:2px;">480 / 700 XP</div>' +
-              '<div class="eaa-ref-nametag-bar">' +
-                '<div class="eaa-ref-nametag-bar-fill" style="width:68%;"></div>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="eaa-ref-pedestal-scene">' +
-              '<div class="eaa-ref-stage-camera-tools">' +
-                '<button class="eaa-ref-camera-btn" title="Zoom In" onclick="if(window.showToast) window.showToast(\'Zooming camera\', \'info\');">🔍</button>' +
-                '<button class="eaa-ref-camera-btn" title="Rotate View" onclick="if(window.showToast) window.showToast(\'Rotating view\', \'info\');">🔄</button>' +
-                '<button class="eaa-ref-camera-btn" title="Play Animation" onclick="if(window.showToast) window.showToast(\'Playing roar animation!\', \'success\');">⚡</button>' +
-                '<button class="eaa-ref-camera-btn" title="Reset Camera" onclick="if(window.showToast) window.showToast(\'Camera reset\', \'info\');">↺</button>' +
-              '</div>' +
-
-              // Animated Monster Companion on Pedestal
-              '<div style="position:relative; z-index:2; text-align:center;">' +
-                '<img src="assets/reference/extracted/studio_monster.png" class="eaa-ref-studio-dragon-img" alt="Monster Companion">' +
-              '</div>' +
-
-              // Environment Switcher
-              '<div class="eaa-ref-env-switcher">' +
-                '<button class="eaa-ref-env-btn is-active" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🏰 Academy</button>' +
-                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🌲 Forest</button>' +
-                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">❄️ Snow</button>' +
-                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🏜️ Desert</button>' +
-                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🌌 Space</button>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="eaa-ref-stage-actions">' +
-              '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Generated random look!\', \'info\');" style="padding:8px 16px; font-weight:800; background:rgba(255,255,255,0.08); color:#ffffff; border:1px solid rgba(255,255,255,0.2);">🎲 Random Look</button>' +
-              '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Preset saved to closet!\', \'success\');" style="padding:8px 16px; font-weight:800; background:rgba(37,99,235,0.3); color:#60a5fa; border:1px solid rgba(37,99,235,0.5);">💾 Save as Preset</button>' +
-            '</div>' +
-          '</div>' +
-
-          // Right Column: Equipped & Stats
-          '<div class="eaa-ref-right-panel">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-              '<span style="font-weight:900; font-size:0.92rem; color:#f1f5f9;">Equipped Items</span>' +
-              '<select style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:0.75rem; color:#ffffff; padding:2px 8px;">' +
-                '<option>Loadout 1 ▾</option>' +
-                '<option>Loadout 2</option>' +
-                '<option>Loadout 3</option>' +
-              '</select>' +
-            '</div>' +
-
-            '<div class="eaa-ref-equipped-grid">' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">🍃</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Leaf Horns</span>' +
-              '</div>' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">🎒</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Explorer Pack</span>' +
-              '</div>' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">🦎</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Nature Tail</span>' +
-              '</div>' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">👀</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Happy Eyes</span>' +
-              '</div>' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">👄</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Sweet Smile</span>' +
-              '</div>' +
-              '<div class="eaa-ref-equipped-slot">' +
-                '<span style="font-size:20px;">💎</span>' +
-                '<span style="font-size:0.68rem; font-weight:800;">Forest Aura</span>' +
-              '</div>' +
-            '</div>' +
-
-            '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Loadout editor active\', \'info\');" style="padding:6px; font-size:0.78rem; width:100%; justify-content:center; background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1);">✏️ Edit Loadout</button>' +
-
-            // Color Palette
-            '<div>' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:8px;">Color Palette</div>' +
-              '<div class="eaa-ref-color-swatches">' +
-                '<div class="eaa-ref-color-dot is-active" style="background:#22c55e;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
-                '<div class="eaa-ref-color-dot" style="background:#06b6d4;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
-                '<div class="eaa-ref-color-dot" style="background:#f59e0b;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
-                '<div class="eaa-ref-color-dot" style="background:#ec4899;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
-                '<div class="eaa-ref-color-dot" style="background:#a855f7;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
-                '<div class="eaa-ref-color-dot" style="background:transparent; border:1px dashed #ffffff; display:flex; align-items:center; justify-content:center; font-size:12px; color:#ffffff;">+</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Stats Preview
-            '<div>' +
-              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:8px;">Stats Preview</div>' +
-              '<div class="eaa-ref-stats-list">' +
-                '<div class="eaa-ref-stat-row">' +
-                  '<span>🧪 Creativity</span>' +
-                  '<div class="eaa-ref-stat-bar"><div style="width:75%; height:100%; background:#22c55e;"></div></div>' +
-                  '<span style="color:#4ade80;">+12</span>' +
-                '</div>' +
-                '<div class="eaa-ref-stat-row">' +
-                  '<span>🛡️ Confidence</span>' +
-                  '<div class="eaa-ref-stat-bar"><div style="width:65%; height:100%; background:#06b6d4;"></div></div>' +
-                  '<span style="color:#38bdf8;">+10</span>' +
-                '</div>' +
-                '<div class="eaa-ref-stat-row">' +
-                  '<span>🎯 Focus</span>' +
-                  '<div class="eaa-ref-stat-bar"><div style="width:55%; height:100%; background:#8b5cf6;"></div></div>' +
-                  '<span style="color:#a78bfa;">+8</span>' +
-                '</div>' +
-                '<div class="eaa-ref-stat-row">' +
-                  '<span>🤝 Teamwork</span>' +
-                  '<div class="eaa-ref-stat-bar"><div style="width:45%; height:100%; background:#ec4899;"></div></div>' +
-                  '<span style="color:#f472b6;">+6</span>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Save CTA
-            '<button class="eaa-ref-save-btn" onclick="if(window.playCelebrationSound) window.playCelebrationSound(); if(window.showToast) window.showToast(\'Monster saved to your adventurer profile!\', \'success\');">' +
-              '<span>👑</span>' +
-              '<span>Save Monster</span>' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
-
-        // Bottom Evolution Track
-        '<div class="eaa-ref-bottom-evo">' +
-          '<div style="background:linear-gradient(180deg, #b45309 0%, #78350f 100%); padding:6px 14px; border-radius:8px; border:1.5px solid #92400e; font-weight:900; font-size:0.8rem; color:#fef3c7;">' +
-            'MONSTER EVOLUTION' +
-          '</div>' +
-
-          '<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">' +
-            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_1_egg.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
-              '<div style="font-size:0.65rem; color:#94a3b8;">Level 1 Baby</div>' +
-            '</div>' +
-            '<span>➔</span>' +
-
-            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_2_baby.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
-              '<div style="font-size:0.65rem; color:#94a3b8;">Level 2 Young</div>' +
-            '</div>' +
-            '<span>➔</span>' +
-
-            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_3_adventurer.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
-              '<div style="font-size:0.65rem; color:#94a3b8;">Level 3 Adventurer</div>' +
-            '</div>' +
-            '<span>➔</span>' +
-
-            '<div style="text-align:center; background:rgba(6,182,212,0.2); border:1.5px solid #06b6d4; border-radius:12px; padding:4px 10px; box-shadow:0 0 12px rgba(6,182,212,0.4); cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/studio_monster.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
-              '<div style="font-size:0.68rem; font-weight:900; color:#38bdf8;">Level 4 Growing</div>' +
-            '</div>' +
-            '<span>➔</span>' +
-
-            '<div style="text-align:center; opacity:0.4; cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center; font-size:20px;">🔒</div>' +
-              '<div style="font-size:0.65rem; color:#64748b;">Level 5 Elite</div>' +
-            '</div>' +
-            '<span>➔</span>' +
-
-            '<div style="text-align:center; opacity:0.4; cursor:pointer;" onclick="switchView(\'evolution\')">' +
-              '<div style="height:30px; display:flex; align-items:center; justify-content:center; font-size:20px;">🔒</div>' +
-              '<div style="font-size:0.65rem; color:#64748b;">Level 6 Legendary</div>' +
-            '</div>' +
-          '</div>' +
-
-          '<div style="background:linear-gradient(180deg, #b45309 0%, #78350f 100%); padding:6px 14px; border-radius:8px; border:1.5px solid #92400e; font-weight:900; font-size:0.8rem; color:#fef3c7;">' +
-            'Bigger Monsters Brighter Minds!' +
-          '</div>' +
-        '</div>' +
+        renderMonsterSubTabContent(student, monsterState, profile, categories, studentMonsterCategory) +
       '</div>';
   }
 
@@ -13989,250 +13395,3 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>';
     }
   };
-
-  // English Challenges Engine View
-  window._activeChallengeCat = 'all';
-  window._activeChallengeStudentId = null;
-
-  window.setChallengeCategory = function(cat) {
-    window._activeChallengeCat = cat || 'all';
-    const container = document.getElementById('app-view-container');
-    if (container && window.currentView === 'challenges') {
-      window.renderChallengesView(container);
-    }
-  };
-
-  window.setChallengeTargetStudent = function(studentId) {
-    window._activeChallengeStudentId = studentId;
-    const container = document.getElementById('app-view-container');
-    if (container && window.currentView === 'challenges') {
-      window.renderChallengesView(container);
-    }
-  };
-
-  window.pickRandomChallengeStudent = function() {
-    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]);
-    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
-    if (!students || !students.length) return;
-    const randomIdx = Math.floor(Math.random() * students.length);
-    const chosen = students[randomIdx];
-    window._activeChallengeStudentId = chosen.id;
-    if (window.showToast) window.showToast('🎲 Selected Explorer: ' + chosen.firstName + ' ' + (chosen.lastName || '') + '!', 'info');
-    const container = document.getElementById('app-view-container');
-    if (container && window.currentView === 'challenges') {
-      window.renderChallengesView(container);
-    }
-  };
-
-
-  window.handleCompleteChallenge = function(challengeId, studentId, xpAmount, challengeTitle) {
-    const student = (studentId && store.getStudent) ? store.getStudent(studentId) : (store.getActiveStudent ? store.getActiveStudent() : (store.getStudents()[0]));
-    if (!student) {
-      if (window.showToast) window.showToast('Please select an explorer first.', 'warning');
-      return;
-    }
-    const xp = parseInt(xpAmount, 10) || 50;
-    const title = challengeTitle || ('Challenge ' + challengeId);
-    if (store.completeEnglishChallenge) {
-      store.completeEnglishChallenge(student.id, challengeId, xp, title);
-    } else if (store.addStudentXP) {
-      store.addStudentXP(student.id, xp, 'Challenge: ' + title);
-    }
-    if (window.playCelebrationSound) {
-      try { window.playCelebrationSound(); } catch (e) {}
-    }
-    if (window.showToast) {
-      window.showToast('🎉 ' + student.firstName + ' completed ' + title + '! +' + xp + ' Learning Energy XP awarded!', 'success');
-    }
-    const c = document.getElementById('app-view-container');
-    if (c && window.currentView === 'challenges') window.renderChallengesView(c);
-  };
-
-  window.handleAwardClassChallenge = function(challengeId, xpAmount, challengeTitle) {
-    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]);
-    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
-    if (!students || !students.length) return;
-    const xp = parseInt(xpAmount, 10) || 40;
-    const title = challengeTitle || ('Team Mission ' + challengeId);
-    students.forEach(s => {
-      if (store.addStudentXP) store.addStudentXP(s.id, xp, 'Team Mission: ' + title);
-    });
-    if (window.playCelebrationSound) {
-      try { window.playCelebrationSound(); } catch (e) {}
-    }
-    if (window.showToast) {
-      window.showToast('🏆 All ' + students.length + ' Explorers in ' + (cls ? cls.name : 'Class') + ' earned +' + xp + ' XP for ' + title + '!', 'success');
-    }
-    const c = document.getElementById('app-view-container');
-    if (c && window.currentView === 'challenges') window.renderChallengesView(c);
-  };
-
-  window.renderChallengesView = function(container) {
-    if (!container) container = document.getElementById('app-view-container');
-    if (!container) return;
-
-    const cls = (store.getActiveClass && store.getActiveClass()) || (store.getClasses && store.getClasses()[0]) || { id: 'class-4b', name: 'Grade 4B' };
-    const students = (cls && store.getStudentsByClass) ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents() : []);
-    let targetStudent = (window._activeChallengeStudentId && store.getStudent) ? store.getStudent(window._activeChallengeStudentId) : null;
-    if (!targetStudent && store.getActiveStudent) targetStudent = store.getActiveStudent();
-    if (!targetStudent && students.length) targetStudent = students[0];
-    if (targetStudent) window._activeChallengeStudentId = targetStudent.id;
-
-    const missions = [
-      { id: 'm1', cat: 'speak', icon: '🎤', title: 'The 60-Second Story', desc: 'Speak for 60 seconds about your favorite invention using 5 target vocabulary words.', level: 'A1+', xp: 50 },
-      { id: 'm2', cat: 'speak', icon: '🗣', title: 'Partner Interview', desc: 'Ask your partner 3 questions about school tools and summarize their answers in English.', level: 'A1', xp: 40 },
-      { id: 'm3', cat: 'read', icon: '📖', title: 'Word Hunter in Forest', desc: 'Read The After-School Inventor and identify all action verbs.', level: 'A1+', xp: 45 },
-      { id: 'm4', cat: 'listen', icon: '🎧', title: 'Audio Dialogue Decode', desc: 'Listen to the audio track and answer 3 questions about the invention emergency.', level: 'A1', xp: 35 },
-      { id: 'm5', cat: 'write', icon: '✍', title: 'Invention Blueprint Label', desc: 'Write 4 sentences describing what your new machine does and how it helps students.', level: 'A1+', xp: 50 },
-      { id: 'm6', cat: 'vocab', icon: '🧠', title: 'Vocabulary Flash Challenge', desc: 'Master 10 target vocabulary cards with 100% accuracy in the Vocabulary Lab.', level: 'A1', xp: 30 },
-      { id: 'm7', cat: 'grammar', icon: '🔤', title: 'Preposition Quest', desc: 'Complete 8 sentences using on, under, behind, and in front of correctly.', level: 'A1', xp: 35 },
-      { id: 'm8', cat: 'team', icon: '👥', title: 'Team Invention Pitch', desc: 'Collaborate in groups of 3 to present an invention to the classroom.', level: 'A1+', xp: 60 }
-    ];
-
-    const categories = [
-      { id: 'all', label: 'All Missions' },
-      { id: 'speak', label: '🗣 Speak' },
-      { id: 'read', label: '📖 Read' },
-      { id: 'listen', label: '🎧 Listen' },
-      { id: 'write', label: '✍ Write' },
-      { id: 'vocab', label: '🧠 Vocabulary' },
-      { id: 'grammar', label: '🔤 Grammar' },
-      { id: 'team', label: '👥 Team' }
-    ];
-
-    const activeCat = window._activeChallengeCat || 'all';
-    const visibleMissions = (activeCat === 'all')
-      ? missions
-      : missions.filter(m => m.cat === activeCat);
-
-    container.innerHTML = 
-      '<div class="eaa-challenges-board">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:18px;">' +
-          '<div>' +
-            '<h1 style="font-size:1.85rem; font-weight:900; color:#ffffff; margin:0; display:flex; align-items:center; gap:10px;">' +
-              '<span>⚡</span> <span>English Challenge Board</span>' +
-            '</h1>' +
-            '<p style="font-size:0.88rem; color:#94a3b8; margin:4px 0 0 0;">Complete missions to gain Learning Energy XP and evolve your companion monster.</p>' +
-          '</div>' +
-          '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
-            '<div style="display:flex; align-items:center; gap:6px; background:rgba(30,41,59,0.85); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:4px 10px;">' +
-              '<span style="font-size:0.82rem; color:#38bdf8; font-weight:700;">🎯 Target Explorer:</span>' +
-              '<select onchange="window.setChallengeTargetStudent(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; border-radius:6px; padding:4px 8px; font-size:0.82rem; cursor:pointer;">' +
-                students.map(s => '<option value="' + s.id + '"' + (targetStudent && targetStudent.id === s.id ? ' selected' : '') + '>' + s.firstName + ' ' + (s.lastName || '') + ' (' + (s.xp || 0) + ' XP)</option>').join('') +
-              '</select>' +
-              '<button type="button" class="btn-sm-secondary" onclick="window.pickRandomChallengeStudent()" title="Pick random student" style="padding:3px 8px; font-size:0.78rem;">🎲 Random</button>' +
-            '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="if(window.openSmartBoardMode) window.openSmartBoardMode(); else switchView(\'classroom-hub\');">⚡ Launch Smart Board Mode</button>' +
-          '</div>' +
-        '</div>' +
-
-        // Categories Bar
-        '<div class="eaa-challenge-categories-bar">' +
-          categories.map(c => {
-            const isActive = (activeCat === c.id);
-            return '<button type="button" class="eaa-challenge-cat-btn' + (isActive ? ' is-active' : '') + '" onclick="window.setChallengeCategory(\'' + c.id + '\')">' + c.label + '</button>';
-          }).join('') +
-        '</div>' +
-
-        // Missions Grid
-        '<div class="eaa-missions-grid">' +
-          visibleMissions.map(m => {
-            const safeTitle = m.title.replace(/'/g, "\\'");
-            const isTeam = (m.cat === 'team');
-            return '' +
-              '<div class="eaa-mission-card">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                    '<span class="eaa-mission-cat-pill">' + m.icon + ' ' + m.cat.toUpperCase() + ' MISSION</span>' +
-                    '<span class="badge" style="background:rgba(255,255,255,0.06); color:#cbd5e1;">' + m.level + '</span>' +
-                  '</div>' +
-                  '<h3 class="eaa-mission-name">' + m.title + '</h3>' +
-                  '<p class="eaa-mission-desc">' + m.desc + '</p>' +
-                '</div>' +
-                '<div class="eaa-mission-footer" style="display:flex; flex-direction:column; gap:8px; align-items:stretch;">' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                    '<span class="eaa-mission-xp-tag">+' + m.xp + ' XP</span>' +
-                    '<span style="font-size:0.75rem; color:#94a3b8;">' + (targetStudent ? ('Explorer: ' + targetStudent.firstName) : '') + '</span>' +
-                  '</div>' +
-                  '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                    '<button type="button" class="eaa-mission-start-btn" style="flex:1;" onclick="if(window.showToast) window.showToast(\'⚡ Mission ' + safeTitle + ' started for ' + (targetStudent ? targetStudent.firstName : 'Explorer') + '!\', \'info\'); if(window.openSmartBoardMode) window.openSmartBoardMode();">' +
-                      'START ▶' +
-                    '</button>' +
-                    '<button type="button" class="eaa-mission-start-btn" style="flex:1.2; background:linear-gradient(135deg, #10b981, #059669); border-color:#34d399;" onclick="window.handleCompleteChallenge(\'' + m.id + '\', \'' + (targetStudent ? targetStudent.id : '') + '\', ' + m.xp + ', \'' + safeTitle + '\')">' +
-                      '✓ Complete (+' + m.xp + ')' +
-                    '</button>' +
-                    (isTeam ? '<button type="button" class="btn-sm-secondary" style="font-size:0.72rem; padding:4px 8px; width:100%;" onclick="window.handleAwardClassChallenge(\'' + m.id + '\', ' + m.xp + ', \'' + safeTitle + '\')">👥 Award to Entire Class</button>' : '') +
-                  '</div>' +
-                '</div>' +
-              '</div>';
-          }).join('') +
-        '</div>' +
-      '</div>';
-  };
-
-  window.handleGlobalOmnisearch = function(query) {
-    const q = (query || '').trim().toLowerCase();
-    let resultsContainer = document.getElementById('eaa-omnisearch-results');
-    const input = document.getElementById('global-search-input');
-    if (!input) return;
-
-    if (!q) {
-      if (resultsContainer) resultsContainer.remove();
-      return;
-    }
-
-    if (!resultsContainer) {
-      resultsContainer = document.createElement('div');
-      resultsContainer.id = 'eaa-omnisearch-results';
-      resultsContainer.className = 'eaa-omnisearch-results-menu';
-      input.parentElement.style.position = 'relative';
-      input.parentElement.appendChild(resultsContainer);
-    }
-
-    const students = (store.getStudents ? store.getStudents() : []).filter(s => (s.firstName + ' ' + s.lastName).toLowerCase().includes(q)).slice(0, 5);
-    const resources = (store.getResources ? store.getResources() : []).filter(r => (r.title + ' ' + (r.topic || '')).toLowerCase().includes(q)).slice(0, 5);
-
-    let html = '';
-    if (students.length > 0) {
-      html += '<div style="font-size:0.68rem; font-weight:800; color:#94a3b8; padding:4px 8px; text-transform:uppercase;">Learners</div>';
-      students.forEach(s => {
-        html += '<div class="eaa-omnisearch-item" onclick="openStudentDetail(\'' + s.id + '\'); document.getElementById(\'eaa-omnisearch-results\').remove();">' +
-          '<span style="display:flex; align-items:center; gap:8px;">🧒 <strong>' + s.firstName + ' ' + s.lastName + '</strong></span>' +
-          '<span style="font-size:0.75rem; color:#06b6d4;">' + (s.overallCefr || 'A1') + '</span>' +
-        '</div>';
-      });
-    }
-
-    if (resources.length > 0) {
-      html += '<div style="font-size:0.68rem; font-weight:800; color:#94a3b8; padding:4px 8px; text-transform:uppercase; margin-top:6px;">Lessons & Activities</div>';
-      resources.forEach(r => {
-        const route = r.route || '#';
-        html += '<a href="' + route + '" class="eaa-omnisearch-item" style="text-decoration:none;" onclick="document.getElementById(\'eaa-omnisearch-results\').remove();">' +
-          '<span style="display:flex; align-items:center; gap:8px;">🚀 <strong>' + r.title + '</strong></span>' +
-          '<span style="font-size:0.72rem; color:#10b981; font-weight:800;">START</span>' +
-        '</a>';
-      });
-    }
-
-    if (!students.length && !resources.length) {
-      html = '<div style="padding:10px; font-size:0.8rem; color:#94a3b8; text-align:center;">No matching students or lessons found.</div>';
-    }
-
-    resultsContainer.innerHTML = html;
-  };
-
-  // Keyboard shortcut '/' to focus Omnisearch
-  window.addEventListener('keydown', function(e) {
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-      const s = document.getElementById('global-search-input');
-      if (s) { s.focus(); s.select(); }
-    }
-  });
-
-
-  window.openSmartboardScoreboardModal = function() {
-    window.openClassroomToolkitModal('scoreboard');
-  };
-
-// Persistent smartboard dock integrated in toggleSmartboardMode

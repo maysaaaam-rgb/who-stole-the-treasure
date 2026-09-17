@@ -1332,64 +1332,16 @@
       else hornId = 'none';
     }
 
-    
-    const earType = (equipped && (equipped.ears || equipped.archetype)) || 'floppy';
-    let earsMarkup = '';
-
-    if (earType === 'ears-fox' || earType === 'fox') {
-      earsMarkup = `
-        <!-- Fox Ears -->
-        <g filter="url(#mf-shadow)" class="monster-ears">
-          <polygon points="${cX - 42 * scale},${topY + 18 * scale} ${cX - 24 * scale},${topY - 14 * scale} ${cX - 14 * scale},${topY + 8 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <polygon points="${cX - 36 * scale},${topY + 14 * scale} ${cX - 24 * scale},${topY - 4 * scale} ${cX - 18 * scale},${topY + 8 * scale}" fill="#ffffff" opacity="0.85" />
-          <polygon points="${cX + 42 * scale},${topY + 18 * scale} ${cX + 24 * scale},${topY - 14 * scale} ${cX + 14 * scale},${topY + 8 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <polygon points="${cX + 36 * scale},${topY + 14 * scale} ${cX + 24 * scale},${topY - 4 * scale} ${cX + 18 * scale},${topY + 8 * scale}" fill="#ffffff" opacity="0.85" />
-        </g>
-      `;
-    } else if (earType === 'ears-cat' || earType === 'cat') {
-      earsMarkup = `
-        <!-- Cat Ears -->
-        <g filter="url(#mf-shadow)" class="monster-ears">
-          <polygon points="${cX - 38 * scale},${topY + 14 * scale} ${cX - 24 * scale},${topY - 8 * scale} ${cX - 16 * scale},${topY + 8 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <polygon points="${cX - 32 * scale},${topY + 11 * scale} ${cX - 24 * scale},${topY - 2 * scale} ${cX - 19 * scale},${topY + 7 * scale}" fill="#fbcfe8" />
-          <polygon points="${cX + 38 * scale},${topY + 14 * scale} ${cX + 24 * scale},${topY - 8 * scale} ${cX + 16 * scale},${topY + 8 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <polygon points="${cX + 32 * scale},${topY + 11 * scale} ${cX + 24 * scale},${topY - 2 * scale} ${cX + 19 * scale},${topY + 7 * scale}" fill="#fbcfe8" />
-        </g>
-      `;
-    } else if (earType === 'ears-rabbit' || earType === 'rabbit') {
-      earsMarkup = `
-        <!-- Bunny Ears -->
-        <g filter="url(#mf-shadow)" class="monster-ears">
-          <ellipse cx="${cX - 22 * scale}" cy="${topY - 14 * scale}" rx="${7 * scale}" ry="${24 * scale}" transform="rotate(-10, ${cX - 22 * scale}, ${topY - 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.2" />
-          <ellipse cx="${cX - 22 * scale}" cy="${topY - 14 * scale}" rx="${4 * scale}" ry="${17 * scale}" transform="rotate(-10, ${cX - 22 * scale}, ${topY - 14 * scale})" fill="#fbcfe8" />
-          <ellipse cx="${cX + 22 * scale}" cy="${topY - 14 * scale}" rx="${7 * scale}" ry="${24 * scale}" transform="rotate(10, ${cX + 22 * scale}, ${topY - 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.2" />
-          <ellipse cx="${cX + 22 * scale}" cy="${topY - 14 * scale}" rx="${4 * scale}" ry="${17 * scale}" transform="rotate(10, ${cX + 22 * scale}, ${topY - 14 * scale})" fill="#fbcfe8" />
-        </g>
-      `;
-    } else if (earType === 'ears-bear' || earType === 'bear') {
-      earsMarkup = `
-        <!-- Round Bear Ears -->
-        <g filter="url(#mf-shadow)" class="monster-ears">
-          <circle cx="${cX - 32 * scale}" cy="${topY + 2 * scale}" r="${13 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <circle cx="${cX - 32 * scale}" cy="${topY + 2 * scale}" r="${7 * scale}" fill="#fef3c7" />
-          <circle cx="${cX + 32 * scale}" cy="${topY + 2 * scale}" r="${13 * scale}" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <circle cx="${cX + 32 * scale}" cy="${topY + 2 * scale}" r="${7 * scale}" fill="#fef3c7" />
-        </g>
-      `;
-    } else {
-      // Default Floppy Ears
-      earsMarkup = `
-        <!-- Cute Floppy Monster Ears -->
-        <g filter="url(#mf-shadow)" class="monster-ears">
-          <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
-          <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-          <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
-        </g>
-      `;
-    }
-    const customEarsMarkup = true;
-
+    // Floppy Monster Ears are ALWAYS present to maintain signature character DNA across all stages!
+    const earsMarkup = `
+      <!-- Cute Floppy Monster Ears (Signature Character DNA) -->
+      <g filter="url(#mf-shadow)" class="monster-ears">
+        <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
+        <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
+        <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
+        <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
+      </g>
+    `;
 
     if (hornId === 'none' || hornId === 'horns-none') {
       return earsMarkup;

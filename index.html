@@ -15,8 +15,6 @@
 
   <!-- School Platform Unified Stylesheet -->
   <link rel="stylesheet" href="css/school-platform.css">
-  <!-- Master Adventure Theme & Ecosystem Stylesheet -->
-  <link rel="stylesheet" href="css/adventure-theme.css">
 
   <!-- Immediate Auth & Lock Check + Mobile/Cross-Device Controller -->
   <script>
@@ -344,21 +342,18 @@
   <!-- ========================================================================
        1. GLOBAL TOP HEADER & ROLE SWITCHER
        ======================================================================== -->
-  <!-- ========================================================================
-       1. GLOBAL TOP COMMAND & NAVIGATION BAR
-       ======================================================================== -->
-  <header class="app-header eaa-command-bar" id="eaa-top-command-bar">
+  <header class="app-header">
     <div class="header-inner">
       <div class="brand-section">
         <button class="mobile-nav-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle navigation" style="display:none; background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-main); padding:4px 8px; margin-right:8px;">☰</button>
-        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy — Learn • Play • Grow">
+        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy">
           <div class="brand-icon-box">
-            <span style="font-size: 1.25rem;">🏰</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
           </div>
-          <div class="eaa-brand-text" style="display:flex; flex-direction:column;">
-            <span class="eaa-brand-title" style="font-weight:900; font-size:1.02rem; line-height:1.1; letter-spacing:0.02em;">ADVENTURE ACADEMY</span>
-            <span class="eaa-tagline" style="font-size:0.62rem; font-weight:800; color:#38bdf8; letter-spacing:0.8px;">LEARN • PLAY • GROW</span>
-          </div>
+          <span>Adventure Academy</span>
         </div>
 
         <!-- Role Switcher (Teacher · Student · Parent) -->
@@ -375,82 +370,8 @@
         </nav>
       </div>
 
-      <!-- Main Unified Top Navigation Pills -->
-      <nav class="eaa-top-nav-links" id="eaa-top-nav" aria-label="Main Navigation">
-        <button type="button" class="eaa-nav-pill is-active" data-view="dashboard" onclick="switchView('dashboard')" title="Teacher Command Center">
-          <span class="nav-pill-icon">🏠</span> <span>Home</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="class-detail" onclick="switchView('class-detail')" title="Classroom World & Explorers">
-          <span class="nav-pill-icon">🗺️</span> <span>Classes</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="students" onclick="switchView('students')" title="Student Directory & Dossiers">
-          <span class="nav-pill-icon">🧒</span> <span>Explorers</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="library" onclick="switchView('library')" title="Adventure Resource Library — 1-Click Curated Lessons, Games & Worksheets" style="background:rgba(59,130,246,0.15); border-color:#3b82f6;">
-          <span class="nav-pill-icon">📚</span> <span style="font-weight:800; color:#60a5fa;">Resource Library</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="curriculum" onclick="switchView('curriculum')" title="Macmillan Anthology & Scope & Sequence">
-          <span class="nav-pill-icon">📖</span> <span>Curriculum</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="worksheets" onclick="switchView('worksheets')" title="Printable & Digital Worksheets">
-          <span class="nav-pill-icon">📄</span> <span>Worksheets</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="assignments" onclick="switchView('assignments')" title="Assignments & Class Tasks">
-          <span class="nav-pill-icon">📝</span> <span>Assignments</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="challenges" onclick="switchView('challenges')" title="Daily Missions & Weekly English Quests">
-          <span class="nav-pill-icon">⚡</span> <span>Quests</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="monster" onclick="switchView('monster')" title="Monster Studio & Creature Customizer">
-          <span class="nav-pill-icon">👾</span> <span>Monsters</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="evolution" onclick="switchView('evolution')" title="Monster Evolution Journey">
-          <span class="nav-pill-icon">🐲</span> <span>Evolution</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="badges" onclick="switchView('badges')" title="Achievement Wall & Relics">
-          <span class="nav-pill-icon">🏅</span> <span>Badges</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="progress" onclick="switchView('progress')" title="CEFR Skill Mastery Diagnostics">
-          <span class="nav-pill-icon">📊</span> <span>Progress</span>
-        </button>
-        <button type="button" class="eaa-nav-pill" data-view="smartboard" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView('classroom-hub');}" title="Fullscreen Smart Board Classroom Mode">
-          <span class="nav-pill-icon">⚡</span> <span>Smart Board</span>
-        </button>
-        
-        <!-- More Destinations Dropdown -->
-        <div class="eaa-nav-more-wrap" style="position:relative; display:inline-block;">
-          <button type="button" class="eaa-nav-pill" onclick="const m = document.getElementById('eaa-nav-more-menu'); if(m) m.style.display = (m.style.display === 'block' ? 'none' : 'block');" title="More Destinations">
-            <span>⋯ More</span>
-          </button>
-          <div id="eaa-nav-more-menu" class="create-dropdown-menu" style="display:none; position:absolute; right:0; top:calc(100% + 6px); z-index:9999; min-width:210px; background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.5); padding:6px;">
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('homework')"><span>✍️</span> <span>Homework</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('quizzes')"><span>🧩</span> <span>Quizzes &amp; Tests</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('assessments')"><span>🎯</span> <span>Assessments &amp; Rubrics</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('progress-check')"><span>📈</span> <span>Progress Check</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('reports')"><span>📊</span> <span>Reports &amp; Exports</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('messages')"><span>💬</span> <span>Messages</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('timer')"><span>⏱️</span> <span>Classroom Timer</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('archived')"><span>🗄️</span> <span>Archived Items</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('settings')"><span>⚙️</span> <span>School Settings</span></button>
-            <button class="dropdown-item-btn" onclick="document.getElementById('eaa-nav-more-menu').style.display='none'; switchView('system-health')"><span>🩺</span> <span>System Health</span></button>
-          </div>
-        </div>
-      </nav>
-
-      <!-- Center Omnisearch -->
-      <div class="eaa-omnisearch-wrap" style="margin: 0 10px;">
-        <span class="eaa-omnisearch-icon">🔍</span>
-        <input type="text" id="global-search-input" class="eaa-omnisearch-input" placeholder="Search world, explorers, quests... (Press /)" oninput="if(window.handleGlobalOmnisearch) window.handleGlobalOmnisearch(this.value)">
-        <span class="eaa-omnisearch-kbd">/</span>
-      </div>
-
-      <!-- Right Controls & Teacher Persona -->
+      <!-- Right Controls -->
       <div class="header-right">
-        <!-- 1-Click Smart Board Button -->
-        <button class="eaa-smartboard-quick-btn" onclick="if(window.openSmartBoardMode){window.openSmartBoardMode();}else{switchView('classroom-hub');}" title="Launch Fullscreen Smart Board Mode">
-          <span>⚡</span> <span>Smart Board</span>
-        </button>
-
         <!-- Active Class Selector -->
         <select id="header-class-select" class="class-switcher-select" title="Active Class">
           <!-- Dynamically populated by school-app.js -->
@@ -463,12 +384,12 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
           <div class="create-dropdown-menu" id="header-create-menu" style="max-height:420px; overflow-y:auto; width:220px;">
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Classroom &amp; Students</div>
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Classroom & Students</div>
             <button class="dropdown-item-btn" onclick="openStudentModal()"><span>👧</span> <span>+ Student</span></button>
             <button class="dropdown-item-btn" onclick="openClassModal()"><span>👥</span> <span>+ Class</span></button>
             <button class="dropdown-item-btn" onclick="openCreateGroupModal()"><span>👥</span> <span>+ Group</span></button>
             
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Curriculum &amp; Content</div>
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Curriculum & Content</div>
             <button class="dropdown-item-btn" onclick="openAddBookModal()"><span>📖</span> <span>+ Book</span></button>
             <button class="dropdown-item-btn" onclick="openAddUnitModal()"><span>📑</span> <span>+ Unit</span></button>
             <button class="dropdown-item-btn" onclick="openAddLessonModal()"><span>📝</span> <span>+ Lesson</span></button>
@@ -476,7 +397,7 @@
             <button class="dropdown-item-btn" onclick="openResourceEditor()"><span>🎮</span> <span>+ Game / Activity</span></button>
             <button class="dropdown-item-btn" onclick="openWorksheetEditor()"><span>📄</span> <span>+ Worksheet</span></button>
 
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Teaching &amp; Assessment</div>
+            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Teaching & Assessment</div>
             <button class="dropdown-item-btn" onclick="openModal('modal-create-assignment')"><span>📝</span> <span>+ Assignment</span></button>
             <button class="dropdown-item-btn" onclick="openModal('modal-homework-editor')"><span>✍️</span> <span>+ Homework</span></button>
             <button class="dropdown-item-btn" onclick="openModal('modal-quiz-builder')"><span>🧩</span> <span>+ Quiz</span></button>
@@ -523,17 +444,16 @@
   </header>
 
   <!-- ========================================================================
-       2. MAIN APPLICATION ADVENTURE WORLD LAYOUT (100% WIDTH)
+       2. MAIN APPLICATION LAYOUT (SIDEBAR + DYNAMIC VIEW)
        ======================================================================== -->
-  <div class="app-layout eaa-world-layout">
-    <!-- Contextual Secondary Nav Sub-Bar (Injected dynamically when sub-tabs exist) -->
-    <div id="eaa-context-nav-bar" class="eaa-context-nav-bar" style="display:none;"></div>
+  <div class="app-layout">
+    <!-- Dynamic Role Sidebar -->
+    <aside class="app-sidebar" id="app-sidebar-nav" aria-label="Platform Navigation">
+      <!-- Injected dynamically by school-app.js -->
+    </aside>
 
-    <!-- Hidden aside element preserved for backward compatibility -->
-    <aside class="app-sidebar" id="app-sidebar-nav" style="display:none !important;" aria-hidden="true"></aside>
-
-    <!-- Dynamic Sub-view Container (Edge-to-edge World canvas) -->
-    <main class="app-main eaa-world-main" id="app-view-container">
+    <!-- Dynamic Sub-view Container -->
+    <main class="app-main" id="app-view-container">
       <!-- Injected dynamically by school-app.js -->
     </main>
   </div>
@@ -3465,37 +3385,7 @@
         </div>
       </form>
     </div>
-  <!-- ========================================================================
-       4. CONTEXTUAL ACTION DRAWER (EXPLORER PROFILE & INSTANT ACTIONS)
-       ======================================================================== -->
-  <div id="eaa-drawer-overlay" class="eaa-drawer-overlay" onclick="closeExplorerDrawer()"></div>
-  <aside id="eaa-action-drawer" class="eaa-action-drawer" aria-label="Explorer Action Drawer">
-    <!-- Populated dynamically by openExplorerDrawer(studentId) -->
-  </aside>
-
-  <!-- Mobile Bottom Navigation (Visible only on mobile screens <= 768px) -->
-  <nav class="eaa-mobile-nav" aria-label="Mobile Navigation">
-    <button type="button" class="eaa-mobile-tab-btn is-active" onclick="switchView('dashboard')">
-      <span style="font-size:1.2rem;">📊</span>
-      <span>Home</span>
-    </button>
-    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('library')">
-      <span style="font-size:1.2rem;">🎮</span>
-      <span>Lessons</span>
-    </button>
-    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('gamification')">
-      <span style="font-size:1.2rem;">🏆</span>
-      <span>Quests</span>
-    </button>
-    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('monster')">
-      <span style="font-size:1.2rem;">👾</span>
-      <span>Monsters</span>
-    </button>
-    <button type="button" class="eaa-mobile-tab-btn" onclick="switchView('progress')">
-      <span style="font-size:1.2rem;">📈</span>
-      <span>Progress</span>
-    </button>
-  </nav>
+  </div>
 
   <!-- Platform Access Controller is defined in head for instant cross-device execution -->
 </body>
