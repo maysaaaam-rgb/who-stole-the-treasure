@@ -6638,61 +6638,666 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     renderAttendanceTableForClass(cls, students);
   }
 
+  // =========================================================================
+  // MONSTER EVOLUTION ROADMAP (REFERENCE 3: SMALL STEPS. BIGGER ADVENTURES)
+  // =========================================================================
+  function renderMonsterEvolutionRoadmapView(container) {
+    if (!container) container = document.getElementById('app-view-container');
+    if (!container) return;
+
+    container.innerHTML = 
+      '<div class="eaa-ref-roadmap-wrap">' +
+        // Header
+        '<div class="eaa-ref-roadmap-header">' +
+          '<div class="eaa-ref-roadmap-brand">' +
+            '<span style="font-size:26px;">📖</span>' +
+            '<div style="text-align:left;">' +
+              '<div style="font-size:0.95rem; font-weight:900; color:#ffffff;">English Adventure Academy</div>' +
+              '<div style="font-size:0.7rem; font-weight:800; color:#38bdf8;">Learn • Play • Grow</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-roadmap-center">' +
+            '<h1 class="eaa-ref-roadmap-title">MONSTER EVOLUTION</h1>' +
+            '<div class="eaa-ref-roadmap-subtitle">SMALL STEPS. BIGGER ADVENTURES.</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-roadmap-slogan-top">' +
+            'Your Effort Builds a Brighter, Stronger You! 👑' +
+          '</div>' +
+        '</div>' +
+
+        // Top Milestone Path
+        '<div class="eaa-ref-milestones-track">' +
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#15803d; color:#ffffff;">🍃</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#4ade80;">LEARN</div>' +
+          '</div>' +
+          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #15803d, #0d9488); margin:0 8px; position:relative; top:-10px;"></div>' +
+
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#0d9488; color:#ffffff;">🌱</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#2dd4bf;">PRACTICE</div>' +
+          '</div>' +
+          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #0d9488, #0284c7); margin:0 8px; position:relative; top:-10px;"></div>' +
+
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#0284c7; color:#ffffff;">⛰️</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#38bdf8;">EXPLORE</div>' +
+          '</div>' +
+          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #0284c7, #d97706); margin:0 8px; position:relative; top:-10px;"></div>' +
+
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#d97706; color:#ffffff;">🔥</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#fbbf24;">ACHIEVE</div>' +
+          '</div>' +
+          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #d97706, #ca8a04); margin:0 8px; position:relative; top:-10px;"></div>' +
+
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#ca8a04; color:#ffffff;">⭐</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#fde047;">MASTER</div>' +
+          '</div>' +
+          '<div style="flex:1; height:2px; background:linear-gradient(90deg, #ca8a04, #7c3aed); margin:0 8px; position:relative; top:-10px;"></div>' +
+
+          '<div class="eaa-ref-milestone-node">' +
+            '<div class="eaa-ref-milestone-circle" style="background:#7c3aed; color:#ffffff;">👑</div>' +
+            '<div class="eaa-ref-milestone-label" style="color:#c084fc;">BECOME LEGENDARY</div>' +
+          '</div>' +
+        '</div>' +
+
+        // 6 Stone Pedestals Grid
+        '<div class="eaa-ref-pedestals-grid">' +
+          // Level 1: Baby Monster
+          '<div class="eaa-ref-pedestal-card">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 1</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Baby Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#15803d; color:#ffffff;">0 – 100 XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_1_egg.png" alt="Baby Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Small and cute</li>' +
+              '<li>Curious and friendly</li>' +
+              '<li>Just starting the journey</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon">' +
+              'Every expert was once a beginner!' +
+            '</div>' +
+          '</div>' +
+
+          // Level 2: Young Monster
+          '<div class="eaa-ref-pedestal-card">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 2</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Young Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#0d9488; color:#ffffff;">101 – 300 XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_2_baby.png" alt="Young Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Bigger and braver</li>' +
+              '<li>Two horns</li>' +
+              '<li>A small tail</li>' +
+              '<li>Ready to learn more</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon">' +
+              'Practice makes progress!' +
+            '</div>' +
+          '</div>' +
+
+          // Level 3: Adventurer Monster
+          '<div class="eaa-ref-pedestal-card" style="border-color:#0284c7; box-shadow:0 0 16px rgba(2, 132, 199, 0.4);">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#38bdf8; text-transform:uppercase;">LEVEL 3</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Adventurer Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#0284c7; color:#ffffff;">301 – 700 XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_3_adventurer.png" alt="Adventurer Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Stronger and taller</li>' +
+              '<li>Adventure gear</li>' +
+              '<li>More confident</li>' +
+              '<li>Ready for challenges</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #bae6fd 0%, #38bdf8 100%); color:#0369a1;">' +
+              'Explore. Try. Improve!' +
+            '</div>' +
+          '</div>' +
+
+          // Level 4: Elite Monster
+          '<div class="eaa-ref-pedestal-card">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 4</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Elite Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#d97706; color:#ffffff;">701 – 1,200 XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_4_elite.png" alt="Elite Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Much larger</li>' +
+              '<li>Armor and powerful horns</li>' +
+              '<li>Glowing eyes</li>' +
+              '<li>Stronger and braver</li>' +
+              '<li>Ready for bigger adventures</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #fed7aa 0%, #fb923c 100%); color:#7c2d12;">' +
+              'Hard work takes you further!' +
+            '</div>' +
+          '</div>' +
+
+          // Level 5: Legendary Monster
+          '<div class="eaa-ref-pedestal-card">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase;">LEVEL 5</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Legendary Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#ca8a04; color:#ffffff;">1,201 – 2,000 XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_5_legendary.png" alt="Legendary Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Majestic wings</li>' +
+              '<li>Legendary armor</li>' +
+              '<li>Unique powers</li>' +
+              '<li>A true leader</li>' +
+              '<li>Inspiring others</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon">' +
+              'You are a legend in the making!' +
+            '</div>' +
+          '</div>' +
+
+          // Level 6: Mythic Monster
+          '<div class="eaa-ref-pedestal-card" style="border-color:#9333ea; box-shadow:0 0 20px rgba(147, 51, 234, 0.4);">' +
+            '<div>' +
+              '<div style="font-size:0.78rem; font-weight:800; color:#c084fc; text-transform:uppercase;">LEVEL 6</div>' +
+              '<div style="font-size:1.1rem; font-weight:900; color:#ffffff;">Mythic Monster</div>' +
+              '<div class="eaa-ref-pedestal-badge" style="background:#7e22ce; color:#ffffff;">2,001+ XP</div>' +
+            '</div>' +
+            '<div class="eaa-ref-pedestal-art">' +
+              '<img src="assets/reference/extracted/evo_6_mythic.png" alt="Mythic Monster">' +
+            '</div>' +
+            '<ul class="eaa-ref-pedestal-bullets">' +
+              '<li>Ultimate form</li>' +
+              '<li>Massive and unique design</li>' +
+              '<li>Mythic powers</li>' +
+              '<li>A symbol of greatness</li>' +
+              '<li>You inspire the world</li>' +
+            '</ul>' +
+            '<div class="eaa-ref-motto-ribbon" style="background:linear-gradient(180deg, #f3e8ff 0%, #d8b4fe 100%); color:#581c87;">' +
+              'Beyond learning. You make a difference!' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // Bottom XP Timeline
+        '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px; flex-wrap:wrap; gap:12px;">' +
+          '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<span style="font-size:24px;">🎮</span>' +
+            '<span style="font-weight:900; font-size:1.1rem; color:#38bdf8;">XP MILESTONES</span>' +
+          '</div>' +
+
+          '<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#4ade80;">● DISCOVER</span>' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#2dd4bf;">● PRACTICE</span>' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#38bdf8;">● IMPROVE</span>' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#fbbf24;">● ACHIEVE</span>' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#fde047;">● EVOLVE</span>' +
+            '<span style="font-size:0.78rem; font-weight:800; color:#c084fc;">● BE LEGENDARY</span>' +
+          '</div>' +
+
+          '<div style="font-family:\'Comic Sans MS\', cursive, sans-serif; font-size:0.9rem; color:#f472b6; font-weight:700;">' +
+            'Same Student Different Future ❤️' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // =========================================================================
+  // TEACHER DASHBOARD & CLASSROOM HUB (REFERENCE 1: GRADE 4B)
+  // =========================================================================
   function renderTeacherDashboard(container) {
     const cls = store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
     const assignments = store.getAssignments(cls.id);
-    const attRate = store.getClassAttendanceRate(cls.id);
-    const currentMood = store.getClassroomMood ? store.getClassroomMood(cls.id) : 'focused';
-    const worldProg = store.getWorldProgression ? store.getWorldProgression(cls.id) : { totalClassXP: 4850, currentWorld: { name: 'Meadow Academy', icon: '🌲' }, nextWorld: { name: 'The Invention Lab', icon: '🚀' }, pct: 68 };
-
-    const currentHour = new Date().getHours();
-    let timeGreeting = 'Good morning';
-    if (currentHour >= 12 && currentHour < 18) timeGreeting = 'Good afternoon';
-    else if (currentHour >= 18 || currentHour < 5) timeGreeting = 'Good evening';
-    const teacherDisplayName = (store.getSchoolSettings && store.getSchoolSettings().teacherName) || 'Mr. Maysam';
+    const attRate = store.getClassAttendanceRate ? store.getClassAttendanceRate(cls.id) : 85;
 
     container.innerHTML = 
-      // 1. CLASS HERO BANNER (5-Second Answer Header)
-      '<div class="eaa-banner-class" style="background:linear-gradient(135deg, #091e3a 0%, #0c3559 45%, #0f766e 85%, #0d9488 100%); border:2px solid #06b6d4; border-radius:18px; padding:22px 26px; margin-bottom:20px; box-shadow:0 12px 35px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
-        '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.06; pointer-events:none;">🌍</div>' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; position:relative; z-index:2;">' +
+      '<div class="eaa-ref-hub">' +
+        // 1. Top Hub Bar
+        '<div class="eaa-ref-topbar">' +
+          '<div class="eaa-ref-class-title-wrap">' +
+            '<div class="eaa-ref-globe-icon">🌍</div>' +
+            '<div>' +
+              '<h1 class="eaa-ref-class-name">Grade 4B</h1>' +
+              '<div class="eaa-ref-class-meta">' +
+                '<span>👥 ' + (students.length || 19) + ' Students</span>' +
+                '<span>•</span>' +
+                '<span>Room 4B</span>' +
+                '<span>•</span>' +
+                '<span>Tue, Thu 10:00 – 10:40</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-topbar-actions">' +
+            '<div class="eaa-ref-classcode-pill" onclick="if(navigator.clipboard){navigator.clipboard.writeText(\'G4B-2026\');} if(window.showToast) window.showToast(\'Class code G4B-2026 copied!\', \'success\');" title="Click to copy class code">' +
+              '<span>Class Code:</span> ' +
+              '<strong style="color:#2563eb;">G4B-2026</strong> ' +
+              '<span>📋</span>' +
+            '</div>' +
+            '<button class="eaa-ref-invite-btn" onclick="openModal(\'modal-add-student\')">' +
+              '<span>+</span> <span>Invite</span>' +
+            '</button>' +
+            '<button class="eaa-ref-settings-btn" onclick="openSchoolSettingsModal()">' +
+              '<span>⚙️</span> <span>Class Settings</span>' +
+            '</button>' +
+            '<div class="eaa-ref-slogan-cursive" style="margin-left:8px;">' +
+              '"Small Steps Big English Adventures!"' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // 2. Hub Tabs Bar
+        '<div class="eaa-ref-tabs">' +
+          '<button class="eaa-ref-tab-btn is-active" onclick="switchView(\'dashboard\')">Overview</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'students\')">Students</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'story\')">Class Story</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'assignments\')">Assignments</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'progress\')">Progress</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'assessments\')">Assessments</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'calendar\')">Calendar</button>' +
+          '<button class="eaa-ref-tab-btn" onclick="switchView(\'classes\')">More ▾</button>' +
+        '</div>' +
+
+        // 3. Classroom Hero Banner
+        '<div class="eaa-ref-hero-banner" style="padding:0; min-height:130px; background:none; border:none; box-shadow:0 10px 24px rgba(0,0,0,0.12); position:relative; overflow:hidden; margin-bottom:22px;">' +
+          '<img src="assets/reference/extracted/dash_hero_banner_full.png" alt="Grade 4B English Explorers - Better English. A Brighter You." style="width:100%; border-radius:18px; display:block; object-fit:cover; max-height:150px;">' +
+          '<span class="eaa-ref-wooden-sign-title" style="display:none;">Grade 4B English Explorers</span>' +
+        '</div>' +
+
+        // 4. Five Key Metrics Row
+        '<div class="eaa-ref-metrics-row">' +
+          '<div class="eaa-ref-metric-card">' +
+            '<div class="eaa-ref-metric-icon-box" style="background:#eff6ff; color:#2563eb;">👥</div>' +
+            '<div>' +
+              '<div class="eaa-ref-metric-val">' + (students.length || 19) + '</div>' +
+              '<div class="eaa-ref-metric-label">Students</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-metric-card">' +
+            '<div class="eaa-ref-metric-icon-box" style="background:#ecfdf5; color:#10b981;">📋</div>' +
+            '<div>' +
+              '<div class="eaa-ref-metric-val">' + attRate + '%</div>' +
+              '<div class="eaa-ref-metric-label">Attendance</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-metric-card">' +
+            '<div class="eaa-ref-metric-icon-box" style="background:#fefce8; color:#eab308;">⭐</div>' +
+            '<div>' +
+              '<div class="eaa-ref-metric-val">72%</div>' +
+              '<div class="eaa-ref-metric-label">Average Mastery</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-metric-card">' +
+            '<div class="eaa-ref-metric-icon-box" style="background:#f5f3ff; color:#8b5cf6;">📝</div>' +
+            '<div>' +
+              '<div class="eaa-ref-metric-val">' + (assignments.length || 5) + '</div>' +
+              '<div class="eaa-ref-metric-label">Active Assignments</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="eaa-ref-metric-card">' +
+            '<div class="eaa-ref-metric-icon-box" style="background:#fff1f2; color:#f43f5e;">🔥</div>' +
+            '<div>' +
+              '<div class="eaa-ref-metric-val">1,240</div>' +
+              '<div class="eaa-ref-metric-label">Class XP This Month</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // 5. Main 2-Column Grid
+        '<div class="eaa-ref-grid">' +
+          // Left Column
           '<div>' +
-            '<div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">' +
-              '<span style="font-size:1.65rem;">🏫</span>' +
-              '<h1 style="font-size:1.65rem; font-weight:900; color:#ffffff; margin:0; letter-spacing:-0.4px;">' + cls.name + ' — English Explorers</h1>' +
-              '<span class="badge" style="background:#06b6d4; color:#082f49; font-weight:900; padding:4px 10px; border-radius:20px; font-size:0.75rem;">' + (cls.cefrTarget || 'A1+') + ' TARGET</span>' +
+            // Active Unit Card
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>📖</span> <span>Active Unit &gt;</span></h3>' +
+              '</div>' +
+              '<div class="eaa-ref-unit-box">' +
+                '<div class="eaa-ref-unit-thumb">' +
+                  '<img src="assets/reference/extracted/dash_active_unit_img.png" alt="I Love Reading" style="width:100%; height:100%; object-fit:cover;">' +
+                '</div>' +
+                '<div style="flex:1;">' +
+                  '<span class="eaa-ref-unit-badge">Unit 1</span>' +
+                  '<h4 class="eaa-ref-unit-title">I Love Reading</h4>' +
+                  '<div class="eaa-ref-unit-sub">Global Readings 3 · Explore amazing stories, interesting people and new worlds!</div>' +
+                  '<div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">' +
+                    '<div style="flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">' +
+                      '<div style="width:75%; height:100%; background:#22c55e; border-radius:4px;"></div>' +
+                    '</div>' +
+                    '<span style="font-size:0.78rem; font-weight:800; color:#64748b;">3 / 4 Lessons</span>' +
+                  '</div>' +
+                  '<div style="display:flex; gap:10px;">' +
+                    '<a href="save-tomorrow/index.html" class="btn-primary-action" style="padding:7px 16px; font-size:0.84rem; text-decoration:none; background:#2563eb; color:#ffffff;">▶ Continue</a>' +
+                    '<button class="btn-sm-secondary" onclick="switchView(\'curriculum\')" style="padding:7px 14px; font-size:0.84rem;">View Unit</button>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
             '</div>' +
-            '<p style="font-size:0.86rem; color:#bae6fd; margin:0 0 12px 0;">' + timeGreeting + ', ' + teacherDisplayName + '! Here is your live classroom command cockpit.</p>' +
-            
-            // Classroom Mood Selector
-            '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-              '<span style="font-size:0.76rem; font-weight:800; color:#7dd3fc; text-transform:uppercase;">Classroom Mood:</span>' +
-              ['energetic', 'focused', 'inquisitive', 'creative'].map(m => {
-                const isCurrent = currentMood === m;
-                const labels = { energetic: '⚡ Energetic', focused: '🎯 Focused', inquisitive: '🔍 Inquisitive', creative: '🌟 Creative' };
-                return '<button type="button" onclick="store.setClassroomMood(\'' + cls.id + '\', \'' + m + '\'); renderTeacherDashboard(document.getElementById(\'app-view-container\'));" style="background:' + (isCurrent ? '#06b6d4' : 'rgba(255,255,255,0.08)') + '; color:' + (isCurrent ? '#042f2e' : '#e0f2fe') + '; border:1px solid ' + (isCurrent ? '#22d3ee' : 'rgba(255,255,255,0.15)') + '; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:14px; cursor:pointer; transition:all 0.15s;">' + labels[m] + '</button>';
-              }).join('') +
+
+            // Next Activities
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>📋</span> <span>Next Activities</span></h3>' +
+                '<a class="eaa-ref-card-link" onclick="switchView(\'assignments\')">View All &gt;</a>' +
+              '</div>' +
+              '<div class="eaa-ref-activity-item">' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<span style="font-size:1.2rem;">📄</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Worksheet 1.2</div>' +
+                    '<div style="font-size:0.75rem; color:#64748b;">Skimming for Main Idea</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#ef4444; background:rgba(239,68,68,0.1); padding:2px 8px; border-radius:6px;">🔴 Today</span>' +
+                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">19/19</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="eaa-ref-activity-item">' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<span style="font-size:1.2rem;">🏆</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Vocabulary Quiz</div>' +
+                    '<div style="font-size:0.75rem; color:#64748b;">Units 1–2</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#3b82f6; background:rgba(59,130,246,0.1); padding:2px 8px; border-radius:6px;">📅 Tomorrow</span>' +
+                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">0/19</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="eaa-ref-activity-item">' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<span style="font-size:1.2rem;">🏠</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">My Town Prepositions</div>' +
+                    '<div style="font-size:0.75rem; color:#64748b;">Assignment</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:2px 8px; border-radius:6px;">Fri, Sep 19</span>' +
+                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">0/19</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="eaa-ref-activity-item">' +
+                '<div style="display:flex; align-items:center; gap:10px;">' +
+                  '<span style="font-size:1.2rem;">🎙️</span>' +
+                  '<div>' +
+                    '<div style="font-weight:800; font-size:0.88rem; color:#0f172a;">Speaking: Roll a Story</div>' +
+                    '<div style="font-size:0.75rem; color:#64748b;">Class Activity</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; align-items:center; gap:12px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#8b5cf6; background:rgba(139,92,246,0.1); padding:2px 8px; border-radius:6px;">Next Week</span>' +
+                  '<span style="font-size:0.75rem; font-weight:700; color:#64748b;">—</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Classroom Badges Shelf
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>🏆</span> <span>Classroom Badges</span></h3>' +
+                '<a class="eaa-ref-card-link" onclick="switchView(\'gamification\')">View All &gt;</a>' +
+              '</div>' +
+              '<div class="eaa-ref-badges-filter">' +
+                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">All</button>' +
+                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Skills</button>' +
+                '<button class="eaa-ref-badge-pill is-active" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Challenges</button>' +
+                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Behavior</button>' +
+                '<button class="eaa-ref-badge-pill" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">Special</button>' +
+              '</div>' +
+              '<div class="eaa-ref-badges-row">' +
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_1_speaking.png" alt="Speaking Star" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Speaking Star</div>' +
+                  '<div class="eaa-ref-badge-desc">Speak in English 5 times in class</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_2_reading.png" alt="Reading Explorer" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Reading Explorer</div>' +
+                  '<div class="eaa-ref-badge-desc">Read 3 short texts</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_3_vocab.png" alt="Vocabulary Master" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Vocabulary Master</div>' +
+                  '<div class="eaa-ref-badge-desc">Learn 20 new words</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_4_listening.png" alt="Listening Detective" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Listening Detective</div>' +
+                  '<div class="eaa-ref-badge-desc">Find key details in audio</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_5_writing.png" alt="Writing Wizard" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Writing Wizard</div>' +
+                  '<div class="eaa-ref-badge-desc">Write 3 full sentences</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_6_team.png" alt="Team Player" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">Team Player</div>' +
+                  '<div class="eaa-ref-badge-desc">Help a classmate in English</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-badge-item">' +
+                  '<div class="eaa-ref-badge-shield"><img src="assets/reference/extracted/badge_7_challenge.png" alt="English Challenge" style="width:36px; height:36px; object-fit:contain;"></div>' +
+                  '<div class="eaa-ref-badge-name">English Challenge</div>' +
+                  '<div class="eaa-ref-badge-desc">Complete weekly challenge</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Monster Evolution (Class View)
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>👾</span> <span>Monster Evolution (Class View)</span></h3>' +
+                '<a class="eaa-ref-card-link" onclick="switchView(\'evolution\')">View Full Roadmap &gt;</a>' +
+              '</div>' +
+              '<div class="eaa-ref-evo-shelf">' +
+                '<div class="eaa-ref-evo-track">' +
+                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_1_egg.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Egg</span>' +
+                  '</div>' +
+                  '<span>➔</span>' +
+                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_2_baby.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Baby</span>' +
+                  '</div>' +
+                  '<span>➔</span>' +
+                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_2_baby.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Young</span>' +
+                  '</div>' +
+                  '<span>➔</span>' +
+                  '<div class="eaa-ref-evo-node is-active" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_3_adventurer.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Adventurer</span>' +
+                  '</div>' +
+                  '<span>➔</span>' +
+                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_4_elite.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Elite</span>' +
+                  '</div>' +
+                  '<span>➔</span>' +
+                  '<div class="eaa-ref-evo-node" onclick="switchView(\'evolution\')">' +
+                    '<div class="eaa-ref-evo-icon"><img src="assets/reference/extracted/evo_5_legendary.png" style="width:34px; height:34px; object-fit:contain;"></div>' +
+                    '<span class="eaa-ref-evo-label">Legendary</span>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-most-evolved-card">' +
+                  '<img src="assets/reference/extracted/dash_most_evolved_card.png" style="width:40px; height:40px; border-radius:8px; object-fit:cover;">' +
+                  '<div>' +
+                    '<div style="font-size:0.7rem; font-weight:800; color:#854d0e; text-transform:uppercase;">Most Evolved Monster</div>' +
+                    '<div style="font-size:0.95rem; font-weight:900; color:#713f12;">ELIF ASYA</div>' +
+                    '<div style="font-size:0.75rem; font-weight:700; color:#a16207;">Level 5 • Legendary</div>' +
+                  '</div>' +
+                  '<button class="btn-sm-secondary" onclick="switchView(\'evolution\')" style="padding:4px 10px; font-size:0.76rem; background:#ffffff; border:1px solid #facc15; font-weight:800;">View All</button>' +
+                '</div>' +
+              '</div>' +
             '</div>' +
           '</div>' +
 
-          '<div style="display:flex; gap:10px; flex-wrap:wrap;">' +
-            '<button class="btn-primary-action" onclick="openClass(\'' + cls.id + '\', \'classroom\')" style="background:#06b6d4; color:#042f2e; font-weight:900; box-shadow:0 4px 14px rgba(6,182,212,0.4);">🏫 Open Classroom Hub</button>' +
-            '<button class="btn-sm-secondary" onclick="toggleSmartboardMode()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#ffffff; font-weight:800;">🎓 Smart Board Mode</button>' +
+          // Right Column
+          '<div>' +
+            // Classroom Mood
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>💭</span> <span>Classroom Mood</span></h3>' +
+              '</div>' +
+              '<div style="font-weight:900; font-size:0.95rem; color:#16a34a; margin-bottom:4px;">⭐ Great Energy!</div>' +
+              '<div class="eaa-ref-mood-faces">' +
+                '<button class="eaa-ref-mood-face-btn is-active" title="Happy & Focused" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Focused!\', \'success\');">🟢</button>' +
+                '<button class="eaa-ref-mood-face-btn" title="Excited & Creative" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Creative!\', \'success\');">🌸</button>' +
+                '<button class="eaa-ref-mood-face-btn" title="Calm & Thoughtful" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Calm!\', \'success\');">🔵</button>' +
+                '<button class="eaa-ref-mood-face-btn" title="Playful & Curious" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Inquisitive!\', \'success\');">🩵</button>' +
+                '<button class="eaa-ref-mood-face-btn" title="Energetic & Ready" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\'); if(window.showToast) window.showToast(\'Classroom mood set to Energetic!\', \'success\');">🟠</button>' +
+              '</div>' +
+              '<div style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">Most students are on task and engaged.</div>' +
+              '<div style="height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">' +
+                '<div style="width:85%; height:100%; background:#22c55e;"></div>' +
+              '</div>' +
+            '</div>' +
+
+            // Today\'s Focus
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>🎯</span> <span>Today\'s Focus</span></h3>' +
+              '</div>' +
+              '<div class="eaa-ref-focus-wrap">' +
+                '<div class="eaa-ref-focus-list">' +
+                  '<label class="eaa-ref-focus-item">' +
+                    '<input type="checkbox" checked style="transform:scale(1.2); cursor:pointer;">' +
+                    '<span>Complete Unit 1 Worksheet</span>' +
+                  '</label>' +
+                  '<label class="eaa-ref-focus-item">' +
+                    '<input type="checkbox" style="transform:scale(1.2); cursor:pointer;">' +
+                    '<span>Speaking practice (pairs)</span>' +
+                  '</label>' +
+                  '<label class="eaa-ref-focus-item">' +
+                    '<input type="checkbox" style="transform:scale(1.2); cursor:pointer;">' +
+                    '<span>Award 3 new badges</span>' +
+                  '</label>' +
+                '</div>' +
+                '<div class="eaa-ref-focus-mascot">' +
+                  '<img src="assets/reference/extracted/dash_focus_mascot.png" alt="Let\'s make English fun!" style="width:78px; height:auto; display:block;">' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Quick Actions
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>⚡</span> <span>Quick Actions</span></h3>' +
+                '<a class="eaa-ref-card-link" onclick="openSchoolSettingsModal()">Customize</a>' +
+              '</div>' +
+              '<div class="eaa-ref-actions-grid">' +
+                '<button class="eaa-ref-action-sq-btn" onclick="openStudentModal()">' +
+                  '<span style="font-size:22px; color:#2563eb;">👥</span>' +
+                  '<span>Add Student</span>' +
+                '</button>' +
+                '<button class="eaa-ref-action-sq-btn" onclick="openQuickPointsModal()">' +
+                  '<span style="font-size:22px; color:#eab308;">⭐</span>' +
+                  '<span>Give Points</span>' +
+                '</button>' +
+                '<button class="eaa-ref-action-sq-btn" onclick="window.location.href=\'save-tomorrow/index.html\'">' +
+                  '<span style="font-size:22px; color:#10b981;">▶</span>' +
+                  '<span>Start Lesson</span>' +
+                '</button>' +
+                '<button class="eaa-ref-action-sq-btn" onclick="if(window.openRandomStudentPickerModal) window.openRandomStudentPickerModal(); else toggleSmartboardMode();">' +
+                  '<span style="font-size:22px; color:#8b5cf6;">🎲</span>' +
+                  '<span>Randomizer</span>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+
+            // Today in Grade 4B (Timeline)
+            '<div class="eaa-ref-card">' +
+              '<div class="eaa-ref-card-header">' +
+                '<h3 class="eaa-ref-card-title"><span>⏰</span> <span>Today in Grade 4B</span></h3>' +
+                '<a class="eaa-ref-card-link" onclick="switchView(\'calendar\')">View All &gt;</a>' +
+              '</div>' +
+              '<div class="eaa-ref-timeline">' +
+                '<div class="eaa-ref-timeline-item">' +
+                  '<span class="eaa-ref-timeline-time">10:00</span>' +
+                  '<div>' +
+                    '<div class="eaa-ref-timeline-desc">Class starts</div>' +
+                    '<div class="eaa-ref-timeline-sub">Unit 1 – Reading</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-timeline-item">' +
+                  '<span class="eaa-ref-timeline-time">10:10</span>' +
+                  '<div>' +
+                    '<div class="eaa-ref-timeline-desc">Warm-up</div>' +
+                    '<div class="eaa-ref-timeline-sub">Quick speaking game</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-timeline-item">' +
+                  '<span class="eaa-ref-timeline-time">10:20</span>' +
+                  '<div>' +
+                    '<div class="eaa-ref-timeline-desc">Worksheet 1.2</div>' +
+                    '<div class="eaa-ref-timeline-sub">Skimming for main idea</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-timeline-item">' +
+                  '<span class="eaa-ref-timeline-time">10:35</span>' +
+                  '<div>' +
+                    '<div class="eaa-ref-timeline-desc">Pair Practice</div>' +
+                    '<div class="eaa-ref-timeline-sub">Talk about the story</div>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="eaa-ref-timeline-item">' +
+                  '<span class="eaa-ref-timeline-time">10:40</span>' +
+                  '<div>' +
+                    '<div class="eaa-ref-timeline-desc">Wrap Up</div>' +
+                    '<div class="eaa-ref-timeline-sub">Award points &amp; badges</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Bottom Scenic Box
+            '<div class="eaa-ref-landscape-box" style="padding:0; overflow:hidden; border-radius:14px; background:transparent; border:none; box-shadow:0 4px 14px rgba(0,0,0,0.08);">' +
+              '<img src="assets/reference/extracted/dash_bottom_banner.png" alt="Different Students Brighter Futures" style="width:100%; border-radius:14px; display:block;">' +
+            '</div>' +
           '</div>' +
         '</div>' +
-
-        // Bottom Stats Bar inside banner
-        '<div style="display:flex; gap:16px; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.15); flex-wrap:wrap; position:relative; z-index:2;">' +
-          '<span style="font-size:0.8rem; color:#e0f2fe; font-weight:700;">👥 <strong>' + students.length + '</strong> Learners</span>' +
-          '<span style="font-size:0.8rem; color:#e0f2fe; font-weight:700;">✓ <strong>' + attRate + '%</strong> Attendance</span>' +
-          '<span style="font-size:0.8rem; color:#e0f2fe; font-weight:700;">⭐ <strong>' + worldProg.totalClassXP.toLocaleString() + '</strong> Total Class XP</span>' +
-          '<span style="font-size:0.8rem; color:#e0f2fe; font-weight:700;">' + worldProg.currentWorld.icon + ' <strong>' + worldProg.currentWorld.name + '</strong></span>' +
-        '</div>' +
-      '</div>' +
-
-      // 2. COCKPIT INTERACTIVE WIDGETS
-      renderClassroomDashboardWidgets(cls, students);
+      '</div>';
   }
 
   function renderProgressView(container) {
@@ -7226,59 +7831,59 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       }
 
       sidebar.innerHTML = 
-        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
+        // Top Home Button
+        '<ul class="sidebar-nav-list" style="margin-bottom: 8px;">' +
+          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Home Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Home</span></span></button></li>' +
         '</ul>' +
 
-        renderNavGroup('main-hub', 'MAIN', [
-          { view: 'dashboard', label: 'Home Overview', icon: '🏠', title: 'Home Overview', isActive: currentView === 'dashboard' },
-          { view: 'library', label: 'Lessons & Games', icon: '🎮', title: 'Lessons & Games', isActive: currentView === 'library', badge: counts.resources },
-          { view: 'assignments', label: 'Quests & Tasks', icon: '📝', title: 'Quests & Tasks', isActive: currentView === 'assignments', badge: counts.assignments },
-          { view: 'monster', label: 'Monster Studio', icon: '👾', title: 'Monster Studio', isActive: currentView === 'monster' },
-          { view: 'progress', label: 'CEFR Progress', icon: '📈', title: 'CEFR Progress', isActive: currentView === 'progress' }
-        ], ['dashboard', 'library', 'assignments', 'monster', 'progress']) +
-
-        renderNavGroup('my-school', 'TEACHER', [
+        // 1. MY SCHOOL
+        renderNavGroup('my-school', 'MY SCHOOL', [
           { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
+          { view: 'students', label: 'Students', icon: '🧒', title: 'Students', isActive: currentView === 'students', badge: counts.students },
           { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
-          { view: 'students', label: 'Student Directory', icon: '🧒', title: 'Student Directory', isActive: currentView === 'students', badge: counts.students },
-          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' },
-          { view: 'calendar', label: 'Calendar & Schedule', icon: '📅', title: 'Calendar & Schedule', isActive: currentView === 'calendar' }
-        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'calendar']) +
+          { view: 'calendar', label: 'Calendar', icon: '📅', title: 'Calendar', isActive: currentView === 'calendar' },
+          { view: 'story', label: 'Announcements', icon: '📢', title: 'Announcements', isActive: currentView === 'story' }
+        ], ['classes', 'students', 'classroom-hub', 'class-detail', 'calendar', 'story']) +
 
+        // 2. TEACHING
         renderNavGroup('teaching', 'TEACHING', [
-          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
-          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
-          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
-          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
-          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
-          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
-        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
+          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum' },
+          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library' },
+          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets' },
+          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments' },
+          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework' },
+          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes' },
+          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
+          { view: 'reports', label: 'Reports', icon: '📊', title: 'Reports', isActive: currentView === 'reports' }
+        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes', 'progress', 'reports']) +
 
-        renderNavGroup('assessment', 'ASSESSMENT', [
-          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
-          { view: 'progress', label: 'CEFR Tracking', icon: '📈', title: 'CEFR Tracking', isActive: currentView === 'progress' },
-          { view: 'reports', label: 'Diagnostic Reports', icon: '📄', title: 'Diagnostic Reports', isActive: currentView === 'reports', badge: counts.reports },
-          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
-        ], ['assessments', 'progress', 'reports', 'progress-check']) +
-
+        // 3. GAMIFICATION
         renderNavGroup('gamification-nav', 'GAMIFICATION', [
           { view: 'gamification', label: 'Badges & Achievements', icon: '🏆', title: 'Badges & Achievements', isActive: currentView === 'gamification' },
-          { view: 'monster', label: 'Monster Evolution Studio', icon: '👾', title: 'Monster Evolution Studio', isActive: currentView === 'monster' },
-          { view: 'challenges', label: 'English Challenges', icon: '⚡', title: 'English Challenges', isActive: currentView === 'challenges' }
-        ], ['gamification', 'monster', 'challenges']) +
+          { view: 'evolution', label: 'Monster Evolution', icon: '🐲', title: 'Monster Evolution Roadmap', isActive: currentView === 'evolution' },
+          { view: 'monster', label: 'Items Catalog', icon: '👾', title: 'Monster Studio & Items', isActive: currentView === 'monster' },
+          { view: 'challenges', label: 'Class XP & Rewards', icon: '⚡', title: 'Class XP & Challenges', isActive: currentView === 'challenges' }
+        ], ['gamification', 'evolution', 'monster', 'challenges']) +
 
+        // 4. COMMUNITY
         renderNavGroup('community', 'COMMUNITY', [
-          { view: 'story', label: 'Class Story Feed', icon: '📸', title: 'Class Story Feed', isActive: currentView === 'story' },
-          { view: 'messages', label: 'Parent Messages', icon: '💬', title: 'Parent Messages', isActive: currentView === 'messages', badge: counts.messages },
-          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
-        ], ['story', 'messages', 'portfolios']) +
+          { view: 'assessments', label: 'Teacher Tools', icon: '🛠️', title: 'Teacher Tools', isActive: currentView === 'assessments' },
+          { view: 'parent-home', label: 'Parent View', icon: '👨‍👩‍👧', title: 'Parent View', isActive: currentView === 'parent-home' },
+          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages }
+        ], ['assessments', 'parent-home', 'messages']) +
 
-        renderNavGroup('admin', 'ADMIN & AUDIT', [
-          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & Audit', isActive: currentView === 'health' },
-          { view: 'archived', label: 'Archived Items', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
-          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
-        ], ['health', 'archived', 'settings']) +
+        // Teacher Level 8 Card at Bottom of Nav (Reference 1)
+        '<div class="eaa-sidebar-teacher-card">' +
+          '<span class="eaa-teacher-trophy">🏆</span>' +
+          '<div style="flex:1;">' +
+            '<div style="font-size:0.7rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;">Your Teacher Level</div>' +
+            '<div style="font-size:0.95rem; font-weight:900; color:#facc15; line-height:1.2;">Level 8</div>' +
+            '<div style="font-size:0.7rem; color:#e2e8f0; margin-top:2px;">420 / 1,000 XP</div>' +
+            '<div style="width:100%; height:5px; background:rgba(255,255,255,0.15); border-radius:3px; margin-top:5px; overflow:hidden;">' +
+              '<div style="width:42%; height:100%; background:linear-gradient(90deg, #f59e0b, #fbbf24); border-radius:3px;"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
@@ -7390,6 +7995,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'settings': renderSchoolSettingsView(container); break;
         case 'gamification': renderGamificationView(container); break;
         case 'monster': renderMonsterStudentView(container); break;
+        case 'evolution': renderMonsterEvolutionRoadmapView(container); break;
         case 'adventure': renderStudentAdventureView(container); break;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
@@ -12241,64 +12847,337 @@ window.switchClassroomSubTab = function(subTab) {
   // Dedicated Full-Page Monster View (Student/Parent role or route #monster)
   function renderMonsterStudentView(container) {
     const students = store.getStudents();
-    if (!students.length) {
-      container.innerHTML = '<div style="padding:40px; text-align:center;">No students available.</div>';
-      return;
-    }
-
-    let targetStudentId = currentProfileStudentId || (students[0] ? students[0].id : null);
-    const student = store.getStudent(targetStudentId) || students[0];
-    const monsterState = store.calculateMonsterState(student.id);
-    const profile = store.getMonsterProfile(student.id);
-
-    const categories = [
-      { id: 'all', label: 'All Items' },
-      { id: 'body', label: 'Bodies / Colors' },
-      { id: 'hat', label: 'Hats' },
-      { id: 'glasses', label: 'Glasses' },
-      { id: 'accessory', label: 'Accessories' },
-      { id: 'backpack', label: 'Backpacks' },
-      { id: 'wings', label: 'Wings' },
-      { id: 'tail', label: 'Tails' },
-      { id: 'aura', label: 'Auras' },
-      { id: 'background', label: 'Backgrounds' }
-    ];
+    const student = students.find(s => s.id === currentProfileStudentId) || students[0] || { firstName: 'ilay', id: 's1' };
+    const xp = store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 480;
 
     container.innerHTML = 
-      '<div style="max-width:1100px; margin:0 auto; padding-bottom:60px;">' +
-        // Header with student switcher
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
-          '<div>' +
-            '<h1 style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👾 Monster Evolution &amp; Companion</h1>' +
-            '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Grow, hatch, and customize your learning companion through English mastery!</p>' +
+      '<div class="eaa-ref-studio-wrap">' +
+        // Header
+        '<div class="eaa-ref-studio-header">' +
+          '<div class="eaa-ref-sign-left">' +
+            '<span>✨</span>' +
+            '<span>Same Student Different Future!</span>' +
           '</div>' +
-          '<div style="display:flex; align-items:center; gap:10px;">' +
-            '<label style="font-size:0.84rem; font-weight:700;">Student:</label>' +
-            '<select class="filter-select" onchange="currentProfileStudentId=this.value; renderMonsterStudentView(document.getElementById(\'app-view-container\'))">' +
-              students.map(s => '<option value="' + s.id + '" ' + (s.id === student.id ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id) + ' XP)</option>').join('') +
-            '</select>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+
+          '<div class="eaa-ref-studio-center">' +
+            '<h1 class="eaa-ref-studio-title">Monster Studio &amp; Customizer</h1>' +
+            '<div class="eaa-ref-studio-sub">Create. Customize. Evolve.</div>' +
+            '<p class="eaa-ref-studio-desc">Design your learning companion with unique looks, items and powers!</p>' +
+          '</div>' +
+
+          '<div class="eaa-ref-sign-right">' +
+            '<span style="font-size:22px;">🦉</span>' +
+            '<span>LEARN PLAY CUSTOMIZE EVOLVE BELONG 👑</span>' +
           '</div>' +
         '</div>' +
 
-        renderMonsterHeroCard(student, monsterState, profile) +
-
-        // Monster Tabs
-        '<div class="monster-tabs-wrap" style="margin-top:28px;">' +
-          [
-            { id: 'customize', label: '🎨 Monster Closet & Customization' },
-            { id: 'progress', label: '📊 Learning Progress & Habits' },
-            { id: 'achievements', label: '🏆 Achievements & Unlocks' },
-            { id: 'collection', label: '🎒 Unlocked Catalog' },
-            { id: 'history', label: '📜 Evolution History' }
-          ].map(t => 
-            '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
-              t.label +
-            '</button>'
-          ).join('') +
+        // Category Nav Pills
+        '<div class="eaa-ref-studio-nav">' +
+          '<button class="eaa-ref-category-btn is-active">👾 Monster</button>' +
+          '<button class="eaa-ref-category-btn">🐸 Face</button>' +
+          '<button class="eaa-ref-category-btn">🪶 Features</button>' +
+          '<button class="eaa-ref-category-btn">🥋 Clothing</button>' +
+          '<button class="eaa-ref-category-btn">🎀 Accessories</button>' +
+          '<button class="eaa-ref-category-btn">🌍 World</button>' +
+          '<button class="eaa-ref-category-btn">✨ Auras</button>' +
         '</div>' +
 
-        renderMonsterSubTabContent(student, monsterState, profile, categories, studentMonsterCategory) +
+        // 3-Column Studio Grid
+        '<div class="eaa-ref-studio-grid">' +
+          // Left Column: Catalog
+          '<div class="eaa-ref-catalog-panel">' +
+            '<div class="eaa-ref-subrail">' +
+              '<div style="font-size:0.68rem; font-weight:800; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Choose a Category</div>' +
+              '<button class="eaa-ref-subrail-btn is-active">🔲 All Items</button>' +
+              '<button class="eaa-ref-subrail-btn">🪶 Horns</button>' +
+              '<button class="eaa-ref-subrail-btn">🪽 Wings</button>' +
+              '<button class="eaa-ref-subrail-btn">🦎 Tails</button>' +
+              '<button class="eaa-ref-subrail-btn">🎩 Hats</button>' +
+              '<button class="eaa-ref-subrail-btn">🥋 Clothing</button>' +
+              '<button class="eaa-ref-subrail-btn">🎒 Backpacks</button>' +
+              '<button class="eaa-ref-subrail-btn">🎀 Accessories</button>' +
+              '<button class="eaa-ref-subrail-btn">✨ Auras</button>' +
+              '<button class="eaa-ref-subrail-btn">🌟 Special</button>' +
+            '</div>' +
+
+            '<div class="eaa-ref-items-catalog">' +
+              '<div class="eaa-ref-catalog-controls">' +
+                '<input type="text" class="eaa-ref-search-input" placeholder="Search items...">' +
+                '<select class="eaa-ref-rarity-select">' +
+                  '<option>Rarity ▾</option>' +
+                  '<option>Common</option>' +
+                  '<option>Rare</option>' +
+                  '<option>Epic</option>' +
+                  '<option>Legendary</option>' +
+                '</select>' +
+              '</div>' +
+
+              '<div class="eaa-ref-items-grid">' +
+                // Item 1
+                '<div class="eaa-ref-item-card is-equipped" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Leaf Horns!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🍃</div>' +
+                  '<div class="eaa-ref-item-name">Leaf Horns</div>' +
+                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
+                '</div>' +
+
+                // Item 2
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Crystal Horns!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">💎</div>' +
+                  '<div class="eaa-ref-item-name">Crystal Horns</div>' +
+                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
+                '</div>' +
+
+                // Item 3
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Flame Horns!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🔥</div>' +
+                  '<div class="eaa-ref-item-name">Flame Horns</div>' +
+                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
+                '</div>' +
+
+                // Item 4
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Angel Wings!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🪽</div>' +
+                  '<div class="eaa-ref-item-name">Angel Wings</div>' +
+                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
+                '</div>' +
+
+                // Item 5
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Shadow Wings!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🦇</div>' +
+                  '<div class="eaa-ref-item-name">Shadow Wings</div>' +
+                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
+                '</div>' +
+
+                // Item 6
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Rainbow Wings!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🌈</div>' +
+                  '<div class="eaa-ref-item-name">Rainbow Wings</div>' +
+                  '<span class="eaa-ref-rarity-pill legendary">Legendary</span>' +
+                '</div>' +
+
+                // Item 7
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Explorer Hat!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🧭</div>' +
+                  '<div class="eaa-ref-item-name">Explorer Hat</div>' +
+                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
+                '</div>' +
+
+                // Item 8
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Wizard Hat!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🧙‍♂️</div>' +
+                  '<div class="eaa-ref-item-name">Wizard Hat</div>' +
+                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
+                '</div>' +
+
+                // Item 9
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Royal Crown!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">👑</div>' +
+                  '<div class="eaa-ref-item-name">Royal Crown</div>' +
+                  '<span class="eaa-ref-rarity-pill legendary">Legendary</span>' +
+                '</div>' +
+
+                // Item 10
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped School Backpack!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🎒</div>' +
+                  '<div class="eaa-ref-item-name">School Backpack</div>' +
+                  '<span class="eaa-ref-rarity-pill common">Common</span>' +
+                '</div>' +
+
+                // Item 11
+                '<div class="eaa-ref-item-card is-equipped" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Adventure Pack!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">🧳</div>' +
+                  '<div class="eaa-ref-item-name">Adventure Pack</div>' +
+                  '<span class="eaa-ref-rarity-pill rare">Rare</span>' +
+                '</div>' +
+
+                // Item 12
+                '<div class="eaa-ref-item-card" onclick="this.classList.toggle(\'is-equipped\'); if(window.showToast) window.showToast(\'Equipped Crystal Pack!\', \'success\');">' +
+                  '<div class="eaa-ref-item-icon">💠</div>' +
+                  '<div class="eaa-ref-item-name">Crystal Pack</div>' +
+                  '<span class="eaa-ref-rarity-pill epic">Epic</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          // Center Column: Stage
+          '<div class="eaa-ref-stage-panel">' +
+            '<div class="eaa-ref-nametag-plaque">' +
+              '<div class="eaa-ref-nametag-name">' +
+                '<span>' + (student.firstName || 'ilay') + '</span> ' +
+                '<span style="font-size:14px; cursor:pointer;" onclick="const n = prompt(\'Enter companion name:\', \'' + (student.firstName || 'ilay') + '\'); if(n) this.previousElementSibling.textContent=n;">✏️</span>' +
+              '</div>' +
+              '<div class="eaa-ref-nametag-level">Level 4 • Growing Monster</div>' +
+              '<div style="font-size:0.72rem; color:#bae6fd; margin-top:2px;">480 / 700 XP</div>' +
+              '<div class="eaa-ref-nametag-bar">' +
+                '<div class="eaa-ref-nametag-bar-fill" style="width:68%;"></div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="eaa-ref-pedestal-scene">' +
+              '<div class="eaa-ref-stage-camera-tools">' +
+                '<button class="eaa-ref-camera-btn" title="Zoom In" onclick="if(window.showToast) window.showToast(\'Zooming camera\', \'info\');">🔍</button>' +
+                '<button class="eaa-ref-camera-btn" title="Rotate View" onclick="if(window.showToast) window.showToast(\'Rotating view\', \'info\');">🔄</button>' +
+                '<button class="eaa-ref-camera-btn" title="Play Animation" onclick="if(window.showToast) window.showToast(\'Playing roar animation!\', \'success\');">⚡</button>' +
+                '<button class="eaa-ref-camera-btn" title="Reset Camera" onclick="if(window.showToast) window.showToast(\'Camera reset\', \'info\');">↺</button>' +
+              '</div>' +
+
+              // Animated Monster Companion on Pedestal
+              '<div style="position:relative; z-index:2; text-align:center;">' +
+                '<img src="assets/reference/extracted/studio_monster.png" class="eaa-ref-studio-dragon-img" alt="Monster Companion">' +
+              '</div>' +
+
+              // Environment Switcher
+              '<div class="eaa-ref-env-switcher">' +
+                '<button class="eaa-ref-env-btn is-active" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🏰 Academy</button>' +
+                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🌲 Forest</button>' +
+                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">❄️ Snow</button>' +
+                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🏜️ Desert</button>' +
+                '<button class="eaa-ref-env-btn" onclick="this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'is-active\')); this.classList.add(\'is-active\')">🌌 Space</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="eaa-ref-stage-actions">' +
+              '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Generated random look!\', \'info\');" style="padding:8px 16px; font-weight:800; background:rgba(255,255,255,0.08); color:#ffffff; border:1px solid rgba(255,255,255,0.2);">🎲 Random Look</button>' +
+              '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Preset saved to closet!\', \'success\');" style="padding:8px 16px; font-weight:800; background:rgba(37,99,235,0.3); color:#60a5fa; border:1px solid rgba(37,99,235,0.5);">💾 Save as Preset</button>' +
+            '</div>' +
+          '</div>' +
+
+          // Right Column: Equipped & Stats
+          '<div class="eaa-ref-right-panel">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+              '<span style="font-weight:900; font-size:0.92rem; color:#f1f5f9;">Equipped Items</span>' +
+              '<select style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:0.75rem; color:#ffffff; padding:2px 8px;">' +
+                '<option>Loadout 1 ▾</option>' +
+                '<option>Loadout 2</option>' +
+                '<option>Loadout 3</option>' +
+              '</select>' +
+            '</div>' +
+
+            '<div class="eaa-ref-equipped-grid">' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">🍃</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Leaf Horns</span>' +
+              '</div>' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">🎒</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Explorer Pack</span>' +
+              '</div>' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">🦎</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Nature Tail</span>' +
+              '</div>' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">👀</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Happy Eyes</span>' +
+              '</div>' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">👄</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Sweet Smile</span>' +
+              '</div>' +
+              '<div class="eaa-ref-equipped-slot">' +
+                '<span style="font-size:20px;">💎</span>' +
+                '<span style="font-size:0.68rem; font-weight:800;">Forest Aura</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<button class="btn-sm-secondary" onclick="if(window.showToast) window.showToast(\'Loadout editor active\', \'info\');" style="padding:6px; font-size:0.78rem; width:100%; justify-content:center; background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1);">✏️ Edit Loadout</button>' +
+
+            // Color Palette
+            '<div>' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:8px;">Color Palette</div>' +
+              '<div class="eaa-ref-color-swatches">' +
+                '<div class="eaa-ref-color-dot is-active" style="background:#22c55e;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
+                '<div class="eaa-ref-color-dot" style="background:#06b6d4;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
+                '<div class="eaa-ref-color-dot" style="background:#f59e0b;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
+                '<div class="eaa-ref-color-dot" style="background:#ec4899;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
+                '<div class="eaa-ref-color-dot" style="background:#a855f7;" onclick="this.parentElement.querySelectorAll(\'.eaa-ref-color-dot\').forEach(d=>d.classList.remove(\'is-active\')); this.classList.add(\'is-active\');"></div>' +
+                '<div class="eaa-ref-color-dot" style="background:transparent; border:1px dashed #ffffff; display:flex; align-items:center; justify-content:center; font-size:12px; color:#ffffff;">+</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Stats Preview
+            '<div>' +
+              '<div style="font-size:0.75rem; font-weight:800; color:#94a3b8; margin-bottom:8px;">Stats Preview</div>' +
+              '<div class="eaa-ref-stats-list">' +
+                '<div class="eaa-ref-stat-row">' +
+                  '<span>🧪 Creativity</span>' +
+                  '<div class="eaa-ref-stat-bar"><div style="width:75%; height:100%; background:#22c55e;"></div></div>' +
+                  '<span style="color:#4ade80;">+12</span>' +
+                '</div>' +
+                '<div class="eaa-ref-stat-row">' +
+                  '<span>🛡️ Confidence</span>' +
+                  '<div class="eaa-ref-stat-bar"><div style="width:65%; height:100%; background:#06b6d4;"></div></div>' +
+                  '<span style="color:#38bdf8;">+10</span>' +
+                '</div>' +
+                '<div class="eaa-ref-stat-row">' +
+                  '<span>🎯 Focus</span>' +
+                  '<div class="eaa-ref-stat-bar"><div style="width:55%; height:100%; background:#8b5cf6;"></div></div>' +
+                  '<span style="color:#a78bfa;">+8</span>' +
+                '</div>' +
+                '<div class="eaa-ref-stat-row">' +
+                  '<span>🤝 Teamwork</span>' +
+                  '<div class="eaa-ref-stat-bar"><div style="width:45%; height:100%; background:#ec4899;"></div></div>' +
+                  '<span style="color:#f472b6;">+6</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            // Save CTA
+            '<button class="eaa-ref-save-btn" onclick="if(window.playCelebrationSound) window.playCelebrationSound(); if(window.showToast) window.showToast(\'Monster saved to your adventurer profile!\', \'success\');">' +
+              '<span>👑</span>' +
+              '<span>Save Monster</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Bottom Evolution Track
+        '<div class="eaa-ref-bottom-evo">' +
+          '<div style="background:linear-gradient(180deg, #b45309 0%, #78350f 100%); padding:6px 14px; border-radius:8px; border:1.5px solid #92400e; font-weight:900; font-size:0.8rem; color:#fef3c7;">' +
+            'MONSTER EVOLUTION' +
+          '</div>' +
+
+          '<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">' +
+            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_1_egg.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
+              '<div style="font-size:0.65rem; color:#94a3b8;">Level 1 Baby</div>' +
+            '</div>' +
+            '<span>➔</span>' +
+
+            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_2_baby.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
+              '<div style="font-size:0.65rem; color:#94a3b8;">Level 2 Young</div>' +
+            '</div>' +
+            '<span>➔</span>' +
+
+            '<div style="text-align:center; cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/evo_3_adventurer.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
+              '<div style="font-size:0.65rem; color:#94a3b8;">Level 3 Adventurer</div>' +
+            '</div>' +
+            '<span>➔</span>' +
+
+            '<div style="text-align:center; background:rgba(6,182,212,0.2); border:1.5px solid #06b6d4; border-radius:12px; padding:4px 10px; box-shadow:0 0 12px rgba(6,182,212,0.4); cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center;"><img src="assets/reference/extracted/studio_monster.png" style="width:26px; height:26px; object-fit:contain;"></div>' +
+              '<div style="font-size:0.68rem; font-weight:900; color:#38bdf8;">Level 4 Growing</div>' +
+            '</div>' +
+            '<span>➔</span>' +
+
+            '<div style="text-align:center; opacity:0.4; cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center; font-size:20px;">🔒</div>' +
+              '<div style="font-size:0.65rem; color:#64748b;">Level 5 Elite</div>' +
+            '</div>' +
+            '<span>➔</span>' +
+
+            '<div style="text-align:center; opacity:0.4; cursor:pointer;" onclick="switchView(\'evolution\')">' +
+              '<div style="height:30px; display:flex; align-items:center; justify-content:center; font-size:20px;">🔒</div>' +
+              '<div style="font-size:0.65rem; color:#64748b;">Level 6 Legendary</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="background:linear-gradient(180deg, #b45309 0%, #78350f 100%); padding:6px 14px; border-radius:8px; border:1.5px solid #92400e; font-weight:900; font-size:0.8rem; color:#fef3c7;">' +
+            'Bigger Monsters Brighter Minds!' +
+          '</div>' +
+        '</div>' +
       '</div>';
   }
 
