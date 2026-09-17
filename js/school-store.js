@@ -8532,6 +8532,21 @@
                   });
                 }
               }
+              const brainHackersRes = CANONICAL_GAMES.find(g => g.id === 'brain-hackers');
+              if (brainHackersRes) {
+                const bhIdx = merged.resources.findIndex(r => r.id === 'brain-hackers');
+                if (bhIdx === -1) {
+                  merged.resources.unshift(brainHackersRes);
+                } else {
+                  merged.resources[bhIdx] = Object.assign({}, brainHackersRes, merged.resources[bhIdx], {
+                    route: 'brain-hackers/index.html',
+                    worksheet: 'brain-hackers/worksheets.html',
+                    worksheetRoute: 'brain-hackers/worksheets.html',
+                    archived: false,
+                    featured: true
+                  });
+                }
+              }
               const robotsRes = CANONICAL_GAMES.find(g => g.id === 'robots');
               if (robotsRes && !merged.resources.some(r => r.id === 'robots')) {
                 merged.resources.unshift(robotsRes);

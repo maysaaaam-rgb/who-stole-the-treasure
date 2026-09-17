@@ -919,7 +919,7 @@
 
   function initCreativeCanvas() {
     const cvs = document.getElementById('creativeCanvas');
-    if (!cvs) return;
+    if (!cvs || !cvs.getContext) return;
     canvasCtx = cvs.getContext('2d');
     canvasCtx.fillStyle = '#061325';
     canvasCtx.fillRect(0, 0, cvs.width, cvs.height);

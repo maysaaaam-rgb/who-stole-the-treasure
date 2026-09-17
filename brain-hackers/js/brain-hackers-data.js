@@ -7,7 +7,7 @@
 (function(window) {
   'use strict';
 
-  const BRAIN_HACKERS_DATA = {
+  const BRAIN_DATA = {
     meta: {
       id: 'brain-hackers',
       title: 'THE BRAIN HACKERS',
@@ -15,254 +15,240 @@
       level: 'A1+/A2',
       targetAge: '8–11 years',
       grade: 'Grade 4',
-      durationMinutes: 65,
+      durationMinutes: 40,
       totalMissions: 8,
       totalXP: 100
     },
 
-    vocabulary: [
-      { word: 'brain', icon: '🧠', def: 'The control center of your body and thoughts.' },
-      { word: 'neuron', icon: '⚡', def: 'A special cell inside your brain.' },
-      { word: 'cell body', icon: '🟢', def: 'The main center of a neuron.' },
-      { word: 'fiber', icon: '〰️', def: 'A long wire that carries brain signals.' },
-      { word: 'connection', icon: '🔗', def: 'Where two neurons link together.' },
-      { word: 'message', icon: '✉️', def: 'Information sent through your nerves.' },
-      { word: 'visualize', icon: '👁️', def: 'To imagine a picture in your mind.' },
-      { word: 'creative', icon: '🎨', def: 'Using your imagination to make new ideas.' }
-    ],
-
     missions: [
       {
-        id: 'm1',
-        number: '01',
-        title: 'DETECT THE BRAIN',
-        badge: 'MISSION 01',
-        desc: 'Scan the brain and discover which areas activate for hearing, seeing, speaking, and thinking.',
-        xp: 10,
-        energyGain: 10,
-        narrativeTransition: 'We discovered which brain areas are active. But HOW do they communicate? Let us zoom in!'
+        id: 1,
+        title: 'Detect the Brain',
+        icon: '🔬',
+        subtitle: 'Discover which lobes power hearing, seeing, speaking, and thinking.'
       },
       {
-        id: 'm2',
-        number: '02',
-        title: 'NEURON NETWORK',
-        badge: 'MISSION 02',
-        desc: 'Zoom into the microscopic world. Assemble a neuron cell body, fiber, connection, and message.',
-        xp: 10,
-        energyGain: 10,
-        narrativeTransition: 'We found the connections. But WHAT do they send across the network?'
+        id: 2,
+        title: 'Neuron Network',
+        icon: '🧩',
+        subtitle: 'Assemble a biological neuron under 10,000x magnification.'
       },
       {
-        id: 'm3',
-        number: '03',
-        title: 'SEND THE MESSAGE',
-        badge: 'MISSION 03',
-        desc: 'Become a human neuron chain! Pass the electric message: DOG → RUN → FAST.',
-        xp: 15,
-        energyGain: 15,
-        narrativeTransition: 'We can send messages. But can the brain create pictures without eyes?'
+        id: 3,
+        title: 'Send the Message',
+        icon: '⚡',
+        subtitle: 'Pass high-speed electrical signals along a human neuron chain.'
       },
       {
-        id: 'm4',
-        number: '04',
-        title: 'VISUALIZE THE INVISIBLE',
-        badge: 'MISSION 04',
-        desc: 'Close your eyes, build a picture in your mind, then spot the visual discrepancies.',
-        xp: 15,
-        energyGain: 15,
-        narrativeTransition: 'Can different brains imagine different things? Let us unleash our creativity!'
+        id: 4,
+        title: 'Visualize the Invisible',
+        icon: '👁️',
+        subtitle: 'Listen, build a mental projection, and spot the 4 differences.'
       },
       {
-        id: 'm5',
-        number: '05',
-        title: 'UNLOCK CREATIVITY',
-        badge: 'MISSION 05',
-        desc: 'Bring impossible sentences to life on the digital imagination canvas.',
-        xp: 20,
-        energyGain: 15,
-        narrativeTransition: 'How does your amazing brain perform in sports, music, and numbers?'
+        id: 5,
+        title: 'Unlock Creativity',
+        icon: '🎨',
+        subtitle: 'Draw on the digital canvas and discover how each brain creates unique ideas.'
       },
       {
-        id: 'm6',
-        number: '06',
-        title: 'BRAIN VS BRAIN',
-        badge: 'MISSION 06',
-        desc: 'Power up four subject portals: PE, Music, Mathematics, and Reading.',
-        xp: 20,
-        energyGain: 15,
-        narrativeTransition: 'Warning! The brain has worked hard and energy is running low!'
+        id: 6,
+        title: 'Brain vs Brain',
+        icon: '🏫',
+        subtitle: 'Explore 4 subject portals and watch active lobe heatmaps light up.'
       },
       {
-        id: 'm7',
-        number: '07',
-        title: 'SAVE THE BRAIN',
-        badge: 'MISSION 07',
-        desc: 'Recharge the Brain Energy meter to 100% using powerful learning and health habits.',
-        xp: 10,
-        energyGain: 20,
-        narrativeTransition: 'All systems are operating at maximum power! Final Scientist evaluation ready!'
+        id: 7,
+        title: 'Save the Brain',
+        icon: '🔋',
+        subtitle: 'Fuel depleted brain energy to 100% OVERLOAD POWER with healthy habits.'
       },
       {
-        id: 'final',
-        number: '08',
-        title: 'BECOME A BRAIN SCIENTIST',
-        badge: 'FINAL DISCOVERY',
-        desc: 'Synthesize what your brain can do and claim your official Brain Hacker License.',
-        xp: 0,
-        energyGain: 0,
-        narrativeTransition: 'Mission Accomplished! You are certified Brain Scientists!'
+        id: 8,
+        title: 'Become a Brain Scientist',
+        icon: '🎓',
+        subtitle: 'Complete your scientific discovery statement and earn Academy honors.'
       }
     ],
 
-    // Mission 01 Audio Prompts & Activity sets
-    detectActivities: [
-      {
-        id: 'hearing',
-        label: 'Hearing',
-        icon: '🎧',
-        lobe: 'temporal',
-        promptSentence: 'Listen: "The cat is hiding under the table."',
-        explanation: 'Your temporal lobe hears sounds and speech!'
-      },
-      {
-        id: 'seeing',
-        label: 'Seeing',
-        icon: '👀',
-        lobe: 'occipital',
-        promptSentence: 'Look: "See the big yellow star in the night sky."',
-        explanation: 'Your occipital lobe at the back processes visual pictures!'
-      },
-      {
-        id: 'speaking',
-        label: 'Speaking',
-        icon: '🗣',
-        lobe: 'motor',
-        promptSentence: 'Say: "Hello! My name is Alex and I love English."',
-        explanation: 'Your motor and frontal speech areas activate to talk!'
-      },
-      {
-        id: 'thinking',
-        label: 'Thinking',
-        icon: '💭',
-        lobe: 'frontal',
-        promptSentence: 'Solve: "What is 7 plus 5? How does an invention work?"',
-        explanation: 'Your frontal lobe does planning, math, and thinking!'
-      }
-    ],
-
-    // Mission 02: Neuron Anatomy
-    neuronParts: [
-      { id: 'cell_body', label: 'Cell Body', x: 28, y: 50, hint: 'The main round center of the cell' },
-      { id: 'fiber', label: 'Fiber', x: 55, y: 50, hint: 'The long electrical wire (axon)' },
-      { id: 'connection', label: 'Connection', x: 80, y: 50, hint: 'Where neurons link and touch' },
-      { id: 'message', label: 'Message', x: 42, y: 35, hint: 'The electrical signal moving fast' }
-    ],
-
-    // Mission 03: Human Neuron Chains
-    messageChains: [
-      {
-        id: 'dog_fast',
-        targetWords: ['DOG', 'RUN', 'FAST'],
-        nodes: [
-          { id: 'n1', word: 'DOG', icon: '🐕' },
-          { id: 'n2', word: 'RUN', icon: '🏃' },
-          { id: 'n3', word: 'FAST', icon: '⚡' }
-        ]
-      },
-      {
-        id: 'robot_english',
-        targetWords: ['ROBOT', 'TALK', 'ENGLISH'],
-        nodes: [
-          { id: 'n1', word: 'ROBOT', icon: '🤖' },
-          { id: 'n2', word: 'TALK', icon: '🗣' },
-          { id: 'n3', word: 'ENGLISH', icon: '🇬🇧' }
-        ]
-      }
-    ],
-
-    // Mission 04: Visualization Script
-    visualizationStory: {
-      spokenScript: 'Imagine a tiny blue house. There is a red door. A yellow cat is sitting next to the door. A green tree is behind the house.',
-      discrepancies: [
-        { id: 'disc_door', name: 'Green Door', expected: 'Should be RED', x: 50, y: 65 },
-        { id: 'disc_cat', name: 'Purple Cat', expected: 'Should be YELLOW', x: 68, y: 75 },
-        { id: 'disc_house', name: 'Orange House', expected: 'Should be BLUE', x: 32, y: 50 },
-        { id: 'disc_tree', name: 'Missing Tree', expected: 'Tree is missing behind the house', x: 80, y: 30 }
+    // Mission 1: Detect the Brain (PET Lobes & Senses)
+    mission1_detect: {
+      scenarios: [
+        {
+          id: 'clue1',
+          icon: '👂',
+          clue: 'You listen to the teacher explain a secret science mystery.',
+          targetAction: 'hearing',
+          targetLobe: 'temporal',
+          colorClass: 'active-yellow',
+          explanation: 'Hearing words activates your Temporal Lobe!'
+        },
+        {
+          id: 'clue2',
+          icon: '👁️',
+          clue: 'You look at the glowing microscope screen.',
+          targetAction: 'seeing',
+          targetLobe: 'occipital',
+          colorClass: 'active-green',
+          explanation: 'Seeing visual images lights up your Occipital Lobe!'
+        },
+        {
+          id: 'clue3',
+          icon: '🗣️',
+          clue: 'You answer: "The brain has billions of neurons!"',
+          targetAction: 'speaking',
+          targetLobe: 'frontal',
+          colorClass: 'active-red',
+          explanation: 'Speaking aloud activates the speech network in your Frontal Lobe!'
+        },
+        {
+          id: 'clue4',
+          icon: '🧠',
+          clue: 'You think deeply to solve the logic puzzle.',
+          targetAction: 'thinking',
+          targetLobe: 'frontal',
+          colorClass: 'active-red',
+          explanation: 'Deep thinking and planning activate your Frontal Lobe!'
+        }
+      ],
+      actions: [
+        { id: 'hearing', name: 'Hearing Sounds', icon: '👂', lobeName: 'Temporal Lobe' },
+        { id: 'seeing', name: 'Seeing Pictures', icon: '👁️', lobeName: 'Occipital Lobe' },
+        { id: 'speaking', name: 'Speaking Aloud', icon: '🗣️', lobeName: 'Frontal Lobe' },
+        { id: 'thinking', name: 'Thinking & Planning', icon: '💡', lobeName: 'Frontal Lobe' }
       ]
     },
 
-    // Mission 05: Creative Prompts
-    creativePrompts: [
-      { id: 'p1', text: 'A robot is dancing on the moon with a sparkling hat.' },
-      { id: 'p2', text: 'A purple elephant is riding a bicycle through a sunny garden.' },
-      { id: 'p3', text: 'A friendly friendly green monster is eating a giant pizza slice.' }
-    ],
+    // Mission 2: Neuron Network (Microscopic Neuron Anatomy)
+    mission2_neurons: {
+      parts: [
+        {
+          id: 'cellbody',
+          name: 'Cell Body (Soma)',
+          definition: 'The main center command station containing the cell nucleus.',
+          analogy: 'The computer CPU of the neuron.'
+        },
+        {
+          id: 'dendrites',
+          name: 'Dendrites (Fibers)',
+          definition: 'Branch-like antennas that receive incoming messages from other neurons.',
+          analogy: 'The antennas catching Wi-Fi signals.'
+        },
+        {
+          id: 'axon',
+          name: 'Axon (Pathway)',
+          definition: 'The long insulated cable that sends electrical signals away at 250 mph.',
+          analogy: 'The high-speed fiber-optic cable.'
+        },
+        {
+          id: 'synapse',
+          name: 'Synapse (Connection)',
+          definition: 'The junction gap where neurons connect and send messages to each other.',
+          analogy: 'The spark bridge between two power lines.'
+        }
+      ]
+    },
 
-    // Mission 06: Subject Portals
-    subjectPortals: [
-      {
-        id: 'pe',
-        subject: 'Physical Education',
-        short: 'PE',
-        icon: '⚽',
-        title: 'Motor & Movement Challenge',
-        taskText: 'Your cerebellum balances your body! Stand up and perform a soccer kick or jump 3 times!',
-        actionType: 'movement',
-        seconds: 10
-      },
-      {
-        id: 'music',
-        subject: 'Music',
-        short: 'MUSIC',
-        icon: '🎵',
-        title: 'Auditory Rhythm Decode',
-        taskText: 'Listen to the rhythm pulse! Tap the rhythm button 3 times in time with the beat.',
-        actionType: 'rhythm',
-        pattern: [1, 1, 2]
-      },
-      {
-        id: 'math',
-        subject: 'Mathematics',
-        short: 'MATH',
-        icon: '➕',
-        title: 'Frontal Calculation Lab',
-        taskText: 'What is 7 + 5?',
-        options: ['10', '12', '14'],
-        correct: '12'
-      },
-      {
-        id: 'reading',
-        subject: 'Reading',
-        short: 'READING',
-        icon: '📖',
-        title: 'Visualization Riddle',
-        taskText: 'I have pages, words, and stories, but no voice. When you open me, your brain builds pictures. What am I?',
-        options: ['A Book', 'A Table', 'A Shoe'],
-        correct: 'A Book'
-      }
-    ],
+    // Mission 3: Send the Message (Relay Race Chains)
+    mission3_chain: {
+      chains: [
+        {
+          targetSentence: 'DOG RUN FAST',
+          tokens: ['DOG', 'RUN', 'FAST'],
+          speed: '1.0x Regular Speed',
+          nodes: [
+            { role: 'Sensor Neuron', icon: '🐶' },
+            { role: 'Brain Processor', icon: '⚡' },
+            { role: 'Motor Neuron', icon: '🏃' }
+          ]
+        },
+        {
+          targetSentence: 'ROBOT TALK ENGLISH',
+          tokens: ['ROBOT', 'TALK', 'ENGLISH'],
+          speed: '2.5x High Speed',
+          nodes: [
+            { role: 'Auditory Sensor', icon: '🤖' },
+            { role: 'Language Center', icon: '💬' },
+            { role: 'Vocal Motor', icon: '🗣️' }
+          ]
+        },
+        {
+          targetSentence: 'PRACTICE MAKES STRONGER',
+          tokens: ['PRACTICE', 'MAKES', 'STRONGER'],
+          speed: '5.0x SUPER SPEED!',
+          nodes: [
+            { role: 'Effort Signal', icon: '📚' },
+            { role: 'Synapse Growth', icon: '🔗' },
+            { role: 'Mastery Highway', icon: '🌟' }
+          ]
+        }
+      ]
+    },
 
-    // Mission 07: Brain Energy Habits
-    habits: [
-      { id: 'h1', text: 'Reading Books', icon: '📖', fuel: 15, isGood: true },
-      { id: 'h2', text: 'Learning English', icon: '🧠', fuel: 15, isGood: true },
-      { id: 'h3', text: 'Deep Thinking', icon: '💭', fuel: 15, isGood: true },
-      { id: 'h4', text: 'Imagining Stories', icon: '🎨', fuel: 15, isGood: true },
-      { id: 'h5', text: 'Making Connections', icon: '🔗', fuel: 10, isGood: true },
-      { id: 'h6', text: '9 Hours Good Sleep', icon: '😴', fuel: 10, isGood: true },
-      { id: 'bad1', text: 'All-Night Screens', icon: '📺', fuel: 0, isGood: false, tip: 'Screens make your brain exhausted!' },
-      { id: 'bad2', text: 'Only Eating Candy', icon: '🍭', fuel: 0, isGood: false, tip: 'Your brain needs healthy nutrients!' }
-    ],
+    // Mission 4: Visualize the Invisible
+    mission4_visualize: {
+      storyText: 'Close your eyes and visualize. Imagine a blue house with a silver triangular roof. It has two round yellow windows, and a golden lightning rod on top.',
+      differencesCount: 4
+    },
 
-    // Final Mission: Brain Discovery
-    finalDiscoveryOptions: [
-      { word: 'think', desc: 'solve problems and make smart choices' },
-      { word: 'learn', desc: 'absorb new English words and ideas' },
-      { word: 'imagine', desc: 'create colorful pictures in my mind' },
-      { word: 'connect', desc: 'link neurons together like a superhero network' },
-      { word: 'visualize', desc: 'see entire stories when I read' }
-    ]
+    // Mission 6: Subject Portals & Heatmaps
+    mission6_subjects: {
+      subjects: [
+        {
+          id: 'pe',
+          name: 'Physical Education & Sports',
+          icon: '⚽',
+          activeLobe: 'Frontal Motor Cortex',
+          description: 'Controls running, kicking, balancing, and reflex reactions.',
+          pathway: 'Sensory Eyes ➔ Motor Cortex ➔ Leg Muscles'
+        },
+        {
+          id: 'music',
+          name: 'Music & Rhythm',
+          icon: '🎵',
+          activeLobe: 'Temporal Auditory Lobe',
+          description: 'Processes pitch, harmony, rhythm tempo, and musical memory.',
+          pathway: 'Ear Cochlea ➔ Auditory Cortex ➔ Emotional Memory'
+        },
+        {
+          id: 'math',
+          name: 'Mathematics & Logic',
+          icon: '➕',
+          activeLobe: 'Parietal Calculation Lobe',
+          description: 'Processes quantities, geometry, spatial shapes, and numbers.',
+          pathway: 'Visual Symbols ➔ Parietal Number Line ➔ Solution'
+        },
+        {
+          id: 'reading',
+          name: 'English Reading & Stories',
+          icon: '📖',
+          activeLobe: 'Occipital + Temporal Language',
+          description: 'Converts printed letters into spoken sounds and mental pictures.',
+          pathway: 'Eyes (Occipital) ➔ Word Sound (Temporal) ➔ Meaning (Frontal)'
+        }
+      ]
+    },
+
+    // Mission 7: Save the Brain (Habits & Fuels)
+    mission7_habits: {
+      habits: [
+        { id: 'sleep', name: '8 to 10 Hours Sleep', icon: '💤', isHealthy: true, reason: 'Brain reorganizes memory and clears waste during sleep!' },
+        { id: 'water', name: 'Fresh Water & Nutrients', icon: '💧', isHealthy: true, reason: 'The brain is 75% water and needs hydration!' },
+        { id: 'exercise', name: '30 Min Daily Exercise', icon: '🏃', isHealthy: true, reason: 'Pumps fresh oxygen-rich blood to your neurons!' },
+        { id: 'reading', name: 'Daily Reading Practice', icon: '📚', isHealthy: true, reason: 'Builds thicker, permanent neural highways!' },
+        { id: 'mindful', name: 'Mindful Rest & Calming', icon: '🧘', isHealthy: true, reason: 'Resets stress and recharges focus!' },
+        { id: 'screen', name: 'All-Night Phone Screens', icon: '📱', isHealthy: false, reason: 'Blue light drains energy and prevents sleep!' },
+        { id: 'sugar', name: 'Eating Pure Sugar & Candy', icon: '🍬', isHealthy: false, reason: 'Causes severe energy crashes in brain cells!' }
+      ]
+    },
+
+    // Mission 8: Graduation
+    mission8_graduation: {
+      diplomaTitle: 'CERTIFIED BRAIN SCIENTIST',
+      xpAward: 100
+    }
   };
 
-  window.BRAIN_HACKERS_DATA = BRAIN_HACKERS_DATA;
+  window.BRAIN_DATA = BRAIN_DATA;
+  window.BRAIN_HACKERS_DATA = BRAIN_DATA;
 })(typeof window !== 'undefined' ? window : global);
