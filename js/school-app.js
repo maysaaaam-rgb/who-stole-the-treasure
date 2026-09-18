@@ -2837,7 +2837,7 @@
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
             '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
           '</div>' :
-          '<div class="students-directory-grid">' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">' +
             filtered.map(s => {
               const mState = store.calculateMonsterState(s.id);
               const totalXP = mState.totalXP;
@@ -2846,54 +2846,65 @@
               const progressPct = mState.progressPct;
               const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
+              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 120, animated: true });
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
-                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
+                '<div class="student-hero-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
                   (isMultiSelectMode ?
                     '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
                       '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
                     '</div>' : ''
                   ) +
-                  '<div class="student-card-top-bar">' +
-                    '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
+                  '<div style="position:absolute; top:14px; left:14px; z-index:2; display:flex; gap:6px;">' +
                     '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                  '</div>' +
+                  '<div style="position:absolute; top:14px; right:14px; z-index:2;">' +
                     '<span class="student-card-streak-pill" title="Daily streak">🔥 ' + streak + 'd</span>' +
                   '</div>' +
 
-                  '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
+                  // Large Hero Portrait
+                  '<div class="student-hero-portrait" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
                     monsterSvg +
-                    '<div class="avatar-customize-pill">🎨 Customize</div>' +
+                    '<div class="avatar-customize-pill" style="font-size:0.7rem; padding:2px 8px; position:absolute; bottom:6px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#38bdf8; border-radius:10px; white-space:nowrap; border:1px solid rgba(56,189,248,0.4);">🎨 Studio</div>' +
                   '</div>' +
 
-                  '<div class="student-directory-name">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div class="student-directory-class-sub">' + (cls ? cls.name : 'Unenrolled') + ' · ' + s.grade + '</div>' +
+                  // Name & Subtitle
+                  '<h3 class="student-hero-name">' + s.firstName + ' ' + s.lastName + '</h3>' +
+                  '<div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">' + (cls ? cls.name : 'Unenrolled') + ' · ' + s.grade + '</div>' +
 
-                  '<div class="student-directory-stage-badge">' +
+                  // Stage & XP Badge
+                  '<div class="student-hero-level">' +
                     'Level ' + mState.currentLevel + ' · ' + mState.stageName +
                   '</div>' +
 
-                  '<div class="student-directory-xp-line" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
-                    '<strong>⭐ ' + totalXP.toLocaleString() + ' XP</strong>' +
-                    '<span style="color:var(--text-muted); font-size:0.75rem;">' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' · ✏️ Edit</span>' +
+                  '<div class="student-hero-xp-badge" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
+                    '⭐ ' + totalXP.toLocaleString() + ' XP' +
                   '</div>' +
 
-                  '<div class="student-directory-progress-bar" title="' + progressPct + '% to next stage">' +
-                    '<div class="student-directory-progress-fill" style="width:' + progressPct + '%;"></div>' +
-                  '</div>' +
-                  '<div class="student-directory-progress-sub">' +
-                    (!mState.isHatched ? 
-                      ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
-                      (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
-                    ) +
+                  // Evolution Progress
+                  '<div class="student-hero-progress">' +
+                    '<div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; color:var(--text-secondary); margin-bottom:4px;">' +
+                      '<span>' + (!mState.isHatched ? 'Egg Cracking' : 'Evolution') + '</span>' +
+                      '<span>' + progressPct + '%</span>' +
+                    '</div>' +
+                    '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                      '<div style="width:' + progressPct + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); border-radius:6px; transition:width 0.3s ease;"></div>' +
+                    '</div>' +
+                    '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">' +
+                      (!mState.isHatched ? 
+                        ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
+                        (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
+                      ) +
+                    '</div>' +
                   '</div>' +
 
-                  '<div class="student-directory-card-actions" onclick="event.stopPropagation();">' +
-                    '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')">Profile →</button>' +
+                  // Actions
+                  '<div class="student-hero-actions" onclick="event.stopPropagation();">' +
+                    '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3); flex:1; justify-content:center;" title="Quick +10 XP">+10 XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309; flex:1; justify-content:center;">⭐ Award</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openMonsterCreator(\'' + s.id + '\')" title="Monster Studio" style="padding:6px 9px;">🎨</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')" style="padding:6px 9px;" title="View Profile">→</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -5525,7 +5536,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Create a new homework quest or clear your active filters.</p>' +
             '<button type="button" class="btn-primary-action" onclick="openCreateHomeworkModal()">+ Create Homework</button>' +
           '</div>' :
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(330px, 1fr)); gap:20px;">' +
+          '<div style="display:flex; flex-direction:column; gap:12px;">' +
             filtered.map(h => {
               const cls = classes.find(c => c.id === h.classId) || { name: h.className || 'Grade 3A' };
               const classStudents = store.getStudentsByClass(cls.id);
@@ -5547,51 +5558,47 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               const isDraft = (h.status || '').toUpperCase() === 'DRAFT';
 
               return '' +
-                '<div class="hw-quest-card">' +
-                  '<div class="hw-quest-card-thumb-wrap">' +
+                '<div class="quest-board-row">' +
+                  '<div class="quest-row-thumb" style="position:relative;">' +
                     '<img src="' + thumb + '" alt="' + (h.title || 'Quest') + '" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
-                    (isDraft ? '<div style="position:absolute; top:10px; right:10px; background:#475569; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:10px;">DRAFT</div>' : '') +
+                    (isDraft ? '<div style="position:absolute; top:6px; left:6px; background:#475569; color:#fff; font-size:0.65rem; font-weight:800; padding:2px 6px; border-radius:6px;">DRAFT</div>' : '') +
                   '</div>' +
-                  '<div class="hw-quest-card-body">' +
-                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                      '<span class="hw-tag-badge ' + tagClass + '">' + (h.subject || 'Vocabulary') + '</span>' +
+                  '<div class="quest-row-content">' +
+                    '<div class="quest-row-meta">' +
+                      '<span class="badge ' + tagClass + '" style="font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:8px;">' + (h.subject || 'Vocabulary') + '</span>' +
+                      '<span class="badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:8px;">' + (h.cefr || 'A1') + '</span>' +
                       '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
+                      '<span class="hw-xp-pill" style="font-size:0.75rem; padding:2px 8px;">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
+                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill" style="font-size:0.75rem; padding:2px 8px;">✨ +' + (h.optionalChallengeXp || 5) + ' Bonus XP</span>' : '') +
                     '</div>' +
-
-                    '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 6px 0; color:var(--text-main); line-height:1.25;">' + h.title + '</h3>' +
-                    '<div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px; font-weight:600;">' +
-                      'Due: ' + (h.dueDate || 'Friday, Nov 15') +
+                    '<h3 class="quest-row-title">' + h.title + '</h3>' +
+                    '<p class="quest-row-desc">' + (h.shortDesc || h.description || 'Complete missions, answer practice challenges, and earn XP.') + '</p>' +
+                    '<div class="quest-row-stats">' +
+                      '<span>📅 Due: ' + (h.dueDate || 'Friday, Nov 15') + '</span>' +
+                      '<span>⏱️ ' + (h.estimatedTime || '20 min') + '</span>' +
+                      '<span>👥 ' + submittedCount + '/' + totalStudentsCount + ' completed</span>' +
                     '</div>' +
-
-                    // Progress Bar & Stats
-                    '<div style="margin-bottom:14px;">' +
-                      '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; margin-bottom:4px; color:var(--text-secondary);">' +
-                        '<span>' + submittedCount + '/' + totalStudentsCount + ' completed (' + pct + '%)</span>' +
-                        '<span>' + (h.estimatedTime || '20 min') + '</span>' +
-                      '</div>' +
-                      '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
-                        '<div style="width:' + pct + '%; height:100%; background:#10b981; border-radius:6px; transition:width 0.3s ease;"></div>' +
-                      '</div>' +
+                  '</div>' +
+                  '<div class="quest-row-progress-wrap">' +
+                    '<div style="display:flex; justify-content:space-between; font-size:0.74rem; font-weight:800; color:var(--text-secondary);">' +
+                      '<span>Progress</span>' +
+                      '<span>' + pct + '%</span>' +
                     '</div>' +
-
-                    // XP Badges
-                    '<div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">' +
-                      '<span class="hw-xp-pill">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
-                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill">✨ +' + (h.optionalChallengeXp || 5) + ' XP (Optional Challenge)</span>' : '') +
+                    '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                      '<div style="width:' + pct + '%; height:100%; background:#10b981; border-radius:6px; transition:width 0.3s ease;"></div>' +
                     '</div>' +
-
-                    // Footer Action Buttons
-                    '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:12px; margin-top:auto; gap:6px; flex-wrap:wrap;">' +
-                      '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:6px 12px; font-size:0.8rem; font-weight:800;">' +
-                        'Submissions (' + submittedCount + ')' +
-                      '</button>' +
-                      '<div style="display:flex; gap:4px;">' +
-                        '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:5px 9px; font-size:0.78rem; font-weight:800; color:#3b82f6;" title="Student Quest View">👁️ Preview</button>' +
-                        '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
-                        '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
-                        '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
-                      '</div>' +
-                    '</div>' +
+                    '<div style="font-size:0.72rem; color:var(--text-muted); text-align:right;">' + submittedCount + ' of ' + totalStudentsCount + ' completed</div>' +
+                  '</div>' +
+                  '<div class="quest-row-actions">' +
+                    '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:8px 14px; font-size:0.82rem; font-weight:800;">' +
+                      'Submissions (' + submittedCount + ')' +
+                    '</button>' +
+                    '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:8px 12px; font-size:0.82rem; font-weight:800; color:#3b82f6; border-color:#93c5fd;" title="Open Quest View">' +
+                      'Open Quest ➔' +
+                    '</button>' +
+                    '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:8px 10px; font-size:0.82rem;" title="Edit">✏️</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:8px 10px; font-size:0.82rem;" title="Duplicate">📋</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:8px 10px; font-size:0.82rem; color:var(--color-danger);" title="Archive">📦</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -5688,6 +5695,39 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     renderAttachedResourceChips();
     updateLiveQuestPreview();
     window.openModal('modal-homework-editor');
+  };
+
+  window.switchHwWorkspaceTab = function(tabId) {
+    const tabBtns = document.querySelectorAll('.workspace-tabs-row .workspace-tab-btn');
+    tabBtns.forEach(btn => {
+      if (btn.id === 'wtab-' + tabId) {
+        btn.classList.add('is-active');
+      } else {
+        btn.classList.remove('is-active');
+      }
+    });
+
+    if (tabId === 'preview') {
+      window.previewCurrentHomeworkAsStudent();
+      return;
+    }
+
+    if (tabId === 'basic') {
+      const el = document.getElementById('new-hw-title');
+      if (el) el.focus();
+    } else if (tabId === 'resources') {
+      const el = document.getElementById('hw-attached-resources-chips');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (tabId === 'instructions') {
+      const el = document.getElementById('new-hw-desc');
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else if (tabId === 'settings') {
+      const el = document.getElementById('new-hw-opt-toggle');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   window.toggleOptionalChallengeField = function() {
@@ -7209,6 +7249,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const cls = store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
     const assignments = store.getAssignments(cls.id);
+    const homework = store.getHomework ? store.getHomework(cls.id) : [];
     const attRate = store.getClassAttendanceRate(cls.id);
 
     const currentHour = new Date().getHours();
@@ -7220,25 +7261,152 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
     const teacherDisplayName = (store.getSchoolSettings && store.getSchoolSettings().teacherName) || 'Mr. Maysam';
 
+    // Calculate total class XP
+    const totalClassXP = students.reduce((acc, s) => acc + (store.getStudentTotalXP ? store.getStudentTotalXP(s.id) : (s.xp || 0)), 0);
+
+    // Active quests (filter homework)
+    const activeQuests = homework.filter(h => (h.status || 'ACTIVE').toUpperCase() === 'ACTIVE').slice(0, 3);
+
     container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px; display:flex; flex-direction:column; gap:24px;">' +
+        // 1. CLASS ADVENTURE HERO BANNER
+        '<div style="background:linear-gradient(135deg, #1e1b4b 0%, #1e3a8a 50%, #0f172a 100%); border-radius:24px; padding:28px 32px; color:#ffffff; box-shadow:0 12px 32px rgba(15,23,42,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-20px; top:-20px; width:260px; height:260px; background:radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%); border-radius:50%; pointer-events:none;"></div>' +
+          '<div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">' +
+            '<div>' +
+              '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;">' +
+                '<span style="background:rgba(56,189,248,0.25); color:#7dd3fc; border:1px solid rgba(56,189,248,0.5); font-size:0.76rem; font-weight:800; padding:3px 12px; border-radius:999px;">' + cls.name + ' · ACTIVE COHORT</span>' +
+                '<span style="background:rgba(16,185,129,0.25); color:#6ee7b7; border:1px solid rgba(16,185,129,0.5); font-size:0.76rem; font-weight:800; padding:3px 12px; border-radius:999px;">CEFR ' + (cls.cefrTarget || 'A1+') + '</span>' +
+                '<span style="background:rgba(245,158,11,0.25); color:#fde68a; border:1px solid rgba(245,158,11,0.5); font-size:0.76rem; font-weight:800; padding:3px 12px; border-radius:999px;">🔥 7-day streak</span>' +
+              '</div>' +
+              '<h1 style="font-size:1.9rem; font-weight:900; margin:0 0 6px 0; letter-spacing:-0.02em;">' + timeGreeting + ', ' + teacherDisplayName + ' 🚀</h1>' +
+              '<p style="color:#94a3b8; font-size:0.92rem; margin:0 0 16px 0;">Today\'s Adventure: <strong>Fire Station Adventure</strong> · Live classroom command center</p>' +
+              '<div style="display:flex; gap:10px; flex-wrap:wrap;">' +
+                '<a href="firefighter/index.html" class="btn-primary-action" style="padding:10px 22px; font-size:0.92rem; font-weight:900; background:#38bdf8; color:#0f172a; text-decoration:none; display:inline-flex; align-items:center; gap:8px; border-radius:12px; box-shadow:0 4px 16px rgba(56,189,248,0.4);">' +
+                  '<span>▶</span> <span>Start Today\'s Lesson</span>' +
+                '</a>' +
+                '<button class="btn-sm-secondary" onclick="openClass(\'' + cls.id + '\', \'classroom\')" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:10px 18px; font-size:0.88rem; font-weight:800; border-radius:12px;">' +
+                  '🏫 Open Classroom Hub' +
+                '</button>' +
+                '<button class="btn-sm-secondary" onclick="openCreateHomeworkModal()" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:10px 18px; font-size:0.88rem; font-weight:800; border-radius:12px;">' +
+                  '✍️ + Assign Quest' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+            // Right stats strip
+            '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; min-width:260px;">' +
+              '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:16px; padding:14px; text-align:center;">' +
+                '<div style="font-size:0.75rem; color:#94a3b8; font-weight:800; text-transform:uppercase;">Enrolled Learners</div>' +
+                '<div style="font-size:1.6rem; font-weight:900; color:#ffffff; margin-top:2px;">' + students.length + '</div>' +
+                '<div style="font-size:0.72rem; color:#6ee7b7;">✓ ' + attRate + '% attendance</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:16px; padding:14px; text-align:center;">' +
+                '<div style="font-size:0.75rem; color:#94a3b8; font-weight:800; text-transform:uppercase;">Class Total XP</div>' +
+                '<div style="font-size:1.6rem; font-weight:900; color:#fde047; margin-top:2px;">' + totalClassXP.toLocaleString() + '</div>' +
+                '<div style="font-size:0.72rem; color:#fef08a;">⭐ Shared Pool</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // 2. CLASS ADVENTURE PROGRESSION ROADMAP
+        '<div style="background:var(--bg-card); border:1.5px solid var(--border-light); border-radius:20px; padding:18px 24px; box-shadow:var(--shadow-sm);">' +
+          '<div style="font-size:0.8rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:12px;">' +
+            '🗺️ Class Adventure Learning Loop' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; overflow-x:auto; padding-bottom:6px;">' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#2563eb; white-space:nowrap;">' +
+              '<span>📖</span> <span>1. Lesson</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#059669; white-space:nowrap;">' +
+              '<span>🎯</span> <span>2. Quest</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#d97706; white-space:nowrap;">' +
+              '<span>✍️</span> <span>3. Homework</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(234,179,8,0.15); border:1px solid rgba(234,179,8,0.35); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#b45309; white-space:nowrap;">' +
+              '<span>⭐</span> <span>4. XP</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#7e22ce; white-space:nowrap;">' +
+              '<span>🐾</span> <span>5. Grow</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(236,72,153,0.1); border:1px solid rgba(236,72,153,0.3); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#db2777; white-space:nowrap;">' +
+              '<span>✨</span> <span>6. Evolve</span>' +
+            '</div>' +
+            '<span style="color:var(--text-muted); font-weight:900;">➔</span>' +
+            '<div style="display:flex; align-items:center; gap:8px; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:12px; padding:8px 14px; font-weight:800; font-size:0.84rem; color:#92400e; white-space:nowrap;">' +
+              '<span>🏆</span> <span>7. Reward</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        // 3. ACTIVE QUESTS BOARD (HORIZONTAL ROWS)
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">' + timeGreeting + ', ' + teacherDisplayName + ' 👋</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Here is your live classroom command summary for ' + cls.name + '.</p>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-primary-action" onclick="openClass(\'' + cls.id + '\', \'classroom\')">🏫 Open Classroom Hub</button>' +
-        '</div>' +
-      '</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<span style="font-size:1.3rem;">🎯</span>' +
+              '<h2 style="font-size:1.25rem; font-weight:900; margin:0; color:var(--text-main);">Active Quests for ' + cls.name + '</h2>' +
+            '</div>' +
+            '<button class="btn-sm-secondary" onclick="renderView(\'homework\')" style="font-weight:800;">View All Quests Board ➔</button>' +
+          '</div>' +
+          (activeQuests.length === 0 ?
+            '<div style="padding:24px; text-align:center; background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; color:var(--text-muted);">' +
+              'No active quests right now. <button class="btn-sm-secondary" onclick="openCreateHomeworkModal()" style="margin-left:8px;">+ Assign a Quest</button>' +
+            '</div>' :
+            activeQuests.map(h => {
+              const totalStudentsCount = students.length || 18;
+              const submissions = h.submissions || {};
+              const completedCount = Object.values(submissions).filter(s => s.status === 'COMPLETED' || s.status === 'Complete').length;
+              const submittedCount = h.submittedCount !== undefined ? h.submittedCount : completedCount;
+              const pct = Math.min(100, Math.round((submittedCount / totalStudentsCount) * 100));
+              const thumb = h.thumbnail || 'assets/homework/thumb-animals.png';
 
-      '<div class="kpi-grid" style="margin-bottom:24px;">' +
-        '<div class="kpi-card"><span class="kpi-label">Enrolled Learners</span><span class="kpi-val">' + students.length + '</span><span class="kpi-sub">' + cls.name + '</span></div>' +
-        '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">✓ Live attendance rate</span></div>' +
-        '<div class="kpi-card"><span class="kpi-label">Active Assignments</span><span class="kpi-val">' + assignments.length + '</span><span class="kpi-sub">Pending completion</span></div>' +
-        '<div class="kpi-card"><span class="kpi-label">Target CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span><span class="kpi-sub">' + (cls.academicYear || '2026–2027') + '</span></div>' +
-      '</div>' +
+              return '' +
+                '<div class="quest-board-row">' +
+                  '<div class="quest-row-thumb">' +
+                    '<img src="' + thumb + '" alt="' + (h.title || 'Quest') + '" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+                  '</div>' +
+                  '<div class="quest-row-content">' +
+                    '<div class="quest-row-meta">' +
+                      '<span class="badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:10px;">' + (h.subject || 'Vocabulary') + '</span>' +
+                      '<span class="hw-xp-pill" style="font-size:0.74rem; padding:2px 8px;">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
+                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill" style="font-size:0.74rem; padding:2px 8px;">✨ Bonus</span>' : '') +
+                    '</div>' +
+                    '<h3 class="quest-row-title">' + h.title + '</h3>' +
+                    '<div class="quest-row-stats">' +
+                      '<span>📅 Due: ' + (h.dueDate || 'Friday, Nov 15') + '</span>' +
+                      '<span>⏱️ ' + (h.estimatedTime || '20 min') + '</span>' +
+                      '<span>👥 ' + submittedCount + '/' + totalStudentsCount + ' completed</span>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="quest-row-progress-wrap">' +
+                    '<div style="display:flex; justify-content:space-between; font-size:0.74rem; font-weight:800; color:var(--text-secondary);">' +
+                      '<span>Completion</span>' +
+                      '<span>' + pct + '%</span>' +
+                    '</div>' +
+                    '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                      '<div style="width:' + pct + '%; height:100%; background:#10b981; border-radius:6px;"></div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="quest-row-actions">' +
+                    '<button class="btn-primary-action" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:8px 14px; font-size:0.82rem; font-weight:800;">' +
+                      'Open Quest ➔' +
+                    '</button>' +
+                    '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:8px 10px; font-size:0.82rem;" title="Edit">✏️</button>' +
+                  '</div>' +
+                '</div>';
+            }).join('')
+          ) +
+        '</div>' +
 
-      renderClassroomDashboardWidgets(cls, students);
+        // 4. CLASSROOM COMMAND WIDGETS (Roll call, attention)
+        renderClassroomDashboardWidgets(cls, students) +
+      '</div>';
   }
 
   function renderProgressView(container) {
