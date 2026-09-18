@@ -1,530 +1,324 @@
-/**
- * YOUNG INVENTOR ACADEMY — STRUCTURED CURRICULUM DATA
- * Grade 4 A1+ • Based on "My Good Ideas Book", Unit 1, pages 18–21
- * Problem → Idea → Invention → Improvement → Presentation
+﻿/**
+ * YOUNG INVENTORS — CURRICULUM DATA
+ * Grade 4 A1+ | Global Readings 3 Unit 1: Inventions
+ * Plan • Build • Test • Improve
  */
-
 (function(root) {
   'use strict';
 
   const YOUNG_INVENTOR_DATA = {
+
     meta: {
-      title: "Young Inventor Academy",
-      subtitle: "From Problem → Idea → Invention → Improvement → Presentation",
-      unit: "My Good Ideas Book • Unit 1",
-      grade: "Grade 4",
-      level: "CEFR A1+",
-      duration: "35–45 minutes per lesson",
-      maxXP: 100,
-      totalMissions: 10
+      id: 'young-inventors',
+      title: 'YOUNG INVENTORS',
+      subtitle: 'PLAN \u2022 BUILD \u2022 TEST \u2022 IMPROVE',
+      unit: 'Global Readings 3 \u2014 Unit 1: Inventions',
+      grade: 'Grade 4',
+      level: 'A1+ / early A2',
+      duration: '45\u201360 minutes',
+      totalMissions: 8,
+      totalXP: 200
     },
 
-    // Mission Map Overview
-    missionMap: [
-      { id: 1, name: "Inventor Detectives", icon: "🔍", desc: "Find the Problem", xp: 10 },
-      { id: 2, name: "Idea Lab", icon: "💡", desc: "Find a Solution", xp: 10 },
-      { id: 3, name: "Idea Hunters", icon: "🌱", desc: "Nature & Old Things", xp: 10 },
-      { id: 4, name: "Inventor Workshop", icon: "🎨", desc: "Design & Draw", xp: 10 },
-      { id: 5, name: "Invention Builder", icon: "⚙️", desc: "Build the Prototype", xp: 10 },
-      { id: 6, name: "What Can It Do?", icon: "🚀", desc: "CAN & CAN'T Abilities", xp: 10 },
-      { id: 7, name: "How Does It Work?", icon: "📋", desc: "Simple Instructions", xp: 10 },
-      { id: 8, name: "Test Lab", icon: "🧪", desc: "Test the Prototype", xp: 10 },
-      { id: 9, name: "Make It Better!", icon: "🔧", desc: "Improve & Upgrade", xp: 10 },
-      { id: 10, name: "Presentation & Expo", icon: "🏆", desc: "Present to the World", xp: 20 }
+    missions: [
+      { id: 1, title: 'Discover Inventions',  icon: '\uD83D\uDD0D', subtitle: 'Look around the lab. What inventions can you see?' },
+      { id: 2, title: 'Find the Problem',      icon: '\uD83E\uDDE9', subtitle: 'Every invention starts with a problem!' },
+      { id: 3, title: 'Unlock the Purpose',    icon: '\uD83C\uDFAF', subtitle: 'TO + VERB = PURPOSE' },
+      { id: 4, title: 'Design the Blueprint',  icon: '\uD83D\uDCD0', subtitle: 'Real inventors plan before they build!' },
+      { id: 5, title: 'Build Test Measure',    icon: '\uD83E\uDDEA', subtitle: 'Your Engineering Control Center' },
+      { id: 6, title: 'Improve the Design',    icon: '\uD83D\uDD27', subtitle: 'Real inventors never give up after one test!' },
+      { id: 7, title: 'Present the Result',    icon: '\uD83C\uDFA4', subtitle: 'Inventor Presentation Stage' },
+      { id: 8, title: 'Inventor Battle',       icon: '\uD83C\uDFC6', subtitle: 'The Final Challenge!' }
     ],
 
-    // =========================================================================
-    // MISSION 1: INVENTOR DETECTIVES (Find the Problem)
-    // =========================================================================
-    mission1: {
-      title: "INVENTOR DETECTIVES",
-      subtitle: "Every invention starts with a problem!",
-      robotPrompt: "Look at the classroom scene! What is the problem? Choose the best answer!",
-      definition: {
-        term: "PROBLEM",
-        meaning: "Something that is difficult or needs to be fixed.",
-        icon: "⚠️"
-      },
-      scenes: [
+    mission1_discover: {
+      instructions: 'Explore the lab! Click each invention to learn about it.',
+      inventions: [
+        { id: 'car',         name: 'Car',         emoji: '\uD83D\uDE97', description: 'A vehicle powered by an engine that carries people on land.',                        problem: 'People needed to travel quickly on land.',               year: 1886, inventor: 'Karl Benz' },
+        { id: 'airplane',    name: 'Airplane',    emoji: '\u2708\uFE0F', description: 'A flying machine with wings powered by engines.',                                   problem: 'People wanted to fly through the sky.',                   year: 1903, inventor: 'Wright Brothers' },
+        { id: 'telephone',   name: 'Telephone',   emoji: '\uD83D\uDCDE', description: 'A device that sends and receives voice messages over long distances.',              problem: 'People needed to communicate far away.',                  year: 1876, inventor: 'Alexander Graham Bell' },
+        { id: 'light-bulb',  name: 'Light Bulb',  emoji: '\uD83D\uDCA1', description: 'An electric lamp that produces light without fire or flame.',                       problem: 'People needed light at night without fire.',              year: 1879, inventor: 'Thomas Edison' },
+        { id: 'computer',    name: 'Computer',    emoji: '\uD83D\uDCBB', description: 'An electronic machine that stores, retrieves, and processes data.',                 problem: 'People needed to calculate data quickly.',                year: 1945, inventor: 'Alan Turing' },
+        { id: 'alarm-clock', name: 'Alarm Clock', emoji: '\u23F0',       description: 'A clock with a buzzer or bell that wakes you up at a set time.',                   problem: 'People needed to wake up on time.',                       year: 1787, inventor: 'Levi Hutchins' },
+        { id: 'parachute',   name: 'Parachute',   emoji: '\uD83E\uDE82', description: 'A large fabric canopy that slows a person falling from height.',                   problem: 'People needed to fall safely from great height.',         year: 1783, inventor: 'Sebastien Lenormand' },
+        { id: 'robot',       name: 'Robot',       emoji: '\uD83E\uDD16', description: 'A programmable machine that performs tasks automatically.',                        problem: 'People needed help with dangerous and repetitive work.',  year: 1954, inventor: 'George Devol' }
+      ]
+    },
+
+    mission2_problem: {
+      instructions: 'Each invention solved a problem. Can you find the right one?',
+      rounds: [
+        { invention: 'Car',         emoji: '\uD83D\uDE97', correctProblem: 'People needed to travel more quickly and easily.',         distractors: ['People needed to fly above the clouds.', 'People needed to talk to friends far away.'] },
+        { invention: 'Airplane',    emoji: '\u2708\uFE0F', correctProblem: 'People wanted to fly through the sky.',                    distractors: ['People needed to drive faster on roads.', 'People needed to see in the dark.'] },
+        { invention: 'Alarm Clock', emoji: '\u23F0',       correctProblem: 'People needed a machine to wake them up on time.',         distractors: ['People needed to measure how far they walked.', 'People needed to cook food automatically.'] },
+        { invention: 'Telephone',   emoji: '\uD83D\uDCDE', correctProblem: 'People needed to talk to others far away.',                distractors: ['People needed to travel quickly underground.', 'People needed to lift heavy objects easily.'] },
+        { invention: 'Light Bulb',  emoji: '\uD83D\uDCA1', correctProblem: 'People needed light at night without using fire.',         distractors: ['People needed to send letters faster.', 'People needed to keep food cold longer.'] },
+        { invention: 'Parachute',   emoji: '\uD83E\uDE82', correctProblem: 'People needed a safe way to fall from great height.',      distractors: ['People needed to breathe underwater.', 'People needed to travel across the ocean quickly.'] }
+      ],
+      pairs: [
+        { problem: 'Travel quickly on land',    invention: 'Car',         emoji: '\uD83D\uDE97' },
+        { problem: 'Fly through the sky',        invention: 'Airplane',    emoji: '\u2708\uFE0F' },
+        { problem: 'Wake up on time',            invention: 'Alarm Clock', emoji: '\u23F0'       },
+        { problem: 'Talk to others far away',    invention: 'Telephone',   emoji: '\uD83D\uDCDE' },
+        { problem: 'See at night without fire',  invention: 'Light Bulb',  emoji: '\uD83D\uDCA1' },
+        { problem: 'Fall safely from height',    invention: 'Parachute',   emoji: '\uD83E\uDE82' }
+      ]
+    },
+
+    mission3_purpose: {
+      instructions: 'Choose the correct word to complete each purpose sentence.',
+      grammarNote: 'We use TO + VERB to explain WHY something was invented.',
+      sentences: [
+        { base: 'People invented cars ___ travel quickly.',          blank: '___', options: ['TO','FOR','BECAUSE'], correct: 'TO', completion: 'People invented cars TO travel quickly.' },
+        { base: 'People invented parachutes ___ fall safely.',       blank: '___', options: ['TO','FOR','BECAUSE'], correct: 'TO', completion: 'People invented parachutes TO fall safely.' },
+        { base: 'People invented alarm clocks ___ wake up on time.', blank: '___', options: ['TO','FOR','BECAUSE'], correct: 'TO', completion: 'People invented alarm clocks TO wake up on time.' },
+        { base: 'People invented telephones ___ communicate.',       blank: '___', options: ['TO','FOR','BECAUSE'], correct: 'TO', completion: 'People invented telephones TO communicate.' },
+        { base: 'People invented light bulbs ___ see at night.',     blank: '___', options: ['TO','FOR','BECAUSE'], correct: 'TO', completion: 'People invented light bulbs TO see at night.' }
+      ],
+      sentenceBuilder: [
+        { words: ['invented','cars','People','quickly.','travel','to'],            correctOrder: 'People invented cars to travel quickly.',    hint: 'Subject + Verb + Object + to + Verb' },
+        { words: ['designed','it','We','farther.','fly','to'],                     correctOrder: 'We designed it to fly farther.',             hint: 'Think about what "we" changed and why.' },
+        { words: ['changed','wings','We','it','because','turned.','the'],          correctOrder: 'We changed the wings because it turned.',    hint: 'BECAUSE explains the reason for the problem.' }
+      ]
+    },
+
+    mission4_blueprint: {
+      instructions: 'Real inventors plan before they build! Choose your design and label the parts.',
+      challenges: [
         {
-          id: "p1",
-          title: "The Rolling Pencil",
-          icon: "✏️💨",
-          prompt: "The pencil rolls off the table onto the floor.",
-          question: "What is the problem?",
-          options: [
-            { text: "The pencil falls from the desk.", correct: true },
-            { text: "The pencil can fly.", correct: false },
-            { text: "The desk is blue.", correct: false }
+          id: 'airplane', name: 'Paper Airplane', emoji: '\u2708\uFE0F',
+          goal: 'Design a paper airplane that flies as far as possible.',
+          designs: [
+            { id: 'dart',   name: 'Dart',      icon: '\uD83D\uDE80', description: 'Narrow and pointed. Built for speed and distance.',              strengths: ['speed','distance'],               difficulty: 'Easy'   },
+            { id: 'glider', name: 'Glider',    icon: '\uD83E\uDEB1', description: 'Wide wings for a smooth, longer glide.',                        strengths: ['smooth flight','longer air time'], difficulty: 'Medium' },
+            { id: 'delta',  name: 'Delta Wing', icon: '\uD83D\uDD3A', description: 'Triangular shape for stability in different conditions.',       strengths: ['stability','control'],            difficulty: 'Hard'   }
           ],
-          audioClue: "The pencil rolls off the table. The pencil falls from the desk."
+          parts: [
+            { id: 'wing', label: 'Wing', description: 'Keeps the airplane in the air by creating lift.' },
+            { id: 'nose', label: 'Nose', description: 'The pointed front that cuts through the air.' },
+            { id: 'body', label: 'Body', description: 'The main folded section that holds the plane together.' },
+            { id: 'tail', label: 'Tail', description: 'Helps balance and steer the airplane.' }
+          ]
         },
         {
-          id: "p2",
-          title: "The Heavy Backpack",
-          icon: "🎒🏋️",
-          prompt: "The student is bent over carrying ten thick books.",
-          question: "What is the problem?",
-          options: [
-            { text: "The school bag is too heavy.", correct: true },
-            { text: "The school bag has wheels.", correct: false },
-            { text: "The bag is singing.", correct: false }
-          ],
-          audioClue: "Ouch! The student's back hurts. The school bag is too heavy."
-        },
-        {
-          id: "p3",
-          title: "Muddy Shoes",
-          icon: "👟🍂",
-          prompt: "Mud sticks to the shoes after playing outside in the garden.",
-          question: "What is the problem?",
-          options: [
-            { text: "The shoes are dirty.", correct: true },
-            { text: "The shoes are made of gold.", correct: false },
-            { text: "The shoes can run fast.", correct: false }
-          ],
-          audioClue: "Look at the mud! The shoes are dirty."
-        },
-        {
-          id: "p4",
-          title: "Lost Pencil Case",
-          icon: "🔍📦",
-          prompt: "The student looks everywhere inside the desk but cannot find the pencil.",
-          question: "What is the problem?",
-          options: [
-            { text: "The student loses the pencil.", correct: true },
-            { text: "The pencil has bright lights.", correct: false },
-            { text: "The desk is empty.", correct: false }
-          ],
-          audioClue: "Where is it? The student loses the pencil."
-        },
-        {
-          id: "p5",
-          title: "Messy Study Table",
-          icon: "📚🌪️",
-          prompt: "Papers, scissors, rulers, and markers are everywhere on the table.",
-          question: "What is the problem?",
-          options: [
-            { text: "The study desk is messy.", correct: true },
-            { text: "The room is sparkling clean.", correct: false },
-            { text: "The books can cook dinner.", correct: false }
-          ],
-          audioClue: "What a mess! The study desk is messy."
-        },
-        {
-          id: "p6",
-          title: "Rainy Walk",
-          icon: "🌧️👧",
-          prompt: "The rain is pouring and water drips on the student's clothes.",
-          question: "What is the problem?",
-          options: [
-            { text: "The student gets wet in the rain.", correct: true },
-            { text: "The rain is warm orange juice.", correct: false },
-            { text: "The umbrella is flying.", correct: false }
-          ],
-          audioClue: "Splish splash! The student gets wet in the rain."
-        },
-        {
-          id: "p7",
-          title: "Dropping Books",
-          icon: "📖💥",
-          prompt: "Carrying a tall stack of books, they tumble to the floor.",
-          question: "What is the problem?",
-          options: [
-            { text: "Too many books to carry.", correct: true },
-            { text: "The books can swim.", correct: false },
-            { text: "The floor is soft bread.", correct: false }
-          ],
-          audioClue: "Crash! There are too many books to carry."
-        },
-        {
-          id: "p8",
-          title: "Cold Lunch Box",
-          icon: "🍱❄️",
-          prompt: "The soup and pasta are cold by lunchtime at school.",
-          question: "What is the problem?",
-          options: [
-            { text: "The food is cold.", correct: true },
-            { text: "The food has giant wheels.", correct: false },
-            { text: "The lunchbox is a computer.", correct: false }
-          ],
-          audioClue: "Brrr! The food is cold."
+          id: 'pinwheel', name: 'Pinwheel', emoji: '\uD83C\uDF00',
+          goal: 'Design a pinwheel that spins fast in the wind.',
+          startingSize: '15 cm x 15 cm',
+          parts: [
+            { id: 'blade',  label: 'Blade',  description: 'The angled flap that catches the wind and causes spinning.' },
+            { id: 'center', label: 'Center', description: 'The middle point where all blades meet and rotate.' },
+            { id: 'pin',    label: 'Pin',    description: 'The small fastener that holds the blades to the stick.' },
+            { id: 'stick',  label: 'Stick',  description: 'The handle you hold while the pinwheel spins.' }
+          ]
         }
       ]
     },
 
-    // =========================================================================
-    // MISSION 2: IDEA LAB (Find a Solution)
-    // =========================================================================
-    mission2: {
-      title: "IDEA LAB",
-      subtitle: "A solution is an idea that fixes a problem!",
-      robotPrompt: "Thomas Edison had hundreds of notebooks filled with ideas. Connect each problem to its smart invention solution!",
-      definition: {
-        term: "SOLUTION",
-        meaning: "An idea or invention that fixes a problem.",
-        icon: "💡"
-      },
-      matchingPairs: [
-        {
-          id: "sol-shoe",
-          problemText: "Dirty Muddy Shoes",
-          problemIcon: "👟🍂",
-          solutionText: "Automatic Shoe Cleaner",
-          solutionIcon: "👞✨",
-          explanation: "It cleans the shoes automatically when you step on it!"
-        },
-        {
-          id: "sol-bag",
-          problemText: "Heavy Backpack",
-          problemIcon: "🎒🏋️",
-          solutionText: "Smart Rolling Bag with Wheels",
-          solutionIcon: "🎒⚙️",
-          explanation: "It has wheels and follows you so your back does not hurt!"
-        },
-        {
-          id: "sol-pencil",
-          problemText: "Lost Pencils",
-          problemIcon: "✏️❓",
-          solutionText: "Pencil Radar Beeper",
-          solutionIcon: "📡✏️",
-          explanation: "Press a button and the pencil beeps and glows!"
-        },
-        {
-          id: "sol-room",
-          problemText: "Messy Study Table",
-          problemIcon: "📚🌪️",
-          solutionText: "Desk Organizer Robot",
-          solutionIcon: "🤖📦",
-          explanation: "The robot arm picks up pencils and stacks the books neatly!"
-        }
+    mission5_test: {
+      instructions: 'Follow the steps to build and test your invention!',
+      airplaneSteps: [
+        { step: 1, title: 'Choose Blueprint',    icon: '\uD83D\uDCD0',       action: 'Select your airplane design: Dart, Glider, or Delta Wing.',                                             tip: 'Remember: different designs fly differently!' },
+        { step: 2, title: 'Measure the Paper',   icon: '\uD83D\uDCCF',       action: 'Use a ruler to check your paper is the correct size (A4 / 21 cm x 29.7 cm).',                         tip: 'Measure twice — fold once!' },
+        { step: 3, title: 'Fold the Airplane',   icon: '\uD83D\uDD8A\uFE0F', action: 'Follow the folding instructions for your chosen design. Make sharp, clean creases.',                  tip: 'Flat folds make a better flier!' },
+        { step: 4, title: 'Build and Throw',     icon: '\uD83E\uDDEA',       action: 'Throw the airplane three times. Record the distance each time in centimetres.',                       tip: 'Throw at the same angle each time for a fair test.' },
+        { step: 5, title: 'Check Symmetry',      icon: '\uD83D\uDD0D',       action: 'Look at both wings from the front. They should be exactly the same size.',                            tip: 'Symmetry = straight flight!' }
       ],
-      brainstormChallenge: {
-        problem: "Pencils fall off the desk!",
-        question: "Which invention idea is the most useful?",
-        choices: [
-          { text: "Magnetic Desk Grip (sticks pencils safely)", useful: true, icon: "🧲" },
-          { text: "Clip-on Pencil Cradle", useful: true, icon: "📎" },
-          { text: "Pencil-Eating Monster", useful: false, icon: "👾" },
-          { text: "Desk with soft safety net", useful: true, icon: "🕸️" }
-        ]
+      pinwheelSteps: [
+        { step: 1, title: 'Measure the Square',      icon: '\uD83D\uDCCF',       action: 'Measure and cut a 15 cm x 15 cm square from your paper.',                                                   tip: 'Use a ruler and pencil to mark the lines first.' },
+        { step: 2, title: 'Draw Cutting Lines',       icon: '\u270F\uFE0F',       action: 'Draw diagonal lines from each corner to within 3 cm of the centre. Do NOT cut all the way!',           tip: 'Leave at least 3 cm in the middle uncut.' },
+        { step: 3, title: 'Cut Toward Centre',        icon: '\u2702\uFE0F',       action: 'Carefully cut along each diagonal line, stopping before the centre.',                                     tip: 'Scissors straight — cut steady!' },
+        { step: 4, title: 'Fold Alternate Corners',   icon: '\uD83D\uDD8A\uFE0F', action: 'Fold every OTHER corner point toward the centre. Do not crease — just curve them.',                      tip: 'Fold, do not flatten — keep the blade curved!' },
+        { step: 5, title: 'Attach the Centre',        icon: '\uD83D\uDCCC',       action: 'Push a pin or brad through the centre of all folded blades to hold them in place.',                      tip: 'Make sure it is loose enough to spin freely!' },
+        { step: 6, title: 'Attach to Stick',          icon: '\uD83E\uDE9B',       action: 'Push the pin into the top of your pencil or dowel stick. Test it by blowing gently.',                   tip: 'Blow from the side — watch it spin!' }
+      ],
+      dataTable: {
+        headers: ['Test #', 'Distance (cm) / Spin Time (s)', 'Notes'],
+        rows: 3
       }
     },
 
-    // =========================================================================
-    // MISSION 3: IDEA HUNTERS (Nature & Old Things)
-    // =========================================================================
-    mission3: {
-      title: "IDEA HUNTERS",
-      subtitle: "Where do great ideas come from? Look at nature & old things!",
-      robotPrompt: "Biomimicry! Nature already invented amazing solutions. Let's explore how animals and plants inspired real inventions!",
-      natureExamples: [
-        {
-          id: "kingfisher",
-          sourceName: "Kingfisher Bird 🐦",
-          sourceIcon: "🐦",
-          sourceDesc: "Kingfishers dive at high speed into water with zero splash because of their sleek, pointed beak shape.",
-          arrow: "➔",
-          inventionName: "Shinkansen Bullet Train 🚆",
-          inventionIcon: "🚆",
-          inventionDesc: "Engineers designed the front of the fastest bullet train in Japan like the kingfisher beak to stop loud sonic booms in tunnels!",
-          keySentence: "The train shape is like the kingfisher beak."
-        },
-        {
-          id: "plant",
-          sourceName: "Sticky Burdock Plant 🌱",
-          sourceIcon: "🌱",
-          sourceDesc: "Tiny microscopic hooks on burdock seeds stick tenaciously to dog fur and socks.",
-          arrow: "➔",
-          inventionName: "Velcro Sticky Shoes 👟",
-          inventionIcon: "👟",
-          inventionDesc: "George de Mestral saw this in nature and invented Velcro straps for shoes and clothes that stick instantly without laces!",
-          keySentence: "This shoe sticks like the plant."
-        },
-        {
-          id: "old-things",
-          sourceName: "Old Plastic Bottles & Fabric ♻️",
-          sourceIcon: "♻️",
-          sourceDesc: "Empty water bottles and leftover denim fabric waiting in the recycling bin.",
-          arrow: "➔",
-          inventionName: "Eco-Friendly Backpack 🎒",
-          inventionIcon: "🎒",
-          inventionDesc: "Using old things to make something brand new and super strong!",
-          keySentence: "Use old things to make something new."
-        }
+    mission6_improve: {
+      instructions: 'Look at your test results. What went wrong? How can you make it better?',
+      coreMessage: 'Real inventors NEVER give up after one test. They observe, identify the problem, make changes, and test again. This is the Design Cycle: Plan -> Build -> Test -> Improve -> Repeat!',
+      engineeringCycleSteps: ['Plan', 'Build', 'Test', 'Improve', 'Repeat'],
+      airplaneProblems: [
+        { id: 'ap1', text: 'The airplane turned left or right instead of going straight.', improvements: ['Make sure both wings are exactly the same size (symmetry).', 'Bend one wing slightly upward to correct the turn.', 'Re-fold the nose so it points straight forward.'] },
+        { id: 'ap2', text: 'The airplane nose-dived quickly after throwing.',              improvements: ['Add a small paper clip to the nose for extra weight.', 'Fold the tail slightly upward to create more lift.', 'Try a wider wing design like the Glider.'] },
+        { id: 'ap3', text: 'The airplane stalled and fell slowly right away.',             improvements: ['Make the nose heavier by folding more layers at the front.', 'Reduce the wing size to decrease drag.', 'Throw with more force and a flatter angle.'] },
+        { id: 'ap4', text: 'The airplane did not travel far enough.',                      improvements: ['Try the Dart design — it is built for maximum distance.', 'Sharpen and flatten all folds for less air resistance.', 'Throw from a higher starting position.'] }
       ],
-      quiz: [
-        {
-          question: "The kingfisher's beak inspired the shape of the...",
-          options: ["Bullet Train 🚆", "Pencil Box 📦", "Umbrella ☂️"],
-          correct: "Bullet Train 🚆"
-        },
-        {
-          question: "The sticky burdock plant inspired...",
-          options: ["Velcro Shoe Straps 👟", "A loud whistle 📢", "A glass cup 🥤"],
-          correct: "Velcro Shoe Straps 👟"
-        },
-        {
-          question: "When you use old plastic bottles to make a new bag, you...",
-          options: ["Use old things to make something new ♻️", "Throw things in the river 🌊", "Forget your homework 📝"],
-          correct: "Use old things to make something new ♻️"
-        }
+      pinwheelProblems: [
+        { id: 'pp1', text: 'The pinwheel spun too slowly.',             improvements: ['Curve the blades more to catch more wind.', 'Make the blades wider by starting with a bigger square.', 'Make sure the pin is not too tight — it must spin freely.'] },
+        { id: 'pp2', text: 'The pinwheel did not spin at all.',         improvements: ['Check that all four alternate corners are folded toward the centre.', 'Loosen the pin so the blades can rotate freely.', 'Try blowing from a different angle.'] },
+        { id: 'pp3', text: 'The pinwheel fell apart during testing.',   improvements: ['Push the pin more securely through all layers.', 'Add a small piece of tape to hold the centre together.', 'Use thicker paper or card for the blades.'] },
+        { id: 'pp4', text: 'The blades were not equal in size.',        improvements: ['Re-measure and re-cut a new square, making sure all cuts are equal.', 'Use a pencil and ruler to draw equal lines before cutting.', 'Fold the paper in half to check symmetry before cutting.'] }
       ]
     },
 
-    // =========================================================================
-    // MISSION 4: INVENTOR WORKSHOP (Design & Draw)
-    // =========================================================================
-    mission4: {
-      title: "INVENTOR WORKSHOP",
-      subtitle: "Draw a picture of your idea. Drawing helps you see your idea!",
-      robotPrompt: "Step 1: Choose a problem. Step 2: Name your invention. Step 3: Draw your blueprint on the drawing board!",
-      problemPresets: [
-        { id: "prob-bag", name: "Heavy School Bag", icon: "🎒", defaultInvention: "Super Rolling Backpack 3000" },
-        { id: "prob-shoes", name: "Dirty Muddy Shoes", icon: "👟", defaultInvention: "Auto-Clean Step Station" },
-        { id: "prob-pencil", name: "Lost Pencils & Rulers", icon: "✏️", defaultInvention: "Pencil Radar Finder" },
-        { id: "prob-desk", name: "Messy Study Table", icon: "📚", defaultInvention: "Robo-Tidy Organizer" },
-        { id: "prob-rain", name: "Wet Clothes in Rain", icon: "🌧️", defaultInvention: "Bubble Shield Umbrella" },
-        { id: "prob-lunch", name: "Cold School Lunch", icon: "🍱", defaultInvention: "Solar Thermo Lunchbox" }
+    mission7_present: {
+      instructions: 'Stand up, speak clearly, and present your invention to the class!',
+      sentenceFrames: [
+        { label: 'Invention Name',     example: 'We built a paper airplane / pinwheel.' },
+        { label: 'Purpose',            example: 'We invented it to fly far / spin fast.' },
+        { label: 'Materials',          example: 'We used paper, a ruler, and scissors.' },
+        { label: 'Test Result',        example: 'In our first test, it flew ___ cm / spun for ___ seconds.' },
+        { label: 'Problem',            example: 'The problem was that it turned / stopped spinning.' },
+        { label: 'Improvement Made',   example: 'We changed the wings / blades because it turned / slowed down.' },
+        { label: 'Second Test Result', example: 'After improving, it flew ___ cm / spun for ___ seconds.' },
+        { label: 'Conclusion',         example: 'Our invention was successful because it flew farther / spun faster!' }
       ],
-      canvasColors: ["#38bdf8", "#f59e0b", "#10b981", "#ec4899", "#a855f7", "#ffffff"],
-      tips: [
-        "Drawing helps you see your idea.",
-        "Add labels with arrows to show what parts do.",
-        "Don't worry about perfection — great inventors sketch quickly!"
+      scoringCriteria: [
+        { criterion: 'Uses all 8 sentence frames correctly',          maxPoints: 5 },
+        { criterion: 'Explains the problem and improvement clearly',  maxPoints: 4 },
+        { criterion: 'Uses "to + verb" purpose structures',           maxPoints: 3 },
+        { criterion: 'Speaks clearly and with good volume',           maxPoints: 3 },
+        { criterion: 'All team members contribute to presentation',   maxPoints: 3 },
+        { criterion: 'Presents test data using numbers',              maxPoints: 2 }
+      ],
+      totalPoints: 20
+    },
+
+    mission8_battle: {
+      instructions: 'Teams take turns choosing a category and answering questions to earn XP!',
+      categories: [
+        { id: 'vocab',    label: 'Vocab',    icon: '\uD83E\uDDE0',       color: 'amber'  },
+        { id: 'problem',  label: 'Problem',  icon: '\uD83E\uDDE9',       color: 'cyan'   },
+        { id: 'purpose',  label: 'Purpose',  icon: '\uD83C\uDFAF',       color: 'purple' },
+        { id: 'airplane', label: 'Airplane', icon: '\u2708\uFE0F',       color: 'green'  },
+        { id: 'pinwheel', label: 'Pinwheel', icon: '\uD83C\uDF00',       color: 'red'    },
+        { id: 'test',     label: 'Test',     icon: '\uD83E\uDDEA',       color: 'blue'   },
+        { id: 'improve',  label: 'Improve',  icon: '\uD83D\uDD27',       color: 'gold'   },
+        { id: 'speak',    label: 'Speak',    icon: '\uD83D\uDDE3\uFE0F', color: 'purple' }
+      ],
+      questions: [
+
+        // VOCAB
+        { id: 'v1', category: 'vocab', type: 'multiple_choice', question: 'What is an INVENTION?',
+          options: ['A) A question someone asks','B) A new thing someone makes to solve a problem','C) A place where scientists work','D) A type of machine that breaks'],
+          correct: 'B', tileType: 'normal' },
+        { id: 'v2', category: 'vocab', type: 'multiple_choice', question: 'What does IMPROVE mean?',
+          options: ['A) To throw something away','B) To make something worse','C) To make something better','D) To copy an idea'],
+          correct: 'C', tileType: 'bonus' },
+        { id: 'v3', category: 'vocab', type: 'true_false', question: 'An inventor is a person who creates new things to solve problems. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'TRUE', tileType: 'normal' },
+        { id: 'v4', category: 'vocab', type: 'multiple_choice', question: 'Which word means "a drawing or plan made before building something"?',
+          options: ['A) Blueprint','B) Ingredient','C) Discovery','D) Measurement'],
+          correct: 'A', tileType: 'double' },
+
+        // PROBLEM
+        { id: 'p1', category: 'problem', type: 'multiple_choice', question: 'What problem did the TELEPHONE solve?',
+          options: ['A) People needed light at night.','B) People needed to talk to others far away.','C) People needed to fly.','D) People needed to keep food cold.'],
+          correct: 'B', tileType: 'normal' },
+        { id: 'p2', category: 'problem', type: 'multiple_choice', question: 'Why did people invent the LIGHT BULB?',
+          options: ['A) They wanted to cook food faster.','B) They needed light at night without using fire.','C) They wanted to fly over clouds.','D) They needed to send letters quickly.'],
+          correct: 'B', tileType: 'steal' },
+        { id: 'p3', category: 'problem', type: 'true_false', question: 'The PARACHUTE was invented so people could travel faster on land. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'FALSE', tileType: 'normal' },
+        { id: 'p4', category: 'problem', type: 'multiple_choice', question: 'What problem did the ALARM CLOCK solve?',
+          options: ['A) People needed to travel fast.','B) People needed to talk to friends.','C) People needed a machine to wake them up on time.','D) People needed to see in the dark.'],
+          correct: 'C', tileType: 'double' },
+
+        // PURPOSE
+        { id: 'pu1', category: 'purpose', type: 'multiple_choice', question: 'Choose the correct sentence: People invented cars ___.',
+          options: ['A) for travel quickly.','B) because travel quickly.','C) to travel quickly.','D) travel quickly.'],
+          correct: 'C', tileType: 'normal' },
+        { id: 'pu2', category: 'purpose', type: 'sentence_order', question: 'Put the words in the correct order: [ parachutes / fall / People / safely / invented / to ]',
+          options: ['A) People invented parachutes to fall safely.','B) Parachutes invented people to fall safely.','C) People to invented parachutes fall safely.','D) Invented people parachutes to safely fall.'],
+          correct: 'A', tileType: 'expert' },
+        { id: 'pu3', category: 'purpose', type: 'true_false', question: '"We use TO + VERB to explain the purpose of an invention." TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'TRUE', tileType: 'normal' },
+        { id: 'pu4', category: 'purpose', type: 'multiple_choice', question: 'Which sentence uses "to + verb" correctly?',
+          options: ['A) We changed wings because it turned.','B) We designed it for fly farther.','C) We designed it to fly farther.','D) We designed it flying farther.'],
+          correct: 'C', tileType: 'challenge' },
+
+        // AIRPLANE
+        { id: 'a1', category: 'airplane', type: 'multiple_choice', question: 'Which paper airplane design is BEST for maximum distance?',
+          options: ['A) Glider','B) Delta Wing','C) Dart','D) Box Kite'],
+          correct: 'C', tileType: 'normal' },
+        { id: 'a2', category: 'airplane', type: 'multiple_choice', question: 'What does the WING of a paper airplane do?',
+          options: ['A) It makes the plane heavier.','B) It creates lift to keep the plane in the air.','C) It holds the pilot inside.','D) It powers the engine.'],
+          correct: 'B', tileType: 'bonus' },
+        { id: 'a3', category: 'airplane', type: 'true_false', question: 'If a paper airplane turns left, it means both wings are exactly the same size. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'FALSE', tileType: 'normal' },
+        { id: 'a4', category: 'airplane', type: 'multiple_choice', question: 'What should you check to make your paper airplane fly straight?',
+          options: ['A) The colour of the paper','B) The symmetry — both wings must be equal','C) The name written on the airplane','D) The type of pen you used'],
+          correct: 'B', tileType: 'speed' },
+
+        // PINWHEEL
+        { id: 'pw1', category: 'pinwheel', type: 'multiple_choice', question: 'What is the starting size of the paper for the pinwheel?',
+          options: ['A) 10 cm x 10 cm','B) 20 cm x 20 cm','C) 15 cm x 15 cm','D) 30 cm x 30 cm'],
+          correct: 'C', tileType: 'normal' },
+        { id: 'pw2', category: 'pinwheel', type: 'multiple_choice', question: 'What does the BLADE of a pinwheel do?',
+          options: ['A) It holds the pin in place.','B) It is the handle you hold.','C) It catches the wind and causes spinning.','D) It measures the speed of the wind.'],
+          correct: 'C', tileType: 'steal' },
+        { id: 'pw3', category: 'pinwheel', type: 'true_false', question: 'You should cut all the way to the centre of the paper when making a pinwheel. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'FALSE', tileType: 'normal' },
+        { id: 'pw4', category: 'pinwheel', type: 'multiple_choice', question: 'If your pinwheel does not spin, what should you check first?',
+          options: ['A) The colour of the paper','B) Whether the pin is too tight','C) The size of the stick','D) The name on the blade'],
+          correct: 'B', tileType: 'double' },
+
+        // TEST
+        { id: 't1', category: 'test', type: 'multiple_choice', question: 'Why should you throw the paper airplane THREE times during the test?',
+          options: ['A) Because three is a lucky number.','B) To get an average and make the test fair.','C) Because one throw always breaks it.','D) Because the teacher said so.'],
+          correct: 'B', tileType: 'normal' },
+        { id: 't2', category: 'test', type: 'true_false', question: 'A fair test means you change MANY things at the same time. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'FALSE', tileType: 'normal' },
+        { id: 't3', category: 'test', type: 'multiple_choice', question: 'What unit do you use to measure how far a paper airplane flew?',
+          options: ['A) Kilograms','B) Seconds','C) Centimetres','D) Litres'],
+          correct: 'C', tileType: 'bonus' },
+        { id: 't4', category: 'test', type: 'multiple_choice', question: 'What is the correct order of the Design Cycle?',
+          options: ['A) Test -> Build -> Plan -> Improve','B) Build -> Plan -> Improve -> Test','C) Plan -> Build -> Test -> Improve','D) Improve -> Test -> Build -> Plan'],
+          correct: 'C', tileType: 'expert' },
+
+        // IMPROVE
+        { id: 'i1', category: 'improve', type: 'multiple_choice', question: 'Your airplane nose-dives. What is the BEST improvement?',
+          options: ['A) Paint it a different colour.','B) Add a paper clip to the nose for more weight.','C) Make the wings smaller.','D) Write your name on it.'],
+          correct: 'B', tileType: 'normal' },
+        { id: 'i2', category: 'improve', type: 'multiple_choice', question: 'Your pinwheel spins too slowly. What should you do?',
+          options: ['A) Use a bigger stick.','B) Curve the blades more to catch more wind.','C) Add more pins to the centre.','D) Use a smaller square of paper.'],
+          correct: 'B', tileType: 'challenge' },
+        { id: 'i3', category: 'improve', type: 'true_false', question: 'Real inventors stop after the first failed test. TRUE or FALSE?',
+          options: ['TRUE','FALSE'], correct: 'FALSE', tileType: 'normal' },
+        { id: 'i4', category: 'improve', type: 'multiple_choice', question: 'Complete this sentence: "We changed the wings ___ it turned."',
+          options: ['A) to','B) for','C) because','D) with'],
+          correct: 'C', tileType: 'speed' },
+
+        // SPEAK
+        { id: 's1', category: 'speak', type: 'speaking', question: 'Say a complete sentence: "People invented ___ to ___." Use any invention.',
+          options: null, correct: null, tileType: 'normal',
+          rubric: ['Uses "to + verb" structure','Names a real invention','Sentence is grammatically correct'] },
+        { id: 's2', category: 'speak', type: 'speaking', question: 'Describe your airplane or pinwheel using: "We built a ___ to ___."',
+          options: null, correct: null, tileType: 'bonus',
+          rubric: ['Names the invention','States the purpose with "to + verb"','Speaks clearly'] },
+        { id: 's3', category: 'speak', type: 'speaking', question: 'Say what went wrong in your test and what you changed: "The problem was ___ so we ___."',
+          options: null, correct: null, tileType: 'challenge',
+          rubric: ['States the problem clearly','Describes the change made','Uses complete sentences'] },
+        { id: 's4', category: 'speak', type: 'speaking', question: 'Name THREE inventions and the year or inventor for each one.',
+          options: null, correct: null, tileType: 'expert',
+          rubric: ['Names 3 inventions','Provides year OR inventor for each','Pronounces inventor names correctly'] }
+
       ]
     },
 
-    // =========================================================================
-    // MISSION 5: INVENTION BUILDER (Build the Prototype)
-    // =========================================================================
-    mission5: {
-      title: "INVENTION BUILDER",
-      subtitle: "Snap components together to construct your prototype!",
-      robotPrompt: "Drag or tap parts from the workshop shelf into the central assembly pod. Watch the sentences generate automatically!",
-      grammarFocus: "IT HAS + NOUN PHRASE",
-      components: [
-        { id: "comp-wheels", name: "Rubber Wheels", icon: "⚙️", countNoun: "two wheels", sentence: "It has two wheels." },
-        { id: "comp-wings", name: "Solar Wings", icon: "🪽", countNoun: "wings", sentence: "It has wings." },
-        { id: "comp-buttons", name: "Action Buttons", icon: "🔘", countNoun: "three buttons", sentence: "It has three buttons." },
-        { id: "comp-screen", name: "Digital Screen", icon: "🖥️", countNoun: "a large screen", sentence: "It has a large screen." },
-        { id: "comp-battery", name: "Rechargeable Battery", icon: "🔋", countNoun: "a battery", sentence: "It has a battery." },
-        { id: "comp-arm", name: "Robotic Grab Arm", icon: "🦾", countNoun: "a robotic arm", sentence: "It has a robotic arm." },
-        { id: "comp-basket", name: "Storage Basket", icon: "🧺", countNoun: "a storage basket", sentence: "It has a storage basket." },
-        { id: "comp-handle", name: "Telescopic Handle", icon: "🧰", countNoun: "a strong handle", sentence: "It has a strong handle." },
-        { id: "comp-sensor", name: "Radar Sensor", icon: "📡", countNoun: "an obstacle sensor", sentence: "It has an obstacle sensor." },
-        { id: "comp-fan", name: "Cooling Propeller", icon: "🪭", countNoun: "a propeller fan", sentence: "It has a cooling fan." },
-        { id: "comp-light", name: "LED Spotlight", icon: "💡", countNoun: "bright LED lights", sentence: "It has bright lights." },
-        { id: "comp-box", name: "Waterproof Shell", icon: "📦", countNoun: "a waterproof shell", sentence: "It has a waterproof shell." }
-      ]
-    },
+    awards: [
+      { id: 'designer', icon: '\uD83D\uDCD0', title: 'Blueprint Designer', description: 'Awarded for creating an excellent and detailed blueprint in Mission 4.' },
+      { id: 'solver',   icon: '\uD83E\uDDE9', title: 'Problem Solver',     description: 'Awarded for correctly identifying the problems behind inventions in Mission 2.' },
+      { id: 'improver', icon: '\uD83D\uDD27', title: 'Master Improver',    description: 'Awarded for making the most effective improvements in Mission 6.' },
+      { id: 'tester',   icon: '\uD83E\uDDEA', title: 'Top Tester',         description: 'Awarded for recording the best and most accurate test data in Mission 5.' },
+      { id: 'thinker',  icon: '\uD83D\uDCA1', title: 'Critical Thinker',   description: 'Awarded for outstanding analysis and reasoning across all missions.' },
+      { id: 'team',     icon: '\uD83E\uDD1D', title: 'Team MVP',           description: 'Awarded for exceptional teamwork, collaboration, and supporting teammates.' },
+      { id: 'inventor', icon: '\uD83D\uDDE3\uFE0F', title: 'Star Inventor', description: 'Awarded for the most impressive and confident presentation in Mission 7.' }
+    ],
 
-    // =========================================================================
-    // MISSION 6: WHAT CAN IT DO? (CAN / CAN'T)
-    // =========================================================================
-    mission6: {
-      title: "WHAT CAN IT DO?",
-      subtitle: "Describe your invention's super abilities using CAN and CAN'T!",
-      robotPrompt: "Pick 3 action verbs that your invention CAN do, and 1 funny thing it CAN'T do!",
-      grammarFocus: "IT CAN + VERB / IT CAN'T + VERB",
-      actionVerbs: [
-        { id: "v-clean", verb: "clean", icon: "🧼", sentence: "It can clean shoes.", exampleObject: "shoes" },
-        { id: "v-carry", verb: "carry", icon: "🎒", sentence: "It can carry heavy books.", exampleObject: "books" },
-        { id: "v-find", verb: "find", icon: "🔍", sentence: "It can find lost pencils.", exampleObject: "pencils" },
-        { id: "v-fly", verb: "fly", icon: "✈️", sentence: "It can fly over puddles.", exampleObject: "over puddles" },
-        { id: "v-help", verb: "help", icon: "🤝", sentence: "It can help students.", exampleObject: "students" },
-        { id: "v-protect", verb: "protect", icon: "🛡️", sentence: "It can protect people from rain.", exampleObject: "from rain" },
-        { id: "v-save", verb: "save", icon: "⏱️", sentence: "It can save time in the morning.", exampleObject: "time" },
-        { id: "v-move", verb: "move", icon: "🚀", sentence: "It can move fast.", exampleObject: "fast" },
-        { id: "v-make", verb: "make", icon: "🛠️", sentence: "It can make warm lunch.", exampleObject: "warm lunch" },
-        { id: "v-organize", verb: "organize", icon: "📦", sentence: "It can organize books neatly.", exampleObject: "books neatly" }
-      ],
-      cantOptions: [
-        { id: "cant-swim", text: "It can't swim in deep water.", icon: "🌊" },
-        { id: "cant-fly", text: "It can't fly to the moon.", icon: "🚀" },
-        { id: "cant-cook", text: "It can't cook pizza.", icon: "🍕" },
-        { id: "cant-sing", text: "It can't sing opera songs.", icon: "🎵" }
-      ],
-      quiz: [
-        {
-          question: "What CAN a smart rolling backpack do?",
-          options: [
-            "It can carry heavy books. 📚",
-            "It can eat your homework. 📄",
-            "It can sleep under the bed. 💤"
-          ],
-          correct: "It can carry heavy books. 📚"
-        },
-        {
-          question: "What CAN a shoe-cleaning station do?",
-          options: [
-            "It can clean dirty shoes. 👟✨",
-            "It can paint shoes green. 🎨",
-            "It can dance in the street. 💃"
-          ],
-          correct: "It can clean dirty shoes. 👟✨"
-        }
-      ]
-    },
+    teamRoles: [
+      { id: 'designer', icon: '\uD83D\uDCD0', title: 'Designer',  responsibility: 'Draws the blueprint and labels all parts before building begins.',                              keyPhrase: '"I designed ___ because ___."' },
+      { id: 'builder',  icon: '\uD83D\uDD28', title: 'Builder',   responsibility: 'Follows the blueprint to build the invention carefully and accurately.',                       keyPhrase: '"We built ___ using ___."' },
+      { id: 'tester',   icon: '\uD83D\uDCCF', title: 'Tester',    responsibility: 'Carries out each test, makes sure the test is fair, and records the results.',                keyPhrase: '"In test ___, it flew/spun ___."' },
+      { id: 'recorder', icon: '\uD83D\uDCDD', title: 'Recorder',  responsibility: 'Writes all measurements, results, and observations in the data table.',                       keyPhrase: '"The result was ___ because ___."' },
+      { id: 'speaker',  icon: '\uD83C\uDFA4', title: 'Speaker',   responsibility: "Presents the team's invention, results, and improvements to the class.",                      keyPhrase: '"We invented ___ to ___. We improved it by ___."' }
+    ]
 
-    // =========================================================================
-    // MISSION 7: HOW DOES IT WORK? (Simple Instructions)
-    // =========================================================================
-    mission7: {
-      title: "HOW DOES IT WORK?",
-      subtitle: "Explain the process step-by-step: FIRST, THEN, FINALLY!",
-      robotPrompt: "Good inventors give clear, simple instructions so anyone can use their machine. Put the steps in order!",
-      grammarFocus: "IMPERATIVE VERBS & SEQUENCING",
-      presets: {
-        smartBag: [
-          { step: "FIRST", text: "Put the books inside.", icon: "📥", correctPos: 0 },
-          { step: "THEN", text: "Press the green button.", icon: "🔘", correctPos: 1 },
-          { step: "FINALLY", text: "The bag follows you on wheels.", icon: "🚶‍♂️🎒", correctPos: 2 }
-        ],
-        shoeCleaner: [
-          { step: "FIRST", text: "Step on the clean pad.", icon: "🦶", correctPos: 0 },
-          { step: "THEN", text: "Turn on the power switch.", icon: "⚡", correctPos: 1 },
-          { step: "FINALLY", text: "The brushes clean your shoes.", icon: "✨👟", correctPos: 2 }
-        ],
-        pencilFinder: [
-          { step: "FIRST", text: "Turn on the radar scanner.", icon: "📡", correctPos: 0 },
-          { step: "THEN", text: "Listen for the beep sound.", icon: "🔊", correctPos: 1 },
-          { step: "FINALLY", text: "Find your glowing pencil.", icon: "✏️🌟", correctPos: 2 }
-        ]
-      }
-    },
-
-    // =========================================================================
-    // MISSION 8: TEST LAB (Test Your Idea)
-    // =========================================================================
-    mission8: {
-      title: "TEST LAB",
-      subtitle: "Test your idea! Karl Benz tested his first motorcar many times!",
-      robotPrompt: "Time to test your prototype in the testing chamber! Will it withstand the classroom challenge?",
-      testingChallenges: [
-        {
-          id: "test1",
-          title: "The Weight Test 🏋️",
-          prompt: "We place 10 heavy dictionaries inside your invention.",
-          simulationText: "Measuring weight... 5kg... 10kg... 15kg...",
-          question: "Can your invention carry the heavy load?",
-          passMessage: "PASS! The frame is strong and holds all 10 books! 🎉",
-          failMessage: "Warning! The frame shakes a little. Time to improve! ⚠️"
-        },
-        {
-          id: "test2",
-          title: "The Rain & Splash Test 🌧️",
-          prompt: "Simulating a sudden afternoon rainstorm in the schoolyard.",
-          simulationText: "Water sprays from overhead jets... Splash!",
-          question: "Can your invention protect the books from water?",
-          passMessage: "PASS! 100% dry! The waterproof shell works! ☔",
-          failMessage: "A few drops got inside. We need a better seal! 🔧"
-        }
-      ],
-      growthMindsetQuote: "Don't give up! Try again. When something doesn't work, we learn how to make it better!"
-    },
-
-    // =========================================================================
-    // MISSION 9: MAKE IT BETTER! (Improve Your Idea)
-    // =========================================================================
-    mission9: {
-      title: "MAKE IT BETTER!",
-      subtitle: "Listen to feedback and improve your invention!",
-      robotPrompt: "Great inventors never stop at Version 1. Choose an upgrade to make your invention even more useful!",
-      grammarFocus: "I IMPROVED MY IDEA. NOW IT CAN...",
-      upgrades: [
-        { id: "up-wheels", title: "➕ Add All-Terrain Wheels", desc: "Rolls smoothly over stairs and mud!", icon: "🛞", benefit: "Now it can move on stairs." },
-        { id: "up-battery", title: "➕ Add Solar Power Battery", desc: "Never runs out of power on sunny days!", icon: "☀️🔋", benefit: "Now it can work without plugging in." },
-        { id: "up-sensor", title: "➕ Add Smart Voice Sensor", desc: "Listens and speaks back in English!", icon: "🎙️🤖", benefit: "Now it can talk and listen." },
-        { id: "up-shield", title: "➕ Add Waterproof Bubble Shield", desc: "Opens an umbrella bubble automatically!", icon: "🫧🛡️", benefit: "Now it can protect you from rain." },
-        { id: "up-lighter", title: "➕ Make It Ultra-Light", desc: "Made of recycled carbon fiber!", icon: "🪶", benefit: "Now it is super light to carry." },
-        { id: "up-faster", title: "➕ Make It Turbo-Fast", desc: "Dual twin-turbo booster fan!", icon: "⚡💨", benefit: "Now it can move super fast." }
-      ]
-    },
-
-    // =========================================================================
-    // MISSION 10: PRESENTATION LAB & YOUNG INVENTOR EXPO
-    // =========================================================================
-    mission10: {
-      title: "PRESENTATION LAB & EXPO",
-      subtitle: "Present your invention to the class for the Young Inventor Expo!",
-      robotPrompt: "Prepare your 9 presentation cards! Speak with a loud, proud voice!",
-      speechCards: [
-        { id: "card1", tag: "👋 HELLO", prompt: "Greeting & Name", template: "Hello everyone! My name is [NAME]. Today I will show you my invention." },
-        { id: "card2", tag: "🔍 PROBLEM", prompt: "The Problem", template: "The problem is that [PROBLEM]." },
-        { id: "card3", tag: "💡 IDEA", prompt: "My Invention", template: "My invention is called [INVENTION NAME]." },
-        { id: "card4", tag: "🎨 DESCRIPTION", prompt: "What it looks like", template: "It has [COMPONENTS]. It is [ADJECTIVE]." },
-        { id: "card5", tag: "🚀 ABILITIES", prompt: "What it can do", template: "It can [CAN 1] and [CAN 2]. It can't [CAN'T]." },
-        { id: "card6", tag: "⚙️ HOW IT WORKS", prompt: "Simple Instructions", template: "First, [STEP 1]. Then, [STEP 2]. Finally, [STEP 3]." },
-        { id: "card7", tag: "⭐ USEFUL", prompt: "Why it is useful", template: "It is useful because it [saves time / helps students]." },
-        { id: "card8", tag: "🔧 IMPROVEMENT", prompt: "How you improved it", template: "I improved my idea. Now it can [IMPROVEMENT]." },
-        { id: "card9", tag: "🎤 END", prompt: "Closing & Questions", template: "Thank you for listening! Do you have any questions?" }
-      ],
-      audienceCard: {
-        title: "🔎 INVENTOR DETECTIVE REVIEW CARD",
-        fields: [
-          { label: "Inventor Name", placeholder: "e.g. Leo" },
-          { label: "Invention Name", placeholder: "e.g. Super Bag 3000" },
-          { label: "Problem it fixes", placeholder: "e.g. Heavy books" },
-          { label: "One cool thing it can do", placeholder: "e.g. It can fly!" },
-          { label: "My question for the inventor", placeholder: "e.g. How does it charge?" }
-        ]
-      },
-      rubric: [
-        { id: "rubric-idea", category: "💡 IDEA & PROBLEM", desc: "Clearly explains the problem and the creative solution", max: 3 },
-        { id: "rubric-english", category: "🗣️ ENGLISH LANGUAGE", desc: "Uses CAN / CAN'T, HAS / HAVE, and imperative verbs accurately", max: 3 },
-        { id: "rubric-description", category: "⚙️ DESCRIPTION & PROCESS", desc: "Describes components and explains First / Then / Finally", max: 3 },
-        { id: "rubric-presentation", category: "🎤 PRESENTATION & CONFIDENCE", desc: "Speaks clearly with eye contact and responds to questions", max: 3 }
-      ],
-      studentChecklist: [
-        "I found a problem.",
-        "I created an idea.",
-        "I designed an invention.",
-        "I can describe it.",
-        "I can say what it has.",
-        "I can say what it can do.",
-        "I can explain how it works.",
-        "I can explain why it is useful.",
-        "I improved my idea.",
-        "I am ready to present!"
-      ]
-    },
-
-    // =========================================================================
-    // TEACHER OBSERVATION & LESSON TIMING GUIDES (3-Lesson Classroom Flow)
-    // =========================================================================
-    teacherGuides: {
-      lesson1: {
-        title: "Lesson 1: Problem, Solution & Inspiration (35 min)",
-        flow: [
-          { time: "00:00–05:00", stage: "Hook & Discussion", desc: "Ask: 'What is a problem in our classroom?' Write ideas on board." },
-          { time: "05:00–12:00", stage: "Mission 1 (Problem Detectives)", desc: "Interactive Smart Board problem identification across 8 scenarios." },
-          { time: "12:00–20:00", stage: "Mission 2 (Idea Lab)", desc: "Connect problems to solutions. Introduce Thomas Edison's notebooks." },
-          { time: "20:00–28:00", stage: "Mission 3 (Idea Hunters)", desc: "Nature biomimicry (Kingfisher beak ➔ train, sticky burdock ➔ shoe)." },
-          { time: "28:00–35:00", stage: "Mission 4 (Choose Problem & Blueprint)", desc: "Students select their individual problem and sketch preliminary drawings." }
-        ]
-      },
-      lesson2: {
-        title: "Lesson 2: Building, CAN/CAN'T & Instructions (35 min)",
-        flow: [
-          { time: "00:00–05:00", stage: "Review & Warm-Up", desc: "Review vocabulary: problem, solution, useful, machine, wheel, screen." },
-          { time: "05:00–15:00", stage: "Mission 5 (Invention Builder)", desc: "Assemble modular components. Practice 'It has two wheels / a screen'." },
-          { time: "15:00–25:00", stage: "Mission 6 (What Can It Do?)", desc: "Core language target: 'It can carry / clean / find / help / protect'." },
-          { time: "25:00–35:00", stage: "Mission 7 (How Does It Work?)", desc: "Sequencing imperatives: First, put... Then, press... Finally, the bag..." }
-        ]
-      },
-      lesson3: {
-        title: "Lesson 3: Testing, Improving & Presentation Rehearsal (35 min)",
-        flow: [
-          { time: "00:00–05:00", stage: "Resilience Warm-Up", desc: "Introduce Karl Benz's test trials. Emphasize: 'Don't give up! Try again!'" },
-          { time: "05:00–12:00", stage: "Mission 8 (Test Lab)", desc: "Simulate stress tests in testing chamber. Celebrate discovering flaws." },
-          { time: "12:00–20:00", stage: "Mission 9 (Make It Better)", desc: "Upgrade prototypes: 'I improved my idea. Now it can...'." },
-          { time: "20:00–30:00", stage: "Mission 10 (Presentation Rehearsal)", desc: "Rehearse 9 speaking cards with microphone, timer, and partner peer feedback." },
-          { time: "30:00–35:00", stage: "Checklist & Expo Launch", desc: "Complete 10-point self-checklist and prepare for the classroom expo." }
-        ]
-      }
-    }
-  };
+  }; // end YOUNG_INVENTOR_DATA
 
   root.YOUNG_INVENTOR_DATA = YOUNG_INVENTOR_DATA;
 

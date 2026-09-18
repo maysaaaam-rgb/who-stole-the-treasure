@@ -1,1149 +1,930 @@
 /* ==========================================================================
    🧠 THE BRAIN HACKERS: MISSION UNLOCK YOUR BRAIN
-   Futuristic Brain Laboratory & Neural Sci-Fi Experience
-   Smart Interactive Whiteboard & Mobile/Desktop Responsive CSS
+   Complete Academy Design System & Smart Board Touch UI
+   Futuristic Neural Cyber-Laboratory & Interactive Science Experience
    ========================================================================== */
 
 :root {
-  --bg-space: #060913;
+  --bg-deep: #050914;
   --bg-lab: #0a1128;
-  --bg-card: rgba(15, 23, 42, 0.85);
-  --bg-card-hover: rgba(30, 41, 59, 0.95);
-  --border-cyan: rgba(56, 189, 248, 0.35);
-  --border-purple: rgba(168, 85, 247, 0.4);
-  --border-glow: rgba(56, 189, 248, 0.7);
+  --bg-surface: rgba(13, 23, 48, 0.88);
+  --bg-card: rgba(17, 29, 58, 0.82);
+  --bg-card-hover: rgba(26, 44, 86, 0.95);
+  --bg-card-active: rgba(30, 58, 110, 1);
 
-  --neon-cyan: #38bdf8;
-  --neon-blue: #0284c7;
+  --neon-cyan: #00f0ff;
+  --neon-cyan-glow: rgba(0, 240, 255, 0.4);
   --neon-purple: #c084fc;
-  --neon-magenta: #f43f5e;
-  --neon-green: #34d399;
+  --neon-purple-glow: rgba(192, 132, 252, 0.35);
+  --neon-pink: #ff2d87;
   --neon-gold: #fbbf24;
+  --neon-green: #10b981;
+  --neon-green-glow: rgba(16, 185, 129, 0.4);
   --neon-red: #ef4444;
 
-  --text-primary: #f8fafc;
+  --border-subtle: rgba(56, 189, 248, 0.22);
+  --border-bright: rgba(0, 240, 255, 0.55);
+  --border-glow: 0 0 15px rgba(0, 240, 255, 0.35);
+
+  --text-main: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
+  --text-gold: #fde047;
 
-  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --font-display: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }
 
-* {
+/* Global Reset & Base Setup */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  user-select: none;
-  -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-body, html {
+html, body {
   width: 100%;
-  height: 100%;
-  background: var(--bg-space);
-  color: var(--text-primary);
-  font-family: var(--font-main);
-  overflow: hidden;
-  position: relative;
+  min-height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* Background Neural Grid Canvas */
-#neural-bg-canvas {
-  position: absolute;
+/* Base interactive reset to remove ALL browser defaults */
+button, input, select, a {
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+  border: none;
+  background: none;
+}
+
+/* Background Neural Simulation Canvas */
+#neuralBgCanvas {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.55;
-}
-
-/* App Viewport Container */
-.bh-app-container {
-  position: relative;
   width: 100vw;
   height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+/* Top App Wrapper (Fills Entire Screen) */
+#bhAppWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   z-index: 1;
-  background: radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+  background: 
+    radial-gradient(ellipse at 50% 10%, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 85%, rgba(192, 132, 252, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(5, 9, 20, 0.95) 0%, rgba(10, 17, 40, 0.95) 100%);
 }
 
-/* Top Scientist HUD Bar */
-.bh-top-bar {
+/* ==========================================================================
+   1. TOP ACADEMY GAME HUD
+   ========================================================================== */
+.bh-hud-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 24px;
-  background: rgba(6, 10, 25, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-cyan);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-  z-index: 20;
-  min-height: 64px;
+  background: rgba(7, 13, 30, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1.5px solid var(--border-subtle);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  gap: 16px;
+  min-height: 68px;
 }
 
-.bh-brand-title {
+.bh-hud-left, .bh-hud-right {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bh-btn-library {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: #38bdf8;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 800;
   cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+.bh-btn-library:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px var(--neon-cyan-glow);
+  transform: translateY(-2px);
 }
 
-.bh-brain-logo {
-  font-size: 1.8rem;
-  filter: drop-shadow(0 0 10px var(--neon-cyan));
-  animation: pulse-brain 2.5s infinite ease-in-out;
-}
-
-@keyframes pulse-brain {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--neon-cyan)); }
-  50% { transform: scale(1.1); filter: drop-shadow(0 0 16px var(--neon-magenta)); }
-}
-
-.bh-title-text h1 {
-  font-size: 1.25rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  background: linear-gradient(135deg, #ffffff 40%, var(--neon-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
-}
-
-.bh-title-text .bh-sub {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--neon-cyan);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* Center HUD Metrics */
-.bh-hud-metrics {
+.bh-brand-cluster {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
+  cursor: pointer;
+}
+.bh-logo-pulse {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 12px var(--neon-cyan));
+  animation: logoBreath 3s infinite ease-in-out;
+}
+@keyframes logoBreath {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--neon-cyan)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 18px #ff2d87); }
+}
+.bh-brand-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #00f0ff, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bh-brand-sub {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1.5px;
 }
 
-.bh-metric-pill {
-  display: flex;
+/* Top Stat Badges */
+.bh-stat-pill {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.bh-metric-pill.energy-pill {
-  border-color: rgba(56, 189, 248, 0.35);
-}
-
-.bh-energy-bar-wrap {
-  width: 90px;
-  height: 8px;
-  background: #1e293b;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-
-.bh-energy-bar-fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #06b6d4);
-  background-size: 200% 100%;
-  border-radius: 4px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bh-metric-pill.xp-pill {
-  color: var(--neon-gold);
-  border-color: rgba(251, 191, 36, 0.3);
-}
-
-.bh-metric-pill.rank-pill {
-  color: var(--neon-purple);
-  border-color: rgba(192, 132, 252, 0.3);
-}
-
-/* Right HUD Controls */
-.bh-hud-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.bh-hud-btn {
-  background: rgba(30, 41, 59, 0.7);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  padding: 7px 12px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-}
-
-.bh-hud-btn:hover {
-  background: rgba(56, 189, 248, 0.2);
-  border-color: var(--neon-cyan);
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.bh-hud-btn.active {
-  background: rgba(168, 85, 247, 0.3);
-  border-color: var(--neon-purple);
-  color: #ffffff;
-}
-
-/* Stage / Viewport Area */
-.bh-stage-viewport {
-  flex: 1;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 24px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.bh-mission-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  animation: fadeInStage 0.4s ease-out;
-}
-
-@keyframes fadeInStage {
-  from { opacity: 0; transform: scale(0.98) translateY(6px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.bh-mission-header {
-  text-align: center;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.bh-mission-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid var(--border-cyan);
-  padding: 4px 14px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  color: var(--neon-cyan);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.bh-mission-title {
-  font-size: 2.1rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-  text-shadow: 0 2px 14px rgba(56, 189, 248, 0.35);
-  margin-bottom: 6px;
-}
-
-.bh-mission-desc {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  max-width: 760px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
-
-/* MISSION 00: CINEMATIC INTRO */
-.bh-intro-screen {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 58vh;
-}
-
-.bh-alarm-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(239, 68, 68, 0.18);
-  border: 1px solid var(--neon-red);
-  color: #fca5a5;
-  padding: 6px 18px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  animation: flashAlarm 1.4s infinite;
-}
-
-@keyframes flashAlarm {
-  0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-  50% { opacity: 0.55; box-shadow: 0 0 24px rgba(239, 68, 68, 0.8); }
-}
-
-.bh-intro-brain-stage {
-  position: relative;
-  width: 250px;
-  height: 250px;
-  margin: 0 auto 24px;
-}
-
-.bh-intro-brain-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.7));
-  animation: floatBrain 3.5s infinite ease-in-out;
-}
-
-@keyframes floatBrain {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-10px) scale(1.04); }
-}
-
-.bh-intro-heading {
-  font-size: 2.9rem;
-  font-weight: 900;
-  line-height: 1.15;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%, #c084fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bh-intro-subheading {
-  font-size: 1.25rem;
-  color: #cbd5e1;
-  max-width: 680px;
-  margin: 0 auto 28px;
-  line-height: 1.6;
-}
-
-.bh-start-mission-btn {
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
-  color: #ffffff;
-  border: none;
-  border-radius: 999px;
-  padding: 18px 48px;
-  font-size: 1.35rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.45);
-  transition: all 0.25s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.bh-start-mission-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.6);
-}
-
-/* MISSION 01: DETECT THE BRAIN */
-.bh-detect-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  width: 100%;
-  align-items: center;
-}
-
-.bh-detect-brain-view {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-card);
-  border: 1px solid var(--border-cyan);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  position: relative;
-}
-
-.bh-detect-svg {
-  width: 100%;
-  max-width: 380px;
-  height: auto;
-}
-
-.bh-color-key-bar {
-  display: flex;
-  gap: 16px;
-  margin-top: 18px;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 12px;
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.bh-key-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.bh-key-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.bh-key-dot.red { background: var(--neon-red); box-shadow: 0 0 8px var(--neon-red); }
-.bh-key-dot.blue { background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
-.bh-key-dot.black { background: #334155; }
-
-.bh-activities-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.bh-activity-card {
-  background: var(--bg-card);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 22px 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 130px;
-  justify-content: center;
-}
-
-.bh-activity-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--neon-cyan);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
-}
-
-.bh-activity-card.active-red {
-  border-color: var(--neon-red);
-  background: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
-  animation: pulseCard 1s infinite alternate;
-}
-
-@keyframes pulseCard {
-  from { transform: scale(1); }
-  to { transform: scale(1.04); }
-}
-
-.bh-act-icon {
-  font-size: 2.2rem;
-  margin-bottom: 8px;
-}
-
-.bh-act-label {
-  font-size: 1.15rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-}
-
-.bh-audio-prompt-box {
-  grid-column: 1 / -1;
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 16px;
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.bh-audio-play-btn {
-  background: var(--neon-cyan);
-  color: #04101e;
-  border: none;
-  border-radius: 999px;
-  padding: 8px 18px;
-  font-weight: 800;
+  border: 1.5px solid var(--border-subtle);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
   font-size: 0.88rem;
-  cursor: pointer;
+  font-weight: 800;
+  min-height: 44px;
+}
+.bh-stat-pill.xp-pill {
+  border-color: rgba(251, 191, 36, 0.4);
+  color: var(--text-gold);
+}
+.bh-stat-pill.energy-pill {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.bh-btn-hud {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
-}
-
-.bh-audio-play-btn:hover {
-  background: #7dd3fc;
-  transform: scale(1.05);
-}
-
-/* MISSION 02: NEURON NETWORK & BUILDER */
-.bh-neuron-builder-wrap {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.bh-neuron-stage {
-  position: relative;
-  width: 100%;
-  min-height: 380px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-cyan);
-  border-radius: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
-}
-
-.bh-neuron-svg {
-  width: 90%;
-  max-width: 800px;
-  height: auto;
-}
-
-.bh-drop-target {
-  position: absolute;
-  width: 140px;
-  height: 48px;
-  border: 2px dashed rgba(56, 189, 248, 0.5);
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: var(--neon-cyan);
-  transition: all 0.25s ease;
-  cursor: pointer;
-}
-
-.bh-drop-target.filled {
-  border-style: solid;
-  border-color: var(--neon-green);
-  background: rgba(16, 185, 129, 0.2);
-  color: #ffffff;
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
-}
-
-.bh-neuron-labels-dock {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.bh-neuron-label-btn {
-  background: rgba(30, 41, 59, 0.9);
-  border: 2px solid rgba(56, 189, 248, 0.4);
-  color: #ffffff;
-  padding: 12px 24px;
-  border-radius: 14px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
-}
-
-.bh-neuron-label-btn:hover {
-  background: rgba(56, 189, 248, 0.25);
-  border-color: var(--neon-cyan);
-  transform: translateY(-2px);
-}
-
-.bh-neuron-label-btn.is-placed {
-  opacity: 0.35;
-  pointer-events: none;
-  filter: grayscale(0.8);
-}
-
-/* MISSION 03: HUMAN NEURON CHAIN */
-.bh-chain-stage {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-cyan);
-  border-radius: 24px;
-  padding: 36px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-}
-
-.bh-target-msg-banner {
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: var(--neon-gold);
-  text-align: center;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 10px 24px;
-  border-radius: 999px;
-  border: 1px solid rgba(251, 191, 36, 0.3);
-}
-
-.bh-nodes-chain {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 100%;
-  flex-wrap: wrap;
-}
-
-.bh-neuron-node {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.95);
-  border: 3px solid rgba(255, 255, 255, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  position: relative;
-}
-
-.bh-neuron-node:hover {
-  transform: scale(1.08);
-  border-color: var(--neon-cyan);
-}
-
-.bh-neuron-node.activated {
-  border-color: var(--neon-green);
-  background: rgba(16, 185, 129, 0.25);
-  box-shadow: 0 0 35px var(--neon-green);
-  animation: glowNode 1.5s infinite alternate;
-}
-
-.bh-neuron-node .node-word {
-  font-size: 1.15rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.bh-neuron-node .node-icon {
-  font-size: 1.8rem;
-  margin-bottom: 4px;
-}
-
-.bh-synapse-connector {
-  width: 60px;
-  height: 6px;
-  background: #1e293b;
-  border-radius: 3px;
-  position: relative;
-  overflow: hidden;
-}
-
-.bh-synapse-connector.active-spark::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  animation: sparkStream 0.6s infinite linear;
-}
-
-@keyframes sparkStream {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-/* MISSION 04: VISUALIZE THE INVISIBLE */
-.bh-visualize-stage {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-  align-items: center;
-}
-
-.bh-vis-story-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-purple);
-  border-radius: 20px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.bh-vis-story-text {
-  font-size: 1.25rem;
-  line-height: 1.7;
-  color: #e2e8f0;
-  font-style: italic;
-}
-
-.bh-vis-story-text strong {
-  color: var(--neon-cyan);
-  font-style: normal;
-}
-
-.bh-spot-canvas-wrap {
-  position: relative;
-  background: #0f172a;
-  border: 2px solid var(--border-cyan);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.bh-spot-img-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.bh-error-hotspot {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bh-error-hotspot:hover {
-  background: rgba(56, 189, 248, 0.25);
-  border-color: var(--neon-cyan);
-  transform: scale(1.1);
-}
-
-.bh-error-hotspot.discovered {
-  border: 3px solid var(--neon-green);
-  background: rgba(16, 185, 129, 0.35);
-  box-shadow: 0 0 20px var(--neon-green);
-}
-
-/* MISSION 05: UNLOCK CREATIVITY */
-.bh-creative-stage {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-
-.bh-prompt-selector-bar {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.bh-prompt-pill {
   background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  padding: 8px 18px;
-  color: #cbd5e1;
-  font-size: 0.92rem;
-  font-weight: 700;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  color: var(--text-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  min-height: 44px;
 }
-
-.bh-prompt-pill.selected {
-  background: rgba(168, 85, 247, 0.25);
-  border-color: var(--neon-purple);
-  color: #ffffff;
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
-}
-
-.bh-draw-board-card {
-  width: 100%;
-  max-width: 860px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-cyan);
-  border-radius: 20px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.bh-draw-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.bh-color-swatches {
-  display: flex;
-  gap: 8px;
-}
-
-.bh-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.bh-swatch:hover, .bh-swatch.active {
-  transform: scale(1.2);
-  border-color: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-}
-
-#bh-draw-canvas {
-  width: 100%;
-  height: 360px;
-  background: #0f172a;
-  border-radius: 14px;
-  cursor: crosshair;
-  touch-action: none;
-}
-
-/* MISSION 06: BRAIN VS BRAIN */
-.bh-portals-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  width: 100%;
-}
-
-.bh-portal-card {
-  background: var(--bg-card);
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-  min-height: 240px;
-  justify-content: space-between;
-}
-
-.bh-portal-card:hover {
-  transform: translateY(-4px);
+.bh-btn-hud:hover {
+  background: rgba(51, 65, 85, 0.95);
   border-color: var(--neon-cyan);
-  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
 }
-
-.bh-portal-card.completed {
-  border-color: var(--neon-green);
-  background: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-}
-
-.bh-portal-icon {
-  font-size: 3rem;
-  margin-bottom: 8px;
-}
-
-.bh-portal-name {
-  font-size: 1.3rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: #ffffff;
-  margin-bottom: 4px;
-}
-
-.bh-portal-tag {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-/* MISSION 07: SAVE THE BRAIN */
-.bh-energy-stage {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 28px;
-}
-
-.bh-energy-centerpiece {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: var(--bg-card);
-  border: 2px solid var(--border-cyan);
-  border-radius: 28px;
-  padding: 32px 48px;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
-  text-align: center;
-}
-
-.bh-big-energy-val {
-  font-size: 4rem;
-  font-weight: 900;
+.bh-btn-hud.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--neon-cyan);
   color: var(--neon-cyan);
-  text-shadow: 0 0 24px rgba(56, 189, 248, 0.6);
-  line-height: 1;
-  margin-bottom: 8px;
+}
+.bh-btn-hud.teacher-btn {
+  background: rgba(192, 132, 252, 0.15);
+  border-color: rgba(192, 132, 252, 0.4);
+  color: #e9d5ff;
+}
+.bh-btn-hud.teacher-btn:hover {
+  background: rgba(192, 132, 252, 0.3);
+  border-color: var(--neon-purple);
 }
 
-.bh-habits-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+/* Overall Progress Strip */
+.bh-progress-track {
   width: 100%;
-  max-width: 900px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.bh-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00f0ff, #c084fc, #ff2d87);
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px var(--neon-cyan);
 }
 
-.bh-habit-card {
-  background: var(--bg-card);
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  padding: 18px 20px;
+/* ==========================================================================
+   2. TEAM COUNTERS BAR (FIXED: NO CONCATENATED LABELS)
+   ========================================================================== */
+.bh-teams-strip {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bh-habit-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--neon-cyan);
-  transform: translateY(-2px);
-}
-
-.bh-habit-card.fueled {
-  border-color: var(--neon-green);
-  background: rgba(16, 185, 129, 0.2);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
-  pointer-events: none;
-}
-
-/* FINAL MISSION & CELEBRATION */
-.bh-final-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border-cyan);
-  border-radius: 28px;
-  padding: 36px 40px;
-  width: 100%;
-  max-width: 860px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-}
-
-.bh-sentence-builder-box {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin: 24px 0;
-}
-
-.bh-builder-slot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.45);
-  border: 2px dashed var(--neon-cyan);
-  border-radius: 12px;
-  padding: 8px 24px;
-  font-size: 1.3rem;
-  font-weight: 800;
-  min-width: 140px;
-  color: var(--neon-gold);
-}
-
-.bh-choice-pills-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
+  padding: 10px 24px;
+  background: rgba(10, 16, 35, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-wrap: wrap;
 }
-
-.bh-choice-pill {
-  background: rgba(30, 41, 59, 0.9);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  padding: 10px 22px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #ffffff;
+.bh-team-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bh-choice-pill:hover {
-  background: rgba(56, 189, 248, 0.3);
-  border-color: var(--neon-cyan);
-  transform: translateY(-2px);
-}
-
-/* Bottom Narrative & Controls Dock */
-.bh-bottom-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: rgba(6, 10, 25, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid var(--border-cyan);
-  min-height: 72px;
-  z-index: 20;
-}
-
-.bh-narrative-box {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  max-width: 720px;
-}
-
-.bh-narrative-speaker {
-  font-size: 1.8rem;
-  filter: drop-shadow(0 0 8px var(--neon-purple));
-}
-
-.bh-narrative-text {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  line-height: 1.4;
-}
-
-.bh-nav-controls {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.bh-nav-btn {
-  background: rgba(30, 41, 59, 0.8);
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   transition: all 0.2s ease;
   min-height: 48px;
 }
-
-.bh-nav-btn.primary-action {
-  background: linear-gradient(135deg, #0284c7, #2563eb);
-  border-color: #38bdf8;
-  box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35);
-}
-
-.bh-nav-btn:hover {
-  transform: translateY(-2px);
+.bh-team-card:hover {
   border-color: var(--neon-cyan);
+  transform: translateY(-2px);
+}
+.bh-team-card.selected {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.12);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+.bh-team-icon {
+  font-size: 1.35rem;
+}
+.bh-team-info {
+  display: flex;
+  flex-direction: column;
+}
+.bh-team-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+.bh-team-pts {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--neon-gold);
+  font-family: var(--font-mono);
+}
+.bh-team-btn-group {
+  display: flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+.bh-team-btn-group button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+.bh-team-btn-group button:hover {
+  background: var(--neon-cyan);
+  color: #050914;
 }
 
-/* Modals & Teacher Drawer */
+/* ==========================================================================
+   3. VISUAL MISSION TIMELINE NAVIGATION
+   ========================================================================== */
+.bh-timeline-strip {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 24px;
+  background: rgba(8, 14, 30, 0.9);
+  overflow-x: auto;
+  border-bottom: 1.5px solid var(--border-subtle);
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) transparent;
+}
+.bh-timeline-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.bh-timeline-strip::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 4px;
+}
+
+.bh-timeline-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(17, 26, 48, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 48px;
+}
+.bh-timeline-step:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: var(--neon-cyan);
+  transform: translateY(-2px);
+}
+.bh-timeline-step.active {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+}
+.bh-timeline-step.completed {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+}
+.bh-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.bh-step-icon {
+  font-size: 1.15rem;
+}
+.bh-step-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.bh-step-status {
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+
+/* ==========================================================================
+   4. CINEMATIC HERO LAUNCH SCREEN
+   ========================================================================== */
+#bhHeroScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: calc(100vh - 160px);
+  text-align: center;
+  position: relative;
+}
+
+.bh-hero-graphic-wrap {
+  position: relative;
+  width: 320px;
+  height: 260px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bh-hero-radar-ring {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border: 1.5px dashed rgba(0, 240, 255, 0.3);
+  border-radius: 50%;
+  animation: radarSpin 20s infinite linear;
+}
+@keyframes radarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.bh-hero-radar-ring.outer {
+  width: 340px;
+  height: 340px;
+  border-color: rgba(192, 132, 252, 0.25);
+  animation-direction: reverse;
+  animation-duration: 30s;
+}
+
+.bh-hero-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1.5px solid var(--neon-cyan);
+  padding: 6px 18px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  display: inline-block;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+.bh-hero-h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #00f0ff 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+}
+
+.bh-hero-sub {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #cbd5e1;
+  max-width: 650px;
+  margin: 0 auto 30px auto;
+  line-height: 1.5;
+}
+
+.bh-btn-start-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #00f0ff 0%, #0284c7 50%, #7c3aed 100%);
+  color: #050914;
+  font-size: 1.25rem;
+  font-weight: 900;
+  padding: 16px 42px;
+  border-radius: 35px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 240, 255, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 70px;
+}
+.bh-btn-start-hero:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 14px 40px rgba(0, 240, 255, 0.6);
+  filter: brightness(1.1);
+}
+.bh-btn-start-hero:active {
+  transform: scale(0.97);
+}
+
+/* Hero Fast Jump Selector */
+.bh-hero-missions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  max-width: 1000px;
+  width: 100%;
+  margin-top: 40px;
+}
+.bh-hero-mission-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+.bh-hero-mission-card:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: var(--neon-cyan);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   5. MAIN MISSION VIEWPORT CONTAINER
+   ========================================================================== */
+.bh-stage-container {
+  flex: 1;
+  padding: 24px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.bh-mission-header-card {
+  background: rgba(13, 23, 48, 0.85);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px 28px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+.bh-mission-badges-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.bh-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.bh-badge.active-mission {
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+.bh-badge.curriculum {
+  background: rgba(192, 132, 252, 0.15);
+  border: 1px solid var(--neon-purple);
+  color: var(--neon-purple);
+}
+
+.bh-mission-h2 {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 900;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bh-mission-p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Two-Column Mission Layout */
+.bh-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+}
+@media (max-width: 992px) {
+  .bh-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bh-panel {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.bh-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+.bh-panel-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   6. MISSION 1: BRAIN PET SCANNER
+   ========================================================================== */
+.bh-scanner-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+.bh-brain-svg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.25));
+}
+.bh-lobe-path {
+  fill: #0f1c3f;
+  stroke: #38bdf8;
+  stroke-width: 2.5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.bh-lobe-path:hover {
+  fill: #1e3a8a;
+  stroke: #00f0ff;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 12px var(--neon-cyan));
+}
+.bh-lobe-path.glowing.active-yellow {
+  fill: #f59e0b;
+  stroke: #fde047;
+  filter: drop-shadow(0 0 20px #f59e0b);
+}
+.bh-lobe-path.glowing.active-green {
+  fill: #059669;
+  stroke: #34d399;
+  filter: drop-shadow(0 0 20px #10b981);
+}
+.bh-lobe-path.glowing.active-red {
+  fill: #dc2626;
+  stroke: #f87171;
+  filter: drop-shadow(0 0 20px #ef4444);
+}
+
+/* Smart Board Large Action Cards (70px+ Touch Target) */
+.bh-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+.bh-btn-sense-action {
+  background: rgba(17, 26, 48, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 72px;
+}
+.bh-btn-sense-action:hover {
+  background: rgba(30, 58, 110, 0.9);
+  border-color: var(--neon-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.3);
+}
+.bh-btn-sense-action:active {
+  transform: scale(0.97);
+}
+.bh-sense-icon {
+  font-size: 2rem;
+}
+.bh-sense-info {
+  text-align: left;
+}
+.bh-sense-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+.bh-sense-lobe {
+  font-size: 0.8rem;
+  color: var(--neon-cyan);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   7. MISSION 2: NEURON NETWORK
+   ========================================================================== */
+.bh-neuron-svg {
+  width: 100%;
+  max-width: 680px;
+  height: auto;
+}
+.bh-target-node {
+  fill: rgba(0, 240, 255, 0.15);
+  stroke: var(--neon-cyan);
+  stroke-width: 3;
+  stroke-dasharray: 6 3;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.bh-target-node:hover {
+  fill: rgba(0, 240, 255, 0.4);
+  transform: scale(1.08);
+}
+.bh-target-node.completed {
+  fill: rgba(16, 185, 129, 0.5);
+  stroke: #10b981;
+  stroke-dasharray: none;
+}
+
+.bh-part-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 68px;
+}
+.bh-part-card:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(30, 41, 59, 0.95);
+}
+.bh-part-card.active-selection {
+  border-color: var(--neon-gold);
+  background: rgba(251, 191, 36, 0.15);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.35);
+}
+.bh-part-card.placed {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+/* ==========================================================================
+   8. FOOTER STAGE CONTROLS
+   ========================================================================== */
+.bh-stage-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(7, 13, 30, 0.92);
+  border-top: 1.5px solid var(--border-subtle);
+  margin-top: auto;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.bh-btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  min-height: 54px;
+  transition: all 0.2s;
+}
+.bh-btn-nav:hover {
+  background: rgba(51, 65, 85, 1);
+  border-color: var(--neon-cyan);
+  transform: translateY(-2px);
+}
+.bh-btn-nav.primary {
+  background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+  color: #050914;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
+}
+.bh-btn-nav.primary:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px) scale(1.02);
+}
+.bh-btn-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   9. POLISHED GLASS MODALS (DOSSIER & TEACHER HUD)
+   ========================================================================== */
 .bh-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: none;
+  background: rgba(3, 7, 18, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
-
-.bh-modal-overlay.open {
-  display: flex;
+.bh-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
-
 .bh-modal-card {
-  background: #0f172a;
-  border: 2px solid var(--border-cyan);
-  border-radius: 24px;
-  padding: 28px;
-  width: 92%;
-  max-width: 640px;
-  max-height: 85vh;
+  background: rgba(13, 23, 48, 0.95);
+  border: 2px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-  position: relative;
+  padding: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-
-.bh-modal-close {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.4rem;
+.bh-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+.bh-modal-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--neon-cyan);
+}
+.bh-btn-close-modal {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 1.1rem;
+}
+.bh-btn-close-modal:hover {
+  background: #ef4444;
 }
 
-.bh-modal-close:hover {
+/* Floating XP Toast */
+.bh-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1.5px solid var(--neon-cyan);
   color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2000;
+}
+.bh-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-@media (max-width: 900px) {
-  .bh-detect-layout, .bh-visualize-stage { grid-template-columns: 1fr; }
-  .bh-portals-grid { grid-template-columns: 1fr 1fr; }
-  .bh-habits-grid { grid-template-columns: 1fr 1fr; }
-  .bh-hud-metrics { display: none; }
+/* Floating +10 XP Animation */
+@keyframes floatXp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+.float-xp-bubble {
+  position: absolute;
+  font-weight: 900;
+  color: var(--neon-gold);
+  font-size: 1.2rem;
+  pointer-events: none;
+  animation: floatXp 1s forwards ease-out;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
 }
