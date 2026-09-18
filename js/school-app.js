@@ -5404,90 +5404,724 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   // =========================================================================
-  // HOMEWORK VIEW (Complete CRUD)
+  // HOMEWORK & QUESTS VIEW (Full CRUD, Student Quest & Centralized XP System)
   // =========================================================================
+  let hwFilterTab = 'all'; // 'all' | 'draft' | 'active' | 'completed' | 'overdue'
+  let hwSearchQuery = '';
+  let hwFilterClass = 'all';
+  let hwFilterSubject = 'all';
   let hwFilterStatus = 'all';
-  let hwFilterType = 'all';
+  let currentEditingHwResources = [];
+  let simulatedAudioRecordingInterval = null;
+  let simulatedAudioRecorded = false;
+  let simulatedAudioSeconds = 0;
 
   function renderHomeworkView(container) {
-    const activeClass = store.getActiveClass();
     const allHomework = store.getHomework();
     const classes = store.getClasses();
-    let homework = allHomework.filter(h => {
-      if (!activeClass) return true;
-      if (h.classId && h.classId !== 'all' && h.classId !== activeClass.id) return false;
+    const activeClass = store.getActiveClass();
+
+    // Tab counts
+    const countAll = allHomework.length;
+    const countDraft = allHomework.filter(h => (h.status || '').toUpperCase() === 'DRAFT').length;
+    const countActive = allHomework.filter(h => (h.status || 'ACTIVE').toUpperCase() === 'ACTIVE').length;
+    const countCompleted = allHomework.filter(h => (h.status || '').toUpperCase() === 'COMPLETED').length;
+    const countOverdue = allHomework.filter(h => (h.status || '').toUpperCase() === 'OVERDUE').length;
+
+    // Filter items
+    let filtered = allHomework.filter(h => {
+      // Tab filter
+      const st = (h.status || 'ACTIVE').toUpperCase();
+      if (hwFilterTab === 'draft' && st !== 'DRAFT') return false;
+      if (hwFilterTab === 'active' && st !== 'ACTIVE') return false;
+      if (hwFilterTab === 'completed' && st !== 'COMPLETED') return false;
+      if (hwFilterTab === 'overdue' && st !== 'OVERDUE') return false;
+
+      // Status dropdown filter
+      if (hwFilterStatus !== 'all' && st !== hwFilterStatus.toUpperCase()) return false;
+
+      // Class dropdown filter
+      if (hwFilterClass !== 'all' && h.classId && h.classId !== 'all' && h.classId !== hwFilterClass) return false;
+
+      // Subject dropdown filter
+      if (hwFilterSubject !== 'all' && (h.subject || '').toLowerCase() !== hwFilterSubject.toLowerCase()) return false;
+
+      // Search query
+      if (hwSearchQuery && hwSearchQuery.trim()) {
+        const q = hwSearchQuery.toLowerCase().trim();
+        const matchTitle = (h.title || '').toLowerCase().includes(q);
+        const matchDesc = (h.description || '').toLowerCase().includes(q);
+        const matchSubj = (h.subject || '').toLowerCase().includes(q);
+        if (!matchTitle && !matchDesc && !matchSubj) return false;
+      }
+
       return true;
     });
 
-    if (hwFilterType !== 'all') homework = homework.filter(h => (h.type || '').toLowerCase() === hwFilterType.toLowerCase());
-
     container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Homework &amp; Independent Tasks</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + allHomework.length + ' tasks tracking student submissions, task completion, and evidence-based accuracy.</p>' +
+      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+        // Header
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:8px;">' +
+              '<span>✍️</span> <span>Homework &amp; Quests</span>' +
+            '</h1>' +
+            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Assign fun English quests, track completion, and reward your students with XP!</p>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button class="btn-primary-action" onclick="openCreateHomeworkModal()" style="font-weight:900; padding:10px 20px; font-size:0.92rem; box-shadow:0 4px 14px rgba(59,130,246,0.35);">' +
+              '+ Create Homework' +
+            '</button>' +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
+
+        // Toolbar: Search + Class + Subject + Status Filters
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:14px 16px; margin-bottom:16px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
+          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+            '<div style="flex:1; min-width:220px; position:relative;">' +
+              '<input type="text" class="search-input" placeholder="🔍 Search homework tasks..." value="' + (hwSearchQuery || '') + '" oninput="hwSearchQuery=this.value; renderCurrentView();" style="width:100%;" />' +
+            '</div>' +
+
+            '<select class="filter-select" onchange="hwFilterClass=this.value; renderCurrentView();" style="min-width:140px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterClass === 'all' ? 'selected' : '') + '>All Classes</option>' +
+              classes.map(c => '<option value="' + c.id + '" ' + (hwFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
+            '</select>' +
+
+            '<select class="filter-select" onchange="hwFilterSubject=this.value; renderCurrentView();" style="min-width:150px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterSubject === 'all' ? 'selected' : '') + '>All Subjects</option>' +
+              '<option value="Vocabulary" ' + (hwFilterSubject === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+              '<option value="Reading & Vocab" ' + (hwFilterSubject === 'Reading & Vocab' ? 'selected' : '') + '>Reading &amp; Vocab</option>' +
+              '<option value="Phonics & Spelling" ' + (hwFilterSubject === 'Phonics & Spelling' ? 'selected' : '') + '>Phonics &amp; Spelling</option>' +
+              '<option value="Speaking" ' + (hwFilterSubject === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
+              '<option value="Reading" ' + (hwFilterSubject === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+              '<option value="Grammar" ' + (hwFilterSubject === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+              '<option value="English / Science CLIL" ' + (hwFilterSubject === 'English / Science CLIL' ? 'selected' : '') + '>English / Science CLIL</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="hwFilterStatus=this.value; renderCurrentView();" style="min-width:130px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterStatus === 'all' ? 'selected' : '') + '>All Status</option>' +
+              '<option value="active" ' + (hwFilterStatus === 'active' ? 'selected' : '') + '>Active</option>' +
+              '<option value="draft" ' + (hwFilterStatus === 'draft' ? 'selected' : '') + '>Draft</option>' +
+              '<option value="completed" ' + (hwFilterStatus === 'completed' ? 'selected' : '') + '>Completed</option>' +
+              '<option value="overdue" ' + (hwFilterStatus === 'overdue' ? 'selected' : '') + '>Overdue</option>' +
+            '</select>' +
+          '</div>' +
         '</div>' +
-      '</div>' +
 
-      // Filters Bar
-      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
-        '<select class="filter-select" onchange="hwFilterType=this.value; renderCurrentView();">' +
-          '<option value="all" ' + (hwFilterType === 'all' ? 'selected' : '') + '>All Task Types</option>' +
-          '<option value="Game" ' + (hwFilterType === 'Game' ? 'selected' : '') + '>Game Mission</option>' +
-          '<option value="Worksheet" ' + (hwFilterType === 'Worksheet' ? 'selected' : '') + '>Printable Worksheet</option>' +
-          '<option value="Reading" ' + (hwFilterType === 'Reading' ? 'selected' : '') + '>Reading Task</option>' +
-          '<option value="Writing" ' + (hwFilterType === 'Writing' ? 'selected' : '') + '>Writing Task</option>' +
-          '<option value="Speaking" ' + (hwFilterType === 'Speaking' ? 'selected' : '') + '>Speaking Mission</option>' +
-          '<option value="Project" ' + (hwFilterType === 'Project' ? 'selected' : '') + '>Project</option>' +
-        '</select>' +
-      '</div>' +
+        // Filter Tabs
+        '<div class="hw-filter-tabs">' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'all' ? 'is-active' : '') + '" onclick="hwFilterTab=\'all\'; renderCurrentView();">All (' + countAll + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'draft' ? 'is-active' : '') + '" onclick="hwFilterTab=\'draft\'; renderCurrentView();">Draft (' + countDraft + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'active' ? 'is-active' : '') + '" onclick="hwFilterTab=\'active\'; renderCurrentView();">Active (' + countActive + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'completed' ? 'is-active' : '') + '" onclick="hwFilterTab=\'completed\'; renderCurrentView();">Completed (' + countCompleted + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'overdue' ? 'is-active' : '') + '" onclick="hwFilterTab=\'overdue\'; renderCurrentView();">Overdue (' + countOverdue + ')</button>' +
+        '</div>' +
 
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
-        (homework.length === 0 ? '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No homework tasks match your filters.</div>' :
-          homework.map(h => {
-            const cls = classes.find(c => c.id === h.classId) || { name: 'Active Cohort' };
-            const classStudents = store.getStudentsByClass(cls.id);
-            const submissions = h.submissions || {};
-            const completedCount = Object.values(submissions).filter(s => s.status === 'Complete').length;
-            const inProgressCount = Object.values(submissions).filter(s => s.status === 'Partially Complete' || s.status === 'In Progress').length;
-            const totalCount = classStudents.length || 8;
-            const pct = Math.round(((completedCount + inProgressCount * 0.5) / totalCount) * 100);
+        // Homework Cards Grid
+        (filtered.length === 0 ?
+          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+            '<div style="font-size:44px; margin-bottom:10px;">📝</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No homework tasks found</h3>' +
+            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Create a new homework quest or clear your active filters.</p>' +
+            '<button type="button" class="btn-primary-action" onclick="openCreateHomeworkModal()">+ Create Homework</button>' +
+          '</div>' :
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(330px, 1fr)); gap:20px;">' +
+            filtered.map(h => {
+              const cls = classes.find(c => c.id === h.classId) || { name: h.className || 'Grade 3A' };
+              const classStudents = store.getStudentsByClass(cls.id);
+              const totalStudentsCount = classStudents.length || 18;
+              const submissions = h.submissions || {};
+              const completedCount = Object.values(submissions).filter(s => s.status === 'COMPLETED' || s.status === 'Complete').length;
+              const submittedCount = h.submittedCount !== undefined ? h.submittedCount : completedCount;
+              const pct = Math.min(100, Math.round((submittedCount / totalStudentsCount) * 100));
 
-            return '' +
-              '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); background:rgba(79,70,229,0.1); padding:2px 8px; border-radius:999px;">' + h.type + '</span>' +
-                    '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
+              // Tag badge styling
+              const subj = (h.subject || 'Vocabulary').toLowerCase();
+              let tagClass = 'hw-tag-vocab';
+              if (subj.includes('phonics')) tagClass = 'hw-tag-phonics';
+              else if (subj.includes('speaking')) tagClass = 'hw-tag-speaking';
+              else if (subj.includes('reading')) tagClass = 'hw-tag-reading';
+              else if (subj.includes('clil') || subj.includes('science')) tagClass = 'hw-tag-clil';
+
+              const thumb = h.thumbnail || 'assets/homework/thumb-animals.png';
+              const isDraft = (h.status || '').toUpperCase() === 'DRAFT';
+
+              return '' +
+                '<div class="hw-quest-card">' +
+                  '<div class="hw-quest-card-thumb-wrap">' +
+                    '<img src="' + thumb + '" alt="' + (h.title || 'Quest') + '" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+                    (isDraft ? '<div style="position:absolute; top:10px; right:10px; background:#475569; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:10px;">DRAFT</div>' : '') +
                   '</div>' +
-                  '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">' + h.title + '</h3>' +
-                  '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Due: ' + (h.dueDate || 'Friday') + ' · ' + (h.questionsTotal || 10) + ' Tasks</p>' +
-                  // Completion progress bar
-                  '<div style="margin-bottom:14px;">' +
-                    '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">' +
-                      '<span>Class Submissions</span>' +
-                      '<span>' + completedCount + ' / ' + totalCount + ' completed</span>' +
+                  '<div class="hw-quest-card-body">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                      '<span class="hw-tag-badge ' + tagClass + '">' + (h.subject || 'Vocabulary') + '</span>' +
+                      '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
                     '</div>' +
-                    '<div class="progress-bar-wrap" style="height:8px;"><div class="progress-bar-fill" style="width:' + pct + '%;"></div></div>' +
+
+                    '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 6px 0; color:var(--text-main); line-height:1.25;">' + h.title + '</h3>' +
+                    '<div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px; font-weight:600;">' +
+                      'Due: ' + (h.dueDate || 'Friday, Nov 15') +
+                    '</div>' +
+
+                    // Progress Bar & Stats
+                    '<div style="margin-bottom:14px;">' +
+                      '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; margin-bottom:4px; color:var(--text-secondary);">' +
+                        '<span>' + submittedCount + '/' + totalStudentsCount + ' completed (' + pct + '%)</span>' +
+                        '<span>' + (h.estimatedTime || '20 min') + '</span>' +
+                      '</div>' +
+                      '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                        '<div style="width:' + pct + '%; height:100%; background:#10b981; border-radius:6px; transition:width 0.3s ease;"></div>' +
+                      '</div>' +
+                    '</div>' +
+
+                    // XP Badges
+                    '<div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">' +
+                      '<span class="hw-xp-pill">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
+                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill">✨ +' + (h.optionalChallengeXp || 5) + ' XP (Optional Challenge)</span>' : '') +
+                    '</div>' +
+
+                    // Footer Action Buttons
+                    '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:12px; margin-top:auto; gap:6px; flex-wrap:wrap;">' +
+                      '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:6px 12px; font-size:0.8rem; font-weight:800;">' +
+                        'Submissions (' + submittedCount + ')' +
+                      '</button>' +
+                      '<div style="display:flex; gap:4px;">' +
+                        '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:5px 9px; font-size:0.78rem; font-weight:800; color:#3b82f6;" title="Student Quest View">👁️ Preview</button>' +
+                        '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                '</div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:8px;">' +
-                  '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:5px 12px; font-size:0.8rem;">👥 Submissions &amp; Grading</button>' +
-                  '<div style="display:flex; gap:6px;">' +
-                    '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>';
-          }).join('')
+                '</div>';
+            }).join('') +
+          '</div>'
         ) +
       '</div>';
   }
 
+  // =========================================================================
+  // 2-COLUMN CREATE / EDIT HOMEWORK MODAL & LIVE PREVIEW
+  // =========================================================================
+
+  window.openCreateHomeworkModal = function() {
+    const editIdEl = document.getElementById('edit-hw-id');
+    const modalTitleEl = document.getElementById('hw-modal-title');
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+    const pubEl = document.getElementById('new-hw-publish');
+
+    if (editIdEl) editIdEl.value = '';
+    if (modalTitleEl) modalTitleEl.textContent = 'Create Homework Quest';
+    if (titleEl) titleEl.value = '🐾 Animal Habitats Explorer';
+    if (subjEl) subjEl.value = 'Reading & Vocab';
+    if (dateEl) dateEl.value = 'Friday, Nov 15';
+    if (xpEl) xpEl.value = '20';
+    if (descEl) descEl.value = '1. Read the short passage about forest and ocean animals.\n2. Complete the 5 matching questions.\n3. Audio record: say 3 animal names and their habitats!';
+    if (optToggleEl) optToggleEl.checked = true;
+    if (optDescEl) optDescEl.value = 'Draw your favorite animal for +5 bonus XP!';
+    if (pubEl) pubEl.checked = true;
+
+    // Populate class selector
+    const classes = store.getClasses();
+    const activeClass = store.getActiveClass();
+    if (classEl) {
+      classEl.innerHTML = classes.map(c => '<option value="' + c.id + '" ' + (activeClass && activeClass.id === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('');
+    }
+
+    currentEditingHwResources = [
+      { id: 'res-ws-1', type: 'worksheet', title: '📄 Forest & Ocean Reading (PDF)' },
+      { id: 'res-gm-1', type: 'game', title: '🎮 Jungle Animal Explorer' }
+    ];
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+    window.openModal('modal-homework-editor');
+  };
+
+  window.openEditHomeworkModal = function(homeworkId) {
+    const hw = store.getHomeworkItem(homeworkId);
+    if (!hw) return;
+
+    const editIdEl = document.getElementById('edit-hw-id');
+    const modalTitleEl = document.getElementById('hw-modal-title');
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+    const pubEl = document.getElementById('new-hw-publish');
+
+    if (editIdEl) editIdEl.value = hw.id;
+    if (modalTitleEl) modalTitleEl.textContent = 'Edit Homework Quest';
+    if (titleEl) titleEl.value = hw.title || '';
+    if (subjEl) subjEl.value = hw.subject || 'Reading & Vocab';
+    if (dateEl) dateEl.value = hw.dueDate || 'Friday, Nov 15';
+    if (xpEl) xpEl.value = hw.xpReward || 20;
+
+    if (descEl) {
+      if (Array.isArray(hw.instructions) && hw.instructions.length) {
+        descEl.value = hw.instructions.join('\n');
+      } else {
+        descEl.value = hw.description || '';
+      }
+    }
+
+    if (optToggleEl) optToggleEl.checked = !!hw.optionalChallenge;
+    if (optDescEl) optDescEl.value = hw.optionalChallengeDesc || '';
+    if (pubEl) pubEl.checked = (hw.status || '').toUpperCase() !== 'DRAFT';
+
+    const classes = store.getClasses();
+    if (classEl) {
+      classEl.innerHTML = classes.map(c => '<option value="' + c.id + '" ' + (hw.classId === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('');
+    }
+
+    currentEditingHwResources = Array.isArray(hw.resources) ? JSON.parse(JSON.stringify(hw.resources)) : [];
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+    window.openModal('modal-homework-editor');
+  };
+
+  window.toggleOptionalChallengeField = function() {
+    const toggle = document.getElementById('new-hw-opt-toggle');
+    const details = document.getElementById('hw-opt-details');
+    if (details && toggle) {
+      details.style.display = toggle.checked ? 'flex' : 'none';
+    }
+  };
+
+  window.renderAttachedResourceChips = function() {
+    const container = document.getElementById('hw-attached-resources-chips');
+    if (!container) return;
+    if (currentEditingHwResources.length === 0) {
+      container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">No extra resources attached yet.</span>';
+      return;
+    }
+    container.innerHTML = currentEditingHwResources.map((r, idx) => 
+      '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:4px 10px; font-size:0.75rem; font-weight:800; display:flex; align-items:center; gap:6px;">' +
+        '<span>' + (r.title || 'Resource') + '</span>' +
+        '<button type="button" onclick="removeAttachedResource(' + idx + ')" style="background:none; border:none; color:var(--color-danger); cursor:pointer; font-weight:900; font-size:0.8rem;" title="Remove">✕</button>' +
+      '</div>'
+    ).join('');
+  };
+
+  window.removeAttachedResource = function(index) {
+    currentEditingHwResources.splice(index, 1);
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+  };
+
+  window.attachQuickResource = function(type) {
+    if (type === 'worksheet') {
+      const ws = (store.getWorksheets ? store.getWorksheets() : [])[0] || { title: 'Animal Habitats Reading Worksheet (PDF)' };
+      currentEditingHwResources.push({ id: 'res-ws-' + Date.now(), type: 'worksheet', title: '📄 ' + ws.title });
+    } else {
+      const gm = (store.getResources ? store.getResources() : [])[0] || { title: 'Jungle Animal Explorer Game' };
+      currentEditingHwResources.push({ id: 'res-gm-' + Date.now(), type: 'game', title: '🎮 ' + gm.title });
+    }
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+  };
+
+  window.updateLiveQuestPreview = function() {
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+
+    const previewTitle = document.getElementById('preview-hw-title');
+    const previewSubj = document.getElementById('preview-subject-badge');
+    const previewClass = document.getElementById('preview-class-name');
+    const previewDate = document.getElementById('preview-due-date');
+    const previewXP = document.getElementById('preview-xp-pill');
+    const previewBonusXP = document.getElementById('preview-bonus-xp-pill');
+    const previewStepsList = document.getElementById('preview-steps-list');
+    const previewResources = document.getElementById('preview-resources-wrap');
+
+    if (previewTitle && titleEl) previewTitle.textContent = titleEl.value || '🐾 New Homework Quest';
+    if (previewSubj && subjEl) previewSubj.textContent = subjEl.value;
+    if (previewClass && classEl && classEl.options[classEl.selectedIndex]) previewClass.textContent = classEl.options[classEl.selectedIndex].text;
+    if (previewDate && dateEl) previewDate.textContent = 'Due: ' + (dateEl.value || 'Friday, Nov 15');
+    if (previewXP && xpEl) previewXP.textContent = '⭐ +' + (xpEl.value || 20) + ' XP';
+
+    if (previewBonusXP && optToggleEl) {
+      if (optToggleEl.checked) {
+        previewBonusXP.style.display = 'inline-flex';
+        previewBonusXP.textContent = '✨ +5 XP Bonus';
+      } else {
+        previewBonusXP.style.display = 'none';
+      }
+    }
+
+    if (previewStepsList && descEl) {
+      const raw = descEl.value || '';
+      const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+      if (lines.length) {
+        previewStepsList.innerHTML = lines.map(line => 
+          '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+            '<span style="color:#38bdf8;">✓</span>' +
+            '<span>' + line + '</span>' +
+          '</div>'
+        ).join('');
+      } else {
+        previewStepsList.innerHTML = '<div>1. Complete your English quest!</div>';
+      }
+    }
+
+    if (previewResources) {
+      if (currentEditingHwResources.length) {
+        previewResources.innerHTML = currentEditingHwResources.map(r => 
+          '<div style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:6px 10px; font-size:0.75rem; font-weight:800; color:#38bdf8;">' +
+            r.title +
+          '</div>'
+        ).join('');
+      } else {
+        previewResources.innerHTML = '';
+      }
+    }
+  };
+
+  window.handleSaveHomeworkForm = function(event) {
+    if (event) event.preventDefault();
+    const editId = document.getElementById('edit-hw-id')?.value;
+    const title = document.getElementById('new-hw-title')?.value || 'New Quest';
+    const subject = document.getElementById('new-hw-subject')?.value || 'Reading & Vocab';
+    const classId = document.getElementById('new-hw-class')?.value || 'class-3a';
+    const dueDate = document.getElementById('new-hw-date')?.value || 'Friday, Nov 15';
+    const xpReward = parseInt(document.getElementById('new-hw-xp')?.value, 10) || 20;
+    const rawDesc = document.getElementById('new-hw-desc')?.value || '';
+    const instructions = rawDesc.split('\n').map(l => l.trim()).filter(Boolean);
+    const optionalChallenge = !!document.getElementById('new-hw-opt-toggle')?.checked;
+    const optionalChallengeDesc = document.getElementById('new-hw-opt-desc')?.value || 'Draw your favorite animal for +5 bonus XP!';
+    const isPublished = !!document.getElementById('new-hw-publish')?.checked;
+
+    const payload = {
+      title,
+      subject,
+      classId,
+      dueDate,
+      xpReward,
+      instructions,
+      description: rawDesc,
+      optionalChallenge,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc,
+      resources: currentEditingHwResources,
+      status: isPublished ? 'ACTIVE' : 'DRAFT',
+      published: isPublished
+    };
+
+    if (editId) {
+      store.updateHomework(editId, payload);
+      showNotification('Homework Quest "' + title + '" updated successfully!');
+    } else {
+      store.createHomework(payload);
+      showNotification('New Homework Quest "' + title + '" created and assigned!');
+    }
+
+    window.closeModal('modal-homework-editor');
+    renderCurrentView();
+  };
+
+  window.handleDuplicateHomework = function(hwId) {
+    const duplicated = store.duplicateHomework(hwId);
+    if (duplicated) {
+      showNotification('Duplicated "' + duplicated.title + '"!');
+      renderCurrentView();
+    }
+  };
+
+  window.handleArchiveHomework = function(hwId) {
+    if (confirm('Archive this homework quest? It can be restored anytime in Archived Items.')) {
+      store.archiveHomework(hwId);
+      showNotification('Homework quest archived.');
+      renderCurrentView();
+    }
+  };
+
+  // =========================================================================
+  // 3. STUDENT QUEST VIEW & SUBMISSION CONTROLLER
+  // =========================================================================
+
+  window.openStudentQuestModal = function(homeworkId, studentId = null) {
+    const hw = store.getHomeworkItem(homeworkId);
+    if (!hw) return;
+
+    const activeClass = store.getClass(hw.classId) || store.getActiveClass();
+    const students = store.getStudentsByClass(activeClass.id);
+    const selStudentId = studentId || (students[0] ? students[0].id : 'student-3a-224');
+
+    document.getElementById('student-quest-hw-id').value = hw.id;
+    document.getElementById('student-quest-student-id').value = selStudentId;
+
+    // Student picker
+    const picker = document.getElementById('student-quest-picker');
+    if (picker) {
+      picker.innerHTML = students.map(s => 
+        '<option value="' + s.id + '" ' + (s.id === selStudentId ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (Level ' + (store.calculateMonsterState(s.id).currentLevel) + ')</option>'
+      ).join('');
+    }
+
+    // Set Header Info
+    const titleEl = document.getElementById('student-quest-title');
+    const tagEl = document.getElementById('student-quest-tag');
+    const dueEl = document.getElementById('student-quest-due');
+    const xpEl = document.getElementById('student-quest-xp-pill');
+    const bonusEl = document.getElementById('student-quest-bonus-pill');
+    const descEl = document.getElementById('student-quest-desc');
+
+    if (titleEl) titleEl.textContent = '🐾 Quest: ' + hw.title;
+    if (tagEl) tagEl.textContent = hw.subject || 'QUEST';
+    if (dueEl) dueEl.textContent = 'Due: ' + (hw.dueDate || 'Friday, Nov 15');
+    if (xpEl) xpEl.textContent = '⭐ +' + (hw.xpReward || 20) + ' XP Reward';
+
+    if (bonusEl) {
+      if (hw.optionalChallenge) {
+        bonusEl.style.display = 'inline-flex';
+        bonusEl.textContent = '✨ +' + (hw.optionalChallengeXp || 5) + ' XP Bonus (Optional)';
+      } else {
+        bonusEl.style.display = 'none';
+      }
+    }
+
+    if (descEl) descEl.textContent = hw.description || 'Explore different animal habitats and learn key English vocabulary!';
+
+    // Checklist
+    const listWrap = document.getElementById('student-quest-checklist-container');
+    const sub = (hw.submissions && hw.submissions[selStudentId]) || {};
+    const isCompleted = sub.status === 'COMPLETED' || sub.status === 'Complete';
+
+    let steps = Array.isArray(hw.instructions) && hw.instructions.length ? hw.instructions : [
+      '1. Read the short passage about forest and ocean animals.',
+      '2. Complete the 5 matching questions.',
+      '3. Audio record: say 3 animal names and their habitats!'
+    ];
+
+    if (listWrap) {
+      listWrap.innerHTML = steps.map((st, i) => {
+        const isStepDone = isCompleted;
+        let actionBtn = '';
+        if (i === 0) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-worksheet-preview\')" style="font-size:0.75rem; font-weight:800; color:#3b82f6; border-color:#3b82f6;">📄 Open Worksheet</button>';
+        if (i === 1) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-game-preview\')" style="font-size:0.75rem; font-weight:800; color:#059669; border-color:#059669;">🎮 Open Game</button>';
+        if (i === 2) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="toggleSimulatedAudioRecording()" style="font-size:0.75rem; font-weight:800; color:#ef4444; border-color:#ef4444;">🎙️ Record Voice</button>';
+
+        return '' +
+          '<div class="quest-checklist-item ' + (isStepDone ? 'is-done' : '') + '" id="quest-item-' + i + '">' +
+            '<input type="checkbox" class="quest-checklist-check" ' + (isStepDone ? 'checked' : '') + ' onchange="handleQuestChecklistChange(' + i + ', this.checked)" />' +
+            '<div style="flex:1;">' +
+              '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main); line-height:1.3;">' + st + '</div>' +
+            '</div>' +
+            (actionBtn ? '<div>' + actionBtn + '</div>' : '') +
+          '</div>';
+      }).join('') +
+      (hw.optionalChallenge ? 
+        '<div class="quest-checklist-item ' + (sub.optionalDone ? 'is-done' : '') + '" id="quest-item-opt" style="border-style:dashed; border-color:#f59e0b; background:rgba(245,158,11,0.03);">' +
+          '<input type="checkbox" id="quest-check-optional" class="quest-checklist-check" ' + (sub.optionalDone ? 'checked' : '') + ' onchange="handleQuestChecklistChange(\'opt\', this.checked)" />' +
+          '<div style="flex:1;">' +
+            '<div style="font-weight:900; font-size:0.88rem; color:#b45309;">🌟 OPTIONAL CHALLENGE (+5 Bonus XP)</div>' +
+            '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">' + (hw.optionalChallengeDesc || 'Draw your favorite animal or record a fun bonus fact!') + '</div>' +
+          '</div>' +
+        '</div>' : ''
+      );
+    }
+
+    const notesEl = document.getElementById('student-quest-notes');
+    if (notesEl) notesEl.value = sub.notes || '';
+
+    // Audio status reset
+    const recStatus = document.getElementById('audio-recording-status');
+    const recBtn = document.getElementById('btn-audio-record');
+    const playBtn = document.getElementById('btn-audio-playback');
+    if (recStatus) recStatus.textContent = 'Ready';
+    if (recBtn) recBtn.innerHTML = '🔴 Start Recording';
+    if (playBtn) playBtn.disabled = true;
+
+    window.openModal('modal-student-quest');
+  };
+
+  window.previewCurrentHomeworkAsStudent = function() {
+    const title = document.getElementById('new-hw-title')?.value || '🐾 Animal Habitats Explorer';
+    const subject = document.getElementById('new-hw-subject')?.value || 'Reading & Vocab';
+    const dueDate = document.getElementById('new-hw-date')?.value || 'Friday, Nov 15';
+    const xpReward = parseInt(document.getElementById('new-hw-xp')?.value, 10) || 20;
+    const rawDesc = document.getElementById('new-hw-desc')?.value || '';
+    const instructions = rawDesc.split('\n').map(l => l.trim()).filter(Boolean);
+    const optionalChallenge = !!document.getElementById('new-hw-opt-toggle')?.checked;
+    const optionalChallengeDesc = document.getElementById('new-hw-opt-desc')?.value || '';
+
+    // Find or create preview homework in memory
+    const existing = store.getHomework().find(h => h.title === title) || store.getHomework()[0];
+    if (existing) {
+      window.openStudentQuestModal(existing.id);
+    }
+  };
+
+  window.handleStudentQuestLearnerChange = function(studentId) {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    if (hwId) window.openStudentQuestModal(hwId, studentId);
+  };
+
+  window.handleQuestChecklistChange = function(index, isChecked) {
+    const row = document.getElementById(index === 'opt' ? 'quest-item-opt' : 'quest-item-' + index);
+    if (row) {
+      if (isChecked) row.classList.add('is-done');
+      else row.classList.remove('is-done');
+    }
+  };
+
+  window.toggleSimulatedAudioRecording = function() {
+    const statusEl = document.getElementById('audio-recording-status');
+    const recordBtn = document.getElementById('btn-audio-record');
+    const playBtn = document.getElementById('btn-audio-playback');
+
+    if (!simulatedAudioRecordingInterval) {
+      // Start recording
+      simulatedAudioSeconds = 0;
+      if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:00)';
+      if (statusEl) {
+        statusEl.textContent = 'Recording Audio...';
+        statusEl.style.color = '#ef4444';
+      }
+      simulatedAudioRecordingInterval = setInterval(() => {
+        simulatedAudioSeconds++;
+        const s = simulatedAudioSeconds < 10 ? '0' + simulatedAudioSeconds : simulatedAudioSeconds;
+        if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:' + s + ')';
+        if (simulatedAudioSeconds >= 14) {
+          window.toggleSimulatedAudioRecording();
+        }
+      }, 1000);
+    } else {
+      // Stop recording
+      clearInterval(simulatedAudioRecordingInterval);
+      simulatedAudioRecordingInterval = null;
+      simulatedAudioRecorded = true;
+      if (recordBtn) recordBtn.innerHTML = '🔴 Re-Record';
+      if (statusEl) {
+        statusEl.textContent = 'Audio Captured (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
+        statusEl.style.color = '#059669';
+      }
+      if (playBtn) {
+        playBtn.disabled = false;
+        playBtn.innerHTML = '▶️ Listen to Recording (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
+      }
+      showNotification('Voice note recorded successfully! 🎙️');
+      // Mark step 2 as checked
+      const step3Check = document.querySelector('#quest-item-2 .quest-checklist-check');
+      if (step3Check) {
+        step3Check.checked = true;
+        handleQuestChecklistChange(2, true);
+      }
+    }
+  };
+
+  window.playSimulatedAudioPlayback = function() {
+    showNotification('Playing student voice recording... 🔊');
+  };
+
+  window.handleSaveStudentQuestProgress = function() {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    const studentId = document.getElementById('student-quest-student-id')?.value;
+    const notes = document.getElementById('student-quest-notes')?.value || '';
+    if (!hwId || !studentId) return;
+
+    store.recordHomeworkSubmission(hwId, studentId, {
+      status: 'IN_PROGRESS',
+      notes: notes,
+      attempted: 3,
+      correct: 3
+    });
+    showNotification('Quest progress saved!');
+  };
+
+  window.handleSubmitStudentQuest = function() {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    const studentId = document.getElementById('student-quest-student-id')?.value;
+    const notes = document.getElementById('student-quest-notes')?.value || '';
+    const optCheck = document.getElementById('quest-check-optional');
+    const isOptChecked = optCheck ? optCheck.checked : false;
+
+    if (!hwId || !studentId) return;
+
+    const hw = store.getHomeworkItem(hwId);
+    const student = store.getStudent(studentId);
+    if (!hw || !student) return;
+
+    // Record submission and trigger centralized XP awarding with strict duplicate protection
+    const result = store.recordHomeworkSubmission(hwId, studentId, {
+      status: 'COMPLETED',
+      completedDate: new Date().toISOString().split('T')[0],
+      optionalChallengeDone: isOptChecked,
+      notes: notes,
+      attempted: 5,
+      correct: 5
+    });
+
+    window.closeModal('modal-student-quest');
+
+    // Launch Quest Completed Celebration Modal
+    openQuestCompletedModal(hw, student, result);
+    renderCurrentView();
+  };
+
+  // =========================================================================
+  // 4. QUEST COMPLETED CELEBRATION MODAL
+  // =========================================================================
+
+  window.openQuestCompletedModal = function(hw, student, subResult) {
+    const mTitle = document.getElementById('qc-quest-title');
+    const xpBadge = document.getElementById('qc-xp-badge');
+    const stageLabel = document.getElementById('qc-monster-stage-label');
+    const xpLabel = document.getElementById('qc-monster-xp-label');
+    const progFill = document.getElementById('qc-monster-progress-fill');
+    const nextLabel = document.getElementById('qc-monster-next-label');
+    const actionWrap = document.getElementById('qc-action-wrap');
+
+    const totalEarnedXP = subResult ? subResult.xpAwarded : (hw.xpReward + (hw.optionalChallenge ? hw.optionalChallengeXp : 0));
+    const mState = store.calculateMonsterState(student.id);
+
+    if (mTitle) mTitle.textContent = hw.title + ' finished!';
+    if (xpBadge) xpBadge.textContent = '+' + totalEarnedXP + ' XP Awarded!';
+    if (stageLabel) stageLabel.textContent = 'Level ' + mState.currentLevel + ' ' + mState.stageName;
+    if (xpLabel) xpLabel.textContent = mState.totalXP + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired : 'MAX') + ' XP';
+    if (progFill) progFill.style.width = Math.min(100, mState.progressPct) + '%';
+    if (nextLabel) {
+      nextLabel.textContent = mState.xpToNext > 0
+        ? (mState.xpToNext + ' XP to Level ' + (mState.currentLevel + 1) + ' ' + (mState.nextLevel ? mState.nextLevel.name : ''))
+        : '🌟 Peak evolution stage achieved!';
+    }
+
+    // Check if evolution triggered!
+    const evo = subResult ? subResult.evolutionEvent : null;
+    if (actionWrap) {
+      if (evo) {
+        actionWrap.innerHTML = 
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\'); openMonsterLevelUpModal(\'' + student.id + '\', ' + evo.prevLevel + ', ' + evo.newLevel + ');" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:linear-gradient(90deg, #f59e0b, #ef4444); color:#fff; box-shadow:0 6px 20px rgba(245,158,11,0.5);">' +
+            'Evolve Monster Now! 🚀' +
+          '</button>';
+      } else {
+        actionWrap.innerHTML = 
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\')" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:#38bdf8; color:#0f172a;">' +
+            'Awesome! 🎉' +
+          '</button>';
+      }
+    }
+
+    window.openModal('modal-quest-completed');
+  };
+
+  // Upgraded openHomeworkGradingModal
   window.openHomeworkGradingModal = function(homeworkId) {
     const hw = store.getHomeworkItem(homeworkId);
     if (!hw) return;
@@ -5497,7 +6131,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const list = document.getElementById('hw-grading-students-list');
 
     if (title) title.textContent = '👥 ' + hw.title + ' — Submissions & Grading';
-    if (subtitle) subtitle.textContent = 'Total: ' + (hw.questionsTotal || 10) + ' tasks. Record completed questions to log official learning evidence.';
+    if (subtitle) subtitle.textContent = 'Track student quest completion and reward evidence-based XP directly to student records.';
 
     const cls = store.getClass(hw.classId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
@@ -5505,40 +6139,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     if (list) {
       list.innerHTML = students.map(st => {
-        const sub = submissions[st.id] || { status: 'Not Started', attempted: 0, correct: 0, completion: 0, accuracy: 0, notes: '' };
+        const sub = submissions[st.id] || { status: 'Not Started', attempted: 0, correct: 0, completion: 0, accuracy: 0, notes: '', optionalDone: false };
+        const isDone = sub.status === 'COMPLETED' || sub.status === 'Complete';
+        const mState = store.calculateMonsterState(st.id);
+
         return '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
-            '<div style="display:flex; align-items:center; gap:10px; min-width:160px;">' +
-              '<div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(st.id, { size: 38, animated: false }) + '</div>' +
+          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
+            '<div style="display:flex; align-items:center; gap:12px; min-width:180px;">' +
+              '<div style="width:44px; height:44px; border-radius:10px; overflow:hidden; background:#0f172a; flex-shrink:0;">' +
+                '<img src="' + window.MonsterRenderer.getMonsterStageImage(mState.stageKey) + '" alt="' + st.firstName + '" style="width:100%; height:100%; object-fit:cover;" />' +
+              '</div>' +
               '<div>' +
-                '<div style="font-weight:800; font-size:0.95rem;">' + st.firstName + ' ' + st.lastName + '</div>' +
-                '<div style="font-size:0.75rem; color:var(--text-muted);">CEFR ' + (st.overallCefr || 'A1') + '</div>' +
+                '<div style="font-weight:900; font-size:0.95rem; color:var(--text-main);">' + st.firstName + ' ' + st.lastName + '</div>' +
+                '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
               '<div>' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Status</label>' +
-                '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px;">' +
-                  '<option value="Not Started" ' + (sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
-                  '<option value="In Progress" ' + (sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
-                  '<option value="Partially Complete" ' + (sub.status === 'Partially Complete' ? 'selected' : '') + '>Partially Complete</option>' +
-                  '<option value="Complete" ' + (sub.status === 'Complete' ? 'selected' : '') + '>Complete</option>' +
-                  '<option value="Needs Revision" ' + (sub.status === 'Needs Revision' ? 'selected' : '') + '>Needs Revision</option>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Status</label>' +
+                '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px; font-weight:700;">' +
+                  '<option value="COMPLETED" ' + (isDone ? 'selected' : '') + '>Completed ✓</option>' +
+                  '<option value="IN_PROGRESS" ' + (sub.status === 'IN_PROGRESS' || sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
+                  '<option value="NOT_STARTED" ' + (sub.status === 'NOT_STARTED' || sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
                 '</select>' +
               '</div>' +
-              '<div style="width:75px;">' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Attempted</label>' +
-                '<input type="number" class="filter-select hw-sub-attempted" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.attempted || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
+              '<div>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Optional +5 XP</label>' +
+                '<input type="checkbox" class="hw-sub-opt" ' + (sub.optionalDone ? 'checked' : '') + ' style="width:18px; height:18px; accent-color:#059669; margin-top:4px;" />' +
               '</div>' +
-              '<div style="width:75px;">' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Correct</label>' +
-                '<input type="number" class="filter-select hw-sub-correct" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.correct || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
-              '</div>' +
-              '<div style="text-align:center; min-width:110px; background:var(--bg-canvas); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">' +
-                '<div style="font-size:0.7rem; color:var(--text-muted);">Task: <strong>' + (sub.completion || 0) + '%</strong></div>' +
-                '<div style="font-size:0.78rem; font-weight:800; color:var(--color-primary);">Accuracy: ' + (sub.accuracy || 0) + '%</div>' +
-              '</div>' +
-              '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:4px 10px; font-size:0.78rem;">Save Grade</button>' +
+              '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:6px 14px; font-size:0.8rem; font-weight:800;">' +
+                'Grade &amp; Award XP' +
+              '</button>' +
             '</div>' +
           '</div>';
       }).join('');
@@ -5551,19 +6182,25 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const row = document.getElementById('hw-sub-row-' + studentId);
     if (!row) return;
 
-    const status = row.querySelector('.hw-sub-status')?.value || 'Complete';
-    const attempted = parseInt(row.querySelector('.hw-sub-attempted')?.value, 10) || 0;
-    const correct = parseInt(row.querySelector('.hw-sub-correct')?.value, 10) || 0;
+    const status = row.querySelector('.hw-sub-status')?.value || 'COMPLETED';
+    const optionalDone = !!row.querySelector('.hw-sub-opt')?.checked;
 
-    const sub = store.recordHomeworkSubmission(hwId, studentId, { status, attempted, correct });
-    if (sub) {
-      showNotification('Grade saved! Task: ' + sub.completion + '% · Accuracy: ' + sub.accuracy + '% (logged to learning evidence)');
-      window.openHomeworkGradingModal(hwId);
+    const res = store.recordHomeworkSubmission(hwId, studentId, {
+      status,
+      optionalChallengeDone: optionalDone,
+      completedDate: new Date().toISOString().split('T')[0]
+    });
+
+    if (res) {
+      showNotification('Grade saved! +' + res.xpAwarded + ' XP awarded to student record.');
+      if (res.evolutionEvent) {
+        window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+      } else {
+        window.openHomeworkGradingModal(hwId);
+      }
       renderCurrentView();
     }
   };
-
-
   // =========================================================================
   // QUIZZES & QUESTION BUILDER VIEW (Complete CRUD)
   // =========================================================================
@@ -5848,7 +6485,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabBodyHtml = '';
 
     if (activeTab === 'levels') {
-      tabBodyHtml = 
+      tabBodyHtml = (window.MonsterRenderer && window.MonsterRenderer.renderMonsterEvolutionStagesBanner ? window.MonsterRenderer.renderMonsterEvolutionStagesBanner() : '') +
+        
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
             '<div>' +
@@ -12504,65 +13142,47 @@ window.switchClassroomSubTab = function(subTab) {
     const levels = store.getProgressionLevels();
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
     const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
-    const profile = store.getMonsterProfile(studentId);
 
-    const titleEl = document.getElementById('m-levelup-title') || document.getElementById('modal-levelup-title');
-    if (titleEl) titleEl.innerText = student.firstName.toUpperCase() + "'S MONSTER EVOLVED!";
+    const titleEl = document.getElementById('m-levelup-title');
+    if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
     const subtitleEl = document.getElementById('m-levelup-subtitle');
-    if (subtitleEl) subtitleEl.innerText = 'Congratulations! Reached Level ' + toLvl.level + ': ' + toLvl.name;
+    if (subtitleEl) subtitleEl.innerText = 'Congratulations, ' + student.firstName + '! Your monster has evolved into a Level ' + toLvl.level + ' ' + toLvl.name + '!';
 
     const xpInfoEl = document.getElementById('m-levelup-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Reached';
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Milestone Reached';
 
-    const prevSvgEl = document.getElementById('m-levelup-prev-svg') || document.getElementById('modal-levelup-left');
-    if (prevSvgEl && window.renderMonsterSVG) {
-      prevSvgEl.innerHTML = window.renderMonsterSVG({ stage: fromLvl.stageKey, color: profile.baseColor, size: 90, animated: false });
-    }
+    // Before Art
+    const prevImg = document.getElementById('m-levelup-prev-img');
+    if (prevImg) prevImg.src = window.MonsterRenderer.getMonsterStageImage(fromLvl.stageKey);
+    const prevLabel = document.getElementById('m-levelup-prev-label');
+    if (prevLabel) prevLabel.innerHTML = 'Level ' + fromLvl.level + '<br>' + fromLvl.name;
 
-    const prevLabelEl = document.getElementById('m-levelup-prev-label');
-    if (prevLabelEl) prevLabelEl.innerHTML = 'Level ' + fromLvl.level + '<br>' + fromLvl.name;
+    // After Art
+    const nextImg = document.getElementById('m-levelup-next-img');
+    if (nextImg) nextImg.src = window.MonsterRenderer.getMonsterStageImage(toLvl.stageKey);
+    const nextLabel = document.getElementById('m-levelup-next-label');
+    if (nextLabel) nextLabel.innerText = 'Level ' + toLvl.level + ': ' + toLvl.name;
 
-    const nextSvgEl = document.getElementById('m-levelup-next-svg') || document.getElementById('modal-levelup-right');
-    if (nextSvgEl && window.renderMonsterSVG) {
-      nextSvgEl.innerHTML = window.renderMonsterSVG({ stage: toLvl.stageKey, color: profile.baseColor, size: 110, animated: true });
-    }
-
-    const nextLabelEl = document.getElementById('m-levelup-next-label');
-    if (nextLabelEl) nextLabelEl.innerText = 'Level ' + toLvl.level + ': ' + toLvl.name;
-
+    // Teaser
     const nextLvl = levels.find(l => l.level > toLvl.level);
     const teaserEl = document.getElementById('m-levelup-next-teaser');
     if (teaserEl) {
       teaserEl.innerText = nextLvl 
         ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString() + ' XP (' + nextLvl.name + ')')
-        : '🌟 Maximum evolution stage achieved!';
+        : '🌟 Peak evolution stage achieved!';
     }
 
-    const itemsWrap = document.getElementById('m-levelup-items-list') || document.getElementById('modal-levelup-unlocked-items');
-    if (itemsWrap) {
-      const unlockedItems = store.getMonsterItems ? store.getMonsterItems().filter(it => it.unlockType === 'level' && it.unlockRequirement && it.unlockRequirement.level === toLvl.level) : [];
-      if (unlockedItems.length > 0) {
-        itemsWrap.innerHTML = unlockedItems.map(it => 
-          '<div class="monster-item-card" style="padding:10px; border-radius:10px; border:1px solid var(--border-light); background:var(--bg-card); display:flex; flex-direction:column; align-items:center; min-width:85px;">' +
-            '<div style="font-size:1.8rem;">' + (it.icon || '🎁') + '</div>' +
-            '<div style="font-size:0.75rem; font-weight:800; text-align:center;">' + it.name + '</div>' +
-            '<div style="font-size:0.65rem; color:var(--color-primary); text-transform:uppercase;">' + it.category + '</div>' +
-          '</div>'
-        ).join('');
-      } else {
-        itemsWrap.innerHTML = '<div style="font-size:0.82rem; color:var(--text-muted); padding:6px 0;">✨ Evolution aura and unique visual traits unlocked!</div>';
-      }
+    // Perks
+    const perksList = document.getElementById('m-levelup-perks-list');
+    if (perksList) {
+      perksList.innerHTML = 
+        '<div>🌟 <strong>Stronger Companion Aura:</strong> Shines brighter in classroom view</div>' +
+        '<div>🎨 <strong>New Monster Studio Customizations:</strong> ' + (toLvl.unlockedItems ? toLvl.unlockedItems.slice(0, 3).join(', ') : 'Special accessories') + ' unlocked!</div>' +
+        '<div>🏆 <strong>Evolution Badge:</strong> ' + toLvl.name + ' Adventurer unlocked!</div>';
     }
 
-    const btnCustom = document.getElementById('btn-modal-levelup-customize');
-    if (btnCustom) {
-      btnCustom.onclick = function() {
-        window.closeModal('modal-monster-levelup');
-        window.openStudentDetail(studentId, 'monster');
-      };
-    }
-
+    if (window.playCelebrationSound) window.playCelebrationSound();
     window.openModal('modal-monster-levelup');
   };
 

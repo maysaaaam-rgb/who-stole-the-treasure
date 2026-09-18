@@ -1849,6 +1849,8 @@
       stageKey: 'egg',
       xpRequired: 0,
       description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
+      subtitle: 'A new adventure begins...',
+      image: 'assets/monsters/stage-1-mystery-egg.png',
       unlockedItems: ['body-blue', 'body-pink', 'body-green', 'body-orange', 'body-purple', 'bg-meadow'],
       rewardXP: 0,
       status: 'active'
@@ -1860,6 +1862,8 @@
       stageKey: 'cracking_egg',
       xpRequired: 100,
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
+      subtitle: 'Life is waking up!',
+      image: 'assets/monsters/stage-2-cracking-egg.png',
       unlockedItems: ['eyes-happy', 'mouth-cheer'],
       rewardXP: 50,
       status: 'active'
@@ -1871,6 +1875,8 @@
       stageKey: 'baby',
       xpRequired: 250,
       description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
+      subtitle: 'Small steps, big dreams!',
+      image: 'assets/monsters/stage-3-baby-monster.png',
       unlockedItems: ['horns-ears', 'tail-puff', 'eyes-wink', 'glasses-round'],
       rewardXP: 100,
       status: 'active'
@@ -1882,6 +1888,8 @@
       stageKey: 'growing',
       xpRequired: 500,
       description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
+      subtitle: 'Stronger every day!',
+      image: 'assets/monsters/stage-4-growing-monster.png',
       unlockedItems: ['mouth-toothy', 'horns-nub', 'tail-perky', 'wings-starter', 'hat-scholar'],
       rewardXP: 150,
       status: 'active'
@@ -1893,6 +1901,8 @@
       stageKey: 'adventurer',
       xpRequired: 1000,
       description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
+      subtitle: 'Ready for bigger quests!',
+      image: 'assets/monsters/stage-5-adventurer-monster.png',
       unlockedItems: ['body-gold', 'hat-explorer', 'bp-explorer', 'horns-curved', 'aura-flame', 'bg-crystal'],
       rewardXP: 250,
       status: 'active'
@@ -1904,6 +1914,8 @@
       stageKey: 'advanced',
       xpRequired: 2000,
       description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
+      subtitle: 'New powers, new places!',
+      image: 'assets/monsters/stage-6-advanced-monster.png',
       unlockedItems: ['horns-crystal', 'wings-dragon', 'tail-dragon', 'eyes-dragon', 'hat-wizard', 'bg-cosmos'],
       rewardXP: 500,
       status: 'active'
@@ -1915,9 +1927,208 @@
       stageKey: 'ultimate',
       xpRequired: 5000,
       description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
+      subtitle: 'A true hero!',
+      image: 'assets/monsters/stage-7-ultimate-monster.png',
       unlockedItems: ['hat-crown', 'wings-celestial', 'tail-flame', 'aura-cosmic', 'bg-castle'],
       rewardXP: 1000,
       status: 'active'
+    }
+  ];
+
+  const DEFAULT_HOMEWORK_QUESTS = [
+    {
+      id: 'hw-animals',
+      title: 'Vocabulary Quest: Animals',
+      description: 'Learn and use 10 animal words. Complete the worksheet and play the mini-game. Try the extra challenge for more XP!',
+      subject: 'Vocabulary',
+      skill: 'Vocabulary',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 22, 2026',
+      estimatedTime: '20 minutes',
+      xpReward: 20,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Make a short video saying the animal words!',
+      resources: [
+        { id: 'res-ws-animals', type: 'worksheet', title: 'Animal Explorers Cutout Worksheet', url: 'clara-inventor/worksheet.html' },
+        { id: 'res-vid-animals', type: 'video', title: 'Wild Animals & Habitats Video', url: 'https://youtube.com' },
+        { id: 'res-game-animals', type: 'game', title: 'Jungle Vocabulary Expedition', url: 'expedition' }
+      ],
+      instructions: [
+        '1. Watch the video',
+        '2. Learn the animal words',
+        '3. Complete the worksheet',
+        '4. Play the mini-game',
+        '5. Submit your work'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-animals.png',
+      companionImage: 'assets/homework/rabbit-adventurer.png',
+      submittedCount: 12,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 21, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-224' },
+        'student-3a-229': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 21, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-229' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 21, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-354' },
+        'student-3a-203': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-203' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-227' },
+        'student-3a-206': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-206' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-220' },
+        'student-3a-209': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-209' },
+        'student-3a-208': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-208' },
+        'student-3a-355': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-355' },
+        'student-3a-211': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-211' },
+        'student-3a-321': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-321' }
+      }
+    },
+    {
+      id: 'hw-phonics',
+      title: 'Phonics Adventure: Long vs Short Vowels',
+      description: 'Listen, match and write the words. Try the challenge!',
+      subject: 'Phonics',
+      skill: 'Phonics',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 25, 2026',
+      estimatedTime: '15 minutes',
+      xpReward: 15,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Find 3 words in your home with long vowel sounds!',
+      resources: [
+        { id: 'res-ws-phonics', type: 'worksheet', title: 'Phonics Vowel Drill Sheet', url: 'clara-inventor/worksheet.html' },
+        { id: 'res-aud-phonics', type: 'link', title: 'Audio Chant: A E I O U', url: '#' }
+      ],
+      instructions: [
+        '1. Listen to the vowel sounds chant',
+        '2. Match the long and short vowel pairs',
+        '3. Complete the phonics drill worksheet',
+        '4. Submit your pronunciation recording'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-phonics.png',
+      submittedCount: 8,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 23, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-224' },
+        'student-3a-229': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 23, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-229' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-354' },
+        'student-3a-203': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 24, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-203' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-227' },
+        'student-3a-206': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-206' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 25, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-220' },
+        'student-3a-209': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 25, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-209' }
+      }
+    },
+    {
+      id: 'hw-self',
+      title: 'My Wonderful Self',
+      description: 'Create a short presentation about yourself. You can use pictures.',
+      subject: 'Speaking',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 29, 2026',
+      estimatedTime: '25 minutes',
+      xpReward: 25,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Record a 1-minute video introducing your favorite book or toy!',
+      resources: [
+        { id: 'res-ws-self', type: 'worksheet', title: 'All About Me Template', url: 'clara-inventor/worksheet.html' }
+      ],
+      instructions: [
+        '1. Fill out the "About Me" worksheet',
+        '2. Draw or paste 3 pictures of your favorite things',
+        '3. Practice speaking: "My name is... I like..."',
+        '4. Submit your presentation'
+      ],
+      status: 'DRAFT',
+      published: false,
+      thumbnail: 'assets/homework/thumb-self.png',
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
+    },
+    {
+      id: 'hw-city',
+      title: 'The Mystery City (Optional)',
+      description: 'Solve the riddles and find the hidden places!',
+      subject: 'Mixed Skills',
+      skill: 'Critical Thinking',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Oct 2, 2026',
+      estimatedTime: '30 minutes',
+      xpReward: 30,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Draw a secret map with 4 hidden treasure clues!',
+      resources: [
+        { id: 'res-game-detectives', type: 'game', title: 'The City Detectives Game', url: 'detectives' },
+        { id: 'res-ws-city', type: 'worksheet', title: 'Mystery Map Clues', url: 'detectives/worksheet.html' }
+      ],
+      instructions: [
+        '1. Read the city detective clues',
+        '2. Follow the directions on the map',
+        '3. Solve the 5 neighborhood riddles',
+        '4. Play the Detective City game'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-city.png',
+      submittedCount: 5,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 26, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-224' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 26, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-354' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 27, 2026', optionalDone: false, xpAwarded: 30, xpTxId: 'tx-hw-city-227' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 27, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-220' },
+        'student-3a-208': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 28, 2026', optionalDone: false, xpAwarded: 30, xpTxId: 'tx-hw-city-208' }
+      }
+    },
+    {
+      id: 'hw-reading',
+      title: 'Reading Champions',
+      description: 'Read the story and answer the questions.',
+      subject: 'Reading',
+      skill: 'Reading Comprehension',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Oct 5, 2026',
+      estimatedTime: '20 minutes',
+      xpReward: 20,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Read the story aloud to a parent or friend!',
+      resources: [
+        { id: 'res-book-gr2', type: 'link', title: 'Global Readings 2 - Unit 1', url: 'assets/books/global-readings-2/Global-Readings-2.pdf' }
+      ],
+      instructions: [
+        '1. Skim the title and illustrations',
+        '2. Read the story carefully twice',
+        '3. Complete the reading comprehension questions',
+        '4. Submit your answers'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-reading.png',
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
     }
   ];
 
@@ -7226,29 +7437,8 @@
         }
       ],
 
-      // 6. Homework
-      homework: [
-        {
-          id: 'hw-1',
-          title: 'Daily Routine Clock Practice',
-          type: 'Game Mission',
-          classId: 'class-3a',
-          studentIds: 'all',
-          dueDate: 'Sep 20, 2026',
-          description: 'Play the Daily Routine Adventure and set 5 clock times accurately.',
-          archived: false
-        },
-        {
-          id: 'hw-2',
-          title: 'My Neighbourhood Prepositions Worksheet',
-          type: 'Worksheet',
-          classId: 'class-3a',
-          studentIds: 'all',
-          dueDate: 'Sep 24, 2026',
-          description: 'Complete the map drawing worksheet circling places opposite the library.',
-          archived: false
-        }
-      ],
+      // 6. Homework (Interactive Quests & Independent Practice)
+      homework: JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS)),
 
       // 7. Quizzes & Tests
       quizzes: [
@@ -8275,6 +8465,28 @@
               merged.studentAwards = [];
             }
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
+
+            // Synchronize canonical homework quests (ensure all 5 quests exist with full metadata)
+            if (!merged.homework || !Array.isArray(merged.homework) || merged.homework.length === 0) {
+              merged.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+            } else {
+              const existingHwMap = new Map(merged.homework.map(h => [h.id, h]));
+              DEFAULT_HOMEWORK_QUESTS.forEach(defHw => {
+                if (!existingHwMap.has(defHw.id)) {
+                  merged.homework.push(JSON.parse(JSON.stringify(defHw)));
+                } else {
+                  const existing = existingHwMap.get(defHw.id);
+                  // Ensure rich fields are present
+                  ['subject', 'skill', 'cefrLevel', 'estimatedTime', 'xpReward', 'optionalChallenge', 'optionalChallengeXp', 'optionalChallengeDesc', 'resources', 'instructions', 'thumbnail', 'status', 'published'].forEach(f => {
+                    if (defHw[f] !== undefined && existing[f] === undefined) {
+                      existing[f] = defHw[f];
+                    }
+                  });
+                  if (!existing.submissions) existing.submissions = JSON.parse(JSON.stringify(defHw.submissions || {}));
+                  if (!existing.submittedCount && defHw.submittedCount) existing.submittedCount = defHw.submittedCount;
+                }
+              });
+            }
             
             // Synchronize canonical resources (ensure all 21 games & textbooks are available)
             if (!merged.resources || !merged.resources.length) {
@@ -9040,6 +9252,31 @@
       };
 
       if (!this.state.xpTransactions) this.state.xpTransactions = [];
+
+      // STRICT DUPLICATE XP PROTECTION
+      if (options.sourceId) {
+        const existingTx = this.state.xpTransactions.find(t => 
+          (t.studentId === studentId || (s && (t.studentId === s.id || t.studentId === s.studentIdNumber))) &&
+          t.sourceId === options.sourceId &&
+          t.status !== 'voided'
+        );
+        if (existingTx) {
+          console.warn('[SchoolStore] Duplicate XP transaction blocked for sourceId:', options.sourceId, 'student:', studentId);
+          return {
+            success: false,
+            duplicate: true,
+            transaction: existingTx,
+            student: s,
+            newTotalXP: this.getStudentTotalXP(studentId),
+            reason: existingTx.reason,
+            amount: existingTx.amount,
+            points: existingTx.points,
+            xp: existingTx.xp,
+            evolutionEvent: null,
+            monsterState: this.calculateMonsterState(studentId)
+          };
+        }
+      }
       const prevMonsterState = this.calculateMonsterState(studentId);
       const prevLevel = prevMonsterState ? prevMonsterState.currentLevel : 1;
       const prevStageName = prevMonsterState ? prevMonsterState.stageName : 'Mystery Egg';
@@ -9572,51 +9809,73 @@
       return null;
     }
 
-    recordHomeworkSubmission(homeworkId, studentId, submissionData) {
+    recordHomeworkSubmission(homeworkId, studentId, submissionData = {}) {
       const hw = this.getHomeworkItem(homeworkId);
       if (!hw) return null;
       if (!hw.submissions) hw.submissions = {};
 
-      const totalQuestions = hw.questionsTotal || 10;
-      const attempted = Math.min(totalQuestions, Math.max(0, parseInt(submissionData.attempted, 10) || 0));
-      const correct = Math.min(attempted, Math.max(0, parseInt(submissionData.correct, 10) || 0));
-      const completion = Math.round((attempted / totalQuestions) * 100);
-      const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
-      const status = submissionData.status || (completion === 100 ? 'Complete' : completion > 0 ? 'Partially Complete' : 'Not Started');
+      const isComplete = (submissionData.status === 'COMPLETED' || submissionData.status === 'Complete' || submissionData.completed === true);
+      const prevSub = hw.submissions[studentId] || {};
+      const alreadyAwarded = prevSub.xpAwarded && prevSub.xpAwarded > 0;
+
+      // Base XP configured on homework (default 20)
+      const baseXP = parseInt(hw.xpReward, 10) || 20;
+      const optXP = (submissionData.optionalChallengeDone && hw.optionalChallenge) ? (parseInt(hw.optionalChallengeXp, 10) || 5) : 0;
+      const totalEarnedXP = isComplete ? (baseXP + optXP) : 0;
+
+      let xpResult = null;
+      let awardedAmount = 0;
+
+      if (isComplete && !alreadyAwarded && totalEarnedXP > 0) {
+        // Award XP through centralized XP engine with strict sourceId
+        const sourceId = 'hw-sub-' + homeworkId + '-' + studentId;
+        xpResult = this.giveXP(
+          studentId,
+          totalEarnedXP,
+          'Completed Homework Quest: ' + hw.title + (optXP > 0 ? ' (+Optional Challenge)' : ''),
+          'Homework Quest',
+          {
+            sourceType: 'HOMEWORK',
+            sourceId: sourceId,
+            homeworkId: homeworkId,
+            category: 'homework',
+            icon: '⭐'
+          }
+        );
+        if (xpResult && xpResult.success) {
+          awardedAmount = totalEarnedXP;
+        }
+      }
 
       hw.submissions[studentId] = {
-        status,
-        attempted,
-        correct,
-        totalQuestions,
-        completion,
-        accuracy,
+        status: isComplete ? 'COMPLETED' : (submissionData.status || 'IN_PROGRESS'),
+        attempted: submissionData.attempted !== undefined ? submissionData.attempted : 5,
+        correct: submissionData.correct !== undefined ? submissionData.correct : 5,
         completedDate: submissionData.completedDate || new Date().toISOString().split('T')[0],
-        notes: submissionData.notes || ''
+        optionalDone: !!submissionData.optionalChallengeDone,
+        notes: submissionData.notes || '',
+        xpAwarded: awardedAmount || prevSub.xpAwarded || 0,
+        xpTransactionId: xpResult && xpResult.transaction ? xpResult.transaction.id : (prevSub.xpTransactionId || null)
       };
 
-      hw.submittedCount = Object.values(hw.submissions).filter(s => s.status === 'Complete' || s.status === 'Partially Complete').length;
+      // Recalculate submittedCount
+      const subs = Object.values(hw.submissions);
+      hw.submittedCount = subs.filter(s => s.status === 'COMPLETED' || s.status === 'Complete').length;
 
-      // Connect to learningEvidence: accuracy reflects mastery, completion reflects task completion
-      if (attempted > 0) {
-        if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      // Evidence link
+      if (this.state.learningEvidence && isComplete) {
         const existingEv = this.state.learningEvidence.find(e => e.studentId === studentId && e.sourceId === homeworkId);
-        if (existingEv) {
-          existingEv.score = accuracy;
-          existingEv.completion = completion;
-          existingEv.notes = 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%';
-          existingEv.date = new Date().toISOString().split('T')[0];
-        } else {
+        if (!existingEv) {
           this.state.learningEvidence.push({
             id: 'ev-hw-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
             studentId,
             source: 'homework',
             sourceId: homeworkId,
             title: hw.title,
-            skill: hw.skill || 'General',
-            score: accuracy,
-            completion: completion,
-            notes: 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%',
+            skill: hw.skill || hw.subject || 'General',
+            score: 100,
+            completion: 100,
+            notes: 'Homework Quest completed with full evidence.',
             date: new Date().toISOString().split('T')[0]
           });
         }
@@ -9624,7 +9883,15 @@
 
       this.saveState();
       this.notify('homework', this.state.homework);
-      return hw.submissions[studentId];
+
+      return {
+        submission: hw.submissions[studentId],
+        xpResult,
+        xpAwarded: awardedAmount,
+        duplicate: !!(alreadyAwarded || (xpResult && xpResult.duplicate)),
+        evolutionEvent: xpResult ? xpResult.evolutionEvent : null,
+        monsterState: this.calculateMonsterState(studentId)
+      };
     }
 
     archiveClass(id) {
@@ -10334,28 +10601,82 @@
       return this.state.homework.find(h => h.id === id);
     }
 
+    getHomework(classId = null, filterStatus = null) {
+      if (!this.state.homework) this.state.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+      return this.state.homework.filter(h => {
+        if (h.archived) return false;
+        if (classId && classId !== 'all' && h.classId && h.classId !== 'all' && h.classId !== classId) return false;
+        if (filterStatus && filterStatus !== 'all') {
+          const status = (h.status || 'ACTIVE').toUpperCase();
+          if (filterStatus.toUpperCase() !== status) return false;
+        }
+        return true;
+      });
+    }
+
+    getHomeworkItem(id) {
+      if (!this.state.homework) this.state.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+      return this.state.homework.find(h => h.id === id);
+    }
+
     createHomework(data) {
+      if (!this.state.homework) this.state.homework = [];
+      const cls = this.getClass(data.classId || this.state.activeClassId);
+      const isPublished = data.published !== undefined ? !!data.published : true;
       const newHw = {
         id: 'hw-' + Date.now(),
-        title: data.title || 'New Homework Task',
-        type: data.type || 'Game Mission',
-        classId: data.classId || this.state.activeClassId,
+        title: data.title || 'New Homework Quest',
+        description: data.description || '',
+        subject: data.subject || data.type || 'Vocabulary',
+        skill: data.skill || data.subject || 'Vocabulary',
+        cefrLevel: data.cefrLevel || 'A1',
+        classId: data.classId || this.state.activeClassId || 'class-3a',
+        className: (cls ? cls.name : (data.className || 'Grade 3A')),
         studentIds: data.studentIds || 'all',
         dueDate: data.dueDate || 'Sep 25, 2026',
-        description: data.description || '',
+        estimatedTime: data.estimatedTime || '20 minutes',
+        xpReward: parseInt(data.xpReward, 10) || 20,
+        optionalChallenge: !!data.optionalChallenge,
+        optionalChallengeXp: parseInt(data.optionalChallengeXp, 10) || 5,
+        optionalChallengeDesc: data.optionalChallengeDesc || '',
+        resources: Array.isArray(data.resources) ? data.resources : [],
+        instructions: Array.isArray(data.instructions) && data.instructions.length ? data.instructions : [
+          '1. Watch the video',
+          '2. Learn the vocabulary',
+          '3. Complete the worksheet',
+          '4. Play the mini-game',
+          '5. Submit your work'
+        ],
+        status: isPublished ? (data.status || 'ACTIVE') : 'DRAFT',
+        published: isPublished,
+        thumbnail: data.thumbnail || 'assets/homework/thumb-animals.png',
+        companionImage: data.companionImage || 'assets/homework/rabbit-adventurer.png',
         submittedCount: 0,
+        submissions: {},
         archived: false
       };
       this.state.homework.unshift(newHw);
       this.saveState();
+      this.notify('homework', this.state.homework);
       return newHw;
     }
 
     updateHomework(id, data) {
       const h = this.getHomeworkItem(id);
       if (h) {
+        const wasPublished = h.published;
         Object.assign(h, data);
+        if (data.classId) {
+          const cls = this.getClass(data.classId);
+          if (cls) h.className = cls.name;
+        }
+        if (data.published !== undefined) {
+          h.published = !!data.published;
+          if (!h.published) h.status = 'DRAFT';
+          else if (h.status === 'DRAFT') h.status = 'ACTIVE';
+        }
         this.saveState();
+        this.notify('homework', this.state.homework);
         return h;
       }
       return null;
@@ -10368,9 +10689,13 @@
         copy.id = 'hw-' + Date.now();
         copy.title = original.title + ' (Copy)';
         copy.submittedCount = 0;
+        copy.submissions = {};
+        copy.status = 'DRAFT';
+        copy.published = false;
         copy.archived = false;
         this.state.homework.unshift(copy);
         this.saveState();
+        this.notify('homework', this.state.homework);
         return copy;
       }
       return null;
@@ -10381,16 +10706,18 @@
       if (h) {
         h.archived = true;
         this.saveState();
+        this.notify('homework', this.state.homework);
         return true;
       }
       return false;
     }
 
     deleteHomework(id) {
-      const idx = this.state.homework.findIndex(h => h.id === id);
+      const idx = (this.state.homework || []).findIndex(h => h.id === id);
       if (idx !== -1) {
         this.state.homework.splice(idx, 1);
         this.saveState();
+        this.notify('homework', this.state.homework);
         return true;
       }
       return false;

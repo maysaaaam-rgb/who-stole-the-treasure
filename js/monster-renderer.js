@@ -2350,11 +2350,94 @@
     `.trim();
   }
 
+  
+  const STAGE_IMAGES = {
+    egg: 'assets/monsters/stage-1-mystery-egg.png',
+    cracking_egg: 'assets/monsters/stage-2-cracking-egg.png',
+    baby: 'assets/monsters/stage-3-baby-monster.png',
+    growing: 'assets/monsters/stage-4-growing-monster.png',
+    adventurer: 'assets/monsters/stage-5-adventurer-monster.png',
+    advanced: 'assets/monsters/stage-6-advanced-monster.png',
+    ultimate: 'assets/monsters/stage-7-ultimate-monster.png'
+  };
+
+  function getMonsterStageImage(stageKey) {
+    const key = normalizeStageKey(stageKey);
+    return STAGE_IMAGES[key] || STAGE_IMAGES.baby;
+  }
+
+  function renderMonsterArtwork(options = {}) {
+    const stage = normalizeStageKey(options.stage);
+    const imgSrc = getMonsterStageImage(stage);
+    const size = options.size || 160;
+    const isRound = options.round !== false;
+    const animated = options.animated !== false;
+    const animClass = animated ? 'eaa-monster-artwork-anim' : '';
+
+    return `
+      <div class="eaa-monster-artwork-wrap ${animClass}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${isRound ? '18px' : '10px'}; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.3); background:#0f172a;">
+        <img src="${imgSrc}" alt="${stage}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+      </div>
+    `.trim();
+  }
+
+  function renderMonsterEvolutionStagesBanner() {
+    const stages = [
+      { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
+      { level: 2, name: 'Cracking Egg', xp: '100 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
+      { level: 3, name: 'Baby Monster', xp: '250 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
+      { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
+      { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
+      { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
+      { level: 7, name: 'Ultimate Monster', xp: '5,000 XP', sub: 'A true hero!', stageKey: 'ultimate' }
+    ];
+
+    return `
+      <div class="monster-evolution-upgrade-banner" style="background:linear-gradient(180deg, #071328 0%, #0c1e3d 100%); border-radius:20px; padding:24px; color:#fff; box-shadow:0 12px 36px rgba(0,0,0,0.4); margin-bottom:24px; border:1px solid rgba(56,189,248,0.25);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:14px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.4rem;">👾</span>
+              <h2 style="font-size:1.35rem; font-weight:900; margin:0; letter-spacing:0.02em; color:#fff;">Monster Evolution Upgrade (Visual Progression)</h2>
+            </div>
+            <p style="font-size:0.84rem; color:#94a3b8; margin:4px 0 0 0;">A real visual evolution, not just accessories. Monsters grow and change as students earn XP!</p>
+          </div>
+          <div style="font-size:0.75rem; color:#38bdf8; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">
+            Same Spirit • Greater Growth • More Adventures • A Brighter You!
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; align-items:stretch;">
+          ${stages.map((st, idx) => `
+            <div class="evolution-stage-card-premium" style="background:rgba(15,23,42,0.85); border:1.5px solid ${idx === 6 ? '#f59e0b' : 'rgba(56,189,248,0.3)'}; border-radius:14px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:transform 0.2s ease, box-shadow 0.2s ease; position:relative;">
+              <div style="font-size:0.68rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px;">Level ${st.level}</div>
+              <div style="font-size:0.82rem; font-weight:900; color:#f8fafc; margin-bottom:8px; line-height:1.2;">${st.name}</div>
+              
+              <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);">
+                <img src="${getMonsterStageImage(st.stageKey)}" alt="${st.name}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+              </div>
+
+              <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">
+                ${st.xp}
+              </div>
+              <div style="font-size:0.68rem; color:#cbd5e1; line-height:1.3; font-style:italic;">
+                "${st.sub}"
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `.trim();
+  }
+
   function getStageInfo(stageKey) {
     return STAGE_META[stageKey] || STAGE_META.baby;
   }
 
   root.MonsterRenderer = {
+    getMonsterStageImage: getMonsterStageImage,
+    renderMonsterArtwork: renderMonsterArtwork,
+    renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
@@ -2365,6 +2448,9 @@
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
+  root.getMonsterStageImage = getMonsterStageImage;
+  root.renderMonsterArtwork = renderMonsterArtwork;
+  root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;
