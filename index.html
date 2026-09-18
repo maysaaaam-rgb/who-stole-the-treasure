@@ -1903,52 +1903,6 @@
     </div>
   </div>
 
-  <!-- Bottom Classroom Toolkit Dock -->
-  <div id="classroom-floating-toolkit" class="classroom-toolkit-dock" style="display:none;">
-    <div class="toolkit-inner">
-      <button type="button" class="toolkit-item-btn toolkit-btn-drawer" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit" style="background:var(--color-primary); color:#ffffff; font-weight:800;">
-        <span class="toolkit-icon">🧰</span>
-        <span class="toolkit-label">Toolkit</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openSimonSaysModal()" title="Simon Says Physical Classroom Game" style="font-weight:800; color:#059669;">
-        <span class="toolkit-icon">🗣️</span>
-        <span class="toolkit-label">Simon Says</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
-        <span class="toolkit-icon">🎲</span>
-        <span class="toolkit-label">Random</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="toggleFloatingTimer()" title="Classroom Timer">
-        <span class="toolkit-icon">⏱</span>
-        <span class="toolkit-label">Timer</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Groups">
-        <span class="toolkit-icon">👥</span>
-        <span class="toolkit-label">Groups</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
-        <span class="toolkit-icon">✓</span>
-        <span class="toolkit-label">Attendance</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openGiveFeedbackModal('class')" title="Give Whole Class Feedback" style="font-weight:800; color:#b45309;">
-        <span class="toolkit-icon">⭐</span>
-        <span class="toolkit-label">Feedback</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openQuickAssessmentModal()" title="Quick Formative Assessment">
-        <span class="toolkit-icon">📝</span>
-        <span class="toolkit-label">Assess</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openQuickEvidenceModal()" title="Quick Worksheet Scoring">
-        <span class="toolkit-icon">📄</span>
-        <span class="toolkit-label">Evidence</span>
-      </button>
-      <button type="button" class="toolkit-item-btn toolkit-btn-mode" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
-        <span class="toolkit-icon">🎓</span>
-        <span class="toolkit-label" id="label-smartboard-mode">Classroom Mode</span>
-      </button>
-    </div>
-  </div>
-
   <!-- Reusable Confirmation Modal -->
   <div class="modal-overlay" id="modal-confirm-action">
     <div class="modal-dialog" style="max-width: 440px; text-align:center;">
@@ -3727,47 +3681,31 @@
   </div>
 
 
-  <!-- Floating Classroom Action Dock (Quick Toolkit) -->
-  <div class="classroom-action-dock" id="classroom-action-dock">
-    <button type="button" class="dock-btn" onclick="openClassroomToolkitModal('all')" title="Classroom Toolkit">
-      <span class="dock-btn-icon">🧰</span>
-      <span class="dock-btn-label">Toolkit</span>
+  <!-- Floating Classroom Action Dock (Compact Dock) -->
+  <div class="classroom-compact-dock" id="classroom-action-dock">
+    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('all')" title="Classroom Toolkit">
+      <span>🧰</span> <span>Toolkit</span>
     </button>
-    <button type="button" class="dock-btn" onclick="openClassroomToolkitModal('simon')" title="Simon Says Live">
-      <span class="dock-btn-icon">🗣️</span>
-      <span class="dock-btn-label">Simon Says</span>
+    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('timer')" title="Interactive Timer">
+      <span>⏱️</span> <span>Timer</span>
     </button>
-    <button type="button" class="dock-btn" onclick="runRandomStudentPicker()" title="Random Picker">
-      <span class="dock-btn-icon">🎲</span>
-      <span class="dock-btn-label">Random</span>
+    <button type="button" class="compact-dock-btn" onclick="runRandomStudentPicker()" title="Random Picker">
+      <span>🎲</span> <span>Random</span>
     </button>
-    <button type="button" class="dock-btn" onclick="openClassroomToolkitModal('timer')" title="Interactive Timer">
-      <span class="dock-btn-icon">⏱️</span>
-      <span class="dock-btn-label">Timer</span>
+    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('groups')" title="Class Groups">
+      <span>👥</span> <span>Groups</span>
     </button>
-    <button type="button" class="dock-btn" onclick="openClassroomToolkitModal('groups')" title="Class Groups">
-      <span class="dock-btn-icon">👥</span>
-      <span class="dock-btn-label">Groups</span>
+    <button type="button" class="compact-dock-btn" onclick="switchView('attendance')" title="Take Attendance">
+      <span>📋</span> <span>Attendance</span>
     </button>
-    <button type="button" class="dock-btn" onclick="switchView('attendance')" title="Take Attendance">
-      <span class="dock-btn-icon">📋</span>
-      <span class="dock-btn-label">Attendance</span>
+    <button type="button" class="compact-dock-btn" onclick="openGiveFeedbackModal()" title="Instant Feedback">
+      <span>⭐</span> <span>Feedback</span>
     </button>
-    <button type="button" class="dock-btn" onclick="openGiveFeedbackModal()" title="Instant Feedback">
-      <span class="dock-btn-icon">⭐</span>
-      <span class="dock-btn-label">Feedback</span>
+    <button type="button" class="compact-dock-btn" onclick="switchView('assessments')" title="Formative Assessments">
+      <span>🎯</span> <span>Assess</span>
     </button>
-    <button type="button" class="dock-btn" onclick="switchView('assessments')" title="Formative Assessments">
-      <span class="dock-btn-icon">🎯</span>
-      <span class="dock-btn-label">Assess</span>
-    </button>
-    <button type="button" class="dock-btn" onclick="switchView('reports')" title="Learning Evidence">
-      <span class="dock-btn-icon">📄</span>
-      <span class="dock-btn-label">Evidence</span>
-    </button>
-    <button type="button" class="dock-btn dock-btn-primary" onclick="toggleSmartboardMode()" title="Classroom Smart Board Mode">
-      <span class="dock-btn-icon">🎓</span>
-      <span class="dock-btn-label">Classroom Mode</span>
+    <button type="button" class="compact-dock-btn is-active" onclick="toggleSmartboardMode()" title="Classroom Smart Board Mode">
+      <span>🎓</span> <span>Classroom Mode</span>
     </button>
   </div>
 

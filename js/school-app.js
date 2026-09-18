@@ -59,7 +59,7 @@
   let activeCreateMenuOpen = false;
 
   // Classroom Hub state
-  let classroomActiveSubTab = 'students'; // 'students' | 'groups'
+  let classroomActiveSubTab = 'command'; // 'command' | 'students' | 'groups' | 'unenrolled'
   let isMultiSelectMode = false;
   let selectedStudentIds = new Set();
   let timerInterval = null;
@@ -80,6 +80,7 @@
   let libFilterGrade = 'all';
   let libFilterDuration = 'all';
   let libFilterFavoritesOnly = false;
+  let studentsLayoutMode = 'table'; // 'table' | 'cards'
   let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'stories' | 'roleplays' | 'textbooks' | 'favorites'
   let libSortOrder = 'default'; // 'default' | 'title-asc' | 'title-desc' | 'level' | 'duration' | 'xp'
   let navSectionsCollapsed = {};
@@ -2015,57 +2016,66 @@
           const nextXP = monsterState.nextLevelXP || totalXP;
           const xpToNext = monsterState.xpToNext;
           const progressPct = monsterState.progressPct;
-          const monsterSvg = window.renderStudentMonsterAvatar(student.id, { size: 124, animated: true });
+          const cefrKey = (student.overallCefr || 'A1').toLowerCase().replace('+', '-plus');
 
           return '' +
-            '<div class="student-profile-monster-hero" style="display:flex; gap:20px; align-items:center; background:linear-gradient(135deg, var(--bg-surface), var(--bg-card)); border:1px solid var(--border-light); border-radius:18px; padding:20px; margin-bottom:18px; box-shadow:var(--shadow-sm); flex-wrap:wrap;">' +
-              // Monster Stage Box
-              '<div style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; background:var(--bg-canvas); border-radius:16px; border:2px solid var(--border-light); cursor:pointer; position:relative;" onclick="openMonsterCreator(\'' + student.id + '\')" title="Click to open Monster Creator">' +
-                monsterSvg +
-                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">🎨 Creator</span>' +
+            '<div class="student-profile-hero-stage">' +
+              // Top Badges & Actions Strip
+              '<div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:760px; margin-bottom:8px; flex-wrap:wrap; gap:10px;">' +
+                '<div style="display:flex; align-items:center; gap:8px;">' +
+                  '<span class="badge" style="background:#38bdf8; color:#0f172a; font-weight:900; font-size:0.8rem; padding:4px 12px; border-radius:999px;">LEVEL ' + monsterState.currentLevel + '</span>' +
+                  '<span class="badge-cefr badge-cefr-' + cefrKey + '" style="font-size:0.75rem; padding:3px 10px;">' + (student.overallCefr || 'A1') + '</span>' +
+                  '<span style="font-size:0.82rem; color:#94a3b8; font-weight:700;">' + student.grade + ' · ID: ' + (student.studentIdNumber || 'EAA-001') + '</span>' +
+                '</div>' +
+                '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
+                  '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 14px; background:#38bdf8; color:#0f172a; font-weight:900;">🎨 Customize Companion</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreenModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25);">✨ Fullscreen</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#fde047; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4);">⭐ Award XP</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25);">✏️ XP</button>' +
+                '</div>' +
               '</div>' +
 
-              // Details & Controls
-              '<div style="flex:1; min-width:260px;">' +
-                '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
-                  '<div>' +
-                    '<div style="display:flex; align-items:center; gap:8px;">' +
-                      '<span class="badge" style="background:var(--color-primary); color:#fff; font-weight:800; font-size:0.75rem; padding:2px 10px; border-radius:12px;">Level ' + monsterState.currentLevel + '</span>' +
-                      '<h2 style="font-size:1.45rem; font-weight:900; margin:0; color:var(--text-main);">' + student.firstName.toUpperCase() + ' ' + student.lastName.toUpperCase() + '</h2>' +
-                      '<span class="badge-cefr badge-cefr-' + student.overallCefr.toLowerCase().replace('+', '-plus') + '">' + student.overallCefr + '</span>' +
-                    '</div>' +
-                    '<div style="font-size:0.95rem; font-weight:800; color:var(--color-primary); margin-top:2px;">' + monsterState.stageName + '</div>' +
-                    '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">ID: <strong>' + (student.studentIdNumber || 'EAA-001') + '</strong> · ' + student.grade + ' · Age ' + student.age + '</div>' +
-                  '</div>' +
+              // 50% Visual Area Giant Floating Monster Companion
+              '<div class="giant-monster-showcase" onclick="openMonsterCreator(\'' + student.id + '\')" title="Click to customize monster in Studio" style="cursor:pointer;">' +
+                window.renderMonsterAvatar(student.id, { size: 260, animated: true }) +
+              '</div>' +
 
-                  // Top Action Buttons
-                  '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                    '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreenModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;" title="Open Fullscreen Monster Showcase">✨ Fullscreen</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; font-weight:700;">✏️ Edit XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">✏️ Edit</button>' +
-                    '<div class="card-more-menu-wrap" style="position:relative;">' +
-                      '<button class="btn-card-more" onclick="toggleCardDropdown(\'prof-' + student.id + '\', event)" title="More Management Options">⋯</button>' +
-                      '<div class="card-dropdown-menu" id="menu-prof-' + student.id + '">' +
-                        '<button class="card-dropdown-item" onclick="openReportGenerator(\'' + student.id + '\')">🖨️ Generate Report</button>' +
-                        '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + student.id + '\')">Unenroll from Class</button>' +
-                        '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + student.id + '\')">Archive Student</button>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>' +
+              // Name & Evolution Stage Title
+              '<h2 style="font-size:2rem; font-weight:900; margin:4px 0 2px 0; color:#ffffff; letter-spacing:-0.02em;">' + student.firstName.toUpperCase() + ' ' + student.lastName.toUpperCase() + '</h2>' +
+              '<div style="font-size:1.05rem; font-weight:800; color:#38bdf8; margin-bottom:16px;">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
+
+              // Giant XP Track
+              '<div class="giant-xp-track">' +
+                '<div style="display:flex; justify-content:space-between; font-size:0.86rem; font-weight:900; margin-bottom:6px; color:#e2e8f0;">' +
+                  '<span>⭐ ' + totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' XP</span>' +
+                  '<span style="color:#38bdf8;">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP TO EVOLVE') : '👑 APEX FORM REACHED')) + '</span>' +
                 '</div>' +
+                '<div style="width:100%; height:14px; background:rgba(255,255,255,0.15); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,0.2);">' +
+                  '<div style="width:' + progressPct + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #818cf8, #c084fc); border-radius:999px; box-shadow:0 0 12px rgba(56,189,248,0.5);"></div>' +
+                '</div>' +
+              '</div>' +
 
-                // Evolution Progress Meter
-                '<div style="margin-top:12px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
-                  '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:4px;">' +
-                    '<span>⭐ ' + totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' XP</span>' +
-                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
-                  '</div>' +
-                  '<div style="height:10px; border-radius:5px; background:var(--border-light); overflow:hidden;">' +
-                    '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:5px; transition:width 0.4s ease;"></div>' +
-                  '</div>' +
+              // 4 Adventure Stats Pills
+              '<div style="display:flex; gap:12px; margin:14px 0 20px 0; flex-wrap:wrap; justify-content:center;">' +
+                '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:14px; padding:7px 16px; font-weight:800; font-size:0.82rem; color:#e2e8f0;">📚 12 Lessons</div>' +
+                '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:14px; padding:7px 16px; font-weight:800; font-size:0.82rem; color:#e2e8f0;">🎯 8 Quests Completed</div>' +
+                '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:14px; padding:7px 16px; font-weight:800; font-size:0.82rem; color:#e2e8f0;">🏆 ' + studentAwards.length + ' Achievements</div>' +
+                '<div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.16); border-radius:14px; padding:7px 16px; font-weight:800; font-size:0.82rem; color:#fde047;">🔥 ' + (student.streakDays || 7) + 'd Streak</div>' +
+              '</div>' +
+
+              // Locked Next Stage Preview / Active Quest
+              '<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:760px; text-align:left;">' +
+                '<div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:18px; padding:18px;">' +
+                  '<div style="font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase;">🎯 CURRENT ACTIVE QUEST</div>' +
+                  '<div style="font-size:1rem; font-weight:900; color:#fff; margin-top:4px;">Vocabulary Quest: Prepositions</div>' +
+                  '<div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Reward: ⭐ +20 XP</div>' +
+                  '<button type="button" class="btn-primary-action" onclick="closeAllModals(); openStudentQuestModal(\'hw-1\');" style="margin-top:12px; font-size:0.8rem; padding:6px 14px; background:#38bdf8; color:#0f172a; font-weight:900;">Continue Quest ➔</button>' +
+                '</div>' +
+                '<div class="locked-next-stage-preview">' +
+                  '<div style="font-size:0.75rem; font-weight:800; color:#cbd5e1; text-transform:uppercase;">🔒 NEXT EVOLUTION STAGE</div>' +
+                  '<div style="font-size:1rem; font-weight:900; color:#fff; margin-top:4px;">' + (monsterState.nextLevel ? monsterState.nextLevel.name : 'Max Apex Form') + '</div>' +
+                  '<div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">' + (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP remaining') : 'Apex Achieved') + '</div>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="margin-top:12px; font-size:0.8rem; padding:6px 14px; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3);">View Roadmap 🗺️</button>' +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -2822,14 +2832,19 @@
               '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>🔤 Name: A to Z</option>' +
               '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>🔥 Streak: High to Low</option>' +
             '</select>' +
+
+            '<div style="display:flex; gap:6px; margin-left:auto;">' +
+              '<button type="button" class="btn-sm-secondary ' + (studentsLayoutMode === 'table' ? 'is-active' : '') + '" onclick="studentsLayoutMode=\'table\'; renderCurrentView();" style="' + (studentsLayoutMode === 'table' ? 'background:var(--color-primary); color:#fff; font-weight:800;' : '') + '">📋 List Table</button>' +
+              '<button type="button" class="btn-sm-secondary ' + (studentsLayoutMode === 'cards' ? 'is-active' : '') + '" onclick="studentsLayoutMode=\'cards\'; renderCurrentView();" style="' + (studentsLayoutMode === 'cards' ? 'background:var(--color-primary); color:#fff; font-weight:800;' : '') + '">🎴 Monster Cards</button>' +
+            '</div>' +
           '</div>' +
           '<div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">' +
             '<span>Showing <strong>' + filtered.length + '</strong> of ' + allStudents.length + ' registered learners</span>' +
-            '<span>Click any monster or card to view detailed learning profile &amp; closet</span>' +
+            '<span>Click any learner row or monster to open companion adventure profile</span>' +
           '</div>' +
         '</div>' +
 
-        // Students Cards Grid
+        // Students Table or Cards Grid
         (filtered.length === 0 ?
           '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
             '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
@@ -3141,11 +3156,14 @@
         '</div>' +
       '</div>' +
 
-      // Subtoolbar: Students | Groups | Unenrolled + Quick Actions
-      '<div class="classroom-subtoolbar">' +
+      // Subtoolbar: Command Center | Students | Groups | Unenrolled + Quick Actions
+      '<div class="classroom-subtoolbar" style="margin-bottom:20px;">' +
         '<div class="classroom-view-toggle-pills">' +
+          '<button class="classroom-view-pill-btn ' + ((classroomActiveSubTab === 'command' || !classroomActiveSubTab) ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'command\')">' +
+            '<span>🧭</span> <span>Command Center</span>' +
+          '</button>' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'students' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'students\')">' +
-            '<span>🧒</span> <span>Students (' + safeStudents.length + ')</span>' +
+            '<span>🧒</span> <span>All Students (' + safeStudents.length + ')</span>' +
           '</button>' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'groups' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'groups\')">' +
             '<span>👥</span> <span>Groups (' + groups.length + ')</span>' +
@@ -3163,7 +3181,7 @@
             '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All (' + safeStudents.length + ')</button>' +
             '<button class="btn-sm-secondary" onclick="clearSelectedStudents()" style="font-weight:700;">✕ Deselect</button>' : ''
           ) +
-          '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback (❤️ Helping Others, 👍 On Task, 🤝 Teamwork)">⭐ Give Feedback</button>' +
+          '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback">⭐ Give Feedback</button>' +
           '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:700;" title="Award Custom Points">⭐ Points</button>' +
           '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-weight:700;">🧰 Toolkit</button>' +
           (classroomActiveSubTab === 'groups' ?
@@ -3173,9 +3191,11 @@
         '</div>' +
       '</div>' +
 
-      // Body View: Students Grid, Groups Grid, or Unenrolled Grid
-      (classroomActiveSubTab === 'students' ? 
-        renderClassroomStudentsGrid(cls, safeStudents) : 
+      // Body View: Command Center (Default!), Students Hybrid, Groups, or Unenrolled
+      ((classroomActiveSubTab === 'command' || !classroomActiveSubTab) ?
+        renderClassroomCommandCenter(cls, safeStudents) :
+        classroomActiveSubTab === 'students' ? 
+        renderClassroomStudentsHybrid(cls, safeStudents) : 
         classroomActiveSubTab === 'groups' ?
         renderClassroomGroupsGrid(cls, groups, safeStudents) :
         renderClassroomUnenrolledGrid(cls)
@@ -3183,6 +3203,313 @@
 
       // Classroom Dashboard Summary Widgets
       renderClassroomDashboardWidgets(cls, safeStudents);
+  }
+
+  // Classroom Command Center (Primary view without 19 repetitive cards)
+  function renderClassroomCommandCenter(cls, students = []) {
+    const totalClassXP = students.reduce((acc, s) => acc + (store.getStudentTotalXP ? store.getStudentTotalXP(s.id) : (s.xp || 0)), 0);
+    const attRate = (store && store.getClassAttendanceRate) ? store.getClassAttendanceRate(cls.id) : 100;
+    let avgMastery = 0;
+    if (Array.isArray(students) && students.length > 0) {
+      const sum = students.reduce((acc, s) => acc + (typeof calculateStudentProgressPct === 'function' ? calculateStudentProgressPct(s.id) : 0), 0);
+      avgMastery = Math.round(sum / students.length);
+    }
+    const featuredStudents = students.slice(0, 3);
+
+    return '' +
+      // 1. HERO SECTION
+      '<div class="classroom-command-hero">' +
+        '<div>' +
+          '<div class="hero-badge-strip">' +
+            '<span class="hero-tag-pill" style="background:rgba(56,189,248,0.25); color:#7dd3fc; border:1px solid rgba(56,189,248,0.5);">🌍 ' + cls.name + '</span>' +
+            '<span class="hero-tag-pill" style="background:rgba(16,185,129,0.25); color:#6ee7b7; border:1px solid rgba(16,185,129,0.5);">CEFR ' + (cls.cefrTarget || 'A2') + ' Target</span>' +
+            '<span class="hero-tag-pill" style="background:rgba(245,158,11,0.25); color:#fde68a; border:1px solid rgba(245,158,11,0.5);">👥 ' + students.length + ' Students</span>' +
+          '</div>' +
+          '<h1 class="hero-title-main">' + cls.name + ' Command Center</h1>' +
+          '<p class="hero-subtitle-desc">Active Educational Adventure • Global Readings 3 • Unit 1: Inventions &amp; Community Heroes. Manage missions, spark student engagement, and guide monster companion evolutions.</p>' +
+          '<div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">' +
+            '<a href="firefighter/index.html" class="btn-primary-action" style="padding:10px 22px; font-size:0.92rem; font-weight:900; background:#38bdf8; color:#0f172a; text-decoration:none; display:inline-flex; align-items:center; gap:8px; border-radius:12px; box-shadow:0 4px 16px rgba(56,189,248,0.4);">' +
+              '<span>▶</span> <span>START LESSON</span>' +
+            '</a>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:10px 18px; font-size:0.88rem; font-weight:800; border-radius:12px;">' +
+              '🧰 Open Toolkit' +
+            '</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="switchClassroomSubTab(\'students\')" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:10px 18px; font-size:0.88rem; font-weight:800; border-radius:12px;">' +
+              '👥 View All Students (' + students.length + ')' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="hero-adventure-launch-box">' +
+          '<div style="font-size:0.75rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">' +
+            '🔥 TODAY\'S ADVENTURE' +
+          '</div>' +
+          '<h3 style="font-size:1.35rem; font-weight:900; margin:0 0 6px 0; color:#ffffff;">Fire Station Adventure</h3>' +
+          '<p style="font-size:0.84rem; color:#cbd5e1; margin:0 0 14px 0; line-height:1.4;">Mission 3: Emergency Dispatch Room &amp; Prepositions of Place. Whole-class interactive storytelling.</p>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:0.78rem; color:#94a3b8;">' +
+            '<span>Next Lesson: <strong>10:15 AM</strong></span>' +
+            '<span style="color:#fde047; font-weight:800;">⭐ +30 XP Reward</span>' +
+          '</div>' +
+          '<a href="firefighter/index.html" class="btn-primary-action" style="width:100%; justify-content:center; padding:10px; font-size:0.92rem; font-weight:900; background:#38bdf8; color:#0f172a; text-decoration:none; display:flex; border-radius:12px;">' +
+            'START LESSON ➔' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+
+      // 2. LARGE VISUAL METRICS
+      '<div class="classroom-metrics-grid-lg">' +
+        '<div class="metric-card-lg">' +
+          '<div class="metric-header-label"><span>⭐</span> <span>CLASS XP</span></div>' +
+          '<div class="metric-huge-value">' + (totalClassXP || 4820).toLocaleString() + '</div>' +
+          '<div class="metric-sub-note" style="color:#10b981;">+340 XP earned this week</div>' +
+        '</div>' +
+        '<div class="metric-card-lg">' +
+          '<div class="metric-header-label"><span>🔥</span> <span>LEARNING STREAK</span></div>' +
+          '<div class="metric-huge-value">7 Days</div>' +
+          '<div class="metric-sub-note" style="color:#f59e0b;">100% daily attendance pace</div>' +
+        '</div>' +
+        '<div class="metric-card-lg">' +
+          '<div class="metric-header-label"><span>🎯</span> <span>MASTERY</span></div>' +
+          '<div class="metric-huge-value">' + (avgMastery || 68) + '%</div>' +
+          '<div class="metric-sub-note" style="color:#6366f1;">CEFR ' + (cls.cefrTarget || 'A2') + ' Target Track</div>' +
+        '</div>' +
+        '<div class="metric-card-lg">' +
+          '<div class="metric-header-label"><span>🏆</span> <span>QUESTS COMPLETED</span></div>' +
+          '<div class="metric-huge-value">24</div>' +
+          '<div class="metric-sub-note" style="color:#0ea5e9;">3 active quests ongoing</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 3. ACTIVE ADVENTURES (LARGE HORIZONTAL CARDS)
+      '<div style="margin-bottom:28px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
+          '<div>' +
+            '<h2 style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin:0;">🔥 ACTIVE ADVENTURES &amp; QUESTS</h2>' +
+            '<p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Interactive missions and homework challenges assigned to ' + cls.name + '</p>' +
+          '</div>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'homework\')" style="font-weight:800;">Quest Board ➔</button>' +
+        '</div>' +
+
+        // Adventure Card 1
+        '<div class="adventure-card-lg">' +
+          '<div class="adventure-artwork-lg">' +
+            '<img src="assets/homework/thumb-animals.png" alt="Fire Station" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+          '</div>' +
+          '<div style="flex:1; min-width:200px;">' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">' +
+              '<span class="badge" style="background:#ef4444; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">Speaking &amp; Story</span>' +
+              '<span class="badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">A2 Target</span>' +
+              '<span class="hw-xp-pill" style="font-size:0.75rem; padding:2px 8px;">⭐ +30 XP</span>' +
+            '</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 4px 0; color:var(--text-main);">Fire Station Adventure: Emergency Dispatch</h3>' +
+            '<p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 8px 0;">Learners navigate the dispatch control room, practice preposition directions, and guide emergency responders.</p>' +
+            '<div style="display:flex; align-items:center; gap:14px; font-size:0.78rem; color:var(--text-muted);">' +
+              '<span>👥 12/19 students completed (63%)</span>' +
+              '<span>⏱️ 25 mins</span>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">' +
+            '<a href="firefighter/index.html" class="btn-primary-action" style="padding:10px 18px; font-size:0.86rem; font-weight:800; text-decoration:none;">OPEN ADVENTURE ➔</a>' +
+            '<button type="button" class="btn-sm-secondary" onclick="switchView(\'progress-check\')" style="font-size:0.78rem; padding:6px 12px;">📊 Assessment</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Adventure Card 2
+        '<div class="adventure-card-lg">' +
+          '<div class="adventure-artwork-lg">' +
+            '<img src="assets/homework/thumb-prepositions.png" alt="Vocabulary Quest" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+          '</div>' +
+          '<div style="flex:1; min-width:200px;">' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">' +
+              '<span class="badge" style="background:#10b981; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">Vocabulary</span>' +
+              '<span class="badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">A1+</span>' +
+              '<span class="hw-xp-pill" style="font-size:0.75rem; padding:2px 8px;">⭐ +20 XP</span>' +
+            '</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 4px 0; color:var(--text-main);">Vocabulary Quest: Prepositions of Place</h3>' +
+            '<p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 8px 0;">Interactive companion challenges: locate hidden objects in, on, under, and between town landmarks.</p>' +
+            '<div style="display:flex; align-items:center; gap:14px; font-size:0.78rem; color:var(--text-muted);">' +
+              '<span>👥 15/19 students completed (79%)</span>' +
+              '<span>⏱️ 15 mins</span>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">' +
+            '<button type="button" class="btn-primary-action" onclick="openStudentQuestModal(\'hw-1\')" style="padding:10px 18px; font-size:0.86rem; font-weight:800;">OPEN QUEST ➔</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openEditHomeworkModal(\'hw-1\')" style="font-size:0.78rem; padding:6px 12px;">✏️ Edit</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Adventure Card 3
+        '<div class="adventure-card-lg">' +
+          '<div class="adventure-artwork-lg">' +
+            '<img src="assets/homework/thumb-monsters.png" alt="Young Inventors" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+          '</div>' +
+          '<div style="flex:1; min-width:200px;">' +
+            '<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap;">' +
+              '<span class="badge" style="background:#8b5cf6; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">CLIL &amp; STEM</span>' +
+              '<span class="badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">A2 Target</span>' +
+              '<span class="hw-xp-pill" style="font-size:0.75rem; padding:2px 8px;">⭐ +50 XP</span>' +
+            '</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 4px 0; color:var(--text-main);">Young Inventors Lab: Plan, Build, Test</h3>' +
+            '<p style="font-size:0.84rem; color:var(--text-secondary); margin:0 0 8px 0;">Learners formulate design hypotheses, measure test results, and describe improvements using TO + VERB.</p>' +
+            '<div style="display:flex; align-items:center; gap:14px; font-size:0.78rem; color:var(--text-muted);">' +
+              '<span>👥 9/19 students completed (47%)</span>' +
+              '<span>⏱️ 40 mins</span>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">' +
+            '<a href="young-inventor/index.html" class="btn-primary-action" style="padding:10px 18px; font-size:0.86rem; font-weight:800; text-decoration:none;">ENTER LAB ➔</a>' +
+            '<button type="button" class="btn-sm-secondary" onclick="switchView(\'worksheets\')" style="font-size:0.78rem; padding:6px 12px;">📄 Blueprints</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // 4. FEATURED COMPANIONS SPOTLIGHT (ONLY 3 FEATURED LEARNERS WITH 150px ARTWORK)
+      '<div class="featured-companions-container">' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;">' +
+          '<div>' +
+            '<div style="font-size:0.8rem; font-weight:900; color:#7e22ce; text-transform:uppercase; letter-spacing:0.06em;">YOUR CLASS FEATURED COMPANIONS</div>' +
+            '<h2 style="font-size:1.4rem; font-weight:900; color:#0f172a; margin:4px 0 0 0;">Evolving Companions in ' + cls.name + '</h2>' +
+          '</div>' +
+          '<div style="font-size:0.84rem; color:#64748b; font-weight:700;">Top progressing learners this week</div>' +
+        '</div>' +
+
+        '<div class="featured-companions-grid">' +
+          featuredStudents.map((s, idx) => {
+            const mState = store.calculateMonsterState(s.id);
+            const totalXP = mState.totalXP;
+            return '' +
+              '<div class="companion-spotlight-card" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')">' +
+                '<div class="spotlight-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize companion">' +
+                  window.renderMonsterAvatar(s.id, { size: 140, animated: true }) +
+                '</div>' +
+                '<span class="badge" style="background:#7e22ce; color:#fff; font-size:0.74rem; font-weight:800; padding:2px 10px; border-radius:999px; margin-bottom:6px;">' +
+                  'Level ' + mState.currentLevel + ' · ' + mState.stageName +
+                '</span>' +
+                '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 4px 0; color:#0f172a;">' + s.firstName + ' ' + s.lastName + '</h3>' +
+                '<div style="font-size:0.84rem; font-weight:800; color:#b45309; margin-bottom:10px;">⭐ ' + totalXP.toLocaleString() + ' XP</div>' +
+                '<div style="width:100%; height:8px; background:#e2e8f0; border-radius:999px; overflow:hidden; margin-bottom:12px;">' +
+                  '<div style="width:' + mState.progressPct + '%; height:100%; background:linear-gradient(90deg, #a855f7, #3b82f6); border-radius:999px;"></div>' +
+                '</div>' +
+                '<div style="display:flex; gap:6px; width:100%;" onclick="event.stopPropagation();">' +
+                  '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="flex:1; justify-content:center; font-weight:800; color:#059669; font-size:0.78rem;">+10 XP</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openMonsterCreator(\'' + s.id + '\')" style="padding:6px 10px; font-size:0.78rem;" title="Studio">🎨</button>' +
+                  '<button type="button" class="btn-primary-action" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')" style="padding:6px 12px; font-size:0.78rem; font-weight:800;">Profile →</button>' +
+                '</div>' +
+              '</div>';
+          }).join('') +
+        '</div>' +
+
+        // Prominent Call to Action Button to View All Students
+        '<button type="button" class="btn-primary-action" onclick="switchClassroomSubTab(\'students\')" style="width:100%; justify-content:center; padding:16px; font-size:1.02rem; font-weight:900; margin-top:20px; border-radius:16px; background:linear-gradient(135deg, #1e1b4b, #2563eb); box-shadow:0 8px 24px rgba(37,99,235,0.3);">' +
+          '👥 VIEW ALL STUDENTS (' + students.length + ' LEARNERS) ➔' +
+        '</button>' +
+      '</div>';
+  }
+
+  // Students Hybrid Table (Clean list view instead of repetitive cards)
+  function renderClassroomStudentsHybrid(cls, students = []) {
+    return '' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
+        '<div>' +
+          '<h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">All Learners in ' + cls.name + '</h3>' +
+          '<p style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Comprehensive learner directory with active companion levels, XP, and growth progress.</p>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px;">' +
+          '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchClassroomSubTab(\'command\')">← Back to Command Center</button>' +
+        '</div>' +
+      '</div>' +
+      renderStudentsHybridList(students, cls);
+  }
+
+  function renderStudentsHybridList(students, cls) {
+    if (!students || students.length === 0) {
+      return '<div style="padding:40px; text-align:center; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light); color:var(--text-muted);">No students in this class.</div>';
+    }
+
+    return '' +
+      '<div class="students-hybrid-table">' +
+        '<div class="student-hybrid-header">' +
+          '<div>STUDENT &amp; COMPANION</div>' +
+          '<div>LEVEL &amp; STAGE</div>' +
+          '<div>TOTAL XP</div>' +
+          '<div>EVOLUTION PROGRESS</div>' +
+          '<div>STREAK</div>' +
+          '<div style="text-align:right;">ACTIONS</div>' +
+        '</div>' +
+        students.map(s => {
+          const mState = store.calculateMonsterState(s.id);
+          const totalXP = mState.totalXP;
+          const xpToNext = mState.xpToNext;
+          const streak = s.streakDays || 0;
+          const cefrKey = (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus');
+
+          return '' +
+            '<div class="student-hybrid-row" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')">' +
+              // Col 1: Student & Companion
+              '<div style="display:flex; align-items:center; gap:14px;">' +
+                '<div style="width:68px; height:68px; border-radius:16px; background:radial-gradient(circle, rgba(56,189,248,0.15), rgba(15,23,42,0.04)); display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(56,189,248,0.3); flex-shrink:0;" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
+                  window.renderMonsterAvatar(s.id, { size: 60, animated: true }) +
+                '</div>' +
+                '<div>' +
+                  '<div style="display:flex; align-items:center; gap:8px;">' +
+                    '<h4 style="margin:0; font-size:1.02rem; font-weight:800; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</h4>' +
+                    '<span class="badge-cefr badge-cefr-' + cefrKey + '" style="font-size:0.72rem; padding:2px 7px;">' + (s.overallCefr || 'A1') + '</span>' +
+                  '</div>' +
+                  '<div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; margin-top:3px;">' +
+                    (cls ? cls.name : 'Enrolled') + ' · Age ' + (s.age || 9) + ' · ID: ' + (s.studentIdNumber || 'EAA-001') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              // Col 2: Level & Stage
+              '<div>' +
+                '<span class="badge" style="background:var(--color-primary); color:#fff; font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:999px;">' +
+                  'Level ' + mState.currentLevel +
+                '</span>' +
+                '<div style="font-size:0.8rem; font-weight:800; color:var(--text-main); margin-top:3px;">' +
+                  mState.stageName +
+                '</div>' +
+              '</div>' +
+
+              // Col 3: Total XP
+              '<div>' +
+                '<div class="student-hero-xp-badge" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to edit XP" style="display:inline-flex; font-size:0.82rem; padding:3px 10px; border-radius:10px; cursor:pointer;">' +
+                  '⭐ ' + totalXP.toLocaleString() + ' XP' +
+                '</div>' +
+              '</div>' +
+
+              // Col 4: Evolution Progress
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; margin-bottom:3px; color:var(--text-secondary);">' +
+                  '<span>' + (!mState.isHatched ? 'Egg Cracking' : 'Evolution') + '</span>' +
+                  '<span>' + mState.progressPct + '%</span>' +
+                '</div>' +
+                '<div style="width:100%; height:7px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                  '<div style="width:' + mState.progressPct + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); border-radius:6px;"></div>' +
+                '</div>' +
+                '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:3px;">' +
+                  (!mState.isHatched ? ('Egg: ' + mState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form')) +
+                '</div>' +
+              '</div>' +
+
+              // Col 5: Activity & Streak
+              '<div>' +
+                '<div style="display:flex; align-items:center; gap:5px; font-weight:800; font-size:0.82rem; color:#f59e0b;">' +
+                  '<span>🔥</span> <span>' + streak + 'd streak</span>' +
+                '</div>' +
+                '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Active today</div>' +
+              '</div>' +
+
+              // Col 6: Actions
+              '<div style="display:flex; gap:6px; justify-content:flex-end;" onclick="event.stopPropagation();">' +
+                '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3); padding:5px 8px; font-size:0.74rem;" title="+10 XP">+10 XP</button>' +
+                '<button type="button" class="btn-sm-secondary" onclick="openMonsterCreator(\'' + s.id + '\')" style="padding:5px 8px; font-size:0.74rem;" title="Monster Studio">🎨</button>' +
+                '<button type="button" class="btn-primary-action" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')" style="padding:5px 10px; font-size:0.74rem; font-weight:800;">Profile →</button>' +
+              '</div>' +
+            '</div>';
+        }).join('') +
+      '</div>';
   }
 
   // 1. Students Visual Avatar Grid
@@ -5472,16 +5799,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     container.innerHTML = 
       '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
         // Header
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:8px;">' +
-              '<span>✍️</span> <span>Homework &amp; Quests</span>' +
+            '<div style="font-size:0.75rem; font-weight:900; color:#0284c7; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">ADVENTURE ACADEMY</div>' +
+            '<h1 style="font-size:2rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">' +
+              '<span>🎯</span> <span>QUEST BOARD</span>' +
             '</h1>' +
-            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Assign fun English quests, track completion, and reward your students with XP!</p>' +
+            '<p style="font-size:0.92rem; color:var(--text-muted); margin:0; font-weight:600;">Complete missions. Earn XP. Grow your companion.</p>' +
           '</div>' +
           '<div style="display:flex; gap:8px;">' +
-            '<button class="btn-primary-action" onclick="openCreateHomeworkModal()" style="font-weight:900; padding:10px 20px; font-size:0.92rem; box-shadow:0 4px 14px rgba(59,130,246,0.35);">' +
-              '+ Create Homework' +
+            '<button class="btn-primary-action" onclick="openCreateHomeworkModal()" style="font-weight:900; padding:10px 22px; font-size:0.92rem; box-shadow:0 4px 14px rgba(59,130,246,0.35); border-radius:12px;">' +
+              '+ Create Quest' +
             '</button>' +
           '</div>' +
         '</div>' +
@@ -6803,14 +7131,50 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
 
     container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Gamification &amp; Reward Milestones</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage badges, monster evolution stages, modular cosmetics, and XP skills.</p>' +
+      // YOUR ADVENTURE HERO HEADER
+      '<div style="margin-bottom:24px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<div style="font-size:0.75rem; font-weight:900; color:#7e22ce; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">COMPANION &amp; REWARD SYSTEM</div>' +
+            '<h1 style="font-size:2rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:10px;">' +
+              '<span>✨</span> <span>YOUR ADVENTURE</span>' +
+            '</h1>' +
+            '<p style="font-size:0.92rem; color:var(--text-muted); margin:0; font-weight:600;">Every lesson makes your companion stronger. Earn XP, crack eggs, and unlock powers.</p>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
+            '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
-          '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
+
+        // DESTINATION WORLD CARDS
+        '<div class="gamification-destinations-grid" style="margin-top:20px; margin-bottom:28px;">' +
+          '<div class="destination-world-card" onclick="switchView(\'monster\')" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border:1px solid rgba(129,140,248,0.3);">' +
+            '<div>' +
+              '<div style="font-size:2.2rem; margin-bottom:10px;">🐾</div>' +
+              '<h3 style="font-size:1.25rem; font-weight:900; margin:0 0 6px 0;">MY MONSTER</h3>' +
+              '<p style="font-size:0.84rem; color:#cbd5e1; margin:0; line-height:1.4;">Open the Monster Studio closet, change colors, and equip hats, wings, and cosmic auras.</p>' +
+            '</div>' +
+            '<div style="font-size:0.82rem; font-weight:800; color:#38bdf8; margin-top:14px;">ENTER STUDIO ➔</div>' +
+          '</div>' +
+
+          '<div class="destination-world-card" onclick="switchGamificationTab(\'badges\')" style="background:linear-gradient(135deg, #064e3b 0%, #047857 100%); border:1px solid rgba(52,211,153,0.3);">' +
+            '<div>' +
+              '<div style="font-size:2.2rem; margin-bottom:10px;">🏆</div>' +
+              '<h3 style="font-size:1.25rem; font-weight:900; margin:0 0 6px 0;">ACHIEVEMENTS</h3>' +
+              '<p style="font-size:0.84rem; color:#d1fae5; margin:0; line-height:1.4;">' + (badges.length + achievements.length) + ' milestone trophies, special feats, and classroom honors for learner dedication.</p>' +
+            '</div>' +
+            '<div style="font-size:0.82rem; font-weight:800; color:#6ee7b7; margin-top:14px;">VIEW BADGES ➔</div>' +
+          '</div>' +
+
+          '<div class="destination-world-card" onclick="switchGamificationTab(\'levels\')" style="background:linear-gradient(135deg, #78350f 0%, #b45309 100%); border:1px solid rgba(251,191,36,0.3);">' +
+            '<div>' +
+              '<div style="font-size:2.2rem; margin-bottom:10px;">⭐</div>' +
+              '<h3 style="font-size:1.25rem; font-weight:900; margin:0 0 6px 0;">XP &amp; EVOLUTION</h3>' +
+              '<p style="font-size:0.84rem; color:#fef3c7; margin:0; line-height:1.4;">' + levels.length + ' anatomical evolution stages from Mystery Egg to Apex Form with XP thresholds.</p>' +
+            '</div>' +
+            '<div style="font-size:0.82rem; font-weight:800; color:#fde047; margin-top:14px;">EXPLORE PATHWAY ➔</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       tabsHtml +
@@ -7352,7 +7716,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<span style="font-size:1.3rem;">🎯</span>' +
               '<h2 style="font-size:1.25rem; font-weight:900; margin:0; color:var(--text-main);">Active Quests for ' + cls.name + '</h2>' +
             '</div>' +
-            '<button class="btn-sm-secondary" onclick="renderView(\'homework\')" style="font-weight:800;">View All Quests Board ➔</button>' +
+            '<button class="btn-sm-secondary" onclick="switchView(\'homework\')" style="font-weight:800;">View All Quests Board ➔</button>' +
           '</div>' +
           (activeQuests.length === 0 ?
             '<div style="padding:24px; text-align:center; background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; color:var(--text-muted);">' +
@@ -7404,7 +7768,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           ) +
         '</div>' +
 
-        // 4. CLASSROOM COMMAND WIDGETS (Roll call, attention)
+        // 4. STUDENT COMPANION SPOTLIGHT (Featured Companions)
+        '<div class="featured-companions-container" style="margin-top:4px;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+            '<div>' +
+              '<div style="font-size:0.75rem; font-weight:900; color:#7e22ce; text-transform:uppercase; letter-spacing:0.05em;">COMPANION SPOTLIGHT</div>' +
+              '<h3 style="font-size:1.25rem; font-weight:900; color:#0f172a; margin:2px 0 0 0;">Class Companions Growing Fast</h3>' +
+            '</div>' +
+            '<button class="btn-sm-secondary" onclick="switchView(\'students\')" style="font-weight:800;">View All Students ➔</button>' +
+          '</div>' +
+          '<div class="featured-companions-grid">' +
+            students.slice(0, 3).map(s => {
+              const mState = store.calculateMonsterState(s.id);
+              return '' +
+                '<div class="companion-spotlight-card" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')">' +
+                  '<div class="spotlight-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to open Monster Studio">' +
+                    window.renderMonsterAvatar(s.id, { size: 120, animated: true }) +
+                  '</div>' +
+                  '<span class="badge" style="background:#7e22ce; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:999px; margin-bottom:4px;">' +
+                    'Level ' + mState.currentLevel + ' · ' + mState.stageName +
+                  '</span>' +
+                  '<h4 style="font-size:1.05rem; font-weight:900; margin:0 0 2px 0; color:#0f172a;">' + s.firstName + ' ' + s.lastName + '</h4>' +
+                  '<div style="font-size:0.8rem; font-weight:800; color:#b45309; margin-bottom:8px;">⭐ ' + mState.totalXP.toLocaleString() + ' XP</div>' +
+                  '<div style="width:100%; height:6px; background:#e2e8f0; border-radius:999px; overflow:hidden;">' +
+                    '<div style="width:' + mState.progressPct + '%; height:100%; background:linear-gradient(90deg, #a855f7, #3b82f6);"></div>' +
+                  '</div>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+
+        // 5. CLASSROOM COMMAND WIDGETS (Roll call, attention)
         renderClassroomDashboardWidgets(cls, students) +
       '</div>';
   }
@@ -7940,45 +8334,44 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       }
 
       sidebar.innerHTML = 
-        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
-        '</ul>' +
-
-        renderNavGroup('my-school', 'My School', [
+        renderNavGroup('adventure', 'Adventure', [
+          { view: 'dashboard', label: 'Overview', icon: '🧭', title: 'Overview Dashboard', isActive: currentView === 'dashboard' },
+          { view: 'classroom-hub', label: 'My Classroom', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
+          { view: 'students', label: 'My Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
           { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
-          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
-          { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
           { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
-        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
+        ], ['dashboard', 'classroom-hub', 'class-detail', 'students', 'classes', 'attendance']) +
 
-        renderNavGroup('teaching', 'Teaching', [
+        renderNavGroup('teaching', 'Teach', [
           { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
-          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'library', label: 'Resources', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
           { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
           { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
-          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
+          { view: 'homework', label: 'Quests', icon: '✍️', title: 'Homework Quests', isActive: currentView === 'homework', badge: counts.homework },
           { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
         ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
 
-        renderNavGroup('assessment', 'Assessment', [
-          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
+        renderNavGroup('assessment', 'Assess', [
+          { view: 'assessments', label: 'Assessments', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
           { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
           { view: 'reports', label: 'Reports', icon: '📄', title: 'Reports', isActive: currentView === 'reports', badge: counts.reports },
-          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
+          { view: 'progress-check', label: 'Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
         ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
-        renderNavGroup('community', 'Community', [
+        renderNavGroup('gamification', 'Gamify', [
+          { view: 'monster', label: 'My Monster', icon: '🐾', title: 'Monster Studio & Companion', isActive: currentView === 'monster' },
+          { view: 'gamification', label: 'Achievements', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+          { view: 'rewards', label: 'Rewards', icon: '👑', title: 'Rewards', isActive: currentView === 'rewards' },
           { view: 'story', label: 'Class Story', icon: '📸', title: 'Class Story', isActive: currentView === 'story' },
           { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages },
           { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
-        ], ['story', 'messages', 'portfolios']) +
+        ], ['monster', 'gamification', 'rewards', 'story', 'messages', 'portfolios']) +
 
-        renderNavGroup('admin', 'Admin & Audit', [
+        renderNavGroup('admin', 'Admin', [
           { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
-          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
           { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
-          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
-        ], ['health', 'gamification', 'archived', 'settings']) +
+          { view: 'settings', label: 'Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
+        ], ['health', 'archived', 'settings']) +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
