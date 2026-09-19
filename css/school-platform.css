@@ -3719,27 +3719,27 @@ body.classroom-mode-active .classroom-students-grid {
 }
 
 .eaa-monster-svg.eaa-monster-animated .eaa-monster-breathe-group {
-  transform-origin: 100px 145px;
+  transform-origin: 256px 330px;
   animation: eaaMonsterBreathe 3.4s ease-in-out infinite;
 }
 
 .eaa-monster-svg.eaa-monster-animated .eaa-monster-blink-group {
-  transform-origin: 100px 105px;
+  transform-origin: 256px 185px;
   animation: eaaMonsterBlink 4.2s ease-in-out infinite;
 }
 
 .eaa-monster-svg.eaa-monster-animated .eaa-monster-tail-group {
-  transform-origin: 125px 135px;
+  transform-origin: 290px 380px;
   animation: eaaMonsterTailWag 2.4s ease-in-out infinite;
 }
 
 .eaa-monster-svg.eaa-monster-animated .eaa-monster-wings-group {
-  transform-origin: 100px 105px;
+  transform-origin: 256px 260px;
   animation: eaaMonsterWingFlutter 2.6s ease-in-out infinite;
 }
 
 .eaa-monster-svg.eaa-monster-animated .eaa-monster-aura-group {
-  transform-origin: 100px 110px;
+  transform-origin: 256px 260px;
   animation: eaaMonsterAuraPulse 3s ease-in-out infinite;
 }
 
