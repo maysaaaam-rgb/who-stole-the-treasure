@@ -229,55 +229,67 @@
       </defs>
     `;
 
-    // 1. Background layer
+    // 1. World / Background Layer
     let bgLayer = '';
-    try {
-      bgLayer = renderBackgroundLayer(equipped.background, stage);
-    } catch (e) {
-      bgLayer = renderBackgroundLayer('bg-meadow', stage);
+    const showWorld = options.showWorld !== false && options.transparent !== true;
+    if (showWorld) {
+      try {
+        bgLayer = `<g class="eaa-layer eaa-layer-world" data-layer="world">${renderBackgroundLayer(equipped.background, stage)}</g>`;
+      } catch (e) {
+        bgLayer = `<g class="eaa-layer eaa-layer-world" data-layer="world">${renderBackgroundLayer('bg-meadow', stage)}</g>`;
+      }
     }
 
-    // 2. Aura layer (under monster)
+    // 2. Aura Layer (under monster)
     let auraLayer = '';
     try {
-      auraLayer = renderAuraLayer(equipped.aura, stage, palette);
+      const a = renderAuraLayer(equipped.aura, stage, palette);
+      if (a) auraLayer = `<g class="eaa-layer eaa-layer-aura eaa-monster-aura-group" data-layer="aura">${a}</g>`;
     } catch (e) {
       auraLayer = '';
     }
 
-    // 3. Wings layer (behind body)
+    // 3. Ground Shadow Layer (anchored under feet)
+    const shadowLayer = `<g class="eaa-layer eaa-layer-shadow" data-layer="shadow"><ellipse cx="100" cy="180" rx="55" ry="12" fill="rgba(15, 23, 42, 0.18)" class="eaa-monster-ground-shadow" /></g>`;
+
+    // 4. Wings Layer (behind body)
     let wingsLayer = '';
     try {
-      wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
+      const w = renderWingsLayer(stage, equipped.wings, palette);
+      if (w) wingsLayer = `<g class="eaa-layer eaa-layer-wings eaa-monster-wings-group" data-layer="wings">${w}</g>`;
     } catch (e) {
       wingsLayer = '';
     }
 
-    // 4. Tail layer (behind body)
+    // 5. Tail Layer (behind body)
     let tailLayer = '';
     try {
-      tailLayer = renderTailLayer(stage, equipped.tail, palette);
+      const t = renderTailLayer(stage, equipped.tail, palette);
+      if (t) tailLayer = `<g class="eaa-layer eaa-layer-tail eaa-monster-tail-group" data-layer="tail">${t}</g>`;
     } catch (e) {
       tailLayer = '';
     }
 
-    // 5. Backpack layer (behind body)
+    // 6. Backpack Layer (behind body)
     let backpackLayer = '';
     try {
-      backpackLayer = renderBackpackLayer(stage, equipped.backpack);
+      const bp = renderBackpackLayer(stage, equipped.backpack);
+      if (bp) backpackLayer = `<g class="eaa-layer eaa-layer-backpack" data-layer="backpack">${bp}</g>`;
     } catch (e) {
       backpackLayer = '';
     }
 
-    // 6. Main monster body or egg (Uses Master Evolution Artwork as single source of truth)
-    const imgSrc = getMonsterStageImage(stage);
-    let mainEntityLayer = `
-      <g class="eaa-monster-artwork-figure">
-        <image href="${imgSrc}" x="12" y="12" width="176" height="176" preserveAspectRatio="xMidYMid meet" />
-      </g>
-    `;
+    // 7. Main monster body or egg
+    let mainEntityLayer = '';
+    if (stage === 'egg') {
+      mainEntityLayer = renderEggWhole(palette, colorKey);
+    } else if (stage === 'cracking_egg') {
+      mainEntityLayer = renderEggCracking(palette, colorKey);
+    } else {
+      mainEntityLayer = renderMonsterBody(stage, palette, colorKey, equipped);
+    }
 
-    // 7. Foreground accessories (hats, glasses, handheld items)
+    // 8. Foreground accessories (hats, glasses, handheld items)
     let fgAccessoryLayer = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
@@ -287,16 +299,26 @@
       }
     }
 
-    return `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
-        ${defs}
-        ${bgLayer}
-        ${auraLayer}
-        ${wingsLayer}
-        ${tailLayer}
+    // Combined Character Entity in subtle idle breathing group
+    const characterEntity = `
+      <g class="eaa-monster-character-wrap eaa-monster-breathe-group" data-layer="character">
         ${backpackLayer}
         ${mainEntityLayer}
         ${fgAccessoryLayer}
+      </g>
+    `;
+
+    const pauseClass = (animated === false || options.paused === true) ? 'is-paused' : '';
+
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass} ${pauseClass} ${options.className || ''}" data-stage="${stage}" data-color="${colorKey}">
+        ${defs}
+        ${bgLayer}
+        ${auraLayer}
+        ${shadowLayer}
+        ${wingsLayer}
+        ${tailLayer}
+        ${characterEntity}
       </svg>
     `.trim();
   }
@@ -1039,7 +1061,7 @@
 
     const feetMarkup = `
       <!-- Feet -->
-      <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.5">
+      <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.5" class="eaa-layer eaa-layer-body-feet" data-layer="body">
         <ellipse cx="${cX - footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
         <ellipse cx="${cX + footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
       </g>
@@ -1069,11 +1091,11 @@
 
     const torsoMarkup = `
       <!-- Main Monster Body -->
-      <g filter="url(#mf-shadow)">
+      <g filter="url(#mf-shadow)" class="eaa-layer eaa-layer-body" data-layer="body">
         <ellipse cx="${cX}" cy="${cY}" rx="${rx}" ry="${ry}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3" />
         
         <!-- Soft Belly Patch -->
-        <ellipse cx="${cX}" cy="${cY + ry * 0.22}" rx="${bellyRx}" ry="${bellyRy}" fill="url(#mg-belly-${colorKey})" />
+        <ellipse cx="${cX}" cy="${cY + ry * 0.22}" rx="${bellyRx}" ry="${bellyRy}" fill="url(#mg-belly-${colorKey})" class="eaa-layer-belly" />
 
         ${armsMarkup}
       </g>
@@ -1086,7 +1108,7 @@
       ${hornsEarsMarkup}
       ${feetMarkup}
       ${torsoMarkup}
-      ${clothingMarkup}
+      ${clothingMarkup ? `<g class="eaa-layer eaa-layer-clothing" data-layer="clothing">${clothingMarkup}</g>` : ''}
       ${faceMarkup}
     `;
   }
@@ -1325,7 +1347,7 @@
     // Floppy Monster Ears are ALWAYS present to maintain signature character DNA across all stages!
     const earsMarkup = `
       <!-- Cute Floppy Monster Ears (Signature Character DNA) -->
-      <g filter="url(#mf-shadow)" class="monster-ears">
+      <g filter="url(#mf-shadow)" class="monster-ears eaa-layer eaa-layer-ears" data-layer="ears">
         <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
         <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
         <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
@@ -1408,7 +1430,7 @@
 
     return `
       ${earsMarkup}
-      ${hornsMarkup}
+      ${hornsMarkup ? `<g class="eaa-layer eaa-layer-horns" data-layer="horns">${hornsMarkup}</g>` : ''}
     `;
   }
 
@@ -1423,8 +1445,10 @@
 
     // Warm signature pink blush cheeks
     const cheeks = `
-      <ellipse cx="${cX - eyeSpacing - 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
-      <ellipse cx="${cX + eyeSpacing + 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
+      <g class="eaa-layer eaa-layer-markings" data-layer="markings">
+        <ellipse cx="${cX - eyeSpacing - 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
+        <ellipse cx="${cX + eyeSpacing + 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
+      </g>
     `;
 
     let eyesMarkup = '';
@@ -1544,8 +1568,8 @@
 
     return `
       ${cheeks}
-      ${eyesMarkup}
-      ${mouthMarkup}
+      <g class="eaa-layer eaa-layer-eyes eaa-monster-blink-group" data-layer="eyes">${eyesMarkup}</g>
+      <g class="eaa-layer eaa-layer-mouth" data-layer="mouth">${mouthMarkup}</g>
     `;
   }
 
@@ -1783,9 +1807,9 @@
     }
 
     return `
-      ${hatMarkup}
-      ${glassesMarkup}
-      ${accessoryMarkup}
+      ${hatMarkup ? `<g class="eaa-layer eaa-layer-hat" data-layer="hat">${hatMarkup}</g>` : ''}
+      ${glassesMarkup ? `<g class="eaa-layer eaa-layer-glasses" data-layer="glasses">${glassesMarkup}</g>` : ''}
+      ${accessoryMarkup ? `<g class="eaa-layer eaa-layer-accessory" data-layer="accessory">${accessoryMarkup}</g>` : ''}
     `;
   }
 
@@ -2387,39 +2411,26 @@
   }
 
   function renderMonsterArtwork(options = {}) {
-    const evo = getMonsterForEvolution(options.stage || options.level || options.xp);
-    const imgSrc = evo.image;
     const size = options.size || 160;
     const isRound = options.round !== false;
-    const animated = options.animated !== false;
-    const animClass = animated ? 'eaa-monster-artwork-anim' : '';
     const borderRadius = typeof options.radius === 'number' ? options.radius + 'px' : (isRound ? (size >= 100 ? '22px' : '14px') : '0px');
-    const equipped = Object.assign({}, options.equipped || {});
-    
-    // Check aura styles
-    let auraEffect = '';
-    if (equipped.aura && equipped.aura !== 'none') {
-      if (equipped.aura === 'aura-celestial' || equipped.aura === 'aura-galaxy') {
-        auraEffect = 'box-shadow: 0 0 28px rgba(168,85,247,0.7), inset 0 0 18px rgba(56,189,248,0.5);';
-      } else if (equipped.aura === 'aura-fire') {
-        auraEffect = 'box-shadow: 0 0 28px rgba(249,115,22,0.8), inset 0 0 16px rgba(239,68,68,0.6);';
-      } else {
-        auraEffect = 'box-shadow: 0 0 24px rgba(56,189,248,0.6);';
-      }
-    }
+    const stage = options.stage || options.level || options.xp;
+    const color = options.color || (options.equipped && options.equipped.body);
 
-    // Optional environment background
-    let bgStyle = 'background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);';
-    if (equipped.background && equipped.background !== 'none') {
-      if (equipped.background === 'bg-castle') bgStyle = 'background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);';
-      else if (equipped.background === 'bg-forest') bgStyle = 'background: linear-gradient(180deg, #064e3b 0%, #022c22 100%);';
-      else if (equipped.background === 'bg-cosmos') bgStyle = 'background: radial-gradient(circle at center, #312e81 0%, #020617 100%);';
-      else if (equipped.background === 'bg-volcano') bgStyle = 'background: linear-gradient(180deg, #7c2d12 0%, #451a03 100%);';
-    }
+    const svg = renderMonsterSVG({
+      stage: stage,
+      color: color,
+      equipped: options.equipped,
+      size: size,
+      animated: options.animated !== false,
+      paused: options.paused === true,
+      showWorld: options.showWorld !== false,
+      transparent: options.transparent === true
+    });
 
     return `
-      <div class="eaa-monster-artwork-wrap ${animClass} ${options.className || ''}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${borderRadius}; overflow:hidden; ${bgStyle} ${auraEffect} ${options.style || ''}">
-        <img src="${imgSrc}" alt="${evo.name}" style="width:100%; height:100%; object-fit:cover; display:block; pointer-events:none;" />
+      <div class="eaa-monster-artwork-wrap ${options.animated !== false ? 'eaa-monster-artwork-anim' : ''} ${options.className || ''}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${borderRadius}; overflow:hidden; ${options.style || ''}">
+        ${svg}
       </div>
     `.trim();
   }
@@ -2475,6 +2486,7 @@
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
+    renderModularMonsterSVG: renderMonsterSVG,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
     palettes: MONSTER_PALETTES,
@@ -2486,6 +2498,7 @@
   root.MonsterRenderer = MonsterEvolutionRenderer;
   root.getMonsterForEvolution = getMonsterForEvolution;
   root.renderMonsterSVG = renderMonsterSVG;
+  root.renderModularMonsterSVG = renderMonsterSVG;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
   root.getMonsterStageImage = getMonsterStageImage;

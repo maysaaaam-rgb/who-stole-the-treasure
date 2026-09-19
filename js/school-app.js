@@ -12322,9 +12322,11 @@ window.switchClassroomSubTab = function(subTab) {
     if (box && renderer) {
       box.innerHTML = renderer.renderMonsterArtwork({
         stage: previewStage,
+        color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
         size: 280,
         animated: monsterCreatorIsAnimated,
+        paused: !monsterCreatorIsAnimated,
         round: true
       });
     }
@@ -12332,9 +12334,11 @@ window.switchClassroomSubTab = function(subTab) {
     if (miniAvatarBox && renderer) {
       miniAvatarBox.innerHTML = renderer.renderMonsterArtwork({
         stage: previewStage,
+        color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
         size: 48,
         animated: false,
+        paused: true,
         round: true
       });
     }
