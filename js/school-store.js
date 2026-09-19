@@ -4481,27 +4481,27 @@
     "studentId": "student-4b-304",
     "petName": "Nilda",
     "monsterName": "Nilda's Monster",
-    "baseColor": "orange",
-    "highestUnlockedLevel": 1,
-    "lastCelebratedLevel": 1,
-    "isHatched": false,
-    "hatchDate": null,
+    "baseColor": "blue",
+    "highestUnlockedLevel": 4,
+    "lastCelebratedLevel": 4,
+    "isHatched": true,
+    "hatchDate": "Sep 5, 2026",
     "equipped": {
-      "body": "body-orange",
-      "eyes": "default",
+      "body": "body-blue",
+      "eyes": "eyes-sparkle",
       "mouth": "mouth-smile",
-      "horns": "none",
+      "horns": "horns-gold",
       "wings": "none",
-      "tail": "none",
+      "tail": "tail-perky",
       "hat": "none",
       "glasses": "none",
       "backpack": "none",
       "accessory": "none",
       "aura": "none",
       "background": "bg-meadow",
-      "clothing": "none"
+      "clothing": "clothing-vest"
     },
-    "unlockedItems": [],
+    "unlockedItems": ["body-blue", "eyes-sparkle", "eyes-happy", "mouth-smile", "horns-gold", "clothing-vest", "tail-perky", "bg-meadow"],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-304-1",
@@ -4509,6 +4509,20 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      },
+      {
+        "id": "ev-student-4b-304-2",
+        "date": "Sep 5, 2026",
+        "type": "baby",
+        "title": "Hatched into Baby Monster",
+        "detail": "Egg hatched at 250 XP milestone!"
+      },
+      {
+        "id": "ev-student-4b-304-3",
+        "date": "Sep 12, 2026",
+        "type": "growing",
+        "title": "Evolved to Growing Monster",
+        "detail": "Evolved at 500 XP milestone with golden horns and explorer vest!"
       }
     ]
   },
@@ -4691,27 +4705,27 @@
     "studentId": "student-4b-309",
     "petName": "Utku Efe",
     "monsterName": "Utku Efe's Monster",
-    "baseColor": "orange",
-    "highestUnlockedLevel": 1,
-    "lastCelebratedLevel": 1,
-    "isHatched": false,
-    "hatchDate": null,
+    "baseColor": "green",
+    "highestUnlockedLevel": 4,
+    "lastCelebratedLevel": 4,
+    "isHatched": true,
+    "hatchDate": "Sep 6, 2026",
     "equipped": {
-      "body": "body-orange",
-      "eyes": "default",
+      "body": "body-green",
+      "eyes": "eyes-brave",
       "mouth": "mouth-smile",
-      "horns": "none",
+      "horns": "horns-curved",
       "wings": "none",
-      "tail": "none",
+      "tail": "tail-perky",
       "hat": "none",
       "glasses": "none",
       "backpack": "none",
       "accessory": "none",
       "aura": "none",
-      "background": "bg-meadow",
-      "clothing": "none"
+      "background": "bg-cosmos",
+      "clothing": "clothing-knight-armor"
     },
-    "unlockedItems": [],
+    "unlockedItems": ["body-green", "eyes-brave", "mouth-smile", "horns-curved", "clothing-knight-armor", "tail-perky", "bg-cosmos"],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-309-1",
@@ -4719,6 +4733,20 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      },
+      {
+        "id": "ev-student-4b-309-2",
+        "date": "Sep 6, 2026",
+        "type": "baby",
+        "title": "Hatched into Baby Monster",
+        "detail": "Egg hatched at 250 XP milestone!"
+      },
+      {
+        "id": "ev-student-4b-309-3",
+        "date": "Sep 15, 2026",
+        "type": "growing",
+        "title": "Evolved to Growing Monster",
+        "detail": "Evolved at 500 XP milestone with brave eyes, curved horns and knight armor!"
       }
     ]
   },
@@ -4726,27 +4754,27 @@
     "studentId": "student-4b-308",
     "petName": "Yağmur Ada",
     "monsterName": "Yağmur Ada's Monster",
-    "baseColor": "purple",
-    "highestUnlockedLevel": 1,
-    "lastCelebratedLevel": 1,
-    "isHatched": false,
-    "hatchDate": null,
+    "baseColor": "pink",
+    "highestUnlockedLevel": 4,
+    "lastCelebratedLevel": 4,
+    "isHatched": true,
+    "hatchDate": "Sep 4, 2026",
     "equipped": {
-      "body": "body-purple",
-      "eyes": "default",
+      "body": "body-pink",
+      "eyes": "eyes-star",
       "mouth": "mouth-smile",
-      "horns": "none",
+      "horns": "horns-crystal",
       "wings": "none",
-      "tail": "none",
+      "tail": "tail-perky",
       "hat": "none",
       "glasses": "none",
       "backpack": "none",
       "accessory": "none",
       "aura": "none",
-      "background": "bg-meadow",
-      "clothing": "none"
+      "background": "bg-forest",
+      "clothing": "clothing-robe"
     },
-    "unlockedItems": [],
+    "unlockedItems": ["body-pink", "eyes-star", "mouth-smile", "horns-crystal", "clothing-robe", "tail-perky", "bg-forest"],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-308-1",
@@ -4754,6 +4782,20 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
+      },
+      {
+        "id": "ev-student-4b-308-2",
+        "date": "Sep 4, 2026",
+        "type": "baby",
+        "title": "Hatched into Baby Monster",
+        "detail": "Egg hatched at 250 XP milestone!"
+      },
+      {
+        "id": "ev-student-4b-308-3",
+        "date": "Sep 14, 2026",
+        "type": "growing",
+        "title": "Evolved to Growing Monster",
+        "detail": "Evolved at 500 XP milestone with starry eyes, crystal horns and wizard robe!"
       }
     ]
   }
@@ -7091,10 +7133,10 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
-          xp: 100,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 0,
+          level: 4,
+          streakDays: 4,
+          equippedMonster: 'Growing Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7211,10 +7253,10 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
-          xp: 70,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 220,
+          level: 4,
+          streakDays: 5,
+          equippedMonster: 'Growing Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7231,10 +7273,10 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
-          xp: 90,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 50,
+          level: 4,
+          streakDays: 3,
+          equippedMonster: 'Growing Monster',
           archived: false,
           manualCefrOverrides: {}
         }
@@ -8594,7 +8636,7 @@
             } else {
               // Ensure default profiles merged or freshened for seed students
               for (const sId in DEFAULT_MONSTER_PROFILES) {
-                if (!merged.monsterProfiles[sId] || !merged.monsterProfiles[sId].equipped) {
+                if (!merged.monsterProfiles[sId] || !merged.monsterProfiles[sId].equipped || (DEFAULT_MONSTER_PROFILES[sId].equipped && DEFAULT_MONSTER_PROFILES[sId].equipped.horns !== 'none' && (!merged.monsterProfiles[sId].equipped.horns || merged.monsterProfiles[sId].equipped.horns === 'none' || !merged.monsterProfiles[sId].equipped.clothing || merged.monsterProfiles[sId].equipped.clothing === 'none'))) {
                   merged.monsterProfiles[sId] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[sId]));
                 }
               }
@@ -8603,6 +8645,10 @@
             if (Array.isArray(merged.students)) {
               const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
               merged.students.forEach((st, sIdx) => {
+                if (st.id === 'student-4b-304') { st.xp = 0; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
+                if (st.id === 'student-4b-308') { st.xp = 50; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
+                if (st.id === 'student-4b-309') { st.xp = 220; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
+
                 if (!merged.monsterProfiles[st.id] || !merged.monsterProfiles[st.id].equipped) {
                   if (DEFAULT_MONSTER_PROFILES[st.id]) {
                     merged.monsterProfiles[st.id] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[st.id]));
@@ -8645,8 +8691,8 @@
                 // Calculate genuine XP and sync hatch status
                 const totalXP = (merged.xpTransactions || [])
                   .filter(tx => tx.studentId === st.id && tx.status !== 'voided')
-                  .reduce((sum, tx) => sum + (parseInt(tx.amount, 10) || 0), 0);
-                if (totalXP >= 250) {
+                  .reduce((sum, tx) => sum + (parseInt(tx.amount, 10) || 0), 0) + (st.xp || 0);
+                if (totalXP >= 250 || (merged.monsterProfiles[st.id] && merged.monsterProfiles[st.id].highestUnlockedLevel >= 3)) {
                   merged.monsterProfiles[st.id].isHatched = true;
                 }
 
@@ -13954,6 +14000,9 @@
 
         cloudData.students.forEach(remoteStudent => {
           if (!remoteStudent || !remoteStudent.id) return;
+          if (remoteStudent.id === 'student-4b-304') remoteStudent.xp = 0;
+          if (remoteStudent.id === 'student-4b-308') remoteStudent.xp = 50;
+          if (remoteStudent.id === 'student-4b-309') remoteStudent.xp = 220;
           remoteMap.set(remoteStudent.id, remoteStudent);
 
           const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
@@ -13967,6 +14016,17 @@
                 this.state.monsterProfiles[remoteStudent.id] || {},
                 remoteStudent.monsterProfile
               );
+              if (DEFAULT_MONSTER_PROFILES[remoteStudent.id] && DEFAULT_MONSTER_PROFILES[remoteStudent.id].equipped && DEFAULT_MONSTER_PROFILES[remoteStudent.id].equipped.horns !== 'none') {
+                const curP = this.state.monsterProfiles[remoteStudent.id];
+                if (!curP.equipped || curP.equipped.horns === 'none' || !curP.equipped.clothing || curP.equipped.clothing === 'none') {
+                  this.state.monsterProfiles[remoteStudent.id] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[remoteStudent.id]));
+                }
+              }
+            }
+            if (remoteStudent.id === 'student-4b-304' || remoteStudent.id === 'student-4b-308' || remoteStudent.id === 'student-4b-309') {
+              if (this.state.monsterProfiles && this.state.monsterProfiles[remoteStudent.id]) {
+                this.state.monsterProfiles[remoteStudent.id].highestUnlockedLevel = 4;
+              }
             }
             modified = true;
           } else {
@@ -13974,6 +14034,17 @@
             this.state.students.push(remoteStudent);
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
               this.state.monsterProfiles[remoteStudent.id] = remoteStudent.monsterProfile;
+              if (DEFAULT_MONSTER_PROFILES[remoteStudent.id] && DEFAULT_MONSTER_PROFILES[remoteStudent.id].equipped && DEFAULT_MONSTER_PROFILES[remoteStudent.id].equipped.horns !== 'none') {
+                const curP = this.state.monsterProfiles[remoteStudent.id];
+                if (!curP.equipped || curP.equipped.horns === 'none' || !curP.equipped.clothing || curP.equipped.clothing === 'none') {
+                  this.state.monsterProfiles[remoteStudent.id] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[remoteStudent.id]));
+                }
+              }
+            }
+            if (remoteStudent.id === 'student-4b-304' || remoteStudent.id === 'student-4b-308' || remoteStudent.id === 'student-4b-309') {
+              if (this.state.monsterProfiles && this.state.monsterProfiles[remoteStudent.id]) {
+                this.state.monsterProfiles[remoteStudent.id].highestUnlockedLevel = 4;
+              }
             }
             modified = true;
           }
@@ -14267,6 +14338,7 @@
     window.GLOBAL_READINGS_2_DATA = GLOBAL_READINGS_2_DATA;
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
+    window.DEFAULT_MONSTER_PROFILES = DEFAULT_MONSTER_PROFILES;
 
     // Initialize continuous background cloud sync & cross-device auto-sync
     if (window.SchoolCloudSync) {

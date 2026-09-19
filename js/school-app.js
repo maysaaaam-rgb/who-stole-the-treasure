@@ -951,41 +951,57 @@
     const renderer = window.MonsterEvolutionRenderer || window.MonsterRenderer;
     if (!renderer) return '👾';
 
+    const showWorld = options.showWorld !== undefined ? options.showWorld : false;
+    const transparent = options.transparent !== undefined ? options.transparent : true;
+    const paused = options.paused === true || !animated;
+
     try {
       if (!studentId) {
-        return renderer.renderMonsterArtwork ? renderer.renderMonsterArtwork({ stage: 'egg', size: size, animated: animated, round: options.round !== false }) : renderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return renderer.renderMonsterArtwork ? 
+          renderer.renderMonsterArtwork({ stage: 'egg', size: size, animated: animated, paused: paused, round: options.round !== false, showWorld: showWorld, transparent: transparent }) : 
+          renderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, paused: paused, showWorld: showWorld, transparent: transparent });
       }
       const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
       const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
 
       const stageKey = (monsterState && monsterState.stageKey) ? monsterState.stageKey : 'baby';
       const equipped = (profile && profile.equipped) ? profile.equipped : {};
+      const baseColor = (profile && profile.baseColor) || 'blue';
 
       if (renderer.renderMonsterArtwork) {
         return renderer.renderMonsterArtwork({
           stage: stageKey,
+          color: baseColor,
           equipped: equipped,
           size: size,
           animated: animated,
+          paused: paused,
           showLevelBadge: options.showLevelBadge,
-          round: options.round !== false
+          round: options.round !== false,
+          showWorld: showWorld,
+          transparent: transparent,
+          className: options.className || '',
+          style: options.style || ''
         });
       }
 
       return renderer.renderMonsterSVG({
         stage: stageKey,
-        color: (profile && profile.baseColor) || 'blue',
+        color: baseColor,
         equipped: equipped,
         size: size,
-        animated: animated
+        animated: animated,
+        paused: paused,
+        showWorld: showWorld,
+        transparent: transparent
       });
     } catch (err) {
       console.warn('Error in renderMonsterAvatar for ' + studentId, err);
       try {
         if (renderer.renderMonsterArtwork) {
-          return renderer.renderMonsterArtwork({ stage: 'baby', size: size, animated: animated, round: options.round !== false });
+          return renderer.renderMonsterArtwork({ stage: 'baby', size: size, animated: animated, paused: paused, round: options.round !== false, showWorld: false, transparent: true });
         }
-        return renderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
+        return renderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated, paused: paused, showWorld: false, transparent: true });
       } catch (e2) {
         return '👾';
       }
@@ -2702,6 +2718,8 @@
   let studentsFilterClass = 'all';
   let studentsFilterStage = 'all';
   let studentsFilterProgression = 'all';
+  let studentsFilterColor = 'all';
+  let studentsFilterFeature = 'all';
   let studentsSortBy = 'xp_desc';
 
   window.handleStudentsSearch = function(val) {
@@ -2733,8 +2751,23 @@
     renderCurrentView();
   };
 
+  window.handleStudentsFilterColor = function(col) {
+    studentsFilterColor = col;
+    renderCurrentView();
+  };
+
+  window.handleStudentsFilterFeature = function(feat) {
+    studentsFilterFeature = feat;
+    renderCurrentView();
+  };
+
   window.handleStudentsSort = function(sort) {
     studentsSortBy = sort;
+    renderCurrentView();
+  };
+
+  window.setStudentsLayoutMode = function(mode) {
+    studentsLayoutMode = mode;
     renderCurrentView();
   };
 
@@ -2779,6 +2812,29 @@
       filtered = filtered.filter(s => {
         const achs = store.getStudentAchievements ? store.getStudentAchievements(s.id) : [];
         return achs.length > 0;
+      });
+    }
+
+    // Filter by Monster Fur Color
+    if (studentsFilterColor !== 'all') {
+      filtered = filtered.filter(s => {
+        const prof = store.getMonsterProfile(s.id);
+        const col = (prof && prof.baseColor) ? prof.baseColor.toLowerCase() : 'blue';
+        return col === studentsFilterColor.toLowerCase();
+      });
+    }
+
+    // Filter by Equipped Feature / Trait
+    if (studentsFilterFeature !== 'all') {
+      filtered = filtered.filter(s => {
+        const prof = store.getMonsterProfile(s.id);
+        const eq = (prof && prof.equipped) ? prof.equipped : {};
+        if (studentsFilterFeature === 'wings') return eq.wings && eq.wings !== 'none';
+        if (studentsFilterFeature === 'clothing') return eq.clothing && eq.clothing !== 'none';
+        if (studentsFilterFeature === 'hat') return eq.hat && eq.hat !== 'none';
+        if (studentsFilterFeature === 'horns') return eq.horns && eq.horns !== 'none' && eq.horns !== 'horns-ears';
+        if (studentsFilterFeature === 'aura') return eq.aura && eq.aura !== 'none';
+        return true;
       });
     }
 
@@ -2837,7 +2893,26 @@
               '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
             '</select>' +
 
-            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:150px;">' +
+            '<select class="filter-select" onchange="handleStudentsFilterColor(this.value)" style="min-width:130px;" title="Filter by Monster Fur Color">' +
+              '<option value="all" ' + (studentsFilterColor === 'all' ? 'selected' : '') + '>🎨 All Fur Colors</option>' +
+              '<option value="blue" ' + (studentsFilterColor === 'blue' ? 'selected' : '') + '>🔵 Sky Blue</option>' +
+              '<option value="pink" ' + (studentsFilterColor === 'pink' ? 'selected' : '') + '>🌸 Berry Pink</option>' +
+              '<option value="green" ' + (studentsFilterColor === 'green' ? 'selected' : '') + '>🍃 Leaf Green</option>' +
+              '<option value="orange" ' + (studentsFilterColor === 'orange' ? 'selected' : '') + '>🍊 Sunset Orange</option>' +
+              '<option value="purple" ' + (studentsFilterColor === 'purple' ? 'selected' : '') + '>💜 Lavender Purple</option>' +
+              '<option value="gold" ' + (studentsFilterColor === 'gold' ? 'selected' : '') + '>⭐ Royal Gold</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterFeature(this.value)" style="min-width:130px;" title="Filter by Equipped Monster Trait">' +
+              '<option value="all" ' + (studentsFilterFeature === 'all' ? 'selected' : '') + '>✨ All Features</option>' +
+              '<option value="clothing" ' + (studentsFilterFeature === 'clothing' ? 'selected' : '') + '>🦺 Has Outfits</option>' +
+              '<option value="horns" ' + (studentsFilterFeature === 'horns' ? 'selected' : '') + '>🐏 Custom Horns</option>' +
+              '<option value="wings" ' + (studentsFilterFeature === 'wings' ? 'selected' : '') + '>🪽 Has Wings</option>' +
+              '<option value="hat" ' + (studentsFilterFeature === 'hat' ? 'selected' : '') + '>👑 Has Headwear</option>' +
+              '<option value="aura" ' + (studentsFilterFeature === 'aura' ? 'selected' : '') + '>🌟 Has Aura</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:145px;">' +
               '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
               '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
               '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
@@ -2869,8 +2944,8 @@
             return '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
               '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
               '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
-              '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
-              '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
+              '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, fur color, or evolution stage filter.</p>' +
+              '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; studentsFilterColor=\'all\'; studentsFilterFeature=\'all\'; renderCurrentView();">Reset Filters</button>' +
             '</div>';
           }
           if (studentsLayoutMode === 'table') {
@@ -2892,7 +2967,6 @@
                     const totalXP = mState.totalXP;
                     const streak = s.streakDays || 0;
                     const isSelected = selectedStudentIds.has(s.id);
-                    const img = window.MonsterRenderer.getMonsterStageImage(mState.stageKey);
 
                     return '' +
                       '<tr style="border-bottom:1px solid var(--border-subtle); cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background=\'rgba(59,130,246,0.03)\'" onmouseout="this.style.background=\'transparent\'" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')">' +
@@ -2906,8 +2980,8 @@
                           '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px; text-align:center;">' +
-                          '<div style="display:inline-block; width:46px; height:46px; border-radius:12px; overflow:hidden; background:#0f172a; border:1px solid rgba(0,0,0,0.1); box-shadow:0 2px 8px rgba(0,0,0,0.15);" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Open Monster Studio">' +
-                            '<img src="' + img + '" alt="' + s.firstName + '" style="width:100%; height:100%; object-fit:cover;" />' +
+                          '<div class="student-dir-monster-thumb" style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:12px; overflow:hidden; background:linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.95) 100%); border:1px solid rgba(255,255,255,0.12); box-shadow:0 2px 8px rgba(0,0,0,0.18); cursor:pointer;" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + mState.stageName + ')">' +
+                            window.renderMonsterAvatar(s.id, { size: 48, animated: false, showWorld: false, transparent: true }) +
                           '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px;">' +
@@ -2950,7 +3024,7 @@
               const progressPct = mState.progressPct;
               const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 120, animated: true });
+              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 120, animated: true, showWorld: false, transparent: true });
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
@@ -2968,9 +3042,9 @@
                   '</div>' +
 
                   // Large Hero Portrait
-                  '<div class="student-hero-portrait" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
+                  '<div class="student-hero-portrait" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + mState.stageName + ')" style="cursor:pointer;">' +
                     monsterSvg +
-                    '<div class="avatar-customize-pill" style="font-size:0.7rem; padding:2px 8px; position:absolute; bottom:6px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#38bdf8; border-radius:10px; white-space:nowrap; border:1px solid rgba(56,189,248,0.4);">🎨 Studio</div>' +
+                    '<div class="avatar-customize-pill" style="font-size:0.7rem; padding:2px 8px; position:absolute; bottom:6px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#38bdf8; border-radius:10px; white-space:nowrap; border:1px solid rgba(56,189,248,0.4); cursor:pointer;" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')">🎨 Studio</div>' +
                   '</div>' +
 
                   // Name & Subtitle
@@ -8556,6 +8630,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   // ROUTER CONTROLLER
   // =========================================================================
+  window.renderCurrentView = function() {
+    return renderCurrentView();
+  };
   function renderCurrentView() {
     const container = document.getElementById('app-view-container');
     if (!container) return;

@@ -256,7 +256,7 @@
     let wingsLayer = '';
     try {
       const w = renderWingsLayer(stage, equipped.wings, palette);
-      if (w) wingsLayer = `<g class="eaa-layer eaa-layer-wings eaa-monster-wings-group" data-layer="wings">${w}</g>`;
+      if (w) wingsLayer = `<g class="eaa-layer eaa-layer-wings eaa-monster-wings-group eaa-item-${equipped.wings || ''}" data-layer="wings" data-item-id="${equipped.wings || ''}">${w}</g>`;
     } catch (e) {
       wingsLayer = '';
     }
@@ -265,7 +265,7 @@
     let tailLayer = '';
     try {
       const t = renderTailLayer(stage, equipped.tail, palette);
-      if (t) tailLayer = `<g class="eaa-layer eaa-layer-tail eaa-monster-tail-group" data-layer="tail">${t}</g>`;
+      if (t) tailLayer = `<g class="eaa-layer eaa-layer-tail eaa-monster-tail-group eaa-item-${equipped.tail || ''}" data-layer="tail" data-item-id="${equipped.tail || ''}">${t}</g>`;
     } catch (e) {
       tailLayer = '';
     }
@@ -274,7 +274,7 @@
     let backpackLayer = '';
     try {
       const bp = renderBackpackLayer(stage, equipped.backpack);
-      if (bp) backpackLayer = `<g class="eaa-layer eaa-layer-backpack" data-layer="backpack">${bp}</g>`;
+      if (bp) backpackLayer = `<g class="eaa-layer eaa-layer-backpack eaa-item-${equipped.backpack || ''}" data-layer="backpack" data-item-id="${equipped.backpack || ''}">${bp}</g>`;
     } catch (e) {
       backpackLayer = '';
     }
@@ -1101,14 +1101,15 @@
       </g>
     `;
 
-    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette);
+    const clothingId = equipped.clothing;
+    const clothingMarkup = renderClothingLayer(clothingId, cX, cY, rx, ry, palette);
     const faceMarkup = renderFaceElements(stage, palette, equipped, cX, cY, ry);
 
     return `
       ${hornsEarsMarkup}
       ${feetMarkup}
       ${torsoMarkup}
-      ${clothingMarkup ? `<g class="eaa-layer eaa-layer-clothing" data-layer="clothing">${clothingMarkup}</g>` : ''}
+      ${clothingMarkup ? `<g class="eaa-layer eaa-layer-clothing eaa-item-${clothingId}" data-layer="clothing" data-item-id="${clothingId}">${clothingMarkup}</g>` : ''}
       ${faceMarkup}
     `;
   }
@@ -1428,9 +1429,10 @@
       `;
     }
 
+    const hornsId = hornId;
     return `
       ${earsMarkup}
-      ${hornsMarkup ? `<g class="eaa-layer eaa-layer-horns" data-layer="horns">${hornsMarkup}</g>` : ''}
+      ${hornsMarkup ? `<g class="eaa-layer eaa-layer-horns eaa-item-${hornsId}" data-layer="horns" data-item-id="${hornsId}">${hornsMarkup}</g>` : ''}
     `;
   }
 
@@ -1568,8 +1570,8 @@
 
     return `
       ${cheeks}
-      <g class="eaa-layer eaa-layer-eyes eaa-monster-blink-group" data-layer="eyes">${eyesMarkup}</g>
-      <g class="eaa-layer eaa-layer-mouth" data-layer="mouth">${mouthMarkup}</g>
+      <g class="eaa-layer eaa-layer-eyes eaa-monster-blink-group eaa-item-${eyesId}" data-layer="eyes" data-item-id="${eyesId}">${eyesMarkup}</g>
+      <g class="eaa-layer eaa-layer-mouth eaa-item-${mouthId}" data-layer="mouth" data-item-id="${mouthId}">${mouthMarkup}</g>
     `;
   }
 
