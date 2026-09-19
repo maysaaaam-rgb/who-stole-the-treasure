@@ -3747,9 +3747,39 @@ body.classroom-mode-active .classroom-students-grid {
   animation: eaaEggCrackGlow 2s ease-in-out infinite;
 }
 
+/* Illustrated Monster Compositor Styles */
+.monster-compositor-box {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.monster-compositor-box.eaa-monster-artwork-anim .layer-body,
+.monster-compositor-box.eaa-monster-artwork-anim .layer-clothing,
+.monster-compositor-box.eaa-monster-artwork-anim .layer-eyes,
+.monster-compositor-box.eaa-monster-artwork-anim .layer-mouth,
+.monster-compositor-box.eaa-monster-artwork-anim .layer-horns,
+.monster-compositor-box.eaa-monster-artwork-anim .layer-ears {
+  animation: eaaMonsterBreathe 3.6s ease-in-out infinite;
+}
+
+.monster-compositor-box.eaa-monster-artwork-anim .layer-wings.eaa-monster-wing-anim {
+  transform-origin: 50% 50%;
+  animation: eaaMonsterWingFlutter 2.8s ease-in-out infinite;
+}
+
+.monster-compositor-box.eaa-monster-artwork-anim .layer-tail.eaa-monster-tail-anim {
+  transform-origin: 90% 70%;
+  animation: eaaMonsterTailWag 2.4s ease-in-out infinite;
+}
+
 /* Paused State */
 .is-paused,
 .is-paused *,
+.monster-compositor-box.is-paused,
+.monster-compositor-box.is-paused *,
 .eaa-monster-svg.is-paused,
 .eaa-monster-svg.is-paused * {
   animation-play-state: paused !important;
