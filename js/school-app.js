@@ -948,34 +948,46 @@
     const animated = options.animated !== false;
     let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
 
-    if (!window.MonsterRenderer || typeof window.MonsterRenderer.renderMonsterSVG !== 'function') {
-      return '👾';
-    }
+    const renderer = window.MonsterEvolutionRenderer || window.MonsterRenderer;
+    if (!renderer) return '👾';
 
     try {
       if (!studentId) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return renderer.renderMonsterArtwork ? renderer.renderMonsterArtwork({ stage: 'egg', size: size, animated: animated, round: options.round !== false }) : renderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
       }
       const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
       const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
 
-      if (!profile || !monsterState) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+      const stageKey = (monsterState && monsterState.stageKey) ? monsterState.stageKey : 'baby';
+      const equipped = (profile && profile.equipped) ? profile.equipped : {};
+
+      if (renderer.renderMonsterArtwork) {
+        return renderer.renderMonsterArtwork({
+          stage: stageKey,
+          equipped: equipped,
+          size: size,
+          animated: animated,
+          showLevelBadge: options.showLevelBadge,
+          round: options.round !== false
+        });
       }
 
-      return window.MonsterRenderer.renderMonsterSVG({
-        stage: monsterState.stageKey || 'baby',
-        color: profile.baseColor || 'blue',
-        equipped: profile.equipped || {},
+      return renderer.renderMonsterSVG({
+        stage: stageKey,
+        color: (profile && profile.baseColor) || 'blue',
+        equipped: equipped,
         size: size,
         animated: animated
       });
     } catch (err) {
       console.warn('Error in renderMonsterAvatar for ' + studentId, err);
       try {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
+        if (renderer.renderMonsterArtwork) {
+          return renderer.renderMonsterArtwork({ stage: 'baby', size: size, animated: animated, round: options.round !== false });
+        }
+        return renderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
       } catch (e2) {
-        return '<svg viewBox="0 0 100 100" width="' + size + '" height="' + size + '"><circle cx="50" cy="50" r="40" fill="#8b5cf6"/><circle cx="38" cy="45" r="5" fill="#fff"/><circle cx="62" cy="45" r="5" fill="#fff"/><circle cx="38" cy="45" r="2.5" fill="#000"/><circle cx="62" cy="45" r="2.5" fill="#000"/><path d="M 40 65 Q 50 75 60 65" stroke="#000" stroke-width="3" fill="none"/></svg>';
+        return '👾';
       }
     }
   };
@@ -2071,11 +2083,18 @@
                   '<div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Reward: ⭐ +20 XP</div>' +
                   '<button type="button" class="btn-primary-action" onclick="closeAllModals(); openStudentQuestModal(\'hw-1\');" style="margin-top:12px; font-size:0.8rem; padding:6px 14px; background:#38bdf8; color:#0f172a; font-weight:900;">Continue Quest ➔</button>' +
                 '</div>' +
-                '<div class="locked-next-stage-preview">' +
-                  '<div style="font-size:0.75rem; font-weight:800; color:#cbd5e1; text-transform:uppercase;">🔒 NEXT EVOLUTION STAGE</div>' +
-                  '<div style="font-size:1rem; font-weight:900; color:#fff; margin-top:4px;">' + (monsterState.nextLevel ? monsterState.nextLevel.name : 'Max Apex Form') + '</div>' +
-                  '<div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">' + (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP remaining') : 'Apex Achieved') + '</div>' +
-                  '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="margin-top:12px; font-size:0.8rem; padding:6px 14px; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3);">View Roadmap 🗺️</button>' +
+                '<div class="locked-next-stage-preview" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:18px; padding:18px; display:flex; justify-content:space-between; align-items:center; gap:12px;">' +
+                  '<div>' +
+                    '<div style="font-size:0.75rem; font-weight:800; color:#cbd5e1; text-transform:uppercase;">🔒 NEXT EVOLUTION STAGE</div>' +
+                    '<div style="font-size:1rem; font-weight:900; color:#fff; margin-top:4px;">' + (monsterState.nextLevel ? monsterState.nextLevel.name : 'Max Apex Form') + '</div>' +
+                    '<div style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">' + (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP remaining') : 'Apex Achieved') + '</div>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="margin-top:12px; font-size:0.8rem; padding:6px 14px; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.3);">View Roadmap 🗺️</button>' +
+                  '</div>' +
+                  (monsterState.nextLevel ? 
+                    '<div style="position:relative; width:68px; height:68px; border-radius:14px; background:rgba(15,23,42,0.6); border:1.5px dashed rgba(56,189,248,0.4); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">' +
+                      '<img src="' + (window.MonsterRenderer ? window.MonsterRenderer.getMonsterStageImage(monsterState.nextLevel.stageKey) : 'assets/monsters/stage-4-growing-monster.png') + '" style="width:100%; height:100%; object-fit:contain; filter:grayscale(50%) opacity(0.75);" alt="Locked Stage" />' +
+                      '<span style="position:absolute; font-size:1.1rem; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8));">🔒</span>' +
+                    '</div>' : '') +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -2845,14 +2864,84 @@
         '</div>' +
 
         // Students Table or Cards Grid
-        (filtered.length === 0 ?
-          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
-            '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
-            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
-            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
-            '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
-          '</div>' :
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">' +
+        (() => {
+          if (filtered.length === 0) {
+            return '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+              '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
+              '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
+              '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
+              '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
+            '</div>';
+          }
+          if (studentsLayoutMode === 'table') {
+            return '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
+              '<table style="width:100%; border-collapse:collapse; text-align:left;">' +
+                '<thead>' +
+                  '<tr style="background:var(--bg-canvas); border-bottom:1px solid var(--border-light); font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">' +
+                    '<th style="padding:14px 18px;">Student</th>' +
+                    '<th style="padding:14px 18px; text-align:center;">Monster</th>' +
+                    '<th style="padding:14px 18px;">Level</th>' +
+                    '<th style="padding:14px 18px; min-width:180px;">XP Progress</th>' +
+                    '<th style="padding:14px 18px;">Activity</th>' +
+                    '<th style="padding:14px 18px; text-align:right;">Actions</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                  filtered.map(s => {
+                    const mState = store.calculateMonsterState(s.id);
+                    const totalXP = mState.totalXP;
+                    const streak = s.streakDays || 0;
+                    const isSelected = selectedStudentIds.has(s.id);
+                    const img = window.MonsterRenderer.getMonsterStageImage(mState.stageKey);
+
+                    return '' +
+                      '<tr style="border-bottom:1px solid var(--border-subtle); cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background=\'rgba(59,130,246,0.03)\'" onmouseout="this.style.background=\'transparent\'" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')">' +
+                        '<td style="padding:14px 18px;">' +
+                          '<div style="display:flex; align-items:center; gap:12px;">' +
+                            (isMultiSelectMode ? '<input type="checkbox" onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" ' + (isSelected ? 'checked' : '') + ' />' : '') +
+                            '<div>' +
+                              '<div style="font-weight:800; font-size:0.92rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
+                              '<div style="font-size:0.74rem; color:var(--text-muted);">' + (s.grade || 'Grade 4') + ' · ID: ' + (s.studentIdNumber || s.id) + '</div>' +
+                            '</div>' +
+                          '</div>' +
+                        '</td>' +
+                        '<td style="padding:14px 18px; text-align:center;">' +
+                          '<div style="display:inline-block; width:46px; height:46px; border-radius:12px; overflow:hidden; background:#0f172a; border:1px solid rgba(0,0,0,0.1); box-shadow:0 2px 8px rgba(0,0,0,0.15);" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Open Monster Studio">' +
+                            '<img src="' + img + '" alt="' + s.firstName + '" style="width:100%; height:100%; object-fit:cover;" />' +
+                          '</div>' +
+                        '</td>' +
+                        '<td style="padding:14px 18px;">' +
+                          '<div style="font-weight:800; font-size:0.86rem; color:var(--text-main);">Level ' + mState.currentLevel + '</div>' +
+                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">' + mState.stageName + '</div>' +
+                        '</td>' +
+                        '<td style="padding:14px 18px;">' +
+                          '<div style="display:flex; justify-content:space-between; font-size:0.74rem; font-weight:800; margin-bottom:4px; color:var(--text-secondary);">' +
+                            '<span>' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + '</span>' +
+                            '<span>' + Math.min(100, mState.progressPct) + '%</span>' +
+                          '</div>' +
+                          '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                            '<div style="width:' + Math.min(100, mState.progressPct) + '%; height:100%; background:linear-gradient(90deg, #3b82f6, #10b981); border-radius:6px;"></div>' +
+                          '</div>' +
+                        '</td>' +
+                        '<td style="padding:14px 18px;">' +
+                          '<div style="font-size:0.8rem; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px;">' +
+                            '<span style="color:#d97706;">🔥 ' + streak + ' day streak</span>' +
+                          '</div>' +
+                          '<div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">⭐ 3 quests done</div>' +
+                        '</td>' +
+                        '<td style="padding:14px 18px; text-align:right;" onclick="event.stopPropagation();">' +
+                          '<div style="display:inline-flex; align-items:center; gap:8px;">' +
+                            '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\')" style="font-size:0.8rem; padding:5px 12px; font-weight:800; border-radius:8px;">Profile</button>' +
+                            '<button type="button" class="btn-sm-secondary" onclick="openMonsterCreator(\'' + s.id + '\')" title="Monster Studio" style="padding:5px 8px; font-size:0.8rem; border-radius:8px;">🎨</button>' +
+                          '</div>' +
+                        '</td>' +
+                      '</tr>';
+                  }).join('') +
+                '</tbody>' +
+              '</table>' +
+            '</div>';
+          }
+          return '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">' +
             filtered.map(s => {
               const mState = store.calculateMonsterState(s.id);
               const totalXP = mState.totalXP;
@@ -2923,8 +3012,8 @@
                   '</div>' +
                 '</div>';
             }).join('') +
-          '</div>'
-        ) +
+          '</div>';
+        })() +
       '</div>';
   }
 
@@ -6472,6 +6561,30 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     // Check if evolution triggered!
     const evo = subResult ? subResult.evolutionEvent : null;
+
+    // Populate Evolved Monster Visual
+    const visualWrap = document.getElementById('qc-monster-visual');
+    if (visualWrap) {
+      if (evo) {
+        const prevImg = window.MonsterRenderer.getMonsterStageImage('stage-' + evo.prevLevel);
+        const newImg = window.MonsterRenderer.getMonsterStageImage('stage-' + evo.newLevel);
+        visualWrap.innerHTML = 
+          '<div style="display:flex; align-items:center; justify-content:center; gap:16px;">' +
+            '<div style="text-align:center; opacity:0.75;">' +
+              '<div style="font-size:0.7rem; color:#94a3b8; font-weight:800; margin-bottom:4px;">BEFORE (LVL ' + evo.prevLevel + ')</div>' +
+              '<img src="' + prevImg + '" style="width:90px; height:90px; object-fit:contain;" />' +
+            '</div>' +
+            '<div style="font-size:1.5rem; color:#fbbf24; animation:pulse 1s infinite;">⚡ ➔ ⚡</div>' +
+            '<div style="text-align:center;">' +
+              '<div style="font-size:0.7rem; color:#38bdf8; font-weight:800; margin-bottom:4px;">NEW EVOLUTION (LVL ' + evo.newLevel + ')!</div>' +
+              '<img src="' + newImg + '" style="width:130px; height:130px; object-fit:contain; filter:drop-shadow(0 0 16px rgba(56,189,248,0.8));" />' +
+            '</div>' +
+          '</div>';
+      } else {
+        visualWrap.innerHTML = window.renderMonsterAvatar(student.id, { size: 140, animated: true, showLevelBadge: true });
+      }
+    }
+
     if (actionWrap) {
       if (evo) {
         actionWrap.innerHTML = 
@@ -11826,8 +11939,9 @@ window.switchClassroomSubTab = function(subTab) {
       id: 'monster',
       label: 'Monster',
       icon: '👾',
-      title: 'Fur Colors & Palette',
+      title: 'Choose Your Monster Base',
       subCategories: [
+        { id: 'bases', label: 'Monster Base', icon: '👾', title: 'Choose Your Monster Base' },
         { id: 'colors', label: 'Fur Colors', icon: '🎨', title: 'Fur Colors & Palette' }
       ]
     },
@@ -11887,15 +12001,17 @@ window.switchClassroomSubTab = function(subTab) {
     if (!student) return;
 
     const profile = store.getMonsterProfile(studentId);
+    const mState = store.calculateMonsterState(studentId);
 
     // Initialize draft from current profile
     monsterCreatorDraft = {
       baseColor: profile.baseColor || 'blue',
+      stage: (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : mState.stageKey,
       equipped: Object.assign({}, profile.equipped || {})
     };
 
-    monsterCreatorActiveTab = 'features';
-    monsterCreatorActiveSubTab = 'horns';
+    monsterCreatorActiveTab = 'monster';
+    monsterCreatorActiveSubTab = 'bases';
     monsterCreatorIsAnimated = true;
 
     // Reset animate button UI
@@ -11982,6 +12098,52 @@ window.switchClassroomSubTab = function(subTab) {
     const noneOptions = [];
 
     const sub = monsterCreatorActiveSubTab;
+
+    if (monsterCreatorActiveTab === 'monster' && (sub === 'bases' || sub === 'all')) {
+      const bases = [
+        { stageKey: 'baby', level: 3, name: 'Baby Monster', xp: 250 },
+        { stageKey: 'growing', level: 4, name: 'Growing Monster', xp: 500 },
+        { stageKey: 'adventurer', level: 5, name: 'Adventurer Monster', xp: 1000 },
+        { stageKey: 'advanced', level: 6, name: 'Advanced Monster', xp: 2000 },
+        { stageKey: 'ultimate', level: 7, name: 'Ultimate Monster', xp: 5000 }
+      ];
+      const curStage = monsterCreatorDraft.stage || (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg' ? 'baby' : mState.stageKey);
+
+      if (titleEl) titleEl.textContent = 'Choose Your Monster Base';
+      if (countEl) countEl.textContent = bases.length + ' Evolution Forms';
+
+      grid.style.display = 'flex';
+      grid.style.flexDirection = 'column';
+      grid.innerHTML = bases.map(b => {
+        const isSelected = (curStage === b.stageKey);
+        const isCurrent = (mState.currentLevel === b.level);
+        const isUnlocked = (mState.currentLevel >= b.level);
+        const img = window.MonsterRenderer.getMonsterStageImage(b.stageKey);
+
+        return '' +
+          '<div class="monster-base-select-card ' + (isSelected ? 'is-selected' : '') + '" ' +
+               'onclick="handleSelectMonsterBase(\'' + b.stageKey + '\')" ' +
+               'style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:' + (isSelected ? '#eff6ff' : 'var(--bg-surface)') + '; border:1.5px solid ' + (isSelected ? '#3b82f6' : 'var(--border-light)') + '; border-radius:14px; cursor:pointer; margin-bottom:8px; transition:all 0.2s ease;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<div style="width:58px; height:58px; border-radius:12px; overflow:hidden; background:#0f172a; flex-shrink:0; border:1px solid rgba(0,0,0,0.1);">' +
+                '<img src="' + img + '" alt="' + b.name + '" style="width:100%; height:100%; object-fit:cover;" />' +
+              '</div>' +
+              '<div>' +
+                '<div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">' + b.name + '</div>' +
+                '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Level ' + b.level + ' · ' + b.xp.toLocaleString() + ' XP</div>' +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              (isCurrent ? '<span style="font-size:0.74rem; font-weight:800; background:#3b82f6; color:#fff; padding:3px 10px; border-radius:10px;">Current ✓</span>' : (isUnlocked ? '<span style="font-size:0.74rem; font-weight:800; color:#059669;">Unlocked</span>' : '<span style="font-size:0.74rem; font-weight:800; color:#94a3b8;">🔒 Lvl ' + b.level + '</span>')) +
+            '</div>' +
+          '</div>';
+      }).join('');
+      return;
+    }
+
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+
     if (sub === 'colors') {
       items = allItems.filter(i => i.category === 'body');
     } else if (sub === 'eyes') {
@@ -12111,6 +12273,13 @@ window.switchClassroomSubTab = function(subTab) {
     window.updateMonsterCreatorPreview();
   };
 
+  window.handleSelectMonsterBase = function(stageKey) {
+    if (!monsterCreatorDraft) return;
+    monsterCreatorDraft.stage = stageKey;
+    window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
+  };
+
   window.toggleMonsterCreatorAnimation = function() {
     monsterCreatorIsAnimated = !monsterCreatorIsAnimated;
     const btn = document.getElementById('btn-monster-preview-animate');
@@ -12147,32 +12316,52 @@ window.switchClassroomSubTab = function(subTab) {
     const summaryEl = document.getElementById('monster-creator-equipped-summary');
     const countSummaryEl = document.getElementById('monster-creator-equipped-count');
 
-    const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
-    const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+    const previewStage = monsterCreatorDraft.stage || (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg' ? 'baby' : mState.stageKey);
+    const renderer = window.MonsterEvolutionRenderer || window.MonsterRenderer;
 
-    if (box && renderFn) {
-      box.innerHTML = renderFn({
+    if (box && renderer) {
+      box.innerHTML = renderer.renderMonsterArtwork({
         stage: previewStage,
-        color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
-        size: 270,
-        animated: monsterCreatorIsAnimated
+        size: 280,
+        animated: monsterCreatorIsAnimated,
+        round: true
       });
     }
 
-    if (miniAvatarBox && renderFn) {
-      miniAvatarBox.innerHTML = renderFn({
+    if (miniAvatarBox && renderer) {
+      miniAvatarBox.innerHTML = renderer.renderMonsterArtwork({
         stage: previewStage,
-        color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
-        size: 46,
-        animated: false
+        size: 48,
+        animated: false,
+        round: true
       });
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
     if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
     if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+
+    // Render Bottom Horizontal Evolution Journey
+    const journeyEl = document.getElementById('monster-creator-journey-steps');
+    if (journeyEl && renderer && renderer.EVOLUTION_STAGES) {
+      const stages = renderer.EVOLUTION_STAGES;
+      const curLvl = mState.currentLevel;
+      journeyEl.innerHTML = stages.map((st, idx) => {
+        const isCurrent = (st.level === curLvl);
+        const isLast = (idx === stages.length - 1);
+        return '' +
+          '<div style="display:flex; flex-direction:column; align-items:center; text-align:center; min-width:96px; position:relative;">' +
+            (isCurrent ? '<span style="font-size:0.65rem; font-weight:900; background:#3b82f6; color:#fff; padding:1px 6px; border-radius:6px; margin-bottom:2px;">Current ✓</span>' : '<span style="font-size:0.65rem; font-weight:800; color:var(--text-muted); margin-bottom:2px;">Level ' + st.level + '</span>') +
+            '<div style="width:72px; height:72px; border-radius:14px; overflow:hidden; background:#0f172a; border:2px solid ' + (isCurrent ? '#3b82f6' : 'var(--border-light)') + '; box-shadow:' + (isCurrent ? '0 0 12px rgba(59,130,246,0.4)' : 'none') + '; margin-bottom:4px;">' +
+              '<img src="' + st.image + '" alt="' + st.name + '" style="width:100%; height:100%; object-fit:cover;" />' +
+            '</div>' +
+            '<div style="font-size:0.75rem; font-weight:800; color:var(--text-main); white-space:nowrap;">' + st.name + '</div>' +
+          '</div>' +
+          (!isLast ? '<span style="color:var(--text-muted); font-size:1.1rem; font-weight:800; margin: 0 4px;">➔</span>' : '');
+      }).join('');
+    }
 
     // Render Preview Background Swatches
     const bgSwatchesEl = document.getElementById('monster-preview-bg-swatches');

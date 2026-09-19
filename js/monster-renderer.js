@@ -269,23 +269,13 @@
       backpackLayer = '';
     }
 
-    // 6. Main monster body or egg
-    let mainEntityLayer = '';
-    try {
-      if (stage === 'egg') {
-        mainEntityLayer = renderEggWhole(palette, colorKey);
-      } else if (stage === 'cracking_egg') {
-        mainEntityLayer = renderEggCracking(palette, colorKey);
-      } else {
-        mainEntityLayer = renderMonsterBody(stage, palette, colorKey, equipped);
-      }
-    } catch (e) {
-      try {
-        mainEntityLayer = renderMonsterBody('baby', palette, colorKey, {});
-      } catch (err2) {
-        mainEntityLayer = '';
-      }
-    }
+    // 6. Main monster body or egg (Uses Master Evolution Artwork as single source of truth)
+    const imgSrc = getMonsterStageImage(stage);
+    let mainEntityLayer = `
+      <g class="eaa-monster-artwork-figure">
+        <image href="${imgSrc}" x="12" y="12" width="176" height="176" preserveAspectRatio="xMidYMid meet" />
+      </g>
+    `;
 
     // 7. Foreground accessories (hats, glasses, handheld items)
     let fgAccessoryLayer = '';
@@ -2361,36 +2351,81 @@
     ultimate: 'assets/monsters/stage-7-ultimate-monster.png'
   };
 
+  const EVOLUTION_STAGES = [
+    { level: 1, stageKey: 'egg', name: 'Mystery Egg', title: 'Level 1: Mystery Egg', xpRequired: 0, image: 'assets/monsters/stage-1-mystery-egg.png', subtitle: 'A new adventure begins...', icon: '🥚', desc: 'A mysterious egg waiting for your learning journey to begin.' },
+    { level: 2, stageKey: 'cracking_egg', name: 'Cracking Egg', title: 'Level 2: Cracking Egg', xpRequired: 100, image: 'assets/monsters/stage-2-cracking-egg.png', subtitle: 'Life is waking up!', icon: '🥚', desc: 'Glowing fissures appear as you earn XP and practice English!' },
+    { level: 3, stageKey: 'baby', name: 'Baby Monster', title: 'Level 3: Baby Monster', xpRequired: 250, image: 'assets/monsters/stage-3-baby-monster.png', subtitle: 'Small steps, big dreams!', icon: '🐣', desc: 'Hatched! A cute, curious companion eager to learn with you.' },
+    { level: 4, stageKey: 'growing', name: 'Growing Monster', title: 'Level 4: Growing Monster', xpRequired: 500, image: 'assets/monsters/stage-4-growing-monster.png', subtitle: 'Stronger every day!', icon: '👾', desc: 'Bigger, bouncier, and sprouting distinctive traits.' },
+    { level: 5, stageKey: 'adventurer', name: 'Adventurer Monster', title: 'Level 5: Adventurer Monster', xpRequired: 1000, image: 'assets/monsters/stage-5-adventurer-monster.png', subtitle: 'Ready for bigger quests!', icon: '🧭', desc: 'Equipped for quests and eager for English challenges!' },
+    { level: 6, stageKey: 'advanced', name: 'Advanced Monster', title: 'Level 6: Advanced Monster', xpRequired: 2000, image: 'assets/monsters/stage-6-advanced-monster.png', subtitle: 'New powers, new places!', icon: '🐲', desc: 'Majestic crystal horns, sweeping wings, and proud posture.' },
+    { level: 7, stageKey: 'ultimate', name: 'Ultimate Monster', title: 'Level 7: Ultimate Monster', xpRequired: 5000, image: 'assets/monsters/stage-7-ultimate-monster.png', subtitle: 'A true hero!', icon: '👑', desc: 'The legendary sovereign form crowned with celestial power!' }
+  ];
+
+  function getMonsterForEvolution(levelOrKeyOrXP) {
+    if (typeof levelOrKeyOrXP === 'number') {
+      if (levelOrKeyOrXP >= 1 && levelOrKeyOrXP <= 7) {
+        return EVOLUTION_STAGES.find(s => s.level === levelOrKeyOrXP) || EVOLUTION_STAGES[2];
+      }
+      // Numeric XP
+      let match = EVOLUTION_STAGES[0];
+      for (let i = 0; i < EVOLUTION_STAGES.length; i++) {
+        if (levelOrKeyOrXP >= EVOLUTION_STAGES[i].xpRequired) {
+          match = EVOLUTION_STAGES[i];
+        } else {
+          break;
+        }
+      }
+      return match;
+    }
+    const key = normalizeStageKey(levelOrKeyOrXP);
+    return EVOLUTION_STAGES.find(s => s.stageKey === key) || EVOLUTION_STAGES[2];
+  }
+
   function getMonsterStageImage(stageKey) {
-    const key = normalizeStageKey(stageKey);
-    return STAGE_IMAGES[key] || STAGE_IMAGES.baby;
+    const evo = getMonsterForEvolution(stageKey);
+    return evo.image || STAGE_IMAGES.baby;
   }
 
   function renderMonsterArtwork(options = {}) {
-    const stage = normalizeStageKey(options.stage);
-    const imgSrc = getMonsterStageImage(stage);
+    const evo = getMonsterForEvolution(options.stage || options.level || options.xp);
+    const imgSrc = evo.image;
     const size = options.size || 160;
     const isRound = options.round !== false;
     const animated = options.animated !== false;
     const animClass = animated ? 'eaa-monster-artwork-anim' : '';
+    const borderRadius = typeof options.radius === 'number' ? options.radius + 'px' : (isRound ? (size >= 100 ? '22px' : '14px') : '0px');
+    const equipped = Object.assign({}, options.equipped || {});
+    
+    // Check aura styles
+    let auraEffect = '';
+    if (equipped.aura && equipped.aura !== 'none') {
+      if (equipped.aura === 'aura-celestial' || equipped.aura === 'aura-galaxy') {
+        auraEffect = 'box-shadow: 0 0 28px rgba(168,85,247,0.7), inset 0 0 18px rgba(56,189,248,0.5);';
+      } else if (equipped.aura === 'aura-fire') {
+        auraEffect = 'box-shadow: 0 0 28px rgba(249,115,22,0.8), inset 0 0 16px rgba(239,68,68,0.6);';
+      } else {
+        auraEffect = 'box-shadow: 0 0 24px rgba(56,189,248,0.6);';
+      }
+    }
+
+    // Optional environment background
+    let bgStyle = 'background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);';
+    if (equipped.background && equipped.background !== 'none') {
+      if (equipped.background === 'bg-castle') bgStyle = 'background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);';
+      else if (equipped.background === 'bg-forest') bgStyle = 'background: linear-gradient(180deg, #064e3b 0%, #022c22 100%);';
+      else if (equipped.background === 'bg-cosmos') bgStyle = 'background: radial-gradient(circle at center, #312e81 0%, #020617 100%);';
+      else if (equipped.background === 'bg-volcano') bgStyle = 'background: linear-gradient(180deg, #7c2d12 0%, #451a03 100%);';
+    }
 
     return `
-      <div class="eaa-monster-artwork-wrap ${animClass}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${isRound ? '18px' : '10px'}; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.3); background:#0f172a;">
-        <img src="${imgSrc}" alt="${stage}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+      <div class="eaa-monster-artwork-wrap ${animClass} ${options.className || ''}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${borderRadius}; overflow:hidden; ${bgStyle} ${auraEffect} ${options.style || ''}">
+        <img src="${imgSrc}" alt="${evo.name}" style="width:100%; height:100%; object-fit:cover; display:block; pointer-events:none;" />
       </div>
     `.trim();
   }
 
   function renderMonsterEvolutionStagesBanner() {
-    const stages = [
-      { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
-      { level: 2, name: 'Cracking Egg', xp: '100 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
-      { level: 3, name: 'Baby Monster', xp: '250 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
-      { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
-      { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
-      { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
-      { level: 7, name: 'Ultimate Monster', xp: '5,000 XP', sub: 'A true hero!', stageKey: 'ultimate' }
-    ];
+    const stages = EVOLUTION_STAGES;
 
     return `
       <div class="monster-evolution-upgrade-banner" style="background:linear-gradient(180deg, #071328 0%, #0c1e3d 100%); border-radius:20px; padding:24px; color:#fff; box-shadow:0 12px 36px rgba(0,0,0,0.4); margin-bottom:24px; border:1px solid rgba(56,189,248,0.25);">
@@ -2418,10 +2453,10 @@
               </div>
 
               <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">
-                ${st.xp}
+                ${st.xpRequired.toLocaleString()} XP
               </div>
               <div style="font-size:0.68rem; color:#cbd5e1; line-height:1.3; font-style:italic;">
-                "${st.sub}"
+                "${st.subtitle}"
               </div>
             </div>
           `).join('')}
@@ -2431,10 +2466,11 @@
   }
 
   function getStageInfo(stageKey) {
-    return STAGE_META[stageKey] || STAGE_META.baby;
+    return getMonsterForEvolution(stageKey);
   }
 
-  root.MonsterRenderer = {
+  const MonsterEvolutionRenderer = {
+    getMonsterForEvolution: getMonsterForEvolution,
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
@@ -2442,9 +2478,13 @@
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
     palettes: MONSTER_PALETTES,
-    stages: STAGE_META
+    stages: STAGE_META,
+    EVOLUTION_STAGES: EVOLUTION_STAGES
   };
 
+  root.MonsterEvolutionRenderer = MonsterEvolutionRenderer;
+  root.MonsterRenderer = MonsterEvolutionRenderer;
+  root.getMonsterForEvolution = getMonsterForEvolution;
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
@@ -2453,8 +2493,7 @@
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = root.MonsterRenderer;
+    module.exports = MonsterEvolutionRenderer;
   }
 
 })(typeof window !== 'undefined' ? window : global);
-

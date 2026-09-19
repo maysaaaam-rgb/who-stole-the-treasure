@@ -2117,7 +2117,7 @@ button, input, select, textarea {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 1200;
   background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(4px);
   display: none;
@@ -5854,8 +5854,39 @@ body.classroom-mode-active .classroom-students-grid {
   .student-hybrid-header, .student-hybrid-row {
     grid-template-columns: 2fr 1fr 1fr;
   }
-  .gamification-destinations-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
+/* EAA Universal Monster Evolution Artwork Styles */
+.eaa-monster-artwork-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  vertical-align: middle;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.eaa-monster-artwork-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.eaa-monster-artwork-anim {
+  animation: eaaMonsterArtworkFloat 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes eaaMonsterArtworkFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.015);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}

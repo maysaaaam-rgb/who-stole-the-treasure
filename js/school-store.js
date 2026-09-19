@@ -6871,10 +6871,10 @@
           parentName: 'Parent of Ali İhsan Bıçakçı',
           parentContact: '+90 (555) 346-0001',
           parentEmail: 'parent346@example.com',
-          xp: 0,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 400,
+          level: 3,
+          streakDays: 5,
+          equippedMonster: 'Baby Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6891,10 +6891,10 @@
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
-          xp: 0,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 530,
+          level: 4,
+          streakDays: 7,
+          equippedMonster: 'Growing Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6911,10 +6911,10 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
-          xp: 100,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 380,
+          level: 3,
+          streakDays: 4,
+          equippedMonster: 'Baby Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6931,10 +6931,10 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
-          xp: 70,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 310,
+          level: 3,
+          streakDays: 4,
+          equippedMonster: 'Baby Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6951,10 +6951,10 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
-          xp: 70,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 530,
+          level: 4,
+          streakDays: 6,
+          equippedMonster: 'Growing Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6971,10 +6971,10 @@
           parentName: 'Parent of Elisa Berre Eşkin',
           parentContact: '+90 (555) 348-0001',
           parentEmail: 'parent348@example.com',
-          xp: 0,
-          level: 1,
-          streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          xp: 4700,
+          level: 6,
+          streakDays: 12,
+          equippedMonster: 'Advanced Monster',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -9191,12 +9191,15 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!this.state.xpTransactions || !studentId) return 0;
-      const s = this.getStudent(studentId);
+      if (!studentId) return 0;
+      const s = this.getStudent ? this.getStudent(studentId) : null;
       const resolvedId = s ? s.id : studentId;
-      // Strictly recalculate from active transactions only
+      const baseXP = (s && typeof s.xp === 'number') ? s.xp : 0;
+      if (!this.state || !this.state.xpTransactions) return baseXP;
+      // Strictly recalculate from active transactions plus base student XP
       const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
-      return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      const txSum = txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      return Math.max(0, baseXP + txSum);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
@@ -11343,6 +11346,7 @@
         unlockedItemIds,
         currentLevelObj,
         nextLevelObj,
+        nextLevel: nextLevelObj,
         highestUnlockedLevel,
         profile
       };

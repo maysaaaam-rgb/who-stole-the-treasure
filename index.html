@@ -2679,6 +2679,25 @@
         </div>
       </div>
 
+      <!-- Monster Evolution Journey (Bottom Horizontal Bar) -->
+      <div id="monster-creator-evolution-journey" style="margin-top:20px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:18px; padding:16px 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.2rem;">🎨</span>
+              <h3 style="font-size:1.05rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Journey</h3>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Watch your companion grow stronger as you learn!</p>
+          </div>
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-avatar-selector'); switchGamificationTab('levels'); switchView('gamification');" style="font-weight:800; font-size:0.78rem;">
+            View Evolution Details ➔
+          </button>
+        </div>
+        <div id="monster-creator-journey-steps" style="display:flex; justify-content:space-between; align-items:center; overflow-x:auto; gap:10px; padding-bottom:4px;">
+          <!-- Dynamically populated with all 7 stages -->
+        </div>
+      </div>
+
       <!-- Studio Modal Footer: Pro Tip & Unlock Legend -->
       <div class="monster-creator-footer-bar" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:var(--text-muted);">
         <div style="display:flex; align-items:center; gap:6px;">
@@ -3655,8 +3674,13 @@
       <h2 style="font-size: 1.65rem; font-weight: 900; color: #38bdf8; margin: 0 0 6px 0; letter-spacing: 0.02em;">QUEST COMPLETED!</h2>
       <p id="qc-quest-title" style="font-size: 0.95rem; color: #bae6fd; margin: 0 0 16px 0; font-weight: 700;">Animal Habitats Explorer finished!</p>
 
-      <div id="qc-xp-badge" style="font-size: 1.25rem; font-weight: 900; color: #fbbf24; background: rgba(245,158,11,0.2); border: 1.5px solid #f59e0b; padding: 8px 24px; border-radius: 24px; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(245,158,11,0.3);">
+      <div id="qc-xp-badge" style="font-size: 1.25rem; font-weight: 900; color: #fbbf24; background: rgba(245,158,11,0.2); border: 1.5px solid #f59e0b; padding: 8px 24px; border-radius: 24px; display: inline-block; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(245,158,11,0.3);">
         +20 XP Awarded!
+      </div>
+
+      <!-- Evolved Monster Showcase Image -->
+      <div id="qc-monster-visual" style="margin: 0 auto 16px auto; display:flex; justify-content:center;">
+        <!-- Dynamically rendered with student's evolved monster artwork -->
       </div>
 
       <!-- Monster Animated Progress Meter -->
