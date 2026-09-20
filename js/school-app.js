@@ -5618,6 +5618,35 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
         '</div>' +
 
+        // Featured Alice in Wonderland Reference Poster Showcase Banner
+        '<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #064e3b 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
+          '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #fbbf24; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.4);" onclick="openModal(\'modal-alice-poster\')">' +
+            '<img src="assets/homework/alice-xp-challenges-poster.jpg" alt="Alice XP Challenges" style="width:100%; height:100%; object-fit: cover;" />' +
+            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
+          '</div>' +
+          '<div style="flex: 1; min-width: 260px;">' +
+            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
+              '<span style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">FEATURED XP POSTER</span>' +
+              '<span style="background: rgba(56,189,248,0.25); color: #38bdf8; font-size: 0.72rem; font-weight: 800; padding: 2px 9px; border-radius: 999px;">13 DISCRETE HOMEWORK TASKS</span>' +
+            '</div>' +
+            '<h2 style="font-size: 1.35rem; font-weight: 900; margin: 0 0 4px 0; color: #fff; line-height: 1.2;">Alice in Wonderland: XP Challenges</h2>' +
+            '<p style="font-size: 0.86rem; color: #cbd5e1; margin: 0 0 12px 0; line-height: 1.35;">' +
+              '&ldquo;Same Story. Different Challenges. Brighter Learners!&rdquo; Pick Level 1 (+10&ndash;20 XP), Level 2 (+40&ndash;50 XP), Level 3 (+80&ndash;200 XP), or Base Check-In (+10 XP).' +
+            '</p>' +
+            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+              '<button type="button" class="btn-primary-action" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px;">' +
+                '🖼️ View High-Res Poster' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-alice-vocab10\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '👥 Grade &amp; Award Tasks' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '⭐ Award Individual Student XP' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
         // Filter Tabs
         '<div class="hw-filter-tabs">' +
           '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'all' ? 'is-active' : '') + '" onclick="hwFilterTab=\'all\'; renderCurrentView();">All (' + countAll + ')</button>' +

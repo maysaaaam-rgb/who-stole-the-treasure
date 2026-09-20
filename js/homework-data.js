@@ -15,7 +15,8 @@
       title: "Completed Base Log / Reading Check-In",
       xp: 10,
       category: "Participation",
-      description: "Submit reading check-in log and daily reading participation confirmation."
+      description: "Submit reading check-in log and daily reading participation confirmation.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
     // Tier 1: Level 1 — Get Started!
@@ -27,7 +28,8 @@
       title: "Learn 10 New Words & Meanings",
       xp: 10,
       category: "Vocabulary",
-      description: "Learn 10 new vocabulary words and their meanings from the chapter."
+      description: "Learn 10 new vocabulary words and their meanings from the chapter.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-fav-char",
@@ -37,7 +39,8 @@
       title: "Favorite Character + 3 Reasons",
       xp: 15,
       category: "Speaking/Writing",
-      description: "Choose your favorite character from Wonderland and explain 3 reasons why."
+      description: "Choose your favorite character from Wonderland and explain 3 reasons why.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-draw",
@@ -47,7 +50,8 @@
       title: "Draw a Scene/Character & Explain",
       xp: 20,
       category: "Creative",
-      description: "Draw a colorful scene or character from Alice in Wonderland and write/speak an explanation."
+      description: "Draw a colorful scene or character from Alice in Wonderland and write/speak an explanation.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-comp5",
@@ -57,7 +61,8 @@
       title: "Answer 5 Comprehension Questions",
       xp: 20,
       category: "Reading",
-      description: "Answer 5 story comprehension questions in complete sentences."
+      description: "Answer 5 story comprehension questions in complete sentences.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
     // Tier 2: Level 2 — Go Deeper!
@@ -69,7 +74,8 @@
       title: "Learn 25 Words (10 Used in Sentences)",
       xp: 40,
       category: "Vocabulary",
-      description: "Master 25 story vocabulary words and use at least 10 in original context sentences."
+      description: "Master 25 story vocabulary words and use at least 10 in original context sentences.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-speech2m",
@@ -79,7 +85,8 @@
       title: "2-Minute Character Talk (Actions & Role)",
       xp: 50,
       category: "Speaking",
-      description: "Deliver a 2-minute oral presentation describing a character's key actions and role."
+      description: "Deliver a 2-minute oral presentation describing a character's key actions and role.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-retell",
@@ -89,7 +96,8 @@
       title: "Retell One Key Scene (Without Reading)",
       xp: 50,
       category: "Speaking",
-      description: "Retell one key scene from memory using descriptive adverbs and sequence connectors."
+      description: "Retell one key scene from memory using descriptive adverbs and sequence connectors.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-new-ending",
@@ -99,7 +107,8 @@
       title: "Write an Alternate Ending (100–150 Words)",
       xp: 50,
       category: "Writing",
-      description: "Create and write a 100–150 word original alternate ending for Alice in Wonderland."
+      description: "Create and write a 100–150 word original alternate ending for Alice in Wonderland.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
     // Tier 3: Level 3 — Big Challenge!
@@ -111,7 +120,8 @@
       title: "Compare Two Characters in Detail",
       xp: 80,
       category: "Critical Thinking",
-      description: "Conduct an in-depth character comparison analyzing personality traits, motivations, and conflicts."
+      description: "Conduct an in-depth character comparison analyzing personality traits, motivations, and conflicts.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-journey",
@@ -121,7 +131,8 @@
       title: "Explain Alice’s Journey & Character Arc",
       xp: 80,
       category: "Critical Thinking",
-      description: "Detail Alice's growth from curiosity and confusion to confidence and problem-solving."
+      description: "Detail Alice's growth from curiosity and confusion to confidence and problem-solving.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-act-out",
@@ -131,7 +142,8 @@
       title: "Act Out a Scene (Partner/Group Video)",
       xp: 100,
       category: "Speaking/Drama",
-      description: "Collaborate with a partner or group to record and submit a dramatic scene reenactment."
+      description: "Collaborate with a partner or group to record and submit a dramatic scene reenactment.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-full-summary",
@@ -141,7 +153,8 @@
       title: "Full Story Spoken Summary (5–7 Minutes)",
       xp: 200,
       category: "Speaking/Mastery",
-      description: "Deliver a master spoken presentation summarizing the entire narrative with comprehensive detail."
+      description: "Deliver a master spoken presentation summarizing the entire narrative with comprehensive detail.",
+      poster: "assets/homework/alice-xp-challenges-poster.jpg"
     }
   ];
 

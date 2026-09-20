@@ -3126,6 +3126,24 @@
     </div>
   </div>
 
+  <!-- Alice in Wonderland XP Challenges Poster Lightbox Modal -->
+  <div class="modal-overlay" id="modal-alice-poster" style="z-index: 1300;">
+    <div class="modal-dialog" style="max-width: 920px; width: 95%; max-height: 94vh; padding: 18px; background: #0f172a; border-radius: 20px; border: 2px solid #38bdf8; text-align: center; position: relative; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-alice-poster')" style="color: #fff; background: rgba(0,0,0,0.5); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">✕</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.15); flex-wrap: wrap; gap: 10px;">
+        <div style="text-align: left;">
+          <h2 style="font-size: 1.25rem; font-weight: 900; margin: 0; color: #38bdf8;">📘 Alice in Wonderland: XP Challenges Master Reference</h2>
+          <p style="font-size: 0.8rem; color: #94a3b8; margin: 2px 0 0 0;">Discrete Level 1, Level 2, and Level 3 homework tasks with verified XP point values.</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="assets/homework/alice-xp-challenges-poster.jpg" target="_blank" download="alice-xp-challenges.jpg" class="btn-sm-secondary" style="color:#fff; border-color:rgba(255,255,255,0.25); text-decoration:none;">📥 Download Poster</a>
+          <button type="button" class="btn-primary-action" onclick="closeModal('modal-alice-poster')" style="padding: 6px 16px; font-size: 0.85rem; font-weight: 800;">Close</button>
+        </div>
+      </div>
+      <img src="assets/homework/alice-xp-challenges-poster.jpg" alt="Alice in Wonderland XP Challenges Poster" style="max-width: 100%; height: auto; border-radius: 14px; box-shadow: 0 12px 35px rgba(0,0,0,0.7); display: block; margin: 0 auto;" />
+    </div>
+  </div>
+
   <!-- Homework Submissions & Live Evidence Grading Modal -->
   <div class="modal-overlay" id="modal-homework-grading">
     <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
@@ -3134,6 +3152,7 @@
         <div style="flex:1; min-width:240px;">
           <h2 id="hw-grading-title" style="font-size:1.35rem; font-weight:800; margin:0;">Homework Submissions &amp; Grading</h2>
           <p id="hw-grading-subtitle" style="font-size:0.84rem; color:var(--text-muted); margin:2px 0 0 0;">Track task completion and record evidence-based mastery accuracy.</p>
+          <button type="button" class="btn-sm-secondary" onclick="openModal('modal-alice-poster')" style="font-weight:800; color:#0284c7; border-color:#0284c7; display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-size:0.76rem; padding:3px 10px;">🖼️ View XP Challenge Poster</button>
         </div>
         <div style="min-width:280px;">
           <label style="display:block; font-size:0.75rem; font-weight:800; color:var(--text-muted); margin-bottom:4px;">Switch Quest / Discrete Task:</label>
