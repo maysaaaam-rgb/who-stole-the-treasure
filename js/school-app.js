@@ -12415,7 +12415,7 @@ window.switchClassroomSubTab = function(subTab) {
     const monster = store.getStudentMonster(studentId);
     const previewBox = document.getElementById('studio-live-monster-wrap');
     if (previewBox && window.MonsterRenderer) {
-      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 380, showPedestal: true, animated: true });
+      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 400, showPedestal: true, animated: true });
     }
 
     const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
@@ -12502,7 +12502,7 @@ window.switchClassroomSubTab = function(subTab) {
     const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
 
     const monsterArt = window.MonsterRenderer ? window.MonsterRenderer.render(monster, {
-      size: 380,
+      size: 400,
       showPedestal: true,
       animated: true
     }) : '👾';

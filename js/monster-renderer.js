@@ -1,47 +1,29 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — PREMIUM DATA-DRIVEN COMPOSABLE MONSTER RENDERER
+ * ENGLISH ADVENTURE ACADEMY — CELESTIAL DRAGON-FOX COMPANION
  * 
- * High-Fidelity Vector Art Architecture:
- * - ONE SPECIES: "academy-companion" (Adorable magical fox/cat fantasy companion)
- * - PURE DATA-DRIVEN: 100% vector SVG with organic curves, 3D shading, highlights, and layers
- * - NO FLAT PNGs: Scalable to any size without quality loss
- * - 7 PHYSICAL EVOLUTION STAGES (Calculated from XP):
- *     Level 0: Egg (0 XP)
- *     Level 1: Baby (100 XP)
- *     Level 2: Tot (300 XP)
- *     Level 3: Young (700 XP)
- *     Level 4: Adventurer (1,200 XP)
- *     Level 5: Elite (2,500 XP)
- *     Level 6: Legendary (5,000 XP)
- * - BOY / GIRL STYLE: Dynamic hero crest vs. side satin ribbon flower/bow & silky bangs
- * - COMPOSABLE LAYERS (Z-Order):
- *     1. Dais & Shadow
- *     2. Background Aura / Effects
- *     3. Tail (Multi-layered plume with highlights)
- *     4. Back Accessories (Capes, Wings)
- *     5. Hind & Front Legs/Paws (Rounded with toe bean pads)
- *     6. Body & Belly (3D shading, organic chest curve, belly patch)
- *     7. Outfit (Anatomically fitted jacket, vest, cape, robe)
- *     8. Head & Cheek Fluff (Organic silhouette, rounded cheek fluff)
- *     9. Ears & Inner Ear Fluff (Curved outer shape, warm inner gradient, fluffy tufts)
- *    10. Face & Muzzle (Glossy anime eyes, rosy blush, dimensional muzzle, cute smile)
- *    11. Hair / Crest (Boy crest / Girl side bow & bangs)
- *    12. Accessories (Monarch crown, bows, glasses, bandana, badge, wizard hat)
- *    13. Apex Foreground Effects (Runic halo, floating stardust motes)
+ * Official Species: Celestial Dragon-Fox ("Academy Companion")
+ * Directly modeled from project reference: assets/monsters/monster-evolution-stages-banner.png
+ * 
+ * Architecture:
+ * - 100% Scalable Vector SVG with semantic layer groups
+ * - Master-crafted 3/4 hero perspective with anatomical depth (chest forward, angled paws, haunches)
+ * - Directional lighting and multi-stop gradients
+ * - 7 Continuous Evolution Stages (Egg -> Baby -> Tot -> Young -> Adventurer -> Elite -> Legendary)
+ * - 5 Bespoke Colorways (Azure Blue, Emerald Sprout, Solar Ember, Arcane Twilight, Sakura Blossom)
+ * - Tailored Apparel & Collectible Accessories
  */
 
 (function(root) {
   'use strict';
 
-  // 1. XP Thresholds & Progression Map
   const EVOLUTION_THRESHOLDS = [
     { level: 0, stageKey: 'egg', name: 'Egg', xpRequired: 0, subtitle: 'Enchanted Cosmic Egg' },
-    { level: 1, stageKey: 'baby', name: 'Baby', xpRequired: 100, subtitle: 'Tiny & Cuddly Companion' },
-    { level: 2, stageKey: 'tot', name: 'Tot', xpRequired: 300, subtitle: 'Playful & Growing Explorer' },
-    { level: 3, stageKey: 'young', name: 'Young', xpRequired: 700, subtitle: 'Confident & Alert Partner' },
+    { level: 1, stageKey: 'baby', name: 'Baby', xpRequired: 100, subtitle: 'Tiny & Cuddly Hatchling' },
+    { level: 2, stageKey: 'tot', name: 'Tot', xpRequired: 300, subtitle: 'Playful Growing Explorer' },
+    { level: 3, stageKey: 'young', name: 'Young', xpRequired: 700, subtitle: 'Confident Alert Partner' },
     { level: 4, stageKey: 'adventurer', name: 'Adventurer', xpRequired: 1200, subtitle: 'Quest-Ready Hero Guardian' },
-    { level: 5, stageKey: 'elite', name: 'Elite', xpRequired: 2500, subtitle: 'Noble Fluent Academy Champion' },
-    { level: 6, stageKey: 'legendary', name: 'Legendary', xpRequired: 5000, subtitle: 'Apex Mythic Sovereign Companion' }
+    { level: 5, stageKey: 'elite', name: 'Elite', xpRequired: 2500, subtitle: 'Winged Academy Champion' },
+    { level: 6, stageKey: 'legendary', name: 'Legendary', xpRequired: 5000, subtitle: 'Apex Sovereign Dragon-Fox' }
   ];
 
   function getEvolutionStage(totalXP) {
@@ -55,817 +37,792 @@
     return 0;
   }
 
-  function getStageInfo(stageOrLevel) {
-    if (typeof stageOrLevel === 'number') {
-      const lvl = Math.max(0, Math.min(6, Math.floor(stageOrLevel)));
-      return EVOLUTION_THRESHOLDS[lvl];
-    }
-    const s = String(stageOrLevel || '').toLowerCase().trim();
-    const found = EVOLUTION_THRESHOLDS.find(t => t.stageKey === s || String(t.level) === s);
-    return found || EVOLUTION_THRESHOLDS[1];
+  function getStageInfo(level) {
+    const lvl = Math.max(0, Math.min(6, parseInt(level, 10) || 0));
+    return EVOLUTION_THRESHOLDS[lvl] || EVOLUTION_THRESHOLDS[0];
   }
 
-  // 2. High-Fidelity Fur Palettes
   const FUR_PALETTES = {
     blue: {
-      id: 'blue',
-      name: 'Sky Azure',
+      name: 'Celestial Azure',
       highlight: '#bae6fd',
       primaryLight: '#60a5fa',
-      primary: '#3b82f6',
-      primaryDark: '#1d4ed8',
-      shadow: '#1e3a8a',
-      ambientShadow: '#0f172a',
-      bellyHighlight: '#ffffff',
-      belly: '#eff6ff',
-      bellyShadow: '#bfdbfe',
-      innerEarTop: '#fbcfe8',
-      innerEarBottom: '#f472b6',
-      eyeColorLight: '#67e8f9',
-      eyeColorMid: '#0284c7',
-      eyeColorDark: '#082f49',
-      glow: 'rgba(59, 130, 246, 0.45)'
+      primary: '#38bdf8',
+      primaryDark: '#0284c7',
+      primaryDeep: '#075985',
+      shadow: '#082f49',
+      belly: '#ffffff',
+      bellyShade: '#e2e8f0',
+      bellyDeep: '#cbd5e1',
+      innerEar: '#f472b6',
+      eyeTop: '#082f49',
+      eyeMid: '#0284c7',
+      eyeGleam: '#38bdf8',
+      hornBase: '#b45309',
+      hornMid: '#fbbf24',
+      hornTip: '#fef08a',
+      blush: '#fb7185',
+      glow: 'rgba(56, 189, 248, 0.55)'
+    },
+    orange: {
+      name: 'Solar Ember',
+      highlight: '#fef08a',
+      primaryLight: '#fb923c',
+      primary: '#f97316',
+      primaryDark: '#ea580c',
+      primaryDeep: '#c2410c',
+      shadow: '#431407',
+      belly: '#fffbeb',
+      bellyShade: '#fef3c7',
+      bellyDeep: '#fde68a',
+      innerEar: '#fb7185',
+      eyeTop: '#451a03',
+      eyeMid: '#ea580c',
+      eyeGleam: '#f59e0b',
+      hornBase: '#92400e',
+      hornMid: '#f59e0b',
+      hornTip: '#fef3c7',
+      blush: '#f87171',
+      glow: 'rgba(249, 115, 22, 0.55)'
     },
     purple: {
-      id: 'purple',
-      name: 'Lavender Arcane',
-      highlight: '#f3e8ff',
+      name: 'Arcane Twilight',
+      highlight: '#e9d5ff',
       primaryLight: '#c084fc',
       primary: '#a855f7',
       primaryDark: '#7e22ce',
-      shadow: '#581c87',
-      ambientShadow: '#2e1065',
-      bellyHighlight: '#ffffff',
+      primaryDeep: '#581c87',
+      shadow: '#2e1065',
       belly: '#faf5ff',
-      bellyShadow: '#e9d5ff',
-      innerEarTop: '#fbcfe8',
-      innerEarBottom: '#f472b6',
-      eyeColorLight: '#f0abfc',
-      eyeColorMid: '#a855f7',
-      eyeColorDark: '#3b0764',
-      glow: 'rgba(168, 85, 247, 0.45)'
+      bellyShade: '#f3e8ff',
+      bellyDeep: '#e9d5ff',
+      innerEar: '#f472b6',
+      eyeTop: '#2e1065',
+      eyeMid: '#7e22ce',
+      eyeGleam: '#c084fc',
+      hornBase: '#b45309',
+      hornMid: '#fbbf24',
+      hornTip: '#fef08a',
+      blush: '#f472b6',
+      glow: 'rgba(168, 85, 247, 0.55)'
     },
     green: {
-      id: 'green',
-      name: 'Leaf Emerald',
-      highlight: '#d1fae5',
-      primaryLight: '#34d399',
+      name: 'Emerald Sprout',
+      highlight: '#a7f3d0',
+      primaryLight: '#4ade80',
       primary: '#10b981',
-      primaryDark: '#047857',
+      primaryDark: '#059669',
+      primaryDeep: '#047857',
       shadow: '#064e3b',
-      ambientShadow: '#022c22',
-      bellyHighlight: '#ffffff',
       belly: '#f0fdf4',
-      bellyShadow: '#a7f3d0',
-      innerEarTop: '#fecdd3',
-      innerEarBottom: '#fb7185',
-      eyeColorLight: '#6ee7b7',
-      eyeColorMid: '#059669',
-      eyeColorDark: '#064e3b',
-      glow: 'rgba(16, 185, 129, 0.45)'
-    },
-    orange: {
-      id: 'orange',
-      name: 'Sunset Amber',
-      highlight: '#ffedd5',
-      primaryLight: '#fb923c',
-      primary: '#f97316',
-      primaryDark: '#c2410c',
-      shadow: '#7c2d12',
-      ambientShadow: '#431407',
-      bellyHighlight: '#ffffff',
-      belly: '#fff7ed',
-      bellyShadow: '#fed7aa',
-      innerEarTop: '#fecdd3',
-      innerEarBottom: '#f43f5e',
-      eyeColorLight: '#fde047',
-      eyeColorMid: '#ea580c',
-      eyeColorDark: '#7c2d12',
-      glow: 'rgba(249, 115, 22, 0.45)'
+      bellyShade: '#dcfce7',
+      bellyDeep: '#bbf7d0',
+      innerEar: '#fb7185',
+      eyeTop: '#064e3b',
+      eyeMid: '#059669',
+      eyeGleam: '#34d399',
+      hornBase: '#b45309',
+      hornMid: '#fbbf24',
+      hornTip: '#fef08a',
+      blush: '#fb7185',
+      glow: 'rgba(16, 185, 129, 0.55)'
     },
     pink: {
-      id: 'pink',
-      name: 'Berry Blossom',
+      name: 'Sakura Blossom',
       highlight: '#fce7f3',
       primaryLight: '#f472b6',
       primary: '#ec4899',
-      primaryDark: '#be185d',
-      shadow: '#831843',
-      ambientShadow: '#500724',
-      bellyHighlight: '#ffffff',
-      belly: '#fdf2f8',
-      bellyShadow: '#fbcfe8',
-      innerEarTop: '#ffe4e6',
-      innerEarBottom: '#fb7185',
-      eyeColorLight: '#f472b6',
-      eyeColorMid: '#db2777',
-      eyeColorDark: '#831843',
-      glow: 'rgba(236, 72, 153, 0.45)'
+      primaryDark: '#db2777',
+      primaryDeep: '#be185d',
+      shadow: '#500724',
+      belly: '#fff5f7',
+      bellyShade: '#fce7f3',
+      bellyDeep: '#fbcfe8',
+      innerEar: '#fb7185',
+      eyeTop: '#500724',
+      eyeMid: '#db2777',
+      eyeGleam: '#f472b6',
+      hornBase: '#b45309',
+      hornMid: '#fbbf24',
+      hornTip: '#fef08a',
+      blush: '#f43f5e',
+      glow: 'rgba(236, 72, 153, 0.55)'
     }
   };
 
-  function normalizeMonsterConfig(rawConfig = {}) {
-    let data = rawConfig;
-    if (rawConfig.monster && typeof rawConfig.monster === 'object') {
-      data = Object.assign({}, rawConfig.monster, rawConfig);
+  const STAGE_SCALING = {
+    0: { name: 'Egg', scale: 1.0 },
+    1: { // Baby hatchling
+      headSize: 1.18,
+      bodyWidth: 0.82,
+      bodyHeight: 0.80,
+      pawScale: 0.80,
+      hornLength: 0.25,
+      hornType: 'bud',
+      tailScale: 0.65,
+      wingScale: 0,
+      hasArmor: false,
+      yOffset: 32
+    },
+    2: { // Tot
+      headSize: 1.10,
+      bodyWidth: 0.88,
+      bodyHeight: 0.86,
+      pawScale: 0.88,
+      hornLength: 0.50,
+      hornType: 'hornlet',
+      tailScale: 0.82,
+      wingScale: 0,
+      hasArmor: false,
+      yOffset: 22
+    },
+    3: { // Young
+      headSize: 1.02,
+      bodyWidth: 0.95,
+      bodyHeight: 0.94,
+      pawScale: 0.96,
+      hornLength: 0.80,
+      hornType: 'curved',
+      tailScale: 0.95,
+      wingScale: 0,
+      hasArmor: false,
+      yOffset: 12
+    },
+    4: { // Adventurer
+      headSize: 0.98,
+      bodyWidth: 1.04,
+      bodyHeight: 1.02,
+      pawScale: 1.02,
+      hornLength: 1.0,
+      hornType: 'swept',
+      tailScale: 1.10,
+      wingScale: 0,
+      hasArmor: true,
+      yOffset: 0
+    },
+    5: { // Elite
+      headSize: 0.96,
+      bodyWidth: 1.08,
+      bodyHeight: 1.05,
+      pawScale: 1.05,
+      hornLength: 1.25,
+      hornType: 'dragon',
+      tailScale: 1.22,
+      wingScale: 1.0,
+      hasArmor: true,
+      yOffset: -6
+    },
+    6: { // Legendary
+      headSize: 0.95,
+      bodyWidth: 1.12,
+      bodyHeight: 1.08,
+      pawScale: 1.08,
+      hornLength: 1.45,
+      hornType: 'crowned',
+      tailScale: 1.35,
+      wingScale: 1.25,
+      hasArmor: true,
+      yOffset: -12
     }
+  };
 
-    let stage = 1;
-    if (data.previewStage !== undefined) {
-      stage = Number(data.previewStage);
-    } else if (data.evolutionStage !== undefined) {
-      stage = Number(data.evolutionStage);
-    } else if (data.level !== undefined) {
-      stage = Number(data.level);
-    } else if (data.stage !== undefined) {
-      stage = getStageInfo(data.stage).level;
-    } else if (data.totalXP !== undefined || data.xp !== undefined) {
-      stage = getEvolutionStage(data.totalXP || data.xp);
+  function renderMonsterSVG(config = {}, options = {}) {
+    let stage = 3;
+    if (config.previewStage !== undefined && config.previewStage !== null) {
+      stage = parseInt(config.previewStage, 10);
+    } else if (config.evolutionStage !== undefined && config.evolutionStage !== null) {
+      stage = parseInt(config.evolutionStage, 10);
+    } else if (config.stageKey) {
+      const found = EVOLUTION_THRESHOLDS.find(t => t.stageKey === config.stageKey);
+      if (found) stage = found.level;
+    } else if (config.stage !== undefined) {
+      stage = parseInt(config.stage, 10);
     }
-    stage = Math.max(0, Math.min(6, isNaN(stage) ? 1 : stage));
+    stage = Math.max(0, Math.min(6, isNaN(stage) ? 3 : stage));
 
-    let colorKey = (data.furColor || data.baseColor || data.color || 'blue').toLowerCase().replace('body-', '');
-    if (!FUR_PALETTES[colorKey]) colorKey = 'blue';
+    const colorKey = (config.furColor || config.color || 'blue').toLowerCase();
+    const pal = FUR_PALETTES[colorKey] || FUR_PALETTES.blue;
+    const isGirl = (config.style || config.monsterStyle || 'boy') === 'girl';
 
-    let style = (data.style || data.monsterStyle || data.gender || 'boy').toLowerCase();
-    if (style !== 'girl') style = 'boy';
+    const size = parseInt(options.size || config.size, 10) || 400;
+    const showPedestal = options.showPedestal !== undefined ? options.showPedestal : true;
+    const uid = 'cel_' + Math.random().toString(36).substr(2, 7);
 
-    let eyes = (data.eyes || 'round').toLowerCase().replace('eyes-', '');
-    if (!['round', 'sparkle', 'fierce', 'happy', 'curious'].includes(eyes)) eyes = 'round';
-
-    let ears = (data.ears || 'fox').toLowerCase().replace('ears-', '');
-    if (!['fox', 'cat', 'floppy', 'tufted'].includes(ears)) ears = 'fox';
-
-    let tail = (data.tail || 'fluffy').toLowerCase().replace('tail-', '');
-    if (!['fluffy', 'dragon', 'curly', 'twin'].includes(tail)) tail = 'fluffy';
-
-    let outfit = (data.outfit || (data.equipped && data.equipped.clothing) || 'none').toLowerCase().replace('clothing-', '');
-    if (outfit === 'null' || outfit === 'none') outfit = null;
-
-    let accessory = (data.accessory || (data.equipped && (data.equipped.hat || data.equipped.accessory || data.equipped.glasses)) || 'none').toLowerCase();
-    accessory = accessory.replace('hat-', '').replace('glasses-', '').replace('accessory-', '');
-    if (accessory === 'null' || accessory === 'none') accessory = null;
-
-    let aura = (data.aura || (data.equipped && (data.equipped.aura || data.equipped.wings)) || 'none').toLowerCase().replace('aura-', '').replace('wings-', '');
-    if (aura === 'null' || aura === 'none') aura = null;
-
-    return {
-      species: 'academy-companion',
-      evolutionStage: stage,
-      style: style,
-      furColor: colorKey,
-      eyes: eyes,
-      ears: ears,
-      tail: tail,
-      outfit: outfit,
-      accessory: accessory,
-      aura: aura
-    };
-  }
-
-  let svgIdCounter = 0;
-
-  /**
-   * Premium Vector SVG Companion Generator
-   */
-  function renderMonsterSVG(rawConfig = {}, options = {}) {
-    const config = normalizeMonsterConfig(rawConfig);
-    const size = Number(options.size !== undefined ? options.size : (rawConfig.size !== undefined ? rawConfig.size : 300));
-    const showPedestal = options.showPedestal !== undefined ? options.showPedestal : (rawConfig.showPedestal !== false);
-    const animated = options.animated !== false && !options.paused && rawConfig.animated !== false;
-    const customStyle = options.style || rawConfig.style || '';
-    const className = options.className || rawConfig.className || '';
-
-    const uid = 'mc_' + (++svgIdCounter) + '_' + Math.floor(Math.random() * 10000);
-    const stage = config.evolutionStage;
-    const pal = FUR_PALETTES[config.furColor] || FUR_PALETTES.blue;
-    const isGirl = config.style === 'girl';
-
-    // Organic Proportions Scaling across the 7 stages
-    // Center point: X=200. Base: Y=334.
-    const stageParams = {
-      0: { headY: 190, headRX: 0, headRY: 0, bodyY: 200, bodyScale: 1.0, earL: 0, tailScale: 0 },
-      1: { headY: 152, headRX: 74, headRY: 64, bodyY: 238, bodyScale: 0.72, earL: 52, tailScale: 0.68, legScale: 0.74, posture: 'baby' },
-      2: { headY: 142, headRX: 71, headRY: 62, bodyY: 230, bodyScale: 0.84, earL: 64, tailScale: 0.86, legScale: 0.85, posture: 'tot' },
-      3: { headY: 130, headRX: 68, headRY: 59, bodyY: 220, bodyScale: 0.98, earL: 78, tailScale: 1.05, legScale: 0.98, posture: 'young' },
-      4: { headY: 120, headRX: 66, headRY: 57, bodyY: 212, bodyScale: 1.10, earL: 88, tailScale: 1.20, legScale: 1.08, posture: 'adventurer' },
-      5: { headY: 110, headRX: 64, headRY: 55, bodyY: 202, bodyScale: 1.22, earL: 98, tailScale: 1.35, legScale: 1.18, posture: 'elite' },
-      6: { headY: 100, headRX: 62, headRY: 53, bodyY: 194, bodyScale: 1.32, earL: 108, tailScale: 1.50, legScale: 1.26, posture: 'legendary' }
-    }[stage];
-
-    // ==========================================
-    // 1. DEFS (Lush Gradients, Shading, Filters)
-    // ==========================================
-    const defs = `
-      <defs>
-        <!-- Spherical Head Gradient with Soft 3D Highlight Dome -->
-        <radialGradient id="${uid}_head_sphere" cx="42%" cy="28%" r="72%">
-          <stop offset="0%" stop-color="${pal.highlight}" />
-          <stop offset="35%" stop-color="${pal.primaryLight}" />
-          <stop offset="78%" stop-color="${pal.primary}" />
-          <stop offset="100%" stop-color="${pal.primaryDark}" />
-        </radialGradient>
-
-        <!-- Torso & Limb 3D Gradient -->
-        <linearGradient id="${uid}_fur_body" x1="25%" y1="0%" x2="75%" y2="100%">
-          <stop offset="0%" stop-color="${pal.highlight}" />
-          <stop offset="25%" stop-color="${pal.primaryLight}" />
-          <stop offset="70%" stop-color="${pal.primary}" />
-          <stop offset="100%" stop-color="${pal.primaryDark}" />
-        </linearGradient>
-
-        <!-- Belly Cream Gradient (Soft 3D Pillow) -->
-        <linearGradient id="${uid}_belly" x1="50%" y1="0%" x2="50%" y2="100%">
-          <stop offset="0%" stop-color="${pal.bellyHighlight}" />
-          <stop offset="65%" stop-color="${pal.belly}" />
-          <stop offset="100%" stop-color="${pal.bellyShadow}" />
-        </linearGradient>
-
-        <!-- Inner Ear Rosy Peach Gradient -->
-        <linearGradient id="${uid}_inner_ear" x1="50%" y1="0%" x2="50%" y2="100%">
-          <stop offset="0%" stop-color="${pal.innerEarTop}" />
-          <stop offset="100%" stop-color="${pal.innerEarBottom}" />
-        </linearGradient>
-
-        <!-- Anime RPG Irises (4-Stop Crystalline Radial Glow) -->
-        <radialGradient id="${uid}_eye_iris" cx="42%" cy="32%" r="68%">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-          <stop offset="22%" stop-color="${pal.eyeColorLight}" />
-          <stop offset="60%" stop-color="${pal.eyeColorMid}" />
-          <stop offset="90%" stop-color="${pal.eyeColorDark}" />
-          <stop offset="100%" stop-color="#020617" />
-        </radialGradient>
-
-        <!-- Pedestal Arcane Crystal Base -->
-        <linearGradient id="${uid}_pedestal_top" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#0f172a" />
-          <stop offset="50%" stop-color="#1e293b" />
-          <stop offset="100%" stop-color="#0f172a" />
-        </linearGradient>
-        <linearGradient id="${uid}_pedestal_glow" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${pal.primaryLight}" stop-opacity="0.3" />
-          <stop offset="50%" stop-color="${pal.highlight}" stop-opacity="0.95" />
-          <stop offset="100%" stop-color="${pal.primaryLight}" stop-opacity="0.3" />
-        </linearGradient>
-
-        <!-- Egg Cosmic Radiant -->
-        <radialGradient id="${uid}_egg_grad" cx="35%" cy="28%" r="75%">
-          <stop offset="0%" stop-color="#ffffff" />
-          <stop offset="25%" stop-color="${pal.highlight}" />
-          <stop offset="65%" stop-color="${pal.primary}" />
-          <stop offset="100%" stop-color="${pal.shadow}" />
-        </radialGradient>
-
-        <!-- Soft Glow & Shading Filters -->
-        <filter id="${uid}_glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="12" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        <filter id="${uid}_soft_shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#020617" flood-opacity="0.35" />
-        </filter>
-        <filter id="${uid}_deep_shadow" x="-25%" y="-20%" width="150%" height="145%">
-          <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.45" />
-        </filter>
-      </defs>
-    `;
-
-    // ==========================================
-    // 2. LAYER: PEDESTAL & SHADOW
-    // ==========================================
-    let pedestalSVG = '';
-    if (showPedestal) {
-      pedestalSVG = `
-        <g id="layer-pedestal" class="monster-layer layer-pedestal" data-layer="pedestal">
-          <ellipse cx="200" cy="346" rx="146" ry="32" fill="#000000" opacity="0.45" filter="url(#${uid}_glow)" />
-          <ellipse cx="200" cy="340" rx="138" ry="24" fill="url(#${uid}_pedestal_top)" stroke="url(#${uid}_pedestal_glow)" stroke-width="2.5" />
-          <ellipse cx="200" cy="338" rx="114" ry="17" fill="#090d16" stroke="${pal.primaryLight}" stroke-width="1.8" stroke-dasharray="12 6" opacity="0.85" />
-          <ellipse cx="200" cy="337" rx="84" ry="11" fill="none" stroke="${pal.highlight}" stroke-width="1.2" opacity="0.65" />
-        </g>
-      `;
-    }
-
-    // ==========================================
-    // 3. LAYER: AURA & AMBIENT EFFECTS (Behind Monster)
-    // ==========================================
-    let auraSVG = '';
-    if (config.aura === 'glow' || stage === 6) {
-      auraSVG = `
-        <g id="layer-aura" class="monster-layer layer-aura" data-layer="aura">
-          <circle cx="200" cy="205" r="160" fill="${pal.glow}" filter="url(#${uid}_glow)" opacity="${stage === 6 ? '0.7' : '0.42'}" />
-          ${stage === 6 ? `
-            <circle cx="200" cy="205" r="176" fill="none" stroke="${pal.highlight}" stroke-width="2.5" stroke-dasharray="18 12" opacity="0.8">
-              ${animated ? '<animateTransform attributeName="transform" type="rotate" from="0 200 205" to="360 200 205" dur="20s" repeatCount="indefinite"/>' : ''}
-            </circle>
-          ` : ''}
-        </g>
-      `;
-    } else if (config.aura === 'star_glow' || config.aura === 'stars') {
-      auraSVG = `
-        <g id="layer-aura" class="monster-layer layer-aura" data-layer="aura">
-          <circle cx="200" cy="205" r="150" fill="${pal.glow}" filter="url(#${uid}_glow)" opacity="0.45" />
-          <g fill="#fbbf24" stroke="#f59e0b" stroke-width="1">
-            <path d="M 75,115 L 79,127 L 91,129 L 81,136 L 84,148 L 75,140 L 66,148 L 69,136 L 59,129 L 71,127 Z" opacity="0.9" />
-            <path d="M 325,110 L 328,119 L 338,121 L 330,126 L 332,135 L 325,129 L 318,135 L 320,126 L 312,121 L 322,119 Z" opacity="0.9" />
-            <path d="M 90,265 L 92,272 L 100,273 L 94,277 L 96,285 L 90,280 L 84,285 L 86,277 L 80,273 L 88,272 Z" opacity="0.8" />
-            <path d="M 310,260 L 312,267 L 320,268 L 314,272 L 316,280 L 310,275 L 304,280 L 306,272 L 300,268 L 308,267 Z" opacity="0.8" />
-          </g>
-        </g>
-      `;
-    } else if (config.aura === 'sparks') {
-      auraSVG = `
-        <g id="layer-aura" class="monster-layer layer-aura" data-layer="aura">
-          <circle cx="200" cy="205" r="140" fill="${pal.glow}" filter="url(#${uid}_glow)" opacity="0.35" />
-          <g stroke="${pal.highlight}" stroke-width="2.5" stroke-linecap="round">
-            <path d="M 68,160 L 80,180 L 74,198 L 88,216" />
-            <path d="M 332,155 L 320,175 L 326,193 L 312,210" />
-            <circle cx="90" cy="150" r="3.5" fill="#ffffff" />
-            <circle cx="310" cy="145" r="3.5" fill="#ffffff" />
-          </g>
-        </g>
-      `;
-    } else if (config.aura === 'wings') {
-      auraSVG = `
-        <g id="layer-aura" class="monster-layer layer-aura" data-layer="aura" opacity="0.92">
-          <path d="M 160,175 C 105,70 30,85 15,145 C 2,190 60,230 152,212 Z" fill="url(#${uid}_inner_ear)" opacity="0.6" stroke="${pal.highlight}" stroke-width="2.5" />
-          <path d="M 240,175 C 295,70 370,85 385,145 C 398,190 340,230 248,212 Z" fill="url(#${uid}_inner_ear)" opacity="0.6" stroke="${pal.highlight}" stroke-width="2.5" />
-        </g>
-      `;
-    }
-
-    // ==========================================
-    // 4. LEVEL 0: SPECIAL ENCHANTED EGG
-    // ==========================================
+    // =========================================================================
+    // STAGE 0: ENCHANTED COSMIC EGG
+    // =========================================================================
     if (stage === 0) {
       return `
-        <svg class="monster-svg ${className}" viewBox="0 0 400 400" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:inline-block; vertical-align:middle; overflow:hidden; ${customStyle}" data-stage="0" data-species="academy-companion" data-color="${config.furColor}" data-style="${config.style}">
-          ${defs}
-          ${pedestalSVG}
-          ${auraSVG}
-          <g id="layer-nest" class="monster-layer layer-nest" filter="url(#${uid}_deep_shadow)">
-            <ellipse cx="200" cy="308" rx="92" ry="35" fill="#78350f" />
-            <ellipse cx="200" cy="304" rx="86" ry="30" fill="#92400e" stroke="#b45309" stroke-width="3" />
-            <path d="M 118,303 Q 200,332 282,303" stroke="#d97706" stroke-width="3.5" fill="none" stroke-dasharray="12 6" />
+        <svg class="monster-svg monster-egg" viewBox="0 0 400 400" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:auto; overflow:hidden; user-select:none;">
+          <defs>
+            <radialGradient id="${uid}_egg_ped" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0284c7" stop-opacity="0.85"/>
+              <stop offset="70%" stop-color="#0369a1" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#082f49" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="${uid}_egg_grad" x1="15%" y1="10%" x2="85%" y2="90%">
+              <stop offset="0%" stop-color="${pal.highlight}"/>
+              <stop offset="35%" stop-color="${pal.primary}"/>
+              <stop offset="75%" stop-color="${pal.primaryDark}"/>
+              <stop offset="100%" stop-color="${pal.primaryDeep}"/>
+            </linearGradient>
+            <linearGradient id="${uid}_gold_crack" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="50%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#b45309"/>
+            </linearGradient>
+            <filter id="${uid}_glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="${uid}_drop_shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.65"/>
+            </filter>
+          </defs>
+
+          ${showPedestal ? `
+            <g id="layer-pedestal" class="monster-layer layer-pedestal">
+              <ellipse cx="200" cy="342" rx="140" ry="40" fill="url(#${uid}_egg_ped)" />
+              <ellipse cx="200" cy="336" rx="110" ry="24" fill="#091426" stroke="#1e3a8a" stroke-width="2" />
+              <ellipse cx="200" cy="336" rx="85" ry="16" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,4" />
+            </g>
+          ` : ''}
+
+          <g id="layer-aura" class="monster-layer layer-aura">
+            <circle cx="200" cy="215" r="115" fill="${pal.glow}" opacity="0.35" filter="url(#${uid}_glow)" />
+            <circle cx="120" cy="180" r="3" fill="#ffffff" opacity="0.8" filter="url(#${uid}_glow)" />
+            <circle cx="280" cy="160" r="4" fill="#fef08a" opacity="0.85" filter="url(#${uid}_glow)" />
           </g>
-          <g id="layer-egg-body" class="monster-layer layer-body" filter="url(#${uid}_deep_shadow)">
-            <ellipse cx="200" cy="222" rx="74" ry="96" fill="url(#${uid}_egg_grad)" stroke="${pal.highlight}" stroke-width="3" />
-            <path d="M 158,165 C 150,195 150,225 164,248" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round" opacity="0.7" fill="none" />
-            <circle cx="182" cy="212" r="11" fill="#ffffff" opacity="0.75" filter="url(#${uid}_glow)" />
-            <circle cx="230" cy="242" r="9" fill="#ffffff" opacity="0.7" filter="url(#${uid}_glow)" />
-            <circle cx="195" cy="268" r="8" fill="#ffffff" opacity="0.6" filter="url(#${uid}_glow)" />
-            <path d="M 194,185 L 206,200 L 198,212 L 214,228" stroke="#ffffff" stroke-width="2.8" fill="none" opacity="0.9" filter="url(#${uid}_glow)" />
+
+          <g id="layer-egg-body" class="monster-layer layer-egg" filter="url(#${uid}_drop_shadow)">
+            <path d="M 200,90 C 130,90 108,180 108,245 C 108,305 145,335 200,335 C 255,335 292,305 292,245 C 292,180 270,90 200,90 Z" fill="url(#${uid}_egg_grad)" stroke="${pal.primaryDeep}" stroke-width="3" />
+            <path d="M 175,115 C 145,130 130,175 130,220 C 130,170 148,130 175,115 Z" fill="#ffffff" opacity="0.45" />
+
+            <!-- Luminous Gold Cracks -->
+            <path d="M 200,165 L 212,190 L 195,215 L 220,245 L 205,275 L 222,300" stroke="url(#${uid}_gold_crack)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#${uid}_glow)" />
+            <path d="M 195,215 L 175,230 L 165,250" stroke="url(#${uid}_gold_crack)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#${uid}_glow)" />
+            <path d="M 220,245 L 242,255 L 255,250" stroke="url(#${uid}_gold_crack)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#${uid}_glow)" />
+
+            <!-- Dragon Scales -->
+            <path d="M 150,275 Q 160,265 170,275" stroke="${pal.highlight}" stroke-width="2.5" fill="none" opacity="0.6" />
+            <path d="M 230,280 Q 240,270 250,280" stroke="${pal.highlight}" stroke-width="2.5" fill="none" opacity="0.6" />
+            <circle cx="212" cy="230" r="14" fill="#fef08a" opacity="0.65" filter="url(#${uid}_glow)" />
           </g>
         </svg>
-      `.trim();
-    }
-
-    // ==========================================
-    // 5. LAYER: TAIL (Lush, Sweeping Plume)
-    // ==========================================
-    const tScale = stageParams.tailScale;
-    let tailSVG = '';
-    if (config.tail === 'fluffy') {
-      tailSVG = `
-        <g id="layer-tail" class="monster-layer layer-tail" data-layer="tail" filter="url(#${uid}_deep_shadow)">
-          <g transform="translate(200, 260) scale(${tScale}) translate(-200, -260)">
-            <path d="M 235,275 C 330,290 385,215 358,140 C 336,88 268,115 248,155 C 238,175 228,238 218,265 Z" fill="${pal.shadow}" />
-            <path d="M 230,270 C 320,285 375,210 350,140 C 330,92 272,120 252,160 C 242,180 232,238 222,265 Z" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2" />
-            <path d="M 350,140 C 330,92 272,120 252,160 C 270,146 304,142 330,166 C 342,152 352,144 350,140 Z" fill="#ffffff" opacity="0.96" />
-            <path d="M 342,168 Q 318,188 330,218" stroke="${pal.highlight}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8" />
-            <path d="M 318,202 Q 296,222 306,248" stroke="${pal.highlight}" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.65" />
-          </g>
-        </g>
-      `;
-    } else if (config.tail === 'dragon') {
-      tailSVG = `
-        <g id="layer-tail" class="monster-layer layer-tail" data-layer="tail" filter="url(#${uid}_deep_shadow)">
-          <g transform="translate(200, 260) scale(${tScale}) translate(-200, -260)">
-            <path d="M 225,270 C 315,290 365,225 358,150 C 345,125 320,140 308,168 C 285,220 245,248 225,265 Z" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2" />
-            <polygon points="354,152 376,134 356,170" fill="${pal.highlight}" />
-            <polygon points="346,182 368,170 348,200" fill="${pal.highlight}" />
-            <polygon points="325,220 345,212 328,235" fill="${pal.highlight}" />
-          </g>
-        </g>
-      `;
-    } else if (config.tail === 'curly') {
-      tailSVG = `
-        <g id="layer-tail" class="monster-layer layer-tail" data-layer="tail" filter="url(#${uid}_deep_shadow)">
-          <g transform="translate(200, 260) scale(${tScale}) translate(-200, -260)">
-            <path d="M 225,270 C 295,285 335,235 320,180 C 305,135 255,145 260,180 C 265,205 292,205 290,188" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2.5" />
-            <circle cx="280" cy="172" r="18" fill="#ffffff" opacity="0.9" />
-          </g>
-        </g>
-      `;
-    } else if (config.tail === 'twin' || stage === 6) {
-      tailSVG = `
-        <g id="layer-tail" class="monster-layer layer-tail" data-layer="tail" filter="url(#${uid}_deep_shadow)">
-          <g transform="translate(200, 260) scale(${tScale}) translate(-200, -260)">
-            <path d="M 165,275 C 70,290 15,215 42,140 C 64,88 132,115 152,155 C 162,175 172,238 182,265 Z" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2" />
-            <path d="M 42,140 C 64,88 132,115 152,155 C 134,146 100,142 74,166 C 62,152 52,144 42,140 Z" fill="#ffffff" opacity="0.96" />
-            <path d="M 235,275 C 330,290 385,215 358,140 C 336,88 268,115 248,155 C 238,175 228,238 218,265 Z" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2" />
-            <path d="M 358,140 C 336,88 268,115 248,155 C 266,146 300,142 326,166 C 338,152 348,144 358,140 Z" fill="#ffffff" opacity="0.96" />
-          </g>
-        </g>
       `;
     }
 
-    // ==========================================
-    // 6. LAYER: HIND LEGS & FRONT PAWS
-    // ==========================================
-    const bScale = stageParams.bodyScale;
-    const lScale = stageParams.legScale || 1.0;
-    const legsSVG = `
-      <g id="layer-legs" class="monster-layer layer-legs" data-layer="legs" filter="url(#${uid}_soft_shadow)">
-        <g id="hind-haunches">
-          <path d="M 116,296 C 104,270 120,238 146,252 C 164,262 160,302 134,314 C 118,314 112,306 116,296 Z" fill="${pal.shadow}" />
-          <ellipse cx="130" cy="310" rx="25" ry="15" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="1.8" />
-          
-          <path d="M 284,296 C 296,270 280,238 254,252 C 236,262 240,302 266,314 C 282,314 288,306 284,296 Z" fill="${pal.shadow}" />
-          <ellipse cx="270" cy="310" rx="25" ry="15" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="1.8" />
-        </g>
+    // =========================================================================
+    // STAGES 1 TO 6: THE CELESTIAL DRAGON-FOX COMPANION
+    // =========================================================================
+    const sConf = STAGE_SCALING[stage] || STAGE_SCALING[3];
+    const yOff = sConf.yOffset || 0;
 
-        <g id="forelimbs" transform="translate(200, 308) scale(${lScale}) translate(-200, -308)">
-          <path d="M 166,230 C 154,255 150,285 158,304 C 162,312 174,312 178,304 C 182,285 180,255 178,230 Z" fill="url(#${uid}_fur_body)" />
-          <g transform="translate(164, 304)">
-            <ellipse cx="0" cy="0" rx="17" ry="12" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="1.5" />
-            <ellipse cx="-6" cy="3.5" rx="3.4" ry="2.8" fill="${pal.belly}" />
-            <ellipse cx="0" cy="4.5" rx="3.8" ry="3" fill="${pal.belly}" />
-            <ellipse cx="6" cy="3.5" rx="3.4" ry="2.8" fill="${pal.belly}" />
+    const headScale = sConf.headSize;
+    const bodyW = sConf.bodyWidth;
+    const bodyH = sConf.bodyHeight;
+    const tailSc = sConf.tailScale;
+    const pawSc = sConf.pawScale;
+    const wingSc = sConf.wingScale;
+
+    const headCX = 200;
+    const headCY = 158 + yOff;
+
+    return `
+      <svg class="monster-svg companion-celestial-species stage-${stage}" viewBox="0 0 400 400" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:auto; overflow:hidden; user-select:none;">
+        <defs>
+          <!-- Directional 3D Fur Gradients -->
+          <linearGradient id="${uid}_fur_body" x1="20%" y1="10%" x2="80%" y2="90%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="30%" stop-color="${pal.primaryLight}"/>
+            <stop offset="65%" stop-color="${pal.primary}"/>
+            <stop offset="88%" stop-color="${pal.primaryDark}"/>
+            <stop offset="100%" stop-color="${pal.primaryDeep}"/>
+          </linearGradient>
+
+          <radialGradient id="${uid}_head_sphere" cx="44%" cy="36%" r="65%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="35%" stop-color="${pal.primaryLight}"/>
+            <stop offset="70%" stop-color="${pal.primary}"/>
+            <stop offset="90%" stop-color="${pal.primaryDark}"/>
+            <stop offset="100%" stop-color="${pal.primaryDeep}"/>
+          </radialGradient>
+
+          <!-- Soft Cream Chest Bib & Muzzle -->
+          <linearGradient id="${uid}_cream_bib" x1="45%" y1="0%" x2="55%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="55%" stop-color="${pal.belly}"/>
+            <stop offset="85%" stop-color="${pal.bellyShade}"/>
+            <stop offset="100%" stop-color="${pal.bellyDeep}"/>
+          </linearGradient>
+
+          <!-- Inner Ear Gradient -->
+          <linearGradient id="${uid}_inner_ear" x1="30%" y1="10%" x2="70%" y2="90%">
+            <stop offset="0%" stop-color="${pal.innerEar}"/>
+            <stop offset="70%" stop-color="#f43f5e"/>
+            <stop offset="100%" stop-color="#be185d"/>
+          </linearGradient>
+
+          <!-- 3D Dragon Horn Metallic Gradient -->
+          <linearGradient id="${uid}_horn_gold" x1="10%" y1="0%" x2="90%" y2="100%">
+            <stop offset="0%" stop-color="${pal.hornTip}"/>
+            <stop offset="35%" stop-color="${pal.hornMid}"/>
+            <stop offset="75%" stop-color="${pal.hornBase}"/>
+            <stop offset="100%" stop-color="#78350f"/>
+          </linearGradient>
+
+          <!-- Anime Jewel Iris Gradient -->
+          <radialGradient id="${uid}_eye_iris" cx="45%" cy="38%" r="62%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="30%" stop-color="${pal.eyeGleam}"/>
+            <stop offset="70%" stop-color="${pal.eyeMid}"/>
+            <stop offset="100%" stop-color="${pal.eyeTop}"/>
+          </radialGradient>
+
+          <!-- Feathered Wing Gradients -->
+          <linearGradient id="${uid}_wing_primary" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="40%" stop-color="${pal.primary}"/>
+            <stop offset="85%" stop-color="${pal.primaryDark}"/>
+            <stop offset="100%" stop-color="${pal.primaryDeep}"/>
+          </linearGradient>
+
+          <!-- Dais Platform Radial -->
+          <radialGradient id="${uid}_dais_rad" cx="50%" cy="45%" r="55%">
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85"/>
+            <stop offset="50%" stop-color="#0284c7" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#0c4a6e" stop-opacity="0"/>
+          </radialGradient>
+
+          <!-- Soft Atmospheric Filters -->
+          <filter id="${uid}_soft_shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#020617" flood-opacity="0.45"/>
+          </filter>
+          <filter id="${uid}_deep_shadow" x="-25%" y="-25%" width="150%" height="150%">
+            <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.55"/>
+          </filter>
+          <filter id="${uid}_glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- ================================================================= -->
+        <!-- 1. LAYER: PEDESTAL & RUNIC DAIS                                   -->
+        <!-- ================================================================= -->
+        ${showPedestal ? `
+          <g id="layer-pedestal" class="monster-layer layer-pedestal">
+            <ellipse cx="200" cy="344" rx="145" ry="42" fill="url(#${uid}_dais_rad)" />
+            <ellipse cx="200" cy="340" rx="122" ry="26" fill="#091426" stroke="#1e3a8a" stroke-width="2.5" />
+            <ellipse cx="200" cy="338" rx="100" ry="20" fill="#0f223d" stroke="#38bdf8" stroke-width="1.8" />
+            <ellipse cx="200" cy="338" rx="76" ry="14" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.75" />
+            <circle cx="108" cy="338" r="3.5" fill="#38bdf8" filter="url(#${uid}_glow)" />
+            <circle cx="292" cy="338" r="3.5" fill="#38bdf8" filter="url(#${uid}_glow)" />
           </g>
-
-          <path d="M 234,230 C 246,255 250,285 242,304 C 238,312 226,312 222,304 C 218,285 220,255 222,230 Z" fill="url(#${uid}_fur_body)" />
-          <g transform="translate(236, 304)">
-            <ellipse cx="0" cy="0" rx="17" ry="12" fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="1.5" />
-            <ellipse cx="-6" cy="3.5" rx="3.4" ry="2.8" fill="${pal.belly}" />
-            <ellipse cx="0" cy="4.5" rx="3.8" ry="3" fill="${pal.belly}" />
-            <ellipse cx="6" cy="3.5" rx="3.4" ry="2.8" fill="${pal.belly}" />
-          </g>
-        </g>
-      </g>
-    `;
-
-    // ==========================================
-    // 7. LAYER: TORSO & SOFT BELLY (Organic 3D Curves)
-    // ==========================================
-    const bY = stageParams.bodyY;
-    const bodySVG = `
-      <g id="layer-body" class="monster-layer layer-body" data-layer="body" filter="url(#${uid}_deep_shadow)">
-        <g transform="translate(200, ${bY}) scale(${bScale}) translate(-200, -220)">
-          <path d="M 158,172 
-                   C 132,198 122,252 144,288 
-                   C 158,308 242,308 256,288 
-                   C 278,252 268,198 242,172 
-                   C 226,156 174,156 158,172 Z" 
-                fill="url(#${uid}_fur_body)" stroke="${pal.shadow}" stroke-width="2.2" />
-
-          <path d="M 172,182 
-                   C 150,208 146,256 160,284 
-                   C 174,298 226,298 240,284 
-                   C 254,256 250,208 228,182 
-                   C 214,172 186,172 172,182 Z" 
-                fill="url(#${uid}_belly)" />
-
-          <path d="M 186,186 Q 200,200 214,186 Q 200,192 186,186 Z" fill="#ffffff" opacity="0.9" />
-          ${stage >= 3 ? `
-            <path d="M 180,202 Q 200,216 220,202 Q 200,208 180,202 Z" fill="#ffffff" opacity="0.8" />
-          ` : ''}
-
-          ${stage >= 5 ? `
-            <path d="M 136,182 Q 168,206 200,190 Q 232,206 264,182" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.95" />
-          ` : ''}
-        </g>
-      </g>
-    `;
-
-    // ==========================================
-    // 8. LAYER: OUTFITS (Anatomically Fitted)
-    // ==========================================
-    let outfitSVG = '';
-    if (config.outfit === 'adventurer_jacket' || (stage >= 4 && !config.outfit)) {
-      outfitSVG = `
-        <g id="layer-outfit" class="monster-layer layer-outfit" data-layer="outfit" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(200, ${bY}) scale(${bScale}) translate(-200, -220)">
-            <path d="M 164,174 L 154,260 L 176,260 L 182,174 Z" fill="#78350f" stroke="#451a03" stroke-width="2" />
-            <path d="M 236,174 L 246,260 L 224,260 L 218,174 Z" fill="#78350f" stroke="#451a03" stroke-width="2" />
-            <rect x="148" y="248" width="104" height="15" rx="4" fill="#92400e" stroke="#451a03" stroke-width="1.8" />
-            <rect x="188" y="243" width="24" height="25" rx="4" fill="#fbbf24" stroke="#b45309" stroke-width="2.2" />
-            <rect x="194" y="249" width="12" height="13" rx="2" fill="#78350f" />
-          </g>
-        </g>
-      `;
-    } else if (config.outfit === 'vest') {
-      outfitSVG = `
-        <g id="layer-outfit" class="monster-layer layer-outfit" data-layer="outfit" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(200, ${bY}) scale(${bScale}) translate(-200, -220)">
-            <path d="M 160,176 L 150,266 L 180,266 L 190,184 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="2.2" />
-            <path d="M 240,176 L 250,266 L 220,266 L 210,184 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="2.2" />
-            <circle cx="200" cy="204" r="3.8" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
-            <circle cx="200" cy="225" r="3.8" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
-            <circle cx="200" cy="246" r="3.8" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
-          </g>
-        </g>
-      `;
-    } else if (config.outfit === 'cape') {
-      outfitSVG = `
-        <g id="layer-outfit" class="monster-layer layer-outfit" data-layer="outfit" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(200, ${bY}) scale(${bScale}) translate(-200, -220)">
-            <path d="M 154,176 C 118,210 112,276 128,288 L 154,246 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.2" />
-            <path d="M 246,176 C 282,210 288,276 272,288 L 246,246 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.2" />
-            <circle cx="200" cy="180" r="9" fill="#fbbf24" stroke="#b45309" stroke-width="2.2" />
-            <circle cx="200" cy="180" r="4" fill="#ef4444" />
-          </g>
-        </g>
-      `;
-    } else if (config.outfit === 'robe') {
-      outfitSVG = `
-        <g id="layer-outfit" class="monster-layer layer-outfit" data-layer="outfit" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(200, ${bY}) scale(${bScale}) translate(-200, -220)">
-            <path d="M 154,174 L 138,272 L 262,272 L 246,174 Z" fill="#4c1d95" opacity="0.94" stroke="#c084fc" stroke-width="2.2" />
-            <path d="M 200,174 L 200,272" stroke="#fbbf24" stroke-width="2.8" />
-          </g>
-        </g>
-      `;
-    }
-
-    // ==========================================
-    // 9. LAYER: HEAD & CHUBBY CHEEK FLUFF
-    // ==========================================
-    const hY = stageParams.headY;
-    const hRX = stageParams.headRX;
-    const hRY = stageParams.headRY;
-    const headSVG = `
-      <g id="layer-head" class="monster-layer layer-head" data-layer="head" filter="url(#${uid}_deep_shadow)">
-        <path d="M 200,${hY - hRY} 
-                 C ${200 + hRX * 0.65},${hY - hRY} ${200 + hRX * 1.05},${hY - hRY * 0.45} ${200 + hRX * 1.08},${hY} 
-                 C ${200 + hRX * 1.14},${hY + hRY * 0.25} ${200 + hRX * 1.18},${hY + hRY * 0.50} ${200 + hRX * 1.12},${hY + hRY * 0.65} 
-                 Q ${200 + hRX * 1.22},${hY + hRY * 0.75} ${200 + hRX * 1.05},${hY + hRY * 0.85} 
-                 Q ${200 + hRX * 1.12},${hY + hRY * 0.95} ${200 + hRX * 0.85},${hY + hRY * 1.02} 
-                 C ${200 + hRX * 0.50},${hY + hRY * 1.08} ${200 + hRX * 0.20},${hY + hRY * 1.08} 200,${hY + hRY * 1.08} 
-                 C ${200 - hRX * 0.20},${hY + hRY * 1.08} ${200 - hRX * 0.50},${hY + hRY * 1.08} ${200 - hRX * 0.85},${hY + hRY * 1.02} 
-                 Q ${200 - hRX * 1.12},${hY + hRY * 0.95} ${200 - hRX * 1.05},${hY + hRY * 0.85} 
-                 Q ${200 - hRX * 1.22},${hY + hRY * 0.75} ${200 - hRX * 1.12},${hY + hRY * 0.65} 
-                 C ${200 - hRX * 1.18},${hY + hRY * 0.50} ${200 - hRX * 1.14},${hY + hRY * 0.25} ${200 - hRX * 1.08},${hY} 
-                 C ${200 - hRX * 1.05},${hY - hRY * 0.45} ${200 - hRX * 0.65},${hY - hRY} 200,${hY - hRY} Z" 
-              fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-
-        <path d="M ${200 - hRX * 1.00},${hY + hRY * 0.35} Q ${200 - hRX * 0.76},${hY + hRY * 0.60} ${200 - hRX * 0.52},${hY + hRY * 0.85}" stroke="${pal.highlight}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.75" />
-        <path d="M ${200 + hRX * 1.00},${hY + hRY * 0.35} Q ${200 + hRX * 0.76},${hY + hRY * 0.60} ${200 + hRX * 0.52},${hY + hRY * 0.85}" stroke="${pal.highlight}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.75" />
-      </g>
-    `;
-
-    // ==========================================
-    // 10. LAYER: EARS & INNER EAR FLUFF
-    // ==========================================
-    const eL = stageParams.earL;
-    let earsSVG = '';
-    if (config.ears === 'fox') {
-      earsSVG = `
-        <g id="layer-ears" class="monster-layer layer-ears" data-layer="ears" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(${200 - hRX * 0.50}, ${hY - hRY * 0.60})">
-            <path d="M 0,0 C -12,-22 -${eL * 0.55},-${eL * 0.74} -${eL * 0.36},-${eL} C -${eL * 0.10},-${eL * 0.86} ${eL * 0.22},-${eL * 0.52} ${eL * 0.38},-${eL * 0.08} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-            <path d="M -4,-8 C -14,-22 -${eL * 0.42},-${eL * 0.66} -${eL * 0.26},-${eL * 0.86} C -${eL * 0.06},-${eL * 0.72} ${eL * 0.16},-${eL * 0.42} ${eL * 0.24},-${eL * 0.16} Z" fill="url(#${uid}_inner_ear)" />
-            <path d="M -${eL * 0.22},-${eL * 0.32} Q 0,-${eL * 0.52} ${eL * 0.16},-${eL * 0.26}" stroke="#ffffff" stroke-width="3.6" fill="none" stroke-linecap="round" />
-            <path d="M -${eL * 0.14},-${eL * 0.48} Q 2,-${eL * 0.64} ${eL * 0.20},-${eL * 0.42}" stroke="#ffffff" stroke-width="2.8" fill="none" stroke-linecap="round" />
-          </g>
-
-          <g transform="translate(${200 + hRX * 0.50}, ${hY - hRY * 0.60})">
-            <path d="M 0,0 C 12,-22 ${eL * 0.55},-${eL * 0.74} ${eL * 0.36},-${eL} C ${eL * 0.10},-${eL * 0.86} -${eL * 0.22},-${eL * 0.52} -${eL * 0.38},-${eL * 0.08} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-            <path d="M 4,-8 C 14,-22 ${eL * 0.42},-${eL * 0.66} ${eL * 0.28},-${eL * 0.86} C ${eL * 0.06},-${eL * 0.72} -${eL * 0.16},-${eL * 0.42} -${eL * 0.24},-${eL * 0.16} Z" fill="url(#${uid}_inner_ear)" />
-            <path d="M ${eL * 0.22},-${eL * 0.32} Q 0,-${eL * 0.52} -${eL * 0.16},-${eL * 0.26}" stroke="#ffffff" stroke-width="3.6" fill="none" stroke-linecap="round" />
-            <path d="M ${eL * 0.14},-${eL * 0.48} Q -2,-${eL * 0.64} -${eL * 0.20},-${eL * 0.42}" stroke="#ffffff" stroke-width="2.8" fill="none" stroke-linecap="round" />
-          </g>
-        </g>
-      `;
-    } else if (config.ears === 'cat') {
-      earsSVG = `
-        <g id="layer-ears" class="monster-layer layer-ears" data-layer="ears" filter="url(#${uid}_soft_shadow)">
-          <path d="M ${200 - hRX * 0.72},${hY - hRY * 0.34} L ${200 - hRX * 0.65},${hY - hRY * 1.35} L ${200 - hRX * 0.16},${hY - hRY * 0.74} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-          <path d="M ${200 - hRX * 0.66},${hY - hRY * 0.44} L ${200 - hRX * 0.62},${hY - hRY * 1.20} L ${200 - hRX * 0.24},${hY - hRY * 0.74} Z" fill="url(#${uid}_inner_ear)" />
-
-          <path d="M ${200 + hRX * 0.72},${hY - hRY * 0.34} L ${200 + hRX * 0.65},${hY - hRY * 1.35} L ${200 + hRX * 0.16},${hY - hRY * 0.74} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-          <path d="M ${200 + hRX * 0.66},${hY - hRY * 0.44} L ${200 + hRX * 0.62},${hY - hRY * 1.20} L ${200 + hRX * 0.24},${hY - hRY * 0.74} Z" fill="url(#${uid}_inner_ear)" />
-        </g>
-      `;
-    } else if (config.ears === 'floppy') {
-      earsSVG = `
-        <g id="layer-ears" class="monster-layer layer-ears" data-layer="ears" filter="url(#${uid}_soft_shadow)">
-          <path d="M ${200 - hRX * 0.54},${hY - hRY * 0.64} C ${200 - hRX * 1.36},${hY - hRY * 0.12} ${200 - hRX * 1.28},${hY + hRY * 0.56} ${200 - hRX * 0.84},${hY + hRY * 0.50} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-          <path d="M ${200 + hRX * 0.54},${hY - hRY * 0.64} C ${200 + hRX * 1.36},${hY - hRY * 0.12} ${200 + hRX * 1.28},${hY + hRY * 0.56} ${200 + hRX * 0.84},${hY + hRY * 0.50} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-        </g>
-      `;
-    } else if (config.ears === 'tufted' || stage >= 5) {
-      earsSVG = `
-        <g id="layer-ears" class="monster-layer layer-ears" data-layer="ears" filter="url(#${uid}_soft_shadow)">
-          <path d="M ${200 - hRX * 0.56},${hY - hRY * 0.54} C ${200 - hRX * 0.92},${hY - hRY * 1.46} ${200 - hRX * 0.32},${hY - hRY * 1.56} ${200 - hRX * 0.20},${hY - hRY * 0.64} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-          <path d="M ${200 + hRX * 0.56},${hY - hRY * 0.54} C ${200 + hRX * 0.92},${hY - hRY * 1.46} ${200 + hRX * 0.32},${hY - hRY * 1.56} ${200 + hRX * 0.20},${hY - hRY * 0.64} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.6" />
-          <circle cx="${200 - hRX * 0.58}" cy="${hY - hRY * 1.46}" r="5.5" fill="${pal.highlight}" filter="url(#${uid}_glow)" />
-          <circle cx="${200 + hRX * 0.58}" cy="${hY - hRY * 1.46}" r="5.5" fill="${pal.highlight}" filter="url(#${uid}_glow)" />
-        </g>
-      `;
-    }
-
-    // ==========================================
-    // 11. LAYER: EXPRESSIVE RPG EYES & FACE
-    // ==========================================
-    const eyeOffsetX = 32;
-    const eyeY = hY + hRY * 0.12;
-    const eyeRX = 19;
-    const eyeRY = 23;
-
-    let eyesMarkup = '';
-    if (config.eyes === 'sparkle') {
-      eyesMarkup = `
-        <g id="eyes-pair" class="layer-eyes">
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY}" rx="${eyeRX}" ry="${eyeRY}" fill="#050814" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY}" rx="${eyeRX}" ry="${eyeRY}" fill="#050814" />
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY + 2}" rx="${eyeRX * 0.90}" ry="${eyeRY * 0.88}" fill="url(#${uid}_eye_iris)" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY + 2}" rx="${eyeRX * 0.90}" ry="${eyeRY * 0.88}" fill="url(#${uid}_eye_iris)" />
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY + 3}" rx="${eyeRX * 0.52}" ry="${eyeRY * 0.58}" fill="#050814" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY + 3}" rx="${eyeRX * 0.52}" ry="${eyeRY * 0.58}" fill="#050814" />
-          <path d="M ${200 - eyeOffsetX},${eyeY - 6} L ${200 - eyeOffsetX + 3},${eyeY - 1} L ${200 - eyeOffsetX + 8},${eyeY + 2} L ${200 - eyeOffsetX + 3},${eyeY + 5} L ${200 - eyeOffsetX},${eyeY + 10} L ${200 - eyeOffsetX - 3},${eyeY + 5} L ${200 - eyeOffsetX - 8},${eyeY + 2} L ${200 - eyeOffsetX - 3},${eyeY - 1} Z" fill="#ffffff" />
-          <path d="M ${200 + eyeOffsetX},${eyeY - 6} L ${200 + eyeOffsetX + 3},${eyeY - 1} L ${200 + eyeOffsetX + 8},${eyeY + 2} L ${200 + eyeOffsetX + 3},${eyeY + 5} L ${200 + eyeOffsetX},${eyeY + 10} L ${200 + eyeOffsetX - 3},${eyeY + 5} L ${200 + eyeOffsetX - 8},${eyeY + 2} L ${200 + eyeOffsetX - 3},${eyeY - 1} Z" fill="#ffffff" />
-        </g>
-      `;
-    } else if (config.eyes === 'fierce') {
-      eyesMarkup = `
-        <g id="eyes-pair" class="layer-eyes">
-          <path d="M ${200 - eyeOffsetX - eyeRX},${eyeY - 2} Q ${200 - eyeOffsetX},${eyeY - 14} ${200 - eyeOffsetX + eyeRX},${eyeY + 5} Q ${200 - eyeOffsetX},${eyeY + eyeRY * 0.95} ${200 - eyeOffsetX - eyeRX},${eyeY - 2} Z" fill="#050814" />
-          <path d="M ${200 + eyeOffsetX + eyeRX},${eyeY - 2} Q ${200 + eyeOffsetX},${eyeY - 14} ${200 + eyeOffsetX - eyeRX},${eyeY + 5} Q ${200 + eyeOffsetX},${eyeY + eyeRY * 0.95} ${200 + eyeOffsetX + eyeRX},${eyeY - 2} Z" fill="#050814" />
-          <circle cx="${200 - eyeOffsetX}" cy="${eyeY + 1}" r="${eyeRX * 0.65}" fill="url(#${uid}_eye_iris)" />
-          <circle cx="${200 + eyeOffsetX}" cy="${eyeY + 1}" r="${eyeRX * 0.65}" fill="url(#${uid}_eye_iris)" />
-          <circle cx="${200 - eyeOffsetX - 3}" cy="${eyeY - 1}" r="4.5" fill="#ffffff" />
-          <circle cx="${200 + eyeOffsetX - 3}" cy="${eyeY - 1}" r="4.5" fill="#ffffff" />
-        </g>
-      `;
-    } else if (config.eyes === 'happy') {
-      eyesMarkup = `
-        <g id="eyes-pair" class="layer-eyes">
-          <path d="M ${200 - eyeOffsetX - eyeRX + 2},${eyeY + 5} Q ${200 - eyeOffsetX},${eyeY - 12} ${200 - eyeOffsetX + eyeRX - 2},${eyeY + 5}" stroke="#050814" stroke-width="5" stroke-linecap="round" fill="none" />
-          <path d="M ${200 + eyeOffsetX - eyeRX + 2},${eyeY + 5} Q ${200 + eyeOffsetX},${eyeY - 12} ${200 + eyeOffsetX + eyeRX - 2},${eyeY + 5}" stroke="#050814" stroke-width="5" stroke-linecap="round" fill="none" />
-        </g>
-      `;
-    } else {
-      eyesMarkup = `
-        <g id="eyes-pair" class="layer-eyes">
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY}" rx="${eyeRX}" ry="${eyeRY}" fill="#050814" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY}" rx="${eyeRX}" ry="${eyeRY}" fill="#050814" />
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY + 2}" rx="${eyeRX * 0.90}" ry="${eyeRY * 0.88}" fill="url(#${uid}_eye_iris)" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY + 2}" rx="${eyeRX * 0.90}" ry="${eyeRY * 0.88}" fill="url(#${uid}_eye_iris)" />
-          <ellipse cx="${200 - eyeOffsetX}" cy="${eyeY + 3}" rx="${eyeRX * 0.52}" ry="${eyeRY * 0.58}" fill="#020617" />
-          <ellipse cx="${200 + eyeOffsetX}" cy="${eyeY + 3}" rx="${eyeRX * 0.52}" ry="${eyeRY * 0.58}" fill="#020617" />
-          <ellipse cx="${200 - eyeOffsetX - eyeRX * 0.32}" cy="${eyeY - eyeRY * 0.32}" rx="${eyeRX * 0.38}" ry="${eyeRY * 0.40}" fill="#ffffff" />
-          <ellipse cx="${200 + eyeOffsetX - eyeRX * 0.32}" cy="${eyeY - eyeRY * 0.32}" rx="${eyeRX * 0.38}" ry="${eyeRY * 0.40}" fill="#ffffff" />
-          <circle cx="${200 - eyeOffsetX + eyeRX * 0.36}" cy="${eyeY + eyeRY * 0.38}" r="${eyeRX * 0.22}" fill="#ffffff" />
-          <circle cx="${200 + eyeOffsetX + eyeRX * 0.36}" cy="${eyeY + eyeRY * 0.38}" r="${eyeRX * 0.22}" fill="#ffffff" />
-        </g>
-      `;
-    }
-
-    const faceSVG = `
-      <g id="layer-face" class="monster-layer layer-face" data-layer="face">
-        <ellipse cx="${200 - eyeOffsetX - 14}" cy="${eyeY + eyeRY * 0.92}" rx="15" ry="8.5" fill="#f43f5e" opacity="0.48" filter="url(#${uid}_glow)" />
-        <ellipse cx="${200 + eyeOffsetX + 14}" cy="${eyeY + eyeRY * 0.92}" rx="15" ry="8.5" fill="#f43f5e" opacity="0.48" filter="url(#${uid}_glow)" />
-
-        <path d="M ${200 - eyeOffsetX - 15},${eyeY - eyeRY * 0.90} Q ${200 - eyeOffsetX},${eyeY - eyeRY * 1.25} ${200 - eyeOffsetX + 12},${eyeY - eyeRY * 0.95}" stroke="${pal.primaryDark}" stroke-width="3.2" stroke-linecap="round" fill="none" />
-        <path d="M ${200 + eyeOffsetX - 12},${eyeY - eyeRY * 0.95} Q ${200 + eyeOffsetX},${eyeY - eyeRY * 1.25} ${200 + eyeOffsetX + 15},${eyeY - eyeRY * 0.90}" stroke="${pal.primaryDark}" stroke-width="3.2" stroke-linecap="round" fill="none" />
-
-        ${eyesMarkup}
-
-        ${isGirl ? `
-          <path d="M ${200 - eyeOffsetX + eyeRX * 0.72},${eyeY - eyeRY * 0.88} L ${200 - eyeOffsetX + eyeRX * 1.28},${eyeY - eyeRY * 1.20}" stroke="#050814" stroke-width="2.6" stroke-linecap="round" />
-          <path d="M ${200 + eyeOffsetX - eyeRX * 0.72},${eyeY - eyeRY * 0.88} L ${200 + eyeOffsetX - eyeRX * 1.28},${eyeY - eyeRY * 1.20}" stroke="#050814" stroke-width="2.6" stroke-linecap="round" />
         ` : ''}
 
-        <ellipse cx="200" cy="${hY + hRY * 0.50}" rx="24" ry="15" fill="${pal.belly}" opacity="0.92" />
-        <path d="M 194,${hY + hRY * 0.42} Q 200,${hY + hRY * 0.47} 206,${hY + hRY * 0.42} Q 200,${hY + hRY * 0.38} 194,${hY + hRY * 0.42} Z" fill="#0f172a" />
-        <circle cx="198" cy="${hY + hRY * 0.41}" r="1.6" fill="#ffffff" />
+        <!-- ================================================================= -->
+        <!-- 2. LAYER: AURA & STARDUST PARTICLES                               -->
+        <!-- ================================================================= -->
+        <g id="layer-aura" class="monster-layer layer-aura">
+          ${(config.aura === 'wings' || stage >= 5) ? `
+            <ellipse cx="200" cy="${210 + yOff}" rx="140" ry="115" fill="${pal.glow}" opacity="0.32" filter="url(#${uid}_glow)" />
+          ` : ''}
+          ${(config.aura === 'sparks' || stage >= 4) ? `
+            <circle cx="95" cy="${160 + yOff}" r="3" fill="#fef08a" opacity="0.85" filter="url(#${uid}_glow)" />
+            <circle cx="305" cy="${145 + yOff}" r="3.5" fill="#ffffff" opacity="0.9" filter="url(#${uid}_glow)" />
+            <circle cx="115" cy="${255 + yOff}" r="2.5" fill="${pal.highlight}" opacity="0.8" />
+            <circle cx="290" cy="${265 + yOff}" r="3" fill="#fef08a" opacity="0.85" filter="url(#${uid}_glow)" />
+          ` : ''}
+        </g>
 
-        <path d="M 189,${hY + hRY * 0.56} Q 195,${hY + hRY * 0.68} 200,${hY + hRY * 0.58} Q 205,${hY + hRY * 0.68} 211,${hY + hRY * 0.56}" stroke="#0f172a" stroke-width="3" stroke-linecap="round" fill="none" />
-        <path d="M 196,${hY + hRY * 0.62} Q 200,${hY + hRY * 0.74} 204,${hY + hRY * 0.62} Z" fill="#f43f5e" opacity="0.9" />
-      </g>
-    `;
+        <!-- ================================================================= -->
+        <!-- 3. LAYER: CELESTIAL FEATHERED WINGS (Stages 5 & 6)                -->
+        <!-- ================================================================= -->
+        ${(wingSc > 0) ? `
+          <g id="layer-wings" class="monster-layer layer-wings" filter="url(#${uid}_soft_shadow)">
+            <!-- Left Feathered Wing Spanning Upward & Outward -->
+            <g transform="translate(130, ${180 + yOff}) scale(${wingSc}) translate(-130, -${180 + yOff})">
+              <!-- Tier 1 Long Flight Feathers -->
+              <path d="M 140,210 C 105,170 42,90 32,35 C 30,70 60,155 110,220 Z" fill="${pal.primaryDeep}" />
+              <path d="M 136,210 C 106,165 58,98 52,62 C 58,95 90,165 125,220 Z" fill="${pal.primaryDark}" />
+              <path d="M 132,215 C 112,175 75,120 76,88 C 82,118 108,175 132,224 Z" fill="url(#${uid}_wing_primary)" />
+              <path d="M 128,220 C 116,188 95,145 98,118 C 104,142 120,185 136,226 Z" fill="${pal.highlight}" />
+              ${stage === 6 ? `
+                <polygon points="32,35 45,58 30,64" fill="#fbbf24" filter="url(#${uid}_glow)" />
+                <polygon points="52,62 64,84 48,90" fill="#fbbf24" />
+                <polygon points="76,88 88,108 72,114" fill="#fbbf24" />
+              ` : ''}
+            </g>
 
-    // ==========================================
-    // 12. LAYER: BOY / GIRL STYLE & HAIR
-    // ==========================================
-    let hairSVG = '';
-    if (isGirl) {
-      hairSVG = `
-        <g id="layer-hair" class="monster-layer layer-hair" data-layer="hair" filter="url(#${uid}_soft_shadow)">
-          <path d="M 172,${hY - hRY * 0.88} C 182,${hY - hRY * 0.42} 196,${hY - hRY * 0.38} 208,${hY - hRY * 0.78}" stroke="url(#${uid}_head_sphere)" stroke-width="8.5" stroke-linecap="round" fill="none" />
-          <g id="girl-hair-bow" transform="translate(${200 - hRX * 0.78}, ${hY - hRY * 0.68}) rotate(-24) scale(0.85)">
-            <path d="M 0,0 C -20,-16 -35,-3 -28,12 C -24,20 -8,6 0,0 Z" fill="#f472b6" stroke="#db2777" stroke-width="2" />
-            <path d="M 0,0 C 20,-16 35,-3 28,12 C 24,20 8,6 0,0 Z" fill="#f472b6" stroke="#db2777" stroke-width="2" />
-            <circle cx="0" cy="0" r="5.5" fill="#fbcfe8" stroke="#db2777" stroke-width="2" />
+            <!-- Right Feathered Wing Spanning Upward & Outward -->
+            <g transform="translate(270, ${180 + yOff}) scale(${wingSc}) translate(-270, -${180 + yOff})">
+              <path d="M 260,210 C 295,170 358,90 368,35 C 370,70 340,155 290,220 Z" fill="${pal.primaryDeep}" />
+              <path d="M 264,210 C 294,165 342,98 348,62 C 342,95 310,165 275,220 Z" fill="${pal.primaryDark}" />
+              <path d="M 268,215 C 288,175 325,120 324,88 C 318,118 292,175 268,224 Z" fill="url(#${uid}_wing_primary)" />
+              <path d="M 272,220 C 284,188 305,145 302,118 C 296,142 280,185 264,226 Z" fill="${pal.highlight}" />
+              ${stage === 6 ? `
+                <polygon points="368,35 355,58 370,64" fill="#fbbf24" filter="url(#${uid}_glow)" />
+                <polygon points="348,62 336,84 352,90" fill="#fbbf24" />
+                <polygon points="324,88 312,108 328,114" fill="#fbbf24" />
+              ` : ''}
+            </g>
+          </g>
+        ` : ''}
+
+        <!-- ================================================================= -->
+        <!-- 4. LAYER: SWEEPING DRAGON-FOX 'S' PLUME TAIL                      -->
+        <!-- ================================================================= -->
+        <g id="layer-tail" class="monster-layer layer-tail" filter="url(#${uid}_deep_shadow)">
+          <g transform="translate(230, ${270 + yOff}) scale(${tailSc}) translate(-230, -${270 + yOff})">
+            <!-- Under-shadow boundary for 3D depth -->
+            <path d="M 235,285 C 295,305 358,272 368,198 C 378,138 318,88 262,118 C 236,132 230,168 232,208 C 234,245 234,272 235,285 Z" fill="${pal.primaryDeep}" />
+            
+            <!-- Volumetric Main Tail Fur Body -->
+            <path d="M 230,280 C 286,298 348,266 358,198 C 368,142 312,96 264,124 C 242,136 236,168 238,208 Z" fill="url(#${uid}_fur_body)" stroke="${pal.primaryDeep}" stroke-width="2" />
+            
+            <!-- Soft Layered Tail Fur Crest Fluffs -->
+            <path d="M 338,155 C 352,170 354,192 338,208 C 346,194 345,180 338,155 Z" fill="${pal.highlight}" opacity="0.8" />
+            <path d="M 312,208 C 326,222 328,242 314,258 C 322,244 320,232 312,208 Z" fill="${pal.highlight}" opacity="0.7" />
+
+            <!-- Cream/White Luminous Tail Tip -->
+            <path d="M 358,198 C 368,142 312,96 264,124 C 286,118 325,135 338,168 C 348,182 355,192 358,198 Z" fill="#ffffff" opacity="0.96" />
+
+            <!-- Golden Dragon Spine Scales (Stages 3+) -->
+            ${stage >= 3 ? `
+              <polygon points="340,140 360,128 348,155" fill="${pal.hornMid}" />
+              <polygon points="352,170 372,162 358,186" fill="${pal.hornMid}" />
+              <polygon points="344,204 362,200 348,222" fill="${pal.hornMid}" />
+            ` : ''}
+
+            ${stage === 6 ? `
+              <!-- Legendary Stardust Sparkles on Tail -->
+              <circle cx="345" cy="120" r="3.5" fill="#ffffff" filter="url(#${uid}_glow)" />
+              <circle cx="365" cy="165" r="3" fill="#fef08a" filter="url(#${uid}_glow)" />
+            ` : ''}
           </g>
         </g>
-      `;
-    } else {
-      hairSVG = `
-        <g id="layer-hair" class="monster-layer layer-hair" data-layer="hair" filter="url(#${uid}_soft_shadow)">
-          <path d="M 184,${hY - hRY * 0.96} Q 194,${hY - hRY * 1.45} 200,${hY - hRY * 1.55} Q 206,${hY - hRY * 1.45} 216,${hY - hRY * 0.96} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2.2" />
-          <path d="M 174,${hY - hRY * 0.90} Q 183,${hY - hRY * 1.28} 188,${hY - hRY * 1.34} Q 190,${hY - hRY * 1.10} 193,${hY - hRY * 0.92} Z" fill="url(#${uid}_head_sphere)" stroke="${pal.shadow}" stroke-width="2" />
-        </g>
-      `;
-    }
 
-    // ==========================================
-    // 13. LAYER: ACCESSORIES
-    // ==========================================
-    let accSVG = '';
-    if (config.accessory === 'crown' || (stage === 6 && !config.accessory)) {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_deep_shadow)">
-          <path d="M 172,${hY - hRY * 0.96} L 166,${hY - hRY * 1.48} L 185,${hY - hRY * 1.24} L 200,${hY - hRY * 1.66} L 215,${hY - hRY * 1.24} L 234,${hY - hRY * 1.48} L 228,${hY - hRY * 0.96} Z" fill="#fbbf24" stroke="#b45309" stroke-width="2.6" />
-          <path d="M 180,${hY - hRY * 1.04} Q 200,${hY - hRY * 1.32} 220,${hY - hRY * 1.04}" stroke="#991b1b" stroke-width="4.5" fill="none" opacity="0.8" />
-          <circle cx="200" cy="${hY - hRY * 1.20}" r="5" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
-          <circle cx="182" cy="${hY - hRY * 1.12}" r="3.6" fill="#10b981" />
-          <circle cx="218" cy="${hY - hRY * 1.12}" r="3.6" fill="#10b981" />
-        </g>
-      `;
-    } else if (config.accessory === 'blue_bow') {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(200, ${hY + hRY * 0.94})">
-            <path d="M 0,0 C -22,-16 -35,-4 -28,10 C -24,20 -8,6 0,0 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
-            <path d="M 0,0 C 22,-16 35,-4 28,10 C 24,20 8,6 0,0 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
-            <circle cx="0" cy="0" r="5" fill="#bae6fd" stroke="#0284c7" stroke-width="1.8" />
+        <!-- ================================================================= -->
+        <!-- 5. LAYER: HIND LEGS & 3/4 SEATED HAUNCHES                         -->
+        <!-- ================================================================= -->
+        <g id="layer-hind-legs" class="monster-layer layer-hind-legs" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(200, ${305 + yOff}) scale(${bodyW}, ${bodyH}) translate(-200, -${305 + yOff})">
+            <!-- Left Hind Haunch & Foot (3/4 Foreground) -->
+            <path d="M 125,265 C 98,278 92,312 108,335 C 120,348 146,346 156,330 C 162,318 156,282 140,268 Z" fill="${pal.primaryDeep}" />
+            <path d="M 128,268 C 104,278 98,310 112,332 C 124,344 146,342 154,328 C 158,315 152,285 140,270 Z" fill="url(#${uid}_fur_body)" />
+            <ellipse cx="125" cy="336" rx="21" ry="12" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.5" />
+            <circle cx="113" cy="338" r="3.2" fill="${pal.blush}" opacity="0.6" />
+            <circle cx="125" cy="339" r="3.6" fill="${pal.blush}" opacity="0.6" />
+            <circle cx="137" cy="338" r="3.2" fill="${pal.blush}" opacity="0.6" />
+
+            <!-- Right Hind Haunch (3/4 Background) -->
+            <path d="M 270,265 C 294,275 298,310 285,332 C 274,345 250,342 242,328 C 236,315 242,282 256,268 Z" fill="${pal.primaryDeep}" />
+            <path d="M 268,268 C 290,276 294,308 282,330 C 272,340 250,338 244,326 C 240,314 246,284 256,270 Z" fill="url(#${uid}_fur_body)" />
+            <ellipse cx="270" cy="336" rx="20" ry="12" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.5" />
+            <circle cx="258" cy="338" r="3.2" fill="${pal.blush}" opacity="0.6" />
+            <circle cx="270" cy="339" r="3.6" fill="${pal.blush}" opacity="0.6" />
+            <circle cx="282" cy="338" r="3.2" fill="${pal.blush}" opacity="0.6" />
           </g>
         </g>
-      `;
-    } else if (config.accessory === 'bandana') {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_soft_shadow)">
-          <path d="M 166,${hY + hRY * 0.82} Q 200,${hY + hRY * 0.96} 234,${hY + hRY * 0.82} L 209,${hY + hRY * 1.38} L 200,${hY + hRY * 1.44} L 191,${hY + hRY * 1.38} Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.2" />
-        </g>
-      `;
-    } else if (config.accessory === 'glasses') {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_soft_shadow)">
-          <circle cx="${200 - eyeOffsetX}" cy="${eyeY}" r="${eyeRX * 1.20}" fill="none" stroke="#fbbf24" stroke-width="3" />
-          <circle cx="${200 + eyeOffsetX}" cy="${eyeY}" r="${eyeRX * 1.20}" fill="none" stroke="#fbbf24" stroke-width="3" />
-          <path d="M ${200 - eyeOffsetX + eyeRX * 1.20},${eyeY} L ${200 + eyeOffsetX - eyeRX * 1.20},${eyeY}" stroke="#fbbf24" stroke-width="2.6" />
-          <path d="M ${200 - eyeOffsetX - eyeRX * 0.8},${eyeY - eyeRY * 0.5} L ${200 - eyeOffsetX - eyeRX * 0.3},${eyeY - eyeRY * 0.8}" stroke="#ffffff" stroke-width="2.2" opacity="0.65" stroke-linecap="round" />
-          <path d="M ${200 + eyeOffsetX - eyeRX * 0.8},${eyeY - eyeRY * 0.5} L ${200 + eyeOffsetX - eyeRX * 0.3},${eyeY - eyeRY * 0.8}" stroke="#ffffff" stroke-width="2.2" opacity="0.65" stroke-linecap="round" />
-        </g>
-      `;
-    } else if (config.accessory === 'badge') {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_soft_shadow)">
-          <g transform="translate(160, ${bY - 14}) scale(0.95)">
-            <circle cx="0" cy="0" r="13" fill="#fbbf24" stroke="#b45309" stroke-width="2.4" />
-            <polygon points="0,-8 2.5,-2.5 8.5,-2.5 3.5,2 5.5,8 0,4.5 -5.5,8 -3.5,2 -8.5,-2.5 -2.5,-2.5" fill="#ffffff" />
+
+        <!-- ================================================================= -->
+        <!-- 6. LAYER: TORSO & LAYERED FLUFFY CHEST BIB                        -->
+        <!-- ================================================================= -->
+        <g id="layer-body" class="monster-layer layer-body" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(200, ${250 + yOff}) scale(${bodyW}, ${bodyH}) translate(-200, -${250 + yOff})">
+            <!-- Organic Anatomic Torso Silhouette -->
+            <path d="M 154,195 C 138,230 135,285 146,315 C 156,336 244,336 254,315 C 265,285 262,230 246,195 C 234,175 166,175 154,195 Z" fill="url(#${uid}_fur_body)" stroke="${pal.primaryDeep}" stroke-width="2.5" />
+
+            <!-- Cream Chest Bib (3-Tier Layered Fluff System) -->
+            <path d="M 166,198 C 154,235 156,285 168,318 C 178,332 222,332 232,318 C 244,285 246,235 234,198 C 220,186 180,186 166,198 Z" fill="url(#${uid}_cream_bib)" stroke="${pal.bellyDeep}" stroke-width="1.5" />
+
+            <!-- Tier 1 Chest Fur Tuft -->
+            <path d="M 178,212 C 188,226 195,232 200,230 C 205,232 212,226 222,212 C 215,225 208,236 200,238 C 192,236 185,225 178,212 Z" fill="#ffffff" opacity="0.95" />
+            
+            <!-- Tier 2 Chest Fur Tuft -->
+            <path d="M 172,242 C 185,260 194,268 200,266 C 206,268 215,260 228,242 C 220,258 210,272 200,274 C 190,272 180,258 172,242 Z" fill="#ffffff" opacity="0.95" />
+
+            <!-- Tier 3 Lower Belly Tuft -->
+            <path d="M 180,275 C 190,290 196,296 200,295 C 204,296 210,290 220,275 C 214,288 208,298 200,300 C 192,298 186,288 180,275 Z" fill="#ffffff" opacity="0.9" />
           </g>
         </g>
-      `;
-    } else if (config.accessory === 'wizard_hat') {
-      accSVG = `
-        <g id="layer-accessory" class="monster-layer layer-accessory" data-layer="accessory" filter="url(#${uid}_deep_shadow)">
-          <ellipse cx="200" cy="${hY - hRY * 0.92}" rx="54" ry="15" fill="#312e81" stroke="#4338ca" stroke-width="2.2" />
-          <path d="M 158,${hY - hRY * 0.92} L 206,${hY - hRY * 1.94} L 242,${hY - hRY * 0.92} Z" fill="#3730a3" stroke="#4338ca" stroke-width="2.2" />
-          <polygon points="206,-20 208,-15 213,-15 209,-12 211,-7 206,-10 201,-7 203,-12 199,-15 204,-15" fill="#fbbf24" transform="translate(0, ${hY - hRY * 1.48})" />
-        </g>
-      `;
-    }
 
-    // ==========================================
-    // 14. LAYER: CELESTIAL STAGE 6 APEX EFFECTS
-    // ==========================================
-    let apexSVG = '';
-    if (stage === 6) {
-      apexSVG = `
-        <g id="layer-apex-effects" class="monster-layer layer-effects" data-layer="effects">
-          <polygon points="200,${hY - hRY * 0.48} 206,${hY - hRY * 0.30} 200,${hY - hRY * 0.12} 194,${hY - hRY * 0.30}" fill="#fbbf24" filter="url(#${uid}_glow)" />
-          <circle cx="125" cy="155" r="4" fill="#fbbf24" opacity="0.9" filter="url(#${uid}_glow)" />
-          <circle cx="275" cy="145" r="4.5" fill="${pal.highlight}" opacity="0.9" filter="url(#${uid}_glow)" />
-          <circle cx="145" cy="75" r="3.5" fill="#ffffff" opacity="0.95" filter="url(#${uid}_glow)" />
-          <circle cx="255" cy="70" r="4" fill="#fbbf24" opacity="0.95" filter="url(#${uid}_glow)" />
-        </g>
-      `;
-    }
+        <!-- ================================================================= -->
+        <!-- 7. LAYER: FORELIMBS & ROUNDED CAT/FOX PAWS                        -->
+        <!-- ================================================================= -->
+        <g id="layer-forelimbs" class="monster-layer layer-forelimbs" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(200, ${315 + yOff}) scale(${pawSc}) translate(-200, -${315 + yOff})">
+            <!-- Left Forearm (Angling from shoulder to paw) -->
+            <path d="M 166,236 C 160,265 162,296 170,320 C 174,328 184,328 186,320 C 188,296 182,265 178,236 Z" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.8" />
+            <g transform="translate(176, 324)">
+              <ellipse cx="0" cy="0" rx="16" ry="11" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.6" />
+              <ellipse cx="-5" cy="3" rx="3.0" ry="2.4" fill="${pal.blush}" opacity="0.65" />
+              <ellipse cx="0" cy="4" rx="3.4" ry="2.6" fill="${pal.blush}" opacity="0.65" />
+              <ellipse cx="5" cy="3" rx="3.0" ry="2.4" fill="${pal.blush}" opacity="0.65" />
+            </g>
 
-    // Assemble Final High-Fidelity Vector SVG
-    return `
-      <svg class="monster-svg monster-stage-${stage} ${className}" viewBox="0 0 400 400" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" style="display:inline-block; vertical-align:middle; overflow:hidden; user-select:none; ${customStyle}" data-stage="${stage}" data-species="${config.species}" data-color="${config.furColor}" data-style="${config.style}">
-        ${defs}
-        ${pedestalSVG}
-        ${auraSVG}
-        ${tailSVG}
-        ${legsSVG}
-        ${bodySVG}
-        ${outfitSVG}
-        ${headSVG}
-        ${earsSVG}
-        ${faceSVG}
-        ${hairSVG}
-        ${accSVG}
-        ${apexSVG}
+            <!-- Right Forearm (Angling from shoulder to paw) -->
+            <path d="M 234,236 C 240,265 238,296 230,320 C 226,328 216,328 214,320 C 212,296 218,265 222,236 Z" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.8" />
+            <g transform="translate(224, 324)">
+              <ellipse cx="0" cy="0" rx="16" ry="11" fill="${pal.belly}" stroke="${pal.bellyDeep}" stroke-width="1.6" />
+              <ellipse cx="-5" cy="3" rx="3.0" ry="2.4" fill="${pal.blush}" opacity="0.65" />
+              <ellipse cx="0" cy="4" rx="3.4" ry="2.6" fill="${pal.blush}" opacity="0.65" />
+              <ellipse cx="5" cy="3" rx="3.0" ry="2.4" fill="${pal.blush}" opacity="0.65" />
+            </g>
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 8. LAYER: TAILORED OUTFITS (Only for Stages 3+ or Equipped)       -->
+        <!-- ================================================================= -->
+        ${((config.outfit && config.outfit !== 'none' && stage >= 3) || (sConf.hasArmor && (!config.outfit || config.outfit === 'adventurer'))) ? `
+          <g id="layer-outfit" class="monster-layer layer-outfit" filter="url(#${uid}_soft_shadow)">
+            ${(config.outfit === 'scholar') ? `
+              <!-- Scholar Tailored Vest -->
+              <path d="M 160,215 L 150,298 C 165,308 235,308 250,298 L 240,215 C 228,212 215,228 200,232 C 185,228 172,212 160,215 Z" fill="#1e3a8a" stroke="#172554" stroke-width="2.2" />
+              <path d="M 188,226 L 200,250 L 212,226" stroke="#fbbf24" stroke-width="2.5" fill="none" />
+              <circle cx="200" cy="258" r="3.2" fill="#fbbf24" />
+              <circle cx="200" cy="274" r="3.2" fill="#fbbf24" />
+              <circle cx="200" cy="290" r="3.2" fill="#fbbf24" />
+            ` : (config.outfit === 'hero') ? `
+              <!-- Hero Flowing Cape & Gold Brooch -->
+              <path d="M 146,205 C 122,240 112,315 118,338 C 144,332 152,285 160,250 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+              <path d="M 254,205 C 278,240 288,315 282,338 C 256,332 248,285 240,250 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+              <circle cx="200" cy="215" r="9" fill="#fbbf24" stroke="#b45309" stroke-width="2" />
+              <polygon points="200,208 203,214 208,214 204,218 206,223 200,220 194,223 196,218 192,214 197,214" fill="#ffffff" />
+            ` : (config.outfit === 'mystic') ? `
+              <!-- Mystic Robe -->
+              <path d="M 158,215 L 146,312 C 168,328 232,328 254,312 L 242,215 C 226,225 214,232 200,232 C 186,232 174,225 158,215 Z" fill="#4338ca" stroke="#312e81" stroke-width="2.2" />
+              <path d="M 150,300 Q 200,320 250,300" stroke="#a855f7" stroke-width="3" fill="none" />
+              <circle cx="200" cy="226" r="7" fill="#38bdf8" stroke="#0284c7" stroke-width="2" filter="url(#${uid}_glow)" />
+            ` : `
+              <!-- Adventurer Explorer Harness (Fitted to 3/4 Chest) -->
+              <g id="outfit-adventurer">
+                <path d="M 166,206 C 170,235 174,265 176,295 L 188,295 C 186,265 182,235 176,206 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+                <path d="M 234,206 C 230,235 226,265 224,295 L 212,295 C 214,265 218,235 224,206 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+                <rect x="156" y="278" width="88" height="15" rx="3" fill="#92400e" stroke="#451a03" stroke-width="1.8" />
+                <rect x="190" y="274" width="20" height="23" rx="4" fill="#fbbf24" stroke="#b45309" stroke-width="2" />
+                <rect x="195" y="279" width="10" height="13" rx="2" fill="#78350f" />
+                <circle cx="172" cy="224" r="2.5" fill="#fbbf24" />
+                <circle cx="228" cy="224" r="2.5" fill="#fbbf24" />
+                <circle cx="175" cy="254" r="2.5" fill="#fbbf24" />
+                <circle cx="225" cy="254" r="2.5" fill="#fbbf24" />
+                <path d="M 148,228 C 135,238 130,268 138,288 L 146,284 C 140,268 142,244 152,234 Z" fill="#5c2b09" stroke="#451a03" stroke-width="1.2" />
+              </g>
+            `}
+          </g>
+        ` : ''}
+
+        <!-- ================================================================= -->
+        <!-- 9. LAYER: HEAD & CHUBBY CHEEK FUR TUFTS                           -->
+        <!-- ================================================================= -->
+        <g id="layer-head" class="monster-layer layer-head" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+            <!-- Organic Cranium & 3-Tier Plush Cheek Fluffs -->
+            <path d="
+              M 150,118
+              C 134,136 112,154 116,176
+              C 106,184 108,206 128,216
+              C 142,224 165,228 200,228
+              C 235,228 258,224 272,216
+              C 292,206 294,184 284,176
+              C 288,154 266,136 250,118
+              C 234,98 166,98 150,118 Z"
+              fill="url(#${uid}_head_sphere)"
+              stroke="${pal.primaryDeep}"
+              stroke-width="2.6"
+            />
+
+            <!-- Soft Cream Face Mask (Snout & Lower Cheeks) -->
+            <path d="
+              M 136,172
+              C 118,182 116,204 134,215
+              C 148,224 170,227 200,227
+              C 230,227 252,224 266,215
+              C 284,204 282,182 264,172
+              C 244,166 226,175 200,175
+              C 174,175 156,166 136,172 Z"
+              fill="url(#${uid}_cream_bib)"
+              stroke="${pal.bellyDeep}"
+              stroke-width="1.4"
+            />
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 10. LAYER: LARGE EXPRESSIVE FENNEC EARS                           -->
+        <!-- ================================================================= -->
+        <g id="layer-ears" class="monster-layer layer-ears" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+            <!-- Left Fennec Ear (Organic Curved Contour) -->
+            <path d="M 160,118 C 132,92 88,58 74,40 C 70,72 96,128 142,145 Z" fill="url(#${uid}_head_sphere)" stroke="${pal.primaryDeep}" stroke-width="2.6" />
+            <path d="M 154,116 C 130,94 92,65 82,50 C 80,74 102,122 138,138 Z" fill="url(#${uid}_inner_ear)" />
+            <path d="M 136,134 Q 118,110 102,118" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.9" />
+
+            <!-- Right Fennec Ear (Organic Curved Contour) -->
+            <path d="M 240,118 C 268,92 312,58 326,40 C 330,72 304,128 258,145 Z" fill="url(#${uid}_head_sphere)" stroke="${pal.primaryDeep}" stroke-width="2.6" />
+            <path d="M 246,116 C 270,94 308,65 318,50 C 320,74 298,122 262,138 Z" fill="url(#${uid}_inner_ear)" />
+            <path d="M 264,134 Q 282,110 298,118" stroke="#ffffff" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.9" />
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 11. LAYER: CELESTIAL DRAGON HORNS (Growing per Stage)             -->
+        <!-- ================================================================= -->
+        <g id="layer-horns" class="monster-layer layer-horns" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+            ${(sConf.hornType === 'bud') ? `
+              <!-- Baby Horn Buds -->
+              <ellipse cx="168" cy="110" rx="7.5" ry="9" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="1.8" />
+              <ellipse cx="232" cy="110" rx="7.5" ry="9" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="1.8" />
+            ` : (sConf.hornType === 'hornlet') ? `
+              <!-- Tot Short Curved Hornlets -->
+              <path d="M 170,114 C 158,95 152,80 156,68 C 162,78 168,96 176,114 Z" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="2" />
+              <path d="M 230,114 C 242,95 248,80 244,68 C 238,78 232,96 224,114 Z" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="2" />
+            ` : `
+              <!-- Swept Dragon Horns (Stages 3 to 6) -->
+              <!-- Left Horn -->
+              <path d="M 172,116 C 150,85 136,52 142,32 C 150,48 165,82 180,114 Z" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="2.4" />
+              <path d="M 160,82 Q 168,88 174,84" stroke="#78350f" stroke-width="2" fill="none" />
+              <path d="M 150,60 Q 158,66 164,62" stroke="#78350f" stroke-width="2" fill="none" />
+
+              <!-- Right Horn -->
+              <path d="M 228,116 C 250,85 264,52 258,32 C 250,48 235,82 220,114 Z" fill="url(#${uid}_horn_gold)" stroke="#92400e" stroke-width="2.4" />
+              <path d="M 240,82 Q 232,88 226,84" stroke="#78350f" stroke-width="2" fill="none" />
+              <path d="M 250,60 Q 242,66 236,62" stroke="#78350f" stroke-width="2" fill="none" />
+            `}
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 12. LAYER: FOREHEAD MANE / WINDSWEPT CREST                        -->
+        <!-- ================================================================= -->
+        <g id="layer-hair" class="monster-layer layer-hair" filter="url(#${uid}_soft_shadow)">
+          <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+            <path d="
+              M 174,122
+              C 166,95 182,78 190,68
+              C 194,80 198,62 200,52
+              C 202,62 206,80 210,68
+              C 218,78 234,95 226,122
+              C 216,108 184,108 174,122 Z"
+              fill="url(#${uid}_head_sphere)"
+              stroke="${pal.primaryDeep}"
+              stroke-width="2.2"
+            />
+            <path d="M 188,92 Q 198,72 204,86" stroke="${pal.highlight}" stroke-width="2.6" stroke-linecap="round" fill="none" />
+
+            <!-- Girl Style: Sweet Silk Bow on Outer Left Ear Root -->
+            ${isGirl ? `
+              <g id="girl-ear-bow" transform="translate(136, 126) rotate(-22) scale(0.85)">
+                <path d="M 0,0 C -22,-18 -36,-5 -28,12 C -24,20 -8,6 0,0 Z" fill="#f472b6" stroke="#db2777" stroke-width="2" />
+                <path d="M 0,0 C 22,-18 36,-5 28,12 C 24,20 8,6 0,0 Z" fill="#f472b6" stroke="#db2777" stroke-width="2" />
+                <circle cx="0" cy="0" r="5.5" fill="#fbcfe8" stroke="#db2777" stroke-width="2" />
+                <path d="M -4,6 L -10,22 L -2,18 L 4,20 L 2,6 Z" fill="#f472b6" />
+              </g>
+            ` : ''}
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 13. LAYER: EXPRESSIVE ANIME EYES & SWEET FACE                     -->
+        <!-- ================================================================= -->
+        <g id="layer-face" class="monster-layer layer-face">
+          <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+            <!-- Rosy Airbrush Cheek Blush -->
+            <ellipse cx="152" cy="188" rx="14" ry="8.5" fill="${pal.blush}" opacity="0.45" filter="url(#${uid}_glow)" />
+            <ellipse cx="248" cy="188" rx="14" ry="8.5" fill="${pal.blush}" opacity="0.45" filter="url(#${uid}_glow)" />
+
+            <!-- Left Anime Eye -->
+            <g id="eye-left">
+              <ellipse cx="168" cy="164" rx="17" ry="21" fill="#030712" />
+              <ellipse cx="168" cy="166" rx="15" ry="18.5" fill="url(#${uid}_eye_iris)" />
+              <ellipse cx="168" cy="167" rx="9" ry="12" fill="#030712" />
+              <ellipse cx="162" cy="157" rx="6.5" ry="8" fill="#ffffff" />
+              <circle cx="174" cy="172" r="3.6" fill="#ffffff" />
+              <path d="M 150,164 Q 166,146 186,166" stroke="#030712" stroke-width="3.4" stroke-linecap="round" fill="none" />
+              ${isGirl ? `
+                <path d="M 184,163 L 190,158" stroke="#030712" stroke-width="2.6" stroke-linecap="round" />
+              ` : ''}
+            </g>
+
+            <!-- Right Anime Eye -->
+            <g id="eye-right">
+              <ellipse cx="232" cy="164" rx="17" ry="21" fill="#030712" />
+              <ellipse cx="232" cy="166" rx="15" ry="18.5" fill="url(#${uid}_eye_iris)" />
+              <ellipse cx="232" cy="167" rx="9" ry="12" fill="#030712" />
+              <ellipse cx="226" cy="157" rx="6.5" ry="8" fill="#ffffff" />
+              <circle cx="238" cy="172" r="3.6" fill="#ffffff" />
+              <path d="M 214,166 Q 234,146 250,164" stroke="#030712" stroke-width="3.4" stroke-linecap="round" fill="none" />
+              ${isGirl ? `
+                <path d="M 216,163 L 210,158" stroke="#030712" stroke-width="2.6" stroke-linecap="round" />
+              ` : ''}
+            </g>
+
+            <!-- Delicate Dark Button Nose -->
+            <path d="M 195,184 Q 200,189 205,184 Q 200,181 195,184 Z" fill="#0f172a" />
+            <circle cx="198" cy="183.5" r="1.3" fill="#ffffff" />
+
+            <!-- Sweet Joyful :3 Cat Smile with Pink Tongue -->
+            <path d="M 190,193 Q 195,202 200,196 Q 205,202 210,193" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round" fill="none" />
+            <path d="M 196,198 Q 200,207 204,198 Z" fill="#f43f5e" />
+          </g>
+        </g>
+
+        <!-- ================================================================= -->
+        <!-- 14. LAYER: COLLECTIBLE ACCESSORIES (Stages 3+ or Equipped)        -->
+        <!-- ================================================================= -->
+        ${((config.accessory && config.accessory !== 'none' && stage >= 3) || (stage === 6 && config.accessory !== 'none')) ? `
+          <g id="layer-accessory" class="monster-layer layer-accessory" filter="url(#${uid}_deep_shadow)">
+            <g transform="translate(${headCX}, ${headCY}) scale(${headScale}) translate(-${headCX}, -${headCY})">
+              ${(config.accessory === 'glasses') ? `
+                <!-- Scholar Wire-Rim Glasses -->
+                <circle cx="168" cy="164" r="22" fill="none" stroke="#fbbf24" stroke-width="3" />
+                <circle cx="232" cy="164" r="22" fill="none" stroke="#fbbf24" stroke-width="3" />
+                <path d="M 190,164 L 210,164" stroke="#fbbf24" stroke-width="2.8" />
+                <path d="M 154,152 L 164,142" stroke="#ffffff" stroke-width="2.2" opacity="0.6" stroke-linecap="round" />
+                <path d="M 218,152 L 228,142" stroke="#ffffff" stroke-width="2.2" opacity="0.6" stroke-linecap="round" />
+              ` : (config.accessory === 'bandana') ? `
+                <!-- Scout Kerchief -->
+                <path d="M 166,198 Q 200,212 234,198 L 207,242 L 200,248 L 193,242 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.2" />
+              ` : (config.accessory === 'blue_bow') ? `
+                <!-- Satin Ribbon Bow (Collar) -->
+                <g transform="translate(200, 204)">
+                  <path d="M 0,0 C -22,-16 -35,-4 -28,10 C -24,20 -8,6 0,0 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
+                  <path d="M 0,0 C 22,-16 35,-4 28,10 C 24,20 8,6 0,0 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
+                  <circle cx="0" cy="0" r="5" fill="#bae6fd" stroke="#0284c7" stroke-width="1.8" />
+                </g>
+              ` : (config.accessory === 'badge') ? `
+                <!-- Star Guild Badge -->
+                <g transform="translate(160, 245)">
+                  <circle cx="0" cy="0" r="14" fill="#fbbf24" stroke="#b45309" stroke-width="2.4" />
+                  <polygon points="0,-8 2.5,-2.5 8.5,-2.5 3.5,2 5.5,8 0,4.5 -5.5,8 -3.5,2 -8.5,-2.5 -2.5,-2.5" fill="#ffffff" />
+                </g>
+              ` : (config.accessory === 'wizard_hat') ? `
+                <!-- Wizard Hat -->
+                <ellipse cx="200" cy="112" rx="55" ry="16" fill="#312e81" stroke="#4338ca" stroke-width="2.2" />
+                <path d="M 158,112 L 206,18 L 242,112 Z" fill="#3730a3" stroke="#4338ca" stroke-width="2.2" />
+                <polygon points="206,-20 208,-15 213,-15 209,-12 211,-7 206,-10 201,-7 203,-12 199,-15 204,-15" fill="#fbbf24" transform="translate(0, 75)" />
+              ` : `
+                <!-- Monarch Crown (Perfect between the horns) -->
+                <g id="accessory-crown">
+                  <path d="M 174,112 L 168,65 L 186,86 L 200,48 L 214,86 L 232,65 L 226,112 Z" fill="#fbbf24" stroke="#b45309" stroke-width="2.5" />
+                  <path d="M 180,102 Q 200,78 220,102" stroke="#991b1b" stroke-width="4.5" fill="none" opacity="0.85" />
+                  <circle cx="200" cy="85" r="5" fill="#ef4444" stroke="#991b1b" stroke-width="1.5" />
+                  <circle cx="184" cy="94" r="3.6" fill="#10b981" />
+                  <circle cx="216" cy="94" r="3.6" fill="#10b981" />
+                </g>
+              `}
+            </g>
+          </g>
+        ` : ''}
       </svg>
-    `.trim();
+    `;
   }
 
-  function renderMonsterArtwork(options = {}) {
-    return renderMonsterSVG(options, options);
+  function renderMonsterArtwork(opts = {}) {
+    return renderMonsterSVG(opts, opts);
   }
 
   function renderMonster(configOrStudentOrOpts = {}, maybeOptions = {}) {
