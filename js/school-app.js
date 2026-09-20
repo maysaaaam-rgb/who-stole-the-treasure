@@ -961,6 +961,27 @@
           renderer.renderMonsterArtwork({ stage: 'egg', size: size, animated: animated, paused: paused, round: options.round !== false, showWorld: showWorld, transparent: transparent }) : 
           renderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, paused: paused, showWorld: showWorld, transparent: transparent });
       }
+      if (typeof store !== 'undefined' && store.getStudentMonster) {
+        const studentMonster = store.getStudentMonster(studentId);
+        if (studentMonster && renderer.render) {
+          const mConfig = Object.assign({}, studentMonster);
+          if (options.style && (options.style === 'boy' || options.style === 'girl')) mConfig.style = options.style;
+          if (options.color) mConfig.furColor = options.color;
+          if (options.stage !== undefined) {
+            mConfig.evolutionStage = typeof options.stage === 'number' ? options.stage : (renderer.getStageInfo ? renderer.getStageInfo(options.stage).level : 1);
+          }
+          return renderer.render(mConfig, {
+            size: size,
+            animated: animated,
+            paused: paused,
+            showPedestal: options.showPedestal === true,
+            round: options.round !== false,
+            className: options.className || '',
+            style: (typeof options.style === 'string' && options.style !== 'boy' && options.style !== 'girl') ? options.style : ''
+          });
+        }
+      }
+
       const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
       const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
 
@@ -12316,8 +12337,106 @@ window.switchClassroomSubTab = function(subTab) {
     renderCurrentView();
   };
 
+  let activeStudioCategory = 'fur';
+
   window.saveStudentMonsterStudio = function(studentId) {
+    const student = store.getStudent(studentId);
+    if (student && student.monster) {
+      store.updateStudentMonster(studentId, student.monster);
+    }
     showNotification('Monster companion configuration saved successfully! ✨');
+  };
+
+  window.setStudentMonsterStyle = function(studentId, style) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const monster = store.getStudentMonster(studentId);
+    monster.style = style;
+    store.updateStudentMonster(studentId, { style: style });
+    window.updateLiveStudioMonster(studentId);
+  };
+
+  window.selectMonsterCustomization = function(studentId, category, value) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const val = (value === 'none' || value === null || value === 'null') ? null : value;
+    const updates = {};
+    if (category === 'fur') updates.furColor = val;
+    else updates[category] = val;
+    
+    store.updateStudentMonster(studentId, updates);
+    window.updateLiveStudioMonster(studentId);
+
+    // Refresh drawer UI to reflect selection
+    const drawerEl = document.querySelector('.creator-drawer-pane');
+    if (drawerEl) {
+      const monster = store.getStudentMonster(studentId);
+      drawerEl.outerHTML = renderMonsterStudioDrawerCol(student, monster);
+    }
+  };
+
+  window.setStudentMonsterEvolutionStage = function(studentId, stage) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    store.updateStudentMonster(studentId, { evolutionStage: Number(stage) });
+    window.updateLiveStudioMonster(studentId);
+
+    const c = document.getElementById('app-view-container');
+    if (c) renderMonsterStudentView(c);
+  };
+
+  window.addStudentMonsterXP = function(studentId, deltaXP) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    store.awardXP(studentId, deltaXP, 'Character Evolution Training');
+    const totalXP = store.getStudentTotalXP(studentId);
+    const newStage = window.getEvolutionStage ? window.getEvolutionStage(totalXP) : 3;
+    store.updateStudentMonster(studentId, { evolutionStage: newStage });
+    
+    const c = document.getElementById('app-view-container');
+    if (c) renderMonsterStudentView(c);
+    showNotification('XP Increased! Character now has ' + totalXP.toLocaleString() + ' XP (Stage ' + newStage + ')! 🚀');
+  };
+
+  window.switchMonsterCategory = function(catId, studentId) {
+    activeStudioCategory = catId;
+    const student = store.getStudent(studentId || currentProfileStudentId);
+    if (!student) return;
+    const monster = store.getStudentMonster(student.id);
+    const drawerEl = document.querySelector('.creator-drawer-pane');
+    if (drawerEl) {
+      drawerEl.outerHTML = renderMonsterStudioDrawerCol(student, monster);
+    }
+  };
+
+  window.updateLiveStudioMonster = function(studentId) {
+    const student = store.getStudent(studentId);
+    if (!student) return;
+    const monster = store.getStudentMonster(studentId);
+    const previewBox = document.getElementById('studio-live-monster-wrap');
+    if (previewBox && window.MonsterRenderer) {
+      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 300, showPedestal: true, animated: true });
+    }
+
+    const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
+    const badgeEl = document.getElementById('studio-monster-level-badge');
+    if (badgeEl) badgeEl.textContent = 'LEVEL ' + monster.evolutionStage;
+
+    const titleEl = document.getElementById('studio-monster-stage-title');
+    if (titleEl) titleEl.textContent = 'Level ' + monster.evolutionStage + ' · ' + stageInfo.name + ' Stage';
+
+    const descEl = document.getElementById('studio-monster-stage-desc');
+    if (descEl) descEl.textContent = '"' + stageInfo.subtitle + '"';
+
+    const boyBtn = document.getElementById('studio-btn-style-boy');
+    const girlBtn = document.getElementById('studio-btn-style-girl');
+    if (boyBtn && girlBtn) {
+      const isBoy = monster.style === 'boy';
+      boyBtn.style.border = isBoy ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)';
+      boyBtn.style.background = isBoy ? '#0284c7' : 'rgba(15,23,42,0.6)';
+      girlBtn.style.border = !isBoy ? '2px solid #f472b6' : '1.5px solid rgba(255,255,255,0.2)';
+      girlBtn.style.background = !isBoy ? '#db2777' : 'rgba(15,23,42,0.6)';
+    }
   };
 
   // Dedicated Full-Page Monster View (Student/Parent role or route #monster)
@@ -12330,18 +12449,20 @@ window.switchClassroomSubTab = function(subTab) {
 
     let targetStudentId = currentProfileStudentId || (students[0] ? students[0].id : null);
     const student = store.getStudent(targetStudentId) || students[0];
-    const monsterState = store.calculateMonsterState(student.id);
-    const profile = store.getMonsterProfile(student.id);
+    const monster = store.getStudentMonster(student.id);
     const totalXP = store.getStudentTotalXP(student.id);
-    const nextLevelXP = monsterState.nextLevel ? monsterState.nextLevel.xpRequired : 1200;
-    const progressPct = monsterState.progressPctToNextLevel !== undefined ? monsterState.progressPctToNextLevel : (monsterState.progressPct || 70);
+    const stages = window.MonsterRenderer ? window.MonsterRenderer.stages : [];
+    const curStageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', xpRequired: 0 };
+    const nextStageInfo = stages[monster.evolutionStage + 1] || null;
+    const nextLevelXP = nextStageInfo ? nextStageInfo.xpRequired : 5000;
+    const progressPct = nextStageInfo ? Math.min(100, Math.max(0, Math.round(((totalXP - curStageInfo.xpRequired) / (nextLevelXP - curStageInfo.xpRequired)) * 100))) : 100;
 
     container.innerHTML = 
       '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
         // TOP: Student selector & Header
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<div style="font-size:0.75rem; font-weight:900; color:#0284c7; text-transform:uppercase; letter-spacing:0.06em;">CHARACTER CREATOR</div>' +
+            '<div style="font-size:0.75rem; font-weight:900; color:#0284c7; text-transform:uppercase; letter-spacing:0.06em;">DATA-DRIVEN CHARACTER SYSTEM</div>' +
             '<h1 style="font-size:1.85rem; font-weight:900; color:var(--text-main); margin:0;">👾 Monster Studio</h1>' +
           '</div>' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
@@ -12356,8 +12477,8 @@ window.switchClassroomSubTab = function(subTab) {
         '<div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:20px; padding:18px 24px; margin-bottom:24px; box-shadow:0 4px 16px rgba(15,23,42,0.05); display:flex; flex-direction:column; gap:10px;">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
             '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<span class="badge" style="background:#2563eb; color:#fff; font-weight:900; font-size:0.95rem; padding:6px 16px; border-radius:999px;">LEVEL ' + monsterState.currentLevel + '</span>' +
-              '<span style="font-size:1.1rem; font-weight:900; color:#0f172a;">' + monsterState.stageName + ' Stage</span>' +
+              '<span id="studio-monster-level-badge" class="badge" style="background:#2563eb; color:#fff; font-weight:900; font-size:0.95rem; padding:6px 16px; border-radius:999px;">LEVEL ' + monster.evolutionStage + '</span>' +
+              '<span id="studio-monster-stage-title" style="font-size:1.1rem; font-weight:900; color:#0f172a;">Level ' + monster.evolutionStage + ' · ' + curStageInfo.name + ' Stage</span>' +
             '</div>' +
             '<div style="font-size:1.05rem; font-weight:900; color:#d97706;">' +
               '⭐ ' + totalXP.toLocaleString() + ' / ' + nextLevelXP.toLocaleString() + ' XP' +
@@ -12370,141 +12491,276 @@ window.switchClassroomSubTab = function(subTab) {
 
         // 55% / 45% CHARACTER CREATOR WORKSPACE
         '<div class="creator-studio-layout">' +
-          renderMonsterStudioPreviewCol(student, monsterState, profile) +
-          renderMonsterStudioDrawerCol(student, monsterState, profile) +
+          renderMonsterStudioPreviewCol(student, monster) +
+          renderMonsterStudioDrawerCol(student, monster) +
         '</div>' +
       '</div>';
   }
 
-  function renderMonsterStudioPreviewCol(student, monsterState, profile) {
-    const isBoy = (profile.style || 'boy') === 'boy';
-    const isHatched = monsterState.isHatched;
+  function renderMonsterStudioPreviewCol(student, monster) {
+    const isBoy = (monster.style || 'boy') === 'boy';
+    const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
 
-    const monsterArt = window.renderMonsterArtwork ? window.renderMonsterArtwork({
-      stage: monsterState.stageKey,
-      color: profile.baseColor || 'blue',
-      monsterStyle: profile.style || 'boy',
-      equipped: profile.equipped || {},
-      size: 280,
+    const monsterArt = window.MonsterRenderer ? window.MonsterRenderer.render(monster, {
+      size: 300,
       showPedestal: true,
       animated: true
-    }) : (window.renderMonsterSVG ? window.renderMonsterSVG({
-      stage: monsterState.stageKey,
-      color: profile.baseColor || 'blue',
-      monsterStyle: profile.style || 'boy',
-      equipped: profile.equipped || {},
-      size: 280,
-      showPedestal: true,
-      animated: true
-    }) : '👾');
+    }) : '👾';
 
     return '' +
       '<div class="creator-preview-pane">' +
-        '<div style="font-size:0.75rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">LIVE COMPANION PREVIEW</div>' +
-        '<div style="position:relative; width:100%; display:flex; justify-content:center; align-items:center; min-height:290px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; width:100%;">' +
+          '<span style="font-size:0.75rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">LIVE VECTOR COMPONENT PREVIEW</span>' +
+          '<span style="font-size:0.72rem; font-weight:800; color:#a5b4fc; background:rgba(99,102,241,0.2); padding:2px 8px; border-radius:8px;">Pure SVG · No PNG</span>' +
+        '</div>' +
+        
+        '<div id="studio-live-monster-wrap" style="position:relative; width:100%; display:flex; justify-content:center; align-items:center; min-height:310px; margin:8px 0;">' +
           monsterArt +
         '</div>' +
         
-        // Boy / Girl Toggle
-        '<div style="display:flex; gap:10px; margin:14px 0 10px 0; width:100%; justify-content:center;">' +
-          '<button type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'boy\')" style="flex:1; max-width:140px; padding:8px 16px; border-radius:20px; font-weight:800; font-size:0.82rem; border:1.5px solid ' + (isBoy ? '#38bdf8' : 'rgba(255,255,255,0.2)') + '; background:' + (isBoy ? '#0284c7' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
-            '♂ Boy Tuft' +
+        // Boy / Girl Style Toggle
+        '<div style="display:flex; gap:10px; margin:8px 0 12px 0; width:100%; justify-content:center;">' +
+          '<button id="studio-btn-style-boy" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'boy\')" style="flex:1; max-width:145px; padding:9px 16px; border-radius:20px; font-weight:800; font-size:0.84rem; border:' + (isBoy ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (isBoy ? '#0284c7' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
+            '♂ Boy Style' +
           '</button>' +
-          '<button type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'girl\')" style="flex:1; max-width:140px; padding:8px 16px; border-radius:20px; font-weight:800; font-size:0.82rem; border:1.5px solid ' + (!isBoy ? '#f472b6' : 'rgba(255,255,255,0.2)') + '; background:' + (!isBoy ? '#db2777' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
-            '♀ Girl Bow' +
+          '<button id="studio-btn-style-girl" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'girl\')" style="flex:1; max-width:145px; padding:9px 16px; border-radius:20px; font-weight:800; font-size:0.84rem; border:' + (!isBoy ? '2px solid #f472b6' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (!isBoy ? '#db2777' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
+            '♀ Girl Style' +
           '</button>' +
         '</div>' +
 
-        '<h2 style="font-size:1.65rem; font-weight:900; margin:0 0 2px 0; color:#fff;">' + (profile.monsterName || (student.firstName + '\'s Monster')) + '</h2>' +
-        '<div style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:8px;">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
-        '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 18px 0; line-height:1.4; text-align:center;">' + monsterState.stageDescription + '</p>' +
+        '<h2 style="font-size:1.6rem; font-weight:900; margin:0 0 2px 0; color:#fff;">' + student.firstName + '\'s Companion</h2>' +
+        '<div style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:6px;">Stage ' + monster.evolutionStage + ' · ' + stageInfo.name + '</div>' +
+        '<p id="studio-monster-stage-desc" style="font-size:0.8rem; color:#94a3b8; margin:0 0 16px 0; line-height:1.4; text-align:center;">"' + stageInfo.subtitle + '"</p>' +
 
         // Save Customization Button
         '<button type="button" class="btn-primary-action" onclick="saveStudentMonsterStudio(\'' + student.id + '\')" style="width:100%; padding:14px 20px; font-size:0.95rem; font-weight:900; background:#10b981; color:#ffffff; border:none; border-radius:16px; box-shadow:0 4px 16px rgba(16,185,129,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">' +
-          '<span>💾</span> <span>Save Changes</span>' +
+          '<span>💾</span> <span>Save Companion Configuration</span>' +
         '</button>' +
       '</div>';
   }
 
-  function renderMonsterStudioDrawerCol(student, monsterState, profile) {
+  function renderMonsterStudioDrawerCol(student, monster) {
     const categories = [
-      { id: 'body', label: 'BODY', icon: '🐾' },
+      { id: 'fur', label: 'FUR', icon: '🎨' },
       { id: 'eyes', label: 'EYES', icon: '👀' },
-      { id: 'mouth', label: 'MOUTH', icon: '👄' },
-      { id: 'hair', label: 'HAIR', icon: '🎀' },
-      { id: 'horns', label: 'EARS', icon: '🦄' },
-      { id: 'clothing', label: 'OUTFIT', icon: '👕' },
-      { id: 'accessories', label: 'ACCESSORIES', icon: '🎒' },
-      { id: 'colors', label: 'COLORS', icon: '🎨' }
+      { id: 'ears', label: 'EARS', icon: '🦊' },
+      { id: 'tail', label: 'TAIL', icon: '🐾' },
+      { id: 'outfit', label: 'OUTFIT', icon: '👕' },
+      { id: 'accessory', label: 'ACCESSORY', icon: '👑' },
+      { id: 'aura', label: 'AURA', icon: '✨' },
+      { id: 'evolution', label: 'EVOLUTION', icon: '📈' }
     ];
 
-    const currentCat = studentMonsterCategory || 'body';
-    const equipped = profile.equipped || {};
-
+    const currentCat = activeStudioCategory || 'fur';
     let contentHtml = '';
 
-    if (currentCat === 'colors') {
+    if (currentCat === 'fur') {
       const paletteColors = [
-        { id: 'blue', label: 'Sky Blue', hex: '#0284c7', desc: 'Bright cheerful sky blue' },
-        { id: 'pink', label: 'Berry Pink', hex: '#ec4899', desc: 'Playful sweet berry pink' },
-        { id: 'purple', label: 'Lavender Purple', hex: '#8b5cf6', desc: 'Enchanted whimsical lavender' },
-        { id: 'green', label: 'Leaf Green', hex: '#10b981', desc: 'Earthy fresh leaf green' },
-        { id: 'orange', label: 'Sunset Orange', hex: '#f97316', desc: 'Energetic sunset orange' }
+        { id: 'blue', label: 'Sky Blue', hex: '#3b82f6', desc: 'Bright celestial azure' },
+        { id: 'purple', label: 'Lavender Purple', hex: '#a855f7', desc: 'Enchanted whimsical arcane' },
+        { id: 'green', label: 'Leaf Green', hex: '#10b981', desc: 'Earthy fresh emerald' },
+        { id: 'orange', label: 'Sunset Orange', hex: '#f97316', desc: 'Energetic warm amber' },
+        { id: 'pink', label: 'Berry Pink', hex: '#ec4899', desc: 'Playful sweet blossom' }
       ];
 
       contentHtml = '' +
         '<div class="creator-items-grid">' +
           paletteColors.map(col => {
-            const isSelected = (profile.baseColor || 'blue') === col.id;
+            const isSelected = (monster.furColor || 'blue') === col.id;
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="setStudentBaseMonsterColor(\'' + student.id + '\', \'' + col.id + '\')">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'fur\', \'' + col.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
                 '<div style="width:46px; height:46px; border-radius:50%; background:' + col.hex + '; box-shadow:0 4px 12px ' + col.hex + '66; border:3px solid #ffffff; margin-bottom:8px;"></div>' +
                 '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + col.label + '</div>' +
                 '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + col.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Select') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'eyes') {
+      const eyeOptions = [
+        { id: 'round', name: 'Round Anime', icon: '👀', desc: 'Expressive anime pupils' },
+        { id: 'sparkle', name: 'Star Sparkle', icon: '✨', desc: 'Magical star catchlights' },
+        { id: 'fierce', name: 'Fierce Heroic', icon: '⚡', desc: 'Brave determined look' },
+        { id: 'happy', name: 'Joyful Closed', icon: '◠‿◠', desc: 'Happy smiling eyes' },
+        { id: 'curious', name: 'Wide Curious', icon: '🌟', desc: 'Alert questioning eyes' }
+      ];
+
+      contentHtml = '' +
+        '<div class="creator-items-grid">' +
+          eyeOptions.map(opt => {
+            const isSelected = (monster.eyes || 'round') === opt.id;
+            return '' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'eyes\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Select') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'ears') {
+      const earOptions = [
+        { id: 'fox', name: 'Fox Companion', icon: '🦊', desc: 'Pointed ears with inner fluff' },
+        { id: 'cat', name: 'Cat / Lynx', icon: '🐱', desc: 'Perky triangular ears' },
+        { id: 'floppy', name: 'Floppy Puppy', icon: '🐶', desc: 'Folded gentle puppy ears' },
+        { id: 'tufted', name: 'Celestial Tufted', icon: '🦄', desc: 'Ears with glowing wisps' }
+      ];
+
+      contentHtml = '' +
+        '<div class="creator-items-grid">' +
+          earOptions.map(opt => {
+            const isSelected = (monster.ears || 'fox') === opt.id;
+            return '' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'ears\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Select') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'tail') {
+      const tailOptions = [
+        { id: 'fluffy', name: 'Fluffy Plume', icon: '🦊', desc: 'Fox plume with white fur tip' },
+        { id: 'dragon', name: 'Dragon Tail', icon: '🐉', desc: 'Sleek tail with dorsal scales' },
+        { id: 'curly', name: 'Cloud Swirl', icon: '🍥', desc: 'Playful curly puff tail' },
+        { id: 'twin', name: 'Twin Kitsune', icon: '✨', desc: 'Double mystical sweeping plumes' }
+      ];
+
+      contentHtml = '' +
+        '<div class="creator-items-grid">' +
+          tailOptions.map(opt => {
+            const isSelected = (monster.tail || 'fluffy') === opt.id;
+            return '' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'tail\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Select') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'outfit') {
+      const outfitOptions = [
+        { id: 'none', name: 'Natural Fur', icon: '🐾', desc: 'No clothing equipped' },
+        { id: 'adventurer_jacket', name: 'Adventurer Jacket', icon: '🥋', desc: 'Leather harness & brass buckle' },
+        { id: 'vest', name: 'Scholar Vest', icon: '🦺', desc: 'Blue vest with golden trim' },
+        { id: 'cape', name: 'Hero Cape', icon: '🧣', desc: 'Billowing crimson adventurer cape' },
+        { id: 'robe', name: 'Mystic Robe', icon: '🧙', desc: 'Arcane purple wizard mantle' }
+      ];
+
+      contentHtml = '' +
+        '<div class="creator-items-grid">' +
+          outfitOptions.map(opt => {
+            const isSelected = (monster.outfit || 'none') === opt.id || (!monster.outfit && opt.id === 'none');
+            return '' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'outfit\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
                 '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Equip') +
                 '</span>' +
               '</div>';
           }).join('') +
         '</div>';
-    } else {
-      let items = [];
-      if (currentCat === 'hair') {
-        items = store.getMonsterItems ? store.getMonsterItems().filter(i => i.id.startsWith('hat-bow') || i.id.startsWith('hat-star') || i.id.startsWith('hat-flower') || i.id.startsWith('hat-headband') || (i.subCategory || '').includes('hair')) : [];
-      } else if (currentCat === 'accessories') {
-        items = store.getMonsterItems ? store.getMonsterItems().filter(i => ['accessory', 'hat', 'glasses', 'backpack', 'wings', 'tail'].includes(i.category)) : [];
-      } else if (currentCat === 'horns') {
-        items = store.getMonsterItems ? store.getMonsterItems().filter(i => i.id.includes('ear') || i.id.includes('horn') || i.category === 'accessory') : [];
-      } else {
-        items = store.getMonsterItems ? store.getMonsterItems(currentCat) : [];
-      }
 
-      if (!items || items.length === 0) {
-        items = store.getMonsterItems ? store.getMonsterItems() : [];
-      }
+    } else if (currentCat === 'accessory') {
+      const accOptions = [
+        { id: 'none', name: 'None', icon: '🚫', desc: 'No accessory' },
+        { id: 'crown', name: 'Monarch Crown', icon: '👑', desc: 'Gold crown with ruby jewels' },
+        { id: 'blue_bow', name: 'Blue Satin Bow', icon: '🎀', desc: 'Collar satin ribbon' },
+        { id: 'bandana', name: 'Scout Bandana', icon: '🧣', desc: 'Heroic red neckerchief' },
+        { id: 'glasses', name: 'Scholar Glasses', icon: '👓', desc: 'Round gold wire spectacles' },
+        { id: 'badge', name: 'Star Guild Badge', icon: '🎖️', desc: 'Adventurer Academy medal' },
+        { id: 'wizard_hat', name: 'Wizard Hat', icon: '🧙', desc: 'Starry indigo sorcerer hat' }
+      ];
 
       contentHtml = '' +
         '<div class="creator-items-grid">' +
-          items.map(item => {
-            const isUnlocked = monsterState.unlockedItemIds ? monsterState.unlockedItemIds.has(item.id) : true;
-            const isEquipped = equipped[item.category] === item.id;
-            const slot = item.category || currentCat;
-            const unlockLvl = (item.unlockRequirement && item.unlockRequirement.level) || 3;
-
+          accOptions.map(opt => {
+            const isSelected = (monster.accessory || 'none') === opt.id || (!monster.accessory && opt.id === 'none');
             return '' +
-              '<div class="creator-item-tile ' + (!isUnlocked ? 'is-locked' : '') + ' ' + (isEquipped ? 'is-equipped' : '') + '" onclick="' + (isUnlocked ? ('equipStudentMonsterItem(\'' + student.id + '\', \'' + slot + '\', \'' + (isEquipped ? 'none' : item.id) + '\')') : '') + '">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + (item.icon || '✨') + '</div>' +
-                '<div style="font-size:0.84rem; font-weight:900; color:#0f172a; margin-bottom:2px;">' + item.name + '</div>' +
-                '<div style="margin-top:auto; width:100%;">' +
-                  (isUnlocked ?
-                    '<div style="font-size:0.75rem; font-weight:800; color:' + (isEquipped ? '#2563eb' : '#059669') + '; padding:4px 0;">' +
-                      (isEquipped ? '✓ Equipped' : '✓ Unlocked') +
-                    '</div>' :
-                    '<div style="font-size:0.72rem; font-weight:800; color:#94a3b8; background:#e2e8f0; padding:4px 8px; border-radius:8px;">' +
-                      '🔒 Unlock at Level ' + unlockLvl +
-                    '</div>'
-                  ) +
-                '</div>' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'accessory\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Equip') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'aura') {
+      const auraOptions = [
+        { id: 'none', name: 'None', icon: '🚫', desc: 'No magical aura' },
+        { id: 'glow', name: 'Pulsing Glow', icon: '💫', desc: 'Luminous ambient energy' },
+        { id: 'star_glow', name: 'Star Particles', icon: '⭐', desc: 'Orbiting stardust particles' },
+        { id: 'sparks', name: 'Arcane Sparks', icon: '⚡', desc: 'Crackling electric energy' },
+        { id: 'wings', name: 'Ether Wings', icon: '🪽', desc: 'Translucent glowing wings' }
+      ];
+
+      contentHtml = '' +
+        '<div class="creator-items-grid">' +
+          auraOptions.map(opt => {
+            const isSelected = (monster.aura || 'none') === opt.id || (!monster.aura && opt.id === 'none');
+            return '' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'aura\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
+                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+                  (isSelected ? '✓ Equipped' : 'Equip') +
+                '</span>' +
+              '</div>';
+          }).join('') +
+        '</div>';
+
+    } else if (currentCat === 'evolution') {
+      const stages = window.MonsterRenderer ? window.MonsterRenderer.stages : [];
+      contentHtml = '' +
+        '<div style="margin-bottom:14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px; font-size:0.8rem; color:#1e40af; line-height:1.4;">' +
+          '<strong>Physical Growth Engine:</strong> Evolution alters physical proportions (body size, ear length, tail maturity, stance). The creature stays recognizable as the exact same companion!' +
+        '</div>' +
+
+        // XP Simulation Boost Bar
+        '<div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 100)" style="flex:1; min-width:130px; padding:8px 12px; background:#2563eb; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+            '⚡ +100 XP' +
+          '</button>' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 400)" style="flex:1; min-width:180px; padding:8px 12px; background:#7c3aed; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+            '🚀 +400 XP (Tot ➔ Young)' +
+          '</button>' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 1000)" style="flex:1; min-width:130px; padding:8px 12px; background:#d97706; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+            '⭐ +1,000 XP' +
+          '</button>' +
+        '</div>' +
+
+        '<div class="creator-items-grid">' +
+          stages.map(st => {
+            const isCurrent = monster.evolutionStage === st.level;
+            return '' +
+              '<div class="creator-item-tile ' + (isCurrent ? 'is-equipped' : '') + '" onclick="setStudentMonsterEvolutionStage(\'' + student.id + '\', ' + st.level + ')" style="border:' + (isCurrent ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isCurrent ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
+                '<div style="font-size:0.75rem; font-weight:900; color:#3b82f6; text-transform:uppercase;">Level ' + st.level + '</div>' +
+                '<div style="font-size:0.92rem; font-weight:900; color:#0f172a; margin:2px 0;">' + st.name + '</div>' +
+                '<div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:4px;">' + st.xpRequired.toLocaleString() + ' XP</div>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + st.subtitle + '</div>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:' + (isCurrent ? '#2563eb' : '#64748b') + ';">' +
+                  (isCurrent ? '● Active Body' : 'Preview Stage') +
+                '</span>' +
               '</div>';
           }).join('') +
         '</div>';
@@ -12512,15 +12768,15 @@ window.switchClassroomSubTab = function(subTab) {
 
     return '' +
       '<div class="creator-drawer-pane">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-          '<h3 style="font-size:1.2rem; font-weight:900; color:#0f172a; margin:0;">Customization Panel</h3>' +
-          '<span style="font-size:0.78rem; font-weight:800; color:#2563eb; background:#eff6ff; padding:3px 10px; border-radius:999px;">' + currentCat.toUpperCase() + '</span>' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
+          '<h3 style="font-size:1.2rem; font-weight:900; color:#0f172a; margin:0;">Character Studio Customizer</h3>' +
+          '<span style="font-size:0.78rem; font-weight:800; color:#2563eb; background:#eff6ff; padding:4px 12px; border-radius:999px;">' + currentCat.toUpperCase() + '</span>' +
         '</div>' +
 
-        // 8 CATEGORIES NAV: BODY, EYES, MOUTH, HAIR, EARS, OUTFIT, ACCESSORIES, COLORS
-        '<div class="creator-cat-nav">' +
+        // 8 CATEGORIES NAV: FUR, EYES, EARS, TAIL, OUTFIT, ACCESSORY, AURA, EVOLUTION
+        '<div class="creator-cat-nav" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">' +
           categories.map(cat => 
-            '<button type="button" class="creator-cat-pill ' + (currentCat === cat.id ? 'is-active' : '') + '" onclick="switchMonsterCategory(\'' + cat.id + '\')">' +
+            '<button type="button" class="creator-cat-pill ' + (currentCat === cat.id ? 'is-active' : '') + '" onclick="switchMonsterCategory(\'' + cat.id + '\', \'' + student.id + '\')" style="padding:6px 12px; border-radius:20px; font-size:0.8rem; font-weight:800; border:' + (currentCat === cat.id ? '2px solid #2563eb' : '1px solid #cbd5e1') + '; background:' + (currentCat === cat.id ? '#2563eb' : '#f8fafc') + '; color:' + (currentCat === cat.id ? '#ffffff' : '#334155') + '; cursor:pointer; transition:all 0.15s ease;">' +
               cat.icon + ' ' + cat.label +
             '</button>'
           ).join('') +

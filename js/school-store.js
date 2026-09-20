@@ -11279,6 +11279,110 @@
       }
     }
 
+    getStudentMonster(studentId) {
+      const student = this.getStudent(studentId);
+      const totalXP = this.getStudentTotalXP(studentId);
+      const stage = (typeof window !== 'undefined' && window.getEvolutionStage) ? window.getEvolutionStage(totalXP) : (totalXP >= 5000 ? 6 : totalXP >= 2500 ? 5 : totalXP >= 1200 ? 4 : totalXP >= 700 ? 3 : totalXP >= 300 ? 2 : totalXP >= 100 ? 1 : 0);
+      const prof = this.getMonsterProfile(studentId);
+
+      if (!student) {
+        return {
+          species: "academy-companion",
+          style: "boy",
+          evolutionStage: stage,
+          furColor: "blue",
+          eyes: "round",
+          ears: "fox",
+          tail: "fluffy",
+          outfit: stage >= 4 ? "adventurer_jacket" : null,
+          accessory: stage >= 6 ? "crown" : null,
+          aura: stage >= 6 ? "star_glow" : null
+        };
+      }
+
+      if (!student.monster) {
+        const colors = ['blue', 'purple', 'green', 'orange', 'pink'];
+        const assignedColor = (prof && prof.baseColor) || colors[Math.abs(studentId.charCodeAt(studentId.length - 1)) % colors.length] || 'blue';
+        student.monster = {
+          species: "academy-companion",
+          style: (prof && prof.style) || (student.gender === 'female' ? 'girl' : 'boy'),
+          evolutionStage: stage,
+          furColor: assignedColor,
+          eyes: (prof && prof.equipped && prof.equipped.eyes) ? prof.equipped.eyes.replace('eyes-', '') : "round",
+          ears: "fox",
+          tail: "fluffy",
+          outfit: (prof && prof.equipped && prof.equipped.clothing && prof.equipped.clothing !== 'none') ? prof.equipped.clothing.replace('clothing-', '') : (stage >= 4 ? "adventurer_jacket" : null),
+          accessory: (prof && prof.equipped && (prof.equipped.accessory || prof.equipped.hat) && (prof.equipped.accessory !== 'none' || prof.equipped.hat !== 'none')) ? (prof.equipped.accessory || prof.equipped.hat).replace('hat-', '').replace('accessory-', '') : (stage >= 6 ? "crown" : null),
+          aura: (prof && prof.equipped && prof.equipped.aura && prof.equipped.aura !== 'none') ? prof.equipped.aura.replace('aura-', '') : (stage >= 6 ? "star_glow" : null)
+        };
+      } else {
+        if (student.monster.previewStage !== undefined) {
+          student.monster.evolutionStage = student.monster.previewStage;
+        } else {
+          student.monster.evolutionStage = stage;
+        }
+      }
+
+      return student.monster;
+    }
+
+    updateStudentMonster(studentId, updates) {
+      const monster = this.getStudentMonster(studentId);
+      if (!monster) return null;
+
+      if (updates.evolutionStage !== undefined) {
+        monster.previewStage = Number(updates.evolutionStage);
+      }
+      if (updates.resetPreview) {
+        delete monster.previewStage;
+      }
+
+      Object.assign(monster, updates);
+
+      const student = this.getStudent(studentId);
+      if (student) {
+        student.monster = monster;
+      }
+
+      // Mirror to monsterProfile for backward compatibility
+      const prof = this.getMonsterProfile(studentId);
+      if (prof) {
+        if (updates.furColor) {
+          prof.baseColor = updates.furColor;
+          if (!prof.equipped) prof.equipped = {};
+          prof.equipped.body = 'body-' + updates.furColor;
+        }
+        if (updates.style) prof.style = updates.style;
+        if (updates.eyes) {
+          if (!prof.equipped) prof.equipped = {};
+          prof.equipped.eyes = 'eyes-' + updates.eyes;
+        }
+        if (updates.outfit !== undefined) {
+          if (!prof.equipped) prof.equipped = {};
+          prof.equipped.clothing = updates.outfit ? ('clothing-' + updates.outfit) : 'none';
+        }
+        if (updates.accessory !== undefined) {
+          if (!prof.equipped) prof.equipped = {};
+          prof.equipped.accessory = updates.accessory ? ('accessory-' + updates.accessory) : 'none';
+        }
+        if (updates.aura !== undefined) {
+          if (!prof.equipped) prof.equipped = {};
+          prof.equipped.aura = updates.aura ? ('aura-' + updates.aura) : 'none';
+        }
+      }
+
+      this.saveState();
+      this.notify();
+
+      if (student && typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveStudent(student).catch(err => {
+          console.error('[SchoolStore] Supabase saveStudent monster error:', err);
+        });
+      }
+
+      return monster;
+    }
+
     updateMonsterProfile(studentId, updates) {
       const profile = this.getMonsterProfile(studentId);
       if (profile) {
