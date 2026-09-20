@@ -1044,6 +1044,70 @@
       '</div>';
   };
 
+  /**
+   * Render modern Student Monster Evolution Card Structure
+   * Matches: .student-card > .monster-stage.element-* > .pedestal-shadow + .monster-avatar.float-anim + .evolution-badge
+   *        > .student-info > .student-name + .student-grade + XP / Actions
+   */
+  window.renderStudentMonsterCard = function(studentOrId, options = {}) {
+    const s = typeof studentOrId === 'string' ? (store.getStudent(studentOrId) || { id: studentOrId, firstName: studentOrId, grade: 'Grade 4' }) : studentOrId;
+    if (!s) return '';
+    const studentId = s.id;
+    const mState = store.calculateMonsterState ? store.calculateMonsterState(studentId) : { currentLevel: s.level || 1, stageName: s.stageName || 'Mystery Egg', totalXP: s.xp || 0, progressPct: 0 };
+    const profile = store.getMonsterProfile ? store.getMonsterProfile(studentId) : null;
+    const cls = store.getClass ? store.getClass(s.classId) : null;
+    const gradeLabel = s.grade || (cls ? cls.name : 'Grade 4');
+    const studentName = (s.firstName ? (s.firstName + ' ' + (s.lastName || '')).trim() : (s.name || 'Student'));
+
+    let element = (profile && profile.element) || s.element;
+    if (!element) {
+      const col = (profile && profile.baseColor) || 'blue';
+      if (col === 'orange' || col === 'red') element = 'ember';
+      else if (col === 'green') element = 'verdant';
+      else if (col === 'purple' || col === 'violet') element = 'astral';
+      else if (col === 'gold' || col === 'yellow') element = 'spark';
+      else element = 'aqua';
+    }
+    const elementClass = 'element-' + element;
+
+    let avatarMarkup = '';
+    const customImg = options.image || s.monsterAvatar;
+    if (customImg) {
+      avatarMarkup = '<img src="' + customImg + '" class="monster-avatar float-anim" alt="' + studentName + ' Monster" />';
+    } else if (mState.currentLevel >= 4 && (element === 'ember' || (profile && profile.baseColor === 'orange'))) {
+      avatarMarkup = '<img src="monsters/emberwing-stage2.webp" class="monster-avatar float-anim" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
+    } else {
+      avatarMarkup = '<div class="monster-avatar float-anim">' + window.renderMonsterStageBadge(studentId, { size: 84, animated: false }) + '</div>';
+    }
+
+    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, ''));
+
+    return '' +
+      '<div class="student-card" data-student-id="' + studentId + '">' +
+        '<div class="monster-stage ' + elementClass + '">' +
+          '<div class="pedestal-shadow"></div>' +
+          avatarMarkup +
+          '<span class="evolution-badge">' + evolutionBadge + '</span>' +
+        '</div>' +
+        '<div class="student-info">' +
+          '<h3 class="student-name">' + studentName + '</h3>' +
+          '<p class="student-grade">' + gradeLabel + '</p>' +
+          '<div class="student-card-meta-row" style="margin-top:6px;">' +
+            '<span class="student-card-xp-badge" onclick="openStudentXPMenu(\'' + studentId + '\', this, event)" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + ' XP</span>' +
+            '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+          '</div>' +
+          '<div class="student-card-progress-bar" style="width:100%; margin-top:4px;" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
+            '<div class="student-card-progress-fill" style="width:' + (mState.progressPct || 0) + '%;"></div>' +
+          '</div>' +
+          '<div class="student-card-actions" style="margin-top:10px; width:100%; justify-content:center; display:flex; gap:6px;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + studentId + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.3);">+10 XP</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + studentId + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || studentId) + '\', \'overview\')">Profile →</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  };
+
   // Canonical entry point for Monster Creator
   window.openAvatarSelector = function(studentId) {
     if (!studentId) return;
@@ -3296,8 +3360,30 @@
       const isSelected = selectedStudentIds.has(s.id);
       const streak = s.streakDays || 0;
 
+      let elementKey = s.element || (monsterState && monsterState.profile && monsterState.profile.element);
+      if (!elementKey) {
+        const c = (monsterState && monsterState.profile && monsterState.profile.baseColor) || 'blue';
+        if (c === 'orange' || c === 'red') elementKey = 'ember';
+        else if (c === 'green') elementKey = 'verdant';
+        else if (c === 'purple' || c === 'violet') elementKey = 'astral';
+        else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
+        else elementKey = 'aqua';
+      }
+      const elementClass = 'element-' + elementKey;
+
+      let avatarMarkup = '';
+      if (s.monsterAvatar) {
+        avatarMarkup = '<img src="' + s.monsterAvatar + '" class="monster-avatar float-anim" alt="' + s.firstName + ' Monster" />';
+      } else if (monsterState.currentLevel >= 4 && elementKey === 'ember') {
+        avatarMarkup = '<img src="monsters/emberwing-stage2.webp" class="monster-avatar float-anim" alt="' + s.firstName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
+      } else {
+        avatarMarkup = '<div class="student-avatar-frame monster-avatar-box float-anim">' +
+          window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) +
+        '</div>';
+      }
+
       return '' +
-        '<div class="classroom-student-card ' + (isSelected ? 'is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+        '<div class="classroom-student-card student-card ' + (isSelected ? 'is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Checkbox
           '<div class="student-card-check-wrap" style="' + (isMultiSelectMode ? 'display:block;' : '') + '">' +
             '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
@@ -3306,25 +3392,29 @@
           // Status Dot
           '<div class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></div>' +
 
-          // Avatar Frame (Clickable to change character avatar)
-          '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
-            window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) +
+          // Monster Stage Platform with Pedestal Shadow & Floating Avatar
+          '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+            '<div class="pedestal-shadow"></div>' +
+            avatarMarkup +
+            '<span class="evolution-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
           '</div>' +
 
-          // Name (Uppercase)
-          '<div class="student-card-name">' + s.firstName.toUpperCase() + '</div>' +
-          '<div style="font-size:0.72rem; font-weight:800; color:var(--color-primary); margin-bottom:4px;">Level ' + monsterState.currentLevel + ' · ' + monsterState.stageName + '</div>' +
-          '<div class="student-card-progress-bar" style="margin-top:4px;" title="Evolution: ' + monsterState.progressPct + '%">' +
-            '<div class="student-card-progress-fill" style="width:' + monsterState.progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>' +
-          '</div>' +
-          '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; text-align:center;">' +
-            (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : '👑 Apex Form')) +
-          '</div>' +
+          // Student Info (Name, Grade, XP Bar & Actions)
+          '<div class="student-info">' +
+            '<h3 class="student-name student-card-name">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
+            '<p class="student-grade">' + (s.grade || cls.name || 'Grade 4') + '</p>' +
+            '<div class="student-card-progress-bar" style="margin-top:4px;" title="Evolution: ' + monsterState.progressPct + '%">' +
+              '<div class="student-card-progress-fill" style="width:' + monsterState.progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>' +
+            '</div>' +
+            '<div style="font-size:0.68rem; color:var(--text-muted); margin-top:2px; text-align:center;">' +
+              (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : '👑 Apex Form')) +
+            '</div>' +
 
-          // Meta Row (Points + CEFR)
-          '<div class="student-card-meta-row">' +
-            '<span class="student-card-xp-badge" onclick="openStudentXPMenu(\'' + s.id + '\', this, event)" title="Click for XP Actions: Award, Edit, History">⭐ ' + formattedXP + '</span>' +
-            '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+            // Meta Row (Points + CEFR)
+            '<div class="student-card-meta-row" style="margin-top:6px;">' +
+              '<span class="student-card-xp-badge" onclick="openStudentXPMenu(\'' + s.id + '\', this, event)" title="Click for XP Actions: Award, Edit, History">⭐ ' + formattedXP + '</span>' +
+              '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
+            '</div>' +
           '</div>' +
 
           // Quick 1-Click Points and Award Bar
