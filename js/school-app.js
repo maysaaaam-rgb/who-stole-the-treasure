@@ -12415,7 +12415,7 @@ window.switchClassroomSubTab = function(subTab) {
     const monster = store.getStudentMonster(studentId);
     const previewBox = document.getElementById('studio-live-monster-wrap');
     if (previewBox && window.MonsterRenderer) {
-      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 300, showPedestal: true, animated: true });
+      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 380, showPedestal: true, animated: true });
     }
 
     const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
@@ -12433,9 +12433,9 @@ window.switchClassroomSubTab = function(subTab) {
     if (boyBtn && girlBtn) {
       const isBoy = monster.style === 'boy';
       boyBtn.style.border = isBoy ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)';
-      boyBtn.style.background = isBoy ? '#0284c7' : 'rgba(15,23,42,0.6)';
+      boyBtn.style.background = isBoy ? 'linear-gradient(135deg, #0284c7, #0369a1)' : 'rgba(15,23,42,0.6)';
       girlBtn.style.border = !isBoy ? '2px solid #f472b6' : '1.5px solid rgba(255,255,255,0.2)';
-      girlBtn.style.background = !isBoy ? '#db2777' : 'rgba(15,23,42,0.6)';
+      girlBtn.style.background = !isBoy ? 'linear-gradient(135deg, #db2777, #be185d)' : 'rgba(15,23,42,0.6)';
     }
   };
 
@@ -12458,7 +12458,7 @@ window.switchClassroomSubTab = function(subTab) {
     const progressPct = nextStageInfo ? Math.min(100, Math.max(0, Math.round(((totalXP - curStageInfo.xpRequired) / (nextLevelXP - curStageInfo.xpRequired)) * 100))) : 100;
 
     container.innerHTML = 
-      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+      '<div style="max-width:1240px; margin:0 auto; padding-bottom:60px;">' +
         // TOP: Student selector & Header
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
@@ -12502,65 +12502,156 @@ window.switchClassroomSubTab = function(subTab) {
     const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
 
     const monsterArt = window.MonsterRenderer ? window.MonsterRenderer.render(monster, {
-      size: 300,
+      size: 380,
       showPedestal: true,
       animated: true
     }) : '👾';
 
     return '' +
-      '<div class="creator-preview-pane">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; width:100%;">' +
+      '<div class="creator-preview-pane" style="background:radial-gradient(circle at 50% 32%, #0e274c 0%, #061226 100%); border:1px solid rgba(56,189,248,0.3); border-radius:24px; padding:24px; display:flex; flex-direction:column; align-items:center; box-shadow:0 16px 36px rgba(0,0,0,0.45);">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:8px;">' +
           '<span style="font-size:0.75rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">LIVE VECTOR COMPONENT PREVIEW</span>' +
-          '<span style="font-size:0.72rem; font-weight:800; color:#a5b4fc; background:rgba(99,102,241,0.2); padding:2px 8px; border-radius:8px;">Pure SVG · No PNG</span>' +
+          '<span style="font-size:0.72rem; font-weight:800; color:#a5b4fc; background:rgba(99,102,241,0.25); padding:3px 10px; border-radius:12px; border:1px solid rgba(165,180,252,0.3);">100% Scalable Vector</span>' +
         '</div>' +
         
-        '<div id="studio-live-monster-wrap" style="position:relative; width:100%; display:flex; justify-content:center; align-items:center; min-height:310px; margin:8px 0;">' +
+        '<div id="studio-live-monster-wrap" style="position:relative; width:100%; display:flex; justify-content:center; align-items:center; min-height:380px; margin:4px 0;">' +
           monsterArt +
         '</div>' +
         
         // Boy / Girl Style Toggle
-        '<div style="display:flex; gap:10px; margin:8px 0 12px 0; width:100%; justify-content:center;">' +
-          '<button id="studio-btn-style-boy" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'boy\')" style="flex:1; max-width:145px; padding:9px 16px; border-radius:20px; font-weight:800; font-size:0.84rem; border:' + (isBoy ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (isBoy ? '#0284c7' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
+        '<div style="display:flex; gap:12px; margin:10px 0 14px 0; width:100%; justify-content:center;">' +
+          '<button id="studio-btn-style-boy" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'boy\')" style="flex:1; max-width:150px; padding:10px 18px; border-radius:22px; font-weight:900; font-size:0.86rem; border:' + (isBoy ? '2px solid #38bdf8' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (isBoy ? 'linear-gradient(135deg, #0284c7, #0369a1)' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease; box-shadow:' + (isBoy ? '0 4px 14px rgba(2,132,199,0.4)' : 'none') + ';">' +
             '♂ Boy Style' +
           '</button>' +
-          '<button id="studio-btn-style-girl" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'girl\')" style="flex:1; max-width:145px; padding:9px 16px; border-radius:20px; font-weight:800; font-size:0.84rem; border:' + (!isBoy ? '2px solid #f472b6' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (!isBoy ? '#db2777' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease;">' +
+          '<button id="studio-btn-style-girl" type="button" onclick="setStudentMonsterStyle(\'' + student.id + '\', \'girl\')" style="flex:1; max-width:150px; padding:10px 18px; border-radius:22px; font-weight:900; font-size:0.86rem; border:' + (!isBoy ? '2px solid #f472b6' : '1.5px solid rgba(255,255,255,0.2)') + '; background:' + (!isBoy ? 'linear-gradient(135deg, #db2777, #be185d)' : 'rgba(15,23,42,0.6)') + '; color:#fff; cursor:pointer; transition:all 0.2s ease; box-shadow:' + (!isBoy ? '0 4px 14px rgba(219,39,119,0.4)' : 'none') + ';">' +
             '♀ Girl Style' +
           '</button>' +
         '</div>' +
 
-        '<h2 style="font-size:1.6rem; font-weight:900; margin:0 0 2px 0; color:#fff;">' + student.firstName + '\'s Companion</h2>' +
-        '<div style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:6px;">Stage ' + monster.evolutionStage + ' · ' + stageInfo.name + '</div>' +
-        '<p id="studio-monster-stage-desc" style="font-size:0.8rem; color:#94a3b8; margin:0 0 16px 0; line-height:1.4; text-align:center;">"' + stageInfo.subtitle + '"</p>' +
+        '<h2 style="font-size:1.65rem; font-weight:900; margin:0 0 2px 0; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);">' + student.firstName + '\'s Companion</h2>' +
+        '<div style="font-size:0.92rem; font-weight:900; color:#38bdf8; margin-bottom:4px;">Stage ' + monster.evolutionStage + ' · ' + stageInfo.name + '</div>' +
+        '<p id="studio-monster-stage-desc" style="font-size:0.82rem; color:#94a3b8; margin:0 0 16px 0; line-height:1.4; text-align:center;">"' + stageInfo.subtitle + '"</p>' +
 
         // Save Customization Button
-        '<button type="button" class="btn-primary-action" onclick="saveStudentMonsterStudio(\'' + student.id + '\')" style="width:100%; padding:14px 20px; font-size:0.95rem; font-weight:900; background:#10b981; color:#ffffff; border:none; border-radius:16px; box-shadow:0 4px 16px rgba(16,185,129,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">' +
+        '<button type="button" class="btn-primary-action" onclick="saveStudentMonsterStudio(\'' + student.id + '\')" style="width:100%; padding:14px 20px; font-size:0.96rem; font-weight:900; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#ffffff; border:none; border-radius:18px; box-shadow:0 6px 20px rgba(16,185,129,0.4); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform 0.15s ease;">' +
           '<span>💾</span> <span>Save Companion Configuration</span>' +
         '</button>' +
       '</div>';
   }
 
+  
+  // Helper to render high-fidelity vector thumbnails for Character Studio options
+  function getStudioOptionThumbnail(cat, id, colorHex = '#3b82f6') {
+    if (cat === 'eyes') {
+      if (id === 'sparkle') {
+        return '<svg viewBox="0 0 80 40" width="68" height="34" xmlns="http://www.w3.org/2000/svg"><ellipse cx="25" cy="20" rx="14" ry="17" fill="#050814"/><ellipse cx="55" cy="20" rx="14" ry="17" fill="#050814"/><circle cx="25" cy="21" r="11" fill="' + colorHex + '"/><circle cx="55" cy="21" r="11" fill="' + colorHex + '"/><path d="M 25,14 L 27,19 L 32,21 L 27,23 L 25,28 L 23,23 L 18,21 L 23,19 Z" fill="#fff"/><path d="M 55,14 L 57,19 L 62,21 L 57,23 L 55,28 L 53,23 L 48,21 L 53,19 Z" fill="#fff"/></svg>';
+      } else if (id === 'fierce') {
+        return '<svg viewBox="0 0 80 40" width="68" height="34" xmlns="http://www.w3.org/2000/svg"><path d="M 12,20 Q 25,8 38,25 Q 25,32 12,20 Z" fill="#050814"/><path d="M 68,20 Q 55,8 42,25 Q 55,32 68,20 Z" fill="#050814"/><circle cx="25" cy="21" r="8" fill="' + colorHex + '"/><circle cx="55" cy="21" r="8" fill="' + colorHex + '"/><circle cx="23" cy="18" r="3" fill="#fff"/><circle cx="53" cy="18" r="3" fill="#fff"/></svg>';
+      } else if (id === 'happy') {
+        return '<svg viewBox="0 0 80 40" width="68" height="34" xmlns="http://www.w3.org/2000/svg"><path d="M 12,24 Q 25,8 38,24" stroke="#050814" stroke-width="4.5" stroke-linecap="round" fill="none"/><path d="M 42,24 Q 55,8 68,24" stroke="#050814" stroke-width="4.5" stroke-linecap="round" fill="none"/></svg>';
+      } else if (id === 'curious') {
+        return '<svg viewBox="0 0 80 40" width="68" height="34" xmlns="http://www.w3.org/2000/svg"><ellipse cx="25" cy="20" rx="15" ry="17" fill="#050814"/><ellipse cx="55" cy="20" rx="15" ry="17" fill="#050814"/><ellipse cx="25" cy="21" rx="12" ry="14" fill="' + colorHex + '"/><ellipse cx="55" cy="21" rx="12" ry="14" fill="' + colorHex + '"/><circle cx="23" cy="17" r="5" fill="#fff"/><circle cx="53" cy="17" r="5" fill="#fff"/></svg>';
+      } else {
+        // round default
+        return '<svg viewBox="0 0 80 40" width="68" height="34" xmlns="http://www.w3.org/2000/svg"><ellipse cx="25" cy="20" rx="14" ry="17" fill="#050814"/><ellipse cx="55" cy="20" rx="14" ry="17" fill="#050814"/><ellipse cx="25" cy="21" rx="11" ry="13" fill="' + colorHex + '"/><ellipse cx="55" cy="21" rx="11" ry="13" fill="' + colorHex + '"/><circle cx="22" cy="16" r="4.5" fill="#fff"/><circle cx="52" cy="16" r="4.5" fill="#fff"/><circle cx="28" cy="24" r="2" fill="#fff"/><circle cx="58" cy="24" r="2" fill="#fff"/></svg>';
+      }
+    }
+    if (cat === 'ears') {
+      if (id === 'cat') {
+        return '<svg viewBox="0 0 80 50" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><polygon points="14,44 26,10 40,36" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><polygon points="20,40 27,18 36,36" fill="#fbcfe8"/><polygon points="66,44 54,10 40,36" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><polygon points="60,40 53,18 44,36" fill="#fbcfe8"/></svg>';
+      } else if (id === 'floppy') {
+        return '<svg viewBox="0 0 80 50" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><path d="M 28,14 C 10,18 8,42 22,46 C 32,46 32,24 28,14 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><path d="M 52,14 C 70,18 72,42 58,46 C 48,46 48,24 52,14 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/></svg>';
+      } else if (id === 'tufted') {
+        return '<svg viewBox="0 0 80 50" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><path d="M 20,44 C 12,24 20,10 24,8 C 28,12 34,26 36,44 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><circle cx="24" cy="8" r="4" fill="#67e8f9"/><path d="M 60,44 C 68,24 60,10 56,8 C 52,12 46,26 44,44 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><circle cx="56" cy="8" r="4" fill="#67e8f9"/></svg>';
+      } else {
+        // fox
+        return '<svg viewBox="0 0 80 50" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><path d="M 16,42 C 10,24 16,10 25,6 C 30,12 36,24 38,42 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><path d="M 20,38 C 16,25 20,16 25,12 C 28,18 32,26 34,38 Z" fill="#fbcfe8"/><path d="M 64,42 C 70,24 64,10 55,6 C 50,12 44,24 42,42 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><path d="M 60,38 C 64,25 60,16 55,12 C 52,18 48,26 46,38 Z" fill="#fbcfe8"/></svg>';
+      }
+    }
+    if (cat === 'tail') {
+      if (id === 'dragon') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 12,42 C 35,46 54,34 50,16 C 45,10 36,15 32,24 C 26,35 18,38 12,42 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><polygon points="48,16 56,12 50,22" fill="#bae6fd"/></svg>';
+      } else if (id === 'curly') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 15,40 C 35,44 48,32 44,20 C 40,10 26,12 28,24 C 30,30 38,30 38,24" fill="' + colorHex + '" stroke="#0f172a" stroke-width="3"/><circle cx="36" cy="20" r="6" fill="#fff"/></svg>';
+      } else if (id === 'twin') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 18,44 C 32,46 44,36 38,18 C 34,10 26,14 24,24 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="1.8"/><path d="M 26,44 C 42,46 56,36 50,18 C 46,10 38,14 36,24 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="1.8"/><path d="M 38,18 C 34,10 26,14 24,24 C 27,20 33,19 38,18 Z" fill="#fff"/><path d="M 50,18 C 46,10 38,14 36,24 C 39,20 45,19 50,18 Z" fill="#fff"/></svg>';
+      } else {
+        // fluffy plume
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 14,42 C 38,46 54,34 50,16 C 45,8 32,12 28,22 C 25,28 20,38 14,42 Z" fill="' + colorHex + '" stroke="#0f172a" stroke-width="2"/><path d="M 50,16 C 45,8 32,12 28,22 C 34,18 42,17 48,22 C 49,19 50,17 50,16 Z" fill="#fff"/></svg>';
+      }
+    }
+    if (cat === 'outfit') {
+      if (id === 'adventurer_jacket') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="10" width="32" height="30" rx="6" fill="#78350f" stroke="#451a03" stroke-width="2"/><path d="M 22,10 L 22,40 M 38,10 L 38,40" stroke="#451a03" stroke-width="2"/><rect x="10" y="26" width="40" height="8" rx="2" fill="#92400e"/><rect x="25" y="24" width="10" height="12" rx="2" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/></svg>';
+      } else if (id === 'vest') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 14,10 L 46,10 L 44,40 L 16,40 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="2"/><polygon points="24,10 30,24 36,10" fill="#ffffff"/><circle cx="30" cy="28" r="2" fill="#fbbf24"/><circle cx="30" cy="34" r="2" fill="#fbbf24"/></svg>';
+      } else if (id === 'cape') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 20,12 C 10,24 8,42 16,44 L 44,44 C 52,42 50,24 40,12 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2"/><circle cx="30" cy="14" r="5" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/><circle cx="30" cy="14" r="2" fill="#ef4444"/></svg>';
+      } else if (id === 'robe') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 16,10 L 44,10 L 48,42 L 12,42 Z" fill="#4c1d95" stroke="#c084fc" stroke-width="2"/><line x1="30" y1="10" x2="30" y2="42" stroke="#fbbf24" stroke-width="2"/><circle cx="30" cy="18" r="3.5" fill="#38bdf8"/></svg>';
+      } else {
+        // natural fur
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="30" rx="14" ry="10" fill="' + colorHex + '"/><circle cx="20" cy="18" r="4" fill="' + colorHex + '"/><circle cx="27" cy="14" r="4.5" fill="' + colorHex + '"/><circle cx="35" cy="14" r="4.5" fill="' + colorHex + '"/><circle cx="42" cy="18" r="4" fill="' + colorHex + '"/></svg>';
+      }
+    }
+    if (cat === 'accessory') {
+      if (id === 'crown') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><polygon points="12,38 10,18 22,26 30,12 38,26 50,18 48,38" fill="#fbbf24" stroke="#b45309" stroke-width="2"/><circle cx="30" cy="22" r="3" fill="#ef4444"/><circle cx="18" cy="26" r="2.2" fill="#10b981"/><circle cx="42" cy="26" r="2.2" fill="#10b981"/></svg>';
+      } else if (id === 'blue_bow') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 30,24 C 18,12 8,20 12,30 C 16,36 26,28 30,24 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.8"/><path d="M 30,24 C 42,12 52,20 48,30 C 44,36 34,28 30,24 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.8"/><circle cx="30" cy="24" r="4" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/></svg>';
+      } else if (id === 'bandana') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 12,18 Q 30,24 48,18 L 36,38 L 30,42 L 24,38 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2"/><circle cx="30" cy="24" r="3" fill="#fbbf24"/></svg>';
+      } else if (id === 'glasses') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="25" r="10" fill="none" stroke="#fbbf24" stroke-width="2.5"/><circle cx="40" cy="25" r="10" fill="none" stroke="#fbbf24" stroke-width="2.5"/><line x1="30" y1="25" x2="30" y2="25" stroke="#fbbf24" stroke-width="2.5"/><line x1="10" y1="23" x2="2" y2="20" stroke="#fbbf24" stroke-width="2"/><line x1="50" y1="23" x2="58" y2="20" stroke="#fbbf24" stroke-width="2"/></svg>';
+      } else if (id === 'badge') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="24" r="12" fill="#fbbf24" stroke="#b45309" stroke-width="2"/><polygon points="30,16 32,21 37,21 33,24 35,29 30,26 25,29 27,24 23,21 28,21" fill="#ffffff"/><rect x="26" y="36" width="8" height="10" fill="#dc2626"/></svg>';
+      } else if (id === 'wizard_hat') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="38" rx="22" ry="7" fill="#312e81" stroke="#4338ca" stroke-width="2"/><polygon points="16,38 32,8 44,38" fill="#3730a3" stroke="#4338ca" stroke-width="2"/><circle cx="32" cy="18" r="3" fill="#fbbf24"/></svg>';
+      } else {
+        // none
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="25" r="14" fill="none" stroke="#94a3b8" stroke-width="2.5"/><line x1="20" y1="15" x2="40" y2="35" stroke="#ef4444" stroke-width="2.5"/></svg>';
+      }
+    }
+    if (cat === 'aura') {
+      if (id === 'star_glow') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="25" r="14" fill="rgba(251,191,36,0.2)"/><path d="M 30,12 L 32,18 L 38,20 L 32,22 L 30,28 L 28,22 L 22,20 L 28,18 Z" fill="#fbbf24"/><circle cx="16" cy="18" r="2.5" fill="#fde047"/><circle cx="44" cy="32" r="2.5" fill="#fde047"/></svg>';
+      } else if (id === 'sparks') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><polygon points="32,8 20,24 28,24 24,40 38,22 30,22" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/></svg>';
+      } else if (id === 'wings') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><path d="M 28,30 C 14,12 4,16 6,26 C 8,34 22,34 28,30 Z" fill="#bae6fd" opacity="0.8" stroke="#38bdf8" stroke-width="1.5"/><path d="M 32,30 C 46,12 56,16 54,26 C 52,34 38,34 32,30 Z" fill="#bae6fd" opacity="0.8" stroke="#38bdf8" stroke-width="1.5"/></svg>';
+      } else if (id === 'glow') {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="25" r="16" fill="rgba(56,189,248,0.3)"/><circle cx="30" cy="25" r="11" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 3"/></svg>';
+      } else {
+        return '<svg viewBox="0 0 60 50" width="50" height="42" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="25" r="12" fill="none" stroke="#94a3b8" stroke-width="2"/><line x1="21" y1="16" x2="39" y2="34" stroke="#ef4444" stroke-width="2"/></svg>';
+      }
+    }
+    return '';
+  }
+
+
   function renderMonsterStudioDrawerCol(student, monster) {
     const categories = [
-      { id: 'fur', label: 'FUR', icon: '🎨' },
-      { id: 'eyes', label: 'EYES', icon: '👀' },
-      { id: 'ears', label: 'EARS', icon: '🦊' },
-      { id: 'tail', label: 'TAIL', icon: '🐾' },
-      { id: 'outfit', label: 'OUTFIT', icon: '👕' },
-      { id: 'accessory', label: 'ACCESSORY', icon: '👑' },
-      { id: 'aura', label: 'AURA', icon: '✨' },
-      { id: 'evolution', label: 'EVOLUTION', icon: '📈' }
+      { id: 'fur', label: 'Fur', icon: '🎨' },
+      { id: 'eyes', label: 'Eyes', icon: '👁️' },
+      { id: 'ears', label: 'Ears', icon: '🦊' },
+      { id: 'tail', label: 'Tail', icon: '🐾' },
+      { id: 'outfit', label: 'Outfit', icon: '👕' },
+      { id: 'accessory', label: 'Accessory', icon: '👑' },
+      { id: 'aura', label: 'Aura', icon: '✨' },
+      { id: 'evolution', label: 'Evolution', icon: '📈' }
     ];
 
     const currentCat = activeStudioCategory || 'fur';
+    const pal = window.MonsterRenderer && window.MonsterRenderer.palettes ? (window.MonsterRenderer.palettes[monster.furColor] || window.MonsterRenderer.palettes.blue) : { primary: '#3b82f6' };
     let contentHtml = '';
 
     if (currentCat === 'fur') {
       const paletteColors = [
-        { id: 'blue', label: 'Sky Blue', hex: '#3b82f6', desc: 'Bright celestial azure' },
-        { id: 'purple', label: 'Lavender Purple', hex: '#a855f7', desc: 'Enchanted whimsical arcane' },
-        { id: 'green', label: 'Leaf Green', hex: '#10b981', desc: 'Earthy fresh emerald' },
-        { id: 'orange', label: 'Sunset Orange', hex: '#f97316', desc: 'Energetic warm amber' },
-        { id: 'pink', label: 'Berry Pink', hex: '#ec4899', desc: 'Playful sweet blossom' }
+        { id: 'blue', label: 'Sky Azure', hex: '#3b82f6', desc: 'Bright celestial azure blue' },
+        { id: 'purple', label: 'Lavender Arcane', hex: '#a855f7', desc: 'Enchanted whimsical purple' },
+        { id: 'green', label: 'Leaf Emerald', hex: '#10b981', desc: 'Earthy fresh forest green' },
+        { id: 'orange', label: 'Sunset Amber', hex: '#f97316', desc: 'Energetic warm radiant amber' },
+        { id: 'pink', label: 'Berry Blossom', hex: '#ec4899', desc: 'Playful sweet flower petal' }
       ];
 
       contentHtml = '' +
@@ -12568,11 +12659,11 @@ window.switchClassroomSubTab = function(subTab) {
           paletteColors.map(col => {
             const isSelected = (monster.furColor || 'blue') === col.id;
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'fur\', \'' + col.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="width:46px; height:46px; border-radius:50%; background:' + col.hex + '; box-shadow:0 4px 12px ' + col.hex + '66; border:3px solid #ffffff; margin-bottom:8px;"></div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + col.label + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + col.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'fur\', \'' + col.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="width:48px; height:48px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffffff 0%, ' + col.hex + ' 70%, #000000 130%); box-shadow:0 6px 16px ' + col.hex + '66; border:3px solid #ffffff; margin-bottom:10px;"></div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + col.label + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + col.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Select') +
                 '</span>' +
               '</div>';
@@ -12581,11 +12672,11 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'eyes') {
       const eyeOptions = [
-        { id: 'round', name: 'Round Anime', icon: '👀', desc: 'Expressive anime pupils' },
-        { id: 'sparkle', name: 'Star Sparkle', icon: '✨', desc: 'Magical star catchlights' },
-        { id: 'fierce', name: 'Fierce Heroic', icon: '⚡', desc: 'Brave determined look' },
-        { id: 'happy', name: 'Joyful Closed', icon: '◠‿◠', desc: 'Happy smiling eyes' },
-        { id: 'curious', name: 'Wide Curious', icon: '🌟', desc: 'Alert questioning eyes' }
+        { id: 'round', name: 'Round Anime', desc: 'Classic multi-reflection RPG pupils' },
+        { id: 'sparkle', name: 'Star Sparkle', desc: 'Magical radiant star catchlights' },
+        { id: 'fierce', name: 'Fierce Heroic', desc: 'Brave determined quest gaze' },
+        { id: 'happy', name: 'Joyful Smiling', desc: 'Delighted friendly closed eyes' },
+        { id: 'curious', name: 'Wide Curious', desc: 'Alert questioning wide pupil look' }
       ];
 
       contentHtml = '' +
@@ -12593,11 +12684,11 @@ window.switchClassroomSubTab = function(subTab) {
           eyeOptions.map(opt => {
             const isSelected = (monster.eyes || 'round') === opt.id;
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'eyes\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'eyes\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('eyes', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Select') +
                 '</span>' +
               '</div>';
@@ -12606,10 +12697,10 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'ears') {
       const earOptions = [
-        { id: 'fox', name: 'Fox Companion', icon: '🦊', desc: 'Pointed ears with inner fluff' },
-        { id: 'cat', name: 'Cat / Lynx', icon: '🐱', desc: 'Perky triangular ears' },
-        { id: 'floppy', name: 'Floppy Puppy', icon: '🐶', desc: 'Folded gentle puppy ears' },
-        { id: 'tufted', name: 'Celestial Tufted', icon: '🦄', desc: 'Ears with glowing wisps' }
+        { id: 'fox', name: 'Fox Companion', desc: 'Pointed curved ears with inner fluff' },
+        { id: 'cat', name: 'Cat / Lynx', desc: 'Perky triangular ears with pink canal' },
+        { id: 'floppy', name: 'Floppy Puppy', desc: 'Folded gentle cuddly puppy ears' },
+        { id: 'tufted', name: 'Celestial Tufted', desc: 'Noble ears with glowing wisp orbs' }
       ];
 
       contentHtml = '' +
@@ -12617,11 +12708,11 @@ window.switchClassroomSubTab = function(subTab) {
           earOptions.map(opt => {
             const isSelected = (monster.ears || 'fox') === opt.id;
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'ears\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'ears\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('ears', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Select') +
                 '</span>' +
               '</div>';
@@ -12630,10 +12721,10 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'tail') {
       const tailOptions = [
-        { id: 'fluffy', name: 'Fluffy Plume', icon: '🦊', desc: 'Fox plume with white fur tip' },
-        { id: 'dragon', name: 'Dragon Tail', icon: '🐉', desc: 'Sleek tail with dorsal scales' },
-        { id: 'curly', name: 'Cloud Swirl', icon: '🍥', desc: 'Playful curly puff tail' },
-        { id: 'twin', name: 'Twin Kitsune', icon: '✨', desc: 'Double mystical sweeping plumes' }
+        { id: 'fluffy', name: 'Fluffy Plume', desc: 'Fox plume with white jagged fur tip' },
+        { id: 'dragon', name: 'Dragon Tail', desc: 'Sleek scaled tail with dorsal spines' },
+        { id: 'curly', name: 'Cloud Swirl', desc: 'Playful curly puff tail' },
+        { id: 'twin', name: 'Twin Kitsune', desc: 'Double mystical sweeping plumes' }
       ];
 
       contentHtml = '' +
@@ -12641,11 +12732,11 @@ window.switchClassroomSubTab = function(subTab) {
           tailOptions.map(opt => {
             const isSelected = (monster.tail || 'fluffy') === opt.id;
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'tail\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'tail\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('tail', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Select') +
                 '</span>' +
               '</div>';
@@ -12654,11 +12745,11 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'outfit') {
       const outfitOptions = [
-        { id: 'none', name: 'Natural Fur', icon: '🐾', desc: 'No clothing equipped' },
-        { id: 'adventurer_jacket', name: 'Adventurer Jacket', icon: '🥋', desc: 'Leather harness & brass buckle' },
-        { id: 'vest', name: 'Scholar Vest', icon: '🦺', desc: 'Blue vest with golden trim' },
-        { id: 'cape', name: 'Hero Cape', icon: '🧣', desc: 'Billowing crimson adventurer cape' },
-        { id: 'robe', name: 'Mystic Robe', icon: '🧙', desc: 'Arcane purple wizard mantle' }
+        { id: 'none', name: 'Natural Fur', desc: 'Pure creature fur with no clothing' },
+        { id: 'adventurer_jacket', name: 'Adventurer Jacket', desc: 'Leather harness & brass buckle' },
+        { id: 'vest', name: 'Scholar Vest', desc: 'Navy waistcoat with golden buttons' },
+        { id: 'cape', name: 'Hero Cape', desc: 'Crimson cape with gold star brooch' },
+        { id: 'robe', name: 'Mystic Robe', desc: 'Arcane purple wizard mantle' }
       ];
 
       contentHtml = '' +
@@ -12666,11 +12757,11 @@ window.switchClassroomSubTab = function(subTab) {
           outfitOptions.map(opt => {
             const isSelected = (monster.outfit || 'none') === opt.id || (!monster.outfit && opt.id === 'none');
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'outfit\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'outfit\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('outfit', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Equip') +
                 '</span>' +
               '</div>';
@@ -12679,13 +12770,13 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'accessory') {
       const accOptions = [
-        { id: 'none', name: 'None', icon: '🚫', desc: 'No accessory' },
-        { id: 'crown', name: 'Monarch Crown', icon: '👑', desc: 'Gold crown with ruby jewels' },
-        { id: 'blue_bow', name: 'Blue Satin Bow', icon: '🎀', desc: 'Collar satin ribbon' },
-        { id: 'bandana', name: 'Scout Bandana', icon: '🧣', desc: 'Heroic red neckerchief' },
-        { id: 'glasses', name: 'Scholar Glasses', icon: '👓', desc: 'Round gold wire spectacles' },
-        { id: 'badge', name: 'Star Guild Badge', icon: '🎖️', desc: 'Adventurer Academy medal' },
-        { id: 'wizard_hat', name: 'Wizard Hat', icon: '🧙', desc: 'Starry indigo sorcerer hat' }
+        { id: 'none', name: 'None', desc: 'No accessory' },
+        { id: 'crown', name: 'Monarch Crown', desc: '3D Gold crown with ruby jewels' },
+        { id: 'blue_bow', name: 'Satin Ribbon Bow', desc: 'Pastel collar silk bow' },
+        { id: 'bandana', name: 'Scout Bandana', desc: 'Heroic red folded kerchief' },
+        { id: 'glasses', name: 'Scholar Glasses', desc: 'Round gold wire spectacles' },
+        { id: 'badge', name: 'Star Guild Badge', desc: 'Academy medalist ribbon' },
+        { id: 'wizard_hat', name: 'Wizard Hat', desc: 'Starry indigo sorcerer hat' }
       ];
 
       contentHtml = '' +
@@ -12693,11 +12784,11 @@ window.switchClassroomSubTab = function(subTab) {
           accOptions.map(opt => {
             const isSelected = (monster.accessory || 'none') === opt.id || (!monster.accessory && opt.id === 'none');
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'accessory\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'accessory\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('accessory', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Equip') +
                 '</span>' +
               '</div>';
@@ -12706,11 +12797,11 @@ window.switchClassroomSubTab = function(subTab) {
 
     } else if (currentCat === 'aura') {
       const auraOptions = [
-        { id: 'none', name: 'None', icon: '🚫', desc: 'No magical aura' },
-        { id: 'glow', name: 'Pulsing Glow', icon: '💫', desc: 'Luminous ambient energy' },
-        { id: 'star_glow', name: 'Star Particles', icon: '⭐', desc: 'Orbiting stardust particles' },
-        { id: 'sparks', name: 'Arcane Sparks', icon: '⚡', desc: 'Crackling electric energy' },
-        { id: 'wings', name: 'Ether Wings', icon: '🪽', desc: 'Translucent glowing wings' }
+        { id: 'none', name: 'None', desc: 'No magical aura' },
+        { id: 'glow', name: 'Pulsing Glow', desc: 'Luminous ambient energy ring' },
+        { id: 'star_glow', name: 'Star Particles', desc: 'Orbiting golden stardust' },
+        { id: 'sparks', name: 'Arcane Sparks', desc: 'Crackling electric energy' },
+        { id: 'wings', name: 'Ether Wings', desc: 'Translucent glowing wings' }
       ];
 
       contentHtml = '' +
@@ -12718,11 +12809,11 @@ window.switchClassroomSubTab = function(subTab) {
           auraOptions.map(opt => {
             const isSelected = (monster.aura || 'none') === opt.id || (!monster.aura && opt.id === 'none');
             return '' +
-              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'aura\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:2rem; margin-bottom:4px;">' + opt.icon + '</div>' +
-                '<div style="font-size:0.86rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
-                '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + opt.desc + '</div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
+              '<div class="creator-item-tile ' + (isSelected ? 'is-equipped' : '') + '" onclick="selectMonsterCustomization(\'' + student.id + '\', \'aura\', \'' + opt.id + '\')" style="border:' + (isSelected ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isSelected ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:16px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="margin-bottom:8px; display:flex; align-items:center; justify-content:center; height:42px;">' + getStudioOptionThumbnail('aura', opt.id, pal.primary) + '</div>' +
+                '<div style="font-size:0.88rem; font-weight:900; color:#0f172a;">' + opt.name + '</div>' +
+                '<div style="font-size:0.72rem; color:#64748b; margin-bottom:10px;">' + opt.desc + '</div>' +
+                '<span style="font-size:0.76rem; font-weight:800; color:' + (isSelected ? '#2563eb' : '#64748b') + ';">' +
                   (isSelected ? '✓ Equipped' : 'Equip') +
                 '</span>' +
               '</div>';
@@ -12732,19 +12823,19 @@ window.switchClassroomSubTab = function(subTab) {
     } else if (currentCat === 'evolution') {
       const stages = window.MonsterRenderer ? window.MonsterRenderer.stages : [];
       contentHtml = '' +
-        '<div style="margin-bottom:14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px; font-size:0.8rem; color:#1e40af; line-height:1.4;">' +
-          '<strong>Physical Growth Engine:</strong> Evolution alters physical proportions (body size, ear length, tail maturity, stance). The creature stays recognizable as the exact same companion!' +
+        '<div style="margin-bottom:14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:14px; font-size:0.82rem; color:#1e40af; line-height:1.5;">' +
+          '<strong>Physical Growth Engine:</strong> Evolution alters the actual body proportions (cranial volume, ear length, tail maturity, stance). The creature remains instantly recognizable as the exact same companion!' +
         '</div>' +
 
         // XP Simulation Boost Bar
-        '<div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">' +
-          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 100)" style="flex:1; min-width:130px; padding:8px 12px; background:#2563eb; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+        '<div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 100)" style="flex:1; min-width:130px; padding:9px 14px; background:#2563eb; color:#fff; border:none; border-radius:12px; font-weight:900; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(37,99,235,0.3);">' +
             '⚡ +100 XP' +
           '</button>' +
-          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 400)" style="flex:1; min-width:180px; padding:8px 12px; background:#7c3aed; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 400)" style="flex:1.2; min-width:180px; padding:9px 14px; background:#7c3aed; color:#fff; border:none; border-radius:12px; font-weight:900; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(124,58,237,0.3);">' +
             '🚀 +400 XP (Tot ➔ Young)' +
           '</button>' +
-          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 1000)" style="flex:1; min-width:130px; padding:8px 12px; background:#d97706; color:#fff; border:none; border-radius:10px; font-weight:800; font-size:0.78rem; cursor:pointer;">' +
+          '<button type="button" onclick="addStudentMonsterXP(\'' + student.id + '\', 1000)" style="flex:1; min-width:130px; padding:9px 14px; background:#d97706; color:#fff; border:none; border-radius:12px; font-weight:900; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(217,119,6,0.3);">' +
             '⭐ +1,000 XP' +
           '</button>' +
         '</div>' +
@@ -12752,11 +12843,19 @@ window.switchClassroomSubTab = function(subTab) {
         '<div class="creator-items-grid">' +
           stages.map(st => {
             const isCurrent = monster.evolutionStage === st.level;
+            const previewMonster = Object.assign({}, monster, { evolutionStage: st.level, previewStage: st.level });
+            const miniArt = window.MonsterRenderer ? window.MonsterRenderer.render(previewMonster, {
+              size: 85,
+              showPedestal: false,
+              animated: false
+            }) : '👾';
+
             return '' +
-              '<div class="creator-item-tile ' + (isCurrent ? 'is-equipped' : '') + '" onclick="setStudentMonsterEvolutionStage(\'' + student.id + '\', ' + st.level + ')" style="border:' + (isCurrent ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isCurrent ? '#eff6ff' : '#ffffff') + '; cursor:pointer;">' +
-                '<div style="font-size:0.75rem; font-weight:900; color:#3b82f6; text-transform:uppercase;">Level ' + st.level + '</div>' +
-                '<div style="font-size:0.92rem; font-weight:900; color:#0f172a; margin:2px 0;">' + st.name + '</div>' +
-                '<div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:4px;">' + st.xpRequired.toLocaleString() + ' XP</div>' +
+              '<div class="creator-item-tile ' + (isCurrent ? 'is-equipped' : '') + '" onclick="setStudentMonsterEvolutionStage(\'' + student.id + '\', ' + st.level + ')" style="border:' + (isCurrent ? '2.5px solid #2563eb' : '1px solid #e2e8f0') + '; background:' + (isCurrent ? '#eff6ff' : '#ffffff') + '; cursor:pointer; padding:12px; border-radius:18px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:all 0.15s ease;">' +
+                '<div style="height:85px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' + miniArt + '</div>' +
+                '<div style="font-size:0.75rem; font-weight:900; color:#2563eb; text-transform:uppercase;">Level ' + st.level + '</div>' +
+                '<div style="font-size:0.92rem; font-weight:900; color:#0f172a; margin:1px 0;">' + st.name + '</div>' +
+                '<div style="font-size:0.75rem; font-weight:800; color:#d97706; margin-bottom:2px;">' + st.xpRequired.toLocaleString() + ' XP</div>' +
                 '<div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">' + st.subtitle + '</div>' +
                 '<span style="font-size:0.75rem; font-weight:800; color:' + (isCurrent ? '#2563eb' : '#64748b') + ';">' +
                   (isCurrent ? '● Active Body' : 'Preview Stage') +
@@ -12767,16 +12866,16 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     return '' +
-      '<div class="creator-drawer-pane">' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
+      '<div class="creator-drawer-pane" style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:24px; padding:22px; box-shadow:0 8px 24px rgba(15,23,42,0.06);">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
           '<h3 style="font-size:1.2rem; font-weight:900; color:#0f172a; margin:0;">Character Studio Customizer</h3>' +
-          '<span style="font-size:0.78rem; font-weight:800; color:#2563eb; background:#eff6ff; padding:4px 12px; border-radius:999px;">' + currentCat.toUpperCase() + '</span>' +
+          '<span style="font-size:0.78rem; font-weight:900; color:#2563eb; background:#eff6ff; padding:5px 14px; border-radius:999px; border:1px solid #bfdbfe;">' + currentCat.toUpperCase() + '</span>' +
         '</div>' +
 
-        // 8 CATEGORIES NAV: FUR, EYES, EARS, TAIL, OUTFIT, ACCESSORY, AURA, EVOLUTION
-        '<div class="creator-cat-nav" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">' +
+        // 8 CATEGORIES NAV: Fur, Eyes, Ears, Tail, Outfit, Accessory, Aura, Evolution
+        '<div class="creator-cat-nav" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;">' +
           categories.map(cat => 
-            '<button type="button" class="creator-cat-pill ' + (currentCat === cat.id ? 'is-active' : '') + '" onclick="switchMonsterCategory(\'' + cat.id + '\', \'' + student.id + '\')" style="padding:6px 12px; border-radius:20px; font-size:0.8rem; font-weight:800; border:' + (currentCat === cat.id ? '2px solid #2563eb' : '1px solid #cbd5e1') + '; background:' + (currentCat === cat.id ? '#2563eb' : '#f8fafc') + '; color:' + (currentCat === cat.id ? '#ffffff' : '#334155') + '; cursor:pointer; transition:all 0.15s ease;">' +
+            '<button type="button" class="creator-cat-pill ' + (currentCat === cat.id ? 'is-active' : '') + '" onclick="switchMonsterCategory(\'' + cat.id + '\', \'' + student.id + '\')" style="padding:8px 14px; border-radius:22px; font-size:0.82rem; font-weight:800; border:' + (currentCat === cat.id ? '2px solid #2563eb' : '1px solid #cbd5e1') + '; background:' + (currentCat === cat.id ? '#2563eb' : '#f8fafc') + '; color:' + (currentCat === cat.id ? '#ffffff' : '#334155') + '; cursor:pointer; transition:all 0.15s ease; box-shadow:' + (currentCat === cat.id ? '0 3px 10px rgba(37,99,235,0.3)' : 'none') + ';">' +
               cat.icon + ' ' + cat.label +
             '</button>'
           ).join('') +
@@ -12786,8 +12885,7 @@ window.switchClassroomSubTab = function(subTab) {
         contentHtml +
       '</div>';
   }
-
-  function renderMonsterHeroCard(student, monsterState, profile) {
+function renderMonsterHeroCard(student, monsterState, profile) {
     const isHatched = monsterState.isHatched;
     const progressPct = monsterState.progressPctToNextLevel !== undefined ? monsterState.progressPctToNextLevel : (monsterState.progressPct || 50);
     const isBoy = (profile.style || 'boy') === 'boy';
