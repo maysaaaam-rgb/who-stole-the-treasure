@@ -863,7 +863,8 @@
       'alice-quest': 'alice-quest/index.html',
       'brain-quit': 'brain/index.html',
       'the-day-your-brain-quit': 'brain/index.html',
-      'brain': 'brain/index.html'
+      'brain': 'brain/index.html',
+      'nasa-mission': 'nasa-mission/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

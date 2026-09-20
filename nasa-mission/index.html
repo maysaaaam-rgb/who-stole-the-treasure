@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🚀 NASA Mission: Find a New Planet | English Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🚀</text></svg>">
+  <script>
+    if (!location.pathname.endsWith('/') && !location.pathname.endsWith('.html')) {
+      location.replace(location.pathname + '/' + location.search + location.hash);
+    }
+  </script>
+  <link rel="stylesheet" href="css/nasa-mission.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Starfield Canvas Backdrop -->
+  <canvas id="starfieldCanvas"></canvas>
+
+  <div id="nasaAppWrapper">
+    <!-- Top HUD Header -->
+    <header class="nasa-hud-header" id="nasaHudHeader">
+      <div class="nasa-hud-left">
+        <a href="../index.html#library" class="nasa-btn-library" title="Return to Educational Resource Library">
+          <span>🏛️</span> <span>Academy Library</span>
+        </a>
+
+        <div class="nasa-brand-cluster" onclick="window.NasaMission.goToStage(1)" title="Return to Pre-Flight Screen">
+          <span class="nasa-logo-pulse">🚀</span>
+          <div>
+            <div class="nasa-brand-title">NASA MISSION</div>
+            <div class="nasa-brand-sub">FIND A NEW PLANET • CLIL LAB</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nasa-hud-right">
+        <div class="nasa-stat-pill xp-pill" title="Total XP Earned">
+          <span>⭐</span> <span id="nasaXpDisplay">0 XP</span>
+        </div>
+
+        <div class="nasa-stat-pill fuel-pill" title="Rocket Fuel Level">
+          <span>⛽</span> <span id="nasaFuelDisplay">Fuel: 0%</span>
+        </div>
+
+        <button type="button" class="nasa-btn-hud" id="nasaSoundBtn" title="Toggle Sound / Mute">
+          🔊 <span>Sound: ON</span>
+        </button>
+
+        <a href="worksheet.html" target="_blank" class="nasa-btn-hud" title="Print Mission Log & Diploma">
+          🖨️ <span>Worksheet</span>
+        </a>
+
+        <button type="button" class="nasa-btn-hud" onclick="window.NasaMission.openDossierModal()" title="View Mission Dossier">
+          📋 <span>Mission Log</span>
+        </button>
+
+        <button type="button" class="nasa-btn-hud teacher-btn" onclick="window.NasaMission.openTeacherModal()" title="Open Teacher Guide HUD">
+          🧑‍🏫 <span>Teacher HUD</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Stage Tracker Bar -->
+    <nav class="nasa-stage-tracker" id="nasaStageTracker" aria-label="Mission Stages"></nav>
+
+    <!-- Main Dynamic Gameplay Stage Container -->
+    <main class="nasa-stage-container" id="nasaStageContainer"></main>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 1: NASA PLANETARY PIONEER DIPLOMA
+       ========================================================================= -->
+  <div class="nasa-modal-backdrop" id="nasaDiplomaModal">
+    <div class="nasa-modal-box">
+      <button type="button" class="modal-close-btn" onclick="window.NasaMission.closeDiplomaModal()">&times;</button>
+      <div class="diploma-card">
+        <div style="font-size: 3rem; margin-bottom: 8px;">🎖️</div>
+        <div class="diploma-title">NASA Planetary Explorer Diploma</div>
+        <div style="font-size: 0.95rem; color: #a5b4fc; font-weight: 700;">OFFICIAL CERTIFICATE OF COMPLETION</div>
+        <p style="margin-top: 14px; font-size: 0.9rem; color: var(--text-muted);">This certifies that Cadet</p>
+        <div class="diploma-recipient">CADET ALEX</div>
+        <p style="font-size: 0.92rem; color: var(--text-main); line-height: 1.6; max-width: 480px; margin: 0 auto 16px;">
+          has successfully boosted rocket thrusters with Magic 'E', scanned planet <strong>Cryo-Gliese</strong>, sorted critical life-support cargo, engineered an ice-melting rover, and broadcast the mission report to Earth!
+        </p>
+        <div style="display: flex; justify-content: center; gap: 14px; margin-top: 20px;">
+          <a href="worksheet.html" target="_blank" class="nasa-btn-hud" style="background: #fbbf24; color: #0f172a; font-weight: 900;">
+            🖨️ Print Full Official Diploma
+          </a>
+          <button type="button" class="nasa-btn-hud" onclick="window.NasaMission.closeDiplomaModal()">
+            Continue Exploring
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: MISSION DOSSIER / LOG NOTEBOOK
+       ========================================================================= -->
+  <div class="nasa-modal-backdrop" id="nasaDossierModal">
+    <div class="nasa-modal-box">
+      <button type="button" class="modal-close-btn" onclick="window.NasaMission.closeDossierModal()">&times;</button>
+      <h2 style="font-size: 1.4rem; font-weight: 900; color: var(--cyan); margin-bottom: 12px;">
+        📋 Cadet Mission Dossier
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem;">
+        <div style="background: #1e293b; padding: 14px; border-radius: 8px;">
+          <strong style="color: #fff;">Target Planet:</strong> Cryo-Gliese (Glacial Ice World)<br>
+          <strong style="color: #fff;">Discovered Traits:</strong> Cold, Rocky, Dark
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 8px;">
+          <strong style="color: #fff;">Vital Life-Support Cargo:</strong> Oxygen Tanks, Fresh Water, Crop Seeds, Space Suits
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 8px;">
+          <strong style="color: #fff;">Invention Solution:</strong> Snow-Track Tank + Thermal Dynamo + Thermal Heat Ray (Melts ice for drinking water)
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 8px;">
+          <strong style="color: #fff;">Classmate Peer Upgrade:</strong> UV Water Filter (Station Tokyo)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 3: TEACHER HUD & LESSON PLAN
+       ========================================================================= -->
+  <div class="nasa-modal-backdrop" id="nasaTeacherModal">
+    <div class="nasa-modal-box">
+      <button type="button" class="modal-close-btn" onclick="window.NasaMission.closeTeacherModal()">&times;</button>
+      <h2 style="font-size: 1.4rem; font-weight: 900; color: #a5b4fc; margin-bottom: 12px;">
+        🧑‍🏫 Teacher Guide & Curriculum Blueprint
+      </h2>
+      <div style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <strong style="color: #fff;">Level & Target Audience:</strong> Primary Grade 3–4 | CEFR A1/A1+ ESL & CLIL
+        </div>
+        <div>
+          <strong style="color: #fff;">Core Language Targets:</strong>
+          <ul style="margin-left: 20px; margin-top: 4px;">
+            <li>Descriptive Adjectives: <em>It is [cold / hot / rocky / dark].</em></li>
+            <li>Survival Needs: <em>People need [water / oxygen] to live.</em></li>
+            <li>Functions & Purpose: <em>It can [melt ice / filter water].</em></li>
+            <li>Conjunction Expansion: <em>My machine can [melt ice] AND [filter water].</em></li>
+          </ul>
+        </div>
+        <div>
+          <strong style="color: #fff;">Phonics Target:</strong>
+          Magic 'E' (Silent 'e') CVC vs. CVCe vowel discrimination: <em>cap/cape, kit/kite, hop/hope, cut/cute</em>.
+        </div>
+        <div>
+          <strong style="color: #fff;">Smart Board / Class Activity Modes:</strong>
+          Divide the class into Mission Teams (Flight Navigators, Geological Scouts, Cargo Loaders, Mechanical Engineers). Have students read the teleprompter broadcast in chorus or record individual cadets!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/nasa-mission-data.js"></script>
+  <script src="js/nasa-mission-audio.js"></script>
+  <script src="js/nasa-mission-app.js"></script>
+</body>
+</html>

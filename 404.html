@@ -184,6 +184,9 @@
       } else if (pathname.includes('alice')) {
         targetUrl = basePrefix + 'alice-quest/index.html';
         targetName = "Alice's Reading Quest";
+      } else if (pathname.includes('nasa') || pathname.includes('planet')) {
+        targetUrl = basePrefix + 'nasa-mission/index.html';
+        targetName = 'NASA Mission: Find a New Planet';
       } else if (pathname.includes('library')) {
         targetUrl = basePrefix + 'index.html#library';
         targetName = 'ESL Academy Library';
