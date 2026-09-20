@@ -3144,6 +3144,83 @@
     </div>
   </div>
 
+  <!-- Dedicated Alice in Wonderland XP Quest Grader Modal -->
+  <div class="modal-overlay" id="modal-alice-quest-grader" style="z-index: 1280;">
+    <div class="modal-dialog" style="max-width: 880px; max-height: 92vh; overflow-y: auto; border-radius: 20px; border: 2px solid #a855f7; box-shadow: 0 25px 60px rgba(0,0,0,0.4); padding: 24px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-alice-quest-grader')">✕</button>
+
+      <!-- Header Banner -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-light); padding-bottom:16px; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg, #a855f7 0%, #ec4899 100%); display:flex; align-items:center; justify-content:center; font-size:28px; box-shadow:0 4px 14px rgba(168,85,247,0.4);">
+            🫖
+          </div>
+          <div>
+            <h2 style="font-size:1.35rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              <span>Alice in Wonderland: XP Quest Grader</span>
+              <span style="font-size:0.75rem; background:rgba(168,85,247,0.15); color:#a855f7; padding:2px 8px; border-radius:12px; font-weight:800;">13 Challenges</span>
+            </h2>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Select a learner and check off verified challenges to credit their ledger and advance Monster Evolution.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-sm-secondary" onclick="openModal('modal-alice-poster')" style="font-weight:800; color:#38bdf8; border-color:#38bdf8; display:flex; align-items:center; gap:6px;">
+          🖼️ View Quest Poster
+        </button>
+      </div>
+
+      <!-- Student Picker Bar & Active Monster Card -->
+      <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:14px 16px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+        <div style="flex:1; min-width:240px;">
+          <label style="display:block; font-size:0.8rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">👤 Select Student from Active Roster:</label>
+          <select id="alice-grader-student-select" class="filter-select" style="width:100%; font-weight:700; font-size:0.9rem;" onchange="handleAliceGraderStudentChange(this.value)">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div id="alice-grader-student-preview" style="display:flex; align-items:center; gap:12px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:8px 14px; min-width:210px;">
+          <!-- Dynamically updated with student badge, level, and XP -->
+        </div>
+      </div>
+
+      <!-- Challenge Picker Container (Grouped by Level 1, Level 2, Level 3, and Base) -->
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+          <span style="font-size:0.88rem; font-weight:900; color:var(--text-main);">🎯 Select Completed Challenges:</span>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-sm-secondary" onclick="selectAliceGraderLevel(1)" style="font-size:0.75rem; padding:3px 8px; color:#10b981; border-color:#10b981; font-weight:800;">+ Level 1 (All)</button>
+            <button type="button" class="btn-sm-secondary" onclick="selectAliceGraderLevel(2)" style="font-size:0.75rem; padding:3px 8px; color:#0284c7; border-color:#0284c7; font-weight:800;">+ Level 2 (All)</button>
+            <button type="button" class="btn-sm-secondary" onclick="selectAliceGraderLevel(3)" style="font-size:0.75rem; padding:3px 8px; color:#a855f7; border-color:#a855f7; font-weight:800;">+ Level 3 (All)</button>
+            <button type="button" class="btn-sm-secondary" onclick="clearAliceGraderSelection()" style="font-size:0.75rem; padding:3px 8px; font-weight:700;">Clear All</button>
+          </div>
+        </div>
+
+        <div id="alice-grader-challenges-grid" style="display:flex; flex-direction:column; gap:14px;">
+          <!-- Challenges dynamically rendered -->
+        </div>
+      </div>
+
+      <!-- Teacher Evidence Field -->
+      <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px; margin-bottom:18px;">
+        <label style="display:block; font-size:0.8rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">📎 Teacher Evidence &amp; Student Notes (Optional):</label>
+        <input type="text" id="alice-grader-evidence" class="filter-select" style="width:100%; font-size:0.85rem;" placeholder="e.g. Seesaw video link, audio recording clip, or sketchbook page 14..." />
+      </div>
+
+      <!-- Footer Summary & Action Strip -->
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:16px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span id="alice-grader-summary-badge" style="font-size:1.05rem; font-weight:900; color:#2563eb; background:rgba(37,99,235,0.1); border:1.5px solid rgba(37,99,235,0.25); padding:6px 16px; border-radius:999px; display:inline-block;">
+            0 Challenges Selected · +0 XP
+          </span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-alice-quest-grader')" style="padding:10px 18px; font-size:0.9rem;">Cancel</button>
+          <button type="button" id="btn-alice-grader-submit" class="btn-primary-action" onclick="handleSubmitAliceQuestGrader()" style="padding:10px 24px; font-weight:900; font-size:0.95rem; background:linear-gradient(135deg, #a855f7 0%, #2563eb 100%); border:none; box-shadow:0 4px 15px rgba(168,85,247,0.4);" disabled>
+            🚀 Award Quest XP (+0 XP)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Homework Submissions & Live Evidence Grading Modal -->
   <div class="modal-overlay" id="modal-homework-grading">
     <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
@@ -3152,7 +3229,10 @@
         <div style="flex:1; min-width:240px;">
           <h2 id="hw-grading-title" style="font-size:1.35rem; font-weight:800; margin:0;">Homework Submissions &amp; Grading</h2>
           <p id="hw-grading-subtitle" style="font-size:0.84rem; color:var(--text-muted); margin:2px 0 0 0;">Track task completion and record evidence-based mastery accuracy.</p>
-          <button type="button" class="btn-sm-secondary" onclick="openModal('modal-alice-poster')" style="font-weight:800; color:#0284c7; border-color:#0284c7; display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-size:0.76rem; padding:3px 10px;">🖼️ View XP Challenge Poster</button>
+          <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-sm-secondary" onclick="openModal('modal-alice-poster')" style="font-weight:800; color:#0284c7; border-color:#0284c7; display:inline-flex; align-items:center; gap:6px; font-size:0.76rem; padding:3px 10px;">🖼️ View Poster</button>
+            <button type="button" class="btn-primary-action" onclick="closeModal('modal-homework-grading'); openAliceQuestGraderModal();" style="font-weight:800; font-size:0.76rem; padding:3px 12px; background:#a855f7; border-color:#9333ea;">🎯 Single-Student Grader</button>
+          </div>
         </div>
         <div style="min-width:280px;">
           <label style="display:block; font-size:0.75rem; font-weight:800; color:var(--text-muted); margin-bottom:4px;">Switch Quest / Discrete Task:</label>

@@ -5,166 +5,225 @@
 (function(root) {
   'use strict';
 
+  // 13 Discrete Verified Tasks matching the reference poster
   const ALICE_HOMEWORK_ASSIGNMENTS = [
     // Base Participation
     {
       id: "hw-alice-checkin",
       code: "HW-ALICE-000",
-      tier: "Base",
+      tier: "Base Participation",
       level: 0,
-      title: "Completed Base Log / Reading Check-In",
+      levelLabel: "Base Participation",
+      title: "Base Reading Check-In / Submission Log",
       xp: 10,
-      category: "Participation",
+      category: "Participation & Daily Habit",
+      icon: "🐇",
+      instructions: "No Challenge? That's okay! You'll still get 10 XP for being here and logging your reading check-in.",
       description: "Submit reading check-in log and daily reading participation confirmation.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
-    // Tier 1: Level 1 — Get Started!
+    // Level 1: Get Started! (Vocabulary & Understanding)
     {
       id: "hw-alice-vocab10",
       code: "HW-ALICE-101",
-      tier: "Tier 1",
+      tier: "Level 1: Get Started!",
       level: 1,
-      title: "Learn 10 New Words & Meanings",
+      levelLabel: "Level 1",
+      title: "Learn 10 new words and explain meanings",
       xp: 10,
-      category: "Vocabulary",
-      description: "Learn 10 new vocabulary words and their meanings from the chapter.",
+      category: "Vocabulary & Understanding",
+      icon: "📖",
+      instructions: "Learn 10 new words from the story and explain their meanings.",
+      description: "Find, define, and explain 10 unfamiliar vocabulary words encountered in the story.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-fav-char",
       code: "HW-ALICE-102",
-      tier: "Tier 1",
+      tier: "Level 1: Get Started!",
       level: 1,
-      title: "Favorite Character + 3 Reasons",
+      levelLabel: "Level 1",
+      title: "Name favorite character + 3 reasons why",
       xp: 15,
-      category: "Speaking/Writing",
-      description: "Choose your favorite character from Wonderland and explain 3 reasons why.",
+      category: "Vocabulary & Understanding",
+      icon: "❤️",
+      instructions: "Tell us your favorite character and give 3 reasons why.",
+      description: "Select one character from Wonderland and present 3 distinct reasons why you like them.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-draw",
       code: "HW-ALICE-103",
-      tier: "Tier 1",
+      tier: "Level 1: Get Started!",
       level: 1,
-      title: "Draw a Scene/Character & Explain",
+      levelLabel: "Level 1",
+      title: "Draw a character/scene and explain",
       xp: 20,
-      category: "Creative",
-      description: "Draw a colorful scene or character from Alice in Wonderland and write/speak an explanation.",
+      category: "Vocabulary & Understanding",
+      icon: "🎨",
+      instructions: "Draw a character or scene and explain your drawing.",
+      description: "Create a colorful illustration of a character or key moment and explain what is happening.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-comp5",
       code: "HW-ALICE-104",
-      tier: "Tier 1",
+      tier: "Level 1: Get Started!",
       level: 1,
-      title: "Answer 5 Comprehension Questions",
+      levelLabel: "Level 1",
+      title: "Answer 5 comprehension questions",
       xp: 20,
-      category: "Reading",
-      description: "Answer 5 story comprehension questions in complete sentences.",
+      category: "Vocabulary & Understanding",
+      icon: "📝",
+      instructions: "Answer 5 comprehension questions about the story.",
+      description: "Demonstrate story understanding by formulating complete written answers to 5 comprehension queries.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
-    // Tier 2: Level 2 — Go Deeper!
+    // Level 2: Go Deeper! (Thinking & Applied English)
     {
       id: "hw-alice-vocab25",
       code: "HW-ALICE-201",
-      tier: "Tier 2",
+      tier: "Level 2: Go Deeper!",
       level: 2,
-      title: "Learn 25 Words (10 Used in Sentences)",
+      levelLabel: "Level 2",
+      title: "Learn 25 words (use 10 in sentences)",
       xp: 40,
-      category: "Vocabulary",
-      description: "Master 25 story vocabulary words and use at least 10 in original context sentences.",
+      category: "Thinking & Applied English",
+      icon: "📚",
+      instructions: "Learn 25 words from the story and use 10 of them in sentences.",
+      description: "Master 25 story vocabulary words and compose original contextual sentences using at least 10 words.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-speech2m",
       code: "HW-ALICE-202",
-      tier: "Tier 2",
+      tier: "Level 2: Go Deeper!",
       level: 2,
-      title: "2-Minute Character Talk (Actions & Role)",
+      levelLabel: "Level 2",
+      title: "2-minute character talk (personality, actions, role)",
       xp: 50,
-      category: "Speaking",
-      description: "Deliver a 2-minute oral presentation describing a character's key actions and role.",
+      category: "Thinking & Applied English",
+      icon: "💬",
+      instructions: "Talk about one character for 2 minutes (personality, actions, and role).",
+      description: "Deliver a structured 2-minute oral presentation analyzing a character's choices and story role.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-retell",
       code: "HW-ALICE-203",
-      tier: "Tier 2",
+      tier: "Level 2: Go Deeper!",
       level: 2,
-      title: "Retell One Key Scene (Without Reading)",
+      levelLabel: "Level 2",
+      title: "Retell one key scene without reading from the book",
       xp: 50,
-      category: "Speaking",
-      description: "Retell one key scene from memory using descriptive adverbs and sequence connectors.",
+      category: "Thinking & Applied English",
+      icon: "🎬",
+      instructions: "Retell one important scene without reading from the book.",
+      description: "Fluently retell a key scene from memory using descriptive time sequence transitions.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-new-ending",
       code: "HW-ALICE-204",
-      tier: "Tier 2",
+      tier: "Level 2: Go Deeper!",
       level: 2,
-      title: "Write an Alternate Ending (100–150 Words)",
+      levelLabel: "Level 2",
+      title: "Write an alternate story ending (100–150 words)",
       xp: 50,
-      category: "Writing",
-      description: "Create and write a 100–150 word original alternate ending for Alice in Wonderland.",
+      category: "Thinking & Applied English",
+      icon: "✍️",
+      instructions: "Write a new ending for the story (100–150 words).",
+      description: "Draft a creative alternate resolution for Alice in Wonderland in 100–150 descriptive words.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
 
-    // Tier 3: Level 3 — Big Challenge!
+    // Level 3: Big Challenge! (Deep Mastery & Performance)
     {
       id: "hw-alice-char-compare",
       code: "HW-ALICE-301",
-      tier: "Tier 3",
+      tier: "Level 3: Big Challenge!",
       level: 3,
-      title: "Compare Two Characters in Detail",
+      levelLabel: "Level 3",
+      title: "Compare two characters in detail (similarities & differences)",
       xp: 80,
-      category: "Critical Thinking",
-      description: "Conduct an in-depth character comparison analyzing personality traits, motivations, and conflicts.",
+      category: "Deep Mastery & Performance",
+      icon: "👫",
+      instructions: "Compare two characters in detail (similarities & differences).",
+      description: "Analyze similarities and differences between two characters in personality, motives, and actions.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-journey",
       code: "HW-ALICE-302",
-      tier: "Tier 3",
+      tier: "Level 3: Big Challenge!",
       level: 3,
-      title: "Explain Alice’s Journey & Character Arc",
+      levelLabel: "Level 3",
+      title: "Explain Alice's journey and personal growth",
       xp: 80,
-      category: "Critical Thinking",
-      description: "Detail Alice's growth from curiosity and confusion to confidence and problem-solving.",
+      category: "Deep Mastery & Performance",
+      icon: "💡",
+      instructions: "Explain Alice’s journey and how she changes throughout the story.",
+      description: "Examine Alice's personal growth and evolution from curiosity and confusion to confidence.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-act-out",
       code: "HW-ALICE-303",
-      tier: "Tier 3",
+      tier: "Level 3: Big Challenge!",
       level: 3,
-      title: "Act Out a Scene (Partner/Group Video)",
+      levelLabel: "Level 3",
+      title: "Act out a scene with partner/group or record video",
       xp: 100,
-      category: "Speaking/Drama",
-      description: "Collaborate with a partner or group to record and submit a dramatic scene reenactment.",
+      category: "Deep Mastery & Performance",
+      icon: "🎭",
+      instructions: "Act out a scene with a partner or group (or make a video).",
+      description: "Collaborate to rehearse and perform a dramatic reenactment of an iconic scene.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     },
     {
       id: "hw-alice-full-summary",
       code: "HW-ALICE-304",
-      tier: "Tier 3",
+      tier: "Level 3: Big Challenge!",
       level: 3,
-      title: "Full Story Spoken Summary (5–7 Minutes)",
+      levelLabel: "Level 3",
+      title: "Spoken full-story summary (5–7 minutes in own words)",
       xp: 200,
-      category: "Speaking/Mastery",
-      description: "Deliver a master spoken presentation summarizing the entire narrative with comprehensive detail.",
+      category: "Deep Mastery & Performance",
+      icon: "👑",
+      instructions: "Read the ENTIRE story and give a 5–7 minute summary in your own words.",
+      description: "Deliver a master spoken oral summary covering Exposition, Rising Action, Climax, and Resolution.",
       poster: "assets/homework/alice-xp-challenges-poster.jpg"
     }
   ];
 
-  // Global AdventureAcademy Hub
+  // Collection Metadata
+  const ALICE_WONDERLAND_XP_QUEST = {
+    id: "alice-wonderland-xp-quest",
+    title: "Alice in Wonderland XP Challenges",
+    subtitle: "Choose a challenge. The more you challenge yourself, the more XP you earn!",
+    quote: "Every adventure starts with a choice. — Alice ❤️",
+    slogan: "Same Story. Different Challenges. Brighter Learners!",
+    poster: "assets/homework/alice-xp-challenges-poster.jpg",
+    totalTasks: ALICE_HOMEWORK_ASSIGNMENTS.length,
+    levels: [
+      { level: 1, title: "Level 1: Get Started!", subtitle: "Build your vocabulary and understanding.", color: "#10b981", badge: "Small steps lead to big adventures!" },
+      { level: 2, title: "Level 2: Go Deeper!", subtitle: "Show your thinking and use your English.", color: "#0284c7", badge: "Curious minds go further!" },
+      { level: 3, title: "Level 3: Big Challenge! 👑", subtitle: "Show your full understanding and creativity.", color: "#a855f7", badge: "Think deeper. Speak braver. Earn bigger!" },
+      { level: 0, title: "Base Participation", subtitle: "Daily Reading Habit Check-In", color: "#64748b", badge: "You'll still get 10 XP for being here!" }
+    ],
+    tasks: ALICE_HOMEWORK_ASSIGNMENTS
+  };
+
+  // AdventureAcademy Global Hub
   root.ALICE_HOMEWORK_ASSIGNMENTS = ALICE_HOMEWORK_ASSIGNMENTS;
+  root.ALICE_WONDERLAND_XP_QUEST = ALICE_WONDERLAND_XP_QUEST;
   root.AdventureAcademy = root.AdventureAcademy || {};
 
   /**
-   * Directly updates student balance and triggers monster evolution check
-   * @param {Object} payload - { studentId, amount, source, timestamp }
+   * Directly updates student balance, triggers audio, and checks monster evolution
+   * @param {Object} payload - { studentId, amount, source, timestamp, notes }
    */
   root.AdventureAcademy.awardXP = function(payload) {
     if (!payload || !payload.studentId) {
@@ -182,29 +241,42 @@
     const res = store.giveXP(payload.studentId, amount, source, 'Homework');
 
     if (res) {
-      // Trigger Monster Evolution Check if applicable
+      // Audio cue: Play fanfare for big achievements (>= 80 XP), otherwise coin chime
+      try {
+        if (root.academyAudio) {
+          if (amount >= 80 && typeof root.academyAudio.playFanfare === 'function') {
+            root.academyAudio.playFanfare();
+          } else if (typeof root.academyAudio.playCoin === 'function') {
+            root.academyAudio.playCoin();
+          }
+        }
+      } catch (err) {
+        console.warn('Sound playback skipped:', err);
+      }
+
+      // Check Monster Evolution trigger
       if (res.evolutionEvent && typeof root.openMonsterLevelUpModal === 'function') {
         root.openMonsterLevelUpModal(payload.studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
       }
-      // Re-render current platform view to update UI counters
+
+      // Re-render views & update leaderboard standings
       if (typeof root.renderCurrentView === 'function') {
         root.renderCurrentView();
       }
-      // Notify Teacher UI
+
+      // Notify UI
       if (typeof root.showNotification === 'function') {
         const studentName = res.student ? (res.student.firstName + ' ' + (res.student.lastName || '')) : 'Student';
-        root.showNotification('⭐ +' + amount + ' XP awarded to ' + studentName.trim() + ' for "' + source + '"!');
+        root.showNotification('🎉 +' + amount + ' XP awarded to ' + studentName.trim() + ' for ' + source + '!');
       }
     }
     return res;
   };
 
   /**
-   * Helper to award directly to a selected learner in your XP Ledger
-   * @param {string} studentId
-   * @param {string} assignmentId - e.g. "hw-alice-vocab10" or "HW-ALICE-101"
+   * Helper to award a single discrete assignment
    */
-  root.awardHomeworkXP = function(studentId, assignmentId) {
+  root.awardHomeworkXP = function(studentId, assignmentId, notes = '') {
     const assignment = ALICE_HOMEWORK_ASSIGNMENTS.find(a => 
       a.id === assignmentId || 
       a.code === assignmentId || 
@@ -217,7 +289,7 @@
       return null;
     }
 
-    // Also mark homework submission in store if this homework item exists
+    // Mark homework submission in store
     const store = root.store;
     if (store && typeof store.recordHomeworkSubmission === 'function') {
       const hwItem = store.getHomeworkItem ? store.getHomeworkItem(assignment.id) : null;
@@ -225,18 +297,69 @@
         store.recordHomeworkSubmission(assignment.id, studentId, {
           status: 'COMPLETED',
           completedDate: new Date().toISOString().split('T')[0],
-          notes: 'Completed task: ' + assignment.title
+          notes: notes || ('Completed task: ' + assignment.title)
         });
       }
     }
 
-    // Directly updates student balance and triggers monster evolution check
     return root.AdventureAcademy.awardXP({
       studentId: studentId,
       amount: assignment.xp,
-      source: 'Homework: ' + (assignment.code ? '[' + assignment.code + '] ' : '') + assignment.title,
+      source: `Homework: [${assignment.code}] ${assignment.title}`,
+      notes: notes,
       timestamp: new Date().toISOString()
     });
+  };
+
+  /**
+   * Helper to award multiple challenges simultaneously for a selected student
+   * @param {string} studentId
+   * @param {Array<string>} taskIds
+   * @param {string} teacherEvidence
+   */
+  root.awardMultipleAliceTasks = function(studentId, taskIds = [], teacherEvidence = '') {
+    if (!studentId || !Array.isArray(taskIds) || taskIds.length === 0) {
+      alert('Please select a student and at least one challenge task.');
+      return null;
+    }
+
+    const tasks = ALICE_HOMEWORK_ASSIGNMENTS.filter(a => 
+      taskIds.includes(a.id) || taskIds.includes(a.code)
+    );
+
+    if (tasks.length === 0) {
+      alert('No matching challenges found.');
+      return null;
+    }
+
+    const totalXP = tasks.reduce((sum, t) => sum + (t.xp || 0), 0);
+    const store = root.store;
+
+    // Record submission for each task
+    tasks.forEach(t => {
+      if (store && typeof store.recordHomeworkSubmission === 'function') {
+        const hwItem = store.getHomeworkItem ? store.getHomeworkItem(t.id) : null;
+        if (hwItem) {
+          store.recordHomeworkSubmission(t.id, studentId, {
+            status: 'COMPLETED',
+            completedDate: new Date().toISOString().split('T')[0],
+            notes: teacherEvidence ? ('Evidence: ' + teacherEvidence) : ('Verified quest: ' + t.title)
+          });
+        }
+      }
+    });
+
+    // Write aggregated reward to XP Ledger
+    const taskTitles = tasks.map(t => t.code).join(', ');
+    const res = root.AdventureAcademy.awardXP({
+      studentId: studentId,
+      amount: totalXP,
+      source: `Alice XP Quest: ${taskTitles} (+${totalXP} XP)`,
+      notes: teacherEvidence,
+      timestamp: new Date().toISOString()
+    });
+
+    return { result: res, totalXP, tasks };
   };
 
 })(typeof window !== 'undefined' ? window : global);
