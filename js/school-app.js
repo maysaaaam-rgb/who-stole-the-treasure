@@ -865,8 +865,10 @@
       'the-day-your-brain-quit': 'brain/index.html',
       'brain': 'brain/index.html',
       'nasa-mission': 'nasa-mission/index.html',
-      'bamboozle': 'bamboozle/index.html',
-      'academy-bamboozle': 'bamboozle/index.html'
+      'academy-bamboozle': 'baamboozle/index.html',
+      'baamboozle': 'baamboozle/index.html',
+      'bamboozle': 'baamboozle/index.html',
+      'young-inventors-battle': 'baamboozle/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

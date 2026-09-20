@@ -6,27 +6,27 @@
 
 const GAMES_REGISTRY = [
   {
-    "id": "bamboozle",
-    "title": "⚡ Academy Bamboozle Arena | Young Inventors Edition",
-    "description": "High-energy whole-class team game arena featuring 8 mystery bamboozle boxes, invention questions, team power-ups (Swap, Steal, Double Bonus), and harmonic audio feedback!",
+    "id": "academy-bamboozle",
+    "aliases": ["bamboozle", "baamboozle"],
+    "title": "⚡ Baamboozle Arena: Young Inventors",
+    "description": "High-energy classroom team showdown with mystery cards, problem-solving questions, and sudden game-changing power-ups (Swap, Steal, and Double Points)!",
     "type": "game",
-    "category": "CLIL & STEM Games",
-    "categoryLabel": "⚡ Classroom Quiz Arena",
-    "level": "A1 / A1+",
-    "cefrLevel": "A1+",
-    "age": "Ages 7–11",
-    "ageGroup": "7-11",
+    "category": "Classroom Game Shows",
+    "categoryLabel": "⚡ Team Quiz Show",
+    "level": "All Levels (A1–A2+)",
+    "cefrLevel": "A1–A2+",
+    "age": "Ages 7–12",
+    "ageGroup": "7-12",
     "grade": "Grade 3–5",
     "grades": ["Grade 3", "Grade 4", "Grade 5"],
-    "duration": 20,
-    "durationText": "20 min",
-    "estimatedMinutes": 20,
+    "duration": 15,
+    "durationText": "15 min",
+    "estimatedMinutes": 15,
     "xp": 100,
     "skills": [
-      "ESL Speaking & Recall",
-      "Teamwork & Strategy",
-      "Invention & Science Concepts",
-      "Quick Problem Solving"
+      "Speaking",
+      "Quick Recall",
+      "Team Collaboration"
     ],
     "topic": "Inventions, Tools & Problem Solving",
     "topics": [
@@ -38,8 +38,9 @@ const GAMES_REGISTRY = [
     "languageFocus": "Why did people invent...? People invented... to [verb].",
     "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
     "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
-    "difficulty": "Grade 3–4 A1 / A1+",
+    "difficulty": "All Levels (A1–A2+)",
     "tags": [
+      "baamboozle",
       "bamboozle",
       "game-show",
       "quiz",
@@ -55,22 +56,22 @@ const GAMES_REGISTRY = [
     ],
     "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
     "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
-    "route": "bamboozle/index.html",
+    "route": "baamboozle/index.html",
     "featured": true,
     "thumbnailIcon": "⚡",
-    "gradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #f59e0b 100%)",
+    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
     "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="bamboozleGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#0f172a"/>
-          <stop offset="50%" stop-color="#1e293b"/>
-          <stop offset="100%" stop-color="#f59e0b"/>
+        <linearGradient id="baamboozleGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1e1b4b"/>
+          <stop offset="50%" stop-color="#312e81"/>
+          <stop offset="100%" stop-color="#4338ca"/>
         </linearGradient>
       </defs>
-      <rect width="200" height="140" fill="url(#bamboozleGrad)"/>
+      <rect width="200" height="140" fill="url(#baamboozleGrad)"/>
       <circle cx="100" cy="70" r="44" fill="#f59e0b" opacity="0.25"/>
       <circle cx="100" cy="70" r="28" fill="#38bdf8" opacity="0.6"/>
       <text x="100" y="78" font-size="34" text-anchor="middle">⚡</text>
