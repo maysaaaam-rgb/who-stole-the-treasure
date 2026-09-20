@@ -2078,9 +2078,12 @@ const GAMES_REGISTRY = [
   }
 ];
 
+const GAMES_DATA = GAMES_REGISTRY;
+
 if (typeof window !== "undefined") {
   window.GAMES_REGISTRY = GAMES_REGISTRY;
+  window.GAMES_DATA = GAMES_DATA;
 }
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { GAMES_REGISTRY };
+  module.exports = { GAMES_REGISTRY, GAMES_DATA };
 }
