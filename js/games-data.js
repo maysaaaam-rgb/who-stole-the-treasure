@@ -8,14 +8,14 @@ const GAMES_REGISTRY = [
   {
     "id": "nasa-mission",
     "title": "🚀 NASA Mission: Find a New Planet",
-    "description": "Immersive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted planetary surfaces, sort essential survival cargo, engineer modular problem-solving machines, collaborate with international peers using 'AND', and broadcast the final live discovery report to Earth!",
+    "description": "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
     "type": "game",
     "category": "CLIL & STEM Games",
-    "categoryLabel": "🚀 CLIL & STEM Games",
-    "level": "A1+",
+    "categoryLabel": "🚀 CLIL & Space Exploration",
+    "level": "A1 / A1+",
     "cefrLevel": "A1+",
-    "age": "Ages 7–11",
-    "ageGroup": "7-11",
+    "age": "Ages 6–9",
+    "ageGroup": "6-9",
     "grade": "Grade 3–4",
     "grades": ["Grade 3", "Grade 4"],
     "duration": 40,
@@ -23,26 +23,26 @@ const GAMES_REGISTRY = [
     "estimatedMinutes": 40,
     "xp": 150,
     "skills": [
-      "Science & CLIL",
-      "Speaking",
-      "Phonics",
-      "Vocabulary",
-      "Critical Thinking",
-      "Collaboration"
+      "CLIL Science & Astronomy",
+      "Phonics (Magic 'e')",
+      "Speaking & Presentation",
+      "Descriptive Adjectives",
+      "Survival Vocabulary",
+      "Engineering & Problem Solving"
     ],
-    "topic": "Astronomy, Human Survival Needs & Space Engineering Inventions",
+    "topic": "Planetary Science, Survival Needs & Engineering Inventions",
     "topics": [
-      "Magic 'E' Phonics (CVC vs CVCe)",
-      "Planetary Adjectives",
-      "Essential Survival Needs",
-      "Engineering Design",
-      "Conjunctions (AND)",
-      "Public Speaking Broadcast"
+      "Planetary Science",
+      "Survival Needs",
+      "Engineering Inventions",
+      "Magic 'E' Phonics",
+      "Descriptive Adjectives",
+      "Conjunctions (AND)"
     ],
-    "languageFocus": "It is [cold / rocky / dark]. People need [water / oxygen] to live. The problem is [frozen water]. My machine can [melt ice] AND [filter water].",
+    "languageFocus": "It is [cold / rocky / red]. People need [water / oxygen] to live. The problem is [no water]. It can [melt / filter] AND [clean].",
     "activityMode": "Whole Class Smart Board Interactive / Individual Space Cadet Mode",
     "interactionType": "Phonics Booster Canister, Radar Surface Scanner, Airlock Cargo Sorter, Snap-Together Machine Builder, Peer Upgrade Bay, Live Teleprompter",
-    "difficulty": "Grade 3–4 A1+",
+    "difficulty": "Grade 3–4 A1 / A1+",
     "tags": [
       "space",
       "nasa",
@@ -58,7 +58,7 @@ const GAMES_REGISTRY = [
     ],
     "learningObjectives": [
       "Discriminate between short and long vowel sounds with Magic 'e' (cap/cape, kit/kite, hop/hope, cut/cute)",
-      "Observe and classify planetary environmental conditions using descriptive adjectives (cold, rocky, dark)",
+      "Observe and classify planetary environmental conditions using descriptive adjectives (cold, rocky, red)",
       "Distinguish between essential biological survival needs and non-essential luxury items in space",
       "Design and snap together a modular rover invention to solve an extreme sub-zero freezing crisis",
       "Synthesize compound sentence structures using the coordinating conjunction 'AND'",
@@ -69,16 +69,18 @@ const GAMES_REGISTRY = [
     "route": "nasa-mission/index.html",
     "worksheet": "nasa-mission/worksheet.html",
     "worksheetRoute": "nasa-mission/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🚀",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
-    "featured": true,
     "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="nasaGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#050814"/>
-          <stop offset="50%" stop-color="#0f172a"/>
-          <stop offset="100%" stop-color="#0284c7"/>
+          <stop offset="0%" stop-color="#090d16"/>
+          <stop offset="50%" stop-color="#1e1b4b"/>
+          <stop offset="100%" stop-color="#0369a1"/>
         </linearGradient>
       </defs>
       <rect width="200" height="140" fill="url(#nasaGrad)"/>

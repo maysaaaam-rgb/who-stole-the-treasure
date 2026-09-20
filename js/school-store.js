@@ -672,28 +672,38 @@
     {
       id: "nasa-mission",
       title: "🚀 NASA Mission: Find a New Planet",
+      description: "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
+      type: "game",
       category: "CLIL & STEM Games",
-      level: "A1+",
-      age: "7–11",
+      categoryLabel: "🚀 CLIL & Space Exploration",
+      level: "A1 / A1+",
+      cefrLevel: "A1+",
+      age: "Ages 6–9",
+      ageGroup: "6-9",
       grade: "Grade 3–4",
+      grades: ["Grade 3", "Grade 4"],
       duration: 40,
-      skills: ["Science & CLIL", "Speaking", "Phonics", "Vocabulary", "Critical Thinking", "Collaboration"],
-      topics: ["Magic 'E' Phonics", "Planetary Adjectives", "Survival Needs", "Engineering", "Conjunctions (AND)", "Speaking"],
-      objectives: [
-        "Discriminate between short and long vowel sounds with Magic 'e' (cap/cape, kit/kite, hop/hope, cut/cute)",
-        "Observe and classify planetary environmental conditions using descriptive adjectives (cold, rocky, dark)",
-        "Distinguish between essential biological survival needs and non-essential luxury items in space",
-        "Design and snap together a modular rover invention to solve an extreme sub-zero freezing crisis",
-        "Synthesize compound sentence structures using the coordinating conjunction 'AND'",
-        "Deliver a 5-sentence spoken mission report to Earth using an interactive teleprompter"
+      durationText: "40 min",
+      estimatedMinutes: 40,
+      xp: 150,
+      skills: [
+        "CLIL Science & Astronomy",
+        "Phonics (Magic 'e')",
+        "Speaking & Presentation",
+        "Descriptive Adjectives",
+        "Survival Vocabulary",
+        "Engineering & Problem Solving"
       ],
+      topic: "Planetary Science, Survival Needs & Engineering Inventions",
+      languageFocus: "It is [cold / rocky / red]. People need [water / oxygen] to live. The problem is [no water]. It can [melt / filter] AND [clean].",
       route: "nasa-mission/index.html",
       worksheet: "nasa-mission/worksheet.html",
       worksheetRoute: "nasa-mission/worksheet.html",
-      teacherGuide: true,
       featured: true,
-      archived: false,
-      description: "Immersive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted planetary surfaces, sort essential survival cargo, engineer modular problem-solving machines, collaborate with international peers using 'AND', and broadcast the final live discovery report to Earth!"
+      thumbnailIcon: "🚀",
+      gradient: "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
+      teacherGuide: true,
+      archived: false
     }
   ];
 
