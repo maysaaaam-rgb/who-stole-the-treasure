@@ -1,189 +1,168 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — HIGH-QUALITY ILLUSTRATED MONSTER COMPOSITOR
+ * ENGLISH ADVENTURE ACADEMY — CANONICAL ILLUSTRATED MONSTER ENGINE
  * 
- * Production illustrated asset compositor.
- * Replaces procedural vector shapes with high-quality transparent art layers
- * matching the project's original fantasy companion art style.
- * 
- * Features:
- * - 100% Layer-based Illustrated Asset Compositor
- * - High-resolution transparent PNG layers (512x512 normalized space)
- * - 6 Illustrated Fur Palettes (Sky Blue, Berry Pink, Leaf Green, Sunset Orange, Lavender Purple, Royal Gold)
- * - 8 Illustrated Painted Eye Expressions
- * - 6 Illustrated Expressive Mouth Sculptures
- * - 5 Sculpted 3D Horn Sets
- * - 5 Species Ears Sets
- * - 6 Detailed Outfits wrapping character anatomy
- * - 4 Layered Fantasy Wings & 4 Animated Tails
- * - 7 High-Resolution Illustrated Fantasy World Environments
- * - Non-destructive colorization preserving highlights, textures, and 3D shadows
- * - Zero external dependencies, instant zero-lag compositing
+ * Master Visual Blueprint Implementation:
+ * - ONE SPECIES ONLY: Cute fluffy blue fantasy companion
+ * - 7 Canonical Physical Growth Stages (Level 0 Egg through Level 6 Legendary)
+ * - Pure body growth across stages (NOT accessories)
+ * - Boy / Girl Style Toggle (Girl style features delicate pink ribbon hair bow)
+ * - 5 Vibrant Fur Colors (Sky Blue, Berry Pink, Lavender Purple, Leaf Green, Sunset Orange)
+ * - Customization cleanly separated from evolution
+ * - High-resolution transparent PNG layers (zero-lag compositing)
  */
 
 (function(root) {
   'use strict';
 
-  // 7 Canonical Evolution Stages
+  // 7 Canonical Evolution Stages (Levels 0 through 6)
   const EVOLUTION_STAGES = [
     {
-      level: 1,
+      level: 0,
       stageKey: 'egg',
-      name: 'Mystery Egg',
-      subtitle: 'A new adventure begins...',
+      name: 'Egg',
+      subtitle: 'A new friend is waiting!',
       xpRequired: 0,
-      image: 'assets/monsters/stage-1-mystery-egg.png',
-      unlockedFeatures: ['Mystery Egg Hatching Glow']
+      description: 'A smooth, mysterious speckled egg resting in a cozy nest, waiting for your English journey to begin.',
+      image: 'assets/monsters/canonical/stage-0-egg-blue.png',
+      unlockedFeatures: ['Mystery Egg in Nest']
+    },
+    {
+      level: 1,
+      stageKey: 'baby',
+      name: 'Baby',
+      subtitle: 'Tiny and curious',
+      xpRequired: 0,
+      description: 'Tiny and curious! Your newly hatched companion takes its first steps with large curious eyes and short baby legs.',
+      image: 'assets/monsters/canonical/stage-1-baby-blue.png',
+      unlockedFeatures: ['Tiny body', 'Large head', 'Short legs']
     },
     {
       level: 2,
-      stageKey: 'cracking_egg',
-      name: 'Cracking Egg',
-      subtitle: 'Life is waking up!',
+      stageKey: 'tot',
+      name: 'Tot',
+      subtitle: 'Growing fast',
       xpRequired: 100,
-      image: 'assets/monsters/stage-2-cracking-egg.png',
-      unlockedFeatures: ['Curious Chirps', 'First Cracks']
+      description: 'Growing fast and active! Ears perk up and playful paws grow stronger as vocabulary expands.',
+      image: 'assets/monsters/canonical/stage-2-tot-blue.png',
+      unlockedFeatures: ['Growing body', 'Playful posture', 'Perky ears']
     },
     {
       level: 3,
-      stageKey: 'baby',
-      name: 'Baby Monster',
-      subtitle: 'Small steps, big dreams!',
-      xpRequired: 250,
-      image: 'assets/monsters/stage-3-baby-monster.png',
-      unlockedFeatures: ['Soft Baby Paws', 'Cute Smile', 'Starter Horns']
+      stageKey: 'young',
+      name: 'Young',
+      subtitle: 'More confident',
+      xpRequired: 300,
+      description: 'More confident and standing tall! Upright posture with attentive ears ready for reading adventures.',
+      image: 'assets/monsters/canonical/stage-3-young-blue.png',
+      unlockedFeatures: ['Standing upright', 'Taller torso', 'Free arms']
     },
     {
       level: 4,
-      stageKey: 'growing',
-      name: 'Growing Monster',
-      subtitle: 'Stronger every day!',
-      xpRequired: 500,
-      image: 'assets/monsters/stage-4-growing-monster.png',
-      unlockedFeatures: ['Curved Horns', 'Fluffy Tail', 'Explorer Vest']
+      stageKey: 'adventurer',
+      name: 'Adventurer',
+      subtitle: 'Ready for adventures',
+      xpRequired: 700,
+      description: 'Ready for bigger adventures! Mature proportions, athletic frame, and bushy white-tipped tail.',
+      image: 'assets/monsters/canonical/stage-4-adventurer-blue.png',
+      unlockedFeatures: ['Mature proportions', 'Wider chest', 'Bushy tail']
     },
     {
       level: 5,
-      stageKey: 'adventurer',
-      name: 'Adventurer Monster',
-      subtitle: 'Ready for bigger quests!',
-      xpRequired: 1000,
-      image: 'assets/monsters/stage-5-adventurer-monster.png',
-      unlockedFeatures: ['Golden Horns', 'Adventure Pack', 'Hero Aura']
+      stageKey: 'elite',
+      name: 'Elite',
+      subtitle: 'Stronger than ever',
+      xpRequired: 1200,
+      description: 'Stronger than ever! Broad chest, powerful posture, and majestic fur reflecting deep English fluency.',
+      image: 'assets/monsters/canonical/stage-5-elite-blue.png',
+      unlockedFeatures: ['Large muscular body', 'Proud posture']
     },
     {
       level: 6,
-      stageKey: 'advanced',
-      name: 'Advanced Monster',
-      subtitle: 'New powers, new places!',
+      stageKey: 'legendary',
+      name: 'Legendary',
+      subtitle: 'A true legend',
       xpRequired: 2000,
-      image: 'assets/monsters/stage-6-advanced-monster.png',
-      unlockedFeatures: ['Crystal Horns', 'Fairy Wings', 'Wizard Robe']
-    },
-    {
-      level: 7,
-      stageKey: 'ultimate',
-      name: 'Ultimate Monster',
-      subtitle: 'A true hero!',
-      xpRequired: 5000,
-      image: 'assets/monsters/stage-7-ultimate-monster.png',
-      unlockedFeatures: ['Celestial Wings', 'Royal Crown', 'Cosmic Aura']
+      description: 'A true legend! The most magnificent silhouette with sweeping bushy tail, proudest stance, and full collection mastery.',
+      image: 'assets/monsters/canonical/stage-6-legendary-blue.png',
+      unlockedFeatures: ['Largest silhouette', 'Glorious mane & tail']
     }
   ];
 
-  // Layer Placement Coordinates (percentage of container)
+  // Girl hair bow placement offsets per stage
+  const GIRL_BOW_OFFSETS = {
+    egg: { top: '24%', left: '46%', width: '18%' },
+    baby: { top: '8%', left: '46%', width: '20%' },
+    tot: { top: '7%', left: '47%', width: '19%' },
+    young: { top: '6%', left: '46%', width: '19%' },
+    adventurer: { top: '5%', left: '47%', width: '18%' },
+    elite: { top: '5%', left: '46%', width: '18%' },
+    legendary: { top: '5%', left: '46%', width: '18%' }
+  };
+
+  // Optional closet item offsets
   const ITEM_OFFSETS = {
-    // Horns
-    'horns-gold': { top: '3%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-curved': { top: '3%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-crystal': { top: '1%', left: '33%', width: '34%', zIndex: 5 },
-    'horns-dragon': { top: '8%', left: '14%', width: '72%', zIndex: 5 },
-    'horns-cosmic': { top: '5%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-star': { top: '5%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-starter': { top: '15%', left: '36%', width: '28%', zIndex: 5 },
-    'horns-nub': { top: '15%', left: '36%', width: '28%', zIndex: 5 },
-    'horns-nature': { top: '5%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-flame': { top: '3%', left: '18%', width: '64%', zIndex: 5 },
-    'horns-ice': { top: '1%', left: '33%', width: '34%', zIndex: 5 },
+    // Horns (only rendered if explicitly equipped by student in closet)
+    'horns-gold': { top: '3%', left: '18%', width: '64%', zIndex: 6 },
+    'horns-curved': { top: '3%', left: '18%', width: '64%', zIndex: 6 },
+    'horns-crystal': { top: '1%', left: '33%', width: '34%', zIndex: 6 },
+    'horns-dragon': { top: '8%', left: '14%', width: '72%', zIndex: 6 },
+    'horns-cosmic': { top: '5%', left: '18%', width: '64%', zIndex: 6 },
+    'horns-starter': { top: '15%', left: '36%', width: '28%', zIndex: 6 },
 
-    // Ears
-    'ears-default': { top: '8%', left: '24%', width: '52%', zIndex: 4 },
-    'horns-ears': { top: '8%', left: '24%', width: '52%', zIndex: 4 },
-    'ears-fox': { top: '6%', left: '24%', width: '52%', zIndex: 4 },
-    'ears-cat': { top: '10%', left: '25%', width: '50%', zIndex: 4 },
-    'ears-dragon': { top: '10%', left: '22%', width: '56%', zIndex: 4 },
-    'ears-elf': { top: '12%', left: '18%', width: '64%', zIndex: 4 },
+    // Hats
+    'hat-explorer': { top: '2%', left: '30%', width: '40%', zIndex: 7 },
+    'hat-scholar': { top: '2%', left: '28%', width: '44%', zIndex: 7 },
+    'hat-crown': { top: '2%', left: '34%', width: '32%', zIndex: 7 },
 
-    // Outfits
-    'clothing-vest': { top: '47%', left: '34%', width: '33%', zIndex: 6 },
-    'clothing-cape': { top: '47%', left: '34%', width: '33%', zIndex: 6 },
-    'clothing-adv-jacket': { top: '47%', left: '34%', width: '33%', zIndex: 6 },
-    'clothing-robe': { top: '42%', left: '31%', width: '38%', zIndex: 6 },
-    'clothing-knight': { top: '46%', left: '32%', width: '36%', zIndex: 6 },
-    'clothing-knight-armor': { top: '46%', left: '32%', width: '36%', zIndex: 6 },
-    'clothing-scientist': { top: '44%', left: '32%', width: '36%', zIndex: 6 },
-    'clothing-travel-coat': { top: '44%', left: '32%', width: '36%', zIndex: 6 },
-    'clothing-space': { top: '44%', left: '32%', width: '36%', zIndex: 6 },
-    'clothing-uniform': { top: '47%', left: '33%', width: '34%', zIndex: 6 },
-    'clothing-scarf': { top: '47%', left: '33%', width: '34%', zIndex: 6 },
-    'clothing-hoodie': { top: '47%', left: '33%', width: '34%', zIndex: 6 },
+    // Clothing (only rendered if explicitly equipped by student in closet)
+    'clothing-vest': { top: '48%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-cape': { top: '46%', left: '30%', width: '40%', zIndex: 5 },
+    'clothing-adv-jacket': { top: '47%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-robe': { top: '42%', left: '30%', width: '40%', zIndex: 5 },
+    'clothing-knight': { top: '46%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-knight-armor': { top: '46%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-scientist': { top: '44%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-travel-coat': { top: '44%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-space': { top: '44%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-uniform': { top: '47%', left: '32%', width: '36%', zIndex: 5 },
+    'clothing-scarf': { top: '45%', left: '33%', width: '34%', zIndex: 5 },
+    'clothing-hoodie': { top: '46%', left: '31%', width: '38%', zIndex: 5 },
 
-    // Wings
-    'wings-fairy': { top: '4%', left: '15%', width: '70%', zIndex: 2 },
-    'wings-crystal': { top: '4%', left: '15%', width: '70%', zIndex: 2 },
+    // Wings (rendered behind body)
+    'wings-fairy': { top: '4%', left: '14%', width: '72%', zIndex: 2 },
+    'wings-crystal': { top: '4%', left: '14%', width: '72%', zIndex: 2 },
     'wings-dragon': { top: '6%', left: '16%', width: '68%', zIndex: 2 },
     'wings-cosmic': { top: '4%', left: '14%', width: '72%', zIndex: 2 },
     'wings-celestial': { top: '4%', left: '14%', width: '72%', zIndex: 2 },
-    'wings-starter': { top: '4%', left: '15%', width: '70%', zIndex: 2 },
 
-    // Tails
-    'tail-puff': { top: '40%', left: '8%', width: '30%', zIndex: 2 },
-    'tail-perky': { top: '35%', left: '6%', width: '34%', zIndex: 2 },
-    'tail-dragon': { top: '40%', left: '4%', width: '38%', zIndex: 2 },
-    'tail-star': { top: '38%', left: '6%', width: '34%', zIndex: 2 },
-    'tail-flame': { top: '38%', left: '6%', width: '34%', zIndex: 2 },
+    // Backpacks
+    'bp-explorer': { top: '44%', left: '20%', width: '32%', zIndex: 4 },
+    'bp-scholar': { top: '44%', left: '20%', width: '32%', zIndex: 4 },
 
-    // Eyes
-    defaultEyes: { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-sparkle': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-happy': { top: '27%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-wink': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-brave': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-sleepy': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-star': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-galaxy': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-    'eyes-dragon': { top: '25%', left: '38%', width: '26%', zIndex: 7 },
-
-    // Mouths
-    defaultMouth: { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-smile': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-tiny': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-grin': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-toothy': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-cheer': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-excited': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-sleepy': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-brave': { top: '35%', left: '40%', width: '22%', zIndex: 8 },
-    'mouth-dragon': { top: '35%', left: '40%', width: '22%', zIndex: 8 }
+    // Glasses
+    'glasses-round': { top: '27%', left: '36%', width: '28%', zIndex: 7 },
+    'glasses-sun': { top: '27%', left: '36%', width: '28%', zIndex: 7 }
   };
 
   function normalizeStageKey(key) {
-    if (!key) return 'growing';
-    const s = String(key).toLowerCase();
-    if (s.includes('1') || s === 'egg') return 'egg';
-    if (s.includes('2') || s === 'cracking' || s === 'cracking_egg') return 'cracking_egg';
-    if (s.includes('3') || s === 'baby') return 'baby';
-    if (s.includes('4') || s === 'growing') return 'growing';
-    if (s.includes('5') || s === 'adventurer') return 'adventurer';
-    if (s.includes('6') || s === 'advanced') return 'advanced';
-    if (s.includes('7') || s === 'ultimate') return 'ultimate';
-    return 'growing';
+    if (key === undefined || key === null) return 'baby';
+    const s = String(key).toLowerCase().trim();
+    if (s === '0' || s === 'egg') return 'egg';
+    if (s === '1' || s === 'baby') return 'baby';
+    if (s === '2' || s === 'tot' || s === 'cracking' || s === 'cracking_egg' || s === 'growing') return 'tot';
+    if (s === '3' || s === 'young') return 'young';
+    if (s === '4' || s === 'adventurer') return 'adventurer';
+    if (s === '5' || s === 'elite' || s === 'advanced') return 'elite';
+    if (s === '6' || s === '7' || s === 'legendary' || s === 'ultimate') return 'legendary';
+    return 'baby';
   }
 
   function getMonsterForEvolution(levelOrKeyOrXP) {
     if (typeof levelOrKeyOrXP === 'number') {
-      if (levelOrKeyOrXP >= 1 && levelOrKeyOrXP <= 7) {
-        return EVOLUTION_STAGES.find(s => s.level === levelOrKeyOrXP) || EVOLUTION_STAGES[3];
+      if (levelOrKeyOrXP >= 0 && levelOrKeyOrXP <= 6) {
+        return EVOLUTION_STAGES.find(s => s.level === levelOrKeyOrXP) || EVOLUTION_STAGES[1];
       }
+      // Treat as XP
       let match = EVOLUTION_STAGES[0];
       for (let i = 0; i < EVOLUTION_STAGES.length; i++) {
         if (levelOrKeyOrXP >= EVOLUTION_STAGES[i].xpRequired) {
@@ -195,48 +174,50 @@
       return match;
     }
     const key = normalizeStageKey(levelOrKeyOrXP);
-    return EVOLUTION_STAGES.find(s => s.stageKey === key) || EVOLUTION_STAGES[3];
+    return EVOLUTION_STAGES.find(s => s.stageKey === key) || EVOLUTION_STAGES[1];
   }
 
-  function getMonsterStageImage(stageKey) {
+  function getMonsterStageImage(stageKey, color = 'blue') {
     const evo = getMonsterForEvolution(stageKey);
-    return evo.image || 'assets/monsters/stage-4-growing-monster.png';
+    const validColors = ['blue', 'pink', 'purple', 'green', 'orange'];
+    const cleanColor = validColors.includes(color) ? color : 'blue';
+    return `assets/monsters/canonical/stage-${evo.level}-${evo.stageKey}-${cleanColor}.png`;
   }
 
   /**
-   * High-Quality Layered Illustrated Compositor
+   * Master Canonical Monster Compositor
    */
   function renderMonsterArtwork(options = {}) {
     const size = options.size || 256;
-    const stage = normalizeStageKey(options.stage || options.level || options.xp);
-    const color = (options.color || (options.equipped && options.equipped.body) || 'blue').replace('body-', '');
+    let stageKey = 'baby';
+    if (options.stage !== undefined) stageKey = normalizeStageKey(options.stage);
+    else if (options.level !== undefined) stageKey = normalizeStageKey(options.level);
+    else if (options.xp !== undefined) stageKey = getMonsterForEvolution(options.xp).stageKey;
+
+    const evo = getMonsterForEvolution(stageKey);
+
+    // Color resolution
+    let rawColor = options.color || options.baseColor || (options.equipped && options.equipped.body) || 'blue';
+    rawColor = String(rawColor).replace('body-', '').toLowerCase();
+    const validColors = ['blue', 'pink', 'purple', 'green', 'orange'];
+    const color = validColors.includes(rawColor) ? rawColor : 'blue';
+
+    // Style (Boy vs Girl)
+    const rawStyle = options.monsterStyle || (options.style === 'boy' || options.style === 'girl' ? options.style : null) || options.gender || 'boy';
+    const isGirl = String(rawStyle).toLowerCase() === 'girl';
+    const customCss = (typeof options.style === 'string' && options.style !== 'boy' && options.style !== 'girl') ? options.style : (options.customStyle || '');
+
     const eq = options.equipped || {};
     const isRound = options.round !== false;
     const borderRadius = typeof options.radius === 'number' ? options.radius + 'px' : (isRound ? (size >= 100 ? '20px' : '12px') : '0px');
-    const showWorld = options.showWorld !== false && !options.transparent;
+    const showWorld = options.showWorld === true && !options.transparent;
+    const showPedestal = options.showPedestal === true;
     const animated = options.animated !== false;
     const paused = options.paused === true || !animated;
 
-    // 1. Egg Stages (render painted egg art)
-    if (stage === 'egg') {
-      return `
-        <div class="monster-compositor-box ${options.className || ''}" style="width:${size}px; height:${size}px; position:relative; overflow:hidden; border-radius:${borderRadius}; display:inline-block; vertical-align:middle; background:#0b132b; ${options.style || ''}">
-          <img src="assets/monsters/stage-1-mystery-egg.png" alt="Mystery Egg" style="width:100%; height:100%; object-fit:cover;" />
-        </div>
-      `.trim();
-    }
-    if (stage === 'cracking_egg') {
-      return `
-        <div class="monster-compositor-box ${options.className || ''}" style="width:${size}px; height:${size}px; position:relative; overflow:hidden; border-radius:${borderRadius}; display:inline-block; vertical-align:middle; background:#0b132b; ${options.style || ''}">
-          <img src="assets/monsters/stage-2-cracking-egg.png" alt="Cracking Egg" style="width:100%; height:100%; object-fit:cover;" />
-        </div>
-      `.trim();
-    }
-
-    // 2. Character Assembly from High-Quality Illustrated Transparent Layers
     const layers = [];
 
-    // Layer 1: Scenic World Background
+    // 1. World Background (if explicitly enabled)
     if (showWorld) {
       const bgId = eq.background || 'bg-meadow';
       const bgFile = (bgId === 'bg-cosmos' || bgId === 'bg-space') ? 'bg-cosmos.jpg' : 
@@ -250,8 +231,15 @@
       `);
     }
 
-    // Layer 2: Wings (Behind Body)
-    const wingId = eq.wings && eq.wings !== 'none' ? eq.wings : null;
+    // 2. Stone Pedestal (beneath creature)
+    if (showPedestal) {
+      layers.push(`
+        <img class="monster-layer layer-pedestal" src="assets/monsters/canonical/stone-pedestal.png" alt="Pedestal" style="position:absolute; bottom:0; left:8%; width:84%; height:26%; object-fit:contain; z-index:2; pointer-events:none;" />
+      `);
+    }
+
+    // 3. Custom Wings (Behind Body — ONLY if student explicitly equipped them in closet)
+    const wingId = eq.wings && eq.wings !== 'none' && eq.wings !== 'wings-none' ? eq.wings : null;
     if (wingId) {
       const wOff = ITEM_OFFSETS[wingId] || ITEM_OFFSETS['wings-fairy'];
       const wFile = (wingId.includes('crystal')) ? 'wings-crystal.png' :
@@ -259,61 +247,19 @@
                     (wingId.includes('cosmic') || wingId.includes('celestial')) ? 'wings-cosmic.png' : 'wings-fairy.png';
 
       layers.push(`
-        <img class="monster-layer layer-wings ${animated && !paused ? 'eaa-monster-wing-anim' : ''}" src="assets/monsters/layers/wings/${wFile}" alt="Wings" style="position:absolute; top:${wOff.top}; left:${wOff.left}; width:${wOff.width}; z-index:2; pointer-events:none;" />
+        <img class="monster-layer layer-wings ${animated && !paused ? 'eaa-monster-wing-anim' : ''}" src="assets/monsters/layers/wings/${wFile}" alt="Wings" style="position:absolute; top:${wOff.top}; left:${wOff.left}; width:${wOff.width}; z-index:3; pointer-events:none;" />
       `);
     }
 
-    // Layer 3: Tail (Behind Body)
-    const tailId = eq.tail && eq.tail !== 'none' ? eq.tail : 'tail-perky';
-    if (tailId) {
-      const tOff = ITEM_OFFSETS[tailId] || ITEM_OFFSETS['tail-perky'];
-      const tFile = (tailId.includes('puff')) ? 'tail-puff.png' :
-                    (tailId.includes('dragon')) ? 'tail-dragon.png' :
-                    (tailId.includes('star') || tailId.includes('flame')) ? 'tail-star.png' : 'tail-perky.png';
-
-      layers.push(`
-        <img class="monster-layer layer-tail ${animated && !paused ? 'eaa-monster-tail-anim' : ''}" src="assets/monsters/layers/tail/${tFile}" alt="Tail" style="position:absolute; top:${tOff.top}; left:${tOff.left}; width:${tOff.width}; z-index:2; pointer-events:none;" />
-      `);
-    }
-
-    // Layer 4: Master Body Base with Illustrated Fur Color
-    const validColors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
-    const colKey = validColors.includes(color) ? color : 'blue';
+    // 4. Canonical Physical Monster Character (Exact Illustrated Species)
+    const creatureImg = `assets/monsters/canonical/stage-${evo.level}-${evo.stageKey}-${color}.png`;
     layers.push(`
-      <img class="monster-layer layer-body" src="assets/monsters/layers/body/body-${colKey}.png" alt="Body" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:3; pointer-events:none;" />
+      <img class="monster-layer layer-canonical-character" src="${creatureImg}" alt="${evo.name}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:4; pointer-events:none;" />
     `);
 
-    // Layer 5: Species Ears
-    const earId = eq.ears && eq.ears !== 'none' ? eq.ears : (eq.horns === 'horns-ears' ? 'horns-ears' : 'ears-default');
-    if (earId && earId !== 'none') {
-      const eOff = ITEM_OFFSETS[earId] || ITEM_OFFSETS['ears-default'];
-      const eFile = (earId.includes('fox')) ? 'ears-fox.png' :
-                    (earId.includes('cat')) ? 'ears-cat.png' :
-                    (earId.includes('dragon')) ? 'ears-dragon.png' :
-                    (earId.includes('elf')) ? 'ears-elf.png' : 'ears-default.png';
-
-      layers.push(`
-        <img class="monster-layer layer-ears" src="assets/monsters/layers/ears/${eFile}" alt="Ears" style="position:absolute; top:${eOff.top}; left:${eOff.left}; width:${eOff.width}; z-index:4; pointer-events:none;" />
-      `);
-    }
-
-    // Layer 6: 3D Sculpted Horns
-    const hornId = eq.horns && eq.horns !== 'none' && eq.horns !== 'horns-ears' ? eq.horns : 'horns-gold';
-    if (hornId && hornId !== 'none' && hornId !== 'horns-ears') {
-      const hOff = ITEM_OFFSETS[hornId] || ITEM_OFFSETS['horns-gold'];
-      const hFile = (hornId.includes('crystal') || hornId.includes('ice')) ? 'horns-crystal.png' :
-                    (hornId.includes('dragon')) ? 'horns-dragon.png' :
-                    (hornId.includes('cosmic') || hornId.includes('star')) ? 'horns-cosmic.png' :
-                    (hornId.includes('starter') || hornId.includes('nub')) ? 'horns-starter.png' : 'horns-gold.png';
-
-      layers.push(`
-        <img class="monster-layer layer-horns" src="assets/monsters/layers/horns/${hFile}" alt="Horns" style="position:absolute; top:${hOff.top}; left:${hOff.left}; width:${hOff.width}; z-index:5; pointer-events:none;" />
-      `);
-    }
-
-    // Layer 7: Dimensional Clothing
-    const clothId = eq.clothing && eq.clothing !== 'none' ? eq.clothing : 'clothing-vest';
-    if (clothId && clothId !== 'none') {
+    // 5. Custom Outfits (ONLY if student explicitly equipped them in closet)
+    const clothId = eq.clothing && eq.clothing !== 'none' && eq.clothing !== 'clothing-none' ? eq.clothing : null;
+    if (clothId && evo.level > 0) {
       const cOff = ITEM_OFFSETS[clothId] || ITEM_OFFSETS['clothing-vest'];
       const cFile = (clothId.includes('robe')) ? 'clothing-robe.png' :
                     (clothId.includes('knight')) ? 'clothing-knight-armor.png' :
@@ -322,58 +268,57 @@
                     (clothId.includes('uniform') || clothId.includes('scarf') || clothId.includes('hoodie')) ? 'clothing-uniform.png' : 'clothing-vest.png';
 
       layers.push(`
-        <img class="monster-layer layer-clothing" src="assets/monsters/layers/clothing/${cFile}" alt="Clothing" style="position:absolute; top:${cOff.top}; left:${cOff.left}; width:${cOff.width}; z-index:6; pointer-events:none;" />
+        <img class="monster-layer layer-clothing" src="assets/monsters/layers/clothing/${cFile}" alt="Clothing" style="position:absolute; top:${cOff.top}; left:${cOff.left}; width:${cOff.width}; z-index:5; pointer-events:none;" />
       `);
     }
 
-    // Layer 8: Expressive Glossy Eyes
-    const eyeId = eq.eyes && eq.eyes !== 'none' ? eq.eyes : 'eyes-sparkle';
-    const eyOff = ITEM_OFFSETS[eyeId] || ITEM_OFFSETS.defaultEyes;
-    const eyFile = (eyeId.includes('happy')) ? 'eyes-happy.png' :
-                   (eyeId.includes('wink')) ? 'eyes-wink.png' :
-                   (eyeId.includes('brave')) ? 'eyes-brave.png' :
-                   (eyeId.includes('sleepy')) ? 'eyes-sleepy.png' :
-                   (eyeId.includes('star')) ? 'eyes-star.png' :
-                   (eyeId.includes('galaxy')) ? 'eyes-galaxy.png' :
-                   (eyeId.includes('dragon')) ? 'eyes-dragon.png' : 'eyes-sparkle.png';
+    // 6. Girl Style Ribbon Bow (Centered on head tuft)
+    if (isGirl && evo.level > 0) {
+      const bowOff = GIRL_BOW_OFFSETS[evo.stageKey] || GIRL_BOW_OFFSETS.baby;
+      layers.push(`
+        <img class="monster-layer layer-girl-bow" src="assets/monsters/canonical/pink-hair-bow.png" alt="Girl Ribbon" style="position:absolute; top:${bowOff.top}; left:${bowOff.left}; width:${bowOff.width}; z-index:6; pointer-events:none;" />
+      `);
+    }
 
-    layers.push(`
-      <img class="monster-layer layer-eyes" src="assets/monsters/layers/eyes/${eyFile}" alt="Eyes" style="position:absolute; top:${eyOff.top}; left:${eyOff.left}; width:${eyOff.width}; z-index:7; pointer-events:none;" />
-    `);
+    // 7. Custom Hats (ONLY if student explicitly equipped them in closet)
+    const hatId = eq.hat && eq.hat !== 'none' && eq.hat !== 'hat-none' ? eq.hat : null;
+    if (hatId && evo.level > 0) {
+      const hOff = ITEM_OFFSETS[hatId] || ITEM_OFFSETS['hat-explorer'];
+      const hFile = hatId.includes('scholar') ? 'hat-scholar.png' :
+                    hatId.includes('crown') ? 'hat-crown.png' : 'hat-explorer.png';
+      layers.push(`
+        <img class="monster-layer layer-hat" src="assets/monsters/layers/clothing/${hFile}" alt="Hat" style="position:absolute; top:${hOff.top}; left:${hOff.left}; width:${hOff.width}; z-index:7; pointer-events:none;" />
+      `);
+    }
 
-    // Layer 9: Expressive Painted Mouth & Snout
-    const mouthId = eq.mouth && eq.mouth !== 'none' ? eq.mouth : 'mouth-smile';
-    const mOff = ITEM_OFFSETS[mouthId] || ITEM_OFFSETS.defaultMouth;
-    const mFile = (mouthId.includes('grin') || mouthId.includes('toothy')) ? 'mouth-grin.png' :
-                  (mouthId.includes('cheer') || mouthId.includes('excited')) ? 'mouth-cheer.png' :
-                  (mouthId.includes('sleepy')) ? 'mouth-sleepy.png' :
-                  (mouthId.includes('brave')) ? 'mouth-brave.png' :
-                  (mouthId.includes('dragon')) ? 'mouth-dragon.png' : 'mouth-smile.png';
+    // 8. Custom Horns (ONLY if student explicitly equipped them in closet, NEVER by default)
+    const hornId = eq.horns && eq.horns !== 'none' && eq.horns !== 'horns-ears' && eq.horns !== 'horns-none' ? eq.horns : null;
+    if (hornId && evo.level > 0) {
+      const hnOff = ITEM_OFFSETS[hornId] || ITEM_OFFSETS['horns-gold'];
+      const hnFile = (hornId.includes('crystal') || hornId.includes('ice')) ? 'horns-crystal.png' :
+                     (hornId.includes('dragon')) ? 'horns-dragon.png' :
+                     (hornId.includes('cosmic') || hornId.includes('star')) ? 'horns-cosmic.png' :
+                     (hornId.includes('starter') || hornId.includes('nub')) ? 'horns-starter.png' : 'horns-gold.png';
 
-    layers.push(`
-      <img class="monster-layer layer-mouth" src="assets/monsters/layers/mouths/${mFile}" alt="Mouth" style="position:absolute; top:${mOff.top}; left:${mOff.left}; width:${mOff.width}; z-index:8; pointer-events:none;" />
-    `);
+      layers.push(`
+        <img class="monster-layer layer-horns" src="assets/monsters/layers/horns/${hnFile}" alt="Horns" style="position:absolute; top:${hnOff.top}; left:${hnOff.left}; width:${hnOff.width}; z-index:7; pointer-events:none;" />
+      `);
+    }
 
-    const animClass = animated ? 'eaa-monster-artwork-anim' : '';
+    const animClass = (animated && !paused) ? 'eaa-monster-artwork-anim' : '';
     const pauseClass = paused ? 'is-paused' : '';
 
     return `
-      <div class="monster-compositor-box ${animClass} ${pauseClass} ${options.className || ''}" style="width:${size}px; height:${size}px; position:relative; overflow:hidden; border-radius:${borderRadius}; display:inline-block; vertical-align:middle; background:${showWorld ? 'transparent' : 'rgba(15,23,42,0.04)'}; user-select:none; ${options.style || ''}">
+      <div class="monster-compositor-box ${animClass} ${pauseClass} ${options.className || ''}" style="width:${size}px; height:${size}px; position:relative; overflow:hidden; border-radius:${borderRadius}; display:inline-block; vertical-align:middle; background:${showWorld ? 'transparent' : 'transparent'}; user-select:none; ${customCss}">
         ${layers.join('\n')}
       </div>
     `.trim();
   }
 
-  /**
-   * Backwards-compatible drop-in for renderMonsterSVG
-   */
   function renderMonsterSVG(options = {}) {
     return renderMonsterArtwork(options);
   }
 
-  /**
-   * Catalog item thumbnail generator
-   */
   function renderMonsterItemThumbnail(item, options = {}) {
     if (!item) return '';
     const size = options.size || 48;
@@ -382,7 +327,7 @@
       const colKey = item.id.replace('body-', '');
       return `
         <div style="width:${size}px; height:${size}px; border-radius:10px; overflow:hidden; position:relative; background:#0f172a; display:flex; align-items:center; justify-content:center;">
-          <img src="assets/monsters/layers/body/body-${colKey}.png" style="width:120%; height:120%; object-fit:contain;" alt="${item.name}" />
+          <img src="assets/monsters/canonical/stage-3-young-${colKey}.png" style="width:110%; height:110%; object-fit:contain;" alt="${item.name}" />
         </div>
       `.trim();
     }
@@ -423,10 +368,10 @@
               <span style="font-size:1.4rem;">👾</span>
               <h2 style="font-size:1.35rem; font-weight:900; margin:0; letter-spacing:0.02em; color:#fff;">Monster Evolution Upgrade (Visual Progression)</h2>
             </div>
-            <p style="font-size:0.84rem; color:#94a3b8; margin:4px 0 0 0;">A real visual evolution, not just accessories. Monsters grow and change as students earn XP!</p>
+            <p style="font-size:0.84rem; color:#94a3b8; margin:4px 0 0 0;">A real visual evolution, not accessories. Monsters grow physical proportions as students earn XP!</p>
           </div>
           <div style="font-size:0.75rem; color:#38bdf8; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">
-            Same Spirit • Greater Growth • More Adventures • A Brighter You!
+            Same Spirit • Pure Body Growth • 7 Canonical Stages • One True Companion
           </div>
         </div>
 
@@ -436,8 +381,9 @@
               <div style="font-size:0.68rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px;">Level ${st.level}</div>
               <div style="font-size:0.82rem; font-weight:900; color:#f8fafc; margin-bottom:8px; line-height:1.2;">${st.name}</div>
               
-              <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);">
-                <img src="${getMonsterStageImage(st.stageKey)}" alt="${st.name}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+              <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; position:relative;">
+                <img src="assets/monsters/canonical/stone-pedestal.png" alt="Pedestal" style="position:absolute; bottom:0; left:10%; width:80%; height:26%; object-fit:contain; z-index:1;" />
+                <img src="${getMonsterStageImage(st.stageKey)}" alt="${st.name}" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:2; display:block;" />
               </div>
 
               <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">
@@ -470,6 +416,61 @@
     EVOLUTION_STAGES: EVOLUTION_STAGES
   };
 
+  function renderMonster(opts = {}) {
+    let student = opts.student;
+    let studentId = null;
+    if (typeof opts === 'string') {
+      studentId = opts;
+    } else if (typeof student === 'string') {
+      studentId = student;
+      student = null;
+    } else if (student && student.id) {
+      studentId = student.id;
+    }
+
+    const store = (typeof window !== 'undefined' ? (window.store || window.schoolStore) : null);
+    if (!student && studentId && store && store.getStudent) {
+      student = store.getStudent(studentId);
+    }
+
+    let stageKey = opts.stage;
+    let level = opts.level;
+    let color = opts.color;
+    let gender = opts.gender || opts.monsterStyle;
+    let equipped = opts.customization || (student && student.equipped) || {};
+
+    if (studentId && store) {
+      if (!stageKey && store.calculateMonsterState) {
+        const ms = store.calculateMonsterState(studentId);
+        if (ms) {
+          stageKey = ms.stageKey;
+          level = ms.currentLevel;
+        }
+      }
+      if (store.getMonsterProfile) {
+        const mp = store.getMonsterProfile(studentId);
+        if (mp) {
+          if (!color) color = mp.baseColor;
+          if (!gender) gender = mp.style;
+          if (!opts.customization && mp.equipped) equipped = mp.equipped;
+        }
+      }
+    }
+
+    return renderMonsterArtwork({
+      stage: stageKey || 'adventurer',
+      level: level || 4,
+      color: color || 'blue',
+      monsterStyle: gender || 'boy',
+      equipped: equipped,
+      size: opts.size || 220,
+      showPedestal: opts.showPedestal !== undefined ? opts.showPedestal : true,
+      animated: opts.animated !== undefined ? opts.animated : true,
+      customStyle: opts.style
+    });
+  }
+
+  root.renderMonster = renderMonster;
   root.MonsterEvolutionRenderer = MonsterEvolutionRenderer;
   root.MonsterRenderer = MonsterEvolutionRenderer;
   root.getMonsterForEvolution = getMonsterForEvolution;
@@ -480,6 +481,10 @@
   root.getMonsterStageImage = getMonsterStageImage;
   root.renderMonsterArtwork = renderMonsterArtwork;
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
+
+  if (typeof window !== 'undefined') {
+    window.renderMonster = renderMonster;
+  }
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = MonsterEvolutionRenderer;
