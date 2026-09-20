@@ -670,6 +670,32 @@
       description: "Two energetic, interactive 35-minute ESL lessons based on Reading Book 3 (pp. 16–17). Lesson 1 explores the 6-event story sequence, 4 feeling monsters (worried, bored, surprised, interested), and the Mystery Door creative studio. Lesson 2 trains Eagle Eye Skimming Detectives (38 cm, golden key, garden), Skim vs. Read Carefully, and the 'Learning and Your Brain' superpower challenge."
     },
     {
+      id: "alice-homework-quest",
+      title: "🍄 Alice in Wonderland XP Challenges: Homework Presentation & Quest Deck",
+      category: "Reading Games",
+      categoryLabel: "🍄 Literature & Homework Quests",
+      level: "A1–A2",
+      age: "8–12",
+      grade: "Grade 3 & 4",
+      duration: 35,
+      skills: ["Speaking", "Reading", "Vocabulary", "Creative Writing", "Drama & Roleplay"],
+      topics: ["Alice in Wonderland", "Vocabulary & Definitions", "Character Analysis", "Creative Ending", "Oral Fluency", "Comprehension"],
+      objectives: [
+        "Present and explain 12 discrete Alice in Wonderland homework challenges with instructions and model answers",
+        "Differentiate Level 1 (Get Started), Level 2 (Go Deeper), and Level 3 (Big Challenge) tasks",
+        "Empower teachers to award targeted XP directly to specific students with live gradebook logging"
+      ],
+      route: "alice-quest/homework.html",
+      worksheet: "assets/homework/alice-xp-challenges-poster.jpg",
+      worksheetRoute: "assets/homework/alice-xp-challenges-poster.jpg",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      badge: "⭐ 12 XP Quests",
+      thumbnail: "assets/homework/alice-xp-challenges-poster.jpg",
+      description: "Interactive slide presentation and comprehensive homework quest deck for Alice in Wonderland. Features 12 graded challenges across 3 progression tiers (+10 to +200 XP), clear student instructions, model answer examples, and direct teacher XP awarding."
+    },
+    {
       id: "nasa-mission",
       title: "🚀 NASA Mission: Find a New Planet",
       description: "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",

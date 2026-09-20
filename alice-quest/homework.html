@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alice in Wonderland XP Challenges | Homework Presentation & Quest</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --panel: #162032;
+      --border: #334155;
+      --gold: #f59e0b;
+      --cyan: #38bdf8;
+      --emerald: #10b981;
+      --purple: #c084fc;
+      --rose: #fb7185;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #0b0f19 90%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 2px solid var(--border);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+    .brand { font-size: 1.25rem; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 0.6rem; letter-spacing: 0.02em; }
+    .brand a { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.6rem; }
+    .nav-tabs { display: flex; gap: 0.5rem; align-items: center; }
+    .tab-btn {
+      background: #1e293b;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover { color: #fff; border-color: var(--cyan); }
+    .tab-btn.active { background: var(--cyan); color: #022c22; border-color: var(--cyan); box-shadow: 0 4px 12px rgba(56,189,248,0.3); }
+
+    .btn-back-home {
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-back-home:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+
+    /* Main View Area */
+    .view-container { max-width: 1100px; margin: 1.5rem auto; width: 92%; flex: 1; }
+    
+    /* Slide Deck Section */
+    .slide-frame {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      position: relative;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+    }
+    .slide-badge {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.04em;
+    }
+    .badge-l1 { background: rgba(16, 185, 129, 0.2); color: var(--emerald); border: 1px solid var(--emerald); }
+    .badge-l2 { background: rgba(56, 189, 248, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+    .badge-l3 { background: rgba(192, 132, 252, 0.2); color: var(--purple); border: 1px solid var(--purple); }
+
+    .slide-title { font-size: 2.1rem; font-weight: 900; margin-bottom: 0.5rem; color: #fff; line-height: 1.25; }
+    .slide-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) {
+      .slide-body { grid-template-columns: 1fr; }
+      .slide-title { font-size: 1.6rem; }
+      header { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+      .nav-tabs { width: 100%; justify-content: flex-start; overflow-x: auto; }
+    }
+
+    .example-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.35rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .example-tag { font-weight: 900; color: var(--gold); margin-bottom: 0.6rem; display: block; font-size: 0.85rem; letter-spacing: 0.03em; }
+    .slide-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 1.2rem;
+    }
+    .ctrl-btn {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 0.65rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ctrl-btn:hover { background: var(--cyan); color: #0b0f19; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(56,189,248,0.4); }
+
+    /* Grid View Section */
+    #grid-viewport {
+      display: none;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .grid-card {
+      background: var(--panel);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .grid-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .grid-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.8rem;
+    }
+    .grid-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .grid-card-desc {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+      line-height: 1.45;
+    }
+
+    /* Teacher Homework Award Drawer */
+    .teacher-tray {
+      margin-top: 2rem;
+      background: #0f172a;
+      border: 2px dashed var(--gold);
+      border-radius: 16px;
+      padding: 1.35rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .select-input {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      outline: none;
+      min-width: 220px;
+    }
+    .select-input:focus { border-color: var(--gold); }
+    .award-btn {
+      background: linear-gradient(135deg, var(--gold), #d97706);
+      color: #000;
+      border: none;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 0.75rem 1.7rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
+    }
+    .award-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.5); }
+    .award-btn:active { transform: scale(0.96); }
+
+    /* Toast Notification */
+    #toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #059669;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    #toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <a href="../index.html" title="Back to Adventure Academy">
+        <span style="font-size:1.4rem;">🍄</span>
+        <span>ALICE XP HOMEWORK QUEST</span>
+      </a>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="btn-slide-mode" onclick="setMode('slides')">📺 Slides Presentation</button>
+      <button class="tab-btn" id="btn-grid-mode" onclick="setMode('grid')">📋 Full Homework List</button>
+      <a href="../index.html" class="btn-back-home">🏛️ Academy Hub</a>
+    </div>
+  </header>
+
+  <main class="view-container">
+    <!-- Active Slide Viewport -->
+    <div class="slide-frame" id="slide-viewport">
+      <div>
+        <span class="slide-badge" id="slide-level">LEVEL 1</span>
+        <h2 class="slide-title" id="slide-task-title">Learn 10 New Words (+10 XP)</h2>
+        <p style="color: var(--muted); font-size: 1.05rem;" id="slide-desc">Find 10 words you didn't know and explain what they mean in your own words.</p>
+        
+        <div class="slide-body">
+          <div class="example-card">
+            <span class="example-tag">💡 STUDENT INSTRUCTIONS:</span>
+            <ul style="padding-left: 1.25rem; color: #cbd5e1; display:flex; flex-direction:column; gap:0.5rem;" id="slide-instructions">
+              <li>Write down 10 words from chapters 1-3.</li>
+              <li>Give a definition or draw a quick sketch.</li>
+              <li>Say each word out loud once.</li>
+            </ul>
+          </div>
+          <div class="example-card">
+            <span class="example-tag">✨ EXAMPLE SENTENCE / ANSWER:</span>
+            <p id="slide-example" style="color: #f1f5f9; font-size: 1.02rem;"><em>"Curious = Strange or unusual. 'Alice found a curious little bottle on the table.'"</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-controls">
+        <button class="ctrl-btn" onclick="prevSlide()">◀ Previous</button>
+        <span style="font-weight: 800; color: var(--gold); font-size: 1.05rem;" id="slide-counter">1 / 12</span>
+        <button class="ctrl-btn" onclick="nextSlide()">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- Full Homework List Grid View -->
+    <div id="grid-viewport">
+      <div style="margin-bottom: 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="font-size:1.6rem; font-weight:900; color:#fff;">📋 All 12 Alice XP Challenges</h2>
+          <p style="font-size:0.88rem; color:var(--muted); margin-top:2px;">Click any quest to open in slide deck or award credit directly.</p>
+        </div>
+        <div style="font-size:0.82rem; color:var(--gold); font-weight:800; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:4px 12px; border-radius:20px;">
+          Tiers 1, 2 & 3 • Total Available: 745 XP
+        </div>
+      </div>
+      <div class="grid-container" id="grid-cards-container">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Teacher Action Tray (Direct Student Award) -->
+    <div class="teacher-tray">
+      <div>
+        <h4 style="color: var(--gold); font-size: 1.15rem; margin-bottom: 0.25rem;">⭐ Award Current Homework XP</h4>
+        <p style="color: var(--muted); font-size: 0.88rem;" id="tray-task-label">Active Task: <strong style="color:#fff;" id="tray-current-task-name">Learn 10 New Words (+10 XP)</strong></p>
+      </div>
+      <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+        <select class="select-input" id="student-picker">
+          <option value="">-- Choose Student --</option>
+          <option value="stu_1">Leo (Grade 3A)</option>
+          <option value="stu_2">Maya (Grade 3A)</option>
+          <option value="stu_3">Adam (Grade 4B)</option>
+          <option value="stu_4">Sara (Grade 4B)</option>
+        </select>
+        <button class="award-btn" onclick="awardSelectedStudent()">🎉 Award XP to Student</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast-msg"></div>
+
+  <script>
+    const HOMEWORK_QUESTS = [
+      {
+        id: "HW-ALICE-101",
+        lvl: "Level 1: Get Started!", badgeClass: "badge-l1", xp: 10,
+        title: "Learn 10 New Words & Meanings",
+        desc: "Build your vocabulary directly from the story.",
+        inst: ["Pick 10 interesting words.", "Look up what they mean.", "Write or say their definition."],
+        example: "'Curious' means strange or unusual. 'Alice saw a very curious glass table.'"
+      },
+      {
+        id: "HW-ALICE-102",
+        lvl: "Level 1: Get Started!", badgeClass: "badge-l1", xp: 15,
+        title: "Favorite Character + 3 Reasons",
+        desc: "Pick your favorite friend or villain in Wonderland.",
+        inst: ["Name your character.", "Give 3 clear reasons why you like them.", "Use adjectives!"],
+        example: "'I like the Cheshire Cat because: 1) He can disappear, 2) He always smiles, and 3) He gives funny riddles.'"
+      },
+      {
+        id: "HW-ALICE-103",
+        lvl: "Level 1: Get Started!", badgeClass: "badge-l1", xp: 20,
+        title: "Draw a Character/Scene & Explain",
+        desc: "Show your art and speak/write about what is happening.",
+        inst: ["Draw with colors.", "Add labels to the parts.", "Write 2 sentences describing your picture."],
+        example: "'This is Alice falling down the rabbit hole. She sees clocks, books, and jars on the shelves.'"
+      },
+      {
+        id: "HW-ALICE-104",
+        lvl: "Level 1: Get Started!", badgeClass: "badge-l1", xp: 20,
+        title: "Answer 5 Comprehension Questions",
+        desc: "Check your reading understanding with full sentences.",
+        inst: ["Read the assigned chapter.", "Answer with complete sentences.", "Check spelling!"],
+        example: "'Why did Alice follow the rabbit? Because he had a waistcoat and a pocket watch!'"
+      },
+      {
+        id: "HW-ALICE-201",
+        lvl: "Level 2: Go Deeper!", badgeClass: "badge-l2", xp: 40,
+        title: "Learn 25 Words (10 in Sentences)",
+        desc: "Expand your vocabulary range and sentence building.",
+        inst: ["List 25 words from the book.", "Choose your top 10.", "Write complete sentences using each."],
+        example: "'Sentence: Alice drank from the bottle and immediately began to shrink.'"
+      },
+      {
+        id: "HW-ALICE-202",
+        lvl: "Level 2: Go Deeper!", badgeClass: "badge-l2", xp: 50,
+        title: "2-Minute Character Talk",
+        desc: "Talk about personality, actions, and their role in the story.",
+        inst: ["Choose one character.", "Practice speaking for 2 minutes.", "Describe their actions & behavior."],
+        example: "'The Mad Hatter is chaotic and energetic. He hosts an endless tea party because time stopped!'"
+      },
+      {
+        id: "HW-ALICE-203",
+        lvl: "Level 2: Go Deeper!", badgeClass: "badge-l2", xp: 50,
+        title: "Retell One Scene (Without Reading)",
+        desc: "Practice natural fluency by telling the scene from memory.",
+        inst: ["Review your favorite scene.", "Close the book.", "Retell what happened in order (First, Next, Then)."],
+        example: "'First, Alice met the Caterpillar on a mushroom. Next, he asked Who are you? Then, he showed her how to grow.'"
+      },
+      {
+        id: "HW-ALICE-204",
+        lvl: "Level 2: Go Deeper!", badgeClass: "badge-l2", xp: 50,
+        title: "Write a New Ending (100–150 Words)",
+        desc: "Be the author and create an alternate finale.",
+        inst: ["Change the courtroom trial.", "Write 100-150 words.", "What happens to the tarts?"],
+        example: "'Alice grabbed the tarts, shared them with the Knave, and woke up having tea in her garden!'"
+      },
+      {
+        id: "HW-ALICE-301",
+        lvl: "Level 3: Big Challenge!", badgeClass: "badge-l3", xp: 80,
+        title: "Compare Two Characters in Detail",
+        desc: "Find similarities and sharp differences.",
+        inst: ["Choose 2 characters (e.g. Alice vs Queen).", "List 2 similarities.", "List 3 differences."],
+        example: "'Both are in Wonderland, but Alice is curious and calm while the Queen is impatient and angry!'"
+      },
+      {
+        id: "HW-ALICE-302",
+        lvl: "Level 3: Big Challenge!", badgeClass: "badge-l3", xp: 80,
+        title: "Explain Alice's Journey & Character Arc",
+        desc: "How does Alice grow from the start to the end?",
+        inst: ["How was Alice at the beginning?", "What problems did she face?", "How did her bravery change?"],
+        example: "'At first, Alice was timid and easily confused. By the trial, she stood up to the Queen without fear!'"
+      },
+      {
+        id: "HW-ALICE-303",
+        lvl: "Level 3: Big Challenge!", badgeClass: "badge-l3", xp: 100,
+        title: "Act Out a Scene (Video or Partner)",
+        desc: "Bring Wonderland to life with costumes and drama.",
+        inst: ["Pick a scene (e.g. Mad Tea Party).", "Perform with props or costumes.", "Record 1-2 minutes."],
+        example: "'Two students act as Alice and the Hatter pouring pretend tea and reciting riddles!'"
+      },
+      {
+        id: "HW-ALICE-304",
+        lvl: "Level 3: Big Challenge!", badgeClass: "badge-l3", xp: 200,
+        title: "5–7 Minute Full Story Spoken Summary",
+        desc: "The ultimate mastery challenge!",
+        inst: ["Read the whole story.", "Outline beginning, middle, and climax.", "Record a 5-7 min video speech."],
+        example: "'Comprehensive walk-through covering the rabbit hole, pool of tears, tea party, and courtroom.'"
+      }
+    ];
+
+    let currentSlide = 0;
+    let currentMode = 'slides';
+
+    function setMode(mode) {
+      currentMode = mode;
+      const slideV = document.getElementById("slide-viewport");
+      const gridV = document.getElementById("grid-viewport");
+      const btnSlide = document.getElementById("btn-slide-mode");
+      const btnGrid = document.getElementById("btn-grid-mode");
+
+      if (mode === 'slides') {
+        slideV.style.display = "flex";
+        gridV.style.display = "none";
+        btnSlide.classList.add("active");
+        btnGrid.classList.remove("active");
+      } else {
+        slideV.style.display = "none";
+        gridV.style.display = "block";
+        btnSlide.classList.remove("active");
+        btnGrid.classList.add("active");
+        renderGrid();
+      }
+    }
+
+    function renderSlide() {
+      const q = HOMEWORK_QUESTS[currentSlide];
+      const badge = document.getElementById("slide-level");
+      badge.innerText = `${q.lvl} • +${q.xp} XP`;
+      badge.className = `slide-badge ${q.badgeClass}`;
+      document.getElementById("slide-task-title").innerText = `${q.title} (+${q.xp} XP)`;
+      document.getElementById("slide-desc").innerText = q.desc;
+      
+      const instList = document.getElementById("slide-instructions");
+      instList.innerHTML = q.inst.map(i => `<li>${i}</li>`).join("");
+      
+      document.getElementById("slide-example").innerHTML = `<em>"${q.example}"</em>`;
+      document.getElementById("slide-counter").innerText = `${currentSlide + 1} / ${HOMEWORK_QUESTS.length}`;
+
+      const currentTaskNameEl = document.getElementById("tray-current-task-name");
+      if (currentTaskNameEl) {
+        currentTaskNameEl.innerText = `${q.title} (+${q.xp} XP)`;
+      }
+    }
+
+    function renderGrid() {
+      const container = document.getElementById("grid-cards-container");
+      if (!container) return;
+      container.innerHTML = HOMEWORK_QUESTS.map((q, idx) => `
+        <div class="grid-card">
+          <div>
+            <div class="grid-card-header">
+              <span class="slide-badge ${q.badgeClass}" style="margin:0; font-size:0.75rem;">${q.lvl}</span>
+              <span style="font-weight:900; color:var(--gold); font-size:0.95rem; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); padding:2px 8px; border-radius:12px;">+${q.xp} XP</span>
+            </div>
+            <h3 class="grid-card-title">${q.title}</h3>
+            <p class="grid-card-desc">${q.desc}</p>
+            <div style="background:rgba(15,23,42,0.6); padding:8px 10px; border-radius:8px; font-size:0.8rem; color:#cbd5e1; margin-bottom:12px;">
+              <strong style="color:var(--gold);">Ex:</strong> ${q.example}
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="ctrl-btn" style="flex:1; padding:0.45rem; font-size:0.82rem; justify-content:center;" onclick="selectSlide(${idx})">📺 Present Slide</button>
+            <button class="ctrl-btn" style="background:#059669; color:#fff; padding:0.45rem 0.8rem; font-size:0.82rem;" onclick="selectForAward(${idx})" title="Select for XP award">⭐ Select</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function selectSlide(idx) {
+      currentSlide = idx;
+      setMode('slides');
+      renderSlide();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectForAward(idx) {
+      currentSlide = idx;
+      renderSlide();
+      showToast(`Selected: "${HOMEWORK_QUESTS[idx].title}" (+${HOMEWORK_QUESTS[idx].xp} XP)`);
+      const tray = document.querySelector(".teacher-tray");
+      if (tray) tray.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % HOMEWORK_QUESTS.length;
+      renderSlide();
+    }
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + HOMEWORK_QUESTS.length) % HOMEWORK_QUESTS.length;
+      renderSlide();
+    }
+
+    // Keyboard navigation
+    window.addEventListener("keydown", (e) => {
+      if (currentMode !== 'slides') return;
+      if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+        nextSlide();
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+        prevSlide();
+      }
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast-msg");
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3500);
+    }
+
+    // Auto-populate roster from parent Adventure Academy platform if available
+    function loadPlatformRoster() {
+      const picker = document.getElementById("student-picker");
+      if (!picker) return;
+
+      let students = null;
+      try {
+        if (window.parent && window.parent.store && typeof window.parent.store.getStudents === 'function') {
+          students = window.parent.store.getStudents();
+        } else if (window.opener && window.opener.store && typeof window.opener.store.getStudents === 'function') {
+          students = window.opener.store.getStudents();
+        } else {
+          const raw = localStorage.getItem('eaa_school_store_v1') || localStorage.getItem('school_store_state_v1');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            students = parsed.students || null;
+          }
+        }
+      } catch (err) {
+        console.warn("Could not read platform store:", err);
+      }
+
+      if (students && Array.isArray(students) && students.length > 0) {
+        picker.innerHTML = '<option value="">-- Choose Student (' + students.length + ' Enrolled) --</option>' +
+          students.map(s => {
+            const cls = s.classId || s.grade || 'Academy';
+            const name = (s.firstName ? s.firstName + ' ' + (s.lastName || '') : s.name).trim();
+            return `<option value="${s.id}">${name} (${cls})</option>`;
+          }).join("");
+      }
+    }
+
+    function awardSelectedStudent() {
+      const picker = document.getElementById("student-picker");
+      const stuId = picker.value;
+      if (!stuId) {
+        alert("Please pick a student from the list first!");
+        picker.focus();
+        return;
+      }
+      const q = HOMEWORK_QUESTS[currentSlide];
+      const studentLabel = picker.options[picker.selectedIndex].text;
+
+      // 1. Hook into parent Adventure Academy store
+      let awarded = false;
+      try {
+        const storeRef = (window.parent && window.parent.store) || (window.opener && window.opener.store) || (window.store);
+        if (storeRef && typeof storeRef.awardStudentXP === 'function') {
+          storeRef.awardStudentXP(stuId, q.xp, `Homework (${q.id || 'ALICE'}): ${q.title}`);
+          awarded = true;
+        }
+      } catch (err) {
+        console.warn("Direct store award attempt:", err);
+      }
+
+      // 2. Global AdventureAcademy hook
+      if (window.AdventureAcademy && typeof window.AdventureAcademy.awardXP === 'function') {
+        window.AdventureAcademy.awardXP({
+          studentId: stuId,
+          amount: q.xp,
+          reason: `Homework: ${q.title}`
+        });
+        awarded = true;
+      }
+
+      showToast(`🎉 Awarded +${q.xp} XP to ${studentLabel} for: "${q.title}"!`);
+    }
+
+    // Initialize
+    loadPlatformRoster();
+    renderSlide();
+  </script>
+</body>
+</html>
