@@ -11862,6 +11862,25 @@ window.switchClassroomSubTab = function(subTab) {
           container.innerHTML = window.renderToolkitSimonView();
         }
         break;
+      case 'bamboozle':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<!-- Baamboozle Arena Utility Card -->' +
+            '<div class="toolkit-card" style="max-width:520px; width:100%; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border: 2px solid #38bdf8; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'baamboozle/index.html\', \'_blank\')">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">⚡</span>' +
+                '<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">PARTY SHOWDOWN</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Baamboozle Arena</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">24-Card Team Tournament with Phonics, CLIL Inventions, Tongue Twisters & Sabotage Traps.</p>' +
+              '</div>' +
+              '<button style="background: #38bdf8; color: #022c22; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
+                '🚀 Launch Arena' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        break;
       default:
         container.innerHTML = renderToolkitTimerView();
         break;

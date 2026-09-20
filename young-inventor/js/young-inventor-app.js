@@ -117,7 +117,7 @@
     renderTeamsStrip();
     renderTimeline();
     renderHeroGrid();
-    showHero();
+    YoungInventors.showHero();
     bindKeyboard();
   }
 
@@ -1496,6 +1496,21 @@
         <span>${m.title}</span>
       </div>
     `).join('');
+  }
+
+  function renderTimeline() {
+    if (!DOM.timeline || !D.missions) return;
+    DOM.timeline.innerHTML = D.missions.map(m => `
+      <div class="yi-timeline-node ${state.currentMission === m.id ? 'active' : ''} ${state.completedMissions.has(m.id) ? 'completed' : ''}"
+           onclick="window.YoungInventors.loadMission(${m.id})" title="${m.title}">
+        <span>${m.icon}</span>
+        <span class="node-num">${m.id}</span>
+      </div>
+    `).join('');
+  }
+
+  function updateTimeline() {
+    renderTimeline();
   }
 
   function renderTeamsStrip() {
