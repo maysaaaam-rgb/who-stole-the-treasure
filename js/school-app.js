@@ -4852,6 +4852,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #f59e0b; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:6px;">READING 2 · NEW 💡</span>' +
+                  '<span style="font-size:0.78rem; color:#fde68a; font-weight:800;">⏱️ 30 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The Inventor’s Odyssey: My Good Ideas Lab</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Interactive 4-part lesson: Rolling pencil hexagon physics, Biomimicry plant &amp; bird matching, Leonardo da Vinci parachute drop tester, and Karl Benz 1885 motorcar iteration.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Problem &amp; Solution</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(56,189,248,0.2); color:#bae6fd; border:1px solid rgba(56,189,248,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Hexagon &amp; Parachute</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Improve (Iteration)</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="good-ideas-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; border:none; box-shadow:0 4px 14px rgba(245,158,11,0.4);">▶ Play Good Ideas Lab</a>' +
+              '</div>' +
+            '</div>' +
             '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
@@ -11882,6 +11900,24 @@ window.switchClassroomSubTab = function(subTab) {
               '</div>' +
               '<button style="background: #38bdf8; color: #022c22; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
                 '🚀 Launch Arena' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        break;
+      case 'ideas':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<div class="toolkit-card" style="max-width:540px; width:100%; background: linear-gradient(135deg, #0d1527 0%, #1e1b4b 50%, #f59e0b 100%); border: 2px solid #f59e0b; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'good-ideas-lab/index.html\', \'_blank\')">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">💡</span>' +
+                '<span style="background: rgba(245, 158, 11, 0.2); color: #fde68a; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">DESIGN THINKING LAB</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">The Inventor’s Odyssey: My Good Ideas Lab</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">Rolling pencil hexagon physics, Biomimicry matcher, Leonardo da Vinci parachute canopy drop tester &amp; Karl Benz motorcar iteration.</p>' +
+              '</div>' +
+              '<button style="background: #f59e0b; color: #000; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
+                '💡 Launch Good Ideas Lab' +
               '</button>' +
             '</div>' +
           '</div>';
