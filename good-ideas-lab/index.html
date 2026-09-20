@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Inventor’s Odyssey: My Good Ideas Lab 💡 | مختبر الأفكار الرائعة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0d1527 0%, #15203b 50%, #1a2849 100%);
+      --card-bg: #1e293b;
+      --card-bg-light: #26354a;
+      --panel-border: #334155;
+      --accent-yellow: #f59e0b;
+      --accent-yellow-light: #fde68a;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-green-light: #6ee7b7;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-display: 'Fredoka', 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation HUD */
+    .lab-header {
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--panel-border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .brand-icon {
+      font-size: 2rem;
+      animation: floatBulb 3s ease-in-out infinite;
+    }
+    @keyframes floatBulb {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-5px) rotate(4deg); }
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--accent-yellow);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .brand-title span.sub {
+      font-size: 0.75rem;
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 0.5px;
+    }
+
+    .hud-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hud-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.45rem 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .hud-btn:hover {
+      background: var(--card-bg-light);
+      border-color: var(--accent-cyan);
+      transform: translateY(-1px);
+    }
+    .hud-btn:active { transform: translateY(1px); }
+    .hud-btn.active {
+      background: var(--accent-cyan);
+      color: #042f2e;
+      border-color: var(--accent-cyan);
+    }
+
+    /* XP & Progress Pill */
+    .xp-pill {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15));
+      border: 1px solid var(--accent-yellow);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--accent-yellow-light);
+    }
+
+    /* Quest Progress Stepper */
+    .quest-stepper {
+      background: #0b1120;
+      border-bottom: 1px solid var(--panel-border);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      overflow-x: auto;
+    }
+
+    .step-node {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .step-node.active {
+      border-color: var(--accent-yellow);
+      background: #273549;
+      color: #fff;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+    }
+    .step-node.completed {
+      border-color: var(--accent-green);
+      color: var(--accent-green-light);
+    }
+
+    /* Main Container & Screens */
+    main.lab-stage {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-view {
+      display: none;
+      flex-direction: column;
+      gap: 1.5rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .screen-view.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card Containers */
+    .glass-card {
+      background: var(--card-bg);
+      border: 2px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    /* ----------------------------------------------------
+       SCREEN 0: DASHBOARD & NOTEBOOK INTRO
+       ---------------------------------------------------- */
+    .hero-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #4338ca 100%);
+      border: 3px solid #6366f1;
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner h1 {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.5);
+    }
+    .hero-banner p {
+      font-size: 1.15rem;
+      color: #c7d2fe;
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+    }
+
+    .inventory-section {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    .inventory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .inventory-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .badge-item {
+      background: #1e293b;
+      border: 2px dashed #475569;
+      border-radius: 16px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+    .badge-item.unlocked {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 2px solid var(--accent-green);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
+      transform: translateY(-2px);
+    }
+    .badge-item .badge-icon {
+      font-size: 2.8rem;
+      margin-bottom: 0.4rem;
+      filter: grayscale(1) opacity(0.35);
+      transition: all 0.3s;
+    }
+    .badge-item.unlocked .badge-icon {
+      filter: grayscale(0) opacity(1);
+      animation: popIn 0.4s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.5); }
+      70% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .badge-item .badge-word {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+    .badge-item.unlocked .badge-word {
+      color: var(--accent-green-light);
+    }
+    .badge-item .badge-pronounce {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      margin-top: 0.25rem;
+      display: none;
+    }
+    .badge-item.unlocked .badge-pronounce { display: block; }
+
+    /* Action Play Button */
+    .btn-action-prime {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      padding: 1rem 3rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn-action-prime:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 14px 30px rgba(245, 158, 11, 0.5);
+    }
+    .btn-action-prime:active {
+      transform: translateY(1px);
+    }
+
+    /* ----------------------------------------------------
+       QUEST 1: ROLLING PENCIL & NATURE MATCHING
+       ---------------------------------------------------- */
+    .quest-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .quest-badge-tag {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .pencil-canvas-box {
+      width: 100%;
+      height: 260px;
+      background: #090d16;
+      border: 3px solid #334155;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #pencilCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .shape-picker {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .shape-btn {
+      background: #0f172a;
+      border: 3px solid #334155;
+      color: #fff;
+      border-radius: 16px;
+      padding: 1rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 140px;
+    }
+    .shape-btn:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-3px);
+      background: #1e293b;
+    }
+    .shape-btn.selected {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+    }
+    .shape-btn .shape-icon {
+      font-size: 2.2rem;
+    }
+
+    /* Edison Note Modal / Card */
+    .historical-note {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+      border: 2px solid var(--accent-yellow);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: none;
+      align-items: center;
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .historical-note.visible { display: flex; }
+    .edison-avatar {
+      font-size: 3.5rem;
+    }
+
+    /* Biomimicry Matcher Columns */
+    .biomimicry-arena {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .biomimicry-arena { grid-template-columns: 1fr; }
+    }
+
+    .bio-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .bio-card {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .bio-card:hover {
+      border-color: var(--accent-cyan);
+      background: #162032;
+    }
+    .bio-card.active-match {
+      border-color: var(--accent-yellow);
+      background: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+    }
+    .bio-card.matched {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.15);
+      pointer-events: none;
+    }
+    .bio-card .bio-img {
+      font-size: 2.4rem;
+    }
+    .bio-card .bio-info h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .bio-card .bio-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Combined Crafting Bench */
+    .crafting-bench {
+      background: #090d16;
+      border: 2px dashed #475569;
+      border-radius: 18px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .craft-parts-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .craft-part-chip {
+      background: #1e293b;
+      border: 2px solid #334155;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .craft-combine-btn {
+      background: var(--accent-purple);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .craft-combine-btn:hover {
+      background: #c084fc;
+      transform: translateY(-2px);
+    }
+
+    /* ----------------------------------------------------
+       QUEST 2: LEONARDO'S BLUEPRINT PARACHUTE TESTER
+       ---------------------------------------------------- */
+    .blueprint-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+    }
+    @media (max-width: 860px) {
+      .blueprint-layout { grid-template-columns: 1fr; }
+    }
+
+    .tower-canvas-box {
+      background: #020617;
+      border: 3px solid #334155;
+      border-radius: 20px;
+      height: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    #towerCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .blueprint-controls {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .slider-group label {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: space-between;
+    }
+    .blueprint-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 6px;
+      background: #1e293b;
+      outline: none;
+      border: 1px solid #475569;
+    }
+    .blueprint-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent-yellow);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+    }
+
+    /* ----------------------------------------------------
+       QUEST 3: KARL BENZ ITERATION LOOP
+       ---------------------------------------------------- */
+    .benz-stage-box {
+      background: #090d16;
+      border: 3px solid #334155;
+      border-radius: 20px;
+      height: 320px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #benzCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .bystander-bubbles {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .dialogue-bubble {
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 16px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 240px;
+    }
+    .dialogue-bubble .avatar { font-size: 1.8rem; }
+
+    .iteration-upgrades {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .upgrade-card {
+      flex: 1;
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 14px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 200px;
+    }
+    .upgrade-card:hover {
+      border-color: var(--accent-cyan);
+      background: #182234;
+    }
+    .upgrade-card.applied {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.15);
+      pointer-events: none;
+    }
+
+    /* ----------------------------------------------------
+       FINAL CELEBRATION & CERTIFICATE MODAL
+       ---------------------------------------------------- */
+    .certificate-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 4px solid var(--accent-yellow);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.3);
+      position: relative;
+    }
+    .cert-crown {
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+      animation: popBounce 1s ease-in-out infinite alternate;
+    }
+    @keyframes popBounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+    .cert-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      color: var(--accent-yellow);
+      margin-bottom: 0.25rem;
+    }
+
+    .student-name-input {
+      background: #090d16;
+      border: 2px solid var(--accent-cyan);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      padding: 0.6rem 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      width: 100%;
+      max-width: 440px;
+      margin: 1rem auto;
+      outline: none;
+    }
+    .student-name-input:focus {
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Vocabulary Flashcards Review */
+    .vocab-review-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+    .vocab-card {
+      background: #0b1120;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .vocab-card .term {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--accent-yellow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .vocab-card .pronounce-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .vocab-card .definition {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      line-height: 1.35;
+    }
+
+    /* Student Idea Creator Box */
+    .student-idea-box {
+      background: #090d16;
+      border: 2px dashed #475569;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
+    }
+    .student-idea-box h4 {
+      font-family: var(--font-display);
+      color: var(--accent-green-light);
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+    .idea-field {
+      margin-bottom: 0.8rem;
+    }
+    .idea-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-bottom: 0.3rem;
+    }
+    .idea-field input {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    /* Next / Back navigation buttons */
+    .stage-nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--panel-border);
+    }
+
+    /* Confetti Canvas Overlay */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Print Styles */
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .lab-header, .quest-stepper, .stage-nav-row, .hud-controls { display: none !important; }
+      .certificate-card { border: 4px solid #000 !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+      .cert-title { color: #000 !important; }
+      .student-name-input { border: 2px solid #000 !important; color: #000 !important; }
+      .vocab-card { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; }
+      .vocab-card .term { color: #000 !important; }
+      .vocab-card .definition { color: #333 !important; }
+      .student-idea-box { border: 1px solid #000 !important; background: #fff !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Lab HUD -->
+  <header class="lab-header">
+    <div class="brand-wrap" onclick="App.showScreen('dashboard')">
+      <div class="brand-icon">💡</div>
+      <div class="brand-title">
+        <span>MY GOOD IDEAS LAB</span>
+        <span class="sub">مختبر الأفكار الرائعة • Global Readings ESL</span>
+      </div>
+    </div>
+
+    <div class="hud-controls">
+      <div class="xp-pill" title="Total Lab XP">
+        <span>⚡ XP:</span>
+        <span id="hud-xp-val">0</span>
+      </div>
+
+      <button class="hud-btn" id="btn-audio" onclick="AudioEngine.toggleSound()" title="Sound Effects">
+        🔊 SFX
+      </button>
+      <button class="hud-btn" id="btn-speech" onclick="AudioEngine.toggleSpeech()" title="Speech Pronunciation">
+        🗣️ TTS
+      </button>
+    </div>
+  </header>
+
+  <!-- Quest Progress Stepper -->
+  <nav class="quest-stepper">
+    <div class="step-node active" id="nav-step-0" onclick="App.showScreen('dashboard')">
+      <span>📖</span> <span>Lab Notebook</span>
+    </div>
+    <div class="step-node" id="nav-step-1" onclick="App.showScreen('quest1')">
+      <span>✏️</span> <span>Quest 1: Rolling Pencil</span>
+    </div>
+    <div class="step-node" id="nav-step-2" onclick="App.showScreen('quest2')">
+      <span>🪂</span> <span>Quest 2: Leonardo's Blueprint</span>
+    </div>
+    <div class="step-node" id="nav-step-3" onclick="App.showScreen('quest3')">
+      <span>🚗</span> <span>Quest 3: Karl Benz's Loop</span>
+    </div>
+    <div class="step-node" id="nav-step-4" onclick="App.showScreen('celebration')">
+      <span>🏆</span> <span>Master Certificate</span>
+    </div>
+  </nav>
+
+  <!-- Main Multi-Screen Container -->
+  <main class="lab-stage">
+
+    <!-- ====================================================
+         SCREEN 0: DASHBOARD & INVENTOR'S NOTEBOOK
+         ==================================================== -->
+    <section class="screen-view active" id="screen-dashboard">
+      <div class="hero-banner">
+        <h1>Welcome to My Good Ideas Lab! 💡</h1>
+        <p>
+          Every great invention begins with a <strong>problem</strong>! Great inventors like Thomas Edison, Leonardo da Vinci, and Karl Benz didn't give up. Step into the lab, solve engineering challenges, unlock target vocabulary, and design your own inventions!
+        </p>
+        <button class="btn-action-prime" onclick="App.startQuests()">
+          <span>🚀 OPEN QUEST 1</span>
+        </button>
+      </div>
+
+      <!-- Vocabulary Badge Inventory -->
+      <div class="inventory-section">
+        <div class="inventory-header">
+          <h3><span>🏷️</span> Vocabulary Badge Inventory (5 Badges)</h3>
+          <span style="color:var(--text-muted); font-size:0.85rem; font-weight:700;">Collect all 5 to graduate!</span>
+        </div>
+
+        <div class="badges-grid">
+          <!-- Badge 1: Problem -->
+          <div class="badge-item" id="badge-problem" onclick="App.pronounceBadge('problem')">
+            <div class="badge-icon">🚨</div>
+            <div class="badge-word">Problem</div>
+            <div class="badge-pronounce">🔊 Click to Hear</div>
+          </div>
+
+          <!-- Badge 2: Solution -->
+          <div class="badge-item" id="badge-solution" onclick="App.pronounceBadge('solution')">
+            <div class="badge-icon">💡</div>
+            <div class="badge-word">Solution</div>
+            <div class="badge-pronounce">🔊 Click to Hear</div>
+          </div>
+
+          <!-- Badge 3: Hexagon -->
+          <div class="badge-item" id="badge-hexagon" onclick="App.pronounceBadge('hexagon')">
+            <div class="badge-icon">⬡</div>
+            <div class="badge-word">Hexagon</div>
+            <div class="badge-pronounce">🔊 Click to Hear</div>
+          </div>
+
+          <!-- Badge 4: Parachute -->
+          <div class="badge-item" id="badge-parachute" onclick="App.pronounceBadge('parachute')">
+            <div class="badge-icon">🪂</div>
+            <div class="badge-word">Parachute</div>
+            <div class="badge-pronounce">🔊 Click to Hear</div>
+          </div>
+
+          <!-- Badge 5: Improve -->
+          <div class="badge-item" id="badge-improve" onclick="App.pronounceBadge('improve')">
+            <div class="badge-icon">🔧</div>
+            <div class="badge-word">Improve</div>
+            <div class="badge-pronounce">🔊 Click to Hear</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SCREEN 1: QUEST 1 — ROLLING PENCIL & BIOMIMICRY
+         ==================================================== -->
+    <section class="screen-view" id="screen-quest1">
+      <div class="glass-card">
+        <div class="quest-card-header">
+          <div>
+            <span class="quest-badge-tag">Pages 18–19 • Design Thinking</span>
+            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
+              Quest 1: The Rolling Pencil Puzzle & Nature's Secrets
+            </h2>
+          </div>
+          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">+3 Badges Available</span>
+        </div>
+
+        <!-- Part A: The Rolling Pencil Canvas Simulation -->
+        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
+          <strong>The Problem:</strong> When a round pencil is placed on a tilted desk, it rolls off and drops onto the floor! Which cross-section shape will give it a <strong>solution</strong> so it won't roll?
+        </p>
+
+        <div class="pencil-canvas-box">
+          <canvas id="pencilCanvas"></canvas>
+        </div>
+
+        <div class="shape-picker">
+          <button class="shape-btn" id="btn-shape-circle" onclick="Quest1.chooseShape('circle')">
+            <span class="shape-icon">⭕</span>
+            <span>Circle</span>
+          </button>
+          <button class="shape-btn" id="btn-shape-triangle" onclick="Quest1.chooseShape('triangle')">
+            <span class="shape-icon">🔺</span>
+            <span>Triangle</span>
+          </button>
+          <button class="shape-btn" id="btn-shape-hexagon" onclick="Quest1.chooseShape('hexagon')">
+            <span class="shape-icon">⬡</span>
+            <span>Hexagon (6 sides)</span>
+          </button>
+        </div>
+
+        <div id="pencil-feedback" style="text-align:center; margin-top:1rem; font-weight:800; font-size:1.15rem; min-height:1.5rem;"></div>
+
+        <!-- Edison's Historical Note -->
+        <div class="historical-note" id="edison-note">
+          <div class="edison-avatar">👨‍🔬</div>
+          <div>
+            <h4 style="color:var(--accent-yellow); font-size:1.15rem; font-family:var(--font-display);">Thomas Edison's Inventor Rule:</h4>
+            <p style="font-size:0.95rem; color:#e2e8f0; line-height:1.4; margin-top:0.2rem;">
+              <em>"When you have a <strong>problem</strong>, look for a <strong>solution</strong>! I filled thousands of notebooks with ideas. An ordinary round pencil rolls, but a <strong>hexagon</strong> has 6 flat sides that lock onto the table!"</em>
+            </p>
+          </div>
+        </div>
+
+        <hr style="border:0; border-top:1px solid var(--panel-border); margin: 2rem 0;">
+
+        <!-- Part B: Biomimicry Matcher -->
+        <h3 style="font-family:var(--font-display); font-size:1.4rem; color:var(--accent-cyan); margin-bottom:0.5rem;">
+          🌿 Part B: Biomimicry Matcher (Copying Nature's Secrets)
+        </h3>
+        <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+          Inventors observe nature to solve human problems. Match the natural creature on the left with the human invention on the right!
+        </p>
+
+        <div class="biomimicry-arena">
+          <!-- Nature Side -->
+          <div class="bio-col">
+            <div class="bio-card" id="bio-burdock" onclick="Quest1.selectBio('burdock', 'nature')">
+              <div class="bio-img">🌱</div>
+              <div class="bio-info">
+                <h4>Burdock Burr Plant</h4>
+                <p>Has tiny sharp hooks that grab onto animal fur.</p>
+              </div>
+            </div>
+
+            <div class="bio-card" id="bio-kingfisher" onclick="Quest1.selectBio('kingfisher', 'nature')">
+              <div class="bio-img">🐦</div>
+              <div class="bio-info">
+                <h4>Kingfisher Bird</h4>
+                <p>Sleek aerodynamic beak that dives into water with zero splash.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invention Side -->
+          <div class="bio-col">
+            <div class="bio-card" id="bio-velcro" onclick="Quest1.selectBio('velcro', 'invention')">
+              <div class="bio-img">👟</div>
+              <div class="bio-info">
+                <h4>Velcro Shoe Straps</h4>
+                <p>Tiny nylon loops & hooks that stick fast to clothes and shoes!</p>
+              </div>
+            </div>
+
+            <div class="bio-card" id="bio-bullet" onclick="Quest1.selectBio('bullet', 'invention')">
+              <div class="bio-img">🚅</div>
+              <div class="bio-info">
+                <h4>Aerodynamic Bullet Train</h4>
+                <p>Long nose cone eliminates tunnel sonic boom noise!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bonus Combine Old Ideas Bench -->
+        <div class="crafting-bench">
+          <h4 style="font-family:var(--font-display); font-size:1.15rem; color:var(--accent-purple);">
+            🛠️ Bonus Creative Combination (Page 19)
+          </h4>
+          <p style="color:#94a3b8; font-size:0.9rem; margin-top:0.2rem;">
+            "You can combine two or three old things to make a brand-new invention!"
+          </p>
+          <div class="craft-parts-row">
+            <div class="craft-part-chip"><span>📯</span> <span>Old Horn</span></div>
+            <span style="font-size:1.5rem; font-weight:900; color:var(--accent-cyan);">+</span>
+            <div class="craft-part-chip"><span>🧪</span> <span>Rubber Tube</span></div>
+            <span style="font-size:1.5rem; font-weight:900; color:var(--accent-cyan);">+</span>
+            <div class="craft-part-chip"><span>🩹</span> <span>Sticky Tape</span></div>
+          </div>
+          <button class="craft-combine-btn" id="btn-craft" onclick="Quest1.combineCraft()">
+            ⚡ Combine Items into New Invention!
+          </button>
+          <div id="craft-result" style="margin-top:0.8rem; font-weight:800; color:var(--accent-green-light); display:none;">
+            🎉 You built an early Doctor's Stethoscope! It magnifies heartbeat sounds!
+          </div>
+        </div>
+
+        <div class="stage-nav-row">
+          <button class="hud-btn" onclick="App.showScreen('dashboard')">⬅️ Back to Notebook</button>
+          <button class="hud-btn active" id="btn-next-q1" onclick="App.showScreen('quest2')">Continue to Quest 2 ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SCREEN 2: QUEST 2 — LEONARDO'S BLUEPRINT WORKSHOP
+         ==================================================== -->
+    <section class="screen-view" id="screen-quest2">
+      <div class="glass-card">
+        <div class="quest-card-header">
+          <div>
+            <span class="quest-badge-tag">Page 20 • Rapid Prototyping</span>
+            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
+              Quest 2: Leonardo's Blueprint Workshop
+            </h2>
+          </div>
+          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">Badge: Parachute 🪂</span>
+        </div>
+
+        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
+          <strong>Leonardo's Concept:</strong> <em>"Drawing helps you see your idea and change it before building."</em><br>
+          Adjust the blueprint canopy diameter using the slider. If the parachute is too small, air resistance cannot slow gravity down. If it is large enough, the inventor will float down gently!
+        </p>
+
+        <div class="blueprint-layout">
+          <!-- Drop Tower Canvas -->
+          <div class="tower-canvas-box">
+            <canvas id="towerCanvas"></canvas>
+          </div>
+
+          <!-- Controls & Blueprint Settings -->
+          <div class="blueprint-controls">
+            <div>
+              <h3 style="font-family:var(--font-display); font-size:1.25rem; color:var(--accent-yellow); margin-bottom:1rem;">
+                📐 Blueprint Specifications
+              </h3>
+
+              <div class="slider-group">
+                <label for="slider-chute">
+                  <span>Canopy Diameter:</span>
+                  <span id="chute-val" style="color:#fff; font-weight:900;">35 px (Too Small)</span>
+                </label>
+                <input type="range" class="blueprint-slider" id="slider-chute" min="20" max="130" value="35" oninput="Quest2.updateDiameter(this.value)">
+              </div>
+
+              <div style="margin-top:1.5rem; font-size:0.85rem; color:#94a3b8; line-height:1.4;">
+                <p>💡 <strong>Air Resistance Rule:</strong> A wider cloth canopy traps more air underneath, creating upward drag to counteract downward gravity!</p>
+              </div>
+            </div>
+
+            <div>
+              <div id="drop-feedback" style="font-weight:800; font-size:1rem; min-height:2.2rem; margin-bottom:0.75rem; text-align:center;"></div>
+              <button class="btn-action-prime" style="width:100%; font-size:1.2rem; padding:0.9rem;" onclick="Quest2.launchDropTest()">
+                🚀 LAUNCH DROP TEST!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-nav-row">
+          <button class="hud-btn" onclick="App.showScreen('quest1')">⬅️ Back to Quest 1</button>
+          <button class="hud-btn active" id="btn-next-q2" onclick="App.showScreen('quest3')">Continue to Quest 3 ➡️</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SCREEN 3: QUEST 3 — KARL BENZ'S ITERATION LOOP
+         ==================================================== -->
+    <section class="screen-view" id="screen-quest3">
+      <div class="glass-card">
+        <div class="quest-card-header">
+          <div>
+            <span class="quest-badge-tag">Page 21 • The Iteration Cycle</span>
+            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
+              Quest 3: The Iteration Loop with Karl Benz
+            </h2>
+          </div>
+          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">Badge: Improve 🔧</span>
+        </div>
+
+        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
+          <strong>The Golden Rule of Inventions:</strong> <em>"Don't give up! Try again... and again... and again! Show your idea and listen to feedback."</em><br>
+          Karl Benz built the world's first gas-powered motorcar in 1885. At first, it sputtered, shook violently, and tilted. Listen to the crowd and select engineering improvements!
+        </p>
+
+        <!-- Benz Motorcar Canvas Animation -->
+        <div class="benz-stage-box">
+          <canvas id="benzCanvas"></canvas>
+        </div>
+
+        <!-- Bystander Dialogue -->
+        <div class="bystander-bubbles">
+          <div class="dialogue-bubble">
+            <div class="avatar">🎩</div>
+            <div>
+              <strong style="color:var(--accent-cyan);">Passerby 1:</strong>
+              <p style="color:#e2e8f0; font-size:0.9rem; margin-top:0.1rem;">"A carriage with no horses? It will never work!"</p>
+            </div>
+          </div>
+          <div class="dialogue-bubble">
+            <div class="avatar">🧐</div>
+            <div>
+              <strong style="color:var(--accent-rose);">Passerby 2:</strong>
+              <p style="color:#e2e8f0; font-size:0.9rem; margin-top:0.1rem;" id="crowd-critique">"Only three wheels? It shakes and tilts too easily!"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Iteration Upgrades Selection -->
+        <div class="iteration-upgrades">
+          <div class="upgrade-card" id="upg-1" onclick="Quest3.applyUpgrade(1)">
+            <h4 style="color:var(--accent-yellow); font-family:var(--font-display); font-size:1.1rem;">
+              Step 1: Test Initial Model
+            </h4>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
+              Single-cylinder, 3 thin wooden wheels. Run the motor!
+            </p>
+          </div>
+
+          <div class="upgrade-card" id="upg-2" onclick="Quest3.applyUpgrade(2)">
+            <h4 style="color:var(--accent-cyan); font-family:var(--font-display); font-size:1.1rem;">
+              Step 2: Engine Counterbalance
+            </h4>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
+              Stabilize pistons and refine fuel mixture to stop stalling.
+            </p>
+          </div>
+
+          <div class="upgrade-card" id="upg-3" onclick="Quest3.applyUpgrade(3)">
+            <h4 style="color:var(--accent-green-light); font-family:var(--font-display); font-size:1.1rem;">
+              Step 3: 4th Wheel & Steering
+            </h4>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
+              Add a 4th wheel, wire-spoke balance & rack steering!
+            </p>
+          </div>
+        </div>
+
+        <div id="benz-feedback" style="margin-top:1.25rem; text-align:center; font-weight:800; font-size:1.2rem; min-height:1.8rem;"></div>
+
+        <div class="stage-nav-row">
+          <button class="hud-btn" onclick="App.showScreen('quest2')">⬅️ Back to Quest 2</button>
+          <button class="hud-btn active" id="btn-next-q3" onclick="App.showScreen('celebration')">Claim Master Certificate 🏆</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         SCREEN 4: FINAL CELEBRATION & CERTIFICATE
+         ==================================================== -->
+    <section class="screen-view" id="screen-celebration">
+      <div class="certificate-card">
+        <div class="cert-crown">🏆</div>
+        <h2 class="cert-title">MASTER INVENTOR DIPLOMA</h2>
+        <p style="color:#cbd5e1; font-size:1.1rem; max-width:600px; margin:0 auto;">
+          This official certificate honors exceptional mastery of the <strong>Design Thinking Cycle</strong>, Biomimicry Innovation, and Creative Problem Solving.
+        </p>
+
+        <div style="margin: 1.5rem auto 1rem; max-width:440px;">
+          <label style="font-size:0.85rem; font-weight:800; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:1px;">
+            Enter Candidate Name:
+          </label>
+          <input type="text" class="student-name-input" id="cert-name" value="Young Inventor" placeholder="Your Name Here">
+        </div>
+
+        <!-- 5 Core Vocabulary Definition Flashcards -->
+        <h3 style="font-family:var(--font-display); font-size:1.3rem; color:var(--accent-yellow); margin-top:1.5rem;">
+          📚 Target Vocabulary Mastery
+        </h3>
+        <div class="vocab-review-strip">
+          <div class="vocab-card">
+            <div class="term">
+              <span>1. Problem</span>
+              <button class="pronounce-btn" onclick="App.pronounceWord('Problem')">🔊</button>
+            </div>
+            <div class="definition">A challenge or difficulty that needs to be fixed or solved.</div>
+          </div>
+
+          <div class="vocab-card">
+            <div class="term">
+              <span>2. Solution</span>
+              <button class="pronounce-btn" onclick="App.pronounceWord('Solution')">🔊</button>
+            </div>
+            <div class="definition">The creative answer or invention that fixes a problem.</div>
+          </div>
+
+          <div class="vocab-card">
+            <div class="term">
+              <span>3. Hexagon</span>
+              <button class="pronounce-btn" onclick="App.pronounceWord('Hexagon')">🔊</button>
+            </div>
+            <div class="definition">A flat polygon with 6 straight sides that prevents rolling.</div>
+          </div>
+
+          <div class="vocab-card">
+            <div class="term">
+              <span>4. Parachute</span>
+              <button class="pronounce-btn" onclick="App.pronounceWord('Parachute')">🔊</button>
+            </div>
+            <div class="definition">A wide cloth canopy that catches air to slow down a fall.</div>
+          </div>
+
+          <div class="vocab-card">
+            <div class="term">
+              <span>5. Improve</span>
+              <button class="pronounce-btn" onclick="App.pronounceWord('Improve')">🔊</button>
+            </div>
+            <div class="definition">To test, listen to feedback, and make something better!</div>
+          </div>
+        </div>
+
+        <!-- Interactive Good Ideas Card Input -->
+        <div class="student-idea-box">
+          <h4>💡 My Own Real-World Idea (Good Ideas Card)</h4>
+          <div class="idea-field">
+            <label>1. What everyday problem do you want to solve?</label>
+            <input type="text" id="idea-prob" placeholder="e.g., My heavy backpack makes my shoulders tired.">
+          </div>
+          <div class="idea-field">
+            <label>2. What is your creative invention or solution?</label>
+            <input type="text" id="idea-sol" placeholder="e.g., Backpack straps with bouncy air cushions and solar wheels!">
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div style="display:flex; justify-content:center; gap:1rem; margin-top:2rem; flex-wrap:wrap;">
+          <button class="btn-action-prime" onclick="window.print()">
+            🖨️ PRINT DIPLOMA & IDEA CARD
+          </button>
+          <button class="hud-btn" style="font-size:1.1rem; padding:0.8rem 1.8rem;" onclick="App.restart()">
+            🔄 RESTART ODYSSEY
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- ====================================================
+       APPLICATION JAVASCRIPT & ENGINES
+       ==================================================== -->
+  <script>
+    /* ----------------------------------------------------
+       1. WEB AUDIO API SYNTHESIZER (ZERO EXTERNAL MP3s)
+       ---------------------------------------------------- */
+    class LabSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.sfxEnabled = true;
+        this.ttsEnabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type = "sine", duration = 0.2, gainVal = 0.15) {
+        if (!this.sfxEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      }
+
+      playChord(freqs, type = "triangle", duration = 0.4, gainVal = 0.12) {
+        if (!this.sfxEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        freqs.forEach(f => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(f, now);
+          gain.gain.setValueAtTime(gainVal, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + duration);
+        });
+      }
+
+      click() { this.playTone(800, "sine", 0.05, 0.08); }
+      coin() { this.playChord([987.77, 1318.51], "sine", 0.35, 0.15); }
+      unlock() { this.playChord([523.25, 659.25, 783.99, 1046.5], "triangle", 0.5, 0.15); }
+      dropThud() {
+        this.playTone(130, "sawtooth", 0.25, 0.25);
+        setTimeout(() => this.playTone(80, "sine", 0.3, 0.3), 80);
+      }
+      engineSputter() {
+        for (let i = 0; i < 4; i++) {
+          setTimeout(() => this.playTone(110 + (Math.random() * 40), "square", 0.08, 0.15), i * 140);
+        }
+      }
+      engineCruise() {
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => this.playTone(180 + (i * 20), "triangle", 0.12, 0.12), i * 100);
+        }
+      }
+      fanfare() {
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+        notes.forEach((n, i) => {
+          setTimeout(() => this.playChord([n, n * 1.25], "triangle", 0.3, 0.18), i * 110);
+        });
+      }
+
+      speak(text) {
+        if (!this.ttsEnabled || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.9;
+        utter.pitch = 1.1;
+        utter.lang = "en-US";
+        window.speechSynthesis.speak(utter);
+      }
+
+      toggleSound() {
+        this.sfxEnabled = !this.sfxEnabled;
+        const btn = document.getElementById("btn-audio");
+        btn.innerText = this.sfxEnabled ? "🔊 SFX" : "🔇 SFX";
+        btn.classList.toggle("active", this.sfxEnabled);
+      }
+
+      toggleSpeech() {
+        this.ttsEnabled = !this.ttsEnabled;
+        const btn = document.getElementById("btn-speech");
+        btn.innerText = this.ttsEnabled ? "🗣️ TTS" : "🤐 TTS";
+        btn.classList.toggle("active", this.ttsEnabled);
+        if (!this.ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+      }
+    }
+    const AudioEngine = new LabSoundEngine();
+
+    /* ----------------------------------------------------
+       2. CONFETTI PARTICLE SYSTEM
+       ---------------------------------------------------- */
+    const Confetti = {
+      canvas: document.getElementById("confettiCanvas"),
+      ctx: null,
+      particles: [],
+      animId: null,
+
+      init() {
+        this.ctx = this.canvas.getContext("2d");
+        this.resize();
+        window.addEventListener("resize", () => this.resize());
+      },
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      },
+      launch(count = 60) {
+        const colors = ["#f59e0b", "#38bdf8", "#10b981", "#f43f5e", "#a855f7", "#fbbf24"];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight * 0.4,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.9) * 16,
+            size: Math.random() * 9 + 5,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 12,
+            life: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35; // gravity
+          p.rotation += p.vRot;
+          p.life -= 0.012;
+
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate((p.rotation * Math.PI) / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.globalAlpha = Math.max(0, p.life);
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+          this.ctx.restore();
+
+          if (p.life <= 0 || p.y > window.innerHeight) {
+            this.particles.splice(i, 1);
+          }
+        }
+        if (this.particles.length > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.animId = null;
+        }
+      }
+    };
+    Confetti.init();
+
+    /* ----------------------------------------------------
+       3. APPLICATION STATE & ORCHESTRATION
+       ---------------------------------------------------- */
+    const App = {
+      currentScreen: "dashboard",
+      totalXP: 0,
+      badges: {
+        problem: false,
+        solution: false,
+        hexagon: false,
+        parachute: false,
+        improve: false
+      },
+
+      showScreen(screenId) {
+        AudioEngine.click();
+        this.currentScreen = screenId;
+        document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
+        const target = document.getElementById(`screen-${screenId}`);
+        if (target) target.classList.add("active");
+
+        // Update Stepper
+        const stepMap = { dashboard: 0, quest1: 1, quest2: 2, quest3: 3, celebration: 4 };
+        const idx = stepMap[screenId] ?? 0;
+        document.querySelectorAll(".step-node").forEach((node, i) => {
+          node.classList.toggle("active", i === idx);
+        });
+
+        // Trigger Canvas Inits
+        if (screenId === "quest1") Quest1.init();
+        if (screenId === "quest2") Quest2.init();
+        if (screenId === "quest3") Quest3.init();
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+
+      startQuests() {
+        this.showScreen("quest1");
+      },
+
+      addXP(pts) {
+        this.totalXP += pts;
+        document.getElementById("hud-xp-val").innerText = this.totalXP;
+        AudioEngine.coin();
+      },
+
+      unlockBadge(badgeKey) {
+        if (!this.badges[badgeKey]) {
+          this.badges[badgeKey] = true;
+          const el = document.getElementById(`badge-${badgeKey}`);
+          if (el) el.classList.add("unlocked");
+          this.addXP(25);
+          AudioEngine.unlock();
+          Confetti.launch(30);
+        }
+      },
+
+      pronounceBadge(badgeKey) {
+        AudioEngine.click();
+        const dict = {
+          problem: "Problem. A challenge that needs fixing.",
+          solution: "Solution. The answer that solves a problem.",
+          hexagon: "Hexagon. A six-sided flat polygon that won't roll.",
+          parachute: "Parachute. A cloth canopy that slows a fall.",
+          improve: "Improve. To test and make your idea better."
+        };
+        if (dict[badgeKey]) AudioEngine.speak(dict[badgeKey]);
+      },
+
+      pronounceWord(word) {
+        AudioEngine.click();
+        AudioEngine.speak(word);
+      },
+
+      restart() {
+        this.totalXP = 0;
+        document.getElementById("hud-xp-val").innerText = "0";
+        Object.keys(this.badges).forEach(k => {
+          this.badges[k] = false;
+          const el = document.getElementById(`badge-${k}`);
+          if (el) el.classList.remove("unlocked");
+        });
+        this.showScreen("dashboard");
+      }
+    };
+
+    /* ----------------------------------------------------
+       4. QUEST 1: ROLLING PENCIL PUZZLE & BIOMIMICRY
+       ---------------------------------------------------- */
+    const Quest1 = {
+      canvas: null,
+      ctx: null,
+      pencilX: 180,
+      pencilY: 130,
+      angle: 0,
+      vx: 0,
+      vy: 0,
+      state: "circle", // circle | triangle | hexagon
+      animId: null,
+      matchedPairs: 0,
+      selectedNature: null,
+
+      init() {
+        this.canvas = document.getElementById("pencilCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.resize();
+        this.resetPencil();
+        this.loop();
+      },
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+      },
+      resetPencil() {
+        this.pencilX = this.canvas.width * 0.35;
+        this.pencilY = this.canvas.height * 0.45;
+        this.vx = 0;
+        this.vy = 0;
+        this.angle = 0;
+      },
+      chooseShape(shape) {
+        AudioEngine.click();
+        this.state = shape;
+        document.querySelectorAll(".shape-btn").forEach(b => b.classList.remove("selected"));
+        document.getElementById(`btn-shape-${shape}`).classList.add("selected");
+        this.resetPencil();
+
+        const fb = document.getElementById("pencil-feedback");
+        if (shape === "circle") {
+          this.vx = 2.4;
+          fb.style.color = "var(--accent-rose)";
+          fb.innerText = "❌ Oh no! A circle has no flat sides, so it rolls straight off the tilted desk!";
+          AudioEngine.speak("A round pencil has no flat sides, so it rolls off the table!");
+        } else if (shape === "triangle") {
+          this.vx = 0;
+          fb.style.color = "var(--accent-yellow)";
+          fb.innerText = "⚠️ It stops rolling, but 3 sharp sides are uncomfortable to write with!";
+          AudioEngine.speak("A triangle pencil stops rolling, but its sharp sides hurt your fingers!");
+        } else if (shape === "hexagon") {
+          this.vx = 0;
+          fb.style.color = "var(--accent-green-light)";
+          fb.innerText = "🎉 Solved! A hexagon has 6 flat sides: it rests firmly on the desk and grips comfortably!";
+          AudioEngine.speak("Great job! A hexagon has six flat sides, so it will not roll!");
+          App.unlockBadge("problem");
+          App.unlockBadge("solution");
+          App.unlockBadge("hexagon");
+          document.getElementById("edison-note").classList.add("visible");
+        }
+      },
+      loop() {
+        if (!this.ctx) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw Tilted Desk
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.ctx.save();
+        this.ctx.fillStyle = "#334155";
+        this.ctx.beginPath();
+        this.ctx.moveTo(w * 0.1, h * 0.35);
+        this.ctx.lineTo(w * 0.85, h * 0.65);
+        this.ctx.lineTo(w * 0.85, h * 0.75);
+        this.ctx.lineTo(w * 0.1, h * 0.45);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.strokeStyle = "#475569";
+        this.ctx.lineWidth = 3;
+        this.ctx.stroke();
+        this.ctx.restore();
+
+        // Update Physics
+        if (this.state === "circle" && this.vx > 0) {
+          this.pencilX += this.vx;
+          this.pencilY += this.vx * 0.4;
+          this.angle += 0.08;
+
+          // If rolled off edge
+          if (this.pencilX > w * 0.85) {
+            this.pencilY += 4.5; // gravity fall
+            if (this.pencilY > h * 0.88) {
+              this.vx = 0;
+              AudioEngine.dropThud();
+            }
+          }
+        }
+
+        // Draw Pencil Body
+        this.ctx.save();
+        this.ctx.translate(this.pencilX, this.pencilY);
+        this.ctx.rotate(this.angle);
+
+        if (this.state === "circle") {
+          // Round pencil cross section
+          this.ctx.fillStyle = "#f59e0b";
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, 18, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.fillStyle = "#1e293b";
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, 5, 0, Math.PI * 2);
+          this.ctx.fill();
+        } else if (this.state === "triangle") {
+          this.ctx.fillStyle = "#f59e0b";
+          this.ctx.beginPath();
+          this.ctx.moveTo(0, -20);
+          this.ctx.lineTo(18, 14);
+          this.ctx.lineTo(-18, 14);
+          this.ctx.closePath();
+          this.ctx.fill();
+        } else if (this.state === "hexagon") {
+          // 6-sided hexagon
+          this.ctx.fillStyle = "#10b981";
+          this.ctx.beginPath();
+          const r = 20;
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3;
+            const px = r * Math.cos(a);
+            const py = r * Math.sin(a);
+            if (i === 0) this.ctx.moveTo(px, py);
+            else this.ctx.lineTo(px, py);
+          }
+          this.ctx.closePath();
+          this.ctx.fill();
+          this.ctx.strokeStyle = "#fff";
+          this.ctx.lineWidth = 2;
+          this.ctx.stroke();
+
+          // Lead center
+          this.ctx.fillStyle = "#0f172a";
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, 5, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+
+        this.ctx.restore();
+
+        this.animId = requestAnimationFrame(() => this.loop());
+      },
+
+      selectBio(key, type) {
+        AudioEngine.click();
+        if (type === "nature") {
+          this.selectedNature = key;
+          document.querySelectorAll(".bio-card").forEach(c => c.classList.remove("active-match"));
+          document.getElementById(`bio-${key}`).classList.add("active-match");
+        } else if (type === "invention") {
+          if (!this.selectedNature) {
+            AudioEngine.speak("First choose a plant or bird from the left column!");
+            return;
+          }
+
+          // Check match
+          const valid = (this.selectedNature === "burdock" && key === "velcro") ||
+                        (this.selectedNature === "kingfisher" && key === "bullet");
+
+          if (valid) {
+            document.getElementById(`bio-${this.selectedNature}`).classList.add("matched");
+            document.getElementById(`bio-${key}`).classList.add("matched");
+            document.getElementById(`bio-${this.selectedNature}`).classList.remove("active-match");
+            AudioEngine.coin();
+            this.matchedPairs++;
+            if (this.matchedPairs >= 2) {
+              AudioEngine.fanfare();
+              Confetti.launch(35);
+              App.addXP(25);
+              AudioEngine.speak("Brilliant matching! Burdock burrs inspired Velcro, and kingfishers inspired bullet trains!");
+            }
+            this.selectedNature = null;
+          } else {
+            AudioEngine.playTone(220, "sawtooth", 0.25, 0.2);
+            AudioEngine.speak("Not quite a match! Think about how the shape or hooks copy nature.");
+          }
+        }
+      },
+
+      combineCraft() {
+        AudioEngine.click();
+        AudioEngine.fanfare();
+        Confetti.launch(30);
+        document.getElementById("btn-craft").style.display = "none";
+        document.getElementById("craft-result").style.display = "block";
+        App.addXP(25);
+        AudioEngine.speak("You combined old ideas to create a new invention!");
+      }
+    };
+
+    /* ----------------------------------------------------
+       5. QUEST 2: LEONARDO'S BLUEPRINT PARACHUTE TESTER
+       ---------------------------------------------------- */
+    const Quest2 = {
+      canvas: null,
+      ctx: null,
+      diameter: 35,
+      mannequinY: 60,
+      mannequinX: 0,
+      vy: 0,
+      dropping: false,
+      animId: null,
+
+      init() {
+        this.canvas = document.getElementById("towerCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.resize();
+        this.resetDrop();
+        this.loop();
+      },
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+        this.mannequinX = this.canvas.width * 0.5;
+      },
+      resetDrop() {
+        this.mannequinY = 70;
+        this.vy = 0;
+        this.dropping = false;
+      },
+      updateDiameter(val) {
+        this.diameter = parseInt(val, 10);
+        const label = document.getElementById("chute-val");
+        if (this.diameter < 65) {
+          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-rose);">(Too Small)</span>`;
+        } else if (this.diameter < 85) {
+          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-yellow);">(Moderate)</span>`;
+        } else {
+          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-green-light);">(Optimal Blueprint!)</span>`;
+        }
+      },
+      launchDropTest() {
+        AudioEngine.click();
+        this.resetDrop();
+        this.dropping = true;
+        document.getElementById("drop-feedback").innerText = "Testing prototype in mid-air...";
+      },
+      loop() {
+        if (!this.ctx) return;
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.ctx.clearRect(0, 0, w, h);
+
+        // Draw High Stone Tower on the Left
+        this.ctx.fillStyle = "#1e293b";
+        this.ctx.fillRect(w * 0.08, h * 0.2, w * 0.25, h * 0.8);
+        this.ctx.strokeStyle = "#334155";
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeRect(w * 0.08, h * 0.2, w * 0.25, h * 0.8);
+
+        // Ground Line
+        this.ctx.strokeStyle = "#475569";
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, h * 0.92);
+        this.ctx.lineTo(w, h * 0.92);
+        this.ctx.stroke();
+
+        // Physics Simulation
+        if (this.dropping) {
+          const terminalVelocity = Math.max(1.2, 10 - (this.diameter / 12));
+          this.vy = Math.min(terminalVelocity, this.vy + 0.15);
+          this.mannequinY += this.vy;
+
+          // Touchdown
+          if (this.mannequinY >= h * 0.82) {
+            this.mannequinY = h * 0.82;
+            this.dropping = false;
+            const fb = document.getElementById("drop-feedback");
+
+            if (this.diameter < 70) {
+              AudioEngine.dropThud();
+              fb.style.color = "var(--accent-rose)";
+              fb.innerText = "❌ Too fast! The parachute canopy was too small to slow down gravity!";
+              AudioEngine.speak("Too small! The prototype hit the ground too fast. Improve your blueprint!");
+            } else {
+              AudioEngine.fanfare();
+              Confetti.launch(40);
+              fb.style.color = "var(--accent-green-light)";
+              fb.innerText = "🎉 Safe gentle landing! Leonardo's parachute blueprint succeeded!";
+              AudioEngine.speak("Safe landing! Leonardo da Vinci drew parachutes hundreds of years before they were built!");
+              App.unlockBadge("parachute");
+            }
+          }
+        }
+
+        // Draw Parachute Canopy
+        const cx = this.mannequinX;
+        const cy = this.mannequinY - 35;
+        const radius = this.diameter / 2;
+
+        this.ctx.save();
+        this.ctx.fillStyle = "#38bdf8";
+        this.ctx.beginPath();
+        this.ctx.arc(cx, cy, radius, Math.PI, 0);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.strokeStyle = "#f8fafc";
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+
+        // Suspension Strings to Mannequin
+        this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
+        this.ctx.lineWidth = 1.5;
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx - radius, cy);
+        this.ctx.lineTo(cx, this.mannequinY - 10);
+        this.ctx.moveTo(cx + radius, cy);
+        this.ctx.lineTo(cx, this.mannequinY - 10);
+        this.ctx.moveTo(cx, cy - radius);
+        this.ctx.lineTo(cx, this.mannequinY - 10);
+        this.ctx.stroke();
+
+        // Draw Inventor Mannequin
+        this.ctx.fillStyle = "#f59e0b";
+        this.ctx.beginPath();
+        this.ctx.arc(cx, this.mannequinY - 10, 8, 0, Math.PI * 2); // head
+        this.ctx.fill();
+        this.ctx.fillStyle = "#cbd5e1";
+        this.ctx.fillRect(cx - 4, this.mannequinY - 2, 8, 16); // torso
+        this.ctx.restore();
+
+        this.animId = requestAnimationFrame(() => this.loop());
+      }
+    };
+
+    /* ----------------------------------------------------
+       6. QUEST 3: KARL BENZ'S ITERATION LOOP
+       ---------------------------------------------------- */
+    const Quest3 = {
+      canvas: null,
+      ctx: null,
+      carX: 80,
+      step: 1,
+      running: false,
+      carSpeed: 0,
+      animId: null,
+
+      init() {
+        this.canvas = document.getElementById("benzCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.resize();
+        this.resetCar();
+        this.loop();
+      },
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+      },
+      resetCar() {
+        this.carX = 80;
+        this.carSpeed = 0;
+        this.running = false;
+      },
+      applyUpgrade(stepNum) {
+        AudioEngine.click();
+        this.step = stepNum;
+        this.resetCar();
+        this.running = true;
+
+        const fb = document.getElementById("benz-feedback");
+        const critique = document.getElementById("crowd-critique");
+
+        if (stepNum === 1) {
+          AudioEngine.engineSputter();
+          this.carSpeed = 1.2;
+          fb.style.color = "var(--accent-rose)";
+          fb.innerText = "⚠️ Model stalled after 3 meters! Don't give up! (Try again...)";
+          critique.innerText = "'Only three wheels? It shakes and tilts too easily!'";
+          AudioEngine.speak("The motor stalled! Don't give up. Try again and again!");
+        } else if (stepNum === 2) {
+          AudioEngine.engineSputter();
+          this.carSpeed = 2.4;
+          fb.style.color = "var(--accent-yellow)";
+          fb.innerText = "⚡ Getting better! Piston balance improved, but steering still veers off.";
+          critique.innerText = "'It moves further now, but how does he turn corners safely?'";
+          AudioEngine.speak("Getting better! Show your idea, listen to feedback, and improve it!");
+        } else if (stepNum === 3) {
+          AudioEngine.engineCruise();
+          this.carSpeed = 5.2;
+          fb.style.color = "var(--accent-green-light)";
+          fb.innerText = "🎉 Master Iteration! 4 wheels & rack steering! Karl Benz cruises smoothly past the crowd!";
+          critique.innerText = "'Astonishing! The automobile is born! Bravo!'";
+          AudioEngine.speak("Astonishing! By testing and improving, Karl Benz created the first modern automobile!");
+          App.unlockBadge("improve");
+          Confetti.launch(50);
+        }
+      },
+      loop() {
+        if (!this.ctx) return;
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.ctx.clearRect(0, 0, w, h);
+
+        // Cobblestone Road
+        this.ctx.fillStyle = "#1e293b";
+        this.ctx.fillRect(0, h * 0.72, w, h * 0.28);
+        this.ctx.strokeStyle = "#475569";
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, h * 0.72);
+        this.ctx.lineTo(w, h * 0.72);
+        this.ctx.stroke();
+
+        // Move Car
+        if (this.running) {
+          this.carX += this.carSpeed;
+          if (this.step === 1 && this.carX > w * 0.35) {
+            this.carSpeed = 0; // stall
+          }
+          if (this.step === 2 && this.carX > w * 0.58) {
+            this.carSpeed = 0; // wobble stop
+          }
+          if (this.step === 3 && this.carX > w * 0.95) {
+            this.carX = -120; // cruise wrap
+          }
+        }
+
+        // Draw Karl Benz Motorcar
+        this.ctx.save();
+        this.ctx.translate(this.carX, h * 0.65);
+
+        // Chassis Frame
+        this.ctx.strokeStyle = "#38bdf8";
+        this.ctx.lineWidth = 4;
+        this.ctx.beginPath();
+        this.ctx.moveTo(-40, -10);
+        this.ctx.lineTo(40, -10);
+        this.ctx.lineTo(20, -35);
+        this.ctx.lineTo(-20, -35);
+        this.ctx.closePath();
+        this.ctx.stroke();
+
+        // Karl Benz Silhouette
+        this.ctx.fillStyle = "#f59e0b";
+        this.ctx.beginPath();
+        this.ctx.arc(0, -48, 7, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Wheels
+        this.ctx.strokeStyle = "#fde68a";
+        this.ctx.lineWidth = 3;
+
+        // Rear Wheel
+        this.ctx.beginPath();
+        this.ctx.arc(-30, 8, 16, 0, Math.PI * 2);
+        this.ctx.stroke();
+
+        // Front Wheel(s)
+        if (this.step === 3) {
+          // Dual Front Wheels (4-wheel upgrade)
+          this.ctx.beginPath();
+          this.ctx.arc(32, 8, 16, 0, Math.PI * 2);
+          this.ctx.arc(38, 8, 16, 0, Math.PI * 2);
+          this.ctx.stroke();
+        } else {
+          // Single Front Wheel (3-wheeled original)
+          this.ctx.beginPath();
+          this.ctx.arc(32, 8, 14, 0, Math.PI * 2);
+          this.ctx.stroke();
+        }
+
+        this.ctx.restore();
+
+        this.animId = requestAnimationFrame(() => this.loop());
+      }
+    };
+  </script>
+</body>
+</html>

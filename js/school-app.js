@@ -868,7 +868,12 @@
       'academy-bamboozle': 'baamboozle/index.html',
       'baamboozle': 'baamboozle/index.html',
       'bamboozle': 'baamboozle/index.html',
-      'young-inventors-battle': 'baamboozle/index.html'
+      'young-inventors-battle': 'baamboozle/index.html',
+      'good-ideas-lab': 'good-ideas-lab/index.html',
+      'inventors-odyssey': 'good-ideas-lab/index.html',
+      'the-inventors-odyssey': 'good-ideas-lab/index.html',
+      'my-good-ideas-lab': 'good-ideas-lab/index.html',
+      'ideas-lab': 'good-ideas-lab/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

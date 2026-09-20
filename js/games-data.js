@@ -6,6 +6,87 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "good-ideas-lab",
+    "aliases": ["inventors-odyssey", "my-good-ideas-lab", "the-inventors-odyssey", "ideas-lab"],
+    "title": "💡 The Inventor’s Odyssey: My Good Ideas Lab",
+    "description": "High-engagement 4-stage interactive design thinking adventure (Global Readings pp. 18–21). Solve the rolling pencil physics puzzle with 6-sided hexagons, match nature's biomimicry secrets, test Leonardo da Vinci's parachute canopy prototype, and iterate Karl Benz's motorcar to unlock the Master Inventor Diploma!",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "💡 Design Thinking & Inventions",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 7–12",
+    "ageGroup": "7-12",
+    "grade": "Grade 3–5",
+    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": [
+      "Design Thinking Cycle",
+      "Biomimicry Innovation",
+      "Problem & Solution Vocabulary",
+      "Prototype Testing",
+      "Iterative Engineering"
+    ],
+    "topic": "Problem Solving, Biomimicry, Prototyping & Iteration",
+    "topics": [
+      "Problems & Solutions",
+      "Biomimicry in Nature",
+      "Shapes (Hexagon)",
+      "Aviation (Parachute)",
+      "Engineering Iteration (Improve)"
+    ],
+    "languageFocus": "Target Vocabulary: problem, solution, hexagon, parachute, improve. 'When you have a problem, look for a solution!' 'Don't give up! Try again and improve.'",
+    "activityMode": "Interactive Multi-Stage Lab / Classroom Smart Board Challenge",
+    "interactionType": "Canvas Physics Simulation, Biomimicry Matcher, Canopy Drag Tester, Iteration Engine, Printable Diploma",
+    "difficulty": "Grade 3–5 (A1–A2)",
+    "tags": [
+      "inventions",
+      "design-thinking",
+      "biomimicry",
+      "clil",
+      "stem",
+      "problem-solving",
+      "hexagon",
+      "parachute",
+      "improve",
+      "edison",
+      "leonardo",
+      "benz"
+    ],
+    "learningObjectives": [
+      "Identify and use the 5 core target words: problem, solution, hexagon, parachute, improve",
+      "Apply the Design Thinking cycle: identify a problem, design a prototype, test, and iterate",
+      "Understand biomimicry principles by connecting natural adaptations (burrs, kingfishers) to human engineering (Velcro, bullet trains)",
+      "Explore historical inventors (Thomas Edison, Leonardo da Vinci, Karl Benz) and model resilient growth mindsets ('Try again... and again!')",
+      "Create and print a personal Good Ideas Card proposing a creative solution to an everyday problem"
+    ],
+    "teacherInstructions": "Launch on classroom Smart Board or assign individually. Guide students through Quest 1 (Pencil shape & Biomimicry), Quest 2 (Leonardo's canopy drop test), and Quest 3 (Karl Benz's 3-step iteration loop). Students enter their name on the final screen to print their Master Inventor Diploma & Good Ideas Card.",
+    "studentInstructions": "Enter the Good Ideas Lab! Solve the rolling pencil puzzle, match nature's secrets, test Leonardo's parachute, and upgrade Karl Benz's motorcar to collect all 5 vocabulary badges!",
+    "route": "good-ideas-lab/index.html",
+    "featured": true,
+    "thumbnailIcon": "💡",
+    "gradient": "linear-gradient(135deg, #0d1527 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ideasGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0d1527"/>
+          <stop offset="50%" stop-color="#1e1b4b"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#ideasGrad)"/>
+      <circle cx="100" cy="70" r="44" fill="#f59e0b" opacity="0.25"/>
+      <circle cx="100" cy="70" r="28" fill="#38bdf8" opacity="0.6"/>
+      <text x="100" y="80" font-size="36" text-anchor="middle">💡</text>
+    </svg>`
+  },
+  {
     "id": "academy-bamboozle",
     "aliases": ["bamboozle", "baamboozle"],
     "title": "⚡ Baamboozle Arena: Young Inventors",
