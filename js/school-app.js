@@ -1941,15 +1941,43 @@
   };
 
   // XP & GAMIFICATION HANDLERS
+  window.handleXPReasonChange = function(selectEl) {
+    if (!selectEl) return;
+    const opt = selectEl.options[selectEl.selectedIndex];
+    if (opt && opt.dataset && opt.dataset.xp) {
+      const xpInput = document.getElementById('xp-amount-val');
+      if (xpInput) {
+        xpInput.value = opt.dataset.xp;
+      }
+    }
+  };
+
   window.handleGiveXPSubmit = function(e) {
     e.preventDefault();
     const studentId = document.getElementById('xp-student-select').value;
     const amount = parseInt(document.getElementById('xp-amount-val').value, 10) || 50;
-    const reason = document.getElementById('xp-reason-select').value;
+    const reasonSelect = document.getElementById('xp-reason-select');
+    const reason = reasonSelect.value;
+    const selectedOpt = reasonSelect.options[reasonSelect.selectedIndex];
+    const hwId = selectedOpt ? selectedOpt.dataset.hwId : null;
 
-    const res = store.giveXP(studentId, amount, reason, 'Teacher Award');
+    const res = store.giveXP(studentId, amount, reason, hwId ? 'Homework' : 'Teacher Award');
+    if (hwId && typeof store.recordHomeworkSubmission === 'function') {
+      const hwItem = store.getHomeworkItem(hwId);
+      if (hwItem) {
+        store.recordHomeworkSubmission(hwId, studentId, {
+          status: 'COMPLETED',
+          completedDate: new Date().toISOString().split('T')[0],
+          notes: 'Awarded via XP screen: ' + reason
+        });
+      }
+    }
+
     window.closeAllModals();
-    showNotification('⭐ Awarded +' + amount + ' XP (+' + (amount * 10) + ' pts) to ' + res.student.firstName + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
+    if (res && res.evolutionEvent && typeof window.openMonsterLevelUpModal === 'function') {
+      window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+    }
+    showNotification('⭐ Awarded +' + amount + ' XP (+' + (amount * 10) + ' pts) to ' + (res.student ? res.student.firstName : 'Student') + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
     renderCurrentView();
   };
 
@@ -6205,15 +6233,36 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   // Upgraded openHomeworkGradingModal
   window.openHomeworkGradingModal = function(homeworkId) {
-    const hw = store.getHomeworkItem(homeworkId);
+    let allHw = store.getHomework ? store.getHomework() : [];
+    if (!homeworkId && allHw.length > 0) {
+      homeworkId = allHw[0].id;
+    }
+    const hw = store.getHomeworkItem(homeworkId) || allHw[0];
     if (!hw) return;
 
     const title = document.getElementById('hw-grading-title');
     const subtitle = document.getElementById('hw-grading-subtitle');
     const list = document.getElementById('hw-grading-students-list');
+    const switcher = document.getElementById('hw-grading-task-switcher');
 
     if (title) title.textContent = '👥 ' + hw.title + ' — Submissions & Grading';
-    if (subtitle) subtitle.textContent = 'Track student quest completion and reward evidence-based XP directly to student records.';
+    if (subtitle) {
+      const tierBadge = hw.tier ? '[' + hw.tier + ': Level ' + hw.level + '] · ' : '';
+      subtitle.textContent = tierBadge + 'Target Reward: +' + (hw.xpReward || 20) + ' XP · Category: ' + (hw.category || hw.subject || 'General');
+    }
+
+    if (switcher) {
+      const aliceHw = allHw.filter(h => h.id && h.id.startsWith('hw-alice'));
+      const stdHw = allHw.filter(h => !h.id || !h.id.startsWith('hw-alice'));
+      switcher.innerHTML = 
+        '<optgroup label="📘 Alice in Wonderland Discrete Tasks">' +
+        aliceHw.map(h => '<option value="' + h.id + '" ' + (h.id === hw.id ? 'selected' : '') + '>' + (h.code ? h.code + ' · ' : '') + h.title + ' (+' + (h.xpReward || 10) + ' XP)</option>').join('') +
+        '</optgroup>' +
+        '<optgroup label="📋 Standard Homework Quests">' +
+        stdHw.map(h => '<option value="' + h.id + '" ' + (h.id === hw.id ? 'selected' : '') + '>' + h.title + ' (+' + (h.xpReward || 20) + ' XP)</option>').join('') +
+        '</optgroup>';
+      switcher.value = hw.id;
+    }
 
     const cls = store.getClass(hw.classId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
@@ -6237,6 +6286,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
             '</div>' +
             '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
+              '<div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); border-radius:8px; padding:4px 10px; font-weight:800; font-size:0.8rem; color:#2563eb;">' +
+                '+' + (hw.xpReward || 20) + ' XP' +
+              '</div>' +
               '<div>' +
                 '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Status</label>' +
                 '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px; font-weight:700;">' +
@@ -6245,12 +6297,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<option value="NOT_STARTED" ' + (sub.status === 'NOT_STARTED' || sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
                 '</select>' +
               '</div>' +
+              (hw.optionalChallenge ? 
               '<div>' +
-                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Optional +5 XP</label>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Optional +' + (hw.optionalChallengeXp || 5) + ' XP</label>' +
                 '<input type="checkbox" class="hw-sub-opt" ' + (sub.optionalDone ? 'checked' : '') + ' style="width:18px; height:18px; accent-color:#059669; margin-top:4px;" />' +
-              '</div>' +
+              '</div>' : '') +
               '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:6px 14px; font-size:0.8rem; font-weight:800;">' +
-                'Grade &amp; Award XP' +
+                (isDone ? 'Update Grade' : 'Grade &amp; Award +' + (hw.xpReward || 20) + ' XP') +
               '</button>' +
             '</div>' +
           '</div>';

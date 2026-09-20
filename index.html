@@ -1054,13 +1054,36 @@
           <input type="number" id="xp-amount-val" class="filter-select" style="width:100%; margin-top:8px;" value="50" min="5" max="500" />
         </div>
         <div>
-          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason / Skill</label>
-          <select id="xp-reason-select" class="filter-select" style="width:100%;">
-            <option value="Speaking Participation">🗣️ Great Speaking Participation</option>
-            <option value="Helping Classmate">🤝 Helping a Classmate</option>
-            <option value="Vocabulary Mastery">🧠 Vocabulary Mastery</option>
-            <option value="Completed Mission">🎯 Completed Learning Mission</option>
-            <option value="Curiosity & Effort">✨ Outstanding Effort &amp; Curiosity</option>
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Reason / Skill / Homework Task</label>
+          <select id="xp-reason-select" class="filter-select" style="width:100%;" onchange="handleXPReasonChange(this)">
+            <optgroup label="⭐ General Achievements">
+              <option value="Speaking Participation" data-xp="25">🗣️ Great Speaking Participation (+25 XP)</option>
+              <option value="Helping Classmate" data-xp="25">🤝 Helping a Classmate (+25 XP)</option>
+              <option value="Vocabulary Mastery" data-xp="50">🧠 Vocabulary Mastery (+50 XP)</option>
+              <option value="Completed Mission" data-xp="50">🎯 Completed Learning Mission (+50 XP)</option>
+              <option value="Curiosity & Effort" data-xp="25">✨ Outstanding Effort &amp; Curiosity (+25 XP)</option>
+            </optgroup>
+            <optgroup label="📘 Alice in Wonderland: Discrete Homework Tasks (Tier 1: Level 1)">
+              <option value="HW-ALICE-101: Learn 10 New Words & Meanings" data-xp="10" data-hw-id="hw-alice-vocab10">HW-ALICE-101 | Learn 10 New Words & Meanings (+10 XP)</option>
+              <option value="HW-ALICE-102: Favorite Character + 3 Reasons" data-xp="15" data-hw-id="hw-alice-fav-char">HW-ALICE-102 | Favorite Character + 3 Reasons (+15 XP)</option>
+              <option value="HW-ALICE-103: Draw a Scene/Character & Explain" data-xp="20" data-hw-id="hw-alice-draw">HW-ALICE-103 | Draw a Scene/Character & Explain (+20 XP)</option>
+              <option value="HW-ALICE-104: Answer 5 Comprehension Questions" data-xp="20" data-hw-id="hw-alice-comp5">HW-ALICE-104 | Answer 5 Comprehension Questions (+20 XP)</option>
+            </optgroup>
+            <optgroup label="📘 Alice in Wonderland: Discrete Homework Tasks (Tier 2: Level 2)">
+              <option value="HW-ALICE-201: Learn 25 Words (10 in Sentences)" data-xp="40" data-hw-id="hw-alice-vocab25">HW-ALICE-201 | Learn 25 Words (10 Used in Sentences) (+40 XP)</option>
+              <option value="HW-ALICE-202: 2-Minute Character Talk (Actions & Role)" data-xp="50" data-hw-id="hw-alice-speech2m">HW-ALICE-202 | 2-Minute Character Talk (+50 XP)</option>
+              <option value="HW-ALICE-203: Retell One Key Scene (Without Reading)" data-xp="50" data-hw-id="hw-alice-retell">HW-ALICE-203 | Retell One Key Scene (Without Reading) (+50 XP)</option>
+              <option value="HW-ALICE-204: Write an Alternate Ending (100–150 Words)" data-xp="50" data-hw-id="hw-alice-new-ending">HW-ALICE-204 | Write an Alternate Ending (+50 XP)</option>
+            </optgroup>
+            <optgroup label="📘 Alice in Wonderland: Discrete Homework Tasks (Tier 3: Level 3)">
+              <option value="HW-ALICE-301: Compare Two Characters in Detail" data-xp="80" data-hw-id="hw-alice-char-compare">HW-ALICE-301 | Compare Two Characters in Detail (+80 XP)</option>
+              <option value="HW-ALICE-302: Explain Alice’s Journey & Character Arc" data-xp="80" data-hw-id="hw-alice-journey">HW-ALICE-302 | Explain Alice’s Journey & Arc (+80 XP)</option>
+              <option value="HW-ALICE-303: Act Out a Scene (Partner/Group Video)" data-xp="100" data-hw-id="hw-alice-act-out">HW-ALICE-303 | Act Out a Scene (Partner/Group Video) (+100 XP)</option>
+              <option value="HW-ALICE-304: Full Story Spoken Summary (5–7 Minutes)" data-xp="200" data-hw-id="hw-alice-full-summary">HW-ALICE-304 | Full Story Spoken Summary (+200 XP)</option>
+            </optgroup>
+            <optgroup label="📘 Alice in Wonderland: Base Participation">
+              <option value="HW-ALICE-000: Completed Base Log / Reading Check-In" data-xp="10" data-hw-id="hw-alice-checkin">HW-ALICE-000 | Completed Base Log / Reading Check-In (+10 XP)</option>
+            </optgroup>
           </select>
         </div>
         <button type="submit" class="btn-primary-action" style="margin-top:8px; justify-content:center;">Award XP</button>
@@ -3005,6 +3028,9 @@
   <!-- 2. Cloud Persistence & Cross-Device Sync Service (Single Online Cloud DB) -->
   <script src="js/school-cloud-sync.js?v=3.0"></script>
 
+  <!-- Discrete Homework Quests & Verified XP Tasks -->
+  <script src="js/homework-data.js?v=3.0"></script>
+
   <!-- 3. School Platform Store (Single Source of Truth) -->
   <script src="js/school-store.js?v=3.0"></script>
 
@@ -3104,10 +3130,16 @@
   <div class="modal-overlay" id="modal-homework-grading">
     <div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
       <button class="modal-close-btn" onclick="closeModal('modal-homework-grading')">✕</button>
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; margin-bottom:16px;">
-        <div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+        <div style="flex:1; min-width:240px;">
           <h2 id="hw-grading-title" style="font-size:1.35rem; font-weight:800; margin:0;">Homework Submissions &amp; Grading</h2>
           <p id="hw-grading-subtitle" style="font-size:0.84rem; color:var(--text-muted); margin:2px 0 0 0;">Track task completion and record evidence-based mastery accuracy.</p>
+        </div>
+        <div style="min-width:280px;">
+          <label style="display:block; font-size:0.75rem; font-weight:800; color:var(--text-muted); margin-bottom:4px;">Switch Quest / Discrete Task:</label>
+          <select id="hw-grading-task-switcher" class="filter-select" style="width:100%; font-size:0.85rem; font-weight:700;" onchange="openHomeworkGradingModal(this.value)">
+            <!-- Populated dynamically -->
+          </select>
         </div>
       </div>
       <div id="hw-grading-students-list" style="display:flex; flex-direction:column; gap:10px;">
