@@ -24,6 +24,8 @@
       purpleDark: '#7c3aed',
       cheek: '#f472b6',
       shadow: '#075985',
+      shadowDark: '#0c4a6e',
+      iris: '#0284c7',
       name: 'Sky Blue'
     },
     pink: {
@@ -36,6 +38,8 @@
       purpleDark: '#a21caf',
       cheek: '#fb7185',
       shadow: '#9d174d',
+      shadowDark: '#831843',
+      iris: '#db2777',
       name: 'Berry Pink'
     },
     green: {
@@ -48,6 +52,8 @@
       purpleDark: '#047857',
       cheek: '#f87171',
       shadow: '#14532d',
+      shadowDark: '#052e16',
+      iris: '#16a34a',
       name: 'Leaf Green'
     },
     orange: {
@@ -60,6 +66,8 @@
       purpleDark: '#b45309',
       cheek: '#f43f5e',
       shadow: '#7c2d12',
+      shadowDark: '#431407',
+      iris: '#ea580c',
       name: 'Sunset Orange'
     },
     purple: {
@@ -72,6 +80,8 @@
       purpleDark: '#0284c7',
       cheek: '#ec4899',
       shadow: '#581c87',
+      shadowDark: '#3b0764',
+      iris: '#9333ea',
       name: 'Lavender Purple'
     },
     gold: {
@@ -84,6 +94,8 @@
       purpleDark: '#7c3aed',
       cheek: '#fb7185',
       shadow: '#713f12',
+      shadowDark: '#451a03',
+      iris: '#ca8a04',
       name: 'Royal Gold'
     }
   };
@@ -131,7 +143,127 @@
 
     let defs = `
       <defs>
-        <!-- Gradients -->
+        <!-- 11 O'Clock Key Light Volumetric Plush Fur Radial Gradient -->
+        <radialGradient id="plush-fur-${colorKey}" cx="36%" cy="28%" r="72%" fx="32%" fy="24%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+          <stop offset="18%" stop-color="${palette.primaryLight}" />
+          <stop offset="55%" stop-color="${palette.primary}" />
+          <stop offset="85%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="${palette.shadow}" />
+        </radialGradient>
+
+        <!-- 3D Egg Shell Gradient (Keylit) -->
+        <radialGradient id="plush-egg-${colorKey}" cx="36%" cy="28%" r="70%" fx="32%" fy="22%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+          <stop offset="20%" stop-color="${palette.primaryLight}" />
+          <stop offset="55%" stop-color="${palette.primary}" />
+          <stop offset="85%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="${palette.shadowDark || palette.shadow}" />
+        </radialGradient>
+
+        <!-- Volumetric Snout & Muzzle Dome -->
+        <radialGradient id="plush-snout-${colorKey}" cx="42%" cy="32%" r="65%" fx="38%" fy="28%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="40%" stop-color="${palette.belly}" />
+          <stop offset="80%" stop-color="${palette.primaryLight}" />
+          <stop offset="100%" stop-color="${palette.primaryDark}" stop-opacity="0.4" />
+        </radialGradient>
+
+        <!-- Volumetric Belly Patch Gradient -->
+        <radialGradient id="plush-belly-${colorKey}" cx="40%" cy="30%" r="68%" fx="36%" fy="26%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="42%" stop-color="${palette.belly}" />
+          <stop offset="85%" stop-color="${palette.primaryLight}" />
+          <stop offset="100%" stop-color="${palette.primary}" stop-opacity="0.7" />
+        </radialGradient>
+
+        <!-- 3D Rear Ear Shading (Deep Occlusion) -->
+        <radialGradient id="plush-rear-ear-${colorKey}" cx="40%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="${palette.primary}" />
+          <stop offset="60%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="${palette.shadowDark || palette.shadow}" />
+        </radialGradient>
+
+        <!-- 3D Front Ear Shading (Keylit Velvet) -->
+        <radialGradient id="plush-front-ear-${colorKey}" cx="35%" cy="25%" r="75%">
+          <stop offset="0%" stop-color="${palette.primaryLight}" />
+          <stop offset="45%" stop-color="${palette.primary}" />
+          <stop offset="85%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="${palette.shadow}" />
+        </radialGradient>
+
+        <!-- Inner Ear Cavity Soft Ambient Shade -->
+        <radialGradient id="plush-inner-ear-${colorKey}" cx="45%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#fce7f3" />
+          <stop offset="65%" stop-color="#f472b6" />
+          <stop offset="100%" stop-color="#9d174d" />
+        </radialGradient>
+
+        <!-- Living Glass Eye Iris Radial Gradient -->
+        <radialGradient id="plush-eye-iris-${colorKey}" cx="48%" cy="62%" r="52%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+          <stop offset="25%" stop-color="${palette.primary}" />
+          <stop offset="65%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="#020617" />
+        </radialGradient>
+
+        <!-- Tiered Wooden Pedestal Top Surface Gradient -->
+        <radialGradient id="pedestal-top" cx="42%" cy="38%" r="60%">
+          <stop offset="0%" stop-color="#fef3c7" />
+          <stop offset="50%" stop-color="#fde68a" />
+          <stop offset="85%" stop-color="#d97706" />
+          <stop offset="100%" stop-color="#92400e" />
+        </radialGradient>
+
+        <!-- Tiered Wooden Pedestal Side Bevel Cylinder -->
+        <linearGradient id="pedestal-side" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#78350f" />
+          <stop offset="25%" stop-color="#b45309" />
+          <stop offset="55%" stop-color="#d97706" />
+          <stop offset="85%" stop-color="#78350f" />
+          <stop offset="100%" stop-color="#451a03" />
+        </linearGradient>
+
+        <!-- Sovereign Royal Crown 3D Gold Gradient -->
+        <linearGradient id="plush-gold-crown" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#fef08a" />
+          <stop offset="55%" stop-color="#eab308" />
+          <stop offset="85%" stop-color="#ca8a04" />
+          <stop offset="100%" stop-color="#713f12" />
+        </linearGradient>
+
+        <!-- Crystal Horns 3D Shading -->
+        <linearGradient id="plush-crystal-horn" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="20%" stop-color="#a5f3fc" />
+          <stop offset="60%" stop-color="${palette.purple || '#c084fc'}" />
+          <stop offset="100%" stop-color="#4c1d95" />
+        </linearGradient>
+
+        <!-- Celestial Wings 3D Volumetric Gradient -->
+        <linearGradient id="plush-wing-celestial" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="35%" stop-color="#fde047" />
+          <stop offset="70%" stop-color="#eab308" />
+          <stop offset="100%" stop-color="${palette.primaryDark}" />
+        </linearGradient>
+
+        <!-- Filters for Ultra-Soft Ambient Occlusion & Shadows -->
+        <filter id="plush-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="3.5" stdDeviation="2.8" flood-color="#020617" flood-opacity="0.28" />
+        </filter>
+
+        <filter id="plush-contact-blur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2" />
+        </filter>
+
+        <filter id="plush-glow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+
+        <!-- Backward-Compatible Secondary Gradients & Filters -->
         <linearGradient id="mg-egg-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${palette.primaryLight}" />
           <stop offset="40%" stop-color="${palette.primary}" />
@@ -219,7 +351,6 @@
           <stop offset="100%" stop-color="#4338ca" />
         </linearGradient>
 
-        <!-- Filters -->
         <filter id="mf-glow" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="4" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -241,7 +372,26 @@
       }
     }
 
-    // 2. Aura layer (under monster)
+    // 2. Pedestal Stage (Tiered circular wooden/stone dais grounding creature into physical stage)
+    const pedestalMarkup = `
+      <!-- Tiered Circular Wooden Pedestal Dais Stage -->
+      <g class="monster-pedestal-stage">
+        <!-- Lower Base Ambient Shadow Cast by Dais -->
+        <ellipse cx="100" cy="174" rx="60" ry="11" fill="rgba(15,23,42,0.22)" filter="url(#plush-contact-blur)" />
+
+        <!-- Pedestal Base Rim (Lower Tier Cylinder Bevel) -->
+        <path d="M 44 165 C 44 175 156 175 156 165 L 156 170 C 156 180 44 180 44 170 Z" fill="url(#pedestal-side)" stroke="#451a03" stroke-width="1.2" />
+
+        <!-- Pedestal Top Surface (Polished Bevel Rim) -->
+        <ellipse cx="100" cy="165" rx="56" ry="11" fill="url(#pedestal-top)" stroke="#d97706" stroke-width="1.2" />
+        <ellipse cx="100" cy="165" rx="54" ry="9.5" fill="none" stroke="#fef3c7" stroke-width="0.9" opacity="0.8" />
+
+        <!-- Contact Shadow of Monster Feet onto Dais Surface -->
+        <ellipse cx="100" cy="154" rx="34" ry="6.5" fill="rgba(15,23,42,0.38)" filter="url(#plush-contact-blur)" />
+      </g>
+    `;
+
+    // 3. Aura layer (under monster)
     let auraLayer = '';
     try {
       auraLayer = renderAuraLayer(equipped.aura, stage, palette);
@@ -249,7 +399,7 @@
       auraLayer = '';
     }
 
-    // 3. Wings layer (behind body)
+    // 4. Wings layer (behind body)
     let wingsLayer = '';
     try {
       wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
@@ -257,7 +407,7 @@
       wingsLayer = '';
     }
 
-    // 4. Tail layer (behind body)
+    // 5. Tail layer (behind body)
     let tailLayer = '';
     try {
       tailLayer = renderTailLayer(stage, equipped.tail, palette);
@@ -265,7 +415,7 @@
       tailLayer = '';
     }
 
-    // 5. Backpack layer (behind body)
+    // 6. Backpack layer (behind body)
     let backpackLayer = '';
     try {
       backpackLayer = renderBackpackLayer(stage, equipped.backpack);
@@ -273,7 +423,7 @@
       backpackLayer = '';
     }
 
-    // 6. Main monster body or egg
+    // 7. Main monster body or egg
     let mainEntityLayer = '';
     try {
       if (stage === 'egg') {
@@ -291,7 +441,7 @@
       }
     }
 
-    // 7. Foreground accessories (hats, glasses, handheld items)
+    // 8. Foreground accessories (hats, glasses, handheld items)
     let fgAccessoryLayer = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
@@ -305,6 +455,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
         ${defs}
         ${bgLayer}
+        ${pedestalMarkup}
         ${auraLayer}
         ${wingsLayer}
         ${tailLayer}
@@ -667,31 +818,22 @@
   function renderEggWhole(palette, colorKey) {
     return `
       <!-- Level 1: Mystery Egg -->
-      <g filter="url(#mf-shadow)" class="monster-egg-whole">
-        <!-- Egg Shell Base (Pastel Blue & Lavender Gradient with Crisp Contour) -->
-        <path d="M 100 42 C 64 42 54 112 58 148 C 62 170 78 180 100 180 C 122 180 138 170 142 148 C 146 112 136 42 100 42 Z" 
-              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+      <g filter="url(#plush-shadow)" class="monster-egg-whole">
+        <!-- Egg Shell Base (Volumetric 11 O'Clock Keylit Shading) -->
+        <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z"
+              fill="url(#plush-egg-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="3.2" stroke-linejoin="round" />
 
-        <!-- Soft Speckles establishing character colors (pastel cyan & lavender) -->
-        <circle cx="76" cy="92" r="6.5" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="124" cy="84" r="8" fill="#e9d5ff" opacity="0.85" />
-        <circle cx="94" cy="148" r="9.5" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="68" cy="138" r="5.5" fill="#e9d5ff" opacity="0.8" />
-        <circle cx="132" cy="136" r="7" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="86" cy="68" r="4.5" fill="${palette.purple || '#c084fc'}" opacity="0.5" />
-        <circle cx="114" cy="116" r="5" fill="#818cf8" opacity="0.45" />
+        <!-- Soft Dimensional Speckles -->
+        <circle cx="76" cy="92" r="6.5" fill="${palette.primaryLight}" opacity="0.8" />
+        <circle cx="124" cy="84" r="8" fill="#e9d5ff" opacity="0.8" />
+        <circle cx="94" cy="144" r="9" fill="${palette.primaryLight}" opacity="0.8" />
+        <circle cx="68" cy="134" r="5.5" fill="#e9d5ff" opacity="0.75" />
+        <circle cx="132" cy="132" r="7" fill="${palette.primaryLight}" opacity="0.8" />
+        <circle cx="86" cy="68" r="4.5" fill="${palette.purple || '#c084fc'}" opacity="0.45" />
 
-        <!-- Translucent Inner Hint of the Monster's Cute Eyes & Rosy Blush through the shell -->
-        <g opacity="0.45" filter="url(#mf-glow)">
-          <path d="M 84 110 Q 92 103 100 110" fill="none" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" />
-          <path d="M 100 110 Q 108 103 116 110" fill="none" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" />
-          <ellipse cx="82" cy="118" rx="7.5" ry="4.8" fill="${palette.cheek}" />
-          <ellipse cx="118" cy="118" rx="7.5" ry="4.8" fill="${palette.cheek}" />
-        </g>
-
-        <!-- Glossy Egg Highlight -->
-        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.8" />
-        <circle cx="78" cy="54" r="2.8" fill="#ffffff" opacity="0.9" />
+        <!-- 11 O'Clock Glossy Specular Sheen Arc -->
+        <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
+        <circle cx="80" cy="50" r="2.5" fill="#ffffff" opacity="0.9" />
       </g>
     `;
   }
@@ -700,50 +842,42 @@
   function renderEggCracking(palette, colorKey) {
     return `
       <!-- Level 2: Cracking Egg -->
-      <g filter="url(#mf-shadow)" class="monster-egg-cracking">
-        <!-- EXACT SAME Egg Shell Base as Level 1 with Crisp Contour -->
-        <path d="M 100 42 C 64 42 54 112 58 148 C 62 170 78 180 100 180 C 122 180 138 170 142 148 C 146 112 136 42 100 42 Z" 
-              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-
-        <!-- EXACT SAME Speckles as Level 1 -->
-        <circle cx="76" cy="92" r="6.5" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="124" cy="84" r="8" fill="#e9d5ff" opacity="0.85" />
-        <circle cx="94" cy="148" r="9.5" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="68" cy="138" r="5.5" fill="#e9d5ff" opacity="0.8" />
-        <circle cx="132" cy="136" r="7" fill="${palette.primaryLight}" opacity="0.85" />
-        <circle cx="86" cy="68" r="4.5" fill="${palette.purple || '#c084fc'}" opacity="0.5" />
-        <circle cx="114" cy="116" r="5" fill="#818cf8" opacity="0.45" />
-
-        <!-- Glossy Egg Highlight -->
-        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.8" />
-        <circle cx="78" cy="54" r="2.8" fill="#ffffff" opacity="0.9" />
+      <g filter="url(#plush-shadow)" class="monster-egg-cracking">
+        <!-- Egg Shell Base (Volumetric 11 O'Clock Keylit Shading) -->
+        <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z"
+              fill="url(#plush-egg-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="3.2" stroke-linejoin="round" />
 
         <!-- Glowing Fissure Seams -->
-        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.8" filter="url(#mf-glow)" />
-        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" />
+        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.8" filter="url(#plush-glow)" />
+        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M 84 126 L 74 138 L 82 148 L 76 158 L 84 167" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#plush-glow)" />
+        <path d="M 84 126 L 74 138 L 82 148 L 76 158 L 84 167" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
+        <path d="M 124 116 L 136 126 L 130 140 L 140 152" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#plush-glow)" />
+        <path d="M 124 116 L 136 126 L 130 140 L 140 152" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
 
-        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#mf-glow)" />
-        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
+        <!-- Crack Opening -->
+        <polygon points="76,108 92,100 100,107 114,99 126,110 118,126 102,122 88,128 78,122" fill="#020617" />
 
-        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#mf-glow)" />
-        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
-
-        <!-- Crack Opening Revealing Interior -->
-        <polygon points="76,108 92,100 100,107 114,99 126,110 118,126 102,122 88,128 78,122" fill="#0f172a" />
-
-        <!-- Character's EXACT SAME Cute Eyes & Cheeks Peeking Out Through the Crack! -->
+        <!-- Soft Velvet Cheek Blush -->
         <ellipse cx="84" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
         <ellipse cx="116" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
 
-        <ellipse cx="92" cy="112" rx="8.5" ry="10.8" fill="#0f172a" stroke="${palette.primary}" stroke-width="1.2" />
-        <circle cx="90" cy="109" r="3.8" fill="#ffffff" />
-        <circle cx="94" cy="115" r="1.8" fill="#ffffff" />
+        <!-- Living Glass Eyes Peeking Out Through Crack! -->
+        <g transform="rotate(-4, 91, 114)">
+          <ellipse cx="91" cy="114" rx="8.0" ry="11.0" fill="#020617" stroke="${palette.primary}" stroke-width="1.2" />
+          <ellipse cx="91" cy="116" rx="7.0" ry="8.6" fill="url(#plush-eye-iris-${colorKey})" />
+          <circle cx="88.5" cy="110.8" r="3.6" fill="#ffffff" />
+          <circle cx="93.5" cy="117.2" r="1.8" fill="#ffffff" opacity="0.95" />
+        </g>
+        <g transform="rotate(4, 109, 114)">
+          <ellipse cx="109" cy="114" rx="8.0" ry="11.0" fill="#020617" stroke="${palette.primary}" stroke-width="1.2" />
+          <ellipse cx="109" cy="116" rx="7.0" ry="8.6" fill="url(#plush-eye-iris-${colorKey})" />
+          <circle cx="106.5" cy="110.8" r="3.6" fill="#ffffff" />
+          <circle cx="111.5" cy="117.2" r="1.8" fill="#ffffff" opacity="0.95" />
+        </g>
 
-        <ellipse cx="108" cy="112" rx="8.5" ry="10.8" fill="#0f172a" stroke="${palette.primary}" stroke-width="1.2" />
-        <circle cx="106" cy="109" r="3.8" fill="#ffffff" />
-        <circle cx="110" cy="115" r="1.8" fill="#ffffff" />
-
-        <path d="M 97 103 Q 100 99 103 103" fill="none" stroke="${palette.primaryLight}" stroke-width="2.2" stroke-linecap="round" />
+        <!-- 11 O'Clock Specular Gloss -->
+        <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
       </g>
     `;
   }
@@ -978,21 +1112,21 @@
   // --- STAGE GEOMETRY PROPORTIONS ---
   function getStageGeometry(stage) {
     if (stage === 'baby') {
-      return { topY: 74, botY: 154, cW: 37, bW: 41, cheekY: 110, eyeY: 118, eyeSpacing: 15, earScale: 0.9, pawY: 140, footSpacing: 21 };
+      return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
     } else if (stage === 'growing') {
-      return { topY: 66, botY: 154, cW: 39, bW: 43, cheekY: 106, eyeY: 116, eyeSpacing: 16, earScale: 1.0, pawY: 138, footSpacing: 22 };
+      return { topY: 62, botY: 150, cW: 40, bW: 44, cheekY: 100, eyeY: 112, eyeSpacing: 16.5, earScale: 1.0, pawY: 134, footSpacing: 21 };
     } else if (stage === 'adventurer') {
-      return { topY: 60, botY: 154, cW: 41, bW: 45, cheekY: 102, eyeY: 114, eyeSpacing: 17, earScale: 1.08, pawY: 136, footSpacing: 24 };
+      return { topY: 56, botY: 150, cW: 42, bW: 46, cheekY: 96, eyeY: 110, eyeSpacing: 17, earScale: 1.08, pawY: 132, footSpacing: 22 };
     } else if (stage === 'advanced') {
-      return { topY: 54, botY: 154, cW: 43, bW: 46, cheekY: 98, eyeY: 112, eyeSpacing: 17.5, earScale: 1.15, pawY: 134, footSpacing: 25 };
+      return { topY: 50, botY: 150, cW: 43, bW: 47, cheekY: 92, eyeY: 108, eyeSpacing: 17.5, earScale: 1.15, pawY: 130, footSpacing: 23 };
     } else if (stage === 'ultimate') {
-      return { topY: 48, botY: 154, cW: 44, bW: 47, cheekY: 94, eyeY: 110, eyeSpacing: 18, earScale: 1.22, pawY: 132, footSpacing: 26 };
+      return { topY: 44, botY: 150, cW: 44, bW: 48, cheekY: 88, eyeY: 106, eyeSpacing: 18, earScale: 1.22, pawY: 128, footSpacing: 24 };
     }
-    return { topY: 74, botY: 154, cW: 37, bW: 41, cheekY: 110, eyeY: 118, eyeSpacing: 15, earScale: 0.9, pawY: 140, footSpacing: 21 };
+    return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
   }
 
   // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
-  function renderUnderBodyAccessories(stage, palette, equipped, cX, g) {
+  function renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
     const cW = g.cW;
     const scale = g.earScale;
@@ -1007,17 +1141,17 @@
     // Left (Rear) Ear: Layered beneath body with volumetric darker tone
     const rearEarMarkup = `
       <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
-      <g filter="url(#mf-shadow)" class="monster-ear-rear">
-        <path d="M ${cX - cW * 0.46} ${topY + 14 * scale}
-                 C ${cX - cW * 0.92} ${topY + 4 * scale} ${cX - cW * 1.34 * scale} ${topY - 14 * scale} ${cX - cW * 0.96 * scale} ${topY - 26 * scale}
-                 C ${cX - cW * 0.68 * scale} ${topY - 32 * scale} ${cX - cW * 0.42 * scale} ${topY - 8 * scale} ${cX - cW * 0.26 * scale} ${topY + 6 * scale}
-                 C ${cX - cW * 0.34 * scale} ${topY + 11 * scale} ${cX - cW * 0.40 * scale} ${topY + 13 * scale} ${cX - cW * 0.46} ${topY + 14 * scale} Z"
-              fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
+      <g filter="url(#plush-shadow)" class="monster-ear-rear">
+        <path d="M ${cX - cW * 0.44} ${topY + 12 * scale}
+                 C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
+                 C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
+                 C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
+              fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
         <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
-        <path d="M ${cX - cW * 0.48} ${topY + 9 * scale}
-                 C ${cX - cW * 0.84} ${topY + 2 * scale} ${cX - cW * 1.12 * scale} ${topY - 12 * scale} ${cX - cW * 0.90 * scale} ${topY - 20 * scale}
-                 C ${cX - cW * 0.70 * scale} ${topY - 24 * scale} ${cX - cW * 0.50 * scale} ${topY - 6 * scale} ${cX - cW * 0.36 * scale} ${topY + 4 * scale} Z"
-              fill="${palette.shadow}" opacity="0.45" />
+        <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
+                 C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
+                 C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
+              fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
       </g>
     `;
 
@@ -1026,12 +1160,12 @@
     if (hornId === 'horns-curved') {
       rearHornMarkup = `
         <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 10} ${cX - 46} ${topY - 4} ${cX - 40} ${topY + 16} C ${cX - 32} ${topY + 6} ${cX - 24} ${topY - 4} ${cX - 12} ${topY + 8} Z"
-              fill="${palette.shadow}" stroke="${palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#mf-shadow)" />
+              fill="${palette.shadowDark || palette.shadow}" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
       `;
     } else if (hornId === 'horns-crystal') {
       rearHornMarkup = `
-        <path d="M ${cX - 20} ${topY + 8} C ${cX - 34} ${topY - 16} ${cX - 42} ${topY - 30} ${cX - 32} ${topY - 38} C ${cX - 22} ${topY - 24} ${cX - 14} ${topY - 6} ${cX - 10} ${topY + 10} Z"
-              fill="${palette.purpleDark || '#7c3aed'}" stroke="${palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#mf-shadow)" />
+        <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 16} ${cX - 42} ${topY - 30} ${cX - 32} ${topY - 38} C ${cX - 22} ${topY - 24} ${cX - 14} ${topY - 6} ${cX - 10} ${topY + 10} Z"
+              fill="url(#plush-crystal-horn)" stroke="#4c1d95" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
       `;
     }
 
@@ -1042,7 +1176,7 @@
   }
 
   // --- FOREGROUND OVER-BODY ACCESSORIES (Flared Roots & Front Elements) ---
-  function renderOverBodyAccessories(stage, palette, equipped, cX, g) {
+  function renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
     const cW = g.cW;
     const scale = g.earScale;
@@ -1054,20 +1188,22 @@
       else hornId = 'none';
     }
 
-    // Right (Front) Ear: Flared root transition blending into skull envelope with vibrant primary color and pastel cavity
+    // Right (Front) Ear: Flared root transition blending into skull envelope with keylit velvet gradient and pastel cavity
     const frontEarMarkup = `
       <!-- Front Ear (Flared Root Fillet Transition) -->
-      <g filter="url(#mf-shadow)" class="monster-ear-front">
-        <path d="M ${cX + cW * 0.26 * scale} ${topY + 6 * scale}
-                 C ${cX + cW * 0.42 * scale} ${topY - 8 * scale} ${cX + cW * 0.68 * scale} ${topY - 32 * scale} ${cX + cW * 0.96 * scale} ${topY - 26 * scale}
-                 C ${cX + cW * 1.34 * scale} ${topY - 14 * scale} ${cX + cW * 0.92} ${topY + 4 * scale} ${cX + cW * 0.46} ${topY + 14 * scale}
-                 C ${cX + cW * 0.40 * scale} ${topY + 13 * scale} ${cX + cW * 0.34 * scale} ${topY + 11 * scale} ${cX + cW * 0.26 * scale} ${topY + 6 * scale} Z"
-              fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-        <!-- Front Inner Ear Cavity (Pastel Tone) -->
-        <path d="M ${cX + cW * 0.36 * scale} ${topY + 4 * scale}
-                 C ${cX + cW * 0.50 * scale} ${topY - 6 * scale} ${cX + cW * 0.70 * scale} ${topY - 24 * scale} ${cX + cW * 0.90 * scale} ${topY - 20 * scale}
-                 C ${cX + cW * 1.12 * scale} ${topY - 12 * scale} ${cX + cW * 0.84} ${topY + 2 * scale} ${cX + cW * 0.48} ${topY + 9 * scale} Z"
-              fill="${palette.purple || '#c084fc'}" opacity="0.75" />
+      <g filter="url(#plush-shadow)" class="monster-ear-front">
+        <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
+                 C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
+                 C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
+                 C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
+              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+        <!-- Front Inner Ear Cavity (Velvet Tone) -->
+        <path d="M ${cX + cW * 0.34 * scale} ${topY + 3 * scale}
+                 C ${cX + cW * 0.48 * scale} ${topY - 6 * scale} ${cX + cW * 0.68 * scale} ${topY - 25 * scale} ${cX + cW * 0.88 * scale} ${topY - 22 * scale}
+                 C ${cX + cW * 1.08 * scale} ${topY - 14 * scale} ${cX + cW * 0.82 * scale} ${topY + 1 * scale} ${cX + cW * 0.48 * scale} ${topY + 8 * scale} Z"
+              fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
+        <path d="M ${cX + cW * 0.50 * scale} ${topY - 18 * scale} Q ${cX + cW * 0.62 * scale} ${topY - 28 * scale} ${cX + cW * 0.82 * scale} ${topY - 26 * scale}"
+              fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
       </g>
     `;
 
@@ -1078,35 +1214,36 @@
     let hornsMarkup = '';
     if (hornId === 'horns-small' || hornId === 'horns-nub') {
       hornsMarkup = `
-        <!-- Small Horns with Flared Roots -->
-        <g fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" filter="url(#mf-shadow)">
-          <path d="M ${cX - 24} ${topY + 10} C ${cX - 26} ${topY - 2} ${cX - 22} ${topY - 16} ${cX - 16} ${topY - 16} C ${cX - 12} ${topY - 12} ${cX - 12} ${topY} ${cX - 10} ${topY + 10} Z" />
-          <path d="M ${cX + 24} ${topY + 10} C ${cX + 26} ${topY - 2} ${cX + 22} ${topY - 16} ${cX + 16} ${topY - 16} C ${cX + 12} ${topY - 12} ${cX + 12} ${topY} ${cX + 10} ${topY + 10} Z" />
+        <!-- Small Sprout Horns with Flared Roots -->
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - 22} ${topY + 8} C ${cX - 24} ${topY - 4} ${cX - 20} ${topY - 16} ${cX - 14} ${topY - 14} Q ${cX - 12} ${topY - 4} ${cX - 10} ${topY + 8} Z"
+                fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.0" />
+          <path d="M ${cX + 22} ${topY + 8} C ${cX + 24} ${topY - 4} ${cX + 20} ${topY - 16} ${cX + 14} ${topY - 14} Q ${cX + 12} ${topY - 4} ${cX + 10} ${topY + 8} Z"
+                fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.0" />
         </g>
       `;
     } else if (hornId === 'horns-curved') {
       hornsMarkup = `
         <!-- Curved Ram Horns with Sweeping S-Curves and Ribbed Fillets -->
-        <g fill="#f97316" stroke="#c2410c" stroke-width="2.4" filter="url(#mf-shadow)">
+        <g fill="#f97316" stroke="#c2410c" stroke-width="2.4" filter="url(#plush-shadow)">
           <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 10} ${cX + 48} ${topY - 4} ${cX + 42} ${topY + 18} C ${cX + 34} ${topY + 6} ${cX + 26} ${topY - 4} ${cX + 12} ${topY + 8} Z" />
-          <!-- Horn Rings -->
           <path d="M ${cX + 22} ${topY} C ${cX + 26} ${topY + 2} ${cX + 28} ${topY + 6} ${cX + 28} ${topY + 8}" stroke="#ea580c" stroke-width="1.8" fill="none" />
           <path d="M ${cX + 32} ${topY + 2} C ${cX + 36} ${topY + 6} ${cX + 37} ${topY + 10} ${cX + 36} ${topY + 14}" stroke="#ea580c" stroke-width="1.8" fill="none" />
         </g>
       `;
     } else if (hornId === 'horns-crystal') {
       hornsMarkup = `
-        <!-- Crystal Horns with Sweeping Taper and Facet Highlights -->
-        <g filter="url(#mf-shadow)">
+        <!-- Crystal Horns with Specular Edge Ridge -->
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 16} ${cX + 42} ${topY - 30} ${cX + 32} ${topY - 38} C ${cX + 22} ${topY - 24} ${cX + 14} ${topY - 6} ${cX + 10} ${topY + 10} Z"
-                fill="url(#mg-crystal-horn)" stroke="#6b21a8" stroke-width="2.2" />
-          <path d="M ${cX + 20} ${topY} L ${cX + 28} ${topY - 26}" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
+                fill="url(#plush-crystal-horn)" stroke="#4c1d95" stroke-width="2.2" />
+          <path d="M ${cX + 20} ${topY} L ${cX + 28} ${topY - 26}" stroke="#ffffff" stroke-width="2.0" stroke-linecap="round" opacity="0.9" />
         </g>
       `;
     } else if (hornId === 'horns-gold') {
       hornsMarkup = `
         <!-- Gold Sovereign Horns -->
-        <g filter="url(#mf-shadow)">
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} C ${cX - 30} ${topY - 12} ${cX - 36} ${topY - 26} ${cX - 24} ${topY - 32} C ${cX - 18} ${topY - 18} ${cX - 14} ${topY} ${cX - 10} ${topY + 8} Z"
                 fill="url(#mg-gold-horn)" stroke="#a16207" stroke-width="2.2" />
           <path d="M ${cX + 18} ${topY + 8} C ${cX + 30} ${topY - 12} ${cX + 36} ${topY - 26} ${cX + 24} ${topY - 32} C ${cX + 18} ${topY - 18} ${cX + 14} ${topY} ${cX + 10} ${topY + 8} Z"
@@ -1116,17 +1253,17 @@
     } else if (hornId === 'horns-nature') {
       hornsMarkup = `
         <!-- Nature Leaf Horns -->
-        <g filter="url(#mf-shadow)">
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} C ${cX - 32} ${topY - 6} ${cX - 32} ${topY - 26} ${cX - 18} ${topY - 30} C ${cX - 12} ${topY - 16} ${cX - 12} ${topY} ${cX - 10} ${topY + 8} Z"
                 fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
-          <path d="M ${cX + 18} ${topY + 8} C ${cX + 32} ${topY - 6} ${cX + 32} ${topY - 26} ${cX + 18} ${topY - 30} C ${cX + 12} ${topY - 16} ${cX + 12} ${topY} ${cX + 10} ${topY + 8} Z"
+          <path d="M ${cX + 18} ${topY + 8} C ${cX + 32} ${topY - 6} ${cX + 32} ${topY - 26} ${cX + 18} ${topY - 30} C ${cX - 12} ${topY - 16} ${cX - 12} ${topY} ${cX - 10} ${topY + 8} Z"
                 fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
         </g>
       `;
     } else if (hornId === 'horns-ice') {
       hornsMarkup = `
         <!-- Ice Spire Horns -->
-        <g filter="url(#mf-shadow)">
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX - 20} ${topY + 8} L ${cX - 28} ${topY - 28} L ${cX - 12} ${topY + 8} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
           <path d="M ${cX + 20} ${topY + 8} L ${cX + 28} ${topY - 28} L ${cX + 12} ${topY + 8} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
         </g>
@@ -1134,7 +1271,7 @@
     } else if (hornId === 'horns-flame') {
       hornsMarkup = `
         <!-- Flame Horns -->
-        <g filter="url(#mf-shadow)">
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX - 20} ${topY + 8} Q ${cX - 32} ${topY - 10} ${cX - 26} ${topY - 30} Q ${cX - 14} ${topY - 14} ${cX - 10} ${topY + 8} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
           <path d="M ${cX + 20} ${topY + 8} Q ${cX + 32} ${topY - 10} ${cX + 26} ${topY - 30} Q ${cX + 14} ${topY - 14} ${cX + 10} ${topY + 8} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
         </g>
@@ -1142,7 +1279,7 @@
     } else if (hornId === 'horns-star') {
       hornsMarkup = `
         <!-- Star Horns -->
-        <g filter="url(#mf-shadow)">
+        <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} L ${cX - 22} ${topY - 16} L ${cX - 12} ${topY + 8} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
           <polygon points="${cX-22},${topY-24} ${cX-20},${topY-18} ${cX-14},${topY-18} ${cX-19},${topY-14} ${cX-17},${topY-8} ${cX-22},${topY-12} ${cX-27},${topY-8} ${cX-25},${topY-14} ${cX-30},${topY-18} ${cX-24},${topY-18}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
           <path d="M ${cX + 18} ${topY + 8} L ${cX + 22} ${topY - 16} L ${cX + 12} ${topY + 8} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
@@ -1158,28 +1295,32 @@
   }
 
   // --- ANATOMICALLY GROUNDED FEET (Flattened Floor Plane Contact) ---
-  function renderGroundedFeet(palette, cX, g) {
+  function renderGroundedFeet(palette, colorKey, cX, g) {
     const botY = g.botY;
     const footSpacing = g.footSpacing;
 
     return `
-      <!-- Anatomically Grounded Feet -->
-      <g class="monster-feet" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Volumetric 3D Grounded Paws (Resting on Dais Surface) -->
+      <g class="plush-feet" filter="url(#plush-shadow)">
         <!-- Left Foot -->
-        <path d="M ${cX - footSpacing - 12} ${botY - 3}
-                 C ${cX - footSpacing - 14} ${botY + 5} ${cX - footSpacing - 8} ${botY + 7} ${cX - footSpacing} ${botY + 7}
-                 C ${cX - footSpacing + 10} ${botY + 7} ${cX - footSpacing + 13} ${botY + 3} ${cX - footSpacing + 11} ${botY - 4}
-                 C ${cX - footSpacing + 6} ${botY - 7} ${cX - footSpacing - 8} ${botY - 6} ${cX - footSpacing - 12} ${botY - 3} Z" />
-        <line x1="${cX - footSpacing - 2}" y1="${botY + 2}" x2="${cX - footSpacing - 2}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
-        <line x1="${cX - footSpacing + 4}" y1="${botY + 2}" x2="${cX - footSpacing + 4}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+        <path d="M ${cX - footSpacing - 12} ${botY - 4}
+                 C ${cX - footSpacing - 14} ${botY + 4} ${cX - footSpacing - 8} ${botY + 6} ${cX - footSpacing} ${botY + 6}
+                 C ${cX - footSpacing + 10} ${botY + 6} ${cX - footSpacing + 13} ${botY + 2} ${cX - footSpacing + 11} ${botY - 5}
+                 C ${cX - footSpacing + 6} ${botY - 8} ${cX - footSpacing - 8} ${botY - 7} ${cX - footSpacing - 12} ${botY - 4} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+        <ellipse cx="${cX - footSpacing - 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
+        <ellipse cx="${cX - footSpacing + 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
+        <line x1="${cX - footSpacing}" y1="${botY - 2}" x2="${cX - footSpacing}" y2="${botY + 4}" stroke="${palette.primaryDark}" stroke-width="1.6" stroke-linecap="round" />
 
         <!-- Right Foot -->
-        <path d="M ${cX + footSpacing - 11} ${botY - 4}
-                 C ${cX + footSpacing - 13} ${botY + 3} ${cX + footSpacing - 10} ${botY + 7} ${cX + footSpacing} ${botY + 7}
-                 C ${cX + footSpacing + 8} ${botY + 7} ${cX + footSpacing + 14} ${botY + 5} ${cX + footSpacing + 12} ${botY - 3}
-                 C ${cX + footSpacing + 8} ${botY - 6} ${cX + footSpacing - 6} ${botY - 7} ${cX + footSpacing - 11} ${botY - 4} Z" />
-        <line x1="${cX + footSpacing - 4}" y1="${botY + 2}" x2="${cX + footSpacing - 4}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
-        <line x1="${cX + footSpacing + 2}" y1="${botY + 2}" x2="${cX + footSpacing + 2}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+        <path d="M ${cX + footSpacing - 11} ${botY - 5}
+                 C ${cX + footSpacing - 13} ${botY + 2} ${cX + footSpacing - 10} ${botY + 6} ${cX + footSpacing} ${botY + 6}
+                 C ${cX + footSpacing + 8} ${botY + 6} ${cX + footSpacing + 14} ${botY + 4} ${cX + footSpacing + 12} ${botY - 4}
+                 C ${cX + footSpacing + 8} ${botY - 7} ${cX + footSpacing - 6} ${botY - 8} ${cX + footSpacing - 11} ${botY - 5} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+        <ellipse cx="${cX + footSpacing - 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
+        <ellipse cx="${cX + footSpacing + 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
+        <line x1="${cX + footSpacing}" y1="${botY - 2}" x2="${cX + footSpacing}" y2="${botY + 4}" stroke="${palette.primaryDark}" stroke-width="1.6" stroke-linecap="round" />
       </g>
     `;
   }
@@ -1205,7 +1346,7 @@
     `;
 
     // Inner Belly / Muzzle Patch (soft pastel tone breaking up monochromatic fills)
-    const bellyTop = g.eyeY + 6;
+    const bellyTop = g.eyeY + 8;
     const bellyW = bW * 0.62;
     const bellyPath = `
       M ${cX} ${bellyTop}
@@ -1218,19 +1359,19 @@
 
     // Ambient Occlusion Crescent along lower-right inner rim
     const aoCrescent = `
-      <path d="M ${cX - 8} ${botY}
+      <path d="M ${cX - 10} ${botY}
                C ${cX + 18} ${botY} ${cX + bW * 0.88} ${botY + 2} ${cX + bW} ${botY - 10}
                C ${cX + bW * 1.06} ${botY - 24} ${cX + cW * 1.05} ${cheekY + 14} ${cX + cW} ${cheekY}
-               C ${cX + cW - 4} ${cheekY + 14} ${cX + bW - 6} ${botY - 20} ${cX - 8} ${botY} Z"
-            fill="${palette.shadow}" opacity="0.20" />
+               C ${cX + cW - 5} ${cheekY + 14} ${cX + bW - 7} ${botY - 20} ${cX - 10} ${botY} Z"
+            fill="${palette.shadowDark || palette.shadow}" opacity="0.26" />
     `;
 
     // Top Specular Highlight Arc along crown curve
     const specularArc = `
       <path d="M ${cX - cW * 0.45} ${topY + 6}
                C ${cX - cW * 0.20} ${topY + 2} ${cX + cW * 0.20} ${topY + 2} ${cX + cW * 0.45} ${topY + 6}"
-            fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" opacity="0.55" />
-      <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="1.8" fill="#ffffff" opacity="0.75" />
+            fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" opacity="0.75" />
+      <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="2.2" fill="#ffffff" opacity="0.9" />
     `;
 
     // Front Arms / Paws
@@ -1238,38 +1379,36 @@
     if (stage === 'baby') {
       // Tiny baby paws curled happily on belly
       armsMarkup = `
-        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z" />
-          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z" />
-        </g>
-      `;
-    } else if (stage === 'growing') {
-      // Small arms reaching out slightly with cute paw pads
-      armsMarkup = `
-        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M ${cX - cW + 6} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 6} ${g.pawY - 14} Z" />
-          <circle cx="${cX - cW - 2}" cy="${g.pawY + 5}" r="2.8" fill="${palette.cheek}" opacity="0.8" />
-          <path d="M ${cX + cW - 6} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 6} ${g.pawY - 14} Z" />
-          <circle cx="${cX + cW + 2}" cy="${g.pawY + 5}" r="2.8" fill="${palette.cheek}" opacity="0.8" />
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <ellipse cx="${cX - 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
+
+          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <ellipse cx="${cX + 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
         </g>
       `;
     } else {
-      // Adventurer, Advanced, Ultimate arms
+      // Growing, Adventurer, Advanced, Ultimate arms
       armsMarkup = `
-        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M ${cX - cW + 5} ${g.pawY - 16} C ${cX - cW - 10} ${g.pawY - 8} ${cX - cW - 12} ${g.pawY + 12} ${cX - cW + 6} ${g.pawY + 16} C ${cX - cW + 12} ${g.pawY + 10} ${cX - cW + 10} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 16} Z" />
-          <circle cx="${cX - cW - 1}" cy="${g.pawY + 7}" r="3.2" fill="${palette.cheek}" opacity="0.8" />
-          <path d="M ${cX + cW - 5} ${g.pawY - 16} C ${cX + cW + 10} ${g.pawY - 8} ${cX + cW + 12} ${g.pawY + 12} ${cX + cW - 6} ${g.pawY + 16} C ${cX + cW - 12} ${g.pawY + 10} ${cX + cW - 10} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 16} Z" />
-          <circle cx="${cX + cW + 1}" cy="${g.pawY + 7}" r="3.2" fill="${palette.cheek}" opacity="0.8" />
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+          <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
+
+          <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+          <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
         </g>
       `;
     }
 
     return `
       <!-- Main Organic Torso with Volumetric Shading -->
-      <g filter="url(#mf-shadow)">
-        <path d="${bodyPath}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" />
-        <path d="${bellyPath}" fill="url(#mg-belly-${colorKey})" />
+      <g filter="url(#plush-shadow)">
+        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
+        <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
         ${aoCrescent}
         ${specularArc}
         ${armsMarkup}
@@ -1285,12 +1424,12 @@
     const rx = g.bW;
     const ry = (g.botY - g.topY) / 2;
 
-    const underBodyMarkup = renderUnderBodyAccessories(stage, palette, equipped, cX, g);
-    const feetMarkup = renderGroundedFeet(palette, cX, g);
+    const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
+    const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
     const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
-    const overBodyMarkup = renderOverBodyAccessories(stage, palette, equipped, cX, g);
+    const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-    const faceMarkup = renderFaceElements(stage, palette, equipped, cX, g);
+    const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
 
     return `
       ${underBodyMarkup}
@@ -1467,20 +1606,30 @@
   }
 
   // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
-  function renderFaceElements(stage, palette, equipped, cX, g) {
+  function renderFaceElements(stage, palette, colorKey, equipped, cX, g) {
     let eyesId = equipped.eyes || 'eyes-sparkle';
     if (eyesId === 'default') eyesId = 'eyes-sparkle';
     const mouthId = equipped.mouth || 'mouth-smile';
 
-    // Low Horizon Placement (Lower 38%-42% of head for peak cute chibi appeal)
+    // Low Horizon Placement (Lower 38%-42% of cranial mass for peak cute chibi appeal)
     const eyeY = g.eyeY;
     const eyeSpacing = g.eyeSpacing;
-    const mouthY = eyeY + 12;
+    const mouthY = eyeY + 13;
 
     // Warm signature pink blush cheeks nestled directly into the cheek swell
     const cheeks = `
-      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.2" ry="5.2" fill="${palette.cheek}" opacity="0.76" />
-      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.2" ry="5.2" fill="${palette.cheek}" opacity="0.76" />
+      <!-- Soft Velvet Cheek Blush -->
+      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+    `;
+
+    // 3D Snout & Muzzle Dome with Curved Button Nose
+    const snoutDome = `
+      <!-- 3D Snout & Muzzle Dome (Volumetric Dimensional Pad) -->
+      <ellipse cx="${cX}" cy="${eyeY + 7}" rx="14.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+      <!-- Cute Curved Button Snout Nose with Specular Highlight -->
+      <ellipse cx="${cX}" cy="${eyeY + 4.5}" rx="3.2" ry="2.4" fill="#0f172a" />
+      <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
     `;
 
     let eyesMarkup = '';
@@ -1488,101 +1637,135 @@
       eyesMarkup = `
         <!-- Curious Wink Eyes -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
         </g>
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
         </g>
       `;
     } else if (eyesId === 'eyes-happy') {
       eyesMarkup = `
         <!-- Happy Crescent Eyes -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 9} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 10} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <circle cx="${cX - eyeSpacing - 2}" cy="${eyeY - 2}" r="1.8" fill="#ffffff" opacity="0.9" />
         </g>
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 9} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 10} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+          <circle cx="${cX + eyeSpacing + 2}" cy="${eyeY - 2}" r="1.8" fill="#ffffff" opacity="0.9" />
         </g>
       `;
     } else if (eyesId === 'eyes-brave') {
       eyesMarkup = `
         <!-- Brave Hero Eyes with angled brows -->
-        <line x1="${cX - eyeSpacing - 9}" y1="${eyeY - 13}" x2="${cX - eyeSpacing + 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
-        <line x1="${cX + eyeSpacing + 9}" y1="${eyeY - 13}" x2="${cX + eyeSpacing - 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
+        <line x1="${cX - eyeSpacing - 9}" y1="${eyeY - 14}" x2="${cX - eyeSpacing + 8}" y2="${eyeY - 10}" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" />
+        <line x1="${cX + eyeSpacing + 9}" y1="${eyeY - 14}" x2="${cX + eyeSpacing - 8}" y2="${eyeY - 10}" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" />
         <g transform="rotate(-3, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.4" ry="12.0" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
-          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.0}" r="4.0" fill="#ffffff" />
-          <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="2.0" fill="#ffffff" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="12.4" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="9.8" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="5.0" ry="6.8" fill="#090d16" />
+          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.4}" r="4.0" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
         </g>
         <g transform="rotate(3, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.4" ry="12.0" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
-          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.0}" r="4.0" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="2.0" fill="#ffffff" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="12.4" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="9.8" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.0" ry="6.8" fill="#090d16" />
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.4}" r="4.0" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
         </g>
       `;
     } else if (eyesId === 'eyes-sleepy') {
       eyesMarkup = `
         <!-- Sleepy Eyes with gentle downward arcs -->
-        <path d="M ${cX - eyeSpacing - 9} ${eyeY - 2} Q ${cX - eyeSpacing} ${eyeY + 7} ${cX - eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-        <path d="M ${cX + eyeSpacing - 9} ${eyeY - 2} Q ${cX + eyeSpacing} ${eyeY + 7} ${cX + eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <path d="M ${cX - eyeSpacing - 9} ${eyeY - 2} Q ${cX - eyeSpacing} ${eyeY + 8} ${cX - eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <path d="M ${cX + eyeSpacing - 9} ${eyeY - 2} Q ${cX + eyeSpacing} ${eyeY + 8} ${cX + eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
       `;
     } else if (eyesId === 'eyes-star') {
       eyesMarkup = `
         <!-- Starry Eyes -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
           <polygon points="${cX-eyeSpacing},${eyeY-6} ${cX-eyeSpacing+2.4},${eyeY-1.2} ${cX-eyeSpacing+7},${eyeY-1.2} ${cX-eyeSpacing+3.5},${eyeY+2.4} ${cX-eyeSpacing+4.8},${eyeY+7} ${cX-eyeSpacing},${eyeY+3.6} ${cX-eyeSpacing-4.8},${eyeY+7} ${cX-eyeSpacing-3.5},${eyeY+2.4} ${cX-eyeSpacing-7},${eyeY-1.2} ${cX-eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.4" fill="#ffffff" />
         </g>
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
           <polygon points="${cX+eyeSpacing},${eyeY-6} ${cX+eyeSpacing+2.4},${eyeY-1.2} ${cX+eyeSpacing+7},${eyeY-1.2} ${cX+eyeSpacing+3.5},${eyeY+2.4} ${cX+eyeSpacing+4.8},${eyeY+7} ${cX+eyeSpacing},${eyeY+3.6} ${cX+eyeSpacing-4.8},${eyeY+7} ${cX+eyeSpacing-3.5},${eyeY+2.4} ${cX+eyeSpacing-7},${eyeY-1.2} ${cX+eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.4" fill="#ffffff" />
         </g>
       `;
     } else if (eyesId === 'eyes-dragon') {
       eyesMarkup = `
         <!-- Dragon Golden Eyes with vertical slit pupils -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
-          <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#ca8a04" stroke="#713f12" stroke-width="1.8" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="#eab308" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#020617" />
+          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.8}" r="3.2" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.8}" r="1.8" fill="#ffffff" opacity="0.9" />
         </g>
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
-          <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#ca8a04" stroke="#713f12" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="#eab308" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#020617" />
+          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.8}" r="3.2" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.8}" r="1.8" fill="#ffffff" opacity="0.9" />
         </g>
       `;
     } else if (eyesId === 'eyes-galaxy') {
       eyesMarkup = `
         <!-- Galaxy Cosmic Eyes -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.8" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="#4338ca" />
           <circle cx="${cX - eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
-          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
-          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.0" fill="#38bdf8" />
         </g>
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="#4338ca" />
           <circle cx="${cX + eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
-          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.0" fill="#38bdf8" />
         </g>
       `;
     } else {
-      // Default: Signature Anime Sparkle Eyes (Chibi Proportions, Outward Angled, Brilliant Glints)
+      // Default: Living Glossy Eyes (11 O'Clock Keylit Glass Spheres)
       eyesMarkup = `
+        <!-- Living Glossy Left Eye -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
+          <!-- Dominant 11 O'Clock Primary Reflection Dot (Real Glass Sphere) -->
+          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.2" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
+          <!-- Secondary Bounce Light at 5 O'Clock -->
+          <circle cx="${cX - eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
+          <!-- Tertiary Micro Reflection Spec -->
+          <circle cx="${cX - eyeSpacing - 3.6}" cy="${eyeY + 2.8}" r="1.1" fill="#ffffff" opacity="0.85" />
         </g>
 
+        <!-- Living Glossy Right Eye -->
         <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
+          <!-- Dominant 11 O'Clock Primary Reflection Dot -->
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.2" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
+          <!-- Secondary Bounce Light at 5 O'Clock -->
+          <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
+          <!-- Tertiary Micro Reflection Spec -->
+          <circle cx="${cX + eyeSpacing - 3.6}" cy="${eyeY + 2.8}" r="1.1" fill="#ffffff" opacity="0.85" />
         </g>
       `;
     }
@@ -1621,16 +1804,21 @@
         <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
       `;
     } else {
-      // Default: Sweet Gentle Smile (Enhanced 3.0px rounded stroke)
+      // Default: Organic W-Smile Lip Crease (Cuddly Plush Mouth)
       mouthMarkup = `
-        <path d="M ${cX - 7.5} ${mouthY} Q ${cX} ${mouthY + 6.2} ${cX + 7.5} ${mouthY}" fill="none" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M ${cX - 7.5} ${mouthY} Q ${cX - 3.5} ${mouthY + 5.0} ${cX} ${mouthY + 2.5} Q ${cX + 3.5} ${mouthY + 5.0} ${cX + 7.5} ${mouthY}"
+              fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
       `;
     }
 
     return `
-      ${cheeks}
-      ${eyesMarkup}
-      ${mouthMarkup}
+      <!-- Living Glossy Chibi Face Elements -->
+      <g class="plush-face">
+        ${cheeks}
+        ${snoutDome}
+        ${eyesMarkup}
+        ${mouthMarkup}
+      </g>
     `;
   }
 
@@ -1653,23 +1841,23 @@
     // Hats
     if (hatId === 'hat-crown') {
       hatMarkup = `
-        <!-- Sovereign Royal Crown -->
-        <g filter="url(#mf-shadow)">
-          <polygon points="80,56 86,30 100,44 114,30 120,56" fill="url(#mg-gold-crown)" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round" />
-          <rect x="78" y="54" width="44" height="6" rx="2" fill="#eab308" stroke="#a16207" stroke-width="1.2" />
-          <circle cx="100" cy="46" r="3" fill="#ef4444" />
-          <circle cx="87" cy="38" r="2.2" fill="#3b82f6" />
-          <circle cx="113" cy="38" r="2.2" fill="#10b981" />
+        <!-- Sovereign Royal Crown (Volumetric 3D Gold with Jewels) -->
+        <g filter="url(#plush-shadow)">
+          <polygon points="80,52 86,26 100,40 114,26 120,52" fill="url(#plush-gold-crown)" stroke="#713f12" stroke-width="2" stroke-linejoin="round" />
+          <rect x="78" y="50" width="44" height="6" rx="2" fill="#ca8a04" stroke="#713f12" stroke-width="1.2" />
+          <circle cx="100" cy="42" r="3.2" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.8" />
+          <circle cx="87" cy="34" r="2.4" fill="#3b82f6" stroke="#1e3a8a" stroke-width="0.8" />
+          <circle cx="113" cy="34" r="2.4" fill="#10b981" stroke="#064e3b" stroke-width="0.8" />
         </g>
       `;
     } else if (hatId === 'hat-explorer') {
       hatMarkup = `
-        <!-- Adventurer Explorer Fedora -->
-        <g filter="url(#mf-shadow)">
-          <ellipse cx="100" cy="68" rx="38" ry="8" fill="#d97706" stroke="#92400e" stroke-width="2" />
-          <path d="M 74 66 C 74 44 126 44 126 66 Z" fill="#b45309" stroke="#78350f" stroke-width="2" />
-          <rect x="74" y="62" width="52" height="4.5" fill="#451a03" />
-          <path d="M 116 62 Q 124 50 120 42" stroke="#facc15" stroke-width="2" stroke-linecap="round" fill="none" />
+        <!-- Adventurer Explorer Fedora (11 O'Clock Shading) -->
+        <g filter="url(#plush-shadow)">
+          <ellipse cx="100" cy="66" rx="38" ry="8" fill="#d97706" stroke="#78350f" stroke-width="2" />
+          <path d="M 74 64 C 74 42 126 42 126 64 Z" fill="#b45309" stroke="#78350f" stroke-width="2" />
+          <rect x="74" y="60" width="52" height="4.5" fill="#451a03" />
+          <circle cx="86" cy="52" r="2.0" fill="#ffffff" opacity="0.8" />
         </g>
       `;
     } else if (hatId === 'hat-wizard') {
