@@ -696,6 +696,35 @@
       description: "Interactive slide presentation and comprehensive homework quest deck for Alice in Wonderland. Features 12 graded challenges across 3 progression tiers (+10 to +200 XP), clear student instructions, model answer examples, and direct teacher XP awarding."
     },
     {
+      id: "monster-studio",
+      title: "🎨 Monster Studio & Customizer",
+      category: "Creative Tools",
+      categoryLabel: "🎨 Monster Studio & Customizer",
+      type: "tool",
+      level: "All Levels",
+      age: "Ages 5–12",
+      grade: "Grade 1–4",
+      duration: 20,
+      durationText: "20 min",
+      estimatedMinutes: 20,
+      xp: 50,
+      skills: ["Creativity", "Visual Art", "Vocabulary", "Speaking", "Avatar Customization"],
+      topics: ["Monster Customization", "Colors & Accessories", "Self-Expression", "Character Design"],
+      objectives: [
+        "Customize monster avatar with eyes, mouths, horns, clothing, and pedestals",
+        "Describe avatar characteristics and accessories using color and descriptive vocabulary",
+        "Equip and sync custom monster avatars with student profiles and live rosters"
+      ],
+      route: "monster-studio/index.html",
+      featured: true,
+      thumbnailIcon: "🎨",
+      gradient: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #a855f7 100%)",
+      teacherGuide: true,
+      archived: false,
+      badge: "✨ Studio Tool",
+      description: "Interactive real-time 3D-feel Monster Customizer Studio. Features SVG rig animations, eye/mouth/horn/clothing/pedestal customization, quick color strip palettes, and direct syncing with student roster avatars."
+    },
+    {
       id: "nasa-mission",
       title: "🚀 NASA Mission: Find a New Planet",
       description: "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
