@@ -704,6 +704,39 @@
       gradient: "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
       teacherGuide: true,
       archived: false
+    },
+    {
+      id: "good-ideas-lab",
+      title: "💡 The Inventor’s Odyssey: My Good Ideas Lab",
+      description: "High-engagement 4-stage interactive design thinking adventure (Global Readings pp. 18–21). Solve the rolling pencil physics puzzle with 6-sided hexagons, match nature's biomimicry secrets, test Leonardo da Vinci's parachute canopy prototype, and iterate Karl Benz's motorcar to unlock the Master Inventor Diploma!",
+      type: "game",
+      category: "CLIL & STEM Games",
+      categoryLabel: "💡 Design Thinking & Inventions",
+      level: "A1 / A2",
+      cefrLevel: "A1–A2",
+      age: "Ages 7–12",
+      ageGroup: "7-12",
+      grade: "Grade 3–5",
+      grades: ["Grade 3", "Grade 4", "Grade 5"],
+      duration: 30,
+      durationText: "30 min",
+      estimatedMinutes: 30,
+      xp: 150,
+      skills: [
+        "Design Thinking Cycle",
+        "Biomimicry Innovation",
+        "Problem & Solution Vocabulary",
+        "Prototype Testing",
+        "Iterative Engineering"
+      ],
+      topic: "Problem Solving, Biomimicry, Prototyping & Iteration",
+      languageFocus: "Target Vocabulary: problem, solution, hexagon, parachute, improve. 'When you have a problem, look for a solution!' 'Don't give up! Try again and improve.'",
+      route: "good-ideas-lab/index.html",
+      featured: true,
+      thumbnailIcon: "💡",
+      gradient: "linear-gradient(135deg, #0d1527 0%, #1e1b4b 50%, #f59e0b 100%)",
+      teacherGuide: true,
+      archived: false
     }
   ];
 
