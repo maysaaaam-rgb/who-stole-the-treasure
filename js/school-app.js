@@ -864,7 +864,9 @@
       'brain-quit': 'brain/index.html',
       'the-day-your-brain-quit': 'brain/index.html',
       'brain': 'brain/index.html',
-      'nasa-mission': 'nasa-mission/index.html'
+      'nasa-mission': 'nasa-mission/index.html',
+      'bamboozle': 'bamboozle/index.html',
+      'academy-bamboozle': 'bamboozle/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

@@ -6,6 +6,77 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "bamboozle",
+    "title": "⚡ Academy Bamboozle Arena | Young Inventors Edition",
+    "description": "High-energy whole-class team game arena featuring 8 mystery bamboozle boxes, invention questions, team power-ups (Swap, Steal, Double Bonus), and harmonic audio feedback!",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "⚡ Classroom Quiz Arena",
+    "level": "A1 / A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–11",
+    "ageGroup": "7-11",
+    "grade": "Grade 3–5",
+    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "duration": 20,
+    "durationText": "20 min",
+    "estimatedMinutes": 20,
+    "xp": 100,
+    "skills": [
+      "ESL Speaking & Recall",
+      "Teamwork & Strategy",
+      "Invention & Science Concepts",
+      "Quick Problem Solving"
+    ],
+    "topic": "Inventions, Tools & Problem Solving",
+    "topics": [
+      "Inventions",
+      "Aviation",
+      "Engineering Parts",
+      "Purposes (TO + Verb)"
+    ],
+    "languageFocus": "Why did people invent...? People invented... to [verb].",
+    "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
+    "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
+    "difficulty": "Grade 3–4 A1 / A1+",
+    "tags": [
+      "bamboozle",
+      "game-show",
+      "quiz",
+      "team-battle",
+      "inventions",
+      "speaking",
+      "review"
+    ],
+    "learningObjectives": [
+      "Recall purpose statements using 'to + verb' (to fly quickly, to wake up on time)",
+      "Identify key mechanical parts of airplanes and pinwheels",
+      "Collaborate and compete strategically in team-based classroom quiz drills"
+    ],
+    "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
+    "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
+    "route": "bamboozle/index.html",
+    "featured": true,
+    "thumbnailIcon": "⚡",
+    "gradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #f59e0b 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bamboozleGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0f172a"/>
+          <stop offset="50%" stop-color="#1e293b"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#bamboozleGrad)"/>
+      <circle cx="100" cy="70" r="44" fill="#f59e0b" opacity="0.25"/>
+      <circle cx="100" cy="70" r="28" fill="#38bdf8" opacity="0.6"/>
+      <text x="100" y="78" font-size="34" text-anchor="middle">⚡</text>
+    </svg>`
+  },
+  {
     "id": "nasa-mission",
     "title": "🚀 NASA Mission: Find a New Planet",
     "description": "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",

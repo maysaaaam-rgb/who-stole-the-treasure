@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academy Bamboozle Arena | Young Inventors Edition</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --cyan: #38bdf8;
+      --amber: #f59e0b;
+      --green: #10b981;
+      --rose: #f43f5e;
+      --purple: #a855f7;
+    }
+    body {
+      margin: 0; font-family: system-ui, sans-serif;
+      background: var(--bg); color: #f8fafc; display: flex; flex-direction: column; min-height: 100vh;
+    }
+    /* Team Score Header */
+    .scoreboard {
+      display: flex; justify-content: space-around; padding: 1rem;
+      background: #111827; border-bottom: 2px solid #334155;
+    }
+    .team-card {
+      background: var(--card-bg); border-radius: 12px; padding: 0.75rem 1.5rem;
+      text-align: center; border: 2px solid transparent; min-width: 140px;
+    }
+    .team-card.active-turn { border-color: var(--amber); box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+    .team-score { font-size: 1.8rem; font-weight: 900; color: var(--amber); }
+
+    /* Number Grid */
+    .grid-container {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+      padding: 1.5rem; max-width: 1000px; margin: auto; flex: 1; width: calc(100% - 3rem);
+    }
+    .bamboozle-box {
+      aspect-ratio: 4/3; background: linear-gradient(135deg, #1e293b, #334155);
+      border: 2px solid #475569; border-radius: 14px; display: flex; align-items: center;
+      justify-content: center; font-size: 2.5rem; font-weight: 900; color: var(--cyan);
+      cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+    }
+    .bamboozle-box:hover { transform: scale(1.03); border-color: var(--cyan); }
+    .bamboozle-box.opened { opacity: 0.2; pointer-events: none; }
+
+    /* Modal Question & Power-up Overlay */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none;
+      align-items: center; justify-content: center; padding: 1rem; z-index: 50;
+    }
+    .modal-content {
+      background: #1e293b; border-radius: 18px; padding: 2rem; max-width: 550px;
+      width: 100%; text-align: center; border: 2px solid var(--cyan);
+    }
+    .question-stem { font-size: 1.6rem; font-weight: 800; margin: 1.2rem 0; }
+    .btn-row { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+    .action-btn {
+      padding: 0.8rem 1.6rem; border: none; border-radius: 10px; font-size: 1.1rem;
+      font-weight: 800; cursor: pointer; transition: transform 0.1s;
+    }
+    .action-btn:active { transform: scale(0.96); }
+    .btn-pass { background: var(--green); color: #022c22; }
+    .btn-fail { background: var(--rose); color: #4c0519; }
+    .btn-power { background: var(--amber); color: #451a03; }
+  </style>
+</head>
+<body>
+
+  <header class="scoreboard">
+    <div class="team-card active-turn" id="team-0-card">
+      <div>🚀 Red Team</div>
+      <div class="team-score" id="team-0-score">0</div>
+    </div>
+    <div class="team-card" id="team-1-card">
+      <div>⚡ Blue Team</div>
+      <div class="team-score" id="team-1-score">0</div>
+    </div>
+  </header>
+
+  <main class="grid-container" id="cards-grid"></main>
+
+  <!-- Modal Dialog for Questions / Mystery Power-ups -->
+  <div class="modal-overlay" id="quiz-modal">
+    <div class="modal-content" id="modal-body"></div>
+  </div>
+
+  <script src="../js/sound-engine.js"></script>
+  <script>
+    if (!window.academyAudio) {
+      window.academyAudio = {
+        playCoin: function() {},
+        playWhoosh: function() {},
+        playSoftFail: function() {},
+        playFanfare: function() {}
+      };
+    }
+
+    const CARDS = [
+      { id: 1, type: "q", pts: 15, q: "Why did people invent airplanes?", a: "To fly quickly!" },
+      { id: 2, type: "power", action: "swap", title: "💥 BAMBOOZLE!", text: "Swap points with the other team!" },
+      { id: 3, type: "q", pts: 20, q: "What part helps a paper airplane fly straight?", a: "The wings and the tail!" },
+      { id: 4, type: "power", action: "steal", title: "🦹 STEAL 15 PTS!", text: "Take 15 points from the opposing team!" },
+      { id: 5, type: "q", pts: 10, q: "Complete: People invented alarm clocks to _____ on time.", a: "wake up" },
+      { id: 6, type: "q", pts: 25, q: "Name 3 parts of a pinwheel!", a: "Blades, center pin, and stick!" },
+      { id: 7, type: "power", action: "double", title: "🎉 LUCKY BONUS!", text: "Free +30 points for your team!" },
+      { id: 8, type: "q", pts: 15, q: "Which tool melts ice?", a: "A thermal heat ray!" }
+    ];
+
+    let currentTurn = 0; // 0 = Red, 1 = Blue
+    let scores = [0, 0];
+    let activeCard = null;
+
+    const grid = document.getElementById("cards-grid");
+    const modal = document.getElementById("quiz-modal");
+    const modalBody = document.getElementById("modal-body");
+
+    function renderGrid() {
+      grid.innerHTML = "";
+      CARDS.forEach((card, idx) => {
+        const box = document.createElement("div");
+        box.className = "bamboozle-box";
+        box.innerText = idx + 1;
+        box.onclick = () => openCard(card, box);
+        grid.appendChild(box);
+      });
+    }
+
+    function openCard(card, boxElement) {
+      activeCard = card;
+      boxElement.classList.add("opened");
+      modal.style.display = "flex";
+
+      if (card.type === "power") {
+        window.academyAudio.playWhoosh();
+        modalBody.innerHTML = `
+          <h2 style="color:var(--amber); font-size:2rem; margin:0;">${card.title}</h2>
+          <p class="question-stem">${card.text}</p>
+          <button class="action-btn btn-power" onclick="resolvePowerUp()">ACTIVATE!</button>
+        `;
+      } else {
+        window.academyAudio.playCoin();
+        modalBody.innerHTML = `
+          <div style="color:var(--cyan); font-weight:800;">QUESTION • ${card.pts} PTS</div>
+          <p class="question-stem">${card.q}</p>
+          <div id="revealed-ans" style="display:none; color:var(--amber); font-size:1.3rem; margin:1rem 0;">
+            ${card.a}
+          </div>
+          <button class="action-btn btn-power" id="btn-show-ans" onclick="revealAnswer()">Check Answer</button>
+          <div class="btn-row" id="verdict-row" style="display:none;">
+            <button class="action-btn btn-pass" onclick="awardPoints(true)">✅ Correct (+${card.pts})</button>
+            <button class="action-btn btn-fail" onclick="awardPoints(false)">❌ Wrong</button>
+          </div>
+        `;
+      }
+    }
+
+    function revealAnswer() {
+      document.getElementById("revealed-ans").style.display = "block";
+      document.getElementById("btn-show-ans").style.display = "none";
+      document.getElementById("verdict-row").style.display = "flex";
+    }
+
+    function awardPoints(success) {
+      if (success) {
+        window.academyAudio.playCoin();
+        scores[currentTurn] += activeCard.pts;
+      } else {
+        window.academyAudio.playSoftFail();
+      }
+      closeModal();
+    }
+
+    function resolvePowerUp() {
+      if (activeCard.action === "swap") {
+        const temp = scores[0];
+        scores[0] = scores[1];
+        scores[1] = temp;
+      } else if (activeCard.action === "steal") {
+        const other = 1 - currentTurn;
+        const stolen = Math.min(scores[other], 15);
+        scores[other] -= stolen;
+        scores[currentTurn] += stolen;
+      } else if (activeCard.action === "double") {
+        scores[currentTurn] += 30;
+      }
+      closeModal();
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      updateScoreboard();
+      // Switch team turn
+      currentTurn = 1 - currentTurn;
+      document.getElementById("team-0-card").classList.toggle("active-turn", currentTurn === 0);
+      document.getElementById("team-1-card").classList.toggle("active-turn", currentTurn === 1);
+    }
+
+    function updateScoreboard() {
+      document.getElementById("team-0-score").innerText = scores[0];
+      document.getElementById("team-1-score").innerText = scores[1];
+    }
+
+    renderGrid();
+  </script>
+</body>
+</html>
