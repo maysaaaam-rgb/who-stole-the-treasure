@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>💡 INVENTOR LAB: What Does It Take to Be an Inventor? | Interactive ESL Lesson (A1+/A2)</title>
+  <link rel="stylesheet" href="css/inventor.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive Stage Wrapper -->
+  <div id="inventor-screen-wrapper">
+
+    <!-- Top Persistent HUD -->
+    <header id="inventor-hud">
+      <div class="hud-group">
+        <button class="hud-btn primary" onclick="window.inventorApp.renderStage(1)" title="Return to Lab Induction">
+          💡 <span>Inventor Lab</span>
+        </button>
+
+        <button class="hud-btn" onclick="window.inventorApp.prevStage()" title="Previous Stage">
+          ⬅️ <span>Prev</span>
+        </button>
+
+        <button class="hud-btn" onclick="window.inventorApp.nextStage()" title="Next Stage">
+          <span>Next</span> ➡️
+        </button>
+
+        <!-- Stage Tracker Pill -->
+        <div class="stage-tracker-pill" id="hud-stage-name">
+          1. 🚀 Lab Induction
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <!-- Classroom Dual-Team Scoreboard -->
+        <div class="team-scoreboard">
+          <div class="team-pill team-alpha" title="Team Alpha Points">
+            <span>🔵 Alpha:</span>
+            <span class="team-score-num" id="score-teamA">0</span>
+            <button class="team-btn-add" onclick="window.inventorApp.addScore('teamA', 1)">+1</button>
+          </div>
+          <div class="team-pill team-beta" title="Team Beta Points">
+            <span>🟡 Beta:</span>
+            <span class="team-score-num" id="score-teamB">0</span>
+            <button class="team-btn-add" onclick="window.inventorApp.addScore('teamB', 1)">+1</button>
+          </div>
+        </div>
+
+        <!-- Audio Toggles -->
+        <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.inventorAudio.toggleSfx(); this.textContent = on ? '🔊 SFX' : '🔇 SFX';" title="Toggle Sound Effects">
+          🔊 SFX
+        </button>
+        <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.inventorAudio.toggleSpeech(); this.textContent = on ? '🗣️ TTS' : '🤐 TTS';" title="Toggle Speech Read-Aloud">
+          🗣️ TTS
+        </button>
+
+        <!-- Teacher Control Center -->
+        <button class="hud-btn" onclick="window.inventorApp.openTeacherModal()" title="Teacher Navigation">
+          ⚙️ <span>Teacher</span>
+        </button>
+
+        <!-- Printable Companion -->
+        <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Open Printable Lab Notebook">
+          🖨️ <span>Worksheet</span>
+        </a>
+
+        <!-- Return to Library -->
+        <a href="../index.html#library" class="hud-btn" title="Back to Library">
+          📚 <span>Library</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Stage Area -->
+    <main id="stage-container">
+      <!-- Injected dynamically by inventor-scenes.js -->
+    </main>
+
+  </div>
+
+  <!-- Reusable Modal (Teacher Menu & Glossary) -->
+  <div class="inventor-modal-overlay" id="inventor-modal" style="display:none;" onclick="if(event.target === this) window.inventorApp.closeModal();">
+    <div class="inventor-modal-box">
+      <button class="modal-close-btn" onclick="window.inventorApp.closeModal()">✕</button>
+      <div id="modal-content-area"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Bar -->
+  <div id="inventor-toast"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/inventor-audio.js"></script>
+  <script src="js/inventor-data.js"></script>
+  <script src="js/inventor-scenes.js"></script>
+  <script src="js/inventor-app.js"></script>
+
+</body>
+</html>

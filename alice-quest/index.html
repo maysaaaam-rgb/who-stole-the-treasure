@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🐇 Alice's Wonderland Reading Quest & The Skimming Detectives | Interactive ESL Lessons (A1+)</title>
+  <link rel="stylesheet" href="css/alice.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive App Wrapper -->
+  <div id="alice-app-wrapper">
+
+    <!-- Top Persistent HUD -->
+    <header id="alice-hud">
+      <div class="hud-group">
+        <button class="hud-brand" onclick="window.aliceApp.goToStage('lesson1', 1)" title="Return to Quest Start">
+          🐇 <span>Alice's Quest</span>
+        </button>
+
+        <!-- Lesson Selector Tabs -->
+        <div class="lesson-tabs">
+          <button class="lesson-tab-btn active" id="tab-lesson1" onclick="window.aliceApp.switchLesson('lesson1')" title="Lesson 1: Alice in Wonderland Story Sequence & Feelings">
+            L1: Wonderland Quest (35m)
+          </button>
+          <button class="lesson-tab-btn gold" id="tab-lesson2" onclick="window.aliceApp.switchLesson('lesson2')" title="Lesson 2: Skimming Detectives & Brain Power">
+            L2: Skimming Detectives (35m)
+          </button>
+        </div>
+
+        <button class="hud-btn" onclick="window.aliceApp.prevStage()" title="Previous Stage">
+          ⬅️ <span>Prev</span>
+        </button>
+
+        <button class="hud-btn" onclick="window.aliceApp.nextStage()" title="Next Stage">
+          <span>Next</span> ➡️
+        </button>
+
+        <!-- Stage Tracker Pill -->
+        <div class="stage-tracker-pill" id="hud-stage-tracker">
+          1. 🐇 Follow Rabbit
+        </div>
+      </div>
+
+      <div class="hud-group">
+        <!-- Adventure Score & Resource Badges -->
+        <div class="badge-pill" title="Total Adventure Score">
+          <span>⚡</span>
+          <span id="hud-score-val">0 XP</span>
+        </div>
+
+        <div class="badge-pill" title="Golden Stars Collected">
+          <span>⭐</span>
+          <span id="hud-stars-val">0</span>
+        </div>
+
+        <div class="badge-pill" title="Golden Wonderland Keys">
+          <span>🔑</span>
+          <span id="hud-keys-val">0</span>
+        </div>
+
+        <!-- Combo Pill -->
+        <div class="combo-pill" id="hud-combo-pill" style="display:none;" title="Answer Streak Combo">
+          🔥 3 COMBO!
+        </div>
+
+        <!-- Hint Button -->
+        <button class="hud-btn" onclick="window.aliceApp.showHint()" title="Get a gentle clue">
+          💡 <span>Hint</span>
+        </button>
+
+        <!-- Audio Toggles -->
+        <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.aliceAudio.toggleSfx(); this.textContent = on ? '🔊 SFX' : '🔇 SFX';" title="Toggle Sound Effects">
+          🔊 SFX
+        </button>
+        <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.aliceAudio.toggleSpeech(); this.textContent = on ? '🗣️ TTS' : '🤐 TTS';" title="Toggle Speech Narration">
+          🗣️ TTS
+        </button>
+
+        <!-- Teacher Control Center -->
+        <button class="hud-btn" onclick="window.aliceApp.openTeacherModal()" title="Teacher Navigation & 8-Dimension Guide">
+          ⚙️ <span>Teacher</span>
+        </button>
+
+        <!-- Printable Companion Kit -->
+        <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Open 6-Page Printable Classroom Kit & Cutouts">
+          🖨️ <span>Worksheet</span>
+        </a>
+
+        <!-- Return to Platform Library -->
+        <a href="../index.html#library" class="hud-btn" title="Back to Game Library">
+          📚 <span>Library</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Stage Area -->
+    <main id="alice-stage-container">
+      <!-- Injected dynamically by alice-scenes.js -->
+    </main>
+
+  </div>
+
+  <!-- Reusable Teacher Control Center Modal -->
+  <div class="alice-modal-overlay" id="alice-modal" style="display:none;" onclick="if(event.target === this) window.aliceApp.closeModal();">
+    <div class="alice-modal-box">
+      <button class="modal-close-btn" onclick="window.aliceApp.closeModal()" aria-label="Close Modal">✕</button>
+      <div id="modal-content-area"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Bar -->
+  <div id="alice-toast"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/alice-audio.js"></script>
+  <script src="js/alice-data.js"></script>
+  <script src="js/alice-scenes.js"></script>
+  <script src="js/alice-app.js"></script>
+</body>
+</html>

@@ -42,7 +42,7 @@ class MonsterRenderer {
     this.canvas.height = 520;
     this.canvas.style.cssText = 'width:100%;height:auto;display:block;image-rendering:auto;';
     container.appendChild(this.canvas);
-    this.ctx   = this.canvas.getContext('2d');
+    this.ctx   = this.canvas.getContext('2d', { alpha: true });
     this.state = { ...state };
     this.draw();
     return this;

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior Inventor Lab Notebook | Printable Worksheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink-black: #0f172a;
+      --ink-slate: #334155;
+      --border-gray: #94a3b8;
+      --light-gray: #f1f5f9;
+      --amber-accent: #d97706;
+      --cyan-accent: #0284c7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: var(--ink-black);
+      background-color: #f8fafc;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .no-print-toolbar {
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-print {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back {
+      color: #475569;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* 4-Page Sheet Container */
+    .sheet-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      margin: 0 auto 28px auto;
+      padding: 22mm 20mm;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      position: relative;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sheet-header {
+      border-bottom: 2.5px solid var(--ink-black);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .header-title-block h1 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-title-block p {
+      font-size: 0.85rem;
+      color: var(--ink-slate);
+      font-weight: 600;
+    }
+
+    .student-info-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr 1fr;
+      gap: 12px;
+      background: var(--light-gray);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-gray);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .section-box {
+      border: 1.5px solid var(--border-gray);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-black);
+      border-bottom: 1px dashed var(--border-gray);
+      padding-bottom: 4px;
+    }
+
+    .word-bank {
+      background: #e0f2fe;
+      border: 1px solid #7dd3fc;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .writing-line {
+      display: block;
+      margin: 10px 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .fill-line {
+      display: inline-block;
+      border-bottom: 1.5px solid var(--ink-black);
+      min-width: 250px;
+      height: 1.2rem;
+    }
+
+    .drawing-canvas-frame {
+      border: 2px dashed #0284c7;
+      background-image: 
+        linear-gradient(rgba(2, 132, 199, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(2, 132, 199, 0.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border-radius: 12px;
+      height: 240px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0369a1;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .sheet-footer {
+      border-top: 1px solid var(--border-gray);
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--ink-slate);
+      font-weight: 600;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print-toolbar {
+        display: none;
+      }
+      .sheet-page {
+        margin: 0;
+        box-shadow: none;
+        padding: 15mm 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- No-Print Toolbar -->
+  <div class="no-print-toolbar">
+    <div>
+      <h3 style="font-size:1.1rem; font-weight:800;">💡 Junior Inventor Lab Notebook (4 Pages)</h3>
+      <p style="font-size:0.85rem; color:#64748b;">Ready to print or save as PDF for classroom lessons</p>
+    </div>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <a href="index.html" class="btn-back">⬅️ Back to Interactive Lesson</a>
+      <button class="btn-print" onclick="window.print()">🖨️ Print Notebook</button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 1: MYSTERY ROOM OBSERVATION
+       ========================================== -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="header-title-block">
+          <h1>🔬 Junior Inventor Lab Notebook</h1>
+          <p>Unit 1: What Does It Do? • Thinking & Observation Sheet</p>
+        </div>
+        <div style="font-size:1.1rem; font-weight:900; color:var(--amber-accent);">PAGE 1 OF 4</div>
+      </div>
+
+      <div class="student-info-grid">
+        <div>Junior Inventor Name: _________________________</div>
+        <div>Date: _____________</div>
+        <div>Team: [ ] Alpha [ ] Beta</div>
+      </div>
+
+      <!-- Word Bank -->
+      <div class="word-bank">
+        <strong>💡 Word Bank:</strong>
+        <span>inventor</span> • <span>robot</span> • <span>bookshelf</span> • <span>glasses</span> • 
+        <span>electric lamp</span> • <span>wires</span> • <span>teacup</span> • <span>studying</span> • <span>machines</span>
+      </div>
+
+      <!-- Part A: I SEE -->
+      <div class="section-box">
+        <div class="section-title">👁️ Part A: See (Look at Textbook Page 8. What do you see?)</div>
+        <p style="font-size:0.85rem; color:var(--ink-slate); margin-bottom:8px;">Write 3 facts you can see directly in the picture:</p>
+        <div class="writing-line">1. I see <span class="fill-line" style="min-width:380px;"></span>.</div>
+        <div class="writing-line">2. I see <span class="fill-line" style="min-width:380px;"></span>.</div>
+        <div class="writing-line">3. There is a <span class="fill-line" style="min-width:345px;"></span>.</div>
+      </div>
+
+      <!-- Part B: I THINK -->
+      <div class="section-box">
+        <div class="section-title">🧠 Part B: Think (What do the clues tell you?)</div>
+        <p style="font-size:0.85rem; color:var(--ink-slate); margin-bottom:8px;">Complete the sentences using "because":</p>
+        <div class="writing-line">
+          1. I think he is an inventor because <span class="fill-line" style="min-width:320px;"></span>.
+        </div>
+        <div class="writing-line">
+          2. I think the books are old because <span class="fill-line" style="min-width:325px;"></span>.
+        </div>
+        <div class="writing-line">
+          3. I think he likes science because <span class="fill-line" style="min-width:330px;"></span>.
+        </div>
+      </div>
+
+      <!-- Part C: I WONDER -->
+      <div class="section-box">
+        <div class="section-title">❓ Part C: Wonder / Maybe (What questions do you have?)</div>
+        <div class="writing-line">1. Maybe the robot can <span class="fill-line" style="min-width:330px;"></span>!</div>
+        <div class="writing-line">2. Is it <span class="fill-line" style="min-width:410px;"></span>?</div>
+        <div class="writing-line">3. How old <span class="fill-line" style="min-width:390px;"></span>?</div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>Global Readings 2 — Unit 1: What Does It Do?</span>
+      <span>Junior Inventor Lab © Educational Resource Platform</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 2: THE INVENTION CYCLE & READING
+       ========================================== -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="header-title-block">
+          <h1>🔄 The 5-Stage Invention Cycle</h1>
+          <p>Textbook Pages 9, 10 & 11 • Guided Reading & Evidence Investigation</p>
+        </div>
+        <div style="font-size:1.1rem; font-weight:900; color:var(--amber-accent);">PAGE 2 OF 4</div>
+      </div>
+
+      <div class="student-info-grid">
+        <div>Student Name: _________________________</div>
+        <div>Date: _____________</div>
+        <div>Class: ____________</div>
+      </div>
+
+      <!-- Part A: Number the cycle -->
+      <div class="section-box">
+        <div class="section-title">⚙️ Part A: Put the 5 Invention Steps in Order (1 to 5)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px;">
+          <div class="writing-line">[ &nbsp; &nbsp; ] Make changes & try again!</div>
+          <div class="writing-line">[ &nbsp; &nbsp; ] Have an idea 💡</div>
+          <div class="writing-line">[ &nbsp; &nbsp; ] Try it and build a prototype 🛠️</div>
+          <div class="writing-line">[ &nbsp; &nbsp; ] Solve problems & help people 🚀</div>
+          <div class="writing-line">[ &nbsp; &nbsp; ] Draw a blueprint and make a plan 📝</div>
+        </div>
+        <div style="margin-top:12px; font-weight:700; font-size:0.9rem;">
+          ⭐ Which step do inventors do FIRST? <span class="fill-line" style="min-width:260px;"></span>
+        </div>
+      </div>
+
+      <!-- Part B: Clara Doodle Evidence Detective -->
+      <div class="section-box">
+        <div class="section-title">📖 Part B: Clara Doodle — Evidence Detective</div>
+        <p style="font-size:0.85rem; color:var(--ink-slate); margin-bottom:10px;">
+          Find and write the exact sentence from pages 10–11 of the reading:
+        </p>
+
+        <div style="margin-bottom:12px;">
+          <strong>1. When does Clara invent things?</strong><br>
+          Evidence: " <span class="fill-line" style="min-width:440px;"></span> "
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <strong>2. What two things did she invent for rainy days?</strong><br>
+          Evidence: " <span class="fill-line" style="min-width:440px;"></span> "
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <strong>3. What does Clara do when some ideas are not so good?</strong><br>
+          Evidence: " <span class="fill-line" style="min-width:440px;"></span> "
+        </div>
+
+        <div style="margin-bottom:6px;">
+          <strong>4. What does she do when she gets an idea? (Page 12)</strong><br>
+          Evidence: " <span class="fill-line" style="min-width:440px;"></span> "
+        </div>
+      </div>
+
+      <!-- Part C: Words in Context Match -->
+      <div class="section-box">
+        <div class="section-title">🔤 Part C: Match the Words to their Meanings</div>
+        <div style="font-size:0.9rem; line-height:1.8;">
+          1. <strong>invent</strong> &nbsp; • &nbsp; • [ &nbsp; ] To try another time after making a mistake<br>
+          2. <strong>try again</strong> &nbsp; • &nbsp; • [ &nbsp; ] To create something completely new<br>
+          3. <strong>change</strong> &nbsp; • &nbsp; • [ &nbsp; ] Equipment with moving parts that does work<br>
+          4. <strong>machine</strong> &nbsp; • &nbsp; • [ &nbsp; ] To make something different or better
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>Global Readings 2 — Unit 1: What Does It Do?</span>
+      <span>Junior Inventor Lab © Educational Resource Platform</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 3: MINDSET & THE HEAVY BAG DILEMMA
+       ========================================== -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="header-title-block">
+          <h1>⚖️ Inventor Mindset & Problem Solving</h1>
+          <p>Persistence, Testing, and Redesigning Solutions</p>
+        </div>
+        <div style="font-size:1.1rem; font-weight:900; color:var(--amber-accent);">PAGE 3 OF 4</div>
+      </div>
+
+      <div class="student-info-grid">
+        <div>Student Name: _________________________</div>
+        <div>Date: _____________</div>
+        <div>Class: ____________</div>
+      </div>
+
+      <!-- Part A: Mindset Check -->
+      <div class="section-box">
+        <div class="section-title">💡 Part A: Inventor or Not an Inventor? (Put ✓ or ✗)</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px; font-size:0.9rem;">
+          <div>[ &nbsp; &nbsp; ] 1. Leo's robot arm fell off. He threw it away and cried: "I give up!"</div>
+          <div>[ &nbsp; &nbsp; ] 2. Maya's toy boat sank, so she added corks to the bottom until it floated.</div>
+          <div>[ &nbsp; &nbsp; ] 3. Sam taped a small flashlight to his glasses so he could read at night.</div>
+          <div>[ &nbsp; &nbsp; ] 4. Aisha's paper plane fell down, so she changed the wings 8 times.</div>
+          <div>[ &nbsp; &nbsp; ] 5. Carlos made a heavy wooden base so his puppy wouldn't tip over the water.</div>
+        </div>
+      </div>
+
+      <!-- Part B: Heavy Backpack Dilemma -->
+      <div class="section-box">
+        <div class="section-title">🎒 Part B: The Heavy Backpack Redesign Dilemma</div>
+        <p style="font-size:0.85rem; color:var(--ink-slate); margin-bottom:8px;">
+          Problem: Your school backpack has wheels, but when it rains, mud splashes on your socks!
+        </p>
+
+        <div style="background:#fef3c7; border:1px solid #fde68a; padding:8px 12px; border-radius:6px; font-size:0.85rem; font-weight:700; color:#92400e; margin-bottom:12px;">
+          What would a true inventor do? (Circle one):<br>
+          A) Give up and carry 12 heavy books &nbsp; &nbsp; &nbsp; B) MAKE CHANGES and add mudguards!
+        </div>
+
+        <p style="font-size:0.9rem; font-weight:700;">Draw your improved mud-proof backpack design:</p>
+        <div class="drawing-canvas-frame" style="height:170px;">
+          <span>✏️ Sketch your mudguard & waterproof changes here</span>
+        </div>
+
+        <div class="writing-line">
+          Explain your change: "I made changes by adding <span class="fill-line" style="min-width:300px;"></span>."
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>Global Readings 2 — Unit 1: What Does It Do?</span>
+      <span>Junior Inventor Lab © Educational Resource Platform</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 4: MY OFFICIAL INVENTION BLUEPRINT
+       ========================================== -->
+  <div class="sheet-page">
+    <div>
+      <div class="sheet-header">
+        <div class="header-title-block">
+          <h1>📐 My Official Invention Blueprint</h1>
+          <p>Design Your Own Invention & Practice Your Class Pitch</p>
+        </div>
+        <div style="font-size:1.1rem; font-weight:900; color:var(--amber-accent);">PAGE 4 OF 4</div>
+      </div>
+
+      <div class="student-info-grid">
+        <div>Inventor Name: _________________________</div>
+        <div>Invention Name: _______________________</div>
+        <div>Date: _____________</div>
+      </div>
+
+      <!-- Blueprint Drawing Area -->
+      <div class="section-box" style="margin-bottom:10px;">
+        <div class="section-title">🎨 Blueprint Diagram & Labels</div>
+        <div class="drawing-canvas-frame" style="height:210px;">
+          <span>✏️ Draw your invention here (Draw arrows to label the parts!)</span>
+        </div>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.85rem; font-weight:700;">
+          <div>Base Body: [ ] Robot [ ] Drone [ ] Backpack [ ] Box</div>
+          <div>Feature: [ ] Wings [ ] Grabber [ ] Light [ ] Wheels</div>
+        </div>
+      </div>
+
+      <!-- Pitch Script -->
+      <div class="section-box">
+        <div class="section-title">🗣️ Junior Inventor Presentation Pitch Script</div>
+        <p style="font-size:0.82rem; color:var(--ink-slate); margin-bottom:8px;">Practice presenting your invention to your classmates:</p>
+        
+        <div style="background:#f1f5f9; padding:12px; border-radius:8px; font-size:0.95rem; line-height:1.8; font-weight:700;">
+          "Hello class! My invention is the <span class="fill-line" style="min-width:240px;"></span>.<br>
+          It is a <span class="fill-line" style="min-width:180px;"></span>.<br>
+          It can <span class="fill-line" style="min-width:280px;"></span> with its <span class="fill-line" style="min-width:160px;"></span>.<br>
+          It helps <span class="fill-line" style="min-width:240px;"></span> because it solves problems!<br>
+          What do you think?"
+        </div>
+      </div>
+
+      <!-- Peer Review Badges -->
+      <div style="display:flex; justify-content:space-between; background:#e0f2fe; padding:10px 14px; border-radius:8px; border:1px solid #7dd3fc; font-size:0.85rem; font-weight:800; color:#0369a1;">
+        <span>Peer Review Award:</span>
+        <span>[ ] 🏆 Most Useful</span>
+        <span>[ ] 💡 Most Creative</span>
+        <span>[ ] 😂 Funniest</span>
+        <span>[ ] 🚀 Best Future Tech</span>
+      </div>
+    </div>
+
+    <div class="sheet-footer">
+      <span>Global Readings 2 — Unit 1: What Does It Do?</span>
+      <span>Junior Inventor Lab © Educational Resource Platform</span>
+    </div>
+  </div>
+
+</body>
+</html>

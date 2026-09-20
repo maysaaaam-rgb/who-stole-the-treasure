@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Interactive Story Adventure Engine | Alice in Wonderland</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
+  <link rel="stylesheet" href="css/story-engine.css" />
+<style>
+    /* RESUME SAVED ADVENTURE BANNER */
+    .story-resume-banner {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #38bdf8;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.3);
+      border-radius: 20px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 9500;
+      backdrop-filter: blur(12px);
+      max-width: 90%;
+      animation: bannerSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes bannerSlideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(30px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .story-resume-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .story-btn-resume {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.88rem;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s ease;
+    }
+    .story-btn-resume:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+    }
+    .story-btn-restart {
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .story-btn-restart:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GAME VIEWPORT -->
+  <div id="story-game-viewport">
+    
+    <!-- TOP APP BAR -->
+    <header class="story-top-bar">
+      <div class="story-top-left">
+        <a href="../index.html" class="story-btn-icon" title="Return to Educational Resource Library">
+          <span>📚</span> <span>Library</span>
+        </a>
+        <div class="story-badge-pill">
+          <span id="story-area-icon" style="font-size:1.1rem;">🐇</span>
+          <span id="story-area-name-badge">Rabbit Woods</span>
+        </div>
+      </div>
+
+      <div class="story-top-right">
+        <!-- Adaptive Difficulty Mode Badge -->
+        <div class="story-badge-pill" id="story-difficulty-badge" style="background:rgba(15,23,42,0.7); color:#cbd5e1; font-weight:800; font-size:0.75rem;">
+          🌿 Mode: Standard
+        </div>
+
+        <div class="story-badge-pill" id="story-student-pill">
+          <span style="font-size:1.1rem;">👧</span>
+          <span id="story-student-name">Alice</span>
+        </div>
+
+        <!-- In-Game Pedagogical Hint Button -->
+        <button type="button" class="story-btn-icon" id="story-btn-hint" onclick="if(window.StoryGame && window.StoryGame.director) window.StoryGame.director.escalateHint('hud')" title="Request Pedagogical Hint (H)">
+          <span>💡</span> <span>Hint</span>
+        </button>
+
+        <!-- Speaking Practice Button -->
+        <button type="button" class="story-btn-icon" id="story-btn-speak" onclick="if(window.StoryGame && window.StoryGame.speaking) window.StoryGame.speaking.promptSpeaking({ speaker: 'White Rabbit', targetPhrase: 'Follow me!', targetWord: 'follow' })" title="Practice Speaking (V)">
+          <span>🎤</span> <span>Speak</span>
+        </button>
+
+        <button type="button" class="story-btn-icon" id="story-btn-sound" onclick="toggleStorySound()" title="Toggle Audio (M)">
+          <span id="story-sound-icon">🔊</span>
+        </button>
+        <button type="button" class="story-btn-icon" id="story-btn-fullscreen" onclick="toggleStoryFullscreen()" title="Toggle Fullscreen (F)">
+          <span id="story-fs-icon">⛶</span> <span>Fullscreen</span>
+        </button>
+        <button type="button" class="story-btn-icon" id="story-btn-debug" onclick="window.StoryDebug.toggle()" title="Toggle Developer Diagnostics (~)" style="display: none;">
+          <span>⚙️</span> <span>Debug</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN GAME CANVAS -->
+    <canvas id="story-canvas"></canvas>
+
+    <!-- PROXIMITY INTERACTION PROMPT BUBBLE -->
+    <div id="story-interaction-bubble" class="story-interaction-bubble" style="display: none;">
+      <div class="story-interaction-bubble-inner">
+        <span class="prompt-key-badge">E</span>
+        <span id="story-prompt-text">Interact</span>
+      </div>
+      <div class="prompt-arrow-down"></div>
+    </div>
+
+    <!-- QUEST TRACKER HUD -->
+    <aside id="story-quest-tracker" class="story-quest-tracker">
+      <div class="quest-tracker-header">
+        <span class="quest-header-title">📜 Active Quest</span>
+        <span id="story-quest-xp-reward" style="font-size: 0.72rem; color: #fef08a; font-weight: 800;">⭐ 100 XP</span>
+      </div>
+      <h3 id="story-quest-title" class="quest-title-text">The White Rabbit's Watch</h3>
+      <ul id="story-quest-objectives" class="quest-objectives-list">
+        <li class="quest-obj-item is-active">
+          <span class="quest-obj-checkbox"></span>
+          <span>Follow the White Rabbit</span>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- INVENTORY TRAY HUD -->
+    <div id="story-inventory-tray" class="story-inventory-tray">
+      <div class="inventory-slot" id="inv-slot-0" title="Slot 1"></div>
+      <div class="inventory-slot" id="inv-slot-1" title="Slot 2"></div>
+      <div class="inventory-slot" id="inv-slot-2" title="Slot 3"></div>
+      <div class="inventory-slot" id="inv-slot-3" title="Slot 4"></div>
+    </div>
+
+    <!-- DIALOGUE BUBBLE BOX -->
+    <div id="story-dialogue-container" class="story-dialogue-container">
+      <div class="story-dialogue-speaker-tag">🗣️ Guide</div>
+      <div class="story-dialogue-text">...</div>
+      <div class="story-dialogue-footer">
+        <span class="story-dialogue-hint">Press [E] or Space to continue</span>
+        <button type="button" class="story-dialogue-action-btn">Next ↵</button>
+      </div>
+    </div>
+
+    <!-- MOBILE / TOUCH CONTROLS -->
+    <div id="story-touch-controls" class="story-touch-controls">
+      <div class="story-virtual-joystick" id="story-virtual-joystick">
+        <div class="joystick-thumb" id="joystick-thumb"></div>
+      </div>
+      <button type="button" class="story-touch-action-btn" id="story-touch-action-btn">
+        <span>A</span>
+      </button>
+    </div>
+
+    <!-- DEVELOPER DEBUG OVERLAY -->
+    <div id="story-debug-overlay" class="story-debug-overlay">
+      <div class="debug-title">
+        <span>ENGINE DIAGNOSTICS</span>
+        <span style="cursor:pointer;" onclick="window.StoryDebug.toggle()">✕</span>
+      </div>
+      <div class="debug-row"><span>FPS:</span> <span id="debug-val-fps">60</span></div>
+      <div class="debug-row"><span>Scene:</span> <span id="debug-val-scene" style="color:#38bdf8;">None</span></div>
+      <div class="debug-row"><span>Story State:</span> <span id="debug-val-story-state" style="color:#fef08a;">None</span></div>
+      <div class="debug-row"><span>Player:</span> <span id="debug-val-player-pos">(0, 0)</span></div>
+      <div class="debug-row"><span>Camera:</span> <span id="debug-val-cam-pos">(0, 0)</span></div>
+      <div class="debug-row"><span>Input:</span> <span id="debug-val-input" style="color:#a7f3d0;">Idle</span></div>
+      <div class="debug-row"><span>Collision:</span> <span id="debug-val-collision">Clear</span></div>
+      <div class="debug-row"><span>Quest:</span> <span id="debug-val-quest">None</span></div>
+      <div class="debug-row"><span>Inventory:</span> <span id="debug-val-inventory">Empty</span></div>
+      <div class="debug-actions">
+        <button type="button" class="debug-btn" id="debug-toggle-hitboxes">Hitboxes: OFF</button>
+        <button type="button" class="debug-btn" id="debug-teleport-key">Go to Watch</button>
+        <button type="button" class="debug-btn" id="debug-teleport-gate">Go to Hole</button>
+      </div>
+
+      <!-- ADAPTIVE AI LEARNING DIRECTOR DIAGNOSTICS -->
+      <div class="debug-title" style="margin-top: 10px; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
+        <span>ADAPTIVE LEARNING & AI DIRECTOR</span>
+      </div>
+      <div class="debug-row"><span>Difficulty:</span> <span id="debug-val-difficulty" style="font-weight:800; color:#38bdf8;">STANDARD</span></div>
+      <div class="debug-row"><span>Active Hint:</span> <span id="debug-val-hint" style="color:#fef08a;">Level 0 (None)</span></div>
+      <div class="debug-row"><span>Vocabulary:</span> <span id="debug-val-vocab-counts" style="color:#a7f3d0;">M:0 D:0 W:0</span></div>
+
+      <div class="debug-title" style="margin-top: 8px; font-size: 10px; color:#94a3b8;">
+        <span>SIMULATE LEARNER PROFILES</span>
+      </div>
+      <div class="debug-actions" style="grid-template-columns:1fr 1fr; gap:4px;">
+        <button type="button" class="debug-btn" id="debug-profile-a" style="color:#a7f3d0;" title="Simulate Profile A: Strong Learner">Profile A: Strong</button>
+        <button type="button" class="debug-btn" id="debug-profile-b" style="color:#93c5fd;" title="Simulate Profile B: Average Learner">Profile B: Average</button>
+        <button type="button" class="debug-btn" id="debug-profile-c" style="color:#fca5a5;" title="Simulate Profile C: Struggling Learner">Profile C: Struggle</button>
+        <button type="button" class="debug-btn" id="debug-profile-d" style="color:#fde047;" title="Simulate Profile D: Hint Heavy">Profile D: Hints</button>
+      </div>
+      <div style="margin-top: 6px;">
+        <button type="button" class="debug-btn" id="debug-teacher-report" style="width: 100%; color: #60a5fa;">📊 View Teacher Analytics</button>
+      </div>
+
+      <!-- AUDIO DIAGNOSTICS -->
+      <div class="debug-title" style="margin-top: 10px; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
+        <span>AUDIO ENGINE DIAGNOSTICS</span>
+      </div>
+      <div class="debug-row"><span>State:</span> <span id="debug-audio-state">exploration</span></div>
+      <div class="debug-row"><span>Music:</span> <span id="debug-audio-music">exploration_theme</span></div>
+      <div class="debug-actions" style="margin-top: 6px;">
+        <button type="button" class="debug-btn" id="debug-toggle-audio">Mute: OFF</button>
+        <button type="button" class="debug-btn" id="debug-test-sfx">Test Chime</button>
+      </div>
+
+      <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+        <button type="button" class="debug-btn" id="debug-reset-rabbit-woods" style="width: 100%; color: #38bdf8;">🔄 Reset Rabbit Woods</button>
+        <button type="button" class="debug-btn" id="debug-reset-hall-of-doors" style="width: 100%; color: #fbbf24;">🚪 Reset Hall of Doors</button>
+        <button type="button" class="debug-btn" id="debug-reset-progress" style="width: 100%; color: #f87171;">Reset Entire Progress</button>
+      </div>
+    </div>
+
+    <!-- RESUME SAVED ADVENTURE BANNER -->
+    <div id="story-resume-banner" class="story-resume-banner" style="display: none;">
+      <div class="story-resume-content">
+        <span style="font-size: 2rem;">📖</span>
+        <div>
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #fef08a;">Saved Adventure Found</div>
+          <div style="font-weight: 800; font-size: 1.05rem; color: #ffffff;" id="story-resume-area-title">Chapter 2: The Great Fall</div>
+          <div style="font-size: 0.76rem; color: #cbd5e1;">Pick up right where you left off, or start a new journey from Chapter 1.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button type="button" class="story-btn-resume" id="story-btn-continue" onclick="window.resumeSavedAdventure()">
+          <span>▶</span> <span>Continue Adventure</span>
+        </button>
+        <button type="button" class="story-btn-restart" id="story-btn-newgame" onclick="window.restartNewAdventure()">
+          <span>🔄</span> <span>Start Over</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CINEMATIC TRANSITION FADE OVERLAY -->
+    <div id="story-fade-overlay" class="story-fade-overlay"></div>
+
+  </div>
+
+  <!-- PLATFORM SCRIPTS -->
+  <script src="../js/audio.js"></script>
+  <script src="../js/school-cloud-sync.js"></script>
+  <script src="../js/school-store.js"></script>
+
+  <!-- STORY ENGINE ASSETS (Art & Audio Packs) -->
+  <script src="js/assets/asset-manager.js"></script>
+  <script src="js/assets/art-system.js"></script>
+  <script src="js/assets/audio-system.js"></script>
+  <script src="js/assets/forest-audio-pack.js"></script>
+  <script src="js/assets/alice-audio-pack.js"></script>
+  <script src="js/assets/alice-woods-data.js"></script>
+  <script src="js/assets/alice-adventure-data.js"></script>
+
+  <!-- STORY ENGINE SCRIPTS -->
+  <script src="js/audio-engine.js"></script>
+  <script src="js/engine-core.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/quest-dialogue.js"></script>
+  <script src="js/story-bridge.js"></script>
+  <script src="js/debug.js"></script>
+  <script src="js/test-world-data.js"></script>
+
+  <!-- ADAPTIVE INTELLIGENCE & SPEECH SYSTEMS -->
+  <script src="js/learner-model.js"></script>
+  <script src="js/speaking-system.js"></script>
+  <script src="js/adaptive-director.js"></script>
+
+  <!-- ENGINE BOOTSTRAPPER -->
+  <script>
+    (function() {
+      'use strict';
+
+      // 0. Preload Storybook Game Assets
+      if (window.StoryAssetManager) {
+        window.StoryAssetManager.preloadAliceRabbitWoods();
+      }
+
+      // 1. Initialize Canvas & Viewport
+      const canvas = document.getElementById('story-canvas');
+      const input = new StoryEngineCore.InputManager(canvas);
+      const camera = new StoryEngineCore.Camera2D(window.innerWidth, window.innerHeight);
+      const renderer = new StoryEngineCore.Renderer2D(canvas);
+
+      // 2. Systems: EventBus, Inventory, Quest, Dialogue, Learning
+      const events = new StorySystems.EventBus();
+      const inventory = new StorySystems.InventorySystem();
+      const quests = new StorySystems.QuestSystem(events);
+      const dialogue = new StorySystems.DialogueSystem();
+      const learning = new StorySystems.LearningEventBus(events);
+
+      // Check URL story param: default to 'alice', or 'forest' for test world
+      const urlParams = new URLSearchParams(window.location.search);
+      const isForestStory = urlParams.get('story') === 'forest';
+
+      // Initialize Core Audio Engine & Load Story AudioPack
+      if (window.StoryAudioEngine) {
+        window.StoryAudioEngine.bindEventBus(events);
+        if (!isForestStory && window.AliceAudioPack) {
+          window.StoryAudioEngine.loadAudioPack(window.AliceAudioPack);
+        } else if (window.ForestAudioPack) {
+          window.StoryAudioEngine.loadAudioPack(window.ForestAudioPack);
+        }
+      }
+
+      // Unlock AudioContext on first user gesture
+      const startAudioOnce = () => {
+        if (window.StoryAudioEngine) {
+          window.StoryAudioEngine.initContext();
+          window.StoryAudioEngine.setState('exploration');
+        }
+        window.removeEventListener('pointerdown', startAudioOnce);
+        window.removeEventListener('keydown', startAudioOnce);
+      };
+      window.addEventListener('pointerdown', startAudioOnce);
+      window.addEventListener('keydown', startAudioOnce);
+
+      dialogue.init(document.getElementById('story-dialogue-container'));
+      window.StoryDialogue = dialogue;
+
+      // 3. Create Player Entity (Alice by default, or Explorer)
+      const student = StoryBridge.getActiveStudent();
+      const playerName = isForestStory ? (student ? (student.firstName || student.name) : 'Explorer') : 'Alice';
+      const playerSkin = isForestStory ? 'explorer' : 'alice';
+      const player = new StoryEntities.Player({
+        name: playerName,
+        skin: playerSkin,
+        x: 300,
+        y: 520
+      });
+
+      // 4. Build Story World Data (Alice 9-Chapter Adventure or Forest Clearing)
+      const storyData = (!isForestStory && window.StoryAliceAdventure)
+        ? StoryAliceAdventure.createAliceAdventureWorld()
+        : (!isForestStory && window.StoryAliceWoods)
+          ? StoryAliceWoods.createRabbitWoodsWorld()
+          : StoryTestData.createTestWorld();
+      const world = storyData.world;
+      world.setPlayer(player);
+
+      // Register Quests & Dialogues
+      for (const q of storyData.quests) {
+        quests.registerQuest(q);
+      }
+      for (const [key, tree] of Object.entries(storyData.dialogues)) {
+        dialogue.registerDialogue(key, tree);
+      }
+
+      // 5. Adaptive Learning Engine & AI Game Director Initialization
+      let learnerModel = null;
+      let speakingSystem = null;
+      let gameDirector = null;
+
+      if (window.StoryAdaptive) {
+        learnerModel = new StoryAdaptive.LearnerModel(events, student ? student.id : 'student-3a-224');
+        speakingSystem = new StoryAdaptive.SpeakingSystem(events);
+        speakingSystem.initUI();
+        gameDirector = new StoryAdaptive.AdaptiveGameDirector({
+          eventBus: events,
+          learnerModel,
+          world,
+          quests,
+          dialogue
+        });
+      }
+
+      // 6. Global StoryGame Reference
+      window.StoryGame = {
+        storyState: 'RABBIT_WOODS_ACTIVE',
+        canvas,
+        input,
+        camera,
+        renderer,
+        events,
+        inventory,
+        quests,
+        dialogue,
+        learning,
+        learner: learnerModel,
+        speaking: speakingSystem,
+        director: gameDirector,
+        player,
+        world,
+        debug: window.StoryDebug
+      };
+
+      // 7. Connect Debug Overlay
+      window.StoryDebug.init(document.getElementById('story-debug-overlay'));
+
+      // =====================================================================
+      // FULLSCREEN & SOUND CONTROLS
+      // =====================================================================
+      window.toggleStoryFullscreen = function() {
+        const elem = document.getElementById('story-game-viewport') || document.documentElement;
+        if (!document.fullscreenElement) {
+          if (elem.requestFullscreen) elem.requestFullscreen().catch(() => {});
+          else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        }
+      };
+
+      document.addEventListener('fullscreenchange', () => {
+        const fsIcon = document.getElementById('story-fs-icon');
+        if (fsIcon) fsIcon.textContent = document.fullscreenElement ? '🗗' : '⛶';
+      });
+
+      window.toggleStorySound = function() {
+        if (window.StoryAudioEngine) {
+          window.StoryAudioEngine.toggleSound();
+          const soundIcon = document.getElementById('story-sound-icon');
+          if (soundIcon) {
+            soundIcon.textContent = window.StoryAudioEngine.soundEnabled ? '🔊' : '🔇';
+          }
+        }
+      };
+
+      // Check debug mode in URL: show debug button if ?debug=true
+      if (urlParams.get('debug') === 'true') {
+        const dbgBtn = document.getElementById('story-btn-debug');
+        if (dbgBtn) dbgBtn.style.display = 'inline-flex';
+      }
+
+      // 8. Connect Scene Transition Handler
+      const areaQuestMap = {
+        'rabbit_woods': 'rabbit_watch',
+        'rabbit_hole': 'rabbit_fall',
+        'hall_of_doors': 'hall_transformation',
+        'mushroom_garden': 'caterpillar_riddle',
+        'tulgey_woods': 'cheshire_directions',
+        'tea_party': 'mad_tea_party',
+        'queens_garden': 'paint_roses_red',
+        'royal_court': 'trial_of_tarts',
+        'awakening_bank': 'alice_awakening'
+      };
+
+      world.onTransition = function(targetAreaId, targetSpawn) {
+        const fade = document.getElementById('story-fade-overlay');
+        if (fade) fade.classList.add('is-faded');
+
+        events.emit('STORY_TRANSITION', { targetAreaId, targetSpawn });
+
+        setTimeout(() => {
+          // 1. Load Area and immediately snap camera to new coordinates
+          world.loadArea(targetAreaId, targetSpawn, true);
+          events.emit('AREA_ENTERED', { areaId: targetAreaId });
+
+          // 2. Camera bounds and position alignment
+          if (camera && player && world.activeArea) {
+            camera.setBounds(0, 0, world.activeArea.width, world.activeArea.height);
+            camera.follow(player.x, player.y, true);
+          }
+
+          // 3. Update Area Badge & Icon
+          const areaBadge = document.getElementById('story-area-name-badge');
+          const areaIcon = document.getElementById('story-area-icon');
+          if (areaBadge && world.activeArea) {
+            areaBadge.textContent = world.activeArea.name;
+          }
+          if (areaIcon) {
+            if (targetAreaId === 'rabbit_hole') areaIcon.textContent = '🌀';
+            else if (targetAreaId === 'hall_of_doors') areaIcon.textContent = '🚪';
+            else if (targetAreaId === 'rabbit_woods') areaIcon.textContent = '🐇';
+          }
+
+          // 4. Dynamic Audio State Transition
+          if (window.StoryAudioEngine && window.StoryAudioEngine.setState) {
+            if (targetAreaId === 'rabbit_hole') {
+              window.StoryAudioEngine.setState('falling', 1.8);
+            } else if (targetAreaId === 'hall_of_doors') {
+              window.StoryAudioEngine.setState('wonderland', 1.8);
+            } else if (targetAreaId === 'rabbit_woods') {
+              window.StoryAudioEngine.setState('exploration', 1.8);
+            }
+          }
+
+          // 5. Update Authoritative Story State
+          if (window.StoryGame) {
+            if (targetAreaId === 'rabbit_hole') {
+              window.StoryGame.storyState = 'GREAT_FALL_ACTIVE';
+            } else if (targetAreaId === 'hall_of_doors') {
+              window.StoryGame.storyState = 'WONDERLAND_ARRIVED';
+            }
+          }
+
+          // 6. Camera zoom adaptation for small/giant scale
+          if (player && player.scale !== 1.0) {
+            camera.zoom = (player.scale < 1.0) ? 1.4 : 0.75;
+          } else {
+            camera.zoom = 1.0;
+          }
+
+          // 7. Auto-start area quest (switching active quest on HUD cleanly)
+          const targetQuestId = areaQuestMap[targetAreaId];
+          if (targetQuestId && quests.quests.has(targetQuestId)) {
+            const q = quests.quests.get(targetQuestId);
+            if (!q.isCompleted && q.state !== 'active') {
+              quests.startQuest(targetQuestId);
+            }
+          }
+
+          // 8. Auto-save state on area transition
+          saveCurrentGameState();
+
+          setTimeout(() => {
+            if (fade) fade.classList.remove('is-faded');
+          }, 150);
+        }, 350);
+      };
+
+      // Size transformation camera zoom listener
+      events.on('ALICE_TRANSFORMED', ({ size, scale }) => {
+        if (camera) {
+          camera.zoom = (scale < 1.0) ? 1.4 : (scale > 1.0 ? 0.75 : 1.0);
+        }
+      });
+
+      // Quest completion achievement listener
+      events.on('QUEST_COMPLETED', ({ questId, quest }) => {
+        saveCurrentGameState();
+        if (!isForestStory && window.StoryBridge && window.StoryBridge.unlockAchievement) {
+          if (questId === 'rabbit_watch') {
+            StoryBridge.unlockAchievement('ach-alice-1');
+            StoryBridge.unlockAchievement('ach-alice-2');
+          } else if (questId === 'hall_transformation') {
+            StoryBridge.unlockAchievement('ach-alice-3');
+          } else if (questId === 'caterpillar_riddle') {
+            StoryBridge.unlockAchievement('ach-alice-4');
+          } else if (questId === 'mad_tea_party') {
+            StoryBridge.unlockAchievement('ach-alice-5');
+          } else if (questId === 'paint_roses_red') {
+            StoryBridge.unlockAchievement('ach-alice-6');
+          } else if (questId === 'trial_of_tarts' || questId === 'alice_awakening') {
+            StoryBridge.unlockAchievement('ach-alice-7');
+          }
+        }
+        if (questId === 'rabbit_watch') {
+          if (window.StoryGame) window.StoryGame.storyState = 'RABBIT_WOODS_COMPLETE';
+        }
+      });
+
+      // Authoritative Story State Event Listeners
+      events.on('WATCH_RETURNED', () => {
+        if (window.StoryGame) window.StoryGame.storyState = 'WATCH_RETURNED';
+      });
+      events.on('RABBIT_HOLE_UNLOCKED', () => {
+        if (window.StoryGame) window.StoryGame.storyState = 'GREAT_FALL_UNLOCKED';
+      });
+      events.on('GATE_UNLOCKED', () => {
+        if (window.StoryGame) window.StoryGame.storyState = 'GREAT_FALL_ACTIVE';
+      });
+      events.on('LANDED_ON_LEAVES', () => {
+        if (window.StoryGame) window.StoryGame.storyState = 'GREAT_FALL_COMPLETE';
+      });
+      events.on('HALL_DOOR_ENTERED', () => {
+        if (window.StoryGame) window.StoryGame.storyState = 'WONDERLAND_ARRIVED';
+      });
+
+      // Auto-save on item pickup and objective completion
+      events.on('ITEM_PICKED_UP', () => saveCurrentGameState());
+      events.on('OBJECTIVE_COMPLETED', () => saveCurrentGameState());
+
+      // =====================================================================
+      // STATE PERSISTENCE & RESUME LOGIC
+      // =====================================================================
+      const storyStorageKey = isForestStory ? 'forest' : 'alice';
+
+      function saveCurrentGameState() {
+        if (!world.activeArea || !player) return;
+        const progressData = {
+          storyId: storyStorageKey,
+          timestamp: Date.now(),
+          activeAreaId: world.activeArea.id,
+          player: {
+            x: Math.round(player.x),
+            y: Math.round(player.y),
+            scale: player.scale || 1.0,
+            sizeState: player.sizeState || 'NORMAL'
+          },
+          hallOfDoors: (world.activeArea && world.activeArea.id === 'hall_of_doors') ? {
+            tableExamined: Boolean(world.activeArea.entities.find(e => e.id === 'prop-glass-table')?.isExamined),
+            bottleRevealed: Boolean(world.activeArea.entities.find(e => e.id === 'prop-drink-me')?.isRevealed),
+            bottleConsumed: Boolean(world.activeArea.entities.find(e => e.id === 'prop-drink-me')?.isConsumed),
+            doorState: world.activeArea.entities.find(e => e.id === 'prop-tiny-door')?.doorState || 'LOCKED',
+            doorOpen: Boolean(world.activeArea.entities.find(e => e.id === 'prop-tiny-door')?.isOpen)
+          } : null,
+          inventory: inventory.items.map(it => ({ id: it.id, name: it.name, icon: it.icon, count: it.count })),
+          quests: {
+            activeQuestId: quests.activeQuest ? quests.activeQuest.id : null,
+            completedQuestIds: Array.from(quests.completedQuests || []),
+            states: Array.from(quests.quests.values()).map(q => ({
+              id: q.id,
+              state: q.state,
+              objectives: q.objectives.map(o => ({ id: o.id, isCompleted: o.isCompleted }))
+            }))
+          },
+          learner: (learnerModel && learnerModel.serialize) ? learnerModel.serialize() : null,
+          difficulty: (gameDirector && gameDirector.currentDifficulty) ? gameDirector.currentDifficulty : 'STANDARD'
+        };
+        if (window.StoryBridge && window.StoryBridge.saveProgress) {
+          StoryBridge.saveProgress(storyStorageKey, progressData);
+        }
+      }
+      window.saveCurrentGameState = saveCurrentGameState;
+
+      function resumeSavedGameState(saved) {
+        if (!saved || !saved.activeAreaId) return;
+        console.log('[StoryEngine] Resuming saved adventure from area:', saved.activeAreaId);
+
+        // 1. Load saved area
+        world.loadArea(saved.activeAreaId, 'default', true);
+
+        // 2. Restore player safely inside walkable area
+        if (saved.player && world.activeArea) {
+          const area = world.activeArea;
+          const obstacles = area.getSolidObstacles();
+          let px = (saved.player.x !== undefined) ? saved.player.x : player.x;
+          let py = (saved.player.y !== undefined) ? saved.player.y : player.y;
+
+          // Check whether coordinates fall within valid walkable bounds
+          const hbOffset = player.hitboxOffset || { x: 6, y: 34, w: 32, h: 20 };
+          const isInsideBounds = px >= 60 && px <= (area.width - 60 - player.width) &&
+                                 py >= 60 && py <= (area.height - 60 - player.height);
+          const isInsideObstacle = obstacles.some(obs => window.StoryWorld.Collision.checkAABB({
+            x: px + hbOffset.x,
+            y: py + hbOffset.y,
+            width: hbOffset.w,
+            height: hbOffset.h
+          }, obs));
+
+          if (isInsideBounds && !isInsideObstacle) {
+            player.x = px;
+            player.y = py;
+          } else {
+            console.warn(`[StoryEngine] Saved position (${px}, ${py}) invalid for area "${saved.activeAreaId}". Safely using default spawn.`);
+            const spawn = area.spawnPoints.default || { x: 200, y: 200 };
+            player.x = spawn.x;
+            player.y = spawn.y;
+          }
+
+          player.setMovementMode(area.movementMode || 'standard');
+
+          if (saved.player.sizeState) {
+            player.sizeState = saved.player.sizeState;
+          }
+
+          if (saved.player.scale) {
+            player.scale = saved.player.scale;
+            player.targetScale = saved.player.scale;
+            player.startScale = saved.player.scale;
+            if (camera) camera.zoom = (player.scale < 0.6) ? 1.4 : (player.scale > 1.2 ? 0.75 : 1.0);
+          }
+        }
+
+        // 3. Restore inventory
+        if (Array.isArray(saved.inventory)) {
+          inventory.clear();
+          saved.inventory.forEach(it => inventory.addItem(it));
+        }
+
+        // 4. Restore quests
+        if (saved.quests) {
+          if (Array.isArray(saved.quests.completedQuestIds)) {
+            saved.quests.completedQuestIds.forEach(qId => {
+              if (quests.quests.has(qId)) quests.quests.get(qId).state = 'completed';
+              quests.completedQuests.add(qId);
+            });
+          }
+          if (Array.isArray(saved.quests.states)) {
+            saved.quests.states.forEach(st => {
+              const q = quests.quests.get(st.id);
+              if (q) {
+                q.state = st.state;
+                if (Array.isArray(st.objectives)) {
+                  st.objectives.forEach(so => {
+                    const obj = q.objectives.find(o => o.id === so.id);
+                    if (obj) obj.isCompleted = so.isCompleted;
+                  });
+                }
+              }
+            });
+          }
+          if (saved.quests.activeQuestId && quests.quests.has(saved.quests.activeQuestId)) {
+            quests.startQuest(saved.quests.activeQuestId);
+          }
+        }
+
+        // 5. Restore Hall of Doors interactive entities state
+        if (world.activeArea && world.activeArea.id === 'hall_of_doors') {
+          const table = world.activeArea.entities.find(e => e.id === 'prop-glass-table');
+          const bottle = world.activeArea.entities.find(e => e.id === 'prop-drink-me');
+          const door = world.activeArea.entities.find(e => e.id === 'prop-tiny-door');
+
+          const hallQuest = saved.quests && saved.quests.states && saved.quests.states.find(s => s.id === 'hall_transformation');
+          const obj1Done = hallQuest && hallQuest.objectives && hallQuest.objectives.find(o => o.id === 'find_bottle')?.isCompleted;
+          const obj2Done = hallQuest && hallQuest.objectives && hallQuest.objectives.find(o => o.id === 'drink_potion')?.isCompleted;
+
+          const isTableExamined = (saved.hallOfDoors && saved.hallOfDoors.tableExamined) || obj1Done;
+          const isBottleConsumed = (saved.hallOfDoors && saved.hallOfDoors.bottleConsumed) || obj2Done;
+          const isBottleRevealed = (saved.hallOfDoors && saved.hallOfDoors.bottleRevealed) || isTableExamined;
+
+          if (table && isTableExamined) {
+            table.isExamined = true;
+            table.interactionPrompt = 'Glass Table';
+          }
+          if (bottle) {
+            bottle.isRevealed = Boolean(isBottleRevealed);
+            bottle.isConsumed = Boolean(isBottleConsumed);
+            bottle.isCollected = Boolean(isBottleConsumed);
+            bottle.isInteractable = bottle.isRevealed && !bottle.isConsumed;
+          }
+          if (door) {
+            if (saved.hallOfDoors && saved.hallOfDoors.doorState) {
+              door.doorState = saved.hallOfDoors.doorState;
+              door.isOpen = Boolean(saved.hallOfDoors.doorOpen) || door.doorState === 'OPEN';
+              door.isSolid = !door.isOpen;
+              if (door.isOpen) door.openProgress = 1.0;
+            } else if (isBottleConsumed) {
+              door.doorState = 'AVAILABLE';
+              door.interactionPrompt = 'Unlock Golden Door';
+            }
+          }
+        }
+
+        // 6. Restore learner model
+        if (saved.learner && learnerModel && learnerModel.deserialize) {
+          learnerModel.deserialize(saved.learner);
+        }
+
+        // Update badge
+        const areaBadgeEl = document.getElementById('story-area-name-badge');
+        if (areaBadgeEl && world.activeArea) areaBadgeEl.textContent = world.activeArea.name;
+
+        if (dialogue && dialogue.showQuickToast) {
+          dialogue.showQuickToast(`🌟 Resumed journey at ${world.activeArea.name}!`, 3500);
+        }
+      }
+
+      window.resumeSavedAdventure = function() {
+        const banner = document.getElementById('story-resume-banner');
+        if (banner) banner.style.display = 'none';
+        const saved = StoryBridge.loadProgress(storyStorageKey);
+        if (saved) resumeSavedGameState(saved);
+      };
+
+      function resetRabbitWoodsStoryState() {
+        console.log('[StoryEngine] Resetting Rabbit Woods adventure to fresh state...');
+        const banner = document.getElementById('story-resume-banner');
+        if (banner) banner.style.display = 'none';
+
+        // 1. Clear saved progress in memory and storage
+        if (window.StoryBridge && window.StoryBridge.clearProgress) {
+          StoryBridge.clearProgress(storyStorageKey);
+        }
+        try {
+          localStorage.removeItem(storyStorageKey);
+          localStorage.removeItem('story_adventure_progress_alice');
+        } catch (e) {}
+
+        // 2. Clear Inventory
+        if (inventory) {
+          inventory.clear();
+        }
+
+        // 3. Reset Quests to fresh initial state
+        if (window.StoryGame) {
+          window.StoryGame.storyState = 'RABBIT_WOODS_ACTIVE';
+        }
+        if (quests) {
+          if (quests.completedQuests) quests.completedQuests.clear();
+          const q = quests.quests.get('rabbit_watch');
+          if (q) {
+            q.state = 'not_started';
+            q.isCompleted = false;
+            q.isActive = false;
+            if (Array.isArray(q.objectives)) {
+              q.objectives.forEach(o => o.isCompleted = false);
+            }
+          }
+          const qFall = quests.quests.get('rabbit_fall');
+          if (qFall) {
+            qFall.state = 'not_started';
+            qFall.isCompleted = false;
+            qFall.isActive = false;
+            if (Array.isArray(qFall.objectives)) {
+              qFall.objectives.forEach(o => o.isCompleted = false);
+            }
+          }
+          if (!isForestStory) {
+            quests.startQuest('rabbit_watch');
+          }
+        }
+
+        // Reset Audio to exploration
+        if (window.StoryAudioEngine && window.StoryAudioEngine.setState) {
+          window.StoryAudioEngine.setState('exploration');
+        }
+
+        // 4. Load rabbit_woods area
+        world.loadArea(isForestStory ? 'forest_clearing' : 'rabbit_woods', 'default', true);
+
+        // 5. Position Alice under weeping willow
+        if (player) {
+          player.x = 280;
+          player.y = 520;
+          player.vx = 0;
+          player.vy = 0;
+          player.facing = 'right';
+          player.isCelebrating = false;
+          player.celebrateTimer = 0;
+          player.speechBark = null;
+        }
+
+        // 6. Reset Camera
+        if (camera && player) {
+          camera.follow(player.x, player.y, true);
+        }
+
+        // 7. Reset Area Entities in Rabbit Woods
+        const area = world.areas.get('rabbit_woods');
+        if (area) {
+          // Clear any dropped watch entity
+          const oldWatch = area.getEntity('collectible-pocket-watch');
+          if (oldWatch) {
+            area.removeEntity('collectible-pocket-watch');
+          }
+
+          // Clear footprints and temporary particles
+          area.footprints = [];
+          if (renderer && renderer.particles) {
+            renderer.particles = [];
+          }
+
+          // Re-instantiate or reset White Rabbit
+          let rabbit = area.getEntity('npc-white-rabbit');
+          if (!rabbit) {
+            rabbit = new StoryEntities.WhiteRabbit({
+              id: 'npc-white-rabbit',
+              x: 440,
+              y: 490,
+              speed: 175
+            });
+            area.addEntity(rabbit);
+          } else {
+            rabbit.x = 440;
+            rabbit.y = 490;
+            rabbit.vx = 0;
+            rabbit.vy = 0;
+            rabbit.facing = 'down';
+            rabbit.state = 'intro_waiting';
+            rabbit.introTimer = 0;
+            rabbit.introStep = 0;
+            rabbit.pauseTimer = 0;
+            rabbit.footprintTimer = 0;
+            rabbit.isPausedForPlayer = false;
+            rabbit.currentWaypointIndex = 0;
+            rabbit.hasDroppedWatch = false;
+            rabbit.isCheckingWatch = true;
+            rabbit.isRunning = false;
+            rabbit.isMoving = false;
+            rabbit.isQuestReady = false;
+            rabbit.isInteractable = false;
+            rabbit.speechBark = null;
+            rabbit.scale = 1.0;
+            rabbit.disappearTimer = 0;
+          }
+
+          // Reset Rabbit Hole
+          const rabbitHole = area.getEntity('prop-rabbit-hole');
+          if (rabbitHole) {
+            rabbitHole.isUnlocked = false;
+            rabbitHole.isInteractable = true;
+            rabbitHole.transitionTriggered = false;
+            rabbitHole.interactionPrompt = 'Examine Rabbit Hole';
+          }
+        }
+
+        // Reset Rabbit Hole (Chapter 2) Area Entities if present
+        const holeArea = world.areas.get('rabbit_hole');
+        if (holeArea) {
+          const passageGate = holeArea.getEntity('gate-falling-passage');
+          if (passageGate) {
+            passageGate.isOpen = false;
+            passageGate.isSolid = true;
+            passageGate.openProgress = 0.0;
+            passageGate.interactionPrompt = 'Unlock Gate';
+          }
+          const leaves = holeArea.getEntity('leaves-landing');
+          if (leaves) {
+            leaves.hasTriggered = false;
+          }
+        }
+
+        world.activeInteractable = null;
+        const promptBubble = document.getElementById('story-interaction-bubble');
+        if (promptBubble) promptBubble.style.display = 'none';
+
+        if (!isForestStory && dialogue && dialogue.showQuickToast) {
+          dialogue.showQuickToast('🐇 Alice rested beneath the weeping willow, when suddenly a White Rabbit ran past...', 4500);
+        }
+      }
+      window.resetRabbitWoodsStoryState = resetRabbitWoodsStoryState;
+      window.restartNewAdventure = resetRabbitWoodsStoryState;
+
+      function resetHallOfDoorsState() {
+        console.log('[StoryEngine] Resetting Hall of Doors to fresh initial state...');
+        const banner = document.getElementById('story-resume-banner');
+        if (banner) banner.style.display = 'none';
+
+        // 1. Load Hall of Doors at default spawn (220, 500)
+        world.loadArea('hall_of_doors', 'default', true);
+
+        // 2. Reset Player position and size
+        if (player) {
+          player.resetForScene(220, 500, 'standard', 'down', 'NORMAL', 1.0);
+          player.scale = 1.0;
+          player.targetScale = 1.0;
+          player.startScale = 1.0;
+          player.scaleTimer = 0;
+          player.sizeState = 'NORMAL';
+        }
+        if (camera) {
+          camera.zoom = 1.0;
+          camera.follow(220, 500, true);
+        }
+
+        // 3. Reset Hall of Doors entities
+        if (world.activeArea && world.activeArea.id === 'hall_of_doors') {
+          const table = world.activeArea.entities.find(e => e.id === 'prop-glass-table');
+          const bottle = world.activeArea.entities.find(e => e.id === 'prop-drink-me');
+          const door = world.activeArea.entities.find(e => e.id === 'prop-tiny-door');
+
+          if (table) {
+            table.isExamined = false;
+            table.interactionPrompt = 'Examine Glass Table';
+          }
+          if (bottle) {
+            bottle.isRevealed = false;
+            bottle.isConsumed = false;
+            bottle.isCollected = false;
+            bottle.isInteractable = false;
+          }
+          if (door) {
+            door.doorState = 'LOCKED';
+            door.isOpen = false;
+            door.isSolid = true;
+            door.openProgress = 0;
+            door.hasTriggeredTransition = false;
+            door.interactionPrompt = 'Examine Tiny Door';
+          }
+        }
+
+        // 4. Reset Quests
+        if (window.StoryGame) {
+          window.StoryGame.storyState = 'HALL_OF_DOORS_ACTIVE';
+        }
+        if (quests) {
+          if (quests.completedQuests) quests.completedQuests.delete('hall_transformation');
+          const q = quests.quests.get('hall_transformation');
+          if (q) {
+            q.state = 'active';
+            q.isCompleted = false;
+            q.isActive = true;
+            if (Array.isArray(q.objectives)) {
+              q.objectives.forEach(o => o.isCompleted = false);
+            }
+            quests.activeQuest = q;
+          }
+          quests._notify();
+        }
+
+        // 5. Remove any drink_me_bottle from inventory
+        if (inventory) {
+          inventory.removeItem('drink_me_bottle', 99);
+        }
+
+        // 6. Clear ambient particles
+        if (renderer && renderer.clearParticles) {
+          renderer.clearParticles();
+        }
+
+        // 7. Save state to persistence
+        saveCurrentGameState();
+
+        // 8. User feedback
+        if (dialogue && dialogue.showQuickToast) {
+          dialogue.showQuickToast('🧹 Hall of Doors reset to initial fresh state!', 3500);
+        }
+      }
+      window.resetHallOfDoorsState = resetHallOfDoorsState;
+
+      // Check for existing save on startup
+      const isFreshStart = urlParams.get('fresh') === '1' || urlParams.get('reset') === '1';
+      const savedProgress = (!isFreshStart && window.StoryBridge && window.StoryBridge.loadProgress) ? StoryBridge.loadProgress(storyStorageKey) : null;
+
+      if (isFreshStart) {
+        resetRabbitWoodsStoryState();
+      } else {
+        // Load initial area (either start fresh or present resume prompt)
+        const initialAreaId = isForestStory ? 'forest_clearing' : 'rabbit_woods';
+        world.loadArea(initialAreaId, 'default', true);
+
+        // Update Area Icon and Badge
+        const areaIconEl = document.getElementById('story-area-icon');
+        const areaBadgeEl = document.getElementById('story-area-name-badge');
+        if (areaIconEl) areaIconEl.textContent = isForestStory ? '🌲' : '🐇';
+        if (areaBadgeEl && world.activeArea) areaBadgeEl.textContent = world.activeArea.name;
+
+        if (savedProgress && savedProgress.activeAreaId && savedProgress.activeAreaId !== 'rabbit_woods') {
+          const banner = document.getElementById('story-resume-banner');
+          const resumeTitle = document.getElementById('story-resume-area-title');
+          if (banner && resumeTitle) {
+            const areaObj = world.areas.get(savedProgress.activeAreaId);
+            resumeTitle.textContent = areaObj ? areaObj.name : savedProgress.activeAreaId;
+            banner.style.display = 'flex';
+          }
+        } else {
+          // Start initial quest fresh
+          if (!isForestStory && quests.quests.has('rabbit_watch')) {
+            quests.startQuest('rabbit_watch');
+          }
+          // Introductory story toast
+          if (!isForestStory) {
+            setTimeout(() => {
+              if (dialogue && dialogue.showQuickToast) {
+                dialogue.showQuickToast('🐇 Alice rested beneath the weeping willow, when suddenly a White Rabbit ran past...', 4500);
+              }
+            }, 400);
+          }
+        }
+      }
+
+      // 9. Connect Reactive HUD Updates
+      quests.subscribe((activeQuest) => {
+        const titleEl = document.getElementById('story-quest-title');
+        const listEl = document.getElementById('story-quest-objectives');
+        const xpEl = document.getElementById('story-quest-xp-reward');
+        if (!titleEl || !listEl) return;
+
+        if (!activeQuest) {
+          titleEl.textContent = isForestStory ? 'Explore the Forest' : 'Rabbit Woods';
+          listEl.innerHTML = isForestStory
+            ? '<li class="quest-obj-item is-active"><span class="quest-obj-checkbox"></span> <span>Talk to the Forest Ranger</span></li>'
+            : '<li class="quest-obj-item is-active"><span class="quest-obj-checkbox"></span> <span>Follow the White Rabbit</span></li>';
+          if (xpEl) xpEl.textContent = isForestStory ? '⭐ 50 XP' : '⭐ 100 XP';
+        } else {
+          titleEl.textContent = activeQuest.title;
+          if (xpEl) xpEl.textContent = `⭐ ${activeQuest.rewardXP} XP`;
+
+          // Compact Progressive Quest Tracker: show completed items and single immediate active goal
+          const activeObj = activeQuest.objectives.find(o => !o.isCompleted);
+          const completedObjs = activeQuest.objectives.filter(o => o.isCompleted);
+
+          let html = '';
+          for (const o of completedObjs) {
+            html += `
+              <li class="quest-obj-item is-completed">
+                <span class="quest-obj-checkbox">✓</span>
+                <span>${o.text}</span>
+              </li>`;
+          }
+          if (activeObj) {
+            html += `
+              <li class="quest-obj-item is-active">
+                <span class="quest-obj-checkbox">►</span>
+                <span>${activeObj.text}</span>
+              </li>`;
+          }
+          listEl.innerHTML = html;
+        }
+      });
+
+      inventory.subscribe((items) => {
+        for (let i = 0; i < 4; i++) {
+          const slot = document.getElementById(`inv-slot-${i}`);
+          if (!slot) continue;
+          if (i < items.length) {
+            const item = items[i];
+            slot.classList.add('has-item');
+            slot.innerHTML = `<span>${item.icon}</span><span class="inventory-item-count">${item.count}</span>`;
+            slot.title = `${item.name}: ${item.description}`;
+          } else {
+            slot.classList.remove('has-item');
+            slot.innerHTML = '';
+            slot.title = `Slot ${i + 1}`;
+          }
+        }
+      });
+
+      // 10. Keyboard shortcut listeners: H (Hint), V (Voice), F (Fullscreen), M (Mute), ~ (Debug)
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyH') {
+          if (gameDirector) gameDirector.escalateHint('keyboard_shortcut');
+        }
+        if (e.code === 'KeyV') {
+          if (speakingSystem) {
+            speakingSystem.promptSpeaking({
+              speaker: 'Alice',
+              targetPhrase: 'Follow me!',
+              targetWord: 'follow'
+            });
+          }
+        }
+        if (e.code === 'KeyF') {
+          window.toggleStoryFullscreen();
+        }
+        if (e.code === 'KeyM') {
+          window.toggleStorySound();
+        }
+        if (e.code === 'Backquote') {
+          const dbgBtn = document.getElementById('story-btn-debug');
+          if (dbgBtn) dbgBtn.style.display = 'inline-flex';
+        }
+      });
+
+      // 11. Resize Handler
+      function handleResize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        renderer.resize(w, h);
+        camera.resize(w, h);
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      // 12. Interaction Bubble Position Updater
+      const promptBubble = document.getElementById('story-interaction-bubble');
+      const promptText = document.getElementById('story-prompt-text');
+
+      // 13. Core Game Loop
+      const loop = new StoryEngineCore.GameLoop(
+        // Physics & World Update
+        function(dt) {
+          world.update(dt, input);
+          camera.follow(player.x + player.width / 2, player.y + player.height / 2);
+          camera.update(dt);
+          renderer.updateParticles(dt, world.activeArea);
+
+          if (window.StoryAudioEngine && player) {
+            window.StoryAudioEngine.updateListener(player.x + player.width / 2, player.y + player.height / 2);
+          }
+
+          if (world.activeInteractable && !world.activeInteractable.speechBark && (!player || !player.speechBark) && !dialogue.isOpen) {
+            const ent = world.activeInteractable;
+            const screenPos = camera.worldToScreen(ent.x + ent.width / 2, ent.y);
+            promptBubble.style.left = `${Math.round(screenPos.x)}px`;
+            promptBubble.style.top = `${Math.round(screenPos.y - 12)}px`;
+            promptText.textContent = ent.interactionPrompt || 'Interact';
+            promptBubble.style.display = 'flex';
+          } else {
+            promptBubble.style.display = 'none';
+          }
+
+          window.StoryDebug.update(loop.fps, player, camera, quests, inventory);
+          input.clearPerFrameInputs();
+        },
+        // Render Frame Callback
+        function(delta) {
+          renderer.render(world, camera, input);
+
+          // Render Adaptive Game Director visual clues (pulsing auras, guide arrows)
+          if (gameDirector && gameDirector.renderHintVisuals) {
+            gameDirector.renderHintVisuals(renderer.ctx, camera);
+          }
+        }
+      );
+
+      loop.start();
+
+    })();
+  </script>
+</body>
+</html>

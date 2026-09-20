@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🐇 Welcome to Wonderland — Lesson 1 | Alice in Wonderland ESL Play &amp; Prop Prep</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🐇</text></svg>">
+  <link rel="stylesheet" href="css/wonderland.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800;900&family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Responsive Shell -->
+  <div id="wonderland-screen-wrapper">
+
+    <!-- Top Persistent HUD -->
+    <header id="wonderland-hud">
+      <div class="hud-left">
+        <button type="button" class="hud-btn primary" onclick="window.wonderlandApp.renderScreen(1)" title="Go to Beginning">
+          🐇 <span>Welcome to Wonderland</span>
+        </button>
+
+        <button type="button" class="hud-btn" onclick="window.wonderlandApp.prevScreen()" title="Previous Screen (Left Arrow)">
+          ⬅️ <span>Prev</span>
+        </button>
+
+        <button type="button" class="hud-btn" onclick="window.wonderlandApp.nextScreen()" title="Next Screen (Right Arrow)">
+          <span>Next</span> ➡️
+        </button>
+
+        <div class="screen-tracker-pill" id="hud-screen-tracker">
+          Screen 1 of 12
+        </div>
+
+        <a href="worksheet.html" target="_blank" class="hud-btn" title="Open Printable Prop Workshop Dossier">
+          🖨️ <span>Prop Dossier</span>
+        </a>
+
+        <a href="../index.html#library" class="hud-btn" title="Return to Educational Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none; font-weight:800;">
+          📚 <span>Library</span>
+        </a>
+      </div>
+
+      <div class="hud-right">
+        <!-- XP Pill with Bounce Micro-Animation -->
+        <div class="hud-xp-pill" id="hud-xp-pill">
+          <span id="hud-xp-display">⭐ 0 XP</span>
+        </div>
+
+        <!-- Audio Controls -->
+        <button type="button" class="hud-btn" id="btn-toggle-voice" onclick="toggleWonderlandVoice()" title="Toggle Voice Narration">
+          🔊 <span>Voice</span>
+        </button>
+        <button type="button" class="hud-btn" id="btn-toggle-sfx" onclick="toggleWonderlandSfx()" title="Toggle Sound Effects">
+          🔔 <span>SFX</span>
+        </button>
+
+        <!-- Hidden/Unobtrusive Teacher Drawer -->
+        <button type="button" class="hud-btn" onclick="window.wonderlandApp.openTeacherDrawer()" title="Teacher Pedagogical Guide (Press T)" style="background:rgba(245,158,11,0.2); border-color:#f59e0b; color:#fbbf24;">
+          🧑‍🏫 <span>Teacher Mode (T)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Stage Viewport -->
+    <main id="wonderland-stage-content">
+      <!-- Injected dynamically by WonderlandScenes -->
+    </main>
+
+    <!-- Toast Feedback -->
+    <div id="wonderland-toast"></div>
+
+    <!-- Teacher Guide Modal / Drawer -->
+    <div id="wonderland-teacher-modal" class="teacher-modal-overlay" style="display:none;" onclick="if(event.target===this) window.wonderlandApp.closeTeacherDrawer();">
+      <div class="teacher-modal-box" id="teacher-modal-body">
+        <!-- Injected dynamically by WonderlandApp -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/wonderland-audio.js"></script>
+  <script src="js/wonderland-data.js"></script>
+  <script src="js/wonderland-scenes.js"></script>
+  <script src="js/wonderland-app.js"></script>
+
+  <script>
+    function toggleWonderlandVoice() {
+      const enabled = window.wonderlandAudio.toggleSpeech();
+      const btn = document.getElementById('btn-toggle-voice');
+      if (btn) {
+        btn.innerHTML = enabled ? '🔊 <span>Voice</span>' : '🔇 <span>Muted</span>';
+      }
+    }
+
+    function toggleWonderlandSfx() {
+      const enabled = window.wonderlandAudio.toggleSfx();
+      const btn = document.getElementById('btn-toggle-sfx');
+      if (btn) {
+        btn.innerHTML = enabled ? '🔔 <span>SFX</span>' : '🔕 <span>Quiet</span>';
+      }
+    }
+  </script>
+</body>
+</html>

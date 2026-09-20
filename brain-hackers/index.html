@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🧠 The Brain Hackers: Mission Unlock Your Brain | English Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🧠</text></svg>">
+  <link rel="stylesheet" href="css/brain-hackers.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Background Animated Neural Simulation Canvas -->
+  <canvas id="neuralBgCanvas"></canvas>
+
+  <!-- Fullscreen Shell -->
+  <div id="bhAppWrapper">
+
+    <!-- ========================================================
+         1. TOP ACADEMY GAME HUD
+         ======================================================== -->
+    <header class="bh-hud-header" id="bhHudHeader">
+      <div class="bh-hud-left">
+        <a href="../index.html#library" class="bh-btn-library" title="Return to Educational Resource Library">
+          <span>🏛️</span> <span>Academy Library</span>
+        </a>
+
+        <div class="bh-brand-cluster" onclick="window.BrainApp.showHero()" title="Return to Mission Intro Screen">
+          <span class="bh-logo-pulse">🧠</span>
+          <div>
+            <div class="bh-brand-title">THE BRAIN HACKERS</div>
+            <div class="bh-brand-sub">MISSION: UNLOCK YOUR BRAIN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bh-hud-right">
+        <div class="bh-stat-pill xp-pill" title="Total Brain XP Earned">
+          <span>⭐</span> <span id="hudXpDisplay">0 XP</span>
+        </div>
+
+        <div class="bh-stat-pill energy-pill" title="Current Brain Energy Level">
+          <span>🔋</span> <span id="hudEnergyDisplay">100%</span>
+        </div>
+
+        <button type="button" class="bh-btn-hud" id="hudSoundBtn" onclick="window.BrainApp.toggleSound()" title="Toggle SFX & Speech Synthesis">
+          🔊 <span>Sound: ON</span>
+        </button>
+
+        <button type="button" class="bh-btn-hud" onclick="window.BrainApp.openDossierModal()" title="View Student Lab Notebook & Profile">
+          📄 <span>Student Dossier</span>
+        </button>
+
+        <button type="button" class="bh-btn-hud teacher-btn" onclick="window.BrainApp.openTeacherModal()" title="Open Teacher HUD & Controls (F1)">
+          🧑‍🏫 <span>Teacher HUD</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Overall Progress Strip -->
+    <div class="bh-progress-track">
+      <div class="bh-progress-fill" id="bhOverallProgress" style="width: 12%;"></div>
+    </div>
+
+    <!-- ========================================================
+         2. TEAM SYSTEM CARDS STRIP
+         ======================================================== -->
+    <div class="bh-teams-strip" id="bhTeamsStrip">
+      <!-- Injected dynamically with no text concatenation -->
+    </div>
+
+    <!-- ========================================================
+         3. VISUAL MISSION TIMELINE NAVIGATION
+         ======================================================== -->
+    <nav class="bh-timeline-strip" id="bhMissionTimeline" aria-label="Mission Timeline">
+      <!-- Injected dynamically by app.js -->
+    </nav>
+
+    <!-- ========================================================
+         4. CINEMATIC HERO LAUNCH SCREEN (SHOWN AT START)
+         ======================================================== -->
+    <section id="bhHeroScreen">
+      <div class="bh-hero-graphic-wrap">
+        <div class="bh-hero-radar-ring"></div>
+        <div class="bh-hero-radar-ring outer"></div>
+        <svg viewBox="0 0 200 160" width="180" height="140" style="filter: drop-shadow(0 0 25px #00f0ff); z-index: 2;">
+          <defs>
+            <linearGradient id="heroBrainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00f0ff" />
+              <stop offset="50%" stop-color="#c084fc" />
+              <stop offset="100%" stop-color="#ff2d87" />
+            </linearGradient>
+          </defs>
+          <path d="M 50 80 C 40 50, 65 20, 100 20 C 135 20, 160 50, 150 80 C 160 110, 135 140, 100 140 C 65 140, 40 110, 50 80 Z" fill="none" stroke="url(#heroBrainGrad)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M 100 20 L 100 140 M 65 50 Q 100 70 135 50 M 60 100 Q 100 80 140 100" stroke="#00f0ff" stroke-width="2.5" fill="none" opacity="0.7"/>
+          <circle cx="75" cy="55" r="5" fill="#facc15"/>
+          <circle cx="125" cy="55" r="5" fill="#34d399"/>
+          <circle cx="100" cy="80" r="7" fill="#ff2d87"/>
+          <circle cx="80" cy="110" r="5" fill="#38bdf8"/>
+          <circle cx="120" cy="110" r="5" fill="#c084fc"/>
+        </svg>
+      </div>
+
+      <div class="bh-hero-badge">GRADE 4 • CEFR A1+/A2 • GLOBAL READINGS 3</div>
+      <h1 class="bh-hero-h1">THE BRAIN HACKERS<br>MISSION: UNLOCK YOUR BRAIN</h1>
+      <p class="bh-hero-sub">
+        Step into the futuristic neural laboratory! Explore how your cerebrum powers hearing, seeing, speaking, and thinking. Wire microscopic neurons, race the message relay, and unlock creative superpower!
+      </p>
+
+      <button type="button" class="bh-btn-start-hero" onclick="window.BrainApp.startMissions()">
+        <span>🚀</span> <span>START MISSION 01</span> <span>➔</span>
+      </button>
+
+      <!-- Fast Jump Mission Picker -->
+      <div class="bh-hero-missions-grid" id="bhHeroMissionsGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ========================================================
+         5. MAIN MISSION VIEWPORT STAGE (HIDDEN UNTIL STARTED)
+         ======================================================== -->
+    <main class="bh-stage-container" id="bhStageContainer" style="display: none;">
+      <!-- Active Mission Header Card -->
+      <div class="bh-mission-header-card">
+        <div>
+          <div class="bh-mission-badges-row">
+            <span class="bh-badge active-mission" id="bhCurrentMissionBadge">MISSION 01 OF 08</span>
+            <span class="bh-badge curriculum">📖 UNIT 1: LEARNING & YOUR BRAIN</span>
+          </div>
+          <h2 class="bh-mission-h2" id="bhCurrentMissionTitle">🔬 01. Detect the Brain</h2>
+          <p class="bh-mission-p" id="bhCurrentMissionDesc">Discover how different lobes power hearing, seeing, speaking, and thinking.</p>
+        </div>
+
+        <button type="button" class="bh-btn-hud" onclick="window.BrainApp.speakMissionIntro()">
+          🔊 <span>Hear Clue</span>
+        </button>
+      </div>
+
+      <!-- Dynamic Mission Content Injected Here -->
+      <div id="bhMissionContentStage"></div>
+
+      <!-- Bottom Stage Footer Navigation -->
+      <footer class="bh-stage-footer">
+        <button type="button" class="bh-btn-nav" id="btnPrevStage" onclick="window.BrainApp.prevMission()">
+          <span>◀</span> <span>Previous Mission</span>
+        </button>
+
+        <div style="font-size:0.88rem; color:var(--text-secondary); font-weight:700; display:flex; align-items:center; gap:8px;">
+          <span>💡 Smart Board Tip:</span> <span>Touch lobes and cards directly • Press F1 for Teacher Controls</span>
+        </div>
+
+        <button type="button" class="bh-btn-nav primary" id="btnNextStage" onclick="window.BrainApp.nextMission()">
+          <span>Next Mission</span> <span>▶</span>
+        </button>
+      </footer>
+    </main>
+
+  </div>
+
+  <!-- ========================================================
+       6. POLISHED MODAL: STUDENT DOSSIER
+       ======================================================== -->
+  <div class="bh-modal-overlay" id="dossierModal" onclick="if(event.target===this) window.BrainApp.closeModals()">
+    <div class="bh-modal-card">
+      <div class="bh-modal-header">
+        <div class="bh-modal-title">📄 STUDENT SCIENCE DOSSIER</div>
+        <button type="button" class="bh-btn-close-modal" onclick="window.BrainApp.closeModals()">✕</button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,240,255,0.08); border:1px solid rgba(0,240,255,0.3); border-radius:12px; padding:14px 18px;">
+        <div>
+          <div style="font-size:1.15rem; font-weight:900; color:#fff;" id="dossierStudentName">Explorer Maya</div>
+          <div style="font-size:0.8rem; color:var(--neon-cyan);">Rank: Junior Brain Hacker • Grade 4</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:1.25rem; font-weight:900; color:var(--neon-gold);" id="dossierXpDisplay">0 XP</div>
+          <div style="font-size:0.75rem; color:#94a3b8;">Earned Academy XP</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px;">
+          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">MISSIONS COMPLETED:</div>
+          <div style="font-size:1.4rem; font-weight:900; color:#34d399;" id="dossierMissionsCount">0 / 8</div>
+        </div>
+        <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px;">
+          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">BRAIN ENERGY LEVEL:</div>
+          <div style="font-size:1.4rem; font-weight:900; color:#38bdf8;" id="dossierEnergyCount">100%</div>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.95rem; font-weight:800; color:#fef08a; margin-bottom:8px;">🏆 SCIENCE SKILLS UNLOCKED:</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <span class="bh-badge" style="background:#0369a1; color:#fff;">Lobe Identification</span>
+          <span class="bh-badge" style="background:#15803d; color:#fff;">Neuron Wiring</span>
+          <span class="bh-badge" style="background:#7e22ce; color:#fff;">Relay Signaling</span>
+          <span class="bh-badge" style="background:#b45309; color:#fff;">Visualization</span>
+          <span class="bh-badge" style="background:#be185d; color:#fff;">Creative Canvas</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <a href="worksheets.html" target="_blank" class="bh-btn-nav primary" style="flex:1; justify-content:center; text-decoration:none;">
+          🖨️ Open 4-Page Printable Dossier
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       7. POLISHED MODAL: TEACHER WHITEBOARD HUD
+       ======================================================== -->
+  <div class="bh-modal-overlay" id="teacherModal" onclick="if(event.target===this) window.BrainApp.closeModals()">
+    <div class="bh-modal-card">
+      <div class="bh-modal-header">
+        <div class="bh-modal-title">🧑‍🏫 TEACHER HUD & SMART BOARD TOOLS</div>
+        <button type="button" class="bh-btn-close-modal" onclick="window.BrainApp.closeModals()">✕</button>
+      </div>
+
+      <div>
+        <h4 style="font-size:0.88rem; font-weight:800; color:#c084fc; margin-bottom:10px; letter-spacing:0.5px;">🚀 JUMP TO MISSION</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(1)">01. 🔬 Detect Brain</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(2)">02. 🧩 Neurons</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(3)">03. ⚡ Relay Chain</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(4)">04. 👁️ Visualize</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(5)">05. 🎨 Creativity</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(6)">06. 🏫 Subjects</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(7)">07. 🔋 Save Brain</button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(8)">08. 🎓 Graduation</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+        <h4 style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:10px;">⚡ QUICK CLASSROOM ACTIONS</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button type="button" class="bh-btn-hud primary" onclick="window.BrainApp.autoSolveCurrentMission()">
+            ✨ Auto-Reveal Answers
+          </button>
+          <button type="button" class="bh-btn-hud" onclick="window.BrainAudio.playSuccess()">
+            🎵 Test Victory Fanfare
+          </button>
+          <button type="button" class="bh-btn-hud" onclick="window.print()">
+            🖨️ Print Certificate
+          </button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+        <h4 style="font-size:0.88rem; font-weight:800; color:var(--neon-gold); margin-bottom:10px;">🏆 TEAM SCORE AWARDS (+10 / -5)</h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
+            <span>🧠 Team Brain</span>
+            <div style="display:flex; gap:4px;">
+              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('brain', 10)">+10</button>
+              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('brain', -5)">-5</button>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
+            <span>⚡ Team Neuron</span>
+            <div style="display:flex; gap:4px;">
+              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('neuron', 10)">+10</button>
+              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('neuron', -5)">-5</button>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
+            <span>💡 Team Genius</span>
+            <div style="display:flex; gap:4px;">
+              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('genius', 10)">+10</button>
+              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('genius', -5)">-5</button>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
+            <span>🚀 Team Explorer</span>
+            <div style="display:flex; gap:4px;">
+              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('explorer', 10)">+10</button>
+              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('explorer', -5)">-5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="bhToast" class="bh-toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/brain-hackers-audio.js"></script>
+  <script src="js/brain-hackers-data.js"></script>
+  <script src="js/brain-hackers-app.js"></script>
+</body>
+</html>

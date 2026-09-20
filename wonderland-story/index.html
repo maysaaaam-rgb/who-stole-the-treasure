@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎭 We Are the Wonderland Story! — Lesson 3 | Theatre &amp; Prop Adventure | Grade 3 A1</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🎭</text></svg>">
+  <link rel="stylesheet" href="css/wonderland-story.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Fredoka:wght@600;700;800;900&family=Nunito:wght@700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen Shell -->
+  <div id="wonderland-story-wrapper">
+
+    <!-- Persistent HUD Header -->
+    <header id="ws-hud">
+      <div class="hud-group-left">
+        <button type="button" class="hud-btn primary" onclick="window.wonderlandStoryApp.renderScreen(1)" title="Restart Wonderland Theatre">
+          🎭 <span>Wonderland Theatre</span>
+        </button>
+
+        <button type="button" class="hud-btn" id="btn-nav-prev" onclick="window.wonderlandStoryApp.prevScreen()" title="Previous Scene (Left Arrow)">
+          ⬅️ <span>Prev</span>
+        </button>
+
+        <button type="button" class="hud-btn" id="btn-nav-next" onclick="window.wonderlandStoryApp.nextScreen()" title="Next Scene (Right Arrow)">
+          <span>Next</span> ➡️
+        </button>
+
+        <div class="hud-pill hud-screen-pill" id="hud-screen-indicator">
+          Scene 1 of 11
+        </div>
+
+        <a href="worksheet.html" target="_blank" class="hud-btn" title="Open 4-Page Printable Theatre Dossier">
+          🖨️ <span>Theatre Dossier</span>
+        </a>
+
+        <a href="../index.html#library" class="hud-btn" title="Return to Educational Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none;">
+          📚 <span>Library</span>
+        </a>
+      </div>
+
+      <div class="hud-group-right">
+        <!-- Progress Bar Indicator -->
+        <div class="hud-progress-container" title="Lesson Progress" style="width:100px; height:10px; background:rgba(255,255,255,0.15); border-radius:5px; overflow:hidden; display:inline-block;">
+          <div class="hud-progress-fill" id="hud-progress-fill" style="width: 9%; height:100%; background:#ec4899; transition:width 0.3s ease;"></div>
+        </div>
+
+        <!-- XP Badge -->
+        <div class="hud-pill hud-xp-pill" id="hud-xp-pill">
+          <span id="hud-xp-display">⭐ 0 / 105 XP</span>
+        </div>
+
+        <!-- Audio Controls -->
+        <button type="button" class="hud-btn" id="btn-toggle-voice" onclick="toggleWsVoice()" title="Toggle Voice Narration">
+          🔊 <span>Voice</span>
+        </button>
+        <button type="button" class="hud-btn" id="btn-toggle-sfx" onclick="toggleWsSfx()" title="Toggle SFX">
+          🔔 <span>SFX</span>
+        </button>
+
+        <!-- Hidden Teacher Drawer (Key T) -->
+        <button type="button" class="hud-btn" id="btn-toggle-teacher" onclick="window.wonderlandStoryApp.openTeacherDrawer()" title="Teacher Pedagogical Guide (Press T)" style="background:rgba(245,158,11,0.2); border-color:#f59e0b; color:#fbbf24;">
+          🧑‍🏫 <span>Teacher (T)</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Viewport for Scenes -->
+    <main id="wonderland-story-stage-content">
+      <!-- Injected dynamically by WonderlandStoryScenes & App -->
+    </main>
+
+    <!-- Floating Feedback Toast -->
+    <div id="ws-toast" class="ws-toast"></div>
+
+    <!-- Teacher Guide Modal / Observation Panel -->
+    <div id="wonderland-teacher-modal" class="teacher-modal-overlay" style="display:none;" onclick="if(event.target===this) window.wonderlandStoryApp.closeTeacherDrawer();">
+      <div class="teacher-modal-box" id="teacher-modal-body">
+        <!-- Injected dynamically by scenes.renderTeacherModal -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/wonderland-story-audio.js"></script>
+  <script src="js/wonderland-story-data.js"></script>
+  <script src="js/wonderland-story-scenes.js"></script>
+  <script src="js/wonderland-story-app.js"></script>
+
+  <script>
+    function toggleWsVoice() {
+      if (!window.wonderlandStoryAudio) return;
+      const enabled = window.wonderlandStoryAudio.toggleSpeech();
+      const btn = document.getElementById('btn-toggle-voice');
+      if (btn) btn.innerHTML = enabled ? '🔊 <span>Voice</span>' : '🔇 <span>Muted</span>';
+    }
+    function toggleWsSfx() {
+      if (!window.wonderlandStoryAudio) return;
+      const enabled = window.wonderlandStoryAudio.toggleSfx();
+      const btn = document.getElementById('btn-toggle-sfx');
+      if (btn) btn.innerHTML = enabled ? '🔔 <span>SFX</span>' : '🔕 <span>Quiet</span>';
+    }
+  </script>
+
+</body>
+</html>

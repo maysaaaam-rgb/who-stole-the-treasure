@@ -70,12 +70,23 @@
   let lastPickedStudentId = null;
   let isClassroomSmartboardMode = false;
 
-  // Library filters
+  // Library filters & organization state
   let libSearchQuery = '';
   let libFilterLevel = 'all';
+  let libFilterType = 'all';
   let libFilterSkill = 'all';
+  let libFilterTopic = 'all';
   let libFilterCategory = 'all';
+  let libFilterGrade = 'all';
   let libFilterDuration = 'all';
+  let libFilterFavoritesOnly = false;
+  let libActiveTab = 'all'; // 'all' | 'games' | 'worksheets' | 'stories' | 'roleplays' | 'textbooks' | 'favorites'
+  let libSortOrder = 'default'; // 'default' | 'title-asc' | 'title-desc' | 'level' | 'duration' | 'xp'
+  let navSectionsCollapsed = {};
+  try {
+    const savedNav = localStorage.getItem('eaa-nav-sections-collapsed');
+    if (savedNav) navSectionsCollapsed = JSON.parse(savedNav);
+  } catch (e) {}
 
   // Curriculum active book & filters
   let curriculumActiveBookId = 'book-global-readings-2';
@@ -99,7 +110,7 @@
   // =========================================================================
   // 1. INITIALIZATION & GLOBAL EVENT LISTENERS
   // =========================================================================
-  function initApp() {
+  async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
       currentView = 'dashboard';
@@ -131,7 +142,19 @@
       }
     });
 
-    // Initial render
+    // Cloud First: Guarantee DATABASE -> APPLICATION STATE -> UI on page load
+    if (window.SchoolCloudSync && store) {
+      try {
+        await Promise.race([
+          window.SchoolCloudSync.syncWithStore(store),
+          new Promise(r => setTimeout(r, 5000))
+        ]);
+      } catch (e) {
+        console.warn('[SchoolApp] Cloud bootstrap note:', e);
+      }
+    }
+
+    // Initial render populated with authoritative cloud data
     renderNavigation();
     updateHeaderBadges();
     renderCurrentView();
@@ -221,7 +244,484 @@
         renderCurrentView();
       });
     }
+    setupGlobalCloudSyncUI();
   }
+
+  function setupGlobalCloudSyncUI() {
+    const syncBtn = document.getElementById('global-cloud-sync-btn');
+    const syncIcon = document.getElementById('global-sync-icon');
+    const syncText = document.getElementById('global-sync-text');
+
+    function updateBadge(status) {
+      if (!syncBtn) return;
+      const live = status.liveStatus || (status.isConfigured ? 'connected' : 'unconfigured');
+      const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) || live === 'offline';
+
+      if (isOffline) {
+        if (syncIcon) syncIcon.textContent = '⚠️';
+        if (syncText) syncText.textContent = 'Offline / Local Mode';
+        syncBtn.style.background = '#fef3c7';
+        syncBtn.style.color = '#92400e';
+        syncBtn.style.borderColor = '#fde68a';
+        syncBtn.title = 'Running in offline mode. Local changes are cached safely.';
+      } else if (!status.isConfigured || live === 'unconfigured') {
+        if (syncIcon) syncIcon.textContent = '⚠️';
+        if (syncText) syncText.textContent = 'Offline / Local Mode';
+        syncBtn.style.background = '#f1f5f9';
+        syncBtn.style.color = '#475569';
+        syncBtn.style.borderColor = '#cbd5e1';
+        syncBtn.title = 'Database not configured. Click to configure cloud database.';
+      } else if (live === 'error' || status.lastSyncStatus === 'error') {
+        if (syncIcon) syncIcon.textContent = '❌';
+        if (syncText) syncText.textContent = 'Cloud Connection Failed';
+        syncBtn.style.background = '#fef2f2';
+        syncBtn.style.color = '#991b1b';
+        syncBtn.style.borderColor = '#fecaca';
+        syncBtn.title = 'Supabase Error: ' + (status.lastError || 'Network unreachable');
+      } else if (status.lastSyncStatus === 'syncing') {
+        if (syncIcon) syncIcon.textContent = '⏳';
+        if (syncText) syncText.textContent = 'Syncing...';
+        syncBtn.style.background = '#eff6ff';
+        syncBtn.style.color = '#1e40af';
+        syncBtn.style.borderColor = '#bfdbfe';
+        syncBtn.title = 'Synchronizing with Supabase PostgreSQL cloud database...';
+      } else {
+        // Live connected
+        if (syncIcon) syncIcon.textContent = '☁️';
+        if (syncText) syncText.textContent = 'Cloud Connected';
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+        syncBtn.title = 'Authoritative Supabase database connected (Project: ' + (status.projectId || 'raraoopavipwypvgpuhe') + ')';
+      }
+    }
+
+    if (window.SchoolCloudSync) {
+      window.SchoolCloudSync.subscribe(updateBadge);
+    } else if (window.AdventureSupabase) {
+      window.AdventureSupabase.subscribe(updateBadge);
+    }
+
+    window.triggerGlobalCloudSync = function() {
+      const syncService = window.SchoolCloudSync || window.AdventureSupabase;
+      if (!syncService || !store) return;
+
+      const status = syncService.getStatus ? syncService.getStatus() : {};
+      if (!status.isConfigured) {
+        window.openCloudDatabaseModal();
+        return;
+      }
+
+      updateBadge({ isConfigured: true, lastSyncStatus: 'syncing' });
+      const syncPromise = syncService.syncWithStore ? syncService.syncWithStore(store) : syncService.syncAllWithStore(store);
+
+      syncPromise.then(res => {
+        if (res.success) {
+          updateBadge({ isConfigured: true, lastSyncStatus: 'success', lastSyncTime: new Date().toISOString() });
+          if (window.showToast) window.showToast('✓ Synced with Supabase (' + (res.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students verified)', 'success');
+        } else {
+          updateBadge({ isConfigured: true, lastSyncStatus: 'error', lastError: res.error || res.reason });
+          if (window.showToast) window.showToast('Cloud sync warning: ' + (res.error || res.reason), 'error');
+        }
+      }).catch(err => {
+        updateBadge({ isConfigured: true, lastSyncStatus: 'error', lastError: err.message });
+        if (window.showToast) window.showToast('Cloud error: ' + err.message, 'error');
+      });
+    };
+
+    window.handleCloudSyncButtonClick = function() {
+      const syncService = window.SchoolCloudSync || window.AdventureSupabase;
+      const status = syncService && syncService.getStatus ? syncService.getStatus() : {};
+      if (!status.isConfigured) {
+        window.openCloudDatabaseModal();
+      } else {
+        window.triggerGlobalCloudSync();
+      }
+    };
+  }
+
+  // =========================================================================
+  // SUPABASE CLOUD DATABASE CONFIGURATION & MANAGEMENT MODAL CONTROLLER
+  // =========================================================================
+  window.toggleCloudKeyVisibility = function() {
+    const input = document.getElementById('cloud-input-key');
+    if (!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+  };
+
+  window.openCloudDatabaseModal = function() {
+    const sb = window.AdventureSupabase;
+    const creds = sb && sb.getStoredCredentials ? sb.getStoredCredentials() : { url: '', anonKey: '' };
+    const isConn = Boolean(sb && sb.isConfigured);
+
+    const urlInput = document.getElementById('cloud-input-url');
+    const keyInput = document.getElementById('cloud-input-key');
+    if (urlInput) urlInput.value = creds.url || '';
+    if (keyInput) keyInput.value = creds.anonKey || '';
+
+    // Clear previous inline feedback
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'none';
+      feedback.textContent = '';
+    }
+
+    // Update Status Pill
+    const pill = document.getElementById('cloud-status-pill');
+    const indicator = document.getElementById('cloud-status-indicator');
+    const text = document.getElementById('cloud-status-text');
+    const latencyBadge = document.getElementById('cloud-latency-badge');
+
+    const live = (sb && sb.liveStatus) || (isConn ? 'connected' : 'unconfigured');
+    const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) || live === 'offline';
+
+    if (isOffline) {
+      if (pill) { pill.style.background = '#fef3c7'; pill.style.color = '#92400e'; }
+      if (indicator) indicator.textContent = '⚠️';
+      if (text) text.textContent = 'Offline / Local Mode';
+      if (latencyBadge) latencyBadge.textContent = 'Local Cache Active';
+    } else if (live === 'error') {
+      if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
+      if (indicator) indicator.textContent = '❌';
+      if (text) text.textContent = 'Cloud Connection Failed';
+      if (latencyBadge) latencyBadge.textContent = sb.lastError || '';
+    } else if (isConn) {
+      if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
+      if (indicator) indicator.textContent = '🟢';
+      if (text) text.textContent = 'Cloud Connected';
+      if (latencyBadge) latencyBadge.textContent = creds.url ? creds.url.replace(/^https?:\/\//, '').split('/')[0] : '';
+    } else {
+      if (pill) { pill.style.background = '#f1f5f9'; pill.style.color = '#475569'; }
+      if (indicator) indicator.textContent = '⚠️';
+      if (text) text.textContent = 'Offline / Local Mode';
+      if (latencyBadge) latencyBadge.textContent = '';
+    }
+
+    // Update School Settings badge if open
+    const schoolSettingsBadge = document.getElementById('settings-cloud-status-badge');
+    if (schoolSettingsBadge) {
+      schoolSettingsBadge.style.color = isConn ? '#059669' : '#dc2626';
+      schoolSettingsBadge.textContent = isConn ? 'Cloud Connected' : 'Offline / Local Mode';
+    }
+
+    window.openModal('modal-cloud-sync');
+  };
+
+  window.handleTestCloudConnection = async function() {
+    const urlInput = document.getElementById('cloud-input-url');
+    const keyInput = document.getElementById('cloud-input-key');
+    const url = (urlInput && urlInput.value.trim()) || '';
+    const anonKey = (keyInput && keyInput.value.trim()) || '';
+    const feedback = document.getElementById('cloud-test-feedback');
+    const pill = document.getElementById('cloud-status-pill');
+    const indicator = document.getElementById('cloud-status-indicator');
+    const text = document.getElementById('cloud-status-text');
+    const latencyBadge = document.getElementById('cloud-latency-badge');
+
+    if (!url || !anonKey) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Please enter both Project URL and Public Anon Key.';
+      }
+      return;
+    }
+
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#f1f5f9';
+      feedback.style.color = '#334155';
+      feedback.style.border = '1px solid #cbd5e1';
+      feedback.textContent = 'Testing connection...';
+    }
+    if (indicator) indicator.textContent = '⏳';
+    if (text) text.textContent = 'Testing connection...';
+
+    const sb = window.AdventureSupabase;
+    if (!sb || typeof sb.testConnection !== 'function') {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
+      }
+      return;
+    }
+
+    try {
+      const res = await sb.testConnection(url, anonKey);
+      if (res.success) {
+        if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
+        if (indicator) indicator.textContent = '🟢';
+        if (text) text.textContent = 'Connected';
+        if (latencyBadge) latencyBadge.textContent = `${res.latencyMs}ms latency · ${res.count} records`;
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#ecfdf5';
+          feedback.style.color = '#065f46';
+          feedback.style.border = '1px solid #a7f3d0';
+          feedback.textContent = `✓ Connection successful (${res.latencyMs}ms latency · ${res.count} cloud records verified)`;
+        }
+        showNotification(`✓ Connection successful (${res.latencyMs}ms)`, 'success');
+      } else {
+        if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
+        if (indicator) indicator.textContent = '⚪';
+        if (text) text.textContent = 'Not connected';
+        if (latencyBadge) latencyBadge.textContent = '';
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#fef2f2';
+          feedback.style.color = '#991b1b';
+          feedback.style.border = '1px solid #fecaca';
+          feedback.textContent = `✕ Connection failed: ${res.error || 'Unable to connect to Supabase'}`;
+        }
+        showNotification(`✕ Connection failed`, 'error');
+      }
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Connection failed: ${err.message}`;
+      }
+      showNotification(`✕ Connection failed: ${err.message}`, 'error');
+    }
+  };
+
+  window.handleSaveCloudConfig = async function(event) {
+    if (event) event.preventDefault();
+    const urlInput = document.getElementById('cloud-input-url');
+    const keyInput = document.getElementById('cloud-input-key');
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (!urlInput || !keyInput) return;
+
+    const url = urlInput.value.trim();
+    const anonKey = keyInput.value.trim();
+
+    if (!url || !anonKey) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Please provide both Supabase Project URL and Public Anon Key.';
+      }
+      return;
+    }
+
+    if (!url.startsWith('https://') && !url.startsWith('http://localhost') && !url.startsWith('http://127.0.0.1')) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase Project URL must start with https://';
+      }
+      return;
+    }
+
+    const sb = window.AdventureSupabase;
+    if (!sb) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
+      }
+      return;
+    }
+
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#f1f5f9';
+      feedback.style.color = '#334155';
+      feedback.style.border = '1px solid #cbd5e1';
+      feedback.textContent = 'Testing connection before saving...';
+    }
+
+    // Test connection before saving
+    const testRes = await sb.testConnection(url, anonKey);
+    if (!testRes.success) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Connection failed: ${testRes.error || 'Could not verify credentials'}`;
+      }
+      showNotification('✕ Connection failed: ' + testRes.error, 'error');
+      return;
+    }
+
+    // Save and re-initialize
+    sb.setCredentials(url, anonKey);
+    if (window.SchoolCloudSync && window.SchoolCloudSync.setupAutoSync) {
+      window.SchoolCloudSync.setupAutoSync(store);
+    }
+
+    // Trigger full initial two-way sync
+    const syncRes = await sb.syncAllWithStore(store);
+
+    // Update School Settings badge
+    const schoolSettingsBadge = document.getElementById('settings-cloud-status-badge');
+    if (schoolSettingsBadge) {
+      schoolSettingsBadge.style.color = '#059669';
+      schoolSettingsBadge.textContent = 'Connected';
+    }
+
+    window.closeModal('modal-cloud-sync');
+    showNotification('✓ Cloud connected! ' + (syncRes.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students synchronized.', 'success');
+    renderCurrentView();
+  };
+
+  // Global Event Delegation: ensures clicking Configure Cloud DB ALWAYS works across rerenders
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('#btn-configure-cloud-db, [data-action="open-cloud-db"]');
+      if (btn) {
+        e.preventDefault();
+        window.openCloudDatabaseModal();
+      }
+    });
+  }
+
+  window.handleCopyQuickConnectUrl = function() {
+    const sb = window.AdventureSupabase;
+    const urlInput = document.getElementById('cloud-input-url');
+    const keyInput = document.getElementById('cloud-input-key');
+    const creds = sb && sb.getStoredCredentials ? sb.getStoredCredentials() : { url: '', anonKey: '' };
+
+    const url = (urlInput && urlInput.value.trim()) || creds.url;
+    const key = (keyInput && keyInput.value.trim()) || creds.anonKey;
+
+    if (!url || !key) {
+      showNotification('Please configure and save your Supabase URL and Anon Key first.', 'error');
+      return;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const fullConnectUrl = baseUrl + '?supabase_url=' + encodeURIComponent(url) + '&supabase_key=' + encodeURIComponent(key);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(fullConnectUrl).then(() => {
+        showNotification('✓ Quick-Connect link copied to clipboard! Open on iPad or phone.', 'success');
+      }).catch(() => {
+        prompt('Copy this 1-click connect URL for iPad/phone:', fullConnectUrl);
+      });
+    } else {
+      prompt('Copy this 1-click connect URL for iPad/phone:', fullConnectUrl);
+    }
+  };
+
+  window.handleManualCloudSync = function() {
+    window.triggerGlobalCloudSync();
+    // Refresh modal counts after sync
+    setTimeout(() => {
+      window.openCloudDatabaseModal();
+    }, 1000);
+  };
+
+  window.handleUploadLocalDataToCloud = window.handleManualCloudUploadAll = async function() {
+    const sb = window.AdventureSupabase || window.SchoolCloudSync;
+    if (!sb || !sb.isConfigured) {
+      showNotification('Please connect to Supabase first before uploading data.', 'error');
+      return;
+    }
+
+    const students = store.state.students || [];
+    if (!confirm('Upload ' + students.length + ' local students, ' + (store.state.classes ? store.state.classes.length : 0) + ' classes, and all history to Supabase? (Existing remote records will be updated idempotently).')) {
+      return;
+    }
+
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#eff6ff';
+      feedback.style.color = '#1e40af';
+      feedback.style.border = '1px solid #bfdbfe';
+      feedback.textContent = 'Uploading local data to Supabase...';
+    }
+
+    try {
+      const res = await (sb.uploadLocalStudentsToCloud ? sb.uploadLocalStudentsToCloud(store) : sb.migrateLocalRosterToCloud(store));
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#ecfdf5';
+        feedback.style.color = '#065f46';
+        feedback.style.border = '1px solid #a7f3d0';
+        feedback.textContent = `✓ Uploaded ${res.studentsCount || res.studentCount || 0} students and ${res.classesCount || 0} classes to Supabase!`;
+      }
+      showNotification('✓ Uploaded ' + (res.studentsCount || res.studentCount || 0) + ' students and ' + (res.classesCount || 0) + ' classes to Supabase!', 'success');
+      const latencyBadge = document.getElementById('cloud-latency-badge');
+      if (latencyBadge) latencyBadge.textContent = `${res.studentsCount || 0} cloud students`;
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Upload failed: ${err.message}`;
+      }
+      showNotification('✕ Upload failed: ' + err.message, 'error');
+    }
+  };
+
+  window.handlePullCloudDataToLocal = window.handleManualForcePullCloud = async function() {
+    const sb = window.AdventureSupabase || window.SchoolCloudSync;
+    if (!sb || !sb.isConfigured) {
+      showNotification('Please connect to Supabase first.', 'error');
+      return;
+    }
+
+    const feedback = document.getElementById('cloud-test-feedback');
+    if (feedback) {
+      feedback.style.display = 'block';
+      feedback.style.background = '#eff6ff';
+      feedback.style.color = '#1e40af';
+      feedback.style.border = '1px solid #bfdbfe';
+      feedback.textContent = 'Pulling latest data from Supabase...';
+    }
+
+    try {
+      const res = await (sb.syncAllWithStore ? sb.syncAllWithStore(store) : sb.syncWithStore(store));
+      if (res.success) {
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#ecfdf5';
+          feedback.style.color = '#065f46';
+          feedback.style.border = '1px solid #a7f3d0';
+          feedback.textContent = `✓ Pulled ${res.studentCount || 0} students and ${res.notesCount || 0} notes from cloud!`;
+        }
+        showNotification('✓ Synchronized ' + (res.studentCount || 0) + ' students from Supabase!', 'success');
+        renderCurrentView();
+      } else {
+        throw new Error(res.error || 'Failed to pull cloud data');
+      }
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#fef2f2';
+        feedback.style.color = '#991b1b';
+        feedback.style.border = '1px solid #fecaca';
+        feedback.textContent = `✕ Pull failed: ${err.message}`;
+      }
+      showNotification('✕ Pull failed: ' + err.message, 'error');
+    }
+  };
+
+  window.handleClearCloudCredentials = function() {
+    if (!confirm('Disconnect from Supabase? (Local data will remain intact in this browser).')) return;
+    const sb = window.AdventureSupabase;
+    if (sb) sb.setCredentials('', '');
+    window.closeModal('modal-cloud-sync');
+    if (window.showToast) window.showToast('Cloud database disconnected.', 'info');
+    renderCurrentView();
+  };
 
   function populateHeaderClassSelect() {
     const classSelect = document.getElementById('header-class-select');
@@ -285,6 +785,12 @@
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
         'leaderboard', 'parent-home', 'archived', 'settings', 'monster'
       ];
+      if (primaryView === 'simon-says' || primaryView === 'simon') {
+        if (typeof window.openSimonSaysModal === 'function') {
+          window.openSimonSaysModal();
+          return;
+        }
+      }
       if (validViews.includes(primaryView)) {
         if (primaryView === 'class-detail' && parts[1]) {
           selectedClassDetailId = parts[1];
@@ -299,6 +805,82 @@
   }
 
   // Global Navigation Router
+  // =========================================================================
+  // GLOBAL GAME LAUNCHER ROUTING
+  // =========================================================================
+  window.launchGame = function(gameOrActivityId) {
+    if (!gameOrActivityId) {
+      window.location.href = 'story-engine/index.html?story=alice';
+      return;
+    }
+    let res = (typeof store !== 'undefined' && store.getResource) ? store.getResource(gameOrActivityId) : null;
+    if (!res && typeof GAMES_REGISTRY !== 'undefined' && Array.isArray(GAMES_REGISTRY)) {
+      res = GAMES_REGISTRY.find(g => g.id === gameOrActivityId);
+    }
+    if (gameOrActivityId === 'simon-says-classroom' || gameOrActivityId === 'simon-says') {
+      if (typeof window.openSimonSaysModal === 'function') {
+        window.openSimonSaysModal();
+        return;
+      }
+    }
+    if (res && res.route) {
+      if (res.route === '#simon-says') {
+        if (typeof window.openSimonSaysModal === 'function') {
+          window.openSimonSaysModal();
+          return;
+        }
+      }
+      window.location.href = window.resolveSafeRoute ? window.resolveSafeRoute(res.route) : res.route;
+      return;
+    }
+    const routeMap = {
+      'story-engine-alice': 'story-engine/index.html?story=alice',
+      'alice': 'story-engine/index.html?story=alice',
+      'robots': 'robots/index.html',
+      'feelings': 'feelings/index.html',
+      'monster-day': 'monster-day/index.html',
+      'story-space': 'story/space/index.html',
+      'mouse': 'mouse/index.html',
+      'pokemon': 'pokemon/index.html',
+      'firefighter': 'firefighter/index.html',
+      'nh': 'NH/index.html',
+      'yesterday-detectives': 'detectives/index.html',
+      'wonderland-lesson1': 'wonderland/index.html',
+      'wonderland-lesson3': 'wonderland-story/index.html',
+      'wonderland-story': 'wonderland-story/index.html',
+      'we-are-the-story': 'wonderland-story/index.html',
+      'wonderland-lesson2': 'wonderland-time-machine/index.html',
+      'wonderland-time-machine': 'wonderland-time-machine/index.html',
+      'time-machine': 'wonderland-time-machine/index.html',
+      'welcome-to-wonderland': 'wonderland/index.html',
+      'wonderland': 'wonderland/index.html',
+            'young-inventor': 'young-inventor/index.html',
+      'small-inventor': 'young-inventor/index.html',
+      'the-small-inventor': 'young-inventor/index.html',
+      'young-inventor-academy': 'young-inventor/index.html',
+      'inventor-lab': 'inventor-lab/index.html',
+      'clara-inventor': 'clara-inventor/index.html',
+      'alice-quest': 'alice-quest/index.html',
+      'brain-quit': 'brain/index.html',
+      'the-day-your-brain-quit': 'brain/index.html',
+      'brain': 'brain/index.html',
+      'nasa-mission': 'nasa-mission/index.html',
+      'academy-bamboozle': 'baamboozle/index.html',
+      'baamboozle': 'baamboozle/index.html',
+      'bamboozle': 'baamboozle/index.html',
+      'young-inventors-battle': 'baamboozle/index.html'
+    };
+    if (routeMap[gameOrActivityId]) {
+      window.location.href = routeMap[gameOrActivityId];
+      return;
+    }
+    if (typeof gameOrActivityId === 'string' && gameOrActivityId.startsWith('story-engine')) {
+      window.location.href = 'story-engine/index.html?story=alice';
+    } else if (typeof window.switchView === 'function') {
+      window.switchView('library');
+    }
+  };
+
   window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
     if (updateHash) {
@@ -363,7 +945,7 @@
   // Helper: compute average mastery percentage across all 7 language skills
   
   // =========================================================================
-  // CANONICAL STUDENT MONSTER AVATAR RENDERER
+  // CANONICAL STUDENT MONSTER AVATAR & STAGE RENDERER
   // =========================================================================
   window.renderMonsterAvatar = function(studentOrId, options = {}) {
     const size = options.size || 54;
@@ -376,13 +958,13 @@
 
     try {
       if (!studentId) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, isAvatar: true });
       }
       const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
       const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
 
       if (!profile || !monsterState) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, isAvatar: true });
       }
 
       return window.MonsterRenderer.renderMonsterSVG({
@@ -390,18 +972,67 @@
         color: profile.baseColor || 'blue',
         equipped: profile.equipped || {},
         size: size,
-        animated: animated
+        animated: animated,
+        isAvatar: options.isAvatar !== false
       });
     } catch (err) {
       console.warn('Error in renderMonsterAvatar for ' + studentId, err);
       try {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated, isAvatar: true });
       } catch (e2) {
         return '<svg viewBox="0 0 100 100" width="' + size + '" height="' + size + '"><circle cx="50" cy="50" r="40" fill="#8b5cf6"/><circle cx="38" cy="45" r="5" fill="#fff"/><circle cx="62" cy="45" r="5" fill="#fff"/><circle cx="38" cy="45" r="2.5" fill="#000"/><circle cx="62" cy="45" r="2.5" fill="#000"/><path d="M 40 65 Q 50 75 60 65" stroke="#000" stroke-width="3" fill="none"/></svg>';
       }
     }
   };
   window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
+
+  /**
+   * Prominent Student Card Avatar Stage (72px - 80px)
+   * Wraps monster in a dynamic colored radial backdrop, grounding shadow, and elevated silhouette.
+   */
+  window.renderMonsterStageBadge = function(studentOrId, options = {}) {
+    const size = options.size || 76;
+    const animated = options.animated !== false;
+    let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
+
+    let stageKey = 'egg';
+    let baseColor = 'blue';
+    let equipped = {};
+
+    if (studentId && typeof store !== 'undefined') {
+      const monsterState = store.calculateMonsterState ? store.calculateMonsterState(studentId) : null;
+      const profile = store.getMonsterProfile ? store.getMonsterProfile(studentId) : null;
+      if (monsterState) stageKey = monsterState.stageKey || 'baby';
+      if (profile) {
+        baseColor = profile.baseColor || 'blue';
+        equipped = profile.equipped || {};
+      }
+    }
+
+    const badgeColorInfo = (window.MonsterRenderer && typeof window.MonsterRenderer.getBadgeColors === 'function')
+      ? window.MonsterRenderer.getBadgeColors(baseColor)
+      : { themeClass: 'theme-' + baseColor };
+
+    const svgMarkup = (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function')
+      ? window.MonsterRenderer.renderMonsterSVG({
+          stage: stageKey,
+          color: baseColor,
+          equipped: equipped,
+          size: size,
+          animated: animated,
+          isAvatar: true // Guarantees 100% clean alpha channel
+        })
+      : window.renderMonsterAvatar(studentId, { size: size, isAvatar: true });
+
+    return '' +
+      '<div class="monster-badge ' + badgeColorInfo.themeClass + ' stage-' + stageKey + '" style="--monster-badge-size:' + size + 'px;" data-student-id="' + (studentId || '') + '">' +
+        '<div class="monster-backdrop"></div>' +
+        '<div class="monster-ground-shadow"></div>' +
+        '<div class="monster-character-wrap">' +
+          svgMarkup +
+        '</div>' +
+      '</div>';
+  };
 
   // Canonical entry point for Monster Creator
   window.openAvatarSelector = function(studentId) {
@@ -662,8 +1293,10 @@
 
     if (editId) {
       store.updateStudent(editId, payload);
+      showNotification('✓ Student ' + firstName + ' updated and synced to Cloud!');
     } else {
       store.addStudent(payload);
+      showNotification('✓ Student ' + firstName + ' added and synced to Cloud!');
     }
 
     window.closeAllModals();
@@ -681,6 +1314,7 @@
       isDanger: true,
       onConfirm: () => {
         store.archiveStudent(studentId);
+        showNotification('Student ' + s.firstName + ' archived and synced to Cloud.');
         window.closeAllModals();
         renderCurrentView();
       }
@@ -698,6 +1332,7 @@
       isDanger: false,
       onConfirm: () => {
         store.removeStudentFromClass(studentId);
+        showNotification('Student ' + s.firstName + ' removed from class.');
         window.closeAllModals();
         renderCurrentView();
       }
@@ -715,6 +1350,7 @@
       isDanger: true,
       onConfirm: () => {
         store.deleteStudent(studentId);
+        showNotification('Student ' + s.firstName + ' permanently deleted from Cloud and device.');
         window.closeAllModals();
         renderCurrentView();
       }
@@ -778,10 +1414,12 @@
 
     if (editId) {
       store.updateClass(editId, payload);
+      showNotification('✓ Class ' + name + ' updated!');
       window.closeAllModals();
       renderCurrentView();
     } else {
       const newClass = store.addClass(payload);
+      showNotification('✓ Class ' + name + ' created!');
       window.closeAllModals();
       window.openClass(newClass.id, 'overview');
     }
@@ -790,6 +1428,7 @@
   window.handleDuplicateClass = function(classId) {
     closeAllCardMenus();
     store.duplicateClass(classId);
+    showNotification('Class duplicated!');
     renderCurrentView();
   };
 
@@ -804,6 +1443,7 @@
       isDanger: true,
       onConfirm: () => {
         store.archiveClass(classId);
+        showNotification('Class ' + c.name + ' archived.');
         window.switchView('classes');
       }
     });
@@ -849,15 +1489,37 @@
     window.openModal('modal-resource-editor');
   };
 
-  window.handleSaveResource = function(e) {
-    e.preventDefault();
+  window.resolveSafeRoute = function(route) {
+    if (!route) return '';
+    const trimmed = String(route).trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('#') || trimmed.startsWith('javascript:')) {
+      return trimmed;
+    }
+    // Strip accidental leading slashes so relative paths resolve cleanly on both localhost and GitHub Pages
+    return trimmed.replace(/^\/+/, '');
+  };
+
+  window.handleSaveResource = async function(e) {
+    if (e) e.preventDefault();
     const editId = document.getElementById('res-edit-id').value;
+    const titleInput = document.getElementById('res-title');
+    const titleVal = titleInput ? titleInput.value.trim() : '';
+
+    if (!titleVal) {
+      window.showNotification('Resource Title is required', 'error');
+      if (titleInput) titleInput.focus();
+      return;
+    }
+
     const skills = Array.from(document.querySelectorAll('input[name="res-skills"]:checked')).map(cb => cb.value);
     const objectives = document.getElementById('res-objectives').value.split(',').map(s => s.trim()).filter(Boolean);
     const topics = document.getElementById('res-topic').value.split(',').map(s => s.trim()).filter(Boolean);
+    const rawRoute = document.getElementById('res-route').value.trim();
+    const safeRoute = window.resolveSafeRoute(rawRoute);
 
     const resourceData = {
-      title: document.getElementById('res-title').value.trim(),
+      title: titleVal,
+      type: 'game',
       category: document.getElementById('res-category').value,
       description: document.getElementById('res-description').value.trim(),
       level: document.getElementById('res-level').value,
@@ -865,7 +1527,7 @@
       grade: document.getElementById('res-grade').value.trim(),
       duration: parseInt(document.getElementById('res-duration').value, 10) || 30,
       topics: topics.length ? topics : ['Classroom English'],
-      route: document.getElementById('res-route').value.trim(),
+      route: safeRoute,
       skills: skills.length ? skills : ['Speaking', 'Vocabulary'],
       objectives: objectives.length ? objectives : ['Communicative practice'],
       worksheet: document.getElementById('res-worksheet').checked ? 'Included' : null,
@@ -873,13 +1535,89 @@
       featured: document.getElementById('res-featured').checked
     };
 
+    let savedResource = null;
     if (editId) {
-      store.updateResource(editId, resourceData);
+      savedResource = store.updateResource(editId, resourceData);
     } else {
-      store.addResource(resourceData);
+      savedResource = store.addResource(resourceData);
     }
 
     window.closeAllModals();
+    renderCurrentView();
+
+    // Verify Cloud Persistence & Render Feedback
+    const sb = window.AdventureSupabase;
+    if (sb && sb.isConfigured) {
+      try {
+        const res = await sb.saveResource(savedResource);
+        if (res && res.success) {
+          window.showNotification('☁️ Saved to Cloud: ' + titleVal, 'success');
+          if (savedResource) {
+            savedResource.cloudStatus = 'saved';
+            savedResource.cloudSyncedAt = new Date().toISOString();
+            store.saveState();
+          }
+        } else {
+          window.showNotification('❌ Cloud save failed: ' + (res.error || 'Database rejected write'), 'error');
+        }
+      } catch (err) {
+        console.error('[handleSaveResource] Cloud error:', err);
+        window.showNotification('❌ Cloud save failed: ' + err.message, 'error');
+      }
+    } else {
+      window.showNotification('⚠️ Saved locally (Supabase offline / not connected)', 'warning');
+    }
+
+    renderCurrentView();
+  };
+
+  window.handleSyncLocalLibraryToCloud = async function() {
+    window.showNotification('☁️ Syncing all games & resources with Supabase cloud...', 'info');
+    try {
+      const res = await store.syncLocalLibraryToCloud();
+      if (res && res.success) {
+        const total = res.totalCloud || res.alreadyOnline || res.found || 28;
+        const msg = `✓ All ${total} games and resources are synced online with Supabase cloud!`;
+        window.showNotification(msg, 'success');
+        if (window.showToast) window.showToast(msg, 'success');
+      } else {
+        const msg = `⚠️ Sync completed with issues: ${res ? res.failed : 0} failed.`;
+        window.showNotification(msg, 'error');
+      }
+    } catch (err) {
+      window.showNotification('❌ Library sync error: ' + err.message, 'error');
+    }
+    renderCurrentView();
+  };
+
+  window.handleSyncSingleResource = async function(resourceId, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    closeAllCardMenus();
+    let res = store.getResource ? store.getResource(resourceId) : null;
+    if (!res && store.getWorksheet) {
+      res = store.getWorksheet(resourceId);
+    }
+    if (!res) return;
+    window.showNotification('☁️ Syncing "' + res.title + '" to Supabase cloud...', 'info');
+    try {
+      if (window.AdventureSupabase) {
+        await window.AdventureSupabase.saveResource(res);
+        res.cloudStatus = 'saved';
+        res.cloudSyncedAt = new Date().toISOString();
+        res.cloudSynced = true;
+        if (typeof store.saveState === 'function') store.saveState();
+        const msg = '✓ "' + res.title + '" is now synced to Supabase online cloud!';
+        window.showNotification(msg, 'success');
+        if (window.showToast) window.showToast(msg, 'success');
+      } else {
+        window.showNotification('⚠️ Supabase client not loaded', 'error');
+      }
+    } catch (err) {
+      window.showNotification('❌ Cloud sync failed: ' + err.message, 'error');
+    }
     renderCurrentView();
   };
 
@@ -1286,11 +2024,13 @@
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
   // =========================================================================
-  window.openStudentDetail = function(studentId, activeTab = 'overview') {
-    currentProfileStudentId = studentId;
-    studentProfileActiveTab = activeTab;
-    const student = store.getStudent(studentId);
+  window.openStudentDetail = function(studentIdOrNumber, activeTab = 'overview') {
+    const student = store.getStudent(studentIdOrNumber);
     if (!student) return;
+    const studentId = student.id;
+    currentProfileStudentId = studentId;
+    window.currentProfileStudentId = studentId;
+    studentProfileActiveTab = activeTab;
     const modal = document.getElementById('modal-student-profile');
     if (!modal) return;
 
@@ -1399,6 +2139,10 @@
 
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+  };
+
+  window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview') {
+    return window.openStudentDetail(studentIdNumber, activeTab);
   };
 
   function renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords) {
@@ -2156,11 +2900,11 @@
               const progressPct = mState.progressPct;
               const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
+              const monsterBadge = window.renderMonsterStageBadge(s.id, { size: 78, animated: true });
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
-                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + s.id + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
+                '<div class="student-directory-card ' + (isSelected ? 'is-selected' : '') + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }" style="position:relative;' + (isSelected ? 'border-color:#3b82f6; background:rgba(59,130,246,0.04);' : '') + '">' +
                   (isMultiSelectMode ?
                     '<div class="student-card-check-wrap" style="display:block; position:absolute; top:12px; left:12px; z-index:5;">' +
                       '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" />' +
@@ -2173,7 +2917,7 @@
                   '</div>' +
 
                   '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
-                    monsterSvg +
+                    monsterBadge +
                     '<div class="avatar-customize-pill">🎨 Customize</div>' +
                   '</div>' +
 
@@ -2203,7 +2947,7 @@
                     '<button type="button" class="btn-sm-secondary" onclick="handleQuickAwardXP(\'' + s.id + '\', 10, event)" style="font-weight:800; color:#059669; background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3);" title="Quick +10 XP">+10 XP</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="font-weight:800; color:#b45309;">⭐ Award</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" title="Edit / Correct XP">✏️ Edit</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + s.id + '\', \'overview\')">Profile →</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\')">Profile →</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -2526,7 +3270,7 @@
 
           // Avatar Frame (Clickable to change character avatar)
           '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
-            window.renderStudentMonsterAvatar(s.id, { size: 66, animated: true }) +
+            window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) +
           '</div>' +
 
           // Name (Uppercase)
@@ -2840,7 +3584,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + ' · Game: ' + a.gameId + '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
+                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster-day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
               '</div>' +
             '</div>'
           ).join('') +
@@ -3276,122 +4020,1223 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets'
 
-  function renderLibraryView(container) {
-    container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Educational Resource Library</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">15 Audited digital classroom games, worksheets, stories, and roleplays.</p>' +
+  function getFilteredResources() {
+    let all = store.getStandardizedResources ? store.getStandardizedResources(false) : [];
+    if (!all || all.length === 0) {
+      const games = (store.getResources() || []).filter(r => !r.archived).map(r => ({ ...r, isWorksheet: false }));
+      const worksheets = (store.getWorksheets() || []).filter(w => !w.archived).map(w => ({ ...w, isWorksheet: true }));
+      all = games.concat(worksheets);
+    }
+
+    // Favorites Only Toggle
+    if (libFilterFavoritesOnly) {
+      all = all.filter(r => Boolean(r.featured));
+    }
+
+    // Tab filter
+    if (libActiveTab === 'games') {
+      all = all.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story');
+    } else if (libActiveTab === 'worksheets') {
+      all = all.filter(r => r.isWorksheet);
+    } else if (libActiveTab === 'stories') {
+      all = all.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+    } else if (libActiveTab === 'roleplays') {
+      all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
+    } else if (libActiveTab === 'textbooks') {
+      all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook') || (r.category || '').toLowerCase().includes('curriculum'));
+    } else if (libActiveTab === 'inventor') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        const tags = Array.isArray(r.tags) ? r.tags.join(' ').toLowerCase() : '';
+        return id.includes('inventor') || title.includes('inventor') || desc.includes('inventor') || topics.includes('inventor') || tags.includes('inventor');
+      });
+    } else if (libActiveTab === 'alice') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        return id.includes('alice') || id.includes('wonderland') || title.includes('alice') || title.includes('wonderland') || desc.includes('wonderland') || topics.includes('wonderland');
+      });
+    } else if (libActiveTab === 'brain') {
+      all = all.filter(r => {
+        const title = (r.title || '').toLowerCase();
+        const id = (r.id || '').toLowerCase();
+        const desc = (r.description || '').toLowerCase();
+        const topics = Array.isArray(r.topics) ? r.topics.join(' ').toLowerCase() : (r.topic || '').toLowerCase();
+        const tags = Array.isArray(r.tags) ? r.tags.join(' ').toLowerCase() : '';
+        return id.includes('brain') || title.includes('brain') || desc.includes('brain') || topics.includes('brain') || tags.includes('brain') || id.includes('skimming') || title.includes('skimming');
+      });
+    } else if (libActiveTab === 'favorites' || libActiveTab === 'featured') {
+      all = all.filter(r => Boolean(r.featured));
+    }
+
+    // Search query
+    if (libSearchQuery && libSearchQuery.trim()) {
+      const q = libSearchQuery.toLowerCase().trim();
+      all = all.filter(item => {
+        const inTitle = (item.title || '').toLowerCase().includes(q);
+        const inDesc = (item.description || '').toLowerCase().includes(q);
+        const inCategory = (item.category || '').toLowerCase().includes(q);
+        const inLevel = (item.cefrLevel || item.level || '').toLowerCase().includes(q);
+        const inLang = (item.languageFocus || '').toLowerCase().includes(q);
+        const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase().includes(q)) : (item.topic || '').toLowerCase().includes(q);
+        const inObjectives = Array.isArray(item.learningObjectives) ? item.learningObjectives.some(o => o.toLowerCase().includes(q)) : (Array.isArray(item.objectives) ? item.objectives.some(o => o.toLowerCase().includes(q)) : false);
+        const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(q)) : (item.skill || '').toLowerCase().includes(q);
+        const inTags = Array.isArray(item.tags) ? item.tags.some(t => t.toLowerCase().includes(q)) : false;
+        return inTitle || inDesc || inCategory || inLevel || inLang || inTopics || inObjectives || inSkills || inTags;
+      });
+    }
+
+    // Level filter
+    if (libFilterLevel !== 'all') {
+      const lvl = libFilterLevel.toLowerCase();
+      all = all.filter(item => {
+        const itemLvl = (item.cefrLevel || item.level || '').toLowerCase();
+        if (lvl === 'pre-a1') return itemLvl.includes('pre-a1');
+        if (lvl === 'a1') return itemLvl.includes('a1') && !itemLvl.includes('pre-a1');
+        if (lvl === 'a1+') return itemLvl.includes('a1+') || itemLvl.includes('a1/a1+') || itemLvl.includes('level 2');
+        if (lvl === 'a2') return itemLvl.includes('a2') || itemLvl.includes('level 3');
+        if (lvl === 'b1') return itemLvl.includes('b1');
+        return itemLvl.includes(lvl);
+      });
+    }
+
+    // Type filter
+    if (libFilterType !== 'all') {
+      if (libFilterType === 'game') {
+        all = all.filter(r => !r.isWorksheet && r.type !== 'story' && r.type !== 'textbook');
+      } else if (libFilterType === 'worksheet') {
+        all = all.filter(r => r.isWorksheet);
+      } else if (libFilterType === 'story') {
+        all = all.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading'));
+      } else if (libFilterType === 'roleplay') {
+        all = all.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay') || (r.category || '').toLowerCase().includes('speaking'));
+      } else if (libFilterType === 'textbook' || libFilterType === 'curriculum') {
+        all = all.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('curriculum') || (r.category || '').toLowerCase().includes('textbook'));
+      } else if (libFilterType === 'phonics') {
+        all = all.filter(r => r.type === 'phonics' || (r.category || '').toLowerCase().includes('phonics'));
+      } else if (libFilterType === 'clil') {
+        all = all.filter(r => r.type === 'clil' || (r.category || '').toLowerCase().includes('clil'));
+      }
+    }
+
+    // Grade filter
+    if (libFilterGrade !== 'all') {
+      const gMatch = libFilterGrade.toLowerCase();
+      all = all.filter(item => {
+        if (Array.isArray(item.grades)) return item.grades.some(g => g.toLowerCase().includes(gMatch));
+        return (item.grade || '').toLowerCase().includes(gMatch);
+      });
+    }
+
+    // Skill filter
+    if (libFilterSkill !== 'all') {
+      const sk = libFilterSkill.toLowerCase();
+      all = all.filter(item => {
+        const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(sk)) : false;
+        const inSkill = (item.skill || '').toLowerCase().includes(sk);
+        const inCat = (item.category || '').toLowerCase().includes(sk);
+        return inSkills || inSkill || inCat;
+      });
+    }
+
+    // Topic filter
+    if (libFilterTopic !== 'all') {
+      const tp = libFilterTopic.toLowerCase();
+      all = all.filter(item => {
+        const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase() === tp) : false;
+        const inTopic = (item.topic || '').toLowerCase() === tp;
+        return inTopics || inTopic;
+      });
+    }
+
+    // Duration filter
+    if (libFilterDuration !== 'all') {
+      all = all.filter(item => {
+        const mins = item.estimatedMinutes || (typeof item.duration === 'number' ? item.duration : parseInt(item.duration, 10)) || 30;
+        if (libFilterDuration === 'short') return mins < 25;
+        if (libFilterDuration === 'medium') return mins >= 25 && mins <= 40;
+        if (libFilterDuration === 'long') return mins > 40;
+        return true;
+      });
+    }
+
+    return getSortedResources(all);
+  }
+
+  function getSortedResources(items) {
+    if (!items || items.length === 0) return items;
+    const sorted = items.slice();
+    if (libSortOrder === 'title-asc') {
+      sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    } else if (libSortOrder === 'title-desc') {
+      sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+    } else if (libSortOrder === 'level') {
+      const order = { 'pre-a1': 1, 'a1': 2, 'a1+': 3, 'a1plus': 3, 'level 2': 3, 'a2': 4, 'level 3': 4, 'b1': 5 };
+      sorted.sort((a, b) => {
+        const lvlA = (a.cefrLevel || a.level || '').toLowerCase();
+        const lvlB = (b.cefrLevel || b.level || '').toLowerCase();
+        return (order[lvlA] || 99) - (order[lvlB] || 99);
+      });
+    } else if (libSortOrder === 'duration') {
+      const getMin = r => r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || (r.isWorksheet ? 20 : 30);
+      sorted.sort((a, b) => getMin(a) - getMin(b));
+    } else if (libSortOrder === 'xp') {
+      const getXP = r => r.xp || (r.isWorksheet ? 40 : 50);
+      sorted.sort((a, b) => getXP(b) - getXP(a));
+    } else {
+      // default: featured items first, then original order
+      sorted.sort((a, b) => {
+        if (Boolean(b.featured) !== Boolean(a.featured)) {
+          return b.featured ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sorted;
+  }
+
+  function getPlaceholderSvg(item) {
+    const cat = (item.category || '').toLowerCase();
+    const title = item.title || '';
+    const id = item.id || '';
+
+    if (id === 'phonics-adventure' || cat.includes('phonics')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-phonics" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#312e81"/><stop offset="100%" stop-color="#4338ca"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-phonics)"/>' +
+        '<rect x="22" y="38" width="44" height="44" rx="8" fill="#f59e0b"/>' +
+        '<text x="44" y="67" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">SH</text>' +
+        '<rect x="78" y="30" width="44" height="44" rx="8" fill="#ec4899"/>' +
+        '<text x="100" y="59" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">CH</text>' +
+        '<rect x="134" y="38" width="44" height="44" rx="8" fill="#10b981"/>' +
+        '<text x="156" y="67" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">ST</text>' +
+        '<path d="M 40 100 Q 100 85 160 100" stroke="#a5b4fc" stroke-width="2.5" fill="none" opacity="0.7"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#0284c7"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">PHONICS ADVENTURE 🔤</text>' +
+      '</svg>';
+    }
+
+    if (id === 'res-global-readings-2') {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-gr2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-gr2)"/>' +
+        '<rect x="55" y="20" width="90" height="82" rx="6" fill="#ffffff"/>' +
+        '<rect x="55" y="20" width="14" height="82" fill="#1e40af"/>' +
+        '<rect x="75" y="32" width="62" height="8" rx="2" fill="#f59e0b"/>' +
+        '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">GLOBAL</text>' +
+        '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">READINGS 2</text>' +
+        '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fef3c7"/>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#b45309" text-anchor="middle">GRADE 3 • A1+</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e40af"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
+      '</svg>';
+    }
+
+    if (id === 'res-global-readings-3') {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-gr3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#831843"/><stop offset="100%" stop-color="#be185d"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-gr3)"/>' +
+        '<rect x="55" y="20" width="90" height="82" rx="6" fill="#ffffff"/>' +
+        '<rect x="55" y="20" width="14" height="82" fill="#9d174d"/>' +
+        '<rect x="75" y="32" width="62" height="8" rx="2" fill="#f59e0b"/>' +
+        '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">GLOBAL</text>' +
+        '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">READINGS 3</text>' +
+        '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fce7f3"/>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#9d174d" text-anchor="middle">GRADE 4 • A2</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#9d174d"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
+      '</svg>';
+    }
+
+    if (id === 'hero' || title.includes('Hero')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-hero" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-hero)"/>' +
+        '<path d="M 100 24 L 140 40 L 140 76 Q 100 106 100 106 Q 60 76 60 76 L 60 40 Z" fill="#fbbf24" stroke="#ffffff" stroke-width="2.5"/>' +
+        '<path d="M 100 32 L 132 46 L 132 72 Q 100 96 100 96 Q 68 72 68 72 L 68 46 Z" fill="#dc2626"/>' +
+        '<polygon points="100,48 104,59 116,59 106,66 110,78 100,71 90,78 94,66 84,59 96,59" fill="#fbbf24"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#dc2626"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SUPER HERO ACADEMY 🦸</text>' +
+      '</svg>';
+    }
+
+    if (id === 'monster-day' || id === 'monster' || title.includes('Monster')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-monster" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4c1d95"/><stop offset="50%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#db2777"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-monster)"/>' +
+        '<polygon points="68,38 52,14 80,28" fill="#fbbf24"/>' +
+        '<polygon points="132,38 148,14 120,28" fill="#fbbf24"/>' +
+        '<rect x="55" y="30" width="90" height="74" rx="36" fill="#a855f7" stroke="#ffffff" stroke-width="2.5"/>' +
+        '<circle cx="76" cy="52" r="10" fill="#ffffff"/><circle cx="76" cy="52" r="4.5" fill="#0f172a"/>' +
+        '<circle cx="100" cy="46" r="13" fill="#ffffff"/><circle cx="100" cy="46" r="6" fill="#0f172a"/>' +
+        '<circle cx="124" cy="52" r="10" fill="#ffffff"/><circle cx="124" cy="52" r="4.5" fill="#0f172a"/>' +
+        '<path d="M 76 76 Q 100 96 124 76" fill="#4c1d95" stroke="#ffffff" stroke-width="2"/>' +
+        '<polygon points="86,77 92,86 98,78" fill="#ffffff"/><polygon points="102,78 108,86 114,77" fill="#ffffff"/>' +
+        '<rect x="25" y="112" width="150" height="20" rx="10" fill="#fde047"/>' +
+        '<text x="100" y="126" font-family="sans-serif" font-weight="900" font-size="9.5" fill="#581c87" text-anchor="middle" letter-spacing="0.5">BUILD YOUR MONSTER! 👾</text>' +
+      '</svg>';
+    }
+
+    if (id === 'space' || title.includes('Space')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-space" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#050814"/><stop offset="100%" stop-color="#1e1b4b"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-space)"/>' +
+        '<circle cx="100" cy="65" r="26" fill="#f59e0b"/>' +
+        '<ellipse cx="100" cy="65" rx="44" ry="12" fill="none" stroke="#38bdf8" stroke-width="3.5" transform="rotate(-18 100 65)"/>' +
+        '<circle cx="35" cy="35" r="1.8" fill="#ffffff"/><circle cx="165" cy="40" r="2.2" fill="#ffffff"/>' +
+        '<circle cx="50" cy="95" r="1.5" fill="#ffffff"/><circle cx="155" cy="90" r="2" fill="#ffffff"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#4f46e5"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SPACE EXPLORER 🚀</text>' +
+      '</svg>';
+    }
+
+    if (id === 'garden' || title.includes('Garden')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-garden" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-garden)"/>' +
+        '<circle cx="160" cy="35" r="16" fill="#fbbf24" opacity="0.85"/>' +
+        '<circle cx="70" cy="70" r="12" fill="#f43f5e"/><circle cx="70" cy="70" r="5" fill="#fbbf24"/>' +
+        '<line x1="70" y1="82" x2="70" y2="104" stroke="#a7f3d0" stroke-width="3"/>' +
+        '<circle cx="120" cy="62" r="14" fill="#a855f7"/><circle cx="120" cy="62" r="6" fill="#fef08a"/>' +
+        '<line x1="120" y1="76" x2="120" y2="104" stroke="#a7f3d0" stroke-width="3"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#047857"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">MAGIC GARDEN 🌸</text>' +
+      '</svg>';
+    }
+
+    if (id === 'story-school' || title.includes('School')) {
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-school" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#78350f"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-school)"/>' +
+        '<rect x="55" y="32" width="90" height="66" rx="6" fill="#fef3c7" stroke="#ffffff" stroke-width="2"/>' +
+        '<circle cx="100" cy="52" r="12" fill="#f59e0b"/>' +
+        '<line x1="100" y1="52" x2="100" y2="44" stroke="#ffffff" stroke-width="2"/>' +
+        '<line x1="100" y1="52" x2="106" y2="52" stroke="#ffffff" stroke-width="2"/>' +
+        '<text x="100" y="84" font-family="sans-serif" font-weight="900" font-size="10" fill="#78350f" text-anchor="middle">DAILY ROUTINES</text>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#b45309"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SCHOOL DAY STORY 🏫</text>' +
+      '</svg>';
+    }
+
+    if (item.isWorksheet || id.startsWith('ws-')) {
+      const wsThemes = {
+        'ws-1': { bg: ['#7c2d12', '#ea580c'], icon: '🍽️', label: 'RESTAURANT DRILL' },
+        'ws-2': { bg: ['#881337', '#e11d48'], icon: '🚒', label: 'FIRE STATION DRILL' },
+        'ws-3': { bg: ['#134e4a', '#0d9488'], icon: '🗺️', label: 'NEIGHBOURHOOD MAP' },
+        'ws-4': { bg: ['#1e1b4b', '#4f46e5'], icon: '🕵️', label: 'DETECTIVE CLUES' }
+      };
+      const t = wsThemes[id] || { bg: ['#0f172a', '#3b82f6'], icon: '📄', label: 'PRACTICE WORKSHEET' };
+      return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs><linearGradient id="bg-' + id + '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="' + t.bg[0] + '"/><stop offset="100%" stop-color="' + t.bg[1] + '"/></linearGradient></defs>' +
+        '<rect width="200" height="140" fill="url(#bg-' + id + ')"/>' +
+        '<rect x="65" y="22" width="70" height="78" rx="6" fill="#ffffff"/>' +
+        '<rect x="82" y="16" width="36" height="10" rx="3" fill="#cbd5e1"/>' +
+        '<circle cx="100" cy="21" r="2" fill="#475569"/>' +
+        '<text x="100" y="46" font-size="16" text-anchor="middle">' + t.icon + '</text>' +
+        '<line x1="75" y1="60" x2="125" y2="60" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>' +
+        '<line x1="75" y1="70" x2="120" y2="70" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
+        '<line x1="75" y1="80" x2="110" y2="80" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
+        '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e293b"/>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="9" fill="#ffffff" text-anchor="middle">' + t.label + ' 📝</text>' +
+      '</svg>';
+    }
+
+    return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect width="200" height="140" fill="#1e293b"/>' +
+      '<circle cx="100" cy="60" r="28" fill="#3b82f6" opacity="0.8"/>' +
+      '<text x="100" y="68" font-size="24" text-anchor="middle">🎮</text>' +
+      '<rect x="25" y="112" width="150" height="18" rx="4" fill="#2563eb"/>' +
+      '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">ADVENTURE LESSON</text>' +
+    '</svg>';
+  }
+
+  function getResourceThumbnail(item) {
+    const id = item.id || '';
+    const aliasMap = {
+      'camp-mystery': 'detective-prep',
+      'mouse': 'city-mouse'
+    };
+    const targetId = aliasMap[id] || id;
+
+    if (window.GAMES_REGISTRY && Array.isArray(window.GAMES_REGISTRY)) {
+      const found = window.GAMES_REGISTRY.find(g => g.id === targetId || g.id === id);
+      if (found && found.thumbnailSvg) {
+        return found.thumbnailSvg.trim();
+      }
+    }
+    if (item.thumbnailSvg) return item.thumbnailSvg.trim();
+    return getPlaceholderSvg(item).trim();
+  }
+
+  function renderResourceCard(item) {
+    const isWs = Boolean(item.isWorksheet);
+    const isFeatured = Boolean(item.featured);
+    const rawLevel = item.cefrLevel || item.level || 'A1';
+    const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+    let typeIcon = '🎮';
+    let typeLabel = 'Game';
+    const catLower = (item.type || item.category || '').toLowerCase();
+    if (isWs) {
+      typeIcon = '📄';
+      typeLabel = 'Worksheet';
+    } else if (catLower.includes('story') || catLower.includes('reading')) {
+      typeIcon = '📖';
+      typeLabel = 'Story';
+    } else if (catLower.includes('roleplay')) {
+      typeIcon = '🎭';
+      typeLabel = 'Roleplay';
+    } else if (catLower.includes('phonics')) {
+      typeIcon = '🔤';
+      typeLabel = 'Phonics';
+    } else if (catLower.includes('textbook') || catLower.includes('curriculum')) {
+      typeIcon = '📚';
+      typeLabel = 'Textbook';
+    } else if (catLower.includes('clil') || catLower.includes('science')) {
+      typeIcon = '🌍';
+      typeLabel = 'CLIL';
+    } else if (catLower.includes('warmup') || catLower.includes('prep')) {
+      typeIcon = '⚡';
+      typeLabel = 'Warm-up';
+    }
+
+    const topicText = (Array.isArray(item.topics) && item.topics.length > 0) ? item.topics[0] : (item.topic || item.category || 'Classroom Practice');
+    const durationText = item.estimatedMinutes ? (item.estimatedMinutes + ' min') : (item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min'));
+    const primarySkill = (Array.isArray(item.skills) && item.skills.length > 0) ? item.skills[0] : (item.skill || 'Speaking');
+    const langFocus = item.languageFocus || null;
+    const xpAmount = item.xp || (isWs ? 40 : 50);
+
+    let primaryActionHtml = '';
+    if (isWs) {
+      primaryActionHtml = 
+        '<a href="' + (item.pdfUrl || item.route || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
+          '<span>📄</span> <span>Open Worksheet</span>' +
+        '</a>';
+    } else if (item.type === 'story_adventure' || item.id === 'story-engine-alice' || (item.id && item.id.startsWith('story-engine'))) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || 'story-engine/index.html?story=alice') + '" class="btn-resource-primary" style="background:linear-gradient(135deg, #10b981, #059669); font-weight:800;" title="Play Interactive Adventure: ' + item.title + '">' +
+          '<span>🚀</span> <span>Play Adventure</span>' +
+        '</a>';
+    } else if (catLower.includes('story') || catLower.includes('reading')) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Read ' + item.title + '">' +
+          '<span>📖</span> <span>Read Story</span>' +
+        '</a>';
+    } else if (catLower.includes('curriculum') || catLower.includes('textbook')) {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + '">' +
+          '<span>📚</span> <span>Start Lesson</span>' +
+        '</a>';
+    } else {
+      primaryActionHtml = 
+        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + ' in full screen">' +
+          '<span>▶</span> <span>Start Game</span>' +
+        '</a>';
+    }
+
+    const companionWsBtn = (!isWs && item.worksheetRoute) ? (
+      '<a href="' + item.worksheetRoute + '" class="btn-resource-secondary btn-companion-ws" target="_blank" rel="noopener" title="Open companion printable worksheet">' +
+        '<span>📄 WS</span>' +
+      '</a>'
+    ) : '';
+
+    const isCloudSynced = item.cloudStatus === 'saved' || !item.cloudStatus || item.cloudSynced;
+    const cloudBadgeHtml = isCloudSynced
+      ? '<span class="thumb-cloud-badge is-synced" title="Synced to Online Supabase Cloud Database (Live)">☁️ Synced</span>'
+      : '<span class="thumb-cloud-badge is-pending" title="Local Resource — Click menu to sync to Supabase">☁️ Local</span>';
+
+    const dropdownMenuHtml = isWs ? (
+      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openWorksheetEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Worksheet</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateWorksheet(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
+      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveWorksheet(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Worksheet</span></button>'
+    ) : (
+      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="openResourceEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
+      '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Favorite') + '</span></button>' +
+      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>'
+    );
+
+    const thumbnailSvg = getResourceThumbnail(item);
+
+    return '' +
+      '<div class="resource-card ' + (isFeatured ? 'is-featured' : '') + '" id="resource-card-' + item.id + '">' +
+        '<div class="card-thumbnail-banner">' +
+          '<div class="card-thumb-art">' +
+            thumbnailSvg +
+            '<div class="card-thumb-gradient-overlay"></div>' +
+          '</div>' +
+          '<div class="card-thumb-badges">' +
+            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
+            '<span class="thumb-type-badge">' + typeIcon + ' ' + typeLabel + '</span>' +
+            '<span class="thumb-time-badge">⏱️ ' + durationText + '</span>' +
+            '<span class="thumb-xp-badge">⭐ ' + xpAmount + ' XP</span>' +
+          '</div>' +
+          cloudBadgeHtml +
+          '<button type="button" class="btn-card-fav ' + (isFeatured ? 'is-favorited' : '') + '" onclick="handleToggleFavoriteCard(\'' + item.id + '\', event)" title="' + (isFeatured ? 'Remove from favorites' : 'Add to favorites') + '">' +
+            (isFeatured ? '★' : '☆') +
+          '</button>' +
+          '<button type="button" class="card-thumb-kebab btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
+          '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
+            dropdownMenuHtml +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
-          '<button class="btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
-          '<button class="btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
+
+        '<div class="card-body-content">' +
+          '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '" onclick="openResourcePreviewModal(\'' + item.id + '\')">' + item.title + '</h3>' +
+          '<p class="resource-card-desc" title="' + (item.description || '').replace(/"/g, '&quot;') + '">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
+          '<div class="card-pills-row">' +
+            '<span class="card-pill skill-pill">🎯 ' + primarySkill + '</span>' +
+            '<span class="card-pill topic-pill">📌 ' + topicText + '</span>' +
+            (langFocus ? '<span class="card-pill lang-pill" title="Language Focus">💡 ' + langFocus + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+
+        '<div class="resource-card-footer">' +
+          primaryActionHtml +
+          '<button type="button" class="btn-resource-secondary btn-card-preview" onclick="openResourcePreviewModal(\'' + item.id + '\')" title="Preview details & objectives">' +
+            '<span>👁️</span> <span>Preview</span>' +
+          '</button>' +
+          '<button type="button" class="btn-resource-secondary btn-card-assign" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
+            '<span>📋</span> <span>Assign</span>' +
+          '</button>' +
+          companionWsBtn +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderGameCard(r) {
+    return renderResourceCard(r);
+  }
+
+  function renderLibraryView(container) {
+    const allGames = (store.getResources() || []).filter(r => !r.archived);
+    const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
+    const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
+    const totalResources = allCombined.length;
+
+    const gamesCount = allCombined.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story').length;
+    const worksheetsCount = allCombined.filter(r => r.isWorksheet).length;
+    const storiesCount = allCombined.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading')).length;
+    const roleplaysCount = allCombined.filter(r => r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay')).length;
+    const textbooksCount = allCombined.filter(r => r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook')).length;
+    const favoritesCount = allCombined.filter(r => Boolean(r.featured)).length;
+
+    // Collect topics dynamically
+    const topicSet = new Set();
+    allCombined.forEach(r => {
+      if (Array.isArray(r.topics)) r.topics.forEach(t => topicSet.add(t));
+      else if (r.topic) topicSet.add(r.topic);
+    });
+    const availableTopics = Array.from(topicSet).sort();
+
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const filteredItems = getFilteredResources();
+
+    let tabHeading = 'All Resources';
+    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
+    else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
+    else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
+    else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
+    else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
+    else if (libActiveTab === 'roleplays') tabHeading = 'Roleplay Missions';
+    else if (libActiveTab === 'textbooks') tabHeading = 'Curriculum Textbooks';
+    else if (libActiveTab === 'featured') tabHeading = 'Featured Resources';
+
+    container.innerHTML = 
+      // 1. Professional Header
+      '<div class="library-header-compact">' +
+        '<div class="library-title-wrap">' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<h1 class="library-title-main">Educational Resource Library</h1>' +
+            '<span class="library-verified-badge" title="All curriculum resources audited and verified">✓ Curated</span>' +
+          '</div>' +
+          '<p class="library-subtitle">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
+        '</div>' +
+        '<div class="library-header-actions">' +
+          '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
+            '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
+          '</button>' +
+          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
+          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
+          '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
             (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
       '</div>' +
 
-      // Sub-Tabs: Interactive Games vs Worksheets
-      '<div style="display:flex; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'games' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'games\')">' +
-          '<span>🎮</span> <span>Interactive Games (' + store.getResources().length + ')</span>' +
-        '</button>' +
-        '<button class="classroom-view-pill-btn ' + (libraryActiveCatalogTab === 'worksheets' ? 'is-active' : '') + '" onclick="switchLibraryCatalogTab(\'worksheets\')">' +
-          '<span>📄</span> <span>Printable Worksheets (' + store.getWorksheets().length + ')</span>' +
-        '</button>' +
-      '</div>' +
-
-      (libraryActiveCatalogTab === 'games' ? renderGamesCatalogHTML() : renderWorksheetsCatalogHTML());
-  }
-
-  function renderGamesCatalogHTML() {
-    const resources = store.getResources();
-    return '' +
-      // Search & Filters bar
-      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
-        '<input type="text" id="lib-search-input" class="search-input" placeholder="Search games, vocabulary, topics... (Press /)" style="flex:1; min-width:220px;" value="' + libSearchQuery + '" oninput="libSearchQuery=this.value; renderCurrentView();" />' +
-        '<select class="filter-select" onchange="libFilterLevel=this.value; renderCurrentView();">' +
-          '<option value="all">All CEFR Levels</option>' +
-          '<option value="Pre-A1" ' + (libFilterLevel==='Pre-A1'?'selected':'') + '>Pre-A1</option>' +
-          '<option value="A1" ' + (libFilterLevel==='A1'?'selected':'') + '>A1</option>' +
-          '<option value="A1+" ' + (libFilterLevel==='A1+'?'selected':'') + '>A1+</option>' +
-          '<option value="A2" ' + (libFilterLevel==='A2'?'selected':'') + '>A2</option>' +
-        '</select>' +
-      '</div>' +
-
-      '<div class="games-grid">' +
-        resources.filter(r => {
-          const matchQuery = !libSearchQuery || r.title.toLowerCase().includes(libSearchQuery.toLowerCase()) || (r.description || '').toLowerCase().includes(libSearchQuery.toLowerCase());
-          const matchLevel = libFilterLevel === 'all' || r.level === libFilterLevel;
-          return matchQuery && matchLevel;
-        }).map(r => renderGameCard(r)).join('') +
-      '</div>';
-  }
-
-  function renderWorksheetsCatalogHTML() {
-    const worksheets = store.getWorksheets();
-    return '' +
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:18px;">' +
-        worksheets.map(w => '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
-            '<div>' +
-              '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">' +
-                '<span class="badge-cefr badge-cefr-' + (w.level || 'A1').toLowerCase().replace('+', '-plus') + '">' + w.level + '</span>' +
-                '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + w.category + '</span>' +
-              '</div>' +
-              '<h3 style="font-size:1.05rem; font-weight:800; margin-bottom:6px;">' + w.title + '</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (w.description || 'Classroom worksheet drill.') + '</p>' +
-              (w.answerKey ? '<div style="font-size:0.75rem; background:var(--bg-card-secondary); padding:4px 8px; border-radius:6px; margin-bottom:12px; border:1px solid var(--border-subtle);"><strong>Answer Key:</strong> ' + w.answerKey + '</div>' : '') +
-            '</div>' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-              '<a href="' + w.pdfUrl + '" class="btn-primary-action" style="text-decoration:none; padding:4px 12px; font-size:0.8rem;" target="_blank">📄 View / Print</a>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<button class="btn-sm-secondary" onclick="openWorksheetEditor(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;">✏️ Edit</button>' +
-                '<button class="btn-sm-secondary" onclick="handleArchiveWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);">📦</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        ).join('') +
-      '</div>';
-  }
-
-  function renderGameCard(r) {
-    const isFeatured = r.featured;
-    return '' +
-      '<div class="game-resource-card ' + (isFeatured ? 'is-featured' : '') + '">' +
-        '<div class="game-card-top-row">' +
-          '<span class="badge-cefr badge-cefr-' + (r.level || 'A1').toLowerCase().replace('+', '-plus') + '">' + (r.level || 'A1') + '</span>' +
-          '<div style="display:flex; align-items:center; gap:6px;">' +
-            '<span class="game-card-category-pill">' + (r.category || 'Classroom Game') + '</span>' +
-            '<button class="card-kebab-btn" onclick="toggleCardMenu(\'' + r.id + '\', event)" title="Resource Actions">⋯</button>' +
-            '<div class="card-dropdown-menu ' + (activeCardMenuId === r.id ? 'is-open' : '') + '" id="card-menu-' + r.id + '">' +
-              '<button class="dropdown-item-btn" onclick="openResourceEditor(\'' + r.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
-              '<button class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + r.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-              '<button class="dropdown-item-btn" onclick="openAssignModal(\'' + r.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
-              '<button class="dropdown-item-btn" onclick="handleToggleFavorite(\'' + r.id + '\')"><span>⭐</span> <span>' + (r.featured ? 'Unfavorite' : 'Mark Featured') + '</span></button>' +
-              '<button class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + r.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>' +
+      // Manage Mode & Cloud Diagnostics Banner
+      (isLibraryManageMode ? 
+        '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+          '<div>' +
+            '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
+            '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
+              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> · ' +
+              'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
             '</div>' +
           '</div>' +
-        '</div>' +
-
-        '<div class="game-card-body">' +
-          '<h3 class="game-card-title">' + r.title + '</h3>' +
-          '<p class="game-card-description">' + (r.description || 'Interactive classroom lesson.') + '</p>' +
-          '<div class="game-card-skills-row">' +
-            (r.skills || ['Speaking']).map(s => '<span class="skill-tag-pill">' + s + '</span>').join('') +
+          '<div style="display:flex; gap:8px;">' +
+            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
           '</div>' +
-        '</div>' +
+        '</div>' : '') +
 
-        '<div class="game-card-footer">' +
-          '<a href="' + r.route + '" class="btn-game-play" title="Launch ' + r.title + ' in full screen">' +
-            '<span>▶</span> <span>START GAME</span>' +
-          '</a>' +
-          '<button class="btn-game-assign" onclick="openAssignModal(\'' + r.id + '\')" title="Assign to Class">' +
-            'Assign' +
+      // 2. Prominent Multi-Faceted Controls Bar
+      '<div class="library-controls-bar">' +
+        '<div class="library-search-wrap">' +
+          '<span class="library-search-icon">🔍</span>' +
+          '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search resources, vocabulary, grammar, topics... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" />' +
+          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
+        '</div>' +
+        '<div class="library-filters-row">' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
+              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
+              '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
+              '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
+              '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
+              '<option value="A2" ' + (libFilterLevel === 'A2' ? 'selected' : '') + '>A2</option>' +
+              '<option value="B1" ' + (libFilterLevel === 'B1' ? 'selected' : '') + '>B1</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
+              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
+              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
+              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
+              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
+              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
+              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
+              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)">' +
+              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
+              '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
+              '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
+              '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
+              '<option value="Grade 4" ' + (libFilterGrade === 'Grade 4' ? 'selected' : '') + '>Grade 4</option>' +
+              '<option value="Grade 5" ' + (libFilterGrade === 'Grade 5' ? 'selected' : '') + '>Grade 5</option>' +
+              '<option value="Grade 6" ' + (libFilterGrade === 'Grade 6' ? 'selected' : '') + '>Grade 6</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
+              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill ▾</option>' +
+              '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
+              '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
+              '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+              '<option value="Writing" ' + (libFilterSkill === 'Writing' ? 'selected' : '') + '>Writing</option>' +
+              '<option value="Vocabulary" ' + (libFilterSkill === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+              '<option value="Grammar" ' + (libFilterSkill === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+              '<option value="Phonics" ' + (libFilterSkill === 'Phonics' ? 'selected' : '') + '>Phonics</option>' +
+              '<option value="CLIL" ' + (libFilterSkill === 'CLIL' ? 'selected' : '') + '>CLIL</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
+              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
+              availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
+            '</select>' +
+          '</div>' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)">' +
+              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
+              '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
+              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
+              '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
+            '</select>' +
+          '</div>' +
+          '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
+            '<span>↺</span> <span>Clear filters</span>' +
           '</button>' +
         '</div>' +
+      '</div>' +
+
+      // 3. Category Tabs Row
+      '<div class="library-category-tabs-row library-nav-tabs-row">' +
+        '<div class="library-category-tabs library-nav-tabs">' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'all' && !libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'all\')">' +
+            '<span>All Resources</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
+            '<span>🎮 Games</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + gamesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
+            '<span>📄 Worksheets</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
+            '<span>📚 Stories</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')">' +
+            '<span>🎭 Roleplays</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')">' +
+            '<span>📖 Textbooks</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + textbooksCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
+            '<span>⭐ Favorites</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+
+      // 4. Section Header Row
+      '<div class="library-section-header-row">' +
+        '<div class="library-section-left">' +
+          '<h2 class="section-heading">' + tabHeading + '</h2>' +
+          '<span id="lib-count-badge" class="section-count-badge library-count-pill">Showing ' + filteredItems.length + ' of ' + totalResources + ' resources</span>' +
+        '</div>' +
+        '<div class="library-section-right">' +
+          '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
+          '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
+            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
+            '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
+            '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
+            '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
+            '<option value="duration" ' + (libSortOrder === 'duration' ? 'selected' : '') + '>Duration</option>' +
+            '<option value="xp" ' + (libSortOrder === 'xp' ? 'selected' : '') + '>XP Reward</option>' +
+          '</select>' +
+        '</div>' +
+      '</div>' +
+
+            
+      // The Day Your Brain Quit! Series Showcase Shelf
+      ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
+                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 (CEFR A1/A1+) · 35 min</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🧠 Interactive 10-Screen Story Adventure</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(236,72,153,0.2); color:#fbcfe8; border:1px solid rgba(236,72,153,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Skimming</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think · Learn · Remember · Imagine</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Voice Recorder</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">▶ Play Brain Adventure</a>' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📄 5-Part Detective Workbook</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Brain Defender Gold Certificate.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Print Ready</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Smart Board Compatible</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 Global Readings 3</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules (headings, pictures, first sentences) &amp; Learning and Your Brain neuroscience text.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan RG3</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Unit 1 p.17</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+
+      // The Small Inventor Series Showcase Shelf
+      ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
+          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:12px;">' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor • Young Inventor Academy</h2>' +
+                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+) · 10 Interactive Missions &amp; Capstone Expo</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🚀 Young Inventor Academy</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem → Idea → Invention → Improvement → Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(6,182,212,0.2); color:#67e8f9; border:1px solid rgba(6,182,212,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">CAN / CAN\'T</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">HAS / HAVE</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(168,85,247,0.2); color:#e9d5ff; border:1px solid rgba(168,85,247,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Biomimicry</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">5-Min Expo Pitch</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">▶ Enter Inventor Lab</a>' +
+                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The After-School Inventor</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine. Practice vocabulary and problem-solution pairs.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Reading 1</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Global Readings 2</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
+                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
+                '</div>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 My Good Ideas Book</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Thomas Edison notebooks, Leonardo da Vinci parachute sketches, Kingfisher biomimicry, and Karl Benz motorcar.</p>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Primary Source</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan</span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+
+            // Alice in Wonderland Series Showcase Shelf
+      ((libActiveTab === 'alice' || (libActiveTab === 'all' && !hasActiveFilters)) ?
+        '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<span style="font-size:2rem;">🐇</span>' +
+              '<div>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
+                '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
+              '</div>' +
+            '</div>' +
+            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
+          '</div>' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · NEW ⚡</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, Past Simple discovery, and workshop chest reveal.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
+                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">READING QUEST</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🔍 The Skimming Detectives</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">6-event story sequence, 4 feeling monsters, and Eagle Eye Skimming challenge.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Quest</a>' +
+                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#c084fc;">STORY THEATRE</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">40 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">📖 Alice Story Engine</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Interactive branching story stages with audio narration and character dialogues.</p>' +
+              '</div>' +
+              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Open Story Theatre</a>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · NEW ⚡</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, Mad Hatter lie detector, and Time Monster.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
+                '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+            '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · FINALE 🎭</span>' +
+                  '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
+                '</div>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
+                '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
+                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' : '') +
+      // 5. Resource Grid Container
+      '<div id="library-resource-grid" class="resource-library-grid">' +
+        (filteredItems.length === 0 ? 
+          '<div class="library-empty-state">' +
+            '<div class="library-empty-icon">🔍</div>' +
+            '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+            '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+            '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+              '<span>↺</span> <span>Clear all filters</span>' +
+            '</button>' +
+          '</div>' :
+          filteredItems.map(r => renderResourceCard(r)).join('')
+        ) +
       '</div>';
+  }
+
+  window.handleLibSearch = function(query) {
+    libSearchQuery = query;
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.toggle('is-visible', Boolean(query && query.trim()));
+    updateLibraryGrid();
+  };
+
+  window.handleLibSearchInput = function(e) {
+    const val = (e && e.target) ? e.target.value : (typeof e === 'string' ? e : '');
+    window.handleLibSearch(val);
+  };
+
+  window.clearLibSearch = function() {
+    libSearchQuery = '';
+    const input = document.getElementById('lib-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('is-visible');
+    updateLibraryGrid();
+  };
+
+  window.setLibFilter = function(filterKey, value) {
+    if (filterKey === 'level') libFilterLevel = value;
+    else if (filterKey === 'type') libFilterType = value;
+    else if (filterKey === 'skill') libFilterSkill = value;
+    else if (filterKey === 'topic') libFilterTopic = value;
+    else if (filterKey === 'grade') libFilterGrade = value;
+    else if (filterKey === 'duration') libFilterDuration = value;
+    updateLibraryGrid();
+  };
+
+  window.setLibTab = function(tabName) {
+    libActiveTab = tabName;
+    if (tabName === 'favorites') {
+      libFilterFavoritesOnly = true;
+    } else {
+      libFilterFavoritesOnly = false;
+      libraryActiveCatalogTab = (tabName === 'worksheets') ? 'worksheets' : 'games';
+    }
+    const container = document.getElementById('app-main-content');
+    if (container) renderLibraryView(container);
+    else renderCurrentView();
+  };
+
+  window.setLibSort = function(sortKey) {
+    libSortOrder = sortKey;
+    updateLibraryGrid();
+  };
+
+  window.toggleLibFavoritesOnly = function() {
+    libFilterFavoritesOnly = !libFilterFavoritesOnly;
+    if (libFilterFavoritesOnly) libActiveTab = 'favorites';
+    else if (libActiveTab === 'favorites') libActiveTab = 'all';
+    const container = document.getElementById('app-main-content');
+    if (container) renderLibraryView(container);
+    else updateLibraryGrid();
+  };
+
+  window.handleToggleFavoriteCard = function(resourceId, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (store.toggleFavoriteResource) {
+      store.toggleFavoriteResource(resourceId);
+    } else {
+      const res = store.getResource(resourceId);
+      if (res) store.updateResource(resourceId, { featured: !res.featured });
+    }
+    updateLibraryGrid();
+  };
+
+  window.clearAllLibFilters = function() {
+    libSearchQuery = '';
+    libFilterLevel = 'all';
+    libFilterType = 'all';
+    libFilterSkill = 'all';
+    libFilterTopic = 'all';
+    libFilterGrade = 'all';
+    libFilterDuration = 'all';
+    libFilterFavoritesOnly = false;
+    const input = document.getElementById('lib-search-input');
+    if (input) input.value = '';
+    const clearBtn = document.getElementById('lib-search-clear-btn');
+    if (clearBtn) clearBtn.classList.remove('is-visible');
+    const selects = document.querySelectorAll('.library-select');
+    selects.forEach(s => s.value = 'all');
+    updateLibraryGrid();
+  };
+
+  function updateLibraryGrid() {
+    const grid = document.getElementById('library-resource-grid');
+    if (!grid) {
+      renderCurrentView();
+      return;
+    }
+    const filtered = getFilteredResources();
+    if (filtered.length === 0) {
+      grid.innerHTML = 
+        '<div class="library-empty-state">' +
+          '<div class="library-empty-icon">🔍</div>' +
+          '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+          '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+          '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+            '<span>↺</span> <span>Clear all filters</span>' +
+          '</button>' +
+        '</div>';
+    } else {
+      grid.innerHTML = filtered.map(r => renderResourceCard(r)).join('');
+    }
+
+    const countBadge = document.getElementById('lib-count-badge');
+    if (countBadge) {
+      const totalAll = (store.getStandardizedResources ? store.getStandardizedResources(false) : []).length || (store.getResources().length + (store.getWorksheets ? store.getWorksheets().length : 0));
+      countBadge.textContent = 'Showing ' + filtered.length + ' of ' + totalAll + ' resources';
+    }
+
+    const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const clearRowBtn = document.getElementById('lib-clear-filters-btn');
+    if (clearRowBtn) {
+      clearRowBtn.style.display = hasActive ? 'inline-flex' : 'none';
+    }
+  }
+
+  // =========================================================================
+  // DETAILED PEDAGOGICAL RESOURCE PREVIEW MODAL
+  // =========================================================================
+  window.openResourcePreviewModal = function(resourceId) {
+    closeAllCardMenus();
+    let res = null;
+    if (store.getStandardizedResources) {
+      res = store.getStandardizedResources(true).find(r => r.id === resourceId);
+    }
+    if (!res && window.GAMES_REGISTRY) {
+      res = window.GAMES_REGISTRY.find(g => g.id === resourceId);
+    }
+    if (!res) {
+      res = store.getResource(resourceId) || (store.getWorksheet ? store.getWorksheet(resourceId) : null);
+    }
+    if (!res) return;
+
+    let modalOverlay = document.getElementById('modal-resource-preview');
+    if (!modalOverlay) {
+      modalOverlay = document.createElement('div');
+      modalOverlay.className = 'modal-overlay';
+      modalOverlay.id = 'modal-resource-preview';
+      modalOverlay.innerHTML = '<div class="modal-dialog resource-preview-dialog" id="resource-preview-dialog-content"></div>';
+      document.body.appendChild(modalOverlay);
+    }
+
+    const contentBox = document.getElementById('resource-preview-dialog-content');
+    if (!contentBox) return;
+
+    const isWs = Boolean(res.isWorksheet);
+    const rawLevel = res.cefrLevel || res.level || 'A1';
+    const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    const gradeText = Array.isArray(res.grades) ? res.grades.join(', ') : (res.grade || 'Grades 2–4');
+    const durationText = res.estimatedMinutes ? (res.estimatedMinutes + ' min') : (res.duration ? (typeof res.duration === 'number' ? res.duration + ' min' : res.duration) : (isWs ? '20 min' : '35 min'));
+    const xpText = (res.xp || (isWs ? 40 : 50)) + ' XP';
+    const skillsText = Array.isArray(res.skills) ? res.skills.join(', ') : (res.skill || 'Speaking & Communicative Practice');
+    const langFocus = res.languageFocus || res.topic || (Array.isArray(res.topics) ? res.topics[0] : 'Classroom Communication');
+    const objectives = Array.isArray(res.learningObjectives) && res.learningObjectives.length > 0
+      ? res.learningObjectives
+      : (Array.isArray(res.objectives) && res.objectives.length > 0 ? res.objectives : [res.instructions || 'Practice core communicative skills and vocabulary.']);
+    const teacherGuide = res.teacherInstructions || 'Lead communicative interaction, model key pronunciation phrases, and encourage full-sentence student responses.';
+    const studentMission = res.studentInstructions || 'Follow classroom instructions, complete interactive tasks, and earn XP!';
+    const companionWs = res.worksheetRoute || res.worksheet || null;
+    const thumbnailSvg = getResourceThumbnail(res);
+    const isFav = store.isFavorite ? store.isFavorite(res.id) : Boolean(res.featured);
+
+    let launchBtnText = '▶ Start Game';
+    if (isWs) {
+      launchBtnText = '📄 Open Worksheet';
+    } else if ((res.type || '').includes('story') || (res.category || '').toLowerCase().includes('story')) {
+      launchBtnText = '📖 Read Story';
+    } else if ((res.type || '').includes('textbook') || (res.category || '').toLowerCase().includes('textbook')) {
+      launchBtnText = '📚 Launch Lesson';
+    }
+
+    contentBox.innerHTML = 
+      '<button class="modal-close-btn" onclick="closeModal(\'modal-resource-preview\')" title="Close Preview">✕</button>' +
+      
+      // Modal Hero Header
+      '<div class="preview-hero-banner">' +
+        '<div class="preview-hero-art">' +
+          thumbnailSvg +
+        '</div>' +
+        '<div class="preview-hero-info">' +
+          '<div class="preview-hero-badges">' +
+            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr">' + rawLevel + '</span>' +
+            '<span class="preview-grade-badge">🎓 ' + gradeText + '</span>' +
+            '<span class="preview-time-badge">⏱️ ' + durationText + '</span>' +
+            '<span class="preview-xp-badge">⭐ ' + xpText + '</span>' +
+          '</div>' +
+          '<h2 class="preview-title">' + res.title + '</h2>' +
+          '<p class="preview-category-tag">' + (res.categoryLabel || res.category || 'Classroom Activity') + ' • ' + (res.activityMode || 'Interactive Classroom Activity') + '</p>' +
+        '</div>' +
+      '</div>' +
+
+      // Modal Body
+      '<div class="preview-modal-body">' +
+        // Overview
+        '<div class="preview-section">' +
+          '<h4 class="preview-section-title">📋 Overview &amp; Curriculum Focus</h4>' +
+          '<p class="preview-desc-text">' + (res.description || 'Interactive educational classroom lesson and student practice drill.') + '</p>' +
+          '<div class="preview-focus-pill-box">' +
+            '<span class="preview-pill"><strong>🎯 Target Skills:</strong> ' + skillsText + '</span>' +
+            '<span class="preview-pill"><strong>💡 Language Focus:</strong> ' + langFocus + '</span>' +
+          '</div>' +
+        '</div>' +
+
+        // Learning Objectives
+        '<div class="preview-section">' +
+          '<h4 class="preview-section-title">🎯 Pedagogical Learning Objectives</h4>' +
+          '<ul class="preview-objectives-list">' +
+            objectives.map(obj => '<li><span class="obj-check">✓</span> <span>' + obj + '</span></li>').join('') +
+          '</ul>' +
+        '</div>' +
+
+        // Teacher Guide
+        '<div class="preview-section preview-guide-box">' +
+          '<h4 class="preview-section-title">🧑‍🏫 Teacher Implementation Guide</h4>' +
+          '<p class="preview-guide-text">' + teacherGuide + '</p>' +
+        '</div>' +
+
+        // Student Mission
+        '<div class="preview-section preview-mission-box">' +
+          '<h4 class="preview-section-title">🚀 Student Mission Instructions</h4>' +
+          '<p class="preview-mission-text">' + studentMission + '</p>' +
+        '</div>' +
+
+        // Companion Worksheet Banner if applicable
+        (companionWs && !isWs ? (
+          '<div class="preview-companion-banner">' +
+            '<div>' +
+              '<strong>📄 Printable Worksheet Available</strong>' +
+              '<p style="margin:2px 0 0 0; font-size:0.8rem; color:var(--text-muted);">This lesson includes a printable companion worksheet for student practice.</p>' +
+            '</div>' +
+            '<a href="' + companionWs + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="white-space:nowrap;">📄 Open Worksheet</a>' +
+          '</div>'
+        ) : '') +
+      '</div>' +
+
+      // Action Footer
+      '<div class="preview-modal-footer">' +
+        '<div class="preview-footer-left">' +
+          '<button type="button" class="btn-preview-fav ' + (isFav ? 'is-favorited' : '') + '" onclick="togglePreviewFavorite(\'' + res.id + '\')">' +
+            '<span>' + (isFav ? '★ Favorited' : '☆ Add to Favorites') + '</span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="preview-footer-right">' +
+          '<button type="button" class="btn-secondary" onclick="closeModal(\'modal-resource-preview\')">Close</button>' +
+          '<button type="button" class="btn-secondary btn-preview-assign" onclick="closeModal(\'modal-resource-preview\'); openAssignModal(\'' + res.id + '\')">📋 Assign to Class</button>' +
+          '<a href="' + (res.route || res.pdfUrl || '#') + '" class="btn-primary-action btn-preview-launch" ' + (isWs ? 'target="_blank" rel="noopener"' : '') + '>' + launchBtnText + '</a>' +
+        '</div>' +
+      '</div>';
+
+    window.openModal('modal-resource-preview');
+  };
+
+  window.togglePreviewFavorite = function(resourceId) {
+    if (store.toggleFavoriteResource) store.toggleFavoriteResource(resourceId);
+    openResourcePreviewModal(resourceId);
+    updateLibraryGrid();
+  };
+
+  function renderGamesCatalogHTML() {
+    return (document.getElementById('app-main-content') ? renderLibraryView(document.getElementById('app-main-content')) : '');
   }
 
   // =========================================================================
@@ -3613,90 +5458,724 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   // =========================================================================
-  // HOMEWORK VIEW (Complete CRUD)
+  // HOMEWORK & QUESTS VIEW (Full CRUD, Student Quest & Centralized XP System)
   // =========================================================================
+  let hwFilterTab = 'all'; // 'all' | 'draft' | 'active' | 'completed' | 'overdue'
+  let hwSearchQuery = '';
+  let hwFilterClass = 'all';
+  let hwFilterSubject = 'all';
   let hwFilterStatus = 'all';
-  let hwFilterType = 'all';
+  let currentEditingHwResources = [];
+  let simulatedAudioRecordingInterval = null;
+  let simulatedAudioRecorded = false;
+  let simulatedAudioSeconds = 0;
 
   function renderHomeworkView(container) {
-    const activeClass = store.getActiveClass();
     const allHomework = store.getHomework();
     const classes = store.getClasses();
-    let homework = allHomework.filter(h => {
-      if (!activeClass) return true;
-      if (h.classId && h.classId !== 'all' && h.classId !== activeClass.id) return false;
+    const activeClass = store.getActiveClass();
+
+    // Tab counts
+    const countAll = allHomework.length;
+    const countDraft = allHomework.filter(h => (h.status || '').toUpperCase() === 'DRAFT').length;
+    const countActive = allHomework.filter(h => (h.status || 'ACTIVE').toUpperCase() === 'ACTIVE').length;
+    const countCompleted = allHomework.filter(h => (h.status || '').toUpperCase() === 'COMPLETED').length;
+    const countOverdue = allHomework.filter(h => (h.status || '').toUpperCase() === 'OVERDUE').length;
+
+    // Filter items
+    let filtered = allHomework.filter(h => {
+      // Tab filter
+      const st = (h.status || 'ACTIVE').toUpperCase();
+      if (hwFilterTab === 'draft' && st !== 'DRAFT') return false;
+      if (hwFilterTab === 'active' && st !== 'ACTIVE') return false;
+      if (hwFilterTab === 'completed' && st !== 'COMPLETED') return false;
+      if (hwFilterTab === 'overdue' && st !== 'OVERDUE') return false;
+
+      // Status dropdown filter
+      if (hwFilterStatus !== 'all' && st !== hwFilterStatus.toUpperCase()) return false;
+
+      // Class dropdown filter
+      if (hwFilterClass !== 'all' && h.classId && h.classId !== 'all' && h.classId !== hwFilterClass) return false;
+
+      // Subject dropdown filter
+      if (hwFilterSubject !== 'all' && (h.subject || '').toLowerCase() !== hwFilterSubject.toLowerCase()) return false;
+
+      // Search query
+      if (hwSearchQuery && hwSearchQuery.trim()) {
+        const q = hwSearchQuery.toLowerCase().trim();
+        const matchTitle = (h.title || '').toLowerCase().includes(q);
+        const matchDesc = (h.description || '').toLowerCase().includes(q);
+        const matchSubj = (h.subject || '').toLowerCase().includes(q);
+        if (!matchTitle && !matchDesc && !matchSubj) return false;
+      }
+
       return true;
     });
 
-    if (hwFilterType !== 'all') homework = homework.filter(h => (h.type || '').toLowerCase() === hwFilterType.toLowerCase());
-
     container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
-        '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Homework &amp; Independent Tasks</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + allHomework.length + ' tasks tracking student submissions, task completion, and evidence-based accuracy.</p>' +
+      '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+        // Header
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+          '<div>' +
+            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:8px;">' +
+              '<span>✍️</span> <span>Homework &amp; Quests</span>' +
+            '</h1>' +
+            '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Assign fun English quests, track completion, and reward your students with XP!</p>' +
+          '</div>' +
+          '<div style="display:flex; gap:8px;">' +
+            '<button class="btn-primary-action" onclick="openCreateHomeworkModal()" style="font-weight:900; padding:10px 20px; font-size:0.92rem; box-shadow:0 4px 14px rgba(59,130,246,0.35);">' +
+              '+ Create Homework' +
+            '</button>' +
+          '</div>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-primary-action" onclick="openModal(\'modal-homework-editor\')">+ Create Homework</button>' +
+
+        // Toolbar: Search + Class + Subject + Status Filters
+        '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:14px 16px; margin-bottom:16px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
+          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+            '<div style="flex:1; min-width:220px; position:relative;">' +
+              '<input type="text" class="search-input" placeholder="🔍 Search homework tasks..." value="' + (hwSearchQuery || '') + '" oninput="hwSearchQuery=this.value; renderCurrentView();" style="width:100%;" />' +
+            '</div>' +
+
+            '<select class="filter-select" onchange="hwFilterClass=this.value; renderCurrentView();" style="min-width:140px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterClass === 'all' ? 'selected' : '') + '>All Classes</option>' +
+              classes.map(c => '<option value="' + c.id + '" ' + (hwFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
+            '</select>' +
+
+            '<select class="filter-select" onchange="hwFilterSubject=this.value; renderCurrentView();" style="min-width:150px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterSubject === 'all' ? 'selected' : '') + '>All Subjects</option>' +
+              '<option value="Vocabulary" ' + (hwFilterSubject === 'Vocabulary' ? 'selected' : '') + '>Vocabulary</option>' +
+              '<option value="Reading & Vocab" ' + (hwFilterSubject === 'Reading & Vocab' ? 'selected' : '') + '>Reading &amp; Vocab</option>' +
+              '<option value="Phonics & Spelling" ' + (hwFilterSubject === 'Phonics & Spelling' ? 'selected' : '') + '>Phonics &amp; Spelling</option>' +
+              '<option value="Speaking" ' + (hwFilterSubject === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
+              '<option value="Reading" ' + (hwFilterSubject === 'Reading' ? 'selected' : '') + '>Reading</option>' +
+              '<option value="Grammar" ' + (hwFilterSubject === 'Grammar' ? 'selected' : '') + '>Grammar</option>' +
+              '<option value="English / Science CLIL" ' + (hwFilterSubject === 'English / Science CLIL' ? 'selected' : '') + '>English / Science CLIL</option>' +
+            '</select>' +
+
+            '<select class="filter-select" onchange="hwFilterStatus=this.value; renderCurrentView();" style="min-width:130px; font-weight:700;">' +
+              '<option value="all" ' + (hwFilterStatus === 'all' ? 'selected' : '') + '>All Status</option>' +
+              '<option value="active" ' + (hwFilterStatus === 'active' ? 'selected' : '') + '>Active</option>' +
+              '<option value="draft" ' + (hwFilterStatus === 'draft' ? 'selected' : '') + '>Draft</option>' +
+              '<option value="completed" ' + (hwFilterStatus === 'completed' ? 'selected' : '') + '>Completed</option>' +
+              '<option value="overdue" ' + (hwFilterStatus === 'overdue' ? 'selected' : '') + '>Overdue</option>' +
+            '</select>' +
+          '</div>' +
         '</div>' +
-      '</div>' +
 
-      // Filters Bar
-      '<div class="library-filter-bar" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">' +
-        '<select class="filter-select" onchange="hwFilterType=this.value; renderCurrentView();">' +
-          '<option value="all" ' + (hwFilterType === 'all' ? 'selected' : '') + '>All Task Types</option>' +
-          '<option value="Game" ' + (hwFilterType === 'Game' ? 'selected' : '') + '>Game Mission</option>' +
-          '<option value="Worksheet" ' + (hwFilterType === 'Worksheet' ? 'selected' : '') + '>Printable Worksheet</option>' +
-          '<option value="Reading" ' + (hwFilterType === 'Reading' ? 'selected' : '') + '>Reading Task</option>' +
-          '<option value="Writing" ' + (hwFilterType === 'Writing' ? 'selected' : '') + '>Writing Task</option>' +
-          '<option value="Speaking" ' + (hwFilterType === 'Speaking' ? 'selected' : '') + '>Speaking Mission</option>' +
-          '<option value="Project" ' + (hwFilterType === 'Project' ? 'selected' : '') + '>Project</option>' +
-        '</select>' +
-      '</div>' +
+        // Filter Tabs
+        '<div class="hw-filter-tabs">' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'all' ? 'is-active' : '') + '" onclick="hwFilterTab=\'all\'; renderCurrentView();">All (' + countAll + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'draft' ? 'is-active' : '') + '" onclick="hwFilterTab=\'draft\'; renderCurrentView();">Draft (' + countDraft + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'active' ? 'is-active' : '') + '" onclick="hwFilterTab=\'active\'; renderCurrentView();">Active (' + countActive + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'completed' ? 'is-active' : '') + '" onclick="hwFilterTab=\'completed\'; renderCurrentView();">Completed (' + countCompleted + ')</button>' +
+          '<button type="button" class="hw-tab-btn ' + (hwFilterTab === 'overdue' ? 'is-active' : '') + '" onclick="hwFilterTab=\'overdue\'; renderCurrentView();">Overdue (' + countOverdue + ')</button>' +
+        '</div>' +
 
-      '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
-        (homework.length === 0 ? '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No homework tasks match your filters.</div>' :
-          homework.map(h => {
-            const cls = classes.find(c => c.id === h.classId) || { name: 'Active Cohort' };
-            const classStudents = store.getStudentsByClass(cls.id);
-            const submissions = h.submissions || {};
-            const completedCount = Object.values(submissions).filter(s => s.status === 'Complete').length;
-            const inProgressCount = Object.values(submissions).filter(s => s.status === 'Partially Complete' || s.status === 'In Progress').length;
-            const totalCount = classStudents.length || 8;
-            const pct = Math.round(((completedCount + inProgressCount * 0.5) / totalCount) * 100);
+        // Homework Cards Grid
+        (filtered.length === 0 ?
+          '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
+            '<div style="font-size:44px; margin-bottom:10px;">📝</div>' +
+            '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No homework tasks found</h3>' +
+            '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Create a new homework quest or clear your active filters.</p>' +
+            '<button type="button" class="btn-primary-action" onclick="openCreateHomeworkModal()">+ Create Homework</button>' +
+          '</div>' :
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(330px, 1fr)); gap:20px;">' +
+            filtered.map(h => {
+              const cls = classes.find(c => c.id === h.classId) || { name: h.className || 'Grade 3A' };
+              const classStudents = store.getStudentsByClass(cls.id);
+              const totalStudentsCount = classStudents.length || 18;
+              const submissions = h.submissions || {};
+              const completedCount = Object.values(submissions).filter(s => s.status === 'COMPLETED' || s.status === 'Complete').length;
+              const submittedCount = h.submittedCount !== undefined ? h.submittedCount : completedCount;
+              const pct = Math.min(100, Math.round((submittedCount / totalStudentsCount) * 100));
 
-            return '' +
-              '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
-                '<div>' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">' +
-                    '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); background:rgba(79,70,229,0.1); padding:2px 8px; border-radius:999px;">' + h.type + '</span>' +
-                    '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
+              // Tag badge styling
+              const subj = (h.subject || 'Vocabulary').toLowerCase();
+              let tagClass = 'hw-tag-vocab';
+              if (subj.includes('phonics')) tagClass = 'hw-tag-phonics';
+              else if (subj.includes('speaking')) tagClass = 'hw-tag-speaking';
+              else if (subj.includes('reading')) tagClass = 'hw-tag-reading';
+              else if (subj.includes('clil') || subj.includes('science')) tagClass = 'hw-tag-clil';
+
+              const thumb = h.thumbnail || 'assets/homework/thumb-animals.png';
+              const isDraft = (h.status || '').toUpperCase() === 'DRAFT';
+
+              return '' +
+                '<div class="hw-quest-card">' +
+                  '<div class="hw-quest-card-thumb-wrap">' +
+                    '<img src="' + thumb + '" alt="' + (h.title || 'Quest') + '" onerror="this.src=\'assets/homework/thumb-animals.png\'" />' +
+                    (isDraft ? '<div style="position:absolute; top:10px; right:10px; background:#475569; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:10px;">DRAFT</div>' : '') +
                   '</div>' +
-                  '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">' + h.title + '</h3>' +
-                  '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">Due: ' + (h.dueDate || 'Friday') + ' · ' + (h.questionsTotal || 10) + ' Tasks</p>' +
-                  // Completion progress bar
-                  '<div style="margin-bottom:14px;">' +
-                    '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">' +
-                      '<span>Class Submissions</span>' +
-                      '<span>' + completedCount + ' / ' + totalCount + ' completed</span>' +
+                  '<div class="hw-quest-card-body">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                      '<span class="hw-tag-badge ' + tagClass + '">' + (h.subject || 'Vocabulary') + '</span>' +
+                      '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + cls.name + '</span>' +
                     '</div>' +
-                    '<div class="progress-bar-wrap" style="height:8px;"><div class="progress-bar-fill" style="width:' + pct + '%;"></div></div>' +
+
+                    '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 6px 0; color:var(--text-main); line-height:1.25;">' + h.title + '</h3>' +
+                    '<div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px; font-weight:600;">' +
+                      'Due: ' + (h.dueDate || 'Friday, Nov 15') +
+                    '</div>' +
+
+                    // Progress Bar & Stats
+                    '<div style="margin-bottom:14px;">' +
+                      '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; margin-bottom:4px; color:var(--text-secondary);">' +
+                        '<span>' + submittedCount + '/' + totalStudentsCount + ' completed (' + pct + '%)</span>' +
+                        '<span>' + (h.estimatedTime || '20 min') + '</span>' +
+                      '</div>' +
+                      '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
+                        '<div style="width:' + pct + '%; height:100%; background:#10b981; border-radius:6px; transition:width 0.3s ease;"></div>' +
+                      '</div>' +
+                    '</div>' +
+
+                    // XP Badges
+                    '<div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">' +
+                      '<span class="hw-xp-pill">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
+                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill">✨ +' + (h.optionalChallengeXp || 5) + ' XP (Optional Challenge)</span>' : '') +
+                    '</div>' +
+
+                    // Footer Action Buttons
+                    '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:12px; margin-top:auto; gap:6px; flex-wrap:wrap;">' +
+                      '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:6px 12px; font-size:0.8rem; font-weight:800;">' +
+                        'Submissions (' + submittedCount + ')' +
+                      '</button>' +
+                      '<div style="display:flex; gap:4px;">' +
+                        '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:5px 9px; font-size:0.78rem; font-weight:800; color:#3b82f6;" title="Student Quest View">👁️ Preview</button>' +
+                        '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
+                      '</div>' +
+                    '</div>' +
                   '</div>' +
-                '</div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:8px;">' +
-                  '<button class="btn-primary-action" onclick="openHomeworkGradingModal(\'' + h.id + '\')" style="padding:5px 12px; font-size:0.8rem;">👥 Submissions &amp; Grading</button>' +
-                  '<div style="display:flex; gap:6px;">' +
-                    '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>';
-          }).join('')
+                '</div>';
+            }).join('') +
+          '</div>'
         ) +
       '</div>';
   }
 
+  // =========================================================================
+  // 2-COLUMN CREATE / EDIT HOMEWORK MODAL & LIVE PREVIEW
+  // =========================================================================
+
+  window.openCreateHomeworkModal = function() {
+    const editIdEl = document.getElementById('edit-hw-id');
+    const modalTitleEl = document.getElementById('hw-modal-title');
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+    const pubEl = document.getElementById('new-hw-publish');
+
+    if (editIdEl) editIdEl.value = '';
+    if (modalTitleEl) modalTitleEl.textContent = 'Create Homework Quest';
+    if (titleEl) titleEl.value = '🐾 Animal Habitats Explorer';
+    if (subjEl) subjEl.value = 'Reading & Vocab';
+    if (dateEl) dateEl.value = 'Friday, Nov 15';
+    if (xpEl) xpEl.value = '20';
+    if (descEl) descEl.value = '1. Read the short passage about forest and ocean animals.\n2. Complete the 5 matching questions.\n3. Audio record: say 3 animal names and their habitats!';
+    if (optToggleEl) optToggleEl.checked = true;
+    if (optDescEl) optDescEl.value = 'Draw your favorite animal for +5 bonus XP!';
+    if (pubEl) pubEl.checked = true;
+
+    // Populate class selector
+    const classes = store.getClasses();
+    const activeClass = store.getActiveClass();
+    if (classEl) {
+      classEl.innerHTML = classes.map(c => '<option value="' + c.id + '" ' + (activeClass && activeClass.id === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('');
+    }
+
+    currentEditingHwResources = [
+      { id: 'res-ws-1', type: 'worksheet', title: '📄 Forest & Ocean Reading (PDF)' },
+      { id: 'res-gm-1', type: 'game', title: '🎮 Jungle Animal Explorer' }
+    ];
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+    window.openModal('modal-homework-editor');
+  };
+
+  window.openEditHomeworkModal = function(homeworkId) {
+    const hw = store.getHomeworkItem(homeworkId);
+    if (!hw) return;
+
+    const editIdEl = document.getElementById('edit-hw-id');
+    const modalTitleEl = document.getElementById('hw-modal-title');
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+    const pubEl = document.getElementById('new-hw-publish');
+
+    if (editIdEl) editIdEl.value = hw.id;
+    if (modalTitleEl) modalTitleEl.textContent = 'Edit Homework Quest';
+    if (titleEl) titleEl.value = hw.title || '';
+    if (subjEl) subjEl.value = hw.subject || 'Reading & Vocab';
+    if (dateEl) dateEl.value = hw.dueDate || 'Friday, Nov 15';
+    if (xpEl) xpEl.value = hw.xpReward || 20;
+
+    if (descEl) {
+      if (Array.isArray(hw.instructions) && hw.instructions.length) {
+        descEl.value = hw.instructions.join('\n');
+      } else {
+        descEl.value = hw.description || '';
+      }
+    }
+
+    if (optToggleEl) optToggleEl.checked = !!hw.optionalChallenge;
+    if (optDescEl) optDescEl.value = hw.optionalChallengeDesc || '';
+    if (pubEl) pubEl.checked = (hw.status || '').toUpperCase() !== 'DRAFT';
+
+    const classes = store.getClasses();
+    if (classEl) {
+      classEl.innerHTML = classes.map(c => '<option value="' + c.id + '" ' + (hw.classId === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('');
+    }
+
+    currentEditingHwResources = Array.isArray(hw.resources) ? JSON.parse(JSON.stringify(hw.resources)) : [];
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+    window.openModal('modal-homework-editor');
+  };
+
+  window.toggleOptionalChallengeField = function() {
+    const toggle = document.getElementById('new-hw-opt-toggle');
+    const details = document.getElementById('hw-opt-details');
+    if (details && toggle) {
+      details.style.display = toggle.checked ? 'flex' : 'none';
+    }
+  };
+
+  window.renderAttachedResourceChips = function() {
+    const container = document.getElementById('hw-attached-resources-chips');
+    if (!container) return;
+    if (currentEditingHwResources.length === 0) {
+      container.innerHTML = '<span style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">No extra resources attached yet.</span>';
+      return;
+    }
+    container.innerHTML = currentEditingHwResources.map((r, idx) => 
+      '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:4px 10px; font-size:0.75rem; font-weight:800; display:flex; align-items:center; gap:6px;">' +
+        '<span>' + (r.title || 'Resource') + '</span>' +
+        '<button type="button" onclick="removeAttachedResource(' + idx + ')" style="background:none; border:none; color:var(--color-danger); cursor:pointer; font-weight:900; font-size:0.8rem;" title="Remove">✕</button>' +
+      '</div>'
+    ).join('');
+  };
+
+  window.removeAttachedResource = function(index) {
+    currentEditingHwResources.splice(index, 1);
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+  };
+
+  window.attachQuickResource = function(type) {
+    if (type === 'worksheet') {
+      const ws = (store.getWorksheets ? store.getWorksheets() : [])[0] || { title: 'Animal Habitats Reading Worksheet (PDF)' };
+      currentEditingHwResources.push({ id: 'res-ws-' + Date.now(), type: 'worksheet', title: '📄 ' + ws.title });
+    } else {
+      const gm = (store.getResources ? store.getResources() : [])[0] || { title: 'Jungle Animal Explorer Game' };
+      currentEditingHwResources.push({ id: 'res-gm-' + Date.now(), type: 'game', title: '🎮 ' + gm.title });
+    }
+    renderAttachedResourceChips();
+    updateLiveQuestPreview();
+  };
+
+  window.updateLiveQuestPreview = function() {
+    const titleEl = document.getElementById('new-hw-title');
+    const subjEl = document.getElementById('new-hw-subject');
+    const classEl = document.getElementById('new-hw-class');
+    const dateEl = document.getElementById('new-hw-date');
+    const xpEl = document.getElementById('new-hw-xp');
+    const descEl = document.getElementById('new-hw-desc');
+    const optToggleEl = document.getElementById('new-hw-opt-toggle');
+    const optDescEl = document.getElementById('new-hw-opt-desc');
+
+    const previewTitle = document.getElementById('preview-hw-title');
+    const previewSubj = document.getElementById('preview-subject-badge');
+    const previewClass = document.getElementById('preview-class-name');
+    const previewDate = document.getElementById('preview-due-date');
+    const previewXP = document.getElementById('preview-xp-pill');
+    const previewBonusXP = document.getElementById('preview-bonus-xp-pill');
+    const previewStepsList = document.getElementById('preview-steps-list');
+    const previewResources = document.getElementById('preview-resources-wrap');
+
+    if (previewTitle && titleEl) previewTitle.textContent = titleEl.value || '🐾 New Homework Quest';
+    if (previewSubj && subjEl) previewSubj.textContent = subjEl.value;
+    if (previewClass && classEl && classEl.options[classEl.selectedIndex]) previewClass.textContent = classEl.options[classEl.selectedIndex].text;
+    if (previewDate && dateEl) previewDate.textContent = 'Due: ' + (dateEl.value || 'Friday, Nov 15');
+    if (previewXP && xpEl) previewXP.textContent = '⭐ +' + (xpEl.value || 20) + ' XP';
+
+    if (previewBonusXP && optToggleEl) {
+      if (optToggleEl.checked) {
+        previewBonusXP.style.display = 'inline-flex';
+        previewBonusXP.textContent = '✨ +5 XP Bonus';
+      } else {
+        previewBonusXP.style.display = 'none';
+      }
+    }
+
+    if (previewStepsList && descEl) {
+      const raw = descEl.value || '';
+      const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+      if (lines.length) {
+        previewStepsList.innerHTML = lines.map(line => 
+          '<div style="display:flex; align-items:flex-start; gap:8px;">' +
+            '<span style="color:#38bdf8;">✓</span>' +
+            '<span>' + line + '</span>' +
+          '</div>'
+        ).join('');
+      } else {
+        previewStepsList.innerHTML = '<div>1. Complete your English quest!</div>';
+      }
+    }
+
+    if (previewResources) {
+      if (currentEditingHwResources.length) {
+        previewResources.innerHTML = currentEditingHwResources.map(r => 
+          '<div style="background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:6px 10px; font-size:0.75rem; font-weight:800; color:#38bdf8;">' +
+            r.title +
+          '</div>'
+        ).join('');
+      } else {
+        previewResources.innerHTML = '';
+      }
+    }
+  };
+
+  window.handleSaveHomeworkForm = function(event) {
+    if (event) event.preventDefault();
+    const editId = document.getElementById('edit-hw-id')?.value;
+    const title = document.getElementById('new-hw-title')?.value || 'New Quest';
+    const subject = document.getElementById('new-hw-subject')?.value || 'Reading & Vocab';
+    const classId = document.getElementById('new-hw-class')?.value || 'class-3a';
+    const dueDate = document.getElementById('new-hw-date')?.value || 'Friday, Nov 15';
+    const xpReward = parseInt(document.getElementById('new-hw-xp')?.value, 10) || 20;
+    const rawDesc = document.getElementById('new-hw-desc')?.value || '';
+    const instructions = rawDesc.split('\n').map(l => l.trim()).filter(Boolean);
+    const optionalChallenge = !!document.getElementById('new-hw-opt-toggle')?.checked;
+    const optionalChallengeDesc = document.getElementById('new-hw-opt-desc')?.value || 'Draw your favorite animal for +5 bonus XP!';
+    const isPublished = !!document.getElementById('new-hw-publish')?.checked;
+
+    const payload = {
+      title,
+      subject,
+      classId,
+      dueDate,
+      xpReward,
+      instructions,
+      description: rawDesc,
+      optionalChallenge,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc,
+      resources: currentEditingHwResources,
+      status: isPublished ? 'ACTIVE' : 'DRAFT',
+      published: isPublished
+    };
+
+    if (editId) {
+      store.updateHomework(editId, payload);
+      showNotification('Homework Quest "' + title + '" updated successfully!');
+    } else {
+      store.createHomework(payload);
+      showNotification('New Homework Quest "' + title + '" created and assigned!');
+    }
+
+    window.closeModal('modal-homework-editor');
+    renderCurrentView();
+  };
+
+  window.handleDuplicateHomework = function(hwId) {
+    const duplicated = store.duplicateHomework(hwId);
+    if (duplicated) {
+      showNotification('Duplicated "' + duplicated.title + '"!');
+      renderCurrentView();
+    }
+  };
+
+  window.handleArchiveHomework = function(hwId) {
+    if (confirm('Archive this homework quest? It can be restored anytime in Archived Items.')) {
+      store.archiveHomework(hwId);
+      showNotification('Homework quest archived.');
+      renderCurrentView();
+    }
+  };
+
+  // =========================================================================
+  // 3. STUDENT QUEST VIEW & SUBMISSION CONTROLLER
+  // =========================================================================
+
+  window.openStudentQuestModal = function(homeworkId, studentId = null) {
+    const hw = store.getHomeworkItem(homeworkId);
+    if (!hw) return;
+
+    const activeClass = store.getClass(hw.classId) || store.getActiveClass();
+    const students = store.getStudentsByClass(activeClass.id);
+    const selStudentId = studentId || (students[0] ? students[0].id : 'student-3a-224');
+
+    document.getElementById('student-quest-hw-id').value = hw.id;
+    document.getElementById('student-quest-student-id').value = selStudentId;
+
+    // Student picker
+    const picker = document.getElementById('student-quest-picker');
+    if (picker) {
+      picker.innerHTML = students.map(s => 
+        '<option value="' + s.id + '" ' + (s.id === selStudentId ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (Level ' + (store.calculateMonsterState(s.id).currentLevel) + ')</option>'
+      ).join('');
+    }
+
+    // Set Header Info
+    const titleEl = document.getElementById('student-quest-title');
+    const tagEl = document.getElementById('student-quest-tag');
+    const dueEl = document.getElementById('student-quest-due');
+    const xpEl = document.getElementById('student-quest-xp-pill');
+    const bonusEl = document.getElementById('student-quest-bonus-pill');
+    const descEl = document.getElementById('student-quest-desc');
+
+    if (titleEl) titleEl.textContent = '🐾 Quest: ' + hw.title;
+    if (tagEl) tagEl.textContent = hw.subject || 'QUEST';
+    if (dueEl) dueEl.textContent = 'Due: ' + (hw.dueDate || 'Friday, Nov 15');
+    if (xpEl) xpEl.textContent = '⭐ +' + (hw.xpReward || 20) + ' XP Reward';
+
+    if (bonusEl) {
+      if (hw.optionalChallenge) {
+        bonusEl.style.display = 'inline-flex';
+        bonusEl.textContent = '✨ +' + (hw.optionalChallengeXp || 5) + ' XP Bonus (Optional)';
+      } else {
+        bonusEl.style.display = 'none';
+      }
+    }
+
+    if (descEl) descEl.textContent = hw.description || 'Explore different animal habitats and learn key English vocabulary!';
+
+    // Checklist
+    const listWrap = document.getElementById('student-quest-checklist-container');
+    const sub = (hw.submissions && hw.submissions[selStudentId]) || {};
+    const isCompleted = sub.status === 'COMPLETED' || sub.status === 'Complete';
+
+    let steps = Array.isArray(hw.instructions) && hw.instructions.length ? hw.instructions : [
+      '1. Read the short passage about forest and ocean animals.',
+      '2. Complete the 5 matching questions.',
+      '3. Audio record: say 3 animal names and their habitats!'
+    ];
+
+    if (listWrap) {
+      listWrap.innerHTML = steps.map((st, i) => {
+        const isStepDone = isCompleted;
+        let actionBtn = '';
+        if (i === 0) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-worksheet-preview\')" style="font-size:0.75rem; font-weight:800; color:#3b82f6; border-color:#3b82f6;">📄 Open Worksheet</button>';
+        if (i === 1) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-game-preview\')" style="font-size:0.75rem; font-weight:800; color:#059669; border-color:#059669;">🎮 Open Game</button>';
+        if (i === 2) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="toggleSimulatedAudioRecording()" style="font-size:0.75rem; font-weight:800; color:#ef4444; border-color:#ef4444;">🎙️ Record Voice</button>';
+
+        return '' +
+          '<div class="quest-checklist-item ' + (isStepDone ? 'is-done' : '') + '" id="quest-item-' + i + '">' +
+            '<input type="checkbox" class="quest-checklist-check" ' + (isStepDone ? 'checked' : '') + ' onchange="handleQuestChecklistChange(' + i + ', this.checked)" />' +
+            '<div style="flex:1;">' +
+              '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main); line-height:1.3;">' + st + '</div>' +
+            '</div>' +
+            (actionBtn ? '<div>' + actionBtn + '</div>' : '') +
+          '</div>';
+      }).join('') +
+      (hw.optionalChallenge ? 
+        '<div class="quest-checklist-item ' + (sub.optionalDone ? 'is-done' : '') + '" id="quest-item-opt" style="border-style:dashed; border-color:#f59e0b; background:rgba(245,158,11,0.03);">' +
+          '<input type="checkbox" id="quest-check-optional" class="quest-checklist-check" ' + (sub.optionalDone ? 'checked' : '') + ' onchange="handleQuestChecklistChange(\'opt\', this.checked)" />' +
+          '<div style="flex:1;">' +
+            '<div style="font-weight:900; font-size:0.88rem; color:#b45309;">🌟 OPTIONAL CHALLENGE (+5 Bonus XP)</div>' +
+            '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">' + (hw.optionalChallengeDesc || 'Draw your favorite animal or record a fun bonus fact!') + '</div>' +
+          '</div>' +
+        '</div>' : ''
+      );
+    }
+
+    const notesEl = document.getElementById('student-quest-notes');
+    if (notesEl) notesEl.value = sub.notes || '';
+
+    // Audio status reset
+    const recStatus = document.getElementById('audio-recording-status');
+    const recBtn = document.getElementById('btn-audio-record');
+    const playBtn = document.getElementById('btn-audio-playback');
+    if (recStatus) recStatus.textContent = 'Ready';
+    if (recBtn) recBtn.innerHTML = '🔴 Start Recording';
+    if (playBtn) playBtn.disabled = true;
+
+    window.openModal('modal-student-quest');
+  };
+
+  window.previewCurrentHomeworkAsStudent = function() {
+    const title = document.getElementById('new-hw-title')?.value || '🐾 Animal Habitats Explorer';
+    const subject = document.getElementById('new-hw-subject')?.value || 'Reading & Vocab';
+    const dueDate = document.getElementById('new-hw-date')?.value || 'Friday, Nov 15';
+    const xpReward = parseInt(document.getElementById('new-hw-xp')?.value, 10) || 20;
+    const rawDesc = document.getElementById('new-hw-desc')?.value || '';
+    const instructions = rawDesc.split('\n').map(l => l.trim()).filter(Boolean);
+    const optionalChallenge = !!document.getElementById('new-hw-opt-toggle')?.checked;
+    const optionalChallengeDesc = document.getElementById('new-hw-opt-desc')?.value || '';
+
+    // Find or create preview homework in memory
+    const existing = store.getHomework().find(h => h.title === title) || store.getHomework()[0];
+    if (existing) {
+      window.openStudentQuestModal(existing.id);
+    }
+  };
+
+  window.handleStudentQuestLearnerChange = function(studentId) {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    if (hwId) window.openStudentQuestModal(hwId, studentId);
+  };
+
+  window.handleQuestChecklistChange = function(index, isChecked) {
+    const row = document.getElementById(index === 'opt' ? 'quest-item-opt' : 'quest-item-' + index);
+    if (row) {
+      if (isChecked) row.classList.add('is-done');
+      else row.classList.remove('is-done');
+    }
+  };
+
+  window.toggleSimulatedAudioRecording = function() {
+    const statusEl = document.getElementById('audio-recording-status');
+    const recordBtn = document.getElementById('btn-audio-record');
+    const playBtn = document.getElementById('btn-audio-playback');
+
+    if (!simulatedAudioRecordingInterval) {
+      // Start recording
+      simulatedAudioSeconds = 0;
+      if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:00)';
+      if (statusEl) {
+        statusEl.textContent = 'Recording Audio...';
+        statusEl.style.color = '#ef4444';
+      }
+      simulatedAudioRecordingInterval = setInterval(() => {
+        simulatedAudioSeconds++;
+        const s = simulatedAudioSeconds < 10 ? '0' + simulatedAudioSeconds : simulatedAudioSeconds;
+        if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:' + s + ')';
+        if (simulatedAudioSeconds >= 14) {
+          window.toggleSimulatedAudioRecording();
+        }
+      }, 1000);
+    } else {
+      // Stop recording
+      clearInterval(simulatedAudioRecordingInterval);
+      simulatedAudioRecordingInterval = null;
+      simulatedAudioRecorded = true;
+      if (recordBtn) recordBtn.innerHTML = '🔴 Re-Record';
+      if (statusEl) {
+        statusEl.textContent = 'Audio Captured (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
+        statusEl.style.color = '#059669';
+      }
+      if (playBtn) {
+        playBtn.disabled = false;
+        playBtn.innerHTML = '▶️ Listen to Recording (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
+      }
+      showNotification('Voice note recorded successfully! 🎙️');
+      // Mark step 2 as checked
+      const step3Check = document.querySelector('#quest-item-2 .quest-checklist-check');
+      if (step3Check) {
+        step3Check.checked = true;
+        handleQuestChecklistChange(2, true);
+      }
+    }
+  };
+
+  window.playSimulatedAudioPlayback = function() {
+    showNotification('Playing student voice recording... 🔊');
+  };
+
+  window.handleSaveStudentQuestProgress = function() {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    const studentId = document.getElementById('student-quest-student-id')?.value;
+    const notes = document.getElementById('student-quest-notes')?.value || '';
+    if (!hwId || !studentId) return;
+
+    store.recordHomeworkSubmission(hwId, studentId, {
+      status: 'IN_PROGRESS',
+      notes: notes,
+      attempted: 3,
+      correct: 3
+    });
+    showNotification('Quest progress saved!');
+  };
+
+  window.handleSubmitStudentQuest = function() {
+    const hwId = document.getElementById('student-quest-hw-id')?.value;
+    const studentId = document.getElementById('student-quest-student-id')?.value;
+    const notes = document.getElementById('student-quest-notes')?.value || '';
+    const optCheck = document.getElementById('quest-check-optional');
+    const isOptChecked = optCheck ? optCheck.checked : false;
+
+    if (!hwId || !studentId) return;
+
+    const hw = store.getHomeworkItem(hwId);
+    const student = store.getStudent(studentId);
+    if (!hw || !student) return;
+
+    // Record submission and trigger centralized XP awarding with strict duplicate protection
+    const result = store.recordHomeworkSubmission(hwId, studentId, {
+      status: 'COMPLETED',
+      completedDate: new Date().toISOString().split('T')[0],
+      optionalChallengeDone: isOptChecked,
+      notes: notes,
+      attempted: 5,
+      correct: 5
+    });
+
+    window.closeModal('modal-student-quest');
+
+    // Launch Quest Completed Celebration Modal
+    openQuestCompletedModal(hw, student, result);
+    renderCurrentView();
+  };
+
+  // =========================================================================
+  // 4. QUEST COMPLETED CELEBRATION MODAL
+  // =========================================================================
+
+  window.openQuestCompletedModal = function(hw, student, subResult) {
+    const mTitle = document.getElementById('qc-quest-title');
+    const xpBadge = document.getElementById('qc-xp-badge');
+    const stageLabel = document.getElementById('qc-monster-stage-label');
+    const xpLabel = document.getElementById('qc-monster-xp-label');
+    const progFill = document.getElementById('qc-monster-progress-fill');
+    const nextLabel = document.getElementById('qc-monster-next-label');
+    const actionWrap = document.getElementById('qc-action-wrap');
+
+    const totalEarnedXP = subResult ? subResult.xpAwarded : (hw.xpReward + (hw.optionalChallenge ? hw.optionalChallengeXp : 0));
+    const mState = store.calculateMonsterState(student.id);
+
+    if (mTitle) mTitle.textContent = hw.title + ' finished!';
+    if (xpBadge) xpBadge.textContent = '+' + totalEarnedXP + ' XP Awarded!';
+    if (stageLabel) stageLabel.textContent = 'Level ' + mState.currentLevel + ' ' + mState.stageName;
+    if (xpLabel) xpLabel.textContent = mState.totalXP + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired : 'MAX') + ' XP';
+    if (progFill) progFill.style.width = Math.min(100, mState.progressPct) + '%';
+    if (nextLabel) {
+      nextLabel.textContent = mState.xpToNext > 0
+        ? (mState.xpToNext + ' XP to Level ' + (mState.currentLevel + 1) + ' ' + (mState.nextLevel ? mState.nextLevel.name : ''))
+        : '🌟 Peak evolution stage achieved!';
+    }
+
+    // Check if evolution triggered!
+    const evo = subResult ? subResult.evolutionEvent : null;
+    if (actionWrap) {
+      if (evo) {
+        actionWrap.innerHTML = 
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\'); openMonsterLevelUpModal(\'' + student.id + '\', ' + evo.prevLevel + ', ' + evo.newLevel + ');" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:linear-gradient(90deg, #f59e0b, #ef4444); color:#fff; box-shadow:0 6px 20px rgba(245,158,11,0.5);">' +
+            'Evolve Monster Now! 🚀' +
+          '</button>';
+      } else {
+        actionWrap.innerHTML = 
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\')" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:#38bdf8; color:#0f172a;">' +
+            'Awesome! 🎉' +
+          '</button>';
+      }
+    }
+
+    window.openModal('modal-quest-completed');
+  };
+
+  // Upgraded openHomeworkGradingModal
   window.openHomeworkGradingModal = function(homeworkId) {
     const hw = store.getHomeworkItem(homeworkId);
     if (!hw) return;
@@ -3706,7 +6185,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const list = document.getElementById('hw-grading-students-list');
 
     if (title) title.textContent = '👥 ' + hw.title + ' — Submissions & Grading';
-    if (subtitle) subtitle.textContent = 'Total: ' + (hw.questionsTotal || 10) + ' tasks. Record completed questions to log official learning evidence.';
+    if (subtitle) subtitle.textContent = 'Track student quest completion and reward evidence-based XP directly to student records.';
 
     const cls = store.getClass(hw.classId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
@@ -3714,40 +6193,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     if (list) {
       list.innerHTML = students.map(st => {
-        const sub = submissions[st.id] || { status: 'Not Started', attempted: 0, correct: 0, completion: 0, accuracy: 0, notes: '' };
+        const sub = submissions[st.id] || { status: 'Not Started', attempted: 0, correct: 0, completion: 0, accuracy: 0, notes: '', optionalDone: false };
+        const isDone = sub.status === 'COMPLETED' || sub.status === 'Complete';
+        const mState = store.calculateMonsterState(st.id);
+
         return '' +
-          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
-            '<div style="display:flex; align-items:center; gap:10px; min-width:160px;">' +
-              '<div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(st.id, { size: 38, animated: false }) + '</div>' +
+          '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
+            '<div style="display:flex; align-items:center; gap:12px; min-width:180px;">' +
+              '<div style="flex-shrink:0;">' +
+                window.renderMonsterStageBadge(st.id, { size: 44, animated: false }) +
+              '</div>' +
               '<div>' +
-                '<div style="font-weight:800; font-size:0.95rem;">' + st.firstName + ' ' + st.lastName + '</div>' +
-                '<div style="font-size:0.75rem; color:var(--text-muted);">CEFR ' + (st.overallCefr || 'A1') + '</div>' +
+                '<div style="font-weight:900; font-size:0.95rem; color:var(--text-main);">' + st.firstName + ' ' + st.lastName + '</div>' +
+                '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
               '<div>' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Status</label>' +
-                '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px;">' +
-                  '<option value="Not Started" ' + (sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
-                  '<option value="In Progress" ' + (sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
-                  '<option value="Partially Complete" ' + (sub.status === 'Partially Complete' ? 'selected' : '') + '>Partially Complete</option>' +
-                  '<option value="Complete" ' + (sub.status === 'Complete' ? 'selected' : '') + '>Complete</option>' +
-                  '<option value="Needs Revision" ' + (sub.status === 'Needs Revision' ? 'selected' : '') + '>Needs Revision</option>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Status</label>' +
+                '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px; font-weight:700;">' +
+                  '<option value="COMPLETED" ' + (isDone ? 'selected' : '') + '>Completed ✓</option>' +
+                  '<option value="IN_PROGRESS" ' + (sub.status === 'IN_PROGRESS' || sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
+                  '<option value="NOT_STARTED" ' + (sub.status === 'NOT_STARTED' || sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
                 '</select>' +
               '</div>' +
-              '<div style="width:75px;">' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Attempted</label>' +
-                '<input type="number" class="filter-select hw-sub-attempted" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.attempted || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
+              '<div>' +
+                '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Optional +5 XP</label>' +
+                '<input type="checkbox" class="hw-sub-opt" ' + (sub.optionalDone ? 'checked' : '') + ' style="width:18px; height:18px; accent-color:#059669; margin-top:4px;" />' +
               '</div>' +
-              '<div style="width:75px;">' +
-                '<label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted);">Correct</label>' +
-                '<input type="number" class="filter-select hw-sub-correct" min="0" max="' + (hw.questionsTotal || 10) + '" value="' + (sub.correct || 0) + '" style="width:100%; font-size:0.78rem; padding:4px;" />' +
-              '</div>' +
-              '<div style="text-align:center; min-width:110px; background:var(--bg-canvas); padding:4px 8px; border-radius:6px; border:1px solid var(--border-light);">' +
-                '<div style="font-size:0.7rem; color:var(--text-muted);">Task: <strong>' + (sub.completion || 0) + '%</strong></div>' +
-                '<div style="font-size:0.78rem; font-weight:800; color:var(--color-primary);">Accuracy: ' + (sub.accuracy || 0) + '%</div>' +
-              '</div>' +
-              '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:4px 10px; font-size:0.78rem;">Save Grade</button>' +
+              '<button type="button" class="btn-primary-action" onclick="handleSaveStudentHomeworkGrading(\'' + hw.id + '\', \'' + st.id + '\')" style="padding:6px 14px; font-size:0.8rem; font-weight:800;">' +
+                'Grade &amp; Award XP' +
+              '</button>' +
             '</div>' +
           '</div>';
       }).join('');
@@ -3760,19 +6236,25 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const row = document.getElementById('hw-sub-row-' + studentId);
     if (!row) return;
 
-    const status = row.querySelector('.hw-sub-status')?.value || 'Complete';
-    const attempted = parseInt(row.querySelector('.hw-sub-attempted')?.value, 10) || 0;
-    const correct = parseInt(row.querySelector('.hw-sub-correct')?.value, 10) || 0;
+    const status = row.querySelector('.hw-sub-status')?.value || 'COMPLETED';
+    const optionalDone = !!row.querySelector('.hw-sub-opt')?.checked;
 
-    const sub = store.recordHomeworkSubmission(hwId, studentId, { status, attempted, correct });
-    if (sub) {
-      showNotification('Grade saved! Task: ' + sub.completion + '% · Accuracy: ' + sub.accuracy + '% (logged to learning evidence)');
-      window.openHomeworkGradingModal(hwId);
+    const res = store.recordHomeworkSubmission(hwId, studentId, {
+      status,
+      optionalChallengeDone: optionalDone,
+      completedDate: new Date().toISOString().split('T')[0]
+    });
+
+    if (res) {
+      showNotification('Grade saved! +' + res.xpAwarded + ' XP awarded to student record.');
+      if (res.evolutionEvent) {
+        window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+      } else {
+        window.openHomeworkGradingModal(hwId);
+      }
       renderCurrentView();
     }
   };
-
-
   // =========================================================================
   // QUIZZES & QUESTION BUILDER VIEW (Complete CRUD)
   // =========================================================================
@@ -4057,7 +6539,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabBodyHtml = '';
 
     if (activeTab === 'levels') {
-      tabBodyHtml = 
+      tabBodyHtml = (window.MonsterRenderer && window.MonsterRenderer.renderMonsterEvolutionStagesBanner ? window.MonsterRenderer.renderMonsterEvolutionStagesBanner() : '') +
+        
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
             '<div>' +
@@ -4065,6 +6548,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Configure progression level names, XP required, stage keys, descriptions, and perks. Changes dynamically update all active students.</p>' +
             '</div>' +
             '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
+          '</div>' +
+
+          '<!-- Horizontal Monster Evolution Progression Timeline -->' +
+          '<div class="monster-evolution-timeline">' +
+            levels.map((l, idx) => {
+              const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
+                stage: l.stageKey,
+                color: 'blue',
+                size: 80,
+                animated: false
+              }) : '👾';
+              const isLast = idx === levels.length - 1;
+              const chevronHtml = !isLast ? (
+                '<div class="evolution-timeline-chevron" title="Evolution Step">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<polyline points="9 18 15 12 9 6"></polyline>' +
+                  '</svg>' +
+                '</div>'
+              ) : '';
+
+              return '' +
+                '<div class="evolution-stage-card">' +
+                  '<div style="font-size:0.68rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Level ' + l.level + '</div>' +
+                  '<div style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' +
+                    stageSvg +
+                  '</div>' +
+                  '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); margin-bottom:4px; line-height:1.2;">' + l.name + '</div>' +
+                  '<div style="font-size:0.72rem; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); padding:2px 8px; border-radius:10px; white-space:nowrap;">' + l.xpRequired.toLocaleString() + ' ⭐ XP</div>' +
+                '</div>' +
+                chevronHtml;
+            }).join('') +
           '</div>' +
 
           '<div style="overflow-x:auto;">' +
@@ -5122,8 +7636,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<span style="font-weight:800; font-size:0.84rem; color:#059669; background:rgba(16,185,129,0.1); padding:4px 10px; border-radius:10px;">+' + (task.xpReward || 30) + ' XP</span>' +
                 (task.pdfUrl ?
                   '<a href="' + task.pdfUrl + '" target="_blank" class="btn-primary-action" style="font-size:0.82rem; padding:6px 14px; text-decoration:none;">Open Worksheet 📄</a>' :
-                  (task.gameId ?
-                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + task.gameId + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission 🚀</button>' :
+                  ((task.gameId || task.activityId) ?
+                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + (task.gameId || task.activityId) + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission 🚀</button>' :
                     '<button type="button" class="btn-primary-action" onclick="switchView(\'library\')" style="font-size:0.82rem; padding:6px 14px;">Start Quest 🚀</button>'
                   )
                 ) +
@@ -5286,57 +7800,71 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     };
 
     if (role === 'teacher') {
+      function renderNavGroup(slug, title, items, sectionViews) {
+        const containsActive = (sectionViews || []).includes(currentView) || items.some(i => i.isActive);
+        const isCollapsed = containsActive ? false : Boolean(navSectionsCollapsed[slug]);
+        return '' +
+          '<div class="sidebar-group ' + (isCollapsed ? 'is-collapsed' : '') + '" id="nav-group-' + slug + '">' +
+            '<button type="button" class="sidebar-section-header" onclick="toggleNavSection(\'' + slug + '\')" title="Toggle ' + title + '">' +
+              '<span class="sidebar-section-title">' + title + '</span>' +
+              '<span class="sidebar-section-chevron">▾</span>' +
+            '</button>' +
+            '<ul class="sidebar-nav-list">' +
+              items.map(item => '' +
+                '<li>' +
+                  '<button class="nav-link-btn ' + (item.isActive ? 'is-active' : '') + '" onclick="switchView(\'' + item.view + '\')" title="' + item.title + '">' +
+                    '<span class="nav-item-left">' +
+                      '<span class="nav-icon">' + item.icon + '</span> ' +
+                      '<span class="nav-label">' + item.label + '</span>' +
+                    '</span>' +
+                    (item.badge !== undefined && item.badge !== null ? '<span class="nav-badge-pill">' + item.badge + '</span>' : '') +
+                  '</button>' +
+                '</li>'
+              ).join('') +
+            '</ul>' +
+          '</div>';
+      }
+
       sidebar.innerHTML = 
-        '<div class="sidebar-section-title">Dashboard</div>' +
-        '<ul class="sidebar-nav-list">' +
+        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
           '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
         '</ul>' +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">My School</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classes' ? 'is-active' : '') + '" onclick="switchView(\'classes\')" title="Classes"><span class="nav-item-left"><span class="nav-icon">👥</span> <span class="nav-label">Classes</span></span><span class="nav-badge-pill">' + counts.classes + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classroom-hub' || currentView === 'class-detail' ? 'is-active' : '') + '" onclick="switchView(\'classroom-hub\')" title="Classroom Hub"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Classroom Hub</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'students' ? 'is-active' : '') + '" onclick="switchView(\'students\')" title="Students Directory"><span class="nav-item-left"><span class="nav-icon">🧒</span> <span class="nav-label">Students</span></span><span class="nav-badge-pill">' + counts.students + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'attendance' ? 'is-active' : '') + '" onclick="switchView(\'attendance\')" title="Attendance"><span class="nav-item-left"><span class="nav-icon">📋</span> <span class="nav-label">Attendance</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('my-school', 'My School', [
+          { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
+          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
+          { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
+          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
+        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Teaching</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'curriculum' ? 'is-active' : '') + '" onclick="switchView(\'curriculum\')" title="Curriculum"><span class="nav-item-left"><span class="nav-icon">📚</span> <span class="nav-label">Curriculum</span></span><span class="nav-badge-pill">' + counts.curriculum + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Resource Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Resource Library</span></span><span class="nav-badge-pill">' + counts.resources + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'worksheets' ? 'is-active' : '') + '" onclick="switchView(\'worksheets\')" title="Printable Worksheets"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Worksheets</span></span><span class="nav-badge-pill">' + counts.worksheets + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assignments' ? 'is-active' : '') + '" onclick="switchView(\'assignments\')" title="Assignments"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">Assignments</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'homework' ? 'is-active' : '') + '" onclick="switchView(\'homework\')" title="Homework"><span class="nav-item-left"><span class="nav-icon">✍️</span> <span class="nav-label">Homework</span></span><span class="nav-badge-pill">' + counts.homework + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'quizzes' ? 'is-active' : '') + '" onclick="switchView(\'quizzes\')" title="Quizzes & Tests"><span class="nav-item-left"><span class="nav-icon">🧩</span> <span class="nav-label">Quizzes &amp; Tests</span></span><span class="nav-badge-pill">' + counts.quizzes + '</span></button></li>' +
-        '</ul>' +
+        renderNavGroup('teaching', 'Teaching', [
+          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
+          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
+          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
+          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
+          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
+        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Assessment</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'assessments' ? 'is-active' : '') + '" onclick="switchView(\'assessments\')" title="Assessments & Rubrics"><span class="nav-item-left"><span class="nav-icon">🎯</span> <span class="nav-label">Assessments &amp; Rubrics</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress' ? 'is-active' : '') + '" onclick="switchView(\'progress\')" title="Progress & CEFR"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">Progress &amp; CEFR</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'reports' ? 'is-active' : '') + '" onclick="switchView(\'reports\')" title="Reports"><span class="nav-item-left"><span class="nav-icon">📄</span> <span class="nav-label">Reports</span></span><span class="nav-badge-pill">' + counts.reports + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'progress-check' ? 'is-active' : '') + '" onclick="switchView(\'progress-check\')" title="English Progress Check"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">English Progress Check</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('assessment', 'Assessment', [
+          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
+          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
+          { view: 'reports', label: 'Reports', icon: '📄', title: 'Reports', isActive: currentView === 'reports', badge: counts.reports },
+          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
+        ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Community</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'story' ? 'is-active' : '') + '" onclick="switchView(\'story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'messages' ? 'is-active' : '') + '" onclick="switchView(\'messages\')" title="Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'portfolios' ? 'is-active' : '') + '" onclick="switchView(\'portfolios\')" title="Portfolios"><span class="nav-item-left"><span class="nav-icon">🎨</span> <span class="nav-label">Portfolios</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('community', 'Community', [
+          { view: 'story', label: 'Class Story', icon: '📸', title: 'Class Story', isActive: currentView === 'story' },
+          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages },
+          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
+        ], ['story', 'messages', 'portfolios']) +
 
-        '<div class="sidebar-hr"></div>' +
-        '<div class="sidebar-section-title">Admin &amp; Audit</div>' +
-        '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'health' ? 'is-active' : '') + '" onclick="switchView(\'health\')" title="System Health & CRUD"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">System Health</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'gamification' ? 'is-active' : '') + '" onclick="switchView(\'gamification\')" title="Gamification & Badges"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Gamification</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'archived' ? 'is-active' : '') + '" onclick="switchView(\'archived\')" title="Archived Items & Restore"><span class="nav-item-left"><span class="nav-icon">🗄️</span> <span class="nav-label">Archived &amp; Restore</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'settings' ? 'is-active' : '') + '" onclick="switchView(\'settings\')" title="School Settings"><span class="nav-item-left"><span class="nav-icon">⚙️</span> <span class="nav-label">School Settings</span></span></button></li>' +
-        '</ul>' +
+        renderNavGroup('admin', 'Admin & Audit', [
+          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
+          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+          { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
+          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
+        ], ['health', 'gamification', 'archived', 'settings']) +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
@@ -5382,6 +7910,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (layout) layout.classList.add('sidebar-collapsed');
     }
   }
+
+  window.toggleNavSection = function(slug) {
+    navSectionsCollapsed[slug] = !navSectionsCollapsed[slug];
+    try {
+      localStorage.setItem('eaa-nav-sections-collapsed', JSON.stringify(navSectionsCollapsed));
+    } catch (e) {}
+    renderNavigation();
+  };
 
   window.toggleSidebarCollapse = function() {
     const sidebar = document.getElementById('app-sidebar-nav');
@@ -7157,6 +9693,15 @@ window.switchClassroomSubTab = function(subTab) {
     if (pvCheck) pvCheck.checked = s.parentStoryVisibility !== false;
     if (sndCheck) sndCheck.checked = s.soundEffectsEnabled !== false;
 
+    // Dynamically update cloud connection status badge in School Settings
+    const sb = window.AdventureSupabase;
+    const isConn = Boolean(sb && sb.isConfigured);
+    const cloudBadge = document.getElementById('settings-cloud-status-badge');
+    if (cloudBadge) {
+      cloudBadge.style.color = isConn ? '#059669' : '#dc2626';
+      cloudBadge.textContent = isConn ? 'Connected' : 'Not connected';
+    }
+
     window.openModal('modal-school-settings');
   };
 
@@ -7809,7 +10354,7 @@ window.switchClassroomSubTab = function(subTab) {
           return '' +
             '<div class="classroom-student-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
               '<div class="student-avatar-frame monster-avatar-box">' + 
-                (window.renderMonsterAvatar ? window.renderMonsterAvatar(s.id, { size: 54, animated: true }) : '👾') + 
+                window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) + 
               '</div>' +
               '<div class="student-card-name">' + sName + '</div>' +
               '<div class="student-card-meta-row">' +
@@ -8761,18 +11306,71 @@ window.switchClassroomSubTab = function(subTab) {
   // -------------------------------------------------------------------------
 
   let monsterCreatorStudentId = null;
-  let monsterCreatorActiveTab = 'monster'; // 'monster' | 'face' | 'features' | 'clothing' | 'world'
+  let monsterCreatorActiveTab = 'features'; // 'monster' | 'face' | 'features' | 'clothing' | 'world'
+  let monsterCreatorActiveSubTab = 'horns';
+  let monsterCreatorIsAnimated = true;
   let monsterCreatorDraft = {
     baseColor: 'blue',
     equipped: {}
   };
 
   const MONSTER_CREATOR_TABS = [
-    { id: 'monster', label: 'Monster', icon: '👾', title: 'Body Color & Palette' },
-    { id: 'face', label: 'Face', icon: '👀', title: 'Eyes & Mouth Expressions' },
-    { id: 'features', label: 'Features', icon: '✨', title: 'Horns, Wings & Tail' },
-    { id: 'clothing', label: 'Clothing', icon: '🎩', title: 'Hats, Glasses, Backpacks & Gear' },
-    { id: 'world', label: 'World', icon: '🌍', title: 'Environment & Auras' }
+    {
+      id: 'monster',
+      label: 'Monster',
+      icon: '👾',
+      title: 'Fur Colors & Palette',
+      subCategories: [
+        { id: 'colors', label: 'Fur Colors', icon: '🎨', title: 'Fur Colors & Palette' }
+      ]
+    },
+    {
+      id: 'face',
+      label: 'Face',
+      icon: '👀',
+      title: 'Eyes & Mouth Expressions',
+      subCategories: [
+        { id: 'eyes', label: 'Eyes', icon: '👀', title: 'Eye Expressions' },
+        { id: 'mouths', label: 'Mouths', icon: '👄', title: 'Mouth Expressions' }
+      ]
+    },
+    {
+      id: 'features',
+      label: 'Features',
+      icon: '🪶',
+      title: 'Horns, Wings, Tail & Gear',
+      subCategories: [
+        { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
+        { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings' },
+        { id: 'tails', label: 'Tails', icon: '🦎', title: 'Tails' },
+        { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
+        { id: 'backpacks', label: 'Backpacks', icon: '🎒', title: 'Backpacks & Bags' },
+        { id: 'accessories', label: 'Accessories', icon: '🎀', title: 'Accessories & Held' },
+        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
+      ]
+    },
+    {
+      id: 'clothing',
+      label: 'Clothing',
+      icon: '👔',
+      title: 'Clothing & Outfits',
+      subCategories: [
+        { id: 'adventure', label: 'Adventure', icon: '🧭', title: 'Adventure Gear' },
+        { id: 'school', label: 'School', icon: '🏫', title: 'School Uniforms' },
+        { id: 'special', label: 'Special', icon: '✨', title: 'Special Outfits' },
+        { id: 'fantasy', label: 'Fantasy', icon: '🛡️', title: 'Fantasy & Armor' }
+      ]
+    },
+    {
+      id: 'world',
+      label: 'World',
+      icon: '🌍',
+      title: 'Environment Worlds & Auras',
+      subCategories: [
+        { id: 'worlds', label: 'Worlds', icon: '🌍', title: 'Adventure Worlds' },
+        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
+      ]
+    }
   ];
 
   window.openMonsterCreator = function(studentId) {
@@ -8789,9 +11387,20 @@ window.switchClassroomSubTab = function(subTab) {
       equipped: Object.assign({}, profile.equipped || {})
     };
 
-    monsterCreatorActiveTab = 'monster';
+    monsterCreatorActiveTab = 'features';
+    monsterCreatorActiveSubTab = 'horns';
+    monsterCreatorIsAnimated = true;
+
+    // Reset animate button UI
+    const animBtn = document.getElementById('btn-monster-preview-animate');
+    const animIcon = document.getElementById('monster-animate-icon');
+    const animLabel = document.getElementById('monster-animate-label');
+    if (animBtn) animBtn.classList.add('is-active');
+    if (animIcon) animIcon.textContent = '⏸';
+    if (animLabel) animLabel.textContent = 'Pause';
 
     window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
     window.renderMonsterCreatorItems();
     window.updateMonsterCreatorPreview();
     window.openModal('modal-avatar-selector');
@@ -8815,58 +11424,122 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.selectMonsterCreatorCategory = function(tabId) {
     monsterCreatorActiveTab = tabId;
+    const tabObj = MONSTER_CREATOR_TABS.find(t => t.id === tabId) || MONSTER_CREATOR_TABS[0];
+    if (tabObj && tabObj.subCategories && tabObj.subCategories.length > 0) {
+      monsterCreatorActiveSubTab = tabObj.subCategories[0].id;
+    }
     window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
+    window.renderMonsterCreatorItems();
+  };
+
+  window.renderMonsterCreatorSubNav = function() {
+    const subNavEl = document.getElementById('monster-subcategory-nav');
+    if (!subNavEl) return;
+
+    const currentTab = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
+    const subCats = currentTab.subCategories || [];
+
+    subNavEl.innerHTML = subCats.map(sub => '' +
+      '<button type="button" class="monster-subnav-btn ' + (monsterCreatorActiveSubTab === sub.id ? 'is-active' : '') + '" onclick="selectMonsterCreatorSubTab(\'' + sub.id + '\')">' +
+        '<span>' + sub.icon + '</span>' +
+        '<span>' + sub.label + '</span>' +
+      '</button>'
+    ).join('');
+  };
+
+  window.selectMonsterCreatorSubTab = function(subId) {
+    monsterCreatorActiveSubTab = subId;
+    window.renderMonsterCreatorSubNav();
     window.renderMonsterCreatorItems();
   };
 
   window.renderMonsterCreatorItems = function() {
     const grid = document.getElementById('avatar-characters-grid');
     const titleEl = document.getElementById('monster-creator-category-title');
+    const countEl = document.getElementById('monster-creator-item-count');
     if (!grid) return;
 
     const activeTabObj = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
-    if (titleEl) titleEl.textContent = activeTabObj.title;
+    const activeSubObj = (activeTabObj.subCategories || []).find(s => s.id === monsterCreatorActiveSubTab) || (activeTabObj.subCategories && activeTabObj.subCategories[0]) || { id: 'all', title: activeTabObj.title };
+
+    if (titleEl) titleEl.textContent = activeSubObj.title || activeTabObj.title;
 
     const student = store.getStudent(monsterCreatorStudentId);
     if (!student) return;
     const mState = store.calculateMonsterState(monsterCreatorStudentId);
     const unlockedSet = mState.unlockedItemIds || new Set();
 
-    let categoriesInTab = [];
-    if (monsterCreatorActiveTab === 'monster') categoriesInTab = ['body'];
-    else if (monsterCreatorActiveTab === 'face') categoriesInTab = ['eyes', 'mouth'];
-    else if (monsterCreatorActiveTab === 'features') categoriesInTab = ['horns', 'wings', 'tail'];
-    else if (monsterCreatorActiveTab === 'clothing') categoriesInTab = ['clothing', 'hat', 'glasses', 'backpack', 'accessory'];
-    else if (monsterCreatorActiveTab === 'world') categoriesInTab = ['background', 'aura'];
-
     const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
-    const items = allItems.filter(item => categoriesInTab.includes(item.category));
-
-    // Optional none items for categories that can be unequipped
+    let items = [];
     const noneOptions = [];
-    if (monsterCreatorActiveTab === 'features') {
-      noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', icon: '✕', isNone: true });
-    }
-    if (monsterCreatorActiveTab === 'clothing') {
-      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Clothing', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'glasses-none', category: 'glasses', name: 'No Glasses', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', icon: '✕', isNone: true });
-      noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', icon: '✕', isNone: true });
-    }
-    if (monsterCreatorActiveTab === 'world') {
-      noneOptions.push({ id: 'aura-none', category: 'aura', name: 'No Aura', icon: '✕', isNone: true });
+
+    const sub = monsterCreatorActiveSubTab;
+    if (sub === 'colors') {
+      items = allItems.filter(i => i.category === 'body');
+    } else if (sub === 'eyes') {
+      items = allItems.filter(i => i.category === 'eyes');
+    } else if (sub === 'mouths') {
+      items = allItems.filter(i => i.category === 'mouth');
+    } else if (sub === 'horns') {
+      items = allItems.filter(i => i.category === 'horns');
+    } else if (sub === 'wings') {
+      noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', isNone: true });
+      items = allItems.filter(i => i.category === 'wings');
+    } else if (sub === 'tails') {
+      items = allItems.filter(i => i.category === 'tail');
+    } else if (sub === 'hats') {
+      noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', isNone: true });
+      items = allItems.filter(i => i.category === 'hat');
+    } else if (sub === 'backpacks') {
+      noneOptions.push({ id: 'bp-none', category: 'backpack', name: 'No Backpack', isNone: true });
+      items = allItems.filter(i => i.category === 'backpack');
+    } else if (sub === 'accessories') {
+      noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', isNone: true });
+      items = allItems.filter(i => i.category === 'accessory' || i.category === 'glasses');
+    } else if (sub === 'adventure') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'adventure' || ['clothing-vest', 'clothing-cape', 'clothing-adv-jacket', 'clothing-travel-coat'].includes(i.id)));
+    } else if (sub === 'school') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'school' || ['clothing-scarf', 'clothing-uniform', 'clothing-hoodie', 'clothing-school-jacket', 'clothing-scholar'].includes(i.id)));
+    } else if (sub === 'special') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'special' || ['clothing-royal-robe', 'clothing-robe', 'clothing-space', 'clothing-hero', 'clothing-winter'].includes(i.id)));
+    } else if (sub === 'fantasy') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'fantasy' || ['clothing-dragon-armor', 'clothing-knight-armor', 'clothing-magic-robe', 'clothing-royal'].includes(i.id)));
+    } else if (sub === 'worlds') {
+      items = allItems.filter(i => i.category === 'background');
+    } else if (sub === 'auras') {
+      noneOptions.push({ id: 'aura-none', category: 'aura', name: 'No Aura', isNone: true });
+      items = allItems.filter(i => i.category === 'aura');
+    } else {
+      items = allItems.filter(i => i.category === sub);
     }
 
     const fullList = [...noneOptions, ...items];
+    if (countEl) countEl.textContent = fullList.length + ' Items';
+
+    const thumbRenderer = window.MonsterRenderer && window.MonsterRenderer.renderMonsterItemThumbnail ?
+      window.MonsterRenderer.renderMonsterItemThumbnail :
+      (window.renderMonsterItemThumbnail || null);
 
     grid.innerHTML = fullList.map(item => {
       const cat = item.category;
       let isSelected = false;
+
       if (item.isNone) {
-        isSelected = !monsterCreatorDraft.equipped[cat] || monsterCreatorDraft.equipped[cat] === 'none';
+        if (cat === 'accessory') {
+          isSelected = (!monsterCreatorDraft.equipped.accessory || monsterCreatorDraft.equipped.accessory === 'none') &&
+                       (!monsterCreatorDraft.equipped.glasses || monsterCreatorDraft.equipped.glasses === 'none');
+        } else {
+          isSelected = !monsterCreatorDraft.equipped[cat] || monsterCreatorDraft.equipped[cat] === 'none';
+        }
       } else if (cat === 'body') {
         isSelected = (monsterCreatorDraft.equipped.body === item.id) || (monsterCreatorDraft.baseColor === item.id.replace('body-', ''));
+      } else if (cat === 'accessory' || cat === 'glasses') {
+        isSelected = (monsterCreatorDraft.equipped.accessory === item.id || monsterCreatorDraft.equipped.glasses === item.id);
       } else {
         isSelected = (monsterCreatorDraft.equipped[cat] === item.id);
       }
@@ -8874,7 +11547,7 @@ window.switchClassroomSubTab = function(subTab) {
       const isUnlocked = item.isNone || unlockedSet.has(item.id);
       let lockText = '';
       if (!isUnlocked) {
-        if (item.unlockType === 'level' && item.unlockRequirement) {
+        if (item.unlockType === 'level' && item.unlockRequirement && item.unlockRequirement.level) {
           lockText = 'Level ' + item.unlockRequirement.level;
         } else if (item.unlockType === 'achievement') {
           lockText = 'Achievement';
@@ -8883,12 +11556,26 @@ window.switchClassroomSubTab = function(subTab) {
         }
       }
 
+      const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
+
+      let rarityBadge = '';
+      if (item.rarity && item.rarity !== 'common' && !item.isNone) {
+        rarityBadge = '<span class="monster-item-rarity-pill is-' + item.rarity + '">' + item.rarity + '</span>';
+      }
+
       return '' +
-        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" style="cursor:' + (isUnlocked ? 'pointer' : 'not-allowed') + '; background:var(--bg-canvas); border:' + (isSelected ? '2px solid var(--color-primary)' : isUnlocked ? '1.5px solid var(--border-light)' : '1.5px dashed #cbd5e1') + '; border-radius:var(--radius-md); padding:10px 8px; text-align:center; transition:all 0.15s ease; box-shadow:' + (isSelected ? 'var(--shadow-md)' : 'none') + '; position:relative; opacity:' + (isUnlocked ? '1' : '0.6') + ';">' +
-          (isUnlocked ? '' : '<span style="position:absolute; top:4px; right:4px; font-size:0.7rem; background:#fee2e2; color:#ef4444; border-radius:10px; padding:1px 5px; font-weight:800;">🔒 ' + lockText + '</span>') +
-          '<div style="font-size:32px; margin-bottom:4px;">' + (item.icon || '✨') + '</div>' +
-          '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); line-height:1.2;">' + item.name + '</div>' +
-          '<div style="font-size:0.7rem; color:var(--text-muted); text-transform:capitalize; margin-top:2px;">' + cat + '</div>' +
+        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" ' +
+             'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ' +
+             'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
+          (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
+          (!isUnlocked ? '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>' : '') +
+          '<div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:2px auto;">' +
+            thumbSvg +
+          '</div>' +
+          '<div style="width:100%; text-align:center;">' +
+            '<div class="monster-item-card-title">' + item.name + '</div>' +
+            rarityBadge +
+          '</div>' +
         '</div>';
     }).join('');
   };
@@ -8897,15 +11584,44 @@ window.switchClassroomSubTab = function(subTab) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
     if (isNone) {
-      monsterCreatorDraft.equipped[category] = 'none';
+      if (category === 'accessory') {
+        monsterCreatorDraft.equipped.accessory = 'none';
+        monsterCreatorDraft.equipped.glasses = 'none';
+      } else {
+        monsterCreatorDraft.equipped[category] = 'none';
+      }
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
+    } else if (category === 'glasses') {
+      monsterCreatorDraft.equipped.glasses = itemId;
+      if (monsterCreatorDraft.equipped.accessory === 'none') monsterCreatorDraft.equipped.accessory = '';
     } else {
       monsterCreatorDraft.equipped[category] = itemId;
     }
 
     window.renderMonsterCreatorItems();
+    window.updateMonsterCreatorPreview();
+  };
+
+  window.toggleMonsterCreatorAnimation = function() {
+    monsterCreatorIsAnimated = !monsterCreatorIsAnimated;
+    const btn = document.getElementById('btn-monster-preview-animate');
+    const iconEl = document.getElementById('monster-animate-icon');
+    const labelEl = document.getElementById('monster-animate-label');
+
+    if (btn) {
+      if (monsterCreatorIsAnimated) {
+        btn.classList.add('is-active');
+        if (iconEl) iconEl.textContent = '⏸';
+        if (labelEl) labelEl.textContent = 'Pause';
+      } else {
+        btn.classList.remove('is-active');
+        if (iconEl) iconEl.textContent = '▶';
+        if (labelEl) labelEl.textContent = 'Animate';
+      }
+    }
+
     window.updateMonsterCreatorPreview();
   };
 
@@ -8917,26 +11633,60 @@ window.switchClassroomSubTab = function(subTab) {
     const profile = store.getMonsterProfile(monsterCreatorStudentId);
 
     const box = document.querySelector('#modal-avatar-selector #avatar-preview-box') || document.getElementById('avatar-preview-box');
+    const miniAvatarBox = document.getElementById('monster-creator-mini-avatar');
     const nameEl = document.getElementById('avatar-preview-name');
     const stageEl = document.getElementById('avatar-preview-category');
     const descEl = document.getElementById('avatar-preview-desc');
     const summaryEl = document.getElementById('monster-creator-equipped-summary');
+    const countSummaryEl = document.getElementById('monster-creator-equipped-count');
 
-    if (box && (window.MonsterRenderer || window.renderMonsterSVG)) {
-      const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
-      const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+    const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
+    const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+
+    if (box && renderFn) {
       box.innerHTML = renderFn({
         stage: previewStage,
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
-        size: 260,
-        animated: true
+        size: 270,
+        animated: monsterCreatorIsAnimated
+      });
+    }
+
+    if (miniAvatarBox && renderFn) {
+      miniAvatarBox.innerHTML = renderFn({
+        stage: previewStage,
+        color: monsterCreatorDraft.baseColor,
+        equipped: monsterCreatorDraft.equipped,
+        size: 46,
+        animated: false
       });
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
     if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
     if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+
+    // Render Preview Background Swatches
+    const bgSwatchesEl = document.getElementById('monster-preview-bg-swatches');
+    if (bgSwatchesEl) {
+      const bgs = [
+        { id: 'bg-meadow', icon: '🏕️', label: 'Explorer Camp', bg: '#dcfce7' },
+        { id: 'bg-castle', icon: '🏰', label: 'Academy Castle', bg: '#fef3c7' },
+        { id: 'bg-forest', icon: '🌲', label: 'Enchanted Forest', bg: '#064e3b' },
+        { id: 'bg-volcano', icon: '🌋', label: 'Volcano Island', bg: '#451a03' },
+        { id: 'bg-beach', icon: '🏖️', label: 'Adventure Beach', bg: '#e0f2fe' },
+        { id: 'bg-cosmos', icon: '🚀', label: 'Space World', bg: '#090d16' }
+      ];
+      const curBg = monsterCreatorDraft.equipped.background || 'bg-meadow';
+      bgSwatchesEl.innerHTML = bgs.map(b => '' +
+        '<button type="button" class="monster-preview-bg-dot ' + (curBg === b.id ? 'is-active' : '') + '" ' +
+                'title="' + b.label + '" onclick="handleSelectMonsterItem(\'' + b.id + '\', \'background\', false)" ' +
+                'style="background:' + b.bg + ';">' +
+          b.icon +
+        '</button>'
+      ).join('');
+    }
 
     // Render Quick Fur Color Swatches
     const swatchEl = document.getElementById('monster-color-swatches');
@@ -8950,38 +11700,64 @@ window.switchClassroomSubTab = function(subTab) {
         { id: 'gold', hex: '#eab308', label: 'Royal Gold' }
       ];
       swatchEl.innerHTML = colors.map(c => '' +
-        '<button type="button" title="' + c.label + '" onclick="handleQuickSetColor(\'' + c.id + '\')" style="width:28px; height:28px; border-radius:50%; background:' + c.hex + '; border:' + (monsterCreatorDraft.baseColor === c.id ? '3px solid #0f172a' : '2px solid #ffffff') + '; box-shadow:var(--shadow-xs); cursor:pointer; transform:' + (monsterCreatorDraft.baseColor === c.id ? 'scale(1.15)' : 'scale(1)') + '; transition:all 0.15s ease;"></button>'
+        '<button type="button" title="' + c.label + '" onclick="handleQuickSetColor(\'' + c.id + '\')" style="width:26px; height:26px; border-radius:50%; background:' + c.hex + '; border:' + (monsterCreatorDraft.baseColor === c.id ? '3px solid #0f172a' : '2px solid #ffffff') + '; box-shadow:var(--shadow-xs); cursor:pointer; transform:' + (monsterCreatorDraft.baseColor === c.id ? 'scale(1.15)' : 'scale(1)') + '; transition:all 0.15s ease;"></button>'
       ).join('');
     }
 
+    // Render Equipped Features Summary in Column 3
     if (summaryEl) {
       const eq = monsterCreatorDraft.equipped;
+      const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
+      const getItemName = function(id, fallback) {
+        const found = allItems.find(i => i.id === id);
+        return found ? found.name : fallback || id;
+      };
+
       const layers = [
-        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, canRemove: false },
-        { label: 'Eyes', val: eq.eyes, canRemove: false },
-        { label: 'Mouth', val: eq.mouth, canRemove: false },
-        { label: 'Horns', val: eq.horns, canRemove: true, cat: 'horns' },
-        { label: 'Wings', val: eq.wings, canRemove: true, cat: 'wings' },
-        { label: 'Tail', val: eq.tail, canRemove: true, cat: 'tail' },
-        { label: 'Clothing', val: eq.clothing, canRemove: true, cat: 'clothing' },
-        { label: 'Hat', val: eq.hat, canRemove: true, cat: 'hat' },
-        { label: 'Glasses', val: eq.glasses, canRemove: true, cat: 'glasses' },
-        { label: 'Backpack', val: eq.backpack, canRemove: true, cat: 'backpack' },
-        { label: 'Accessory', val: eq.accessory, canRemove: true, cat: 'accessory' },
-        { label: 'Aura', val: eq.aura, canRemove: true, cat: 'aura' },
-        { label: 'World', val: eq.background, canRemove: false }
+        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, name: monsterCreatorDraft.baseColor.charAt(0).toUpperCase() + monsterCreatorDraft.baseColor.slice(1), icon: '🎨', tab: 'monster', sub: 'colors', canRemove: false },
+        { label: 'Eyes', val: eq.eyes, name: getItemName(eq.eyes, 'Default Eyes'), icon: '👀', tab: 'face', sub: 'eyes', canRemove: false },
+        { label: 'Mouth', val: eq.mouth, name: getItemName(eq.mouth, 'Default Smile'), icon: '👄', tab: 'face', sub: 'mouths', canRemove: false },
+        { label: 'Horns', val: eq.horns, name: getItemName(eq.horns, 'Signature Ears'), icon: '🪶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },
+        { label: 'Wings', val: eq.wings, name: getItemName(eq.wings, 'None'), icon: '🪽', tab: 'features', sub: 'wings', canRemove: true, cat: 'wings' },
+        { label: 'Tail', val: eq.tail, name: getItemName(eq.tail, 'Puff Tail'), icon: '🦎', tab: 'features', sub: 'tails', canRemove: true, cat: 'tail' },
+        { label: 'Clothing', val: eq.clothing, name: getItemName(eq.clothing, 'Explorer Vest'), icon: '👔', tab: 'clothing', sub: 'adventure', canRemove: true, cat: 'clothing' },
+        { label: 'Hat', val: eq.hat, name: getItemName(eq.hat, 'None'), icon: '🎩', tab: 'features', sub: 'hats', canRemove: true, cat: 'hat' },
+        { label: 'Glasses', val: eq.glasses, name: getItemName(eq.glasses, 'None'), icon: '👓', tab: 'features', sub: 'accessories', canRemove: true, cat: 'glasses' },
+        { label: 'Backpack', val: eq.backpack, name: getItemName(eq.backpack, 'None'), icon: '🎒', tab: 'features', sub: 'backpacks', canRemove: true, cat: 'backpack' },
+        { label: 'Accessory', val: eq.accessory, name: getItemName(eq.accessory, 'None'), icon: '🎀', tab: 'features', sub: 'accessories', canRemove: true, cat: 'accessory' },
+        { label: 'Aura', val: eq.aura, name: getItemName(eq.aura, 'None'), icon: '✨', tab: 'features', sub: 'auras', canRemove: true, cat: 'aura' },
+        { label: 'World', val: eq.background, name: getItemName(eq.background, 'Explorer Camp'), icon: '🌍', tab: 'world', sub: 'worlds', canRemove: false }
       ];
 
-      summaryEl.innerHTML = layers.filter(l => l.val && l.val !== 'none').map(l => '' +
-        '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:8px; padding:4px 8px; font-size:0.75rem;">' +
-          '<span><strong style="color:var(--text-main);">' + l.label + ':</strong> ' + l.val + '</span>' +
-          (l.canRemove ? '<button type="button" onclick="handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip item" style="background:transparent; border:none; color:var(--color-danger); cursor:pointer; font-size:0.75rem; padding:0 4px;">✕</button>' : '') +
+      const activeLayers = layers.filter(l => l.val && l.val !== 'none');
+      if (countSummaryEl) countSummaryEl.textContent = '(' + activeLayers.length + ')';
+
+      summaryEl.innerHTML = activeLayers.map(l => '' +
+        '<div class="monster-equipped-row" onclick="navigateToEquippedFeature(\'' + l.tab + '\', \'' + l.sub + '\')" title="Jump to ' + l.label + ' in customizer">' +
+          '<div class="monster-equipped-row-left">' +
+            '<span class="monster-equipped-row-icon">' + l.icon + '</span>' +
+            '<div>' +
+              '<div class="monster-equipped-row-label">' + l.label + '</div>' +
+              '<div class="monster-equipped-row-val">' + l.name + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="monster-equipped-row-actions">' +
+            (l.canRemove ? '<button type="button" class="monster-unequip-btn" onclick="event.stopPropagation(); handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip">✕</button>' : '') +
+            '<span class="monster-equipped-chevron">›</span>' +
+          '</div>' +
         '</div>'
       ).join('');
     }
   };
 
-  
+  window.navigateToEquippedFeature = function(tabId, subId) {
+    monsterCreatorActiveTab = tabId;
+    monsterCreatorActiveSubTab = subId;
+    window.renderMonsterCreatorNav();
+    window.renderMonsterCreatorSubNav();
+    window.renderMonsterCreatorItems();
+  };
+
   window.handleQuickSetColor = function(colorId) {
     if (!monsterCreatorDraft) return;
     monsterCreatorDraft.baseColor = colorId;
@@ -9011,13 +11787,27 @@ window.switchClassroomSubTab = function(subTab) {
     window.closeModal('modal-avatar-selector');
 
     renderCurrentView();
+
+    // Instant re-render for all badges across active view
+    const studentBadges = document.querySelectorAll('.monster-badge[data-student-id="' + monsterCreatorStudentId + '"]');
+    studentBadges.forEach(badge => {
+      const parent = badge.parentNode;
+      if (parent) {
+        const temp = document.createElement('div');
+        temp.innerHTML = window.renderMonsterStageBadge(monsterCreatorStudentId, { size: 76, animated: true });
+        if (temp.firstElementChild) {
+          parent.replaceChild(temp.firstElementChild, badge);
+        }
+      }
+    });
+
     if (currentProfileStudentId === monsterCreatorStudentId) {
       window.openStudentDetail(monsterCreatorStudentId, studentProfileActiveTab || 'overview');
     }
 
     const monsterPreview = document.getElementById('edit-stud-monster-preview');
     if (monsterPreview) {
-      monsterPreview.innerHTML = window.renderMonsterAvatar(monsterCreatorStudentId, { size: 44, animated: true });
+      monsterPreview.innerHTML = window.renderMonsterStageBadge(monsterCreatorStudentId, { size: 48, animated: true });
     }
   };
   window.handleConfirmSaveAvatar = window.handleConfirmSaveMonster;
@@ -9066,6 +11856,30 @@ window.switchClassroomSubTab = function(subTab) {
         break;
       case 'instructions':
         container.innerHTML = renderToolkitInstructionsView();
+        break;
+      case 'simon':
+        if (typeof window.renderToolkitSimonView === 'function') {
+          container.innerHTML = window.renderToolkitSimonView();
+        }
+        break;
+      case 'bamboozle':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<!-- Baamboozle Arena Utility Card -->' +
+            '<div class="toolkit-card" style="max-width:520px; width:100%; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border: 2px solid #38bdf8; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'baamboozle/index.html\', \'_blank\')">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">⚡</span>' +
+                '<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">PARTY SHOWDOWN</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Baamboozle Arena</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">24-Card Team Tournament with Phonics, CLIL Inventions, Tongue Twisters & Sabotage Traps.</p>' +
+              '</div>' +
+              '<button style="background: #38bdf8; color: #022c22; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
+                '🚀 Launch Arena' +
+              '</button>' +
+            '</div>' +
+          '</div>';
         break;
       default:
         container.innerHTML = renderToolkitTimerView();
@@ -10415,65 +13229,47 @@ window.switchClassroomSubTab = function(subTab) {
     const levels = store.getProgressionLevels();
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
     const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
-    const profile = store.getMonsterProfile(studentId);
 
-    const titleEl = document.getElementById('m-levelup-title') || document.getElementById('modal-levelup-title');
-    if (titleEl) titleEl.innerText = student.firstName.toUpperCase() + "'S MONSTER EVOLVED!";
+    const titleEl = document.getElementById('m-levelup-title');
+    if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
     const subtitleEl = document.getElementById('m-levelup-subtitle');
-    if (subtitleEl) subtitleEl.innerText = 'Congratulations! Reached Level ' + toLvl.level + ': ' + toLvl.name;
+    if (subtitleEl) subtitleEl.innerText = 'Congratulations, ' + student.firstName + '! Your monster has evolved into a Level ' + toLvl.level + ' ' + toLvl.name + '!';
 
     const xpInfoEl = document.getElementById('m-levelup-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Reached';
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Milestone Reached';
 
-    const prevSvgEl = document.getElementById('m-levelup-prev-svg') || document.getElementById('modal-levelup-left');
-    if (prevSvgEl && window.renderMonsterSVG) {
-      prevSvgEl.innerHTML = window.renderMonsterSVG({ stage: fromLvl.stageKey, color: profile.baseColor, size: 90, animated: false });
-    }
+    // Before Art
+    const prevImg = document.getElementById('m-levelup-prev-img');
+    if (prevImg) prevImg.src = window.MonsterRenderer.getMonsterStageImage(fromLvl.stageKey);
+    const prevLabel = document.getElementById('m-levelup-prev-label');
+    if (prevLabel) prevLabel.innerHTML = 'Level ' + fromLvl.level + '<br>' + fromLvl.name;
 
-    const prevLabelEl = document.getElementById('m-levelup-prev-label');
-    if (prevLabelEl) prevLabelEl.innerHTML = 'Level ' + fromLvl.level + '<br>' + fromLvl.name;
+    // After Art
+    const nextImg = document.getElementById('m-levelup-next-img');
+    if (nextImg) nextImg.src = window.MonsterRenderer.getMonsterStageImage(toLvl.stageKey);
+    const nextLabel = document.getElementById('m-levelup-next-label');
+    if (nextLabel) nextLabel.innerText = 'Level ' + toLvl.level + ': ' + toLvl.name;
 
-    const nextSvgEl = document.getElementById('m-levelup-next-svg') || document.getElementById('modal-levelup-right');
-    if (nextSvgEl && window.renderMonsterSVG) {
-      nextSvgEl.innerHTML = window.renderMonsterSVG({ stage: toLvl.stageKey, color: profile.baseColor, size: 110, animated: true });
-    }
-
-    const nextLabelEl = document.getElementById('m-levelup-next-label');
-    if (nextLabelEl) nextLabelEl.innerText = 'Level ' + toLvl.level + ': ' + toLvl.name;
-
+    // Teaser
     const nextLvl = levels.find(l => l.level > toLvl.level);
     const teaserEl = document.getElementById('m-levelup-next-teaser');
     if (teaserEl) {
       teaserEl.innerText = nextLvl 
         ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString() + ' XP (' + nextLvl.name + ')')
-        : '🌟 Maximum evolution stage achieved!';
+        : '🌟 Peak evolution stage achieved!';
     }
 
-    const itemsWrap = document.getElementById('m-levelup-items-list') || document.getElementById('modal-levelup-unlocked-items');
-    if (itemsWrap) {
-      const unlockedItems = store.getMonsterItems ? store.getMonsterItems().filter(it => it.unlockType === 'level' && it.unlockRequirement && it.unlockRequirement.level === toLvl.level) : [];
-      if (unlockedItems.length > 0) {
-        itemsWrap.innerHTML = unlockedItems.map(it => 
-          '<div class="monster-item-card" style="padding:10px; border-radius:10px; border:1px solid var(--border-light); background:var(--bg-card); display:flex; flex-direction:column; align-items:center; min-width:85px;">' +
-            '<div style="font-size:1.8rem;">' + (it.icon || '🎁') + '</div>' +
-            '<div style="font-size:0.75rem; font-weight:800; text-align:center;">' + it.name + '</div>' +
-            '<div style="font-size:0.65rem; color:var(--color-primary); text-transform:uppercase;">' + it.category + '</div>' +
-          '</div>'
-        ).join('');
-      } else {
-        itemsWrap.innerHTML = '<div style="font-size:0.82rem; color:var(--text-muted); padding:6px 0;">✨ Evolution aura and unique visual traits unlocked!</div>';
-      }
+    // Perks
+    const perksList = document.getElementById('m-levelup-perks-list');
+    if (perksList) {
+      perksList.innerHTML = 
+        '<div>🌟 <strong>Stronger Companion Aura:</strong> Shines brighter in classroom view</div>' +
+        '<div>🎨 <strong>New Monster Studio Customizations:</strong> ' + (toLvl.unlockedItems ? toLvl.unlockedItems.slice(0, 3).join(', ') : 'Special accessories') + ' unlocked!</div>' +
+        '<div>🏆 <strong>Evolution Badge:</strong> ' + toLvl.name + ' Adventurer unlocked!</div>';
     }
 
-    const btnCustom = document.getElementById('btn-modal-levelup-customize');
-    if (btnCustom) {
-      btnCustom.onclick = function() {
-        window.closeModal('modal-monster-levelup');
-        window.openStudentDetail(studentId, 'monster');
-      };
-    }
-
+    if (window.playCelebrationSound) window.playCelebrationSound();
     window.openModal('modal-monster-levelup');
   };
 

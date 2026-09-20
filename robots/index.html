@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🤖 AMAZING ROBOTS AROUND THE WORLD | Interactive ESL Lesson (A1–A2)</title>
+  <link rel="stylesheet" href="css/robots.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fullscreen 16:9 Auto-Scaling Shell -->
+  <div id="robots-screen-wrapper">
+    <div id="robots-stage">
+
+      <!-- Top Persistent HUD -->
+      <header id="robots-hud">
+        <div class="hud-left">
+          <button class="hud-btn primary" onclick="window.robotsApp.renderPage(1)" title="Return to Lesson Missions">
+            🤖 <span>Amazing Robots</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.robotsApp.prevPage()" title="Previous Page">
+            ⬅️ <span>Prev</span>
+          </button>
+
+          <button class="hud-btn" onclick="window.robotsApp.nextPage()" title="Next Page">
+            <span>Next</span> ➡️
+          </button>
+
+          <!-- Stage Tracker Indicator -->
+          <div class="page-tracker-pill" id="hud-page-name">
+            1. 🚀 Welcome &amp; Missions
+          </div>
+
+          <!-- Active Robot Indicator Badge -->
+          <div class="robot-active-badge" id="hud-robot-badge" onclick="window.robotsApp.cycleRobotReveal()" title="Active Group Robot">
+            🐟 Fish Robot
+          </div>
+
+          <!-- Printable Worksheets Link -->
+          <a href="worksheet.html" target="_blank" class="hud-btn" title="Open Printable Companion">
+            🖨️ <span>Worksheet</span>
+          </a>
+
+          <!-- Return to Library Hub -->
+          <a href="../index.html" class="hud-btn" title="Return to ESL Library" style="background:#e0f2fe; border-color:#38bdf8; color:#0369a1; text-decoration:none; font-weight:800;">
+            📚 <span>Library</span>
+          </a>
+
+          <!-- Navigation Links to Sister Games -->
+          <a href="../feelings/index.html" class="hud-btn" title="Feelings & Emotions Lesson" style="background:#fdf4ff; border-color:#f0abfc; color:#a21caf; text-decoration:none;">
+            🎭 <span>Feelings</span>
+          </a>
+          <a href="../firefighter/index.html" class="hud-btn" title="Fire Station Adventure" style="background:#fee2e2; border-color:#fca5a5; color:#b91c1c; text-decoration:none;">
+            🚒 <span>Firefighter</span>
+          </a>
+        </div>
+
+        <div class="hud-right">
+          <!-- Robot Group Switcher Tabs -->
+          <div style="display: flex; gap: 4px;">
+            <button class="hud-btn" onclick="window.robotsApp.setActiveRobot('fish')" title="Group 1: Fish Robot">🐟 G1</button>
+            <button class="hud-btn" onclick="window.robotsApp.setActiveRobot('jellyfish')" title="Group 2: Robotic Jellyfish">🪼 G2</button>
+            <button class="hud-btn" onclick="window.robotsApp.setActiveRobot('bee')" title="Group 3: Robotic Bee">🐝 G3</button>
+            <button class="hud-btn" onclick="window.robotsApp.setActiveRobot('snake')" title="Group 4: Snake Robot">🐍 G4</button>
+            <button class="hud-btn" onclick="window.robotsApp.setActiveRobot('dog')" title="Group 5: Robot Dog">🐕 G5</button>
+          </div>
+
+          <!-- Audio Controls -->
+          <button class="hud-btn" id="robot-voice-btn" onclick="toggleRobotSpeech()" title="Toggle Voice Pronunciation">
+            🔊 <span>Voice</span>
+          </button>
+          <button class="hud-btn" id="robot-sfx-btn" onclick="toggleRobotSfx()" title="Toggle Sound Effects">
+            🎵 <span>SFX</span>
+          </button>
+
+          <!-- Teacher Control Panel Dropdown -->
+          <div class="teacher-dropdown-wrap">
+            <button class="hud-btn" onclick="toggleTeacherMenu()" title="Teacher Navigation">
+              🧑‍🏫 <span>Teacher</span> ▾
+            </button>
+            <div class="teacher-panel-modal" id="robots-teacher-menu">
+              <div class="menu-section-tag">--- 9-PAGE LESSON FLOW (60-70 MIN) ---</div>
+              <button onclick="window.robotsApp.renderPage(1); toggleTeacherMenu();">1. 🚀 Welcome &amp; Missions (5m)</button>
+              <button onclick="window.robotsApp.renderPage(2); toggleTeacherMenu();">2. 🤔 Mystery Robot Guessing (10m)</button>
+              <button onclick="window.robotsApp.renderPage(3); toggleTeacherMenu();">3. 🔎 WH Question Detective (8m)</button>
+              <button onclick="window.robotsApp.renderPage(4); toggleTeacherMenu();">4. 📖 Official Robot Dossiers (10m)</button>
+              <button onclick="window.robotsApp.renderPage(5); toggleTeacherMenu();">5. 🔎 Find the Answers (8m)</button>
+              <button onclick="window.robotsApp.renderPage(6); toggleTeacherMenu();">6. ⚡ Fact or Guess? (8m)</button>
+              <button onclick="window.robotsApp.renderPage(7); toggleTeacherMenu();">7. 🎤 Presentation Prep (10m)</button>
+              <button onclick="window.robotsApp.renderPage(8); toggleTeacherMenu();">8. 🌍 Real World Reveal (10m)</button>
+              <button onclick="window.robotsApp.renderPage(9); toggleTeacherMenu();">9. 💭 Final Reflection &amp; Award (5m)</button>
+
+              <div class="menu-section-tag">--- SWITCH ACTIVE ROBOT GROUP ---</div>
+              <button onclick="window.robotsApp.setActiveRobot('fish'); toggleTeacherMenu();">🐟 Group 1: Fish Robot (NYU)</button>
+              <button onclick="window.robotsApp.setActiveRobot('jellyfish'); toggleTeacherMenu();">🪼 Group 2: Robotic Jellyfish (FAU/Max Planck)</button>
+              <button onclick="window.robotsApp.setActiveRobot('bee'); toggleTeacherMenu();">🐝 Group 3: Robotic Bee (Harvard RoboBee)</button>
+              <button onclick="window.robotsApp.setActiveRobot('snake'); toggleTeacherMenu();">🐍 Group 4: Snake Robot (CMU SAR)</button>
+              <button onclick="window.robotsApp.setActiveRobot('dog'); toggleTeacherMenu();">🐕 Group 5: Robot Dog (Boston Dynamics)</button>
+
+              <div class="menu-section-tag">--- PRINTABLES &amp; RESOURCES ---</div>
+              <a href="worksheet.html" target="_blank" style="background:#f0fdf4; color:#15803d; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block; margin-bottom:5px;">
+                🖨️ Open 4-Page Printable Worksheet
+              </a>
+              <a href="../index.html" style="background:#eff6ff; color:#1d4ed8; text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:800; display:block;">
+                📚 All Games &amp; Lessons Hub
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Stage Viewport -->
+      <main id="robots-viewport">
+        <!-- Injected dynamically by RobotsScenes and RobotsApp -->
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/robots-audio.js"></script>
+  <script src="js/robots-data.js"></script>
+  <script src="js/robots-scenes.js"></script>
+  <script src="js/robots-app.js"></script>
+</body>
+</html>

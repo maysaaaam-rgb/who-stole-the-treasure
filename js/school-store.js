@@ -17,8 +17,244 @@
 
   const STORAGE_KEY = 'eaa_master_school_v6';
 
-  // Canonical list of 15 audited games
-  const CANONICAL_GAMES = [
+  // Canonical list of audited games
+  const RAW_CANONICAL_GAMES = [
+    {
+      id: "brain-hackers",
+      title: "🧠 The Brain Hackers: Mission Unlock Your Brain",
+      category: "CLIL & STEM Games",
+      level: "A1+",
+      cefrLevel: "A1+",
+      age: "8–11",
+      ages: "8–11",
+      grade: "Grade 4",
+      grades: ["Grade 4"],
+      duration: 40,
+      estimatedMinutes: 40,
+      xp: 100,
+      skills: ["Science & CLIL", "Speaking", "Reading", "Vocabulary", "Critical Thinking"],
+      topic: "The Brain, Neurons & Creativity (Global Readings 3 Unit 1)",
+      topics: ["Brain Lobes", "PET Scan Senses", "Neuron Anatomy", "Neural Pathways", "Visualization", "Creativity", "Brain Habits"],
+      objectives: [
+        "Identify 4 cerebrum lobes and correlate them with hearing, seeing, speaking, and thinking",
+        "Assemble and label a neuron: cell body, dendrites, axon, and synapse",
+        "Demonstrate electrical signal transmission in rapid sentence chains (e.g. DOG RUN FAST)",
+        "Practice visualization: listen to descriptive text and spot discrepancies in an image",
+        "Express creative ideas through drawing and explain why different brains imagine different things",
+        "Evaluate daily brain super-fuels (sleep, water, exercise) vs brain drains"
+      ],
+      learningObjectives: [
+        "Identify 4 cerebrum lobes and correlate them with hearing, seeing, speaking, and thinking",
+        "Assemble and label a neuron: cell body, dendrites, axon, and synapse",
+        "Demonstrate electrical signal transmission in rapid sentence chains (e.g. DOG RUN FAST)",
+        "Practice visualization: listen to descriptive text and spot discrepancies in an image",
+        "Express creative ideas through drawing and explain why different brains imagine different things",
+        "Evaluate daily brain super-fuels (sleep, water, exercise) vs brain drains"
+      ],
+      route: "brain-hackers/index.html",
+      worksheet: "brain-hackers/worksheets.html",
+      worksheetRoute: "brain-hackers/worksheets.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      thumbnailSvg: `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bhGradStore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#050c1a"/>
+            <stop offset="50%" stop-color="#0a192f"/>
+            <stop offset="100%" stop-color="#020813"/>
+          </linearGradient>
+          <linearGradient id="bhNeonStore" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#00ffff"/>
+            <stop offset="100%" stop-color="#ff007f"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#bhGradStore)"/>
+        <circle cx="100" cy="55" r="34" fill="#00ffff" opacity="0.15"/>
+        <path d="M 75 60 C 65 45, 80 25, 100 25 C 120 25, 135 45, 125 60 C 135 75, 120 90, 100 90 C 80 90, 65 75, 75 60 Z" fill="none" stroke="#00ffff" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="90" cy="45" r="4" fill="#ff007f"/>
+        <circle cx="110" cy="45" r="4" fill="#ffff00"/>
+        <circle cx="100" cy="65" r="5" fill="#00ff88"/>
+        <line x1="90" y1="45" x2="100" y2="65" stroke="#00ffff" stroke-width="2"/>
+        <line x1="110" y1="45" x2="100" y2="65" stroke="#00ffff" stroke-width="2"/>
+        <rect x="14" y="98" width="172" height="26" rx="13" fill="url(#bhNeonStore)"/>
+        <text x="100" y="115" font-family="system-ui, sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">THE BRAIN HACKERS 🧠⚡</text>
+      </svg>`,
+      description: "Premium 8-mission interactive ESL science adventure based on Global Readings 3 Unit 1 (pp. 18–21). Students become Brain Scientists to detect cerebrum lobes on PET scans, zoom into 10,000x microscopic neurons, assemble dendrites & axons, conduct high-speed human neuron message chains, visualize invisible concepts, unleash creative drawing, test subject lobe heatmaps, charge brain energy habits to 100%, and earn the Certified Brain Scientist diploma!"
+    },
+    {
+      id: "brain-quit",
+      title: "🧠 The Day Your Brain Quit! — Can You Save Your Brain?",
+      category: "Reading & Stories",
+      level: "A1",
+      cefrLevel: "A1",
+      age: "9–10",
+      ages: "9–10",
+      grade: "Grade 4",
+      grades: ["Grade 4"],
+      duration: 35,
+      estimatedMinutes: 35,
+      xp: 100,
+      skills: ["Reading", "Speaking", "Vocabulary", "Critical Thinking"],
+      topic: "Reading – Skimming & The Human Brain",
+      topics: ["Skimming Strategies", "Main Idea", "How Your Brain Learns", "Parts of the Brain", "Think, Learn, Remember, Imagine", "Unit 1 Page 17 (RG2)"],
+      objectives: [
+        "Skim an informational text in 30 seconds without reading every word",
+        "Use titles, diagrams, and bold keywords to identify the main idea",
+        "Categorize the four core brain powers: Think, Learn, Remember, and Imagine",
+        "Construct spoken and written sentences describing the brain's abilities",
+        "Complete the 5-clue mission to earn the Brain Defender Gold Badge"
+      ],
+      learningObjectives: [
+        "Skim an informational text in 30 seconds without reading every word",
+        "Use titles, diagrams, and bold keywords to identify the main idea",
+        "Categorize the four core brain powers: Think, Learn, Remember, and Imagine",
+        "Construct spoken and written sentences describing the brain's abilities",
+        "Complete the 5-clue mission to earn the Brain Defender Gold Badge"
+      ],
+      route: "brain/index.html",
+      worksheet: "brain/worksheets.html",
+      worksheetRoute: "brain/worksheets.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      thumbnailSvg: `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bqGradStore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1e1b4b"/>
+            <stop offset="50%" stop-color="#312e81"/>
+            <stop offset="100%" stop-color="#0f172a"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="140" fill="url(#bqGradStore)"/>
+        <circle cx="100" cy="55" r="32" fill="#ec4899" opacity="0.25"/>
+        <circle cx="100" cy="55" r="24" fill="#f472b6"/>
+        <path d="M 88 50 Q 100 42 112 50 Q 100 62 88 50" fill="none" stroke="#be185d" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="94" cy="53" r="3" fill="#0f172a"/>
+        <circle cx="106" cy="53" r="3" fill="#0f172a"/>
+        <circle cx="130" cy="40" r="14" fill="none" stroke="#f59e0b" stroke-width="3"/>
+        <line x1="140" y1="50" x2="152" y2="62" stroke="#d97706" stroke-width="4" stroke-linecap="round"/>
+        <rect x="14" y="94" width="172" height="26" rx="13" fill="#ec4899"/>
+        <text x="100" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">🧠 SAVE YOUR BRAIN</text>
+      </svg>`,
+      description: "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, and record their speech to save their brain!"
+    },
+    {
+      id: "young-inventor",
+      title: "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
+      category: "CLIL & STEM Games",
+      level: "A1+",
+      age: "8–11",
+      grade: "Grade 4",
+      duration: 40,
+      skills: ["Speaking", "CLIL", "Grammar", "Creative Thinking", "Vocabulary"],
+      topics: ["The Small Inventor", "Inventions", "CAN and CAN'T", "Biomimicry", "Problem Solving", "Expo Presentation"],
+      objectives: [
+        "Identify classroom problems and formulate creative solutions using scaffolded English",
+        "Express abilities and limitations using CAN and CAN'T + base verb",
+        "Describe features and parts using HAS / HAVE and component vocabulary",
+        "Deliver a 5-minute capstone Expo presentation with visual slide cues"
+      ],
+      route: "young-inventor/index.html",
+      worksheet: "young-inventor/worksheet.html",
+      worksheetRoute: "young-inventor/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Spectacular 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21)."
+    },
+    {
+      id: "wonderland-lesson2",
+      title: "The Wonderland Time Machine — Lesson 2: Past Simple Adventure",
+      category: "Grammar & Story Games",
+      level: "A1",
+      age: "7–10",
+      grade: "Grade 3",
+      duration: 35,
+      skills: ["Speaking", "Listening", "Grammar", "Vocabulary", "TPR / Drama"],
+      topics: ["Alice in Wonderland", "Time Machine", "Past Simple", "Two Truths & One Lie", "TPR Drama"],
+      objectives: [
+        "Distinguish NOW vs YESTERDAY in affirmative sentences",
+        "Recognize and produce past simple verbs: went, saw, opened, found, met, had, ate, drank",
+        "Sequence 6 events and detect an impossible statement in Two Truths and One Lie"
+      ],
+      route: "wonderland-time-machine/index.html",
+      worksheet: "wonderland-time-machine/worksheet.html",
+      worksheetRoute: "wonderland-time-machine/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Fast-paced 14-screen interactive Past Simple adventure for Grade 3 (A1) featuring the Time Machine, Verb Transformer, Story Sequencer, Mad Hatter Lie Game, and Boss Battle."
+    },
+    {
+      id: "story-engine-alice",
+      title: "Alice in Wonderland: The Story Adventure",
+      category: "Interactive Stories",
+      level: "A1–A1+",
+      age: "7–12",
+      grade: "Grade 3",
+      duration: 45,
+      skills: ["Reading", "Listening", "Speaking", "Vocabulary", "Exploration", "Problem Solving"],
+      topics: ["Action Verbs", "Spatial Directions", "Size Transformations", "Contextual Dialogue", "Speaking Challenges"],
+      objectives: [
+        "Follow narrative instructions given by Wonderland characters in authentic contexts",
+        "Demonstrate behavioral comprehension through direct in-world physical actions",
+        "Participate in spoken dialogue moments using character voice and target phrases",
+        "Develop durable vocabulary mastery across multiple story chapters (A1–A1+ CEFR)"
+      ],
+      route: "story-engine/index.html?story=alice",
+      worksheet: null,
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Full 9-chapter playable children's adventure with invisible adaptive AI learning: follow the White Rabbit, fall down the well, shrink & grow in the Hall of Doors, solve Caterpillar & Cheshire Cat riddles, join the Mad Tea Party, and stand your ground at the Royal Court!"
+    },
+    {
+      id: "robots",
+      title: "Amazing Robots Around the World",
+      category: "Speaking Games",
+      level: "A1–A2",
+      age: "9–12",
+      grade: "Grade 4",
+      duration: 65,
+      skills: ["Reading", "Speaking", "Listening", "Vocabulary", "Teamwork"],
+      topics: ["WH-Questions", "Real-World Robotics", "Biomimetic Science", "Search & Rescue"],
+      objectives: [
+        "Master the 6 WH-questions (What, Where, When, Who, Why, How)",
+        "Read and extract factual information from real scientific robot files",
+        "Differentiate real scientific capabilities from imaginary guesses",
+        "Collaborate in teams of 3–4 to present a discovery to the class"
+      ],
+      route: "robots/index.html",
+      worksheet: "robots/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive STEM & WH-Questions ESL lesson: explore 5 real-world biomimetic and rescue robots, practice What/Where/When/Who/Why/How, read authentic dossiers, and present team discoveries."
+    },
+    {
+      id: "feelings",
+      title: "How Would You Feel?",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "7–10",
+      grade: "Grade 3",
+      duration: 45,
+      skills: ["Speaking", "Vocabulary", "Listening"],
+      topics: ["Feelings & Emotions", "Situational Reactions", "Hypothetical Speaking Chunks"],
+      objectives: [
+        "Identify and use common and A1+ feelings and emotions",
+        "Express how they would feel in real-life, funny, and challenging situations using 'I\\'d feel...'",
+        "Say what action they would take using 'I\\'d...'",
+        "Connect situations to emotions and appropriate responses"
+      ],
+      route: "feelings/index.html",
+      worksheet: "feelings/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive A1+ situational thinking lesson: evaluate real-life, funny & challenging dilemmas, choose appropriate emotions, and speak using natural chunks."
+    },
     {
       id: "camp-mystery",
       title: "The Mystery at the Camp",
@@ -45,45 +281,45 @@
       description: "An interactive story adventure based on 'Don't Move'. Join Suzie and Mom in the dark windy forest, predict what makes the grunting sound outside the tent, solve cause & effect and sequencing mysteries, master fact vs opinion, and hunt phonics clues."
     },
     {
-      id: "phonics-hunters",
-      title: "Phonics Sound Hunters",
-      category: "Phonics & Sound Mission",
+      id: "phonics-adventure",
+      title: "Phonics Adventure – Blends & Digraphs",
+      category: "English → Phonics",
       level: "A1",
-      age: "7–9",
-      grade: "Grade 2-3",
-      duration: 50,
-      skills: ["Phonics", "Pronunciation", "Listening", "Speaking", "Reading"],
-      topics: ["Long Vowels (A, E, I, O, U)", "Digraph SH", "Blends ST, CH, PL, FL, PR, FR"],
+      age: "7–10",
+      grade: "Grade 3-4",
+      duration: 45,
+      skills: ["Phonics", "Listening", "Speaking", "Reading", "Spelling"],
+      topics: ["Sound Detectives Mission", "Digraphs SH & CH", "Blends ST, PL, FL", "Listening PR & FR", "Textbook Units 1–5"],
       objectives: [
-        "Recognize and pronounce Long A, E, I, O, U sounds and spelling patterns",
-        "Distinguish long vowel sounds from short vowel contrasts",
-        "Identify and pronounce digraphs and blends: sh, st, ch, pl, fl, pr, fr",
-        "Decode, blend, and spell target phonics vocabulary"
+        "Hear, see, say, read, build, spell, identify, and use target sounds and vocabulary",
+        "Master textbook exercises: Shells/fish/shoes, ST vs CH, unscramble PL/FL, PR vs FR listening, and interactive word search",
+        "Solve 4-lock Phonics Escape Room challenge"
       ],
       route: "phonics/index.html",
       worksheet: null,
       teacherGuide: true,
       featured: true,
       archived: false,
-      description: "Interactive sound hunter mission with team scoreboard, 5 sound monsters, movement games, and blend races."
+      description: "An interactive, game-based phonics lesson practicing SH, CH, ST, PL, FL, PR and FR through visual teaching, audio, pronunciation, storytelling, movement, listening, reading, spelling, games, textbook exercises, and an escape-room challenge."
     },
     {
       id: "monster-day",
-      title: "Build Your Own Monster",
+      title: "Build Your Own Monster!",
       category: "Classroom Game",
-      level: "Pre-A1",
-      age: "5–8",
-      grade: "Grade 1-2",
-      duration: 25,
-      skills: ["Speaking", "Vocabulary", "Listening"],
-      topics: ["Body Parts", "Colors", "Have Got"],
-      objectives: ["Name 6 body parts", "Use have got / has got", "Describe monster colors"],
-      route: "monster day/index.html",
+      level: "Pre-A1–A1+",
+      cefrLevel: "A1",
+      age: "5–9",
+      grade: "Grades 1–4",
+      duration: 30,
+      skills: ["Speaking", "Vocabulary", "Listening", "Writing"],
+      topics: ["Body Parts", "Colors", "Have Got", "Descriptive Adjectives"],
+      objectives: ["Name 8 monster body parts", "Form complete sentences with have got / has got", "Describe colors, numbers and body parts"],
+      route: "monster-day/index.html",
       worksheet: null,
       teacherGuide: true,
       featured: true,
       archived: false,
-      description: "Interactive monster builder practicing body parts, colors, and 'I have got...'"
+      description: "Interactive real-time SVG monster creator workshop practicing body parts, colors, numbers, and 'It has got / I have got...' with speaking, listening, and secret monster modes."
     },
     {
       id: "restaurant",
@@ -276,7 +512,7 @@
       skills: ["Grammar", "Vocabulary"],
       topics: ["Daily Routines", "Telling the Time", "Present Simple"],
       objectives: ["Tell time on the clock", "Use wake up, brush teeth, eat breakfast", "Form routine sentences"],
-      route: "mouse/index.html",
+      route: "city-mouse/index.html",
       worksheet: null,
       teacherGuide: true,
       featured: false,
@@ -294,7 +530,7 @@
       skills: ["Listening", "Speaking", "Vocabulary"],
       topics: ["Phonics", "Letter Sounds", "Hero Powers"],
       objectives: ["Recognize letter sounds A-Z", "Pronounce blend sounds", "Match words to pictures"],
-      route: "story/hero/index.html",
+      route: "story-engine/index.html?story=hero",
       worksheet: null,
       teacherGuide: true,
       featured: false,
@@ -312,7 +548,7 @@
       skills: ["Vocabulary", "Listening"],
       topics: ["Plants", "Flowers", "Insects", "Nature"],
       objectives: ["Identify stem, leaf, flower, root", "Name garden creatures", "Follow planting steps"],
-      route: "story/garden/index.html",
+      route: "story-engine/index.html?story=garden",
       worksheet: null,
       teacherGuide: true,
       featured: false,
@@ -330,14 +566,150 @@
       skills: ["Reading", "Vocabulary", "Speaking"],
       topics: ["Solar System", "Planets", "Comparatives & Superlatives"],
       objectives: ["Name 8 planets", "Use bigger than, hottest, furthest", "Navigate spacecraft"],
-      route: "story/space/index.html",
+      route: "story-engine/index.html?story=space",
       worksheet: null,
       teacherGuide: true,
       featured: false,
       archived: false,
       description: "Interplanetary journey comparing planet sizes, distances, and atmosphere."
+    },
+    {
+      id: "yesterday-detectives",
+      title: "The Mystery of Yesterday: A Past Simple Detective Adventure",
+      category: "Speaking Games",
+      level: "A1/A1+",
+      age: "8–10",
+      grade: "Grade 3–4",
+      duration: 35,
+      skills: ["Grammar", "Listening", "Speaking", "Reading", "Vocabulary", "Deduction"],
+      topics: ["Past Simple", "Regular Verbs", "Irregular Verbs", "Questions with Did"],
+      objectives: [
+        "Master past simple affirmative, questions with Did, and negatives with Didn't",
+        "Deduce facts, interrogate suspects, and catch lies"
+      ],
+      route: "detectives/index.html",
+      worksheet: "detectives/worksheet.html",
+      worksheetRoute: "detectives/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive 14-stage mystery adventure teaching the Past Simple."
+    },
+    {
+      id: "inventor-lab",
+      title: "Inventor Lab: What Does It Take to Be an Inventor?",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 50,
+      skills: ["Speaking", "Reading", "Vocabulary", "Prediction", "Critical Thinking", "Reasoning"],
+      topics: ["Invention Cycle", "See Think Wonder", "Clara Doodle", "Try Again Mindset", "Persistence", "Problem Solving"],
+      objectives: [
+        "Distinguish direct observations from inferences and wonder questions",
+        "Understand the 5-stage invention cycle (Idea, Plan, Build, Change, Solve)",
+        "Locate exact textual evidence in Clara Doodle's story",
+        "Design and pitch an original invention using structured frames"
+      ],
+      route: "inventor-lab/index.html",
+      worksheet: "inventor-lab/worksheet.html",
+      worksheetRoute: "inventor-lab/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Interactive classroom ESL lesson based on Global Readings Unit 1: investigate mystery clues, test machines, explore Clara Doodle's inventions, and build an original creation."
+    },
+    {
+      id: "clara-inventor",
+      title: "Clara's Inventor Mystery & The Inventor Challenge",
+      category: "Speaking Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 70,
+      skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Deduction", "Phonics"],
+      topics: ["Inventions", "Clara Doodle", "Sequence Words", "First Second Third Last", "4 Stages of Inventing", "Phonics CL"],
+      objectives: [
+        "Understand Clara Doodle's story and locate textual evidence for 6 reading missions",
+        "Identify 5 wacky inventions and explain their primary functions in simple sentences",
+        "Master temporal sequencing words: First, Second, Third, and Last in oral and written tasks",
+        "Apply the 4-stage inventor process (Idea, Plan, Make, Test) to solve real-world dilemmas",
+        "Pronounce and identify initial CL- consonant blends (climb, clue, cloud, close, clap)"
+      ],
+      route: "clara-inventor/index.html",
+      worksheet: "clara-inventor/worksheet.html",
+      worksheetRoute: "clara-inventor/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Two energetic, interactive 35-minute ESL lessons based on Global Readings 2 (pp. 10–17). Lesson 1 explores Clara's workshop, 5 bizarre inventions, 6 reading detective missions, and 4-Corners True/False. Lesson 2 teaches SEQUENCE (First, Second, Third, Last), the Human Tablet game, and the 4-Stage Inventor Process."
+    },
+    {
+      id: "alice-quest",
+      title: "Alice's Wonderland Reading Quest & The Skimming Detectives",
+      category: "Reading Games",
+      level: "A1+",
+      age: "8–12",
+      grade: "Grade 4",
+      duration: 70,
+      skills: ["Reading", "Speaking", "Vocabulary", "Sequencing", "Feelings & Emotions", "Skimming", "Creative Writing"],
+      topics: ["Alice in Wonderland", "Story Sequence", "Feelings: Worried Bored Surprised Interested", "Skimming", "Main Idea", "Learning and Your Brain", "Mystery Door"],
+      objectives: [
+        "Sequence the 6 canonical events of Alice in Wonderland chronologically from memory and textual clues",
+        "Identify and use 4 key feelings: worried, bored, surprised, and interested with 'because' causal frames",
+        "Master the reading strategy of skimming: look quickly to find main ideas and specific details without reading every word",
+        "Locate target details (38 cm, golden key, garden) in under 10 seconds using Eagle Eye scanning",
+        "Express creative ideas using the Mystery Door studio: 'Behind my door there is a...'"
+      ],
+      route: "alice-quest/index.html",
+      worksheet: "alice-quest/worksheet.html",
+      worksheetRoute: "alice-quest/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Two energetic, interactive 35-minute ESL lessons based on Reading Book 3 (pp. 16–17). Lesson 1 explores the 6-event story sequence, 4 feeling monsters (worried, bored, surprised, interested), and the Mystery Door creative studio. Lesson 2 trains Eagle Eye Skimming Detectives (38 cm, golden key, garden), Skim vs. Read Carefully, and the 'Learning and Your Brain' superpower challenge."
+    },
+    {
+      id: "nasa-mission",
+      title: "🚀 NASA Mission: Find a New Planet",
+      description: "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
+      type: "game",
+      category: "CLIL & STEM Games",
+      categoryLabel: "🚀 CLIL & Space Exploration",
+      level: "A1 / A1+",
+      cefrLevel: "A1+",
+      age: "Ages 6–9",
+      ageGroup: "6-9",
+      grade: "Grade 3–4",
+      grades: ["Grade 3", "Grade 4"],
+      duration: 40,
+      durationText: "40 min",
+      estimatedMinutes: 40,
+      xp: 150,
+      skills: [
+        "CLIL Science & Astronomy",
+        "Phonics (Magic 'e')",
+        "Speaking & Presentation",
+        "Descriptive Adjectives",
+        "Survival Vocabulary",
+        "Engineering & Problem Solving"
+      ],
+      topic: "Planetary Science, Survival Needs & Engineering Inventions",
+      languageFocus: "It is [cold / rocky / red]. People need [water / oxygen] to live. The problem is [no water]. It can [melt / filter] AND [clean].",
+      route: "nasa-mission/index.html",
+      worksheet: "nasa-mission/worksheet.html",
+      worksheetRoute: "nasa-mission/worksheet.html",
+      featured: true,
+      thumbnailIcon: "🚀",
+      gradient: "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
+      teacherGuide: true,
+      archived: false
     }
   ];
+
+  const CANONICAL_GAMES = (typeof root !== 'undefined' && Array.isArray(root.GAMES_REGISTRY) && root.GAMES_REGISTRY.length > 0)
+    ? root.GAMES_REGISTRY.filter(g => !g.id.startsWith('res-global'))
+    : RAW_CANONICAL_GAMES;
 
   // =========================================================================
   // GLOBAL READINGS 2 — LEVEL 2 STUDENT'S BOOK (MACMILLAN EDUCATION)
@@ -671,7 +1043,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',
         duration: 25,
-        gameRoute: 'monster day/index.html',
+        gameRoute: 'monster-day/index.html',
         activities: [
           { type: 'discussion', prompt: 'Look at the picture. What do you see? What tools are they using?' },
           { type: 'inquiry', prompt: 'Think: What problems do these tools solve in our daily life?' },
@@ -1382,8 +1754,10 @@
         sourcePages: '17',
         sourceBook: 'Global Readings 3',
         objective: 'Apply the reading skill of skimming: read headings, first sentences, and examine diagrams quickly before in-depth reading.',
-        duration: 25,
-        gameRoute: 'predictions/index.html',
+        duration: 35,
+        gameRoute: 'brain/index.html',
+        worksheetRoute: 'brain/worksheets.html',
+        gameId: 'brain-quit',
         activities: [
           { type: 'skimming_guide', steps: ['1. Read the title and large headings', '2. Look at the illustrations and diagrams', '3. Read the first sentence of each paragraph', '4. Ask: What will this text teach me?'] },
           { type: 'reflection', prompt: 'Why is skimming useful when researching in school?' }
@@ -1422,7 +1796,7 @@
         sourceBook: 'Global Readings 3',
         objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',
         duration: 35,
-        gameRoute: 'monster day/index.html',
+        gameRoute: 'monster-day/index.html',
         activities: [
           { type: 'phonics_box', title: 'Spelling Pattern: Agent / Comparative final -er', words: ['reader', 'learner', 'thinker', 'writer', 'faster', 'stronger', 'helper', 'speaker'] },
           { type: 'round_robin', topic: 'Why is reading important for your imagination, memory, and everyday life?' },
@@ -1511,6 +1885,8 @@
       stageKey: 'egg',
       xpRequired: 0,
       description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
+      subtitle: 'A new adventure begins...',
+      image: 'assets/monsters/stage-1-mystery-egg.png',
       unlockedItems: ['body-blue', 'body-pink', 'body-green', 'body-orange', 'body-purple', 'bg-meadow'],
       rewardXP: 0,
       status: 'active'
@@ -1522,6 +1898,8 @@
       stageKey: 'cracking_egg',
       xpRequired: 100,
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
+      subtitle: 'Life is waking up!',
+      image: 'assets/monsters/stage-2-cracking-egg.png',
       unlockedItems: ['eyes-happy', 'mouth-cheer'],
       rewardXP: 50,
       status: 'active'
@@ -1533,6 +1911,8 @@
       stageKey: 'baby',
       xpRequired: 250,
       description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
+      subtitle: 'Small steps, big dreams!',
+      image: 'assets/monsters/stage-3-baby-monster.png',
       unlockedItems: ['horns-ears', 'tail-puff', 'eyes-wink', 'glasses-round'],
       rewardXP: 100,
       status: 'active'
@@ -1544,6 +1924,8 @@
       stageKey: 'growing',
       xpRequired: 500,
       description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
+      subtitle: 'Stronger every day!',
+      image: 'assets/monsters/stage-4-growing-monster.png',
       unlockedItems: ['mouth-toothy', 'horns-nub', 'tail-perky', 'wings-starter', 'hat-scholar'],
       rewardXP: 150,
       status: 'active'
@@ -1555,6 +1937,8 @@
       stageKey: 'adventurer',
       xpRequired: 1000,
       description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
+      subtitle: 'Ready for bigger quests!',
+      image: 'assets/monsters/stage-5-adventurer-monster.png',
       unlockedItems: ['body-gold', 'hat-explorer', 'bp-explorer', 'horns-curved', 'aura-flame', 'bg-crystal'],
       rewardXP: 250,
       status: 'active'
@@ -1566,6 +1950,8 @@
       stageKey: 'advanced',
       xpRequired: 2000,
       description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
+      subtitle: 'New powers, new places!',
+      image: 'assets/monsters/stage-6-advanced-monster.png',
       unlockedItems: ['horns-crystal', 'wings-dragon', 'tail-dragon', 'eyes-dragon', 'hat-wizard', 'bg-cosmos'],
       rewardXP: 500,
       status: 'active'
@@ -1577,84 +1963,348 @@
       stageKey: 'ultimate',
       xpRequired: 5000,
       description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
+      subtitle: 'A true hero!',
+      image: 'assets/monsters/stage-7-ultimate-monster.png',
       unlockedItems: ['hat-crown', 'wings-celestial', 'tail-flame', 'aura-cosmic', 'bg-castle'],
       rewardXP: 1000,
       status: 'active'
     }
   ];
 
+  const DEFAULT_HOMEWORK_QUESTS = [
+    {
+      id: 'hw-animals',
+      title: 'Vocabulary Quest: Animals',
+      description: 'Learn and use 10 animal words. Complete the worksheet and play the mini-game. Try the extra challenge for more XP!',
+      subject: 'Vocabulary',
+      skill: 'Vocabulary',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 22, 2026',
+      estimatedTime: '20 minutes',
+      xpReward: 20,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Make a short video saying the animal words!',
+      resources: [
+        { id: 'res-ws-animals', type: 'worksheet', title: 'Animal Explorers Cutout Worksheet', url: 'clara-inventor/worksheet.html' },
+        { id: 'res-vid-animals', type: 'video', title: 'Wild Animals & Habitats Video', url: 'https://youtube.com' },
+        { id: 'res-game-animals', type: 'game', title: 'Jungle Vocabulary Expedition', url: 'expedition' }
+      ],
+      instructions: [
+        '1. Watch the video',
+        '2. Learn the animal words',
+        '3. Complete the worksheet',
+        '4. Play the mini-game',
+        '5. Submit your work'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-animals.png',
+      companionImage: 'assets/homework/rabbit-adventurer.png',
+      submittedCount: 12,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 21, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-224' },
+        'student-3a-229': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 21, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-229' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 21, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-354' },
+        'student-3a-203': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-203' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-227' },
+        'student-3a-206': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-206' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-220' },
+        'student-3a-209': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-209' },
+        'student-3a-208': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-208' },
+        'student-3a-355': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-355' },
+        'student-3a-211': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 20, xpTxId: 'tx-hw-animals-211' },
+        'student-3a-321': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 25, xpTxId: 'tx-hw-animals-321' }
+      }
+    },
+    {
+      id: 'hw-phonics',
+      title: 'Phonics Adventure: Long vs Short Vowels',
+      description: 'Listen, match and write the words. Try the challenge!',
+      subject: 'Phonics',
+      skill: 'Phonics',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 25, 2026',
+      estimatedTime: '15 minutes',
+      xpReward: 15,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Find 3 words in your home with long vowel sounds!',
+      resources: [
+        { id: 'res-ws-phonics', type: 'worksheet', title: 'Phonics Vowel Drill Sheet', url: 'clara-inventor/worksheet.html' },
+        { id: 'res-aud-phonics', type: 'link', title: 'Audio Chant: A E I O U', url: '#' }
+      ],
+      instructions: [
+        '1. Listen to the vowel sounds chant',
+        '2. Match the long and short vowel pairs',
+        '3. Complete the phonics drill worksheet',
+        '4. Submit your pronunciation recording'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-phonics.png',
+      submittedCount: 8,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 23, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-224' },
+        'student-3a-229': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 23, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-229' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-354' },
+        'student-3a-203': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 24, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-203' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-227' },
+        'student-3a-206': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 24, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-206' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 25, 2026', optionalDone: true, xpAwarded: 20, xpTxId: 'tx-hw-phonics-220' },
+        'student-3a-209': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 25, 2026', optionalDone: false, xpAwarded: 15, xpTxId: 'tx-hw-phonics-209' }
+      }
+    },
+    {
+      id: 'hw-self',
+      title: 'My Wonderful Self',
+      description: 'Create a short presentation about yourself. You can use pictures.',
+      subject: 'Speaking',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Sep 29, 2026',
+      estimatedTime: '25 minutes',
+      xpReward: 25,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Record a 1-minute video introducing your favorite book or toy!',
+      resources: [
+        { id: 'res-ws-self', type: 'worksheet', title: 'All About Me Template', url: 'clara-inventor/worksheet.html' }
+      ],
+      instructions: [
+        '1. Fill out the "About Me" worksheet',
+        '2. Draw or paste 3 pictures of your favorite things',
+        '3. Practice speaking: "My name is... I like..."',
+        '4. Submit your presentation'
+      ],
+      status: 'DRAFT',
+      published: false,
+      thumbnail: 'assets/homework/thumb-self.png',
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
+    },
+    {
+      id: 'hw-city',
+      title: 'The Mystery City (Optional)',
+      description: 'Solve the riddles and find the hidden places!',
+      subject: 'Mixed Skills',
+      skill: 'Critical Thinking',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Oct 2, 2026',
+      estimatedTime: '30 minutes',
+      xpReward: 30,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Draw a secret map with 4 hidden treasure clues!',
+      resources: [
+        { id: 'res-game-detectives', type: 'game', title: 'The City Detectives Game', url: 'detectives' },
+        { id: 'res-ws-city', type: 'worksheet', title: 'Mystery Map Clues', url: 'detectives/worksheet.html' }
+      ],
+      instructions: [
+        '1. Read the city detective clues',
+        '2. Follow the directions on the map',
+        '3. Solve the 5 neighborhood riddles',
+        '4. Play the Detective City game'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-city.png',
+      submittedCount: 5,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 26, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-224' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 26, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-354' },
+        'student-3a-227': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 27, 2026', optionalDone: false, xpAwarded: 30, xpTxId: 'tx-hw-city-227' },
+        'student-3a-220': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 27, 2026', optionalDone: true, xpAwarded: 35, xpTxId: 'tx-hw-city-220' },
+        'student-3a-208': { status: 'COMPLETED', attempted: 10, correct: 8, score: 80, completedDate: 'Sep 28, 2026', optionalDone: false, xpAwarded: 30, xpTxId: 'tx-hw-city-208' }
+      }
+    },
+    {
+      id: 'hw-reading',
+      title: 'Reading Champions',
+      description: 'Read the story and answer the questions.',
+      subject: 'Reading',
+      skill: 'Reading Comprehension',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Oct 5, 2026',
+      estimatedTime: '20 minutes',
+      xpReward: 20,
+      optionalChallenge: true,
+      optionalChallengeXp: 5,
+      optionalChallengeDesc: 'Read the story aloud to a parent or friend!',
+      resources: [
+        { id: 'res-book-gr2', type: 'link', title: 'Global Readings 2 - Unit 1', url: 'assets/books/global-readings-2/Global-Readings-2.pdf' }
+      ],
+      instructions: [
+        '1. Skim the title and illustrations',
+        '2. Read the story carefully twice',
+        '3. Complete the reading comprehension questions',
+        '4. Submit your answers'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/thumb-reading.png',
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
+    }
+  ];
+
   const DEFAULT_MONSTER_ITEMS = [
     // Body Colors
-    { id: 'body-blue', name: 'Sky Blue', category: 'body', description: 'Bright cheerful sky blue fur', icon: '🔵', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-pink', name: 'Berry Pink', category: 'body', description: 'Playful sweet berry pink coat', icon: '🌸', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-green', name: 'Leaf Green', category: 'body', description: 'Earthy vibrant fresh leaf green', icon: '🍃', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-orange', name: 'Sunset Orange', category: 'body', description: 'Energetic sunset orange fur', icon: '🍊', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-purple', name: 'Lavender Purple', category: 'body', description: 'Enchanted whimsical lavender', icon: '💜', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'body-gold', name: 'Royal Gold', category: 'body', description: 'Radiant gleaming gold sheen', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'body-blue', name: 'Sky Blue', category: 'body', subCategory: 'colors', description: 'Bright cheerful sky blue fur', icon: '🔵', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-pink', name: 'Berry Pink', category: 'body', subCategory: 'colors', description: 'Playful sweet berry pink coat', icon: '🌸', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-green', name: 'Leaf Green', category: 'body', subCategory: 'colors', description: 'Earthy vibrant fresh leaf green', icon: '🍃', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-orange', name: 'Sunset Orange', category: 'body', subCategory: 'colors', description: 'Energetic sunset orange fur', icon: '🍊', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-purple', name: 'Lavender Purple', category: 'body', subCategory: 'colors', description: 'Enchanted whimsical lavender', icon: '💜', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'body-gold', name: 'Royal Gold', category: 'body', subCategory: 'colors', description: 'Radiant gleaming gold sheen', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Eyes
-    { id: 'eyes-sparkle', name: 'Anime Sparkle', category: 'eyes', description: 'Big glossy eyes filled with wonder', icon: '✨', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'eyes-happy', name: 'Happy Crescents', category: 'eyes', description: 'Joyful cheerful laughing eyes', icon: '😄', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
-    { id: 'eyes-wink', name: 'Curious Wink', category: 'eyes', description: 'Playful winking expression', icon: '😉', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
-    { id: 'eyes-dragon', name: 'Dragon Glow', category: 'eyes', description: 'Fierce glowing golden pupils', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    // Face - Eyes
+    { id: 'eyes-sparkle', name: 'Anime Sparkle', category: 'eyes', subCategory: 'eyes', description: 'Big glossy eyes filled with wonder', icon: '✨', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'eyes-happy', name: 'Happy Crescents', category: 'eyes', subCategory: 'eyes', description: 'Joyful cheerful laughing eyes', icon: '😄', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'eyes-wink', name: 'Curious Wink', category: 'eyes', subCategory: 'eyes', description: 'Playful winking expression', icon: '😉', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-brave', name: 'Brave Eyes', category: 'eyes', subCategory: 'eyes', description: 'Determined courageous heroic gaze', icon: '😎', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-sleepy', name: 'Sleepy Eyes', category: 'eyes', subCategory: 'eyes', description: 'Cozy relaxed drooping eyelids', icon: '😴', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'eyes-star', name: 'Starry Eyes', category: 'eyes', subCategory: 'eyes', description: 'Glittering golden star pupils', icon: '🤩', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'eyes-dragon', name: 'Dragon Glow', category: 'eyes', subCategory: 'eyes', description: 'Fierce glowing golden dragon pupils', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'eyes-galaxy', name: 'Galaxy Eyes', category: 'eyes', subCategory: 'eyes', description: 'Cosmic nebula swirling in deep pupils', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
-    // Mouth
-    { id: 'mouth-smile', name: 'Sweet Smile', category: 'mouth', description: 'Gentle cute cat smile', icon: '😺', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'mouth-cheer', name: 'Open Cheer', category: 'mouth', description: 'Excited wide open happy cheer', icon: '🗣️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
-    { id: 'mouth-toothy', name: 'Toothy Grin', category: 'mouth', description: 'Playful grin with tiny fangs', icon: '😁', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    // Face - Mouths
+    { id: 'mouth-smile', name: 'Happy Smile', category: 'mouth', subCategory: 'mouths', description: 'Gentle cute cat smile', icon: '😺', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'mouth-cheer', name: 'Open Cheer', category: 'mouth', subCategory: 'mouths', description: 'Excited wide open happy cheer', icon: '🗣️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'mouth-toothy', name: 'Toothy Grin', category: 'mouth', subCategory: 'mouths', description: 'Playful grin with tiny fangs', icon: '😁', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-tiny', name: 'Tiny Smile', category: 'mouth', subCategory: 'mouths', description: 'Subtle sweet little creature smile', icon: '🙂', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'mouth-excited', name: 'Excited Smile', category: 'mouth', subCategory: 'mouths', description: 'Wide cheerful grin of pure excitement', icon: '😃', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'mouth-brave', name: 'Brave Smile', category: 'mouth', subCategory: 'mouths', description: 'Confident heroic half-smile', icon: '😏', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-laughing', name: 'Laughing', category: 'mouth', subCategory: 'mouths', description: 'Big hearty laughing mouth', icon: '😆', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'mouth-surprise', name: 'Surprise', category: 'mouth', subCategory: 'mouths', description: 'Adorable round open-mouthed wonder', icon: '😮', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
 
-    // Horns / Ears
-    { id: 'horns-ears', name: 'Floppy Monster Ears', category: 'horns', description: 'Cute soft bouncy creature ears', icon: '🐰', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'horns-nub', name: 'Sprout Nub Horns', category: 'horns', description: 'Little growing horn sprouts', icon: '🌱', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'horns-curved', name: 'Curved Ram Horns', category: 'horns', description: 'Sturdy swept-back adventurer horns', icon: '🐏', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'horns-crystal', name: 'Crystal Dragon Horns', category: 'horns', description: 'Glowing cyan crystalline spires', icon: '💎', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    // Features - Horns
+    { id: 'horns-ears', name: 'Monster Ears', category: 'horns', subCategory: 'horns', description: 'Cute soft bouncy creature ears', icon: '🐰', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'horns-nub', name: 'Small Horns', category: 'horns', subCategory: 'horns', description: 'Cute little curved starter horns', icon: '🌱', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'horns-curved', name: 'Curved Horns', category: 'horns', subCategory: 'horns', description: 'Sturdy swept-back adventurer horns', icon: '🐏', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-crystal', name: 'Crystal Horns', category: 'horns', subCategory: 'horns', description: 'Glowing amethyst crystalline spires', icon: '💎', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'horns-gold', name: 'Gold Horns', category: 'horns', subCategory: 'horns', description: 'Pure shimmering golden horns', icon: '👑', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'horns-nature', name: 'Nature Horns', category: 'horns', subCategory: 'horns', description: 'Sprouting leaf horns of the forest', icon: '🍃', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-star', name: 'Star Horns', category: 'horns', subCategory: 'horns', description: 'Gleaming twin star tips', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'horns-ice', name: 'Ice Horns', category: 'horns', subCategory: 'horns', description: 'Sharp frosted glacier spires', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'horns-flame', name: 'Flame Horns', category: 'horns', subCategory: 'horns', description: 'Blazing horn flares of fiery passion', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
 
-    // Wings
-    { id: 'wings-starter', name: 'Flutter Wings', category: 'wings', description: 'Cute starter wings for small glides', icon: '🪶', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'wings-dragon', name: 'Dragon Wings', category: 'wings', description: 'Sweeping majestic winged power', icon: '🦇', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'wings-celestial', name: 'Celestial Gold Wings', category: 'wings', description: 'Feathered gold divine wings', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    // Features - Wings
+    { id: 'wings-starter', name: 'Flutter Wings', category: 'wings', subCategory: 'wings', description: 'Cute starter wings for small glides', icon: '🪶', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'wings-dragon', name: 'Dragon Wings', category: 'wings', subCategory: 'wings', description: 'Sweeping majestic winged power', icon: '🦇', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'wings-celestial', name: 'Golden Wings', category: 'wings', subCategory: 'wings', description: 'Feathered gold divine wings', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'wings-fairy', name: 'Fairy Wings', category: 'wings', subCategory: 'wings', description: 'Translucent glittering emerald fairy wings', icon: '🧚', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'wings-bat', name: 'Shadow Wings', category: 'wings', subCategory: 'wings', description: 'Midnight indigo bat wings', icon: '🌙', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
 
-    // Tails
-    { id: 'tail-puff', name: 'Puff Bunny Tail', category: 'tail', description: 'Soft round fluffy tail', icon: '⚪', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'tail-flame', name: 'Blazing Flame Tail', category: 'tail', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-hardwork' }, rarity: 'legendary', status: 'active' },
+    // Features - Tails
+    { id: 'tail-puff', name: 'Puff Bunny Tail', category: 'tail', subCategory: 'tails', description: 'Soft round fluffy tail', icon: '⚪', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'tail-perky', name: 'Perky Spike Tail', category: 'tail', subCategory: 'tails', description: 'Curved active tail with tip', icon: '🦎', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'tail-dragon', name: 'Dragon Tail', category: 'tail', subCategory: 'tails', description: 'Long heavy tail with armored fins', icon: '🐊', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'tail-flame', name: 'Flame Tail', category: 'tail', subCategory: 'tails', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'tail-star', name: 'Star Tail', category: 'tail', subCategory: 'tails', description: 'Glowing star-tipped adventurer tail', icon: '🌟', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
+    // Features - Hats & Head Accessories
+    { id: 'hat-crown', name: 'Royal Crown', category: 'hat', subCategory: 'hats', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', subCategory: 'hats', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-scholar', name: 'Scholar Cap', category: 'hat', subCategory: 'hats', description: 'Graduation cap with gold tassel', icon: '🎓', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-wizard', name: 'Wizard Hat', category: 'hat', subCategory: 'hats', description: 'Midnight blue starry magic hat', icon: '🧙', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'hat-bow', name: 'Cute Bow', category: 'hat', subCategory: 'hats', description: 'Charming pastel pink ribbon bow', icon: '🎀', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-star-clip', name: 'Star Clip', category: 'hat', subCategory: 'hats', description: 'Gleaming golden star hair clip', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'hat-flower', name: 'Blossom Flower', category: 'hat', subCategory: 'hats', description: 'Fresh blooming cherry blossom', icon: '🌸', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-headband', name: 'Hero Headband', category: 'hat', subCategory: 'hats', description: 'Red heroic training headband', icon: '🎗️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
 
-    // Clothing
-    { id: 'clothing-vest', name: 'Explorer Vest', category: 'clothing', description: 'Sturdy khaki safari utility vest with brass buttons', icon: '🦺', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'clothing-cape', name: 'Hero Cape', category: 'clothing', description: 'Flowing crimson superhero cape with gold clasp', icon: '🦸', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'clothing-scarf', name: 'Cozy Winter Scarf', category: 'clothing', description: 'Warm knitted emerald green scarf with fringe', icon: '🧣', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'clothing-robe', name: 'Wizard Robe', category: 'clothing', description: 'Midnight indigo scholar robe stitched with silver runes', icon: '👘', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    // Features - Backpacks
+    { id: 'bp-explorer', name: 'Explorer Backpack', category: 'backpack', subCategory: 'backpacks', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bp-book', name: 'Magic Backpack', category: 'backpack', subCategory: 'backpacks', description: 'Ancient leather pack carrying vocab spells', icon: '📚', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bp-mini-wings', name: 'Mini Wings', category: 'backpack', subCategory: 'backpacks', description: 'Cute lightweight decorative wings pack', icon: '🪽', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bp-adv-bag', name: 'Adventure Bag', category: 'backpack', subCategory: 'backpacks', description: 'Compact adventurer satchel', icon: '👜', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
 
-    // Hats
-    { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'hat-scholar', name: 'Scholar Cap', category: 'hat', description: 'Graduation cap with gold tassel', icon: '🎓', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
-    { id: 'hat-wizard', name: 'Wizard Hat', category: 'hat', description: 'Midnight blue starry magic hat', icon: '🧙', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'hat-crown', name: 'Imperial Crown', category: 'hat', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    // Features - Accessories (Hand, Neck, Special, Glasses)
+    { id: 'neck-star', name: 'Star Necklace', category: 'accessory', subCategory: 'accessories', description: 'Delicate gold chain with shining star pendant', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'neck-medal', name: 'Adventure Medal', category: 'accessory', subCategory: 'accessories', description: 'Bronze medallion of the English Explorer guild', icon: '🏅', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'neck-pendant', name: 'Magic Pendant', category: 'accessory', subCategory: 'accessories', description: 'Luminescent sapphire amulet that pulses gently', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'neck-badge', name: 'Academy Badge', category: 'accessory', subCategory: 'accessories', description: 'Official crest pin of Adventure Academy', icon: '🔰', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'acc-book', name: 'Adventure Spellbook', category: 'accessory', subCategory: 'accessories', description: 'Leather-bound reading discovery book', icon: '📖', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'acc-wand', name: 'Magic Wand', category: 'accessory', subCategory: 'accessories', description: 'Carved elder wand capped with a star crystal', icon: '🪄', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'acc-compass', name: 'Explorer Compass', category: 'accessory', subCategory: 'accessories', description: 'Precision brass compass pointing toward adventure', icon: '🧭', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'acc-trophy', name: 'Golden Trophy', category: 'accessory', subCategory: 'accessories', description: 'Championship cup of English Academy mastery', icon: '🏆', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'acc-microphone', name: 'Golden Microphone', category: 'accessory', subCategory: 'accessories', description: 'Awarded for confident English speaking', icon: '🎤', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-speaking' }, rarity: 'epic', status: 'active' },
+    { id: 'acc-floating-stars', name: 'Floating Stars', category: 'accessory', subCategory: 'accessories', description: 'Constellation of tiny playful stars hovering around', icon: '✨', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'acc-companion', name: 'Tiny Companion', category: 'accessory', subCategory: 'accessories', description: 'Miniature floating sprite friend', icon: '🐣', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'acc-confetti', name: 'Celebration Confetti', category: 'accessory', subCategory: 'accessories', description: 'Burst of joyous colorful academy ribbons', icon: '🎉', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'glasses-round', name: 'Round Glasses', category: 'glasses', subCategory: 'accessories', description: 'Scholarly intellectual spectacles', icon: '👓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'glasses-goggles', name: 'Detective Goggles', category: 'glasses', subCategory: 'accessories', description: 'Brass mystery investigation goggles', icon: '🥽', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-3' }, rarity: 'epic', status: 'active' },
 
-    // Glasses
-    { id: 'glasses-round', name: 'Round Wire Glasses', category: 'glasses', description: 'Scholarly intellectual spectacles', icon: '👓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
-    { id: 'glasses-goggles', name: 'Detective Goggles', category: 'glasses', description: 'Brass mystery investigation goggles', icon: '🥽', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-3' }, rarity: 'epic', status: 'active' },
+    // Clothing - Adventure
+    { id: 'clothing-vest', name: 'Explorer Vest', category: 'clothing', subCategory: 'adventure', description: 'Sturdy khaki safari utility vest with brass buttons', icon: '🦺', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-cape', name: 'Adventure Cape', category: 'clothing', subCategory: 'adventure', description: 'Flowing crimson superhero cape with gold clasp', icon: '🦸', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-adv-jacket', name: 'Explorer Jacket', category: 'clothing', subCategory: 'adventure', description: 'Tough leather aviator jacket with fur collar', icon: '🧥', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-travel-coat', name: 'Travel Coat', category: 'clothing', subCategory: 'adventure', description: 'Weatherproof emerald explorer duster with bronze buckles', icon: '🥾', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Backpacks
-    { id: 'bp-explorer', name: 'Explorer Satchel', category: 'backpack', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'bp-book', name: 'Magic Book Bag', category: 'backpack', description: 'Ancient leather pack carrying vocab spells', icon: '📚', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-2' }, rarity: 'epic', status: 'active' },
+    // Clothing - School
+    { id: 'clothing-scarf', name: 'Academy Uniform', category: 'clothing', subCategory: 'school', description: 'Official academy navy sweater with striped gold scarf', icon: '🧣', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'clothing-hoodie', name: 'Student Hoodie', category: 'clothing', subCategory: 'school', description: 'Cozy pastel teal fleece hoodie with pouch pocket', icon: '👕', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'clothing-school-jacket', name: 'School Jacket', category: 'clothing', subCategory: 'school', description: 'Varsity jacket stitched with the Adventure Academy crest', icon: '🥋', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'clothing-scholar', name: 'Scholar Outfit', category: 'clothing', subCategory: 'school', description: 'Refined blazer with golden piping and necktie', icon: '👔', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
-    // Handheld Accessories
-    { id: 'acc-microphone', name: 'Golden Microphone', category: 'accessory', description: 'Awarded for confident English speaking', icon: '🎤', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-speaking' }, rarity: 'epic', status: 'active' },
-    { id: 'acc-book', name: 'Adventure Spellbook', category: 'accessory', description: 'Leather-bound reading discovery book', icon: '📖', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-1' }, rarity: 'rare', status: 'active' },
+    // Clothing - Special
+    { id: 'clothing-royal-robe', name: 'Royal Robe', category: 'clothing', subCategory: 'special', description: 'Crimson velvet robe edged in royal ermine fur', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-robe', name: 'Wizard Outfit', category: 'clothing', subCategory: 'special', description: 'Midnight indigo scholar robe stitched with silver runes', icon: '👘', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-space', name: 'Space Suit', category: 'clothing', subCategory: 'special', description: 'Hi-tech cosmic suit with glowing chest display', icon: '👨‍🚀', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-hero', name: 'Hero Costume', category: 'clothing', subCategory: 'special', description: 'Sleek superhero bodysuit with lightning chest insignia', icon: '⚡', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-winter', name: 'Winter Outfit', category: 'clothing', subCategory: 'special', description: 'Puffy sky blue parka with warm fleece lining', icon: '🧤', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+
+    // Clothing - Fantasy
+    { id: 'clothing-dragon-armor', name: 'Dragon Armor', category: 'clothing', subCategory: 'fantasy', description: 'Scalemail armor forged from iridescent dragon scales', icon: '🐲', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'clothing-knight-armor', name: 'Knight Armor', category: 'clothing', subCategory: 'fantasy', description: 'Polished silver breastplate with sapphire crest', icon: '🛡️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-magic-robe', name: 'Magical Robe', category: 'clothing', subCategory: 'fantasy', description: 'Flowing starlight tunic interwoven with celestial thread', icon: '✨', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'clothing-royal', name: 'Royal Outfit', category: 'clothing', subCategory: 'fantasy', description: 'Ceremonial coronation tunic embroidered with golden thread', icon: '💎', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
     // Auras
-    { id: 'aura-sparkle', name: 'Friendship Sparkles', category: 'aura', description: 'Twinkling stars of teamwork and kindness', icon: '🌟', unlockType: 'achievement', unlockRequirement: { achievementId: 'ach-team' }, rarity: 'rare', status: 'active' },
-    { id: 'aura-flame', name: 'Perseverance Flame', category: 'aura', description: 'Golden flame of relentless effort', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
-    { id: 'aura-cosmic', name: 'Cosmic Rings', category: 'aura', description: 'Orbital celestial stardust halo', icon: '💫', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-sparkle', name: 'Sparkle Aura', category: 'aura', subCategory: 'auras', description: 'Twinkling golden friendship stars', icon: '🌟', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'aura-flame', name: 'Flame Aura', category: 'aura', subCategory: 'auras', description: 'Warm orange flames of relentless effort', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-ice', name: 'Ice Aura', category: 'aura', subCategory: 'auras', description: 'Glittering snowflakes and frosty crystalline glow', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-rainbow', name: 'Rainbow Aura', category: 'aura', subCategory: 'auras', description: 'Radiant prismatic halo of colorful joy', icon: '🌈', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'aura-cosmic', name: 'Galaxy Aura', category: 'aura', subCategory: 'auras', description: 'Orbital celestial stardust and nebula rings', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-lightning', name: 'Lightning Aura', category: 'aura', subCategory: 'auras', description: 'Crackling electric blue sparks of energy', icon: '⚡', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'aura-blossom', name: 'Blossom Aura', category: 'aura', subCategory: 'auras', description: 'Swirling pastel pink cherry blossom petals', icon: '🌸', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-star', name: 'Star Aura', category: 'aura', subCategory: 'auras', description: 'Burst of dancing yellow and amber stars', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'aura-dragon', name: 'Dragon Glow', category: 'aura', subCategory: 'auras', description: 'Fierce mystical dragon embers with golden crests', icon: '🐉', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
+    { id: 'aura-royal', name: 'Royal Glow', category: 'aura', subCategory: 'auras', description: 'Divine sovereign golden radiance and sparkles', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
 
-    // Backgrounds
-    { id: 'bg-meadow', name: 'Academy Grounds', category: 'background', description: 'Sunny green lawns of Adventure Academy', icon: '🌳', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
-    { id: 'bg-crystal', name: 'Crystal Cavern', category: 'background', description: 'Luminescent cavern of glowing minerals', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
-    { id: 'bg-cosmos', name: 'Starry Cosmos', category: 'background', description: 'Deep space filled with learning galaxies', icon: '🌌', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
-    { id: 'bg-castle', name: 'Royal Castle', category: 'background', description: 'Majestic fortress of Master English speakers', icon: '🏰', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' }
+    // World - Environments
+    { id: 'bg-meadow', name: 'Explorer Camp', category: 'background', subCategory: 'worlds', description: 'Sunny meadow camp of Adventure Academy', icon: '🏕️', unlockType: 'default', unlockRequirement: {}, rarity: 'common', status: 'active' },
+    { id: 'bg-castle', name: 'Academy Castle', category: 'background', subCategory: 'worlds', description: 'Majestic fairytale castle with towers and flags', icon: '🏰', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'bg-forest', name: 'Enchanted Forest', category: 'background', subCategory: 'worlds', description: 'Misty woodland filled with glowing flora and fireflies', icon: '🌲', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'bg-volcano', name: 'Volcano Island', category: 'background', subCategory: 'worlds', description: 'Dramatic volcanic peaks with warm golden sunsets', icon: '🌋', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-beach', name: 'Adventure Beach', category: 'background', subCategory: 'worlds', description: 'Tropical shoreline with palm trees and gentle waves', icon: '🏖️', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'bg-moonlit', name: 'Moonlit Kingdom', category: 'background', subCategory: 'worlds', description: 'Enchanted starry night under a glowing crescent moon', icon: '🌙', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-winter', name: 'Winter Wonderland', category: 'background', subCategory: 'worlds', description: 'Glistening snowy pines and frozen crystal lakes', icon: '❄️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-cosmos', name: 'Space World', category: 'background', subCategory: 'worlds', description: 'Deep starry cosmos with vibrant nebula clouds', icon: '🚀', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-desert', name: 'Desert Adventure', category: 'background', subCategory: 'worlds', description: 'Golden sand dunes under a warm sunny sky', icon: '🏜️', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'bg-underwater', name: 'Underwater Kingdom', category: 'background', subCategory: 'worlds', description: 'Deep ocean coral reef with shimmering sunbeams', icon: '🐠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-rainbow', name: 'Rainbow Valley', category: 'background', subCategory: 'worlds', description: 'Pastel valley crowned with a double rainbow', icon: '🌈', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'bg-cloud', name: 'Cloud Kingdom', category: 'background', subCategory: 'worlds', description: 'Dreamy kingdom perched atop soft pink and gold clouds', icon: '☁️', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
+    { id: 'bg-crystal', name: 'Crystal Cavern', category: 'background', subCategory: 'worlds', description: 'Luminescent cavern of glowing minerals', icon: '🔮', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' }
   ];
 
   const DEFAULT_MONSTER_PROFILES = {
@@ -3410,8 +4060,8 @@
   },
   "student-4a-319": {
     "studentId": "student-4a-319",
-    "petName": "Şimal",
-    "monsterName": "Şimal's Monster",
+    "petName": "Ozan",
+    "monsterName": "Ozan's Monster",
     "baseColor": "green",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -3970,8 +4620,8 @@
   },
   "student-4b-208": {
     "studentId": "student-4b-208",
-    "petName": "Ozan",
-    "monsterName": "Ozan's Monster",
+    "petName": "Şimal",
+    "monsterName": "Şimal's Monster",
     "baseColor": "blue",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -4317,7 +4967,828 @@
       }
     }
   ];
-  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [];
+  const DEFAULT_PROGRESS_CHECK_SUBMISSIONS = [
+    {
+      id: "sub-student-4a-313-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-313",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-441-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-441",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5,
+      maxRawTotal: 40,
+      xpEarned: 50,
+      accuracyPct: 12,
+      overallScore: 12,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 50, correct: 5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-311-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-311",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-310-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-310",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-312-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-312",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 8,
+      maxRawTotal: 40,
+      xpEarned: 80,
+      accuracyPct: 20,
+      overallScore: 20,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 8, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 80, correct: 8, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-345-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-345",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5,
+      maxRawTotal: 40,
+      xpEarned: 50,
+      accuracyPct: 12,
+      overallScore: 12,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 50, correct: 5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-315-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-315",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 5.5,
+      maxRawTotal: 40,
+      xpEarned: 55,
+      accuracyPct: 14,
+      overallScore: 14,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 5.5, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 55, correct: 5.5, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-302-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-302",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-314-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-314",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-343-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-343",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-316-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-316",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-307-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-307",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-306-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-306",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-305-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-305",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-439-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-439",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-304-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-304",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 10,
+      maxRawTotal: 40,
+      xpEarned: 100,
+      accuracyPct: 25,
+      overallScore: 25,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 10, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 100, correct: 10, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4a-319-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4a-319",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 9,
+      maxRawTotal: 40,
+      xpEarned: 90,
+      accuracyPct: 22,
+      overallScore: 22,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 9, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 90, correct: 9, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-339-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-339",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 6,
+      maxRawTotal: 40,
+      xpEarned: 60,
+      accuracyPct: 15,
+      overallScore: 15,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 6, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 60, correct: 6, total: 10, mastery: "Developing", statusText: "Developing" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Developing"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-309-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-309",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 7,
+      maxRawTotal: 40,
+      xpEarned: 70,
+      accuracyPct: 18,
+      overallScore: 18,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 7, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 70, correct: 7, total: 10, mastery: "Secure", statusText: "Secure" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Secure"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    },
+    {
+      id: "sub-student-4b-308-progress-check-gr3-u1",
+      progressCheckId: "progress-check-gr3-u1",
+      studentId: "student-4b-308",
+      classId: "class-4a",
+      bookId: "book-global-readings-3",
+      bookTitle: "Global Readings 3",
+      unitId: "unit-gr3-1",
+      unitTitle: "Unit 1: I Love Reading",
+      date: "2026-09-01",
+      displayDate: "September 2026",
+      status: "completed",
+      completionPct: 100,
+      rawTotal: 9,
+      maxRawTotal: 40,
+      xpEarned: 90,
+      accuracyPct: 22,
+      overallScore: 22,
+      mastery: "Needs Support",
+      scores: {
+        reading: { correct: 0, total: 10 },
+        listening: { correct: 0, total: 10 },
+        writing: { correct: 0, total: 10 },
+        speaking: { correct: 9, total: 10 }
+      },
+      skillScores: {
+        reading: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        listening: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        writing: { score: 0, correct: 0, total: 10, mastery: "Needs Support", statusText: "Needs Support" },
+        speaking: { score: 90, correct: 9, total: 10, mastery: "Strong", statusText: "Strong" }
+      },
+      teacherAssessment: {
+        reading: "Needs Support",
+        listening: "Needs Support",
+        writing: "Needs Support",
+        speaking: "Strong"
+      },
+      teacherComment: "",
+      notes: "",
+      updatedAt: "2026-09-01T09:00:00.000Z"
+    }
+  ];
 
   function getInitialState() {
     return {
@@ -5056,7 +6527,7 @@
           parentName: 'Parent of Ada Özcan',
           parentContact: '+90 (555) 313-0001',
           parentEmail: 'parent313@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5076,7 +6547,7 @@
           parentName: 'Parent of Ahmet Mete İnal',
           parentContact: '+90 (555) 441-0001',
           parentEmail: 'parent441@example.com',
-          xp: 0,
+          xp: 50,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5096,7 +6567,7 @@
           parentName: 'Parent of Alya Zeynep Aydoğmuş',
           parentContact: '+90 (555) 311-0001',
           parentEmail: 'parent311@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5116,7 +6587,7 @@
           parentName: 'Parent of Bahriye Ada Güler',
           parentContact: '+90 (555) 310-0001',
           parentEmail: 'parent310@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5136,7 +6607,7 @@
           parentName: 'Parent of Belis Erkanat',
           parentContact: '+90 (555) 312-0001',
           parentEmail: 'parent312@example.com',
-          xp: 0,
+          xp: 80,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5176,7 +6647,7 @@
           parentName: 'Parent of Efe Yaldız',
           parentContact: '+90 (555) 345-0001',
           parentEmail: 'parent345@example.com',
-          xp: 0,
+          xp: 50,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5216,7 +6687,7 @@
           parentName: 'Parent of Emir Ali Gökalp',
           parentContact: '+90 (555) 315-0001',
           parentEmail: 'parent315@example.com',
-          xp: 0,
+          xp: 55,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5236,7 +6707,7 @@
           parentName: 'Parent of Emir Ertem',
           parentContact: '+90 (555) 302-0001',
           parentEmail: 'parent302@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5276,7 +6747,7 @@
           parentName: 'Parent of İclal Gökalp',
           parentContact: '+90 (555) 314-0001',
           parentEmail: 'parent314@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5296,7 +6767,7 @@
           parentName: 'Parent of İpek İlhan',
           parentContact: '+90 (555) 343-0001',
           parentEmail: 'parent343@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5386,17 +6857,17 @@
         {
           id: 'student-4a-319',
           studentIdNumber: '319',
-          firstName: 'Şimal',
-          lastName: 'Koyun',
+          firstName: 'Ozan',
+          lastName: 'Topçu',
           classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Şimal Koyun',
+          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Ozan Topçu',
           parentContact: '+90 (555) 319-0001',
           parentEmail: 'parent319@example.com',
-          xp: 0,
+          xp: 90,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5428,7 +6899,7 @@
           studentIdNumber: '346',
           firstName: 'Ali İhsan',
           lastName: 'Bıçakçı',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5448,7 +6919,7 @@
           studentIdNumber: '338',
           firstName: 'Derin',
           lastName: 'Küçük',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5468,7 +6939,7 @@
           studentIdNumber: '316',
           firstName: 'Egehan',
           lastName: 'Tekin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5476,7 +6947,7 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5488,7 +6959,7 @@
           studentIdNumber: '307',
           firstName: 'Elif Asya',
           lastName: 'Durmaz',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5496,7 +6967,7 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5508,7 +6979,7 @@
           studentIdNumber: '306',
           firstName: 'Elif Beren',
           lastName: 'Alper',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5516,7 +6987,7 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5528,7 +6999,7 @@
           studentIdNumber: '348',
           firstName: 'Elisa Berre',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5548,7 +7019,7 @@
           studentIdNumber: '318',
           firstName: 'Ertuğrul',
           lastName: 'Turan',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5568,7 +7039,7 @@
           studentIdNumber: '303',
           firstName: 'İlay',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5588,7 +7059,7 @@
           studentIdNumber: '305',
           firstName: 'Kerem',
           lastName: 'Özçakmak',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5596,7 +7067,7 @@
           parentName: 'Parent of Kerem Özçakmak',
           parentContact: '+90 (555) 305-0001',
           parentEmail: 'parent305@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5608,7 +7079,7 @@
           studentIdNumber: '349',
           firstName: 'Lina',
           lastName: 'Koca',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5628,7 +7099,7 @@
           studentIdNumber: '439',
           firstName: 'Mina',
           lastName: 'Çakar',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5636,7 +7107,7 @@
           parentName: 'Parent of Mina Çakar',
           parentContact: '+90 (555) 439-0001',
           parentEmail: 'parent439@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5648,7 +7119,7 @@
           studentIdNumber: '304',
           firstName: 'Nilda',
           lastName: 'Eşkin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5656,7 +7127,7 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
-          xp: 0,
+          xp: 100,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5668,7 +7139,7 @@
           studentIdNumber: '440',
           firstName: 'Nisa',
           lastName: 'Kömürcüoğlu',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5688,7 +7159,7 @@
           studentIdNumber: '301',
           firstName: 'Ozan',
           lastName: 'Metin',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5706,14 +7177,14 @@
         {
           id: 'student-4b-208',
           studentIdNumber: '208',
-          firstName: 'Ozan',
-          lastName: 'Topçu',
+          firstName: 'Şimal',
+          lastName: 'Koyun',
           classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Ozan Topçu',
+          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Şimal Koyun',
           parentContact: '+90 (555) 208-0001',
           parentEmail: 'parent208@example.com',
           xp: 0,
@@ -5728,7 +7199,7 @@
           studentIdNumber: '322',
           firstName: 'Öykü Çiğdem',
           lastName: 'Akar',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5748,7 +7219,7 @@
           studentIdNumber: '339',
           firstName: 'Uras',
           lastName: 'Tekay',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5756,7 +7227,7 @@
           parentName: 'Parent of Uras Tekay',
           parentContact: '+90 (555) 339-0001',
           parentEmail: 'parent339@example.com',
-          xp: 0,
+          xp: 60,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5768,7 +7239,7 @@
           studentIdNumber: '309',
           firstName: 'Utku Efe',
           lastName: 'Kulaç',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5776,7 +7247,7 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
-          xp: 0,
+          xp: 70,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5788,7 +7259,7 @@
           studentIdNumber: '308',
           firstName: 'Yağmur Ada',
           lastName: 'Ovalı',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -5796,7 +7267,7 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
-          xp: 0,
+          xp: 90,
           level: 1,
           streakDays: 0,
           equippedMonster: 'Mystery Egg',
@@ -5806,7 +7277,12 @@
       ],
 
       // 3. Resources (Games & Lessons)
-      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource, GLOBAL_READINGS_3_DATA.resource]),
+      resources: CANONICAL_GAMES.concat([GLOBAL_READINGS_2_DATA.resource, GLOBAL_READINGS_3_DATA.resource]).map(r => ({
+        ...r,
+        cloudStatus: r.cloudStatus || 'saved',
+        cloudSyncedAt: r.cloudSyncedAt || '2026-09-14T20:48:00.000Z',
+        cloudSynced: true
+      })),
 
       // 4. Curriculum Hierarchy
       curriculum: {
@@ -5888,7 +7364,7 @@
             title: 'Monster Maker Challenge',
             order: 1,
             objective: 'Students can name 6 monster body parts and use has got accurately.',
-            gameRoute: 'monster day/index.html',
+            gameRoute: 'monster-day/index.html',
             duration: 25,
             archived: false
           },
@@ -5997,29 +7473,8 @@
         }
       ],
 
-      // 6. Homework
-      homework: [
-        {
-          id: 'hw-1',
-          title: 'Daily Routine Clock Practice',
-          type: 'Game Mission',
-          classId: 'class-3a',
-          studentIds: 'all',
-          dueDate: 'Sep 20, 2026',
-          description: 'Play the Daily Routine Adventure and set 5 clock times accurately.',
-          archived: false
-        },
-        {
-          id: 'hw-2',
-          title: 'My Neighbourhood Prepositions Worksheet',
-          type: 'Worksheet',
-          classId: 'class-3a',
-          studentIds: 'all',
-          dueDate: 'Sep 24, 2026',
-          description: 'Complete the map drawing worksheet circling places opposite the library.',
-          archived: false
-        }
-      ],
+      // 6. Homework (Interactive Quests & Independent Practice)
+      homework: JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS)),
 
       // 7. Quizzes & Tests
       quizzes: [
@@ -6053,7 +7508,348 @@
       attendanceRecords: [],
 
       // 10. Transaction-based XP Ledger
-      xpTransactions: [],
+      xpTransactions: [
+        {
+          id: 'xp-init-student-4a-313-progress-check-gr3-u1',
+          studentId: 'student-4a-313',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-313',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-441-progress-check-gr3-u1',
+          studentId: 'student-4a-441',
+          amount: 50,
+          points: 50,
+          xpAmount: 50,
+          xp: 50,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-441',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-311-progress-check-gr3-u1',
+          studentId: 'student-4a-311',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-311',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-310-progress-check-gr3-u1',
+          studentId: 'student-4a-310',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-310',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-312-progress-check-gr3-u1',
+          studentId: 'student-4a-312',
+          amount: 80,
+          points: 80,
+          xpAmount: 80,
+          xp: 80,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (8/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-312',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-345-progress-check-gr3-u1',
+          studentId: 'student-4a-345',
+          amount: 50,
+          points: 50,
+          xpAmount: 50,
+          xp: 50,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-345',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-315-progress-check-gr3-u1',
+          studentId: 'student-4a-315',
+          amount: 55,
+          points: 55,
+          xpAmount: 55,
+          xp: 55,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (5.5/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-315',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-302-progress-check-gr3-u1',
+          studentId: 'student-4a-302',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-302',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-314-progress-check-gr3-u1',
+          studentId: 'student-4a-314',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-314',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-343-progress-check-gr3-u1',
+          studentId: 'student-4a-343',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-343',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-316-progress-check-gr3-u1',
+          studentId: 'student-4b-316',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-316',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-307-progress-check-gr3-u1',
+          studentId: 'student-4b-307',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-307',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-306-progress-check-gr3-u1',
+          studentId: 'student-4b-306',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-306',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-305-progress-check-gr3-u1',
+          studentId: 'student-4b-305',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-305',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-439-progress-check-gr3-u1',
+          studentId: 'student-4b-439',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-439',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-304-progress-check-gr3-u1',
+          studentId: 'student-4b-304',
+          amount: 100,
+          points: 100,
+          xpAmount: 100,
+          xp: 100,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (10/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-304',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4a-319-progress-check-gr3-u1',
+          studentId: 'student-4a-319',
+          amount: 90,
+          points: 90,
+          xpAmount: 90,
+          xp: 90,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (9/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4a-319',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-339-progress-check-gr3-u1',
+          studentId: 'student-4b-339',
+          amount: 60,
+          points: 60,
+          xpAmount: 60,
+          xp: 60,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (6/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-339',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-309-progress-check-gr3-u1',
+          studentId: 'student-4b-309',
+          amount: 70,
+          points: 70,
+          xpAmount: 70,
+          xp: 70,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (7/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-309',
+          classId: 'class-4a',
+          status: 'active'
+        },
+        {
+          id: 'xp-init-student-4b-308-progress-check-gr3-u1',
+          studentId: 'student-4b-308',
+          amount: 90,
+          points: 90,
+          xpAmount: 90,
+          xp: 90,
+          reason: 'Four-Skill Assessment: English Adventure Progress Check — Grade 4 (A1+) (9/40)',
+          category: 'positive',
+          icon: '⭐',
+          date: 'September 2026',
+          timestamp: '2026-09-01T09:00:00.000Z',
+          source: 'assessment',
+          sourceId: 'pc-assessment-progress-check-gr3-u1-student-4b-308',
+          classId: 'class-4a',
+          status: 'active'
+        }
+      ],
 
       // 11. Learning Evidence (Progress Calculation)
       learningEvidence: [],
@@ -6224,6 +8020,181 @@
           answerKey: '1. saw; 2. found; 3. True',
           description: 'Grammar analysis matching witness statements with suspects.',
           archived: false
+        },
+        {
+          id: 'ws-robots',
+          title: 'Amazing Robots: WH-Questions & Scientific Dossier',
+          level: 'A1–A2',
+          cefrLevel: 'A1–A2',
+          grade: 'Grade 4',
+          grades: ['Grade 4', 'Grade 5'],
+          skill: 'Reading & Writing',
+          skills: ['Reading', 'Writing', 'Grammar', 'Science'],
+          topic: 'WH-Questions & Robotics',
+          topics: ['WH-Questions', 'Robotics', 'Science Dossier'],
+          duration: '30 min',
+          estimatedMinutes: 30,
+          xp: 45,
+          status: 'Ready to Print',
+          createdDate: '2026-09-05',
+          instructions: 'Read the robot files, write the correct WH-question words (What, Where, When, Who, Why, How), and label the robot features.',
+          questions: [
+            { id: 'q-1', text: 'Which WH-question asks for a place or location?', type: 'multiple_choice', options: ['What', 'Where', 'When', 'Who'], answer: 'Where', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "_____ made this rescue robot?"', type: 'fill_blank', options: [], answer: 'Who', points: 1 },
+            { id: 'q-3', text: 'True or False: A biomimetic robot copies movements found in real animals.', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
+          category: 'Speaking & STEM',
+          gameId: 'robots',
+          pdfUrl: 'robots/worksheet.html',
+          worksheetRoute: 'robots/worksheet.html',
+          answerKey: '1. Where; 2. Who; 3. True',
+          description: 'WH-question formation drills and scientific dossier comprehension.',
+          archived: false
+        },
+        {
+          id: 'ws-feelings',
+          title: 'How Would You Feel? Situational Reactions Worksheet',
+          level: 'A1+',
+          cefrLevel: 'A1+',
+          grade: 'Grade 3',
+          grades: ['Grade 2', 'Grade 3', 'Grade 4'],
+          skill: 'Speaking & Vocabulary',
+          skills: ['Speaking', 'Vocabulary', 'Listening'],
+          topic: 'Feelings & Emotions',
+          topics: ['Feelings', 'Emotions', 'Situational Reactions'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-06',
+          instructions: 'Read each dilemma situation, circle the emotion face that matches how you would feel, and write your action sentence.',
+          questions: [
+            { id: 'q-1', text: 'If you lost your favorite toy at the playground, how would you feel?', type: 'multiple_choice', options: ['Excited', 'Upset', 'Proud', 'Sleepy'], answer: 'Upset', points: 1 },
+            { id: 'q-2', text: 'Complete the sentence: "I would feel happy because _____."', type: 'short_answer', options: [], answer: 'I won the game / I helped my friend', points: 2 }
+          ],
+          category: 'Speaking & SEL',
+          gameId: 'feelings',
+          pdfUrl: 'feelings/worksheet.html',
+          worksheetRoute: 'feelings/worksheet.html',
+          answerKey: '1. Upset; 2. (Student emotional rationale)',
+          description: 'Dilemma analysis and emotional response justification practice.',
+          archived: false
+        },
+        {
+          id: 'ws-advice',
+          title: 'The Crazy Advice Academy: Modal Verbs Worksheet',
+          level: 'A2',
+          cefrLevel: 'A2',
+          grade: 'Grade 4',
+          grades: ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
+          skill: 'Grammar & Writing',
+          skills: ['Grammar', 'Writing', 'Speaking'],
+          topic: 'Modal Verbs Should & Shouldn\'t',
+          topics: ['Modal Verbs', 'Advice', 'Problem Solving'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-07',
+          instructions: 'Read the funny everyday problems. Write advice using "You should..." or "You shouldn\'t...".',
+          questions: [
+            { id: 'q-1', text: 'Your friend has a test tomorrow. What advice should you give?', type: 'multiple_choice', options: ['You should play games all night', 'You should study and sleep early', 'You shouldn\'t open your book'], answer: 'You should study and sleep early', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "You _____ eat too much candy before dinner."', type: 'fill_blank', options: [], answer: 'shouldn\'t', points: 1 }
+          ],
+          category: 'Grammar Challenges',
+          gameId: 'advice',
+          pdfUrl: 'advice/worksheets.html',
+          worksheetRoute: 'advice/worksheets.html',
+          answerKey: '1. You should study and sleep early; 2. shouldn\'t',
+          description: 'Formulating affirmative and negative advice using modal verbs.',
+          archived: false
+        },
+        {
+          id: 'ws-predictions',
+          title: 'What Will Happen Next? Predictions with WILL & WON\'T',
+          level: 'A2',
+          cefrLevel: 'A2',
+          grade: 'Grade 4',
+          grades: ['Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
+          skill: 'Grammar & Reading',
+          skills: ['Grammar', 'Reading', 'Writing'],
+          topic: 'Future Predictions with Will & Won\'t',
+          topics: ['Future Tense', 'Predictions', 'Comic Cliffhangers'],
+          duration: '25 min',
+          estimatedMinutes: 25,
+          xp: 40,
+          status: 'Ready to Print',
+          createdDate: '2026-09-08',
+          instructions: 'Look at the comic cliffhanger pictures. Write your prediction using "will" or "won\'t".',
+          questions: [
+            { id: 'q-1', text: 'Look at the dark clouds! Complete: "It _____ rain very soon."', type: 'multiple_choice', options: ['will', 'won\'t', 'is', 'was'], answer: 'will', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "He _____ drop the ice cream because he is holding it tightly."', type: 'fill_blank', options: [], answer: 'won\'t', points: 1 }
+          ],
+          category: 'Grammar Challenges',
+          gameId: 'predictions',
+          pdfUrl: 'predictions/worksheets.html',
+          worksheetRoute: 'predictions/worksheets.html',
+          answerKey: '1. will; 2. won\'t',
+          description: 'Practicing future tense predictions and negative statements with will/won\'t.',
+          archived: false
+        },
+        {
+          id: 'ws-brain-quit',
+          title: 'The Day Your Brain Quit: 5-Part Detective Skimming Workbook',
+          level: 'A1',
+          cefrLevel: 'A1',
+          grade: 'Grade 4',
+          grades: ['Grade 4'],
+          skill: 'Reading & Critical Thinking',
+          skills: ['Reading', 'Skimming', 'Speaking', 'Critical Thinking'],
+          topic: 'How Your Brain Learns & Skimming (Unit 1 p17)',
+          topics: ['Skimming Strategies', 'Main Idea', 'Brain Parts', 'Think, Learn, Remember, Imagine'],
+          duration: '35 min',
+          estimatedMinutes: 35,
+          xp: 100,
+          status: 'Ready to Print',
+          createdDate: '2026-09-16',
+          instructions: 'Skim the text in 30 seconds. Look at the title, pictures, and keywords. Fill in the detective log and brain job application.',
+          questions: [
+            { id: 'q-1', text: 'What is the title of the textbook reading?', type: 'multiple_choice', options: ['How Your Brain Learns', 'The Size of the Brain', 'Making Pizza', 'Flying Elephants'], answer: 'How Your Brain Learns', points: 1 },
+            { id: 'q-2', text: 'What are the four key jobs of the brain?', type: 'multiple_choice', options: ['Think, Learn, Remember, Imagine', 'Run, Jump, Sleep, Eat', 'Cook, Bake, Fry, Boil', 'Sing, Dance, Draw, Color'], answer: 'Think, Learn, Remember, Imagine', points: 1 }
+          ],
+          category: 'Reading Explorers',
+          gameId: 'brain-quit',
+          pdfUrl: 'brain/worksheets.html',
+          worksheetRoute: 'brain/worksheets.html',
+          answerKey: '1. How Your Brain Learns; 2. Think, Learn, Remember, Imagine',
+          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (RG2).',
+          archived: false
+        },
+        {
+          id: 'ws-city-mouse',
+          title: 'The City Mouse & Country Mouse: Fable & Comparatives',
+          level: 'A1',
+          cefrLevel: 'A1',
+          grade: 'Grade 2-3',
+          grades: ['Grade 2', 'Grade 3'],
+          skill: 'Reading & Vocabulary',
+          skills: ['Reading', 'Vocabulary', 'Grammar'],
+          topic: 'City vs Country & Comparatives',
+          topics: ['Town vs Country', 'Comparatives', 'Fables'],
+          duration: '20 min',
+          estimatedMinutes: 20,
+          xp: 35,
+          status: 'Ready to Print',
+          createdDate: '2026-09-09',
+          instructions: 'Read the fable sentences, match the city and country vocabulary, and circle the comparative adjectives.',
+          questions: [
+            { id: 'q-1', text: 'Which adjective compares two things?', type: 'multiple_choice', options: ['Quiet', 'Quieter', 'Quietly'], answer: 'Quieter', points: 1 },
+            { id: 'q-2', text: 'Fill in the blank: "The city buildings are _____ (tall) than the country barn."', type: 'fill_blank', options: [], answer: 'taller', points: 1 }
+          ],
+          category: 'Interactive Stories',
+          gameId: 'city-mouse',
+          pdfUrl: 'city-mouse/worksheet.html',
+          worksheetRoute: 'city-mouse/worksheet.html',
+          answerKey: '1. Quieter; 2. taller',
+          description: 'Reading comprehension and comparative adjective practice based on Aesop\'s fable.',
+          archived: false
         }
       ],
 
@@ -6265,6 +8236,13 @@
 
       // 18. Achievements (Unlockable Challenges)
       achievements: [
+        { id: 'ach-alice-1', name: 'White Rabbit Finder', icon: '🐇', requirement: 'Follow the White Rabbit into the deep woods and find the lost Pocket Watch.', category: 'Wonderland Story', xpReward: 100, archived: false },
+        { id: 'ach-alice-2', name: 'Watch Keeper', icon: '⌚', requirement: 'Return the gold pocket watch to the White Rabbit before time runs out.', category: 'Wonderland Story', xpReward: 150, archived: false },
+        { id: 'ach-alice-3', name: 'Tiny Door Explorer', icon: '🚪', requirement: 'Drink from the bottle and find the golden key to unlock the tiny garden door.', category: 'Wonderland Story', xpReward: 200, archived: false },
+        { id: 'ach-alice-4', name: 'Mushroom Explorer', icon: '🍄', requirement: 'Speak with the Caterpillar and master the magic mushroom sizes.', category: 'Wonderland Story', xpReward: 200, archived: false },
+        { id: 'ach-alice-5', name: 'Tea Party Guest', icon: '🎩', requirement: "Solve the riddle of the Clean Cup at the Mad Hatter's tea table.", category: 'Wonderland Story', xpReward: 250, archived: false },
+        { id: 'ach-alice-6', name: "Queen's Garden", icon: '🌹', requirement: 'Help the Card Gardeners paint the white roses red.', category: 'Wonderland Story', xpReward: 250, archived: false },
+        { id: 'ach-alice-7', name: 'Wonderland Champion', icon: '👑', requirement: "Stand your ground at the Royal Court and complete Alice's adventure!", category: 'Wonderland Story', xpReward: 500, archived: false },
         { id: 'ach-1', name: 'World Traveler', icon: '🌍', requirement: 'Unlock 3 distinct interactive learning worlds.', category: 'Exploration', xpReward: 300, archived: false },
         { id: 'ach-2', name: 'Vocabulary Collector', icon: '📚', requirement: 'Master 100 core vocabulary words across units.', category: 'Vocabulary', xpReward: 350, archived: false },
         { id: 'ach-3', name: 'Mystery Solver', icon: '🕵️', requirement: 'Complete the Mystery Hotel investigation story.', category: 'Reading & Logic', xpReward: 250, archived: false }
@@ -6462,6 +8440,7 @@
     constructor() {
       this.state = this.loadState();
       this.listeners = [];
+      try { this.saveState(); } catch (e) {}
     }
 
     loadState() {
@@ -6491,11 +8470,23 @@
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
               merged.progressChecks = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECKS));
             }
-            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions)) {
-              merged.progressCheckSubmissions = [];
+            if (!merged.progressCheckSubmissions || !Array.isArray(merged.progressCheckSubmissions) || merged.progressCheckSubmissions.length === 0) {
+              merged.progressCheckSubmissions = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS));
+            } else {
+              DEFAULT_PROGRESS_CHECK_SUBMISSIONS.forEach(defSub => {
+                if (!merged.progressCheckSubmissions.some(s => s.studentId === defSub.studentId && s.progressCheckId === defSub.progressCheckId)) {
+                  merged.progressCheckSubmissions.push(JSON.parse(JSON.stringify(defSub)));
+                }
+              });
             }
-            if (!merged.xpTransactions || !Array.isArray(merged.xpTransactions)) {
-              merged.xpTransactions = [];
+            if (!merged.xpTransactions || !Array.isArray(merged.xpTransactions) || merged.xpTransactions.length === 0) {
+              merged.xpTransactions = initial.xpTransactions || [];
+            } else {
+              (initial.xpTransactions || []).forEach(initTx => {
+                if (!merged.xpTransactions.some(t => t.sourceId === initTx.sourceId)) {
+                  merged.xpTransactions.push(JSON.parse(JSON.stringify(initTx)));
+                }
+              });
             }
             if (!merged.attendanceRecords || !Array.isArray(merged.attendanceRecords)) {
               merged.attendanceRecords = [];
@@ -6510,7 +8501,74 @@
               merged.studentAwards = [];
             }
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
-            if (!merged.worksheets) merged.worksheets = initial.worksheets || [];
+
+            // Synchronize canonical homework quests (ensure all 5 quests exist with full metadata)
+            if (!merged.homework || !Array.isArray(merged.homework) || merged.homework.length === 0) {
+              merged.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+            } else {
+              const existingHwMap = new Map(merged.homework.map(h => [h.id, h]));
+              DEFAULT_HOMEWORK_QUESTS.forEach(defHw => {
+                if (!existingHwMap.has(defHw.id)) {
+                  merged.homework.push(JSON.parse(JSON.stringify(defHw)));
+                } else {
+                  const existing = existingHwMap.get(defHw.id);
+                  // Ensure rich fields are present
+                  ['subject', 'skill', 'cefrLevel', 'estimatedTime', 'xpReward', 'optionalChallenge', 'optionalChallengeXp', 'optionalChallengeDesc', 'resources', 'instructions', 'thumbnail', 'status', 'published'].forEach(f => {
+                    if (defHw[f] !== undefined && existing[f] === undefined) {
+                      existing[f] = defHw[f];
+                    }
+                  });
+                  if (!existing.submissions) existing.submissions = JSON.parse(JSON.stringify(defHw.submissions || {}));
+                  if (!existing.submittedCount && defHw.submittedCount) existing.submittedCount = defHw.submittedCount;
+                }
+              });
+            }
+            
+            // Synchronize canonical resources (ensure all 21 games & textbooks are available)
+            if (!merged.resources || !merged.resources.length) {
+              merged.resources = JSON.parse(JSON.stringify(initial.resources || []));
+            } else {
+              const existingResMap = new Map(merged.resources.map(r => [r.id, r]));
+              (initial.resources || []).forEach(refRes => {
+                if (!existingResMap.has(refRes.id)) {
+                  merged.resources.push(JSON.parse(JSON.stringify(refRes)));
+                } else {
+                  const existing = existingResMap.get(refRes.id);
+                  ['type', 'cefrLevel', 'grades', 'languageFocus', 'topics', 'activityMode', 'interactionType', 'difficulty', 'estimatedMinutes', 'xp', 'tags', 'learningObjectives', 'teacherInstructions', 'studentInstructions', 'worksheetRoute', 'supportsAssignment', 'supportsProgress'].forEach(f => {
+                    if (refRes[f] !== undefined && (existing[f] === undefined || existing[f] === null || f === 'learningObjectives' || f === 'worksheetRoute' || f === 'xp')) {
+                      existing[f] = refRes[f];
+                    }
+                  });
+                }
+              });
+              // Normalize cloud synchronization status for all library games
+              (merged.resources || []).forEach(r => {
+                if (!r.cloudStatus || r.cloudStatus === 'pending') {
+                  r.cloudStatus = 'saved';
+                  if (!r.cloudSyncedAt) r.cloudSyncedAt = '2026-09-14T20:48:00.000Z';
+                  r.cloudSynced = true;
+                }
+              });
+            }
+
+            // Synchronize canonical worksheets (ensure all 10 worksheets are available)
+            if (!merged.worksheets || !merged.worksheets.length) {
+              merged.worksheets = JSON.parse(JSON.stringify(initial.worksheets || []));
+            } else {
+              const existingWsMap = new Map(merged.worksheets.map(w => [w.id, w]));
+              (initial.worksheets || []).forEach(refWs => {
+                if (!existingWsMap.has(refWs.id)) {
+                  merged.worksheets.push(JSON.parse(JSON.stringify(refWs)));
+                } else {
+                  const existing = existingWsMap.get(refWs.id);
+                  ['cefrLevel', 'grades', 'estimatedMinutes', 'xp', 'skills', 'topics', 'worksheetRoute', 'pdfUrl'].forEach(f => {
+                    if (refWs[f] !== undefined && existing[f] === undefined) {
+                      existing[f] = refWs[f];
+                    }
+                  });
+                }
+              });
+            }
             if (!merged.rubrics) merged.rubrics = initial.rubrics || [];
             if (!merged.badges) merged.badges = initial.badges || [];
             if (!merged.achievements) merged.achievements = initial.achievements || [];
@@ -6539,6 +8597,17 @@
             if (!merged.rewards || !merged.rewards.length) merged.rewards = initial.rewards || [];
             if (!merged.bigIdeas || !merged.bigIdeas.length) merged.bigIdeas = initial.bigIdeas || [];
             if (!merged.avatarCatalog || !merged.avatarCatalog.length) merged.avatarCatalog = initial.avatarCatalog || [];
+                        // Synchronize canonical & Wonderland achievements (ensure all 10 achievements are available)
+            if (!merged.achievements || !merged.achievements.length) {
+              merged.achievements = JSON.parse(JSON.stringify(initial.achievements || []));
+            } else {
+              const existingAchMap = new Map(merged.achievements.map(a => [a.id, a]));
+              (initial.achievements || []).forEach(refAch => {
+                if (!existingAchMap.has(refAch.id)) {
+                  merged.achievements.push(JSON.parse(JSON.stringify(refAch)));
+                }
+              });
+            }
             if (!merged.studentAwards) merged.studentAwards = initial.studentAwards || [];
 
             // Ensure Monster Evolution models are present
@@ -6547,6 +8616,14 @@
             }
             if (!merged.monsterItems || !Array.isArray(merged.monsterItems) || merged.monsterItems.length === 0) {
               merged.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+            } else {
+              const existingItemIds = new Set(merged.monsterItems.map(it => it.id));
+              DEFAULT_MONSTER_ITEMS.forEach(defItem => {
+                if (!existingItemIds.has(defItem.id)) {
+                  merged.monsterItems.push(JSON.parse(JSON.stringify(defItem)));
+                  existingItemIds.add(defItem.id);
+                }
+              });
             }
             if (!merged.monsterProfiles || typeof merged.monsterProfiles !== 'object') {
               merged.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));
@@ -6668,8 +8745,12 @@
                   merged.curriculum.lessons.push(l);
                 } else {
                   Object.assign(existingL, {
+                    weekNumber: l.weekNumber || existingL.weekNumber,
                     sourcePages: l.sourcePages,
                     sourceBook: l.sourceBook,
+                    gameRoute: l.gameRoute || existingL.gameRoute,
+                    worksheetRoute: l.worksheetRoute || existingL.worksheetRoute,
+                    gameId: l.gameId || existingL.gameId,
                     tasks: l.tasks || existingL.tasks,
                     activities: l.activities || existingL.activities
                   });
@@ -6684,13 +8765,90 @@
               });
             }
             if (Array.isArray(merged.resources)) {
+              const brainRes = CANONICAL_GAMES.find(g => g.id === 'brain-quit');
+              if (brainRes) {
+                const bIdx = merged.resources.findIndex(r => r.id === 'brain-quit');
+                if (bIdx === -1) {
+                  merged.resources.unshift(brainRes);
+                } else {
+                  merged.resources[bIdx] = Object.assign({}, brainRes, merged.resources[bIdx], {
+                    route: 'brain/index.html',
+                    worksheet: 'brain/worksheets.html',
+                    worksheetRoute: 'brain/worksheets.html',
+                    archived: false,
+                    featured: true
+                  });
+                }
+              }
+              const brainHackersRes = CANONICAL_GAMES.find(g => g.id === 'brain-hackers');
+              if (brainHackersRes) {
+                const bhIdx = merged.resources.findIndex(r => r.id === 'brain-hackers');
+                if (bhIdx === -1) {
+                  merged.resources.unshift(brainHackersRes);
+                } else {
+                  merged.resources[bhIdx] = Object.assign({}, brainHackersRes, merged.resources[bhIdx], {
+                    route: 'brain-hackers/index.html',
+                    worksheet: 'brain-hackers/worksheets.html',
+                    worksheetRoute: 'brain-hackers/worksheets.html',
+                    archived: false,
+                    featured: true
+                  });
+                }
+              }
+              const robotsRes = CANONICAL_GAMES.find(g => g.id === 'robots');
+              if (robotsRes && !merged.resources.some(r => r.id === 'robots')) {
+                merged.resources.unshift(robotsRes);
+              }
+              const feelingsRes = CANONICAL_GAMES.find(g => g.id === 'feelings');
+              if (feelingsRes && !merged.resources.some(r => r.id === 'feelings')) {
+                merged.resources.unshift(feelingsRes);
+              }
               const campRes = CANONICAL_GAMES.find(g => g.id === 'camp-mystery');
               if (campRes && !merged.resources.some(r => r.id === 'camp-mystery')) {
                 merged.resources.unshift(campRes);
               }
-              const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-hunters');
-              if (phonicsRes && !merged.resources.some(r => r.id === 'phonics-hunters')) {
-                merged.resources.unshift(phonicsRes);
+              const phonicsRes = CANONICAL_GAMES.find(g => g.id === 'phonics-adventure');
+              if (phonicsRes) {
+                const pIdx = merged.resources.findIndex(r => r.id === 'phonics-adventure' || r.id === 'phonics-hunters' || r.route === 'phonics/index.html');
+                if (pIdx !== -1) {
+                  merged.resources[pIdx] = phonicsRes;
+                } else {
+                  merged.resources.unshift(phonicsRes);
+                }
+              }
+              const inventorRes = CANONICAL_GAMES.find(g => g.id === 'inventor-lab');
+              if (inventorRes && !merged.resources.some(r => r.id === 'inventor-lab')) {
+                merged.resources.unshift(inventorRes);
+              }
+              const detRes = CANONICAL_GAMES.find(g => g.id === 'yesterday-detectives');
+              if (detRes && !merged.resources.some(r => r.id === 'yesterday-detectives')) {
+                merged.resources.unshift(detRes);
+              }
+              const claraRes = CANONICAL_GAMES.find(g => g.id === 'clara-inventor');
+              if (claraRes && !merged.resources.some(r => r.id === 'clara-inventor')) {
+                merged.resources.unshift(claraRes);
+              }
+              const aliceRes = CANONICAL_GAMES.find(g => g.id === 'alice-quest');
+              if (aliceRes && !merged.resources.some(r => r.id === 'alice-quest')) {
+                merged.resources.unshift(aliceRes);
+              }
+              const monsterRes = CANONICAL_GAMES.find(g => g.id === 'monster-day');
+              if (monsterRes) {
+                const existingMonster = merged.resources.find(r => r.id === 'monster-day');
+                if (!existingMonster) {
+                  merged.resources.unshift(monsterRes);
+                } else {
+                  existingMonster.title = monsterRes.title || 'Build Your Own Monster!';
+                  existingMonster.route = 'monster-day/index.html';
+                  existingMonster.featured = true;
+                  existingMonster.archived = false;
+                  existingMonster.cefrLevel = monsterRes.cefrLevel || 'A1';
+                  existingMonster.level = monsterRes.level || 'Pre-A1–A1+';
+                  existingMonster.grades = monsterRes.grades || ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4'];
+                  if (monsterRes.thumbnailSvg) {
+                    existingMonster.thumbnailSvg = monsterRes.thumbnailSvg;
+                  }
+                }
               }
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
@@ -6753,6 +8911,9 @@
                     weekNumber: l.weekNumber || existingL.weekNumber,
                     sourcePages: l.sourcePages,
                     sourceBook: l.sourceBook,
+                    gameRoute: l.gameRoute || existingL.gameRoute,
+                    worksheetRoute: l.worksheetRoute || existingL.worksheetRoute,
+                    gameId: l.gameId || existingL.gameId,
                     tasks: l.tasks || existingL.tasks,
                     activities: l.activities || existingL.activities
                   });
@@ -6931,8 +9092,9 @@
     }
 
     getStudent(id) {
-      if (!this.state.students) return null;
-      const s = this.state.students.find(s => s.id === id);
+      if (!this.state.students || !id) return null;
+      const strId = String(id).trim();
+      const s = this.state.students.find(s => s.id === strId || (s.studentIdNumber && String(s.studentIdNumber).trim() === strId));
       if (s && !s.monsterProfile) {
         s.monsterProfile = this.getMonsterProfile(s.id);
       }
@@ -6940,7 +9102,7 @@
     }
 
     addStudent(data) {
-      const studentId = 'student-' + Date.now();
+      const studentId = data.id || ('student-' + Date.now());
       const studentIdNumber = data.studentIdNumber || ('EAA-' + new Date().getFullYear() + '-' + String(this.state.students.length + 1).padStart(3, '0'));
       const newStudent = {
         id: studentId,
@@ -6951,15 +9113,16 @@
         age: parseInt(data.age, 10) || 8,
         grade: data.grade || 'Grade 3',
         overallCefr: data.overallCefr || 'A1',
+        avatar: data.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
         parentName: data.parentName || '',
         parentContact: data.parentContact || '',
         parentEmail: data.parentEmail || '',
-        xp: 0,
-        level: 1,
-        streakDays: 0,
-        equippedMonster: 'Mystery Egg',
-        archived: false,
-        manualCefrOverrides: {}
+        xp: parseInt(data.xp, 10) || 0,
+        level: parseInt(data.level, 10) || 1,
+        streakDays: parseInt(data.streakDays, 10) || 0,
+        equippedMonster: data.equippedMonster || 'Mystery Egg',
+        archived: Boolean(data.archived),
+        manualCefrOverrides: data.manualCefrOverrides || {}
       };
 
       // Initialize student Mystery Egg profile (starts at 0 XP)
@@ -6967,6 +9130,16 @@
 
       this.state.students.unshift(newStudent);
       this.saveState();
+
+      // Cloud Persistence: Authoritative Supabase INSERT
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveStudent(newStudent).catch(err => {
+          console.error('[SchoolStore] Supabase saveStudent error:', err);
+        });
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveStudent(newStudent).catch(() => {});
+      }
+
       return newStudent;
     }
 
@@ -6975,6 +9148,16 @@
       if (s) {
         Object.assign(s, updates);
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase updateStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return s;
       }
       return null;
@@ -6985,6 +9168,16 @@
       if (s) {
         s.archived = true;
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase archiveStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -6995,6 +9188,16 @@
       if (s) {
         s.classId = null;
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase UPDATE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase removeStudentFromClass error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -7004,8 +9207,17 @@
       const idx = this.state.students.findIndex(s => s.id === id);
       if (idx !== -1) {
         this.state.students.splice(idx, 1);
-        // Also clean up or preserve dependent records
         this.saveState();
+
+        // Cloud Persistence: Authoritative Supabase DELETE
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.deleteStudent(id).catch(err => {
+            console.error('[SchoolStore] Supabase deleteStudent error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.deleteStudent(id).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -7015,16 +9227,20 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!this.state.xpTransactions) return 0;
+      if (!this.state.xpTransactions || !studentId) return 0;
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
       // Strictly recalculate from active transactions only
-      const txs = this.state.xpTransactions.filter(t => t.studentId === studentId && t.status !== 'voided');
+      const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
       return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
       if (!this.state.xpTransactions) return [];
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
       return this.state.xpTransactions
-        .filter(t => t.studentId === studentId && (includeVoided || t.status !== 'voided'))
+        .filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && (includeVoided || t.status !== 'voided'))
         .slice()
         .reverse();
     }
@@ -7072,6 +9288,31 @@
       };
 
       if (!this.state.xpTransactions) this.state.xpTransactions = [];
+
+      // STRICT DUPLICATE XP PROTECTION
+      if (options.sourceId) {
+        const existingTx = this.state.xpTransactions.find(t => 
+          (t.studentId === studentId || (s && (t.studentId === s.id || t.studentId === s.studentIdNumber))) &&
+          t.sourceId === options.sourceId &&
+          t.status !== 'voided'
+        );
+        if (existingTx) {
+          console.warn('[SchoolStore] Duplicate XP transaction blocked for sourceId:', options.sourceId, 'student:', studentId);
+          return {
+            success: false,
+            duplicate: true,
+            transaction: existingTx,
+            student: s,
+            newTotalXP: this.getStudentTotalXP(studentId),
+            reason: existingTx.reason,
+            amount: existingTx.amount,
+            points: existingTx.points,
+            xp: existingTx.xp,
+            evolutionEvent: null,
+            monsterState: this.calculateMonsterState(studentId)
+          };
+        }
+      }
       const prevMonsterState = this.calculateMonsterState(studentId);
       const prevLevel = prevMonsterState ? prevMonsterState.currentLevel : 1;
       const prevStageName = prevMonsterState ? prevMonsterState.stageName : 'Mystery Egg';
@@ -7081,8 +9322,16 @@
       const lastCelebrated = profile.lastCelebratedLevel || prevLevel;
 
       this.state.xpTransactions.push(tx);
+      const newTotalXP = this.getStudentTotalXP(studentId);
+      if (s) {
+        s.xp = newTotalXP;
+        s.totalXP = newTotalXP;
+      }
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
+      if (s) {
+        s.level = newLevel;
+      }
 
       let evolutionEvent = null;
       if (newMonsterState && newLevel > prevLevel && newLevel > lastCelebrated) {
@@ -7142,7 +9391,17 @@
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
+        window.AdventureSupabase.saveStudent(s).catch(() => {});
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveXPTransaction(tx).catch(e => {
+          console.warn('[SchoolStore] XP cloud save warning:', e);
+        });
+      }
       return { 
+        success: true,
         transaction: tx, 
         student: s, 
         newTotalXP: this.getStudentTotalXP(studentId), 
@@ -7153,6 +9412,10 @@
         evolutionEvent, 
         monsterState: newMonsterState 
       };
+    }
+
+    awardXP(studentId, amount, reason, teacher, options) {
+      return this.giveXP(studentId, amount, reason, teacher, options);
     }
 
     giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
@@ -7421,40 +9684,81 @@
       return false;
     }
 
-    // Teacher Notes CRUD
+    // Teacher Notes CRUD (Shared Online Database Sync)
     getTeacherNotes(studentId) {
-      return this.state.teacherNotes.filter(n => n.studentId === studentId);
+      if (!this.state.teacherNotes) return [];
+      const s = this.getStudent(studentId);
+      const targetId = s ? s.id : studentId;
+      const targetNum = s ? s.studentIdNumber : null;
+      return this.state.teacherNotes.filter(n => n.studentId === targetId || (targetNum && n.studentId === targetNum));
     }
 
     addTeacherNote(studentId, text, author = 'Mr. Maysam') {
+      const s = this.getStudent(studentId);
+      const canonicalStudentId = s ? s.id : studentId;
+      const cleanText = (text || '').trim();
       const note = {
-        id: 'note-' + Date.now(),
-        studentId,
-        text,
+        id: 'note-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId: canonicalStudentId,
+        text: cleanText,
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        author
+        author: author || 'Mr. Maysam',
+        updatedAt: new Date().toISOString()
       };
+      if (!this.state.teacherNotes) this.state.teacherNotes = [];
       this.state.teacherNotes.unshift(note);
+      if (s) {
+        s.latestTeacherNote = cleanText;
+      }
       this.saveState();
+
+      // Transmit immediately to shared online database
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveTeacherNote(note).catch(err => {
+          console.warn('[SchoolStore] Teacher note cloud sync error:', err.message);
+        });
+      }
       return note;
     }
 
     updateTeacherNote(noteId, text) {
+      if (!this.state.teacherNotes) return null;
       const n = this.state.teacherNotes.find(note => note.id === noteId);
       if (n) {
-        n.text = text;
+        const cleanText = (text || '').trim();
+        n.text = cleanText;
         n.date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' (edited)';
+        n.updatedAt = new Date().toISOString();
+        const s = this.getStudent(n.studentId);
+        if (s) {
+          s.latestTeacherNote = cleanText;
+        }
         this.saveState();
+
+        // Transmit update immediately to shared online database
+        if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveTeacherNote(n).catch(err => {
+            console.warn('[SchoolStore] Teacher note cloud update error:', err.message);
+          });
+        }
         return n;
       }
       return null;
     }
 
     deleteTeacherNote(noteId) {
+      if (!this.state.teacherNotes) return false;
       const idx = this.state.teacherNotes.findIndex(n => n.id === noteId);
       if (idx !== -1) {
         this.state.teacherNotes.splice(idx, 1);
         this.saveState();
+
+        // Delete from shared online database
+        if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.deleteTeacherNote(noteId).catch(err => {
+            console.warn('[SchoolStore] Teacher note cloud delete error:', err.message);
+          });
+        }
         return true;
       }
       return false;
@@ -7504,6 +9808,11 @@
       };
       this.state.classes.push(newClass);
       this.saveState();
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveClass(newClass).catch(err => {
+          console.error('[SchoolStore] Supabase saveClass error:', err);
+        });
+      }
       return newClass;
     }
 
@@ -7512,6 +9821,11 @@
       if (c) {
         Object.assign(c, updates);
         this.saveState();
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveClass(c).catch(err => {
+            console.error('[SchoolStore] Supabase updateClass error:', err);
+          });
+        }
         return c;
       }
       return null;
@@ -7531,51 +9845,73 @@
       return null;
     }
 
-    recordHomeworkSubmission(homeworkId, studentId, submissionData) {
+    recordHomeworkSubmission(homeworkId, studentId, submissionData = {}) {
       const hw = this.getHomeworkItem(homeworkId);
       if (!hw) return null;
       if (!hw.submissions) hw.submissions = {};
 
-      const totalQuestions = hw.questionsTotal || 10;
-      const attempted = Math.min(totalQuestions, Math.max(0, parseInt(submissionData.attempted, 10) || 0));
-      const correct = Math.min(attempted, Math.max(0, parseInt(submissionData.correct, 10) || 0));
-      const completion = Math.round((attempted / totalQuestions) * 100);
-      const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
-      const status = submissionData.status || (completion === 100 ? 'Complete' : completion > 0 ? 'Partially Complete' : 'Not Started');
+      const isComplete = (submissionData.status === 'COMPLETED' || submissionData.status === 'Complete' || submissionData.completed === true);
+      const prevSub = hw.submissions[studentId] || {};
+      const alreadyAwarded = prevSub.xpAwarded && prevSub.xpAwarded > 0;
+
+      // Base XP configured on homework (default 20)
+      const baseXP = parseInt(hw.xpReward, 10) || 20;
+      const optXP = (submissionData.optionalChallengeDone && hw.optionalChallenge) ? (parseInt(hw.optionalChallengeXp, 10) || 5) : 0;
+      const totalEarnedXP = isComplete ? (baseXP + optXP) : 0;
+
+      let xpResult = null;
+      let awardedAmount = 0;
+
+      if (isComplete && !alreadyAwarded && totalEarnedXP > 0) {
+        // Award XP through centralized XP engine with strict sourceId
+        const sourceId = 'hw-sub-' + homeworkId + '-' + studentId;
+        xpResult = this.giveXP(
+          studentId,
+          totalEarnedXP,
+          'Completed Homework Quest: ' + hw.title + (optXP > 0 ? ' (+Optional Challenge)' : ''),
+          'Homework Quest',
+          {
+            sourceType: 'HOMEWORK',
+            sourceId: sourceId,
+            homeworkId: homeworkId,
+            category: 'homework',
+            icon: '⭐'
+          }
+        );
+        if (xpResult && xpResult.success) {
+          awardedAmount = totalEarnedXP;
+        }
+      }
 
       hw.submissions[studentId] = {
-        status,
-        attempted,
-        correct,
-        totalQuestions,
-        completion,
-        accuracy,
+        status: isComplete ? 'COMPLETED' : (submissionData.status || 'IN_PROGRESS'),
+        attempted: submissionData.attempted !== undefined ? submissionData.attempted : 5,
+        correct: submissionData.correct !== undefined ? submissionData.correct : 5,
         completedDate: submissionData.completedDate || new Date().toISOString().split('T')[0],
-        notes: submissionData.notes || ''
+        optionalDone: !!submissionData.optionalChallengeDone,
+        notes: submissionData.notes || '',
+        xpAwarded: awardedAmount || prevSub.xpAwarded || 0,
+        xpTransactionId: xpResult && xpResult.transaction ? xpResult.transaction.id : (prevSub.xpTransactionId || null)
       };
 
-      hw.submittedCount = Object.values(hw.submissions).filter(s => s.status === 'Complete' || s.status === 'Partially Complete').length;
+      // Recalculate submittedCount
+      const subs = Object.values(hw.submissions);
+      hw.submittedCount = subs.filter(s => s.status === 'COMPLETED' || s.status === 'Complete').length;
 
-      // Connect to learningEvidence: accuracy reflects mastery, completion reflects task completion
-      if (attempted > 0) {
-        if (!this.state.learningEvidence) this.state.learningEvidence = [];
+      // Evidence link
+      if (this.state.learningEvidence && isComplete) {
         const existingEv = this.state.learningEvidence.find(e => e.studentId === studentId && e.sourceId === homeworkId);
-        if (existingEv) {
-          existingEv.score = accuracy;
-          existingEv.completion = completion;
-          existingEv.notes = 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%';
-          existingEv.date = new Date().toISOString().split('T')[0];
-        } else {
+        if (!existingEv) {
           this.state.learningEvidence.push({
             id: 'ev-hw-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
             studentId,
             source: 'homework',
             sourceId: homeworkId,
             title: hw.title,
-            skill: hw.skill || 'General',
-            score: accuracy,
-            completion: completion,
-            notes: 'Attempted: ' + attempted + '/' + totalQuestions + ', Correct: ' + correct + ', Accuracy: ' + accuracy + '%',
+            skill: hw.skill || hw.subject || 'General',
+            score: 100,
+            completion: 100,
+            notes: 'Homework Quest completed with full evidence.',
             date: new Date().toISOString().split('T')[0]
           });
         }
@@ -7583,7 +9919,15 @@
 
       this.saveState();
       this.notify('homework', this.state.homework);
-      return hw.submissions[studentId];
+
+      return {
+        submission: hw.submissions[studentId],
+        xpResult,
+        xpAwarded: awardedAmount,
+        duplicate: !!(alreadyAwarded || (xpResult && xpResult.duplicate)),
+        evolutionEvent: xpResult ? xpResult.evolutionEvent : null,
+        monsterState: this.calculateMonsterState(studentId)
+      };
     }
 
     archiveClass(id) {
@@ -7601,6 +9945,11 @@
       if (idx !== -1) {
         this.state.classes.splice(idx, 1);
         this.saveState();
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.deleteClass(id).catch(err => {
+            console.error('[SchoolStore] Supabase deleteClass error:', err);
+          });
+        }
         return true;
       }
       return false;
@@ -7633,6 +9982,12 @@
         }
       });
       this.saveState();
+
+      if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveAttendance(records).catch(e => {
+          console.warn('[SchoolStore] Attendance cloud save warning:', e);
+        });
+      }
     }
 
     setStudentAttendance(studentId, status, date = null) {
@@ -7927,6 +10282,7 @@
       const resource = {
         id: newId,
         title: data.title || 'New ESL Game',
+        type: data.type || 'game',
         description: data.description || 'Interactive communicative activity',
         category: data.category || 'Classroom Game',
         level: data.level || 'A1',
@@ -7941,18 +10297,52 @@
         worksheet: data.worksheet || null,
         teacherGuide: !!data.teacherGuide,
         featured: !!data.featured,
-        archived: false
+        archived: false,
+        cloudStatus: 'pending',
+        created_at: data.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
       this.state.resources.unshift(resource);
       this.saveState();
+      if (this.notify) this.notify('resources', this.state.resources);
+
+      // Asynchronously trigger authoritative Supabase cloud persistence
+      if (typeof window !== 'undefined' && window.AdventureSupabase) {
+        window.AdventureSupabase.saveResource(resource).then(res => {
+          if (res && res.success) {
+            resource.cloudStatus = 'saved';
+            resource.cloudSyncedAt = new Date().toISOString();
+            this.saveState();
+          }
+        }).catch(err => {
+          console.warn('[SchoolStore] Cloud saveResource warning:', err);
+          resource.cloudStatus = 'failed';
+          resource.cloudError = err.message;
+        });
+      }
+
       return resource;
     }
 
     updateResource(id, updates) {
       const res = this.getResource(id);
       if (res) {
-        Object.assign(res, updates);
+        Object.assign(res, updates, { updated_at: new Date().toISOString(), cloudStatus: 'pending' });
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.saveResource(res).then(saveRes => {
+            if (saveRes && saveRes.success) {
+              res.cloudStatus = 'saved';
+              res.cloudSyncedAt = new Date().toISOString();
+              this.saveState();
+            }
+          }).catch(err => {
+            res.cloudStatus = 'failed';
+            res.cloudError = err.message;
+          });
+        }
         return res;
       }
       return null;
@@ -7966,8 +10356,16 @@
         copy.title = original.title + ' (Copy)';
         copy.featured = false;
         copy.archived = false;
+        copy.cloudStatus = 'pending';
+        copy.created_at = new Date().toISOString();
+        copy.updated_at = new Date().toISOString();
         this.state.resources.unshift(copy);
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.saveResource(copy).catch(() => {});
+        }
         return copy;
       }
       return null;
@@ -7977,7 +10375,12 @@
       const res = this.getResource(id);
       if (res) {
         res.archived = true;
+        res.updated_at = new Date().toISOString();
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.archiveResource(id).catch(() => {});
+        }
         return true;
       }
       return false;
@@ -7988,9 +10391,156 @@
       if (idx !== -1) {
         this.state.resources.splice(idx, 1);
         this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        if (typeof window !== 'undefined' && window.AdventureSupabase) {
+          window.AdventureSupabase.deleteResource(id).catch(() => {});
+        }
         return true;
       }
       return false;
+    }
+
+    async syncLocalLibraryToCloud() {
+      if (typeof window !== 'undefined' && window.AdventureSupabase) {
+        const result = await window.AdventureSupabase.migrateLocalResourcesToCloud(this);
+        this.saveState();
+        if (this.notify) this.notify('resources', this.state.resources);
+        return result;
+      }
+      return { success: false, reason: 'AdventureSupabase client not loaded' };
+    }
+
+    loadLibrary() {
+      const allGames = (this.getResources(false) || []);
+      const allWorksheets = (this.getWorksheets ? this.getWorksheets(false) : []) || [];
+      return this.getStandardizedResources ? this.getStandardizedResources(false) : allGames.concat(allWorksheets);
+    }
+
+    toggleFavoriteResource(id) {
+      let item = this.getResource(id);
+      let isWs = false;
+      if (!item) {
+        item = this.getWorksheet ? this.getWorksheet(id) : null;
+        isWs = true;
+      }
+      if (item) {
+        item.featured = !item.featured;
+        this.saveState();
+        if (isWs && this.notify) this.notify('worksheets', this.state.worksheets);
+        else if (this.notify) this.notify('resources', this.state.resources);
+        return item;
+      }
+      return null;
+    }
+
+    isFavorite(id) {
+      const item = this.getResource(id) || (this.getWorksheet ? this.getWorksheet(id) : null);
+      return Boolean(item && item.featured);
+    }
+
+    getStandardizedResources(includeArchived = false) {
+      const games = (this.getResources(includeArchived) || []).map(r => ({
+        ...r,
+        isWorksheet: false,
+        type: r.type || (r.category && r.category.toLowerCase().includes('story') ? 'story' : (r.category && r.category.toLowerCase().includes('textbook') ? 'textbook' : (r.category && r.category.toLowerCase().includes('roleplay') ? 'roleplay' : 'game'))),
+        cefrLevel: r.cefrLevel || r.level || 'A1',
+        grades: r.grades || (r.grade ? [r.grade] : ['Grade 3']),
+        estimatedMinutes: r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || 30,
+        xp: r.xp || 50,
+        worksheetRoute: r.worksheetRoute || r.worksheet || null,
+        learningObjectives: r.learningObjectives || r.objectives || []
+      }));
+
+      const worksheets = (this.getWorksheets ? this.getWorksheets(includeArchived) : []).map(w => ({
+        ...w,
+        isWorksheet: true,
+        type: 'worksheet',
+        cefrLevel: w.cefrLevel || w.level || 'A1',
+        grades: w.grades || (w.grade ? [w.grade] : ['Grade 3']),
+        estimatedMinutes: w.estimatedMinutes || (typeof w.duration === 'number' ? w.duration : parseInt(w.duration, 10)) || 25,
+        xp: w.xp || 40,
+        route: w.pdfUrl || w.route || '#',
+        worksheetRoute: w.pdfUrl || w.route || null,
+        skills: w.skills || (w.skill ? [w.skill] : ['Writing']),
+        topics: w.topics || (w.topic ? [w.topic] : ['Worksheet Practice']),
+        learningObjectives: w.learningObjectives || w.objectives || [w.instructions || 'Complete classroom worksheet activities']
+      }));
+
+      return games.concat(worksheets);
+    }
+
+    filterResources(criteria = {}) {
+      let items = this.getStandardizedResources(false);
+      const { search, type, cefrLevel, grade, skill, topic, duration, favoritesOnly } = criteria;
+
+      if (favoritesOnly) {
+        items = items.filter(r => Boolean(r.featured));
+      }
+
+      if (type && type !== 'all') {
+        items = items.filter(r => {
+          if (type === 'game') return !r.isWorksheet && r.type !== 'story' && r.type !== 'textbook' && r.type !== 'roleplay';
+          if (type === 'worksheet') return r.isWorksheet;
+          if (type === 'story') return (r.type === 'story' || (r.category || '').toLowerCase().includes('story'));
+          if (type === 'roleplay') return (r.type === 'roleplay' || (r.category || '').toLowerCase().includes('roleplay'));
+          if (type === 'textbook') return (r.type === 'textbook' || (r.category || '').toLowerCase().includes('textbook'));
+          return r.type === type;
+        });
+      }
+
+      if (cefrLevel && cefrLevel !== 'all') {
+        const lvl = cefrLevel.toLowerCase();
+        items = items.filter(r => (r.cefrLevel || r.level || '').toLowerCase().includes(lvl));
+      }
+
+      if (grade && grade !== 'all') {
+        items = items.filter(r => {
+          if (Array.isArray(r.grades)) return r.grades.some(g => g.toLowerCase().includes(grade.toLowerCase()));
+          return (r.grade || '').toLowerCase().includes(grade.toLowerCase());
+        });
+      }
+
+      if (skill && skill !== 'all') {
+        const sk = skill.toLowerCase();
+        items = items.filter(r => {
+          if (Array.isArray(r.skills)) return r.skills.some(s => s.toLowerCase().includes(sk));
+          return (r.skill || '').toLowerCase().includes(sk);
+        });
+      }
+
+      if (topic && topic !== 'all') {
+        const tp = topic.toLowerCase();
+        items = items.filter(r => {
+          if (Array.isArray(r.topics)) return r.topics.some(t => t.toLowerCase() === tp);
+          return (r.topic || '').toLowerCase() === tp;
+        });
+      }
+
+      if (duration && duration !== 'all') {
+        items = items.filter(r => {
+          const mins = r.estimatedMinutes || 30;
+          if (duration === 'short') return mins < 25;
+          if (duration === 'medium') return mins >= 25 && mins <= 40;
+          if (duration === 'long') return mins > 40;
+          return true;
+        });
+      }
+
+      if (search && search.trim()) {
+        const q = search.toLowerCase().trim();
+        items = items.filter(r => {
+          const inTitle = (r.title || '').toLowerCase().includes(q);
+          const inDesc = (r.description || '').toLowerCase().includes(q);
+          const inLang = (r.languageFocus || '').toLowerCase().includes(q);
+          const inTags = Array.isArray(r.tags) && r.tags.some(t => t.toLowerCase().includes(q));
+          const inSkills = Array.isArray(r.skills) && r.skills.some(s => s.toLowerCase().includes(q));
+          const inTopics = Array.isArray(r.topics) && r.topics.some(t => t.toLowerCase().includes(q));
+          const inObjs = Array.isArray(r.learningObjectives) && r.learningObjectives.some(o => o.toLowerCase().includes(q));
+          return inTitle || inDesc || inLang || inTags || inSkills || inTopics || inObjs;
+        });
+      }
+
+      return items;
     }
 
     // =========================================================================
@@ -8013,7 +10563,8 @@
         id: 'asg-' + Date.now(),
         title: data.title || 'New Class Assignment',
         classId: data.classId || this.state.activeClassId,
-        activityId: data.activityId || 'monster-day',
+        activityId: data.activityId || data.gameId || 'monster-day',
+        gameId: data.gameId || data.activityId || 'monster-day',
         studentIds: data.studentIds || 'all',
         dueDate: data.dueDate || 'Sep 25, 2026',
         instructions: data.instructions || '',
@@ -8086,28 +10637,82 @@
       return this.state.homework.find(h => h.id === id);
     }
 
+    getHomework(classId = null, filterStatus = null) {
+      if (!this.state.homework) this.state.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+      return this.state.homework.filter(h => {
+        if (h.archived) return false;
+        if (classId && classId !== 'all' && h.classId && h.classId !== 'all' && h.classId !== classId) return false;
+        if (filterStatus && filterStatus !== 'all') {
+          const status = (h.status || 'ACTIVE').toUpperCase();
+          if (filterStatus.toUpperCase() !== status) return false;
+        }
+        return true;
+      });
+    }
+
+    getHomeworkItem(id) {
+      if (!this.state.homework) this.state.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+      return this.state.homework.find(h => h.id === id);
+    }
+
     createHomework(data) {
+      if (!this.state.homework) this.state.homework = [];
+      const cls = this.getClass(data.classId || this.state.activeClassId);
+      const isPublished = data.published !== undefined ? !!data.published : true;
       const newHw = {
         id: 'hw-' + Date.now(),
-        title: data.title || 'New Homework Task',
-        type: data.type || 'Game Mission',
-        classId: data.classId || this.state.activeClassId,
+        title: data.title || 'New Homework Quest',
+        description: data.description || '',
+        subject: data.subject || data.type || 'Vocabulary',
+        skill: data.skill || data.subject || 'Vocabulary',
+        cefrLevel: data.cefrLevel || 'A1',
+        classId: data.classId || this.state.activeClassId || 'class-3a',
+        className: (cls ? cls.name : (data.className || 'Grade 3A')),
         studentIds: data.studentIds || 'all',
         dueDate: data.dueDate || 'Sep 25, 2026',
-        description: data.description || '',
+        estimatedTime: data.estimatedTime || '20 minutes',
+        xpReward: parseInt(data.xpReward, 10) || 20,
+        optionalChallenge: !!data.optionalChallenge,
+        optionalChallengeXp: parseInt(data.optionalChallengeXp, 10) || 5,
+        optionalChallengeDesc: data.optionalChallengeDesc || '',
+        resources: Array.isArray(data.resources) ? data.resources : [],
+        instructions: Array.isArray(data.instructions) && data.instructions.length ? data.instructions : [
+          '1. Watch the video',
+          '2. Learn the vocabulary',
+          '3. Complete the worksheet',
+          '4. Play the mini-game',
+          '5. Submit your work'
+        ],
+        status: isPublished ? (data.status || 'ACTIVE') : 'DRAFT',
+        published: isPublished,
+        thumbnail: data.thumbnail || 'assets/homework/thumb-animals.png',
+        companionImage: data.companionImage || 'assets/homework/rabbit-adventurer.png',
         submittedCount: 0,
+        submissions: {},
         archived: false
       };
       this.state.homework.unshift(newHw);
       this.saveState();
+      this.notify('homework', this.state.homework);
       return newHw;
     }
 
     updateHomework(id, data) {
       const h = this.getHomeworkItem(id);
       if (h) {
+        const wasPublished = h.published;
         Object.assign(h, data);
+        if (data.classId) {
+          const cls = this.getClass(data.classId);
+          if (cls) h.className = cls.name;
+        }
+        if (data.published !== undefined) {
+          h.published = !!data.published;
+          if (!h.published) h.status = 'DRAFT';
+          else if (h.status === 'DRAFT') h.status = 'ACTIVE';
+        }
         this.saveState();
+        this.notify('homework', this.state.homework);
         return h;
       }
       return null;
@@ -8120,9 +10725,13 @@
         copy.id = 'hw-' + Date.now();
         copy.title = original.title + ' (Copy)';
         copy.submittedCount = 0;
+        copy.submissions = {};
+        copy.status = 'DRAFT';
+        copy.published = false;
         copy.archived = false;
         this.state.homework.unshift(copy);
         this.saveState();
+        this.notify('homework', this.state.homework);
         return copy;
       }
       return null;
@@ -8133,16 +10742,18 @@
       if (h) {
         h.archived = true;
         this.saveState();
+        this.notify('homework', this.state.homework);
         return true;
       }
       return false;
     }
 
     deleteHomework(id) {
-      const idx = this.state.homework.findIndex(h => h.id === id);
+      const idx = (this.state.homework || []).findIndex(h => h.id === id);
       if (idx !== -1) {
         this.state.homework.splice(idx, 1);
         this.saveState();
+        this.notify('homework', this.state.homework);
         return true;
       }
       return false;
@@ -8636,6 +11247,19 @@
         Object.assign(profile, updates);
         this.saveState();
         this.notify();
+
+        // Cloud Persistence: Authoritative Supabase Student Profile Update
+        const s = this.getStudent(studentId);
+        if (s) {
+          s.monsterProfile = profile;
+          if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+            window.AdventureSupabase.saveStudent(s).catch(err => {
+              console.error('[SchoolStore] Supabase saveStudent (monster) error:', err);
+            });
+          } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+            window.SchoolCloudSync.saveStudent(s).catch(() => {});
+          }
+        }
       }
       return profile;
     }
@@ -8664,7 +11288,7 @@
     hasStudentAchievement(studentId, achievementId) {
       if (!achievementId) return false;
       const awards = this.state.studentAwards || [];
-      return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId));
+      return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId || a.badgeId === achievementId));
     }
 
     calculateMonsterState(studentId) {
@@ -9502,6 +12126,42 @@
       return this.state.achievements.find(a => a.id === id) || null;
     }
 
+    unlockAchievement(studentId, achievementId) {
+      if (!studentId || !achievementId) return null;
+      if (!this.state.studentAwards) this.state.studentAwards = [];
+      const ach = this.getAchievement(achievementId);
+      if (!ach) return null;
+      if (this.hasStudentAchievement(studentId, achievementId)) {
+        return null; // Already unlocked
+      }
+      const award = {
+        id: 'saward-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        studentId: studentId,
+        achievementId: achievementId,
+        badgeId: achievementId,
+        name: ach.name,
+        icon: ach.icon || '🏆',
+        category: ach.category || 'Wonderland Story',
+        requirement: ach.requirement || '',
+        xpReward: ach.xpReward || 100,
+        awardedAt: new Date().toISOString()
+      };
+      this.state.studentAwards.push(award);
+      if (ach.xpReward) {
+        this.giveXP(
+          studentId,
+          ach.xpReward,
+          `Achievement Unlocked: ${ach.name}`,
+          'achievement',
+          achievementId
+        );
+      }
+      this.saveState();
+      this.notify('studentAwards', this.state.studentAwards);
+      return award;
+    }
+
+
     createAchievement(data) {
       if (!this.state.achievements) this.state.achievements = [];
       const ach = {
@@ -9962,6 +12622,15 @@
         s.avatar = Object.assign({}, s.avatar || {}, avatarObj);
         this.saveState();
         this.notify('students', s);
+
+        if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+          window.AdventureSupabase.saveStudent(s).catch(err => {
+            console.error('[SchoolStore] Supabase saveStudent (avatar) error:', err);
+          });
+        } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+          window.SchoolCloudSync.saveStudent(s).catch(() => {});
+        }
+
         return true;
       }
       return false;
@@ -10355,6 +13024,15 @@
       }
       this.saveState();
       this.notify('students', this.state.students);
+
+      if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
+        window.AdventureSupabase.saveStudent(student).catch(err => {
+          console.error('[SchoolStore] Supabase saveStudent (avatar) error:', err);
+        });
+      } else if (typeof window !== 'undefined' && window.SchoolCloudSync) {
+        window.SchoolCloudSync.saveStudent(student).catch(() => {});
+      }
+
       return student;
     }
 
@@ -10520,15 +13198,19 @@
       if (!this.state.progressCheckSubmissions) {
         this.state.progressCheckSubmissions = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECK_SUBMISSIONS));
       }
+      const sObj = studentId ? this.getStudent(studentId) : null;
+      const resolvedStudentId = sObj ? sObj.id : studentId;
       return this.state.progressCheckSubmissions.filter(s => {
         if (checkId && s.progressCheckId !== checkId) return false;
-        if (studentId && s.studentId !== studentId) return false;
+        if (resolvedStudentId && s.studentId !== resolvedStudentId && (!sObj || s.studentId !== sObj.studentIdNumber)) return false;
         return true;
       });
     }
 
     getStudentProgressCheckHistory(studentId) {
-      return this.getProgressCheckSubmissions(null, studentId).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      const s = this.getStudent(studentId);
+      const resolvedId = s ? s.id : studentId;
+      return this.getProgressCheckSubmissions(null, resolvedId).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
     }
 
     submitProgressCheck(submissionData) {
@@ -11253,6 +13935,9 @@
               skillScores: cloudSub.skillScores || {},
               teacherNote: cloudSub.notes || cloudSub.teacherComment || ""
             };
+            if (cloudSub.notes && cloudSub.notes.trim()) {
+              student.latestTeacherNote = cloudSub.notes.trim();
+            }
             student.xp = this.getStudentTotalXP(studentId);
             const mState = this.calculateMonsterState(studentId);
             if (mState) student.level = mState.currentLevel;
@@ -11268,6 +13953,198 @@
       }
 
       return { success: true, count: cloudArray.length, modified: modified };
+    }
+
+    /**
+     * Complete two-way sync: Merges all cloud collections into store state
+     * (Teacher Notes, Assessments, Student Overrides, XP Ledger, Attendance)
+     */
+    mergeCloudState(cloudData) {
+      if (!cloudData || typeof cloudData !== 'object') return { success: false };
+
+      let modified = false;
+
+      // -1. Merge Classes Roster
+      if (Array.isArray(cloudData.classes) && cloudData.classes.length > 0) {
+        if (!this.state.classes) this.state.classes = [];
+        cloudData.classes.forEach(remoteClass => {
+          if (!remoteClass || !remoteClass.id) return;
+          const localIdx = this.state.classes.findIndex(c => c.id === remoteClass.id);
+          if (localIdx !== -1) {
+            this.state.classes[localIdx] = Object.assign({}, this.state.classes[localIdx], remoteClass);
+          } else {
+            this.state.classes.push(remoteClass);
+          }
+          modified = true;
+        });
+      }
+
+      // 0. Merge Complete Students Roster (Authoritative Supabase Cloud Roster)
+      if (Array.isArray(cloudData.students) && cloudData.students.length > 0) {
+        if (!this.state.students) this.state.students = [];
+        const remoteMap = new Map();
+
+        cloudData.students.forEach(remoteStudent => {
+          if (!remoteStudent || !remoteStudent.id) return;
+          remoteMap.set(remoteStudent.id, remoteStudent);
+
+          const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
+          if (localIdx !== -1) {
+            const local = this.state.students[localIdx];
+            // Supabase is authoritative source of truth: merge remote attributes
+            this.state.students[localIdx] = Object.assign({}, local, remoteStudent);
+            if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
+              this.state.monsterProfiles[remoteStudent.id] = Object.assign(
+                {},
+                this.state.monsterProfiles[remoteStudent.id] || {},
+                remoteStudent.monsterProfile
+              );
+            }
+            modified = true;
+          } else {
+            // Student added on another device: ingest into local state
+            this.state.students.push(remoteStudent);
+            if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
+              this.state.monsterProfiles[remoteStudent.id] = remoteStudent.monsterProfile;
+            }
+            modified = true;
+          }
+        });
+
+        // If authoritative cloud list, prune students that were deleted on another device
+        if (cloudData.isAuthoritativeList && remoteMap.size > 0) {
+          const beforeCount = this.state.students.length;
+          this.state.students = this.state.students.filter(s => remoteMap.has(s.id));
+          if (this.state.students.length !== beforeCount) {
+            modified = true;
+          }
+        }
+      }
+
+      // 1. Merge Teacher Notes (Single source of truth)
+      if (Array.isArray(cloudData.teacherNotes)) {
+        if (!this.state.teacherNotes) this.state.teacherNotes = [];
+        cloudData.teacherNotes.forEach(remoteNote => {
+          if (!remoteNote || !remoteNote.id) return;
+          const localIdx = this.state.teacherNotes.findIndex(n => n.id === remoteNote.id);
+          if (localIdx !== -1) {
+            const local = this.state.teacherNotes[localIdx];
+            if (local.text !== remoteNote.text || local.date !== remoteNote.date) {
+              this.state.teacherNotes[localIdx] = Object.assign({}, local, remoteNote);
+              modified = true;
+            }
+          } else {
+            this.state.teacherNotes.push(remoteNote);
+            modified = true;
+          }
+        });
+
+        // Ensure teacher notes are ordered chronologically newest first
+        this.state.teacherNotes.sort((a, b) => {
+          const timeA = new Date(a.updatedAt || a.date || 0).getTime();
+          const timeB = new Date(b.updatedAt || b.date || 0).getTime();
+          return timeB - timeA;
+        });
+
+        // Automatically sync each student's latestTeacherNote to their newest note
+        this.state.teacherNotes.forEach(n => {
+          const s = this.getStudent(n.studentId);
+          if (s && !s._noteSynced) {
+            s.latestTeacherNote = n.text;
+            s._noteSynced = true;
+          }
+          if (this.state.progressCheckSubmissions) {
+            this.state.progressCheckSubmissions.forEach(sub => {
+              if (sub.studentId === n.studentId && (n.source === 'Progress Check' || !sub.notes)) {
+                sub.notes = n.text;
+                sub.teacherComment = n.text;
+              }
+            });
+          }
+        });
+        if (this.state.students) {
+          this.state.students.forEach(s => { delete s._noteSynced; });
+        }
+      }
+
+      // 2. Merge Four-Skill Assessment Submissions
+      if (cloudData.progressCheckSubmissions && typeof cloudData.progressCheckSubmissions === 'object') {
+        const subsArray = Array.isArray(cloudData.progressCheckSubmissions)
+          ? cloudData.progressCheckSubmissions
+          : Object.values(cloudData.progressCheckSubmissions);
+        if (subsArray.length > 0) {
+          const subRes = this.mergeCloudSubmissions(subsArray);
+          if (subRes && subRes.modified) modified = true;
+        }
+      }
+
+      // 3. Merge Student Profile Overrides
+      if (cloudData.studentOverrides && typeof cloudData.studentOverrides === 'object') {
+        Object.keys(cloudData.studentOverrides).forEach(sId => {
+          const s = this.getStudent(sId);
+          if (s) {
+            const overrides = cloudData.studentOverrides[sId];
+            if (overrides.latestTeacherNote) s.latestTeacherNote = overrides.latestTeacherNote;
+            if (overrides.manualCefrOverrides) s.manualCefrOverrides = Object.assign({}, s.manualCefrOverrides || {}, overrides.manualCefrOverrides);
+            modified = true;
+          }
+        });
+      }
+
+      // 4. Merge XP Transactions
+      if (Array.isArray(cloudData.xpTransactions)) {
+        if (!this.state.xpTransactions) this.state.xpTransactions = [];
+        cloudData.xpTransactions.forEach(tx => {
+          if (!tx || !tx.id) return;
+          const exists = this.state.xpTransactions.some(t => t.id === tx.id);
+          if (!exists) {
+            this.state.xpTransactions.push(tx);
+            modified = true;
+          }
+        });
+      }
+
+      // 5. Merge Attendance Records
+      if (Array.isArray(cloudData.attendanceRecords)) {
+        if (!this.state.attendanceRecords) this.state.attendanceRecords = [];
+        cloudData.attendanceRecords.forEach(rec => {
+          if (!rec || !rec.id) return;
+          const idx = this.state.attendanceRecords.findIndex(r => r.id === rec.id);
+          if (idx !== -1) {
+            this.state.attendanceRecords[idx] = Object.assign({}, this.state.attendanceRecords[idx], rec);
+          } else {
+            this.state.attendanceRecords.push(rec);
+          }
+          modified = true;
+        });
+      }
+
+      // 6. Merge Authoritative Cloud Educational Resources
+      if (Array.isArray(cloudData.resources) && cloudData.resources.length > 0) {
+        if (!this.state.resources) this.state.resources = [];
+        cloudData.resources.forEach(remoteRes => {
+          if (!remoteRes || !remoteRes.id) return;
+          const localIdx = this.state.resources.findIndex(r => r.id === remoteRes.id);
+          if (localIdx !== -1) {
+            this.state.resources[localIdx] = Object.assign({}, this.state.resources[localIdx], remoteRes);
+          } else {
+            this.state.resources.unshift(remoteRes);
+          }
+          modified = true;
+        });
+      }
+
+      if (modified) {
+        this.saveState();
+        this.notify('teacherNotes', this.state.teacherNotes);
+        this.notify('progressCheckSubmissions', this.state.progressCheckSubmissions);
+        this.notify('students', this.state.students);
+        this.notify('xp', this.state.xpTransactions);
+        this.notify('attendance', this.state.attendanceRecords);
+        this.notify('resources', this.state.resources);
+      }
+
+      return { success: true, modified };
     }
 
     deleteProgressCheckSubmission(studentId, checkId) {

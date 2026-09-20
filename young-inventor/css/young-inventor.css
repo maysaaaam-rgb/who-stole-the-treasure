@@ -1,0 +1,1848 @@
+/* ==========================================================================
+   ✈️ YOUNG INVENTORS: PLAN • BUILD • TEST • IMPROVE
+   Complete Academy Design System — Blueprint Engineering Lab Theme
+   Smart Board Optimized | Grade 4 A1+
+   ========================================================================== */
+
+:root {
+  /* Background Layers */
+  --yi-bg-deep: #03070f;
+  --yi-bg-lab: #060d1c;
+  --yi-bg-surface: rgba(6, 13, 28, 0.9);
+  --yi-bg-card: rgba(10, 20, 40, 0.85);
+  --yi-bg-card-hover: rgba(18, 32, 58, 0.95);
+  --yi-bg-card-active: rgba(25, 45, 80, 1);
+
+  /* Brand Colors — Engineering Blueprint */
+  --yi-amber: #f59e0b;
+  --yi-amber-light: #fbbf24;
+  --yi-amber-glow: rgba(245, 158, 11, 0.4);
+  --yi-cyan: #06b6d4;
+  --yi-cyan-glow: rgba(6, 182, 212, 0.4);
+  --yi-green: #10b981;
+  --yi-green-glow: rgba(16, 185, 129, 0.4);
+  --yi-red: #ef4444;
+  --yi-red-glow: rgba(239, 68, 68, 0.4);
+  --yi-purple: #a855f7;
+  --yi-purple-glow: rgba(168, 85, 247, 0.35);
+  --yi-blue: #3b82f6;
+  --yi-neon-gold: #fde047;
+
+  /* Borders */
+  --yi-border-subtle: rgba(245, 158, 11, 0.18);
+  --yi-border-bright: rgba(245, 158, 11, 0.55);
+  --yi-border-cyan: rgba(6, 182, 212, 0.35);
+
+  /* Text */
+  --yi-text-main: #f8fafc;
+  --yi-text-secondary: #cbd5e1;
+  --yi-text-muted: #94a3b8;
+  --yi-text-gold: #fde047;
+
+  /* Fonts */
+  --yi-font-display: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --yi-font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --yi-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Radius */
+  --yi-radius-sm: 8px;
+  --yi-radius-md: 14px;
+  --yi-radius-lg: 20px;
+  --yi-radius-xl: 28px;
+
+  /* Shadows */
+  --yi-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --yi-shadow-amber: 0 0 20px rgba(245, 158, 11, 0.35), 0 0 40px rgba(245, 158, 11, 0.15);
+  --yi-shadow-cyan: 0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(6, 182, 212, 0.15);
+  --yi-shadow-green: 0 0 20px rgba(16, 185, 129, 0.35), 0 0 40px rgba(16, 185, 129, 0.15);
+}
+
+/* ==========================================================================
+   GLOBAL RESET & BASE
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background: var(--yi-bg-deep);
+  color: var(--yi-text-main);
+  font-family: var(--yi-font-body);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button, input, select, textarea, a {
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+  border: none;
+  background: none;
+}
+
+/* ==========================================================================
+   BLUEPRINT BACKGROUND CANVAS
+   ========================================================================== */
+#yiBlueprintCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* ==========================================================================
+   APP WRAPPER
+   ========================================================================== */
+#yiAppWrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(245, 158, 11, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(3, 7, 15, 0.95) 0%, rgba(6, 13, 28, 0.95) 100%);
+}
+
+/* ==========================================================================
+   1. TOP ACADEMY GAME HUD
+   ========================================================================== */
+.yi-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(3, 7, 15, 0.95);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+  min-height: 72px;
+}
+
+.yi-hud-left, .yi-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.yi-hud-left {
+  flex: 1;
+}
+
+.yi-hud-right {
+  flex-shrink: 0;
+}
+
+/* Library Return Button */
+.yi-btn-library {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  min-height: 44px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  border-radius: var(--yi-radius-sm);
+  color: #fbbf24;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.yi-btn-library:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: var(--yi-shadow-amber);
+  transform: translateY(-1px);
+}
+
+/* Brand Cluster */
+.yi-brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--yi-radius-md);
+  transition: background 0.2s;
+}
+
+.yi-brand-cluster:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.yi-logo-pulse {
+  font-size: 2rem;
+  animation: slow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes slow-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.7)); }
+}
+
+.yi-brand-title {
+  font-family: var(--yi-font-display);
+  font-size: 1rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.yi-brand-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--yi-amber);
+  letter-spacing: 0.1em;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* Stat Pills */
+.yi-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 40px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.yi-stat-pill.xp-pill {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.yi-stat-pill.energy-pill {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1.5px solid rgba(6, 182, 212, 0.35);
+  color: #67e8f9;
+}
+
+/* HUD Buttons */
+.yi-btn-hud {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 15px;
+  min-height: 40px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--yi-radius-sm);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.yi-btn-hud:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.yi-btn-hud:active {
+  transform: translateY(0px);
+}
+
+.yi-btn-hud.primary {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+}
+
+.yi-btn-hud.primary:hover {
+  background: rgba(245, 158, 11, 0.28);
+  box-shadow: var(--yi-shadow-amber);
+}
+
+.yi-btn-hud.teacher-btn {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.35);
+  color: #d8b4fe;
+}
+
+.yi-btn-hud.teacher-btn:hover {
+  background: rgba(168, 85, 247, 0.22);
+  box-shadow: var(--yi-shadow) var(--yi-purple-glow);
+}
+
+/* ==========================================================================
+   OVERALL PROGRESS BAR
+   ========================================================================== */
+.yi-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.yi-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   2. TEAM SCORING STRIP
+   ========================================================================== */
+.yi-teams-strip {
+  display: flex;
+  align-items: stretch;
+  background: rgba(3, 7, 15, 0.85);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.yi-teams-strip::-webkit-scrollbar { display: none; }
+
+.yi-team-card {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.yi-team-card:last-child { border-right: none; }
+
+.yi-team-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.yi-team-card.selected {
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.yi-team-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.yi-team-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yi-team-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--yi-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yi-team-pts {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.yi-team-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.yi-team-btn {
+  padding: 2px 7px;
+  min-height: 22px;
+  border-radius: 4px;
+  font-weight: 900;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  transition: all 0.15s;
+}
+
+.yi-team-btn.plus:hover { background: rgba(16, 185, 129, 0.25); border-color: #10b981; color: #10b981; }
+.yi-team-btn.minus:hover { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444; }
+
+/* ==========================================================================
+   3. MISSION TIMELINE NAV STRIP
+   ========================================================================== */
+.yi-mission-timeline {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 6px;
+  background: rgba(3, 7, 15, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.yi-mission-timeline::-webkit-scrollbar { display: none; }
+
+.yi-timeline-step {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  min-height: 40px;
+  border-radius: 40px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--yi-text-muted);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.yi-timeline-step:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--yi-text-main);
+}
+
+.yi-timeline-step.active {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: var(--yi-amber);
+  color: #fbbf24;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+
+.yi-timeline-step.completed {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #6ee7b7;
+}
+
+.yi-step-num {
+  font-size: 0.68rem;
+  font-weight: 900;
+  opacity: 0.6;
+  font-family: var(--yi-font-mono);
+}
+
+/* ==========================================================================
+   4. HERO SCREEN
+   ========================================================================== */
+.yi-hero-screen {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 20px 40px;
+  min-height: 0;
+}
+
+.yi-hero-blueprint-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.yi-hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.yi-hero-illustration {
+  width: 100%;
+  max-width: 700px;
+  height: 200px;
+}
+
+.yi-hero-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 40px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.yi-hero-title {
+  font-family: var(--yi-font-display);
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #92400e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  line-height: 1;
+}
+
+.yi-hero-subtitle {
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-weight: 800;
+  color: var(--yi-cyan);
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+.yi-hero-desc {
+  max-width: 700px;
+  font-size: 0.95rem;
+  color: var(--yi-text-secondary);
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* Hero Mission Grid (quick launch) */
+.yi-hero-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.yi-hero-mission-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 10px;
+  background: var(--yi-bg-card);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  min-height: 88px;
+}
+
+.yi-hero-mission-card:hover {
+  background: var(--yi-bg-card-hover);
+  border-color: var(--yi-amber);
+  transform: translateY(-2px);
+  box-shadow: var(--yi-shadow-amber);
+}
+
+.yi-hero-mission-card.completed {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.yi-hero-mission-card .mission-icon {
+  font-size: 1.6rem;
+}
+
+.yi-hero-mission-card .mission-num {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #94a3b8;
+  font-family: var(--yi-font-mono);
+}
+
+.yi-hero-mission-card .mission-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.yi-hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Hero Main CTA Button */
+.yi-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 36px;
+  min-height: 64px;
+  font-family: var(--yi-font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--yi-radius-lg);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  border: 2px solid transparent;
+}
+
+.yi-hero-btn:not(.secondary) {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.4), 0 0 40px rgba(245, 158, 11, 0.2);
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.yi-hero-btn:not(.secondary):hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(245, 158, 11, 0.5), 0 0 60px rgba(245, 158, 11, 0.25);
+}
+
+.yi-hero-btn.secondary {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--yi-text-secondary);
+}
+
+.yi-hero-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* ==========================================================================
+   5. STAGE AREA
+   ========================================================================== */
+.yi-stage-header {
+  padding: 16px 24px;
+  background: rgba(3, 7, 15, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.yi-stage-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.yi-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--yi-text-muted);
+}
+
+.yi-badge.active-mission {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+}
+
+.yi-badge.completed {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #6ee7b7;
+}
+
+.yi-stage-title {
+  font-family: var(--yi-font-display);
+  font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.yi-stage-desc {
+  font-size: 0.9rem;
+  color: var(--yi-text-secondary);
+  line-height: 1.5;
+}
+
+.yi-stage-nav-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.yi-btn-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--yi-radius-sm);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yi-btn-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.13);
+  transform: translateY(-1px);
+}
+
+.yi-btn-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.yi-btn-nav.primary {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.15));
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+}
+
+.yi-btn-nav.primary:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(245, 158, 11, 0.2));
+  box-shadow: var(--yi-shadow-amber);
+}
+
+/* Mission Content Area */
+.yi-mission-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   6. LAYOUT PANELS
+   ========================================================================== */
+.yi-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.yi-panel {
+  background: var(--yi-bg-card);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--yi-shadow-card);
+}
+
+.yi-panel.amber-border {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.yi-panel.cyan-border {
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+.yi-panel-header {
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.yi-panel-title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.yi-panel-body {
+  padding: 18px;
+}
+
+/* ==========================================================================
+   7. INVENTION CARDS (Mission 1 — Discover)
+   ========================================================================== */
+.yi-invention-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.yi-invention-card {
+  background: var(--yi-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-md);
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.yi-invention-card:hover {
+  background: var(--yi-bg-card-hover);
+  border-color: var(--yi-amber);
+  transform: translateY(-4px);
+  box-shadow: var(--yi-shadow-amber);
+}
+
+.yi-invention-card.selected {
+  border-color: var(--yi-amber);
+  background: rgba(245, 158, 11, 0.1);
+  box-shadow: var(--yi-shadow-amber);
+}
+
+.yi-invention-card.discovered {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.07);
+}
+
+.yi-invention-icon {
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.yi-invention-name {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.yi-invention-year {
+  font-size: 0.7rem;
+  font-family: var(--yi-font-mono);
+  color: var(--yi-amber);
+  font-weight: 700;
+}
+
+/* Info Box that appears when card is selected */
+.yi-invention-info-box {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--yi-radius-md);
+  padding: 18px 20px;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   8. ANSWER OPTION BUTTONS (Mission 2, 3, 8...)
+   ========================================================================== */
+.yi-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.yi-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 20px;
+  min-height: 64px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--yi-radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--yi-text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.yi-option-btn:hover {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateX(4px);
+}
+
+.yi-option-btn.correct {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: var(--yi-green) !important;
+  color: #6ee7b7 !important;
+  box-shadow: var(--yi-shadow-green);
+  animation: success-pulse 0.5s ease;
+}
+
+.yi-option-btn.incorrect {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: var(--yi-red) !important;
+  color: #fca5a5 !important;
+}
+
+@keyframes success-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   9. SENTENCE BUILDER (Mission 3 — Purpose)
+   ========================================================================== */
+.yi-sentence-builder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-md);
+  min-height: 60px;
+  align-items: center;
+}
+
+.yi-word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+}
+
+.yi-token {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  min-height: 40px;
+  background: var(--yi-bg-card);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yi-token:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  transform: translateY(-2px);
+}
+
+.yi-token.selected {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: var(--yi-cyan);
+  color: #67e8f9;
+}
+
+.yi-token.to-token {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: var(--yi-amber);
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   10. BLUEPRINT DESIGNER (Mission 4)
+   ========================================================================== */
+.yi-blueprint-card {
+  background: #071828;
+  border: 2px solid var(--yi-amber);
+  border-radius: var(--yi-radius-lg);
+  padding: 20px;
+  box-shadow: var(--yi-shadow-amber);
+  position: relative;
+  overflow: hidden;
+}
+
+.yi-blueprint-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.yi-design-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.yi-design-card {
+  background: rgba(245, 158, 11, 0.06);
+  border: 2px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--yi-radius-md);
+  padding: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.yi-design-card:hover {
+  border-color: var(--yi-amber);
+  background: rgba(245, 158, 11, 0.12);
+  transform: translateY(-2px);
+}
+
+.yi-design-card.selected {
+  border-color: var(--yi-amber);
+  background: rgba(245, 158, 11, 0.18);
+  box-shadow: var(--yi-shadow-amber);
+}
+
+.yi-parts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.yi-part-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(6, 182, 212, 0.07);
+  border: 1.5px solid rgba(6, 182, 212, 0.25);
+  border-radius: var(--yi-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yi-part-card:hover {
+  border-color: var(--yi-cyan);
+  background: rgba(6, 182, 212, 0.14);
+}
+
+.yi-part-card.selected {
+  border-color: var(--yi-cyan);
+  background: rgba(6, 182, 212, 0.18);
+  box-shadow: var(--yi-shadow-cyan);
+}
+
+/* ==========================================================================
+   11. TEST STATION (Mission 5)
+   ========================================================================== */
+.yi-test-station {
+  background: var(--yi-bg-card);
+  border: 1.5px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--yi-radius-lg);
+  padding: 20px;
+}
+
+.yi-runway {
+  width: 100%;
+  height: 80px;
+  background: rgba(6, 182, 212, 0.05);
+  border: 1.5px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--yi-radius-md);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.yi-runway-marks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 10px 8px;
+  gap: 0;
+  justify-content: space-between;
+}
+
+.yi-runway-tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.yi-runway-tick .tick-line {
+  width: 1px;
+  height: 16px;
+  background: rgba(6, 182, 212, 0.5);
+}
+
+.yi-runway-tick .tick-label {
+  font-size: 0.65rem;
+  font-family: var(--yi-font-mono);
+  color: var(--yi-cyan);
+  font-weight: 700;
+}
+
+.yi-measurement-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-sm);
+  gap: 6px;
+  text-align: center;
+}
+
+.yi-measurement-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.yi-measurement-input {
+  width: 80px;
+  height: 40px;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1.5px solid rgba(6, 182, 212, 0.4);
+  border-radius: var(--yi-radius-sm);
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-family: var(--yi-font-mono);
+  color: #67e8f9;
+  cursor: pointer;
+  user-select: text;
+}
+
+.yi-measurement-input:focus {
+  outline: none;
+  border-color: var(--yi-cyan);
+  box-shadow: var(--yi-shadow-cyan);
+}
+
+.yi-step-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yi-step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-sm);
+}
+
+.yi-step-num-badge {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #fbbf24;
+  font-family: var(--yi-font-mono);
+}
+
+/* ==========================================================================
+   12. IMPROVE DESIGN (Mission 6)
+   ========================================================================== */
+.yi-problem-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.yi-problem-card {
+  padding: 14px;
+  background: var(--yi-bg-card);
+  border: 2px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--yi-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.yi-problem-card:hover {
+  border-color: var(--yi-red);
+  background: rgba(239, 68, 68, 0.07);
+}
+
+.yi-problem-card.selected {
+  border-color: var(--yi-red);
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
+}
+
+.yi-improvement-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+}
+
+.yi-chip {
+  padding: 8px 16px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1.5px solid rgba(16, 185, 129, 0.35);
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.yi-chip:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--yi-green);
+  transform: translateY(-1px);
+}
+
+.yi-chip.selected {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--yi-green);
+  box-shadow: var(--yi-shadow-green);
+}
+
+/* ==========================================================================
+   13. PRESENTATION STAGE (Mission 7)
+   ========================================================================== */
+.yi-sentence-frames-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yi-frame-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(168, 85, 247, 0.06);
+  border: 1.5px solid rgba(168, 85, 247, 0.25);
+  border-radius: var(--yi-radius-md);
+}
+
+.yi-frame-label {
+  min-width: 160px;
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #d8b4fe;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.yi-frame-example {
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.yi-rubric-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.yi-rubric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--yi-radius-sm);
+  gap: 12px;
+}
+
+.yi-rubric-criterion {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--yi-text-secondary);
+  flex: 1;
+}
+
+.yi-rubric-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.yi-star {
+  font-size: 1.1rem;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.yi-star.active {
+  opacity: 1;
+  filter: drop-shadow(0 0 4px #fbbf24);
+}
+
+/* ==========================================================================
+   14. BAMBOOZLE BATTLE BOARD (Mission 8)
+   ========================================================================== */
+.yi-battle-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.yi-battle-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  max-width: 900px;
+  margin: 0 auto 20px;
+}
+
+.yi-battle-tile {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  background: var(--yi-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--yi-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  position: relative;
+  min-height: 70px;
+}
+
+.yi-battle-tile:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.yi-battle-tile.bonus {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.yi-battle-tile.double {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.yi-battle-tile.steal {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.yi-battle-tile.expert {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.yi-battle-tile.challenge {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.yi-battle-tile.speed {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.45);
+}
+
+.yi-battle-tile.answered {
+  opacity: 0.5;
+  cursor: default;
+  transform: none !important;
+}
+
+.yi-battle-tile .tile-cat-icon {
+  font-size: 1.4rem;
+  margin-bottom: 2px;
+}
+
+.yi-battle-tile .tile-cat-name {
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.yi-battle-tile .tile-special-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+/* Question overlay */
+.yi-battle-question-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.yi-battle-question-card {
+  background: #0a1428;
+  border: 2px solid var(--yi-amber);
+  border-radius: var(--yi-radius-xl);
+  padding: 32px;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), var(--yi-shadow-amber);
+  animation: slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Team Score Cards in Battle */
+.yi-battle-teams {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.yi-battle-team-card {
+  text-align: center;
+  padding: 14px;
+  background: var(--yi-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--yi-radius-md);
+}
+
+/* ==========================================================================
+   15. AWARD BADGES (Mission 7 / Celebration)
+   ========================================================================== */
+.yi-award-wall {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.yi-award-badge {
+  text-align: center;
+  padding: 20px 12px;
+  background: rgba(253, 224, 71, 0.06);
+  border: 2px solid rgba(253, 224, 71, 0.25);
+  border-radius: var(--yi-radius-lg);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.yi-award-badge:hover {
+  border-color: #fde047;
+  background: rgba(253, 224, 71, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(253, 224, 71, 0.2);
+}
+
+.yi-award-badge .award-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.yi-award-badge .award-name {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #fde047;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.yi-award-badge .award-desc {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   16. MODALS
+   ========================================================================== */
+.yi-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.yi-modal-overlay.active {
+  display: flex;
+}
+
+.yi-modal-card {
+  background: #0a1428;
+  border: 2px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--yi-radius-xl);
+  padding: 28px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.yi-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yi-modal-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.yi-btn-close-modal {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.yi-btn-close-modal:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+/* ==========================================================================
+   17. TOAST NOTIFICATION
+   ========================================================================== */
+.yi-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: rgba(10, 20, 40, 0.97);
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--yi-radius-lg);
+  padding: 14px 28px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fbbf24;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  text-align: center;
+}
+
+.yi-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   18. DIPLOMA / CELEBRATION
+   ========================================================================== */
+.yi-diploma-card {
+  background: linear-gradient(135deg, #0a1428 0%, #071020 100%);
+  border: 3px solid #fde047;
+  border-radius: var(--yi-radius-xl);
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(253, 224, 71, 0.25), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.yi-diploma-card::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid rgba(253, 224, 71, 0.25);
+  border-radius: calc(var(--yi-radius-xl) - 4px);
+  pointer-events: none;
+}
+
+.yi-diploma-title {
+  font-family: var(--yi-font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fde047, #f59e0b, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   19. UTILITY CLASSES
+   ========================================================================== */
+.text-amber { color: var(--yi-amber) !important; }
+.text-cyan { color: var(--yi-cyan) !important; }
+.text-green { color: var(--yi-green) !important; }
+.text-red { color: var(--yi-red) !important; }
+.text-gold { color: var(--yi-neon-gold) !important; }
+.text-muted { color: var(--yi-text-muted) !important; }
+.text-center { text-align: center; }
+.fw-900 { font-weight: 900; }
+
+.yi-full-width-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 28px;
+  min-height: 64px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--yi-radius-lg);
+  transition: all 0.25s ease;
+  border: 2px solid rgba(245, 158, 11, 0.5);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.1));
+  color: #fbbf24;
+}
+
+.yi-full-width-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--yi-shadow-amber);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.32), rgba(245, 158, 11, 0.18));
+}
+
+.yi-full-width-btn.secondary {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(6, 182, 212, 0.06));
+  color: #67e8f9;
+}
+
+.yi-full-width-btn.secondary:hover {
+  box-shadow: var(--yi-shadow-cyan);
+}
+
+/* Robo Guide */
+.yi-robo-guide {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(6, 182, 212, 0.07);
+  border: 1.5px solid rgba(6, 182, 212, 0.25);
+  border-radius: var(--yi-radius-md);
+  margin-bottom: 4px;
+}
+
+.yi-robo-avatar {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.yi-robo-speech {
+  font-size: 0.95rem;
+  color: var(--yi-text-secondary);
+  line-height: 1.6;
+}
+
+.yi-robo-speech strong {
+  color: var(--yi-cyan);
+}
+
+/* Matching pairs */
+.yi-match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.yi-match-problem {
+  padding: 12px 16px;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1.5px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--yi-radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.yi-match-invention {
+  padding: 12px 16px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1.5px dashed rgba(245, 158, 11, 0.35);
+  border-radius: var(--yi-radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yi-match-invention:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--yi-amber);
+}
+
+.yi-match-invention.matched {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: var(--yi-green);
+  border-style: solid;
+  color: #6ee7b7;
+}
+
+/* ==========================================================================
+   20. ANIMATIONS
+   ========================================================================== */
+@keyframes float-xp {
+  0% { transform: translateY(0) translateX(-50%); opacity: 1; }
+  100% { transform: translateY(-70px) translateX(-50%); opacity: 0; }
+}
+
+.float-xp-bubble {
+  position: fixed;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  pointer-events: none;
+  animation: float-xp 1.5s ease forwards;
+  z-index: 999;
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.bounce-in {
+  animation: bounce-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .yi-invention-grid { grid-template-columns: repeat(4, 1fr); }
+  .yi-hero-grid { grid-template-columns: repeat(4, 1fr); }
+  .yi-battle-board { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .yi-layout-grid { grid-template-columns: 1fr; }
+  .yi-invention-grid { grid-template-columns: repeat(2, 1fr); }
+  .yi-design-options { grid-template-columns: 1fr 1fr; }
+  .yi-hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .yi-battle-board { grid-template-columns: repeat(4, 1fr); }
+  .yi-award-wall { grid-template-columns: repeat(2, 1fr); }
+  .yi-battle-teams { grid-template-columns: repeat(2, 1fr); }
+  .yi-hud-header { flex-wrap: wrap; }
+  .yi-brand-title { font-size: 0.88rem; }
+}
+
+@media (max-width: 640px) {
+  .yi-invention-grid { grid-template-columns: repeat(2, 1fr); }
+  .yi-hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .yi-parts-grid { grid-template-columns: 1fr; }
+  .yi-problem-selector { grid-template-columns: 1fr; }
+  .yi-award-wall { grid-template-columns: repeat(2, 1fr); }
+  .yi-mission-content { padding: 12px 14px 30px; }
+  .yi-stage-header { padding: 12px 14px; }
+  .yi-hero-btn { padding: 14px 24px; font-size: 1rem; min-height: 56px; }
+}
+
+/* ==========================================================================
+   PRINT STYLES (Worksheets)
+   ========================================================================== */
+@media print {
+  #yiBlueprintCanvas,
+  .yi-hud-header,
+  .yi-progress-track,
+  .yi-teams-strip,
+  .yi-mission-timeline,
+  .yi-toast,
+  .yi-modal-overlay { display: none !important; }
+
+  body { background: white; color: black; }
+  .yi-hero-screen { page-break-after: always; }
+}

@@ -1,0 +1,844 @@
+/* ==========================================================================
+   WONDERLAND ADVENTURE — LESSON 1: WELCOME TO WONDERLAND
+   Victorian Fantasy Aesthetic · Smart Board Touch UX · CEFR A1
+   ========================================================================== */
+
+:root {
+  --wl-bg-dark: #070c18;
+  --wl-bg-card: rgba(18, 27, 49, 0.88);
+  --wl-bg-card-hover: rgba(28, 41, 74, 0.95);
+  --wl-gold: #f59e0b;
+  --wl-gold-glow: rgba(245, 158, 11, 0.5);
+  --wl-emerald: #10b981;
+  --wl-purple: #8b5cf6;
+  --wl-crimson: #e11d48;
+  --wl-blue: #38bdf8;
+  --wl-font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --wl-font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --wl-radius-sm: 10px;
+  --wl-radius-md: 18px;
+  --wl-radius-lg: 26px;
+  --wl-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  background: var(--wl-bg-dark);
+  color: #ffffff;
+  font-family: var(--wl-font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   1. FULLSCREEN RESPONSIVE SHELL
+   ========================================================================== */
+
+#wonderland-screen-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #090d1a 70%);
+  position: relative;
+}
+
+/* ==========================================================================
+   2. TOP PERSISTENT HUD
+   ========================================================================== */
+
+#wonderland-hud {
+  height: 64px;
+  background: rgba(10, 15, 29, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.hud-left, .hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: var(--wl-radius-sm);
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--wl-gold);
+  transform: translateY(-1px);
+}
+
+.hud-btn.primary {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  border-color: #fef08a;
+  color: #000000;
+}
+
+.hud-xp-pill {
+  background: linear-gradient(135deg, #b45309, #d97706);
+  border: 2px solid #fef08a;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-family: var(--wl-font-display);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 15px var(--wl-gold-glow);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hud-xp-pill.bounce {
+  transform: scale(1.22);
+}
+
+.screen-tracker-pill {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1.5px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   3. MAIN VIEWPORT CONTAINER
+   ========================================================================== */
+
+#wonderland-stage-content {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wonderland-scene-wrap {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   4. GIANT TOUCH BUTTONS & CONTROLS (Smart Board Optimized)
+   ========================================================================== */
+
+.wl-btn-giant {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: 3px solid #fef08a;
+  color: #000000;
+  font-family: var(--wl-font-display);
+  font-size: 1.45rem;
+  font-weight: 900;
+  padding: 18px 44px;
+  border-radius: var(--wl-radius-md);
+  cursor: pointer;
+  box-shadow: 0 10px 30px var(--wl-gold-glow);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+  min-height: 68px;
+}
+
+.wl-btn-giant:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 40px rgba(245, 158, 11, 0.7);
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.wl-btn-giant:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.scene-title-group {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.scene-main-title {
+  font-family: var(--wl-font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.scene-subtitle {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   5. SCREEN 1 — WONDERLAND IS CALLING
+   ========================================================================== */
+
+.entrance-stage {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--wl-radius-lg);
+  border: 2.5px solid rgba(245, 158, 11, 0.4);
+  box-shadow: var(--wl-shadow);
+  padding: 40px 20px;
+  background: radial-gradient(circle at center, rgba(30, 27, 75, 0.85) 0%, rgba(9, 13, 26, 0.95) 100%);
+  overflow: hidden;
+}
+
+.entrance-door-art {
+  width: 220px;
+  height: 220px;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+  animation: floatSlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatSlow {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+/* ==========================================================================
+   6. SCREEN 2 — THE WHITE RABBIT
+   ========================================================================== */
+
+.rabbit-dialogue-card {
+  background: var(--wl-bg-card);
+  border: 2px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--wl-radius-md);
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--wl-shadow);
+  max-width: 800px;
+  width: 100%;
+}
+
+.speech-bubble {
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 20px;
+  padding: 16px 24px;
+  font-family: var(--wl-font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 14px solid #ffffff;
+}
+
+.choices-row-giant {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.choice-box-giant {
+  background: var(--wl-bg-card);
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--wl-radius-md);
+  padding: 24px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.choice-box-giant:hover {
+  transform: translateY(-4px);
+  border-color: var(--wl-gold);
+  box-shadow: 0 14px 35px var(--wl-gold-glow);
+}
+
+.choice-box-giant.is-correct {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--wl-emerald);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.6);
+}
+
+.choice-box-giant.is-wrong {
+  background: rgba(225, 29, 72, 0.15);
+  border-color: var(--wl-crimson);
+  opacity: 0.7;
+}
+
+.choice-box-label {
+  font-family: var(--wl-font-display);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   7. SCREEN 3 — WONDERLAND SCAVENGER HUNT
+   ========================================================================== */
+
+.scavenger-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: 480px;
+  background: radial-gradient(circle at center, #1e1b4b 0%, #061126 100%);
+  border: 3px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--wl-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--wl-shadow);
+  margin-bottom: 20px;
+}
+
+.scavenger-target-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.2);
+  border: 2.5px solid #fef08a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 20px var(--wl-gold-glow);
+}
+
+.scavenger-target-pin:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  background: rgba(245, 158, 11, 0.45);
+}
+
+.scavenger-target-pin.collected {
+  opacity: 0.35;
+  pointer-events: none;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.collection-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--wl-radius-md);
+  padding: 12px 24px;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: space-between;
+}
+
+.collected-icons-row {
+  display: flex;
+  gap: 10px;
+}
+
+.collected-badge-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.collected-badge-slot.filled {
+  border: 2px solid #10b981;
+  background: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+  animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   8. SCREEN 4 — MEET THE CHARACTERS (9 Gallery)
+   ========================================================================== */
+
+.characters-grid-9 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.character-card-box {
+  background: var(--wl-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--wl-radius-md);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.character-card-box:hover {
+  transform: translateY(-3px);
+  border-color: var(--wl-gold);
+  box-shadow: 0 12px 30px var(--wl-gold-glow);
+}
+
+.character-card-box.is-selected {
+  border-color: #38bdf8;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+  background: rgba(28, 41, 74, 0.95);
+}
+
+.char-card-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  border: 2.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.char-card-name {
+  font-family: var(--wl-font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.char-card-sentence {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fef08a;
+  min-height: 24px;
+}
+
+/* ==========================================================================
+   9. SCREEN 5 — CHARACTER + PROP MATCH
+   ========================================================================== */
+
+.match-game-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.match-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.match-item-card {
+  background: var(--wl-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--wl-radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 72px;
+}
+
+.match-item-card:hover {
+  border-color: var(--wl-gold);
+  transform: translateX(3px);
+}
+
+.match-item-card.is-active-select {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+.match-item-card.is-matched {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   10. SCREEN 6 & 7 — TIME MACHINE & WHAT HAPPENED
+   ========================================================================== */
+
+.time-machine-box {
+  background: radial-gradient(circle at center, #1e1b4b, #090d1a);
+  border: 3px solid rgba(245, 158, 11, 0.5);
+  border-radius: var(--wl-radius-lg);
+  padding: 30px;
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+  box-shadow: var(--wl-shadow);
+  margin-bottom: 24px;
+}
+
+.clock-reverse-dial {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  border: 4px solid #f59e0b;
+  box-shadow: 0 0 30px var(--wl-gold-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clock-reverse-dial.spinning {
+  animation: spinReverse 0.8s ease-in-out;
+}
+
+@keyframes spinReverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-720deg); }
+}
+
+.past-verb-highlight {
+  color: #fef08a;
+  background: rgba(245, 158, 11, 0.25);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border-bottom: 3px solid #f59e0b;
+  font-weight: 900;
+}
+
+.story-moments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.story-moment-card {
+  background: var(--wl-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--wl-radius-md);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.story-moment-card:hover {
+  border-color: var(--wl-gold);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   11. SCREEN 8 — NOW OR YESTERDAY?
+   ========================================================================== */
+
+.now-yesterday-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 24px;
+}
+
+.btn-choice-now {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border: 3px solid #7dd3fc;
+  color: #ffffff;
+  padding: 24px;
+  font-family: var(--wl-font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  border-radius: var(--wl-radius-md);
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+  transition: all 0.2s ease;
+}
+
+.btn-choice-now:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(2, 132, 199, 0.6);
+}
+
+.btn-choice-yesterday {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border: 3px solid #fef08a;
+  color: #ffffff;
+  padding: 24px;
+  font-family: var(--wl-font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  border-radius: var(--wl-radius-md);
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
+  transition: all 0.2s ease;
+}
+
+.btn-choice-yesterday:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(217, 119, 6, 0.6);
+}
+
+/* ==========================================================================
+   12. SCREEN 10 & 11 — WORKSHOP CHEST & OUR BIG MISSION
+   ========================================================================== */
+
+.chest-unveiling-wrap {
+  text-align: center;
+  width: 100%;
+  max-width: 950px;
+}
+
+.mystery-chest-box {
+  width: 200px;
+  height: 180px;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+  filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.5));
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mystery-chest-box:hover {
+  transform: scale(1.08);
+}
+
+.props-revealed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.prop-reveal-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--wl-radius-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.theatre-stage-frame {
+  position: relative;
+  width: 100%;
+  max-width: 950px;
+  min-height: 440px;
+  border-radius: var(--wl-radius-lg);
+  border: 4px solid #f59e0b;
+  box-shadow: var(--wl-shadow);
+  overflow: hidden;
+  background: linear-gradient(180deg, #1e1b4b 0%, #0a0f1d 85%);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ==========================================================================
+   13. TEACHER MODE DRAWER / MODAL
+   ========================================================================== */
+
+.teacher-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 8, 18, 0.88);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.teacher-modal-box {
+  background: #111827;
+  border: 2px solid #f59e0b;
+  border-radius: var(--wl-radius-lg);
+  max-width: 860px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.teacher-grid-guides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.teacher-guide-tile {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--wl-radius-sm);
+  padding: 12px 16px;
+}
+
+.teacher-guide-tile h4 {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #f59e0b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.teacher-guide-tile p {
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   14. TOAST NOTIFICATION
+   ========================================================================== */
+
+#wonderland-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid #38bdf8;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 40px;
+  font-family: var(--wl-font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+#wonderland-toast.is-active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   15. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .characters-grid-9, .props-revealed-grid, .choices-row-giant {
+    grid-template-columns: 1fr 1fr;
+  }
+  .match-game-grid, .story-moments-grid, .teacher-grid-guides, .now-yesterday-buttons {
+    grid-template-columns: 1fr;
+  }
+}
