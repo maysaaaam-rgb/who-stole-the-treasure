@@ -873,7 +873,12 @@
       'inventors-odyssey': 'good-ideas-lab/index.html',
       'the-inventors-odyssey': 'good-ideas-lab/index.html',
       'my-good-ideas-lab': 'good-ideas-lab/index.html',
-      'ideas-lab': 'good-ideas-lab/index.html'
+      'ideas-lab': 'good-ideas-lab/index.html',
+      'brain-hackers': 'brain-hackers/index.html',
+      'the-brain-hackers': 'brain-hackers/index.html',
+      'brain-hacker': 'brain-hackers/index.html',
+      'mission-unlock': 'brain-hackers/index.html',
+      'brain-hackers-mission': 'brain-hackers/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];
@@ -11918,6 +11923,24 @@ window.switchClassroomSubTab = function(subTab) {
               '</div>' +
               '<button style="background: #f59e0b; color: #000; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
                 '💡 Launch Good Ideas Lab' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+        break;
+      case 'brain':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<div class="toolkit-card" style="max-width:540px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #8b5cf6 100%); border: 2px solid #8b5cf6; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'brain-hackers/index.html\', \'_blank\')">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">🧠</span>' +
+                '<span style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">CYBER-BIOLOGY LAB</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">The Brain Hackers: Mission Unlock</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">7-Mission neural simulation: 4 cerebrum lobes, activity scanner laser, neuron spark anatomy, synaptic routing, and imagination engine.</p>' +
+              '</div>' +
+              '<button style="background: #8b5cf6; color: #fff; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
+                '🧠 Launch Brain Hackers' +
               '</button>' +
             '</div>' +
           '</div>';

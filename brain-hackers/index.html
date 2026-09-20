@@ -3,291 +3,1261 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🧠 The Brain Hackers: Mission Unlock Your Brain | English Adventure Academy</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🧠</text></svg>">
-  <link rel="stylesheet" href="css/brain-hackers.css">
+  <title>The Brain Hackers: Mission: Unlock Your Brain 🧠 | Same Brain. A Brighter You!</title>
+
+  <!-- Tailwind CSS CDN & Modern Sci-Fi Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            space: '#0b0f19',
+            neural: '#8b5cf6',
+            synapse: '#f59e0b',
+            electric: '#06b6d4',
+            healthy: '#10b981'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --space: #0b0f19;
+      --neural: #8b5cf6;
+      --electric: #06b6d4;
+      --synapse: #f59e0b;
+      --healthy: #10b981;
+    }
+
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background-color: #060913;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(139, 92, 246, 0.22) 0%, transparent 65%),
+        radial-gradient(circle at 85% 60%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        linear-gradient(180deg, #070b16 0%, #03060d 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Cyber Neural Background Grid */
+    .cyber-grid {
+      background-image: 
+        linear-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Glassmorphism Sci-Fi Panels */
+    .holo-panel {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(14px);
+      border: 2px solid rgba(139, 92, 246, 0.35);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.08);
+    }
+
+    /* Neon Synapse Glow Animations */
+    @keyframes pulseBrain {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.5)); }
+      50% { transform: scale(1.02); filter: drop-shadow(0 0 26px rgba(6, 182, 212, 0.8)); }
+    }
+    .pulse-brain { animation: pulseBrain 3.5s infinite ease-in-out; }
+
+    @keyframes laserSweep {
+      0% { top: 0%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 96%; opacity: 0; }
+    }
+    .laser-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+      box-shadow: 0 0 12px #10b981;
+      animation: laserSweep 1.2s infinite ease-in-out;
+    }
+
+    /* Brain Lobes Highlight */
+    .brain-lobe {
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+    .brain-lobe:hover { filter: brightness(1.25); }
+    .brain-lobe.active-target {
+      stroke: #38bdf8;
+      stroke-width: 4;
+      animation: lobePulse 1s infinite alternate;
+    }
+    @keyframes lobePulse {
+      from { filter: drop-shadow(0 0 6px #06b6d4); }
+      to { filter: drop-shadow(0 0 20px #06b6d4); }
+    }
+
+    /* Word Unscramble Chips */
+    .word-chip {
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .word-chip:hover { transform: translateY(-2px); }
+    .word-chip:active { transform: scale(0.95); }
+
+    /* Canvas Drawing Area */
+    #drawCanvas {
+      cursor: crosshair;
+      touch-action: none;
+    }
+  </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen cyber-grid">
 
-  <!-- Background Animated Neural Simulation Canvas -->
-  <canvas id="neuralBgCanvas"></canvas>
+  <!-- ====================================================
+       PERSISTENT CYBER HUD & MISSION TRACKER
+       ==================================================== -->
+  <header class="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b-2 border-purple-900/60 px-4 md:px-8 py-3 flex justify-between items-center shadow-2xl">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="MissionNav.goTo(0)">
+      <div class="text-3xl pulse-brain">🧠</div>
+      <div>
+        <h1 class="font-black text-lg md:text-xl text-purple-300 font-display tracking-wide flex items-center gap-2">
+          THE BRAIN HACKERS
+          <span class="text-xs bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded-full font-mono">MISSION: UNLOCK</span>
+        </h1>
+        <p class="text-xs text-cyan-400 font-bold tracking-wider">Same Brain. A Brighter You! • مختبر الدماغ</p>
+      </div>
+    </div>
 
-  <!-- Fullscreen Shell -->
-  <div id="bhAppWrapper">
+    <!-- Right Controls: XP, Energy, Audio -->
+    <div class="flex items-center gap-3 md:gap-5">
+      <!-- Synaptic XP -->
+      <div class="bg-purple-950/60 border border-purple-500/50 text-purple-300 font-extrabold px-3 py-1.5 rounded-full flex items-center gap-2 text-xs md:text-sm font-mono shadow-inner">
+        <span>⚡ XP:</span>
+        <span id="hud-xp" class="text-white">0</span>
+      </div>
 
-    <!-- ========================================================
-         1. TOP ACADEMY GAME HUD
-         ======================================================== -->
-    <header class="bh-hud-header" id="bhHudHeader">
-      <div class="bh-hud-left">
-        <a href="../index.html#library" class="bh-btn-library" title="Return to Educational Resource Library">
-          <span>🏛️</span> <span>Academy Library</span>
-        </a>
+      <!-- Neural Synapse Sync -->
+      <div class="bg-cyan-950/60 border border-cyan-500/50 text-cyan-300 font-extrabold px-3 py-1.5 rounded-full flex items-center gap-2 text-xs md:text-sm font-mono shadow-inner hidden sm:flex">
+        <span>🔋 SYNC:</span>
+        <span id="hud-sync" class="text-white">100%</span>
+      </div>
 
-        <div class="bh-brand-cluster" onclick="window.BrainApp.showHero()" title="Return to Mission Intro Screen">
-          <span class="bh-logo-pulse">🧠</span>
-          <div>
-            <div class="bh-brand-title">THE BRAIN HACKERS</div>
-            <div class="bh-brand-sub">MISSION: UNLOCK YOUR BRAIN</div>
+      <!-- Audio Toggles -->
+      <button id="btn-sfx" onclick="SoundEngine.toggleSfx()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-purple-700/60 font-bold px-3 py-1.5 rounded-xl text-xs md:text-sm flex items-center gap-1.5 transition">
+        🔊 SFX
+      </button>
+      <button id="btn-tts" onclick="SoundEngine.toggleTts()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-purple-700/60 font-bold px-3 py-1.5 rounded-xl text-xs md:text-sm flex items-center gap-1.5 transition">
+        🗣️ VOICE
+      </button>
+    </div>
+  </header>
+
+  <!-- Module Mission Stepper -->
+  <nav class="bg-slate-950/90 border-b border-slate-900 px-4 py-2.5 overflow-x-auto flex justify-center gap-2 md:gap-3 text-xs md:text-sm">
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-purple-600 text-white shadow-md" id="mod-btn-0" onclick="MissionNav.goTo(0)">
+      <span>🚀</span> Mission Brief
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-1" onclick="MissionNav.goTo(1)">
+      <span>🧠</span> 1. Command Center
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-2" onclick="MissionNav.goTo(2)">
+      <span>🔍</span> 2. Activity Scanner
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-3" onclick="MissionNav.goTo(3)">
+      <span>⚡</span> 3. Neuron Anatomy
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-4" onclick="MissionNav.goTo(4)">
+      <span>🔗</span> 4. Synaptic Routing
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-5" onclick="MissionNav.goTo(5)">
+      <span>🎨</span> 5. Imagination Engine
+    </button>
+    <button class="mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white" id="mod-btn-6" onclick="MissionNav.goTo(6)">
+      <span>🏆</span> 6-7. Diagnostics &amp; Protocol
+    </button>
+  </nav>
+
+  <!-- ====================================================
+       MAIN STAGE: MULTI-MODULE SIMULATION
+       ==================================================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
+
+    <!-- ----------------------------------------------------
+         MODULE 0: MISSION BRIEFING (INTRO HERO)
+         ---------------------------------------------------- -->
+    <section id="module-0" class="mission-view flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-10 relative overflow-hidden">
+        <div class="max-w-2xl mb-8">
+          <span class="bg-purple-500/20 text-purple-300 font-mono text-xs uppercase px-3 py-1 rounded-full border border-purple-500/40">
+            Biology &amp; Neuroscience Quest
+          </span>
+          <h2 class="text-3xl md:text-5xl font-black text-white font-display mt-3 leading-tight">
+            MISSION: UNLOCK YOUR BRAIN! 🧠
+          </h2>
+          <p class="text-slate-300 text-sm md:text-base mt-3 leading-relaxed">
+            Your brain has <strong>billions of special cells called neurons</strong> sending electrical sparks at 400 km/h! Explore the lobes, scan activities, wire up neuron fibers, unleash your imagination engine, and commit to your brain strengthening protocol.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-4 items-center">
+            <button onclick="MissionNav.goTo(1)" class="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-slate-950 font-black px-8 py-3.5 rounded-2xl text-base shadow-xl transform active:scale-95 transition flex items-center gap-2">
+              ⚡ INITIATE MISSION (START MODULE 1) 🚀
+            </button>
+            <span class="text-xs text-slate-400 font-mono italic">"Same Brain. A Brighter You!"</span>
           </div>
         </div>
-      </div>
 
-      <div class="bh-hud-right">
-        <div class="bh-stat-pill xp-pill" title="Total Brain XP Earned">
-          <span>⭐</span> <span id="hudXpDisplay">0 XP</span>
+        <!-- 4 Core Brain Power Badges Preview -->
+        <div class="pt-6 border-t border-purple-900/40">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+            Mission Unlock Roadmap (7 Sections):
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-950/80 border border-purple-900/60 p-3 rounded-xl text-center">
+              <span class="text-2xl block mb-1">👂 👁️ 👄 💭</span>
+              <span class="text-xs font-bold text-slate-300">4 Brain Lobes</span>
+            </div>
+            <div class="bg-slate-950/80 border border-purple-900/60 p-3 rounded-xl text-center">
+              <span class="text-2xl block mb-1">⚡ 🧬</span>
+              <span class="text-xs font-bold text-slate-300">Neuron Anatomy</span>
+            </div>
+            <div class="bg-slate-950/80 border border-purple-900/60 p-3 rounded-xl text-center">
+              <span class="text-2xl block mb-1">🔗 💬</span>
+              <span class="text-xs font-bold text-slate-300">Synapse Bridges</span>
+            </div>
+            <div class="bg-slate-950/80 border border-purple-900/60 p-3 rounded-xl text-center">
+              <span class="text-2xl block mb-1">🐘 🚲 🌙</span>
+              <span class="text-xs font-bold text-slate-300">Imagination Engine</span>
+            </div>
+          </div>
         </div>
-
-        <div class="bh-stat-pill energy-pill" title="Current Brain Energy Level">
-          <span>🔋</span> <span id="hudEnergyDisplay">100%</span>
-        </div>
-
-        <button type="button" class="bh-btn-hud" id="hudSoundBtn" onclick="window.BrainApp.toggleSound()" title="Toggle SFX & Speech Synthesis">
-          🔊 <span>Sound: ON</span>
-        </button>
-
-        <button type="button" class="bh-btn-hud" onclick="window.BrainApp.openDossierModal()" title="View Student Lab Notebook & Profile">
-          📄 <span>Student Dossier</span>
-        </button>
-
-        <button type="button" class="bh-btn-hud teacher-btn" onclick="window.BrainApp.openTeacherModal()" title="Open Teacher HUD & Controls (F1)">
-          🧑‍🏫 <span>Teacher HUD</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Overall Progress Strip -->
-    <div class="bh-progress-track">
-      <div class="bh-progress-fill" id="bhOverallProgress" style="width: 12%;"></div>
-    </div>
-
-    <!-- ========================================================
-         2. TEAM SYSTEM CARDS STRIP
-         ======================================================== -->
-    <div class="bh-teams-strip" id="bhTeamsStrip">
-      <!-- Injected dynamically with no text concatenation -->
-    </div>
-
-    <!-- ========================================================
-         3. VISUAL MISSION TIMELINE NAVIGATION
-         ======================================================== -->
-    <nav class="bh-timeline-strip" id="bhMissionTimeline" aria-label="Mission Timeline">
-      <!-- Injected dynamically by app.js -->
-    </nav>
-
-    <!-- ========================================================
-         4. CINEMATIC HERO LAUNCH SCREEN (SHOWN AT START)
-         ======================================================== -->
-    <section id="bhHeroScreen">
-      <div class="bh-hero-graphic-wrap">
-        <div class="bh-hero-radar-ring"></div>
-        <div class="bh-hero-radar-ring outer"></div>
-        <svg viewBox="0 0 200 160" width="180" height="140" style="filter: drop-shadow(0 0 25px #00f0ff); z-index: 2;">
-          <defs>
-            <linearGradient id="heroBrainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00f0ff" />
-              <stop offset="50%" stop-color="#c084fc" />
-              <stop offset="100%" stop-color="#ff2d87" />
-            </linearGradient>
-          </defs>
-          <path d="M 50 80 C 40 50, 65 20, 100 20 C 135 20, 160 50, 150 80 C 160 110, 135 140, 100 140 C 65 140, 40 110, 50 80 Z" fill="none" stroke="url(#heroBrainGrad)" stroke-width="4" stroke-linecap="round"/>
-          <path d="M 100 20 L 100 140 M 65 50 Q 100 70 135 50 M 60 100 Q 100 80 140 100" stroke="#00f0ff" stroke-width="2.5" fill="none" opacity="0.7"/>
-          <circle cx="75" cy="55" r="5" fill="#facc15"/>
-          <circle cx="125" cy="55" r="5" fill="#34d399"/>
-          <circle cx="100" cy="80" r="7" fill="#ff2d87"/>
-          <circle cx="80" cy="110" r="5" fill="#38bdf8"/>
-          <circle cx="120" cy="110" r="5" fill="#c084fc"/>
-        </svg>
-      </div>
-
-      <div class="bh-hero-badge">GRADE 4 • CEFR A1+/A2 • GLOBAL READINGS 3</div>
-      <h1 class="bh-hero-h1">THE BRAIN HACKERS<br>MISSION: UNLOCK YOUR BRAIN</h1>
-      <p class="bh-hero-sub">
-        Step into the futuristic neural laboratory! Explore how your cerebrum powers hearing, seeing, speaking, and thinking. Wire microscopic neurons, race the message relay, and unlock creative superpower!
-      </p>
-
-      <button type="button" class="bh-btn-start-hero" onclick="window.BrainApp.startMissions()">
-        <span>🚀</span> <span>START MISSION 01</span> <span>➔</span>
-      </button>
-
-      <!-- Fast Jump Mission Picker -->
-      <div class="bh-hero-missions-grid" id="bhHeroMissionsGrid">
-        <!-- Rendered dynamically -->
       </div>
     </section>
 
-    <!-- ========================================================
-         5. MAIN MISSION VIEWPORT STAGE (HIDDEN UNTIL STARTED)
-         ======================================================== -->
-    <main class="bh-stage-container" id="bhStageContainer" style="display: none;">
-      <!-- Active Mission Header Card -->
-      <div class="bh-mission-header-card">
-        <div>
-          <div class="bh-mission-badges-row">
-            <span class="bh-badge active-mission" id="bhCurrentMissionBadge">MISSION 01 OF 08</span>
-            <span class="bh-badge curriculum">📖 UNIT 1: LEARNING & YOUR BRAIN</span>
+    <!-- ----------------------------------------------------
+         MODULE 1: THE COMMAND CENTER (PARTS OF THE BRAIN)
+         ---------------------------------------------------- -->
+    <section id="module-1" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-purple-500/20 text-purple-300 font-mono text-xs uppercase px-3 py-1 rounded-full border border-purple-500/40">
+              Section 1 • Anatomy
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-display mt-2">
+              The Command Center: 4 Brain Parts 🧠
+            </h2>
           </div>
-          <h2 class="bh-mission-h2" id="bhCurrentMissionTitle">🔬 01. Detect the Brain</h2>
-          <p class="bh-mission-p" id="bhCurrentMissionDesc">Discover how different lobes power hearing, seeing, speaking, and thinking.</p>
+          <div class="bg-slate-950 border border-purple-700/60 px-4 py-2 rounded-xl text-xs font-bold text-purple-300">
+            Match: Hearing, Seeing, Speaking &amp; Thinking
+          </div>
         </div>
 
-        <button type="button" class="bh-btn-hud" onclick="window.BrainApp.speakMissionIntro()">
-          🔊 <span>Hear Clue</span>
-        </button>
-      </div>
+        <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+          Different regions of your cerebral cortex process distinct sensory tasks. Tap an action token below, then tap the matching colored brain section to route the neural pathway!
+        </p>
 
-      <!-- Dynamic Mission Content Injected Here -->
-      <div id="bhMissionContentStage"></div>
+        <!-- Brain SVG & Interaction Area -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-slate-950/70 p-6 rounded-3xl border border-purple-900/40">
+          
+          <!-- Large Detailed Colored Brain SVG -->
+          <div class="md:col-span-2 flex justify-center items-center relative">
+            <svg viewBox="0 0 500 380" class="w-full max-w-[480px] h-auto pulse-brain" id="brain-svg">
+              <defs>
+                <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
 
-      <!-- Bottom Stage Footer Navigation -->
-      <footer class="bh-stage-footer">
-        <button type="button" class="bh-btn-nav" id="btnPrevStage" onclick="window.BrainApp.prevMission()">
-          <span>◀</span> <span>Previous Mission</span>
-        </button>
+              <!-- Frontal / Red Lobe: THINKING -->
+              <path id="lobe-thinking" onclick="CommandCenter.targetLobe('thinking')" class="brain-lobe fill-rose-600/70 stroke-rose-400 stroke-2" d="M140 190 C120 120, 160 50, 240 50 C260 50, 270 90, 260 160 C240 180, 180 200, 140 190 Z" />
+              <text x="180" y="110" fill="#fff" font-size="14" font-weight="bold" pointer-events="none">💭 THINKING (RED)</text>
 
-        <div style="font-size:0.88rem; color:var(--text-secondary); font-weight:700; display:flex; align-items:center; gap:8px;">
-          <span>💡 Smart Board Tip:</span> <span>Touch lobes and cards directly • Press F1 for Teacher Controls</span>
+              <!-- Parietal / Purple Lobe: SPEAKING -->
+              <path id="lobe-speaking" onclick="CommandCenter.targetLobe('speaking')" class="brain-lobe fill-purple-600/70 stroke-purple-400 stroke-2" d="M240 50 C330 50, 390 100, 390 170 C330 170, 270 170, 260 160 C270 90, 260 50, 240 50 Z" />
+              <text x="300" y="110" fill="#fff" font-size="14" font-weight="bold" pointer-events="none">👄 SPEAKING</text>
+
+              <!-- Temporal / Orange Lobe: HEARING -->
+              <path id="lobe-hearing" onclick="CommandCenter.targetLobe('hearing')" class="brain-lobe fill-amber-600/70 stroke-amber-400 stroke-2" d="M140 190 C180 200, 240 180, 260 160 C270 190, 260 270, 200 280 C150 280, 120 250, 140 190 Z" />
+              <text x="170" y="240" fill="#fff" font-size="14" font-weight="bold" pointer-events="none">👂 HEARING</text>
+
+              <!-- Occipital / Green Lobe: SEEING -->
+              <path id="lobe-seeing" onclick="CommandCenter.targetLobe('seeing')" class="brain-lobe fill-emerald-600/70 stroke-emerald-400 stroke-2" d="M390 170 C410 230, 370 290, 300 300 C270 300, 260 270, 260 160 C270 170, 330 170, 390 170 Z" />
+              <text x="310" y="240" fill="#fff" font-size="14" font-weight="bold" pointer-events="none">👁️ SEEING</text>
+
+              <!-- Cerebellum & Brain Stem Base -->
+              <path d="M200 280 C260 280, 300 300, 300 340 C280 370, 220 370, 200 340 Z" fill="#334155" stroke="#475569" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <!-- Tokens to Match -->
+          <div class="flex flex-col gap-3">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">1. Select Hologram:</h4>
+            
+            <div id="token-thinking" onclick="CommandCenter.selectToken('thinking')" class="token-card bg-slate-900 border-2 border-rose-500/50 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-rose-400 transition">
+              <span class="flex items-center gap-2 font-bold text-sm text-white"><span>💭</span> Thinking (Red)</span>
+              <span class="status-indicator text-xs text-rose-400 font-mono">Select</span>
+            </div>
+
+            <div id="token-speaking" onclick="CommandCenter.selectToken('speaking')" class="token-card bg-slate-900 border-2 border-purple-500/50 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-purple-400 transition">
+              <span class="flex items-center gap-2 font-bold text-sm text-white"><span>👄</span> Speaking (Purple)</span>
+              <span class="status-indicator text-xs text-purple-400 font-mono">Select</span>
+            </div>
+
+            <div id="token-hearing" onclick="CommandCenter.selectToken('hearing')" class="token-card bg-slate-900 border-2 border-amber-500/50 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-amber-400 transition">
+              <span class="flex items-center gap-2 font-bold text-sm text-white"><span>👂</span> Hearing (Orange)</span>
+              <span class="status-indicator text-xs text-amber-400 font-mono">Select</span>
+            </div>
+
+            <div id="token-seeing" onclick="CommandCenter.selectToken('seeing')" class="token-card bg-slate-900 border-2 border-emerald-500/50 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-emerald-400 transition">
+              <span class="flex items-center gap-2 font-bold text-sm text-white"><span>👁️</span> Seeing (Green)</span>
+              <span class="status-indicator text-xs text-emerald-400 font-mono">Select</span>
+            </div>
+          </div>
         </div>
 
-        <button type="button" class="bh-btn-nav primary" id="btnNextStage" onclick="window.BrainApp.nextMission()">
-          <span>Next Mission</span> <span>▶</span>
-        </button>
-      </footer>
-    </main>
+        <!-- Pop-in Fact Box -->
+        <div id="cmd-fact-box" class="bg-gradient-to-r from-purple-950/60 to-cyan-950/60 border border-purple-500/40 p-4 rounded-2xl mt-4 text-xs md:text-sm text-slate-200">
+          💡 <strong>Neuroscience Fact:</strong> Different parts of your brain work when you hear, see, speak, and think. The red areas show the parts we use the most!
+        </div>
 
-  </div>
-
-  <!-- ========================================================
-       6. POLISHED MODAL: STUDENT DOSSIER
-       ======================================================== -->
-  <div class="bh-modal-overlay" id="dossierModal" onclick="if(event.target===this) window.BrainApp.closeModals()">
-    <div class="bh-modal-card">
-      <div class="bh-modal-header">
-        <div class="bh-modal-title">📄 STUDENT SCIENCE DOSSIER</div>
-        <button type="button" class="bh-btn-close-modal" onclick="window.BrainApp.closeModals()">✕</button>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,240,255,0.08); border:1px solid rgba(0,240,255,0.3); border-radius:12px; padding:14px 18px;">
-        <div>
-          <div style="font-size:1.15rem; font-weight:900; color:#fff;" id="dossierStudentName">Explorer Maya</div>
-          <div style="font-size:0.8rem; color:var(--neon-cyan);">Rank: Junior Brain Hacker • Grade 4</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:1.25rem; font-weight:900; color:var(--neon-gold);" id="dossierXpDisplay">0 XP</div>
-          <div style="font-size:0.75rem; color:#94a3b8;">Earned Academy XP</div>
-        </div>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px;">
-          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">MISSIONS COMPLETED:</div>
-          <div style="font-size:1.4rem; font-weight:900; color:#34d399;" id="dossierMissionsCount">0 / 8</div>
-        </div>
-        <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px;">
-          <div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">BRAIN ENERGY LEVEL:</div>
-          <div style="font-size:1.4rem; font-weight:900; color:#38bdf8;" id="dossierEnergyCount">100%</div>
-        </div>
-      </div>
-      <div>
-        <h4 style="font-size:0.95rem; font-weight:800; color:#fef08a; margin-bottom:8px;">🏆 SCIENCE SKILLS UNLOCKED:</h4>
-        <div style="display:flex; flex-wrap:wrap; gap:8px;">
-          <span class="bh-badge" style="background:#0369a1; color:#fff;">Lobe Identification</span>
-          <span class="bh-badge" style="background:#15803d; color:#fff;">Neuron Wiring</span>
-          <span class="bh-badge" style="background:#7e22ce; color:#fff;">Relay Signaling</span>
-          <span class="bh-badge" style="background:#b45309; color:#fff;">Visualization</span>
-          <span class="bh-badge" style="background:#be185d; color:#fff;">Creative Canvas</span>
-        </div>
-      </div>
-      <div style="display:flex; gap:10px; margin-top:10px;">
-        <a href="worksheets.html" target="_blank" class="bh-btn-nav primary" style="flex:1; justify-content:center; text-decoration:none;">
-          🖨️ Open 4-Page Printable Dossier
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================
-       7. POLISHED MODAL: TEACHER WHITEBOARD HUD
-       ======================================================== -->
-  <div class="bh-modal-overlay" id="teacherModal" onclick="if(event.target===this) window.BrainApp.closeModals()">
-    <div class="bh-modal-card">
-      <div class="bh-modal-header">
-        <div class="bh-modal-title">🧑‍🏫 TEACHER HUD & SMART BOARD TOOLS</div>
-        <button type="button" class="bh-btn-close-modal" onclick="window.BrainApp.closeModals()">✕</button>
-      </div>
-
-      <div>
-        <h4 style="font-size:0.88rem; font-weight:800; color:#c084fc; margin-bottom:10px; letter-spacing:0.5px;">🚀 JUMP TO MISSION</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(1)">01. 🔬 Detect Brain</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(2)">02. 🧩 Neurons</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(3)">03. ⚡ Relay Chain</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(4)">04. 👁️ Visualize</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(5)">05. 🎨 Creativity</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(6)">06. 🏫 Subjects</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(7)">07. 🔋 Save Brain</button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainApp.loadMission(8)">08. 🎓 Graduation</button>
-        </div>
-      </div>
-
-      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
-        <h4 style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:10px;">⚡ QUICK CLASSROOM ACTIONS</h4>
-        <div style="display:flex; flex-wrap:wrap; gap:8px;">
-          <button type="button" class="bh-btn-hud primary" onclick="window.BrainApp.autoSolveCurrentMission()">
-            ✨ Auto-Reveal Answers
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(0)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Briefing
           </button>
-          <button type="button" class="bh-btn-hud" onclick="window.BrainAudio.playSuccess()">
-            🎵 Test Victory Fanfare
-          </button>
-          <button type="button" class="bh-btn-hud" onclick="window.print()">
-            🖨️ Print Certificate
+          <button onclick="MissionNav.goTo(2)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Activity Scanner ➡️
           </button>
         </div>
       </div>
+    </section>
 
-      <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
-        <h4 style="font-size:0.88rem; font-weight:800; color:var(--neon-gold); margin-bottom:10px;">🏆 TEAM SCORE AWARDS (+10 / -5)</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
-            <span>🧠 Team Brain</span>
-            <div style="display:flex; gap:4px;">
-              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('brain', 10)">+10</button>
-              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('brain', -5)">-5</button>
+    <!-- ----------------------------------------------------
+         MODULE 2: THE ACTIVITY SCANNER (BRAIN OR NOT?)
+         ---------------------------------------------------- -->
+    <section id="module-2" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-cyan-500/20 text-cyan-400 font-mono text-xs uppercase px-3 py-1 rounded-full border border-cyan-500/40">
+              Section 2 • Diagnostics
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-display mt-2">
+              The Activity Scanner: Brain or Not? 🔍
+            </h2>
+          </div>
+          <div class="bg-slate-950 border border-cyan-700/60 px-4 py-2 rounded-xl text-xs font-bold text-cyan-300">
+            Task: Scan activities that use the brain!
+          </div>
+        </div>
+
+        <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+          Which of these everyday activities require brain power? Click each scanner pod to analyze neural activation!
+        </p>
+
+        <!-- 6 Animated Activity Cards Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="scanner-grid">
+          
+          <!-- Card 1: Play Football -->
+          <div onclick="ScannerLab.scan(this, 'Play Football')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">⚽</span>
+            <h4 class="font-extrabold text-white text-sm">Play Football</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+
+          <!-- Card 2: Listen to Music -->
+          <div onclick="ScannerLab.scan(this, 'Listen to Music')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">🎧</span>
+            <h4 class="font-extrabold text-white text-sm">Listen to Music</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+
+          <!-- Card 3: Solve Math Problems -->
+          <div onclick="ScannerLab.scan(this, 'Solve Math Problems')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">📐</span>
+            <h4 class="font-extrabold text-white text-sm">Solve Math Problems</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+
+          <!-- Card 4: Read a Story -->
+          <div onclick="ScannerLab.scan(this, 'Read a Story')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">📖</span>
+            <h4 class="font-extrabold text-white text-sm">Read a Story</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+
+          <!-- Card 5: Be Creative -->
+          <div onclick="ScannerLab.scan(this, 'Be Creative')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">🎨</span>
+            <h4 class="font-extrabold text-white text-sm">Be Creative</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+
+          <!-- Card 6: Play a Video Game -->
+          <div onclick="ScannerLab.scan(this, 'Play a Video Game')" class="scan-card relative bg-slate-950 border-2 border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer transition overflow-hidden text-center">
+            <span class="text-4xl block mb-2">🎮</span>
+            <h4 class="font-extrabold text-white text-sm">Play a Video Game</h4>
+            <span class="status-badge text-[11px] text-slate-400 block mt-1">Tap to Scan</span>
+          </div>
+        </div>
+
+        <!-- Big Reveal Banner -->
+        <div id="scanner-reveal" class="hidden bg-gradient-to-r from-emerald-950/80 to-slate-900 border-2 border-emerald-400 p-5 rounded-2xl mt-5 text-center shadow-xl">
+          <span class="text-3xl block mb-1">🎉</span>
+          <h3 class="font-black text-emerald-300 text-lg">TRICK QUESTION: ALL ACTIVITIES USE YOUR BRAIN!</h3>
+          <p class="text-slate-200 text-xs md:text-sm mt-1 max-w-xl mx-auto">
+            From kicking a soccer ball to listening to music and dreaming up ideas, your brain is always active, coordinating every movement, emotion, and perception!
+          </p>
+        </div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(1)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Command Center
+          </button>
+          <button onclick="MissionNav.goTo(3)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Neuron Anatomy ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         MODULE 3: ANATOMY OF A SPARK (LABEL THE NEURON)
+         ---------------------------------------------------- -->
+    <section id="module-3" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-amber-500/20 text-amber-400 font-mono text-xs uppercase px-3 py-1 rounded-full border border-amber-500/40">
+              Section 3 • Cell Structure
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-display mt-2">
+              Anatomy of a Spark: Label the Neuron ⚡
+            </h2>
+          </div>
+          <div class="bg-slate-950 border border-amber-700/60 px-4 py-2 rounded-xl text-xs font-bold text-amber-300">
+            Labels: Cell Body, Fiber, Connection, Neuron
+          </div>
+        </div>
+
+        <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+          Neurons are the building blocks of thought. Tap a glowing label below, then tap the matching node along the cell fiber to transmit electrical current!
+        </p>
+
+        <!-- Interactive Neuron Canvas & Diagram -->
+        <div class="relative bg-slate-950 border-2 border-slate-800 rounded-3xl p-6 overflow-hidden shadow-2xl min-h-[340px] flex flex-col justify-between">
+          <canvas id="neuron-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+          <!-- Diagram SVG -->
+          <div class="relative z-10 flex justify-between items-center my-auto px-4 md:px-12">
+            <!-- Node 1: Cell Body -->
+            <div id="drop-cell-body" onclick="NeuronLab.targetSlot('cell_body')" class="neuron-slot bg-purple-950/80 border-2 border-dashed border-purple-400 hover:border-purple-300 w-32 p-3 rounded-2xl text-center cursor-pointer transition">
+              <span class="text-3xl block mb-1">🧬</span>
+              <span class="slot-text text-xs font-bold text-purple-300">[ Cell Body ]</span>
+            </div>
+
+            <!-- Arrow Bridge / Fiber -->
+            <div id="drop-fiber" onclick="NeuronLab.targetSlot('fiber')" class="neuron-slot bg-cyan-950/80 border-2 border-dashed border-cyan-400 hover:border-cyan-300 w-36 p-3 rounded-2xl text-center cursor-pointer transition">
+              <span class="text-2xl block mb-1">⚡⚡⚡</span>
+              <span class="slot-text text-xs font-bold text-cyan-300">[ Long Fiber ]</span>
+            </div>
+
+            <!-- Node 3: Connections / Synapses -->
+            <div id="drop-connection" onclick="NeuronLab.targetSlot('connection')" class="neuron-slot bg-amber-950/80 border-2 border-dashed border-amber-400 hover:border-amber-300 w-36 p-3 rounded-2xl text-center cursor-pointer transition">
+              <span class="text-3xl block mb-1">✨</span>
+              <span class="slot-text text-xs font-bold text-amber-300">[ Connection ]</span>
             </div>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
-            <span>⚡ Team Neuron</span>
-            <div style="display:flex; gap:4px;">
-              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('neuron', 10)">+10</button>
-              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('neuron', -5)">-5</button>
-            </div>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
-            <span>💡 Team Genius</span>
-            <div style="display:flex; gap:4px;">
-              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('genius', 10)">+10</button>
-              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('genius', -5)">-5</button>
-            </div>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px;">
-            <span>🚀 Team Explorer</span>
-            <div style="display:flex; gap:4px;">
-              <button class="bh-btn-hud" style="padding:4px 10px; min-height:32px;" onclick="window.BrainApp.addTeamScore('explorer', 10)">+10</button>
-              <button class="bh-btn-hud" style="padding:4px 8px; min-height:32px;" onclick="window.BrainApp.addTeamScore('explorer', -5)">-5</button>
+
+          <!-- Overall Cell Identifier -->
+          <div class="relative z-10 flex justify-center mt-4">
+            <div id="drop-neuron" onclick="NeuronLab.targetSlot('neuron')" class="neuron-slot bg-slate-900 border-2 border-dashed border-emerald-400 w-52 p-3 rounded-2xl text-center cursor-pointer transition">
+              <span class="slot-text text-xs font-black text-emerald-300 uppercase tracking-wider">[ Entire Cell: Neuron ]</span>
             </div>
           </div>
         </div>
+
+        <!-- Draggable Labels Pool -->
+        <div class="mt-4 bg-slate-950/70 p-4 rounded-2xl border border-slate-800">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Select Label to Place:</span>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="NeuronLab.selectLabel('cell_body')" id="lbl-cell_body" class="label-token bg-purple-900/60 hover:bg-purple-800 border border-purple-400 text-purple-200 font-bold text-xs px-4 py-2 rounded-xl transition">
+              🧬 cell body
+            </button>
+            <button onclick="NeuronLab.selectLabel('fiber')" id="lbl-fiber" class="label-token bg-cyan-900/60 hover:bg-cyan-800 border border-cyan-400 text-cyan-200 font-bold text-xs px-4 py-2 rounded-xl transition">
+              ⚡ fiber
+            </button>
+            <button onclick="NeuronLab.selectLabel('connection')" id="lbl-connection" class="label-token bg-amber-900/60 hover:bg-amber-800 border border-amber-400 text-amber-200 font-bold text-xs px-4 py-2 rounded-xl transition">
+              ✨ connection
+            </button>
+            <button onclick="NeuronLab.selectLabel('neuron')" id="lbl-neuron" class="label-token bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-400 text-emerald-200 font-bold text-xs px-4 py-2 rounded-xl transition">
+              🧠 neuron
+            </button>
+          </div>
+        </div>
+
+        <div id="neuron-status-msg" class="text-center text-xs font-bold mt-2 text-emerald-400 min-h-[16px]"></div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(2)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Activity Scanner
+          </button>
+          <button onclick="MissionNav.goTo(4)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Synaptic Routing ➡️
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Toast Notification -->
-  <div id="bhToast" class="bh-toast"></div>
+    <!-- ----------------------------------------------------
+         MODULE 4: SYNAPTIC ROUTING (SEND THE MESSAGE)
+         ---------------------------------------------------- -->
+    <section id="module-4" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-indigo-500/20 text-indigo-400 font-mono text-xs uppercase px-3 py-1 rounded-full border border-indigo-500/40">
+              Section 4 • Synapses
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-display mt-2">
+              Synaptic Routing: Send the Message 🔗
+            </h2>
+          </div>
+          <div class="bg-slate-950 border border-indigo-700/60 px-4 py-2 rounded-xl text-xs font-bold text-indigo-300">
+            Concept: Neurons connect to send messages!
+          </div>
+        </div>
 
-  <!-- Scripts -->
-  <script src="js/brain-hackers-audio.js"></script>
-  <script src="js/brain-hackers-data.js"></script>
-  <script src="js/brain-hackers-app.js"></script>
+        <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+          Unscramble the scattered data packets to form complete sentences. Every correct message constructs an electrical bridge of light between neurons!
+        </p>
+
+        <!-- Unscramble Arena (3 Rounds) -->
+        <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col gap-6">
+          <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+            <span id="routing-round-txt">PHRASE PACKET 1 OF 3</span>
+            <span class="text-cyan-400 font-bold">SYNAPSE CHANNEL: SECURE</span>
+          </div>
+
+          <!-- Assembled Sentence Strip -->
+          <div class="bg-slate-900 border-2 border-cyan-500/40 rounded-2xl p-4 min-h-[60px] flex items-center gap-2 flex-wrap" id="assembled-strip">
+            <span class="text-xs text-slate-500 italic" id="empty-hint">Click word packets below in order to assemble the message...</span>
+          </div>
+
+          <!-- Word Packets Pool -->
+          <div class="flex flex-wrap gap-3 justify-center" id="words-pool">
+            <!-- Injected by RoutingLab -->
+          </div>
+
+          <div class="flex justify-center gap-4">
+            <button onclick="RoutingLab.resetCurrent()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl text-xs transition">
+              🔄 Clear
+            </button>
+            <button onclick="RoutingLab.verify()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2 rounded-xl text-xs transition shadow-lg">
+              ⚡ TRANSMIT MESSAGE
+            </button>
+          </div>
+        </div>
+
+        <div id="routing-feedback" class="text-center text-xs font-bold mt-2 min-h-[16px]"></div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(3)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Neuron Anatomy
+          </button>
+          <button onclick="MissionNav.goTo(5)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Imagination Engine ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         MODULE 5: THE IMAGINATION ENGINE (DRAWING CANVAS)
+         ---------------------------------------------------- -->
+    <section id="module-5" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-fuchsia-500/20 text-fuchsia-400 font-mono text-xs uppercase px-3 py-1 rounded-full border border-fuchsia-500/40">
+              Section 5 • Creativity
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-display mt-2">
+              The Imagination Engine: Draw the Impossible 🎨
+            </h2>
+          </div>
+          <div class="bg-slate-950 border border-fuchsia-700/60 px-4 py-2 rounded-xl text-xs font-bold text-fuchsia-300">
+            Prompt: Elephant riding bicycle on moon!
+          </div>
+        </div>
+
+        <!-- Prompt Banner -->
+        <div class="bg-gradient-to-r from-purple-950/80 to-slate-900 border-2 border-fuchsia-500/50 p-4 rounded-2xl mb-4 text-xs md:text-sm text-slate-200">
+          🌟 <strong>Imagination Challenge:</strong> <em>"Close your eyes and imagine the picture. Then draw it... A purple elephant is riding a bicycle on the moon!"</em>
+        </div>
+
+        <!-- Drawing Canvas & Palette -->
+        <div class="bg-slate-950 border-2 border-slate-800 rounded-3xl p-4 flex flex-col gap-3">
+          <div class="relative bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 h-[280px]">
+            <canvas id="drawCanvas" class="w-full h-full"></canvas>
+          </div>
+
+          <!-- Color Palette & Tools -->
+          <div class="flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-400">Brush Color:</span>
+              <button onclick="PaintEngine.setColor('#a855f7')" class="w-7 h-7 rounded-full bg-purple-500 border-2 border-white focus:scale-110 transition"></button>
+              <button onclick="PaintEngine.setColor('#06b6d4')" class="w-7 h-7 rounded-full bg-cyan-400 border-2 border-slate-800 focus:scale-110 transition"></button>
+              <button onclick="PaintEngine.setColor('#f59e0b')" class="w-7 h-7 rounded-full bg-amber-400 border-2 border-slate-800 focus:scale-110 transition"></button>
+              <button onclick="PaintEngine.setColor('#10b981')" class="w-7 h-7 rounded-full bg-emerald-400 border-2 border-slate-800 focus:scale-110 transition"></button>
+              <button onclick="PaintEngine.setColor('#ffffff')" class="w-7 h-7 rounded-full bg-white border-2 border-slate-800 focus:scale-110 transition"></button>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button onclick="PaintEngine.clear()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs px-3 py-1.5 rounded-xl border border-slate-700 transition">
+                🗑️ Clear
+              </button>
+              <button onclick="PaintEngine.engageParticles()" class="bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-black text-xs px-5 py-2 rounded-xl shadow-lg transition">
+                ✨ ENGAGE IMAGINATION!
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(4)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Synaptic Routing
+          </button>
+          <button onclick="MissionNav.goTo(6)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Diagnostics &amp; Protocol ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         MODULE 6 & 7: NEURO-FITNESS & STRENGTHENING PROTOCOL
+         ---------------------------------------------------- -->
+    <section id="module-6" class="mission-view hidden flex flex-col gap-6">
+      <div class="holo-panel p-6 md:p-10">
+        <div class="text-center mb-6">
+          <span class="text-4xl block mb-1">🏆</span>
+          <h2 class="text-3xl md:text-4xl font-black text-white font-display">
+            Neuro-Fitness Diagnostics &amp; Protocol
+          </h2>
+          <p class="text-cyan-300 text-sm font-bold mt-1">Sections 6 &amp; 7 • Keep Your Brain Strong!</p>
+        </div>
+
+        <!-- Activity A: True / False Diagnostics -->
+        <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6 mb-6">
+          <h3 class="font-extrabold text-white text-base mb-4 flex items-center gap-2">
+            <span>🛡️</span> True or False System Check (5 Queries)
+          </h3>
+          <div class="flex flex-col gap-3" id="tf-container">
+            <!-- Injected by Diagnostics -->
+          </div>
+        </div>
+
+        <!-- Activity B: The Strengthening Protocol -->
+        <div class="bg-gradient-to-br from-slate-950 to-purple-950/40 border-2 border-purple-500/40 rounded-3xl p-6">
+          <h3 class="font-extrabold text-amber-300 text-base mb-2">
+            🧬 My Personal Brain Strengthening Protocol
+          </h3>
+          <p class="text-slate-300 text-xs mb-4">
+            Type 3 habits you will commit to in order to keep your brain healthy, sharp, and active!
+          </p>
+
+          <!-- Helper Tags -->
+          <div class="flex flex-wrap gap-2 mb-4 text-xs font-bold">
+            <span class="bg-purple-950 text-purple-300 border border-purple-600/50 px-3 py-1 rounded-full cursor-pointer" onclick="Diagnostics.addCommitment('Read everyday stories and books')">+ Read</span>
+            <span class="bg-cyan-950 text-cyan-300 border border-cyan-600/50 px-3 py-1 rounded-full cursor-pointer" onclick="Diagnostics.addCommitment('Learn new challenging skills')">+ Learn</span>
+            <span class="bg-amber-950 text-amber-300 border border-amber-600/50 px-3 py-1 rounded-full cursor-pointer" onclick="Diagnostics.addCommitment('Think and solve math puzzles')">+ Think</span>
+            <span class="bg-emerald-950 text-emerald-300 border border-emerald-600/50 px-3 py-1 rounded-full cursor-pointer" onclick="Diagnostics.addCommitment('Imagine creative adventures')">+ Imagine</span>
+            <span class="bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-600/50 px-3 py-1 rounded-full cursor-pointer" onclick="Diagnostics.addCommitment('Be creative with art and science')">+ Be Creative</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <input type="text" id="habit-1" placeholder="Commitment 1..." class="bg-slate-900 border border-purple-700/60 rounded-xl px-3 py-2 text-xs text-white outline-none">
+            <input type="text" id="habit-2" placeholder="Commitment 2..." class="bg-slate-900 border border-purple-700/60 rounded-xl px-3 py-2 text-xs text-white outline-none">
+            <input type="text" id="habit-3" placeholder="Commitment 3..." class="bg-slate-900 border border-purple-700/60 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          </div>
+
+          <button onclick="Diagnostics.graduate()" class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black py-3.5 rounded-2xl shadow-xl transition transform active:scale-95 text-sm">
+            ✨ LOCK IN PROTOCOL &amp; CLAIM GRADUATION! 🎓
+          </button>
+        </div>
+
+        <!-- Final Graduation Celebration Area -->
+        <div id="graduation-box" class="hidden mt-8 bg-gradient-to-r from-purple-950 via-slate-900 to-cyan-950 border-2 border-amber-400 rounded-3xl p-8 text-center shadow-2xl">
+          <span class="text-6xl block mb-2 glow-amber">🌟</span>
+          <h2 class="text-3xl font-black text-amber-300 font-display">A BRIGHTER BRAIN = A BRIGHTER YOU!</h2>
+          <p class="text-base font-bold text-cyan-300 mt-2">Small Steps = Big Changes!</p>
+          <p class="text-xs md:text-sm text-slate-300 max-w-xl mx-auto mt-2 leading-relaxed">
+            You have unlocked all 7 neural sectors! Keep your curiosity soaring, read often, exercise your body, and never stop imagining the impossible!
+          </p>
+
+          <div class="mt-6 flex justify-center gap-4">
+            <button onclick="window.print()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs shadow-lg transition">
+              🖨️ Print Neuro-Hacker Certificate
+            </button>
+            <button onclick="MissionNav.goTo(0)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-xl text-xs transition">
+              🔄 Replay Mission
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="MissionNav.goTo(5)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Imagination Engine
+          </button>
+          <button onclick="MissionNav.goTo(0)" class="text-cyan-400 hover:underline font-bold text-xs md:text-sm">
+            Return to Mission Briefing 🚀
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Canvas Confetti Overlay -->
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-[9999]"></canvas>
+
+  <!-- ====================================================
+       APPLICATION ENGINE JAVASCRIPT
+       ==================================================== -->
+  <script>
+    /* ----------------------------------------------------
+       1. SYNTHESIZED WEB AUDIO API SOUND ENGINE
+       ---------------------------------------------------- */
+    const SoundEngine = {
+      ctx: null,
+      sfx: true,
+      tts: true,
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      tone(freq, type = 'sine', dur = 0.2, gain = 0.15) {
+        if (!this.sfx) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        g.gain.setValueAtTime(gain, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+        osc.connect(g);
+        g.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + dur);
+      },
+      chord(freqs, type = 'triangle', dur = 0.4, gain = 0.12) {
+        if (!this.sfx) return;
+        this.init();
+        if (!this.ctx) return;
+        freqs.forEach(f => this.tone(f, type, dur, gain));
+      },
+      beep() { this.tone(1100, 'sine', 0.05, 0.08); },
+      scanWhoosh() { this.tone(440, 'triangle', 0.2, 0.15); },
+      spark() {
+        this.tone(1800, 'sawtooth', 0.1, 0.1);
+        setTimeout(() => this.tone(2400, 'sine', 0.15, 0.15), 50);
+      },
+      success() { this.chord([523.25, 659.25, 783.99, 1046.5], 'triangle', 0.45, 0.15); },
+      error() { this.tone(140, 'sawtooth', 0.3, 0.2); },
+      speak(text) {
+        if (!this.tts || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        utter.lang = 'en-US';
+        window.speechSynthesis.speak(utter);
+      },
+      toggleSfx() {
+        this.sfx = !this.sfx;
+        const b = document.getElementById('btn-sfx');
+        b.innerText = this.sfx ? '🔊 SFX' : '🔇 SFX';
+      },
+      toggleTts() {
+        this.tts = !this.tts;
+        const b = document.getElementById('btn-tts');
+        b.innerText = this.tts ? '🗣️ VOICE' : '🤐 VOICE';
+        if (!this.tts && window.speechSynthesis) window.speechSynthesis.cancel();
+      }
+    };
+
+    /* ----------------------------------------------------
+       2. CONFETTI PARTICLE SYSTEM
+       ---------------------------------------------------- */
+    const Confetti = {
+      canvas: document.getElementById('confettiCanvas'),
+      ctx: null,
+      list: [],
+      anim: null,
+      init() {
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      },
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      },
+      launch(count = 50) {
+        const colors = ['#8b5cf6', '#06b6d4', '#f59e0b', '#10b981', '#f43f5e', '#a855f7'];
+        for (let i = 0; i < count; i++) {
+          this.list.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight * 0.4,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.8) * 16,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rot: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 10,
+            life: 1
+          });
+        }
+        if (!this.anim) this.loop();
+      },
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = this.list.length - 1; i >= 0; i--) {
+          const p = this.list[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.rot += p.vRot;
+          p.life -= 0.012;
+
+          this.ctx.save();
+          this.ctx.translate(p.x, p.y);
+          this.ctx.rotate((p.rot * Math.PI) / 180);
+          this.ctx.fillStyle = p.color;
+          this.ctx.globalAlpha = Math.max(0, p.life);
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
+          this.ctx.restore();
+
+          if (p.life <= 0 || p.y > window.innerHeight) this.list.splice(i, 1);
+        }
+        if (this.list.length > 0) this.anim = requestAnimationFrame(() => this.loop());
+        else this.anim = null;
+      }
+    };
+    Confetti.init();
+
+    /* ----------------------------------------------------
+       3. MISSION NAVIGATION & SCENE ORCHESTRATOR
+       ---------------------------------------------------- */
+    const MissionNav = {
+      active: 0,
+      xp: 0,
+
+      goTo(idx) {
+        SoundEngine.beep();
+        this.active = idx;
+        document.querySelectorAll('.mission-view').forEach((v, i) => {
+          v.classList.toggle('hidden', i !== idx);
+        });
+
+        // Update Nav Stepper
+        for (let i = 0; i <= 6; i++) {
+          const b = document.getElementById(`mod-btn-${i}`);
+          if (b) {
+            if (i === idx) {
+              b.className = 'mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-purple-600 text-white shadow-md';
+            } else {
+              b.className = 'mod-nav-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-900 text-slate-400 hover:text-white';
+            }
+          }
+        }
+
+        if (idx === 4) RoutingLab.loadRound(0);
+        if (idx === 5) PaintEngine.init();
+        if (idx === 6) Diagnostics.init();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      addXp(pts) {
+        this.xp += pts;
+        document.getElementById('hud-xp').innerText = this.xp;
+        SoundEngine.spark();
+      }
+    };
+
+    /* ----------------------------------------------------
+       4. MODULE 1: COMMAND CENTER (PARTS OF THE BRAIN)
+       ---------------------------------------------------- */
+    const CommandCenter = {
+      selectedToken: null,
+      matched: { thinking: false, speaking: false, hearing: false, seeing: false },
+
+      selectToken(key) {
+        SoundEngine.beep();
+        this.selectedToken = key;
+        document.querySelectorAll('.token-card').forEach(t => t.classList.remove('ring-2', 'ring-cyan-400'));
+        const el = document.getElementById(`token-${key}`);
+        if (el) el.classList.add('ring-2', 'ring-cyan-400');
+        SoundEngine.speak(`Selected ${key}. Now tap the corresponding lobe on the brain diagram.`);
+      },
+
+      targetLobe(lobeKey) {
+        if (!this.selectedToken) {
+          SoundEngine.speak('First select a hologram action on the right side!');
+          return;
+        }
+
+        if (this.selectedToken === lobeKey) {
+          SoundEngine.success();
+          this.matched[lobeKey] = true;
+          const lobeEl = document.getElementById(`lobe-${lobeKey}`);
+          if (lobeEl) lobeEl.classList.add('active-target');
+
+          const tokenEl = document.getElementById(`token-${lobeKey}`);
+          if (tokenEl) {
+            tokenEl.classList.add('opacity-40', 'pointer-events-none');
+            tokenEl.querySelector('.status-indicator').innerText = '✓ Routed!';
+          }
+
+          MissionNav.addXp(25);
+          Confetti.launch(25);
+          SoundEngine.speak(`Neural connection routed! This region controls ${lobeKey}.`);
+          this.selectedToken = null;
+
+          if (Object.values(this.matched).every(Boolean)) {
+            SoundEngine.success();
+            Confetti.launch(40);
+            SoundEngine.speak('Command Center complete! All 4 functional cerebral lobes mapped!');
+          }
+        } else {
+          SoundEngine.error();
+          SoundEngine.speak('Incorrect neural pathway. Try another brain section.');
+        }
+      }
+    };
+
+    /* ----------------------------------------------------
+       5. MODULE 2: THE ACTIVITY SCANNER (BRAIN OR NOT?)
+       ---------------------------------------------------- */
+    const ScannerLab = {
+      scannedCount: 0,
+
+      scan(el, name) {
+        if (el.dataset.scanned) return;
+        el.dataset.scanned = 'true';
+
+        SoundEngine.scanWhoosh();
+        el.classList.add('border-emerald-400', 'bg-emerald-950/40');
+        el.querySelector('.status-badge').innerText = '✓ Brain Active (100%)';
+        el.querySelector('.status-badge').className = 'status-badge text-[11px] text-emerald-400 font-bold block mt-1';
+
+        // Add scan laser bar
+        const laser = document.createElement('div');
+        laser.className = 'laser-line';
+        el.appendChild(laser);
+
+        this.scannedCount++;
+        MissionNav.addXp(15);
+        SoundEngine.speak(`${name} activates brain networks!`);
+
+        if (this.scannedCount >= 6) {
+          SoundEngine.success();
+          Confetti.launch(45);
+          document.getElementById('scanner-reveal').classList.remove('hidden');
+          SoundEngine.speak('Trick question! All six activities use your brain. Your brain is active 24/7!');
+        }
+      }
+    };
+
+    /* ----------------------------------------------------
+       6. MODULE 3: ANATOMY OF A SPARK (NEURON LABELING)
+       ---------------------------------------------------- */
+    const NeuronLab = {
+      activeLabel: null,
+      slots: { cell_body: false, fiber: false, connection: false, neuron: false },
+
+      selectLabel(key) {
+        SoundEngine.beep();
+        this.activeLabel = key;
+        document.querySelectorAll('.label-token').forEach(l => l.classList.remove('ring-2', 'ring-white'));
+        document.getElementById(`lbl-${key}`).classList.add('ring-2', 'ring-white');
+        SoundEngine.speak(`Selected ${key}. Tap the matching box along the neuron.`);
+      },
+
+      targetSlot(slotKey) {
+        if (!this.activeLabel) {
+          SoundEngine.speak('First select a label token from below!');
+          return;
+        }
+
+        if (this.activeLabel === slotKey) {
+          SoundEngine.spark();
+          this.slots[slotKey] = true;
+          const slotEl = document.getElementById(`drop-${slotKey}`);
+          slotEl.classList.remove('border-dashed');
+          slotEl.classList.add('border-solid', 'bg-slate-900/90', 'shadow-lg');
+          slotEl.querySelector('.slot-text').innerText = `✓ ${slotKey.replace('_', ' ').toUpperCase()}`;
+
+          document.getElementById(`lbl-${slotKey}`).classList.add('opacity-30', 'pointer-events-none');
+          MissionNav.addXp(25);
+          this.activeLabel = null;
+
+          if (Object.values(this.slots).every(Boolean)) {
+            SoundEngine.success();
+            Confetti.launch(40);
+            document.getElementById('neuron-status-msg').innerText = '⚡ ELECTRICAL CIRCUIT LOCKED! Current flowing from cell body to connections!';
+            SoundEngine.speak('Neuron fully mapped! Electrical spark shooting down the fiber to connection points!');
+          }
+        } else {
+          SoundEngine.error();
+          SoundEngine.speak('Incorrect anatomical placement. Try again!');
+        }
+      }
+    };
+
+    /* ----------------------------------------------------
+       7. MODULE 4: SYNAPTIC ROUTING (UNSCRAMBLE)
+       ---------------------------------------------------- */
+    const RoutingLab = {
+      rounds: [
+        { words: ['the', 'dog', 'runs', 'fast', '.'], correct: 'the dog runs fast .' },
+        { words: ['a', 'cat', 'is', 'sleeping', '.'], correct: 'a cat is sleeping .' },
+        { words: ['I', 'go', 'to', 'school', '.'], correct: 'I go to school .' }
+      ],
+      currentRound: 0,
+      assembled: [],
+
+      loadRound(idx) {
+        this.currentRound = idx;
+        this.assembled = [];
+        document.getElementById('routing-round-txt').innerText = `PHRASE PACKET ${idx + 1} OF 3`;
+        document.getElementById('empty-hint').style.display = 'inline';
+
+        const pool = document.getElementById('words-pool');
+        pool.innerHTML = '';
+
+        // Scramble words
+        const scrambled = [...this.rounds[idx].words].sort(() => Math.random() - 0.5);
+        scrambled.forEach((w, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'word-chip bg-slate-900 hover:bg-slate-800 border-2 border-indigo-500/60 text-indigo-200 font-bold px-4 py-2 rounded-xl text-sm transition';
+          btn.innerText = w;
+          btn.onclick = () => this.addWord(w, btn);
+          pool.appendChild(btn);
+        });
+      },
+
+      addWord(w, btn) {
+        SoundEngine.beep();
+        this.assembled.push(w);
+        btn.classList.add('opacity-25', 'pointer-events-none');
+        document.getElementById('empty-hint').style.display = 'none';
+
+        const chip = document.createElement('span');
+        chip.className = 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 font-bold px-3 py-1 rounded-lg text-sm';
+        chip.innerText = w;
+        document.getElementById('assembled-strip').appendChild(chip);
+      },
+
+      resetCurrent() {
+        SoundEngine.beep();
+        const strip = document.getElementById('assembled-strip');
+        strip.innerHTML = '<span class="text-xs text-slate-500 italic" id="empty-hint">Click word packets below in order to assemble the message...</span>';
+        this.loadRound(this.currentRound);
+      },
+
+      verify() {
+        const sentence = this.assembled.join(' ');
+        const target = this.rounds[this.currentRound].correct;
+        const fb = document.getElementById('routing-feedback');
+
+        if (sentence === target) {
+          SoundEngine.success();
+          Confetti.launch(30);
+          MissionNav.addXp(30);
+          fb.className = 'text-center text-xs font-bold text-emerald-400 mt-2 min-h-[16px]';
+          fb.innerText = `✓ Synaptic bridge established: "${sentence}"`;
+          SoundEngine.speak(`Synaptic connection established: ${sentence}`);
+
+          setTimeout(() => {
+            if (this.currentRound < 2) {
+              this.loadRound(this.currentRound + 1);
+            } else {
+              fb.innerText = '🎉 ALL 3 SYNAPTIC PACKETS DELIVERED THROUGH THE NEURON NETWORK!';
+              SoundEngine.speak('All three messages routed! Neurons connect to transmit knowledge!');
+            }
+          }, 1800);
+        } else {
+          SoundEngine.error();
+          fb.className = 'text-center text-xs font-bold text-rose-400 mt-2 min-h-[16px]';
+          fb.innerText = '❌ Packet order mismatch. Clear and try again!';
+          SoundEngine.speak('Packet scrambled incorrectly. Reset and retry!');
+        }
+      }
+    };
+
+    /* ----------------------------------------------------
+       8. MODULE 5: THE IMAGINATION ENGINE (CANVAS PAINT)
+       ---------------------------------------------------- */
+    const PaintEngine = {
+      canvas: null,
+      ctx: null,
+      drawing: false,
+      color: '#a855f7',
+
+      init() {
+        this.canvas = document.getElementById('drawCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+
+        this.canvas.addEventListener('mousedown', (e) => this.start(e));
+        this.canvas.addEventListener('mousemove', (e) => this.draw(e));
+        window.addEventListener('mouseup', () => this.stop());
+
+        this.canvas.addEventListener('touchstart', (e) => this.startTouch(e));
+        this.canvas.addEventListener('touchmove', (e) => this.drawTouch(e));
+        window.addEventListener('touchend', () => this.stop());
+      },
+      resize() {
+        const r = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = r.width;
+        this.canvas.height = r.height;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        this.ctx.lineWidth = 6;
+      },
+      setColor(c) {
+        SoundEngine.beep();
+        this.color = c;
+      },
+      start(e) {
+        this.drawing = true;
+        this.ctx.beginPath();
+        const r = this.canvas.getBoundingClientRect();
+        this.ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+      },
+      draw(e) {
+        if (!this.drawing) return;
+        this.ctx.strokeStyle = this.color;
+        const r = this.canvas.getBoundingClientRect();
+        this.ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+        this.ctx.stroke();
+      },
+      startTouch(e) {
+        e.preventDefault();
+        const t = e.touches[0];
+        this.start({ clientX: t.clientX, clientY: t.clientY });
+      },
+      drawTouch(e) {
+        e.preventDefault();
+        const t = e.touches[0];
+        this.draw({ clientX: t.clientX, clientY: t.clientY });
+      },
+      stop() {
+        this.drawing = false;
+      },
+      clear() {
+        SoundEngine.beep();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      },
+      engageParticles() {
+        SoundEngine.success();
+        Confetti.launch(50);
+        MissionNav.addXp(30);
+        SoundEngine.speak('Imagination Engine engaged! A purple elephant riding a bicycle on the moon! Your brain can visualize anything!');
+      }
+    };
+
+    /* ----------------------------------------------------
+       9. MODULE 6 & 7: NEURO-FITNESS DIAGNOSTICS & PROTOCOL
+       ---------------------------------------------------- */
+    const Diagnostics = {
+      tfQuestions: [
+        { q: '1. Your brain has billions of special cells.', ans: true },
+        { q: '2. Neurons send messages to each other.', ans: true },
+        { q: '3. Reading can make your imagination stronger.', ans: true },
+        { q: '4. The brain is not important in P.E.', ans: false },
+        { q: '5. A healthy brain helps you learn and be creative.', ans: true }
+      ],
+
+      init() {
+        const c = document.getElementById('tf-container');
+        c.innerHTML = '';
+        this.tfQuestions.forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = 'bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center text-xs';
+          row.innerHTML = `
+            <span class="font-bold text-slate-200">${item.q}</span>
+            <div class="flex gap-2">
+              <button onclick="Diagnostics.checkTF(${idx}, true, this)" class="bg-slate-800 hover:bg-emerald-600 px-3 py-1 rounded-lg font-bold text-slate-300 hover:text-white transition">True</button>
+              <button onclick="Diagnostics.checkTF(${idx}, false, this)" class="bg-slate-800 hover:bg-rose-600 px-3 py-1 rounded-lg font-bold text-slate-300 hover:text-white transition">False</button>
+            </div>
+          `;
+          c.appendChild(row);
+        });
+      },
+
+      checkTF(idx, choice, btn) {
+        const correct = this.tfQuestions[idx].ans === choice;
+        if (correct) {
+          SoundEngine.spark();
+          btn.classList.add('bg-emerald-500', 'text-slate-950', 'pointer-events-none');
+          MissionNav.addXp(20);
+        } else {
+          SoundEngine.error();
+          btn.classList.add('bg-rose-600', 'text-white');
+          SoundEngine.speak('Diagnostic error! Brain is vital in physical education for balance, coordination, and reflexes!');
+        }
+      },
+
+      addCommitment(text) {
+        SoundEngine.beep();
+        const h1 = document.getElementById('habit-1');
+        const h2 = document.getElementById('habit-2');
+        const h3 = document.getElementById('habit-3');
+
+        if (!h1.value) h1.value = text;
+        else if (!h2.value) h2.value = text;
+        else if (!h3.value) h3.value = text;
+      },
+
+      graduate() {
+        SoundEngine.success();
+        Confetti.launch(70);
+        MissionNav.addXp(50);
+        document.getElementById('graduation-box').classList.remove('hidden');
+        SoundEngine.speak('A brighter brain equals a brighter you! Small steps equal big changes! Congratulations Neuro Hacker!');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    };
+  </script>
 </body>
 </html>
