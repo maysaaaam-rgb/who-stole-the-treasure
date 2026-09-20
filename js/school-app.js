@@ -5634,12 +5634,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '&ldquo;Same Story. Different Challenges. Brighter Learners!&rdquo; Pick Level 1 (+10&ndash;20 XP), Level 2 (+40&ndash;50 XP), Level 3 (+80&ndash;200 XP), or Base Check-In (+10 XP).' +
             '</p>' +
             '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+              '<button type="button" onclick="window.open(\'alice-homework/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(16,185,129,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
+                '🍄 Launch Alice XP Quest Slides & Grading' +
+              '</button>' +
               '<button type="button" class="btn-primary-action" onclick="openAliceQuestGraderModal()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(168,85,247,0.4);">' +
                 '🎯 Single-Student Grader' +
               '</button>' +
-              '<a href="alice-quest/homework.html" target="_blank" class="btn-sm-secondary" style="background: rgba(16,185,129,0.2); color: #34d399; border-color: #10b981; font-weight: 800; font-size: 0.82rem; padding: 7px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">' +
-                '📺 Slides & Deck View' +
-              '</a>' +
               '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
                 '🖼️ View High-Res Poster' +
               '</button>' +

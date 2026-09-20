@@ -685,7 +685,7 @@
         "Differentiate Level 1 (Get Started), Level 2 (Go Deeper), and Level 3 (Big Challenge) tasks",
         "Empower teachers to award targeted XP directly to specific students with live gradebook logging"
       ],
-      route: "alice-quest/homework.html",
+      route: "alice-homework/index.html",
       worksheet: "assets/homework/alice-xp-challenges-poster.jpg",
       worksheetRoute: "assets/homework/alice-xp-challenges-poster.jpg",
       teacherGuide: true,
