@@ -125,23 +125,10 @@
   }
 
   /**
-   * Main Render Function
-   * @param {Object} options
+   * Comprehensive Shared SVG Defs (Volumetric Gradients & Filters)
    */
-  function renderMonsterSVG(options = {}) {
-    const stage = normalizeStageKey(options.stage);
-    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
-    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
-    const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
-    const equipped = Object.assign({}, options.equipped || {});
-    const size = options.size || 200;
-    const animated = options.animated !== false;
-
-    const animClass = animated ? 'eaa-monster-animated' : '';
-
-    const isAvatar = options.isAvatar || options.hideBackground || options.transparentBg || false;
-
-    let defs = `
+  function getSharedDefs(colorKey, palette) {
+    return `
       <defs>
         <!-- 11 O'Clock Key Light Volumetric Plush Fur Radial Gradient -->
         <radialGradient id="plush-fur-${colorKey}" cx="36%" cy="28%" r="72%" fx="32%" fy="24%">
@@ -361,19 +348,11 @@
         </filter>
       </defs>
     `;
+  }
 
-    // 1. Background layer (Suppressed for avatar badges to maintain crisp 100% alpha transparency)
-    let bgLayer = '';
-    if (!isAvatar) {
-      try {
-        bgLayer = renderBackgroundLayer(equipped.background, stage);
-      } catch (e) {
-        bgLayer = renderBackgroundLayer('bg-meadow', stage);
-      }
-    }
-
-    // 2. Pedestal Stage (Tiered circular wooden/stone dais grounding creature into physical stage)
-    const pedestalMarkup = `
+  // --- PEDESTAL STAGE DAIS (Tiered Circular Platform) ---
+  function renderPedestalDais() {
+    return `
       <!-- Tiered Circular Wooden Pedestal Dais Stage -->
       <g class="monster-pedestal-stage">
         <!-- Lower Base Ambient Shadow Cast by Dais -->
@@ -385,45 +364,200 @@
         <!-- Pedestal Top Surface (Polished Bevel Rim) -->
         <ellipse cx="100" cy="165" rx="56" ry="11" fill="url(#pedestal-top)" stroke="#d97706" stroke-width="1.2" />
         <ellipse cx="100" cy="165" rx="54" ry="9.5" fill="none" stroke="#fef3c7" stroke-width="0.9" opacity="0.8" />
-
-        <!-- Contact Shadow of Monster Feet onto Dais Surface -->
-        <ellipse cx="100" cy="154" rx="34" ry="6.5" fill="rgba(15,23,42,0.38)" filter="url(#plush-contact-blur)" />
       </g>
     `;
+  }
 
-    // 3. Aura layer (under monster)
+  // --- CONTACT SHADOW LAYER ---
+  function renderContactShadow(stage) {
+    if (stage === 'egg' || stage === 'cracking_egg') {
+      return `
+        <!-- Contact Shadow for Egg Base onto Dais Surface -->
+        <g class="monster-contact-shadow-group">
+          <ellipse cx="100" cy="162" rx="34" ry="8.5" fill="rgba(15,23,42,0.34)" filter="url(#plush-contact-blur)" />
+        </g>
+      `;
+    }
+    return `
+      <!-- Contact Shadow of Monster Body & Paws onto Dais Surface -->
+      <g class="monster-contact-shadow-group">
+        <ellipse cx="100" cy="154" rx="34" ry="6.5" fill="rgba(15,23,42,0.38)" filter="url(#plush-contact-blur)" />
+        <ellipse cx="80" cy="154" rx="14" ry="4.5" fill="rgba(15,23,42,0.28)" filter="url(#plush-contact-blur)" />
+        <ellipse cx="120" cy="154" rx="14" ry="4.5" fill="rgba(15,23,42,0.28)" filter="url(#plush-contact-blur)" />
+      </g>
+    `;
+  }
+
+  /**
+   * Modular Layered Viewport Renderer
+   * Standardized 6-layer coordinate stack:
+   * 1. layer-stage-pedestal
+   * 2. layer-contact-shadow
+   * 3. layer-rear-accessories (back horns, wings, tails, backpack, aura, rear ear)
+   * 4. layer-base-body (torso, feet, belly patch, clothes, egg shell)
+   * 5. layer-face (eyes, blush, snout dome, button nose, mouth)
+   * 6. layer-fore-accessories (front horns, front ear, hats, eyewear, handheld gear)
+   */
+  function renderMonsterViewport(options = {}) {
+    const stage = normalizeStageKey(options.stage);
+    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
+    const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
+    const equipped = Object.assign({}, options.equipped || {});
+    const size = options.size || 200;
+    const animated = options.animated !== false;
+
+    const animClass = animated ? 'eaa-monster-animated' : '';
+    const isAvatar = options.isAvatar || options.hideBackground || options.transparentBg || false;
+
+    const defs = getSharedDefs(colorKey, palette);
+
+    // Layer 1: Stage Pedestal Layer
+    let bgLayer = '';
+    if (!isAvatar) {
+      try {
+        bgLayer = renderBackgroundLayer(equipped.background, stage);
+      } catch (e) {
+        bgLayer = renderBackgroundLayer('bg-meadow', stage);
+      }
+    }
+    const pedestalMarkup = renderPedestalDais();
+
+    // Layer 2: Contact Shadow Layer
+    const contactShadowMarkup = renderContactShadow(stage);
+
+    // Layer 3: Rear Accessories Layer
+    let rearAccessoriesMarkup = '';
+    try {
+      const auraLayer = renderAuraLayer(equipped.aura, stage, palette);
+      const wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
+      const tailLayer = renderTailLayer(stage, equipped.tail, palette);
+      const backpackLayer = renderBackpackLayer(stage, equipped.backpack);
+      let rearUnderBody = '';
+      if (stage !== 'egg' && stage !== 'cracking_egg') {
+        const g = getStageGeometry(stage);
+        rearUnderBody = renderUnderBodyAccessories(stage, palette, colorKey, equipped, 100, g);
+      }
+      rearAccessoriesMarkup = `${auraLayer}${wingsLayer}${tailLayer}${backpackLayer}${rearUnderBody}`.trim();
+    } catch (e) {
+      rearAccessoriesMarkup = '';
+    }
+
+    // Layer 4: Base Body Layer
+    let baseBodyMarkup = '';
+    try {
+      if (stage === 'egg') {
+        baseBodyMarkup = renderEggWhole(palette, colorKey);
+      } else if (stage === 'cracking_egg') {
+        baseBodyMarkup = renderEggCrackingShell(palette, colorKey);
+      } else {
+        const g = getStageGeometry(stage);
+        const cX = 100;
+        const cY = (g.topY + g.botY) / 2;
+        const rx = g.bW;
+        const ry = (g.botY - g.topY) / 2;
+        const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
+        const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
+        const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+        baseBodyMarkup = `${feetMarkup}${torsoMarkup}${clothingMarkup}`.trim();
+      }
+    } catch (e) {
+      baseBodyMarkup = '';
+    }
+
+    // Layer 5: Face Layer
+    let faceMarkup = '';
+    try {
+      if (stage === 'egg') {
+        faceMarkup = '';
+      } else if (stage === 'cracking_egg') {
+        faceMarkup = renderEggCrackingFace(palette, colorKey);
+      } else {
+        const g = getStageGeometry(stage);
+        faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, 100, g);
+      }
+    } catch (e) {
+      faceMarkup = '';
+    }
+
+    // Layer 6: Fore Accessories Layer
+    let foreAccessoriesMarkup = '';
+    try {
+      if (stage !== 'egg' && stage !== 'cracking_egg') {
+        const g = getStageGeometry(stage);
+        const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, 100, g);
+        const fgAccessories = renderForegroundAccessories(stage, equipped, palette);
+        foreAccessoriesMarkup = `${overBodyMarkup}${fgAccessories}`.trim();
+      }
+    } catch (e) {
+      foreAccessoriesMarkup = '';
+    }
+
+    function wrapLayerSVG(content, layerClass) {
+      if (!content || !content.trim()) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" class="${layerClass}"></svg>`;
+      }
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" class="${layerClass}">
+          ${defs}
+          ${content}
+        </svg>
+      `.trim();
+    }
+
+    return `
+      <div class="monster-stage-viewport ${animClass}" style="--stage-size:${size}px; width:${size}px; height:${size}px;" data-stage="${stage}" data-color="${colorKey}">
+        <div class="layer layer-stage-pedestal">${wrapLayerSVG(bgLayer + pedestalMarkup, 'layer-svg-stage-pedestal')}</div>
+        <div class="layer layer-contact-shadow">${wrapLayerSVG(contactShadowMarkup, 'layer-svg-contact-shadow')}</div>
+        <div class="layer layer-rear-accessories">${wrapLayerSVG(rearAccessoriesMarkup, 'layer-svg-rear-accessories')}</div>
+        <div class="layer layer-base-body">${wrapLayerSVG(baseBodyMarkup, 'layer-svg-base-body')}</div>
+        <div class="layer layer-face">${wrapLayerSVG(faceMarkup, 'layer-svg-face')}</div>
+        <div class="layer layer-fore-accessories">${wrapLayerSVG(foreAccessoriesMarkup, 'layer-svg-fore-accessories')}</div>
+      </div>
+    `.trim();
+  }
+
+  /**
+   * Monolithic SVG Single-element Renderer (rawSvg fallback)
+   */
+  function renderMonsterSingleSVG(options = {}) {
+    const stage = normalizeStageKey(options.stage);
+    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
+    const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
+    const equipped = Object.assign({}, options.equipped || {});
+    const size = options.size || 200;
+    const animated = options.animated !== false;
+
+    const animClass = animated ? 'eaa-monster-animated' : '';
+    const isAvatar = options.isAvatar || options.hideBackground || options.transparentBg || false;
+
+    const defs = getSharedDefs(colorKey, palette);
+
+    let bgLayer = '';
+    if (!isAvatar) {
+      try {
+        bgLayer = renderBackgroundLayer(equipped.background, stage);
+      } catch (e) {
+        bgLayer = renderBackgroundLayer('bg-meadow', stage);
+      }
+    }
+
+    const pedestalMarkup = renderPedestalDais();
+    const contactShadowMarkup = renderContactShadow(stage);
+
     let auraLayer = '';
-    try {
-      auraLayer = renderAuraLayer(equipped.aura, stage, palette);
-    } catch (e) {
-      auraLayer = '';
-    }
+    try { auraLayer = renderAuraLayer(equipped.aura, stage, palette); } catch (e) { auraLayer = ''; }
 
-    // 4. Wings layer (behind body)
     let wingsLayer = '';
-    try {
-      wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
-    } catch (e) {
-      wingsLayer = '';
-    }
+    try { wingsLayer = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsLayer = ''; }
 
-    // 5. Tail layer (behind body)
     let tailLayer = '';
-    try {
-      tailLayer = renderTailLayer(stage, equipped.tail, palette);
-    } catch (e) {
-      tailLayer = '';
-    }
+    try { tailLayer = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailLayer = ''; }
 
-    // 6. Backpack layer (behind body)
     let backpackLayer = '';
-    try {
-      backpackLayer = renderBackpackLayer(stage, equipped.backpack);
-    } catch (e) {
-      backpackLayer = '';
-    }
+    try { backpackLayer = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackLayer = ''; }
 
-    // 7. Main monster body or egg
     let mainEntityLayer = '';
     try {
       if (stage === 'egg') {
@@ -441,7 +575,6 @@
       }
     }
 
-    // 8. Foreground accessories (hats, glasses, handheld items)
     let fgAccessoryLayer = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
@@ -456,6 +589,7 @@
         ${defs}
         ${bgLayer}
         ${pedestalMarkup}
+        ${contactShadowMarkup}
         ${auraLayer}
         ${wingsLayer}
         ${tailLayer}
@@ -464,6 +598,16 @@
         ${fgAccessoryLayer}
       </svg>
     `.trim();
+  }
+
+  /**
+   * Main Render Entry Point: Defaults to Modular Layered Viewport
+   */
+  function renderMonsterSVG(options = {}) {
+    if (options && options.rawSvg === true) {
+      return renderMonsterSingleSVG(options);
+    }
+    return renderMonsterViewport(options);
   }
 
   // --- BACKGROUND LAYER ---
@@ -838,10 +982,10 @@
     `;
   }
 
-  // --- EGG 2: CRACKING EGG ---
-  function renderEggCracking(palette, colorKey) {
+  // --- EGG 2: CRACKING EGG SHELL (Base Body Layer) ---
+  function renderEggCrackingShell(palette, colorKey) {
     return `
-      <!-- Level 2: Cracking Egg -->
+      <!-- Level 2: Cracking Egg Shell -->
       <g filter="url(#plush-shadow)" class="monster-egg-cracking">
         <!-- Egg Shell Base (Volumetric 11 O'Clock Keylit Shading) -->
         <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z"
@@ -855,9 +999,20 @@
         <path d="M 124 116 L 136 126 L 130 140 L 140 152" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#plush-glow)" />
         <path d="M 124 116 L 136 126 L 130 140 L 140 152" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
 
-        <!-- Crack Opening -->
+        <!-- Crack Opening Cavity -->
         <polygon points="76,108 92,100 100,107 114,99 126,110 118,126 102,122 88,128 78,122" fill="#020617" />
 
+        <!-- 11 O'Clock Specular Gloss -->
+        <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
+      </g>
+    `;
+  }
+
+  // --- EGG 2: CRACKING EGG PEEKING FACE (Face Layer) ---
+  function renderEggCrackingFace(palette, colorKey) {
+    return `
+      <!-- Peeking Living Eyes & Blush inside Crack Opening -->
+      <g class="monster-egg-peeking-face">
         <!-- Soft Velvet Cheek Blush -->
         <ellipse cx="84" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
         <ellipse cx="116" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
@@ -875,11 +1030,12 @@
           <circle cx="106.5" cy="110.8" r="3.6" fill="#ffffff" />
           <circle cx="111.5" cy="117.2" r="1.8" fill="#ffffff" opacity="0.95" />
         </g>
-
-        <!-- 11 O'Clock Specular Gloss -->
-        <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
       </g>
     `;
+  }
+
+  function renderEggCracking(palette, colorKey) {
+    return renderEggCrackingShell(palette, colorKey) + renderEggCrackingFace(palette, colorKey);
   }
 
   // --- WINGS LAYER ---
@@ -2716,6 +2872,7 @@
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
+    renderMonsterViewport: renderMonsterViewport,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
     getBadgeColors: getBadgeColors,
@@ -2724,6 +2881,7 @@
   };
 
   root.renderMonsterSVG = renderMonsterSVG;
+  root.renderMonsterViewport = renderMonsterViewport;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
   root.getBadgeColors = getBadgeColors;

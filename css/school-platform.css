@@ -2888,6 +2888,73 @@ button, input, select, textarea {
   overflow: visible;
 }
 
+/* ==========================================================================
+   MODULAR LAYERED MONSTER STAGE VIEWPORT
+   ========================================================================== */
+.monster-stage-viewport {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--stage-size, var(--monster-badge-size, 100%));
+  height: var(--stage-size, var(--monster-badge-size, 100%));
+  max-width: 100%;
+  max-height: 100%;
+  overflow: visible;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.monster-stage-viewport .layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-stage-viewport .layer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Layer stacking coordinate order */
+.monster-stage-viewport .layer-stage-pedestal  { z-index: 10; }
+.monster-stage-viewport .layer-contact-shadow  { z-index: 20; }
+.monster-stage-viewport .layer-rear-accessories{ z-index: 30; }
+.monster-stage-viewport .layer-base-body       { z-index: 40; }
+.monster-stage-viewport .layer-face            { z-index: 50; }
+.monster-stage-viewport .layer-fore-accessories{ z-index: 60; }
+
+/* Deterministic Idle Animation: Grounded pedestal stays static while character breathes */
+.monster-stage-viewport.eaa-monster-animated .layer-rear-accessories,
+.monster-stage-viewport.eaa-monster-animated .layer-base-body,
+.monster-stage-viewport.eaa-monster-animated .layer-face,
+.monster-stage-viewport.eaa-monster-animated .layer-fore-accessories {
+  animation: monsterViewportBreathe 3.6s ease-in-out infinite;
+  transform-origin: 50% 77%;
+}
+
+@keyframes monsterViewportBreathe {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-2.2px) scale(1.015, 0.985);
+  }
+}
+
+.monster-stage-viewport[data-stage="cracking_egg"].eaa-monster-animated .layer-base-body,
+.monster-stage-viewport[data-stage="cracking_egg"].eaa-monster-animated .layer-face {
+  animation: monsterViewportBreathe 3.6s ease-in-out infinite, eaaEggCrackGlow 2s ease-in-out infinite;
+}
+
 /* Palette Theme Presets for Monster Badges */
 .monster-badge.theme-blue {
   --badge-glow-color: rgba(56, 189, 248, 0.24);
