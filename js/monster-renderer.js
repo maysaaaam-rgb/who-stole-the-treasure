@@ -127,6 +127,8 @@
 
     const animClass = animated ? 'eaa-monster-animated' : '';
 
+    const isAvatar = options.isAvatar || options.hideBackground || options.transparentBg || false;
+
     let defs = `
       <defs>
         <!-- Gradients -->
@@ -229,12 +231,14 @@
       </defs>
     `;
 
-    // 1. Background layer
+    // 1. Background layer (Suppressed for avatar badges to maintain crisp 100% alpha transparency)
     let bgLayer = '';
-    try {
-      bgLayer = renderBackgroundLayer(equipped.background, stage);
-    } catch (e) {
-      bgLayer = renderBackgroundLayer('bg-meadow', stage);
+    if (!isAvatar) {
+      try {
+        bgLayer = renderBackgroundLayer(equipped.background, stage);
+      } catch (e) {
+        bgLayer = renderBackgroundLayer('bg-meadow', stage);
+      }
     }
 
     // 2. Aura layer (under monster)
@@ -664,9 +668,9 @@
     return `
       <!-- Level 1: Mystery Egg -->
       <g filter="url(#mf-shadow)" class="monster-egg-whole">
-        <!-- Egg Shell Base (Pastel Blue & Lavender Gradient) -->
+        <!-- Egg Shell Base (Pastel Blue & Lavender Gradient with Crisp Contour) -->
         <path d="M 100 42 C 64 42 54 112 58 148 C 62 170 78 180 100 180 C 122 180 138 170 142 148 C 146 112 136 42 100 42 Z" 
-              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3" stroke-linejoin="round" />
+              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
 
         <!-- Soft Speckles establishing character colors (pastel cyan & lavender) -->
         <circle cx="76" cy="92" r="6.5" fill="${palette.primaryLight}" opacity="0.85" />
@@ -678,16 +682,16 @@
         <circle cx="114" cy="116" r="5" fill="#818cf8" opacity="0.45" />
 
         <!-- Translucent Inner Hint of the Monster's Cute Eyes & Rosy Blush through the shell -->
-        <g opacity="0.42" filter="url(#mf-glow)">
-          <path d="M 85 110 Q 92 104 99 110" fill="none" stroke="#1e1b4b" stroke-width="2.8" stroke-linecap="round" />
-          <path d="M 101 110 Q 108 104 115 110" fill="none" stroke="#1e1b4b" stroke-width="2.8" stroke-linecap="round" />
-          <ellipse cx="82" cy="118" rx="6.5" ry="4" fill="${palette.cheek}" />
-          <ellipse cx="118" cy="118" rx="6.5" ry="4" fill="${palette.cheek}" />
+        <g opacity="0.45" filter="url(#mf-glow)">
+          <path d="M 84 110 Q 92 103 100 110" fill="none" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" />
+          <path d="M 100 110 Q 108 103 116 110" fill="none" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" />
+          <ellipse cx="82" cy="118" rx="7.5" ry="4.8" fill="${palette.cheek}" />
+          <ellipse cx="118" cy="118" rx="7.5" ry="4.8" fill="${palette.cheek}" />
         </g>
 
         <!-- Glossy Egg Highlight -->
-        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.75" />
-        <circle cx="78" cy="54" r="2.5" fill="#ffffff" opacity="0.85" />
+        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.8" />
+        <circle cx="78" cy="54" r="2.8" fill="#ffffff" opacity="0.9" />
       </g>
     `;
   }
@@ -697,9 +701,9 @@
     return `
       <!-- Level 2: Cracking Egg -->
       <g filter="url(#mf-shadow)" class="monster-egg-cracking">
-        <!-- EXACT SAME Egg Shell Base as Level 1 -->
+        <!-- EXACT SAME Egg Shell Base as Level 1 with Crisp Contour -->
         <path d="M 100 42 C 64 42 54 112 58 148 C 62 170 78 180 100 180 C 122 180 138 170 142 148 C 146 112 136 42 100 42 Z" 
-              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3" stroke-linejoin="round" />
+              fill="url(#mg-egg-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
 
         <!-- EXACT SAME Speckles as Level 1 -->
         <circle cx="76" cy="92" r="6.5" fill="${palette.primaryLight}" opacity="0.85" />
@@ -711,35 +715,35 @@
         <circle cx="114" cy="116" r="5" fill="#818cf8" opacity="0.45" />
 
         <!-- Glossy Egg Highlight -->
-        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.75" />
-        <circle cx="78" cy="54" r="2.5" fill="#ffffff" opacity="0.85" />
+        <path d="M 72 58 C 65 70 63 90 65 112" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.8" />
+        <circle cx="78" cy="54" r="2.8" fill="#ffffff" opacity="0.9" />
 
         <!-- Glowing Fissure Seams -->
-        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.5" filter="url(#mf-glow)" />
-        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.2" />
+        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.8" filter="url(#mf-glow)" />
+        <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" />
 
-        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#fef08a" stroke-width="2" filter="url(#mf-glow)" />
-        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#ffffff" stroke-width="1" />
+        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#mf-glow)" />
+        <path d="M 84 130 L 74 144 L 82 156 L 76 168 L 84 179" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
 
-        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#fef08a" stroke-width="2" filter="url(#mf-glow)" />
-        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#ffffff" stroke-width="1" />
+        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#fef08a" stroke-width="2.4" filter="url(#mf-glow)" />
+        <path d="M 124 116 L 136 126 L 130 142 L 140 155" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" />
 
         <!-- Crack Opening Revealing Interior -->
         <polygon points="76,108 92,100 100,107 114,99 126,110 118,126 102,122 88,128 78,122" fill="#0f172a" />
 
         <!-- Character's EXACT SAME Cute Eyes & Cheeks Peeking Out Through the Crack! -->
-        <ellipse cx="84" cy="119" rx="5.5" ry="3.5" fill="${palette.cheek}" opacity="0.85" />
-        <ellipse cx="116" cy="119" rx="5.5" ry="3.5" fill="${palette.cheek}" opacity="0.85" />
+        <ellipse cx="84" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
+        <ellipse cx="116" cy="119" rx="6.5" ry="4" fill="${palette.cheek}" opacity="0.88" />
 
-        <ellipse cx="92" cy="112" rx="7" ry="9" fill="#1e1b4b" stroke="${palette.primary}" stroke-width="0.8" />
-        <circle cx="90" cy="109" r="3" fill="#ffffff" />
-        <circle cx="94" cy="115" r="1.4" fill="#ffffff" />
+        <ellipse cx="92" cy="112" rx="8.5" ry="10.8" fill="#0f172a" stroke="${palette.primary}" stroke-width="1.2" />
+        <circle cx="90" cy="109" r="3.8" fill="#ffffff" />
+        <circle cx="94" cy="115" r="1.8" fill="#ffffff" />
 
-        <ellipse cx="108" cy="112" rx="7" ry="9" fill="#1e1b4b" stroke="${palette.primary}" stroke-width="0.8" />
-        <circle cx="106" cy="109" r="3" fill="#ffffff" />
-        <circle cx="110" cy="115" r="1.4" fill="#ffffff" />
+        <ellipse cx="108" cy="112" rx="8.5" ry="10.8" fill="#0f172a" stroke="${palette.primary}" stroke-width="1.2" />
+        <circle cx="106" cy="109" r="3.8" fill="#ffffff" />
+        <circle cx="110" cy="115" r="1.8" fill="#ffffff" />
 
-        <path d="M 97 103 Q 100 99 103 103" fill="none" stroke="${palette.primaryLight}" stroke-width="2" stroke-linecap="round" />
+        <path d="M 97 103 Q 100 99 103 103" fill="none" stroke="${palette.primaryLight}" stroke-width="2.2" stroke-linecap="round" />
       </g>
     `;
   }
@@ -1049,7 +1053,7 @@
 
     const feetMarkup = `
       <!-- Feet -->
-      <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.5">
+      <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
         <ellipse cx="${cX - footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
         <ellipse cx="${cX + footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
       </g>
@@ -1060,27 +1064,27 @@
     if (stage === 'baby') {
       // Tiny baby paws curled happily on belly
       armsMarkup = `
-        <ellipse cx="${cX - 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(-15, ${cX - 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2" />
-        <ellipse cx="${cX + 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(15, ${cX + 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2" />
+        <ellipse cx="${cX - 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(-15, ${cX - 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+        <ellipse cx="${cX + 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(15, ${cX + 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
       `;
     } else if (stage === 'growing') {
       // Small arms reaching out slightly
       armsMarkup = `
-        <ellipse cx="${cX - rx + 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(20, ${cX - rx + 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.2" />
-        <ellipse cx="${cX + rx - 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(-20, ${cX + rx - 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.2" />
+        <ellipse cx="${cX - rx + 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(20, ${cX - rx + 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <ellipse cx="${cX + rx - 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(-20, ${cX + rx - 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
       `;
     } else {
       // Adventurer, Advanced, Ultimate arms
       armsMarkup = `
-        <ellipse cx="${cX - rx + 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(22, ${cX - rx + 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
-        <ellipse cx="${cX + rx - 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(-22, ${cX + rx - 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
+        <ellipse cx="${cX - rx + 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(22, ${cX - rx + 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <ellipse cx="${cX + rx - 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(-22, ${cX + rx - 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
       `;
     }
 
     const torsoMarkup = `
       <!-- Main Monster Body -->
       <g filter="url(#mf-shadow)">
-        <ellipse cx="${cX}" cy="${cY}" rx="${rx}" ry="${ry}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3" />
+        <ellipse cx="${cX}" cy="${cY}" rx="${rx}" ry="${ry}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
         
         <!-- Soft Belly Patch -->
         <ellipse cx="${cX}" cy="${cY + ry * 0.22}" rx="${bellyRx}" ry="${bellyRy}" fill="url(#mg-belly-${colorKey})" />
@@ -1431,83 +1435,85 @@
     const eyeY = cY - ry * 0.16;
     const eyeSpacing = stage === 'baby' ? 15 : (stage === 'growing' ? 16 : 17);
 
-    // Warm signature pink blush cheeks
+    // Warm signature pink blush cheeks with expressive chibi glow
     const cheeks = `
-      <ellipse cx="${cX - eyeSpacing - 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
-      <ellipse cx="${cX + eyeSpacing + 9}" cy="${eyeY + 13}" rx="7" ry="4.5" fill="${palette.cheek}" opacity="0.65" />
+      <ellipse cx="${cX - eyeSpacing - 9}" cy="${eyeY + 13}" rx="7.8" ry="5" fill="${palette.cheek}" opacity="0.72" />
+      <ellipse cx="${cX + eyeSpacing + 9}" cy="${eyeY + 13}" rx="7.8" ry="5" fill="${palette.cheek}" opacity="0.72" />
     `;
 
     let eyesMarkup = '';
     if (eyesId === 'eyes-wink' || eyesId === 'eyes-curious') {
       eyesMarkup = `
         <!-- Curious Wink Eyes -->
-        <path d="M ${cX - eyeSpacing - 7} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 6} ${cX - eyeSpacing + 7} ${eyeY}" stroke="#0f172a" stroke-width="3" stroke-linecap="round" fill="none" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#1e1b4b" stroke="${palette.primary}" stroke-width="0.8" />
-        <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 2.5}" cy="${eyeY + 3}" r="1.8" fill="#ffffff" />
+        <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
       `;
     } else if (eyesId === 'eyes-happy') {
       eyesMarkup = `
         <!-- Happy Crescent Eyes -->
-        <path d="M ${cX - eyeSpacing - 8} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 8} ${cX - eyeSpacing + 8} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" fill="none" />
-        <path d="M ${cX + eyeSpacing - 8} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 8} ${cX + eyeSpacing + 8} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" fill="none" />
+        <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 9} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 9} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
       `;
     } else if (eyesId === 'eyes-brave') {
       eyesMarkup = `
         <!-- Brave Hero Eyes with angled brows -->
-        <line x1="${cX - eyeSpacing - 8}" y1="${eyeY - 12}" x2="${cX - eyeSpacing + 7}" y2="${eyeY - 8}" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
-        <line x1="${cX + eyeSpacing + 8}" y1="${eyeY - 12}" x2="${cX + eyeSpacing - 7}" y2="${eyeY - 8}" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="8" ry="10" fill="#1e1b4b" />
-        <circle cx="${cX - eyeSpacing - 2}" cy="${eyeY - 2}" r="3.2" fill="#ffffff" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8" ry="10" fill="#1e1b4b" />
-        <circle cx="${cX + eyeSpacing - 2}" cy="${eyeY - 2}" r="3.2" fill="#ffffff" />
+        <line x1="${cX - eyeSpacing - 9}" y1="${eyeY - 13}" x2="${cX - eyeSpacing + 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
+        <line x1="${cX + eyeSpacing + 9}" y1="${eyeY - 13}" x2="${cX + eyeSpacing - 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.2" ry="11.5" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
+        <circle cx="${cX - eyeSpacing - 2.6}" cy="${eyeY - 2.8}" r="3.8" fill="#ffffff" />
+        <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="1.8" fill="#ffffff" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.2" ry="11.5" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
+        <circle cx="${cX + eyeSpacing - 2.6}" cy="${eyeY - 2.8}" r="3.8" fill="#ffffff" />
+        <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="1.8" fill="#ffffff" />
       `;
     } else if (eyesId === 'eyes-sleepy') {
       eyesMarkup = `
         <!-- Sleepy Eyes with gentle downward arcs -->
-        <path d="M ${cX - eyeSpacing - 8} ${eyeY - 2} Q ${cX - eyeSpacing} ${eyeY + 6} ${cX - eyeSpacing + 8} ${eyeY - 2}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" fill="none" />
-        <path d="M ${cX + eyeSpacing - 8} ${eyeY - 2} Q ${cX + eyeSpacing} ${eyeY + 6} ${cX + eyeSpacing + 8} ${eyeY - 2}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" fill="none" />
+        <path d="M ${cX - eyeSpacing - 9} ${eyeY - 2} Q ${cX - eyeSpacing} ${eyeY + 7} ${cX - eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <path d="M ${cX + eyeSpacing - 9} ${eyeY - 2} Q ${cX + eyeSpacing} ${eyeY + 7} ${cX + eyeSpacing + 9} ${eyeY - 2}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
       `;
     } else if (eyesId === 'eyes-star') {
       eyesMarkup = `
         <!-- Starry Eyes -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#1e1b4b" />
-        <polygon points="${cX-eyeSpacing},${eyeY-5} ${cX-eyeSpacing+2},${eyeY-1} ${cX-eyeSpacing+6},${eyeY-1} ${cX-eyeSpacing+3},${eyeY+2} ${cX-eyeSpacing+4},${eyeY+6} ${cX-eyeSpacing},${eyeY+3} ${cX-eyeSpacing-4},${eyeY+6} ${cX-eyeSpacing-3},${eyeY+2} ${cX-eyeSpacing-6},${eyeY-1} ${cX-eyeSpacing-2},${eyeY-1}" fill="#facc15" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#1e1b4b" />
-        <polygon points="${cX+eyeSpacing},${eyeY-5} ${cX+eyeSpacing+2},${eyeY-1} ${cX+eyeSpacing+6},${eyeY-1} ${cX+eyeSpacing+3},${eyeY+2} ${cX+eyeSpacing+4},${eyeY+6} ${cX+eyeSpacing},${eyeY+3} ${cX+eyeSpacing-4},${eyeY+6} ${cX+eyeSpacing-3},${eyeY+2} ${cX+eyeSpacing-6},${eyeY-1} ${cX+eyeSpacing-2},${eyeY-1}" fill="#facc15" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <polygon points="${cX-eyeSpacing},${eyeY-6} ${cX-eyeSpacing+2.4},${eyeY-1.2} ${cX-eyeSpacing+7},${eyeY-1.2} ${cX-eyeSpacing+3.5},${eyeY+2.4} ${cX-eyeSpacing+4.8},${eyeY+7} ${cX-eyeSpacing},${eyeY+3.6} ${cX-eyeSpacing-4.8},${eyeY+7} ${cX-eyeSpacing-3.5},${eyeY+2.4} ${cX-eyeSpacing-7},${eyeY-1.2} ${cX-eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <polygon points="${cX+eyeSpacing},${eyeY-6} ${cX+eyeSpacing+2.4},${eyeY-1.2} ${cX+eyeSpacing+7},${eyeY-1.2} ${cX+eyeSpacing+3.5},${eyeY+2.4} ${cX+eyeSpacing+4.8},${eyeY+7} ${cX+eyeSpacing},${eyeY+3.6} ${cX+eyeSpacing-4.8},${eyeY+7} ${cX+eyeSpacing-3.5},${eyeY+2.4} ${cX+eyeSpacing-7},${eyeY-1.2} ${cX+eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
       `;
     } else if (eyesId === 'eyes-dragon') {
       eyesMarkup = `
         <!-- Dragon Golden Eyes with vertical slit pupils -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#eab308" stroke="#ca8a04" stroke-width="1.2" />
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2" ry="8" fill="#0f172a" />
-        <circle cx="${cX - eyeSpacing - 2}" cy="${eyeY - 3}" r="2" fill="#ffffff" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#eab308" stroke="#ca8a04" stroke-width="1.2" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2" ry="8" fill="#0f172a" />
-        <circle cx="${cX + eyeSpacing - 2}" cy="${eyeY - 3}" r="2" fill="#ffffff" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
+        <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
+        <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
       `;
     } else if (eyesId === 'eyes-galaxy') {
       eyesMarkup = `
         <!-- Galaxy Cosmic Eyes -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#312e81" stroke="#8b5cf6" stroke-width="1.2" />
-        <circle cx="${cX - eyeSpacing}" cy="${eyeY}" r="5.5" fill="#c084fc" opacity="0.6" />
-        <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.2}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.2}" r="1.8" fill="#38bdf8" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#312e81" stroke="#8b5cf6" stroke-width="1.2" />
-        <circle cx="${cX + eyeSpacing}" cy="${eyeY}" r="5.5" fill="#c084fc" opacity="0.6" />
-        <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.2}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.2}" r="1.8" fill="#38bdf8" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+        <circle cx="${cX - eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
+        <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
+        <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+        <circle cx="${cX + eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
+        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
+        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
       `;
     } else {
-      // Default: Signature Anime Sparkle Eyes
+      // Default: Signature Anime Sparkle Eyes (Prominent Chibi Proportions)
       eyesMarkup = `
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#1e1b4b" stroke="${palette.primary}" stroke-width="0.8" />
-        <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.2}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.2}" r="1.8" fill="#ffffff" />
+        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+        <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
 
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="8.5" ry="11" fill="#1e1b4b" stroke="${palette.primary}" stroke-width="0.8" />
-        <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.2}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.2}" r="1.8" fill="#ffffff" />
+        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
       `;
     }
 
@@ -1515,40 +1521,40 @@
     const mouthY = eyeY + 14;
     if (mouthId === 'mouth-cheer' || mouthId === 'mouth-open') {
       mouthMarkup = `
-        <path d="M ${cX - 8} ${mouthY} Q ${cX} ${mouthY + 13} ${cX + 8} ${mouthY} Z" fill="#e11d48" stroke="#9f1239" stroke-width="2" />
-        <path d="M ${cX - 4} ${mouthY + 7} Q ${cX} ${mouthY + 5} ${cX + 4} ${mouthY + 7}" fill="#fda4af" />
+        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 14} ${cX + 9} ${mouthY} Z" fill="#e11d48" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round" />
+        <path d="M ${cX - 5} ${mouthY + 8} Q ${cX} ${mouthY + 6} ${cX + 5} ${mouthY + 8}" fill="#fda4af" />
       `;
     } else if (mouthId === 'mouth-toothy') {
       mouthMarkup = `
-        <path d="M ${cX - 10} ${mouthY} Q ${cX} ${mouthY + 10} ${cX + 10} ${mouthY}" fill="#0f172a" stroke="#0f172a" stroke-width="2" />
+        <path d="M ${cX - 10} ${mouthY} Q ${cX} ${mouthY + 11} ${cX + 10} ${mouthY}" fill="#0f172a" stroke="#0f172a" stroke-width="2.4" stroke-linejoin="round" />
         <polygon points="${cX - 5},${mouthY} ${cX - 3},${mouthY + 4} ${cX - 1},${mouthY}" fill="#ffffff" />
         <polygon points="${cX + 1},${mouthY} ${cX + 3},${mouthY + 4} ${cX + 5},${mouthY}" fill="#ffffff" />
       `;
     } else if (mouthId === 'mouth-tiny') {
       mouthMarkup = `
-        <path d="M ${cX - 4} ${mouthY + 1} Q ${cX} ${mouthY + 4} ${cX + 4} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" />
+        <path d="M ${cX - 5} ${mouthY + 1} Q ${cX} ${mouthY + 5} ${cX + 5} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
       `;
     } else if (mouthId === 'mouth-excited') {
       mouthMarkup = `
-        <path d="M ${cX - 9} ${mouthY - 1} Q ${cX} ${mouthY + 14} ${cX + 9} ${mouthY - 1} Z" fill="#f43f5e" stroke="#be123c" stroke-width="2" />
-        <ellipse cx="${cX}" cy="${mouthY + 8}" rx="5" ry="3" fill="#fbcfe8" />
+        <path d="M ${cX - 10} ${mouthY - 1} Q ${cX} ${mouthY + 15} ${cX + 10} ${mouthY - 1} Z" fill="#f43f5e" stroke="#be123c" stroke-width="2.5" stroke-linejoin="round" />
+        <ellipse cx="${cX}" cy="${mouthY + 9}" rx="5.5" ry="3.5" fill="#fbcfe8" />
       `;
     } else if (mouthId === 'mouth-brave') {
       mouthMarkup = `
-        <path d="M ${cX - 7} ${mouthY + 2} Q ${cX} ${mouthY} ${cX + 8} ${mouthY - 3}" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
+        <path d="M ${cX - 8} ${mouthY + 2} Q ${cX} ${mouthY} ${cX + 9} ${mouthY - 3}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
       `;
     } else if (mouthId === 'mouth-laughing') {
       mouthMarkup = `
-        <path d="M ${cX - 8} ${mouthY} Q ${cX} ${mouthY + 11} ${cX + 8} ${mouthY}" fill="#e11d48" stroke="#0f172a" stroke-width="2.2" />
+        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 12} ${cX + 9} ${mouthY}" fill="#e11d48" stroke="#0f172a" stroke-width="2.6" stroke-linejoin="round" />
       `;
     } else if (mouthId === 'mouth-surprise') {
       mouthMarkup = `
-        <ellipse cx="${cX}" cy="${mouthY + 3}" rx="4.5" ry="6" fill="#be123c" stroke="#881337" stroke-width="1.8" />
+        <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
       `;
     } else {
-      // Default: Sweet Gentle Smile
+      // Default: Sweet Gentle Smile (Enhanced 3.0px rounded stroke)
       mouthMarkup = `
-        <path d="M ${cX - 7} ${mouthY} Q ${cX} ${mouthY + 5.5} ${cX + 7} ${mouthY}" fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round" />
+        <path d="M ${cX - 8} ${mouthY} Q ${cX} ${mouthY + 6.5} ${cX + 8} ${mouthY}" fill="none" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />
       `;
     }
 
@@ -2434,6 +2440,20 @@
     return STAGE_META[stageKey] || STAGE_META.baby;
   }
 
+  function getBadgeColors(colorKey) {
+    let key = String(colorKey || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[key]) key = 'blue';
+    const palette = MONSTER_PALETTES[key];
+    return {
+      glow: palette.primaryLight,
+      primary: palette.primary,
+      dark: palette.primaryDark,
+      belly: palette.belly,
+      shadow: palette.shadow,
+      themeClass: 'theme-' + key
+    };
+  }
+
   root.MonsterRenderer = {
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
@@ -2441,6 +2461,7 @@
     renderMonsterSVG: renderMonsterSVG,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
+    getBadgeColors: getBadgeColors,
     palettes: MONSTER_PALETTES,
     stages: STAGE_META
   };
@@ -2448,6 +2469,7 @@
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
+  root.getBadgeColors = getBadgeColors;
   root.getMonsterStageImage = getMonsterStageImage;
   root.renderMonsterArtwork = renderMonsterArtwork;
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;

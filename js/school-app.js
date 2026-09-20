@@ -940,7 +940,7 @@
   // Helper: compute average mastery percentage across all 7 language skills
   
   // =========================================================================
-  // CANONICAL STUDENT MONSTER AVATAR RENDERER
+  // CANONICAL STUDENT MONSTER AVATAR & STAGE RENDERER
   // =========================================================================
   window.renderMonsterAvatar = function(studentOrId, options = {}) {
     const size = options.size || 54;
@@ -953,13 +953,13 @@
 
     try {
       if (!studentId) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, isAvatar: true });
       }
       const monsterState = (typeof store !== 'undefined' && store.calculateMonsterState) ? store.calculateMonsterState(studentId) : null;
       const profile = (typeof store !== 'undefined' && store.getMonsterProfile) ? store.getMonsterProfile(studentId) : null;
 
       if (!profile || !monsterState) {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'egg', color: 'purple', size: size, animated: animated, isAvatar: true });
       }
 
       return window.MonsterRenderer.renderMonsterSVG({
@@ -967,18 +967,67 @@
         color: profile.baseColor || 'blue',
         equipped: profile.equipped || {},
         size: size,
-        animated: animated
+        animated: animated,
+        isAvatar: options.isAvatar !== false
       });
     } catch (err) {
       console.warn('Error in renderMonsterAvatar for ' + studentId, err);
       try {
-        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated });
+        return window.MonsterRenderer.renderMonsterSVG({ stage: 'baby', color: 'blue', size: size, animated: animated, isAvatar: true });
       } catch (e2) {
         return '<svg viewBox="0 0 100 100" width="' + size + '" height="' + size + '"><circle cx="50" cy="50" r="40" fill="#8b5cf6"/><circle cx="38" cy="45" r="5" fill="#fff"/><circle cx="62" cy="45" r="5" fill="#fff"/><circle cx="38" cy="45" r="2.5" fill="#000"/><circle cx="62" cy="45" r="2.5" fill="#000"/><path d="M 40 65 Q 50 75 60 65" stroke="#000" stroke-width="3" fill="none"/></svg>';
       }
     }
   };
   window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
+
+  /**
+   * Prominent Student Card Avatar Stage (72px - 80px)
+   * Wraps monster in a dynamic colored radial backdrop, grounding shadow, and elevated silhouette.
+   */
+  window.renderMonsterStageBadge = function(studentOrId, options = {}) {
+    const size = options.size || 76;
+    const animated = options.animated !== false;
+    let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
+
+    let stageKey = 'egg';
+    let baseColor = 'blue';
+    let equipped = {};
+
+    if (studentId && typeof store !== 'undefined') {
+      const monsterState = store.calculateMonsterState ? store.calculateMonsterState(studentId) : null;
+      const profile = store.getMonsterProfile ? store.getMonsterProfile(studentId) : null;
+      if (monsterState) stageKey = monsterState.stageKey || 'baby';
+      if (profile) {
+        baseColor = profile.baseColor || 'blue';
+        equipped = profile.equipped || {};
+      }
+    }
+
+    const badgeColorInfo = (window.MonsterRenderer && typeof window.MonsterRenderer.getBadgeColors === 'function')
+      ? window.MonsterRenderer.getBadgeColors(baseColor)
+      : { themeClass: 'theme-' + baseColor };
+
+    const svgMarkup = (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function')
+      ? window.MonsterRenderer.renderMonsterSVG({
+          stage: stageKey,
+          color: baseColor,
+          equipped: equipped,
+          size: size,
+          animated: animated,
+          isAvatar: true // Guarantees 100% clean alpha channel
+        })
+      : window.renderMonsterAvatar(studentId, { size: size, isAvatar: true });
+
+    return '' +
+      '<div class="monster-badge ' + badgeColorInfo.themeClass + ' stage-' + stageKey + '" style="--monster-badge-size:' + size + 'px;" data-student-id="' + (studentId || '') + '">' +
+        '<div class="monster-backdrop"></div>' +
+        '<div class="monster-ground-shadow"></div>' +
+        '<div class="monster-character-wrap">' +
+          svgMarkup +
+        '</div>' +
+      '</div>';
+  };
 
   // Canonical entry point for Monster Creator
   window.openAvatarSelector = function(studentId) {
@@ -2846,7 +2895,7 @@
               const progressPct = mState.progressPct;
               const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 84, animated: true });
+              const monsterBadge = window.renderMonsterStageBadge(s.id, { size: 78, animated: true });
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
@@ -2863,7 +2912,7 @@
                   '</div>' +
 
                   '<div class="student-directory-avatar-wrap" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')" title="Click to customize monster">' +
-                    monsterSvg +
+                    monsterBadge +
                     '<div class="avatar-customize-pill">🎨 Customize</div>' +
                   '</div>' +
 
@@ -3216,7 +3265,7 @@
 
           // Avatar Frame (Clickable to change character avatar)
           '<div class="student-avatar-frame monster-avatar-box" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
-            window.renderStudentMonsterAvatar(s.id, { size: 66, animated: true }) +
+            window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) +
           '</div>' +
 
           // Name (Uppercase)
@@ -6146,8 +6195,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         return '' +
           '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;" id="hw-sub-row-' + st.id + '">' +
             '<div style="display:flex; align-items:center; gap:12px; min-width:180px;">' +
-              '<div style="width:44px; height:44px; border-radius:10px; overflow:hidden; background:#0f172a; flex-shrink:0;">' +
-                '<img src="' + window.MonsterRenderer.getMonsterStageImage(mState.stageKey) + '" alt="' + st.firstName + '" style="width:100%; height:100%; object-fit:cover;" />' +
+              '<div style="flex-shrink:0;">' +
+                window.renderMonsterStageBadge(st.id, { size: 44, animated: false }) +
               '</div>' +
               '<div>' +
                 '<div style="font-weight:900; font-size:0.95rem; color:var(--text-main);">' + st.firstName + ' ' + st.lastName + '</div>' +
@@ -10300,7 +10349,7 @@ window.switchClassroomSubTab = function(subTab) {
           return '' +
             '<div class="classroom-student-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
               '<div class="student-avatar-frame monster-avatar-box">' + 
-                (window.renderMonsterAvatar ? window.renderMonsterAvatar(s.id, { size: 54, animated: true }) : '👾') + 
+                window.renderMonsterStageBadge(s.id, { size: 76, animated: true }) + 
               '</div>' +
               '<div class="student-card-name">' + sName + '</div>' +
               '<div class="student-card-meta-row">' +
@@ -11733,13 +11782,27 @@ window.switchClassroomSubTab = function(subTab) {
     window.closeModal('modal-avatar-selector');
 
     renderCurrentView();
+
+    // Instant re-render for all badges across active view
+    const studentBadges = document.querySelectorAll('.monster-badge[data-student-id="' + monsterCreatorStudentId + '"]');
+    studentBadges.forEach(badge => {
+      const parent = badge.parentNode;
+      if (parent) {
+        const temp = document.createElement('div');
+        temp.innerHTML = window.renderMonsterStageBadge(monsterCreatorStudentId, { size: 76, animated: true });
+        if (temp.firstElementChild) {
+          parent.replaceChild(temp.firstElementChild, badge);
+        }
+      }
+    });
+
     if (currentProfileStudentId === monsterCreatorStudentId) {
       window.openStudentDetail(monsterCreatorStudentId, studentProfileActiveTab || 'overview');
     }
 
     const monsterPreview = document.getElementById('edit-stud-monster-preview');
     if (monsterPreview) {
-      monsterPreview.innerHTML = window.renderMonsterAvatar(monsterCreatorStudentId, { size: 44, animated: true });
+      monsterPreview.innerHTML = window.renderMonsterStageBadge(monsterCreatorStudentId, { size: 48, animated: true });
     }
   };
   window.handleConfirmSaveAvatar = window.handleConfirmSaveMonster;
