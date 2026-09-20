@@ -1860,7 +1860,7 @@
       level: 1,
       name: 'Baby',
       stageKey: 'baby',
-      xpRequired: 0,
+      xpRequired: 100,
       description: 'Tiny and curious! Your newly hatched companion takes its first steps with large curious eyes and short baby legs.',
       subtitle: 'Tiny and curious',
       image: 'assets/monsters/canonical/stage-1-baby-blue.png',
@@ -1873,7 +1873,7 @@
       level: 2,
       name: 'Tot',
       stageKey: 'tot',
-      xpRequired: 100,
+      xpRequired: 300,
       description: 'Growing fast and active! Ears perk up and playful paws grow stronger as vocabulary and speaking confidence expand.',
       subtitle: 'Growing fast',
       image: 'assets/monsters/canonical/stage-2-tot-blue.png',
@@ -1886,7 +1886,7 @@
       level: 3,
       name: 'Young',
       stageKey: 'young',
-      xpRequired: 300,
+      xpRequired: 700,
       description: 'More confident and standing tall! Eager to tackle reading adventures with an upright posture and attentive ears.',
       subtitle: 'More confident',
       image: 'assets/monsters/canonical/stage-3-young-blue.png',
@@ -1899,7 +1899,7 @@
       level: 4,
       name: 'Adventurer',
       stageKey: 'adventurer',
-      xpRequired: 700,
+      xpRequired: 1200,
       description: 'Ready for bigger adventures! Mature proportions, athletic frame, and bushy white-tipped tail ready for long quests.',
       subtitle: 'Ready for adventures',
       image: 'assets/monsters/canonical/stage-4-adventurer-blue.png',
@@ -1912,7 +1912,7 @@
       level: 5,
       name: 'Elite',
       stageKey: 'elite',
-      xpRequired: 1200,
+      xpRequired: 2500,
       description: 'Stronger than ever! Broad chest, powerful posture, and majestic fur reflecting deep English fluency.',
       subtitle: 'Stronger than ever',
       image: 'assets/monsters/canonical/stage-5-elite-blue.png',
@@ -1925,7 +1925,7 @@
       level: 6,
       name: 'Legendary',
       stageKey: 'legendary',
-      xpRequired: 2000,
+      xpRequired: 5000,
       description: 'A true legend! The most magnificent silhouette with sweeping bushy tail, proudest stance, and full collection mastery.',
       subtitle: 'A true legend',
       image: 'assets/monsters/canonical/stage-6-legendary-blue.png',
@@ -8440,6 +8440,127 @@
   }
 
   // =========================================================================
+  // CANONICAL MONSTER EVOLUTION & PROGRESSION ENGINE
+  // =========================================================================
+  const CANONICAL_EVOLUTION_STAGES = [
+    { level: 0, stageKey: 'egg', name: 'Egg', subtitle: 'Enchanted Cosmic Egg', xpRequired: 0, description: 'A smooth, mysterious speckled egg resting in a cozy nest, waiting for your English journey to begin.' },
+    { level: 1, stageKey: 'baby', name: 'Baby', subtitle: 'Tiny & Cuddly Hatchling', xpRequired: 100, description: 'Tiny and curious! Your newly hatched companion takes its first steps with large curious eyes and short baby legs.' },
+    { level: 2, stageKey: 'tot', name: 'Tot', subtitle: 'Playful Growing Explorer', xpRequired: 300, description: 'Growing fast and active! Ears perk up and playful paws grow stronger as vocabulary and speaking confidence expand.' },
+    { level: 3, stageKey: 'young', name: 'Young', subtitle: 'Energetic Agile Juvenile', xpRequired: 700, description: 'More confident and standing tall! Eager to tackle reading adventures with an upright posture and attentive ears.' },
+    { level: 4, stageKey: 'adventurer', name: 'Adventurer', subtitle: 'Quest-Ready Hero Guardian', xpRequired: 1200, description: 'Ready for bigger adventures! Mature proportions, athletic frame, and bushy white-tipped tail ready for long quests.' },
+    { level: 5, stageKey: 'elite', name: 'Elite', subtitle: 'Ascended Winged Champion', xpRequired: 2500, description: 'Stronger than ever! Broad chest, powerful posture, and majestic fur reflecting deep English fluency.' },
+    { level: 6, stageKey: 'legendary', name: 'Legendary', subtitle: 'Sovereign Mythic Dragon-Fox', xpRequired: 5000, description: 'A true legend! The most magnificent silhouette with sweeping bushy tail, proudest stance, and full collection mastery.' }
+  ];
+
+  function getMonsterProgress(studentOrId) {
+    let studentId = null;
+    let totalXP = 0;
+    const store = (typeof window !== 'undefined' && window.schoolStore) ? window.schoolStore : null;
+
+    if (typeof studentOrId === 'string') {
+      studentId = studentOrId;
+      if (store && store.getStudentTotalXP) {
+        totalXP = store.getStudentTotalXP(studentId);
+      }
+    } else if (studentOrId && typeof studentOrId === 'object') {
+      studentId = studentOrId.id || studentOrId.studentId || null;
+      if (typeof studentOrId.xp === 'number') totalXP = studentOrId.xp;
+      if (store && store.getStudentTotalXP && studentId) {
+        totalXP = store.getStudentTotalXP(studentId);
+      }
+    } else if (typeof studentOrId === 'number') {
+      totalXP = studentOrId;
+    }
+
+    let stageIdx = 0;
+    for (let i = CANONICAL_EVOLUTION_STAGES.length - 1; i >= 0; i--) {
+      if (totalXP >= CANONICAL_EVOLUTION_STAGES[i].xpRequired) {
+        stageIdx = i;
+        break;
+      }
+    }
+
+    const cur = CANONICAL_EVOLUTION_STAGES[stageIdx];
+    const next = CANONICAL_EVOLUTION_STAGES[stageIdx + 1] || null;
+    const stageStartXP = cur.xpRequired;
+    const nextStageXP = next ? next.xpRequired : cur.xpRequired;
+    const xpInStage = totalXP - stageStartXP;
+    const xpNeededForStage = next ? (nextStageXP - stageStartXP) : 0;
+    const xpToNext = next ? Math.max(0, nextStageXP - totalXP) : 0;
+    const progressPct = next ? Math.min(100, Math.max(0, parseFloat(((xpInStage / xpNeededForStage) * 100).toFixed(1)))) : 100;
+
+    return {
+      studentId,
+      totalXP,
+      level: cur.level,
+      currentLevel: cur.level,
+      stageIndex: cur.level,
+      evolutionStage: cur.level,
+      stageKey: cur.stageKey,
+      stageName: cur.name,
+      name: cur.name,
+      subtitle: cur.subtitle,
+      stageSubtitle: cur.subtitle,
+      description: cur.description,
+      stageStartXP,
+      nextStageXP,
+      levelXP: stageStartXP,
+      nextLevelXP: nextStageXP,
+      xpInStage,
+      xpNeededForStage,
+      xpToNext,
+      xpRemainingForNextLevel: xpToNext,
+      progressPct,
+      percentage: progressPct,
+      isMaxStage: !next,
+      isHatched: cur.level >= 1,
+      currentLevelObj: cur,
+      nextLevelObj: next,
+      nextLevel: next,
+      stages: CANONICAL_EVOLUTION_STAGES
+    };
+  }
+
+  if (typeof window !== 'undefined') {
+    window.getMonsterProgress = getMonsterProgress;
+    window.getEvolutionStage = function(xp) {
+      return getMonsterProgress(xp).level;
+    };
+    window.XPService = {
+      addXP(studentId, amount, reason) {
+        if (!studentId || typeof amount !== 'number' || amount <= 0 || isNaN(amount)) {
+          return { success: false, error: 'Invalid student ID or amount' };
+        }
+        const store = window.schoolStore;
+        if (!store) return { success: false, error: 'Store not available' };
+        const student = store.getStudent(studentId);
+        if (!student) return { success: false, error: 'Student not found' };
+
+        store.awardXP(studentId, amount, reason || 'Academy Task Completed');
+        const prog = getMonsterProgress(studentId);
+        const monster = store.getStudentMonster(studentId);
+        if (monster && monster.previewStage === undefined) {
+          monster.evolutionStage = prog.level;
+        }
+        store.saveState();
+
+        if (typeof window.updateLiveStudioMonster === 'function') {
+          window.updateLiveStudioMonster(studentId);
+        }
+
+        return {
+          success: true,
+          studentId,
+          amount,
+          newTotalXP: prog.totalXP,
+          stage: prog.stageName,
+          level: prog.level
+        };
+      }
+    };
+  }
+
+  // =========================================================================
   // CORE STORE ENGINE CLASS
   // =========================================================================
   class MasterSchoolStore {
@@ -11437,75 +11558,30 @@
       return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId || a.badgeId === achievementId));
     }
 
+    getMonsterProgress(studentOrId) {
+      return getMonsterProgress(studentOrId);
+    }
+
     calculateMonsterState(studentId) {
-      const totalXP = this.getStudentTotalXP(studentId);
-      const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
+      const prog = getMonsterProgress(studentId);
       const profile = this.getMonsterProfile(studentId);
-
-      let levelFromXP = 0;
-      if (totalXP >= 2000) {
-        levelFromXP = 6;
-      } else if (totalXP >= 1200) {
-        levelFromXP = 5;
-      } else if (totalXP >= 700) {
-        levelFromXP = 4;
-      } else if (totalXP >= 300) {
-        levelFromXP = 3;
-      } else if (totalXP >= 100) {
-        levelFromXP = 2;
-      } else if (totalXP > 0 || profile.isHatched) {
-        levelFromXP = 1;
-      } else {
-        levelFromXP = 0;
-      }
-
-      // Permanent Evolution Rule: highestUnlockedLevel never downgrades even if XP decreases
-      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel !== undefined ? profile.highestUnlockedLevel : 0, levelFromXP);
+      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel !== undefined ? profile.highestUnlockedLevel : 0, prog.level);
       if (highestUnlockedLevel > (profile.highestUnlockedLevel !== undefined ? profile.highestUnlockedLevel : -1)) {
         profile.highestUnlockedLevel = highestUnlockedLevel;
         if (highestUnlockedLevel >= 1) profile.isHatched = true;
         this.saveState();
       }
 
-      const currentDisplayedLevel = highestUnlockedLevel;
-      const currentLevelObj = levels.find(l => l.level === currentDisplayedLevel) || levels[0];
-      const nextLevelObj = levels.find(l => l.level === currentDisplayedLevel + 1) || null;
-
-      const currentLevel = currentLevelObj.level;
-      const stageKey = currentLevelObj.stageKey;
-      const stageName = currentLevelObj.name;
-      const stageDescription = currentLevelObj.description || 'Companion in English Adventure Academy.';
-      const levelXP = currentLevelObj.xpRequired;
-      const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : 2000;
-      const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
-      
-      let progressPct = 100;
-      if (nextLevelObj && nextLevelXP > levelXP) {
-        progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
-      } else if (currentDisplayedLevel === 0) {
-        progressPct = Math.min(100, Math.round((totalXP / 100) * 100));
-      }
-
-      const isHatched = (currentDisplayedLevel >= 1) || !!profile.isHatched;
-
-      let eggCrackPct = 0;
-      if (currentDisplayedLevel === 0) {
-        eggCrackPct = Math.min(95, Math.round((totalXP / 50) * 100));
-      } else {
-        eggCrackPct = 100;
-      }
+      let eggCrackPct = prog.level === 0 ? Math.min(95, Math.round((prog.totalXP / 100) * 100)) : 100;
 
       const allItems = this.getMonsterItems(null, true);
       const unlockedItemIds = new Set(profile.unlockedItems || []);
-
       allItems.forEach(item => {
         if (item.unlockType === 'default') {
           unlockedItemIds.add(item.id);
         } else if (item.unlockType === 'level') {
           const reqLevel = (item.unlockRequirement && item.unlockRequirement.level) || 1;
-          if (currentDisplayedLevel >= reqLevel) {
-            unlockedItemIds.add(item.id);
-          }
+          if (prog.level >= reqLevel) unlockedItemIds.add(item.id);
         } else if (item.unlockType === 'achievement') {
           const achId = item.unlockRequirement && item.unlockRequirement.achievementId;
           if (achId && this.hasStudentAchievement(studentId, achId)) {
@@ -11514,29 +11590,13 @@
         }
       });
 
-      return {
-        studentId,
-        totalXP,
-        currentLevel,
-        stageKey,
-        stageName,
-        stageDescription,
-        levelXP,
-        nextLevelXP,
-        xpToNext,
-        xpRemainingForNextLevel: xpToNext,
-        progressPct,
-        progressPctToNextLevel: progressPct,
-        isHatched,
+      return Object.assign({}, prog, {
         eggCrackPct,
         eggCrackPercent: eggCrackPct,
         unlockedItemIds,
-        currentLevelObj,
-        nextLevelObj,
-        nextLevel: nextLevelObj,
         highestUnlockedLevel,
         profile
-      };
+      });
     }
 
     logMonsterHistory(studentId, event) {

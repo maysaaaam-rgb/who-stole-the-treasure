@@ -878,6 +878,9 @@
   };
 
   window.switchView = function(viewName, updateHash = true) {
+    if (window.MonsterRenderer && typeof window.MonsterRenderer.destroyAll === 'function') {
+      window.MonsterRenderer.destroyAll();
+    }
     currentView = viewName;
     if (updateHash) {
       if (viewName === 'class-detail') {
@@ -2046,14 +2049,14 @@
     }
 
     const totalXP = (store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : (student.xp || 0));
-    const monsterState = store.calculateMonsterState ? store.calculateMonsterState(student.id) : { stageKey: 'legendary', stageName: 'Legendary Apex', currentLevel: 6, progressPct: 100 };
+    const monsterProg = (typeof window.getMonsterProgress === 'function') 
+      ? window.getMonsterProgress(student.id) 
+      : (store.calculateMonsterState ? store.calculateMonsterState(student.id) : { stageKey: 'legendary', stageName: 'Adventurer', level: 4, currentLevel: 4, progressPct: 0 });
+    const monsterState = store.calculateMonsterState ? store.calculateMonsterState(student.id) : { stageKey: monsterProg.stageKey || 'legendary', stageName: monsterProg.stageName || 'Adventurer', currentLevel: monsterProg.level || 4, progressPct: monsterProg.progressPct || 0 };
     const profile = (store.getMonsterProfile ? store.getMonsterProfile(student.id) : { monsterName: student.firstName + '\'s Monster', baseColor: 'blue', style: 'boy', equipped: {} });
     const isBoy = (profile.style || 'boy') === 'boy';
 
-    const monsterArtwork = (typeof window.renderMonster === 'function') ? window.renderMonster({
-      stage: monsterState.stageKey || 'legendary',
-      color: profile.baseColor || 'blue',
-      gender: profile.style || 'boy',
+    const monsterArtwork = (window.MonsterRenderer && typeof window.MonsterRenderer.render === 'function') ? window.MonsterRenderer.render(student.id, {
       size: 260,
       showPedestal: true,
       animated: true
@@ -2097,21 +2100,21 @@
 
           '<div style="margin-top:6px;">' +
             '<h3 style="font-size:1.45rem; font-weight:900; margin:0; color:#ffffff;">' + (profile.monsterName || (student.firstName + '\'s Monster')) + '</h3>' +
-            '<div style="font-size:0.85rem; font-weight:800; color:#38bdf8; margin-top:2px;">LEVEL ' + (monsterState.currentLevel || 4) + ' · ' + (monsterState.stageName || 'Adventurer') + '</div>' +
+            '<div style="font-size:0.85rem; font-weight:800; color:#38bdf8; margin-top:2px;">LEVEL ' + (monsterProg.level !== undefined ? monsterProg.level : 4) + ' · ' + (monsterProg.stageName || 'Adventurer') + '</div>' +
           '</div>' +
 
           // Evolution progress bar
           '<div style="width:100%; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:12px 16px; box-sizing:border-box;">' +
             '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">' +
               '<span>XP Progress</span>' +
-              '<span style="color:#fde047;">' + totalXP.toLocaleString() + ' / 1,000 XP</span>' +
+              '<span style="color:#fde047;">' + (monsterProg.stageStartXP !== undefined ? (monsterProg.xpInStage + ' / ' + monsterProg.xpNeededInStage + ' XP (' + monsterProg.progressPct + '%)') : (totalXP.toLocaleString() + ' XP')) + '</span>' +
             '</div>' +
             '<div style="height:10px; background:rgba(255,255,255,0.15); border-radius:999px; overflow:hidden;">' +
-              '<div style="width:' + (monsterState.progressPct || 100) + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #a855f7); border-radius:999px;"></div>' +
+              '<div style="width:' + (monsterProg.progressPct !== undefined ? monsterProg.progressPct : 100) + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #a855f7); border-radius:999px;"></div>' +
             '</div>' +
           '</div>' +
 
-          '<button type="button" onclick="window.closeStudentDetail(); switchView(\'monster\');" class="btn-rpg-open" style="width:100%; padding:12px; font-weight:900; background:linear-gradient(135deg, #0284c7, #0369a1);">' +
+          '<button type="button" onclick="window.closeStudentDetail(); currentProfileStudentId = \'' + student.id + '\'; switchView(\'monster\');" class="btn-rpg-open" style="width:100%; padding:12px; font-weight:900; background:linear-gradient(135deg, #0284c7, #0369a1);">' +
             '<span>🎨</span> <span>OPEN CHARACTER STUDIO</span>' +
           '</button>' +
         '</div>' +
@@ -3032,8 +3035,9 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
                 '</thead>' +
                 '<tbody>' +
                   filtered.map(s => {
-                    const mState = store.calculateMonsterState(s.id);
-                    const totalXP = mState.totalXP;
+                    const mProg = (typeof window.getMonsterProgress === 'function') ? window.getMonsterProgress(s.id) : store.calculateMonsterState(s.id);
+                    const mState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : mProg;
+                    const totalXP = mProg.totalXP !== undefined ? mProg.totalXP : (s.xp || 0);
                     const streak = s.streakDays || 0;
                     const isSelected = selectedStudentIds.has(s.id);
 
@@ -3049,21 +3053,21 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
                           '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px; text-align:center;">' +
-                          '<div class="student-dir-monster-thumb" style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:12px; overflow:hidden; background:linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.95) 100%); border:1px solid rgba(255,255,255,0.12); box-shadow:0 2px 8px rgba(0,0,0,0.18); cursor:pointer;" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + mState.stageName + ')">' +
+                          '<div class="student-dir-monster-thumb" style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:12px; overflow:hidden; background:linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.95) 100%); border:1px solid rgba(255,255,255,0.12); box-shadow:0 2px 8px rgba(0,0,0,0.18); cursor:pointer;" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + (mProg.stageName || mState.stageName) + ')">' +
                             window.renderMonsterAvatar(s.id, { size: 48, animated: false, showWorld: false, transparent: true }) +
                           '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px;">' +
-                          '<div style="font-weight:800; font-size:0.86rem; color:var(--text-main);">Level ' + mState.currentLevel + '</div>' +
-                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">' + mState.stageName + '</div>' +
+                          '<div style="font-weight:800; font-size:0.86rem; color:var(--text-main);">Level ' + (mProg.level !== undefined ? mProg.level : mState.currentLevel) + '</div>' +
+                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">' + (mProg.stageName || mState.stageName) + '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px;">' +
                           '<div style="display:flex; justify-content:space-between; font-size:0.74rem; font-weight:800; margin-bottom:4px; color:var(--text-secondary);">' +
-                            '<span>' + totalXP.toLocaleString() + ' / ' + (mState.nextLevel ? mState.nextLevel.xpRequired.toLocaleString() : 'MAX') + '</span>' +
-                            '<span>' + Math.min(100, mState.progressPct) + '%</span>' +
+                            '<span>' + (mProg.stageStartXP !== undefined ? (mProg.xpInStage + ' / ' + mProg.xpNeededInStage + ' XP') : (totalXP.toLocaleString() + ' XP')) + '</span>' +
+                            '<span>' + Math.min(100, mProg.progressPct !== undefined ? mProg.progressPct : mState.progressPct) + '%</span>' +
                           '</div>' +
                           '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
-                            '<div style="width:' + Math.min(100, mState.progressPct) + '%; height:100%; background:linear-gradient(90deg, #3b82f6, #10b981); border-radius:6px;"></div>' +
+                            '<div style="width:' + Math.min(100, mProg.progressPct !== undefined ? mProg.progressPct : mState.progressPct) + '%; height:100%; background:linear-gradient(90deg, #3b82f6, #10b981); border-radius:6px;"></div>' +
                           '</div>' +
                         '</td>' +
                         '<td style="padding:14px 18px;">' +
@@ -3086,14 +3090,13 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
           }
           return '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">' +
             filtered.map(s => {
-              const mState = store.calculateMonsterState(s.id);
-              const totalXP = mState.totalXP;
-              const nextXP = mState.nextLevelXP || totalXP;
-              const xpToNext = mState.xpToNext;
-              const progressPct = mState.progressPct;
+              const mProg = (typeof window.getMonsterProgress === 'function') ? window.getMonsterProgress(s.id) : store.calculateMonsterState(s.id);
+              const mState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : mProg;
+              const totalXP = mProg.totalXP !== undefined ? mProg.totalXP : (s.xp || 0);
+              const progressPct = mProg.progressPct !== undefined ? mProg.progressPct : (mState.progressPct || 0);
               const streak = s.streakDays || 0;
               const cls = store.getClass(s.classId);
-              const monsterSvg = window.renderStudentMonsterAvatar(s.id, { size: 120, animated: true, showWorld: false, transparent: true });
+              const monsterSvg = window.renderMonsterAvatar(s.id, { size: 120, animated: true, showWorld: false, transparent: true });
 
               const isSelected = selectedStudentIds.has(s.id);
               return '' +
@@ -3111,7 +3114,7 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
                   '</div>' +
 
                   // Large Hero Portrait
-                  '<div class="student-hero-portrait" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + mState.stageName + ')" style="cursor:pointer;">' +
+                  '<div class="student-hero-portrait" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'monster\')" title="View ' + s.firstName + '\'s Monster Companion (' + (mProg.stageName || mState.stageName) + ')" style="cursor:pointer;">' +
                     monsterSvg +
                     '<div class="avatar-customize-pill" style="font-size:0.7rem; padding:2px 8px; position:absolute; bottom:6px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.85); color:#38bdf8; border-radius:10px; white-space:nowrap; border:1px solid rgba(56,189,248,0.4); cursor:pointer;" onclick="event.stopPropagation(); openMonsterCreator(\'' + s.id + '\')">🎨 Studio</div>' +
                   '</div>' +
@@ -3122,7 +3125,7 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
 
                   // Stage & XP Badge
                   '<div class="student-hero-level">' +
-                    'Level ' + mState.currentLevel + ' · ' + mState.stageName +
+                    'Level ' + (mProg.level !== undefined ? mProg.level : mState.currentLevel) + ' · ' + (mProg.stageName || mState.stageName) +
                   '</div>' +
 
                   '<div class="student-hero-xp-badge" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" style="cursor:pointer;" title="Click to Edit / Correct XP">' +
@@ -3132,16 +3135,16 @@ window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview'
                   // Evolution Progress
                   '<div class="student-hero-progress">' +
                     '<div style="display:flex; justify-content:space-between; font-size:0.72rem; font-weight:800; color:var(--text-secondary); margin-bottom:4px;">' +
-                      '<span>' + (!mState.isHatched ? 'Egg Cracking' : 'Evolution') + '</span>' +
+                      '<span>' + ((mProg.level || mState.currentLevel) === 0 ? 'Egg Cracking' : 'Evolution') + '</span>' +
                       '<span>' + progressPct + '%</span>' +
                     '</div>' +
                     '<div style="width:100%; height:8px; background:var(--bg-muted); border-radius:6px; overflow:hidden;">' +
                       '<div style="width:' + progressPct + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); border-radius:6px; transition:width 0.3s ease;"></div>' +
                     '</div>' +
                     '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">' +
-                      (!mState.isHatched ? 
-                        ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : 
-                        (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
+                      ((mProg.level || mState.currentLevel) === 0 ? 
+                        ('🥚 Egg Crack Progress: ' + progressPct + '%') : 
+                        (mProg.nextStageXP ? ((mProg.nextStageXP - mProg.totalXP).toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
                       ) +
                     '</div>' +
                   '</div>' +
@@ -5584,22 +5587,35 @@ function updateLibraryGrid() {
   let hwFilterStatus = 'all';
 
   window.completeHomeworkMission = function(hwId) {
-    const allHw = store.getHomework();
+    const allHw = store.getHomework ? store.getHomework() : (store.state ? store.state.homework : []);
     const hw = allHw.find(h => h.id === hwId);
     if (!hw) return;
-    const cls = store.getActiveClass();
-    const students = store.getStudentsByClass(cls.id);
-    const xpAmt = hw.xpReward || 50;
 
-    // Award XP to students and trigger evolution check
+    // Idempotent duplicate check: never double award XP
+    if ((hw.status || '').toUpperCase() === 'COMPLETED') {
+      if (window.showAppToast) {
+        window.showAppToast('Mission is already completed! No extra XP awarded.', 'info');
+      } else if (window.showNotification) {
+        window.showNotification('Mission is already completed! No extra XP awarded.');
+      }
+      return;
+    }
+
+    const cls = store.getActiveClass ? store.getActiveClass() : { id: (store.getCurrentClassId ? store.getCurrentClassId() : 'class-3a') };
+    const students = store.getStudentsByClass ? store.getStudentsByClass(cls.id) : (store.getStudents ? store.getStudents(cls.id) : []);
+    const xpAmt = hw.xpReward || hw.xp || 50;
+
+    // Award XP to students via XPService or store.awardXP
     students.forEach(s => {
-      if (store.awardXP) {
-        store.awardXP(s.id, xpAmt, 'Completed Mission: ' + hw.title);
+      if (window.XPService && typeof window.XPService.addXP === 'function') {
+        window.XPService.addXP(s.id, xpAmt, 'Completed Mission: ' + (hw.title || 'Homework'));
+      } else if (store.awardXP) {
+        store.awardXP(s.id, xpAmt, 'Completed Mission: ' + (hw.title || 'Homework'));
       } else {
         s.xp = (s.xp || 0) + xpAmt;
       }
       // Check for unlockable items/badges
-      const mState = store.calculateMonsterState(s.id);
+      const mState = store.calculateMonsterState ? store.calculateMonsterState(s.id) : null;
       if (mState && mState.currentLevel >= 2) {
         if (store.unlockItemForStudent) store.unlockItemForStudent(s.id, 'hat-bow-pink');
       }
@@ -5615,6 +5631,8 @@ function updateLibraryGrid() {
 
     if (window.showAppToast) {
       window.showAppToast('🎉 Mission Completed! +' + xpAmt + ' XP awarded to all students! Companions leveled up!', 'success');
+    } else if (window.showNotification) {
+      window.showNotification('🎉 Mission Completed! +' + xpAmt + ' XP awarded to all students!');
     }
     renderCurrentView();
   };
@@ -5636,20 +5654,6 @@ function updateLibraryGrid() {
 
   window.setHomeworkFilter = function(st) {
     homeworkFilterStatus = st;
-    const container = document.getElementById('app-view-container');
-    if (container) renderHomeworkView(container);
-  };
-
-  window.completeHomeworkMission = function(id) {
-    if (store && store.updateHomework) {
-      store.updateHomework(id, { status: 'COMPLETED' });
-    }
-    const clsId = store.getCurrentClassId ? store.getCurrentClassId() : 'class-3a';
-    const students = store.getStudents ? store.getStudents(clsId) : [];
-    students.forEach(s => {
-      if (store.awardStudentXP) store.awardStudentXP(s.id, 50, 'Completed Homework Mission');
-    });
-    if (window.showNotification) window.showNotification('Mission Completed! +50 XP awarded to all students! 🎉');
     const container = document.getElementById('app-view-container');
     if (container) renderHomeworkView(container);
   };
@@ -6616,13 +6620,13 @@ function renderQuizzesView(container) {
     const activeQuests = homework.filter(h => (h.status || 'ACTIVE').toUpperCase() === 'ACTIVE');
 
     const topStudent = students.slice().sort((a,b) => (store.getStudentTotalXP(b.id) || 0) - (store.getStudentTotalXP(a.id) || 0))[0] || students[0];
-    const mascotState = topStudent ? store.calculateMonsterState(topStudent.id) : { stageKey: 'legendary', stageName: 'Legendary Apex', currentLevel: 6, totalXP: totalClassXP };
+    const mascotProg = (topStudent && typeof window.getMonsterProgress === 'function') 
+      ? window.getMonsterProgress(topStudent.id) 
+      : (topStudent ? store.calculateMonsterState(topStudent.id) : { stageKey: 'legendary', stageName: 'Adventurer', level: 4, currentLevel: 4, totalXP: totalClassXP, progressPct: 100 });
+    const mascotState = (topStudent && store.calculateMonsterState) ? store.calculateMonsterState(topStudent.id) : mascotProg;
     const mascotProfile = (topStudent && store.getMonsterProfile) ? store.getMonsterProfile(topStudent.id) : { monsterName: 'Sparky', baseColor: 'blue', style: 'boy', equipped: {} };
 
-    const mascotArtwork = (typeof window.renderMonster === 'function') ? window.renderMonster({
-      stage: mascotState.stageKey || 'legendary',
-      color: mascotProfile.baseColor || 'blue',
-      gender: mascotProfile.style || 'boy',
+    const mascotArtwork = (topStudent && window.MonsterRenderer && typeof window.MonsterRenderer.render === 'function') ? window.MonsterRenderer.render(topStudent.id, {
       size: 320,
       showPedestal: true,
       animated: true
@@ -6691,7 +6695,7 @@ function renderQuizzesView(container) {
             '<div class="rpg-hero-dais-container" style="background:radial-gradient(circle at 50% 60%, rgba(56,189,248,0.25) 0%, rgba(139,92,246,0.15) 45%, transparent 70%); filter:drop-shadow(0 15px 30px rgba(56,189,248,0.3));">' +
               mascotArtwork +
             '</div>' +
-            '<div class="rpg-hero-mascot-stage">👑 LEVEL 6 · APEX LEGENDARY COMPANION</div>' +
+            '<div class="rpg-hero-mascot-stage">👑 LEVEL ' + (mascotProg.level !== undefined ? mascotProg.level : 4) + ' · ' + (mascotProg.stageName || 'Adventurer').toUpperCase() + ' COMPANION</div>' +
             '<div class="rpg-hero-mascot-name">' + (topStudent ? topStudent.firstName + '\'s Companion: ' : '') + (mascotProfile.monsterName || 'Sparky') + '</div>' +
           '</div>' +
 
@@ -6700,13 +6704,13 @@ function renderQuizzesView(container) {
             '<div class="rpg-hero-xp-card">' +
               '<div class="rpg-hero-xp-lbl">TOTAL GUILD XP POOL</div>' +
               '<div class="rpg-hero-xp-val">⭐ ' + totalClassXP.toLocaleString() + '</div>' +
-              '<div style="font-size:0.86rem; color:#93c5fd; font-weight:800; margin-bottom:10px;">Companion Rank: ' + mascotState.stageName + '</div>' +
+              '<div style="font-size:0.86rem; color:#93c5fd; font-weight:800; margin-bottom:10px;">Companion Rank: ' + (mascotProg.stageName || mascotState.stageName) + '</div>' +
               '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:900; color:#cbd5e1; margin-bottom:4px;">' +
                 '<span>Evolution Threshold</span>' +
-                '<span style="color:#fde047;">100% (Apex Reached!)</span>' +
+                '<span style="color:#fde047;">' + (mascotProg.stageStartXP !== undefined ? (mascotProg.xpInStage + ' / ' + mascotProg.xpNeededInStage + ' XP (' + mascotProg.progressPct + '%)') : '100% (Apex Reached!)') + '</span>' +
               '</div>' +
               '<div class="rpg-progress-bar-wrap">' +
-                '<div class="rpg-progress-bar-fill" style="width:100%;"></div>' +
+                '<div class="rpg-progress-bar-fill" style="width:' + (mascotProg.progressPct !== undefined ? mascotProg.progressPct : 100) + '%;"></div>' +
               '</div>' +
               '<button type="button" onclick="switchView(\'monster\')" class="btn-sm-secondary" style="margin-top:14px; width:100%; text-align:center; font-weight:900; background:linear-gradient(135deg, rgba(56,189,248,0.25) 0%, rgba(37,99,235,0.35) 100%); color:#fff; border:1px solid rgba(56,189,248,0.45); border-radius:14px; padding:10px 14px; cursor:pointer; font-size:0.86rem;">' +
                 '<span>🎨</span> <span>Enter Monster Studio ➔</span>' +
@@ -7433,7 +7437,14 @@ function renderProgressView(container) {
         case 'class-detail': renderClassDetailView(container); break;
         case 'students': renderStudentsView(container); break;
         case 'curriculum': renderCurriculumView(container); break;
-        case 'library': renderLibraryView(container); break;
+        case 'library':
+        case 'resources':
+        case 'resource-hub': renderLibraryView(container); break;
+        case 'games':
+          libraryActiveTab = 'games';
+          libraryActiveCatalogTab = 'games';
+          renderLibraryView(container);
+          break;
         case 'assignments': renderAssignmentsView(container); break;
         case 'homework': renderHomeworkView(container); break;
         case 'quizzes': renderQuizzesView(container); break;
@@ -12410,23 +12421,25 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   window.updateLiveStudioMonster = function(studentId) {
-    const student = store.getStudent(studentId);
+    const student = store.getStudent(studentId || currentProfileStudentId);
     if (!student) return;
-    const monster = store.getStudentMonster(studentId);
+    const monster = store.getStudentMonster(student.id);
     const previewBox = document.getElementById('studio-live-monster-wrap');
     if (previewBox && window.MonsterRenderer) {
-      previewBox.innerHTML = window.MonsterRenderer.render(monster, { size: 400, showPedestal: true, animated: true });
+      window.MonsterRenderer.mount(previewBox, student.id, { size: 380, showPedestal: true, animated: true });
     }
 
-    const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', subtitle: '' };
+    const prog = (typeof window.getMonsterProgress === 'function') ? window.getMonsterProgress(student.id) : null;
+    const currentStageLevel = (prog && prog.level !== undefined) ? prog.level : (monster.evolutionStage || 4);
+    const stageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(currentStageLevel) : { name: 'Companion', subtitle: '' };
     const badgeEl = document.getElementById('studio-monster-level-badge');
-    if (badgeEl) badgeEl.textContent = 'LEVEL ' + monster.evolutionStage;
+    if (badgeEl) badgeEl.textContent = 'LEVEL ' + currentStageLevel;
 
     const titleEl = document.getElementById('studio-monster-stage-title');
-    if (titleEl) titleEl.textContent = 'Level ' + monster.evolutionStage + ' · ' + stageInfo.name + ' Stage';
+    if (titleEl) titleEl.textContent = 'Level ' + currentStageLevel + ' · ' + (stageInfo.name || 'Adventurer') + ' Stage';
 
     const descEl = document.getElementById('studio-monster-stage-desc');
-    if (descEl) descEl.textContent = '"' + stageInfo.subtitle + '"';
+    if (descEl) descEl.textContent = '"' + (stageInfo.subtitle || '') + '"';
 
     const boyBtn = document.getElementById('studio-btn-style-boy');
     const girlBtn = document.getElementById('studio-btn-style-girl');
@@ -12451,11 +12464,12 @@ window.switchClassroomSubTab = function(subTab) {
     const student = store.getStudent(targetStudentId) || students[0];
     const monster = store.getStudentMonster(student.id);
     const totalXP = store.getStudentTotalXP(student.id);
-    const stages = window.MonsterRenderer ? window.MonsterRenderer.stages : [];
-    const curStageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(monster.evolutionStage) : { name: 'Companion', xpRequired: 0 };
-    const nextStageInfo = stages[monster.evolutionStage + 1] || null;
-    const nextLevelXP = nextStageInfo ? nextStageInfo.xpRequired : 5000;
-    const progressPct = nextStageInfo ? Math.min(100, Math.max(0, Math.round(((totalXP - curStageInfo.xpRequired) / (nextLevelXP - curStageInfo.xpRequired)) * 100))) : 100;
+    const prog = (typeof window.getMonsterProgress === 'function') 
+      ? window.getMonsterProgress(student.id) 
+      : { level: monster.evolutionStage || 4, stageName: 'Adventurer', totalXP, nextStageXP: 2500, progressPct: 12.3, xpInStage: 160, xpNeededInStage: 1300 };
+    const curStageInfo = window.MonsterRenderer ? window.MonsterRenderer.getStageInfo(prog.level) : { name: prog.stageName, xpRequired: prog.stageStartXP || 0 };
+    const nextLevelXP = prog.nextStageXP || 5000;
+    const progressPct = prog.progressPct !== undefined ? prog.progressPct : 100;
 
     container.innerHTML = 
       '<div style="max-width:1240px; margin:0 auto; padding-bottom:60px;">' +
