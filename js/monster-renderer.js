@@ -2880,7 +2880,7 @@
     const stages = [
       { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
       { level: 2, name: 'Cracking Egg', xp: '30 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
-      { level: 3, name: 'Baby Monster', xp: '100 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
+      { level: 3, name: 'Baby Monster', xp: '200 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
       { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
       { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
       { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
