@@ -2261,6 +2261,150 @@ button, input, select, textarea {
   line-height: 1.3;
 }
 
+/* =========================================================================
+   CUSTOMIZER STAGE & MONSTER LAYER COMPOSITOR
+   Exact coordinate overlays and modular stage system
+   ========================================================================= */
+
+.customizer-stage {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  height: 340px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1.5px solid var(--border-light, #334155);
+  background: #090d16;
+}
+
+/* Dynamic Environment / World Background */
+.stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  transition: background 0.4s ease, filter 0.4s ease;
+}
+
+.stage-bg.world-academy {
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 70%, #030712 100%);
+  box-shadow: inset 0 0 70px rgba(124, 58, 237, 0.28);
+}
+
+.stage-bg.world-meadow {
+  background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 55%, #86efac 56%, #22c55e 100%);
+}
+
+.stage-bg.world-volcano {
+  background: radial-gradient(circle at 50% 30%, #450a0a 0%, #1c1917 75%, #0c0a09 100%);
+  box-shadow: inset 0 0 70px rgba(239, 68, 68, 0.25);
+}
+
+.stage-bg.world-space {
+  background: radial-gradient(circle at 50% 25%, #0f172a 0%, #020617 85%, #000000 100%);
+  box-shadow: inset 0 0 80px rgba(56, 189, 248, 0.2);
+}
+
+/* Monster Layer Stack (Exact Coordinate Overlays) */
+.monster-compositor {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: compositorFloat 3.5s ease-in-out infinite;
+}
+
+@keyframes compositorFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+/* Exact Layer Stack Positioning & Ordering */
+.monster-compositor .layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  image-rendering: -webkit-optimize-contrast;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Back Elements: Wings & Tails */
+.monster-compositor .layer-back {
+  z-index: 10;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* Base Pedestal Platform */
+.monster-compositor .layer-pedestal {
+  z-index: 20;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+}
+
+/* Base Body Silhouette */
+.monster-compositor .layer-body {
+  z-index: 30;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.2));
+}
+
+/* Face & Expressions */
+.monster-compositor .layer-face {
+  z-index: 40;
+}
+
+/* Headgear & Horns */
+.monster-compositor .layer-horns {
+  z-index: 50;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+/* Clothing, Scarves & Gear */
+.monster-compositor .layer-clothing {
+  z-index: 60;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* Foreground FX & Aura */
+.monster-compositor .layer-aura {
+  position: absolute;
+  inset: -15px;
+  z-index: 70;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.monster-compositor .aura-sparkles {
+  background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.12) 45%, transparent 70%);
+  animation: sparklesPulse 2.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.6));
+}
+
+@keyframes sparklesPulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0.95;
+  }
+}
+
 .student-card-top {
   display: flex;
   align-items: center;
