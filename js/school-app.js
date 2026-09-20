@@ -1211,7 +1211,7 @@
       gameSelect.innerHTML = resources.map(r => '<option value="' + r.id + '">' + r.title + (r.level ? ' (' + r.level + ')' : (r.targetLevel ? ' (' + r.targetLevel + ')' : '')) + '</option>').join('');
     }
 
-    ['xp-student-select', 'rubric-student-select'].forEach(id => {
+    ['xp-student-select', 'rubric-student-select', 'alice-grader-student-select'].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.innerHTML = students.map(s => '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + (s.grade ? ' (' + s.grade + ')' : '') + '</option>').join('');
@@ -5634,14 +5634,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '&ldquo;Same Story. Different Challenges. Brighter Learners!&rdquo; Pick Level 1 (+10&ndash;20 XP), Level 2 (+40&ndash;50 XP), Level 3 (+80&ndash;200 XP), or Base Check-In (+10 XP).' +
             '</p>' +
             '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
-              '<button type="button" class="btn-primary-action" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px;">' +
+              '<button type="button" class="btn-primary-action" onclick="openAliceQuestGraderModal()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(168,85,247,0.4);">' +
+                '🎯 Single-Student Grader' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
                 '🖼️ View High-Res Poster' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-alice-vocab10\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '👥 Grade &amp; Award Tasks' +
+                '👥 Whole-Class Roster View' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '⭐ Award Individual Student XP' +
+                '⭐ Award XP to Student' +
               '</button>' +
             '</div>' +
           '</div>' +
@@ -6365,6 +6368,228 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       renderCurrentView();
     }
   };
+
+  // =========================================================================
+  // ALICE IN WONDERLAND XP QUEST SINGLE-STUDENT GRADER CONTROLLER
+  // =========================================================================
+  window.openAliceQuestGraderModal = function(preselectedStudentId = null) {
+    const studentSelect = document.getElementById('alice-grader-student-select');
+    const activeClass = store.getActiveClass();
+    const students = store.getStudentsByClass ? store.getStudentsByClass(activeClass.id) : (store.getStudents() || []);
+
+    if (studentSelect) {
+      studentSelect.innerHTML = students.map(s => 
+        '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + ' · Level ' + (s.monsterLevel || s.level || 1) + ' (' + (s.xp || 0) + ' XP)</option>'
+      ).join('');
+      if (preselectedStudentId) {
+        studentSelect.value = preselectedStudentId;
+      }
+    }
+
+    const currentStudentId = (studentSelect && studentSelect.value) ? studentSelect.value : (students[0] ? students[0].id : null);
+    window.handleAliceGraderStudentChange(currentStudentId);
+    window.renderAliceGraderChallenges();
+
+    // Reset notes & totals
+    const evInput = document.getElementById('alice-grader-evidence');
+    if (evInput) evInput.value = '';
+    window.clearAliceGraderSelection();
+
+    window.openModal('modal-alice-quest-grader');
+  };
+
+  window.handleAliceGraderStudentChange = function(studentId) {
+    const preview = document.getElementById('alice-grader-student-preview');
+    if (!preview || !studentId) return;
+
+    const student = store.getStudent(studentId);
+    if (!student) return;
+
+    const mState = store.calculateMonsterState(studentId);
+    preview.innerHTML = 
+      '<div style="flex-shrink:0;">' +
+        window.renderMonsterStageBadge(studentId, { size: 40, animated: false }) +
+      '</div>' +
+      '<div>' +
+        '<div style="font-weight:900; font-size:0.88rem; color:var(--text-main);">' + student.firstName + ' ' + student.lastName + '</div>' +
+        '<div style="font-size:0.75rem; color:#2563eb; font-weight:800;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
+        '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">' + (student.xp || 0) + ' Total XP</div>' +
+      '</div>';
+  };
+
+  window.renderAliceGraderChallenges = function() {
+    const container = document.getElementById('alice-grader-challenges-grid');
+    if (!container) return;
+
+    const assignments = window.ALICE_HOMEWORK_ASSIGNMENTS || [];
+
+    const levels = [
+      {
+        level: 1,
+        title: "Level 1: Get Started!",
+        subtitle: "Build your vocabulary and understanding.",
+        bannerText: "Small steps lead to big adventures!",
+        borderColor: "#10b981",
+        headerBg: "linear-gradient(90deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.02) 100%)",
+        tagBg: "rgba(16,185,129,0.2)",
+        tagColor: "#059669",
+        tasks: assignments.filter(t => t.level === 1)
+      },
+      {
+        level: 2,
+        title: "Level 2: Go Deeper!",
+        subtitle: "Show your thinking and use your English.",
+        bannerText: "Curious minds go further!",
+        borderColor: "#0284c7",
+        headerBg: "linear-gradient(90deg, rgba(2,132,199,0.15) 0%, rgba(2,132,199,0.02) 100%)",
+        tagBg: "rgba(2,132,199,0.2)",
+        tagColor: "#0284c7",
+        tasks: assignments.filter(t => t.level === 2)
+      },
+      {
+        level: 3,
+        title: "Level 3: Big Challenge! 👑",
+        subtitle: "Show your full understanding and creativity.",
+        bannerText: "Think deeper. Speak braver. Earn bigger!",
+        borderColor: "#a855f7",
+        headerBg: "linear-gradient(90deg, rgba(168,85,247,0.15) 0%, rgba(168,85,247,0.02) 100%)",
+        tagBg: "rgba(168,85,247,0.2)",
+        tagColor: "#9333ea",
+        tasks: assignments.filter(t => t.level === 3)
+      },
+      {
+        level: 0,
+        title: "Base Participation",
+        subtitle: "Daily Reading Habit Check-In",
+        bannerText: "No Challenge? That's okay! You'll still get 10 XP for being here!",
+        borderColor: "#64748b",
+        headerBg: "linear-gradient(90deg, rgba(100,116,139,0.15) 0%, rgba(100,116,139,0.02) 100%)",
+        tagBg: "rgba(100,116,139,0.2)",
+        tagColor: "#475569",
+        tasks: assignments.filter(t => t.level === 0)
+      }
+    ];
+
+    container.innerHTML = levels.map(lvl => {
+      return '' +
+        '<div style="background:var(--bg-card); border:1.5px solid ' + lvl.borderColor + '; border-radius:14px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.04);">' +
+          '<div style="background:' + lvl.headerBg + '; padding:10px 16px; border-bottom:1px solid ' + lvl.borderColor + '; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
+            '<div>' +
+              '<h3 style="font-size:0.95rem; font-weight:900; margin:0; color:var(--text-main);">' + lvl.title + '</h3>' +
+              '<p style="font-size:0.75rem; color:var(--text-muted); margin:1px 0 0 0; font-weight:600;">' + lvl.subtitle + '</p>' +
+            '</div>' +
+            '<span style="background:' + lvl.tagBg + '; color:' + lvl.tagColor + '; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:999px;">' + lvl.bannerText + '</span>' +
+          '</div>' +
+          '<div style="padding:12px; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:10px;">' +
+            lvl.tasks.map(t => {
+              return '' +
+                '<label style="display:flex; align-items:flex-start; gap:10px; background:var(--bg-canvas); border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px; cursor:pointer; transition:all 0.15s ease;" class="alice-challenge-card" id="alice-card-' + t.id + '">' +
+                  '<input type="checkbox" class="alice-challenge-checkbox" value="' + t.id + '" data-code="' + t.code + '" data-xp="' + t.xp + '" data-level="' + t.level + '" onchange="updateAliceGraderTotals()" style="width:18px; height:18px; margin-top:2px; accent-color:' + lvl.borderColor + '; flex-shrink:0;" />' +
+                  '<div style="flex:1; min-width:0;">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:3px;">' +
+                      '<span style="font-size:0.75rem; font-weight:800; color:' + lvl.tagColor + '; background:' + lvl.tagBg + '; padding:1px 6px; border-radius:6px;">' + t.code + '</span>' +
+                      '<span style="font-size:0.8rem; font-weight:900; color:#059669; background:rgba(16,185,129,0.12); padding:1px 8px; border-radius:999px;">+' + t.xp + ' XP</span>' +
+                    '</div>' +
+                    '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); line-height:1.25; margin-bottom:3px;">' + t.icon + ' ' + t.title + '</div>' +
+                    '<div style="font-size:0.74rem; color:var(--text-muted); line-height:1.3;">' + t.instructions + '</div>' +
+                  '</div>' +
+                '</label>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+    }).join('');
+  };
+
+  window.updateAliceGraderTotals = function() {
+    const checkboxes = document.querySelectorAll('.alice-challenge-checkbox:checked');
+    let totalXP = 0;
+    let count = checkboxes.length;
+
+    checkboxes.forEach(cb => {
+      totalXP += parseInt(cb.dataset.xp, 10) || 0;
+      const card = document.getElementById('alice-card-' + cb.value);
+      if (card) {
+        card.style.borderColor = '#a855f7';
+        card.style.background = 'rgba(168,85,247,0.06)';
+      }
+    });
+
+    document.querySelectorAll('.alice-challenge-checkbox:not(:checked)').forEach(cb => {
+      const card = document.getElementById('alice-card-' + cb.value);
+      if (card) {
+        card.style.borderColor = 'var(--border-subtle)';
+        card.style.background = 'var(--bg-canvas)';
+      }
+    });
+
+    const badge = document.getElementById('alice-grader-summary-badge');
+    const submitBtn = document.getElementById('btn-alice-grader-submit');
+
+    if (badge) {
+      badge.textContent = count + ' Challenge' + (count === 1 ? '' : 's') + ' Selected · +' + totalXP + ' XP';
+      badge.style.color = count > 0 ? '#10b981' : '#64748b';
+      badge.style.background = count > 0 ? 'rgba(16,185,129,0.12)' : 'rgba(100,116,139,0.1)';
+      badge.style.borderColor = count > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(100,116,139,0.2)';
+    }
+
+    if (submitBtn) {
+      submitBtn.textContent = '🚀 Award Quest XP (+' + totalXP + ' XP)';
+      submitBtn.disabled = count === 0;
+      submitBtn.style.opacity = count === 0 ? '0.5' : '1';
+      submitBtn.style.cursor = count === 0 ? 'not-allowed' : 'pointer';
+    }
+  };
+
+  window.selectAliceGraderLevel = function(level) {
+    document.querySelectorAll('.alice-challenge-checkbox[data-level="' + level + '"]').forEach(cb => {
+      cb.checked = true;
+    });
+    window.updateAliceGraderTotals();
+  };
+
+  window.clearAliceGraderSelection = function() {
+    document.querySelectorAll('.alice-challenge-checkbox').forEach(cb => {
+      cb.checked = false;
+    });
+    window.updateAliceGraderTotals();
+  };
+
+  window.handleSubmitAliceQuestGrader = function() {
+    const studentSelect = document.getElementById('alice-grader-student-select');
+    const studentId = studentSelect ? studentSelect.value : null;
+    if (!studentId) {
+      alert('Please select a student.');
+      return;
+    }
+
+    const checkboxes = document.querySelectorAll('.alice-challenge-checkbox:checked');
+    if (checkboxes.length === 0) {
+      alert('Please select at least one completed challenge.');
+      return;
+    }
+
+    const taskIds = Array.from(checkboxes).map(cb => cb.value);
+    const evidence = document.getElementById('alice-grader-evidence')?.value.trim() || '';
+
+    // Call unified multi-task award helper
+    const awardResult = window.awardMultipleAliceTasks ? 
+      window.awardMultipleAliceTasks(studentId, taskIds, evidence) : null;
+
+    window.closeModal('modal-alice-quest-grader');
+
+    if (awardResult && awardResult.result) {
+      const res = awardResult.result;
+      if (res.evolutionEvent && typeof window.openMonsterLevelUpModal === 'function') {
+        window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
+      }
+    }
+
+    // Refresh UI
+    if (typeof window.renderCurrentView === 'function') {
+      window.renderCurrentView();
+    }
+  };
+
   // =========================================================================
   // QUIZZES & QUESTION BUILDER VIEW (Complete CRUD)
   // =========================================================================
