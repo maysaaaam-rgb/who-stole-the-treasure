@@ -6602,7 +6602,7 @@ function renderQuizzesView(container) {
       stage: mascotState.stageKey || 'legendary',
       color: mascotProfile.baseColor || 'blue',
       gender: mascotProfile.style || 'boy',
-      size: 210,
+      size: 320,
       showPedestal: true,
       animated: true
     }) : '👾';
@@ -6620,76 +6620,74 @@ function renderQuizzesView(container) {
     container.innerHTML = 
       '<div class="rpg-dash-wrap">' +
         // ----------------------------------------------------
-        // TOP: GREETING & 4 STAT PILLS
+        // TOP: GUILD HALL HEADER & 4 TROPHY CREST PILLS
         // ----------------------------------------------------
         '<div class="rpg-dash-top-bar">' +
           '<div class="rpg-dash-title-group">' +
-            '<h1>' + timeGreeting + ', Teacher! 👋</h1>' +
-            '<p>Your Classroom Adventure</p>' +
+            '<h1><span>🏰</span> <span>' + timeGreeting + ', Teacher!</span></h1>' +
+            '<p>Classroom Realm of ' + cls.name + ' · Active Level 6 Expedition</p>' +
           '</div>' +
           '<div class="rpg-dash-pills-row">' +
-            '<div class="rpg-dash-stat-pill" onclick="switchView(\'students\')" title="View All Students">' +
-              '<span>👥</span> <span><span class="pill-num">' + students.length + '</span> STUDENTS</span>' +
+            '<div class="rpg-dash-stat-pill pill-students" onclick="switchView(\'students\')" title="View All Students">' +
+              '<span>👥</span> <span><span class="pill-num">' + students.length + '</span> ADVENTURERS</span>' +
             '</div>' +
-            '<div class="rpg-dash-stat-pill" onclick="switchView(\'gamification\')" title="View Class XP">' +
-              '<span>⭐</span> <span><span class="pill-num">+480 XP</span> TODAY</span>' +
+            '<div class="rpg-dash-stat-pill pill-xp" onclick="switchView(\'gamification\')" title="View Class XP">' +
+              '<span>⚡</span> <span><span class="pill-num">+480 XP</span> TODAY</span>' +
             '</div>' +
-            '<div class="rpg-dash-stat-pill" onclick="switchView(\'homework\')" title="View Active Quests">' +
-              '<span>⚔️</span> <span><span class="pill-num">' + activeQuests.length + '</span> ACTIVE QUESTS</span>' +
+            '<div class="rpg-dash-stat-pill pill-quests" onclick="switchView(\'homework\')" title="View Active Quests">' +
+              '<span>📜</span> <span><span class="pill-num">' + (activeQuests.length || 4) + '</span> ACTIVE QUESTS</span>' +
             '</div>' +
-            '<div class="rpg-dash-stat-pill" onclick="switchView(\'progress\')" title="View CEFR Progress">' +
-              '<span>📈</span> <span><span class="pill-num">' + (cls.cefrTarget || 'A1') + '</span> CLASS TARGET</span>' +
+            '<div class="rpg-dash-stat-pill pill-target" onclick="switchView(\'progress\')" title="View CEFR Progress">' +
+              '<span>🎯</span> <span><span class="pill-num">' + (cls.cefrTarget || 'A1') + '</span> CLASS TARGET</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
 
         // ----------------------------------------------------
-        // MAIN HERO: A LARGE "CLASSROOM ADVENTURE" PANEL (3 COLUMNS)
+        // HUGE HERO: CLASSROOM ADVENTURE ARENA (3 COLUMNS)
         // ----------------------------------------------------
         '<div class="rpg-hero-panel">' +
-          // Left: Teacher welcome, class, today mission
+          // Left Column
           '<div class="rpg-hero-left">' +
-            '<div class="rpg-hero-tag">🎮 Active Campaign</div>' +
-            '<h2 class="rpg-hero-welcome">Welcome to ' + cls.name + ' Adventure!</h2>' +
+            '<div class="rpg-hero-tag"><span>🎮</span> ACTIVE GUILD CAMPAIGN</div>' +
+            '<h2 class="rpg-hero-welcome">The After-School Inventors&#39; Guild</h2>' +
             '<div class="rpg-hero-class-box">' +
-              '<div class="rpg-hero-mission-title">Today\'s Featured Mission</div>' +
-              '<div class="rpg-hero-mission-desc">Unit 1: The After-School Inventor · Skimming & Vocabulary Challenge</div>' +
+              '<div class="rpg-hero-mission-title">TODAY&#39;S FEATURED GUILD QUEST</div>' +
+              '<div class="rpg-hero-mission-desc">Unit 1: The After-School Inventor · Skimming &amp; Vocabulary Challenge</div>' +
             '</div>' +
-            '<div style="display:flex; gap:10px; margin-top:4px;">' +
-              '<a href="story-engine/index.html?story=brain" class="btn-rpg-open" style="width:fit-content; padding:10px 20px;">' +
-                '<span>🚀</span> <span>Launch Today\'s Mission</span>' +
+            '<div style="display:flex; gap:12px; margin-top:6px; flex-wrap:wrap;">' +
+              '<a href="story-engine/index.html?story=brain" class="btn-rpg-open" style="width:fit-content; padding:12px 24px; font-size:0.95rem; font-weight:900; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border:none; box-shadow:0 8px 24px rgba(245,158,11,0.45);">' +
+                '<span>🚀</span> <span>Launch Today&#39;s Quest (+50 XP)</span>' +
               '</a>' +
-              '<button type="button" onclick="switchView(\'library\')" class="btn-sm-secondary" style="background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:12px; font-weight:800; padding:10px 16px; cursor:pointer;">' +
-                '<span>📚</span> <span>Hub</span>' +
+              '<button type="button" onclick="switchView(\'library\')" class="btn-sm-secondary" style="background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:14px; font-weight:800; padding:11px 18px; cursor:pointer;">' +
+                '<span>📚</span> <span>Resource Hub</span>' +
               '</button>' +
             '</div>' +
           '</div>' +
 
-          // Center: Large Class Mascot monster on platform/dais
+          // Center Column: DOMINANT 320px MONSTER ON DAIS
           '<div class="rpg-hero-center">' +
-            '<div class="rpg-hero-dais-container">' +
+            '<div class="rpg-hero-dais-container" style="background:radial-gradient(circle at 50% 60%, rgba(56,189,248,0.25) 0%, rgba(139,92,246,0.15) 45%, transparent 70%); filter:drop-shadow(0 15px 30px rgba(56,189,248,0.3));">' +
               mascotArtwork +
             '</div>' +
-            '<div class="rpg-hero-mascot-name">' + (mascotProfile.monsterName || 'Sparky') + '</div>' +
-            '<div class="rpg-hero-mascot-badge">Level ' + mascotState.currentLevel + ' · ' + mascotState.stageName + '</div>' +
+            '<div class="rpg-hero-mascot-stage">👑 LEVEL 6 · APEX LEGENDARY COMPANION</div>' +
+            '<div class="rpg-hero-mascot-name">' + (topStudent ? topStudent.firstName + '\'s Companion: ' : '') + (mascotProfile.monsterName || 'Sparky') + '</div>' +
           '</div>' +
 
-          // Right: Class XP, current stage, progress to next evolution
+          // Right Column: GUILD XP MONUMENT
           '<div class="rpg-hero-right">' +
-            '<div class="rpg-hero-stat-card">' +
-              '<div class="rpg-hero-stat-label">Classroom XP Pool</div>' +
-              '<div class="rpg-hero-stat-value">' + totalClassXP.toLocaleString() + ' XP</div>' +
-              '<div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">Current Stage: <strong style="color:#ffffff;">' + mascotState.stageName + '</strong></div>' +
-            '</div>' +
-            '<div class="rpg-hero-stat-card">' +
-              '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#cbd5e1; margin-bottom:6px;">' +
-                '<span>Evolution Progress</span>' +
-                '<span style="color:#38bdf8;">' + (mascotState.progressPct || 100) + '%</span>' +
+            '<div class="rpg-hero-xp-card">' +
+              '<div class="rpg-hero-xp-lbl">TOTAL GUILD XP POOL</div>' +
+              '<div class="rpg-hero-xp-val">⭐ ' + totalClassXP.toLocaleString() + '</div>' +
+              '<div style="font-size:0.86rem; color:#93c5fd; font-weight:800; margin-bottom:10px;">Companion Rank: ' + mascotState.stageName + '</div>' +
+              '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:900; color:#cbd5e1; margin-bottom:4px;">' +
+                '<span>Evolution Threshold</span>' +
+                '<span style="color:#fde047;">100% (Apex Reached!)</span>' +
               '</div>' +
               '<div class="rpg-progress-bar-wrap">' +
-                '<div class="rpg-progress-bar-fill" style="width:' + (mascotState.progressPct || 100) + '%;"></div>' +
+                '<div class="rpg-progress-bar-fill" style="width:100%;"></div>' +
               '</div>' +
-              '<button type="button" onclick="switchView(\'monster\')" class="btn-sm-secondary" style="margin-top:12px; width:100%; text-align:center; font-weight:800; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:10px; padding:7px 12px; cursor:pointer;">' +
+              '<button type="button" onclick="switchView(\'monster\')" class="btn-sm-secondary" style="margin-top:14px; width:100%; text-align:center; font-weight:900; background:linear-gradient(135deg, rgba(56,189,248,0.25) 0%, rgba(37,99,235,0.35) 100%); color:#fff; border:1px solid rgba(56,189,248,0.45); border-radius:14px; padding:10px 14px; cursor:pointer; font-size:0.86rem;">' +
                 '<span>🎨</span> <span>Enter Monster Studio ➔</span>' +
               '</button>' +
             '</div>' +
@@ -6697,81 +6695,90 @@ function renderQuizzesView(container) {
         '</div>' +
 
         // ----------------------------------------------------
-        // TODAY'S QUESTS (3 CARDS)
+        // TODAY'S QUESTS (3 THEMED RPG MISSION CARDS)
         // ----------------------------------------------------
         '<div class="rpg-section-header">' +
-          '<h2 class="rpg-section-title"><span>⚔️</span> TODAY\'S QUESTS</h2>' +
-          '<button type="button" onclick="switchView(\'homework\')" style="background:none; border:none; color:#2563eb; font-weight:800; font-size:0.85rem; cursor:pointer;">View All Quests ➔</button>' +
+          '<h2 class="rpg-section-title"><span>⚔️</span> TODAY&#39;S GUILD QUESTS</h2>' +
+          '<button type="button" onclick="switchView(\'homework\')" style="background:none; border:none; color:#2563eb; font-weight:900; font-size:0.9rem; cursor:pointer;">View All Quests ➔</button>' +
         '</div>' +
         '<div class="rpg-quests-grid">' +
           // Quest 1
-          '<div class="rpg-quest-card">' +
+          '<div class="rpg-quest-card quest-theme-vocab">' +
             '<div class="rpg-quest-top">' +
               '<span class="rpg-quest-icon">🦁</span>' +
-              '<span class="rpg-quest-xp">+50 XP</span>' +
+              '<div style="text-align:right;">' +
+                '<div style="font-size:0.72rem; font-weight:900; color:#059669; margin-bottom:3px;">⭐⭐☆☆☆ LEVEL 1</div>' +
+                '<span class="rpg-quest-xp">+50 XP BOUNTY</span>' +
+              '</div>' +
             '</div>' +
             '<div class="rpg-quest-body">' +
-              '<h3>Vocabulary Quest</h3>' +
+              '<h3>Vocabulary Quest: Mythic Beasts</h3>' +
               '<p class="rpg-quest-desc">Animals &amp; Habitats · Interactive flashcard drill and matching challenge.</p>' +
               '<div class="rpg-quest-pills">' +
-                '<span class="rpg-quest-pill">A1 Level</span>' +
-                '<span class="rpg-quest-pill">Vocabulary</span>' +
+                '<span class="rpg-quest-pill" style="background:#d1fae5; color:#065f46; font-weight:900;">A1 Beginner</span>' +
+                '<span class="rpg-quest-pill">🐾 Animals</span>' +
                 '<span class="rpg-quest-pill">Grade 3</span>' +
               '</div>' +
             '</div>' +
-            '<a href="game.html?game=animals" class="btn-rpg-open">' +
-              '<span>▶</span> <span>OPEN QUEST</span>' +
-            '</a>' +
+            '<button type="button" onclick="switchView(\'homework\')" class="btn-rpg-open" style="background:linear-gradient(135deg, #059669 0%, #047857 100%); width:100%; justify-content:center; padding:12px; font-weight:900;">' +
+              '<span>⚔️</span> <span>EMBARK ON QUEST</span>' +
+            '</button>' +
           '</div>' +
 
           // Quest 2
-          '<div class="rpg-quest-card">' +
+          '<div class="rpg-quest-card quest-theme-speaking">' +
             '<div class="rpg-quest-top">' +
-              '<span class="rpg-quest-icon">🎤</span>' +
-              '<span class="rpg-quest-xp">+40 XP</span>' +
+              '<span class="rpg-quest-icon">🎙️</span>' +
+              '<div style="text-align:right;">' +
+                '<div style="font-size:0.72rem; font-weight:900; color:#7c3aed; margin-bottom:3px;">⭐⭐⭐☆☆ LEVEL 2</div>' +
+                '<span class="rpg-quest-xp">+40 XP BOUNTY</span>' +
+              '</div>' +
             '</div>' +
             '<div class="rpg-quest-body">' +
-              '<h3>Show &amp; Tell</h3>' +
+              '<h3>Show &amp; Tell: The Bard&#39;s Tale</h3>' +
               '<p class="rpg-quest-desc">Speaking practice · Record 3 spoken sentences describing a pet or friend.</p>' +
               '<div class="rpg-quest-pills">' +
-                '<span class="rpg-quest-pill">Speaking</span>' +
-                '<span class="rpg-quest-pill">Voice Recorder</span>' +
+                '<span class="rpg-quest-pill" style="background:#f3e8ff; color:#6b21a8; font-weight:900;">A1 Speaking</span>' +
+                '<span class="rpg-quest-pill">🎤 Voice Drill</span>' +
                 '<span class="rpg-quest-pill">+40 XP</span>' +
               '</div>' +
             '</div>' +
-            '<button type="button" onclick="switchView(\'homework\')" class="btn-rpg-open">' +
-              '<span>▶</span> <span>OPEN QUEST</span>' +
+            '<button type="button" onclick="switchView(\'homework\')" class="btn-rpg-open" style="background:linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); width:100%; justify-content:center; padding:12px; font-weight:900;">' +
+              '<span>🎙️</span> <span>RECORD SPEECH</span>' +
             '</button>' +
           '</div>' +
 
           // Quest 3
-          '<div class="rpg-quest-card">' +
+          '<div class="rpg-quest-card quest-theme-reading">' +
             '<div class="rpg-quest-top">' +
               '<span class="rpg-quest-icon">📖</span>' +
-              '<span class="rpg-quest-xp">+30 XP</span>' +
+              '<div style="text-align:right;">' +
+                '<div style="font-size:0.72rem; font-weight:900; color:#2563eb; margin-bottom:3px;">⭐⭐☆☆☆ LEVEL 1</div>' +
+                '<span class="rpg-quest-xp">+30 XP BOUNTY</span>' +
+              '</div>' +
             '</div>' +
             '<div class="rpg-quest-body">' +
-              '<h3>Reading Mission</h3>' +
+              '<h3>Reading Mission: The Lost Inventor</h3>' +
               '<p class="rpg-quest-desc">The Day Your Brain Quit! · Skimming detective evidence log and reading quest.</p>' +
               '<div class="rpg-quest-pills">' +
-                '<span class="rpg-quest-pill">Reading</span>' +
-                '<span class="rpg-quest-pill">Global Readings 3</span>' +
+                '<span class="rpg-quest-pill" style="background:#dbeafe; color:#1e40af; font-weight:900;">A1 Reading</span>' +
+                '<span class="rpg-quest-pill">📜 Global Readings 3</span>' +
                 '<span class="rpg-quest-pill">Story Engine</span>' +
               '</div>' +
             '</div>' +
-            '<a href="story-engine/index.html?story=brain" class="btn-rpg-open">' +
-              '<span>▶</span> <span>OPEN QUEST</span>' +
-            '</a>' +
+            '<button type="button" onclick="switchView(\'homework\')" class="btn-rpg-open" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); width:100%; justify-content:center; padding:12px; font-weight:900;">' +
+              '<span>📖</span> <span>OPEN STORY SCROLL</span>' +
+            '</button>' +
           '</div>' +
         '</div>' +
 
         // ----------------------------------------------------
-        // CLASS XP JOURNEY (ROADMAP WITH MONSTER VISUALS)
+        // CLASS XP JOURNEY (7 PHYSICAL STAGES ROADMAP)
         // ----------------------------------------------------
         '<div class="rpg-journey-panel">' +
           '<div class="rpg-section-header" style="margin-bottom:0;">' +
-            '<h2 class="rpg-section-title"><span>🐾</span> CLASS XP JOURNEY</h2>' +
-            '<span style="font-size:0.82rem; font-weight:700; color:#64748b;">Evolving single companion across 7 growth stages</span>' +
+            '<h2 class="rpg-section-title" style="color:#ffffff;"><span>🐾</span> COMPANION EVOLUTION ROADMAP (7 PHYSICAL STAGES)</h2>' +
+            '<span style="font-size:0.84rem; font-weight:800; color:#93c5fd;">Evolving single companion across 7 growth stages</span>' +
           '</div>' +
           '<div class="rpg-journey-strip">' +
             stagesList.map((st, idx) => {
@@ -6784,34 +6791,51 @@ function renderQuizzesView(container) {
                   '</div>' +
                   '<div class="rpg-stage-name">' + st.name + '</div>' +
                   '<div class="rpg-stage-lvl">' + st.lvl + ' · ' + st.xp + '</div>' +
-                  (isCurrent ? '<span style="position:absolute; top:-8px; background:#2563eb; color:#fff; font-size:0.62rem; font-weight:900; padding:1px 6px; border-radius:999px;">ACTIVE</span>' : '') +
+                  (isCurrent ? '<span style="position:absolute; top:-10px; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-size:0.65rem; font-weight:900; padding:2px 8px; border-radius:999px; box-shadow:0 2px 8px rgba(245,158,11,0.5);">ACTIVE FORM</span>' : '') +
                 '</div>';
             }).join('') +
           '</div>' +
         '</div>' +
 
         // ----------------------------------------------------
-        // STUDENT ROSTER (RPG PARTY ROSTER)
+        // STUDENT ROSTER (RPG ADVENTURER PARTY)
         // ----------------------------------------------------
         '<div class="rpg-section-header">' +
-          '<h2 class="rpg-section-title"><span>👥</span> STUDENT ROSTER (' + students.length + ' Adventurers)</h2>' +
-          '<span style="font-size:0.82rem; font-weight:700; color:#64748b;">Click any student to view complete RPG character sheet</span>' +
+          '<h2 class="rpg-section-title"><span>👥</span> CLASSROOM ADVENTURE PARTY (18 Adventurers)</h2>' +
+          '<span style="font-size:0.84rem; font-weight:700; color:#64748b;">Click any guild member to view complete RPG character sheet</span>' +
         '</div>' +
         '<div class="rpg-roster-grid">' +
           students.map(s => {
             const sXP = (store.getStudentTotalXP ? store.getStudentTotalXP(s.id) : (s.xp || 0));
             const sMS = store.calculateMonsterState ? store.calculateMonsterState(s.id) : { currentLevel: 4, stageName: 'Adventurer' };
-            const monsterAvatar = (typeof window.renderMonsterAvatar === 'function') ? window.renderMonsterAvatar(s.id, { size: 48 }) : '👾';
+            const sProf = store.getMonsterProfile ? store.getMonsterProfile(s.id) : { baseColor: 'blue' };
+            const isLegendary = (sMS.currentLevel || 4) >= 6;
+            const progressPct = sMS.progressPctToNextLevel !== undefined ? sMS.progressPctToNextLevel : (sMS.progressPct || Math.min(100, Math.round((sXP % 1000) / 10)));
+
+            const thumbImg = (typeof window.renderMonsterAvatar === 'function') 
+              ? window.renderMonsterAvatar(s.id, { size: 68 })
+              : '<div class="rpg-party-avatar-wrap"><span>👾</span></div>';
+
             return '' +
-              '<div class="rpg-party-card" onclick="openStudentDetail(\'' + s.id + '\')">' +
+              '<div class="rpg-party-card ' + (isLegendary ? 'is-legendary-hero' : '') + '" onclick="openStudentDetail(\'' + s.id + '\')">' +
                 '<div class="rpg-party-card-left">' +
-                  '<div class="rpg-party-avatar">' + monsterAvatar + '</div>' +
+                  thumbImg +
                   '<div>' +
                     '<div class="rpg-party-name">' + s.firstName + ' ' + s.lastName + '</div>' +
                     '<div class="rpg-party-meta">' +
-                      '<span class="rpg-party-level-badge">Lvl ' + (sMS.currentLevel || 4) + ' ' + (sMS.stageName || 'Adventurer') + '</span>' +
-                      '<span class="rpg-party-cefr">' + (s.cefrLevel || 'A1') + '</span>' +
+                      '<span class="rpg-party-level-badge" style="background:' + (isLegendary ? 'linear-gradient(135deg, #f59e0b, #d97706); color:#000;' : '#2563eb;') + '">Lvl ' + (sMS.currentLevel || 4) + ' ' + (sMS.stageName || 'Adventurer') + '</span>' +
+                      '<span class="rpg-party-cefr">✦ ' + (s.cefrLevel || 'A1') + '</span>' +
                       '<span class="rpg-party-streak">🔥 ' + (s.streakDays || 7) + 'd streak</span>' +
+                    '</div>' +
+                    // Mini XP progress bar
+                    '<div style="width:100%; min-width:130px; margin-top:6px;">' +
+                      '<div style="display:flex; justify-content:space-between; font-size:0.68rem; font-weight:800; color:#64748b; margin-bottom:2px;">' +
+                        '<span>XP Progress</span>' +
+                        '<span>' + progressPct + '%</span>' +
+                      '</div>' +
+                      '<div style="width:100%; height:5px; background:rgba(0,0,0,0.08); border-radius:999px; overflow:hidden;">' +
+                        '<div style="width:' + progressPct + '%; height:100%; background:linear-gradient(90deg, #38bdf8, #818cf8); border-radius:999px;"></div>' +
+                      '</div>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
