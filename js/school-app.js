@@ -13668,7 +13668,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     // Mark as hatched in store
     store.updateMonsterProfile(studentId, { isHatched: true });
-    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (250+ XP). Companion is now awake!');
+    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (100+ XP). Companion is now awake!');
 
     const btnCloset = document.getElementById('btn-modal-hatch-closet');
     if (btnCloset) {

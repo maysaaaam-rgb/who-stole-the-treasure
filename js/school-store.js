@@ -1907,8 +1907,34 @@
   };
 
   // =========================================================================
-  // MONSTER EVOLUTION SYSTEM — SEED DATA & MODELS
+  // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS
   // =========================================================================
+
+  function updateStudentEvolution(student) {
+    if (!student) return student;
+    const xp = student.xp || 0;
+
+    // Standardize stage thresholds
+    if (xp >= 500) {
+      student.level = 4;
+      student.stageName = "Level 4 - Growing Monster";
+      student.progress = Math.min(100, Math.round(((xp - 500) / 500) * 100));
+    } else if (xp >= 100) {
+      student.level = 3;
+      student.stageName = "Level 3 - Baby Monster";
+      student.progress = Math.min(100, Math.round(((xp - 100) / 400) * 100));
+    } else if (xp >= 30) {
+      student.level = 2;
+      student.stageName = "Level 2 - Cracking Egg";
+      student.progress = Math.min(100, Math.round(((xp - 30) / 70) * 100));
+    } else {
+      student.level = 1;
+      student.stageName = "Level 1 - Mystery Egg";
+      student.progress = Math.min(100, Math.round((xp / 30) * 100));
+    }
+
+    return student;
+  }
 
   const DEFAULT_PROGRESSION_LEVELS = [
     {
@@ -1929,7 +1955,7 @@
       level: 2,
       name: 'Cracking Egg',
       stageKey: 'cracking_egg',
-      xpRequired: 100,
+      xpRequired: 30,
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
       subtitle: 'Life is waking up!',
       image: 'assets/monsters/stage-2-cracking-egg.png',
@@ -1942,7 +1968,7 @@
       level: 3,
       name: 'Baby Monster',
       stageKey: 'baby',
-      xpRequired: 250,
+      xpRequired: 100,
       description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
       subtitle: 'Small steps, big dreams!',
       image: 'assets/monsters/stage-3-baby-monster.png',
@@ -9122,6 +9148,14 @@
             // Ensure Monster Evolution models are present
             if (!merged.progressionLevels || !Array.isArray(merged.progressionLevels) || merged.progressionLevels.length === 0) {
               merged.progressionLevels = JSON.parse(JSON.stringify(DEFAULT_PROGRESSION_LEVELS));
+            } else {
+              // Ensure standardized progression thresholds are applied
+              merged.progressionLevels.forEach(lvl => {
+                const def = DEFAULT_PROGRESSION_LEVELS.find(d => d.id === lvl.id || d.level === lvl.level);
+                if (def && (lvl.level <= 4 || lvl.id === 'lvl-2' || lvl.id === 'lvl-3' || lvl.id === 'lvl-4' || lvl.id === 'lvl-1')) {
+                  lvl.xpRequired = def.xpRequired;
+                }
+              });
             }
             if (!merged.monsterItems || !Array.isArray(merged.monsterItems) || merged.monsterItems.length === 0) {
               merged.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
@@ -11843,7 +11877,7 @@
 
       let eggCrackPct = 0;
       if (currentDisplayedLevel === 1) {
-        eggCrackPct = Math.min(95, Math.round((totalXP / 100) * 100));
+        eggCrackPct = Math.min(95, Math.round((totalXP / 30) * 100));
       } else if (currentDisplayedLevel === 2) {
         eggCrackPct = 100;
       } else {
@@ -14792,15 +14826,21 @@
 
   }
 
+  MasterSchoolStore.prototype.updateStudentEvolution = updateStudentEvolution;
+
   // Export singleton instance
   const schoolStore = new MasterSchoolStore();
+  schoolStore.updateStudentEvolution = updateStudentEvolution;
   schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
   schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
   schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
   schoolStore.archiveGame = schoolStore.archiveResource.bind(schoolStore);
   schoolStore.deleteGame = schoolStore.deleteResource.bind(schoolStore);
 
+  root.updateStudentEvolution = updateStudentEvolution;
+
   if (typeof window !== 'undefined') {
+    window.updateStudentEvolution = updateStudentEvolution;
     window.SchoolStore = MasterSchoolStore;
     window.schoolStore = schoolStore;
     window.store = schoolStore;
@@ -14815,7 +14855,7 @@
     }
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
+    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, updateStudentEvolution, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
   }
 
 })(typeof window !== 'undefined' ? window : global);

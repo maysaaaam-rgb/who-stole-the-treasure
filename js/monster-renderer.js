@@ -113,13 +113,13 @@
   function normalizeStageKey(stage) {
     if (!stage) return 'baby';
     const s = String(stage).toLowerCase().trim();
-    if (s === 'mystery egg' || s === 'egg' || s === 'lvl-1' || s === 'level 1') return 'egg';
-    if (s === 'cracking egg' || s === 'cracking_egg' || s === 'cracking' || s === 'lvl-2' || s === 'level 2') return 'cracking_egg';
-    if (s === 'baby monster' || s === 'baby' || s === 'lvl-3' || s === 'level 3') return 'baby';
-    if (s === 'growing monster' || s === 'growing' || s === 'lvl-4' || s === 'level 4') return 'growing';
-    if (s === 'adventurer monster' || s === 'adventurer' || s === 'lvl-5' || s === 'level 5') return 'adventurer';
-    if (s === 'advanced monster' || s === 'advanced' || s === 'lvl-6' || s === 'level 6') return 'advanced';
-    if (s === 'ultimate monster' || s === 'ultimate' || s === 'lvl-7' || s === 'level 7') return 'ultimate';
+    if (s.includes('cracking') || s === 'cracking egg' || s === 'cracking_egg' || s === 'lvl-2' || s === 'level 2') return 'cracking_egg';
+    if (s.includes('mystery') || s === 'egg' || s === 'lvl-1' || s === 'level 1') return 'egg';
+    if (s.includes('baby') || s === 'lvl-3' || s === 'level 3') return 'baby';
+    if (s.includes('growing') || s === 'lvl-4' || s === 'level 4') return 'growing';
+    if (s.includes('adventurer') || s === 'lvl-5' || s === 'level 5') return 'adventurer';
+    if (s.includes('advanced') || s === 'lvl-6' || s === 'level 6') return 'advanced';
+    if (s.includes('ultimate') || s === 'lvl-7' || s === 'level 7') return 'ultimate';
     if (STAGE_META[s]) return s;
     return 'baby';
   }
@@ -2879,8 +2879,8 @@
   function renderMonsterEvolutionStagesBanner() {
     const stages = [
       { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
-      { level: 2, name: 'Cracking Egg', xp: '100 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
-      { level: 3, name: 'Baby Monster', xp: '250 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
+      { level: 2, name: 'Cracking Egg', xp: '30 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
+      { level: 3, name: 'Baby Monster', xp: '100 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
       { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
       { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
       { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
