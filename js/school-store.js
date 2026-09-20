@@ -4463,8 +4463,8 @@
     "petName": "İpek",
     "monsterName": "İpek's Monster",
     "baseColor": "orange",
-    "highestUnlockedLevel": 1,
-    "lastCelebratedLevel": 1,
+    "highestUnlockedLevel": 2,
+    "lastCelebratedLevel": 2,
     "isHatched": false,
     "hatchDate": null,
     "equipped": {
@@ -7332,20 +7332,24 @@
         {
           id: 'student-4a-343',
           studentIdNumber: '343',
-          firstName: 'İpek',
-          lastName: 'İlhan',
+          firstName: 'Ipek',
+          lastName: 'Ilhan',
+          name: 'Ipek Ilhan',
+          displayName: 'İpek İlhan',
           classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          avatar: "cracked-egg.png",
+          level: 2,
+          stageName: "Level 2 - Cracking Egg",
+          crackProgress: 100,
           parentName: 'Parent of İpek İlhan',
           parentContact: '+90 (555) 343-0001',
           parentEmail: 'parent343@example.com',
           xp: 100,
-          level: 1,
           streakDays: 0,
-          equippedMonster: 'Mystery Egg',
+          equippedMonster: 'Cracking Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -9014,6 +9018,21 @@
   class MasterSchoolStore {
     constructor() {
       this.state = this.loadState();
+      if (this.state.students) {
+        this.state.students.forEach(s => {
+          if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+        });
+        const ipek = this.state.students.find(s => {
+          const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
+          return name.includes("ipek") || name.includes("i̇pek");
+        });
+        if (ipek) {
+          ipek.level = 2;
+          ipek.stageName = "Level 2 - Cracking Egg";
+          ipek.avatar = "cracked-egg.png";
+          ipek.crackProgress = 100;
+        }
+      }
       this.listeners = [];
       try { this.saveState(); } catch (e) {}
     }
@@ -9558,6 +9577,20 @@
                 if (!tx.timestamp) tx.timestamp = new Date(tx.date || Date.now()).toISOString();
               });
             }
+            // Apply standardized stage for İpek
+            if (Array.isArray(merged.students)) {
+              const ipek = merged.students.find(s => {
+                const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
+                return name.includes("ipek") || name.includes("i̇pek");
+              });
+              if (ipek) {
+                ipek.level = 2;
+                ipek.stageName = "Level 2 - Cracking Egg";
+                ipek.avatar = "cracked-egg.png";
+                ipek.crackProgress = 100;
+              }
+            }
+
             return merged;
           }
         }
@@ -9665,6 +9698,7 @@
       if (!includeArchived) list = list.filter(s => !s.archived);
       if (classId) list = list.filter(s => s.classId === classId);
       list.forEach(s => {
+        if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
         if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       });
       return list;
