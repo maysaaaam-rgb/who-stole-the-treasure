@@ -2958,7 +2958,16 @@
     `.trim();
   }
 
+  function getMonsterAsset(species, level) {
+    let stage = 'baby';
+    if (level >= 7) stage = 'ultimate';
+    else if (level >= 4) stage = 'growing';
+
+    return `/assets/monsters/${species}_stage_${stage}.webp`;
+  }
+
   root.MonsterRenderer = {
+    getMonsterAsset: getMonsterAsset,
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
@@ -2973,6 +2982,7 @@
     stages: STAGE_META
   };
 
+  root.getMonsterAsset = getMonsterAsset;
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterImageViewport;

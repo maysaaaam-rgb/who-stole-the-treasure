@@ -1045,6 +1045,22 @@
   };
 
   /**
+   * Resolve Monster Stage Asset Path
+   * Thresholds:
+   * Level 1–3: baby
+   * Level 4–6: growing
+   * Level 7+:  ultimate
+   */
+  function getMonsterAsset(species, level) {
+    let stage = 'baby';
+    if (level >= 7) stage = 'ultimate';
+    else if (level >= 4) stage = 'growing';
+
+    return `/assets/monsters/${species}_stage_${stage}.webp`;
+  }
+  window.getMonsterAsset = getMonsterAsset;
+
+  /**
    * Render modern Student Monster Evolution Card Structure
    * Matches: .student-card > .monster-stage.element-* > .pedestal-shadow + .monster-avatar.float-anim + .evolution-badge
    *        > .student-info > .student-name + .student-grade + XP / Actions
@@ -1070,14 +1086,17 @@
     }
     const elementClass = 'element-' + element;
 
+    const species = (profile && (profile.monsterName || profile.species || profile.element))
+      ? (profile.monsterName || profile.element).toLowerCase().replace(/\s+/g, '')
+      : (element === 'ember' ? 'emberwing' : 'monster');
+
     let avatarMarkup = '';
     const customImg = options.image || s.monsterAvatar;
     if (customImg) {
       avatarMarkup = '<img src="' + customImg + '" class="monster-avatar float-anim" alt="' + studentName + ' Monster" />';
-    } else if (mState.currentLevel >= 4 && (element === 'ember' || (profile && profile.baseColor === 'orange'))) {
-      avatarMarkup = '<img src="monsters/emberwing-stage2.webp" class="monster-avatar float-anim" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
     } else {
-      avatarMarkup = '<div class="monster-avatar float-anim">' + window.renderMonsterStageBadge(studentId, { size: 84, animated: false }) + '</div>';
+      const assetUrl = getMonsterAsset(species, mState.currentLevel);
+      avatarMarkup = '<img src="' + assetUrl + '" class="monster-avatar float-anim" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
     }
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, ''));
