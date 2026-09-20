@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monster Studio & Customizer | English Adventure Academy</title>
+  <style>
+    :root {
+      --bg-modal: #0f172a;
+      --card-panel: #1e293b;
+      --card-inner: #0b1120;
+      --border-subtle: #334155;
+      --border-glow: #38bdf8;
+      --amber: #f59e0b;
+      --gold: #fbbf24;
+      --cyan: #38bdf8;
+      --purple: #a855f7;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: rgba(4, 7, 15, 0.92);
+      backdrop-filter: blur(12px);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: var(--text);
+    }
+
+    /* Modal Outer Container */
+    .studio-modal {
+      width: 100%;
+      max-width: 1180px;
+      background: var(--bg-modal);
+      border: 2px solid var(--border-subtle);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .studio-header {
+      padding: 1.25rem 2rem;
+      background: #0a0f1d;
+      border-bottom: 2px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .studio-title-group { display: flex; align-items: center; gap: 1rem; }
+    .studio-icon-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+      border: 1px solid var(--cyan);
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+    }
+    .studio-title h2 { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+    .studio-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+    .close-btn {
+      background: var(--card-panel);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .close-btn:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+    /* Navigation Tabs */
+    .category-tabs {
+      background: #0d1424;
+      padding: 0.6rem 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+    }
+    .tab-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.45rem 1.1rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-pill:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+    .tab-pill.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+    }
+
+    /* 3-Column Studio Layout */
+    .studio-workspace {
+      display: grid;
+      grid-template-columns: 360px 1fr 310px;
+      min-height: 520px;
+      background: #090d16;
+    }
+    @media (max-width: 1040px) {
+      .studio-workspace { grid-template-columns: 1fr; }
+    }
+
+    /* LEFT: Item Customization Tray */
+    .customizer-tray {
+      background: #0f172a;
+      border-right: 1px solid var(--border-subtle);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .subnav-pills {
+      display: flex;
+      gap: 0.5rem;
+      background: #080d1a;
+      padding: 0.35rem;
+      border-radius: 10px;
+    }
+    .subnav-btn {
+      flex: 1;
+      padding: 0.4rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .subnav-btn.active {
+      background: var(--card-panel);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      overflow-y: auto;
+      max-height: 380px;
+      padding-right: 0.3rem;
+    }
+    .option-card {
+      background: var(--card-panel);
+      border: 2px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .option-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(56, 189, 248, 0.2);
+    }
+    .option-card.selected {
+      border-color: var(--emerald);
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+    }
+    .option-card.locked {
+      opacity: 0.45;
+      filter: grayscale(0.8);
+      cursor: not-allowed;
+    }
+    .option-thumb {
+      width: 60px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--card-inner);
+      border-radius: 10px;
+    }
+    .option-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      text-align: center;
+    }
+    .rarity-pill {
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .rarity-common { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+    .rarity-rare { background: rgba(56, 189, 248, 0.2); color: var(--cyan); }
+    .rarity-epic { background: rgba(168, 85, 247, 0.2); color: var(--purple); }
+    .rarity-legendary { background: rgba(245, 158, 11, 0.2); color: var(--gold); }
+
+    /* CENTER: Interactive Live Preview Viewport */
+    .preview-stage {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle at 50% 40%, #1e1b4b 0%, #090d16 75%);
+    }
+    .preview-top-badge {
+      align-self: stretch;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .live-status {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--cyan);
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--cyan);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      letter-spacing: 1px;
+    }
+    .toggle-anim-btn {
+      background: var(--card-panel);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 0.35rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .toggle-anim-btn:hover { border-color: var(--cyan); color: #fff; }
+
+    /* Centered SVG Rig Stage */
+    .monster-rig-viewport {
+      width: 280px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .monster-svg-rig {
+      width: 200px;
+      height: 200px;
+      filter: drop-shadow(0 14px 20px rgba(0,0,0,0.5));
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 2;
+    }
+    .monster-svg-rig.bobbing {
+      animation: monsterHover 3s ease-in-out infinite;
+    }
+    @keyframes monsterHover {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.02); }
+    }
+
+    /* 3D Grounding Pedestal */
+    .pedestal-rig {
+      position: absolute;
+      bottom: 24px;
+      width: 170px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.6) 0%, rgba(15, 23, 42, 0.8) 60%, transparent 75%);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      z-index: 1;
+      animation: pedestalGlow 3s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+    @keyframes pedestalGlow {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(0.92); opacity: 0.4; }
+    }
+
+    /* Color Swatch & Background Strip */
+    .customizer-quick-bar {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .color-swatch-list {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .color-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .color-dot:hover { transform: scale(1.2); }
+    .color-dot.active {
+      transform: scale(1.25);
+      box-shadow: 0 0 10px #fff;
+    }
+
+    /* RIGHT: Student Profile & Equipped Specs */
+    .equipped-sidebar {
+      background: #0f172a;
+      border-left: 1px solid var(--border-subtle);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .companion-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .companion-mini-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid var(--amber);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+    }
+    .companion-details h3 { font-size: 1.15rem; font-weight: 900; color: #fff; }
+    .companion-details p { font-size: 0.8rem; color: var(--gold); font-weight: 800; }
+
+    .specs-list {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .spec-item {
+      background: var(--card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.65rem 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .spec-name { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+    .spec-val { font-size: 0.85rem; font-weight: 900; color: #fff; }
+
+    .sidebar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+    }
+    .save-monster-btn {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s;
+    }
+    .save-monster-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .cancel-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.65rem;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cancel-btn:hover { background: var(--card-panel); color: #fff; }
+
+    /* Footer Banner */
+    .studio-footer {
+      padding: 0.85rem 2rem;
+      background: #0a0f1d;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="studio-modal">
+    <!-- Top Header -->
+    <header class="studio-header">
+      <div class="studio-title-group">
+        <div class="studio-icon-badge">🎨</div>
+        <div class="studio-title">
+          <h2>Monster Studio & Customizer</h2>
+          <p>Customize your companion creature with unlocked skins, eyes, horns, and gear!</p>
+        </div>
+      </div>
+      <a href="../index.html" class="close-btn" title="Back to Adventure Academy" onclick="handleClose(event)">✕</a>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="category-tabs">
+      <button class="tab-pill" id="tab-body" onclick="switchCategory('body')">🐾 Monster Body</button>
+      <button class="tab-pill active" id="tab-face" onclick="switchCategory('face')">👀 Face & Expression</button>
+      <button class="tab-pill" id="tab-horns" onclick="switchCategory('horns')">⚡ Horns & Ears</button>
+      <button class="tab-pill" id="tab-clothing" onclick="switchCategory('clothing')">🎽 Clothing & Gear</button>
+      <button class="tab-pill" id="tab-pedestal" onclick="switchCategory('pedestal')">🪐 Auras & Pedestals</button>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="studio-workspace">
+      <!-- 1. LEFT: Option Tray -->
+      <section class="customizer-tray">
+        <div class="subnav-pills" id="subnav-container">
+          <button class="subnav-btn active" id="subnav-btn-1" onclick="handleSubnav(0)">Eyes</button>
+          <button class="subnav-btn" id="subnav-btn-2" onclick="handleSubnav(1)">Mouths</button>
+        </div>
+
+        <div class="options-grid" id="options-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- 2. CENTER: Live Interactive Preview Viewport -->
+      <section class="preview-stage">
+        <div class="preview-top-badge">
+          <span class="live-status">● LIVE INTERACTIVE PREVIEW</span>
+          <button class="toggle-anim-btn" id="btn-anim" onclick="toggleMotion()">❚❚ Pause Idle</button>
+        </div>
+
+        <div class="monster-rig-viewport">
+          <!-- Dynamic High-End Scalable Vector Monster -->
+          <svg class="monster-svg-rig bobbing" id="monster-svg" viewBox="0 0 200 200">
+            <defs>
+              <radialGradient id="bodyGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fff" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Layer 0: Clothing / Cape (Behind Body) -->
+            <g id="layer-back-gear"></g>
+
+            <!-- Layer 1: Ears / Horns -->
+            <g id="layer-horns">
+              <path d="M 52 35 L 75 75 L 42 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
+              <path d="M 148 35 L 125 75 L 158 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
+              <path d="M 58 45 L 72 70 L 50 68 Z" fill="#fef08a" />
+              <path d="M 142 45 L 128 70 L 150 68 Z" fill="#fef08a" />
+            </g>
+
+            <!-- Layer 2: Main Body Silhouette -->
+            <g id="layer-body">
+              <circle cx="100" cy="115" r="54" id="monster-body-base" fill="#f59e0b" stroke="#b45309" stroke-width="4" />
+              <circle cx="100" cy="115" r="54" fill="url(#bodyGlow)" />
+              <!-- Belly / Chest Cream Pad -->
+              <ellipse cx="100" cy="125" rx="34" ry="32" id="monster-body-belly" fill="#fef3c7" />
+            </g>
+
+            <!-- Layer 3: Paws / Feet -->
+            <g id="layer-feet">
+              <ellipse cx="70" cy="162" rx="14" ry="9" fill="#f59e0b" stroke="#b45309" stroke-width="3"/>
+              <ellipse cx="130" cy="162" rx="14" ry="9" fill="#f59e0b" stroke="#b45309" stroke-width="3"/>
+              <circle cx="90" cy="120" r="6" fill="#f59e0b" />
+              <circle cx="110" cy="120" r="6" fill="#f59e0b" />
+            </g>
+
+            <!-- Layer 4: Clothing / Vest (Over Body) -->
+            <g id="layer-front-gear"></g>
+
+            <!-- Layer 5: Eye Style (Swappable) -->
+            <g id="layer-eyes">
+              <!-- Default: Anime Sparkle -->
+              <ellipse cx="78" cy="100" rx="9" ry="13" fill="#0f172a" />
+              <ellipse cx="122" cy="100" rx="9" ry="13" fill="#0f172a" />
+              <circle cx="81" cy="95" r="4.5" fill="#ffffff" />
+              <circle cx="125" cy="95" r="4.5" fill="#ffffff" />
+              <circle cx="76" cy="105" r="2" fill="#38bdf8" />
+              <circle cx="120" cy="105" r="2" fill="#38bdf8" />
+            </g>
+
+            <!-- Layer 6: Mouth Style (Swappable) -->
+            <g id="layer-mouth">
+              <!-- Default: Happy Smile -->
+              <path d="M 93 114 Q 100 122 107 114" stroke="#0f172a" stroke-width="3.5" fill="none" stroke-linecap="round" />
+            </g>
+          </svg>
+
+          <!-- 3D Grounding Pedestal -->
+          <div class="pedestal-rig" id="pedestal-disk"></div>
+        </div>
+
+        <!-- Color Palette Picker Strip -->
+        <div class="customizer-quick-bar">
+          <span style="font-size:0.8rem; font-weight:800; color:var(--text-muted);">QUICK FUR COLOR:</span>
+          <div class="color-swatch-list">
+            <div class="color-dot active" style="background:#f59e0b;" onclick="setFurColor('#f59e0b', '#b45309', '#fef3c7', 'Gold')"></div>
+            <div class="color-dot" style="background:#38bdf8;" onclick="setFurColor('#38bdf8', '#0284c7', '#e0f2fe', 'Aqua')"></div>
+            <div class="color-dot" style="background:#10b981;" onclick="setFurColor('#10b981', '#047857', '#d1fae5', 'Emerald')"></div>
+            <div class="color-dot" style="background:#ec4899;" onclick="setFurColor('#ec4899', '#be185d', '#fce7f3', 'Rose')"></div>
+            <div class="color-dot" style="background:#8b5cf6;" onclick="setFurColor('#8b5cf6', '#6d28d9', '#ede9fe', 'Violet')"></div>
+            <div class="color-dot" style="background:#64748b;" onclick="setFurColor('#64748b', '#334155', '#f1f5f9', 'Slate')"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. RIGHT: Equipped Features Overview -->
+      <aside class="equipped-sidebar">
+        <div>
+          <div class="companion-meta">
+            <div class="companion-mini-avatar" id="companion-avatar-icon">🦊</div>
+            <div class="companion-details">
+              <h3 id="monster-name">İlay</h3>
+              <p id="monster-level-badge">Level 4 • Growing Monster</p>
+              <span style="font-size:0.75rem; color:#94a3b8;" id="monster-xp-badge">⭐ 541 XP Active Companion</span>
+            </div>
+          </div>
+
+          <div class="specs-list">
+            <div class="spec-item">
+              <span class="spec-name">Fur Color</span>
+              <span class="spec-val" id="spec-color">Gold</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Eyes</span>
+              <span class="spec-val" id="spec-eyes">Anime Sparkle</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Mouth</span>
+              <span class="spec-val" id="spec-mouth">Sweet Smile</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Horns & Ears</span>
+              <span class="spec-val" id="spec-horns">Sprout Ears</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Clothing</span>
+              <span class="spec-val" id="spec-clothing">None</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Pedestal</span>
+              <span class="spec-val" id="spec-pedestal">Cyber Ring</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="save-monster-btn" onclick="saveConfiguration()">✔ Save Monster</button>
+          <button class="cancel-btn" onclick="resetDefaults()">Cancel</button>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Bottom Footer -->
+    <footer class="studio-footer">
+      <span>💡 Pro Tip: Complete lessons and assignments to level up your companion and unlock legendary cosmetics!</span>
+      <span>🔒 Locked items unlock automatically as your companion levels up</span>
+    </footer>
+  </div>
+
+  <script>
+    /* Catalog of Vector Face & Feature Items */
+    const EYE_PRESETS = [
+      {
+        id: "anime",
+        name: "Anime Sparkle",
+        rarity: "common",
+        svg: `
+          <ellipse cx="78" cy="100" rx="9" ry="13" fill="#0f172a" />
+          <ellipse cx="122" cy="100" rx="9" ry="13" fill="#0f172a" />
+          <circle cx="81" cy="95" r="4.5" fill="#ffffff" />
+          <circle cx="125" cy="95" r="4.5" fill="#ffffff" />
+          <circle cx="76" cy="105" r="2" fill="#38bdf8" />
+          <circle cx="120" cy="105" r="2" fill="#38bdf8" />
+        `
+      },
+      {
+        id: "sleepy",
+        name: "Sleepy Eyes",
+        rarity: "common",
+        svg: `
+          <path d="M 70 102 Q 78 109 86 102" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round" />
+          <path d="M 114 102 Q 122 109 130 102" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round" />
+        `
+      },
+      {
+        id: "brave",
+        name: "Brave Eyes",
+        rarity: "rare",
+        svg: `
+          <polygon points="70,95 86,101 72,106" fill="#0f172a" />
+          <polygon points="130,95 114,101 128,106" fill="#0f172a" />
+          <circle cx="78" cy="101" r="2.5" fill="#fff" />
+          <circle cx="122" cy="101" r="2.5" fill="#fff" />
+        `
+      },
+      {
+        id: "wink",
+        name: "Curious Wink",
+        rarity: "rare",
+        svg: `
+          <ellipse cx="78" cy="100" rx="9" ry="13" fill="#0f172a" />
+          <circle cx="81" cy="96" r="4" fill="#fff" />
+          <path d="M 114 100 Q 122 93 130 100" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round" />
+        `
+      },
+      {
+        id: "galaxy",
+        name: "Galaxy Eyes",
+        rarity: "legendary",
+        svg: `
+          <ellipse cx="78" cy="100" rx="10" ry="14" fill="#7e22ce" />
+          <ellipse cx="122" cy="100" rx="10" ry="14" fill="#7e22ce" />
+          <circle cx="78" cy="100" r="5" fill="#e879f9" />
+          <circle cx="122" cy="100" r="5" fill="#e879f9" />
+          <circle cx="81" cy="96" r="2.5" fill="#fff" />
+          <circle cx="125" cy="96" r="2.5" fill="#fff" />
+        `
+      }
+    ];
+
+    const MOUTH_PRESETS = [
+      {
+        id: "smile",
+        name: "Sweet Smile",
+        rarity: "common",
+        svg: `<path d="M 93 114 Q 100 122 107 114" stroke="#0f172a" stroke-width="3.5" fill="none" stroke-linecap="round" />`
+      },
+      {
+        id: "open",
+        name: "Happy Chomp",
+        rarity: "rare",
+        svg: `<path d="M 93 114 Q 100 126 107 114 Z" fill="#ef4444" stroke="#0f172a" stroke-width="3" />`
+      },
+      {
+        id: "curious",
+        name: "Curious O",
+        rarity: "common",
+        svg: `<ellipse cx="100" cy="116" rx="4" ry="6" fill="#0f172a" />`
+      },
+      {
+        id: "toothy",
+        name: "Toothy Grin",
+        rarity: "rare",
+        svg: `<path d="M 92 113 Q 100 123 108 113 Z" fill="#ffffff" stroke="#0f172a" stroke-width="3" /><line x1="100" y1="113" x2="100" y2="119" stroke="#0f172a" stroke-width="2"/>`
+      }
+    ];
+
+    const HORN_PRESETS = [
+      {
+        id: "ears",
+        name: "Sprout Ears",
+        rarity: "common",
+        svg: `
+          <path d="M 52 35 L 75 75 L 42 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
+          <path d="M 148 35 L 125 75 L 158 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
+          <path d="M 58 45 L 72 70 L 50 68 Z" fill="#fef08a" />
+          <path d="M 142 45 L 128 70 L 150 68 Z" fill="#fef08a" />
+        `
+      },
+      {
+        id: "curved",
+        name: "Curved Horns",
+        rarity: "rare",
+        svg: `
+          <path d="M 55 60 Q 40 30 65 25 Q 60 45 72 65 Z" fill="#f59e0b" stroke="#b45309" stroke-width="3" />
+          <path d="M 145 60 Q 160 30 135 25 Q 140 45 128 65 Z" fill="#f59e0b" stroke="#b45309" stroke-width="3" />
+        `
+      },
+      {
+        id: "crystal",
+        name: "Crystal Horns",
+        rarity: "epic",
+        svg: `
+          <polygon points="56,65 50,22 68,58" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5" />
+          <polygon points="144,65 150,22 132,58" fill="#38bdf8" stroke="#0284c7" stroke-width="2.5" />
+        `
+      },
+      {
+        id: "crown",
+        name: "Royal Crown",
+        rarity: "legendary",
+        svg: `
+          <polygon points="76,68 70,42 85,55 100,35 115,55 130,42 124,68" fill="#fbbf24" stroke="#b45309" stroke-width="2.5" />
+          <circle cx="70" cy="40" r="3" fill="#f43f5e" />
+          <circle cx="100" cy="33" r="3.5" fill="#38bdf8" />
+          <circle cx="130" cy="40" r="3" fill="#f43f5e" />
+        `
+      }
+    ];
+
+    const CLOTHING_PRESETS = [
+      {
+        id: "none",
+        name: "None",
+        rarity: "common",
+        svgFront: "",
+        svgBack: ""
+      },
+      {
+        id: "vest",
+        name: "Explorer Vest",
+        rarity: "rare",
+        svgFront: `
+          <path d="M 72 118 L 88 152 L 112 152 L 128 118 Q 100 130 72 118 Z" fill="#d97706" stroke="#92400e" stroke-width="3" />
+          <circle cx="100" cy="136" r="3" fill="#fef08a" />
+        `,
+        svgBack: ""
+      },
+      {
+        id: "cape",
+        name: "Hero Cape",
+        rarity: "epic",
+        svgFront: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`,
+        svgBack: `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`
+      }
+    ];
+
+    const PEDESTAL_PRESETS = [
+      {
+        id: "cyber",
+        name: "Cyber Ring",
+        rarity: "rare",
+        css: "radial-gradient(ellipse at center, rgba(56, 189, 248, 0.6) 0%, rgba(15, 23, 42, 0.8) 60%, transparent 75%)",
+        border: "2px solid rgba(56, 189, 248, 0.4)",
+        glow: "0 6px 20px rgba(56, 189, 248, 0.35)"
+      },
+      {
+        id: "emerald",
+        name: "Emerald Nebula",
+        rarity: "epic",
+        css: "radial-gradient(ellipse at center, rgba(16, 185, 129, 0.65) 0%, rgba(6, 78, 59, 0.75) 60%, transparent 75%)",
+        border: "2px solid rgba(16, 185, 129, 0.4)",
+        glow: "0 6px 20px rgba(16, 185, 129, 0.4)"
+      },
+      {
+        id: "cosmic",
+        name: "Cosmic Amethyst",
+        rarity: "legendary",
+        css: "radial-gradient(ellipse at center, rgba(168, 85, 247, 0.7) 0%, rgba(88, 28, 135, 0.75) 60%, transparent 75%)",
+        border: "2px solid rgba(168, 85, 247, 0.45)",
+        glow: "0 6px 24px rgba(168, 85, 247, 0.45)"
+      }
+    ];
+
+    let currentConfig = {
+      furColor: "#f59e0b",
+      furStroke: "#b45309",
+      furBelly: "#fef3c7",
+      furName: "Gold",
+      eyesId: "anime",
+      mouthId: "smile",
+      hornsId: "ears",
+      clothingId: "none",
+      pedestalId: "cyber"
+    };
+
+    let activeCategory = 'face';
+    let activeSubIndex = 0;
+    let isBobbing = true;
+    let currentStudent = null;
+
+    // Load active student data from Adventure Academy platform if available
+    function initStudentData() {
+      try {
+        const storeRef = (window.parent && window.parent.store) || (window.opener && window.opener.store) || (window.store);
+        const urlParams = new URLSearchParams(window.location.search);
+        const stuId = urlParams.get('studentId') || 'student-4a-343';
+
+        if (storeRef && typeof storeRef.getStudent === 'function') {
+          currentStudent = storeRef.getStudent(stuId) || storeRef.getStudents()[0];
+          if (currentStudent) {
+            document.getElementById("monster-name").innerText = currentStudent.firstName || currentStudent.name || "Companion";
+            const mState = storeRef.calculateMonsterState ? storeRef.calculateMonsterState(currentStudent.id) : null;
+            if (mState) {
+              document.getElementById("monster-level-badge").innerText = `Level ${mState.currentLevel} • ${mState.stageName || 'Growing Monster'}`;
+              document.getElementById("monster-xp-badge").innerText = `⭐ ${mState.totalXP.toLocaleString()} XP Active Companion`;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Platform store bridge:", err);
+      }
+    }
+
+    function switchCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll(".category-tabs .tab-pill").forEach(tab => {
+        tab.classList.toggle("active", tab.id === `tab-${cat}`);
+      });
+
+      const subnavWrap = document.getElementById("subnav-container");
+      if (cat === 'face') {
+        subnavWrap.style.display = "flex";
+        subnavWrap.innerHTML = `
+          <button class="subnav-btn active" id="subnav-btn-1" onclick="handleSubnav(0)">Eyes</button>
+          <button class="subnav-btn" id="subnav-btn-2" onclick="handleSubnav(1)">Mouths</button>
+        `;
+        activeSubIndex = 0;
+        renderOptions('eyes');
+      } else if (cat === 'horns') {
+        subnavWrap.style.display = "none";
+        renderOptions('horns');
+      } else if (cat === 'clothing') {
+        subnavWrap.style.display = "none";
+        renderOptions('clothing');
+      } else if (cat === 'pedestal') {
+        subnavWrap.style.display = "none";
+        renderOptions('pedestal');
+      } else if (cat === 'body') {
+        subnavWrap.style.display = "none";
+        renderOptions('body');
+      }
+    }
+
+    function handleSubnav(idx) {
+      activeSubIndex = idx;
+      document.getElementById("subnav-btn-1").classList.toggle("active", idx === 0);
+      document.getElementById("subnav-btn-2").classList.toggle("active", idx === 1);
+      renderOptions(idx === 0 ? 'eyes' : 'mouths');
+    }
+
+    function renderOptions(type) {
+      const container = document.getElementById("options-container");
+      container.innerHTML = "";
+
+      let list = [];
+      let selectedId = "";
+
+      if (type === 'eyes') {
+        list = EYE_PRESETS;
+        selectedId = currentConfig.eyesId;
+      } else if (type === 'mouths') {
+        list = MOUTH_PRESETS;
+        selectedId = currentConfig.mouthId;
+      } else if (type === 'horns') {
+        list = HORN_PRESETS;
+        selectedId = currentConfig.hornsId;
+      } else if (type === 'clothing') {
+        list = CLOTHING_PRESETS;
+        selectedId = currentConfig.clothingId;
+      } else if (type === 'pedestal') {
+        list = PEDESTAL_PRESETS;
+        selectedId = currentConfig.pedestalId;
+      } else if (type === 'body') {
+        list = [
+          { id: "gold", name: "Gold Chibi", rarity: "common", fill: "#f59e0b", stroke: "#b45309", belly: "#fef3c7" },
+          { id: "aqua", name: "Aqua Mystic", rarity: "rare", fill: "#38bdf8", stroke: "#0284c7", belly: "#e0f2fe" },
+          { id: "emerald", name: "Emerald Forest", rarity: "rare", fill: "#10b981", stroke: "#047857", belly: "#d1fae5" },
+          { id: "rose", name: "Rose Blossom", rarity: "epic", fill: "#ec4899", stroke: "#be185d", belly: "#fce7f3" },
+          { id: "violet", name: "Violet Sovereign", rarity: "legendary", fill: "#8b5cf6", stroke: "#6d28d9", belly: "#ede9fe" },
+          { id: "slate", name: "Shadow Slate", rarity: "epic", fill: "#64748b", stroke: "#334155", belly: "#f1f5f9" }
+        ];
+        selectedId = currentConfig.furName.toLowerCase();
+      }
+
+      list.forEach(item => {
+        const card = document.createElement("div");
+        card.className = `option-card ${item.id === selectedId ? 'selected' : ''}`;
+        
+        let thumbContent = "";
+        if (item.svg) {
+          thumbContent = `<svg viewBox="0 0 200 200" width="50" height="35">${item.svg}</svg>`;
+        } else if (type === 'body') {
+          thumbContent = `<div style="width:26px; height:26px; border-radius:50%; background:${item.fill}; border:2px solid ${item.stroke};"></div>`;
+        } else if (type === 'pedestal') {
+          thumbContent = `<div style="width:40px; height:18px; border-radius:50%; background:${item.css}; border:${item.border};"></div>`;
+        } else if (type === 'clothing') {
+          thumbContent = `<span style="font-size:1.4rem;">🎽</span>`;
+        }
+
+        card.innerHTML = `
+          <div class="option-thumb">${thumbContent}</div>
+          <div class="option-label">${item.name}</div>
+          <span class="rarity-pill rarity-${item.rarity}">${item.rarity}</span>
+        `;
+
+        card.onclick = () => {
+          if (type === 'eyes') {
+            currentConfig.eyesId = item.id;
+            document.getElementById("layer-eyes").innerHTML = item.svg;
+            document.getElementById("spec-eyes").innerText = item.name;
+          } else if (type === 'mouths') {
+            currentConfig.mouthId = item.id;
+            document.getElementById("layer-mouth").innerHTML = item.svg;
+            document.getElementById("spec-mouth").innerText = item.name;
+          } else if (type === 'horns') {
+            currentConfig.hornsId = item.id;
+            document.getElementById("layer-horns").innerHTML = item.svg;
+            document.getElementById("spec-horns").innerText = item.name;
+          } else if (type === 'clothing') {
+            currentConfig.clothingId = item.id;
+            document.getElementById("layer-front-gear").innerHTML = item.svgFront || "";
+            document.getElementById("layer-back-gear").innerHTML = item.svgBack || "";
+            document.getElementById("spec-clothing").innerText = item.name;
+          } else if (type === 'pedestal') {
+            currentConfig.pedestalId = item.id;
+            const disk = document.getElementById("pedestal-disk");
+            disk.style.background = item.css;
+            disk.style.border = item.border;
+            disk.style.boxShadow = item.glow;
+            document.getElementById("spec-pedestal").innerText = item.name;
+          } else if (type === 'body') {
+            setFurColor(item.fill, item.stroke, item.belly, item.name.split(' ')[0]);
+          }
+          renderOptions(type);
+        };
+        container.appendChild(card);
+      });
+    }
+
+    function setFurColor(fill, stroke, belly, name) {
+      currentConfig.furColor = fill;
+      currentConfig.furStroke = stroke;
+      currentConfig.furBelly = belly || '#fef3c7';
+      currentConfig.furName = name;
+
+      document.getElementById("monster-body-base").setAttribute("fill", fill);
+      document.getElementById("monster-body-base").setAttribute("stroke", stroke);
+      document.getElementById("monster-body-belly").setAttribute("fill", currentConfig.furBelly);
+      
+      document.querySelectorAll("#layer-feet ellipse, #layer-feet circle").forEach(el => {
+        el.setAttribute("fill", fill);
+        if (el.tagName === "ellipse") el.setAttribute("stroke", stroke);
+      });
+
+      document.querySelectorAll(".color-dot").forEach(dot => {
+        dot.classList.toggle("active", dot.style.background.includes(fill));
+      });
+
+      document.getElementById("spec-color").innerText = name;
+    }
+
+    function toggleMotion() {
+      isBobbing = !isBobbing;
+      const rig = document.getElementById("monster-svg");
+      const btn = document.getElementById("btn-anim");
+      rig.classList.toggle("bobbing", isBobbing);
+      btn.innerText = isBobbing ? "❚❚ Pause Idle" : "▶ Resume Idle";
+    }
+
+    function saveConfiguration() {
+      try {
+        const storeRef = (window.parent && window.parent.store) || (window.opener && window.opener.store) || (window.store);
+        if (storeRef && currentStudent && typeof storeRef.updateMonsterProfile === 'function') {
+          storeRef.updateMonsterProfile(currentStudent.id, {
+            baseColor: currentConfig.furName.toLowerCase(),
+            equipped: {
+              eyes: currentConfig.eyesId,
+              mouth: currentConfig.mouthId,
+              horns: currentConfig.hornsId,
+              clothing: currentConfig.clothingId,
+              pedestal: currentConfig.pedestalId
+            }
+          });
+        }
+      } catch (err) {
+        console.warn("Could not write directly to store:", err);
+      }
+
+      alert(`🎉 Companion successfully saved!\nFur: ${currentConfig.furName}\nEyes: ${document.getElementById("spec-eyes").innerText}\nMouth: ${document.getElementById("spec-mouth").innerText}\nHorns: ${document.getElementById("spec-horns").innerText}\nPedestal: ${document.getElementById("spec-pedestal").innerText}`);
+    }
+
+    function resetDefaults() {
+      setFurColor("#f59e0b", "#b45309", "#fef3c7", "Gold");
+      switchCategory("face");
+    }
+
+    function handleClose(e) {
+      if (window.parent && window.parent !== window && typeof window.parent.closeModal === 'function') {
+        e.preventDefault();
+        window.parent.closeModal('modal-avatar-selector');
+      }
+    }
+
+    // Initialize
+    initStudentData();
+    renderOptions("eyes");
+  </script>
+</body>
+</html>
