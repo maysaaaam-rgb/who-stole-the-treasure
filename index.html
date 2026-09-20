@@ -14,7 +14,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
   <!-- School Platform Unified Stylesheet -->
-  <link rel="stylesheet" href="css/school-platform.css?v=RPG_MONSTER_V4">
+  <link rel="stylesheet" href="css/school-platform.css">
 
   <!-- Immediate Auth & Lock Check + Mobile/Cross-Device Controller -->
   <script>
@@ -835,58 +835,33 @@
     </div>
   </div>
 
-  <!-- Create / Edit Homework Workspace (Full-Page Studio) -->
+  <!-- Create / Edit Homework Modal (2-Column with Live Preview) -->
   <div class="modal-overlay" id="modal-homework-editor" style="z-index:1150;">
-    <div class="modal-dialog workspace-fullscreen-dialog">
-      <!-- Top Bar -->
-      <div class="workspace-top-bar">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()" style="padding:6px 12px; font-weight:800;">
-            ← Back
-          </button>
-          <div>
-            <h2 id="hw-modal-title" style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin:0;">Create / Edit Homework</h2>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Build an interactive quest, attach multimedia resources, and award XP upon completion.</p>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">✕ Cancel</button>
-          <button type="button" class="btn-primary-action" onclick="document.getElementById('hw-editor-form-submit-btn').click()" style="font-weight:900; padding:8px 20px;">💾 Save</button>
+    <div class="modal-dialog" style="max-width: 1000px; width: 95%; max-height: 92vh; overflow-y: auto; border-radius: 20px; padding: 26px;">
+      <button class="modal-close-btn" onclick="closeAllModals()">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <div>
+          <h2 id="hw-modal-title" style="font-size:1.4rem; font-weight:900; color:var(--text-main); margin:0;">Create Homework Quest</h2>
+          <p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Design engaging English quests, attach worksheets & games, and award XP upon completion.</p>
         </div>
       </div>
 
-      <!-- Workspace Tabs -->
-      <div class="workspace-tabs-row">
-        <button type="button" class="workspace-tab-btn is-active" id="wtab-basic" onclick="switchHwWorkspaceTab('basic')">📋 Basic Info</button>
-        <button type="button" class="workspace-tab-btn" id="wtab-resources" onclick="switchHwWorkspaceTab('resources')">📦 Resources</button>
-        <button type="button" class="workspace-tab-btn" id="wtab-instructions" onclick="switchHwWorkspaceTab('instructions')">📝 Instructions</button>
-        <button type="button" class="workspace-tab-btn" id="wtab-settings" onclick="switchHwWorkspaceTab('settings')">⚙️ Settings</button>
-        <button type="button" class="workspace-tab-btn" id="wtab-preview" onclick="previewCurrentHomeworkAsStudent()">👁️ Student Preview</button>
-      </div>
-
-      <!-- Main Workspace 2-Column Split -->
-      <div class="workspace-main-split">
-        <!-- Left: Form Editor -->
-        <form id="hw-editor-form" onsubmit="handleSaveHomeworkForm(event)" style="display:flex; flex-direction:column; gap:16px;">
+      <div class="hw-editor-grid">
+        <!-- Left: Form -->
+        <form id="hw-editor-form" onsubmit="handleSaveHomeworkForm(event)" style="display:flex; flex-direction:column; gap:14px;">
           <input type="hidden" id="edit-hw-id" value="" />
-          <button type="submit" id="hw-editor-form-submit-btn" style="display:none;"></button>
 
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Title *</label>
-            <input type="text" id="new-hw-title" class="filter-select" style="width:100%; font-weight:800; font-size:1rem; padding:10px 14px;" required placeholder="e.g. Vocabulary Quest: Animals" oninput="updateLiveQuestPreview()" />
+            <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Quest Title</label>
+            <input type="text" id="new-hw-title" class="filter-select" style="width:100%; font-weight:700;" required placeholder="e.g. 🐾 Animal Habitats Explorer" oninput="updateLiveQuestPreview()" />
           </div>
 
-          <div>
-            <label style="display:block; font-size:0.82rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Description</label>
-            <textarea id="new-hw-desc-short" class="filter-select" style="width:100%; height:60px; font-size:0.84rem;" placeholder="Learn and use 10 animal words. Complete the worksheet and play the mini-game. Try the extra challenge for more XP!" oninput="updateLiveQuestPreview()"></textarea>
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
             <div>
-              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Subject</label>
+              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Subject / Focus</label>
               <select id="new-hw-subject" class="filter-select" style="width:100%; font-weight:700;" onchange="updateLiveQuestPreview()">
-                <option value="Vocabulary">Vocabulary</option>
                 <option value="Reading &amp; Vocab">Reading &amp; Vocab</option>
+                <option value="Vocabulary">Vocabulary</option>
                 <option value="Phonics &amp; Spelling">Phonics &amp; Spelling</option>
                 <option value="Speaking">Speaking</option>
                 <option value="Reading">Reading</option>
@@ -895,118 +870,113 @@
               </select>
             </div>
             <div>
-              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">CEFR Level</label>
-              <select id="new-hw-cefr" class="filter-select" style="width:100%; font-weight:700;" onchange="updateLiveQuestPreview()">
-                <option value="Pre-A1">Pre-A1</option>
-                <option value="A1" selected>A1</option>
-                <option value="A1+">A1+</option>
-                <option value="A2">A2</option>
-              </select>
-            </div>
-            <div>
-              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Class / Students</label>
+              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Target Cohort / Class</label>
               <select id="new-hw-class" class="filter-select" style="width:100%; font-weight:700;" onchange="updateLiveQuestPreview()">
                 <!-- Populated dynamically -->
               </select>
             </div>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
             <div>
               <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Due Date</label>
-              <input type="text" id="new-hw-date" class="filter-select" style="width:100%; font-weight:700;" placeholder="Sep 22, 2026" oninput="updateLiveQuestPreview()" />
+              <input type="text" id="new-hw-date" class="filter-select" style="width:100%; font-weight:700;" placeholder="Friday, Nov 15" oninput="updateLiveQuestPreview()" />
             </div>
             <div>
-              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Estimated Time</label>
-              <input type="text" id="new-hw-time" class="filter-select" style="width:100%; font-weight:700;" value="20 minutes" oninput="updateLiveQuestPreview()" />
-            </div>
-            <div>
-              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">XP Reward</label>
+              <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Base XP Reward</label>
               <div style="display:flex; align-items:center; gap:8px;">
                 <input type="number" id="new-hw-xp" class="filter-select" style="width:100%; font-weight:800;" value="20" min="5" max="100" step="5" oninput="updateLiveQuestPreview()" />
-                <span style="font-weight:900; color:#b45309; white-space:nowrap;">⭐ XP</span>
+                <span style="font-weight:800; color:#b45309; white-space:nowrap;">⭐ XP</span>
               </div>
             </div>
           </div>
 
-          <!-- Optional Challenge -->
-          <div style="background:var(--bg-muted); border:1.5px solid var(--border-light); border-radius:14px; padding:14px;">
-            <label style="display:flex; align-items:center; gap:8px; font-weight:900; font-size:0.86rem; cursor:pointer; color:#0f172a;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Instructions &amp; Steps (Numbered Checklist)</label>
+            <textarea id="new-hw-desc" class="filter-select" style="width:100%; height:90px; font-size:0.84rem; line-height:1.4;" placeholder="1. Read the short passage about forest and ocean animals.&#10;2. Complete the 5 matching questions.&#10;3. Audio record: say 3 animal names and their habitats!" oninput="updateLiveQuestPreview()"></textarea>
+          </div>
+
+          <!-- Optional Challenge Toggle -->
+          <div style="background:var(--bg-muted); border:1px solid var(--border-light); border-radius:12px; padding:12px;">
+            <label style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:0.84rem; cursor:pointer; margin-bottom:6px;">
               <input type="checkbox" id="new-hw-opt-toggle" style="width:18px; height:18px; accent-color:#059669;" onchange="toggleOptionalChallengeField(); updateLiveQuestPreview();" checked />
-              <span>💎 Optional Challenge (+5 XP)</span>
+              <span>Include optional challenge (+5 Bonus XP)</span>
             </label>
-            <div id="hw-opt-details" style="margin-top:8px;">
-              <input type="text" id="new-hw-opt-desc" class="filter-select" style="width:100%; font-size:0.82rem;" placeholder="Make a short video saying the animal words!" oninput="updateLiveQuestPreview()" />
+            <div id="hw-opt-details" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+              <input type="text" id="new-hw-opt-desc" class="filter-select" style="width:100%; font-size:0.82rem;" placeholder="Draw your favorite animal or record a bonus fact for +5 bonus XP!" oninput="updateLiveQuestPreview()" />
             </div>
           </div>
 
           <!-- Attach Resources -->
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:800; margin-bottom:6px; color:var(--text-main);">Attach Resources</label>
+            <label style="display:block; font-size:0.8rem; font-weight:800; margin-bottom:6px; color:var(--text-main);">Attach Learning Resources</label>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('worksheet')">📄 Add Worksheet</button>
-              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('link')">🔗 Add Link</button>
-              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('video')">📹 Add Video</button>
-              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('game')">🎮 Add Game</button>
+              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('worksheet')" style="font-size:0.78rem; font-weight:800;">📄 + Attach Worksheet</button>
+              <button type="button" class="btn-sm-secondary" onclick="attachQuickResource('game')" style="font-size:0.78rem; font-weight:800;">🎮 + Attach Game / Lesson</button>
             </div>
-            <div id="hw-attached-resources-chips" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
-          </div>
-
-          <!-- Assignment Instructions Checklist -->
-          <div>
-            <label style="display:block; font-size:0.82rem; font-weight:800; margin-bottom:4px; color:var(--text-main);">Assignment Instructions (Numbered Checklist)</label>
-            <textarea id="new-hw-desc" class="filter-select" style="width:100%; height:90px; font-size:0.84rem; line-height:1.4;" placeholder="1. Watch the video&#10;2. Learn the animal words&#10;3. Complete the worksheet&#10;4. Play the mini-game&#10;5. Submit your work" oninput="updateLiveQuestPreview()"></textarea>
+            <div id="hw-attached-resources-chips" style="display:flex; flex-wrap:wrap; gap:6px;">
+              <!-- Resource chips -->
+            </div>
           </div>
 
           <!-- Publish Toggle -->
-          <div style="padding:10px 14px; background:rgba(37,99,235,0.06); border:1px solid rgba(37,99,235,0.25); border-radius:12px;">
+          <div style="padding:10px 12px; background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2); border-radius:10px;">
             <label style="display:flex; align-items:center; gap:8px; font-size:0.84rem; font-weight:800; cursor:pointer;">
-              <input type="checkbox" id="new-hw-publish" style="width:18px; height:18px; accent-color:#2563eb;" checked />
-              <span>Publish homework (visible to students)</span>
+              <input type="checkbox" id="new-hw-publish" style="width:18px; height:18px; accent-color:#3b82f6;" checked />
+              <span>Publish immediately to students (Active Quest)</span>
             </label>
+          </div>
+
+          <!-- Modal Actions -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-sm-secondary" onclick="closeAllModals()">Cancel</button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-sm-secondary" onclick="previewCurrentHomeworkAsStudent()" style="font-weight:800; color:#3b82f6;">👁️ Preview as Student</button>
+              <button type="submit" class="btn-primary-action" style="font-weight:900;">💾 Save &amp; Assign Homework</button>
+            </div>
           </div>
         </form>
 
-        <!-- Right: Live Student Preview Card (Matching media_1789763338261.jpg Top Right) -->
+        <!-- Right: Live Student Quest Preview -->
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="font-size:0.8rem; font-weight:900; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; display:flex; align-items:center; gap:6px;">
-            <span>📱</span> <span>Homework Preview (Student View)</span>
+          <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+            <span>📱</span> <span>Student Quest Preview</span>
           </div>
 
-          <div style="background:#ffffff; border:2px solid #38bdf8; border-radius:24px; overflow:hidden; box-shadow:0 14px 35px rgba(56,189,248,0.2);">
-            <!-- Rabbit Hero Image -->
-            <div style="width:100%; height:180px; position:relative; overflow:hidden; background:#0f172a;">
-              <img src="assets/homework/rabbit-adventurer.png" alt="Rabbit Adventurer" style="width:100%; height:100%; object-fit:cover;" />
-            </div>
-
-            <div style="padding:20px;">
-              <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                <span class="badge" id="preview-cefr-badge" style="background:#3b82f6; color:#fff; font-size:0.72rem; font-weight:900;">A1</span>
-                <span class="badge" id="preview-subject-badge" style="background:#0284c7; color:#fff; font-size:0.72rem; font-weight:900;">Vocabulary</span>
-                <span style="font-size:0.75rem; color:#64748b; font-weight:700;" id="preview-class-name">Grade 3A</span>
+          <div class="quest-preview-card" id="hw-live-preview-card">
+            <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:14px;">
+              <div style="width:68px; height:68px; border-radius:14px; overflow:hidden; background:#020617; border:1.5px solid rgba(56,189,248,0.5); flex-shrink:0;">
+                <img src="assets/homework/rabbit-adventurer.png" alt="Companion" style="width:100%; height:100%; object-fit:cover;" />
               </div>
-
-              <h3 id="preview-hw-title" style="font-size:1.25rem; font-weight:900; color:#0f172a; margin:0 0 6px 0; line-height:1.25;">Vocabulary Quest: Animals</h3>
-              <p id="preview-hw-short" style="font-size:0.82rem; color:#475569; margin:0 0 14px 0; line-height:1.4;">
-                Learn and use 10 animal words. Complete the worksheet and play the mini-game.
-              </p>
-
-              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:14px; display:flex; flex-direction:column; gap:6px; font-size:0.78rem; font-weight:700; color:#334155;">
-                <div id="preview-due-date">📅 Due: September 22, 2026</div>
-                <div id="preview-time-info">⏱️ Estimated time: 20 minutes</div>
-                <div style="font-weight:900; color:#b45309;" id="preview-xp-pill">⭐ Reward: +20 XP</div>
-              </div>
-
-              <button type="button" class="btn-primary-action" onclick="previewCurrentHomeworkAsStudent()" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; border-radius:14px; background:#2563eb; color:#fff; box-shadow:0 6px 18px rgba(37,99,235,0.4);">
-                Start Quest
-              </button>
-
-              <!-- Optional challenge preview -->
-              <div id="preview-bonus-card" style="margin-top:12px; background:#fef3c7; border:1px solid #fde68a; border-radius:12px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:0.76rem; font-weight:800; color:#92400e;">💎 Optional Challenge</span>
-                <span style="font-size:0.74rem; font-weight:900; color:#b45309; background:#fff; padding:2px 8px; border-radius:10px;">+5 XP</span>
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap;">
+                  <span class="badge" id="preview-subject-badge" style="background:#059669; color:#fff; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">Reading &amp; Vocab</span>
+                  <span style="font-size:0.72rem; color:#94a3b8; font-weight:700;" id="preview-class-name">Grade 3A</span>
+                </div>
+                <h3 id="preview-hw-title" style="font-size:1.15rem; font-weight:900; margin:0 0 4px 0; color:#fff; line-height:1.2;">🐾 Animal Habitats Explorer</h3>
+                <div style="font-size:0.75rem; color:#94a3b8;" id="preview-due-date">Due: Friday, Nov 15</div>
               </div>
             </div>
+
+            <div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">
+              <span class="hw-xp-pill" id="preview-xp-pill">⭐ +20 XP</span>
+              <span class="hw-bonus-xp-pill" id="preview-bonus-xp-pill">✨ +5 XP Bonus</span>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; margin-bottom:14px;">
+              <div style="font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:6px;">Quest Steps:</div>
+              <div id="preview-steps-list" style="display:flex; flex-direction:column; gap:6px; font-size:0.8rem; color:#e2e8f0; line-height:1.35;">
+                <!-- Dynamically updated -->
+              </div>
+            </div>
+
+            <div id="preview-resources-wrap" style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
+              <!-- Attached resource buttons -->
+            </div>
+
+            <button type="button" class="btn-primary-action" style="width:100%; justify-content:center; background:#38bdf8; color:#0f172a; font-weight:900; font-size:0.88rem; box-shadow:0 4px 15px rgba(56,189,248,0.4);" onclick="previewCurrentHomeworkAsStudent()">
+              🚀 START QUEST
+            </button>
           </div>
         </div>
       </div>
@@ -1903,6 +1873,52 @@
     </div>
   </div>
 
+  <!-- Bottom Classroom Toolkit Dock -->
+  <div id="classroom-floating-toolkit" class="classroom-toolkit-dock" style="display:none;">
+    <div class="toolkit-inner">
+      <button type="button" class="toolkit-item-btn toolkit-btn-drawer" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit" style="background:var(--color-primary); color:#ffffff; font-weight:800;">
+        <span class="toolkit-icon">🧰</span>
+        <span class="toolkit-label">Toolkit</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openSimonSaysModal()" title="Simon Says Physical Classroom Game" style="font-weight:800; color:#059669;">
+        <span class="toolkit-icon">🗣️</span>
+        <span class="toolkit-label">Simon Says</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
+        <span class="toolkit-icon">🎲</span>
+        <span class="toolkit-label">Random</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="toggleFloatingTimer()" title="Classroom Timer">
+        <span class="toolkit-icon">⏱</span>
+        <span class="toolkit-label">Timer</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Groups">
+        <span class="toolkit-icon">👥</span>
+        <span class="toolkit-label">Groups</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
+        <span class="toolkit-icon">✓</span>
+        <span class="toolkit-label">Attendance</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openGiveFeedbackModal('class')" title="Give Whole Class Feedback" style="font-weight:800; color:#b45309;">
+        <span class="toolkit-icon">⭐</span>
+        <span class="toolkit-label">Feedback</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openQuickAssessmentModal()" title="Quick Formative Assessment">
+        <span class="toolkit-icon">📝</span>
+        <span class="toolkit-label">Assess</span>
+      </button>
+      <button type="button" class="toolkit-item-btn" onclick="openQuickEvidenceModal()" title="Quick Worksheet Scoring">
+        <span class="toolkit-icon">📄</span>
+        <span class="toolkit-label">Evidence</span>
+      </button>
+      <button type="button" class="toolkit-item-btn toolkit-btn-mode" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
+        <span class="toolkit-icon">🎓</span>
+        <span class="toolkit-label" id="label-smartboard-mode">Classroom Mode</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Reusable Confirmation Modal -->
   <div class="modal-overlay" id="modal-confirm-action">
     <div class="modal-dialog" style="max-width: 440px; text-align:center;">
@@ -2679,25 +2695,6 @@
         </div>
       </div>
 
-      <!-- Monster Evolution Journey (Bottom Horizontal Bar) -->
-      <div id="monster-creator-evolution-journey" style="margin-top:20px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:18px; padding:16px 20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.2rem;">🎨</span>
-              <h3 style="font-size:1.05rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Journey</h3>
-            </div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin:2px 0 0 0;">Watch your companion grow stronger as you learn!</p>
-          </div>
-          <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-avatar-selector'); switchGamificationTab('levels'); switchView('gamification');" style="font-weight:800; font-size:0.78rem;">
-            View Evolution Details ➔
-          </button>
-        </div>
-        <div id="monster-creator-journey-steps" style="display:flex; justify-content:space-between; align-items:center; overflow-x:auto; gap:10px; padding-bottom:4px;">
-          <!-- Dynamically populated with all 7 stages -->
-        </div>
-      </div>
-
       <!-- Studio Modal Footer: Pro Tip & Unlock Legend -->
       <div class="monster-creator-footer-bar" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:var(--text-muted);">
         <div style="display:flex; align-items:center; gap:6px;">
@@ -2722,7 +2719,45 @@
     </div>
   </div>
 
+  <!-- Attach Game to Lesson Modal -->
+  <div class="modal-overlay" id="modal-attach-game">
+    <div class="modal-dialog" style="max-width: 680px; width: 92vw; border-radius: 16px; padding: 22px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-attach-game')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <span style="font-size:1.6rem;">🎮</span>
+        <div>
+          <h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">Attach Game to Lesson</h3>
+          <p id="attach-game-lesson-title" style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Select a game from Adventure Academy library</p>
+        </div>
+      </div>
+      <div id="attach-game-list" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; max-height:400px; overflow-y:auto; padding:4px;">
+        <!-- Dynamically populated games -->
+      </div>
+      <div style="margin-top:16px; text-align:right;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-attach-game')">Cancel</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- Attach Worksheet to Lesson Modal -->
+  <div class="modal-overlay" id="modal-attach-worksheet">
+    <div class="modal-dialog" style="max-width: 680px; width: 92vw; border-radius: 16px; padding: 22px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-attach-worksheet')">✕</button>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; border-bottom:1px solid var(--border-light); padding-bottom:12px;">
+        <span style="font-size:1.6rem;">📄</span>
+        <div>
+          <h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">Attach Worksheet to Lesson</h3>
+          <p id="attach-worksheet-lesson-title" style="font-size:0.82rem; color:var(--text-muted); margin:2px 0 0 0;">Select a printable worksheet from library</p>
+        </div>
+      </div>
+      <div id="attach-worksheet-list" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding:4px;">
+        <!-- Dynamically populated worksheets -->
+      </div>
+      <div style="margin-top:16px; text-align:right;">
+        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-attach-worksheet')">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 6. Interactive Classroom Teacher Toolkit Modal -->
   <div class="modal-overlay" id="modal-classroom-toolkit">
@@ -2964,16 +2999,12 @@
   <script src="js/school-cloud-sync.js?v=3.0"></script>
 
   <!-- 3. School Platform Store (Single Source of Truth) -->
-  <script src="js/school-store.js?v=SPINE_PIXI_V1"></script>
+  <script src="js/school-store.js?v=3.0"></script>
 
-  <!-- 3.1 Spine 2D + PixiJS Monster Character Runtimes -->
-  <script src="js/pixi.min.js"></script>
-  <script src="js/pixi-spine.umd.js"></script>
-
-  <!-- 3.2 Application Controller, Monster Engine & Router -->
-  <script src="js/monster-renderer.js?v=SPINE_PIXI_V1"></script>
+  <!-- 3. Application Controller & Router -->
+  <script src="js/monster-renderer.js?v=3.0"></script>
   <script src="js/progress-check.js?v=3.0"></script>
-  <script src="js/school-app.js?v=SPINE_PIXI_V1"></script>
+  <script src="js/school-app.js?v=3.0"></script>
   <script src="js/simon-says-game.js?v=3.0"></script>
 
 
@@ -3113,72 +3144,63 @@
   </div>
 
 
-  <!-- Monster Level Up / Evolution Celebration Modal (Pedestal Cosmic Arena) -->
+  <!-- Monster Level Up / Evolution Celebration Modal (Cinematic Master Upgrade) -->
   <div class="modal-overlay" id="modal-monster-levelup" style="z-index: 1250;">
-    <div class="modal-dialog evolution-cinematic-modal" style="max-width: 780px; width:94%; text-align: center; border-radius: 28px; padding: 32px 24px; position: relative; overflow: hidden;">
+    <div class="modal-dialog evolution-cinematic-modal" style="max-width: 640px; width:92%; text-align: center; border-radius: 24px; padding: 32px 28px; position: relative; overflow: hidden;">
       <button class="modal-close-btn" onclick="handleCelebrationAcknowledgeLevelUp()" style="color:#fff;">✕</button>
       
-      <div style="font-size: 1.8rem; margin-bottom: 2px;">✨ 🐲 🌟</div>
-      <h2 id="m-levelup-title" style="font-size: 1.85rem; font-weight: 900; color: #38bdf8; margin: 0 0 4px 0; letter-spacing: 0.02em;">MONSTER EVOLUTION!</h2>
+      <div style="font-size: 2.4rem; margin-bottom: 4px;">✨ 🐲 🌟</div>
+      <h2 id="m-levelup-title" style="font-size: 1.65rem; font-weight: 900; color: #38bdf8; margin: 0 0 4px 0; letter-spacing: 0.02em;">MONSTER EVOLUTION!</h2>
       <p id="m-levelup-subtitle" style="font-size: 0.95rem; color: #bae6fd; margin: 0 0 16px 0; font-weight: 700;">Congratulations, Leo! Your monster has evolved into a Level 4 Growing Monster!</p>
 
-      <!-- 3D Pedestal Stage Arena -->
-      <div class="evolution-pedestal-stage">
-        <!-- Before: Level 3 on Pedestal -->
-        <div class="pedestal-slot">
-          <div style="font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:6px;">Before</div>
-          <div class="pedestal-art-card">
-            <img id="m-levelup-prev-img" src="assets/monsters/stage-3-baby-monster.png" alt="Baby Monster" />
+      <!-- XP Milestone Badge -->
+      <div id="m-levelup-xp-info" style="margin-bottom: 18px; font-size: 0.88rem; font-weight: 900; color: #fbbf24; background: rgba(245,158,11,0.2); border: 1.5px solid #f59e0b; padding: 6px 18px; border-radius: 20px; display: inline-block;">
+        ⭐ 500 XP Milestone Reached
+      </div>
+
+      <!-- Evolution Comparison Box with Artwork -->
+      <div style="background: rgba(15,23,42,0.85); border: 1.5px solid rgba(56,189,248,0.4); border-radius: 20px; padding: 20px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-around; gap: 12px; box-shadow: inset 0 2px 12px rgba(0,0,0,0.6);">
+        <!-- Before -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div id="m-levelup-prev-art" style="width: 110px; height: 110px; border-radius: 14px; overflow: hidden; background: #020617; border: 1.5px solid rgba(255,255,255,0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <img id="m-levelup-prev-img" src="assets/monsters/stage-3-baby-monster.png" alt="Previous Stage" style="width: 100%; height: 100%; object-fit: cover;" />
           </div>
-          <div class="pedestal-stone-base"></div>
-          <div style="margin-top:10px;">
-            <div style="font-size:0.72rem; font-weight:800; color:#fbbf24; background:rgba(245,158,11,0.2); border:1px solid #f59e0b; padding:2px 8px; border-radius:10px;">480 / 500 XP</div>
-            <div id="m-levelup-prev-label" style="font-size:0.85rem; font-weight:900; color:#fff; margin-top:4px;">Level 3<br>Baby Monster</div>
-          </div>
+          <span id="m-levelup-prev-label" style="font-size: 0.82rem; font-weight: 800; color: #94a3b8; text-align: center; line-height: 1.3;">Level 3<br>Baby Monster</span>
         </div>
 
-        <!-- Center: Cosmic Evolution Portal -->
-        <div class="evolution-portal-center">
-          <div class="cosmic-ring-glow">
-            <div style="font-size:2.4rem;">✨</div>
-          </div>
-          <div style="font-size:0.82rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em; margin-top:10px;">
-            Evolution Unlocked!
-          </div>
+        <!-- Glowing Sparkle Ray -->
+        <div class="evolution-sparkle-ray" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+          <div style="font-size: 2.2rem; color: #38bdf8; font-weight: 900;">➔</div>
+          <span style="font-size: 0.68rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.5px;">Evolved!</span>
         </div>
 
-        <!-- After: Level 4 on Illuminated Pedestal -->
-        <div class="pedestal-slot">
-          <div style="font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:6px;">After</div>
-          <div class="pedestal-art-card" style="border-color:#38bdf8; box-shadow:0 0 35px rgba(56,189,248,0.7);">
-            <img id="m-levelup-next-img" src="assets/monsters/stage-4-growing-monster.png" alt="Growing Monster" />
+        <!-- After -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div id="m-levelup-next-art" style="width: 125px; height: 125px; border-radius: 16px; overflow: hidden; background: #020617; border: 2.5px solid #38bdf8; box-shadow: 0 0 25px rgba(56,189,248,0.6);">
+            <img id="m-levelup-next-img" src="assets/monsters/stage-4-growing-monster.png" alt="New Stage" style="width: 100%; height: 100%; object-fit: cover;" />
           </div>
-          <div class="pedestal-stone-base" style="background:linear-gradient(180deg, #0284c7 0%, #0369a1 100%);"></div>
-          <div style="margin-top:10px;">
-            <div style="font-size:0.72rem; font-weight:800; color:#10b981; background:rgba(16,185,129,0.2); border:1px solid #10b981; padding:2px 8px; border-radius:10px;">500 / 1,000 XP</div>
-            <div id="m-levelup-next-label" style="font-size:0.85rem; font-weight:900; color:#38bdf8; margin-top:4px;">Level 4<br>Growing Monster</div>
-          </div>
+          <span id="m-levelup-next-label" class="badge" style="background: #38bdf8; color: #020617; font-size: 0.85rem; font-weight: 900; padding: 4px 14px; border-radius: 14px; text-align: center;">Level 4: Growing Monster</span>
         </div>
       </div>
 
-      <!-- Perks Box -->
-      <div style="text-align: left; background: rgba(15,23,42,0.8); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 14px 18px; margin: 16px 0 20px 0;">
-        <div style="font-size: 0.76rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: #38bdf8; margin-bottom: 8px;">✨ Unlocked Perks &amp; Powers:</div>
-        <div id="m-levelup-perks-list" style="display:flex; flex-direction:column; gap:4px; font-size:0.82rem; color:#e2e8f0;">
+      <!-- Next evolution threshold teaser -->
+      <div id="m-levelup-next-teaser" style="font-size: 0.84rem; color: #94a3b8; margin-bottom: 18px; font-weight: 700;">
+        Next evolution at 1,000 XP (Adventurer Monster)
+      </div>
+
+      <!-- Unlocked Perks Box -->
+      <div style="text-align: left; background: rgba(15,23,42,0.7); border: 1px solid rgba(56,189,248,0.25); border-radius: 16px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: #38bdf8; margin-bottom: 10px;">✨ Unlocked Perks &amp; Powers:</div>
+        <div id="m-levelup-perks-list" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.84rem; color: #e2e8f0;">
           <div>🌟 <strong>Stronger Companion Aura:</strong> Shines brighter in classroom view</div>
           <div>🎨 <strong>New Monster Studio Customizations:</strong> Sprout horns &amp; scholar hat unlocked!</div>
           <div>🏆 <strong>Evolution Badge:</strong> Growing Adventurer unlocked!</div>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button type="button" class="btn-primary-action" onclick="handleCelebrationAcknowledgeLevelUp()" style="padding:12px 30px; font-size:0.95rem; font-weight:900; background:#38bdf8; color:#020617; box-shadow:0 4px 20px rgba(56,189,248,0.4);">
-          Continue Adventure! 🚀
-        </button>
-        <button type="button" class="btn-sm-secondary" onclick="handleCelebrationCustomize()" style="padding:12px 22px; font-size:0.95rem; font-weight:800; border:1.5px solid rgba(255,255,255,0.4); color:#fff; background:rgba(255,255,255,0.15);">
-          🎨 Open Monster Studio
-        </button>
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap:wrap;">
+        <button type="button" class="btn-primary-action" onclick="handleCelebrationAcknowledgeLevelUp()" style="padding: 12px 28px; font-size: 0.95rem; font-weight:900; background:#38bdf8; color:#020617; box-shadow:0 4px 20px rgba(56,189,248,0.4);">Continue Adventure! 🚀</button>
+        <button type="button" class="btn-sm-secondary" onclick="handleCelebrationCustomize()" style="padding: 12px 20px; font-size: 0.95rem; font-weight:800; border: 1.5px solid rgba(255,255,255,0.4); color:#ffffff !important; background:rgba(255,255,255,0.15) !important;">🎨 Open Monster Studio</button>
       </div>
     </div>
   </div>
@@ -3488,15 +3510,96 @@
 
   <!-- Platform Access Controller is defined in head for instant cross-device execution -->
 
-  <!-- Student Quest View & Interactive Submission Modal (Parchment Mission Layout) -->
+  <!-- Student Quest View & Interactive Submission Modal -->
   <div class="modal-overlay" id="modal-student-quest" style="z-index:1180;">
-    <div class="modal-dialog" style="max-width: 900px; width: 95%; max-height: 92vh; overflow-y: auto; border-radius: 24px; padding: 24px; background: #f8fafc;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <button type="button" class="btn-sm-secondary" onclick="closeModal('modal-student-quest')" style="font-weight:800;">
-          ← Back to Homework
-        </button>
-        <button class="modal-close-btn" onclick="closeModal('modal-student-quest')">✕</button>
+    <div class="modal-dialog" style="max-width: 780px; width: 95%; max-height: 92vh; overflow-y: auto; border-radius: 20px; padding: 28px; background: var(--bg-surface);">
+      <button class="modal-close-btn" onclick="closeModal('modal-student-quest')">✕</button>
+
+      <!-- Quest Header Banner -->
+      <div style="background:linear-gradient(135deg, #091e3a 0%, #0c3559 50%, #0f766e 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px; color:#fff; margin-bottom:20px; display:flex; align-items:center; gap:18px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">
+        <div style="width:80px; height:80px; border-radius:16px; overflow:hidden; background:#020617; border:2px solid #38bdf8; flex-shrink:0; box-shadow:0 6px 16px rgba(0,0,0,0.4);">
+          <img src="assets/homework/rabbit-adventurer.png" alt="Adventurer Companion" style="width:100%; height:100%; object-fit:cover;" />
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+            <span class="badge" id="student-quest-tag" style="background:#06b6d4; color:#042f2e; font-weight:900; font-size:0.74rem;">QUEST</span>
+            <span style="font-size:0.78rem; color:#bae6fd; font-weight:700;" id="student-quest-due">Due: Friday, Nov 15</span>
+          </div>
+          <h2 id="student-quest-title" style="font-size:1.45rem; font-weight:900; margin:0 0 6px 0; color:#ffffff;">🐾 Quest: Animal Habitats Explorer</h2>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="hw-xp-pill" id="student-quest-xp-pill" style="font-size:0.8rem; font-weight:900;">⭐ +20 XP Reward</span>
+            <span class="hw-bonus-xp-pill" id="student-quest-bonus-pill" style="font-size:0.76rem; font-weight:900;">✨ +5 XP Bonus</span>
+          </div>
+        </div>
       </div>
+
+      <input type="hidden" id="student-quest-hw-id" value="" />
+      <input type="hidden" id="student-quest-student-id" value="" />
+
+      <!-- Student Selector (For Teacher/Student switching) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:var(--bg-muted); padding:10px 14px; border-radius:12px; border:1px solid var(--border-light); flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.1rem;">🧒</span>
+          <span style="font-size:0.84rem; font-weight:800; color:var(--text-main);">Viewing as Learner:</span>
+        </div>
+        <select id="student-quest-picker" class="filter-select" style="font-weight:800; font-size:0.82rem;" onchange="handleStudentQuestLearnerChange(this.value)">
+          <!-- Populated dynamically -->
+        </select>
+      </div>
+
+      <!-- Description -->
+      <p id="student-quest-desc" style="font-size:0.9rem; color:var(--text-secondary); line-height:1.4; margin-bottom:18px; font-weight:600;">
+        Explore different animal habitats and learn key English vocabulary! Follow the checklist below to earn your XP.
+      </p>
+
+      <!-- Checklist Section -->
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:1rem; font-weight:900; margin:0 0 10px 0; display:flex; align-items:center; gap:6px; color:var(--text-main);">
+          <span>📋</span> <span>Quest Checklist (Complete each task)</span>
+        </h3>
+        <div id="student-quest-checklist-container">
+          <!-- Checklist items -->
+        </div>
+      </div>
+
+      <!-- Audio Recording Station -->
+      <div style="background:var(--bg-muted); border:1.5px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.3rem;">🎙️</span>
+            <div>
+              <div style="font-weight:900; font-size:0.9rem; color:var(--text-main);">Voice Recording Studio</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Record speaking response for pronunciation & fluency</div>
+            </div>
+          </div>
+          <span id="audio-recording-status" style="font-size:0.75rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.1); padding:3px 10px; border-radius:10px;">Ready</span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button type="button" id="btn-audio-record" class="btn-primary-action" onclick="toggleSimulatedAudioRecording()" style="background:#ef4444; border-color:#dc2626; font-size:0.82rem; font-weight:800;">
+            🔴 Start Recording
+          </button>
+          <button type="button" id="btn-audio-playback" class="btn-sm-secondary" onclick="playSimulatedAudioPlayback()" style="font-size:0.82rem; font-weight:800;" disabled>
+            ▶️ Listen to Recording (0:14)
+          </button>
+        </div>
+      </div>
+
+      <!-- Student Note to Teacher -->
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:0.82rem; font-weight:800; margin-bottom:6px; color:var(--text-main);">Student Note to Teacher (Optional):</label>
+        <textarea id="student-quest-notes" class="filter-select" style="width:100%; height:65px; font-size:0.84rem;" placeholder="e.g. I really liked the ocean animals section!"></textarea>
+      </div>
+
+      <!-- Action Footer (Sticky) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:14px; position:sticky; bottom:-28px; background:var(--bg-surface); margin-top:16px; margin-bottom:-10px; z-index:10; flex-wrap:wrap; gap:10px;">
+        <button type="button" class="btn-sm-secondary" onclick="handleSaveStudentQuestProgress()" style="font-weight:800;">💾 Save Progress</button>
+        <button type="button" class="btn-primary-action" onclick="handleSubmitStudentQuest()" style="background:#10b981; border-color:#059669; font-size:0.95rem; font-weight:900; padding:10px 24px; box-shadow:0 4px 16px rgba(16,185,129,0.4);">
+          🚀 Submit Quest (+20 XP)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Quest Completed Celebration Modal -->
   <div class="modal-overlay" id="modal-quest-completed" style="z-index:1220;">
@@ -3507,13 +3610,8 @@
       <h2 style="font-size: 1.65rem; font-weight: 900; color: #38bdf8; margin: 0 0 6px 0; letter-spacing: 0.02em;">QUEST COMPLETED!</h2>
       <p id="qc-quest-title" style="font-size: 0.95rem; color: #bae6fd; margin: 0 0 16px 0; font-weight: 700;">Animal Habitats Explorer finished!</p>
 
-      <div id="qc-xp-badge" style="font-size: 1.25rem; font-weight: 900; color: #fbbf24; background: rgba(245,158,11,0.2); border: 1.5px solid #f59e0b; padding: 8px 24px; border-radius: 24px; display: inline-block; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(245,158,11,0.3);">
+      <div id="qc-xp-badge" style="font-size: 1.25rem; font-weight: 900; color: #fbbf24; background: rgba(245,158,11,0.2); border: 1.5px solid #f59e0b; padding: 8px 24px; border-radius: 24px; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(245,158,11,0.3);">
         +20 XP Awarded!
-      </div>
-
-      <!-- Evolved Monster Showcase Image -->
-      <div id="qc-monster-visual" style="margin: 0 auto 16px auto; display:flex; justify-content:center;">
-        <!-- Dynamically rendered with student's evolved monster artwork -->
       </div>
 
       <!-- Monster Animated Progress Meter -->
@@ -3535,35 +3633,6 @@
         </button>
       </div>
     </div>
-  </div>
-
-
-  <!-- Floating Classroom Action Dock (Compact Dock) -->
-  <div class="classroom-compact-dock" id="classroom-action-dock">
-    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('all')" title="Classroom Toolkit">
-      <span>🧰</span> <span>Toolkit</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('timer')" title="Interactive Timer">
-      <span>⏱️</span> <span>Timer</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="runRandomStudentPicker()" title="Random Picker">
-      <span>🎲</span> <span>Random</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="openClassroomToolkitModal('groups')" title="Class Groups">
-      <span>👥</span> <span>Groups</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="switchView('attendance')" title="Take Attendance">
-      <span>📋</span> <span>Attendance</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="openGiveFeedbackModal()" title="Instant Feedback">
-      <span>⭐</span> <span>Feedback</span>
-    </button>
-    <button type="button" class="compact-dock-btn" onclick="switchView('assessments')" title="Formative Assessments">
-      <span>🎯</span> <span>Assess</span>
-    </button>
-    <button type="button" class="compact-dock-btn is-active" onclick="toggleSmartboardMode()" title="Classroom Smart Board Mode">
-      <span>🎓</span> <span>Classroom Mode</span>
-    </button>
   </div>
 
 </body>

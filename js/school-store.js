@@ -1843,94 +1843,94 @@
 
   const DEFAULT_PROGRESSION_LEVELS = [
     {
-      id: 'lvl-0',
-      level: 0,
-      name: 'Egg',
-      stageKey: 'egg',
-      xpRequired: 0,
-      description: 'A smooth, mysterious speckled egg resting in a cozy nest, waiting for your English journey to begin.',
-      subtitle: 'A new friend is waiting!',
-      image: 'assets/monsters/canonical/stage-0-egg-blue.png',
-      unlockedItems: ['body-blue', 'body-pink', 'eyes-sparkle', 'mouth-smile'],
-      rewardXP: 0,
-      status: 'active'
-    },
-    {
       id: 'lvl-1',
       level: 1,
-      name: 'Baby',
-      stageKey: 'baby',
-      xpRequired: 100,
-      description: 'Tiny and curious! Your newly hatched companion takes its first steps with large curious eyes and short baby legs.',
-      subtitle: 'Tiny and curious',
-      image: 'assets/monsters/canonical/stage-1-baby-blue.png',
-      unlockedItems: ['body-blue', 'body-pink', 'eyes-sparkle', 'eyes-happy', 'eyes-brave', 'mouth-smile', 'mouth-tiny', 'mouth-cheer'],
-      rewardXP: 25,
+      name: 'Mystery Egg',
+      stageKey: 'egg',
+      xpRequired: 0,
+      description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
+      subtitle: 'A new adventure begins...',
+      image: 'assets/monsters/stage-1-mystery-egg.png',
+      unlockedItems: ['body-blue', 'body-pink', 'body-green', 'body-orange', 'body-purple', 'bg-meadow'],
+      rewardXP: 0,
       status: 'active'
     },
     {
       id: 'lvl-2',
       level: 2,
-      name: 'Tot',
-      stageKey: 'tot',
-      xpRequired: 300,
-      description: 'Growing fast and active! Ears perk up and playful paws grow stronger as vocabulary and speaking confidence expand.',
-      subtitle: 'Growing fast',
-      image: 'assets/monsters/canonical/stage-2-tot-blue.png',
-      unlockedItems: ['body-purple', 'body-green', 'body-orange', 'ears-cat', 'ears-fox', 'ears-default', 'tail-puff', 'tail-perky'],
+      name: 'Cracking Egg',
+      stageKey: 'cracking_egg',
+      xpRequired: 100,
+      description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
+      subtitle: 'Life is waking up!',
+      image: 'assets/monsters/stage-2-cracking-egg.png',
+      unlockedItems: ['eyes-happy', 'mouth-cheer'],
       rewardXP: 50,
       status: 'active'
     },
     {
       id: 'lvl-3',
       level: 3,
-      name: 'Young',
-      stageKey: 'young',
-      xpRequired: 700,
-      description: 'More confident and standing tall! Eager to tackle reading adventures with an upright posture and attentive ears.',
-      subtitle: 'More confident',
-      image: 'assets/monsters/canonical/stage-3-young-blue.png',
-      unlockedItems: ['eyes-star', 'eyes-wink', 'eyes-sleepy', 'mouth-toothy', 'mouth-grin', 'mouth-excited', 'clothing-vest', 'clothing-scarf'],
-      rewardXP: 75,
+      name: 'Baby Monster',
+      stageKey: 'baby',
+      xpRequired: 250,
+      description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
+      subtitle: 'Small steps, big dreams!',
+      image: 'assets/monsters/stage-3-baby-monster.png',
+      unlockedItems: ['horns-ears', 'tail-puff', 'eyes-wink', 'glasses-round'],
+      rewardXP: 100,
       status: 'active'
     },
     {
       id: 'lvl-4',
       level: 4,
-      name: 'Adventurer',
-      stageKey: 'adventurer',
-      xpRequired: 1200,
-      description: 'Ready for bigger adventures! Mature proportions, athletic frame, and bushy white-tipped tail ready for long quests.',
-      subtitle: 'Ready for adventures',
-      image: 'assets/monsters/canonical/stage-4-adventurer-blue.png',
-      unlockedItems: ['clothing-hoodie', 'clothing-uniform', 'bp-explorer', 'glasses-round'],
-      rewardXP: 100,
+      name: 'Growing Monster',
+      stageKey: 'growing',
+      xpRequired: 500,
+      description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
+      subtitle: 'Stronger every day!',
+      image: 'assets/monsters/stage-4-growing-monster.png',
+      unlockedItems: ['mouth-toothy', 'horns-nub', 'tail-perky', 'wings-starter', 'hat-scholar'],
+      rewardXP: 150,
       status: 'active'
     },
     {
       id: 'lvl-5',
       level: 5,
-      name: 'Elite',
-      stageKey: 'elite',
-      xpRequired: 2500,
-      description: 'Stronger than ever! Broad chest, powerful posture, and majestic fur reflecting deep English fluency.',
-      subtitle: 'Stronger than ever',
-      image: 'assets/monsters/canonical/stage-5-elite-blue.png',
-      unlockedItems: ['hat-explorer', 'hat-scholar', 'clothing-travel-coat', 'clothing-scientist', 'ears-elf'],
-      rewardXP: 150,
+      name: 'Adventurer Monster',
+      stageKey: 'adventurer',
+      xpRequired: 1000,
+      description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
+      subtitle: 'Ready for bigger quests!',
+      image: 'assets/monsters/stage-5-adventurer-monster.png',
+      unlockedItems: ['body-gold', 'hat-explorer', 'bp-explorer', 'horns-curved', 'aura-flame', 'bg-crystal'],
+      rewardXP: 250,
       status: 'active'
     },
     {
       id: 'lvl-6',
       level: 6,
-      name: 'Legendary',
-      stageKey: 'legendary',
+      name: 'Advanced Monster',
+      stageKey: 'advanced',
+      xpRequired: 2000,
+      description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
+      subtitle: 'New powers, new places!',
+      image: 'assets/monsters/stage-6-advanced-monster.png',
+      unlockedItems: ['horns-crystal', 'wings-dragon', 'tail-dragon', 'eyes-dragon', 'hat-wizard', 'bg-cosmos'],
+      rewardXP: 500,
+      status: 'active'
+    },
+    {
+      id: 'lvl-7',
+      level: 7,
+      name: 'Ultimate Monster',
+      stageKey: 'ultimate',
       xpRequired: 5000,
-      description: 'A true legend! The most magnificent silhouette with sweeping bushy tail, proudest stance, and full collection mastery.',
-      subtitle: 'A true legend',
-      image: 'assets/monsters/canonical/stage-6-legendary-blue.png',
-      unlockedItems: ['clothing-robe', 'clothing-knight-armor', 'bg-academy', 'bg-meadow', 'bg-cosmos', 'bg-castle', 'bg-forest', 'bg-space'],
-      rewardXP: 300,
+      description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
+      subtitle: 'A true hero!',
+      image: 'assets/monsters/stage-7-ultimate-monster.png',
+      unlockedItems: ['hat-crown', 'wings-celestial', 'tail-flame', 'aura-cosmic', 'bg-castle'],
+      rewardXP: 1000,
       status: 'active'
     }
   ];
@@ -4481,14 +4481,14 @@
     "studentId": "student-4b-304",
     "petName": "Nilda",
     "monsterName": "Nilda's Monster",
-    "baseColor": "blue",
-    "highestUnlockedLevel": 4,
-    "lastCelebratedLevel": 4,
-    "isHatched": true,
-    "hatchDate": "Sep 5, 2026",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
     "equipped": {
-      "body": "body-blue",
-      "eyes": "eyes-sparkle",
+      "body": "body-orange",
+      "eyes": "default",
       "mouth": "mouth-smile",
       "horns": "none",
       "wings": "none",
@@ -4501,7 +4501,7 @@
       "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": ["body-blue", "eyes-sparkle", "eyes-happy", "mouth-smile", "horns-gold", "clothing-vest", "tail-perky", "bg-meadow"],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-304-1",
@@ -4509,20 +4509,6 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
-      },
-      {
-        "id": "ev-student-4b-304-2",
-        "date": "Sep 5, 2026",
-        "type": "baby",
-        "title": "Hatched into Baby Monster",
-        "detail": "Egg hatched at 250 XP milestone!"
-      },
-      {
-        "id": "ev-student-4b-304-3",
-        "date": "Sep 12, 2026",
-        "type": "growing",
-        "title": "Evolved to Growing Monster",
-        "detail": "Evolved at 500 XP milestone with golden horns and explorer vest!"
       }
     ]
   },
@@ -4705,14 +4691,14 @@
     "studentId": "student-4b-309",
     "petName": "Utku Efe",
     "monsterName": "Utku Efe's Monster",
-    "baseColor": "green",
-    "highestUnlockedLevel": 4,
-    "lastCelebratedLevel": 4,
-    "isHatched": true,
-    "hatchDate": "Sep 6, 2026",
+    "baseColor": "orange",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
     "equipped": {
-      "body": "body-green",
-      "eyes": "eyes-brave",
+      "body": "body-orange",
+      "eyes": "default",
       "mouth": "mouth-smile",
       "horns": "none",
       "wings": "none",
@@ -4722,10 +4708,10 @@
       "backpack": "none",
       "accessory": "none",
       "aura": "none",
-      "background": "bg-cosmos",
+      "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": ["body-green", "eyes-brave", "mouth-smile", "horns-curved", "clothing-knight-armor", "tail-perky", "bg-cosmos"],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-309-1",
@@ -4733,20 +4719,6 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
-      },
-      {
-        "id": "ev-student-4b-309-2",
-        "date": "Sep 6, 2026",
-        "type": "baby",
-        "title": "Hatched into Baby Monster",
-        "detail": "Egg hatched at 250 XP milestone!"
-      },
-      {
-        "id": "ev-student-4b-309-3",
-        "date": "Sep 15, 2026",
-        "type": "growing",
-        "title": "Evolved to Growing Monster",
-        "detail": "Evolved at 500 XP milestone with brave eyes, curved horns and knight armor!"
       }
     ]
   },
@@ -4754,14 +4726,14 @@
     "studentId": "student-4b-308",
     "petName": "Yağmur Ada",
     "monsterName": "Yağmur Ada's Monster",
-    "baseColor": "pink",
-    "highestUnlockedLevel": 4,
-    "lastCelebratedLevel": 4,
-    "isHatched": true,
-    "hatchDate": "Sep 4, 2026",
+    "baseColor": "purple",
+    "highestUnlockedLevel": 1,
+    "lastCelebratedLevel": 1,
+    "isHatched": false,
+    "hatchDate": null,
     "equipped": {
-      "body": "body-pink",
-      "eyes": "eyes-star",
+      "body": "body-purple",
+      "eyes": "default",
       "mouth": "mouth-smile",
       "horns": "none",
       "wings": "none",
@@ -4771,10 +4743,10 @@
       "backpack": "none",
       "accessory": "none",
       "aura": "none",
-      "background": "bg-forest",
+      "background": "bg-meadow",
       "clothing": "none"
     },
-    "unlockedItems": ["body-pink", "eyes-star", "mouth-smile", "horns-crystal", "clothing-robe", "tail-perky", "bg-forest"],
+    "unlockedItems": [],
     "evolutionHistory": [
       {
         "id": "ev-student-4b-308-1",
@@ -4782,20 +4754,6 @@
         "type": "egg",
         "title": "Mystery Egg Received",
         "detail": "Received Mystery Egg upon joining English Adventure Academy."
-      },
-      {
-        "id": "ev-student-4b-308-2",
-        "date": "Sep 4, 2026",
-        "type": "baby",
-        "title": "Hatched into Baby Monster",
-        "detail": "Egg hatched at 250 XP milestone!"
-      },
-      {
-        "id": "ev-student-4b-308-3",
-        "date": "Sep 14, 2026",
-        "type": "growing",
-        "title": "Evolved to Growing Monster",
-        "detail": "Evolved at 500 XP milestone with starry eyes, crystal horns and wizard robe!"
       }
     ]
   }
@@ -6913,10 +6871,10 @@
           parentName: 'Parent of Ali İhsan Bıçakçı',
           parentContact: '+90 (555) 346-0001',
           parentEmail: 'parent346@example.com',
-          xp: 400,
-          level: 3,
-          streakDays: 5,
-          equippedMonster: 'Baby Monster',
+          xp: 0,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6933,10 +6891,10 @@
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
-          xp: 530,
-          level: 4,
-          streakDays: 7,
-          equippedMonster: 'Growing Monster',
+          xp: 0,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6953,10 +6911,10 @@
           parentName: 'Parent of Egehan Tekin',
           parentContact: '+90 (555) 316-0001',
           parentEmail: 'parent316@example.com',
-          xp: 380,
-          level: 3,
-          streakDays: 4,
-          equippedMonster: 'Baby Monster',
+          xp: 100,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6973,10 +6931,10 @@
           parentName: 'Parent of Elif Asya Durmaz',
           parentContact: '+90 (555) 307-0001',
           parentEmail: 'parent307@example.com',
-          xp: 310,
-          level: 3,
-          streakDays: 4,
-          equippedMonster: 'Baby Monster',
+          xp: 70,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -6993,10 +6951,10 @@
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
-          xp: 530,
-          level: 4,
-          streakDays: 6,
-          equippedMonster: 'Growing Monster',
+          xp: 70,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7013,10 +6971,10 @@
           parentName: 'Parent of Elisa Berre Eşkin',
           parentContact: '+90 (555) 348-0001',
           parentEmail: 'parent348@example.com',
-          xp: 4700,
-          level: 6,
-          streakDays: 12,
-          equippedMonster: 'Advanced Monster',
+          xp: 0,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7133,10 +7091,10 @@
           parentName: 'Parent of Nilda Eşkin',
           parentContact: '+90 (555) 304-0001',
           parentEmail: 'parent304@example.com',
-          xp: 0,
-          level: 4,
-          streakDays: 4,
-          equippedMonster: 'Growing Monster',
+          xp: 100,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7253,10 +7211,10 @@
           parentName: 'Parent of Utku Efe Kulaç',
           parentContact: '+90 (555) 309-0001',
           parentEmail: 'parent309@example.com',
-          xp: 220,
-          level: 4,
-          streakDays: 5,
-          equippedMonster: 'Growing Monster',
+          xp: 70,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         },
@@ -7273,10 +7231,10 @@
           parentName: 'Parent of Yağmur Ada Ovalı',
           parentContact: '+90 (555) 308-0001',
           parentEmail: 'parent308@example.com',
-          xp: 50,
-          level: 4,
-          streakDays: 3,
-          equippedMonster: 'Growing Monster',
+          xp: 90,
+          level: 1,
+          streakDays: 0,
+          equippedMonster: 'Mystery Egg',
           archived: false,
           manualCefrOverrides: {}
         }
@@ -8440,127 +8398,6 @@
   }
 
   // =========================================================================
-  // CANONICAL MONSTER EVOLUTION & PROGRESSION ENGINE
-  // =========================================================================
-  const CANONICAL_EVOLUTION_STAGES = [
-    { level: 0, stageKey: 'egg', name: 'Egg', subtitle: 'Enchanted Cosmic Egg', xpRequired: 0, description: 'A smooth, mysterious speckled egg resting in a cozy nest, waiting for your English journey to begin.' },
-    { level: 1, stageKey: 'baby', name: 'Baby', subtitle: 'Tiny & Cuddly Hatchling', xpRequired: 100, description: 'Tiny and curious! Your newly hatched companion takes its first steps with large curious eyes and short baby legs.' },
-    { level: 2, stageKey: 'tot', name: 'Tot', subtitle: 'Playful Growing Explorer', xpRequired: 300, description: 'Growing fast and active! Ears perk up and playful paws grow stronger as vocabulary and speaking confidence expand.' },
-    { level: 3, stageKey: 'young', name: 'Young', subtitle: 'Energetic Agile Juvenile', xpRequired: 700, description: 'More confident and standing tall! Eager to tackle reading adventures with an upright posture and attentive ears.' },
-    { level: 4, stageKey: 'adventurer', name: 'Adventurer', subtitle: 'Quest-Ready Hero Guardian', xpRequired: 1200, description: 'Ready for bigger adventures! Mature proportions, athletic frame, and bushy white-tipped tail ready for long quests.' },
-    { level: 5, stageKey: 'elite', name: 'Elite', subtitle: 'Ascended Winged Champion', xpRequired: 2500, description: 'Stronger than ever! Broad chest, powerful posture, and majestic fur reflecting deep English fluency.' },
-    { level: 6, stageKey: 'legendary', name: 'Legendary', subtitle: 'Sovereign Mythic Dragon-Fox', xpRequired: 5000, description: 'A true legend! The most magnificent silhouette with sweeping bushy tail, proudest stance, and full collection mastery.' }
-  ];
-
-  function getMonsterProgress(studentOrId) {
-    let studentId = null;
-    let totalXP = 0;
-    const store = (typeof window !== 'undefined' && window.schoolStore) ? window.schoolStore : null;
-
-    if (typeof studentOrId === 'string') {
-      studentId = studentOrId;
-      if (store && store.getStudentTotalXP) {
-        totalXP = store.getStudentTotalXP(studentId);
-      }
-    } else if (studentOrId && typeof studentOrId === 'object') {
-      studentId = studentOrId.id || studentOrId.studentId || null;
-      if (typeof studentOrId.xp === 'number') totalXP = studentOrId.xp;
-      if (store && store.getStudentTotalXP && studentId) {
-        totalXP = store.getStudentTotalXP(studentId);
-      }
-    } else if (typeof studentOrId === 'number') {
-      totalXP = studentOrId;
-    }
-
-    let stageIdx = 0;
-    for (let i = CANONICAL_EVOLUTION_STAGES.length - 1; i >= 0; i--) {
-      if (totalXP >= CANONICAL_EVOLUTION_STAGES[i].xpRequired) {
-        stageIdx = i;
-        break;
-      }
-    }
-
-    const cur = CANONICAL_EVOLUTION_STAGES[stageIdx];
-    const next = CANONICAL_EVOLUTION_STAGES[stageIdx + 1] || null;
-    const stageStartXP = cur.xpRequired;
-    const nextStageXP = next ? next.xpRequired : cur.xpRequired;
-    const xpInStage = totalXP - stageStartXP;
-    const xpNeededForStage = next ? (nextStageXP - stageStartXP) : 0;
-    const xpToNext = next ? Math.max(0, nextStageXP - totalXP) : 0;
-    const progressPct = next ? Math.min(100, Math.max(0, parseFloat(((xpInStage / xpNeededForStage) * 100).toFixed(1)))) : 100;
-
-    return {
-      studentId,
-      totalXP,
-      level: cur.level,
-      currentLevel: cur.level,
-      stageIndex: cur.level,
-      evolutionStage: cur.level,
-      stageKey: cur.stageKey,
-      stageName: cur.name,
-      name: cur.name,
-      subtitle: cur.subtitle,
-      stageSubtitle: cur.subtitle,
-      description: cur.description,
-      stageStartXP,
-      nextStageXP,
-      levelXP: stageStartXP,
-      nextLevelXP: nextStageXP,
-      xpInStage,
-      xpNeededForStage,
-      xpToNext,
-      xpRemainingForNextLevel: xpToNext,
-      progressPct,
-      percentage: progressPct,
-      isMaxStage: !next,
-      isHatched: cur.level >= 1,
-      currentLevelObj: cur,
-      nextLevelObj: next,
-      nextLevel: next,
-      stages: CANONICAL_EVOLUTION_STAGES
-    };
-  }
-
-  if (typeof window !== 'undefined') {
-    window.getMonsterProgress = getMonsterProgress;
-    window.getEvolutionStage = function(xp) {
-      return getMonsterProgress(xp).level;
-    };
-    window.XPService = {
-      addXP(studentId, amount, reason) {
-        if (!studentId || typeof amount !== 'number' || amount <= 0 || isNaN(amount)) {
-          return { success: false, error: 'Invalid student ID or amount' };
-        }
-        const store = window.schoolStore;
-        if (!store) return { success: false, error: 'Store not available' };
-        const student = store.getStudent(studentId);
-        if (!student) return { success: false, error: 'Student not found' };
-
-        store.awardXP(studentId, amount, reason || 'Academy Task Completed');
-        const prog = getMonsterProgress(studentId);
-        const monster = store.getStudentMonster(studentId);
-        if (monster && monster.previewStage === undefined) {
-          monster.evolutionStage = prog.level;
-        }
-        store.saveState();
-
-        if (typeof window.updateLiveStudioMonster === 'function') {
-          window.updateLiveStudioMonster(studentId);
-        }
-
-        return {
-          success: true,
-          studentId,
-          amount,
-          newTotalXP: prog.totalXP,
-          stage: prog.stageName,
-          level: prog.level
-        };
-      }
-    };
-  }
-
-  // =========================================================================
   // CORE STORE ENGINE CLASS
   // =========================================================================
   class MasterSchoolStore {
@@ -8754,27 +8591,11 @@
             }
             if (!merged.monsterProfiles || typeof merged.monsterProfiles !== 'object') {
               merged.monsterProfiles = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES));
+            } else {
+              // Ensure default profiles merged or freshened for seed students
               for (const sId in DEFAULT_MONSTER_PROFILES) {
                 if (!merged.monsterProfiles[sId] || !merged.monsterProfiles[sId].equipped) {
                   merged.monsterProfiles[sId] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[sId]));
-                }
-              }
-            }
-            // Sanitize test accessories across all student monster profiles unconditionally to maintain pure companion evolution body
-            for (const sId in merged.monsterProfiles) {
-              const p = merged.monsterProfiles[sId];
-              if (p && p.equipped) {
-                if (p.equipped.horns === 'horns-crystal' || p.equipped.horns === 'horns-gold' || p.equipped.horns === 'horns-curved' || p.equipped.horns === 'horns-ears') {
-                  p.equipped.horns = 'none';
-                }
-                if (p.equipped.clothing === 'clothing-robe' || p.equipped.clothing === 'clothing-vest' || p.equipped.clothing === 'clothing-knight-armor') {
-                  p.equipped.clothing = 'none';
-                }
-                if (p.equipped.wings === 'wings-dragon' || p.equipped.wings === 'wings-angel' || p.equipped.wings === 'wings-fairy') {
-                  p.equipped.wings = 'none';
-                }
-                if (p.equipped.hat === 'hat-wizard' || p.equipped.hat === 'hat-crown' || p.equipped.hat === 'hat-cap') {
-                  p.equipped.hat = 'none';
                 }
               }
             }
@@ -8782,10 +8603,6 @@
             if (Array.isArray(merged.students)) {
               const colors = ['blue', 'pink', 'green', 'orange', 'purple', 'gold'];
               merged.students.forEach((st, sIdx) => {
-                if (st.id === 'student-4b-304') { st.xp = 0; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
-                if (st.id === 'student-4b-308') { st.xp = 50; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
-                if (st.id === 'student-4b-309') { st.xp = 220; if (merged.monsterProfiles[st.id]) merged.monsterProfiles[st.id].highestUnlockedLevel = 4; }
-
                 if (!merged.monsterProfiles[st.id] || !merged.monsterProfiles[st.id].equipped) {
                   if (DEFAULT_MONSTER_PROFILES[st.id]) {
                     merged.monsterProfiles[st.id] = JSON.parse(JSON.stringify(DEFAULT_MONSTER_PROFILES[st.id]));
@@ -8801,7 +8618,7 @@
                         body: 'body-' + assignedColor,
                         eyes: 'eyes-sparkle',
                         mouth: 'mouth-smile',
-                        horns: 'none',
+                        horns: 'horns-ears',
                         wings: 'none',
                         tail: 'tail-puff',
                         hat: 'none',
@@ -8811,7 +8628,7 @@
                         aura: 'none',
                         background: 'bg-meadow'
                       },
-                      unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'tail-puff', 'bg-meadow'],
+                      unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
                       evolutionHistory: [
                         {
                           id: 'ev-init-' + Date.now(),
@@ -8828,8 +8645,8 @@
                 // Calculate genuine XP and sync hatch status
                 const totalXP = (merged.xpTransactions || [])
                   .filter(tx => tx.studentId === st.id && tx.status !== 'voided')
-                  .reduce((sum, tx) => sum + (parseInt(tx.amount, 10) || 0), 0) + (st.xp || 0);
-                if (totalXP >= 250 || (merged.monsterProfiles[st.id] && merged.monsterProfiles[st.id].highestUnlockedLevel >= 3)) {
+                  .reduce((sum, tx) => sum + (parseInt(tx.amount, 10) || 0), 0);
+                if (totalXP >= 250) {
                   merged.monsterProfiles[st.id].isHatched = true;
                 }
 
@@ -9374,15 +9191,12 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!studentId) return 0;
-      const s = this.getStudent ? this.getStudent(studentId) : null;
+      if (!this.state.xpTransactions || !studentId) return 0;
+      const s = this.getStudent(studentId);
       const resolvedId = s ? s.id : studentId;
-      const baseXP = (s && typeof s.xp === 'number') ? s.xp : 0;
-      if (!this.state || !this.state.xpTransactions) return baseXP;
-      // Strictly recalculate from active transactions plus base student XP
+      // Strictly recalculate from active transactions only
       const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
-      const txSum = txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
-      return Math.max(0, baseXP + txSum);
+      return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
@@ -11374,19 +11188,6 @@
         prof.monsterName = prof.petName;
       }
       if (!prof.equipped) prof.equipped = {};
-      // Canonical sanitation: pure companion evolution body without test accessories
-      if (prof.equipped.horns === 'horns-crystal' || prof.equipped.horns === 'horns-gold' || prof.equipped.horns === 'horns-curved' || prof.equipped.horns === 'horns-ears') {
-        prof.equipped.horns = 'none';
-      }
-      if (prof.equipped.clothing === 'clothing-robe' || prof.equipped.clothing === 'clothing-vest' || prof.equipped.clothing === 'clothing-knight-armor') {
-        prof.equipped.clothing = 'none';
-      }
-      if (prof.equipped.wings === 'wings-dragon' || prof.equipped.wings === 'wings-angel' || prof.equipped.wings === 'wings-fairy' || prof.equipped.wings === 'wings-crystal') {
-        prof.equipped.wings = 'none';
-      }
-      if (prof.equipped.hat === 'hat-wizard' || prof.equipped.hat === 'hat-crown' || prof.equipped.hat === 'hat-cap') {
-        prof.equipped.hat = 'none';
-      }
       return prof;
     }
 
@@ -11398,110 +11199,6 @@
         profile.celebratedAt = new Date().toISOString();
         this.saveState();
       }
-    }
-
-    getStudentMonster(studentId) {
-      const student = this.getStudent(studentId);
-      const totalXP = this.getStudentTotalXP(studentId);
-      const stage = (typeof window !== 'undefined' && window.getEvolutionStage) ? window.getEvolutionStage(totalXP) : (totalXP >= 5000 ? 6 : totalXP >= 2500 ? 5 : totalXP >= 1200 ? 4 : totalXP >= 700 ? 3 : totalXP >= 300 ? 2 : totalXP >= 100 ? 1 : 0);
-      const prof = this.getMonsterProfile(studentId);
-
-      if (!student) {
-        return {
-          species: "academy-companion",
-          style: "boy",
-          evolutionStage: stage,
-          furColor: "blue",
-          eyes: "round",
-          ears: "fox",
-          tail: "fluffy",
-          outfit: stage >= 4 ? "adventurer_jacket" : null,
-          accessory: stage >= 6 ? "crown" : null,
-          aura: stage >= 6 ? "star_glow" : null
-        };
-      }
-
-      if (!student.monster) {
-        const colors = ['blue', 'purple', 'green', 'orange', 'pink'];
-        const assignedColor = (prof && prof.baseColor) || colors[Math.abs(studentId.charCodeAt(studentId.length - 1)) % colors.length] || 'blue';
-        student.monster = {
-          species: "academy-companion",
-          style: (prof && prof.style) || (student.gender === 'female' ? 'girl' : 'boy'),
-          evolutionStage: stage,
-          furColor: assignedColor,
-          eyes: (prof && prof.equipped && prof.equipped.eyes) ? prof.equipped.eyes.replace('eyes-', '') : "round",
-          ears: "fox",
-          tail: "fluffy",
-          outfit: (prof && prof.equipped && prof.equipped.clothing && prof.equipped.clothing !== 'none') ? prof.equipped.clothing.replace('clothing-', '') : (stage >= 4 ? "adventurer_jacket" : null),
-          accessory: (prof && prof.equipped && (prof.equipped.accessory || prof.equipped.hat) && (prof.equipped.accessory !== 'none' || prof.equipped.hat !== 'none')) ? (prof.equipped.accessory || prof.equipped.hat).replace('hat-', '').replace('accessory-', '') : (stage >= 6 ? "crown" : null),
-          aura: (prof && prof.equipped && prof.equipped.aura && prof.equipped.aura !== 'none') ? prof.equipped.aura.replace('aura-', '') : (stage >= 6 ? "star_glow" : null)
-        };
-      } else {
-        if (student.monster.previewStage !== undefined) {
-          student.monster.evolutionStage = student.monster.previewStage;
-        } else {
-          student.monster.evolutionStage = stage;
-        }
-      }
-
-      return student.monster;
-    }
-
-    updateStudentMonster(studentId, updates) {
-      const monster = this.getStudentMonster(studentId);
-      if (!monster) return null;
-
-      if (updates.evolutionStage !== undefined) {
-        monster.previewStage = Number(updates.evolutionStage);
-      }
-      if (updates.resetPreview) {
-        delete monster.previewStage;
-      }
-
-      Object.assign(monster, updates);
-
-      const student = this.getStudent(studentId);
-      if (student) {
-        student.monster = monster;
-      }
-
-      // Mirror to monsterProfile for backward compatibility
-      const prof = this.getMonsterProfile(studentId);
-      if (prof) {
-        if (updates.furColor) {
-          prof.baseColor = updates.furColor;
-          if (!prof.equipped) prof.equipped = {};
-          prof.equipped.body = 'body-' + updates.furColor;
-        }
-        if (updates.style) prof.style = updates.style;
-        if (updates.eyes) {
-          if (!prof.equipped) prof.equipped = {};
-          prof.equipped.eyes = 'eyes-' + updates.eyes;
-        }
-        if (updates.outfit !== undefined) {
-          if (!prof.equipped) prof.equipped = {};
-          prof.equipped.clothing = updates.outfit ? ('clothing-' + updates.outfit) : 'none';
-        }
-        if (updates.accessory !== undefined) {
-          if (!prof.equipped) prof.equipped = {};
-          prof.equipped.accessory = updates.accessory ? ('accessory-' + updates.accessory) : 'none';
-        }
-        if (updates.aura !== undefined) {
-          if (!prof.equipped) prof.equipped = {};
-          prof.equipped.aura = updates.aura ? ('aura-' + updates.aura) : 'none';
-        }
-      }
-
-      this.saveState();
-      this.notify();
-
-      if (student && typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
-        window.AdventureSupabase.saveStudent(student).catch(err => {
-          console.error('[SchoolStore] Supabase saveStudent monster error:', err);
-        });
-      }
-
-      return monster;
     }
 
     updateMonsterProfile(studentId, updates) {
@@ -11558,30 +11255,67 @@
       return awards.some(a => a.studentId === studentId && (a.achievementId === achievementId || a.id === achievementId || a.badgeId === achievementId));
     }
 
-    getMonsterProgress(studentOrId) {
-      return getMonsterProgress(studentOrId);
-    }
-
     calculateMonsterState(studentId) {
-      const prog = getMonsterProgress(studentId);
+      const totalXP = this.getStudentTotalXP(studentId);
+      const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
       const profile = this.getMonsterProfile(studentId);
-      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel !== undefined ? profile.highestUnlockedLevel : 0, prog.level);
-      if (highestUnlockedLevel > (profile.highestUnlockedLevel !== undefined ? profile.highestUnlockedLevel : -1)) {
+
+      let levelFromXP = 1;
+      for (let i = 0; i < levels.length; i++) {
+        if (totalXP >= levels[i].xpRequired) {
+          levelFromXP = levels[i].level;
+        } else {
+          break;
+        }
+      }
+
+      // Permanent Evolution Rule: highestUnlockedLevel never downgrades even if XP decreases
+      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, levelFromXP);
+      if (highestUnlockedLevel > (profile.highestUnlockedLevel || 1)) {
         profile.highestUnlockedLevel = highestUnlockedLevel;
-        if (highestUnlockedLevel >= 1) profile.isHatched = true;
+        if (highestUnlockedLevel >= 3) profile.isHatched = true;
         this.saveState();
       }
 
-      let eggCrackPct = prog.level === 0 ? Math.min(95, Math.round((prog.totalXP / 100) * 100)) : 100;
+      const currentDisplayedLevel = highestUnlockedLevel;
+      const currentLevelObj = levels.find(l => l.level === currentDisplayedLevel) || levels[0];
+      const nextLevelObj = levels.find(l => l.level === currentDisplayedLevel + 1) || null;
+
+      const currentLevel = currentLevelObj.level;
+      const stageKey = currentLevelObj.stageKey;
+      const stageName = currentLevelObj.name;
+      const stageDescription = currentLevelObj.description || 'Companion in English Adventure Academy.';
+      const levelXP = currentLevelObj.xpRequired;
+      const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : levelXP;
+      const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
+      
+      let progressPct = 100;
+      if (nextLevelObj && nextLevelXP > levelXP) {
+        progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
+      }
+
+      const isHatched = (currentDisplayedLevel >= 3) || !!profile.isHatched;
+
+      let eggCrackPct = 0;
+      if (currentDisplayedLevel === 1) {
+        eggCrackPct = Math.min(95, Math.round((totalXP / 100) * 100));
+      } else if (currentDisplayedLevel === 2) {
+        eggCrackPct = 100;
+      } else {
+        eggCrackPct = 100;
+      }
 
       const allItems = this.getMonsterItems(null, true);
       const unlockedItemIds = new Set(profile.unlockedItems || []);
+
       allItems.forEach(item => {
         if (item.unlockType === 'default') {
           unlockedItemIds.add(item.id);
         } else if (item.unlockType === 'level') {
           const reqLevel = (item.unlockRequirement && item.unlockRequirement.level) || 1;
-          if (prog.level >= reqLevel) unlockedItemIds.add(item.id);
+          if (currentDisplayedLevel >= reqLevel) {
+            unlockedItemIds.add(item.id);
+          }
         } else if (item.unlockType === 'achievement') {
           const achId = item.unlockRequirement && item.unlockRequirement.achievementId;
           if (achId && this.hasStudentAchievement(studentId, achId)) {
@@ -11590,13 +11324,28 @@
         }
       });
 
-      return Object.assign({}, prog, {
+      return {
+        studentId,
+        totalXP,
+        currentLevel,
+        stageKey,
+        stageName,
+        stageDescription,
+        levelXP,
+        nextLevelXP,
+        xpToNext,
+        xpRemainingForNextLevel: xpToNext,
+        progressPct,
+        progressPctToNextLevel: progressPct,
+        isHatched,
         eggCrackPct,
         eggCrackPercent: eggCrackPct,
         unlockedItemIds,
+        currentLevelObj,
+        nextLevelObj,
         highestUnlockedLevel,
         profile
-      });
+      };
     }
 
     logMonsterHistory(studentId, event) {
@@ -14201,9 +13950,6 @@
 
         cloudData.students.forEach(remoteStudent => {
           if (!remoteStudent || !remoteStudent.id) return;
-          if (remoteStudent.id === 'student-4b-304') remoteStudent.xp = 0;
-          if (remoteStudent.id === 'student-4b-308') remoteStudent.xp = 50;
-          if (remoteStudent.id === 'student-4b-309') remoteStudent.xp = 220;
           remoteMap.set(remoteStudent.id, remoteStudent);
 
           const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
@@ -14212,44 +13958,18 @@
             // Supabase is authoritative source of truth: merge remote attributes
             this.state.students[localIdx] = Object.assign({}, local, remoteStudent);
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
-              const mp = Object.assign(
+              this.state.monsterProfiles[remoteStudent.id] = Object.assign(
                 {},
                 this.state.monsterProfiles[remoteStudent.id] || {},
                 remoteStudent.monsterProfile
               );
-              if (mp.equipped) {
-                if (mp.equipped.horns === 'horns-crystal' || mp.equipped.horns === 'horns-gold' || mp.equipped.horns === 'horns-curved' || mp.equipped.horns === 'horns-ears') mp.equipped.horns = 'none';
-                if (mp.equipped.clothing === 'clothing-robe' || mp.equipped.clothing === 'clothing-vest' || mp.equipped.clothing === 'clothing-knight-armor') mp.equipped.clothing = 'none';
-                if (mp.equipped.wings === 'wings-dragon' || mp.equipped.wings === 'wings-angel' || mp.equipped.wings === 'wings-fairy' || mp.equipped.wings === 'wings-crystal') mp.equipped.wings = 'none';
-                if (mp.equipped.hat === 'hat-wizard' || mp.equipped.hat === 'hat-crown' || mp.equipped.hat === 'hat-cap') mp.equipped.hat = 'none';
-              }
-              this.state.monsterProfiles[remoteStudent.id] = mp;
-              this.state.students[localIdx].monsterProfile = mp;
-            }
-            if (remoteStudent.id === 'student-4b-304' || remoteStudent.id === 'student-4b-308' || remoteStudent.id === 'student-4b-309') {
-              if (this.state.monsterProfiles && this.state.monsterProfiles[remoteStudent.id]) {
-                this.state.monsterProfiles[remoteStudent.id].highestUnlockedLevel = 4;
-              }
             }
             modified = true;
           } else {
             // Student added on another device: ingest into local state
             this.state.students.push(remoteStudent);
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
-              const mp = Object.assign({}, remoteStudent.monsterProfile);
-              if (mp.equipped) {
-                if (mp.equipped.horns === 'horns-crystal' || mp.equipped.horns === 'horns-gold' || mp.equipped.horns === 'horns-curved' || mp.equipped.horns === 'horns-ears') mp.equipped.horns = 'none';
-                if (mp.equipped.clothing === 'clothing-robe' || mp.equipped.clothing === 'clothing-vest' || mp.equipped.clothing === 'clothing-knight-armor') mp.equipped.clothing = 'none';
-                if (mp.equipped.wings === 'wings-dragon' || mp.equipped.wings === 'wings-angel' || mp.equipped.wings === 'wings-fairy' || mp.equipped.wings === 'wings-crystal') mp.equipped.wings = 'none';
-                if (mp.equipped.hat === 'hat-wizard' || mp.equipped.hat === 'hat-crown' || mp.equipped.hat === 'hat-cap') mp.equipped.hat = 'none';
-              }
-              this.state.monsterProfiles[remoteStudent.id] = mp;
-              remoteStudent.monsterProfile = mp;
-            }
-            if (remoteStudent.id === 'student-4b-304' || remoteStudent.id === 'student-4b-308' || remoteStudent.id === 'student-4b-309') {
-              if (this.state.monsterProfiles && this.state.monsterProfiles[remoteStudent.id]) {
-                this.state.monsterProfiles[remoteStudent.id].highestUnlockedLevel = 4;
-              }
+              this.state.monsterProfiles[remoteStudent.id] = remoteStudent.monsterProfile;
             }
             modified = true;
           }
@@ -14543,7 +14263,6 @@
     window.GLOBAL_READINGS_2_DATA = GLOBAL_READINGS_2_DATA;
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
-    window.DEFAULT_MONSTER_PROFILES = DEFAULT_MONSTER_PROFILES;
 
     // Initialize continuous background cloud sync & cross-device auto-sync
     if (window.SchoolCloudSync) {

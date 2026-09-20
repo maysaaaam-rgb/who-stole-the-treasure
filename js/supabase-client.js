@@ -799,12 +799,14 @@
         if (!error && Array.isArray(data) && data.length > 0) {
           return data;
         }
-        if (error) {
-          // Table may not exist yet on remote Supabase instance; fall back gracefully
-          return this._getResourcesFromSharedCohort(includeArchived);
+        if (error && error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
+          console.warn('[AdventureSupabase] getResources error:', error);
+          throw new Error('Supabase getResources error: ' + error.message);
         }
       } catch (err) {
-        // Fallback adapter
+        if (!err.message.includes('PGRST205') && !err.message.includes('schema cache')) {
+          throw err;
+        }
       }
 
       // Fallback adapter
