@@ -2313,35 +2313,27 @@ button, input, select, textarea {
 /* Monster Layer Stack (Exact Coordinate Overlays) */
 .monster-compositor {
   position: relative;
-  width: 250px;
-  height: 250px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: compositorFloat 3.5s ease-in-out infinite;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
 }
 
-@keyframes compositorFloat {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-/* Exact Layer Stack Positioning & Ordering */
 .monster-compositor .layer {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
   pointer-events: none;
-  user-select: none;
-  image-rendering: -webkit-optimize-contrast;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  object-fit: contain;
+  transition: transform 0.2s ease-out;
+}
+
+/* Optional subtle idle float animation */
+.monster-compositor:hover .layer-body,
+.monster-compositor:hover .layer-face,
+.monster-compositor:hover .layer-horns {
+  transform: translateY(-4px);
 }
 
 /* Back Elements: Wings & Tails */
