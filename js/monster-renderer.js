@@ -975,131 +975,328 @@
     return '';
   }
 
-  // --- MAIN MONSTER BODY LAYER (Stages 3 to 7) ---
-  function renderMonsterBody(stage, palette, colorKey, equipped) {
-    // Progressive growth scaling across the 5 character stages
-    let bodyY = 114;
-    let rx = 36;
-    let ry = 34;
-    let bellyRx = 23;
-    let bellyRy = 20;
-    let earScale = 0.85;
-    let footY = 148;
-    let footRx = 11;
-    let footRy = 7;
-    let footSpacing = 20;
-
+  // --- STAGE GEOMETRY PROPORTIONS ---
+  function getStageGeometry(stage) {
     if (stage === 'baby') {
-      bodyY = 114;
-      rx = 36;
-      ry = 34;
-      bellyRx = 23;
-      bellyRy = 20;
-      earScale = 0.85;
-      footY = 148;
-      footRx = 11;
-      footRy = 7;
-      footSpacing = 20;
+      return { topY: 74, botY: 154, cW: 37, bW: 41, cheekY: 110, eyeY: 118, eyeSpacing: 15, earScale: 0.9, pawY: 140, footSpacing: 21 };
     } else if (stage === 'growing') {
-      bodyY = 106;
-      rx = 40;
-      ry = 38;
-      bellyRx = 25;
-      bellyRy = 23;
-      earScale = 0.95;
-      footY = 148;
-      footRx = 12.5;
-      footRy = 7.5;
-      footSpacing = 22;
+      return { topY: 66, botY: 154, cW: 39, bW: 43, cheekY: 106, eyeY: 116, eyeSpacing: 16, earScale: 1.0, pawY: 138, footSpacing: 22 };
     } else if (stage === 'adventurer') {
-      bodyY = 100;
-      rx = 43;
-      ry = 42;
-      bellyRx = 27;
-      bellyRy = 25;
-      earScale = 1.05;
-      footY = 148;
-      footRx = 13.5;
-      footRy = 8;
-      footSpacing = 24;
+      return { topY: 60, botY: 154, cW: 41, bW: 45, cheekY: 102, eyeY: 114, eyeSpacing: 17, earScale: 1.08, pawY: 136, footSpacing: 24 };
     } else if (stage === 'advanced') {
-      bodyY = 94;
-      rx = 46;
-      ry = 46;
-      bellyRx = 29;
-      bellyRy = 28;
-      earScale = 1.15;
-      footY = 148;
-      footRx = 14.5;
-      footRy = 8.5;
-      footSpacing = 25;
+      return { topY: 54, botY: 154, cW: 43, bW: 46, cheekY: 98, eyeY: 112, eyeSpacing: 17.5, earScale: 1.15, pawY: 134, footSpacing: 25 };
     } else if (stage === 'ultimate') {
-      bodyY = 88;
-      rx = 48;
-      ry = 49;
-      bellyRx = 30;
-      bellyRy = 30;
-      earScale = 1.25;
-      footY = 148;
-      footRx = 15.5;
-      footRy = 9;
-      footSpacing = 26;
+      return { topY: 48, botY: 154, cW: 44, bW: 47, cheekY: 94, eyeY: 110, eyeSpacing: 18, earScale: 1.22, pawY: 132, footSpacing: 26 };
+    }
+    return { topY: 74, botY: 154, cW: 37, bW: 41, cheekY: 110, eyeY: 118, eyeSpacing: 15, earScale: 0.9, pawY: 140, footSpacing: 21 };
+  }
+
+  // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
+  function renderUnderBodyAccessories(stage, palette, equipped, cX, g) {
+    const topY = g.topY;
+    const cW = g.cW;
+    const scale = g.earScale;
+
+    let hornId = equipped.horns;
+    if (!hornId || hornId === 'default') {
+      if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
+      else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
+      else hornId = 'none';
     }
 
-    const cX = 100;
-    const cY = bodyY;
-
-    const hornsEarsMarkup = renderHornsAndEars(stage, palette, equipped, cX, cY - ry, earScale);
-
-    const feetMarkup = `
-      <!-- Feet -->
-      <g fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-        <ellipse cx="${cX - footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
-        <ellipse cx="${cX + footSpacing}" cy="${footY}" rx="${footRx}" ry="${footRy}" />
+    // Left (Rear) Ear: Layered beneath body with volumetric darker tone
+    const rearEarMarkup = `
+      <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
+      <g filter="url(#mf-shadow)" class="monster-ear-rear">
+        <path d="M ${cX - cW * 0.46} ${topY + 14 * scale}
+                 C ${cX - cW * 0.92} ${topY + 4 * scale} ${cX - cW * 1.34 * scale} ${topY - 14 * scale} ${cX - cW * 0.96 * scale} ${topY - 26 * scale}
+                 C ${cX - cW * 0.68 * scale} ${topY - 32 * scale} ${cX - cW * 0.42 * scale} ${topY - 8 * scale} ${cX - cW * 0.26 * scale} ${topY + 6 * scale}
+                 C ${cX - cW * 0.34 * scale} ${topY + 11 * scale} ${cX - cW * 0.40 * scale} ${topY + 13 * scale} ${cX - cW * 0.46} ${topY + 14 * scale} Z"
+              fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
+        <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
+        <path d="M ${cX - cW * 0.48} ${topY + 9 * scale}
+                 C ${cX - cW * 0.84} ${topY + 2 * scale} ${cX - cW * 1.12 * scale} ${topY - 12 * scale} ${cX - cW * 0.90 * scale} ${topY - 20 * scale}
+                 C ${cX - cW * 0.70 * scale} ${topY - 24 * scale} ${cX - cW * 0.50 * scale} ${topY - 6 * scale} ${cX - cW * 0.36 * scale} ${topY + 4 * scale} Z"
+              fill="${palette.shadow}" opacity="0.45" />
       </g>
     `;
 
-    // Progressive arms
+    // Rear Horn (if curved or crystal, renders behind skull)
+    let rearHornMarkup = '';
+    if (hornId === 'horns-curved') {
+      rearHornMarkup = `
+        <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 10} ${cX - 46} ${topY - 4} ${cX - 40} ${topY + 16} C ${cX - 32} ${topY + 6} ${cX - 24} ${topY - 4} ${cX - 12} ${topY + 8} Z"
+              fill="${palette.shadow}" stroke="${palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#mf-shadow)" />
+      `;
+    } else if (hornId === 'horns-crystal') {
+      rearHornMarkup = `
+        <path d="M ${cX - 20} ${topY + 8} C ${cX - 34} ${topY - 16} ${cX - 42} ${topY - 30} ${cX - 32} ${topY - 38} C ${cX - 22} ${topY - 24} ${cX - 14} ${topY - 6} ${cX - 10} ${topY + 10} Z"
+              fill="${palette.purpleDark || '#7c3aed'}" stroke="${palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#mf-shadow)" />
+      `;
+    }
+
+    return `
+      ${rearEarMarkup}
+      ${rearHornMarkup}
+    `;
+  }
+
+  // --- FOREGROUND OVER-BODY ACCESSORIES (Flared Roots & Front Elements) ---
+  function renderOverBodyAccessories(stage, palette, equipped, cX, g) {
+    const topY = g.topY;
+    const cW = g.cW;
+    const scale = g.earScale;
+
+    let hornId = equipped.horns;
+    if (!hornId || hornId === 'default') {
+      if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
+      else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
+      else hornId = 'none';
+    }
+
+    // Right (Front) Ear: Flared root transition blending into skull envelope with vibrant primary color and pastel cavity
+    const frontEarMarkup = `
+      <!-- Front Ear (Flared Root Fillet Transition) -->
+      <g filter="url(#mf-shadow)" class="monster-ear-front">
+        <path d="M ${cX + cW * 0.26 * scale} ${topY + 6 * scale}
+                 C ${cX + cW * 0.42 * scale} ${topY - 8 * scale} ${cX + cW * 0.68 * scale} ${topY - 32 * scale} ${cX + cW * 0.96 * scale} ${topY - 26 * scale}
+                 C ${cX + cW * 1.34 * scale} ${topY - 14 * scale} ${cX + cW * 0.92} ${topY + 4 * scale} ${cX + cW * 0.46} ${topY + 14 * scale}
+                 C ${cX + cW * 0.40 * scale} ${topY + 13 * scale} ${cX + cW * 0.34 * scale} ${topY + 11 * scale} ${cX + cW * 0.26 * scale} ${topY + 6 * scale} Z"
+              fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+        <!-- Front Inner Ear Cavity (Pastel Tone) -->
+        <path d="M ${cX + cW * 0.36 * scale} ${topY + 4 * scale}
+                 C ${cX + cW * 0.50 * scale} ${topY - 6 * scale} ${cX + cW * 0.70 * scale} ${topY - 24 * scale} ${cX + cW * 0.90 * scale} ${topY - 20 * scale}
+                 C ${cX + cW * 1.12 * scale} ${topY - 12 * scale} ${cX + cW * 0.84} ${topY + 2 * scale} ${cX + cW * 0.48} ${topY + 9 * scale} Z"
+              fill="${palette.purple || '#c084fc'}" opacity="0.75" />
+      </g>
+    `;
+
+    if (hornId === 'none' || hornId === 'horns-none') {
+      return frontEarMarkup;
+    }
+
+    let hornsMarkup = '';
+    if (hornId === 'horns-small' || hornId === 'horns-nub') {
+      hornsMarkup = `
+        <!-- Small Horns with Flared Roots -->
+        <g fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" filter="url(#mf-shadow)">
+          <path d="M ${cX - 24} ${topY + 10} C ${cX - 26} ${topY - 2} ${cX - 22} ${topY - 16} ${cX - 16} ${topY - 16} C ${cX - 12} ${topY - 12} ${cX - 12} ${topY} ${cX - 10} ${topY + 10} Z" />
+          <path d="M ${cX + 24} ${topY + 10} C ${cX + 26} ${topY - 2} ${cX + 22} ${topY - 16} ${cX + 16} ${topY - 16} C ${cX + 12} ${topY - 12} ${cX + 12} ${topY} ${cX + 10} ${topY + 10} Z" />
+        </g>
+      `;
+    } else if (hornId === 'horns-curved') {
+      hornsMarkup = `
+        <!-- Curved Ram Horns with Sweeping S-Curves and Ribbed Fillets -->
+        <g fill="#f97316" stroke="#c2410c" stroke-width="2.4" filter="url(#mf-shadow)">
+          <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 10} ${cX + 48} ${topY - 4} ${cX + 42} ${topY + 18} C ${cX + 34} ${topY + 6} ${cX + 26} ${topY - 4} ${cX + 12} ${topY + 8} Z" />
+          <!-- Horn Rings -->
+          <path d="M ${cX + 22} ${topY} C ${cX + 26} ${topY + 2} ${cX + 28} ${topY + 6} ${cX + 28} ${topY + 8}" stroke="#ea580c" stroke-width="1.8" fill="none" />
+          <path d="M ${cX + 32} ${topY + 2} C ${cX + 36} ${topY + 6} ${cX + 37} ${topY + 10} ${cX + 36} ${topY + 14}" stroke="#ea580c" stroke-width="1.8" fill="none" />
+        </g>
+      `;
+    } else if (hornId === 'horns-crystal') {
+      hornsMarkup = `
+        <!-- Crystal Horns with Sweeping Taper and Facet Highlights -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 16} ${cX + 42} ${topY - 30} ${cX + 32} ${topY - 38} C ${cX + 22} ${topY - 24} ${cX + 14} ${topY - 6} ${cX + 10} ${topY + 10} Z"
+                fill="url(#mg-crystal-horn)" stroke="#6b21a8" stroke-width="2.2" />
+          <path d="M ${cX + 20} ${topY} L ${cX + 28} ${topY - 26}" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
+        </g>
+      `;
+    } else if (hornId === 'horns-gold') {
+      hornsMarkup = `
+        <!-- Gold Sovereign Horns -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 18} ${topY + 8} C ${cX - 30} ${topY - 12} ${cX - 36} ${topY - 26} ${cX - 24} ${topY - 32} C ${cX - 18} ${topY - 18} ${cX - 14} ${topY} ${cX - 10} ${topY + 8} Z"
+                fill="url(#mg-gold-horn)" stroke="#a16207" stroke-width="2.2" />
+          <path d="M ${cX + 18} ${topY + 8} C ${cX + 30} ${topY - 12} ${cX + 36} ${topY - 26} ${cX + 24} ${topY - 32} C ${cX + 18} ${topY - 18} ${cX + 14} ${topY} ${cX + 10} ${topY + 8} Z"
+                fill="url(#mg-gold-horn)" stroke="#a16207" stroke-width="2.2" />
+        </g>
+      `;
+    } else if (hornId === 'horns-nature') {
+      hornsMarkup = `
+        <!-- Nature Leaf Horns -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 18} ${topY + 8} C ${cX - 32} ${topY - 6} ${cX - 32} ${topY - 26} ${cX - 18} ${topY - 30} C ${cX - 12} ${topY - 16} ${cX - 12} ${topY} ${cX - 10} ${topY + 8} Z"
+                fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
+          <path d="M ${cX + 18} ${topY + 8} C ${cX + 32} ${topY - 6} ${cX + 32} ${topY - 26} ${cX + 18} ${topY - 30} C ${cX + 12} ${topY - 16} ${cX + 12} ${topY} ${cX + 10} ${topY + 8} Z"
+                fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
+        </g>
+      `;
+    } else if (hornId === 'horns-ice') {
+      hornsMarkup = `
+        <!-- Ice Spire Horns -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 20} ${topY + 8} L ${cX - 28} ${topY - 28} L ${cX - 12} ${topY + 8} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
+          <path d="M ${cX + 20} ${topY + 8} L ${cX + 28} ${topY - 28} L ${cX + 12} ${topY + 8} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
+        </g>
+      `;
+    } else if (hornId === 'horns-flame') {
+      hornsMarkup = `
+        <!-- Flame Horns -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 20} ${topY + 8} Q ${cX - 32} ${topY - 10} ${cX - 26} ${topY - 30} Q ${cX - 14} ${topY - 14} ${cX - 10} ${topY + 8} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
+          <path d="M ${cX + 20} ${topY + 8} Q ${cX + 32} ${topY - 10} ${cX + 26} ${topY - 30} Q ${cX + 14} ${topY - 14} ${cX + 10} ${topY + 8} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
+        </g>
+      `;
+    } else if (hornId === 'horns-star') {
+      hornsMarkup = `
+        <!-- Star Horns -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - 18} ${topY + 8} L ${cX - 22} ${topY - 16} L ${cX - 12} ${topY + 8} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+          <polygon points="${cX-22},${topY-24} ${cX-20},${topY-18} ${cX-14},${topY-18} ${cX-19},${topY-14} ${cX-17},${topY-8} ${cX-22},${topY-12} ${cX-27},${topY-8} ${cX-25},${topY-14} ${cX-30},${topY-18} ${cX-24},${topY-18}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+          <path d="M ${cX + 18} ${topY + 8} L ${cX + 22} ${topY - 16} L ${cX + 12} ${topY + 8} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
+          <polygon points="${cX+22},${topY-24} ${cX+24},${topY-18} ${cX+30},${topY-18} ${cX+25},${topY-14} ${cX+27},${topY-8} ${cX+22},${topY-12} ${cX+17},${topY-8} ${cX+19},${topY-14} ${cX+14},${topY-18} ${cX+20},${topY-18}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+        </g>
+      `;
+    }
+
+    return `
+      ${frontEarMarkup}
+      ${hornsMarkup}
+    `;
+  }
+
+  // --- ANATOMICALLY GROUNDED FEET (Flattened Floor Plane Contact) ---
+  function renderGroundedFeet(palette, cX, g) {
+    const botY = g.botY;
+    const footSpacing = g.footSpacing;
+
+    return `
+      <!-- Anatomically Grounded Feet -->
+      <g class="monster-feet" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Left Foot -->
+        <path d="M ${cX - footSpacing - 12} ${botY - 3}
+                 C ${cX - footSpacing - 14} ${botY + 5} ${cX - footSpacing - 8} ${botY + 7} ${cX - footSpacing} ${botY + 7}
+                 C ${cX - footSpacing + 10} ${botY + 7} ${cX - footSpacing + 13} ${botY + 3} ${cX - footSpacing + 11} ${botY - 4}
+                 C ${cX - footSpacing + 6} ${botY - 7} ${cX - footSpacing - 8} ${botY - 6} ${cX - footSpacing - 12} ${botY - 3} Z" />
+        <line x1="${cX - footSpacing - 2}" y1="${botY + 2}" x2="${cX - footSpacing - 2}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+        <line x1="${cX - footSpacing + 4}" y1="${botY + 2}" x2="${cX - footSpacing + 4}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+
+        <!-- Right Foot -->
+        <path d="M ${cX + footSpacing - 11} ${botY - 4}
+                 C ${cX + footSpacing - 13} ${botY + 3} ${cX + footSpacing - 10} ${botY + 7} ${cX + footSpacing} ${botY + 7}
+                 C ${cX + footSpacing + 8} ${botY + 7} ${cX + footSpacing + 14} ${botY + 5} ${cX + footSpacing + 12} ${botY - 3}
+                 C ${cX + footSpacing + 8} ${botY - 6} ${cX + footSpacing - 6} ${botY - 7} ${cX + footSpacing - 11} ${botY - 4} Z" />
+        <line x1="${cX + footSpacing - 4}" y1="${botY + 2}" x2="${cX + footSpacing - 4}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+        <line x1="${cX + footSpacing + 2}" y1="${botY + 2}" x2="${cX + footSpacing + 2}" y2="${botY + 6}" stroke="${palette.shadow}" stroke-width="1.8" />
+      </g>
+    `;
+  }
+
+  // --- ORGANIC PEAR / JELLY-BEAN TORSO WITH VOLUMETRIC VECTOR LIGHTING ---
+  function renderChibiTorso(stage, palette, colorKey, cX, g, equipped) {
+    const topY = g.topY;
+    const botY = g.botY;
+    const cW = g.cW;
+    const bW = g.bW;
+    const cheekY = g.cheekY;
+
+    // Organic Pear / Jelly-Bean Cubic Bezier Silhouette with Lateral Cheek Swells
+    const bodyPath = `
+      M ${cX} ${topY}
+      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
+      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
+      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
+      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
+      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
+      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY}
+      Z
+    `;
+
+    // Inner Belly / Muzzle Patch (soft pastel tone breaking up monochromatic fills)
+    const bellyTop = g.eyeY + 6;
+    const bellyW = bW * 0.62;
+    const bellyPath = `
+      M ${cX} ${bellyTop}
+      C ${cX + bellyW * 0.65} ${bellyTop} ${cX + bellyW} ${bellyTop + 14} ${cX + bellyW} ${botY - 14}
+      C ${cX + bellyW * 0.90} ${botY} ${cX + 12} ${botY} ${cX} ${botY}
+      C ${cX - 12} ${botY} ${cX - bellyW * 0.90} ${botY} ${cX - bellyW} ${botY - 14}
+      C ${cX - bellyW} ${bellyTop + 14} ${cX - bellyW * 0.65} ${bellyTop} ${cX} ${bellyTop}
+      Z
+    `;
+
+    // Ambient Occlusion Crescent along lower-right inner rim
+    const aoCrescent = `
+      <path d="M ${cX - 8} ${botY}
+               C ${cX + 18} ${botY} ${cX + bW * 0.88} ${botY + 2} ${cX + bW} ${botY - 10}
+               C ${cX + bW * 1.06} ${botY - 24} ${cX + cW * 1.05} ${cheekY + 14} ${cX + cW} ${cheekY}
+               C ${cX + cW - 4} ${cheekY + 14} ${cX + bW - 6} ${botY - 20} ${cX - 8} ${botY} Z"
+            fill="${palette.shadow}" opacity="0.20" />
+    `;
+
+    // Top Specular Highlight Arc along crown curve
+    const specularArc = `
+      <path d="M ${cX - cW * 0.45} ${topY + 6}
+               C ${cX - cW * 0.20} ${topY + 2} ${cX + cW * 0.20} ${topY + 2} ${cX + cW * 0.45} ${topY + 6}"
+            fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" opacity="0.55" />
+      <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="1.8" fill="#ffffff" opacity="0.75" />
+    `;
+
+    // Front Arms / Paws
     let armsMarkup = '';
     if (stage === 'baby') {
       // Tiny baby paws curled happily on belly
       armsMarkup = `
-        <ellipse cx="${cX - 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(-15, ${cX - 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-        <ellipse cx="${cX + 14}" cy="${cY + 10}" rx="6.5" ry="5" transform="rotate(15, ${cX + 14}, ${cY + 10})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z" />
+          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z" />
+        </g>
       `;
     } else if (stage === 'growing') {
-      // Small arms reaching out slightly
+      // Small arms reaching out slightly with cute paw pads
       armsMarkup = `
-        <ellipse cx="${cX - rx + 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(20, ${cX - rx + 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-        <ellipse cx="${cX + rx - 4}" cy="${cY + 6}" rx="7.5" ry="12" transform="rotate(-20, ${cX + rx - 4}, ${cY + 6})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M ${cX - cW + 6} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 6} ${g.pawY - 14} Z" />
+          <circle cx="${cX - cW - 2}" cy="${g.pawY + 5}" r="2.8" fill="${palette.cheek}" opacity="0.8" />
+          <path d="M ${cX + cW - 6} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 6} ${g.pawY - 14} Z" />
+          <circle cx="${cX + cW + 2}" cy="${g.pawY + 5}" r="2.8" fill="${palette.cheek}" opacity="0.8" />
+        </g>
       `;
     } else {
       // Adventurer, Advanced, Ultimate arms
       armsMarkup = `
-        <ellipse cx="${cX - rx + 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(22, ${cX - rx + 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
-        <ellipse cx="${cX + rx - 4}" cy="${cY + 8}" rx="9" ry="14" transform="rotate(-22, ${cX + rx - 4}, ${cY + 8})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <g fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M ${cX - cW + 5} ${g.pawY - 16} C ${cX - cW - 10} ${g.pawY - 8} ${cX - cW - 12} ${g.pawY + 12} ${cX - cW + 6} ${g.pawY + 16} C ${cX - cW + 12} ${g.pawY + 10} ${cX - cW + 10} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 16} Z" />
+          <circle cx="${cX - cW - 1}" cy="${g.pawY + 7}" r="3.2" fill="${palette.cheek}" opacity="0.8" />
+          <path d="M ${cX + cW - 5} ${g.pawY - 16} C ${cX + cW + 10} ${g.pawY - 8} ${cX + cW + 12} ${g.pawY + 12} ${cX + cW - 6} ${g.pawY + 16} C ${cX + cW - 12} ${g.pawY + 10} ${cX + cW - 10} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 16} Z" />
+          <circle cx="${cX + cW + 1}" cy="${g.pawY + 7}" r="3.2" fill="${palette.cheek}" opacity="0.8" />
+        </g>
       `;
     }
 
-    const torsoMarkup = `
-      <!-- Main Monster Body -->
+    return `
+      <!-- Main Organic Torso with Volumetric Shading -->
       <g filter="url(#mf-shadow)">
-        <ellipse cx="${cX}" cy="${cY}" rx="${rx}" ry="${ry}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
-        
-        <!-- Soft Belly Patch -->
-        <ellipse cx="${cX}" cy="${cY + ry * 0.22}" rx="${bellyRx}" ry="${bellyRy}" fill="url(#mg-belly-${colorKey})" />
-
+        <path d="${bodyPath}" fill="url(#mg-body-${colorKey})" stroke="${palette.primaryDark}" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" />
+        <path d="${bellyPath}" fill="url(#mg-belly-${colorKey})" />
+        ${aoCrescent}
+        ${specularArc}
         ${armsMarkup}
       </g>
     `;
+  }
 
-    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette);
-    const faceMarkup = renderFaceElements(stage, palette, equipped, cX, cY, ry);
+  // --- MAIN MONSTER BODY LAYER (Stages 3 to 7) ---
+  function renderMonsterBody(stage, palette, colorKey, equipped) {
+    const g = getStageGeometry(stage);
+    const cX = 100;
+    const cY = (g.topY + g.botY) / 2;
+    const rx = g.bW;
+    const ry = (g.botY - g.topY) / 2;
+
+    const underBodyMarkup = renderUnderBodyAccessories(stage, palette, equipped, cX, g);
+    const feetMarkup = renderGroundedFeet(palette, cX, g);
+    const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
+    const overBodyMarkup = renderOverBodyAccessories(stage, palette, equipped, cX, g);
+    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+    const faceMarkup = renderFaceElements(stage, palette, equipped, cX, g);
 
     return `
-      ${hornsEarsMarkup}
+      ${underBodyMarkup}
       ${feetMarkup}
       ${torsoMarkup}
+      ${overBodyMarkup}
       ${clothingMarkup}
       ${faceMarkup}
     `;
@@ -1148,154 +1345,109 @@
       return `
         <!-- Explorer Travel Coat -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 2} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 2} ${cY + 2} L ${cX + rx + 4} ${cY + ry + 8} L ${cX - rx - 4} ${cY + ry + 8} Z" fill="#065f46" stroke="#064e3b" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry + 8}" stroke="#d97706" stroke-width="2" />
-          <circle cx="${cX - 7}" cy="${cY + 16}" r="2.2" fill="#facc15" />
-          <circle cx="${cX + 7}" cy="${cY + 16}" r="2.2" fill="#facc15" />
-          <circle cx="${cX - 7}" cy="${cY + 26}" r="2.2" fill="#facc15" />
-          <circle cx="${cX + 7}" cy="${cY + 26}" r="2.2" fill="#facc15" />
-        </g>
-      `;
-    }
-
-    // School
-    if (clothingId === 'clothing-scarf') {
-      return `
-        <!-- Academy Striped Scarf -->
-        <g filter="url(#mf-shadow)">
-          <ellipse cx="${cX}" cy="${cY - 6}" rx="${rx * 0.75}" ry="7" fill="#2563eb" stroke="#1e40af" stroke-width="2" />
-          <path d="M ${cX - 12} ${cY - 4} L ${cX - 16} ${cY + 24} L ${cX - 4} ${cY + 26} L ${cX} ${cY - 4} Z" fill="#2563eb" stroke="#1e40af" stroke-width="1.5" />
-          <rect x="${cX - 15}" y="${cY + 6}" width="13" height="4" fill="#facc15" />
-          <rect x="${cX - 15}" y="${cY + 16}" width="13" height="4" fill="#facc15" />
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 1} L ${cX - rx + 2} ${cY + ry - 1} Z" fill="#0369a1" stroke="#075985" stroke-width="2" />
+          <line x1="${cX}" y1="${cY + 4}" x2="${cX}" y2="${cY + ry - 1}" stroke="#f8fafc" stroke-width="2" />
+          <circle cx="${cX - 5}" cy="${cY + 12}" r="1.8" fill="#facc15" />
+          <circle cx="${cX - 5}" cy="${cY + 20}" r="1.8" fill="#facc15" />
         </g>
       `;
     }
 
     if (clothingId === 'clothing-hoodie') {
       return `
-        <!-- Student Hoodie -->
+        <!-- Casual Student Hoodie -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY} L ${cX + rx - 2} ${cY + ry - 4} L ${cX - rx + 2} ${cY + ry - 4} Z" fill="#0d9488" stroke="#115e59" stroke-width="2" />
-          <!-- Kangaroo Pocket -->
-          <rect x="${cX - 14}" y="${cY + 14}" width="28" height="12" rx="4" fill="#14b8a6" stroke="#0f766e" stroke-width="1.2" />
-          <!-- Drawstrings -->
-          <line x1="${cX - 5}" y1="${cY + 4}" x2="${cX - 5}" y2="${cY + 12}" stroke="#f0fdfa" stroke-width="1.5" stroke-linecap="round" />
-          <line x1="${cX + 5}" y1="${cY + 4}" x2="${cX + 5}" y2="${cY + 12}" stroke="#f0fdfa" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 10} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#059669" stroke="#047857" stroke-width="2" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.6}" ry="5" fill="#10b981" />
+          <!-- Pouch pocket -->
+          <path d="M ${cX - 14} ${cY + ry - 12} L ${cX + 14} ${cY + ry - 12} L ${cX + 10} ${cY + ry - 4} L ${cX - 10} ${cY + ry - 4} Z" fill="#047857" opacity="0.8" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-school-jacket') {
+    if (clothingId === 'clothing-sweater') {
       return `
-        <!-- School Varsity Jacket -->
+        <!-- Cozy Knitted Sweater -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY} L ${cX + rx - 2} ${cY + ry - 4} L ${cX - rx + 2} ${cY + ry - 4} Z" fill="#1e3a8a" stroke="#172554" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 4}" x2="${cX}" y2="${cY + ry - 4}" stroke="#f8fafc" stroke-width="2.5" />
-          <!-- Academy 'A' Letter -->
-          <text x="${cX - 14}" y="${cY + 16}" font-size="10" font-weight="900" fill="#facc15" font-family="sans-serif">A</text>
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+          <line x1="${cX - rx + 4}" y1="${cY + 10}" x2="${cX + rx - 4}" y2="${cY + 10}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
+          <line x1="${cX - rx + 4}" y1="${cY + 18}" x2="${cX + rx - 4}" y2="${cY + 18}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-scholar') {
+    if (clothingId === 'clothing-scarf') {
       return `
-        <!-- Scholar Outfit -->
+        <!-- Cozy Winter Scarf -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY} L ${cX + rx - 2} ${cY + ry - 4} L ${cX - rx + 2} ${cY + ry - 4} Z" fill="#334155" stroke="#1e293b" stroke-width="2" />
-          <polygon points="${cX},${cY+2} ${cX+8},${cY+8} ${cX},${cY+14} ${cX-8},${cY+8}" fill="#ffffff" />
-          <!-- Crimson Tie -->
-          <polygon points="${cX-2},${cY+12} ${cX+2},${cY+12} ${cX+3},${cY+24} ${cX},${cY+27} ${cX-3},${cY+24}" fill="#dc2626" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="7" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+          <path d="M ${cX + 8} ${cY + 8} L ${cX + 18} ${cY + ry + 4} L ${cX + 6} ${cY + ry + 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+          <!-- Scarf fringe -->
+          <line x1="${cX + 7}" y1="${cY + ry + 4}" x2="${cX + 7}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 12}" y1="${cY + ry + 4}" x2="${cX + 12}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 17}" y1="${cY + ry + 4}" x2="${cX + 17}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
         </g>
       `;
     }
 
-    // Special
-    if (clothingId === 'clothing-royal-robe') {
+    if (clothingId === 'clothing-pilot') {
       return `
-        <!-- Royal Robe -->
+        <!-- Ace Pilot Jumpsuit -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 2} ${cY - 2} Q ${cX} ${cY + 6} ${cX + rx - 2} ${cY - 2} L ${cX + rx + 6} ${cY + ry + 8} L ${cX - rx - 6} ${cY + ry + 8} Z" fill="#991b1b" stroke="#7f1d1d" stroke-width="2" />
-          <!-- White Ermine Fur Collar -->
-          <ellipse cx="${cX}" cy="${cY}" rx="${rx * 0.75}" ry="6.5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
-          <circle cx="${cX - 10}" cy="${cY}" r="1.2" fill="#0f172a" />
-          <circle cx="${cX}" cy="${cY + 1}" r="1.2" fill="#0f172a" />
-          <circle cx="${cX + 10}" cy="${cY}" r="1.2" fill="#0f172a" />
-          <!-- Gold chain clasp -->
-          <line x1="${cX - 12}" y1="${cY + 6}" x2="${cX + 12}" y2="${cY + 6}" stroke="#facc15" stroke-width="2" />
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#ea580c" stroke="#c2410c" stroke-width="2" />
+          <line x1="${cX}" y1="${cY + 3}" x2="${cX}" y2="${cY + ry - 3}" stroke="#facc15" stroke-width="2" />
+          <!-- Star patch on chest -->
+          <polygon points="${cX-10},${cY+12} ${cX-8},${cY+14} ${cX-5},${cY+14} ${cX-7},${cY+16} ${cX-6},${cY+19} ${cX-10},${cY+17} ${cX-14},${cY+19} ${cX-13},${cY+16} ${cX-15},${cY+14} ${cX-12},${cY+14}" fill="#facc15" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-robe') {
+    if (clothingId === 'clothing-tuxedo') {
       return `
-        <!-- Wizard Robe -->
+        <!-- Formal Evening Tuxedo -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY} L ${cX + rx} ${cY + ry + 4} L ${cX - rx} ${cY + ry + 4} Z" fill="#4338ca" stroke="#312e81" stroke-width="2" opacity="0.9" />
-          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry + 4}" stroke="#facc15" stroke-width="2" />
-          <polygon points="${cX},${cY + 18} ${cX+2},${cY+22} ${cX+6},${cY+22} ${cX+3},${cY+25} ${cX+4},${cY+29} ${cX},${cY+26} ${cX-4},${cY+29} ${cX-3},${cY+25} ${cX-6},${cY+22} ${cX-2},${cY+22}" fill="#facc15" />
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
+          <polygon points="${cX},${cY+4} ${cX+10},${cY+ry-3} ${cX-10},${cY+ry-3}" fill="#f8fafc" />
+          <!-- Red bow tie -->
+          <polygon points="${cX},${cY+6} ${cX-6},${cY+4} ${cX-6},${cY+8}" fill="#ef4444" />
+          <polygon points="${cX},${cY+6} ${cX+6},${cY+4} ${cX+6},${cY+8}" fill="#ef4444" />
+          <circle cx="${cX}" cy="${cY+6}" r="1.5" fill="#dc2626" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-space') {
+    if (clothingId === 'clothing-ninja') {
       return `
-        <!-- Space Suit -->
+        <!-- Shadow Ninja Garb -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 4} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
-          <ellipse cx="${cX}" cy="${cY + 2}" rx="${rx * 0.6}" ry="5" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" />
-          <rect x="${cX - 10}" y="${cY + 12}" width="20" height="12" rx="3" fill="#0f172a" />
-          <circle cx="${cX - 4}" cy="${cY + 18}" r="2" fill="#22c55e" />
-          <circle cx="${cX + 4}" cy="${cY + 18}" r="2" fill="#38bdf8" />
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#18181b" stroke="#09090b" stroke-width="2" />
+          <!-- Red ninja sash -->
+          <rect x="${cX - rx + 4}" y="${cY + ry - 10}" width="${rx * 2 - 8}" height="5" fill="#dc2626" stroke="#991b1b" stroke-width="1" />
+          <path d="M ${cX + 6} ${cY + ry - 6} L ${cX + 12} ${cY + ry + 8} L ${cX + 4} ${cY + ry + 8} Z" fill="#dc2626" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-hero') {
+    if (clothingId === 'clothing-kimono') {
       return `
-        <!-- Hero Costume -->
+        <!-- Elegant Kimono Robe -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY} L ${cX + rx - 2} ${cY + ry - 4} L ${cX - rx + 2} ${cY + ry - 4} Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="2" />
-          <!-- Lightning Bolt Insignia -->
-          <polygon points="${cX+2},${cY+6} ${cX-6},${cY+16} ${cX},${cY+16} ${cX-2},${cY+26} ${cX+6},${cY+14} ${cX},${cY+14}" fill="#facc15" stroke="#ca8a04" stroke-width="1" />
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#f43f5e" stroke="#e11d48" stroke-width="2" />
+          <!-- Gold Obi sash -->
+          <rect x="${cX - rx + 4}" y="${cY + 12}" width="${rx * 2 - 8}" height="7" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+          <line x1="${cX - 12}" y1="${cY + 2}" x2="${cX + 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
+          <line x1="${cX + 12}" y1="${cY + 2}" x2="${cX - 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-winter') {
+    if (clothingId === 'clothing-armor') {
       return `
-        <!-- Winter Puffy Parka -->
+        <!-- Knight Golden Armor Plate -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 2} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 2} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#38bdf8" stroke="#0284c7" stroke-width="2" />
-          <line x1="${cX - rx + 6}" y1="${cY + 10}" x2="${cX + rx - 6}" y2="${cY + 10}" stroke="#0284c7" stroke-width="1" />
-          <line x1="${cX - rx + 6}" y1="${cY + 18}" x2="${cX + rx - 6}" y2="${cY + 18}" stroke="#0284c7" stroke-width="1" />
-          <!-- White fur collar -->
-          <ellipse cx="${cX}" cy="${cY}" rx="${rx * 0.7}" ry="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
-        </g>
-      `;
-    }
-
-    // Fantasy
-    if (clothingId === 'clothing-dragon-armor') {
-      return `
-        <!-- Dragon Scalemail Armor -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 3} L ${cX - rx + 2} ${cY + ry - 3} Z" fill="#047857" stroke="#064e3b" stroke-width="2" />
-          <!-- Scales -->
-          <polygon points="${cX},${cY+8} ${cX+8},${cY+14} ${cX},${cY+20} ${cX-8},${cY+14}" fill="#059669" stroke="#047857" stroke-width="1" />
-          <!-- Ruby Core Gem -->
-          <polygon points="${cX},${cY+11} ${cX+4},${cY+14} ${cX},${cY+17} ${cX-4},${cY+14}" fill="#ef4444" />
-        </g>
-      `;
-    }
-
-    if (clothingId === 'clothing-knight-armor') {
-      return `
-        <!-- Knight Silver Armor -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 3} L ${cX - rx + 2} ${cY + ry - 3} Z" fill="#94a3b8" stroke="#475569" stroke-width="2" />
-          <!-- Sapphire Crest -->
-          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry - 4}" stroke="#2563eb" stroke-width="2.5" />
-          <circle cx="${cX}" cy="${cY + 14}" r="3.5" fill="#2563eb" stroke="#1d4ed8" stroke-width="1" />
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 5} ${cY + ry - 3} Q ${cX} ${cY + ry + 4} ${cX - rx + 5} ${cY + ry - 3} Z" fill="#eab308" stroke="#ca8a04" stroke-width="2" />
+          <circle cx="${cX}" cy="${cY + 14}" r="5" fill="#facc15" stroke="#a16207" stroke-width="1.5" />
+          <polygon points="${cX},${cY+11} ${cX+2},${cY+13} ${cX+5},${cY+13} ${cX+3},${cY+15} ${cX+4},${cY+17} ${cX},${cY+16} ${cX-4},${cY+17} ${cX-3},${cY+15} ${cX-5},${cY+13} ${cX-2},${cY+13}" fill="#ca8a04" />
         </g>
       `;
     }
@@ -1311,162 +1463,64 @@
       `;
     }
 
-    if (clothingId === 'clothing-royal') {
-      return `
-        <!-- Royal Outfit -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 3} L ${cX - rx + 2} ${cY + ry - 3} Z" fill="#6b21a8" stroke="#4c1d95" stroke-width="2" />
-          <line x1="${cX - 14}" y1="${cY + 2}" x2="${cX + 14}" y2="${cY + ry - 4}" stroke="#facc15" stroke-width="4" />
-          <circle cx="${cX}" cy="${cY + 14}" r="4" fill="#eab308" stroke="#ca8a04" stroke-width="1.5" />
-        </g>
-      `;
-    }
-
     return '';
   }
 
-  // --- HORNS & EARS ---
-  function renderHornsAndEars(stage, palette, equipped, cX, topY, scale) {
-    let hornId = equipped.horns;
-    if (!hornId || hornId === 'default') {
-      if (stage === 'ultimate') hornId = 'horns-crystal';
-      else if (stage === 'advanced') hornId = 'horns-crystal';
-      else if (stage === 'adventurer') hornId = 'horns-small';
-      else if (stage === 'growing') hornId = 'horns-small';
-      else hornId = 'none';
-    }
-
-    // Floppy Monster Ears are ALWAYS present to maintain signature character DNA across all stages!
-    const earsMarkup = `
-      <!-- Cute Floppy Monster Ears (Signature Character DNA) -->
-      <g filter="url(#mf-shadow)" class="monster-ears">
-        <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-        <ellipse cx="${cX - 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(-25, ${cX - 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
-        <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${11 * scale}" ry="${15 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.5" />
-        <ellipse cx="${cX + 34 * scale}" cy="${topY + 14 * scale}" rx="${6.5 * scale}" ry="${9.5 * scale}" transform="rotate(25, ${cX + 34 * scale}, ${topY + 14 * scale})" fill="${palette.purple || '#c084fc'}" opacity="0.7" />
-      </g>
-    `;
-
-    if (hornId === 'none' || hornId === 'horns-none') {
-      return earsMarkup;
-    }
-
-    let hornsMarkup = '';
-    if (hornId === 'horns-small' || hornId === 'horns-nub') {
-      hornsMarkup = `
-        <!-- Small Horns -->
-        <g fill="#38bdf8" stroke="#0284c7" stroke-width="2" filter="url(#mf-shadow)">
-          <path d="M ${cX - 22} ${topY + 10} Q ${cX - 26} ${topY - 4} ${cX - 18} ${topY - 14} Q ${cX - 14} ${topY} ${cX - 12} ${topY + 10} Z" />
-          <path d="M ${cX + 22} ${topY + 10} Q ${cX + 26} ${topY - 4} ${cX + 18} ${topY - 14} Q ${cX + 14} ${topY} ${cX + 12} ${topY + 10} Z" />
-        </g>
-      `;
-    } else if (hornId === 'horns-curved') {
-      hornsMarkup = `
-        <!-- Curved Ram Horns -->
-        <g fill="#f97316" stroke="#c2410c" stroke-width="2.2" filter="url(#mf-shadow)">
-          <path d="M ${cX - 20} ${topY + 10} C ${cX - 32} ${topY - 6} ${cX - 42} ${topY - 2} ${cX - 38} ${topY + 14} C ${cX - 30} ${topY + 6} ${cX - 24} ${topY - 2} ${cX - 14} ${topY + 10} Z" />
-          <path d="M ${cX + 20} ${topY + 10} C ${cX + 32} ${topY - 6} ${cX + 42} ${topY - 2} ${cX + 38} ${topY + 14} C ${cX + 30} ${topY + 6} ${cX + 24} ${topY - 2} ${cX + 14} ${topY + 10} Z" />
-        </g>
-      `;
-    } else if (hornId === 'horns-crystal') {
-      hornsMarkup = `
-        <!-- Crystal Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 22} ${topY + 10} C ${cX - 34} ${topY - 14} ${cX - 42} ${topY - 26} ${cX - 32} ${topY - 36} C ${cX - 20} ${topY - 22} ${cX - 14} ${topY - 4} ${cX - 12} ${topY + 12} Z" fill="url(#mg-crystal-horn)" stroke="#6b21a8" stroke-width="2.2" />
-          <path d="M ${cX + 22} ${topY + 10} C ${cX + 34} ${topY - 14} ${cX + 42} ${topY - 26} ${cX + 32} ${topY - 36} C ${cX + 20} ${topY - 22} ${cX + 14} ${topY - 4} ${cX + 12} ${topY + 12} Z" fill="url(#mg-crystal-horn)" stroke="#6b21a8" stroke-width="2.2" />
-        </g>
-      `;
-    } else if (hornId === 'horns-gold') {
-      hornsMarkup = `
-        <!-- Gold Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 20} ${topY + 10} C ${cX - 32} ${topY - 10} ${cX - 36} ${topY - 24} ${cX - 24} ${topY - 30} C ${cX - 18} ${topY - 18} ${cX - 14} ${topY} ${cX - 12} ${topY + 10} Z" fill="url(#mg-gold-horn)" stroke="#a16207" stroke-width="2.2" />
-          <path d="M ${cX + 20} ${topY + 10} C ${cX + 32} ${topY - 10} ${cX + 36} ${topY - 24} ${cX + 24} ${topY - 30} C ${cX + 18} ${topY - 18} ${cX + 14} ${topY} ${cX + 12} ${topY + 10} Z" fill="url(#mg-gold-horn)" stroke="#a16207" stroke-width="2.2" />
-        </g>
-      `;
-    } else if (hornId === 'horns-nature') {
-      hornsMarkup = `
-        <!-- Nature Leaf Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 20} ${topY + 10} C ${cX - 34} ${topY - 4} ${cX - 32} ${topY - 24} ${cX - 18} ${topY - 28} C ${cX - 12} ${topY - 16} ${cX - 12} ${topY} ${cX - 12} ${topY + 10} Z" fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
-          <path d="M ${cX + 20} ${topY + 10} C ${cX + 34} ${topY - 4} ${cX + 32} ${topY - 24} ${cX + 18} ${topY - 28} C ${cX + 12} ${topY - 16} ${cX + 12} ${topY} ${cX + 12} ${topY + 10} Z" fill="url(#mg-nature-horn)" stroke="#166534" stroke-width="2" />
-        </g>
-      `;
-    } else if (hornId === 'horns-star') {
-      hornsMarkup = `
-        <!-- Star Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 20} ${topY + 10} L ${cX - 24} ${topY - 16} L ${cX - 14} ${topY + 10} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
-          <polygon points="${cX-24},${topY-24} ${cX-22},${topY-18} ${cX-16},${topY-18} ${cX-21},${topY-14} ${cX-19},${topY-8} ${cX-24},${topY-12} ${cX-29},${topY-8} ${cX-27},${topY-14} ${cX-32},${topY-18} ${cX-26},${topY-18}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
-          <path d="M ${cX + 20} ${topY + 10} L ${cX + 24} ${topY - 16} L ${cX + 14} ${topY + 10} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
-          <polygon points="${cX+24},${topY-24} ${cX+26},${topY-18} ${cX+32},${topY-18} ${cX+27},${topY-14} ${cX+29},${topY-8} ${cX+24},${topY-12} ${cX+19},${topY-8} ${cX+21},${topY-14} ${cX+16},${topY-18} ${cX+22},${topY-18}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
-        </g>
-      `;
-    } else if (hornId === 'horns-ice') {
-      hornsMarkup = `
-        <!-- Ice Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 22} ${topY + 10} L ${cX - 30} ${topY - 26} L ${cX - 14} ${topY + 10} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
-          <path d="M ${cX + 22} ${topY + 10} L ${cX + 30} ${topY - 26} L ${cX + 14} ${topY + 10} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
-        </g>
-      `;
-    } else if (hornId === 'horns-flame') {
-      hornsMarkup = `
-        <!-- Flame Horns -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 22} ${topY + 10} Q ${cX - 34} ${topY - 8} ${cX - 28} ${topY - 28} Q ${cX - 16} ${topY - 12} ${cX - 12} ${topY + 10} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
-          <path d="M ${cX + 22} ${topY + 10} Q ${cX + 34} ${topY - 8} ${cX + 28} ${topY - 28} Q ${cX + 16} ${topY - 12} ${cX + 12} ${topY + 10} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
-        </g>
-      `;
-    }
-
-    return `
-      ${earsMarkup}
-      ${hornsMarkup}
-    `;
-  }
-
-  // --- FACE ELEMENTS ---
-  function renderFaceElements(stage, palette, equipped, cX, cY, ry) {
+  // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
+  function renderFaceElements(stage, palette, equipped, cX, g) {
     let eyesId = equipped.eyes || 'eyes-sparkle';
     if (eyesId === 'default') eyesId = 'eyes-sparkle';
     const mouthId = equipped.mouth || 'mouth-smile';
 
-    const eyeY = cY - ry * 0.16;
-    const eyeSpacing = stage === 'baby' ? 15 : (stage === 'growing' ? 16 : 17);
+    // Low Horizon Placement (Lower 38%-42% of head for peak cute chibi appeal)
+    const eyeY = g.eyeY;
+    const eyeSpacing = g.eyeSpacing;
+    const mouthY = eyeY + 12;
 
-    // Warm signature pink blush cheeks with expressive chibi glow
+    // Warm signature pink blush cheeks nestled directly into the cheek swell
     const cheeks = `
-      <ellipse cx="${cX - eyeSpacing - 9}" cy="${eyeY + 13}" rx="7.8" ry="5" fill="${palette.cheek}" opacity="0.72" />
-      <ellipse cx="${cX + eyeSpacing + 9}" cy="${eyeY + 13}" rx="7.8" ry="5" fill="${palette.cheek}" opacity="0.72" />
+      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.2" ry="5.2" fill="${palette.cheek}" opacity="0.76" />
+      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.2" ry="5.2" fill="${palette.cheek}" opacity="0.76" />
     `;
 
     let eyesMarkup = '';
     if (eyesId === 'eyes-wink' || eyesId === 'eyes-curious') {
       eyesMarkup = `
         <!-- Curious Wink Eyes -->
-        <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        </g>
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+        </g>
       `;
     } else if (eyesId === 'eyes-happy') {
       eyesMarkup = `
         <!-- Happy Crescent Eyes -->
-        <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 9} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-        <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 9} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <path d="M ${cX - eyeSpacing - 9} ${eyeY + 2} Q ${cX - eyeSpacing} ${eyeY - 9} ${cX - eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        </g>
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <path d="M ${cX + eyeSpacing - 9} ${eyeY + 2} Q ${cX + eyeSpacing} ${eyeY - 9} ${cX + eyeSpacing + 9} ${eyeY + 2}" stroke="#0f172a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        </g>
       `;
     } else if (eyesId === 'eyes-brave') {
       eyesMarkup = `
         <!-- Brave Hero Eyes with angled brows -->
         <line x1="${cX - eyeSpacing - 9}" y1="${eyeY - 13}" x2="${cX - eyeSpacing + 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
         <line x1="${cX + eyeSpacing + 9}" y1="${eyeY - 13}" x2="${cX + eyeSpacing - 8}" y2="${eyeY - 9}" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.2" ry="11.5" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
-        <circle cx="${cX - eyeSpacing - 2.6}" cy="${eyeY - 2.8}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="1.8" fill="#ffffff" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.2" ry="11.5" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
-        <circle cx="${cX + eyeSpacing - 2.6}" cy="${eyeY - 2.8}" r="3.8" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="1.8" fill="#ffffff" />
+        <g transform="rotate(-3, ${cX - eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.4" ry="12.0" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
+          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.0}" r="4.0" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="2.0" fill="#ffffff" />
+        </g>
+        <g transform="rotate(3, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.4" ry="12.0" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.4" />
+          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.0}" r="4.0" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 2.8}" cy="${eyeY + 3.0}" r="2.0" fill="#ffffff" />
+        </g>
       `;
     } else if (eyesId === 'eyes-sleepy') {
       eyesMarkup = `
@@ -1477,48 +1531,63 @@
     } else if (eyesId === 'eyes-star') {
       eyesMarkup = `
         <!-- Starry Eyes -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-        <polygon points="${cX-eyeSpacing},${eyeY-6} ${cX-eyeSpacing+2.4},${eyeY-1.2} ${cX-eyeSpacing+7},${eyeY-1.2} ${cX-eyeSpacing+3.5},${eyeY+2.4} ${cX-eyeSpacing+4.8},${eyeY+7} ${cX-eyeSpacing},${eyeY+3.6} ${cX-eyeSpacing-4.8},${eyeY+7} ${cX-eyeSpacing-3.5},${eyeY+2.4} ${cX-eyeSpacing-7},${eyeY-1.2} ${cX-eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-        <polygon points="${cX+eyeSpacing},${eyeY-6} ${cX+eyeSpacing+2.4},${eyeY-1.2} ${cX+eyeSpacing+7},${eyeY-1.2} ${cX+eyeSpacing+3.5},${eyeY+2.4} ${cX+eyeSpacing+4.8},${eyeY+7} ${cX+eyeSpacing},${eyeY+3.6} ${cX+eyeSpacing-4.8},${eyeY+7} ${cX+eyeSpacing-3.5},${eyeY+2.4} ${cX+eyeSpacing-7},${eyeY-1.2} ${cX+eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <polygon points="${cX-eyeSpacing},${eyeY-6} ${cX-eyeSpacing+2.4},${eyeY-1.2} ${cX-eyeSpacing+7},${eyeY-1.2} ${cX-eyeSpacing+3.5},${eyeY+2.4} ${cX-eyeSpacing+4.8},${eyeY+7} ${cX-eyeSpacing},${eyeY+3.6} ${cX-eyeSpacing-4.8},${eyeY+7} ${cX-eyeSpacing-3.5},${eyeY+2.4} ${cX-eyeSpacing-7},${eyeY-1.2} ${cX-eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+        </g>
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <polygon points="${cX+eyeSpacing},${eyeY-6} ${cX+eyeSpacing+2.4},${eyeY-1.2} ${cX+eyeSpacing+7},${eyeY-1.2} ${cX+eyeSpacing+3.5},${eyeY+2.4} ${cX+eyeSpacing+4.8},${eyeY+7} ${cX+eyeSpacing},${eyeY+3.6} ${cX+eyeSpacing-4.8},${eyeY+7} ${cX+eyeSpacing-3.5},${eyeY+2.4} ${cX+eyeSpacing-7},${eyeY-1.2} ${cX+eyeSpacing-2.4},${eyeY-1.2}" fill="#facc15" />
+        </g>
       `;
     } else if (eyesId === 'eyes-dragon') {
       eyesMarkup = `
         <!-- Dragon Golden Eyes with vertical slit pupils -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
-        <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
-        <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
+          <circle cx="${cX - eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+        </g>
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#eab308" stroke="#ca8a04" stroke-width="1.8" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="2.5" ry="9.5" fill="#0f172a" />
+          <circle cx="${cX + eyeSpacing - 2.5}" cy="${eyeY - 3.5}" r="2.4" fill="#ffffff" />
+        </g>
       `;
     } else if (eyesId === 'eyes-galaxy') {
       eyesMarkup = `
         <!-- Galaxy Cosmic Eyes -->
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
-        <circle cx="${cX - eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
-        <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
-        <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
-        <circle cx="${cX + eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
-        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+          <circle cx="${cX - eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
+          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+        </g>
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#1e1b4b" stroke="#8b5cf6" stroke-width="1.6" />
+          <circle cx="${cX + eyeSpacing}" cy="${eyeY}" r="6.2" fill="#c084fc" opacity="0.65" />
+          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.5}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.5}" r="2.0" fill="#38bdf8" />
+        </g>
       `;
     } else {
-      // Default: Signature Anime Sparkle Eyes (Prominent Chibi Proportions)
+      // Default: Signature Anime Sparkle Eyes (Chibi Proportions, Outward Angled, Brilliant Glints)
       eyesMarkup = `
-        <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-        <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-        <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
+        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <circle cx="${cX - eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+        </g>
 
-        <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.4" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
-        <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
-        <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
+        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.6" ry="12.6" fill="#0f172a" stroke="${palette.primaryDark}" stroke-width="1.6" />
+          <circle cx="${cX + eyeSpacing - 2.8}" cy="${eyeY - 3.4}" r="4.2" fill="#ffffff" />
+          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.2" fill="#ffffff" />
+        </g>
       `;
     }
 
     let mouthMarkup = '';
-    const mouthY = eyeY + 14;
     if (mouthId === 'mouth-cheer' || mouthId === 'mouth-open') {
       mouthMarkup = `
         <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 14} ${cX + 9} ${mouthY} Z" fill="#e11d48" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round" />
@@ -1554,7 +1623,7 @@
     } else {
       // Default: Sweet Gentle Smile (Enhanced 3.0px rounded stroke)
       mouthMarkup = `
-        <path d="M ${cX - 8} ${mouthY} Q ${cX} ${mouthY + 6.5} ${cX + 8} ${mouthY}" fill="none" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M ${cX - 7.5} ${mouthY} Q ${cX} ${mouthY + 6.2} ${cX + 7.5} ${mouthY}" fill="none" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round" />
       `;
     }
 
