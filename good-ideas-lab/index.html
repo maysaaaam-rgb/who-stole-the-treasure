@@ -4,1287 +4,820 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>The Inventor’s Odyssey: My Good Ideas Lab 💡 | مختبر الأفكار الرائعة</title>
+
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1e3a8a',
+            edison: '#f59e0b',
+            blueprint: '#06b6d4',
+            nature: '#10b981',
+            parchment: '#fbf7ee'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            hand: ['Patrick Hand', 'Caveat', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0d1527 0%, #15203b 50%, #1a2849 100%);
-      --card-bg: #1e293b;
-      --card-bg-light: #26354a;
-      --panel-border: #334155;
-      --accent-yellow: #f59e0b;
-      --accent-yellow-light: #fde68a;
-      --accent-cyan: #38bdf8;
-      --accent-green: #10b981;
-      --accent-green-light: #6ee7b7;
-      --accent-rose: #f43f5e;
-      --accent-purple: #a855f7;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --font-display: 'Fredoka', 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --ink: #1e3a8a;
+      --edison: #f59e0b;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --dark-bg: #090e17;
+      --card-bg: #131c2e;
+      --border: #22324d;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
     body {
-      font-family: var(--font-body);
-      background: var(--bg-gradient);
-      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #060a12;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(30, 58, 138, 0.35) 0%, transparent 70%),
+        linear-gradient(180deg, #070c16 0%, #03060a 100%);
+      color: #f8fafc;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow-x: hidden;
     }
 
-    /* Top Navigation HUD */
-    .lab-header {
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(10px);
-      border-bottom: 2px solid var(--panel-border);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    /* Blueprint Grid Backdrop */
+    .blueprint-grid {
+      background-color: #0b1322;
+      background-image: 
+        linear-gradient(rgba(6, 182, 212, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
     }
 
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
+    .sketchbook-paper {
+      background: #fdfbf7;
+      background-image: 
+        radial-gradient(#e2d9c8 1px, transparent 1px),
+        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: #1c1917;
     }
 
-    .brand-icon {
-      font-size: 2rem;
-      animation: floatBulb 3s ease-in-out infinite;
-    }
-    @keyframes floatBulb {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50% { transform: translateY(-5px) rotate(4deg); }
-    }
+    /* Handwritten Font Utilities */
+    .font-sketch { font-family: 'Patrick Hand', cursive; }
+    .font-hand { font-family: 'Caveat', cursive; }
 
-    .brand-title {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.35rem;
-      color: var(--accent-yellow);
-      display: flex;
-      flex-direction: column;
-      line-height: 1.15;
-    }
-
-    .brand-title span.sub {
-      font-size: 0.75rem;
-      font-family: var(--font-body);
-      font-weight: 700;
-      color: var(--accent-cyan);
-      letter-spacing: 0.5px;
-    }
-
-    .hud-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .hud-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--panel-border);
-      color: var(--text-main);
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 700;
-      padding: 0.45rem 0.9rem;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s ease;
-    }
-    .hud-btn:hover {
-      background: var(--card-bg-light);
-      border-color: var(--accent-cyan);
-      transform: translateY(-1px);
-    }
-    .hud-btn:active { transform: translateY(1px); }
-    .hud-btn.active {
-      background: var(--accent-cyan);
-      color: #042f2e;
-      border-color: var(--accent-cyan);
-    }
-
-    /* XP & Progress Pill */
-    .xp-pill {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15));
-      border: 1px solid var(--accent-yellow);
-      padding: 0.4rem 0.9rem;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--accent-yellow-light);
-    }
-
-    /* Quest Progress Stepper */
-    .quest-stepper {
-      background: #0b1120;
-      border-bottom: 1px solid var(--panel-border);
-      padding: 0.6rem 1.5rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.75rem;
-      overflow-x: auto;
-    }
-
-    .step-node {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: #1e293b;
-      border: 2px solid #334155;
-      padding: 0.4rem 1rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .step-node.active {
-      border-color: var(--accent-yellow);
-      background: #273549;
-      color: #fff;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
-    }
-    .step-node.completed {
-      border-color: var(--accent-green);
-      color: var(--accent-green-light);
-    }
-
-    /* Main Container & Screens */
-    main.lab-stage {
-      flex: 1;
-      max-width: 1100px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.5rem 1.25rem 3rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .screen-view {
-      display: none;
-      flex-direction: column;
-      gap: 1.5rem;
-      animation: fadeIn 0.3s ease-out;
-    }
-    .screen-view.active { display: flex; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Card Containers */
-    .glass-card {
-      background: var(--card-bg);
-      border: 2px solid var(--panel-border);
-      border-radius: 20px;
-      padding: 1.75rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      position: relative;
-    }
-
-    /* ----------------------------------------------------
-       SCREEN 0: DASHBOARD & NOTEBOOK INTRO
-       ---------------------------------------------------- */
-    .hero-banner {
-      background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #4338ca 100%);
-      border: 3px solid #6366f1;
+    /* Glassmorphism Panels */
+    .glass-panel {
+      background: rgba(19, 28, 46, 0.88);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--border);
       border-radius: 24px;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-banner h1 {
-      font-family: var(--font-display);
-      font-size: 2.8rem;
-      color: #fff;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 3px 12px rgba(0,0,0,0.5);
-    }
-    .hero-banner p {
-      font-size: 1.15rem;
-      color: #c7d2fe;
-      max-width: 680px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.5;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
     }
 
-    .inventory-section {
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 20px;
-      padding: 1.5rem;
-      margin-top: 1rem;
+    /* Keyframes */
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
     }
-    .inventory-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .inventory-header h3 {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      color: var(--accent-yellow);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    .hover-wiggle:hover { animation: wiggle 0.4s ease-in-out infinite; }
 
-    .badges-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+      50% { filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.9)); }
     }
-    .badge-item {
-      background: #1e293b;
-      border: 2px dashed #475569;
-      border-radius: 16px;
-      padding: 1.2rem 1rem;
-      text-align: center;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      cursor: pointer;
-    }
-    .badge-item.unlocked {
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      border: 2px solid var(--accent-green);
-      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
-      transform: translateY(-2px);
-    }
-    .badge-item .badge-icon {
-      font-size: 2.8rem;
-      margin-bottom: 0.4rem;
-      filter: grayscale(1) opacity(0.35);
-      transition: all 0.3s;
-    }
-    .badge-item.unlocked .badge-icon {
-      filter: grayscale(0) opacity(1);
-      animation: popIn 0.4s ease-out;
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.5); }
-      70% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-    .badge-item .badge-word {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text-muted);
-    }
-    .badge-item.unlocked .badge-word {
-      color: var(--accent-green-light);
-    }
-    .badge-item .badge-pronounce {
-      font-size: 0.75rem;
-      color: var(--accent-cyan);
-      margin-top: 0.25rem;
-      display: none;
-    }
-    .badge-item.unlocked .badge-pronounce { display: block; }
+    .glow-amber { animation: pulseGlow 2.2s infinite ease-in-out; }
 
-    /* Action Play Button */
-    .btn-action-prime {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #000;
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 800;
-      padding: 1rem 3rem;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
+    @keyframes reelSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
-    .btn-action-prime:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 14px 30px rgba(245, 158, 11, 0.5);
-    }
-    .btn-action-prime:active {
-      transform: translateY(1px);
-    }
+    .spin-reel { animation: reelSpin 1.8s linear infinite; }
 
-    /* ----------------------------------------------------
-       QUEST 1: ROLLING PENCIL & NATURE MATCHING
-       ---------------------------------------------------- */
-    .quest-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    /* Interactive Draggable Items */
+    .draggable-supply {
+      cursor: grab;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .quest-badge-tag {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid var(--accent-cyan);
-      color: var(--accent-cyan);
-      font-weight: 800;
-      font-size: 0.8rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 999px;
-      text-transform: uppercase;
-    }
+    .draggable-supply:active { cursor: grabbing; transform: scale(1.08); }
 
-    .pencil-canvas-box {
-      width: 100%;
-      height: 260px;
-      background: #090d16;
-      border: 3px solid #334155;
+    /* Badges Display */
+    .badge-capsule {
+      background: #0c1424;
+      border: 2px dashed #283a5a;
       border-radius: 18px;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 0.9rem 0.6rem;
+      text-align: center;
+      transition: all 0.3s ease;
     }
-    #pencilCanvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    .shape-picker {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1.25rem;
-      flex-wrap: wrap;
-    }
-    .shape-btn {
-      background: #0f172a;
-      border: 3px solid #334155;
-      color: #fff;
-      border-radius: 16px;
-      padding: 1rem 1.8rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      min-width: 140px;
-    }
-    .shape-btn:hover {
-      border-color: var(--accent-cyan);
+    .badge-capsule.unlocked {
+      background: linear-gradient(145deg, #132238, #0c1524);
+      border: 2px solid var(--green);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
       transform: translateY(-3px);
-      background: #1e293b;
-    }
-    .shape-btn.selected {
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.15);
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
-    }
-    .shape-btn .shape-icon {
-      font-size: 2.2rem;
     }
 
-    /* Edison Note Modal / Card */
-    .historical-note {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
-      border: 2px solid var(--accent-yellow);
-      border-radius: 16px;
-      padding: 1.25rem;
-      display: none;
-      align-items: center;
-      gap: 1.25rem;
-      margin-top: 1.25rem;
-      animation: fadeIn 0.4s ease-out;
-    }
-    .historical-note.visible { display: flex; }
-    .edison-avatar {
-      font-size: 3.5rem;
-    }
-
-    /* Biomimicry Matcher Columns */
-    .biomimicry-arena {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-top: 1.5rem;
-    }
-    @media (max-width: 768px) {
-      .biomimicry-arena { grid-template-columns: 1fr; }
-    }
-
-    .bio-col {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .bio-card {
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 16px;
-      padding: 1rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .bio-card:hover {
-      border-color: var(--accent-cyan);
-      background: #162032;
-    }
-    .bio-card.active-match {
-      border-color: var(--accent-yellow);
-      background: rgba(245, 158, 11, 0.15);
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
-    }
-    .bio-card.matched {
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.15);
-      pointer-events: none;
-    }
-    .bio-card .bio-img {
-      font-size: 2.4rem;
-    }
-    .bio-card .bio-info h4 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #fff;
-    }
-    .bio-card .bio-info p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.3;
-    }
-
-    /* Combined Crafting Bench */
-    .crafting-bench {
-      background: #090d16;
-      border: 2px dashed #475569;
-      border-radius: 18px;
-      padding: 1.25rem;
-      margin-top: 1.5rem;
-      text-align: center;
-    }
-    .craft-parts-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.2rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
-    }
-    .craft-part-chip {
-      background: #1e293b;
-      border: 2px solid #334155;
-      padding: 0.6rem 1.2rem;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .craft-combine-btn {
-      background: var(--accent-purple);
-      color: #fff;
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 700;
-      padding: 0.75rem 2rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .craft-combine-btn:hover {
-      background: #c084fc;
-      transform: translateY(-2px);
-    }
-
-    /* ----------------------------------------------------
-       QUEST 2: LEONARDO'S BLUEPRINT PARACHUTE TESTER
-       ---------------------------------------------------- */
-    .blueprint-layout {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 1.5rem;
-    }
-    @media (max-width: 860px) {
-      .blueprint-layout { grid-template-columns: 1fr; }
-    }
-
-    .tower-canvas-box {
-      background: #020617;
-      border: 3px solid #334155;
-      border-radius: 20px;
-      height: 420px;
-      position: relative;
-      overflow: hidden;
-    }
-    #towerCanvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    .blueprint-controls {
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 20px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .slider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .slider-group label {
-      font-weight: 800;
-      font-size: 0.95rem;
-      color: var(--accent-cyan);
-      display: flex;
-      justify-content: space-between;
-    }
-    .blueprint-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 12px;
-      border-radius: 6px;
-      background: #1e293b;
-      outline: none;
-      border: 1px solid #475569;
-    }
-    .blueprint-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: var(--accent-yellow);
-      cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
-    }
-
-    /* ----------------------------------------------------
-       QUEST 3: KARL BENZ ITERATION LOOP
-       ---------------------------------------------------- */
-    .benz-stage-box {
-      background: #090d16;
-      border: 3px solid #334155;
-      border-radius: 20px;
-      height: 320px;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #benzCanvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    .bystander-bubbles {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-    .dialogue-bubble {
-      background: #1e293b;
-      border: 2px solid #475569;
-      border-radius: 16px;
-      padding: 0.8rem 1.2rem;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-      min-width: 240px;
-    }
-    .dialogue-bubble .avatar { font-size: 1.8rem; }
-
-    .iteration-upgrades {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.25rem;
-      flex-wrap: wrap;
-    }
-    .upgrade-card {
-      flex: 1;
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 14px;
-      padding: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      min-width: 200px;
-    }
-    .upgrade-card:hover {
-      border-color: var(--accent-cyan);
-      background: #182234;
-    }
-    .upgrade-card.applied {
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.15);
-      pointer-events: none;
-    }
-
-    /* ----------------------------------------------------
-       FINAL CELEBRATION & CERTIFICATE MODAL
-       ---------------------------------------------------- */
-    .certificate-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 4px solid var(--accent-yellow);
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.3);
-      position: relative;
-    }
-    .cert-crown {
-      font-size: 4rem;
-      margin-bottom: 0.5rem;
-      animation: popBounce 1s ease-in-out infinite alternate;
-    }
-    @keyframes popBounce {
-      from { transform: translateY(0); }
-      to { transform: translateY(-8px); }
-    }
-    .cert-title {
-      font-family: var(--font-display);
-      font-size: 2.4rem;
-      color: var(--accent-yellow);
-      margin-bottom: 0.25rem;
-    }
-
-    .student-name-input {
-      background: #090d16;
-      border: 2px solid var(--accent-cyan);
-      color: #fff;
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      padding: 0.6rem 1.5rem;
-      border-radius: 12px;
-      text-align: center;
-      width: 100%;
-      max-width: 440px;
-      margin: 1rem auto;
-      outline: none;
-    }
-    .student-name-input:focus {
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-    }
-
-    /* Vocabulary Flashcards Review */
-    .vocab-review-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      margin: 1.5rem 0;
-      text-align: left;
-    }
-    .vocab-card {
-      background: #0b1120;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-    .vocab-card .term {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.15rem;
-      color: var(--accent-yellow);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .vocab-card .pronounce-btn {
-      background: transparent;
-      border: none;
-      color: var(--accent-cyan);
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    .vocab-card .definition {
-      font-size: 0.85rem;
-      color: #cbd5e1;
-      line-height: 1.35;
-    }
-
-    /* Student Idea Creator Box */
-    .student-idea-box {
-      background: #090d16;
-      border: 2px dashed #475569;
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-top: 1.5rem;
-      text-align: left;
-    }
-    .student-idea-box h4 {
-      font-family: var(--font-display);
-      color: var(--accent-green-light);
-      font-size: 1.2rem;
-      margin-bottom: 0.8rem;
-    }
-    .idea-field {
-      margin-bottom: 0.8rem;
-    }
-    .idea-field label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: #94a3b8;
-      margin-bottom: 0.3rem;
-    }
-    .idea-field input {
-      width: 100%;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #fff;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      outline: none;
-    }
-
-    /* Next / Back navigation buttons */
-    .stage-nav-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--panel-border);
-    }
-
-    /* Confetti Canvas Overlay */
-    #confettiCanvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* Print Styles */
+    /* Print Format */
     @media print {
       body { background: #fff !important; color: #000 !important; }
-      .lab-header, .quest-stepper, .stage-nav-row, .hud-controls { display: none !important; }
-      .certificate-card { border: 4px solid #000 !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
-      .cert-title { color: #000 !important; }
-      .student-name-input { border: 2px solid #000 !important; color: #000 !important; }
-      .vocab-card { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; }
-      .vocab-card .term { color: #000 !important; }
-      .vocab-card .definition { color: #333 !important; }
-      .student-idea-box { border: 1px solid #000 !important; background: #fff !important; }
+      header, nav, .non-printable { display: none !important; }
+      .printable-diploma { border: 4px solid #000 !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
     }
   </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-  <!-- Top Lab HUD -->
-  <header class="lab-header">
-    <div class="brand-wrap" onclick="App.showScreen('dashboard')">
-      <div class="brand-icon">💡</div>
-      <div class="brand-title">
-        <span>MY GOOD IDEAS LAB</span>
-        <span class="sub">مختبر الأفكار الرائعة • Global Readings ESL</span>
+  <!-- ====================================================
+       PERSISTENT TOP HUD & AUDIO CONTROLLER
+       ==================================================== -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b-2 border-slate-800 px-4 md:px-8 py-3 flex justify-between items-center shadow-2xl">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="Nav.goTo(0)">
+      <div class="text-3xl glow-amber">💡</div>
+      <div>
+        <h1 class="font-extrabold text-lg md:text-xl text-amber-400 tracking-tight leading-tight">
+          THE INVENTOR'S ODYSSEY
+        </h1>
+        <p class="text-xs text-cyan-400 font-bold uppercase tracking-wider">My Good Ideas Lab • مختبر الأفكار</p>
       </div>
     </div>
 
-    <div class="hud-controls">
-      <div class="xp-pill" title="Total Lab XP">
-        <span>⚡ XP:</span>
-        <span id="hud-xp-val">0</span>
+    <!-- Navigation Dots & XP -->
+    <div class="flex items-center gap-3 md:gap-5">
+      <!-- XP Badge -->
+      <div class="bg-amber-500/10 border border-amber-500/40 text-amber-300 font-black px-3.5 py-1.5 rounded-full flex items-center gap-2 text-sm shadow-inner">
+        <span class="text-amber-400">⚡ XP:</span>
+        <span id="hud-xp">0</span>
       </div>
 
-      <button class="hud-btn" id="btn-audio" onclick="AudioEngine.toggleSound()" title="Sound Effects">
+      <!-- SFX & TTS Controls -->
+      <button id="btn-sfx" onclick="Sound.toggleSfx()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-3 py-1.5 rounded-xl text-xs md:text-sm flex items-center gap-1.5 transition">
         🔊 SFX
       </button>
-      <button class="hud-btn" id="btn-speech" onclick="AudioEngine.toggleSpeech()" title="Speech Pronunciation">
-        🗣️ TTS
+      <button id="btn-tts" onclick="Sound.toggleTts()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-3 py-1.5 rounded-xl text-xs md:text-sm flex items-center gap-1.5 transition">
+        🗣️ VOICE
       </button>
     </div>
   </header>
 
-  <!-- Quest Progress Stepper -->
-  <nav class="quest-stepper">
-    <div class="step-node active" id="nav-step-0" onclick="App.showScreen('dashboard')">
-      <span>📖</span> <span>Lab Notebook</span>
-    </div>
-    <div class="step-node" id="nav-step-1" onclick="App.showScreen('quest1')">
-      <span>✏️</span> <span>Quest 1: Rolling Pencil</span>
-    </div>
-    <div class="step-node" id="nav-step-2" onclick="App.showScreen('quest2')">
-      <span>🪂</span> <span>Quest 2: Leonardo's Blueprint</span>
-    </div>
-    <div class="step-node" id="nav-step-3" onclick="App.showScreen('quest3')">
-      <span>🚗</span> <span>Quest 3: Karl Benz's Loop</span>
-    </div>
-    <div class="step-node" id="nav-step-4" onclick="App.showScreen('celebration')">
-      <span>🏆</span> <span>Master Certificate</span>
-    </div>
+  <!-- Stepper Breadcrumb Bar -->
+  <nav class="bg-slate-950/90 border-b border-slate-800 px-4 py-2.5 overflow-x-auto flex justify-center gap-2 md:gap-3 text-xs md:text-sm">
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow-md" id="step-btn-0" onclick="Nav.goTo(0)">
+      <span>🎒</span> Satchel Desk
+    </button>
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white" id="step-btn-1" onclick="Nav.goTo(1)">
+      <span>✏️</span> Rolling Pencil
+    </button>
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white" id="step-btn-2" onclick="Nav.goTo(2)">
+      <span>🌿</span> Biomimicry
+    </button>
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white" id="step-btn-3" onclick="Nav.goTo(3)">
+      <span>🪂</span> Da Vinci Chute
+    </button>
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white" id="step-btn-4" onclick="Nav.goTo(4)">
+      <span>🚗</span> Benz & Flight
+    </button>
+    <button class="step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white" id="step-btn-5" onclick="Nav.goTo(5)">
+      <span>🏆</span> Showcase & Diploma
+    </button>
   </nav>
 
-  <!-- Main Multi-Screen Container -->
-  <main class="lab-stage">
+  <!-- ====================================================
+       MAIN STAGE VIEWPORTS
+       ==================================================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-8 flex flex-col justify-center">
 
-    <!-- ====================================================
-         SCREEN 0: DASHBOARD & INVENTOR'S NOTEBOOK
-         ==================================================== -->
-    <section class="screen-view active" id="screen-dashboard">
-      <div class="hero-banner">
-        <h1>Welcome to My Good Ideas Lab! 💡</h1>
-        <p>
-          Every great invention begins with a <strong>problem</strong>! Great inventors like Thomas Edison, Leonardo da Vinci, and Karl Benz didn't give up. Step into the lab, solve engineering challenges, unlock target vocabulary, and design your own inventions!
-        </p>
-        <button class="btn-action-prime" onclick="App.startQuests()">
-          <span>🚀 OPEN QUEST 1</span>
-        </button>
-      </div>
-
-      <!-- Vocabulary Badge Inventory -->
-      <div class="inventory-section">
-        <div class="inventory-header">
-          <h3><span>🏷️</span> Vocabulary Badge Inventory (5 Badges)</h3>
-          <span style="color:var(--text-muted); font-size:0.85rem; font-weight:700;">Collect all 5 to graduate!</span>
+    <!-- ----------------------------------------------------
+         MODULE 0: TACTILE DESK & EQUIPMENT SATCHEL
+         ---------------------------------------------------- -->
+    <section id="module-0" class="module-screen flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-10 relative overflow-hidden">
+        <!-- Floating Sketchbook Post-it -->
+        <div class="absolute top-4 right-4 bg-yellow-100 text-slate-800 p-3 rounded-xl shadow-lg border-2 border-yellow-300 font-sketch transform rotate-3 hover-wiggle cursor-pointer" onclick="Sound.speak('Every invention starts with a problem! Pack your equipment satchel to begin.')">
+          📌 <span class="text-sm md:text-base font-bold">"Ideas solve problems!" — Tap to listen</span>
         </div>
 
-        <div class="badges-grid">
-          <!-- Badge 1: Problem -->
-          <div class="badge-item" id="badge-problem" onclick="App.pronounceBadge('problem')">
-            <div class="badge-icon">🚨</div>
-            <div class="badge-word">Problem</div>
-            <div class="badge-pronounce">🔊 Click to Hear</div>
-          </div>
-
-          <!-- Badge 2: Solution -->
-          <div class="badge-item" id="badge-solution" onclick="App.pronounceBadge('solution')">
-            <div class="badge-icon">💡</div>
-            <div class="badge-word">Solution</div>
-            <div class="badge-pronounce">🔊 Click to Hear</div>
-          </div>
-
-          <!-- Badge 3: Hexagon -->
-          <div class="badge-item" id="badge-hexagon" onclick="App.pronounceBadge('hexagon')">
-            <div class="badge-icon">⬡</div>
-            <div class="badge-word">Hexagon</div>
-            <div class="badge-pronounce">🔊 Click to Hear</div>
-          </div>
-
-          <!-- Badge 4: Parachute -->
-          <div class="badge-item" id="badge-parachute" onclick="App.pronounceBadge('parachute')">
-            <div class="badge-icon">🪂</div>
-            <div class="badge-word">Parachute</div>
-            <div class="badge-pronounce">🔊 Click to Hear</div>
-          </div>
-
-          <!-- Badge 5: Improve -->
-          <div class="badge-item" id="badge-improve" onclick="App.pronounceBadge('improve')">
-            <div class="badge-icon">🔧</div>
-            <div class="badge-word">Improve</div>
-            <div class="badge-pronounce">🔊 Click to Hear</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================
-         SCREEN 1: QUEST 1 — ROLLING PENCIL & BIOMIMICRY
-         ==================================================== -->
-    <section class="screen-view" id="screen-quest1">
-      <div class="glass-card">
-        <div class="quest-card-header">
-          <div>
-            <span class="quest-badge-tag">Pages 18–19 • Design Thinking</span>
-            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
-              Quest 1: The Rolling Pencil Puzzle & Nature's Secrets
-            </h2>
-          </div>
-          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">+3 Badges Available</span>
-        </div>
-
-        <!-- Part A: The Rolling Pencil Canvas Simulation -->
-        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
-          <strong>The Problem:</strong> When a round pencil is placed on a tilted desk, it rolls off and drops onto the floor! Which cross-section shape will give it a <strong>solution</strong> so it won't roll?
-        </p>
-
-        <div class="pencil-canvas-box">
-          <canvas id="pencilCanvas"></canvas>
-        </div>
-
-        <div class="shape-picker">
-          <button class="shape-btn" id="btn-shape-circle" onclick="Quest1.chooseShape('circle')">
-            <span class="shape-icon">⭕</span>
-            <span>Circle</span>
-          </button>
-          <button class="shape-btn" id="btn-shape-triangle" onclick="Quest1.chooseShape('triangle')">
-            <span class="shape-icon">🔺</span>
-            <span>Triangle</span>
-          </button>
-          <button class="shape-btn" id="btn-shape-hexagon" onclick="Quest1.chooseShape('hexagon')">
-            <span class="shape-icon">⬡</span>
-            <span>Hexagon (6 sides)</span>
-          </button>
-        </div>
-
-        <div id="pencil-feedback" style="text-align:center; margin-top:1rem; font-weight:800; font-size:1.15rem; min-height:1.5rem;"></div>
-
-        <!-- Edison's Historical Note -->
-        <div class="historical-note" id="edison-note">
-          <div class="edison-avatar">👨‍🔬</div>
-          <div>
-            <h4 style="color:var(--accent-yellow); font-size:1.15rem; font-family:var(--font-display);">Thomas Edison's Inventor Rule:</h4>
-            <p style="font-size:0.95rem; color:#e2e8f0; line-height:1.4; margin-top:0.2rem;">
-              <em>"When you have a <strong>problem</strong>, look for a <strong>solution</strong>! I filled thousands of notebooks with ideas. An ordinary round pencil rolls, but a <strong>hexagon</strong> has 6 flat sides that lock onto the table!"</em>
-            </p>
-          </div>
-        </div>
-
-        <hr style="border:0; border-top:1px solid var(--panel-border); margin: 2rem 0;">
-
-        <!-- Part B: Biomimicry Matcher -->
-        <h3 style="font-family:var(--font-display); font-size:1.4rem; color:var(--accent-cyan); margin-bottom:0.5rem;">
-          🌿 Part B: Biomimicry Matcher (Copying Nature's Secrets)
-        </h3>
-        <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
-          Inventors observe nature to solve human problems. Match the natural creature on the left with the human invention on the right!
-        </p>
-
-        <div class="biomimicry-arena">
-          <!-- Nature Side -->
-          <div class="bio-col">
-            <div class="bio-card" id="bio-burdock" onclick="Quest1.selectBio('burdock', 'nature')">
-              <div class="bio-img">🌱</div>
-              <div class="bio-info">
-                <h4>Burdock Burr Plant</h4>
-                <p>Has tiny sharp hooks that grab onto animal fur.</p>
-              </div>
-            </div>
-
-            <div class="bio-card" id="bio-kingfisher" onclick="Quest1.selectBio('kingfisher', 'nature')">
-              <div class="bio-img">🐦</div>
-              <div class="bio-info">
-                <h4>Kingfisher Bird</h4>
-                <p>Sleek aerodynamic beak that dives into water with zero splash.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Invention Side -->
-          <div class="bio-col">
-            <div class="bio-card" id="bio-velcro" onclick="Quest1.selectBio('velcro', 'invention')">
-              <div class="bio-img">👟</div>
-              <div class="bio-info">
-                <h4>Velcro Shoe Straps</h4>
-                <p>Tiny nylon loops & hooks that stick fast to clothes and shoes!</p>
-              </div>
-            </div>
-
-            <div class="bio-card" id="bio-bullet" onclick="Quest1.selectBio('bullet', 'invention')">
-              <div class="bio-img">🚅</div>
-              <div class="bio-info">
-                <h4>Aerodynamic Bullet Train</h4>
-                <p>Long nose cone eliminates tunnel sonic boom noise!</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bonus Combine Old Ideas Bench -->
-        <div class="crafting-bench">
-          <h4 style="font-family:var(--font-display); font-size:1.15rem; color:var(--accent-purple);">
-            🛠️ Bonus Creative Combination (Page 19)
-          </h4>
-          <p style="color:#94a3b8; font-size:0.9rem; margin-top:0.2rem;">
-            "You can combine two or three old things to make a brand-new invention!"
+        <div class="max-w-2xl mb-8">
+          <span class="bg-cyan-500/20 text-cyan-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider border border-cyan-500/40">
+            Module 0: Induction
+          </span>
+          <h2 class="text-2xl md:text-4xl font-extrabold text-white mt-2">
+            The Tactile Desk & Equipment Satchel 🎒
+          </h2>
+          <p class="text-slate-300 text-sm md:text-base mt-2 leading-relaxed">
+            Welcome to the <strong>Good Ideas Lab</strong>! Before embarking on historical inventions, pack your 3 essential tools into your explorer's satchel. Click each item on the wooden desk to pack it!
           </p>
-          <div class="craft-parts-row">
-            <div class="craft-part-chip"><span>📯</span> <span>Old Horn</span></div>
-            <span style="font-size:1.5rem; font-weight:900; color:var(--accent-cyan);">+</span>
-            <div class="craft-part-chip"><span>🧪</span> <span>Rubber Tube</span></div>
-            <span style="font-size:1.5rem; font-weight:900; color:var(--accent-cyan);">+</span>
-            <div class="craft-part-chip"><span>🩹</span> <span>Sticky Tape</span></div>
+        </div>
+
+        <!-- 3D Desk & Packable Tools -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-slate-950/70 p-6 rounded-3xl border-2 border-slate-800">
+          
+          <!-- Desk Items -->
+          <div class="flex flex-col gap-4">
+            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">Desk Tools (Click to Pack):</h3>
+            <div class="grid grid-cols-3 gap-3">
+              <!-- Item 1: Bulb -->
+              <div id="item-bulb" onclick="Satchel.pack('bulb')" class="draggable-supply bg-slate-900 border-2 border-amber-500/50 hover:border-amber-400 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 shadow-lg">
+                <span class="text-4xl glow-amber">💡</span>
+                <span class="font-bold text-xs text-amber-300">Creative Ideas</span>
+              </div>
+              <!-- Item 2: Notebook -->
+              <div id="item-notebook" onclick="Satchel.pack('notebook')" class="draggable-supply bg-slate-900 border-2 border-cyan-500/50 hover:border-cyan-400 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 shadow-lg">
+                <span class="text-4xl">📓</span>
+                <span class="font-bold text-xs text-cyan-300">Idea Journal</span>
+              </div>
+              <!-- Item 3: Pencil -->
+              <div id="item-pencil" onclick="Satchel.pack('pencil')" class="draggable-supply bg-slate-900 border-2 border-emerald-500/50 hover:border-emerald-400 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 shadow-lg">
+                <span class="text-4xl">✏️</span>
+                <span class="font-bold text-xs text-emerald-300">Hex Pencil</span>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 italic">"Write down every single idea. That is Edison's secret!"</p>
           </div>
-          <button class="craft-combine-btn" id="btn-craft" onclick="Quest1.combineCraft()">
-            ⚡ Combine Items into New Invention!
-          </button>
-          <div id="craft-result" style="margin-top:0.8rem; font-weight:800; color:var(--accent-green-light); display:none;">
-            🎉 You built an early Doctor's Stethoscope! It magnifies heartbeat sounds!
+
+          <!-- Open Satchel Target -->
+          <div class="bg-gradient-to-br from-slate-900 to-indigo-950 border-2 border-dashed border-cyan-500/40 rounded-3xl p-6 text-center flex flex-col items-center justify-center min-h-[200px]">
+            <div id="satchel-icon" class="text-6xl transition-transform duration-300">🎒</div>
+            <h4 id="satchel-status" class="font-bold text-white text-base mt-3">Satchel is Open (0 / 3 Packed)</h4>
+            <div id="satchel-slots" class="flex gap-2 mt-3 text-2xl">
+              <span id="slot-1" class="opacity-30">💡</span>
+              <span id="slot-2" class="opacity-30">📓</span>
+              <span id="slot-3" class="opacity-30">✏️</span>
+            </div>
+            <button id="satchel-zip-btn" onclick="Satchel.zipAndLaunch()" class="hidden mt-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-6 py-2.5 rounded-xl shadow-lg transform active:scale-95 transition">
+              ⚡ ZIP SATCHEL &amp; OPEN NOTEBOOK!
+            </button>
           </div>
         </div>
 
-        <div class="stage-nav-row">
-          <button class="hud-btn" onclick="App.showScreen('dashboard')">⬅️ Back to Notebook</button>
-          <button class="hud-btn active" id="btn-next-q1" onclick="App.showScreen('quest2')">Continue to Quest 2 ➡️</button>
+        <!-- 5 Locked Badge Inventory Ribbon -->
+        <div class="mt-8 pt-6 border-t border-slate-800">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-extrabold text-sm uppercase tracking-wider text-slate-400">Target Vocabulary Badges (5 Required):</h4>
+            <span class="text-xs text-amber-400 font-bold">Unlocks as you solve missions</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div class="badge-capsule" id="badge-problem">
+              <span class="text-2xl block mb-1">🚨</span>
+              <span class="font-bold text-xs text-slate-400 block badge-name">Problem</span>
+            </div>
+            <div class="badge-capsule" id="badge-solution">
+              <span class="text-2xl block mb-1">💡</span>
+              <span class="font-bold text-xs text-slate-400 block badge-name">Solution</span>
+            </div>
+            <div class="badge-capsule" id="badge-hexagon">
+              <span class="text-2xl block mb-1">⬡</span>
+              <span class="font-bold text-xs text-slate-400 block badge-name">Hexagon</span>
+            </div>
+            <div class="badge-capsule" id="badge-parachute">
+              <span class="text-2xl block mb-1">🪂</span>
+              <span class="font-bold text-xs text-slate-400 block badge-name">Parachute</span>
+            </div>
+            <div class="badge-capsule" id="badge-improve">
+              <span class="text-2xl block mb-1">🔧</span>
+              <span class="font-bold text-xs text-slate-400 block badge-name">Improve</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SCREEN 2: QUEST 2 — LEONARDO'S BLUEPRINT WORKSHOP
-         ==================================================== -->
-    <section class="screen-view" id="screen-quest2">
-      <div class="glass-card">
-        <div class="quest-card-header">
+    <!-- ----------------------------------------------------
+         MODULE 1: THE ROLLING PENCIL LAB & EDISON ARCHIVE
+         ---------------------------------------------------- -->
+    <section id="module-1" class="module-screen hidden flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
           <div>
-            <span class="quest-badge-tag">Page 20 • Rapid Prototyping</span>
-            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
-              Quest 2: Leonardo's Blueprint Workshop
+            <span class="bg-amber-500/20 text-amber-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider border border-amber-500/40">
+              Page 18 • Nonfiction Reading
+            </span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+              The Rolling Pencil Physics Lab ✏️
             </h2>
           </div>
-          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">Badge: Parachute 🪂</span>
+          <div class="bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-slate-300">
+            Rule: Hexagon = 6 Flat Sides
+          </div>
         </div>
 
-        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
-          <strong>Leonardo's Concept:</strong> <em>"Drawing helps you see your idea and change it before building."</em><br>
-          Adjust the blueprint canopy diameter using the slider. If the parachute is too small, air resistance cannot slow gravity down. If it is large enough, the inventor will float down gently!
+        <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-4">
+          <strong>The Problem:</strong> On a tilted classroom desk, a round pencil rolls downhill and drops onto the floor! Adjust the tilt angle and select the correct geometric cross-section to fix the problem.
         </p>
 
-        <div class="blueprint-layout">
-          <!-- Drop Tower Canvas -->
-          <div class="tower-canvas-box">
-            <canvas id="towerCanvas"></canvas>
+        <!-- Physics Drafting Canvas -->
+        <div class="relative bg-slate-950 border-2 border-slate-800 rounded-2xl overflow-hidden shadow-inner h-[280px]">
+          <canvas id="pencil-canvas" class="w-full h-full"></canvas>
+          <!-- Tilt Slider Control -->
+          <div class="absolute bottom-3 left-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700 px-4 py-2 rounded-xl flex items-center justify-between gap-4">
+            <span class="text-xs font-bold text-cyan-400 flex items-center gap-1">📐 Desk Incline Tilt:</span>
+            <input type="range" id="desk-tilt-slider" min="5" max="32" value="14" class="w-1/2 accent-amber-400" oninput="PencilLab.setTilt(this.value)">
+            <span id="desk-tilt-deg" class="text-xs font-bold text-white font-mono">14°</span>
+          </div>
+        </div>
+
+        <!-- 3 Geometric Profile Selectors -->
+        <div class="grid grid-cols-3 gap-3 md:gap-6 mt-4">
+          <button onclick="PencilLab.setShape('circle')" id="shape-circle-btn" class="bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 p-4 rounded-2xl flex flex-col items-center gap-2 transition active:scale-95">
+            <span class="text-3xl">⭕</span>
+            <span class="font-bold text-sm text-white">Circle</span>
+            <span class="text-[11px] text-rose-400">Rolls away!</span>
+          </button>
+          <button onclick="PencilLab.setShape('triangle')" id="shape-triangle-btn" class="bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 p-4 rounded-2xl flex flex-col items-center gap-2 transition active:scale-95">
+            <span class="text-3xl">🔺</span>
+            <span class="font-bold text-sm text-white">Triangle</span>
+            <span class="text-[11px] text-amber-400">Stops, but hurts grip!</span>
+          </button>
+          <button onclick="PencilLab.setShape('hexagon')" id="shape-hexagon-btn" class="bg-slate-900 hover:bg-slate-800 border-2 border-emerald-500/60 p-4 rounded-2xl flex flex-col items-center gap-2 transition active:scale-95 shadow-lg">
+            <span class="text-3xl">⬡</span>
+            <span class="font-bold text-sm text-emerald-300">Hexagon (6 Sides)</span>
+            <span class="text-[11px] text-emerald-400 font-bold">Stable &amp; Comfortable!</span>
+          </button>
+        </div>
+
+        <div id="pencil-verdict" class="text-center mt-3 text-sm font-bold min-h-[22px]"></div>
+
+        <!-- Thomas Edison Historical Card & Interactive Devices -->
+        <div class="mt-8 bg-slate-950/80 border-2 border-amber-500/30 rounded-2xl p-5">
+          <div class="flex flex-col md:flex-row gap-5 items-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Thomas_Edison2.jpg" alt="Thomas Edison" class="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-2 border-amber-400 shadow-md">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-0.5 rounded-full font-bold">HISTORICAL ARCHIVE</span>
+                <h4 class="font-black text-white text-lg">Thomas Edison's Golden Notebooks</h4>
+              </div>
+              <p class="text-slate-300 text-xs md:text-sm mt-1 leading-relaxed">
+                <em>"When you have a <strong>problem</strong>, look for a <strong>solution</strong>!"</em> Edison kept thousands of yellowed notebooks for his sketches and testing observations.
+              </p>
+            </div>
           </div>
 
-          <!-- Controls & Blueprint Settings -->
-          <div class="blueprint-controls">
-            <div>
-              <h3 style="font-family:var(--font-display); font-size:1.25rem; color:var(--accent-yellow); margin-bottom:1rem;">
-                📐 Blueprint Specifications
-              </h3>
+          <!-- 3 Interactive Vintage Inventions -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <!-- Invention 1: Projector -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center text-center gap-2">
+              <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=400&q=80" alt="Film Projector" class="w-full h-24 object-cover rounded-lg">
+              <span class="text-xs font-bold text-white">Movie Projector</span>
+              <button onclick="EdisonLab.spinFilm(this)" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg w-full transition">
+                📽️ Spin Reel
+              </button>
+            </div>
+            <!-- Invention 2: Sound Recorder -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center text-center gap-2">
+              <div class="w-full h-24 bg-slate-950 rounded-lg flex items-center justify-center text-3xl">
+                🎙️
+              </div>
+              <span class="text-xs font-bold text-white">Phonograph Recorder</span>
+              <button onclick="EdisonLab.playCrank()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg w-full transition">
+                🎵 Turn Crank
+              </button>
+            </div>
+            <!-- Invention 3: Glowing Filament Bulb -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center text-center gap-2">
+              <img id="edison-bulb-img" src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=400&q=80" alt="Incandescent Bulb" class="w-full h-24 object-cover rounded-lg transition-all duration-300">
+              <div class="w-full flex items-center justify-between text-[11px] font-bold text-slate-300">
+                <span>Power:</span>
+                <input type="range" min="0" max="100" value="30" class="w-16 accent-amber-400" oninput="EdisonLab.heatFilament(this.value)">
+              </div>
+              <span id="bulb-status-txt" class="text-[11px] font-bold text-amber-400">Warm Glow (30%)</span>
+            </div>
+          </div>
+        </div>
 
-              <div class="slider-group">
-                <label for="slider-chute">
-                  <span>Canopy Diameter:</span>
-                  <span id="chute-val" style="color:#fff; font-weight:900;">35 px (Too Small)</span>
-                </label>
-                <input type="range" class="blueprint-slider" id="slider-chute" min="20" max="130" value="35" oninput="Quest2.updateDiameter(this.value)">
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="Nav.goTo(0)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Satchel
+          </button>
+          <button onclick="Nav.goTo(2)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Biomimicry ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         MODULE 2: BIOMIMICRY & OLD-TO-NEW MAKER BENCH
+         ---------------------------------------------------- -->
+    <section id="module-2" class="module-screen hidden flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-emerald-500/20 text-emerald-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider border border-emerald-500/40">
+              Page 19 • Nature &amp; Inventions
+            </span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+              Biomimicry &amp; Upcycling Maker Bench 🌿
+            </h2>
+          </div>
+          <div class="bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-emerald-300">
+            Concept: Copy Nature &amp; Upcycle
+          </div>
+        </div>
+
+        <!-- Activity A: Interactive Inspection Split-Screen -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-950/70 p-5 rounded-2xl border border-slate-800">
+          
+          <!-- Case 1: Burdock Plant -> Velcro -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-emerald-400 uppercase">Case 1: Micro Hooks</span>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Plant to Shoe</span>
+              </div>
+              <div class="relative h-36 rounded-lg overflow-hidden border border-slate-700 mb-3">
+                <img src="https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=600&q=80" alt="Burdock Burr" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent flex items-end p-2 text-xs font-bold text-white">
+                  🌱 Burdock Burr: Tiny natural hooks catch animal fur
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                In 1941, George de Mestral saw his dog covered in burrs. Under a microscope, he saw thousands of tiny hooks grabbing cloth loops!
+              </p>
+            </div>
+            <button onclick="BioLab.inspectBurr()" class="mt-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs py-2 rounded-lg transition shadow">
+              🔍 Inspect Velcro Sneaker Match
+            </button>
+          </div>
+
+          <!-- Case 2: Kingfisher -> Bullet Train -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase">Case 2: Aerodynamics</span>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Beak to Train</span>
+              </div>
+              <div class="relative h-36 rounded-lg overflow-hidden border border-slate-700 mb-3">
+                <img src="https://images.unsplash.com/photo-1555169062-013468b47731?auto=format&fit=crop&w=600&q=80" alt="Kingfisher" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent flex items-end p-2 text-xs font-bold text-white">
+                  🐦 Kingfisher Bird: Dives into water without a splash
+                </div>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Bullet trains made loud sonic booms exiting tunnels. Engineer Eiji Nakatsu copied the kingfisher's beak for the train nose!
+              </p>
+            </div>
+            <button onclick="BioLab.inspectTrain()" class="mt-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs py-2 rounded-lg transition shadow">
+              🚅 Compare Shinkansen Nose Cone
+            </button>
+          </div>
+        </div>
+
+        <!-- Activity B: The Old-to-New Crafting Forge -->
+        <div class="mt-8 bg-gradient-to-br from-slate-950 to-emerald-950/40 border-2 border-dashed border-emerald-500/40 rounded-2xl p-6 text-center">
+          <h3 class="font-extrabold text-white text-lg">
+            🛠️ The Upcycling Maker Bench ("Use old things to make something new")
+          </h3>
+          <p class="text-xs text-slate-300 mt-1 max-w-xl mx-auto">
+            Place all 3 scrap parts on the bench, then click <strong>COMBINE</strong> to invent a brand-new gadget!
+          </p>
+
+          <div class="grid grid-cols-3 gap-3 max-w-md mx-auto my-5">
+            <div id="scrap-ring" onclick="Forge.toggleScrap('ring')" class="bg-slate-900 border-2 border-slate-700 p-3 rounded-xl cursor-pointer hover:border-emerald-400 transition">
+              <span class="text-3xl block mb-1">⭕</span>
+              <span class="text-[11px] font-bold text-slate-300">Bike Ring Mount</span>
+            </div>
+            <div id="scrap-bulb" onclick="Forge.toggleScrap('bulb')" class="bg-slate-900 border-2 border-slate-700 p-3 rounded-xl cursor-pointer hover:border-emerald-400 transition">
+              <span class="text-3xl block mb-1">🔴</span>
+              <span class="text-[11px] font-bold text-slate-300">Rubber Squeeze Bulb</span>
+            </div>
+            <div id="scrap-tape" onclick="Forge.toggleScrap('tape')" class="bg-slate-900 border-2 border-slate-700 p-3 rounded-xl cursor-pointer hover:border-emerald-400 transition">
+              <span class="text-3xl block mb-1">🩹</span>
+              <span class="text-[11px] font-bold text-slate-300">Repair Tape</span>
+            </div>
+          </div>
+
+          <button id="forge-combine-btn" onclick="Forge.combine()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-8 py-3 rounded-xl shadow-lg transition transform active:scale-95 text-sm">
+            ⚡ COMBINE SCRAP ITEMS!
+          </button>
+
+          <!-- Resulting Animated Retro Bike Horn -->
+          <div id="horn-reveal-area" class="hidden mt-6 bg-slate-900/90 border-2 border-emerald-400 p-4 rounded-2xl max-w-md mx-auto flex items-center justify-between shadow-2xl">
+            <div class="flex items-center gap-3 text-left">
+              <span class="text-5xl cursor-pointer hover:scale-110 active:scale-95 transition-transform" onclick="Forge.honkHorn()">📯</span>
+              <div>
+                <h5 class="font-extrabold text-white text-sm">Vintage Bike Horn</h5>
+                <p class="text-[11px] text-emerald-300">Click horn to honk with authentic squeeze sound!</p>
+              </div>
+            </div>
+            <button onclick="Forge.honkHorn()" class="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black px-4 py-2 rounded-lg text-xs">
+              SQUEEZE!
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="Nav.goTo(1)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Rolling Pencil
+          </button>
+          <button onclick="Nav.goTo(3)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Leonardo's Lab ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------
+         MODULE 3: LEONARDO’S WIND TUNNEL & PARACHUTE LAB
+         ---------------------------------------------------- -->
+    <section id="module-3" class="module-screen hidden flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+          <div>
+            <span class="bg-cyan-500/20 text-cyan-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider border border-cyan-500/40">
+              Page 20 • Work on Your Idea
+            </span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+              Leonardo’s Wind Tunnel &amp; Parachute Lab 🪂
+            </h2>
+          </div>
+          <div class="bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-cyan-300">
+            Badge: Parachute
+          </div>
+        </div>
+
+        <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-4">
+          <strong>Leonardo da Vinci:</strong> <em>"Drawing helps you to see your idea and change it."</em><br>
+          Adjust the canopy width and shape in the blueprint editor. Then drop the wooden test mannequin from the Florence Tower!
+        </p>
+
+        <!-- Wind Tunnel Canvas & Live Speed Dial -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div class="md:col-span-2 relative bg-slate-950 border-2 border-slate-800 rounded-2xl overflow-hidden shadow-2xl h-[360px]">
+            <canvas id="chute-canvas" class="w-full h-full"></canvas>
+            
+            <!-- Live Speedometer Overlay -->
+            <div class="absolute top-3 right-3 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-xl font-mono text-xs flex items-center gap-2">
+              <span class="text-slate-400 font-bold">Descent Speed:</span>
+              <span id="speed-indicator" class="text-amber-400 font-bold">0 km/h</span>
+            </div>
+          </div>
+
+          <!-- Blueprint Controls -->
+          <div class="bg-slate-950/80 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between h-[360px]">
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Leonardo_self.jpg" alt="Leonardo da Vinci" class="w-12 h-12 rounded-full object-cover border-2 border-cyan-400 shadow">
+                <div>
+                  <h4 class="font-bold text-white text-sm">Leonardo's Sketch</h4>
+                  <p class="text-[11px] text-cyan-300">Pyramidal linen canopy (1485)</p>
+                </div>
               </div>
 
-              <div style="margin-top:1.5rem; font-size:0.85rem; color:#94a3b8; line-height:1.4;">
-                <p>💡 <strong>Air Resistance Rule:</strong> A wider cloth canopy traps more air underneath, creating upward drag to counteract downward gravity!</p>
+              <!-- Canopy Slider -->
+              <div class="mb-4">
+                <label class="text-xs font-bold text-slate-300 block mb-1">
+                  Canopy Diameter Width:
+                </label>
+                <input type="range" id="chute-slider" min="20" max="140" value="35" class="w-full accent-cyan-400" oninput="ChuteLab.setWidth(this.value)">
+                <div class="flex justify-between text-[11px] text-slate-400 font-bold mt-1">
+                  <span>Small (Fast Drop)</span>
+                  <span id="chute-width-txt" class="text-cyan-400 font-mono">35 px</span>
+                  <span>Wide (Safe Drift)</span>
+                </div>
+              </div>
+
+              <!-- Shape Toggle -->
+              <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                <button onclick="ChuteLab.setShape('flat')" id="chute-flat-btn" class="bg-slate-800 text-white p-2 rounded-lg border border-slate-700 active:scale-95 transition">
+                  Flat Sheet
+                </button>
+                <button onclick="ChuteLab.setShape('pyramid')" id="chute-pyr-btn" class="bg-cyan-500/20 text-cyan-300 p-2 rounded-lg border border-cyan-500 active:scale-95 transition">
+                  Da Vinci Pyramid
+                </button>
               </div>
             </div>
 
             <div>
-              <div id="drop-feedback" style="font-weight:800; font-size:1rem; min-height:2.2rem; margin-bottom:0.75rem; text-align:center;"></div>
-              <button class="btn-action-prime" style="width:100%; font-size:1.2rem; padding:0.9rem;" onclick="Quest2.launchDropTest()">
-                🚀 LAUNCH DROP TEST!
+              <div id="chute-feedback" class="text-xs font-bold text-center min-h-[28px] mb-2"></div>
+              <button onclick="ChuteLab.dropTest()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black py-3 rounded-xl shadow-lg transition transform active:scale-95 text-sm">
+                🚀 LAUNCH WIND TUNNEL TEST!
               </button>
             </div>
           </div>
         </div>
 
-        <div class="stage-nav-row">
-          <button class="hud-btn" onclick="App.showScreen('quest1')">⬅️ Back to Quest 1</button>
-          <button class="hud-btn active" id="btn-next-q2" onclick="App.showScreen('quest3')">Continue to Quest 3 ➡️</button>
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="Nav.goTo(2)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Biomimicry
+          </button>
+          <button onclick="Nav.goTo(4)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Continue to Karl Benz ➡️
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SCREEN 3: QUEST 3 — KARL BENZ'S ITERATION LOOP
-         ==================================================== -->
-    <section class="screen-view" id="screen-quest3">
-      <div class="glass-card">
-        <div class="quest-card-header">
+    <!-- ----------------------------------------------------
+         MODULE 4: KARL BENZ & THE 4 FLIGHT TRIALS
+         ---------------------------------------------------- -->
+    <section id="module-4" class="module-screen hidden flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-8">
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
           <div>
-            <span class="quest-badge-tag">Page 21 • The Iteration Cycle</span>
-            <h2 style="font-family:var(--font-display); font-size:1.8rem; margin-top:0.3rem;">
-              Quest 3: The Iteration Loop with Karl Benz
+            <span class="bg-purple-500/20 text-purple-400 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wider border border-purple-500/40">
+              Page 21 • Improve Your Idea
+            </span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+              Karl Benz &amp; The 4 Flight Trials 🚗
             </h2>
           </div>
-          <span style="font-weight:800; color:var(--accent-yellow); font-size:1.1rem;">Badge: Improve 🔧</span>
+          <div class="bg-slate-900 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-purple-300">
+            Badge: Improve
+          </div>
         </div>
 
-        <p style="color:#cbd5e1; font-size:1rem; margin-bottom:1rem; line-height:1.4;">
-          <strong>The Golden Rule of Inventions:</strong> <em>"Don't give up! Try again... and again... and again! Show your idea and listen to feedback."</em><br>
-          Karl Benz built the world's first gas-powered motorcar in 1885. At first, it sputtered, shook violently, and tilted. Listen to the crowd and select engineering improvements!
-        </p>
-
-        <!-- Benz Motorcar Canvas Animation -->
-        <div class="benz-stage-box">
-          <canvas id="benzCanvas"></canvas>
-        </div>
-
-        <!-- Bystander Dialogue -->
-        <div class="bystander-bubbles">
-          <div class="dialogue-bubble">
-            <div class="avatar">🎩</div>
+        <!-- Section A: Karl Benz 1885 Workshop -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 mb-6">
+          <div class="flex flex-col md:flex-row gap-5 items-center mb-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/1885Benz.jpg" alt="1885 Benz Patent-Motorwagen" class="w-full md:w-64 h-36 object-cover rounded-xl border border-slate-700 shadow">
             <div>
-              <strong style="color:var(--accent-cyan);">Passerby 1:</strong>
-              <p style="color:#e2e8f0; font-size:0.9rem; margin-top:0.1rem;">"A carriage with no horses? It will never work!"</p>
+              <h4 class="font-extrabold text-white text-base">Karl Benz’s 1885 Three-Wheeled Motorcar</h4>
+              <p class="text-slate-300 text-xs md:text-sm mt-1 leading-relaxed">
+                <em>"Don't give up! Try again... and again... and again! Show your idea and listen to what people say."</em>
+              </p>
+              <!-- Bystander Speech Bubbles -->
+              <div class="flex flex-wrap gap-2 mt-3 text-xs">
+                <span class="bg-slate-900 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-full cursor-pointer hover:border-cyan-400 transition" onclick="Sound.speak('No horses! How can it move? Good idea!')">
+                  🎩 Passerby: <em>"No horses? Good idea!"</em>
+                </span>
+                <span class="bg-slate-900 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-full cursor-pointer hover:border-rose-400 transition" onclick="Sound.speak('Only three wheels? It tilts too easily on corners!')">
+                  🧐 Critic: <em>"Only three wheels? It tilts on turns!"</em>
+                </span>
+              </div>
             </div>
           </div>
-          <div class="dialogue-bubble">
-            <div class="avatar">🧐</div>
-            <div>
-              <strong style="color:var(--accent-rose);">Passerby 2:</strong>
-              <p style="color:#e2e8f0; font-size:0.9rem; margin-top:0.1rem;" id="crowd-critique">"Only three wheels? It shakes and tilts too easily!"</p>
-            </div>
+
+          <!-- Car Upgrade Selector -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-bold">
+            <button onclick="BenzLab.testModel(1)" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl text-left transition">
+              <span class="text-amber-400 block mb-1">Trial 1: Original 3-Wheels</span>
+              <span class="text-slate-400 font-normal">Sputters, shakes, and stalls after 5 meters!</span>
+            </button>
+            <button onclick="BenzLab.testModel(2)" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 p-3 rounded-xl text-left transition">
+              <span class="text-cyan-400 block mb-1">Trial 2: Engine Balance</span>
+              <span class="text-slate-400 font-normal">Engine runs smoother, but veers off course.</span>
+            </button>
+            <button onclick="BenzLab.testModel(3)" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/60 p-3 rounded-xl text-left transition shadow">
+              <span class="text-emerald-400 block mb-1">Trial 3: 4th Wheel &amp; Rack Steering</span>
+              <span class="text-slate-400 font-normal">Smooth cruising! The automobile is born!</span>
+            </button>
           </div>
+          <div id="benz-feedback" class="text-center mt-3 text-xs font-bold min-h-[18px]"></div>
         </div>
 
-        <!-- Iteration Upgrades Selection -->
-        <div class="iteration-upgrades">
-          <div class="upgrade-card" id="upg-1" onclick="Quest3.applyUpgrade(1)">
-            <h4 style="color:var(--accent-yellow); font-family:var(--font-display); font-size:1.1rem;">
-              Step 1: Test Initial Model
+        <!-- Section B: Playable 4-Stage Flight Trial Mini-Game -->
+        <div class="bg-slate-950 border-2 border-indigo-900/50 rounded-2xl p-5">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="font-extrabold text-white text-sm flex items-center gap-2">
+              <span>✈️</span> The 4 Flight Trials ("Try again... and again!")
             </h4>
-            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
-              Single-cylinder, 3 thin wooden wheels. Run the motor!
-            </p>
+            <span id="flight-stage-indicator" class="text-xs font-bold text-amber-400">Stage 1 of 4</span>
           </div>
 
-          <div class="upgrade-card" id="upg-2" onclick="Quest3.applyUpgrade(2)">
-            <h4 style="color:var(--accent-cyan); font-family:var(--font-display); font-size:1.1rem;">
-              Step 2: Engine Counterbalance
-            </h4>
-            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
-              Stabilize pistons and refine fuel mixture to stop stalling.
-            </p>
+          <div class="relative bg-gradient-to-b from-sky-950 to-slate-950 border border-slate-800 rounded-xl h-44 overflow-hidden shadow-inner">
+            <canvas id="flight-canvas" class="w-full h-full"></canvas>
           </div>
 
-          <div class="upgrade-card" id="upg-3" onclick="Quest3.applyUpgrade(3)">
-            <h4 style="color:var(--accent-green-light); font-family:var(--font-display); font-size:1.1rem;">
-              Step 3: 4th Wheel & Steering
-            </h4>
-            <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.25rem;">
-              Add a 4th wheel, wire-spoke balance & rack steering!
-            </p>
+          <!-- 4 Trial Steps Controller -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+            <button onclick="FlightLab.launch(1)" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-left text-xs font-bold transition">
+              <span class="text-rose-400 block">1. Don't give up!</span>
+              <span class="text-[11px] text-slate-400 font-normal">Paper Wings ➔ Mud!</span>
+            </button>
+            <button onclick="FlightLab.launch(2)" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-left text-xs font-bold transition">
+              <span class="text-amber-400 block">2. Try again...</span>
+              <span class="text-[11px] text-slate-400 font-normal">Fence Jump ➔ Hay!</span>
+            </button>
+            <button onclick="FlightLab.launch(3)" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-left text-xs font-bold transition">
+              <span class="text-cyan-400 block">3. and again...</span>
+              <span class="text-[11px] text-slate-400 font-normal">Fabric Glider ➔ Yard</span>
+            </button>
+            <button onclick="FlightLab.launch(4)" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/60 p-2.5 rounded-lg text-left text-xs font-bold transition shadow">
+              <span class="text-emerald-400 block">4. and again!</span>
+              <span class="text-[11px] text-slate-400 font-normal">Winged Suit ➔ Soar!</span>
+            </button>
           </div>
+          <div id="flight-verdict" class="text-center text-xs font-bold mt-2 min-h-[16px]"></div>
         </div>
 
-        <div id="benz-feedback" style="margin-top:1.25rem; text-align:center; font-weight:800; font-size:1.2rem; min-height:1.8rem;"></div>
-
-        <div class="stage-nav-row">
-          <button class="hud-btn" onclick="App.showScreen('quest2')">⬅️ Back to Quest 2</button>
-          <button class="hud-btn active" id="btn-next-q3" onclick="App.showScreen('celebration')">Claim Master Certificate 🏆</button>
+        <!-- Navigation Row -->
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800">
+          <button onclick="Nav.goTo(3)" class="text-slate-400 hover:text-white font-bold text-xs md:text-sm">
+            ⬅️ Back to Leonardo
+          </button>
+          <button onclick="Nav.goTo(5)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-sm shadow-md transition">
+            Claim Master Diploma 🏆
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ====================================================
-         SCREEN 4: FINAL CELEBRATION & CERTIFICATE
-         ==================================================== -->
-    <section class="screen-view" id="screen-celebration">
-      <div class="certificate-card">
-        <div class="cert-crown">🏆</div>
-        <h2 class="cert-title">MASTER INVENTOR DIPLOMA</h2>
-        <p style="color:#cbd5e1; font-size:1.1rem; max-width:600px; margin:0 auto;">
-          This official certificate honors exceptional mastery of the <strong>Design Thinking Cycle</strong>, Biomimicry Innovation, and Creative Problem Solving.
+    <!-- ----------------------------------------------------
+         MODULE 5: VOCABULARY MATRIX & PRINTABLE DIPLOMA
+         ---------------------------------------------------- -->
+    <section id="module-5" class="module-screen hidden flex flex-col gap-6">
+      <div class="glass-panel p-6 md:p-10 text-center printable-diploma">
+        <div class="text-5xl md:text-6xl glow-amber mb-2">🏆</div>
+        <h2 class="text-2xl md:text-4xl font-black text-amber-400 tracking-tight">
+          MASTER INVENTOR DIPLOMA
+        </h2>
+        <p class="text-slate-300 text-xs md:text-sm mt-1 max-w-xl mx-auto">
+          Honoring resilient problem solving, biomimicry innovation, and design thinking.
         </p>
 
-        <div style="margin: 1.5rem auto 1rem; max-width:440px;">
-          <label style="font-size:0.85rem; font-weight:800; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:1px;">
-            Enter Candidate Name:
+        <!-- Candidate Name Field -->
+        <div class="my-6 max-w-md mx-auto text-left">
+          <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">
+            Candidate Name:
           </label>
-          <input type="text" class="student-name-input" id="cert-name" value="Young Inventor" placeholder="Your Name Here">
+          <input type="text" id="diploma-name" value="Young Inventor" class="w-full bg-slate-950 border-2 border-cyan-500/60 rounded-xl px-4 py-2.5 font-bold text-white text-lg text-center shadow-inner outline-none focus:border-amber-400 transition">
         </div>
 
-        <!-- 5 Core Vocabulary Definition Flashcards -->
-        <h3 style="font-family:var(--font-display); font-size:1.3rem; color:var(--accent-yellow); margin-top:1.5rem;">
-          📚 Target Vocabulary Mastery
-        </h3>
-        <div class="vocab-review-strip">
-          <div class="vocab-card">
-            <div class="term">
-              <span>1. Problem</span>
-              <button class="pronounce-btn" onclick="App.pronounceWord('Problem')">🔊</button>
+        <!-- Vocabulary Speed Review Cards -->
+        <div class="text-left my-6">
+          <h4 class="font-extrabold text-sm text-slate-300 uppercase tracking-wider mb-3">
+            📚 Target Vocabulary Mastery:
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>1. Problem</span>
+                <button onclick="Sound.speak('Problem. A challenge that needs fixing.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">A challenge or question that needs a creative fix.</p>
             </div>
-            <div class="definition">A challenge or difficulty that needs to be fixed or solved.</div>
-          </div>
-
-          <div class="vocab-card">
-            <div class="term">
-              <span>2. Solution</span>
-              <button class="pronounce-btn" onclick="App.pronounceWord('Solution')">🔊</button>
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>2. Solution</span>
+                <button onclick="Sound.speak('Solution. The answer that solves a problem.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">The creative answer that fixes a problem.</p>
             </div>
-            <div class="definition">The creative answer or invention that fixes a problem.</div>
-          </div>
-
-          <div class="vocab-card">
-            <div class="term">
-              <span>3. Hexagon</span>
-              <button class="pronounce-btn" onclick="App.pronounceWord('Hexagon')">🔊</button>
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>3. Hexagon</span>
+                <button onclick="Sound.speak('Hexagon. A six-sided flat polygon.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">A 6-sided geometric body that stops pencils rolling.</p>
             </div>
-            <div class="definition">A flat polygon with 6 straight sides that prevents rolling.</div>
-          </div>
-
-          <div class="vocab-card">
-            <div class="term">
-              <span>4. Parachute</span>
-              <button class="pronounce-btn" onclick="App.pronounceWord('Parachute')">🔊</button>
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>4. Parachute</span>
+                <button onclick="Sound.speak('Parachute. A cloth canopy that slows a fall.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">A wide cloth canopy that slows gravity with air drag.</p>
             </div>
-            <div class="definition">A wide cloth canopy that catches air to slow down a fall.</div>
-          </div>
-
-          <div class="vocab-card">
-            <div class="term">
-              <span>5. Improve</span>
-              <button class="pronounce-btn" onclick="App.pronounceWord('Improve')">🔊</button>
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>5. Improve</span>
+                <button onclick="Sound.speak('Improve. To test and make your idea better.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">To test, listen to feedback, and make something better.</p>
             </div>
-            <div class="definition">To test, listen to feedback, and make something better!</div>
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl">
+              <div class="flex justify-between items-center text-amber-400 font-bold text-sm">
+                <span>6. Biomimicry</span>
+                <button onclick="Sound.speak('Biomimicry. Copying nature to invent new technology.')" class="text-xs text-cyan-400 hover:underline">🔊</button>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Copying animals and plants to solve human challenges.</p>
+            </div>
           </div>
         </div>
 
-        <!-- Interactive Good Ideas Card Input -->
-        <div class="student-idea-box">
-          <h4>💡 My Own Real-World Idea (Good Ideas Card)</h4>
-          <div class="idea-field">
-            <label>1. What everyday problem do you want to solve?</label>
-            <input type="text" id="idea-prob" placeholder="e.g., My heavy backpack makes my shoulders tired.">
-          </div>
-          <div class="idea-field">
-            <label>2. What is your creative invention or solution?</label>
-            <input type="text" id="idea-sol" placeholder="e.g., Backpack straps with bouncy air cushions and solar wheels!">
+        <!-- My Good Idea Creator Card -->
+        <div class="bg-slate-950 border-2 border-dashed border-amber-500/40 p-5 rounded-2xl text-left my-6">
+          <h4 class="font-extrabold text-amber-300 text-sm mb-3">💡 My Own Good Idea Card</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-[11px] font-bold text-slate-400 block mb-1">Everyday Problem:</label>
+              <input type="text" id="user-problem" placeholder="e.g., My school backpack hurts my back." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none">
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-400 block mb-1">My Creative Solution:</label>
+              <input type="text" id="user-solution" placeholder="e.g., Solar-powered mini wheels and inflatable cushions!" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none">
+            </div>
           </div>
         </div>
 
         <!-- Action Row -->
-        <div style="display:flex; justify-content:center; gap:1rem; margin-top:2rem; flex-wrap:wrap;">
-          <button class="btn-action-prime" onclick="window.print()">
-            🖨️ PRINT DIPLOMA & IDEA CARD
+        <div class="flex flex-wrap justify-center gap-4 non-printable">
+          <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-xl shadow-lg transition transform active:scale-95 text-sm flex items-center gap-2">
+            🖨️ PRINT DIPLOMA &amp; IDEA CARD
           </button>
-          <button class="hud-btn" style="font-size:1.1rem; padding:0.8rem 1.8rem;" onclick="App.restart()">
-            🔄 RESTART ODYSSEY
+          <button onclick="Nav.goTo(0)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-5 py-3 rounded-xl text-sm transition">
+            🔄 REPLAY ADVENTURE
           </button>
         </div>
       </div>
@@ -1293,749 +826,737 @@
   </main>
 
   <!-- Confetti Canvas -->
-  <canvas id="confettiCanvas"></canvas>
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[9999]"></canvas>
 
   <!-- ====================================================
-       APPLICATION JAVASCRIPT & ENGINES
+       ENGINE JAVASCRIPT: WEB AUDIO, CANVAS, & LOGIC
        ==================================================== -->
   <script>
     /* ----------------------------------------------------
-       1. WEB AUDIO API SYNTHESIZER (ZERO EXTERNAL MP3s)
+       1. SYNTHESIZED SOUND ENGINE (ZERO MP3 ASSETS)
        ---------------------------------------------------- */
-    class LabSoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.sfxEnabled = true;
-        this.ttsEnabled = true;
-      }
+    const Sound = {
+      ctx: null,
+      sfx: true,
+      tts: true,
 
       init() {
         if (!this.ctx) {
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
           if (AudioCtx) this.ctx = new AudioCtx();
         }
-        if (this.ctx && this.ctx.state === "suspended") {
-          this.ctx.resume();
-        }
-      }
-
-      playTone(freq, type = "sine", duration = 0.2, gainVal = 0.15) {
-        if (!this.sfxEnabled) return;
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      tone(freq, type = 'sine', duration = 0.2, gainVal = 0.15) {
+        if (!this.sfx) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
+        const g = this.ctx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, now);
-        gain.gain.setValueAtTime(gainVal, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        g.gain.setValueAtTime(gainVal, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(g);
+        g.connect(this.ctx.destination);
         osc.start(now);
         osc.stop(now + duration);
-      }
-
-      playChord(freqs, type = "triangle", duration = 0.4, gainVal = 0.12) {
-        if (!this.sfxEnabled) return;
+      },
+      chord(freqs, type = 'triangle', duration = 0.4, gain = 0.12) {
+        if (!this.sfx) return;
         this.init();
         if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        freqs.forEach(f => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(f, now);
-          gain.gain.setValueAtTime(gainVal, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now);
-          osc.stop(now + duration);
-        });
-      }
-
-      click() { this.playTone(800, "sine", 0.05, 0.08); }
-      coin() { this.playChord([987.77, 1318.51], "sine", 0.35, 0.15); }
-      unlock() { this.playChord([523.25, 659.25, 783.99, 1046.5], "triangle", 0.5, 0.15); }
-      dropThud() {
-        this.playTone(130, "sawtooth", 0.25, 0.25);
-        setTimeout(() => this.playTone(80, "sine", 0.3, 0.3), 80);
-      }
-      engineSputter() {
-        for (let i = 0; i < 4; i++) {
-          setTimeout(() => this.playTone(110 + (Math.random() * 40), "square", 0.08, 0.15), i * 140);
+        freqs.forEach(f => this.tone(f, type, duration, gain));
+      },
+      click() { this.tone(900, 'sine', 0.04, 0.08); },
+      coin() { this.chord([987.77, 1318.51], 'sine', 0.3, 0.14); },
+      unlock() { this.chord([523.25, 659.25, 783.99, 1046.5], 'triangle', 0.45, 0.15); },
+      pencilDrop() {
+        this.tone(180, 'sawtooth', 0.2, 0.25);
+        setTimeout(() => this.tone(90, 'sine', 0.25, 0.2), 60);
+      },
+      honk() {
+        this.chord([261.63, 329.63, 392], 'sawtooth', 0.35, 0.25);
+      },
+      engineChug() {
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => this.tone(90 + Math.random() * 30, 'square', 0.08, 0.12), i * 110);
         }
-      }
-      engineCruise() {
-        for (let i = 0; i < 8; i++) {
-          setTimeout(() => this.playTone(180 + (i * 20), "triangle", 0.12, 0.12), i * 100);
-        }
-      }
-      fanfare() {
-        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
-        notes.forEach((n, i) => {
-          setTimeout(() => this.playChord([n, n * 1.25], "triangle", 0.3, 0.18), i * 110);
+      },
+      soar() {
+        [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((f, i) => {
+          setTimeout(() => this.chord([f, f * 1.25], 'triangle', 0.35, 0.16), i * 90);
         });
-      }
-
+      },
       speak(text) {
-        if (!this.ttsEnabled || !window.speechSynthesis) return;
+        if (!this.tts || !window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
-        utter.rate = 0.9;
-        utter.pitch = 1.1;
-        utter.lang = "en-US";
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        utter.lang = 'en-US';
         window.speechSynthesis.speak(utter);
+      },
+      toggleSfx() {
+        this.sfx = !this.sfx;
+        const b = document.getElementById('btn-sfx');
+        b.innerText = this.sfx ? '🔊 SFX' : '🔇 SFX';
+        b.classList.toggle('opacity-50', !this.sfx);
+      },
+      toggleTts() {
+        this.tts = !this.tts;
+        const b = document.getElementById('btn-tts');
+        b.innerText = this.tts ? '🗣️ VOICE' : '🤐 VOICE';
+        b.classList.toggle('opacity-50', !this.tts);
+        if (!this.tts && window.speechSynthesis) window.speechSynthesis.cancel();
       }
-
-      toggleSound() {
-        this.sfxEnabled = !this.sfxEnabled;
-        const btn = document.getElementById("btn-audio");
-        btn.innerText = this.sfxEnabled ? "🔊 SFX" : "🔇 SFX";
-        btn.classList.toggle("active", this.sfxEnabled);
-      }
-
-      toggleSpeech() {
-        this.ttsEnabled = !this.ttsEnabled;
-        const btn = document.getElementById("btn-speech");
-        btn.innerText = this.ttsEnabled ? "🗣️ TTS" : "🤐 TTS";
-        btn.classList.toggle("active", this.ttsEnabled);
-        if (!this.ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
-      }
-    }
-    const AudioEngine = new LabSoundEngine();
+    };
 
     /* ----------------------------------------------------
-       2. CONFETTI PARTICLE SYSTEM
+       2. CONFETTI BURST ENGINE
        ---------------------------------------------------- */
     const Confetti = {
-      canvas: document.getElementById("confettiCanvas"),
+      canvas: document.getElementById('confetti-canvas'),
       ctx: null,
-      particles: [],
-      animId: null,
-
+      list: [],
+      anim: null,
       init() {
-        this.ctx = this.canvas.getContext("2d");
+        this.ctx = this.canvas.getContext('2d');
         this.resize();
-        window.addEventListener("resize", () => this.resize());
+        window.addEventListener('resize', () => this.resize());
       },
       resize() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
       },
-      launch(count = 60) {
-        const colors = ["#f59e0b", "#38bdf8", "#10b981", "#f43f5e", "#a855f7", "#fbbf24"];
+      burst(count = 50) {
+        const colors = ['#f59e0b', '#06b6d4', '#10b981', '#f43f5e', '#a855f7', '#fbbf24'];
         for (let i = 0; i < count; i++) {
-          this.particles.push({
+          this.list.push({
             x: window.innerWidth / 2,
-            y: window.innerHeight * 0.4,
+            y: window.innerHeight * 0.45,
             vx: (Math.random() - 0.5) * 16,
-            vy: (Math.random() - 0.9) * 16,
-            size: Math.random() * 9 + 5,
+            vy: (Math.random() - 0.8) * 16,
+            size: Math.random() * 8 + 4,
             color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * 360,
-            vRot: (Math.random() - 0.5) * 12,
+            rot: Math.random() * 360,
+            vRot: (Math.random() - 0.5) * 10,
             life: 1
           });
         }
-        if (!this.animId) this.loop();
+        if (!this.anim) this.loop();
       },
       loop() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-          const p = this.particles[i];
+        for (let i = this.list.length - 1; i >= 0; i--) {
+          const p = this.list[i];
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.35; // gravity
-          p.rotation += p.vRot;
+          p.vy += 0.35;
+          p.rot += p.vRot;
           p.life -= 0.012;
 
           this.ctx.save();
           this.ctx.translate(p.x, p.y);
-          this.ctx.rotate((p.rotation * Math.PI) / 180);
+          this.ctx.rotate((p.rot * Math.PI) / 180);
           this.ctx.fillStyle = p.color;
           this.ctx.globalAlpha = Math.max(0, p.life);
           this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7);
           this.ctx.restore();
 
-          if (p.life <= 0 || p.y > window.innerHeight) {
-            this.particles.splice(i, 1);
-          }
+          if (p.life <= 0 || p.y > window.innerHeight) this.list.splice(i, 1);
         }
-        if (this.particles.length > 0) {
-          this.animId = requestAnimationFrame(() => this.loop());
-        } else {
-          this.animId = null;
-        }
+        if (this.list.length > 0) this.anim = requestAnimationFrame(() => this.loop());
+        else this.anim = null;
       }
     };
     Confetti.init();
 
     /* ----------------------------------------------------
-       3. APPLICATION STATE & ORCHESTRATION
+       3. NAVIGATION & XP SYSTEM
        ---------------------------------------------------- */
-    const App = {
-      currentScreen: "dashboard",
-      totalXP: 0,
-      badges: {
-        problem: false,
-        solution: false,
-        hexagon: false,
-        parachute: false,
-        improve: false
-      },
+    const Nav = {
+      active: 0,
+      xp: 0,
+      badges: { problem: false, solution: false, hexagon: false, parachute: false, improve: false },
 
-      showScreen(screenId) {
-        AudioEngine.click();
-        this.currentScreen = screenId;
-        document.querySelectorAll(".screen-view").forEach(s => s.classList.remove("active"));
-        const target = document.getElementById(`screen-${screenId}`);
-        if (target) target.classList.add("active");
-
-        // Update Stepper
-        const stepMap = { dashboard: 0, quest1: 1, quest2: 2, quest3: 3, celebration: 4 };
-        const idx = stepMap[screenId] ?? 0;
-        document.querySelectorAll(".step-node").forEach((node, i) => {
-          node.classList.toggle("active", i === idx);
+      goTo(idx) {
+        Sound.click();
+        this.active = idx;
+        document.querySelectorAll('.module-screen').forEach((m, i) => {
+          m.classList.toggle('hidden', i !== idx);
         });
 
-        // Trigger Canvas Inits
-        if (screenId === "quest1") Quest1.init();
-        if (screenId === "quest2") Quest2.init();
-        if (screenId === "quest3") Quest3.init();
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      },
-
-      startQuests() {
-        this.showScreen("quest1");
-      },
-
-      addXP(pts) {
-        this.totalXP += pts;
-        document.getElementById("hud-xp-val").innerText = this.totalXP;
-        AudioEngine.coin();
-      },
-
-      unlockBadge(badgeKey) {
-        if (!this.badges[badgeKey]) {
-          this.badges[badgeKey] = true;
-          const el = document.getElementById(`badge-${badgeKey}`);
-          if (el) el.classList.add("unlocked");
-          this.addXP(25);
-          AudioEngine.unlock();
-          Confetti.launch(30);
+        // Update Stepper Buttons
+        for (let i = 0; i <= 5; i++) {
+          const b = document.getElementById(`step-btn-${i}`);
+          if (b) {
+            if (i === idx) {
+              b.className = 'step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shadow-md';
+            } else {
+              b.className = 'step-btn px-3 py-1 rounded-full font-bold transition flex items-center gap-1.5 bg-slate-800 text-slate-400 hover:text-white';
+            }
+          }
         }
+
+        // Initialize Canvases when screen opens
+        if (idx === 1) PencilLab.init();
+        if (idx === 3) ChuteLab.init();
+        if (idx === 4) FlightLab.init();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
 
-      pronounceBadge(badgeKey) {
-        AudioEngine.click();
-        const dict = {
-          problem: "Problem. A challenge that needs fixing.",
-          solution: "Solution. The answer that solves a problem.",
-          hexagon: "Hexagon. A six-sided flat polygon that won't roll.",
-          parachute: "Parachute. A cloth canopy that slows a fall.",
-          improve: "Improve. To test and make your idea better."
-        };
-        if (dict[badgeKey]) AudioEngine.speak(dict[badgeKey]);
+      addXp(amount) {
+        this.xp += amount;
+        document.getElementById('hud-xp').innerText = this.xp;
+        Sound.coin();
       },
 
-      pronounceWord(word) {
-        AudioEngine.click();
-        AudioEngine.speak(word);
-      },
-
-      restart() {
-        this.totalXP = 0;
-        document.getElementById("hud-xp-val").innerText = "0";
-        Object.keys(this.badges).forEach(k => {
-          this.badges[k] = false;
-          const el = document.getElementById(`badge-${k}`);
-          if (el) el.classList.remove("unlocked");
-        });
-        this.showScreen("dashboard");
+      unlockBadge(key) {
+        if (!this.badges[key]) {
+          this.badges[key] = true;
+          const el = document.getElementById(`badge-${key}`);
+          if (el) el.classList.add('unlocked');
+          this.addXp(30);
+          Sound.unlock();
+          Confetti.burst(35);
+        }
       }
     };
 
     /* ----------------------------------------------------
-       4. QUEST 1: ROLLING PENCIL PUZZLE & BIOMIMICRY
+       4. MODULE 0: EQUIPMENT SATCHEL
        ---------------------------------------------------- */
-    const Quest1 = {
+    const Satchel = {
+      packed: { bulb: false, notebook: false, pencil: false },
+
+      pack(item) {
+        Sound.click();
+        this.packed[item] = true;
+        const el = document.getElementById(`item-${item}`);
+        if (el) {
+          el.classList.add('opacity-30', 'pointer-events-none');
+        }
+
+        const count = Object.values(this.packed).filter(Boolean).length;
+        document.getElementById('satchel-status').innerText = `Satchel ( ${count} / 3 Packed )`;
+
+        if (item === 'bulb') document.getElementById('slot-1').classList.remove('opacity-30');
+        if (item === 'notebook') document.getElementById('slot-2').classList.remove('opacity-30');
+        if (item === 'pencil') document.getElementById('slot-3').classList.remove('opacity-30');
+
+        if (count === 3) {
+          Sound.unlock();
+          Confetti.burst(30);
+          document.getElementById('satchel-status').innerText = '🎉 All 3 Packed! Satchel Ready!';
+          document.getElementById('satchel-icon').innerText = '🧳';
+          document.getElementById('satchel-zip-btn').classList.remove('hidden');
+          Sound.speak('Satchel packed with ideas, notebook, and pencil! Open Quest 1.');
+        }
+      },
+
+      zipAndLaunch() {
+        Sound.click();
+        Nav.goTo(1);
+      }
+    };
+
+    /* ----------------------------------------------------
+       5. MODULE 1: ROLLING PENCIL PHYSICS & EDISON
+       ---------------------------------------------------- */
+    const PencilLab = {
       canvas: null,
       ctx: null,
-      pencilX: 180,
-      pencilY: 130,
-      angle: 0,
+      shape: 'circle',
+      tilt: 14,
+      pencilX: 120,
+      pencilY: 80,
       vx: 0,
-      vy: 0,
-      state: "circle", // circle | triangle | hexagon
-      animId: null,
-      matchedPairs: 0,
-      selectedNature: null,
+      angle: 0,
+      anim: null,
 
       init() {
-        this.canvas = document.getElementById("pencilCanvas");
-        this.ctx = this.canvas.getContext("2d");
+        this.canvas = document.getElementById('pencil-canvas');
+        this.ctx = this.canvas.getContext('2d');
         this.resize();
-        this.resetPencil();
-        this.loop();
+        this.reset();
+        if (!this.anim) this.loop();
       },
       resize() {
         const rect = this.canvas.parentElement.getBoundingClientRect();
         this.canvas.width = rect.width;
         this.canvas.height = rect.height;
       },
-      resetPencil() {
-        this.pencilX = this.canvas.width * 0.35;
-        this.pencilY = this.canvas.height * 0.45;
+      reset() {
+        this.pencilX = this.canvas.width * 0.25;
+        this.pencilY = this.canvas.height * 0.35;
         this.vx = 0;
-        this.vy = 0;
         this.angle = 0;
       },
-      chooseShape(shape) {
-        AudioEngine.click();
-        this.state = shape;
-        document.querySelectorAll(".shape-btn").forEach(b => b.classList.remove("selected"));
-        document.getElementById(`btn-shape-${shape}`).classList.add("selected");
-        this.resetPencil();
+      setTilt(deg) {
+        this.tilt = parseInt(deg, 10);
+        document.getElementById('desk-tilt-deg').innerText = `${this.tilt}°`;
+        if (this.shape === 'circle') this.vx = this.tilt * 0.18;
+      },
+      setShape(s) {
+        Sound.click();
+        this.shape = s;
+        this.reset();
 
-        const fb = document.getElementById("pencil-feedback");
-        if (shape === "circle") {
-          this.vx = 2.4;
-          fb.style.color = "var(--accent-rose)";
-          fb.innerText = "❌ Oh no! A circle has no flat sides, so it rolls straight off the tilted desk!";
-          AudioEngine.speak("A round pencil has no flat sides, so it rolls off the table!");
-        } else if (shape === "triangle") {
+        const v = document.getElementById('pencil-verdict');
+        if (s === 'circle') {
+          this.vx = this.tilt * 0.18;
+          v.className = 'text-center mt-3 text-sm font-bold text-rose-400';
+          v.innerText = '❌ A circle has no flat edges! It rolls right off the desk!';
+          Sound.speak('A circle has no flat sides. It rolls off the table!');
+        } else if (s === 'triangle') {
           this.vx = 0;
-          fb.style.color = "var(--accent-yellow)";
-          fb.innerText = "⚠️ It stops rolling, but 3 sharp sides are uncomfortable to write with!";
-          AudioEngine.speak("A triangle pencil stops rolling, but its sharp sides hurt your fingers!");
-        } else if (shape === "hexagon") {
+          v.className = 'text-center mt-3 text-sm font-bold text-amber-400';
+          v.innerText = '⚠️ Stops rolling, but 3 sharp sides pinch your fingers when writing!';
+          Sound.speak('A triangle stops rolling, but its sharp corners hurt your fingers.');
+        } else if (s === 'hexagon') {
           this.vx = 0;
-          fb.style.color = "var(--accent-green-light)";
-          fb.innerText = "🎉 Solved! A hexagon has 6 flat sides: it rests firmly on the desk and grips comfortably!";
-          AudioEngine.speak("Great job! A hexagon has six flat sides, so it will not roll!");
-          App.unlockBadge("problem");
-          App.unlockBadge("solution");
-          App.unlockBadge("hexagon");
-          document.getElementById("edison-note").classList.add("visible");
+          v.className = 'text-center mt-3 text-sm font-bold text-emerald-400';
+          v.innerText = '🎉 Perfect! A hexagon has 6 flat sides that lock onto the table!';
+          Sound.speak('Great job! A hexagon has six flat sides so it will not roll!');
+          Nav.unlockBadge('problem');
+          Nav.unlockBadge('solution');
+          Nav.unlockBadge('hexagon');
         }
       },
       loop() {
-        if (!this.ctx) return;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Draw Tilted Desk
         const w = this.canvas.width;
         const h = this.canvas.height;
+        this.ctx.clearRect(0, 0, w, h);
+
+        // Draw Incline Desk Surface
+        const rad = (this.tilt * Math.PI) / 180;
         this.ctx.save();
-        this.ctx.fillStyle = "#334155";
+        this.ctx.fillStyle = '#1e293b';
         this.ctx.beginPath();
-        this.ctx.moveTo(w * 0.1, h * 0.35);
-        this.ctx.lineTo(w * 0.85, h * 0.65);
-        this.ctx.lineTo(w * 0.85, h * 0.75);
-        this.ctx.lineTo(w * 0.1, h * 0.45);
+        this.ctx.moveTo(w * 0.1, h * 0.25);
+        this.ctx.lineTo(w * 0.85, h * 0.25 + (w * 0.75 * Math.sin(rad)));
+        this.ctx.lineTo(w * 0.85, h * 0.85);
+        this.ctx.lineTo(w * 0.1, h * 0.85);
         this.ctx.closePath();
         this.ctx.fill();
-        this.ctx.strokeStyle = "#475569";
+        this.ctx.strokeStyle = '#334155';
         this.ctx.lineWidth = 3;
         this.ctx.stroke();
         this.ctx.restore();
 
-        // Update Physics
-        if (this.state === "circle" && this.vx > 0) {
+        // Physics Roll Update
+        if (this.shape === 'circle' && this.vx > 0) {
           this.pencilX += this.vx;
-          this.pencilY += this.vx * 0.4;
+          this.pencilY += this.vx * Math.sin(rad);
           this.angle += 0.08;
 
-          // If rolled off edge
+          // Off table drop
           if (this.pencilX > w * 0.85) {
-            this.pencilY += 4.5; // gravity fall
+            this.pencilY += 4.5;
             if (this.pencilY > h * 0.88) {
               this.vx = 0;
-              AudioEngine.dropThud();
+              Sound.pencilDrop();
             }
           }
         }
 
-        // Draw Pencil Body
+        // Draw Pencil Cross-Section Body
         this.ctx.save();
         this.ctx.translate(this.pencilX, this.pencilY);
         this.ctx.rotate(this.angle);
 
-        if (this.state === "circle") {
-          // Round pencil cross section
-          this.ctx.fillStyle = "#f59e0b";
+        if (this.shape === 'circle') {
+          this.ctx.fillStyle = '#f59e0b';
           this.ctx.beginPath();
           this.ctx.arc(0, 0, 18, 0, Math.PI * 2);
           this.ctx.fill();
-          this.ctx.fillStyle = "#1e293b";
+        } else if (this.shape === 'triangle') {
+          this.ctx.fillStyle = '#f59e0b';
           this.ctx.beginPath();
-          this.ctx.arc(0, 0, 5, 0, Math.PI * 2);
-          this.ctx.fill();
-        } else if (this.state === "triangle") {
-          this.ctx.fillStyle = "#f59e0b";
-          this.ctx.beginPath();
-          this.ctx.moveTo(0, -20);
-          this.ctx.lineTo(18, 14);
-          this.ctx.lineTo(-18, 14);
+          this.ctx.moveTo(0, -18);
+          this.ctx.lineTo(16, 14);
+          this.ctx.lineTo(-16, 14);
           this.ctx.closePath();
           this.ctx.fill();
-        } else if (this.state === "hexagon") {
-          // 6-sided hexagon
-          this.ctx.fillStyle = "#10b981";
+        } else if (this.shape === 'hexagon') {
+          this.ctx.fillStyle = '#10b981';
           this.ctx.beginPath();
-          const r = 20;
           for (let i = 0; i < 6; i++) {
             const a = (i * Math.PI) / 3;
-            const px = r * Math.cos(a);
-            const py = r * Math.sin(a);
+            const px = 19 * Math.cos(a);
+            const py = 19 * Math.sin(a);
             if (i === 0) this.ctx.moveTo(px, py);
             else this.ctx.lineTo(px, py);
           }
           this.ctx.closePath();
           this.ctx.fill();
-          this.ctx.strokeStyle = "#fff";
+          this.ctx.strokeStyle = '#fff';
           this.ctx.lineWidth = 2;
           this.ctx.stroke();
+        }
 
-          // Lead center
-          this.ctx.fillStyle = "#0f172a";
+        // Graphite Core
+        this.ctx.fillStyle = '#0f172a';
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        this.anim = requestAnimationFrame(() => this.loop());
+      }
+    };
+
+    const EdisonLab = {
+      spinFilm(btn) {
+        Sound.click();
+        btn.classList.toggle('bg-amber-400');
+        btn.innerText = '🎞️ Running 1890s Film...';
+        Sound.speak('Thomas Edison invented the movie projector so people could watch stories come to life.');
+        Nav.addXp(15);
+      },
+      playCrank() {
+        Sound.click();
+        Sound.chord([440, 554.37, 659.25], 'sawtooth', 0.6, 0.15);
+        Sound.speak('Edison invented the phonograph to record sound on grooved cylinders.');
+        Nav.addXp(15);
+      },
+      heatFilament(val) {
+        const p = parseInt(val, 10);
+        const img = document.getElementById('edison-bulb-img');
+        const txt = document.getElementById('bulb-status-txt');
+        img.style.filter = `brightness(${0.5 + p / 60}) drop-shadow(0 0 ${p / 4}px #f59e0b)`;
+        txt.innerText = `Filament Heat (${p}%)`;
+        if (p > 75) {
+          Sound.coin();
+          txt.innerText = '⚡ Bright Radiant Light!';
+        }
+      }
+    };
+
+    /* ----------------------------------------------------
+       6. MODULE 2: BIOMIMICRY & FORGE BENCH
+       ---------------------------------------------------- */
+    const BioLab = {
+      inspectBurr() {
+        Sound.click();
+        Sound.coin();
+        Sound.speak('The burdock plant has microscopic sharp hooks that grab onto animal fur and inspired Velcro shoe straps.');
+        Nav.addXp(20);
+      },
+      inspectTrain() {
+        Sound.click();
+        Sound.coin();
+        Sound.speak('The Japanese bullet train copied the aerodynamic kingfisher beak to eliminate loud sonic booms.');
+        Nav.addXp(20);
+      }
+    };
+
+    const Forge = {
+      scrap: { ring: false, bulb: false, tape: false },
+
+      toggleScrap(k) {
+        Sound.click();
+        this.scrap[k] = !this.scrap[k];
+        const el = document.getElementById(`scrap-${k}`);
+        el.classList.toggle('border-emerald-400', this.scrap[k]);
+        el.classList.toggle('bg-emerald-950/40', this.scrap[k]);
+      },
+
+      combine() {
+        Sound.click();
+        const all = this.scrap.ring && this.scrap.bulb && this.scrap.tape;
+        if (!all) {
+          Sound.speak('Select all three scrap parts first: ring mount, rubber bulb, and repair tape!');
+          return;
+        }
+
+        Sound.honk();
+        Confetti.burst(35);
+        document.getElementById('forge-combine-btn').classList.add('hidden');
+        document.getElementById('horn-reveal-area').classList.remove('hidden');
+        Nav.addXp(30);
+        Sound.speak('You combined old things to make a brand-new bike horn! Click it to test!');
+      },
+
+      honkHorn() {
+        Sound.honk();
+      }
+    };
+
+    /* ----------------------------------------------------
+       7. MODULE 3: LEONARDO WIND TUNNEL & PARACHUTE
+       ---------------------------------------------------- */
+    const ChuteLab = {
+      canvas: null,
+      ctx: null,
+      width: 35,
+      shape: 'flat',
+      dropY: 60,
+      dropX: 0,
+      vy: 0,
+      active: false,
+      speed: 0,
+
+      init() {
+        this.canvas = document.getElementById('chute-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        this.reset();
+        this.loop();
+      },
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
+        this.dropX = this.canvas.width * 0.55;
+      },
+      reset() {
+        this.dropY = 60;
+        this.vy = 0;
+        this.active = false;
+        this.speed = 0;
+      },
+      setWidth(val) {
+        this.width = parseInt(val, 10);
+        document.getElementById('chute-width-txt').innerText = `${this.width} px`;
+      },
+      setShape(s) {
+        Sound.click();
+        this.shape = s;
+        document.getElementById('chute-flat-btn').classList.toggle('border-cyan-500', s === 'flat');
+        document.getElementById('chute-pyr-btn').classList.toggle('border-cyan-500', s === 'pyramid');
+      },
+      dropTest() {
+        Sound.click();
+        this.reset();
+        this.active = true;
+      },
+      loop() {
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.ctx.clearRect(0, 0, w, h);
+
+        // Draw Italian Stone Tower on Left
+        this.ctx.fillStyle = '#1e293b';
+        this.ctx.fillRect(w * 0.08, h * 0.15, w * 0.25, h * 0.85);
+        this.ctx.strokeStyle = '#334155';
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeRect(w * 0.08, h * 0.15, w * 0.25, h * 0.85);
+
+        // Wind Streaks
+        this.ctx.strokeStyle = this.speed > 30 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(6, 182, 212, 0.35)';
+        this.ctx.lineWidth = 2;
+        for (let i = 0; i < 4; i++) {
+          const sx = w * 0.45 + i * 40;
           this.ctx.beginPath();
-          this.ctx.arc(0, 0, 5, 0, Math.PI * 2);
+          this.ctx.moveTo(sx, 40);
+          this.ctx.lineTo(sx, h * 0.8);
+          this.ctx.stroke();
+        }
+
+        // Drop Physics
+        if (this.active) {
+          const maxSpd = this.shape === 'pyramid' 
+            ? Math.max(1.2, 9 - this.width / 14)
+            : Math.max(3.5, 12 - this.width / 16);
+
+          this.vy = Math.min(maxSpd, this.vy + 0.2);
+          this.dropY += this.vy;
+          this.speed = Math.floor(this.vy * 5.8);
+          document.getElementById('speed-indicator').innerText = `${this.speed} km/h`;
+
+          if (this.dropY >= h * 0.8) {
+            this.dropY = h * 0.8;
+            this.active = false;
+            const fb = document.getElementById('chute-feedback');
+
+            if (this.speed > 25) {
+              Sound.pencilDrop();
+              fb.className = 'text-xs font-bold text-center text-rose-400 min-h-[28px]';
+              fb.innerText = '❌ Too fast! Narrow canopy broke on impact. Broaden your blueprint!';
+              Sound.speak('Too fast! The parachute was too small to slow down gravity.');
+            } else {
+              Sound.soar();
+              Confetti.burst(40);
+              fb.className = 'text-xs font-bold text-center text-emerald-400 min-h-[28px]';
+              fb.innerText = '🎉 Gentle drift landing! Leonardo da Vinci\'s blueprint succeeded!';
+              Sound.speak('Safe landing! Leonardo da Vinci sketched parachutes hundreds of years before they were built!');
+              Nav.unlockBadge('parachute');
+            }
+          }
+        }
+
+        // Draw Parachute & Mannequin
+        const cx = this.dropX;
+        const cy = this.dropY - 30;
+        const r = this.width / 2;
+
+        this.ctx.save();
+        this.ctx.fillStyle = this.shape === 'pyramid' ? '#06b6d4' : '#38bdf8';
+
+        if (this.shape === 'pyramid') {
+          // Da Vinci Triangular/Pyramidal canopy
+          this.ctx.beginPath();
+          this.ctx.moveTo(cx, cy - r);
+          this.ctx.lineTo(cx - r, cy);
+          this.ctx.lineTo(cx + r, cy);
+          this.ctx.closePath();
+          this.ctx.fill();
+          this.ctx.strokeStyle = '#fff';
+          this.ctx.stroke();
+        } else {
+          // Rounded Flat
+          this.ctx.beginPath();
+          this.ctx.arc(cx, cy, r, Math.PI, 0);
+          this.ctx.closePath();
           this.ctx.fill();
         }
 
-        this.ctx.restore();
-
-        this.animId = requestAnimationFrame(() => this.loop());
-      },
-
-      selectBio(key, type) {
-        AudioEngine.click();
-        if (type === "nature") {
-          this.selectedNature = key;
-          document.querySelectorAll(".bio-card").forEach(c => c.classList.remove("active-match"));
-          document.getElementById(`bio-${key}`).classList.add("active-match");
-        } else if (type === "invention") {
-          if (!this.selectedNature) {
-            AudioEngine.speak("First choose a plant or bird from the left column!");
-            return;
-          }
-
-          // Check match
-          const valid = (this.selectedNature === "burdock" && key === "velcro") ||
-                        (this.selectedNature === "kingfisher" && key === "bullet");
-
-          if (valid) {
-            document.getElementById(`bio-${this.selectedNature}`).classList.add("matched");
-            document.getElementById(`bio-${key}`).classList.add("matched");
-            document.getElementById(`bio-${this.selectedNature}`).classList.remove("active-match");
-            AudioEngine.coin();
-            this.matchedPairs++;
-            if (this.matchedPairs >= 2) {
-              AudioEngine.fanfare();
-              Confetti.launch(35);
-              App.addXP(25);
-              AudioEngine.speak("Brilliant matching! Burdock burrs inspired Velcro, and kingfishers inspired bullet trains!");
-            }
-            this.selectedNature = null;
-          } else {
-            AudioEngine.playTone(220, "sawtooth", 0.25, 0.2);
-            AudioEngine.speak("Not quite a match! Think about how the shape or hooks copy nature.");
-          }
-        }
-      },
-
-      combineCraft() {
-        AudioEngine.click();
-        AudioEngine.fanfare();
-        Confetti.launch(30);
-        document.getElementById("btn-craft").style.display = "none";
-        document.getElementById("craft-result").style.display = "block";
-        App.addXP(25);
-        AudioEngine.speak("You combined old ideas to create a new invention!");
-      }
-    };
-
-    /* ----------------------------------------------------
-       5. QUEST 2: LEONARDO'S BLUEPRINT PARACHUTE TESTER
-       ---------------------------------------------------- */
-    const Quest2 = {
-      canvas: null,
-      ctx: null,
-      diameter: 35,
-      mannequinY: 60,
-      mannequinX: 0,
-      vy: 0,
-      dropping: false,
-      animId: null,
-
-      init() {
-        this.canvas = document.getElementById("towerCanvas");
-        this.ctx = this.canvas.getContext("2d");
-        this.resize();
-        this.resetDrop();
-        this.loop();
-      },
-      resize() {
-        const rect = this.canvas.parentElement.getBoundingClientRect();
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
-        this.mannequinX = this.canvas.width * 0.5;
-      },
-      resetDrop() {
-        this.mannequinY = 70;
-        this.vy = 0;
-        this.dropping = false;
-      },
-      updateDiameter(val) {
-        this.diameter = parseInt(val, 10);
-        const label = document.getElementById("chute-val");
-        if (this.diameter < 65) {
-          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-rose);">(Too Small)</span>`;
-        } else if (this.diameter < 85) {
-          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-yellow);">(Moderate)</span>`;
-        } else {
-          label.innerHTML = `${this.diameter} px <span style="color:var(--accent-green-light);">(Optimal Blueprint!)</span>`;
-        }
-      },
-      launchDropTest() {
-        AudioEngine.click();
-        this.resetDrop();
-        this.dropping = true;
-        document.getElementById("drop-feedback").innerText = "Testing prototype in mid-air...";
-      },
-      loop() {
-        if (!this.ctx) return;
-        const w = this.canvas.width;
-        const h = this.canvas.height;
-        this.ctx.clearRect(0, 0, w, h);
-
-        // Draw High Stone Tower on the Left
-        this.ctx.fillStyle = "#1e293b";
-        this.ctx.fillRect(w * 0.08, h * 0.2, w * 0.25, h * 0.8);
-        this.ctx.strokeStyle = "#334155";
-        this.ctx.lineWidth = 4;
-        this.ctx.strokeRect(w * 0.08, h * 0.2, w * 0.25, h * 0.8);
-
-        // Ground Line
-        this.ctx.strokeStyle = "#475569";
-        this.ctx.lineWidth = 3;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, h * 0.92);
-        this.ctx.lineTo(w, h * 0.92);
-        this.ctx.stroke();
-
-        // Physics Simulation
-        if (this.dropping) {
-          const terminalVelocity = Math.max(1.2, 10 - (this.diameter / 12));
-          this.vy = Math.min(terminalVelocity, this.vy + 0.15);
-          this.mannequinY += this.vy;
-
-          // Touchdown
-          if (this.mannequinY >= h * 0.82) {
-            this.mannequinY = h * 0.82;
-            this.dropping = false;
-            const fb = document.getElementById("drop-feedback");
-
-            if (this.diameter < 70) {
-              AudioEngine.dropThud();
-              fb.style.color = "var(--accent-rose)";
-              fb.innerText = "❌ Too fast! The parachute canopy was too small to slow down gravity!";
-              AudioEngine.speak("Too small! The prototype hit the ground too fast. Improve your blueprint!");
-            } else {
-              AudioEngine.fanfare();
-              Confetti.launch(40);
-              fb.style.color = "var(--accent-green-light)";
-              fb.innerText = "🎉 Safe gentle landing! Leonardo's parachute blueprint succeeded!";
-              AudioEngine.speak("Safe landing! Leonardo da Vinci drew parachutes hundreds of years before they were built!");
-              App.unlockBadge("parachute");
-            }
-          }
-        }
-
-        // Draw Parachute Canopy
-        const cx = this.mannequinX;
-        const cy = this.mannequinY - 35;
-        const radius = this.diameter / 2;
-
-        this.ctx.save();
-        this.ctx.fillStyle = "#38bdf8";
-        this.ctx.beginPath();
-        this.ctx.arc(cx, cy, radius, Math.PI, 0);
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.strokeStyle = "#f8fafc";
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
-
-        // Suspension Strings to Mannequin
-        this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
+        // Ropes to Mannequin
+        this.ctx.strokeStyle = 'rgba(255,255,255,0.7)';
         this.ctx.lineWidth = 1.5;
         this.ctx.beginPath();
-        this.ctx.moveTo(cx - radius, cy);
-        this.ctx.lineTo(cx, this.mannequinY - 10);
-        this.ctx.moveTo(cx + radius, cy);
-        this.ctx.lineTo(cx, this.mannequinY - 10);
-        this.ctx.moveTo(cx, cy - radius);
-        this.ctx.lineTo(cx, this.mannequinY - 10);
+        this.ctx.moveTo(cx - r, cy);
+        this.ctx.lineTo(cx, this.dropY - 10);
+        this.ctx.moveTo(cx + r, cy);
+        this.ctx.lineTo(cx, this.dropY - 10);
         this.ctx.stroke();
 
-        // Draw Inventor Mannequin
-        this.ctx.fillStyle = "#f59e0b";
+        // Wooden Mannequin Body
+        this.ctx.fillStyle = '#f59e0b';
         this.ctx.beginPath();
-        this.ctx.arc(cx, this.mannequinY - 10, 8, 0, Math.PI * 2); // head
+        this.ctx.arc(cx, this.dropY - 12, 7, 0, Math.PI * 2);
         this.ctx.fill();
-        this.ctx.fillStyle = "#cbd5e1";
-        this.ctx.fillRect(cx - 4, this.mannequinY - 2, 8, 16); // torso
+        this.ctx.fillStyle = '#cbd5e1';
+        this.ctx.fillRect(cx - 3, this.dropY - 5, 6, 14);
         this.ctx.restore();
 
-        this.animId = requestAnimationFrame(() => this.loop());
+        requestAnimationFrame(() => this.loop());
       }
     };
 
     /* ----------------------------------------------------
-       6. QUEST 3: KARL BENZ'S ITERATION LOOP
+       8. MODULE 4: KARL BENZ & 4-STAGE FLIGHT
        ---------------------------------------------------- */
-    const Quest3 = {
+    const BenzLab = {
+      testModel(step) {
+        Sound.click();
+        const fb = document.getElementById('benz-feedback');
+        if (step === 1) {
+          Sound.engineChug();
+          fb.className = 'text-center mt-3 text-xs font-bold text-rose-400';
+          fb.innerText = '⚠️ Original 3-wheeler stalled after 5m! "Don\'t give up! Try again..."';
+          Sound.speak('The car stalled! Don\'t give up. Try again and again!');
+        } else if (step === 2) {
+          Sound.engineChug();
+          fb.className = 'text-center mt-3 text-xs font-bold text-amber-400';
+          fb.innerText = '⚡ Piston balance improved, but it veers off on sharp curves!';
+          Sound.speak('Getting better! Listen to feedback and improve your steering.');
+        } else if (step === 3) {
+          Sound.soar();
+          Confetti.burst(40);
+          fb.className = 'text-center mt-3 text-xs font-bold text-emerald-400';
+          fb.innerText = '🎉 4 Wheels & Rack Steering! Karl Benz cruises smoothly past the cheering crowd!';
+          Sound.speak('Bravo! Karl Benz improved his motorcar by never giving up!');
+          Nav.unlockBadge('improve');
+        }
+      }
+    };
+
+    const FlightLab = {
       canvas: null,
       ctx: null,
-      carX: 80,
-      step: 1,
+      stage: 1,
+      gliderX: 40,
+      gliderY: 80,
       running: false,
-      carSpeed: 0,
-      animId: null,
 
       init() {
-        this.canvas = document.getElementById("benzCanvas");
-        this.ctx = this.canvas.getContext("2d");
+        this.canvas = document.getElementById('flight-canvas');
+        this.ctx = this.canvas.getContext('2d');
         this.resize();
-        this.resetCar();
-        this.loop();
+        this.launch(1);
       },
       resize() {
-        const rect = this.canvas.parentElement.getBoundingClientRect();
-        this.canvas.width = rect.width;
-        this.canvas.height = rect.height;
+        const r = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = r.width;
+        this.canvas.height = r.height;
       },
-      resetCar() {
-        this.carX = 80;
-        this.carSpeed = 0;
-        this.running = false;
-      },
-      applyUpgrade(stepNum) {
-        AudioEngine.click();
-        this.step = stepNum;
-        this.resetCar();
+      launch(num) {
+        Sound.click();
+        this.stage = num;
+        this.gliderX = 40;
+        this.gliderY = 80;
         this.running = true;
 
-        const fb = document.getElementById("benz-feedback");
-        const critique = document.getElementById("crowd-critique");
+        document.getElementById('flight-stage-indicator').innerText = `Stage ${num} of 4`;
+        const v = document.getElementById('flight-verdict');
 
-        if (stepNum === 1) {
-          AudioEngine.engineSputter();
-          this.carSpeed = 1.2;
-          fb.style.color = "var(--accent-rose)";
-          fb.innerText = "⚠️ Model stalled after 3 meters! Don't give up! (Try again...)";
-          critique.innerText = "'Only three wheels? It shakes and tilts too easily!'";
-          AudioEngine.speak("The motor stalled! Don't give up. Try again and again!");
-        } else if (stepNum === 2) {
-          AudioEngine.engineSputter();
-          this.carSpeed = 2.4;
-          fb.style.color = "var(--accent-yellow)";
-          fb.innerText = "⚡ Getting better! Piston balance improved, but steering still veers off.";
-          critique.innerText = "'It moves further now, but how does he turn corners safely?'";
-          AudioEngine.speak("Getting better! Show your idea, listen to feedback, and improve it!");
-        } else if (stepNum === 3) {
-          AudioEngine.engineCruise();
-          this.carSpeed = 5.2;
-          fb.style.color = "var(--accent-green-light)";
-          fb.innerText = "🎉 Master Iteration! 4 wheels & rack steering! Karl Benz cruises smoothly past the crowd!";
-          critique.innerText = "'Astonishing! The automobile is born! Bravo!'";
-          AudioEngine.speak("Astonishing! By testing and improving, Karl Benz created the first modern automobile!");
-          App.unlockBadge("improve");
-          Confetti.launch(50);
+        if (num === 1) {
+          v.className = 'text-center text-xs font-bold text-rose-400 mt-2';
+          v.innerText = 'Stage 1: Running with paper wings ➔ Falls in the mud! "Don\'t give up!"';
+          Sound.speak('Don\'t give up! Running with paper wings failed, but you can try again!');
+        } else if (num === 2) {
+          v.className = 'text-center text-xs font-bold text-amber-400 mt-2';
+          v.innerText = 'Stage 2: Wooden frame glider ➔ Jumps off fence, lands in hay! "Try again..."';
+          Sound.speak('Try again! The wooden frame glided three feet into the hay.');
+        } else if (num === 3) {
+          v.className = 'text-center text-xs font-bold text-cyan-400 mt-2';
+          v.innerText = 'Stage 3: Aerodynamic fabric monoplane ➔ Glides across the yard! "and again..."';
+          Sound.speak('and again! The fabric monoplane is getting closer to flying.');
+        } else if (num === 4) {
+          v.className = 'text-center text-xs font-bold text-emerald-400 mt-2';
+          v.innerText = 'Stage 4: Full winged glider suit ➔ Soars freely into the sky! "and again!"';
+          Sound.soar();
+          Confetti.burst(50);
+          Sound.speak('and again! Complete success! The wings caught the thermal wind and soared!');
+          Nav.unlockBadge('improve');
         }
+
+        this.animate();
       },
-      loop() {
-        if (!this.ctx) return;
+      animate() {
         const w = this.canvas.width;
         const h = this.canvas.height;
         this.ctx.clearRect(0, 0, w, h);
 
-        // Cobblestone Road
-        this.ctx.fillStyle = "#1e293b";
-        this.ctx.fillRect(0, h * 0.72, w, h * 0.28);
-        this.ctx.strokeStyle = "#475569";
-        this.ctx.lineWidth = 2;
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, h * 0.72);
-        this.ctx.lineTo(w, h * 0.72);
-        this.ctx.stroke();
+        // Ground
+        this.ctx.fillStyle = '#0f172a';
+        this.ctx.fillRect(0, h * 0.75, w, h * 0.25);
 
-        // Move Car
         if (this.running) {
-          this.carX += this.carSpeed;
-          if (this.step === 1 && this.carX > w * 0.35) {
-            this.carSpeed = 0; // stall
-          }
-          if (this.step === 2 && this.carX > w * 0.58) {
-            this.carSpeed = 0; // wobble stop
-          }
-          if (this.step === 3 && this.carX > w * 0.95) {
-            this.carX = -120; // cruise wrap
+          if (this.stage === 1) {
+            this.gliderX += 2.5;
+            this.gliderY += 1.8;
+            if (this.gliderY > h * 0.72) this.running = false;
+          } else if (this.stage === 2) {
+            this.gliderX += 3.5;
+            this.gliderY += 1.2;
+            if (this.gliderY > h * 0.72) this.running = false;
+          } else if (this.stage === 3) {
+            this.gliderX += 4.5;
+            this.gliderY += 0.4;
+            if (this.gliderX > w * 0.7) this.running = false;
+          } else if (this.stage === 4) {
+            this.gliderX += 5.5;
+            this.gliderY = 50 + Math.sin(this.gliderX * 0.05) * 15;
+            if (this.gliderX > w) this.gliderX = 20;
           }
         }
 
-        // Draw Karl Benz Motorcar
+        // Draw Glider Figure
         this.ctx.save();
-        this.ctx.translate(this.carX, h * 0.65);
-
-        // Chassis Frame
-        this.ctx.strokeStyle = "#38bdf8";
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(-40, -10);
-        this.ctx.lineTo(40, -10);
-        this.ctx.lineTo(20, -35);
-        this.ctx.lineTo(-20, -35);
-        this.ctx.closePath();
-        this.ctx.stroke();
-
-        // Karl Benz Silhouette
-        this.ctx.fillStyle = "#f59e0b";
-        this.ctx.beginPath();
-        this.ctx.arc(0, -48, 7, 0, Math.PI * 2);
-        this.ctx.fill();
-
-        // Wheels
-        this.ctx.strokeStyle = "#fde68a";
-        this.ctx.lineWidth = 3;
-
-        // Rear Wheel
-        this.ctx.beginPath();
-        this.ctx.arc(-30, 8, 16, 0, Math.PI * 2);
-        this.ctx.stroke();
-
-        // Front Wheel(s)
-        if (this.step === 3) {
-          // Dual Front Wheels (4-wheel upgrade)
-          this.ctx.beginPath();
-          this.ctx.arc(32, 8, 16, 0, Math.PI * 2);
-          this.ctx.arc(38, 8, 16, 0, Math.PI * 2);
-          this.ctx.stroke();
-        } else {
-          // Single Front Wheel (3-wheeled original)
-          this.ctx.beginPath();
-          this.ctx.arc(32, 8, 14, 0, Math.PI * 2);
-          this.ctx.stroke();
-        }
-
+        this.ctx.translate(this.gliderX, this.gliderY);
+        this.ctx.font = '28px sans-serif';
+        this.ctx.fillText(this.stage === 4 ? '🦅' : '🏃‍♂️', 0, 0);
         this.ctx.restore();
 
-        this.animId = requestAnimationFrame(() => this.loop());
+        if (this.running || this.stage === 4) {
+          requestAnimationFrame(() => this.animate());
+        }
       }
     };
   </script>
