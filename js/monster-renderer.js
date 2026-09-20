@@ -601,13 +601,89 @@
   }
 
   /**
-   * Main Render Entry Point: Defaults to Modular Layered Viewport
+   * Static Asset Image Pipeline: Monster Viewport
+   * Stacks real static PNG image elements with CSS
+   */
+  function renderMonsterImageViewport(options = {}) {
+    const stage = normalizeStageKey(options.stage);
+    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
+    const equipped = Object.assign({}, options.equipped || {});
+    const size = options.size || 200;
+    const animated = options.animated !== false;
+    const animClass = animated ? 'eaa-monster-animated' : '';
+
+    // 1. Stage pedestal image
+    const stageSrc = 'assets/monsters/stages/wooden_pedestal.png';
+
+    // 2. Body image
+    let bodySrc = `assets/monsters/bodies/${colorKey}_chibi.png`;
+    if (stage === 'egg') {
+      bodySrc = 'assets/monsters/bodies/mystery_egg.png';
+    } else if (stage === 'cracking_egg') {
+      bodySrc = 'assets/monsters/bodies/cracking_egg.png';
+    }
+
+    // 3. Horns image
+    let hornSrc = 'assets/monsters/horns/none.png';
+    if (stage !== 'egg' && stage !== 'cracking_egg') {
+      let hornId = equipped.horns;
+      if (!hornId || hornId === 'default') {
+        if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
+        else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
+        else hornId = 'none';
+      }
+
+      if (hornId === 'horns-small' || hornId === 'horns-nub' || hornId === 'sprout_nubs') {
+        hornSrc = 'assets/monsters/horns/sprout_nubs.png';
+      } else if (hornId === 'horns-curved' || hornId === 'curved_horns') {
+        hornSrc = 'assets/monsters/horns/curved_horns.png';
+      } else if (hornId === 'horns-crystal' || hornId === 'crystal_horns' || hornId === 'horns-ice') {
+        hornSrc = 'assets/monsters/horns/crystal_horns.png';
+      } else if (hornId === 'horns-gold' || hornId === 'gold_horns' || hornId === 'horns-flame' || hornId === 'horns-nature') {
+        hornSrc = 'assets/monsters/horns/gold_horns.png';
+      } else {
+        hornSrc = 'assets/monsters/horns/none.png';
+      }
+    }
+
+    // 4. Face/Eyes image
+    let faceSrc = 'assets/monsters/eyes/default_eyes.png';
+    if (stage === 'egg' || stage === 'cracking_egg') {
+      faceSrc = 'assets/monsters/horns/none.png'; // No separate eyes on egg shell
+    } else {
+      let eyeId = equipped.eyes || 'default';
+      if (eyeId === 'eyes-sparkle' || eyeId === 'sparkle_eyes') {
+        faceSrc = 'assets/monsters/eyes/sparkle_eyes.png';
+      } else if (eyeId === 'eyes-happy' || eyeId === 'happy_eyes') {
+        faceSrc = 'assets/monsters/eyes/happy_eyes.png';
+      } else if (eyeId === 'eyes-wink' || eyeId === 'wink_eyes') {
+        faceSrc = 'assets/monsters/eyes/wink_eyes.png';
+      } else if (eyeId === 'eyes-curious' || eyeId === 'curious_eyes') {
+        faceSrc = 'assets/monsters/eyes/curious_eyes.png';
+      } else {
+        faceSrc = 'assets/monsters/eyes/default_eyes.png';
+      }
+    }
+
+    return `
+      <div class="monster-viewport ${animClass}" style="--stage-size:${size}px; width:${size}px; height:${size}px;" data-stage="${stage}" data-color="${colorKey}">
+        <img class="monster-layer stage" src="${stageSrc}" alt="Stage Pedestal" />
+        <img class="monster-layer body" src="${bodySrc}" alt="Monster Body" />
+        <img class="monster-layer horns" src="${hornSrc}" alt="Monster Horns" />
+        <img class="monster-layer face" src="${faceSrc}" alt="Monster Face" />
+      </div>
+    `.trim();
+  }
+
+  /**
+   * Main Render Entry Point: Defaults to Static Asset Image Viewport
    */
   function renderMonsterSVG(options = {}) {
     if (options && options.rawSvg === true) {
       return renderMonsterSingleSVG(options);
     }
-    return renderMonsterViewport(options);
+    return renderMonsterImageViewport(options);
   }
 
   // --- BACKGROUND LAYER ---
@@ -2872,7 +2948,8 @@
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
-    renderMonsterViewport: renderMonsterViewport,
+    renderMonsterViewport: renderMonsterImageViewport,
+    renderMonsterImageViewport: renderMonsterImageViewport,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
     getBadgeColors: getBadgeColors,
@@ -2881,7 +2958,8 @@
   };
 
   root.renderMonsterSVG = renderMonsterSVG;
-  root.renderMonsterViewport = renderMonsterViewport;
+  root.renderMonsterViewport = renderMonsterImageViewport;
+  root.renderMonsterImageViewport = renderMonsterImageViewport;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
   root.getBadgeColors = getBadgeColors;
