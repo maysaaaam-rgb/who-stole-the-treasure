@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Academy Arena: Bamboozle Pro Toolkit</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>⚡</text></svg>">
+  <title>Adventure Academy: Multi-Topic Bamboozle Arena</title>
   <style>
     :root {
-      --bg: #0f172a;
+      --bg: #090d16;
       --panel: #1e293b;
       --border: #334155;
       --cyan: #38bdf8;
@@ -26,38 +25,39 @@
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #090d16;
+      background: var(--bg);
+      background-image: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #090d16 85%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
 
-    /* Top Teacher Toolbar */
-    .toolkit-toolbar {
-      background: #111827;
+    /* Master Toolbar */
+    .master-toolbar {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
       border-bottom: 2px solid var(--border);
-      padding: 0.6rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 1rem;
       z-index: 50;
     }
-    .toolkit-brand {
+    .brand-title {
       font-weight: 900;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       color: var(--amber);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
-    .toolkit-controls {
+    .toolbar-group {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
     .tool-btn {
@@ -65,80 +65,97 @@
       border: 1px solid var(--border);
       color: #cbd5e1;
       font-size: 0.85rem;
-      font-weight: 700;
-      padding: 0.4rem 0.8rem;
+      font-weight: 800;
+      padding: 0.4rem 0.85rem;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
     .tool-btn:hover { background: #334155; color: #fff; border-color: var(--cyan); }
-    .tool-btn.active { background: var(--cyan); color: #022c22; border-color: var(--cyan); font-weight: 900; }
+    .tool-btn.active { background: var(--cyan); color: #022c22; border-color: var(--cyan); }
 
-    /* Interactive Scoreboard Hub */
+    /* Topic Selection Bar */
+    .topic-selector-strip {
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      overflow-x: auto;
+    }
+    .topic-label {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: #64748b;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .topic-pill {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .topic-pill:hover { border-color: var(--cyan); color: #fff; }
+    .topic-pill.active {
+      background: linear-gradient(135deg, var(--amber), #d97706);
+      color: #000;
+      border-color: var(--amber);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Scoreboard */
     .scoreboard-strip {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 1rem;
       padding: 1rem 1.5rem;
-      background: #0f172a;
+      background: #0a0f1d;
       border-bottom: 1px solid var(--border);
     }
-    .team-pill {
+    .team-card {
       background: var(--panel);
       border-radius: 14px;
       padding: 0.75rem 1rem;
       text-align: center;
       border: 3px solid transparent;
-      position: relative;
+      transition: all 0.2s ease;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .team-pill.active-turn {
+    .team-card.active-turn {
       border-color: var(--amber);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
-      background: #1e293b;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+      background: #253349;
     }
-    .team-tag {
-      font-size: 0.85rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .team-score {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: #fff;
-      margin: 0.2rem 0;
-    }
-    .score-nudge {
-      display: flex;
-      justify-content: center;
-      gap: 0.3rem;
-      opacity: 0.6;
-      transition: opacity 0.2s;
-    }
-    .team-pill:hover .score-nudge { opacity: 1; }
+    .team-name { font-size: 0.85rem; font-weight: 900; text-transform: uppercase; }
+    .team-score { font-size: 2.2rem; font-weight: 900; margin: 0.2rem 0; }
+    .score-nudge { display: flex; justify-content: center; gap: 0.3rem; opacity: 0.5; }
+    .team-card:hover .score-nudge { opacity: 1; }
     .nudge-btn {
-      background: #334155;
-      border: none;
-      color: #94a3b8;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      font-weight: 700;
+      background: #334155; border: none; color: #cbd5e1; border-radius: 4px;
+      padding: 2px 7px; font-size: 0.75rem; font-weight: 800; cursor: pointer;
     }
     .nudge-btn:hover { background: var(--amber); color: #000; }
 
-    /* Arena Grid: 24 Cards */
+    /* 24-Card Interactive Arena */
     .arena-grid {
       flex: 1;
-      max-width: 1280px;
+      max-width: 1300px;
       width: 100%;
       margin: 1.5rem auto;
       padding: 0 1.5rem 3rem;
@@ -146,8 +163,8 @@
       grid-template-columns: repeat(6, 1fr);
       gap: 1rem;
     }
-    @media (max-width: 1024px) { .arena-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 640px) { .arena-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1100px) { .arena-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 680px) { .arena-grid { grid-template-columns: repeat(3, 1fr); } }
 
     .card-tile {
       aspect-ratio: 16/11;
@@ -169,10 +186,7 @@
       border-color: var(--cyan);
       box-shadow: 0 12px 0 #020617, 0 16px 28px rgba(56, 189, 248, 0.25);
     }
-    .card-tile:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #020617;
-    }
+    .card-tile:active { transform: translateY(4px); box-shadow: 0 2px 0 #020617; }
     .card-tile.opened {
       opacity: 0.15;
       pointer-events: none;
@@ -186,16 +200,16 @@
       color: #93c5fd;
       text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
-    .card-type-hint {
+    .card-tag {
       position: absolute;
       bottom: 6px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #64748b;
       font-weight: 800;
       text-transform: uppercase;
     }
 
-    /* Modal Question & Sabotage Screen */
+    /* Modal Display */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -210,7 +224,7 @@
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .modal-card {
+    .modal-window {
       background: #1e293b;
       border: 4px solid var(--cyan);
       border-radius: 24px;
@@ -227,58 +241,53 @@
     .modal-top-bar {
       background: #0f172a;
       border-bottom: 2px solid var(--border);
-      padding: 1rem 1.75rem;
+      padding: 0.9rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .badge-category {
+    .badge-cat {
       background: rgba(56, 189, 248, 0.15);
       color: var(--cyan);
       border: 1px solid var(--cyan);
       padding: 0.3rem 0.9rem;
       border-radius: 999px;
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
     }
-    .badge-pts {
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--amber);
-    }
+    .badge-points { font-size: 1.4rem; font-weight: 900; color: var(--amber); }
 
-    .modal-main {
-      padding: 2.5rem 2rem;
+    .modal-body {
+      padding: 2.2rem 2rem;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.2rem;
     }
-    .prompt-avatar {
-      font-size: 4.5rem;
-      animation: gentlePulse 2s infinite ease-in-out;
+    .modal-visual {
+      font-size: 5rem;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+      animation: pulseAvatar 2s infinite ease-in-out;
     }
-    @keyframes gentlePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    .prompt-text {
-      font-size: 2.1rem;
+    @keyframes pulseAvatar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+    .modal-q {
+      font-size: 2rem;
       font-weight: 800;
       line-height: 1.35;
       color: #f8fafc;
       max-width: 720px;
     }
 
-    /* Live Countdown Gauge */
-    .timer-container {
+    /* Live Countdown Progress */
+    .timer-track {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       background: #0f172a;
       border: 2px solid var(--border);
-      height: 16px;
+      height: 14px;
       border-radius: 999px;
       overflow: hidden;
       display: none;
@@ -290,43 +299,43 @@
       transition: width 1s linear, background-color 0.3s;
     }
 
-    /* Answer Reveal Box */
-    .answer-box {
-      background: rgba(16, 185, 129, 0.1);
+    /* Revealed Drawer */
+    .answer-drawer {
+      background: rgba(16, 185, 129, 0.12);
       border: 2px dashed var(--green);
       border-radius: 14px;
-      padding: 1.25rem 2rem;
+      padding: 1rem 1.8rem;
       color: #6ee7b7;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 800;
       width: 90%;
       display: none;
     }
 
-    /* Modal Action Bar */
-    .modal-actions {
+    /* Action Controls */
+    .modal-footer {
       background: #0f172a;
       border-top: 2px solid var(--border);
-      padding: 1.25rem;
+      padding: 1.2rem;
       display: flex;
       justify-content: center;
-      gap: 1.25rem;
+      gap: 1.2rem;
       flex-wrap: wrap;
     }
     .judge-btn {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 900;
-      padding: 0.85rem 2.2rem;
+      padding: 0.85rem 2.4rem;
       border-radius: 12px;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: transform 0.15s, filter 0.15s;
+      transition: transform 0.1s;
     }
     .judge-btn:active { transform: scale(0.96); }
-    .btn-reveal { background: var(--cyan); color: #022c22; font-size: 1.3rem; }
+    .btn-reveal { background: var(--cyan); color: #022c22; }
     .btn-pass { background: var(--green); color: #022c22; }
     .btn-fail { background: var(--rose); color: #fff; }
     .btn-power { background: var(--amber); color: #000; font-size: 1.4rem; padding: 1rem 3rem; }
@@ -334,104 +343,93 @@
 </head>
 <body>
 
-  <!-- Top Teacher Bar -->
-  <header class="toolkit-toolbar">
-    <div class="toolkit-brand">
+  <!-- Master Controls -->
+  <header class="master-toolbar">
+    <div class="brand-title">
       <span>⚡</span>
-      <span>ACADEMY BAMBOOZLE PRO</span>
+      <span>BAMBOOZLE PRO TOOLKIT</span>
     </div>
 
-    <div class="toolkit-controls">
-      <span style="color:#64748b; font-weight:700; font-size:0.85rem;">TEAMS:</span>
-      <button class="tool-btn active" id="btn-team-2" onclick="setTeams(2)">2</button>
-      <button class="tool-btn" id="btn-team-3" onclick="setTeams(3)">3</button>
-      <button class="tool-btn" id="btn-team-4" onclick="setTeams(4)">4</button>
+    <div class="toolbar-group">
+      <span style="color:#64748b; font-weight:800; font-size:0.85rem;">TEAMS:</span>
+      <button class="tool-btn active" id="btn-t-2" onclick="setTeams(2)">2</button>
+      <button class="tool-btn" id="btn-t-3" onclick="setTeams(3)">3</button>
+      <button class="tool-btn" id="btn-t-4" onclick="setTeams(4)">4</button>
 
-      <span style="color:#64748b; font-weight:700; font-size:0.85rem; margin-left:0.5rem;">TIMER:</span>
-      <button class="tool-btn active" id="btn-timer-toggle" onclick="toggleTimer()">15s ON</button>
+      <span style="color:#64748b; font-weight:800; font-size:0.85rem; margin-left:0.5rem;">TIMER:</span>
+      <button class="tool-btn active" id="btn-timer" onclick="toggleTimer()">15s ON</button>
 
-      <span style="color:#64748b; font-weight:700; font-size:0.85rem; margin-left:0.5rem;">AUDIO:</span>
-      <button class="tool-btn active" id="btn-sound-toggle" onclick="toggleSound()">🔊 ON</button>
+      <span style="color:#64748b; font-weight:800; font-size:0.85rem; margin-left:0.5rem;">AUDIO:</span>
+      <button class="tool-btn active" id="btn-sound" onclick="toggleSound()">🔊 ON</button>
 
-      <button class="tool-btn" style="color:var(--rose); border-color:var(--rose);" onclick="resetMatch()">🔄 RESET</button>
-      <a href="../index.html#library" class="tool-btn">📚 Library</a>
-      <a href="../young-inventor/index.html" class="tool-btn">🧑‍🔬 Lab</a>
+      <button class="tool-btn" style="color:var(--rose); border-color:var(--rose); margin-left:0.5rem;" onclick="resetArena()">🔄 RESET</button>
     </div>
   </header>
 
-  <!-- Interactive Scoreboard Hub -->
+  <!-- Live Topic Selector Strip -->
+  <nav class="topic-selector-strip">
+    <span class="topic-label">SELECT TOPIC:</span>
+    <button class="topic-pill active" id="pill-all" onclick="selectTopic('all')">🌟 All-Topic Chaos Mix</button>
+    <button class="topic-pill" id="pill-space" onclick="selectTopic('space')">🚀 NASA & Space Mission</button>
+    <button class="topic-pill" id="pill-invent" onclick="selectTopic('invent')">🛠️ Young Inventors Lab</button>
+    <button class="topic-pill" id="pill-nature" onclick="selectTopic('nature')">🐾 Animal Habitats</button>
+    <button class="topic-pill" id="pill-sabotage" onclick="selectTopic('sabotage')">⚡ Twisters & Sabotages</button>
+  </nav>
+
+  <!-- Dynamic Scoreboard -->
   <section class="scoreboard-strip" id="scoreboard-strip"></section>
 
   <!-- 24-Card Arena Grid -->
   <main class="arena-grid" id="arena-grid"></main>
 
-  <!-- Modal Interaction Layer -->
+  <!-- Pop-in Card Modal -->
   <div class="modal-overlay" id="active-modal">
-    <div class="modal-card">
+    <div class="modal-window">
       <div class="modal-top-bar">
-        <span class="badge-category" id="modal-category">CATEGORY</span>
-        <span class="badge-pts" id="modal-pts">25 PTS</span>
+        <span class="badge-cat" id="modal-cat">CATEGORY</span>
+        <span class="badge-points" id="modal-pts">25 PTS</span>
       </div>
 
-      <div class="modal-main">
-        <div class="prompt-avatar" id="modal-icon">🎯</div>
-        <div class="prompt-text" id="modal-prompt">Prompt text appears here</div>
+      <div class="modal-body">
+        <div class="modal-visual" id="modal-icon">🎯</div>
+        <div class="modal-q" id="modal-prompt">Prompt text goes here</div>
 
-        <div class="timer-container" id="modal-timer-box">
+        <div class="timer-track" id="modal-timer-track">
           <div class="timer-bar" id="modal-timer-bar"></div>
         </div>
 
-        <div class="answer-box" id="modal-answer">Correct answer appears here</div>
+        <div class="answer-drawer" id="modal-answer">Correct answer appears here</div>
       </div>
 
-      <div class="modal-actions" id="modal-actions"></div>
+      <div class="modal-footer" id="modal-footer"></div>
     </div>
   </div>
 
-  <script src="../js/sound-engine.js"></script>
   <script>
-    /* Pure Zero-Dependency Web Audio Synthesizer with Autoplay Guards */
-    class ArenaSynth {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-        this._unlocked = false;
-
-        const unlock = () => {
-          if (!this._unlocked) {
-            this.init();
-            this._unlocked = true;
-            window.removeEventListener("pointerdown", unlock);
-            window.removeEventListener("click", unlock);
-            window.removeEventListener("keydown", unlock);
-          }
-        };
-        window.addEventListener("pointerdown", unlock, { passive: true });
-        window.addEventListener("click", unlock, { passive: true });
-        window.addEventListener("keydown", unlock, { passive: true });
-      }
+    /* Zero-Dependency Polyphonic Audio Synthesizer */
+    class ArenaAudioEngine {
+      constructor() { this.ctx = null; this.enabled = true; }
       init() {
         if (!this.ctx) {
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
           if (AudioCtx) this.ctx = new AudioCtx();
         }
-        if (this.ctx && this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
-        return this.ctx;
+        if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
       }
       playChord(freqs, type="sine", dur=0.35, gain=0.15) {
         if (!this.enabled) return;
-        const ctx = this.init();
-        if (!ctx) return;
-        const now = ctx.currentTime;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
         freqs.forEach(f => {
-          const osc = ctx.createOscillator();
-          const g = ctx.createGain();
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
           osc.type = type;
           osc.frequency.setValueAtTime(f, now);
           g.gain.setValueAtTime(gain, now);
           g.gain.exponentialRampToValueAtTime(0.001, now + dur);
           osc.connect(g);
-          g.connect(ctx.destination);
+          g.connect(this.ctx.destination);
           osc.start(now);
           osc.stop(now + dur);
         });
@@ -449,37 +447,46 @@
         for (let i = 0; i < 3; i++) setTimeout(() => this.playChord([880, 1760], "triangle", 0.18, 0.25), i * 200);
       }
     }
-    const audio = new ArenaSynth();
+    const audio = new ArenaAudioEngine();
 
-    /* 24-Card Pro Deck: Full Curriculum Synergy */
-    const DECK = [
-      { id: 1, type: "q", cat: "Phonics (Magic e)", pts: 20, icon: "🦸", q: "Add Magic 'E' to boost this short word:<br><strong>C - A - P</strong>", a: "CAPE! (Changes /æ/ to long /eɪ/)" },
-      { id: 2, type: "power", action: "swap", cat: "💥 Sabotage", icon: "🔄", q: "<strong>BAMBOOZLE SWAP!</strong><br>Swap all your points with the highest scoring team right now!" },
-      { id: 3, type: "q", cat: "Inventions & Purpose", pts: 20, icon: "✈️", q: "Complete with purpose:<br><em>'People invented airplanes to ________.'</em>", a: "to fly quickly / to travel far" },
-      { id: 4, type: "power", action: "steal", pts: 25, cat: "🦹 Pirate Raid", icon: "🏴‍☠️", q: "<strong>PIRATE STEAL!</strong><br>Steal 25 points from any team you choose!" },
-      { id: 5, type: "q", cat: "Tongue Twister", pts: 30, icon: "🧈", q: "Say 2x fast without stopping:<br><strong>'The bottom of the butter bucket is the buttered bucket bottom.'</strong>", a: "Fluently repeated with zero mistakes!" },
-      { id: 6, type: "q", cat: "Survival Science", pts: 20, icon: "💧", q: "Name 3 essential things human beings need to survive on an alien planet:", a: "Water, Oxygen (Air), and Food!" },
-      { id: 7, type: "power", action: "double", cat: "🎰 Lucky Vault", icon: "🌟", q: "<strong>DOUBLE SCORE!</strong><br>Double your team's score! (If 0, earn +30 bonus points!)" },
-      { id: 8, type: "q", cat: "Engineering & Parts", pts: 25, icon: "🎡", q: "Name 3 key parts of a pinwheel:", a: "Blades, center pin, and stick!" },
-      { id: 9, type: "q", cat: "Unscramble", pts: 25, icon: "🧩", q: "Put in order:<br><strong>farther / our / to / airplane / designed / We / fly</strong>", a: "We designed our airplane to fly farther." },
-      { id: 10, type: "power", action: "bankrupt", cat: "💣 Total Trap", icon: "💥", q: "<strong>TOTAL RESET!</strong><br>BOOM! Your team's points drop to 0! Better luck next round!" },
-      { id: 11, type: "q", cat: "Grammar Repair", pts: 20, icon: "✍️", q: "Fix the mistake:<br><em>'We invented alarm clocks for to wake up on time.'</em>", a: "We invented alarm clocks TO wake up on time." },
-      { id: 12, type: "power", action: "gift", pts: 20, cat: "🤝 Generous Gift", icon: "🎁", q: "<strong>SHARING IS CARING!</strong><br>Gift 20 of your points to the team with the lowest score!" },
-      { id: 13, type: "q", cat: "Phonics (Magic e)", pts: 25, icon: "🪁", q: "Which word has the long /aɪ/ sound?<br><strong>KIT</strong> vs <strong>KITE</strong>", a: "KITE!" },
-      { id: 14, type: "q", cat: "Conjunctions", pts: 25, icon: "🔗", q: "Combine these using 'AND':<br><em>'My machine can melt ice.' + 'It can clean water.'</em>", a: "My machine can melt ice AND clean water." },
-      { id: 15, type: "power", action: "drain", pts: 15, cat: "🧛 Energy Leech", icon: "⚡", q: "<strong>DRAIN 15!</strong><br>Every other team loses 15 points to the void!" },
-      { id: 16, type: "q", cat: "Tongue Twister", pts: 30, icon: "🚀", q: "Say 3x fast under 10 seconds:<br><strong>'Red rocket, roll rocket, red rocket roll!'</strong>", a: "Flawless rapid pronunciation!" },
-      { id: 17, type: "q", cat: "CLIL Problem Solving", pts: 25, icon: "❄️", q: "Temperature is -80°C and rivers are solid ice! What tool solves the problem?", a: "A thermal heat ray / laser to melt ice!" },
-      { id: 18, type: "power", action: "jackpot", pts: 50, cat: "👑 Crown Jackpot", icon: "👑", q: "<strong>ROYAL JACKPOT!</strong><br>Instant +50 Points added to your bank!" },
-      { id: 19, type: "q", cat: "Vocabulary", pts: 20, icon: "📐", q: "What part of an airplane helps it steer and turn left or right?", a: "The tail (and wing flaps / rudders)!" },
-      { id: 20, type: "power", action: "freeze", cat: "🧊 Deep Freeze", icon: "🥶", q: "<strong>FROZEN TURN!</strong><br>Your team is frozen and skips its next pick!" },
-      { id: 21, type: "q", cat: "Phonics (Magic e)", pts: 25, icon: "🌟", q: "Turn <strong>HOP</strong> into a feeling of wishing for something good:", a: "HOPE (add Magic E)!" },
-      { id: 22, type: "q", cat: "Adjective Sprint", pts: 30, icon: "🪐", q: "Describe an alien planet using 3 descriptive adjectives:", a: "e.g., It is cold, rocky, and red!" },
-      { id: 23, type: "power", action: "swap", cat: "💥 Sabotage", icon: "🌪️", q: "<strong>CHAOS TORNADO!</strong><br>Rotate scores: Team 1 gives to Team 2, Team 2 gives to Team 3!" },
-      { id: 24, type: "q", cat: "Final Boss Question", pts: 40, icon: "🏆", q: "State the Golden Rule of Young Inventors from Section 9 & 10 of our lab:", a: "'Good inventors solve problems & NEVER GIVE UP!'" }
+    /* Massive Curriculum Question Bank Across 4 Domains */
+    const QUESTION_BANK = [
+      // NASA & Space
+      { id: "sp1", pool: "space", cat: "🚀 Space Phonics", pts: 20, icon: "🦸", q: "Add Magic 'E' to power up this booster:<br><strong>C - A - P</strong>", a: "CAPE! (Long /eɪ/ sound)" },
+      { id: "sp2", pool: "space", cat: "🪐 Astronomy CLIL", pts: 25, icon: "❄️", q: "Planet Ares is -80°C and rivers are frozen! What tool can melt the ice?", a: "A thermal heat ray / laser!" },
+      { id: "sp3", pool: "space", cat: "💧 Survival Biology", pts: 20, icon: "🫁", q: "Name 3 essential things human beings need to survive on a new planet:", a: "Water, Oxygen (Air), and Food!" },
+      { id: "sp4", pool: "space", cat: "🚀 Space Phonics", pts: 25, icon: "🪁", q: "Which word has the long /aɪ/ sound?<br><strong>KIT</strong> vs <strong>KITE</strong>", a: "KITE!" },
+      { id: "sp5", pool: "space", cat: "🔗 Conjunction Upgrade", pts: 25, icon: "🤝", q: "Combine these using 'AND':<br><em>'My rover can melt ice.' + 'It can clean dirty water.'</em>", a: "My rover can melt ice AND clean dirty water." },
+      { id: "sp6", pool: "space", cat: "🪐 Planet Observation", pts: 20, icon: "🔴", q: "Describe Mars using 2 sensory adjectives:", a: "e.g., It is red and cold / rocky!" },
+
+      // Young Inventors
+      { id: "inv1", pool: "invent", cat: "🛠️ Invention Purpose", pts: 20, icon: "✈️", q: "Complete with purpose:<br><em>'People invented airplanes to ________.'</em>", a: "to fly quickly / to travel far" },
+      { id: "inv2", pool: "invent", cat: "🎡 Engineering Parts", pts: 25, icon: "⚙️", q: "Name 3 key parts of a paper pinwheel:", a: "Blades, center pin, and stick!" },
+      { id: "inv3", pool: "invent", cat: "🧩 Word Order", pts: 25, icon: "📐", q: "Put in order:<br><strong>farther / our / to / airplane / designed / We / fly</strong>", a: "We designed our airplane to fly farther." },
+      { id: "inv4", pool: "invent", cat: "🛠️ Invention Purpose", pts: 20, icon: "⏰", q: "Fix the grammar:<br><em>'People invented alarm clocks for to wake up on time.'</em>", a: "People invented alarm clocks TO wake up on time." },
+      { id: "inv5", pool: "invent", cat: "✈️ Flight Mechanics", pts: 25, icon: "🪽", q: "What part of a paper airplane controls its lift and flight distance?", a: "The wings (and nose/tail)!" },
+      { id: "inv6", pool: "invent", cat: "🛠️ Inventor's Rule", pts: 30, icon: "🏆", q: "What is the Golden Rule of Young Inventors?", a: "'Good inventors solve problems & NEVER GIVE UP!'" },
+
+      // Animal Habitats & Nature
+      { id: "nat1", pool: "nature", cat: "🐾 Habitat Explorer", pts: 20, icon: "🐫", q: "Where do camels live and how do they adapt to the heat?", a: "In the desert! (Store fat in humps, drink lots of water)" },
+      { id: "nat2", pool: "nature", cat: "🐾 Habitat Explorer", pts: 20, icon: "🐻❄️", q: "Which animal lives in the frozen Arctic and has thick white fur?", a: "The polar bear!" },
+      { id: "nat3", pool: "nature", cat: "🌊 Ocean Habitats", pts: 25, icon: "🐬", q: "How do dolphins breathe in the ocean?", a: "Through a blowhole at the top of their head!" },
+      { id: "nat4", pool: "nature", cat: "🌳 Rainforest Jungle", pts: 25, icon: "🦜", q: "Why do rainforest animals have loud voices and bright colors?", a: "To communicate through thick green trees!" },
+      { id: "nat5", pool: "nature", cat: "🐾 Animal Needs", pts: 20, icon: "🌿", q: "What do herbivores need to eat to survive?", a: "Plants, grass, and leaves!" },
+      { id: "nat6", pool: "nature", cat: "🌱 Eco Protection", pts: 25, icon: "♻️", q: "What should we do with plastic bottles to protect animal habitats?", a: "Recycle them!" },
+
+      // Sabotages & Tongue Twisters
+      { id: "sab1", pool: "sabotage", type: "power", action: "swap", cat: "💥 Sabotage", icon: "🔄", q: "<strong>BAMBOOZLE SWAP!</strong><br>Swap all your points with the leading team right now!" },
+      { id: "sab2", pool: "sabotage", type: "power", action: "steal", pts: 25, cat: "🏴☠️ Pirate Raid", icon: "🦹", q: "<strong>PIRATE STEAL!</strong><br>Steal 25 points from any rival team!" },
+      { id: "sab3", pool: "sabotage", type: "power", action: "double", cat: "🎰 Lucky Vault", icon: "🌟", q: "<strong>DOUBLE VAULT!</strong><br>Double your team's score! (Or +30 if currently 0)" },
+      { id: "sab4", pool: "sabotage", type: "power", action: "bankrupt", cat: "💣 Total Trap", icon: "💥", q: "<strong>TOTAL RESET!</strong><br>BOOM! Your points drop to 0! Better luck next time!" },
+      { id: "sab5", pool: "sabotage", cat: "👅 Tongue Twister", pts: 30, icon: "🧈", q: "Say 2x fast without stopping:<br><strong>'The bottom of the butter bucket is the buttered bucket bottom.'</strong>", a: "Fluently repeated with zero mistakes!" },
+      { id: "sab6", pool: "sabotage", cat: "👅 Tongue Twister", pts: 30, icon: "🚀", q: "Say 3x fast under 10 seconds:<br><strong>'Red rocket, roll rocket, red rocket roll!'</strong>", a: "Flawless rapid pronunciation!" }
     ];
 
     /* Match State */
+    let activeTopic = "all";
+    let activeDeck = [];
     let teamCount = 2;
     let currentTurn = 0;
     let scores = [0, 0, 0, 0];
@@ -491,15 +498,39 @@
     const teamNames = ["Red Rockets", "Blue Comets", "Green Rovers", "Purple Novas"];
     const teamColors = ["var(--t1)", "var(--t2)", "var(--t3)", "var(--t4)"];
 
+    function selectTopic(topicKey) {
+      activeTopic = topicKey;
+      document.querySelectorAll(".topic-pill").forEach(p => p.classList.remove("active"));
+      document.getElementById(`pill-${topicKey}`).classList.add("active");
+      buildDeck();
+    }
+
+    function buildDeck() {
+      let filtered = [];
+      if (activeTopic === "all") {
+        filtered = [...QUESTION_BANK];
+      } else {
+        filtered = QUESTION_BANK.filter(q => q.pool === activeTopic || q.type === "power");
+      }
+
+      // Shuffle and fill 24 cards
+      filtered = filtered.sort(() => Math.random() - 0.5);
+      while (filtered.length < 24) {
+        filtered = filtered.concat(QUESTION_BANK.sort(() => Math.random() - 0.5));
+      }
+      activeDeck = filtered.slice(0, 24);
+      renderGrid();
+    }
+
     function initScoreboard() {
       const strip = document.getElementById("scoreboard-strip");
       strip.innerHTML = "";
       for (let i = 0; i < teamCount; i++) {
         const pill = document.createElement("div");
-        pill.className = `team-pill ${i === currentTurn ? 'active-turn' : ''}`;
+        pill.className = `team-card ${i === currentTurn ? 'active-turn' : ''}`;
         pill.id = `pill-team-${i}`;
         pill.innerHTML = `
-          <div class="team-tag" style="color:${teamColors[i]}">${teamNames[i]}</div>
+          <div class="team-name" style="color:${teamColors[i]}">${teamNames[i]}</div>
           <div class="team-score" id="score-team-${i}">${scores[i]}</div>
           <div class="score-nudge">
             <button class="nudge-btn" onclick="manualScore(${i}, -10)">-10</button>
@@ -513,12 +544,12 @@
     function renderGrid() {
       const grid = document.getElementById("arena-grid");
       grid.innerHTML = "";
-      DECK.forEach((card, idx) => {
+      activeDeck.forEach((card, idx) => {
         const tile = document.createElement("div");
         tile.className = "card-tile";
         tile.innerHTML = `
           <div class="card-num">${idx + 1}</div>
-          <div class="card-type-hint">${card.cat.split(" ")[0]}</div>
+          <div class="card-tag">${card.cat.split(" ")[0]}</div>
         `;
         tile.onclick = () => launchCard(card, tile);
         grid.appendChild(tile);
@@ -534,27 +565,27 @@
       answerBox.style.display = "none";
       clearInterval(timerInterval);
 
-      document.getElementById("modal-category").innerText = card.cat;
+      document.getElementById("modal-cat").innerText = card.cat;
       document.getElementById("modal-pts").innerText = card.pts ? `${card.pts} PTS` : "POWER-UP";
       document.getElementById("modal-icon").innerText = card.icon;
       document.getElementById("modal-prompt").innerHTML = card.q;
       document.getElementById("modal-answer").innerHTML = `💡 ${card.a}`;
 
-      const actions = document.getElementById("modal-actions");
-      const timerBox = document.getElementById("modal-timer-box");
+      const footer = document.getElementById("modal-footer");
+      const timerTrack = document.getElementById("modal-timer-track");
 
       if (card.type === "power") {
-        timerBox.style.display = "none";
+        timerTrack.style.display = "none";
         audio.whoosh();
-        actions.innerHTML = `<button class="judge-btn btn-power" onclick="applyPower()">💥 ACTIVATE POWER-UP</button>`;
+        footer.innerHTML = `<button class="judge-btn btn-power" onclick="applyPower()">💥 ACTIVATE POWER-UP</button>`;
       } else {
         audio.coin();
         if (timerEnabled) startCountdown(timerDuration);
-        else timerBox.style.display = "none";
+        else timerTrack.style.display = "none";
 
-        actions.innerHTML = `
-          <button class="judge-btn btn-reveal" id="btn-reveal-ans" onclick="revealAnswer()">👀 Check Answer</button>
-          <div id="verdict-controls" style="display:none; gap:1rem;">
+        footer.innerHTML = `
+          <button class="judge-btn btn-reveal" id="btn-reveal" onclick="revealAnswer()">👀 Check Answer</button>
+          <div id="verdict-bar" style="display:none; gap:1rem;">
             <button class="judge-btn btn-fail" onclick="resolveVerdict(false)">✖ Oops!</button>
             <button class="judge-btn btn-pass" onclick="resolveVerdict(true)">✔ Okay (+${card.pts})</button>
           </div>
@@ -563,9 +594,9 @@
     }
 
     function startCountdown(seconds) {
-      const box = document.getElementById("modal-timer-box");
+      const track = document.getElementById("modal-timer-track");
       const bar = document.getElementById("modal-timer-bar");
-      box.style.display = "block";
+      track.style.display = "block";
       bar.style.width = "100%";
       bar.style.backgroundColor = "var(--amber)";
       let left = seconds;
@@ -584,8 +615,8 @@
 
     function revealAnswer() {
       clearInterval(timerInterval);
-      document.getElementById("btn-reveal-ans").style.display = "none";
-      document.getElementById("verdict-controls").style.display = "flex";
+      document.getElementById("btn-reveal").style.display = "none";
+      document.getElementById("verdict-bar").style.display = "flex";
       document.getElementById("modal-answer").style.display = "block";
     }
 
@@ -597,7 +628,7 @@
       } else {
         audio.softFail();
       }
-      closeCard();
+      dismissModal();
     }
 
     function applyPower() {
@@ -609,30 +640,20 @@
         scores[currentTurn] = scores[other];
         scores[other] = temp;
       } else if (act === "steal") {
-        const stealAmt = Math.min(scores[other], activeCard.pts);
-        scores[other] -= stealAmt;
-        scores[currentTurn] += stealAmt;
+        const amt = Math.min(scores[other], activeCard.pts);
+        scores[other] -= amt;
+        scores[currentTurn] += amt;
       } else if (act === "double") {
         scores[currentTurn] = scores[currentTurn] === 0 ? 30 : scores[currentTurn] * 2;
       } else if (act === "bankrupt") {
         scores[currentTurn] = 0;
-      } else if (act === "gift") {
-        const giftAmt = Math.min(scores[currentTurn], 20);
-        scores[currentTurn] -= giftAmt;
-        scores[other] += giftAmt;
-      } else if (act === "drain") {
-        for (let i = 0; i < teamCount; i++) {
-          if (i !== currentTurn) scores[i] = Math.max(0, scores[i] - 15);
-        }
-      } else if (act === "jackpot") {
-        scores[currentTurn] += activeCard.pts;
       }
 
       audio.whoosh();
-      closeCard();
+      dismissModal();
     }
 
-    function closeCard() {
+    function dismissModal() {
       document.getElementById("active-modal").style.display = "none";
       currentTurn = (currentTurn + 1) % teamCount;
       updateScoresUI();
@@ -657,37 +678,35 @@
       teamCount = num;
       currentTurn = 0;
       for (let i = 2; i <= 4; i++) {
-        document.getElementById(`btn-team-${i}`).classList.toggle("active", i === num);
+        document.getElementById(`btn-t-${i}`).classList.toggle("active", i === num);
       }
       initScoreboard();
     }
 
     function toggleTimer() {
       timerEnabled = !timerEnabled;
-      const btn = document.getElementById("btn-timer-toggle");
+      const btn = document.getElementById("btn-timer");
       btn.innerText = timerEnabled ? "15s ON" : "TIMER OFF";
       btn.classList.toggle("active", timerEnabled);
     }
 
     function toggleSound() {
       audio.enabled = !audio.enabled;
-      const btn = document.getElementById("btn-sound-toggle");
+      const btn = document.getElementById("btn-sound");
       btn.innerText = audio.enabled ? "🔊 ON" : "🔇 OFF";
       btn.classList.toggle("active", audio.enabled);
     }
 
-    function resetMatch() {
-      if (confirm("Reset the tournament match? All scores and opened cards will clear.")) {
-        scores = [0, 0, 0, 0];
-        currentTurn = 0;
-        initScoreboard();
-        renderGrid();
-      }
+    function resetArena() {
+      scores = [0, 0, 0, 0];
+      currentTurn = 0;
+      initScoreboard();
+      buildDeck();
     }
 
     // Launch
     initScoreboard();
-    renderGrid();
+    buildDeck();
   </script>
 </body>
 </html>
