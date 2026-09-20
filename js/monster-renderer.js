@@ -2943,11 +2943,27 @@
     };
   }
 
+  function renderMonsterWithPedestal(options = {}) {
+    const size = options.size || 160;
+    const svg = renderMonsterSVG(Object.assign({}, options, { size: size }));
+    const pedestalWidth = options.pedestalWidth || Math.round(size * 0.55);
+    const pedestalHeight = options.pedestalHeight || Math.max(16, Math.round(size * 0.14));
+    return `
+      <div class="monster-avatar-container" style="${options.containerStyle || ''}">
+        <div class="monster-sprite">
+          ${svg}
+        </div>
+        <div class="monster-pedestal" style="width:${pedestalWidth}px; height:${pedestalHeight}px;"></div>
+      </div>
+    `.trim();
+  }
+
   root.MonsterRenderer = {
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
+    renderMonsterWithPedestal: renderMonsterWithPedestal,
     renderMonsterViewport: renderMonsterImageViewport,
     renderMonsterImageViewport: renderMonsterImageViewport,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
@@ -2958,6 +2974,7 @@
   };
 
   root.renderMonsterSVG = renderMonsterSVG;
+  root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterImageViewport;
   root.renderMonsterImageViewport = renderMonsterImageViewport;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;

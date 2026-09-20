@@ -13278,8 +13278,11 @@ window.switchClassroomSubTab = function(subTab) {
 
     return '' +
       '<div class="my-monster-hero-card">' +
-        '<div class="my-monster-avatar-stage">' +
-          monsterSvg +
+        '<div class="my-monster-avatar-stage monster-avatar-container">' +
+          '<div class="monster-sprite">' +
+            monsterSvg +
+          '</div>' +
+          '<div class="monster-pedestal"></div>' +
         '</div>' +
         '<div class="my-monster-info-wrap" style="flex:1;">' +
           '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">' +
@@ -13658,12 +13661,17 @@ window.switchClassroomSubTab = function(subTab) {
 
     const renderWrap = document.getElementById('m-hatch-monster-svg') || document.getElementById('modal-hatch-monster-render');
     if (renderWrap && window.renderMonsterSVG) {
-      renderWrap.innerHTML = window.renderMonsterSVG({
+      const svg = window.renderMonsterSVG({
         stage: 'baby',
         color: profile.baseColor || 'blue',
         size: 160,
         animated: true
       });
+      renderWrap.innerHTML = '' +
+        '<div class="monster-avatar-container">' +
+          '<div class="monster-sprite">' + svg + '</div>' +
+          '<div class="monster-pedestal"></div>' +
+        '</div>';
     }
 
     // Mark as hatched in store
