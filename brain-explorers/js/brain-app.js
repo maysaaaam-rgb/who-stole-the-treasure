@@ -106,6 +106,8 @@
       renderPhase2Reading(container);
     } else if (playerSession.phase === 'energy') {
       renderPhase3Energy(container);
+    } else if (playerSession.phase === 'broadcast') {
+      renderPhase4Broadcast(container);
     }
   }
 
@@ -804,6 +806,311 @@
     }
 
     AUDIO.speak("Practice strengthens your neural pathways! The more you read, the faster you get!");
+  }
+
+  /* ==========================================================================
+     PHASE 4: LIVE TELEPROMPTER BROADCAST STUDIO
+     ========================================================================== */
+  const broadcastState = {
+    activeLineIdx: -1,
+    isPlaying: false,
+    timerId: null,
+    speedMs: 4500
+  };
+
+  function renderPhase4Broadcast(container) {
+    const data = DATA.teleprompter;
+    const lines = data.teleprompterLines;
+
+    container.innerHTML = `
+      <div class="stage-header-banner">
+        <div>
+          <h2><span>🎙️</span> Phase 4: Live Teleprompter Broadcast</h2>
+          <p>${data.subtitle}</p>
+        </div>
+        <div class="pedagogical-formula-pill">
+          Formula: "The [Lobe] helps us [Verb]." &bull; "We use our [Lobe] to [Verb]."
+        </div>
+      </div>
+
+      <div class="broadcast-stage-layout">
+        <!-- Main Teleprompter Monitor & Controls -->
+        <div class="broadcast-main-shell">
+          <div class="broadcast-studio-header">
+            <div class="studio-title-box">
+              <h2><span>📺</span> ${data.headline}</h2>
+              <p>${data.instruction}</p>
+            </div>
+            <div class="on-air-badge" id="on-air-badge">
+              <span>●</span> STANDBY
+            </div>
+          </div>
+
+          <!-- Scrolling Monitor Screen -->
+          <div class="teleprompter-monitor" id="teleprompter-monitor">
+            ${lines.map((item, idx) => `
+              <div class="prompter-line-card" id="prompter-line-${idx}" data-line-index="${idx}">
+                <div class="prompter-line-left">
+                  <span class="prompter-speaker-tag" style="background:${item.color}22; color:${item.color}; border:1px solid ${item.color}66;">
+                    ${item.icon} ${item.speaker}
+                  </span>
+                  <div class="prompter-line-text">
+                    ${item.text}
+                  </div>
+                </div>
+                <button type="button" class="prompter-listen-btn" title="Listen to model speech" data-listen-idx="${idx}">
+                  🔊
+                </button>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Progress Bar for active line -->
+          <div class="teleprompter-progress-track">
+            <div class="teleprompter-progress-fill" id="teleprompter-progress-fill"></div>
+          </div>
+
+          <!-- Studio Control Deck -->
+          <div class="broadcast-control-deck">
+            <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+              <button type="button" class="deck-btn-primary" id="btn-start-broadcast">
+                <span>🎙️</span> START LIVE BROADCAST
+              </button>
+              <button type="button" class="action-btn-secondary" id="btn-reset-broadcast" style="background:#1e293b; color:#fff; border:1px solid #334155; padding:0.85rem 1.2rem; border-radius:10px; font-weight:800; cursor:pointer;">
+                ⏹️ Reset
+              </button>
+            </div>
+
+            <div class="deck-speed-group">
+              <span>Speed:</span>
+              <button type="button" class="speed-chip ${broadcastState.speedMs === 6000 ? 'active' : ''}" data-speed="6000">Slow (6s)</button>
+              <button type="button" class="speed-chip ${broadcastState.speedMs === 4500 ? 'active' : ''}" data-speed="4500">Normal (4.5s)</button>
+              <button type="button" class="speed-chip ${broadcastState.speedMs === 3000 ? 'active' : ''}" data-speed="3000">Fast (3s)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: News Anchor Avatar & Target Sentence Frames -->
+        <div class="broadcast-side-panel">
+          <div class="side-anchor-card">
+            <h3><span>🧑‍🔬</span> On-Camera Anchor</h3>
+            <div class="anchor-avatar-box">
+              <span class="anchor-avatar-icon">🎙️</span>
+              <p style="font-size:0.88rem; font-weight:800; margin-top:0.5rem; color:#38bdf8;">Junior Neuroscientist</p>
+              <p style="font-size:0.75rem; color:var(--text-muted);">Broadcasting from the Adventure Academy Neuro-Lab!</p>
+            </div>
+          </div>
+
+          <div class="side-formula-card">
+            <h3><span>📋</span> Speaking Target Formulas</h3>
+            <div class="formula-pill-item">
+              <span>The <strong>[lobe]</strong> helps us <strong>[verb]</strong>.</span><br>
+              <em style="color:#94a3b8; font-size:0.75rem;">"The Occipital Lobe helps us see letters."</em>
+            </div>
+            <div class="formula-pill-item">
+              <span>We use our <strong>[lobe]</strong> to <strong>[verb]</strong>.</span><br>
+              <em style="color:#94a3b8; font-size:0.75rem;">"We use our Frontal Lobe to understand meaning."</em>
+            </div>
+            <div class="formula-pill-item" style="border-left-color:var(--neon-amber);">
+              <strong>Reading is a whole-team effort!</strong><br>
+              <em style="color:#94a3b8; font-size:0.75rem;">All 4 lobes connect in 0.3 seconds!</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    bindBroadcastEvents();
+  }
+
+  function bindBroadcastEvents() {
+    const lines = DATA.teleprompter.teleprompterLines;
+
+    // Per-line listen buttons
+    document.querySelectorAll('.prompter-listen-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        AUDIO.ensureUnlocked();
+        const idx = parseInt(btn.dataset.listenIdx, 10);
+        if (lines[idx]) {
+          AUDIO.playSynapticPulse(640);
+          AUDIO.speak(lines[idx].text);
+          highlightPrompterLine(idx);
+        }
+      });
+    });
+
+    // Per-line card click to jump/speak
+    document.querySelectorAll('.prompter-line-card').forEach(card => {
+      card.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        const idx = parseInt(card.dataset.lineIndex, 10);
+        if (lines[idx]) {
+          highlightPrompterLine(idx);
+          AUDIO.speak(lines[idx].text);
+        }
+      });
+    });
+
+    // Start / Pause broadcast button
+    const btnStart = document.getElementById('btn-start-broadcast');
+    if (btnStart) {
+      btnStart.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        if (broadcastState.isPlaying) {
+          pauseTeleprompterBroadcast();
+        } else {
+          startTeleprompterBroadcast();
+        }
+      });
+    }
+
+    // Reset button
+    const btnReset = document.getElementById('btn-reset-broadcast');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        resetTeleprompterBroadcast();
+      });
+    }
+
+    // Speed chips
+    document.querySelectorAll('.speed-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const spd = parseInt(chip.dataset.speed, 10);
+        broadcastState.speedMs = spd;
+        document.querySelectorAll('.speed-chip').forEach(c => c.classList.toggle('active', c === chip));
+        AUDIO.playSynapticPulse(800);
+      });
+    });
+  }
+
+  function startTeleprompterBroadcast() {
+    broadcastState.isPlaying = true;
+    const btnStart = document.getElementById('btn-start-broadcast');
+    if (btnStart) {
+      btnStart.innerHTML = '<span>⏸️</span> PAUSE BROADCAST';
+      btnStart.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    }
+
+    const onAir = document.getElementById('on-air-badge');
+    if (onAir) {
+      onAir.classList.add('live');
+      onAir.innerHTML = '<span>🔴</span> ON AIR';
+    }
+
+    AUDIO.playSuccessArpeggio();
+
+    const lines = DATA.teleprompter.teleprompterLines;
+    if (broadcastState.activeLineIdx < 0 || broadcastState.activeLineIdx >= lines.length - 1) {
+      broadcastState.activeLineIdx = 0;
+    }
+
+    runBroadcastStep();
+  }
+
+  function pauseTeleprompterBroadcast() {
+    broadcastState.isPlaying = false;
+    clearTimeout(broadcastState.timerId);
+
+    const btnStart = document.getElementById('btn-start-broadcast');
+    if (btnStart) {
+      btnStart.innerHTML = '<span>▶️</span> RESUME BROADCAST';
+      btnStart.style.background = 'linear-gradient(135deg, #0284c7, #3b82f6)';
+    }
+
+    const onAir = document.getElementById('on-air-badge');
+    if (onAir) {
+      onAir.classList.remove('live');
+      onAir.innerHTML = '<span>⏸️</span> PAUSED';
+    }
+  }
+
+  function resetTeleprompterBroadcast() {
+    broadcastState.isPlaying = false;
+    clearTimeout(broadcastState.timerId);
+    broadcastState.activeLineIdx = -1;
+
+    document.querySelectorAll('.prompter-line-card').forEach(card => card.classList.remove('active-reading'));
+
+    const btnStart = document.getElementById('btn-start-broadcast');
+    if (btnStart) {
+      btnStart.innerHTML = '<span>🎙️</span> START LIVE BROADCAST';
+      btnStart.style.background = 'linear-gradient(135deg, #0284c7, #3b82f6)';
+    }
+
+    const onAir = document.getElementById('on-air-badge');
+    if (onAir) {
+      onAir.classList.remove('live');
+      onAir.innerHTML = '<span>●</span> STANDBY';
+    }
+
+    const progFill = document.getElementById('teleprompter-progress-fill');
+    if (progFill) progFill.style.width = '0%';
+  }
+
+  function highlightPrompterLine(idx) {
+    document.querySelectorAll('.prompter-line-card').forEach((card, i) => {
+      card.classList.toggle('active-reading', i === idx);
+      if (i === idx) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+
+    const lines = DATA.teleprompter.teleprompterLines;
+    const progFill = document.getElementById('teleprompter-progress-fill');
+    if (progFill && lines.length > 0) {
+      const pct = Math.round(((idx + 1) / lines.length) * 100);
+      progFill.style.width = pct + '%';
+    }
+  }
+
+  function runBroadcastStep() {
+    if (!broadcastState.isPlaying) return;
+
+    const lines = DATA.teleprompter.teleprompterLines;
+    const idx = broadcastState.activeLineIdx;
+
+    if (idx >= lines.length) {
+      finishTeleprompterBroadcast();
+      return;
+    }
+
+    const line = lines[idx];
+    highlightPrompterLine(idx);
+    AUDIO.playNodeConnect();
+
+    AUDIO.speak(line.text);
+
+    broadcastState.timerId = setTimeout(() => {
+      if (!broadcastState.isPlaying) return;
+      broadcastState.activeLineIdx++;
+      runBroadcastStep();
+    }, broadcastState.speedMs);
+  }
+
+  function finishTeleprompterBroadcast() {
+    broadcastState.isPlaying = false;
+    clearTimeout(broadcastState.timerId);
+
+    const onAir = document.getElementById('on-air-badge');
+    if (onAir) {
+      onAir.classList.remove('live');
+      onAir.innerHTML = '<span>🏆</span> BROADCAST COMPLETE';
+      onAir.style.background = 'rgba(16, 185, 129, 0.2)';
+      onAir.style.borderColor = '#10b981';
+      onAir.style.color = '#10b981';
+    }
+
+    const btnStart = document.getElementById('btn-start-broadcast');
+    if (btnStart) {
+      btnStart.innerHTML = '<span>🔄</span> BROADCAST AGAIN';
+      btnStart.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    }
+
+    awardBadge('teleprompter_broadcaster');
+    addEnergy(25);
+    AUDIO.playVictoryFanfare();
+    setTimeout(showVictoryModal, 1000);
   }
 
   /* ==========================================================================

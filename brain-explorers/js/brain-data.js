@@ -329,11 +329,93 @@
       }
     ],
 
+    // Phase 4: Live Teleprompter Broadcast Studio
+    // Language formula: "The [lobe] helps us [verb]." / "We use our [lobe] to [verb]." / "Reading is a whole-team effort."
+    teleprompter: {
+      title: "LIVE NEWS BROADCAST STUDIO",
+      headline: "BRAIN EXPLORER LIVE: HOW YOUR BRAIN READS",
+      instruction: "Step up to the microphone! Read each line on the teleprompter to broadcast live to the class.",
+      motto: "Reading is a whole-team effort!",
+      teleprompterLines: [
+        {
+          id: 1,
+          speaker: "NEWS ANCHOR",
+          role: "Anchor",
+          icon: "🎙️",
+          color: "#38bdf8",
+          text: "Welcome to Brain Explorer News! I am your Junior Neuroscientist.",
+          focusFormula: "Intro & Identity",
+          clue: "Stand up tall and speak clearly into the microphone!"
+        },
+        {
+          id: 2,
+          speaker: "OCCIPITAL LOBE",
+          role: "Vision Station",
+          icon: "👁️",
+          color: "#ef4444",
+          text: "The Occipital Lobe helps us see letters, words, and bright colors.",
+          focusFormula: "The [lobe] helps us [verb]",
+          clue: "Points to the back of the head!"
+        },
+        {
+          id: 3,
+          speaker: "TEMPORAL LOBE",
+          role: "Hearing Station",
+          icon: "👂",
+          color: "#a855f7",
+          text: "The Temporal Lobe helps us hear letter sounds and understand spoken words.",
+          focusFormula: "The [lobe] helps us [verb]",
+          clue: "Points near the ears!"
+        },
+        {
+          id: 4,
+          speaker: "PARIETAL LOBE",
+          role: "Spatial Station",
+          icon: "🖐️",
+          color: "#10b981",
+          text: "We use our Parietal Lobe to feel touch and track words across the page.",
+          focusFormula: "We use our [lobe] to [verb]",
+          clue: "Points to the top of the head!"
+        },
+        {
+          id: 5,
+          speaker: "FRONTAL LOBE",
+          role: "Control Station",
+          icon: "💡",
+          color: "#f59e0b",
+          text: "We use our Frontal Lobe to understand meaning, think, and speak aloud.",
+          focusFormula: "We use our [lobe] to [verb]",
+          clue: "Points to the forehead!"
+        },
+        {
+          id: 6,
+          speaker: "THE READING CIRCUIT",
+          role: "0.3s Relay",
+          icon: "⚡",
+          color: "#06b6d4",
+          text: "Reading is a whole-team effort! All four lobes connect in 0.3 seconds!",
+          focusFormula: "Reading is a whole-team effort",
+          clue: "High energy team message!"
+        },
+        {
+          id: 7,
+          speaker: "NEUROPLASTICITY",
+          role: "Growth Highway",
+          icon: "🚀",
+          color: "#ec4899",
+          text: "When we practice every day, our neural highways grow stronger and faster!",
+          focusFormula: "Brain Growth Formula",
+          clue: "Final sign-off with a smile!"
+        }
+      ]
+    },
+
     // Badges awarded during the mission
     badges: [
       { id: 'atlas_explorer', name: 'Neuro-Atlas Explorer', icon: '🧠', desc: 'Discovered all 4 brain lobes and their powers' },
       { id: 'teamwork_champion', name: 'Reading Team Champion', icon: '⚡', desc: 'Connected all 4 lobes in the 0.3s reading relay' },
       { id: 'battery_master', name: 'Neuro-Battery Master', icon: '🔋', desc: 'Supercharged the brain to 100% with healthy habits' },
+      { id: 'teleprompter_broadcaster', name: 'Master Broadcaster', icon: '🎙️', desc: 'Delivered a live news broadcast on how the brain learns' },
       { id: 'licensed_neuroscientist', name: 'Junior Neuro-Explorer', icon: '🎓', desc: 'Completed the full curriculum and unlocked the Diploma' }
     ]
   };
