@@ -2675,7 +2675,31 @@
           </div>
 
           <div id="avatar-preview-box" class="monster-preview-stage" style="width:280px; height:280px; border-radius:22px; background:radial-gradient(circle at 50% 45%, #1e1b4b 0%, #090d16 80%); display:flex; align-items:center; justify-content:center; margin:10px auto; box-shadow:0 12px 32px rgba(0,0,0,0.35), inset 0 0 24px rgba(56,189,248,0.12); border:1.5px solid rgba(56,189,248,0.35); overflow:hidden; transition:all 0.2s ease; position:relative;">
-            <!-- Dynamically rendered Monster SVG -->
+            <div class="monster-live-stage" id="monster-live-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
+              <!-- 1. Background Aura / FX -->
+              <div id="layer-aura-back" class="layer-item z-0"></div>
+              
+              <!-- 2. Back Gear (Wings, Capes, Tails behind torso) -->
+              <div id="layer-back-gear" class="layer-item z-10"></div>
+
+              <!-- 3. Base Monster Body & Fur (e.g., Gold, Blue, Violet) -->
+              <div id="layer-monster-body" class="layer-item z-20"></div>
+
+              <!-- 4. Face Features (Eyes, Mouth, Blushes) -->
+              <div id="layer-face" class="layer-item z-30"></div>
+
+              <!-- 5. Clothing & Outfits (Vests, Jackets, Coats, Capes) -->
+              <div id="layer-clothing" class="layer-item z-40"></div>
+
+              <!-- 6. Face Accessories & Glasses (Round Wire Glasses, Goggles) -->
+              <div id="layer-glasses" class="layer-item z-50"></div>
+
+              <!-- 7. Headgear (Horns, Hats, Crowns) -->
+              <div id="layer-headwear" class="layer-item z-60"></div>
+
+              <!-- 8. Held Items (Wands, Compasses, Bags) -->
+              <div id="layer-held" class="layer-item z-70"></div>
+            </div>
           </div>
 
           <!-- Bottom Preview Controls: World Backgrounds & Quick Fur Color -->
