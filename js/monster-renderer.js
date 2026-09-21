@@ -346,6 +346,31 @@
         <filter id="mf-shadow" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.25" />
         </filter>
+
+        <style>
+          @keyframes monsterFloatIdle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+          }
+          @keyframes contactPulseIdle {
+            0%, 100% { transform: scale(1); opacity: 0.85; }
+            50% { transform: scale(0.92, 0.85); opacity: 0.55; }
+          }
+          @keyframes daisGlowPulse {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.35)); }
+            50% { filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7)); }
+          }
+          .eaa-monster-animated .monster-bob-group {
+            animation: monsterFloatIdle 3.2s ease-in-out infinite;
+          }
+          .eaa-monster-animated .monster-contact-shadow-group {
+            animation: contactPulseIdle 3.2s ease-in-out infinite;
+            transform-origin: 100px 160px;
+          }
+          .eaa-monster-animated .monster-pedestal-stage {
+            animation: daisGlowPulse 3.2s ease-in-out infinite;
+          }
+        </style>
       </defs>
     `;
   }
@@ -353,17 +378,17 @@
   // --- PEDESTAL STAGE DAIS (Tiered Circular Platform) ---
   function renderPedestalDais() {
     return `
-      <!-- Tiered Circular Wooden Pedestal Dais Stage -->
+      <!-- Tiered Circular Wooden / Cyber Dais Stage -->
       <g class="monster-pedestal-stage">
         <!-- Lower Base Ambient Shadow Cast by Dais -->
-        <ellipse cx="100" cy="174" rx="60" ry="11" fill="rgba(15,23,42,0.22)" filter="url(#plush-contact-blur)" />
-
-        <!-- Pedestal Base Rim (Lower Tier Cylinder Bevel) -->
-        <path d="M 44 165 C 44 175 156 175 156 165 L 156 170 C 156 180 44 180 44 170 Z" fill="url(#pedestal-side)" stroke="#451a03" stroke-width="1.2" />
-
-        <!-- Pedestal Top Surface (Polished Bevel Rim) -->
-        <ellipse cx="100" cy="165" rx="56" ry="11" fill="url(#pedestal-top)" stroke="#d97706" stroke-width="1.2" />
-        <ellipse cx="100" cy="165" rx="54" ry="9.5" fill="none" stroke="#fef3c7" stroke-width="0.9" opacity="0.8" />
+        <ellipse cx="100" cy="176" rx="64" ry="12" fill="rgba(15,23,42,0.28)" filter="url(#plush-contact-blur)" />
+        <!-- Pedestal Lower Cylinder Bevel -->
+        <path d="M 42 165 C 42 178 158 178 158 165 L 158 171 C 158 184 42 184 42 171 Z" fill="url(#pedestal-side)" stroke="#451a03" stroke-width="1.4" />
+        <!-- Pedestal Top Surface (Polished Bevel Rim with Internal Glow) -->
+        <ellipse cx="100" cy="165" rx="58" ry="12" fill="url(#pedestal-top)" stroke="#d97706" stroke-width="1.4" />
+        <ellipse cx="100" cy="165" rx="55" ry="10" fill="none" stroke="#fef3c7" stroke-width="1.2" opacity="0.85" />
+        <!-- Cyber / Magic Glow Ring Accent -->
+        <ellipse cx="100" cy="165" rx="46" ry="7.5" fill="none" stroke="#38bdf8" stroke-width="0.9" opacity="0.45" />
       </g>
     `;
   }
@@ -584,18 +609,24 @@
       }
     }
 
-    return `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
-        ${defs}
-        ${bgLayer}
-        ${pedestalMarkup}
-        ${contactShadowMarkup}
+    const bobGroup = `
+      <g class="monster-bob-group">
         ${auraLayer}
         ${wingsLayer}
         ${tailLayer}
         ${backpackLayer}
         ${mainEntityLayer}
         ${fgAccessoryLayer}
+      </g>
+    `;
+
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
+        ${defs}
+        ${bgLayer}
+        ${pedestalMarkup}
+        ${contactShadowMarkup}
+        ${bobGroup}
       </svg>
     `.trim();
   }
@@ -677,13 +708,13 @@
   }
 
   /**
-   * Main Render Entry Point: Defaults to Static Asset Image Viewport
+   * Main Render Entry Point: Defaults to Scalable Procedural Composite SVG Pipeline
    */
   function renderMonsterSVG(options = {}) {
-    if (options && options.rawSvg === true) {
-      return renderMonsterSingleSVG(options);
+    if (options && options.useImageViewport === true) {
+      return renderMonsterImageViewport(options);
     }
-    return renderMonsterImageViewport(options);
+    return renderMonsterSingleSVG(options);
   }
 
   // --- BACKGROUND LAYER ---
@@ -1222,14 +1253,16 @@
     if (effectiveTail === 'tail-puff') {
       return `
         <!-- Cute Baby Puff Tail (Level 3) -->
-        <circle cx="134" cy="140" r="10" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" />
+        <g class="monster-tail-layer tail-puff">
+          <circle cx="134" cy="140" r="10" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" />
+        </g>
       `;
     }
 
     if (effectiveTail === 'tail-perky' || effectiveTail === 'tail-spiked') {
       return `
         <!-- Perky Explorer Tail (Levels 4 & 5) -->
-        <g class="monster-tail-layer">
+        <g class="monster-tail-layer tail-perky">
           <path d="M 134 134 C 154 128 168 116 164 102 C 160 96 152 100 146 112 C 140 122 132 134 134 134 Z" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
           <ellipse cx="163" cy="102" rx="6" ry="6" fill="${palette.purple || '#c084fc'}" />
         </g>
@@ -1239,7 +1272,7 @@
     if (effectiveTail === 'tail-dragon') {
       return `
         <!-- Advanced Dragon Tail (Level 6) -->
-        <g class="monster-tail-layer">
+        <g class="monster-tail-layer tail-dragon">
           <path d="M 132 136 C 162 132 178 118 174 94 C 170 88 162 96 154 110 C 144 124 128 138 132 136 Z" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" />
           <polygon points="174,94 182,86 178,100" fill="${palette.purple || '#c084fc'}" />
           <polygon points="166,108 174,102 168,114" fill="${palette.purple || '#c084fc'}" />
@@ -1250,7 +1283,7 @@
     if (effectiveTail === 'tail-flame') {
       return `
         <!-- Blazing Flame Tail -->
-        <g class="monster-tail-layer" filter="url(#mf-glow)">
+        <g class="monster-tail-layer tail-flame" filter="url(#mf-glow)">
           <path d="M 132 136 C 158 132 172 118 168 98 C 162 92 154 100 146 114 Z" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.4" />
           <!-- Animated flame cluster on tip -->
           <polygon points="168,98 184,80 174,96" fill="#f97316" />
@@ -1263,7 +1296,7 @@
     if (effectiveTail === 'tail-star') {
       return `
         <!-- Star-Tipped Tail -->
-        <g class="monster-tail-layer">
+        <g class="monster-tail-layer tail-star">
           <path d="M 134 134 C 156 128 170 114 166 100 C 160 94 152 100 146 112 Z" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
           <polygon points="166,96 170,102 176,102 172,106 174,112 166,108 158,112 160,106 156,102 162,102" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" filter="url(#mf-glow)" />
         </g>
@@ -1273,7 +1306,7 @@
     if (effectiveTail === 'tail-celestial') {
       return `
         <!-- Ultimate Celestial Tail (Level 7) -->
-        <g class="monster-tail-layer" filter="url(#mf-glow)">
+        <g class="monster-tail-layer tail-celestial" filter="url(#mf-glow)">
           <path d="M 132 136 C 166 130 184 112 178 86 C 168 78 160 98 150 116 Z" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.6" />
           <polygon points="178,86 188,76 184,94" fill="#facc15" />
           <circle cx="182" cy="84" r="3.5" fill="#fde047" />
@@ -1328,12 +1361,20 @@
       `;
     }
 
-    if (effBackpack === 'bp-adv-bag') {
+    if (effBackpack === 'bp-adv-bag' || effBackpack === 'backpack-adv-bag' || effBackpack === 'backpack-satchel' || effBackpack === 'satchel' || effBackpack === 'bp-satchel' || effBackpack === 'satchel-explorer') {
       return `
-        <!-- Compact Adventure Bag -->
-        <g filter="url(#mf-shadow)">
-          <rect x="50" y="108" width="18" height="30" rx="4" fill="#b45309" stroke="#78350f" stroke-width="2" />
-          <circle cx="59" cy="122" r="3" fill="#fde047" />
+        <!-- Compact Adventurer Satchel with Cross-Body Strap -->
+        <g class="monster-backpack-layer" filter="url(#mf-shadow)">
+          <!-- Cross-body shoulder leather strap across chest -->
+          <path d="M 64 96 Q 84 122 124 146" stroke="#78350f" stroke-width="4.5" fill="none" opacity="0.9" stroke-linecap="round" />
+          <path d="M 64 96 Q 84 122 124 146" stroke="#b45309" stroke-width="2.5" fill="none" opacity="0.8" stroke-linecap="round" />
+          <!-- Leather satchel bag resting on side hip -->
+          <rect x="42" y="112" width="22" height="32" rx="5" fill="#92400e" stroke="#5c2606" stroke-width="2.2" />
+          <!-- Satchel leather top flap -->
+          <path d="M 42 112 L 64 112 L 62 125 L 44 125 Z" fill="#b45309" stroke="#5c2606" stroke-width="1.8" />
+          <!-- Brass lock buckle & stud -->
+          <rect x="50" y="122" width="6" height="7" rx="1.5" fill="#facc15" stroke="#a16207" stroke-width="1.2" />
+          <circle cx="53" cy="125.5" r="1.2" fill="#78350f" />
         </g>
       `;
     }
@@ -1834,6 +1875,103 @@
       `;
     }
 
+    if (clothingId === 'clothing-school-jacket') {
+      return `
+        <!-- Varsity Academy School Jacket -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 1} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 1} L ${cX + rx - 3} ${cY + ry - 2} L ${cX - rx + 3} ${cY + ry - 2} Z" fill="#1e3a8a" stroke="#172554" stroke-width="2.2" />
+          <path d="M ${cX - rx + 4} ${cY + 1} L ${cX - rx - 4} ${cY + ry - 8}" stroke="#fef3c7" stroke-width="4.5" stroke-linecap="round" />
+          <path d="M ${cX + rx - 4} ${cY + 1} L ${cX + rx + 4} ${cY + ry - 8}" stroke="#fef3c7" stroke-width="4.5" stroke-linecap="round" />
+          <text x="${cX - 8}" y="${cY + 18}" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="12" fill="#facc15">A</text>
+          <circle cx="${cX}" cy="${cY + 10}" r="1.8" fill="#ffffff" />
+          <circle cx="${cX}" cy="${cY + 18}" r="1.8" fill="#ffffff" />
+          <circle cx="${cX}" cy="${cY + 26}" r="1.8" fill="#ffffff" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-scholar') {
+      return `
+        <!-- Scholar Academic Blazer with Tie -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 1} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 1} L ${cX + rx - 3} ${cY + ry - 2} L ${cX - rx + 3} ${cY + ry - 2} Z" fill="#0f172a" stroke="#020617" stroke-width="2.2" />
+          <polygon points="${cX},${cY+4} ${cX+9},${cY+ry-3} ${cX-9},${cY+ry-3}" fill="#f8fafc" />
+          <polygon points="${cX},${cY+6} ${cX+3},${cY+8} ${cX+4},${cY+22} ${cX},${cY+26} ${cX-4},${cY+22} ${cX-3},${cY+8}" fill="#eab308" stroke="#a16207" stroke-width="1" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-royal-robe' || clothingId === 'clothing-royal') {
+      return `
+        <!-- Royal Velvet Robe with Ermine Trim -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx + 3} ${cY + ry + 4} L ${cX - rx - 3} ${cY + ry + 4} Z" fill="#991b1b" stroke="#7f1d1d" stroke-width="2.2" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.72}" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" />
+          <rect x="${cX - 3}" y="${cY + 6}" width="6" height="${ry - 2}" fill="#f8fafc" />
+          <circle cx="${cX}" cy="${cY + 12}" r="2" fill="#fbbf24" stroke="#b45309" stroke-width="1" />
+          <circle cx="${cX}" cy="${cY + 22}" r="2" fill="#fbbf24" stroke="#b45309" stroke-width="1" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-robe') {
+      return `
+        <!-- Wizard Scholar Robe -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx + 2} ${cY + ry + 4} L ${cX - rx - 2} ${cY + ry + 4} Z" fill="#312e81" stroke="#1e1b4b" stroke-width="2.2" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.6}" ry="4" fill="#6366f1" />
+          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry + 2}" stroke="#facc15" stroke-width="1.8" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-space') {
+      return `
+        <!-- Cosmic Explorer Space Suit -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 1} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 1} L ${cX + rx - 3} ${cY + ry - 2} L ${cX - rx + 3} ${cY + ry - 2} Z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2.2" />
+          <rect x="${cX - 12}" y="${cY + 10}" width="24" height="14" rx="3" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+          <circle cx="${cX - 6}" cy="${cY + 17}" r="2" fill="#38bdf8" />
+          <circle cx="${cX}" cy="${cY + 17}" r="2" fill="#10b981" />
+          <circle cx="${cX + 6}" cy="${cY + 17}" r="2" fill="#f59e0b" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-hero') {
+      return `
+        <!-- Superhero Bodysuit with Lightning Bolt -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 1} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 1} L ${cX + rx - 3} ${cY + ry - 2} L ${cX - rx + 3} ${cY + ry - 2} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.2" />
+          <polygon points="${cX+2},${cY+8} ${cX-4},${cY+17} ${cX},${cY+17} ${cX-2},${cY+26} ${cX+5},${cY+15} ${cX+1},${cY+15}" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-winter') {
+      return `
+        <!-- Puffy Sky Blue Winter Parka -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 1} L ${cX - rx + 2} ${cY + ry - 1} Z" fill="#0284c7" stroke="#0369a1" stroke-width="2.2" />
+          <line x1="${cX - rx + 4}" y1="${cY + 12}" x2="${cX + rx - 4}" y2="${cY + 12}" stroke="#38bdf8" stroke-width="2" />
+          <line x1="${cX - rx + 4}" y1="${cY + 22}" x2="${cX + rx - 4}" y2="${cY + 22}" stroke="#38bdf8" stroke-width="2" />
+          <ellipse cx="${cX}" cy="${cY + 2}" rx="${rx * 0.7}" ry="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+        </g>
+      `;
+    }
+
+    if (clothingId === 'clothing-dragon-armor' || clothingId === 'clothing-knight-armor') {
+      return `
+        <!-- Dragon Scalemail & Knight Plate Armor -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 1} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 1} L ${cX + rx - 4} ${cY + ry - 2} Q ${cX} ${cY + ry + 4} ${cX - rx + 4} ${cY + ry - 2} Z" fill="#475569" stroke="#1e293b" stroke-width="2.2" />
+          <path d="M ${cX - 12} ${cY + 10} Q ${cX} ${cY + 16} ${cX + 12} ${cY + 10}" stroke="#94a3b8" stroke-width="2" fill="none" />
+          <path d="M ${cX - 14} ${cY + 18} Q ${cX} ${cY + 24} ${cX + 14} ${cY + 18}" stroke="#94a3b8" stroke-width="2" fill="none" />
+          <circle cx="${cX}" cy="${cY + 14}" r="3.5" fill="#38bdf8" stroke="#0284c7" stroke-width="1" />
+        </g>
+      `;
+    }
+
     return '';
   }
 
@@ -2060,6 +2198,13 @@
     let glassesMarkup = '';
     let accessoryMarkup = '';
 
+    const g = getStageGeometry(stage);
+    const eyeY = g.eyeY;
+    const eyeSpacing = g.eyeSpacing;
+    const headTop = g.topY;
+    const leftEyeX = 100 - eyeSpacing;
+    const rightEyeX = 100 + eyeSpacing;
+
     let hatId = equipped.hat;
     if (!hatId || hatId === 'default') {
       if (stage === 'ultimate') hatId = 'hat-crown';
@@ -2070,104 +2215,132 @@
     const glassesId = equipped.glasses || 'none';
     const accId = equipped.accessory || 'none';
 
-    // Hats
+    // Hats dynamically positioned on creature crown
     if (hatId === 'hat-crown') {
       hatMarkup = `
         <!-- Sovereign Royal Crown (Volumetric 3D Gold with Jewels) -->
-        <g filter="url(#plush-shadow)">
-          <polygon points="80,52 86,26 100,40 114,26 120,52" fill="url(#plush-gold-crown)" stroke="#713f12" stroke-width="2" stroke-linejoin="round" />
-          <rect x="78" y="50" width="44" height="6" rx="2" fill="#ca8a04" stroke="#713f12" stroke-width="1.2" />
-          <circle cx="100" cy="42" r="3.2" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.8" />
-          <circle cx="87" cy="34" r="2.4" fill="#3b82f6" stroke="#1e3a8a" stroke-width="0.8" />
-          <circle cx="113" cy="34" r="2.4" fill="#10b981" stroke="#064e3b" stroke-width="0.8" />
+        <g class="monster-hat" filter="url(#plush-shadow)">
+          <polygon points="78,${headTop} 85,${headTop - 24} 100,${headTop - 10} 115,${headTop - 24} 122,${headTop}" fill="url(#plush-gold-crown)" stroke="#713f12" stroke-width="2.2" stroke-linejoin="round" />
+          <rect x="76" y="${headTop - 2}" width="48" height="6.5" rx="2.5" fill="#ca8a04" stroke="#713f12" stroke-width="1.4" />
+          <circle cx="100" cy="${headTop - 8}" r="3.4" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.8" />
+          <circle cx="86" cy="${headTop - 16}" r="2.5" fill="#3b82f6" stroke="#1e3a8a" stroke-width="0.8" />
+          <circle cx="114" cy="${headTop - 16}" r="2.5" fill="#10b981" stroke="#064e3b" stroke-width="0.8" />
         </g>
       `;
     } else if (hatId === 'hat-explorer') {
       hatMarkup = `
-        <!-- Adventurer Explorer Fedora (11 O'Clock Shading) -->
-        <g filter="url(#plush-shadow)">
-          <ellipse cx="100" cy="66" rx="38" ry="8" fill="#d97706" stroke="#78350f" stroke-width="2" />
-          <path d="M 74 64 C 74 42 126 42 126 64 Z" fill="#b45309" stroke="#78350f" stroke-width="2" />
-          <rect x="74" y="60" width="52" height="4.5" fill="#451a03" />
-          <circle cx="86" cy="52" r="2.0" fill="#ffffff" opacity="0.8" />
+        <!-- Adventurer Explorer Fedora -->
+        <g class="monster-hat" filter="url(#plush-shadow)">
+          <ellipse cx="100" cy="${headTop + 6}" rx="42" ry="9" fill="#d97706" stroke="#78350f" stroke-width="2.2" />
+          <path d="M 74 ${headTop + 4} C 74 ${headTop - 22} 126 ${headTop - 22} 126 ${headTop + 4} Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" />
+          <rect x="74" y="${headTop}" width="52" height="5" fill="#451a03" />
+          <circle cx="86" cy="${headTop - 10}" r="2.2" fill="#ffffff" opacity="0.85" />
         </g>
       `;
     } else if (hatId === 'hat-wizard') {
       hatMarkup = `
         <!-- Wizard Hat -->
-        <g filter="url(#mf-shadow)">
-          <ellipse cx="100" cy="74" rx="40" ry="8" fill="#4338ca" stroke="#312e81" stroke-width="2" />
-          <path d="M 76 72 Q 100 20 120 18 Q 110 45 124 72 Z" fill="#4f46e5" stroke="#3730a3" stroke-width="2" />
-          <polygon points="98,40 100,44 104,44 101,47 102,51 98,48 94,51 95,47 92,44 96,44" fill="#facc15" />
+        <g class="monster-hat" filter="url(#mf-shadow)">
+          <ellipse cx="100" cy="${headTop + 10}" rx="42" ry="9" fill="#3730a3" stroke="#1e1b4b" stroke-width="2.2" />
+          <path d="M 76 ${headTop + 8} Q 100 ${headTop - 44} 124 ${headTop - 46} Q 112 ${headTop - 18} 124 ${headTop + 8} Z" fill="#4338ca" stroke="#312e81" stroke-width="2.2" />
+          <polygon points="98,${headTop-20} 100,${headTop-16} 104,${headTop-16} 101,${headTop-13} 102,${headTop-9} 98,${headTop-12} 94,${headTop-9} 95,${headTop-13} 92,${headTop-16} 96,${headTop-16}" fill="#facc15" />
         </g>
       `;
     } else if (hatId === 'hat-scholar') {
       hatMarkup = `
         <!-- Scholar Cap -->
-        <g filter="url(#mf-shadow)">
-          <polygon points="100,50 140,64 100,74 60,64" fill="#0f172a" stroke="#334155" stroke-width="2" />
-          <rect x="80" y="70" width="40" height="10" rx="3" fill="#1e293b" />
-          <line x1="100" y1="62" x2="132" y2="78" stroke="#facc15" stroke-width="2" />
-          <circle cx="132" cy="79" r="2.5" fill="#facc15" />
+        <g class="monster-hat" filter="url(#mf-shadow)">
+          <polygon points="100,${headTop - 18} 142,${headTop - 4} 100,${headTop + 6} 58,${headTop - 4}" fill="#0f172a" stroke="#334155" stroke-width="2.2" />
+          <rect x="78" y="${headTop + 2}" width="44" height="10" rx="3" fill="#1e293b" />
+          <line x1="100" y1="${headTop - 6}" x2="134" y2="${headTop + 10}" stroke="#facc15" stroke-width="2.2" />
+          <circle cx="134" cy="${headTop + 11}" r="3" fill="#facc15" />
         </g>
       `;
     } else if (hatId === 'hat-bow') {
       hatMarkup = `
         <!-- Cute Ribbon Bow -->
-        <g filter="url(#mf-shadow)" transform="translate(122, 60) rotate(15)">
-          <polygon points="0,0 -12,-8 -12,8" fill="#f472b6" stroke="#db2777" stroke-width="1.5" />
-          <polygon points="0,0 12,-8 12,8" fill="#f472b6" stroke="#db2777" stroke-width="1.5" />
-          <circle cx="0" cy="0" r="3.5" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5" />
+        <g class="monster-hat" filter="url(#mf-shadow)" transform="translate(120, ${headTop - 2}) rotate(15)">
+          <polygon points="0,0 -13,-9 -13,9" fill="#f472b6" stroke="#db2777" stroke-width="1.8" />
+          <polygon points="0,0 13,-9 13,9" fill="#f472b6" stroke="#db2777" stroke-width="1.8" />
+          <circle cx="0" cy="0" r="4" fill="#fbcfe8" stroke="#db2777" stroke-width="1.8" />
         </g>
       `;
     } else if (hatId === 'hat-star-clip') {
       hatMarkup = `
         <!-- Star Clip -->
-        <g filter="url(#mf-shadow)" transform="translate(74, 64)">
-          <polygon points="0,-8 2,-2 8,-2 3,2 5,8 0,4 -5,8 -3,2 -8,-2 -2,-2" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+        <g class="monster-hat" filter="url(#mf-shadow)" transform="translate(74, ${headTop + 2})">
+          <polygon points="0,-9 2.5,-2.5 9,-2.5 3.5,2.5 5.5,9 0,4.5 -5.5,9 -3.5,2.5 -9,-2.5 -2.5,-2.5" fill="#facc15" stroke="#ca8a04" stroke-width="1.4" />
         </g>
       `;
     } else if (hatId === 'hat-flower') {
       hatMarkup = `
         <!-- Blossom Flower -->
-        <g filter="url(#mf-shadow)" transform="translate(72, 62)">
+        <g class="monster-hat" filter="url(#mf-shadow)" transform="translate(72, ${headTop + 2})">
           <circle cx="0" cy="-6" r="4.5" fill="#fbcfe8" />
           <circle cx="6" cy="-2" r="4.5" fill="#fbcfe8" />
           <circle cx="4" cy="5" r="4.5" fill="#fbcfe8" />
           <circle cx="-4" cy="5" r="4.5" fill="#fbcfe8" />
           <circle cx="-6" cy="-2" r="4.5" fill="#fbcfe8" />
-          <circle cx="0" cy="0" r="3" fill="#fde047" stroke="#eab308" stroke-width="1" />
+          <circle cx="0" cy="0" r="3.2" fill="#fde047" stroke="#eab308" stroke-width="1.2" />
         </g>
       `;
     } else if (hatId === 'hat-headband') {
       hatMarkup = `
         <!-- Hero Headband -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 68 84 Q 100 76 132 84" stroke="#dc2626" stroke-width="5" stroke-linecap="round" fill="none" />
-          <circle cx="100" cy="78" r="3.5" fill="#facc15" stroke="#ca8a04" stroke-width="1" />
+        <g class="monster-hat" filter="url(#mf-shadow)">
+          <path d="M 68 ${headTop + 18} Q 100 ${headTop + 10} 132 ${headTop + 18}" stroke="#dc2626" stroke-width="5.5" stroke-linecap="round" fill="none" />
+          <circle cx="100" cy="${headTop + 12}" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
         </g>
       `;
     }
 
-    // Glasses
-    if (glassesId === 'glasses-round') {
+    // Glasses & Eyewear dynamically centered over the eyes
+    if (glassesId === 'glasses-round' || glassesId === 'acc-glasses-round' || glassesId === 'glasses-wire' || glassesId === 'round_glasses') {
       glassesMarkup = `
-        <!-- Round Wire Glasses -->
-        <g stroke="#0f172a" stroke-width="2.5" fill="rgba(255,255,255,0.25)">
-          <circle cx="82" cy="118" r="12" />
-          <circle cx="118" cy="118" r="12" />
-          <line x1="94" y1="118" x2="106" y2="118" stroke-width="3" />
+        <!-- Round Wire Glasses (Reflective Glass & Golden Rim) -->
+        <g class="monster-eyewear" filter="url(#mf-shadow)">
+          <line x1="${leftEyeX + 11.5}" y1="${eyeY}" x2="${rightEyeX - 11.5}" y2="${eyeY}" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M ${leftEyeX + 10} ${eyeY} Q 100 ${eyeY - 3} ${rightEyeX - 10} ${eyeY}" stroke="#eab308" stroke-width="2" fill="none" />
+          <circle cx="${leftEyeX}" cy="${eyeY}" r="12" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
+          <circle cx="${leftEyeX}" cy="${eyeY}" r="10.8" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
+          <ellipse cx="${leftEyeX - 3.5}" cy="${eyeY - 4}" rx="4" ry="2.2" transform="rotate(-30, ${leftEyeX - 3.5}, ${eyeY - 4})" fill="#ffffff" opacity="0.7" />
+          <circle cx="${rightEyeX}" cy="${eyeY}" r="12" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
+          <circle cx="${rightEyeX}" cy="${eyeY}" r="10.8" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
+          <ellipse cx="${rightEyeX - 3.5}" cy="${eyeY - 4}" rx="4" ry="2.2" transform="rotate(-30, ${rightEyeX - 3.5}, ${eyeY - 4})" fill="#ffffff" opacity="0.7" />
+          <path d="M ${leftEyeX - 12} ${eyeY} Q ${leftEyeX - 20} ${eyeY - 2} ${leftEyeX - 26} ${eyeY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
+          <path d="M ${rightEyeX + 12} ${eyeY} Q ${rightEyeX + 20} ${eyeY - 2} ${rightEyeX + 26} ${eyeY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
       `;
-    } else if (glassesId === 'glasses-goggles') {
+    } else if (glassesId === 'glasses-goggles' || glassesId === 'detective-goggles') {
       glassesMarkup = `
         <!-- Detective Goggles -->
-        <g filter="url(#mf-shadow)">
-          <circle cx="82" cy="116" r="13" fill="#0284c7" stroke="#92400e" stroke-width="4" opacity="0.85" />
-          <circle cx="118" cy="116" r="13" fill="#0284c7" stroke="#92400e" stroke-width="4" opacity="0.85" />
-          <line x1="95" y1="116" x2="105" y2="116" stroke="#78350f" stroke-width="5" />
-          <line x1="58" y1="116" x2="69" y2="116" stroke="#78350f" stroke-width="4" />
-          <line x1="131" y1="116" x2="142" y2="116" stroke="#78350f" stroke-width="4" />
+        <g class="monster-eyewear" filter="url(#mf-shadow)">
+          <path d="M 52 ${eyeY - 2} Q 100 ${eyeY - 8} 148 ${eyeY - 2}" stroke="#78350f" stroke-width="5.5" fill="none" stroke-linecap="round" />
+          <line x1="${leftEyeX + 11}" y1="${eyeY}" x2="${rightEyeX - 11}" y2="${eyeY}" stroke="#b45309" stroke-width="4.5" stroke-linecap="round" />
+          <circle cx="${leftEyeX}" cy="${eyeY}" r="13" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
+          <circle cx="${leftEyeX}" cy="${eyeY}" r="10.5" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
+          <circle cx="${leftEyeX - 3}" cy="${eyeY - 3}" r="3" fill="#ffffff" opacity="0.7" />
+          <circle cx="${rightEyeX}" cy="${eyeY}" r="13" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
+          <circle cx="${rightEyeX}" cy="${eyeY}" r="10.5" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
+          <circle cx="${rightEyeX - 3}" cy="${eyeY - 3}" r="3" fill="#ffffff" opacity="0.7" />
+        </g>
+      `;
+    } else if (glassesId === 'glasses-star') {
+      glassesMarkup = `
+        <!-- Star Sunglasses -->
+        <g class="monster-eyewear" filter="url(#mf-shadow)">
+          <line x1="${leftEyeX + 10}" y1="${eyeY}" x2="${rightEyeX - 10}" y2="${eyeY}" stroke="#f59e0b" stroke-width="2.5" />
+          <polygon points="${leftEyeX},${eyeY-12} ${leftEyeX+4},${eyeY-3} ${leftEyeX+13},${eyeY-3} ${leftEyeX+6},${eyeY+3} ${leftEyeX+9},${eyeY+12} ${leftEyeX},${eyeY+6} ${leftEyeX-9},${eyeY+12} ${leftEyeX-6},${eyeY+3} ${leftEyeX-13},${eyeY-3} ${leftEyeX-4},${eyeY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+          <polygon points="${rightEyeX},${eyeY-12} ${rightEyeX+4},${eyeY-3} ${rightEyeX+13},${eyeY-3} ${rightEyeX+6},${eyeY+3} ${rightEyeX+9},${eyeY+12} ${rightEyeX},${eyeY+6} ${rightEyeX-9},${eyeY+12} ${rightEyeX-6},${eyeY+3} ${rightEyeX-13},${eyeY-3} ${rightEyeX-4},${eyeY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+        </g>
+      `;
+    } else if (glassesId === 'glasses-sunglasses') {
+      glassesMarkup = `
+        <!-- Cool Dark Shades -->
+        <g class="monster-eyewear" filter="url(#mf-shadow)">
+          <path d="M ${leftEyeX - 13} ${eyeY - 6} L ${rightEyeX + 13} ${eyeY - 6} L ${rightEyeX + 11} ${eyeY + 8} Q ${rightEyeX} ${eyeY + 12} ${rightEyeX - 11} ${eyeY + 8} L ${100} ${eyeY - 2} L ${leftEyeX + 11} ${eyeY + 8} Q ${leftEyeX} ${eyeY + 12} ${leftEyeX - 11} ${eyeY + 8} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
+          <line x1="${leftEyeX - 8}" y1="${eyeY - 4}" x2="${leftEyeX + 4}" y2="${eyeY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
+          <line x1="${rightEyeX - 8}" y1="${eyeY - 4}" x2="${rightEyeX + 4}" y2="${eyeY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
         </g>
       `;
     }
@@ -2973,7 +3146,7 @@
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
     renderMonsterWithPedestal: renderMonsterWithPedestal,
-    renderMonsterViewport: renderMonsterImageViewport,
+    renderMonsterViewport: renderMonsterSingleSVG,
     renderMonsterImageViewport: renderMonsterImageViewport,
     renderMonsterItemThumbnail: renderMonsterItemThumbnail,
     getStageInfo: getStageInfo,
@@ -2985,7 +3158,7 @@
   root.getMonsterAsset = getMonsterAsset;
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
-  root.renderMonsterViewport = renderMonsterImageViewport;
+  root.renderMonsterViewport = renderMonsterSingleSVG;
   root.renderMonsterImageViewport = renderMonsterImageViewport;
   root.renderMonsterItemThumbnail = renderMonsterItemThumbnail;
   root.getStageInfo = getStageInfo;
