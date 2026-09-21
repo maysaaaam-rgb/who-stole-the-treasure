@@ -488,16 +488,11 @@
               </radialGradient>
             </defs>
 
-            <!-- Layer 0: Clothing / Cape (Behind Body) -->
+            <!-- Layer 0: Clothing / Cape / Backpack (Behind Body) -->
             <g id="layer-back-gear"></g>
 
             <!-- Layer 1: Ears / Horns -->
-            <g id="layer-horns">
-              <path d="M 52 35 L 75 75 L 42 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
-              <path d="M 148 35 L 125 75 L 158 70 Z" fill="#eab308" stroke="#ca8a04" stroke-width="3" />
-              <path d="M 58 45 L 72 70 L 50 68 Z" fill="#fef08a" />
-              <path d="M 142 45 L 128 70 L 150 68 Z" fill="#fef08a" />
-            </g>
+            <g id="layer-horns"></g>
 
             <!-- Layer 2: Main Body Silhouette -->
             <g id="layer-body">
@@ -519,21 +514,16 @@
             <g id="layer-front-gear"></g>
 
             <!-- Layer 5: Eye Style (Swappable) -->
-            <g id="layer-eyes">
-              <!-- Default: Anime Sparkle -->
-              <ellipse cx="78" cy="100" rx="9" ry="13" fill="#0f172a" />
-              <ellipse cx="122" cy="100" rx="9" ry="13" fill="#0f172a" />
-              <circle cx="81" cy="95" r="4.5" fill="#ffffff" />
-              <circle cx="125" cy="95" r="4.5" fill="#ffffff" />
-              <circle cx="76" cy="105" r="2" fill="#38bdf8" />
-              <circle cx="120" cy="105" r="2" fill="#38bdf8" />
-            </g>
+            <g id="layer-eyes"></g>
 
-            <!-- Layer 6: Mouth Style (Swappable) -->
-            <g id="layer-mouth">
-              <!-- Default: Happy Smile -->
-              <path d="M 93 114 Q 100 122 107 114" stroke="#0f172a" stroke-width="3.5" fill="none" stroke-linecap="round" />
-            </g>
+            <!-- Layer 6: Glasses & Eyewear -->
+            <g id="layer-glasses"></g>
+
+            <!-- Layer 7: Mouth Style (Swappable) -->
+            <g id="layer-mouth"></g>
+
+            <!-- Layer 8: Headwear / Hats -->
+            <g id="layer-headwear"></g>
           </svg>
 
           <!-- 3D Grounding Pedestal -->
@@ -576,12 +566,24 @@
               <span class="spec-val" id="spec-eyes">Anime Sparkle</span>
             </div>
             <div class="spec-item">
+              <span class="spec-name">Glasses</span>
+              <span class="spec-val" id="spec-glasses">None</span>
+            </div>
+            <div class="spec-item">
               <span class="spec-name">Mouth</span>
               <span class="spec-val" id="spec-mouth">Sweet Smile</span>
             </div>
             <div class="spec-item">
+              <span class="spec-name">Headwear</span>
+              <span class="spec-val" id="spec-hats">None</span>
+            </div>
+            <div class="spec-item">
               <span class="spec-name">Horns & Ears</span>
               <span class="spec-val" id="spec-horns">Sprout Ears</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-name">Back Gear / Wings</span>
+              <span class="spec-val" id="spec-backpack">None</span>
             </div>
             <div class="spec-item">
               <span class="spec-name">Clothing</span>
@@ -739,6 +741,126 @@
       }
     ];
 
+    const GLASSES_PRESETS = [
+      {
+        id: "none",
+        name: "None",
+        rarity: "common",
+        svg: ""
+      },
+      {
+        id: "round",
+        name: "Round Wire Glasses",
+        rarity: "rare",
+        svg: `
+          <circle cx="78" cy="100" r="14" fill="none" stroke="#e2e8f0" stroke-width="2.5" />
+          <circle cx="122" cy="100" r="14" fill="none" stroke="#e2e8f0" stroke-width="2.5" />
+          <line x1="92" y1="100" x2="108" y2="100" stroke="#e2e8f0" stroke-width="2.5" />
+          <path d="M 64 100 L 52 96" stroke="#e2e8f0" stroke-width="2" />
+          <path d="M 136 100 L 148 96" stroke="#e2e8f0" stroke-width="2" />
+        `
+      },
+      {
+        id: "goggles",
+        name: "Detective Goggles",
+        rarity: "epic",
+        svg: `
+          <rect x="62" y="90" width="32" height="20" rx="6" fill="#0284c7" fill-opacity="0.35" stroke="#d97706" stroke-width="3"/>
+          <rect x="106" y="90" width="32" height="20" rx="6" fill="#0284c7" fill-opacity="0.35" stroke="#d97706" stroke-width="3"/>
+          <line x1="94" y1="100" x2="106" y2="100" stroke="#78350f" stroke-width="4"/>
+          <path d="M 62 100 L 46 100" stroke="#78350f" stroke-width="4"/>
+          <path d="M 138 100 L 154 100" stroke="#78350f" stroke-width="4"/>
+        `
+      },
+      {
+        id: "star",
+        name: "Star Shades",
+        rarity: "legendary",
+        svg: `
+          <polygon points="78,88 82,97 92,97 84,103 87,112 78,106 69,112 72,103 64,97 74,97" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+          <polygon points="122,88 126,97 136,97 128,103 131,112 122,106 113,112 116,103 108,97 118,97" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+          <line x1="92" y1="100" x2="108" y2="100" stroke="#fbbf24" stroke-width="2"/>
+        `
+      }
+    ];
+
+    const HAT_PRESETS = [
+      {
+        id: "none",
+        name: "None",
+        rarity: "common",
+        svg: ""
+      },
+      {
+        id: "explorer",
+        name: "Explorer Fedora",
+        rarity: "rare",
+        svg: `
+          <ellipse cx="100" cy="66" rx="42" ry="9" fill="#92400e" stroke="#78350f" stroke-width="2"/>
+          <path d="M 72 65 C 72 45 82 42 100 42 C 118 42 128 45 128 65 Z" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+          <rect x="74" y="60" width="52" height="6" fill="#1e293b"/>
+        `
+      },
+      {
+        id: "crown",
+        name: "Royal Crown",
+        rarity: "legendary",
+        svg: `
+          <polygon points="76,66 70,42 85,55 100,35 115,55 130,42 124,66" fill="#fbbf24" stroke="#b45309" stroke-width="2.5"/>
+          <circle cx="70" cy="40" r="3" fill="#f43f5e"/>
+          <circle cx="100" cy="33" r="3.5" fill="#38bdf8"/>
+          <circle cx="130" cy="40" r="3" fill="#f43f5e"/>
+        `
+      },
+      {
+        id: "wizard",
+        name: "Wizard Hat",
+        rarity: "epic",
+        svg: `
+          <ellipse cx="100" cy="67" rx="38" ry="8" fill="#4338ca" stroke="#312e81" stroke-width="2"/>
+          <polygon points="72,66 100,16 128,66" fill="#4f46e5" stroke="#312e81" stroke-width="2"/>
+          <polygon points="98,28 102,28 103,34 99,31" fill="#fef08a"/>
+        `
+      }
+    ];
+
+    const BACKPACK_PRESETS = [
+      {
+        id: "none",
+        name: "None",
+        rarity: "common",
+        svg: ""
+      },
+      {
+        id: "satchel",
+        name: "Explorer Satchel",
+        rarity: "rare",
+        svg: `
+          <rect x="122" y="120" width="30" height="34" rx="6" fill="#78350f" stroke="#451a03" stroke-width="2.5"/>
+          <rect x="124" y="122" width="26" height="12" rx="3" fill="#92400e"/>
+          <circle cx="137" cy="134" r="2.5" fill="#fef08a"/>
+          <path d="M 68 116 Q 100 135 126 142" stroke="#451a03" stroke-width="3" fill="none"/>
+        `
+      },
+      {
+        id: "wings",
+        name: "Crystal Wings",
+        rarity: "epic",
+        svg: `
+          <path d="M 58 118 C 20 85 10 115 28 142 C 40 148 52 140 58 132 Z" fill="#38bdf8" fill-opacity="0.7" stroke="#0284c7" stroke-width="2"/>
+          <path d="M 142 118 C 180 85 190 115 172 142 C 160 148 148 140 142 132 Z" fill="#38bdf8" fill-opacity="0.7" stroke="#0284c7" stroke-width="2"/>
+        `
+      },
+      {
+        id: "cape",
+        name: "Hero Cape",
+        rarity: "epic",
+        svg: `
+          <path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>
+        `
+      }
+    ];
+
     const CLOTHING_PRESETS = [
       {
         id: "none",
@@ -793,22 +915,80 @@
       }
     ];
 
-    let currentConfig = {
+    let workingState = {
       furColor: "#f59e0b",
       furStroke: "#b45309",
       furBelly: "#fef3c7",
       furName: "Gold",
-      eyesId: "anime",
-      mouthId: "smile",
-      hornsId: "ears",
-      clothingId: "none",
-      pedestalId: "cyber"
+      eyes: "anime",
+      mouth: "smile",
+      glasses: "none",
+      backpack: "none",
+      hats: "none",
+      horns: "ears",
+      clothing: "none",
+      pedestal: "cyber"
     };
+
+    let currentConfig = workingState;
+    Object.defineProperties(workingState, {
+      eyesId: { get() { return this.eyes; }, set(v) { this.eyes = v; } },
+      mouthId: { get() { return this.mouth; }, set(v) { this.mouth = v; } },
+      hornsId: { get() { return this.horns; }, set(v) { this.horns = v; } },
+      clothingId: { get() { return this.clothing; }, set(v) { this.clothing = v; } },
+      pedestalId: { get() { return this.pedestal; }, set(v) { this.pedestal = v; } }
+    });
 
     let activeCategory = 'face';
     let activeSubIndex = 0;
     let isBobbing = true;
     let currentStudent = null;
+
+    function getAssetSvg(category, id) {
+      if (!id || id === 'none') return '';
+      let list = [];
+      if (category === 'eyes') list = EYE_PRESETS;
+      else if (category === 'mouth') list = MOUTH_PRESETS;
+      else if (category === 'glasses') list = GLASSES_PRESETS;
+      else if (category === 'backpack') list = BACKPACK_PRESETS;
+      else if (category === 'hats') list = HAT_PRESETS;
+      else if (category === 'horns') list = HORN_PRESETS;
+      else if (category === 'clothing') list = CLOTHING_PRESETS;
+
+      const item = list.find(entry => entry.id === id);
+      if (!item) return '';
+      return item.svg || item.svgFront || '';
+    }
+
+    function updateBodyColors(furColor, furStroke, belly) {
+      furColor = furColor || workingState.furColor;
+      furStroke = furStroke || workingState.furStroke;
+      const bColor = belly || workingState.furBelly || '#fef3c7';
+
+      const bodyBase = document.getElementById("monster-body-base");
+      if (bodyBase) {
+        bodyBase.setAttribute("fill", furColor);
+        bodyBase.setAttribute("stroke", furStroke);
+      }
+      const bodyBelly = document.getElementById("monster-body-belly");
+      if (bodyBelly) {
+        bodyBelly.setAttribute("fill", bColor);
+      }
+      document.querySelectorAll("#layer-feet ellipse, #layer-feet circle").forEach(el => {
+        el.setAttribute("fill", furColor);
+        if (el.tagName && el.tagName.toLowerCase() === "ellipse") el.setAttribute("stroke", furStroke);
+      });
+    }
+
+    function renderMonsterRig() {
+      document.getElementById('layer-eyes').innerHTML = getAssetSvg('eyes', workingState.eyes);
+      document.getElementById('layer-mouth').innerHTML = getAssetSvg('mouth', workingState.mouth);
+      document.getElementById('layer-glasses').innerHTML = getAssetSvg('glasses', workingState.glasses);
+      document.getElementById('layer-back-gear').innerHTML = getAssetSvg('backpack', workingState.backpack);
+      document.getElementById('layer-headwear').innerHTML = getAssetSvg('hats', workingState.hats);
+      document.getElementById('layer-horns').innerHTML = getAssetSvg('horns', workingState.horns);
+      updateBodyColors(workingState.furColor, workingState.furStroke);
+    }
 
     // Load active student data from Adventure Academy platform if available
     function initStudentData() {
@@ -843,17 +1023,24 @@
       if (cat === 'face') {
         subnavWrap.style.display = "flex";
         subnavWrap.innerHTML = `
-          <button class="subnav-btn active" id="subnav-btn-1" onclick="handleSubnav(0)">Eyes</button>
-          <button class="subnav-btn" id="subnav-btn-2" onclick="handleSubnav(1)">Mouths</button>
+          <button class="subnav-btn active" onclick="handleSubnav(0)">Eyes</button>
+          <button class="subnav-btn" onclick="handleSubnav(1)">Mouths</button>
+          <button class="subnav-btn" onclick="handleSubnav(2)">Glasses</button>
         `;
         activeSubIndex = 0;
         renderOptions('eyes');
+      } else if (cat === 'clothing') {
+        subnavWrap.style.display = "flex";
+        subnavWrap.innerHTML = `
+          <button class="subnav-btn active" onclick="handleSubnav(0)">Outfits</button>
+          <button class="subnav-btn" onclick="handleSubnav(1)">Hats / Headwear</button>
+          <button class="subnav-btn" onclick="handleSubnav(2)">Back Gear / Wings</button>
+        `;
+        activeSubIndex = 0;
+        renderOptions('clothing');
       } else if (cat === 'horns') {
         subnavWrap.style.display = "none";
         renderOptions('horns');
-      } else if (cat === 'clothing') {
-        subnavWrap.style.display = "none";
-        renderOptions('clothing');
       } else if (cat === 'pedestal') {
         subnavWrap.style.display = "none";
         renderOptions('pedestal');
@@ -865,9 +1052,16 @@
 
     function handleSubnav(idx) {
       activeSubIndex = idx;
-      document.getElementById("subnav-btn-1").classList.toggle("active", idx === 0);
-      document.getElementById("subnav-btn-2").classList.toggle("active", idx === 1);
-      renderOptions(idx === 0 ? 'eyes' : 'mouths');
+      document.querySelectorAll("#subnav-container .subnav-btn").forEach((btn, i) => {
+        btn.classList.toggle("active", i === idx);
+      });
+      if (activeCategory === 'face') {
+        const types = ['eyes', 'mouths', 'glasses'];
+        renderOptions(types[idx] || 'eyes');
+      } else if (activeCategory === 'clothing') {
+        const types = ['clothing', 'hats', 'backpack'];
+        renderOptions(types[idx] || 'clothing');
+      }
     }
 
     function renderOptions(type) {
@@ -879,19 +1073,28 @@
 
       if (type === 'eyes') {
         list = EYE_PRESETS;
-        selectedId = currentConfig.eyesId;
+        selectedId = workingState.eyes;
       } else if (type === 'mouths') {
         list = MOUTH_PRESETS;
-        selectedId = currentConfig.mouthId;
+        selectedId = workingState.mouth;
+      } else if (type === 'glasses') {
+        list = GLASSES_PRESETS;
+        selectedId = workingState.glasses;
+      } else if (type === 'hats') {
+        list = HAT_PRESETS;
+        selectedId = workingState.hats;
+      } else if (type === 'backpack') {
+        list = BACKPACK_PRESETS;
+        selectedId = workingState.backpack;
       } else if (type === 'horns') {
         list = HORN_PRESETS;
-        selectedId = currentConfig.hornsId;
+        selectedId = workingState.horns;
       } else if (type === 'clothing') {
         list = CLOTHING_PRESETS;
-        selectedId = currentConfig.clothingId;
+        selectedId = workingState.clothing;
       } else if (type === 'pedestal') {
         list = PEDESTAL_PRESETS;
-        selectedId = currentConfig.pedestalId;
+        selectedId = workingState.pedestal;
       } else if (type === 'body') {
         list = [
           { id: "gold", name: "Gold Chibi", rarity: "common", fill: "#f59e0b", stroke: "#b45309", belly: "#fef3c7" },
@@ -901,7 +1104,7 @@
           { id: "violet", name: "Violet Sovereign", rarity: "legendary", fill: "#8b5cf6", stroke: "#6d28d9", belly: "#ede9fe" },
           { id: "slate", name: "Shadow Slate", rarity: "epic", fill: "#64748b", stroke: "#334155", belly: "#f1f5f9" }
         ];
-        selectedId = currentConfig.furName.toLowerCase();
+        selectedId = workingState.furName.toLowerCase();
       }
 
       list.forEach(item => {
@@ -911,6 +1114,8 @@
         let thumbContent = "";
         if (item.svg) {
           thumbContent = `<svg viewBox="0 0 200 200" width="50" height="35">${item.svg}</svg>`;
+        } else if (item.id === 'none') {
+          thumbContent = `<span style="font-size:1.2rem; color:var(--text-muted); font-weight:700;">✕</span>`;
         } else if (type === 'body') {
           thumbContent = `<div style="width:26px; height:26px; border-radius:50%; background:${item.fill}; border:2px solid ${item.stroke};"></div>`;
         } else if (type === 'pedestal') {
@@ -927,32 +1132,49 @@
 
         card.onclick = () => {
           if (type === 'eyes') {
-            currentConfig.eyesId = item.id;
-            document.getElementById("layer-eyes").innerHTML = item.svg;
-            document.getElementById("spec-eyes").innerText = item.name;
+            workingState.eyes = item.id;
+            const specEl = document.getElementById("spec-eyes");
+            if (specEl) specEl.innerText = item.name;
           } else if (type === 'mouths') {
-            currentConfig.mouthId = item.id;
-            document.getElementById("layer-mouth").innerHTML = item.svg;
-            document.getElementById("spec-mouth").innerText = item.name;
+            workingState.mouth = item.id;
+            const specEl = document.getElementById("spec-mouth");
+            if (specEl) specEl.innerText = item.name;
+          } else if (type === 'glasses') {
+            workingState.glasses = item.id;
+            const specEl = document.getElementById("spec-glasses");
+            if (specEl) specEl.innerText = item.name;
+          } else if (type === 'hats') {
+            workingState.hats = item.id;
+            const specEl = document.getElementById("spec-hats");
+            if (specEl) specEl.innerText = item.name;
+          } else if (type === 'backpack') {
+            workingState.backpack = item.id;
+            const specEl = document.getElementById("spec-backpack");
+            if (specEl) specEl.innerText = item.name;
           } else if (type === 'horns') {
-            currentConfig.hornsId = item.id;
-            document.getElementById("layer-horns").innerHTML = item.svg;
-            document.getElementById("spec-horns").innerText = item.name;
+            workingState.horns = item.id;
+            const specEl = document.getElementById("spec-horns");
+            if (specEl) specEl.innerText = item.name;
           } else if (type === 'clothing') {
-            currentConfig.clothingId = item.id;
-            document.getElementById("layer-front-gear").innerHTML = item.svgFront || "";
-            document.getElementById("layer-back-gear").innerHTML = item.svgBack || "";
-            document.getElementById("spec-clothing").innerText = item.name;
+            workingState.clothing = item.id;
+            const frontLayer = document.getElementById("layer-front-gear");
+            if (frontLayer) frontLayer.innerHTML = item.svgFront || "";
+            const specEl = document.getElementById("spec-clothing");
+            if (specEl) specEl.innerText = item.name;
           } else if (type === 'pedestal') {
-            currentConfig.pedestalId = item.id;
+            workingState.pedestal = item.id;
             const disk = document.getElementById("pedestal-disk");
-            disk.style.background = item.css;
-            disk.style.border = item.border;
-            disk.style.boxShadow = item.glow;
-            document.getElementById("spec-pedestal").innerText = item.name;
+            if (disk) {
+              disk.style.background = item.css;
+              disk.style.border = item.border;
+              disk.style.boxShadow = item.glow;
+            }
+            const specEl = document.getElementById("spec-pedestal");
+            if (specEl) specEl.innerText = item.name;
           } else if (type === 'body') {
             setFurColor(item.fill, item.stroke, item.belly, item.name.split(' ')[0]);
           }
+          renderMonsterRig();
           renderOptions(type);
         };
         container.appendChild(card);
@@ -960,25 +1182,19 @@
     }
 
     function setFurColor(fill, stroke, belly, name) {
-      currentConfig.furColor = fill;
-      currentConfig.furStroke = stroke;
-      currentConfig.furBelly = belly || '#fef3c7';
-      currentConfig.furName = name;
+      workingState.furColor = fill;
+      workingState.furStroke = stroke;
+      workingState.furBelly = belly || '#fef3c7';
+      workingState.furName = name;
 
-      document.getElementById("monster-body-base").setAttribute("fill", fill);
-      document.getElementById("monster-body-base").setAttribute("stroke", stroke);
-      document.getElementById("monster-body-belly").setAttribute("fill", currentConfig.furBelly);
-      
-      document.querySelectorAll("#layer-feet ellipse, #layer-feet circle").forEach(el => {
-        el.setAttribute("fill", fill);
-        if (el.tagName === "ellipse") el.setAttribute("stroke", stroke);
-      });
+      updateBodyColors(fill, stroke, belly);
 
       document.querySelectorAll(".color-dot").forEach(dot => {
         dot.classList.toggle("active", dot.style.background.includes(fill));
       });
 
-      document.getElementById("spec-color").innerText = name;
+      const specColor = document.getElementById("spec-color");
+      if (specColor) specColor.innerText = name;
     }
 
     function toggleMotion() {
@@ -994,13 +1210,16 @@
         const storeRef = (window.parent && window.parent.store) || (window.opener && window.opener.store) || (window.store);
         if (storeRef && currentStudent && typeof storeRef.updateMonsterProfile === 'function') {
           storeRef.updateMonsterProfile(currentStudent.id, {
-            baseColor: currentConfig.furName.toLowerCase(),
+            baseColor: workingState.furName.toLowerCase(),
             equipped: {
-              eyes: currentConfig.eyesId,
-              mouth: currentConfig.mouthId,
-              horns: currentConfig.hornsId,
-              clothing: currentConfig.clothingId,
-              pedestal: currentConfig.pedestalId
+              eyes: workingState.eyes,
+              mouth: workingState.mouth,
+              glasses: workingState.glasses,
+              backpack: workingState.backpack,
+              hats: workingState.hats,
+              horns: workingState.horns,
+              clothing: workingState.clothing,
+              pedestal: workingState.pedestal
             }
           });
         }
@@ -1008,11 +1227,34 @@
         console.warn("Could not write directly to store:", err);
       }
 
-      alert(`🎉 Companion successfully saved!\nFur: ${currentConfig.furName}\nEyes: ${document.getElementById("spec-eyes").innerText}\nMouth: ${document.getElementById("spec-mouth").innerText}\nHorns: ${document.getElementById("spec-horns").innerText}\nPedestal: ${document.getElementById("spec-pedestal").innerText}`);
+      alert(`🎉 Companion successfully saved!\nFur: ${workingState.furName}\nEyes: ${document.getElementById("spec-eyes").innerText}\nMouth: ${document.getElementById("spec-mouth").innerText}\nHorns: ${document.getElementById("spec-horns").innerText}\nPedestal: ${document.getElementById("spec-pedestal").innerText}`);
     }
 
     function resetDefaults() {
+      workingState.eyes = "anime";
+      workingState.mouth = "smile";
+      workingState.glasses = "none";
+      workingState.hats = "none";
+      workingState.backpack = "none";
+      workingState.horns = "ears";
+      workingState.clothing = "none";
+      workingState.pedestal = "cyber";
       setFurColor("#f59e0b", "#b45309", "#fef3c7", "Gold");
+      const disk = document.getElementById("pedestal-disk");
+      if (disk) {
+        disk.style.background = PEDESTAL_PRESETS[0].css;
+        disk.style.border = PEDESTAL_PRESETS[0].border;
+        disk.style.boxShadow = PEDESTAL_PRESETS[0].glow;
+      }
+      document.getElementById("spec-eyes").innerText = "Anime Sparkle";
+      document.getElementById("spec-glasses").innerText = "None";
+      document.getElementById("spec-mouth").innerText = "Sweet Smile";
+      document.getElementById("spec-hats").innerText = "None";
+      document.getElementById("spec-horns").innerText = "Sprout Ears";
+      document.getElementById("spec-backpack").innerText = "None";
+      document.getElementById("spec-clothing").innerText = "None";
+      document.getElementById("spec-pedestal").innerText = "Cyber Ring";
+      renderMonsterRig();
       switchCategory("face");
     }
 
@@ -1023,8 +1265,24 @@
       }
     }
 
+    // Expose globals for integration & testing
+    window.renderMonsterRig = renderMonsterRig;
+    window.workingState = workingState;
+    window.currentConfig = currentConfig;
+    window.getAssetSvg = getAssetSvg;
+    window.updateBodyColors = updateBodyColors;
+    window.EYE_PRESETS = EYE_PRESETS;
+    window.MOUTH_PRESETS = MOUTH_PRESETS;
+    window.HORN_PRESETS = HORN_PRESETS;
+    window.GLASSES_PRESETS = GLASSES_PRESETS;
+    window.HAT_PRESETS = HAT_PRESETS;
+    window.BACKPACK_PRESETS = BACKPACK_PRESETS;
+    window.CLOTHING_PRESETS = CLOTHING_PRESETS;
+    window.PEDESTAL_PRESETS = PEDESTAL_PRESETS;
+
     // Initialize
     initStudentData();
+    renderMonsterRig();
     renderOptions("eyes");
   </script>
 </body>
