@@ -9,15 +9,17 @@
   const INVENTOR_FORGE_DATA = {
     meta: {
       id: "inventor-forge",
-      title: "Inventor's Forge: The RPG Invention Lab",
-      subtitle: "Unlock the Archives • Forge Modern Prototypes • Pitch to the Grand Guild",
+      title: "Inventor's Forge: The Apprentice Quest",
+      subtitle: "Reconnect historical relics • Craft prototypes with 'Try Again' buffs • Deliver a 60s pitch",
       grade: "Grade 3–5",
-      level: "A1+ / A2",
-      totalXP: 200,
+      level: "A1 / A2",
+      cefrLevel: "A1+",
+      languageFocus: "People invented [item] to [verb]. My invention solves [problem] by [mechanic].",
+      totalXP: 150,
       stageXP: {
         stage1: 50,
-        stage2: 75,
-        stage3: 75
+        stage2: 50,
+        stage3: 50
       },
       insightBuffXP: 10
     },
