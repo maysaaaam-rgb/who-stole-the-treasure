@@ -308,6 +308,7 @@ body {
 }
 
 /* Hologram Canvas Viewport */
+.hologram-cortex-stage,
 .cortex-svg-viewport {
   width: 100%;
   aspect-ratio: 5 / 4;
@@ -322,36 +323,43 @@ body {
   box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
 }
 
-.cortex-svg-viewport svg {
+.hologram-cortex-stage svg,
+.cortex-svg-viewport svg,
+.neuro-cortex-svg {
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.25));
 }
 
 /* Lobe Interactive SVG Styling */
-.lobe-path-group {
+.lobe-path-group,
+.cortex-lobe {
   cursor: pointer;
   transition: var(--transition-smooth);
 }
 
-.lobe-path-group path.lobe-fill {
+.lobe-path-group path.lobe-fill,
+.cortex-lobe path.lobe-base {
   transition: fill 0.3s ease, filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
   transform-origin: center;
 }
 
-.lobe-path-group:hover path.lobe-fill {
+.lobe-path-group:hover path.lobe-fill,
+.cortex-lobe:hover path.lobe-base {
   filter: brightness(1.25) drop-shadow(0 0 16px currentColor);
   opacity: 0.95 !important;
 }
 
-.lobe-path-group.active path.lobe-fill {
+.lobe-path-group.active path.lobe-fill,
+.cortex-lobe.active path.lobe-base {
   filter: brightness(1.35) drop-shadow(0 0 24px currentColor);
   opacity: 1 !important;
   stroke: #ffffff;
-  stroke-width: 2.5;
+  stroke-width: 3.5;
 }
 
-.lobe-path-group.drag-target-hover path.lobe-fill {
+.lobe-path-group.drag-target-hover path.lobe-fill,
+.cortex-lobe.drag-target-hover path.lobe-base {
   animation: lobe-target-pulsate 0.6s infinite alternate;
 }
 
@@ -360,29 +368,45 @@ body {
   to { filter: brightness(1.6) drop-shadow(0 0 35px currentColor); }
 }
 
-/* Dynamic Synaptic Arcs */
-.synaptic-flow-arc {
+/* Substructures: Brain Stem & Cerebellum */
+.brain-stem {
+  pointer-events: none;
+}
+
+.cerebellum-zone {
+  cursor: default;
+}
+
+.cerebellum-zone path {
+  transition: filter 0.3s ease;
+}
+
+/* Dynamic Synaptic Arcs & Relay Circuits */
+.synaptic-flow-arc,
+#synapse-occ-temp,
+#synapse-temp-front {
   fill: none;
   stroke-linecap: round;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
 
-.synaptic-flow-arc.active-circuit {
-  opacity: 1;
-  stroke-dasharray: 12, 8;
-  animation: flow-synapse 1s linear infinite;
+.synaptic-flow-arc.active-circuit,
+#synapse-occ-temp.active-circuit,
+#synapse-temp-front.active-circuit {
+  opacity: 1 !important;
+  stroke-dasharray: 10, 6;
+  animation: flow-synapse 0.8s linear infinite;
 }
 
 @keyframes flow-synapse {
-  to { stroke-dashoffset: -40; }
+  to { stroke-dashoffset: -32; }
 }
 
 /* Gyri & Sulci Cortex Folds */
+.sulcus-line,
 .cortex-sulcus-line {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.35);
-  stroke-width: 2;
   stroke-linecap: round;
   pointer-events: none;
 }
