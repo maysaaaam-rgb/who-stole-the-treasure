@@ -881,7 +881,10 @@
       'brain-hackers-mission': 'brain-hackers/index.html',
       'brain-explorers': 'brain-explorers/index.html',
       'learning-and-your-brain': 'brain-explorers/index.html',
-      'learning-brain': 'brain-explorers/index.html'
+      'learning-brain': 'brain-explorers/index.html',
+      'adventure-engine': 'adventure-engine/index.html',
+      'adventure-academy-engine': 'adventure-engine/index.html',
+      'eco-rover': 'adventure-engine/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

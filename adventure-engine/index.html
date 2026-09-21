@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Adventure Academy Engine: Eco-Rover Expedition</title>
+  <link rel="stylesheet" href="css/adventure-engine.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP ACADEMY HUD BAR
+       ========================================================================== -->
+  <header class="academy-hud">
+    <div class="hud-left">
+      <div class="hud-logo-badge">⚡</div>
+      <div class="hud-title-wrap">
+        <h1>Adventure Academy Engine</h1>
+        <p>ECO-ROVER EXPEDITION &bull; CLIL SCIENCE &amp; CLEAN ENERGY</p>
+      </div>
+    </div>
+
+    <!-- Phase Nav Tabs -->
+    <nav class="hud-phase-nav">
+      <button type="button" class="phase-nav-btn active" data-phase="alignment">
+        <span>🧭</span> Phase 1: Alignment
+      </button>
+      <button type="button" class="phase-nav-btn" data-phase="relay">
+        <span>⚡</span> Phase 2: Hazard Relay
+      </button>
+      <button type="button" class="phase-nav-btn" data-phase="broadcast">
+        <span>🎙️</span> Phase 3: Teleprompter
+      </button>
+    </nav>
+
+    <!-- Metabolic Energy Gauge (20% -> 100%) -->
+    <div class="hud-energy-box" title="Rover quantum core scales from 20% metabolic baseline to 100% supercharged!">
+      <span class="energy-label">⚡ CORE ENERGY:</span>
+      <div class="energy-shell">
+        <div class="energy-fill" id="energy-fill"></div>
+      </div>
+      <span class="energy-pct-text" id="energy-pct">20%</span>
+    </div>
+
+    <!-- Controls -->
+    <div class="hud-controls">
+      <button type="button" class="hud-action-btn" id="btn-toggle-sound" title="Toggle Synthesized Web Audio">
+        <span>🔊</span> Sound
+      </button>
+      <button type="button" class="hud-action-btn" id="btn-toggle-tts" title="Toggle ESL Voice Synthesis">
+        <span>🗣️</span> Voice On
+      </button>
+      <a href="worksheet.html" target="_blank" class="hud-action-btn" title="Print Mission Passport &amp; Diploma">
+        <span>🎓</span> Passport &amp; Diploma
+      </a>
+      <a href="../index.html" class="hud-action-btn" title="Return to Adventure Academy platform">
+        <span>🏠</span> Academy
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN DUAL-VIEWPORT ARENA
+       ========================================================================== -->
+  <main class="adventure-arena">
+    <!-- 1. LEFT: Persistent Holographic Eco-Rover & Quantum Core -->
+    <aside class="rover-hero-viewport" id="rover-hero-viewport">
+      <!-- Injected by adventure-app.js -->
+    </aside>
+
+    <!-- 2. RIGHT: Dynamic Cockpit Stage Deck -->
+    <section class="dynamic-cockpit-stage" id="dynamic-cockpit-stage">
+      <!-- Injected dynamically by adventure-app.js -->
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       VICTORY DIPLOMA MODAL
+       ========================================================================== -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-modal-card">
+      <div class="diploma-seal-giant">🏆</div>
+      <h2 style="font-size:1.8rem; font-weight:900; color:var(--color-cyan);">MISSION ACCOMPLISHED: 100%!</h2>
+      <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">
+        Outstanding achievement, Master Explorer! You calibrated all 4 Eco-Rover subsystems, traversed the 3 planetary hazard sectors, supercharged the quantum core, and delivered the official expedition teleprompter broadcast!
+      </p>
+
+      <div class="badges-earned-row">
+        <div class="badge-pill-item">
+          <span>⚙️</span> Quantum Engineer
+        </div>
+        <div class="badge-pill-item">
+          <span>⚡</span> Hazard Champion
+        </div>
+        <div class="badge-pill-item">
+          <span>🔋</span> 100% Supercharged
+        </div>
+        <div class="badge-pill-item">
+          <span>🎙️</span> Voice of the Academy
+        </div>
+        <div class="badge-pill-item" style="border-color:#fbbf24; color:#fbbf24;">
+          <span>🎓</span> Certified Master Explorer
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+        <a href="worksheet.html" target="_blank" class="btn-primary-action">
+          <span>📄</span> Print Mission Passport &amp; Diploma
+        </a>
+        <button type="button" class="hud-action-btn" onclick="document.getElementById('victory-modal').classList.remove('open')">
+          Keep Exploring
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER BAR
+       ========================================================================== -->
+  <footer class="adventure-footer">
+    <div>
+      <span>⚡ <strong>Curriculum Focus:</strong> Clean Energy &bull; Functional Modals (uses [Energy] to [Verb]) &bull; Teamwork</span>
+    </div>
+    <div>
+      <span>Adventure Academy Engine &bull; Zero External Dependencies &bull; 60fps Web Audio Rig</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/adventure-data.js"></script>
+  <script src="js/adventure-audio.js"></script>
+  <script src="js/adventure-app.js"></script>
+</body>
+</html>
