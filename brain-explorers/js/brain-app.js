@@ -148,125 +148,82 @@
         </div>
       </div>
 
-      <!-- Organic Lateral Human Brain SVG -->
-      <div class="cortex-svg-viewport" id="cortex-svg-viewport">
-        <svg viewBox="0 0 600 480">
+      <!-- 1. The Production Anatomical SVG Markup -->
+      <div class="hologram-cortex-stage" id="cortex-svg-viewport">
+        <svg viewBox="0 0 600 480" class="neuro-cortex-svg" id="human-brain-svg" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <!-- Drop Shadow & Glow Filters -->
+            <!-- Neon Glow Filters -->
             <filter id="glow-frontal" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f59e0b" flood-opacity="0.6"/>
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             <filter id="glow-parietal" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#10b981" flood-opacity="0.6"/>
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             <filter id="glow-occipital" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f43f5e" flood-opacity="0.6"/>
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
             <filter id="glow-temporal" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#a855f7" flood-opacity="0.6"/>
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
-
-            <!-- Radial Background Glow -->
-            <radialGradient id="holo-ambient-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#0284c7" stop-opacity="0.18"/>
-              <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
-            </radialGradient>
           </defs>
 
-          <!-- Ambient Holographic Aura -->
-          <circle cx="300" cy="230" r="210" fill="url(#holo-ambient-glow)"/>
+          <!-- BRAIN STEM & SPINAL JUNCTION -->
+          <path class="brain-stem" d="M 285 365 C 290 400 295 440 305 460 L 335 460 C 330 430 325 390 320 365 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/>
 
-          <!-- 1. BRAINSTEM (Pons & Medulla) -->
-          <g id="holo-brainstem" opacity="0.85">
-            <path d="M 285 340 C 285 380 290 420 300 460 L 325 460 C 335 420 330 380 325 340 Z" 
-                  fill="#475569" stroke="#64748b" stroke-width="2"/>
-            <path d="M 280 370 Q 308 385 332 370" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
-            <path d="M 288 405 Q 310 415 328 405" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.6"/>
+          <!-- CEREBELLUM (Striped Balance Center) -->
+          <g class="brain-substructure cerebellum-zone" id="lobe-cerebellum">
+            <path d="M 180 340 C 150 350 140 390 170 415 C 200 435 250 425 275 390 C 285 370 270 345 240 340 Z" fill="rgba(30, 41, 59, 0.85)" stroke="#475569" stroke-width="2.5"/>
+            <path d="M 160 375 Q 210 370 265 375 M 165 395 Q 215 390 255 405 M 180 355 Q 220 350 255 355" stroke="#64748b" stroke-width="1.8" fill="none" opacity="0.6"/>
+            <text x="210" y="390" fill="#94a3b8" font-size="12" font-weight="700" text-anchor="middle">Cerebellum</text>
           </g>
 
-          <!-- 2. CEREBELLUM (Balance & Motor Striations) -->
-          <g id="holo-cerebellum" opacity="0.9">
-            <path d="M 370 330 C 350 360 360 415 400 430 C 440 440 485 425 500 380 C 510 345 480 330 440 325 Z" 
-                  fill="#334155" stroke="#64748b" stroke-width="2.5"/>
-            <!-- Cerebellar Folia (Horizontal Striation Waves) -->
-            <path d="M 380 355 Q 435 345 480 350" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
-            <path d="M 375 375 Q 440 368 490 372" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
-            <path d="M 385 395 Q 440 390 480 398" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
-            <path d="M 400 415 Q 440 412 465 418" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.65"/>
+          <!-- 1. OCCIPITAL LOBE (Vision & Letters - Crimson) -->
+          <g class="cortex-lobe" id="lobe-occipital" data-lobe="occipital">
+            <path class="lobe-base" d="M 130 250 C 105 270 95 315 120 340 C 145 365 185 355 205 330 C 190 295 180 270 170 255 Z" fill="rgba(244, 63, 94, 0.22)" stroke="#f43f5e" stroke-width="3" filter="url(#glow-occipital)"/>
+            <!-- Cortical Gyri Folds -->
+            <path class="sulcus-line" d="M 115 285 Q 140 295 165 280 M 130 320 Q 155 330 185 315" stroke="#fb7185" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="150" cy="305" r="16" fill="#f43f5e" opacity="0.9"/>
+            <text x="150" y="310" font-size="16" text-anchor="middle">👁️</text>
           </g>
 
-          <!-- 3. TEMPORAL LOBE (Electric Violet) -->
-          <g id="lobe-temporal-group" class="lobe-path-group" data-lobe="temporal">
-            <path class="lobe-fill" 
-                  d="M 180 270 C 235 240 310 240 380 250 C 410 255 425 285 410 315 C 390 355 330 365 240 355 C 190 350 160 310 180 270 Z" 
-                  fill="#a855f7" fill-opacity="0.32" stroke="#a855f7" stroke-width="2.5"/>
-            <!-- Superior & Inferior Temporal Gyri Folds -->
-            <path d="M 210 285 Q 295 275 375 285" class="cortex-sulcus-line"/>
-            <path d="M 220 315 Q 305 310 370 320" class="cortex-sulcus-line"/>
-            <!-- Hotspot Node Pin -->
-            <circle cx="300" cy="300" r="6" fill="#a855f7" filter="url(#glow-temporal)"/>
-            <circle cx="300" cy="300" r="16" fill="none" stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
-            <text x="300" y="304" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">👂</text>
+          <!-- 2. TEMPORAL LOBE (Hearing Sounds & Phonemes - Purple) -->
+          <g class="cortex-lobe" id="lobe-temporal" data-lobe="temporal">
+            <path class="lobe-base" d="M 205 320 C 185 320 200 260 220 250 C 265 245 330 240 370 275 C 385 295 380 340 340 355 C 290 370 235 365 205 320 Z" fill="rgba(168, 85, 247, 0.22)" stroke="#a855f7" stroke-width="3" filter="url(#glow-temporal)"/>
+            <!-- Cortical Gyri Folds -->
+            <path class="sulcus-line" d="M 230 275 Q 285 265 345 285 M 240 310 Q 290 300 340 325 M 260 340 Q 300 330 325 345" stroke="#c084fc" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="285" cy="305" r="16" fill="#a855f7" opacity="0.9"/>
+            <text x="285" y="310" font-size="16" text-anchor="middle">🎧</text>
           </g>
 
-          <!-- 4. OCCIPITAL LOBE (Neon Coral / Crimson) -->
-          <g id="lobe-occipital-group" class="lobe-path-group" data-lobe="occipital">
-            <path class="lobe-fill" 
-                  d="M 445 155 C 490 180 540 215 540 275 C 540 315 500 345 440 325 C 420 280 430 210 445 155 Z" 
-                  fill="#f43f5e" fill-opacity="0.32" stroke="#f43f5e" stroke-width="2.5"/>
-            <!-- Visual Cortex / Calcarine Sulcus Folds -->
-            <path d="M 455 210 Q 500 230 525 250" class="cortex-sulcus-line"/>
-            <path d="M 450 255 Q 490 275 515 295" class="cortex-sulcus-line"/>
-            <!-- Hotspot Node Pin -->
-            <circle cx="485" cy="250" r="6" fill="#f43f5e" filter="url(#glow-occipital)"/>
-            <circle cx="485" cy="250" r="16" fill="none" stroke="#f43f5e" stroke-width="1.5" opacity="0.6"/>
-            <text x="485" y="254" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">👁️</text>
+          <!-- 3. PARIETAL LOBE (Touch, Spatial & Math - Emerald) -->
+          <g class="cortex-lobe" id="lobe-parietal" data-lobe="parietal">
+            <path class="lobe-base" d="M 235 90 C 295 80 375 95 400 145 C 360 175 320 205 270 220 C 220 225 185 210 160 170 C 180 125 205 100 235 90 Z" fill="rgba(16, 185, 129, 0.22)" stroke="#10b981" stroke-width="3" filter="url(#glow-parietal)"/>
+            <!-- Cortical Gyri Folds -->
+            <path class="sulcus-line" d="M 245 120 Q 295 130 360 125 M 205 155 Q 260 165 320 160 M 230 190 Q 285 195 340 185" stroke="#34d399" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="280" cy="155" r="16" fill="#10b981" opacity="0.9"/>
+            <text x="280" y="160" font-size="16" text-anchor="middle">✋</text>
           </g>
 
-          <!-- 5. PARIETAL LOBE (Vivid Emerald) -->
-          <g id="lobe-parietal-group" class="lobe-path-group" data-lobe="parietal">
-            <path class="lobe-fill" 
-                  d="M 270 52 C 345 52 425 90 445 155 C 430 210 380 250 310 240 C 275 190 270 110 270 52 Z" 
-                  fill="#10b981" fill-opacity="0.32" stroke="#10b981" stroke-width="2.5"/>
-            <!-- Postcentral & Intraparietal Sulci -->
-            <path d="M 315 75 Q 365 130 385 195" class="cortex-sulcus-line"/>
-            <path d="M 360 90 Q 405 135 415 175" class="cortex-sulcus-line"/>
-            <!-- Hotspot Node Pin -->
-            <circle cx="360" cy="145" r="6" fill="#10b981" filter="url(#glow-parietal)"/>
-            <circle cx="360" cy="145" r="16" fill="none" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
-            <text x="360" y="149" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">🖐️</text>
+          <!-- 4. FRONTAL LOBE (Speech, Planning & Thinking - Amber) -->
+          <g class="cortex-lobe" id="lobe-frontal" data-lobe="frontal">
+            <path class="lobe-base" d="M 400 145 C 445 170 510 215 500 290 C 490 345 440 360 380 345 C 355 315 350 260 385 220 C 375 190 390 160 400 145 Z" fill="rgba(245, 158, 11, 0.22)" stroke="#f59e0b" stroke-width="3" filter="url(#glow-frontal)"/>
+            <!-- Cortical Gyri Folds -->
+            <path class="sulcus-line" d="M 435 185 Q 460 230 455 285 M 405 225 Q 430 260 425 310 M 465 240 Q 480 280 460 325" stroke="#fbbf24" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="440" cy="270" r="16" fill="#f59e0b" opacity="0.9"/>
+            <text x="440" y="275" font-size="16" text-anchor="middle">💡</text>
           </g>
 
-          <!-- 6. FRONTAL LOBE (Solar Amber) -->
-          <g id="lobe-frontal-group" class="lobe-path-group" data-lobe="frontal">
-            <path class="lobe-fill" 
-                  d="M 80 230 C 70 140 140 60 270 52 C 270 110 275 190 310 240 C 265 245 210 265 180 270 C 130 280 90 270 80 230 Z" 
-                  fill="#f59e0b" fill-opacity="0.32" stroke="#f59e0b" stroke-width="2.5"/>
-            <!-- Superior Frontal & Precentral Sulci -->
-            <path d="M 125 180 Q 185 130 240 100" class="cortex-sulcus-line"/>
-            <path d="M 115 220 Q 190 190 260 160" class="cortex-sulcus-line"/>
-            <path d="M 155 245 Q 220 230 265 205" class="cortex-sulcus-line"/>
-            <!-- Hotspot Node Pin -->
-            <circle cx="180" cy="160" r="6" fill="#f59e0b" filter="url(#glow-frontal)"/>
-            <circle cx="180" cy="160" r="16" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>
-            <text x="180" y="164" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">💡</text>
+          <!-- LIVE SYNAPTIC RELAY PATHWAYS (Animated dashed circuit) -->
+          <g class="synapse-circuit-layer" style="pointer-events: none;">
+            <!-- Occipital -> Temporal -->
+            <path id="synapse-occ-temp" d="M 166 305 Q 220 330 269 305" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,6" fill="none" opacity="0"/>
+            <!-- Temporal -> Frontal -->
+            <path id="synapse-temp-front" d="M 301 305 Q 370 330 424 270" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,6" fill="none" opacity="0"/>
           </g>
-
-          <!-- DYNAMIC SYNAPTIC FLOW ARCS (Occipital -> Temporal -> Frontal) -->
-          <!-- Arc 1: Vision to Sound (Occipital -> Temporal) -->
-          <path id="arc-vision-sound" class="synaptic-flow-arc" 
-                d="M 485 250 C 440 300 370 320 300 300" 
-                stroke="#38bdf8" stroke-width="4"/>
-
-          <!-- Arc 2: Sound to Speech (Temporal -> Frontal) -->
-          <path id="arc-sound-speech" class="synaptic-flow-arc" 
-                d="M 300 300 C 240 280 210 220 180 160" 
-                stroke="#fbbf24" stroke-width="4"/>
-
-          <!-- Arc 3: Spatial Tracking (Parietal connector) -->
-          <path id="arc-spatial-relay" class="synaptic-flow-arc" 
-                d="M 360 145 Q 270 140 180 160" 
-                stroke="#10b981" stroke-width="3"/>
         </svg>
       </div>
 
@@ -289,7 +246,7 @@
 
   function bindCortexEvents() {
     // Click on SVG lobe groups
-    document.querySelectorAll('.lobe-path-group').forEach(group => {
+    document.querySelectorAll('.cortex-lobe, .lobe-path-group').forEach(group => {
       const lobeKey = group.dataset.lobe;
       group.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
@@ -337,7 +294,7 @@
     if (!lobeData) return;
 
     // Update active highlight classes on SVG groups
-    document.querySelectorAll('.lobe-path-group').forEach(grp => {
+    document.querySelectorAll('.cortex-lobe, .lobe-path-group').forEach(grp => {
       grp.classList.toggle('active', grp.dataset.lobe === lobeKey);
     });
 
@@ -378,10 +335,10 @@
     if (!viewport) return;
 
     const coords = {
-      frontal: { x: '30%', y: '35%' },
-      parietal: { x: '60%', y: '30%' },
-      occipital: { x: '80%', y: '52%' },
-      temporal: { x: '50%', y: '62%' }
+      occipital: { x: '25%', y: '64%' },
+      temporal: { x: '48%', y: '64%' },
+      parietal: { x: '47%', y: '32%' },
+      frontal: { x: '73%', y: '56%' }
     };
 
     const pt = coords[lobeKey] || { x: '50%', y: '50%' };
@@ -401,10 +358,14 @@
     const arc1 = document.getElementById('arc-vision-sound');
     const arc2 = document.getElementById('arc-sound-speech');
     const arc3 = document.getElementById('arc-spatial-relay');
+    const syn1 = document.getElementById('synapse-occ-temp');
+    const syn2 = document.getElementById('synapse-temp-front');
 
     if (arc1) arc1.classList.remove('active-circuit');
     if (arc2) arc2.classList.remove('active-circuit');
     if (arc3) arc3.classList.remove('active-circuit');
+    if (syn1) { syn1.classList.remove('active-circuit'); syn1.style.opacity = '0'; }
+    if (syn2) { syn2.classList.remove('active-circuit'); syn2.style.opacity = '0'; }
 
     if (phaseKey === 'atlas') {
       if (statusChip) statusChip.innerHTML = '<span>🧭</span> SENSORY SORTING MODE';
@@ -412,6 +373,8 @@
       if (statusChip) statusChip.innerHTML = '<span>⚡</span> 0.3s SPEED RELAY ACTIVE';
       if (arc1) arc1.classList.add('active-circuit');
       if (arc2) arc2.classList.add('active-circuit');
+      if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
+      if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
     } else if (phaseKey === 'gym') {
       if (statusChip) statusChip.innerHTML = '<span>🔋</span> NEURO-METABOLIC OVERCHARGE';
       if (arc3) arc3.classList.add('active-circuit');
@@ -420,6 +383,8 @@
       if (arc1) arc1.classList.add('active-circuit');
       if (arc2) arc2.classList.add('active-circuit');
       if (arc3) arc3.classList.add('active-circuit');
+      if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
+      if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
     }
   }
 
@@ -751,6 +716,10 @@
 
     // Highlight Occipital Lobe on Hologram
     selectLobe('occipital', false);
+    const syn1 = document.getElementById('synapse-occ-temp');
+    const syn2 = document.getElementById('synapse-temp-front');
+    if (syn1) { syn1.classList.remove('active-circuit'); syn1.style.opacity = '0.35'; }
+    if (syn2) { syn2.classList.remove('active-circuit'); syn2.style.opacity = '0.35'; }
 
     const startTime = performance.now();
     clearInterval(playerSession.relay.timerInterval);
@@ -790,8 +759,12 @@
 
       if (playerSession.relay.activeStepIdx === 1) {
         selectLobe('temporal', false);
+        const syn1 = document.getElementById('synapse-occ-temp');
+        if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
       } else if (playerSession.relay.activeStepIdx === 2) {
         selectLobe('frontal', false);
+        const syn2 = document.getElementById('synapse-temp-front');
+        if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
       }
 
       if (playerSession.relay.activeStepIdx >= currentRound.steps.length) {
