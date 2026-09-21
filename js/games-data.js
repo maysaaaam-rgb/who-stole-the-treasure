@@ -423,12 +423,12 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "brain-explorers",
-    "title": "Learning and Your Brain: 4 Lobes, Reading Teamwork & Neuro-Battery",
-    "description": "Visual-first primary CLIL science adventure (A1–A2) exploring the human brain super-computer. Kids discover the 4 lobes (Frontal, Occipital, Temporal, Parietal), trace the 0.3-second reading relay circuit (C-A-T), recharge the 20% neuro-battery with healthy fuel habits, strengthen neural pathways through neuroplasticity practice, and print their Junior Neuroscientist Diploma.",
+    "title": "🧠 Brain Explorers: How Your Brain Reads",
+    "description": "Interactive CLIL neuro-quest where students map the 4 brain lobes, link neural pathways during reading challenges, and deliver a live teleprompter broadcast on how the brain learns.",
     "type": "game",
     "category": "CLIL & STEM Games",
-    "categoryLabel": "💡 CLIL & STEM Games",
-    "level": "A1+",
+    "categoryLabel": "🧠 CLIL & Neuroscience",
+    "level": "A1 / A2",
     "cefrLevel": "A1+",
     "age": "Ages 7–11",
     "ageGroup": "7-11",
@@ -437,18 +437,17 @@ const GAMES_REGISTRY = [
       "Grade 3",
       "Grade 4"
     ],
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 100,
     "skills": [
-      "Science",
-      "CLIL",
-      "Speaking",
-      "Reading",
-      "Vocabulary"
+      "CLIL Human Biology",
+      "Reading Comprehension",
+      "Speaking & Presentation",
+      "Functional Modals (helps us / use to)"
     ],
-    "topic": "Science & The Human Brain",
+    "topic": "CLIL Human Biology & Neuroscience",
     "topics": [
       "The 4 Lobes",
       "Frontal Lobe",
@@ -457,32 +456,31 @@ const GAMES_REGISTRY = [
       "Parietal Lobe",
       "Reading Relay Teamwork",
       "Neuroplasticity",
-      "Brain Energy Consumption"
+      "Live Teleprompter Broadcast"
     ],
-    "languageFocus": "The [Lobe] helps us [Verb] (The occipital lobe helps us see, The temporal lobe helps us hear sounds), We use our [Lobe] to [Verb], Reading is a whole-team effort!",
-    "activityMode": "Whole Class Smart Board Interactive / Individual Neuro-Lab Exploration",
-    "interactionType": "Interactive 4-Lobe SVG Anatomical Map, Snappable Function Tokens, 0.3s Reading Relay Circuit Simulation, Neuro-Battery Habit Sorter, Axon Thickening Practice",
-    "difficulty": "Primary Scaffolded A1–A2",
+    "languageFocus": "The [lobe] helps us [verb]. We use our [lobe] to [verb]. Reading is a whole-team effort.",
+    "activityMode": "Whole Class Smart Board Interactive / Team Neuro-Lab Challenge",
+    "interactionType": "Interactive 4-Lobe SVG Map, Sensory Token Connector, 0.3s Reading Circuit Simulation, Habit Battery Charger, Live Speaking Teleprompter",
+    "difficulty": "Scaffolded A1 / A2",
     "tags": [
       "brain",
       "brain-explorers",
       "neuroscience",
       "clil",
       "stem",
-      "science",
+      "teleprompter",
       "reading-relay",
-      "neuroplasticity",
-      "brain-battery"
+      "speaking"
     ],
     "learningObjectives": [
       "Identify and name the four core lobes of the human brain: Frontal, Occipital, Temporal, and Parietal",
-      "Formulate sentences using the target structure: 'The [lobe] helps us [verb]'",
-      "Understand that reading is a whole-team effort connecting vision, sound, and meaning within 0.3 seconds",
-      "Discover how practice strengthens neural connections through neuroplasticity",
-      "Understand why the brain needs ~20% of daily energy and identify healthy brain habits"
+      "Construct sentences using target formulas: 'The [lobe] helps us [verb]' and 'We use our [lobe] to [verb]'",
+      "Demonstrate how reading is a whole-team effort connecting vision, sound, space, and meaning in 0.3 seconds",
+      "Explain how practice strengthens neural connections through neuroplasticity",
+      "Deliver a live teleprompter broadcast on how the brain learns to earn the Junior Neuroscientist Diploma"
     ],
-    "teacherInstructions": "Project on Smart Board. Guide students across 3 core phases: Phase 1 (Anatomical Neuro-Atlas inspection and token matching), Phase 2 (C-A-T 0.3-second multisensory reading relay), and Phase 3 (Neuro-Battery energy balancing + Axon pathway strengthening).",
-    "studentInstructions": "Explore your brain super-computer! Discover the 4 lobes, trace how your brain reads words in 0.3 seconds, power up your brain battery with healthy fuel, and earn your Junior Neuroscientist Diploma!",
+    "teacherInstructions": "Project on Smart Board. Guide student cadets through 4 interactive phases: 4-Lobe Anatomical Mapping, 0.3-Second Reading Teamwork Relay, Brain Battery Habit Balancer, and the capstone Live Teleprompter News Broadcast.",
+    "studentInstructions": "Embark on an interactive neuro-quest! Map the 4 brain lobes, test the 0.3-second reading relay, power up your brain battery, and step up to the studio teleprompter to broadcast live to the class!",
     "route": "brain-explorers/index.html",
     "worksheet": "brain-explorers/worksheet.html",
     "worksheetRoute": "brain-explorers/worksheet.html",
@@ -490,12 +488,14 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
+    "thumbnailIcon": "🧠",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #3b0764 50%, #0284c7 100%)",
     "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="beThumbBg" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#090d16"/>
-          <stop offset="50%" stop-color="#141d33"/>
-          <stop offset="100%" stop-color="#090d16"/>
+          <stop offset="50%" stop-color="#3b0764"/>
+          <stop offset="100%" stop-color="#0284c7"/>
         </linearGradient>
       </defs>
       <rect width="200" height="140" fill="url(#beThumbBg)"/>
@@ -506,7 +506,7 @@ const GAMES_REGISTRY = [
       <path d="M 86 70 C 102 66 118 68 120 78 C 122 88 114 96 98 98 C 86 98 84 88 86 70 Z" fill="#a855f7" opacity="0.85"/>
       <text x="100" y="70" font-size="24" text-anchor="middle">⚡</text>
       <rect x="18" y="106" width="164" height="20" rx="10" fill="#0284c7"/>
-      <text x="100" y="120" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">LEARNING &amp; YOUR BRAIN 🧠</text>
+      <text x="100" y="120" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">BRAIN EXPLORERS 🧠</text>
     </svg>`
   },
   {
