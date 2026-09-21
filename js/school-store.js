@@ -140,6 +140,31 @@
       description: "Premium 10-screen interactive reading & skimming adventure for Grade 4 (A1–A1+) based on Unit 1 p17 RG2 ('How Your Brain Learns'). Students race against a 30-second skimming clock, unlock 4 sci-fi doors, gather evidence on the detective corkboard, fill out the Brain's Job Application, and record their speech to save their brain!"
     },
     {
+      id: "brain-explorers",
+      title: "Learning and Your Brain: 4 Lobes, Reading Teamwork & Neuro-Battery",
+      category: "CLIL & STEM Games",
+      level: "A1+",
+      age: "7–11",
+      grade: "Grade 3–4",
+      duration: 30,
+      skills: ["Science", "CLIL", "Speaking", "Reading", "Vocabulary"],
+      topics: ["The 4 Lobes", "Frontal Lobe", "Occipital Lobe", "Temporal Lobe", "Parietal Lobe", "Reading Relay Teamwork", "Neuroplasticity", "Brain Energy"],
+      objectives: [
+        "Identify and name the four core lobes of the human brain: Frontal, Occipital, Temporal, and Parietal",
+        "Formulate sentences using the target structure: 'The [lobe] helps us [verb]'",
+        "Understand that reading is a whole-team effort connecting vision, sound, and meaning within 0.3 seconds",
+        "Discover how practice strengthens neural connections through neuroplasticity",
+        "Understand why the brain needs ~20% of daily energy and identify healthy brain habits"
+      ],
+      route: "brain-explorers/index.html",
+      worksheet: "brain-explorers/worksheet.html",
+      worksheetRoute: "brain-explorers/worksheet.html",
+      teacherGuide: true,
+      featured: true,
+      archived: false,
+      description: "Visual-first primary CLIL science adventure (A1–A2) exploring the human brain super-computer. Kids discover the 4 lobes, trace the 0.3-second reading relay circuit (C-A-T), recharge the 20% neuro-battery with healthy fuel habits, and print their Junior Neuroscientist Diploma."
+    },
+    {
       id: "young-inventor",
       title: "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
       category: "CLIL & STEM Games",

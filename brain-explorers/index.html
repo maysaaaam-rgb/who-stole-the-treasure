@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning and Your Brain — Adventure Academy CLIL</title>
+  <link rel="stylesheet" href="css/brain-explorers.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP HUD BAR
+       ========================================================================== -->
+  <header class="neuro-hud">
+    <div class="hud-left">
+      <div class="hud-logo-badge">🧠</div>
+      <div class="hud-title-wrap">
+        <h1>Learning &amp; Your Brain</h1>
+        <p>PRIMARY CLIL &bull; HOW YOUR SUPER-COMPUTER WORKS!</p>
+      </div>
+    </div>
+
+    <!-- Phase Selector Nav -->
+    <nav class="hud-phase-nav">
+      <button class="phase-btn active" data-phase="atlas">
+        <span>🧭</span> Phase 1: Atlas
+      </button>
+      <button class="phase-btn" data-phase="reading">
+        <span>⚡</span> Phase 2: Reading Team
+      </button>
+      <button class="phase-btn" data-phase="energy">
+        <span>🔋</span> Phase 3: Brain Battery
+      </button>
+    </nav>
+
+    <!-- Brain Battery Gauge -->
+    <div class="hud-battery-box" title="Brain consumes ~20% of daily body energy. Power up with healthy habits!">
+      <span class="battery-icon-label">⚡ ENERGY:</span>
+      <div class="battery-shell">
+        <div class="battery-fill" id="battery-fill"></div>
+      </div>
+      <span class="battery-pct-text" id="battery-pct">20%</span>
+    </div>
+
+    <!-- Audio & Action Buttons -->
+    <div class="hud-controls">
+      <button class="hud-btn" id="btn-toggle-sound" title="Toggle audio effects">
+        <span>🔊</span> Sound
+      </button>
+      <button class="hud-btn" id="btn-toggle-tts" title="Toggle ESL spoken speech">
+        <span>🗣️</span> Voice On
+      </button>
+      <a href="worksheet.html" target="_blank" class="hud-btn" title="Open printable A4 Mission Passport &amp; Diploma">
+        <span>🎓</span> Passport &amp; Diploma
+      </a>
+      <a href="../index.html" class="hud-btn" title="Return to Adventure Academy platform">
+        <span>🏠</span> Academy
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN VIEWPORT CONTAINER (Populated dynamically by brain-app.js)
+       ========================================================================== -->
+  <main class="neuro-main-workspace" id="phase-workspace-container">
+    <!-- Rendered dynamically by brain-app.js -->
+  </main>
+
+  <!-- ==========================================================================
+       VICTORY CELEBRATION MODAL
+       ========================================================================== -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-modal-window">
+      <div class="victory-badge-glow">🏆</div>
+      <h2>BRAIN SUPERCHARGED: 100%!</h2>
+      <p>
+        Congratulations, Neuro-Explorer! You mapped all 4 brain lobes, unlocked the 0.3-second reading relay, and strengthened your neural pathways with practice and healthy fuel!
+      </p>
+
+      <div class="badges-earned-row">
+        <div class="badge-item-pill">
+          <span>🧭</span> Neuro-Atlas Explorer
+        </div>
+        <div class="badge-item-pill">
+          <span>⚡</span> Reading Teamwork Champion
+        </div>
+        <div class="badge-item-pill">
+          <span>🔋</span> Neuro-Battery Master
+        </div>
+        <div class="badge-item-pill" style="border-color:var(--neon-amber); color:var(--neon-amber);">
+          <span>🎓</span> Licensed Neuroscientist
+        </div>
+      </div>
+
+      <div class="victory-actions-box">
+        <a href="worksheet.html" target="_blank" class="btn-open-diploma">
+          <span>📄</span> Print Mission Passport &amp; Diploma
+        </a>
+        <button class="btn-close-victory" onclick="document.getElementById('victory-modal').classList.remove('open')">
+          Keep Exploring
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER BAR
+       ========================================================================== -->
+  <footer class="neuro-footer">
+    <div class="footer-tip">
+      <span>💡</span>
+      <span><strong>Neuro-Fact:</strong> Your brain has over 86 billion neurons working together every second!</span>
+    </div>
+    <div>
+      <span>Language Formula: <strong>"The [Lobe] helps us [Verb]."</strong> &bull; "Reading is a whole-team effort!"</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/brain-data.js"></script>
+  <script src="js/brain-audio.js"></script>
+  <script src="js/brain-app.js"></script>
+</body>
+</html>

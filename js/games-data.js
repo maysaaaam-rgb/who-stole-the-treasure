@@ -422,6 +422,94 @@ const GAMES_REGISTRY = [
     </svg>`
   },
   {
+    "id": "brain-explorers",
+    "title": "Learning and Your Brain: 4 Lobes, Reading Teamwork & Neuro-Battery",
+    "description": "Visual-first primary CLIL science adventure (A1–A2) exploring the human brain super-computer. Kids discover the 4 lobes (Frontal, Occipital, Temporal, Parietal), trace the 0.3-second reading relay circuit (C-A-T), recharge the 20% neuro-battery with healthy fuel habits, strengthen neural pathways through neuroplasticity practice, and print their Junior Neuroscientist Diploma.",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "💡 CLIL & STEM Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–11",
+    "ageGroup": "7-11",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 100,
+    "skills": [
+      "Science",
+      "CLIL",
+      "Speaking",
+      "Reading",
+      "Vocabulary"
+    ],
+    "topic": "Science & The Human Brain",
+    "topics": [
+      "The 4 Lobes",
+      "Frontal Lobe",
+      "Occipital Lobe",
+      "Temporal Lobe",
+      "Parietal Lobe",
+      "Reading Relay Teamwork",
+      "Neuroplasticity",
+      "Brain Energy Consumption"
+    ],
+    "languageFocus": "The [Lobe] helps us [Verb] (The occipital lobe helps us see, The temporal lobe helps us hear sounds), We use our [Lobe] to [Verb], Reading is a whole-team effort!",
+    "activityMode": "Whole Class Smart Board Interactive / Individual Neuro-Lab Exploration",
+    "interactionType": "Interactive 4-Lobe SVG Anatomical Map, Snappable Function Tokens, 0.3s Reading Relay Circuit Simulation, Neuro-Battery Habit Sorter, Axon Thickening Practice",
+    "difficulty": "Primary Scaffolded A1–A2",
+    "tags": [
+      "brain",
+      "brain-explorers",
+      "neuroscience",
+      "clil",
+      "stem",
+      "science",
+      "reading-relay",
+      "neuroplasticity",
+      "brain-battery"
+    ],
+    "learningObjectives": [
+      "Identify and name the four core lobes of the human brain: Frontal, Occipital, Temporal, and Parietal",
+      "Formulate sentences using the target structure: 'The [lobe] helps us [verb]'",
+      "Understand that reading is a whole-team effort connecting vision, sound, and meaning within 0.3 seconds",
+      "Discover how practice strengthens neural connections through neuroplasticity",
+      "Understand why the brain needs ~20% of daily energy and identify healthy brain habits"
+    ],
+    "teacherInstructions": "Project on Smart Board. Guide students across 3 core phases: Phase 1 (Anatomical Neuro-Atlas inspection and token matching), Phase 2 (C-A-T 0.3-second multisensory reading relay), and Phase 3 (Neuro-Battery energy balancing + Axon pathway strengthening).",
+    "studentInstructions": "Explore your brain super-computer! Discover the 4 lobes, trace how your brain reads words in 0.3 seconds, power up your brain battery with healthy fuel, and earn your Junior Neuroscientist Diploma!",
+    "route": "brain-explorers/index.html",
+    "worksheet": "brain-explorers/worksheet.html",
+    "worksheetRoute": "brain-explorers/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="beThumbBg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#090d16"/>
+          <stop offset="50%" stop-color="#141d33"/>
+          <stop offset="100%" stop-color="#090d16"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#beThumbBg)"/>
+      <rect x="10" y="10" width="180" height="120" rx="12" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+      <path d="M 65 38 C 50 38 40 52 40 68 C 40 82 52 92 68 92 C 75 92 80 88 84 82 C 80 70 80 50 84 42 C 78 39 72 38 65 38 Z" fill="#f59e0b" opacity="0.85"/>
+      <path d="M 86 40 C 96 38 114 38 126 46 C 132 50 134 56 132 64 C 118 64 102 62 86 66 Z" fill="#10b981" opacity="0.85"/>
+      <path d="M 134 66 C 146 72 152 82 148 94 C 144 102 134 104 124 100 C 122 92 122 80 132 68 Z" fill="#ef4444" opacity="0.85"/>
+      <path d="M 86 70 C 102 66 118 68 120 78 C 122 88 114 96 98 98 C 86 98 84 88 86 70 Z" fill="#a855f7" opacity="0.85"/>
+      <text x="100" y="70" font-size="24" text-anchor="middle">⚡</text>
+      <rect x="18" y="106" width="164" height="20" rx="10" fill="#0284c7"/>
+      <text x="100" y="120" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">LEARNING &amp; YOUR BRAIN 🧠</text>
+    </svg>`
+  },
+  {
   "id": "young-inventor",
   "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
   "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",
