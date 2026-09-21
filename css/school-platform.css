@@ -5181,8 +5181,10 @@ body.classroom-mode-active .classroom-students-grid {
 }
 
 .monster-item-card.is-locked {
-  opacity: 0.65;
-  cursor: not-allowed;
+  opacity: 0.42 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  filter: grayscale(0.7) !important;
   background: #f8fafc;
   border: 1.5px dashed #cbd5e1;
 }
