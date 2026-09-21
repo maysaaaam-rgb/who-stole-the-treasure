@@ -850,11 +850,11 @@
         <!-- 3. Base Monster Body & Fur (e.g., Gold, Blue, Violet) -->
         <div id="layer-monster-body" class="layer-item z-20">${bodySvg}</div>
 
-        <!-- 4. Face Features (Eyes, Mouth, Blushes) -->
-        <div id="layer-face" class="layer-item z-30">${faceSvg}</div>
+        <!-- 4. Clothing & Outfits (Vests, Jackets, Coats, Capes) -->
+        <div id="layer-clothing" class="layer-item z-30">${clothingSvg}</div>
 
-        <!-- 5. Clothing & Outfits (Vests, Jackets, Coats, Capes) -->
-        <div id="layer-clothing" class="layer-item z-40">${clothingSvg}</div>
+        <!-- 5. Face Features (Eyes, Mouth, Blushes) -->
+        <div id="layer-face" class="layer-item z-40">${faceSvg}</div>
 
         <!-- 6. Face Accessories & Glasses (Round Wire Glasses, Goggles) -->
         <div id="layer-glasses" class="layer-item z-50">${glassesSvg}</div>
@@ -1871,40 +1871,37 @@
     const norm = String(clothingId).toLowerCase().trim();
 
     // Adventure Explorer Vest
-    if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest')) {
+    if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest') || norm === 'explorer_vest') {
       return `
-        <!-- Adventure Explorer Vest -->
-        <g filter="url(#plush-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX - 12} ${cY + 4} ${cX - 12} ${cY + ry - 4} L ${cX - rx + 8} ${cY + ry - 4} Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
-          <path d="M ${cX + rx - 4} ${cY + 2} Q ${cX + 12} ${cY + 4} ${cX + 12} ${cY + ry - 4} L ${cX + rx - 8} ${cY + ry - 4} Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
-          <path d="M ${cX - rx + 7} ${cY + 2} L ${cX - 11} ${cY + 12} L ${cX - 13} ${cY + 30} L ${cX - rx + 9} ${cY + 28} Z" fill="#d97706" />
-          <path d="M ${cX + rx - 7} ${cY + 2} L ${cX + 11} ${cY + 12} L ${cX + 13} ${cY + 30} L ${cX + rx - 9} ${cY + 28} Z" fill="#d97706" />
-          <rect x="${cX - rx + 8}" y="${cY + 16}" width="10" height="10" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <rect x="${cX + rx - 18}" y="${cY + 16}" width="10" height="10" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <circle cx="${cX - 8}" cy="${cY + 14}" r="2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="${cX - 8}" cy="${cY + 24}" r="2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        <!-- Tailored Explorer Vest -->
+        <g filter="url(#mf-shadow)">
+          <path d="M 68 110 C 68 128 72 142 82 146 C 88 146 90 134 88 114 C 84 110 74 108 68 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 132 110 C 132 128 128 142 118 146 C 112 146 110 134 112 114 C 116 110 126 108 132 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <circle cx="86" cy="126" r="2.5" fill="#f59e0b" />
+          <circle cx="86" cy="136" r="2.5" fill="#f59e0b" />
+          <circle cx="114" cy="126" r="2.5" fill="#f59e0b" />
+          <circle cx="114" cy="136" r="2.5" fill="#f59e0b" />
         </g>
       `;
     }
 
-    if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape')) {
+    if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape') || norm === 'hero_cape') {
       return `
         <!-- Hero Adventure Cape -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - 24} ${cY - 12} Q ${cX} ${cY - 6} ${cX + 24} ${cY - 12} L ${cX + 32} ${cY + ry + 10} Q ${cX} ${cY + ry + 2} ${cX - 32} ${cY + ry + 10} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" opacity="0.9" />
-          <circle cx="${cX}" cy="${cY - 8}" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <path d="M 60 110 L 40 160 L 160 160 L 140 110 Z" fill="#dc2626" opacity="0.9" />
+          <circle cx="100" cy="110" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-adv-jacket') {
+    if (clothingId === 'clothing-adv-jacket' || norm.includes('jacket') || norm === 'explorer_jacket') {
       return `
-        <!-- Explorer Aviator Jacket -->
+        <!-- Tailored Explorer Jacket wrapped cleanly around chibi torso without blocking face -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 8} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#92400e" stroke="#78350f" stroke-width="2" />
-          <!-- Cream fleece collar -->
-          <ellipse cx="${cX}" cy="${cY + 2}" rx="${rx * 0.7}" ry="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5" />
-          <line x1="${cX}" y1="${cY + 6}" x2="${cX}" y2="${cY + ry - 2}" stroke="#facc15" stroke-width="2" />
+          <path d="M 64 108 C 64 136 68 152 82 154 C 94 154 96 142 94 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 136 108 C 136 136 132 152 118 154 C 106 154 104 142 106 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 80 152 L 120 152 L 116 158 L 84 158 Z" fill="#78350f" />
         </g>
       `;
     }

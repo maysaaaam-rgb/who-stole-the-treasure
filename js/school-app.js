@@ -12012,7 +12012,7 @@ window.switchClassroomSubTab = function(subTab) {
 
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" ' +
-             'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ' +
+             (!isUnlocked ? 'style="pointer-events:none !important; opacity:0.42 !important; filter:grayscale(0.7) !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
              'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
           (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
           (!isUnlocked ? '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>' : '') +
@@ -12166,6 +12166,20 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.handleSelectMonsterItem = function(itemId, category, isNone) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
+
+    // Strict Level Lock Enforcement
+    if (!isNone && store && typeof store.getMonsterCosmeticItems === 'function') {
+      const allCosmetics = store.getMonsterCosmeticItems();
+      const targetItem = allCosmetics.find(i => i.id === itemId);
+      if (targetItem && targetItem.unlockType === 'level' && targetItem.unlockRequirement && targetItem.unlockRequirement.level) {
+        const mState = store.calculateMonsterState(monsterCreatorStudentId);
+        const curLevel = mState ? mState.currentLevel : 1;
+        if (targetItem.unlockRequirement.level > curLevel) {
+          console.warn("Item is level locked (Req Lvl " + targetItem.unlockRequirement.level + " > " + curLevel + "):", targetItem.name);
+          return; // Block equipping or state changes
+        }
+      }
+    }
 
     if (isNone) {
       if (category === 'accessory') {
