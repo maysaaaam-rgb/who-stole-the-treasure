@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🖨️ Alice's Wonderland Explorer Kit & Printable Classroom Notebook | Reading Book 3 (pp. 16–17)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <title>📖 Alice in Wonderland: XP Quest Sheet & Student Passport | Printable Classroom Kit</title>
   <style>
     :root {
       --ink-black: #0f172a;
-      --ink-gray: #475569;
+      --ink-gray: #334155;
       --ink-light: #f8fafc;
       --ink-border: #cbd5e1;
-      --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-body: 'Nunito', system-ui, sans-serif;
+      --gold: #b45309;
+      --emerald: #047857;
+      --cyan: #0284c7;
+      --purple: #7e22ce;
+      --font-stack: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
     }
 
     *, *::before, *::after {
@@ -24,795 +24,653 @@
     }
 
     body {
-      font-family: var(--font-body);
+      font-family: var(--font-stack);
       color: var(--ink-black);
       background: #e2e8f0;
       line-height: 1.4;
       padding: 20px;
     }
 
-    .no-print-bar {
-      max-width: 820px;
-      margin: 0 auto 20px;
+    /* Screen Control Bar (Hidden when printed) */
+    .screen-control-bar {
+      max-width: 860px;
+      margin: 0 auto 20px auto;
       background: #0f172a;
       color: #ffffff;
       padding: 14px 24px;
-      border-radius: 12px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
-    .print-btn {
-      background: #2dd4bf;
-      color: #041226;
-      border: none;
-      font-family: var(--font-heading);
+    .screen-control-bar h1 {
+      font-size: 1.1rem;
       font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-print {
+      background: #f59e0b;
+      color: #000;
+      border: none;
+      font-family: var(--font-stack);
+      font-weight: 900;
       font-size: 0.95rem;
-      padding: 8px 18px;
+      padding: 9px 18px;
       border-radius: 8px;
       cursor: pointer;
-    }
-
-    .print-btn:hover {
-      background: #5eead4;
-    }
-
-    .page-sheet {
-      max-width: 820px;
-      margin: 0 auto 30px;
-      background: #ffffff;
-      padding: 34px 38px;
-      border-radius: 6px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      border: 1px solid var(--ink-border);
-      position: relative;
-    }
-
-    .page-header {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-print:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: #334155;
+      color: #fff;
+      border: none;
+      font-family: var(--font-stack);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-back:hover {
+      background: #475569;
+    }
+
+    /* Printable A4 Container */
+    .page-container {
+      max-width: 840px;
+      margin: 0 auto 30px auto;
+      background: #ffffff;
+      padding: 36px 42px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+    }
+
+    /* Header Block */
+    .sheet-header {
       border-bottom: 2px solid var(--ink-black);
-      padding-bottom: 12px;
-      margin-bottom: 16px;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
     }
 
-    .page-title-box h1 {
-      font-family: var(--font-heading);
-      font-size: 1.4rem;
+    .sheet-title h2 {
+      font-size: 1.45rem;
       font-weight: 900;
+      color: var(--ink-black);
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .page-title-box .subtitle {
+    .sheet-title p {
       font-size: 0.85rem;
       color: var(--ink-gray);
-      font-weight: 700;
       margin-top: 2px;
+      font-weight: 600;
     }
 
-    .student-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.85rem;
-      font-weight: 700;
+    /* Student Meta Fill Grid */
+    .student-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--ink-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
     }
 
-    .meta-line {
-      display: inline-block;
-      border-bottom: 1px solid var(--ink-black);
-      width: 130px;
-      margin-left: 6px;
-    }
-
-    h2.section-heading {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
+    .meta-field label {
+      font-size: 0.72rem;
       font-weight: 800;
-      margin: 14px 0 8px;
-      border-left: 4px solid var(--ink-black);
-      padding-left: 8px;
+      color: var(--ink-gray);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .meta-field .line {
+      border-bottom: 1.5px dotted #64748b;
+      height: 18px;
+    }
+
+    /* Tier Sections */
+    .tier-section {
+      margin-bottom: 20px;
+      border: 1px solid var(--ink-border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .tier-header {
+      padding: 8px 16px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    p.instruction {
-      font-size: 0.88rem;
-      color: var(--ink-gray);
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
+    .tier-header-green { background: #065f46; }
+    .tier-header-blue { background: #0369a1; }
+    .tier-header-purple { background: #6b21a8; }
+    .tier-header-gold { background: #92400e; }
 
-    /* Passport Card */
-    .passport-box {
-      border: 2px solid var(--ink-black);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      background: #f8fafc;
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .passport-photo-slot {
-      width: 90px;
-      height: 90px;
-      border: 2px dashed #94a3b8;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-size: 0.75rem;
-      color: #94a3b8;
-      font-weight: 800;
-      background: #ffffff;
-    }
-
-    .passport-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px 14px;
-      font-size: 0.85rem;
-      font-weight: 700;
-    }
-
-    /* Story Sequence Grid */
-    .story-sequence-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .story-seq-card {
-      border: 1.5px solid var(--ink-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      display: flex;
-      gap: 10px;
-      background: #ffffff;
-      align-items: center;
-    }
-
-    .seq-num-badge {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--ink-black);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-heading);
-      font-weight: 900;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .seq-content h4 {
-      font-family: var(--font-heading);
-      font-size: 0.9rem;
-      font-weight: 800;
-    }
-
-    .seq-content p {
-      font-size: 0.8rem;
-      color: var(--ink-gray);
-      margin-top: 2px;
-    }
-
-    /* Feelings Lab */
-    .feelings-lab-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .feeling-box {
-      border: 1.5px solid var(--ink-border);
-      border-radius: 10px;
-      padding: 12px;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .feeling-face-circle {
-      width: 80px;
-      height: 80px;
-      border: 2px dashed #64748b;
-      border-radius: 50%;
-      margin: 8px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      color: #94a3b8;
-      font-weight: 700;
-      background: #fafafa;
-    }
-
-    .writing-frame-box {
-      background: var(--ink-light);
-      border: 1px solid var(--ink-border);
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .blank-line {
-      display: inline-block;
-      border-bottom: 1.5px solid var(--ink-black);
-      min-width: 140px;
-      margin: 0 4px;
-    }
-
-    /* Drawing Box */
-    .drawing-canvas-box {
-      border: 2px dashed var(--ink-black);
-      border-radius: 12px;
-      height: 250px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #94a3b8;
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin: 12px 0;
-      background: #fafafa;
-    }
-
-    /* Cutout Cards Grid */
-    .cutout-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .cutout-grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .cutout-card {
-      border: 2px dashed #64748b;
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      background: #ffffff;
-      position: relative;
-    }
-
-    .cutout-card .cutout-tag {
-      font-family: var(--font-heading);
-      font-weight: 900;
-      font-size: 0.72rem;
-      border: 1.5px solid var(--ink-black);
-      padding: 2px 8px;
-      border-radius: 4px;
-    }
-
-    .cutout-card .cutout-title {
-      font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: 1rem;
-    }
-
-    .cutout-card .cutout-desc {
-      font-size: 0.8rem;
-      color: var(--ink-gray);
-      line-height: 1.3;
-    }
-
-    .scissors-badge {
-      font-size: 0.75rem;
-      color: #64748b;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .table-compare {
+    .tier-quests-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0 16px;
-      font-size: 0.88rem;
     }
 
-    .table-compare th, .table-compare td {
-      border: 1px solid var(--ink-border);
-      padding: 8px 12px;
-      text-align: left;
+    .tier-quests-table tr {
+      border-bottom: 1px solid #e2e8f0;
     }
 
-    .table-compare th {
-      background: #f1f5f9;
-      font-family: var(--font-heading);
+    .tier-quests-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .tier-quests-table td {
+      padding: 10px 14px;
+      vertical-align: middle;
+      font-size: 0.85rem;
+    }
+
+    .col-check {
+      width: 38px;
+      text-align: center;
+    }
+
+    .checkbox-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--ink-gray);
+      border-radius: 4px;
+      margin: 0 auto;
+    }
+
+    .col-title {
       font-weight: 800;
+      color: var(--ink-black);
+      width: 220px;
     }
 
+    .col-desc {
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    .col-xp {
+      width: 80px;
+      text-align: center;
+    }
+
+    .xp-badge-chip {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+      font-weight: 900;
+      font-size: 0.82rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .col-stamp {
+      width: 65px;
+      text-align: center;
+    }
+
+    .stamp-circle {
+      width: 32px;
+      height: 32px;
+      border: 1.5px dashed #94a3b8;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: #94a3b8;
+    }
+
+    /* Page 2: Student Passport & Evidence Log */
+    .passport-section-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--ink-black);
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin: 18px 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+
+    .vocab-table th {
+      background: #f1f5f9;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-align: left;
+      border: 1px solid var(--ink-border);
+      text-transform: uppercase;
+    }
+
+    .vocab-table td {
+      border: 1px solid var(--ink-border);
+      padding: 7px 10px;
+      height: 28px;
+    }
+
+    .drawing-box-frame {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 12px;
+      background: #fafafa;
+      margin-bottom: 12px;
+    }
+
+    .drawing-box-frame .prompt {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .writing-lines-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .writing-line-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .writing-line-row span {
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .writing-line-fill {
+      flex: 1;
+      border-bottom: 1.5px solid #64748b;
+      height: 20px;
+    }
+
+    /* Diploma Footer Seal */
+    .diploma-seal-box {
+      border: 2px solid var(--gold);
+      background: #fffbeb;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .diploma-seal-text h4 {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #78350f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diploma-seal-text p {
+      font-size: 0.8rem;
+      color: #92400e;
+      margin-top: 4px;
+    }
+
+    .diploma-sign-box {
+      text-align: center;
+      border-top: 1.5px solid #b45309;
+      padding-top: 4px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #78350f;
+    }
+
+    /* =========================================================================
+       PRINT-SPECIFIC STYLES (@media print)
+       ========================================================================= */
     @media print {
       body {
-        background: #ffffff;
+        background: none;
         padding: 0;
       }
-      .no-print-bar {
+
+      .screen-control-bar {
         display: none !important;
       }
-      .page-sheet {
-        margin: 0;
-        padding: 15mm;
+
+      .page-container {
         box-shadow: none;
-        border: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
         page-break-after: always;
-        height: auto;
+      }
+
+      .page-container:last-child {
+        page-break-after: avoid;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Screen Top Bar with Print Controls -->
-  <div class="no-print-bar">
-    <div>
-      <h3 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 900;">
-        🐇 Alice's Wonderland Reading Quest — 6-Page Printable Classroom Kit
-      </h3>
-      <p style="font-size: 0.85rem; color: #94a3b8;">
-        Ink-friendly activity sheets + cut-and-play tactile story cards (Pages 1–6)
-      </p>
-    </div>
-    <div style="display: flex; gap: 10px;">
-      <button class="print-btn" onclick="window.print()">🖨️ Print Entire Kit</button>
-      <a href="index.html" style="color: #cbd5e1; font-weight: 700; text-decoration: none; align-self: center; font-size: 0.9rem;">
-        Back to App ➡️
+  <!-- Screen Control Bar (Hidden when printed) -->
+  <aside class="screen-control-bar" aria-label="Worksheet Actions">
+    <h1>
+      <span>📖</span> <span>Alice in Wonderland: 3-Tier XP Quest Sheet & Passport</span>
+    </h1>
+    <div class="control-actions">
+      <button class="btn-print" onclick="window.print()" title="Print Quest Sheet (Ctrl+P)">
+        <span>🖨️</span> <span>Print Classroom Sheet</span>
+      </button>
+      <a href="index.html" class="btn-back" title="Return to Quest Deck">
+        <span>⬅️</span> <span>Back to Deck</span>
       </a>
     </div>
-  </div>
+  </aside>
 
-  <!-- ========================================================================= -->
-  <!-- PAGE 1: ADVENTURE PASSPORT & STORY SEQUENCE TIMELINE                       -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>🐇 Alice's Adventure Passport & Story Timeline</h1>
-        <div class="subtitle">Reading Book 3 — Page 16 | Lesson 1: Sequence of Events</div>
+  <!-- =========================================================================
+       PAGE 1: THE 3-TIER CHALLENGE QUEST BOARD
+       ========================================================================= -->
+  <main class="page-container">
+    <header class="sheet-header">
+      <div class="sheet-title">
+        <h2><span>🐇</span> Alice in Wonderland: XP Quest Board</h2>
+        <p>Choose your challenges! The more you challenge yourself, the more XP you earn!</p>
       </div>
-      <div class="student-meta">
-        <div>Name: <span class="meta-line"></span></div>
-        <div>Date: <span class="meta-line"></span></div>
-        <div>Class: <span class="meta-line"></span></div>
+      <div style="text-align: right;">
+        <span style="font-weight: 900; font-size: 0.88rem; color: #b45309;">Max XP: 200 👑</span>
       </div>
-    </div>
+    </header>
 
-    <!-- Student Passport -->
-    <div class="passport-box">
-      <div class="passport-photo-slot">
-        <span>Draw You in Wonderland! 🎨</span>
+    <!-- Student Metadata -->
+    <section class="student-meta-grid" aria-label="Student Information">
+      <div class="meta-field">
+        <label>Adventurer Name:</label>
+        <div class="line"></div>
       </div>
-      <div class="passport-fields">
-        <div>Explorer Name: <span class="blank-line" style="min-width: 100px;"></span></div>
-        <div>Favorite Character: <span class="blank-line" style="min-width: 100px;"></span></div>
-        <div>Badge Earned: <span class="blank-line" style="min-width: 100px;"></span></div>
-        <div>Stars Collected: ⭐ ⭐ ⭐ ⭐ ⭐</div>
+      <div class="meta-field">
+        <label>Class / Grade:</label>
+        <div class="line"></div>
       </div>
-    </div>
-
-    <h2 class="section-heading">Activity 1: Number the Story in Order (1 to 6)</h2>
-    <p class="instruction">
-      Read the 6 events from Alice's adventure. Write numbers <strong>1, 2, 3, 4, 5, 6</strong> in the circles to put the story in order!
-    </p>
-
-    <div class="story-sequence-grid">
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>Soft Landing</h4>
-          <p>She landed softly on sticks and dry leaves. She was not hurt!</p>
-        </div>
+      <div class="meta-field">
+        <label>Date:</label>
+        <div class="line"></div>
       </div>
-
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>By the River</h4>
-          <p>Alice sat by the river with her sister. She had nothing to do.</p>
-        </div>
+      <div class="meta-field">
+        <label>Target XP Goal:</label>
+        <div class="line"></div>
       </div>
+    </section>
 
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>Falling Down</h4>
-          <p>Alice fell down the hole for a long time. Down, down, down!</p>
-        </div>
+    <!-- LEVEL 1: GET STARTED! -->
+    <section class="tier-section">
+      <div class="tier-header tier-header-green">
+        <span>Level 1: Get Started! (Vocabulary & Understanding)</span>
+        <span>+10 to +20 XP</span>
       </div>
+      <table class="tier-quests-table">
+        <tbody>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">1. Learn 10 New Words</td>
+            <td class="col-desc">Find 10 words from the story and explain their meanings in English.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+10 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">2. Favorite Character</td>
+            <td class="col-desc">Name your favorite character and give 3 complete reasons why.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+15 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">3. Draw & Explain</td>
+            <td class="col-desc">Draw a character or scene, color it, and write 2 sentences explaining your drawing.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+20 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">4. Comprehension Questions</td>
+            <td class="col-desc">Answer 5 teacher questions in complete sentences with book evidence.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+20 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>The White Rabbit</h4>
-          <p>A White Rabbit with pink eyes ran past her: "Oh dear! I am late!"</p>
-        </div>
+    <!-- LEVEL 2: GO DEEPER! -->
+    <section class="tier-section">
+      <div class="tier-header tier-header-blue">
+        <span>Level 2: Go Deeper! (Application & Creative Writing)</span>
+        <span>+40 to +50 XP</span>
       </div>
+      <table class="tier-quests-table">
+        <tbody>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">5. 25 Words & 10 Sentences</td>
+            <td class="col-desc">Collect 25 vocabulary words and write 10 original sentences.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+40 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">6. 2-Minute Character Talk</td>
+            <td class="col-desc">Speak continuously about one character (personality, actions, and story role).</td>
+            <td class="col-xp"><span class="xp-badge-chip">+50 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">7. Retell a Scene</td>
+            <td class="col-desc">Close the book and orally retell a key scene step-by-step (First, Next, Then, Finally).</td>
+            <td class="col-xp"><span class="xp-badge-chip">+50 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">8. Write a New Ending</td>
+            <td class="col-desc">Write an alternate 100–150 word ending for the trial or tea party.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+50 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>The Hall of Doors</h4>
-          <p>She found a long room with doors and a little golden key on a table.</p>
-        </div>
+    <!-- LEVEL 3: BIG CHALLENGE! -->
+    <section class="tier-section">
+      <div class="tier-header tier-header-purple">
+        <span>Level 3: Big Challenge! (Critical Thinking & Performance)</span>
+        <span>+80 to +200 XP</span>
       </div>
+      <table class="tier-quests-table">
+        <tbody>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">9. Character Comparison</td>
+            <td class="col-desc">Compare two characters in detail (2 similarities and 3 clear differences).</td>
+            <td class="col-xp"><span class="xp-badge-chip">+80 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">10. Alice's Growth Arc</td>
+            <td class="col-desc">Explain how Alice changes from timid and confused to brave and confident.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+80 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">11. Act Out a Scene</td>
+            <td class="col-desc">Perform a dramatic scene with a partner or solo video using props and expressive voices.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+100 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">12. Mastery Summary</td>
+            <td class="col-desc">Give a 5-to-7 minute spoken summary of the ENTIRE book in your own words.</td>
+            <td class="col-xp"><span class="xp-badge-chip">+200 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-      <div class="story-seq-card">
-        <div class="seq-num-badge">?</div>
-        <div class="seq-content">
-          <h4>Down the Hole!</h4>
-          <p>Alice ran after the rabbit and jumped down the rabbit hole.</p>
-        </div>
+    <!-- BASELINE GUARANTEE -->
+    <section class="tier-section" style="margin-bottom: 0;">
+      <div class="tier-header tier-header-gold">
+        <span>The Baseline Guarantee (Attendance & Participation)</span>
+        <span>+10 XP</span>
       </div>
-    </div>
+      <table class="tier-quests-table">
+        <tbody>
+          <tr>
+            <td class="col-check"><div class="checkbox-box"></div></td>
+            <td class="col-title">0. Base Reading Check-In</td>
+            <td class="col-desc">"No Challenge? That's Okay! You'll still get 10 XP for participating."</td>
+            <td class="col-xp"><span class="xp-badge-chip">+10 XP</span></td>
+            <td class="col-stamp"><div class="stamp-circle">Stamp</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
 
-    <h2 class="section-heading">Activity 2: Fast Story Retell</h2>
-    <p class="instruction">Work with a partner. Take turns reading your numbered story aloud!</p>
-    <div class="writing-frame-box">
-      <div>1. First, Alice sat <span class="blank-line" style="min-width:180px;"></span>.</div>
-      <div>2. Next, she saw a White Rabbit and jumped down <span class="blank-line" style="min-width:180px;"></span>.</div>
-      <div>3. Finally, she found a little golden key on <span class="blank-line" style="min-width:180px;"></span>.</div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- PAGE 2: FEELING MONSTER LAB & "WHY" FRAMES                                 -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>😮 Feeling Monster Lab & Reasons</h1>
-        <div class="subtitle">Reading Book 3 — Page 16 | Feelings & Emotions: Worried, Bored, Surprised, Interested</div>
+  <!-- =========================================================================
+       PAGE 2: STUDENT QUEST PASSPORT & EVIDENCE LOG
+       ========================================================================= -->
+  <main class="page-container">
+    <header class="sheet-header">
+      <div class="sheet-title">
+        <h2><span>🧭</span> Student Quest Passport & Evidence Log</h2>
+        <p>Record your words, drawings, and speaking notes to unlock your XP badges!</p>
       </div>
-      <div class="student-meta">
-        <div>Name: <span class="meta-line"></span></div>
-        <div>Date: <span class="meta-line"></span></div>
-      </div>
-    </div>
+    </header>
 
-    <h2 class="section-heading">Activity 1: Draw the Monster Faces</h2>
-    <p class="instruction">Draw the feeling eyes and mouths on each monster face below.</p>
-
-    <div class="feelings-lab-grid">
-      <div class="feeling-box">
-        <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800;">1. 🥱 BORED</h3>
-        <div class="feeling-face-circle">Draw Bored Face!</div>
-        <p style="font-size:0.8rem; color:var(--ink-gray);">Nothing to do! Heavy eyes.</p>
-      </div>
-
-      <div class="feeling-box">
-        <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800;">2. 😲 SURPRISED</h3>
-        <div class="feeling-face-circle">Draw Surprised Face!</div>
-        <p style="font-size:0.8rem; color:var(--ink-gray);">Wide eyes and open mouth: "OH!"</p>
-      </div>
-
-      <div class="feeling-box">
-        <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800;">3. 🧐 INTERESTED</h3>
-        <div class="feeling-face-circle">Draw Interested Face!</div>
-        <p style="font-size:0.8rem; color:var(--ink-gray);">Curious eyes, head tilted: "Hmm!"</p>
-      </div>
-
-      <div class="feeling-box">
-        <h3 style="font-family:var(--font-heading); font-size:1.1rem; font-weight:800;">4. 😰 WORRIED</h3>
-        <div class="feeling-face-circle">Draw Worried Face!</div>
-        <p style="font-size:0.8rem; color:var(--ink-gray);">Wavy mouth and sweating brow: "Oh no!"</p>
-      </div>
-    </div>
-
-    <h2 class="section-heading">Activity 2: Complete the "Why" Sentences</h2>
-    <p class="instruction">Choose from: <strong>bored / surprised / interested / worried</strong> and finish the sentences.</p>
-
-    <div class="writing-frame-box">
-      <div>1. By the river, Alice was <span class="blank-line" style="min-width:140px;"></span> because she had nothing to do.</div>
-      <div>2. When the Rabbit talked, Alice was <span class="blank-line" style="min-width:140px;"></span> because rabbits don't speak!</div>
-      <div>3. Alice was <span class="blank-line" style="min-width:140px;"></span> in following the Rabbit down the hole.</div>
-      <div>4. Falling down the hole, Alice was <span class="blank-line" style="min-width:140px;"></span>: "Will I ever land?"</div>
-    </div>
-
-    <h2 class="section-heading">Activity 3: How Do YOU Feel Today?</h2>
-    <div style="font-size: 0.95rem; font-weight: 700; margin-top: 4px;">
-      Today I feel <span class="blank-line" style="min-width: 140px;"></span> because <span class="blank-line" style="min-width: 280px;"></span>!
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- PAGE 3: THE MYSTERY DOOR CREATIVE STUDIO                                   -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>🚪 The Mystery Door Creative Studio</h1>
-        <div class="subtitle">Reading Book 3 — Page 17 | Creative Writing & Imagination Workshop</div>
-      </div>
-      <div class="student-meta">
-        <div>Name: <span class="meta-line"></span></div>
-        <div>Date: <span class="meta-line"></span></div>
-      </div>
-    </div>
-
-    <h2 class="section-heading">The Little Door in the Wall</h2>
-    <p class="instruction">
-      Alice opened a little door with a golden key. What did she see? What is behind <strong>YOUR</strong> magic door?
-      Draw your wonderful secret world inside the frame!
-    </p>
-
-    <!-- Large Drawing Canvas -->
-    <div class="drawing-canvas-box">
-      <span style="font-size: 2.2rem; margin-bottom: 6px;">🚪 🏰 🚀 🐉 🌺</span>
-      <span>[ DRAW WHAT IS BEHIND YOUR MAGIC DOOR HERE! ]</span>
-      <span style="font-size: 0.8rem; margin-top: 4px;">(Color with crayons or pencils!)</span>
-    </div>
-
-    <h2 class="section-heading">My Secret Door Story</h2>
-    <p class="instruction">Fill in the blanks to describe your secret world to your classmates!</p>
-
-    <div class="writing-frame-box">
-      <div>1. Behind my magic door, there is a <span class="blank-line" style="min-width: 220px;"></span>.</div>
-      <div>2. It is very <span class="blank-line" style="min-width: 160px;"></span> and <span class="blank-line" style="min-width: 160px;"></span>.</div>
-      <div>3. In this world, I can <span class="blank-line" style="min-width: 240px;"></span>.</div>
-      <div>4. I feel <span class="blank-line" style="min-width: 140px;"></span> because <span class="blank-line" style="min-width: 240px;"></span>!</div>
-    </div>
-
-    <div style="margin-top: 10px; font-size: 0.85rem; color: var(--ink-gray); font-style: italic;">
-      💡 Idea bank: giant candy tree, purple dragon, flying bicycle, secret robot, rainbow ocean, friendly alien!
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- PAGE 4: SKIMMING DETECTIVE TRAINING & BRAIN POWER                          -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>🦅 Skimming Detective Training & Brain Power</h1>
-        <div class="subtitle">Reading Book 3 — Page 17 | Skimming Skills & "Learning and Your Brain"</div>
-      </div>
-      <div class="student-meta">
-        <div>Name: <span class="meta-line"></span></div>
-        <div>Date: <span class="meta-line"></span></div>
-      </div>
-    </div>
-
-    <h2 class="section-heading">Mission 1: Skim or Read Carefully?</h2>
-    <p class="instruction">Tick (✔️) the correct column for each everyday reading activity.</p>
-
-    <table class="table-compare">
+    <!-- Vocabulary Vault -->
+    <h3 class="passport-section-title"><span>📖</span> 1. Vocabulary Vault (Quest 1 & 5)</h3>
+    <table class="vocab-table">
       <thead>
         <tr>
-          <th>Reading Situation</th>
-          <th style="text-align:center; width: 130px;">👀 SKIM FAST</th>
-          <th style="text-align:center; width: 140px;">🔍 READ CAREFULLY</th>
+          <th style="width: 30px;">#</th>
+          <th style="width: 140px;">Wonderland Word</th>
+          <th>Definition / Meaning in My Words</th>
+          <th style="width: 70px;">Page #</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1. Checking what time the bus leaves on a timetable</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-        </tr>
-        <tr>
-          <td>2. Reading the rules of a new classroom board game</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-        </tr>
-        <tr>
-          <td>3. Looking at a restaurant menu to find ice cream</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-        </tr>
-        <tr>
-          <td>4. Studying your science textbook for a big test</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-        </tr>
-        <tr>
-          <td>5. Checking a movie poster for the start time</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-          <td style="text-align:center;">[ &nbsp; ]</td>
-        </tr>
+        <tr><td>1</td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td><td></td></tr>
+        <tr><td>4</td><td></td><td></td><td></td></tr>
+        <tr><td>5</td><td></td><td></td><td></td></tr>
       </tbody>
     </table>
 
-    <h2 class="section-heading">Mission 2: 5-Second Speed Skim Challenge</h2>
-    <p class="instruction">Skim the paragraph below in 5 SECONDS! Circle: <strong>38 cm</strong>, <strong>golden key</strong>, and <strong>garden</strong>!</p>
-
-    <div style="border: 2px solid var(--ink-black); border-radius: 8px; padding: 12px 16px; background: #fffbeb; font-size: 0.95rem; line-height: 1.5; margin-bottom: 14px;">
-      Alice found a little door in the room. It was only <strong>38 cm</strong> high.
-      She used the <strong>golden key</strong> to unlock it. She looked through the door
-      and saw the loveliest <strong>garden</strong> with bright flowers and fountains!
-      But Alice was too big to fit through the door.
+    <!-- Drawing & Scene Studio -->
+    <h3 class="passport-section-title"><span>🎨</span> 2. Drawing & Explanation Canvas (Quest 3)</h3>
+    <div class="drawing-box-frame">
+      <span class="prompt">Draw your favorite character or scene inside this box:</span>
+      <span style="align-self: flex-end; font-size: 0.72rem; color: #94a3b8;">Use colored pencils or markers</span>
     </div>
-
-    <h2 class="section-heading">Mission 3: My Brain Power Badges</h2>
-    <p class="instruction">What does your brain do when you learn? Tick your brain superpowers:</p>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-weight: 700; font-size: 0.9rem;">
-      <div>[ &nbsp; ] 🧠 My brain thinks of cool ideas!</div>
-      <div>[ &nbsp; ] 💭 My brain remembers English words!</div>
-      <div>[ &nbsp; ] ⚡ My brain solves tricky puzzles!</div>
-      <div>[ &nbsp; ] 😴 My brain rests when I sleep!</div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- PAGE 5: CUTOUT CARDS — STORY EVENTS & FEELING BADGES                       -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>✂️ Tactile Cutout Cards: Story Events & Feelings</h1>
-        <div class="subtitle">Cut along the dotted lines. Use for timeline races & classroom partner games!</div>
+    <div class="writing-lines-container">
+      <div class="writing-line-row">
+        <span>Sentence 1:</span>
+        <div class="writing-line-fill"></div>
       </div>
-      <div class="student-meta">
-        <div class="scissors-badge">✂️ Cutout Card Kit — Set A</div>
+      <div class="writing-line-row">
+        <span>Sentence 2:</span>
+        <div class="writing-line-fill"></div>
       </div>
     </div>
 
-    <div class="cutout-grid">
-      <!-- Card 1 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 1 • START</span>
-        <div style="font-size: 2rem;">🌊 👭</div>
-        <div class="cutout-title">Sitting by the River</div>
-        <div class="cutout-desc">Alice was sitting by the river with her sister. She had nothing to do.</div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 2 • SIGHT</span>
-        <div style="font-size: 2rem;">🐇 ⏰</div>
-        <div class="cutout-title">The White Rabbit</div>
-        <div class="cutout-desc">A White Rabbit ran past, checked his watch, and shouted: "I am late!"</div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 3 • ACTION</span>
-        <div style="font-size: 2rem;">🕳️ 🏃‍♀️</div>
-        <div class="cutout-title">Down the Rabbit Hole</div>
-        <div class="cutout-desc">Alice jumped into the deep dark rabbit hole after the rabbit!</div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 4 • FALL</span>
-        <div style="font-size: 2rem;">🌀 ⬇️</div>
-        <div class="cutout-title">Falling for a Long Time</div>
-        <div class="cutout-desc">Down, down, down! Alice fell for a very long time through cupboards and books.</div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 5 • LANDING</span>
-        <div style="font-size: 2rem;">🍂 💥</div>
-        <div class="cutout-title">Landed Softly</div>
-        <div class="cutout-desc">THUMP! She landed softly on sticks and dry leaves without getting hurt.</div>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="cutout-card">
-        <span class="cutout-tag">CARD 6 • MYSTERY</span>
-        <div style="font-size: 2rem;">🚪 🔑</div>
-        <div class="cutout-title">The Golden Key & Doors</div>
-        <div class="cutout-desc">She entered a hall with locked doors and found a little golden key on a glass table.</div>
-      </div>
+    <!-- Speaking Frame Notes -->
+    <h3 class="passport-section-title"><span>🗣️</span> 3. Speaking & Performance Frame (Quest 2, 6, 7, 9, 10, 12)</h3>
+    <div style="background: #f8fafc; border: 1px solid var(--ink-border); border-radius: 8px; padding: 12px 14px; font-size: 0.85rem;">
+      <p style="margin-bottom: 6px;"><strong>Starter Sentence Frames:</strong></p>
+      <ul style="padding-left: 20px; color: #334155; line-height: 1.5;">
+        <li><em>"My favorite character is ____________ because ____________."</em></li>
+        <li><em>"First, ____________. Next, ____________. Finally, ____________."</em></li>
+        <li><em>"While both characters are ____________, Alice is ____________ but the Queen is ____________."</em></li>
+      </ul>
     </div>
 
-    <!-- 4 Feeling Cutout Badges -->
-    <h2 class="section-heading" style="margin-top: 16px;">Feeling Badges (Cut & Hold Up in Class!)</h2>
-    <div class="cutout-grid-3" style="grid-template-columns: repeat(4, 1fr);">
-      <div class="cutout-card">
-        <div style="font-size: 1.8rem;">🥱</div>
-        <div class="cutout-title" style="font-size: 0.9rem;">BORED</div>
+    <!-- Official Teacher Verification Seal -->
+    <section class="diploma-seal-box">
+      <div class="diploma-seal-text">
+        <h4><span>👑</span> Certified Wonderland Explorer Seal</h4>
+        <p>This certifies that the adventurer named above completed their selected XP Challenges with curiosity and courage!</p>
       </div>
-      <div class="cutout-card">
-        <div style="font-size: 1.8rem;">😲</div>
-        <div class="cutout-title" style="font-size: 0.9rem;">SURPRISED</div>
+      <div class="diploma-sign-box">
+        <div style="height: 22px;"></div>
+        Teacher Signature & Date
       </div>
-      <div class="cutout-card">
-        <div style="font-size: 1.8rem;">🧐</div>
-        <div class="cutout-title" style="font-size: 0.9rem;">INTERESTED</div>
-      </div>
-      <div class="cutout-card">
-        <div style="font-size: 1.8rem;">😰</div>
-        <div class="cutout-title" style="font-size: 0.9rem;">WORRIED</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- PAGE 6: CUTOUT CARDS — CLASSROOM VOTING SIGNS & EAGLE EYE BADGES           -->
-  <!-- ========================================================================= -->
-  <div class="page-sheet">
-    <div class="page-header">
-      <div class="page-title-box">
-        <h1>✂️ Classroom Voting Signs & Detective Badges</h1>
-        <div class="subtitle">Cut along the dotted lines. Hold up in class during Speed Skim drills!</div>
-      </div>
-      <div class="student-meta">
-        <div class="scissors-badge">✂️ Cutout Card Kit — Set B</div>
-      </div>
-    </div>
-
-    <!-- 2 Large Voting Paddles -->
-    <div class="cutout-grid">
-      <div class="cutout-card" style="padding: 24px 16px; border-width: 3px;">
-        <span class="cutout-tag" style="background:#2dd4bf; color:#0f172a;">VOTING SIGN</span>
-        <div style="font-size: 3.5rem; margin: 8px 0;">👀 ⚡</div>
-        <div class="cutout-title" style="font-size: 1.4rem;">SKIM!</div>
-        <div class="cutout-desc" style="font-size: 0.95rem; font-weight: 700;">
-          Look fast! Don't read every word! Find the main idea!
-        </div>
-      </div>
-
-      <div class="cutout-card" style="padding: 24px 16px; border-width: 3px;">
-        <span class="cutout-tag" style="background:#f59e0b; color:#0f172a;">VOTING SIGN</span>
-        <div style="font-size: 3.5rem; margin: 8px 0;">🔍 📖</div>
-        <div class="cutout-title" style="font-size: 1.4rem;">READ CAREFULLY!</div>
-        <div class="cutout-desc" style="font-size: 0.95rem; font-weight: 700;">
-          Read every word slowly! Understand all the details!
-        </div>
-      </div>
-    </div>
-
-    <!-- Eagle Eye Badges & Imagination Cards -->
-    <h2 class="section-heading" style="margin-top: 20px;">Eagle Eye Detective Badges & Imagination Tokens</h2>
-    <div class="cutout-grid-3">
-      <div class="cutout-card">
-        <div style="font-size: 2rem;">🦅 🔎</div>
-        <div class="cutout-title" style="font-size: 0.95rem;">EAGLE EYE</div>
-        <div class="cutout-desc">I can spot numbers and names in 5 seconds!</div>
-      </div>
-
-      <div class="cutout-card">
-        <div style="font-size: 2rem;">🔑 🏆</div>
-        <div class="cutout-title" style="font-size: 0.95rem;">KEY MASTER</div>
-        <div class="cutout-desc">I solved the mystery door of Wonderland!</div>
-      </div>
-
-      <div class="cutout-card">
-        <div style="font-size: 2rem;">🧠 ⚡</div>
-        <div class="cutout-title" style="font-size: 0.95rem;">BRAIN POWER</div>
-        <div class="cutout-desc">My brain learns and thinks every day!</div>
-      </div>
-    </div>
-
-    <!-- Teacher Instructions -->
-    <div style="margin-top: 20px; border: 1px solid var(--ink-border); border-radius: 8px; padding: 10px 14px; background: #f8fafc; font-size: 0.8rem; color: var(--ink-gray);">
-      <strong>Teacher Tip for Non-Tech Classrooms:</strong> Laminate these cutout cards for recurring classroom use. Have students hold up their <em>SKIM</em> or <em>READ CAREFULLY</em> signs during the game rounds. Use the story event cards for group sequencing relays on the whiteboard or classroom floor.
-    </div>
-  </div>
+    </section>
+  </main>
 
 </body>
 </html>

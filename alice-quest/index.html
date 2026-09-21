@@ -3,108 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🐇 Alice's Wonderland Reading Quest & The Skimming Detectives | Interactive ESL Lessons (A1+)</title>
-  <link rel="stylesheet" href="css/alice.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <title>📖 Alice in Wonderland: XP Quest Deck | Interactive Presentation & Gradebook</title>
+  <link rel="stylesheet" href="css/alice-quest.css">
 </head>
 <body>
 
-  <!-- Fullscreen Responsive App Wrapper -->
-  <div id="alice-app-wrapper">
-
-    <!-- Top Persistent HUD -->
-    <header id="alice-hud">
-      <div class="hud-group">
-        <button class="hud-brand" onclick="window.aliceApp.goToStage('lesson1', 1)" title="Return to Quest Start">
-          🐇 <span>Alice's Quest</span>
-        </button>
-
-        <!-- Lesson Selector Tabs -->
-        <div class="lesson-tabs">
-          <button class="lesson-tab-btn active" id="tab-lesson1" onclick="window.aliceApp.switchLesson('lesson1')" title="Lesson 1: Alice in Wonderland Story Sequence & Feelings">
-            L1: Wonderland Quest (35m)
-          </button>
-          <button class="lesson-tab-btn gold" id="tab-lesson2" onclick="window.aliceApp.switchLesson('lesson2')" title="Lesson 2: Skimming Detectives & Brain Power">
-            L2: Skimming Detectives (35m)
-          </button>
-        </div>
-
-        <button class="hud-btn" onclick="window.aliceApp.prevStage()" title="Previous Stage">
-          ⬅️ <span>Prev</span>
-        </button>
-
-        <button class="hud-btn" onclick="window.aliceApp.nextStage()" title="Next Stage">
-          <span>Next</span> ➡️
-        </button>
-
-        <!-- Stage Tracker Pill -->
-        <div class="stage-tracker-pill" id="hud-stage-tracker">
-          1. 🐇 Follow Rabbit
-        </div>
-      </div>
-
-      <div class="hud-group">
-        <!-- Adventure Score & Resource Badges -->
-        <div class="badge-pill" title="Total Adventure Score">
-          <span>⚡</span>
-          <span id="hud-score-val">0 XP</span>
-        </div>
-
-        <div class="badge-pill" title="Golden Stars Collected">
-          <span>⭐</span>
-          <span id="hud-stars-val">0</span>
-        </div>
-
-        <div class="badge-pill" title="Golden Wonderland Keys">
-          <span>🔑</span>
-          <span id="hud-keys-val">0</span>
-        </div>
-
-        <!-- Combo Pill -->
-        <div class="combo-pill" id="hud-combo-pill" style="display:none;" title="Answer Streak Combo">
-          🔥 3 COMBO!
-        </div>
-
-        <!-- Hint Button -->
-        <button class="hud-btn" onclick="window.aliceApp.showHint()" title="Get a gentle clue">
-          💡 <span>Hint</span>
-        </button>
-
-        <!-- Audio Toggles -->
-        <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.aliceAudio.toggleSfx(); this.textContent = on ? '🔊 SFX' : '🔇 SFX';" title="Toggle Sound Effects">
-          🔊 SFX
-        </button>
-        <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.aliceAudio.toggleSpeech(); this.textContent = on ? '🗣️ TTS' : '🤐 TTS';" title="Toggle Speech Narration">
-          🗣️ TTS
-        </button>
-
-        <!-- Teacher Control Center -->
-        <button class="hud-btn" onclick="window.aliceApp.openTeacherModal()" title="Teacher Navigation & 8-Dimension Guide">
-          ⚙️ <span>Teacher</span>
-        </button>
-
-        <!-- Printable Companion Kit -->
-        <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Open 6-Page Printable Classroom Kit & Cutouts">
-          🖨️ <span>Worksheet</span>
-        </a>
-
-        <!-- Return to Platform Library -->
-        <a href="../index.html#library" class="hud-btn" title="Back to Game Library">
-          📚 <span>Library</span>
-        </a>
-      </div>
-    </header>
-
-    <!-- Main Dynamic Stage Area -->
-    <main id="alice-stage-container">
-      <!-- Injected dynamically by alice-scenes.js -->
-    </main>
-
+  <!-- Atmospheric Floating Card Suits (♠ ♥ ♦ ♣) -->
+  <div class="ambient-suits-layer" aria-hidden="true">
+    <div class="floating-suit suit-heart">♥</div>
+    <div class="floating-suit suit-spade">♠</div>
+    <div class="floating-suit suit-diamond">♦</div>
+    <div class="floating-suit suit-club">♣</div>
   </div>
 
-  <!-- Reusable Teacher Control Center Modal -->
+  <!-- Top Persistent HUD -->
+  <header class="alice-hud" role="banner">
+    <div class="hud-left">
+      <button class="hud-brand" onclick="window.aliceApp.goToCard(0)" title="Return to Quest 1">
+        <span class="brand-icon">🐇</span>
+        <div>
+          <span class="brand-title">ALICE IN WONDERLAND</span>
+          <span class="brand-sub">XP QUEST DECK ⚡</span>
+        </div>
+      </button>
+
+      <!-- Quest Counter Pill -->
+      <div class="hud-progress-pill" id="hud-progress-pill">
+        Quest 1 of 13
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <!-- View Mode Toggle -->
+      <button class="hud-btn" onclick="window.aliceApp.toggleViewMode()" title="Toggle between Slide Presentation and Grid Gallery (V)">
+        🎴 <span id="hud-view-mode-label">Grid View</span>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button class="hud-btn" onclick="window.aliceApp.toggleFullscreen()" title="Toggle Fullscreen Smart Board Mode (F)">
+        ⛶ <span>Fullscreen</span>
+      </button>
+
+      <!-- SFX Toggle -->
+      <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.aliceAudio.toggleSfx(); this.innerHTML = on ? '🔊 <span>SFX</span>' : '🔇 <span>SFX</span>';" title="Toggle Sound Effects">
+        🔊 <span>SFX</span>
+      </button>
+
+      <!-- TTS Toggle -->
+      <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.aliceAudio.toggleSpeech(); this.innerHTML = on ? '🗣️ <span>TTS</span>' : '🤐 <span>TTS</span>';" title="Toggle Speech Narration">
+        🗣️ <span>TTS</span>
+      </button>
+
+      <!-- Printable Quest Sheet & Passport -->
+      <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Printable A4 Quest Sheet & Student Passport">
+        🖨️ <span>Worksheet</span>
+      </a>
+
+      <!-- Return to Platform Library -->
+      <a href="../index.html#library" class="hud-btn" title="Back to Game Library">
+        📚 <span>Library</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Differentiated Challenge Filter Strip -->
+  <nav class="filter-strip" aria-label="Challenge Tiers">
+    <button class="filter-btn btn-all active" data-filter="all" onclick="window.aliceApp.applyFilter('all')">
+      <span>🌟</span> All Quests <span class="filter-count">13</span>
+    </button>
+    <button class="filter-btn btn-level1" data-filter="level1" onclick="window.aliceApp.applyFilter('level1')">
+      <span>🟢</span> Level 1: Get Started (+10–20 XP) <span class="filter-count">4</span>
+    </button>
+    <button class="filter-btn btn-level2" data-filter="level2" onclick="window.aliceApp.applyFilter('level2')">
+      <span>🔵</span> Level 2: Go Deeper (+40–50 XP) <span class="filter-count">4</span>
+    </button>
+    <button class="filter-btn btn-level3" data-filter="level3" onclick="window.aliceApp.applyFilter('level3')">
+      <span>🟣</span> Level 3: Big Challenge (+80–200 XP) <span class="filter-count">4</span>
+    </button>
+    <button class="filter-btn btn-base" data-filter="baseline" onclick="window.aliceApp.applyFilter('baseline')">
+      <span>🟡</span> Base Participation (+10 XP) <span class="filter-count">1</span>
+    </button>
+  </nav>
+
+  <!-- Main Viewport Area (Rendered dynamically by alice-app.js) -->
+  <main class="alice-main-container">
+    <div id="alice-main-viewport"></div>
+  </main>
+
+  <!-- Reusable Modal (Add Student to Roster) -->
   <div class="alice-modal-overlay" id="alice-modal" style="display:none;" onclick="if(event.target === this) window.aliceApp.closeModal();">
     <div class="alice-modal-box">
       <button class="modal-close-btn" onclick="window.aliceApp.closeModal()" aria-label="Close Modal">✕</button>
@@ -112,13 +98,12 @@
     </div>
   </div>
 
-  <!-- Toast Notification Bar -->
-  <div id="alice-toast"></div>
+  <!-- Floating Toast Notification -->
+  <div id="alice-toast" class="alice-toast"></div>
 
   <!-- Application Scripts -->
-  <script src="js/alice-audio.js"></script>
   <script src="js/alice-data.js"></script>
-  <script src="js/alice-scenes.js"></script>
+  <script src="js/alice-audio.js"></script>
   <script src="js/alice-app.js"></script>
 </body>
 </html>
