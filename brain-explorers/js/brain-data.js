@@ -1,7 +1,7 @@
 /**
- * LEARNING AND YOUR BRAIN — CURRICULUM & ENGINE DATA
- * Target Audience: Primary ESL / CLIL (Ages 7–11 | CEFR A1–A2)
- * Core Language: "The [lobe] helps us [verb]." / "Reading is a whole-team effort!"
+ * BRAIN EXPLORERS: HOW YOUR BRAIN READS — CURRICULUM & ENGINE DATA
+ * Grade 3-4 | CEFR A1+ / Early A2 | CLIL Human Biology & Neuroscience
+ * Production-Grade Cyber-Biology Architecture
  */
 
 (function(root) {
@@ -9,414 +9,405 @@
 
   const BRAIN_DATA = {
     meta: {
-      id: 'learning-and-your-brain',
-      title: 'Learning & Your Brain',
-      subtitle: 'HOW YOUR SUPER-COMPUTER WORKS!',
-      theme: 'Neurobiology & How We Learn',
-      grade: 'Primary Grades 2–5',
-      cefr: 'CEFR A1+ / A2',
-      energyRequirement: '20% of Body Energy',
-      coreFormula: 'The [Lobe] helps us [Verb].',
-      teamworkMotto: 'Reading is a whole-team effort!'
+      id: 'brain-explorers',
+      title: '🧠 Brain Explorers: How Your Brain Reads',
+      subtitle: 'Primary CLIL Neuro-Quest & Cognitive Super-Computer',
+      level: 'A1 / A2',
+      cefrLevel: 'A1+',
+      ageGroup: '7-11',
+      durationMinutes: 35,
+      totalXP: 100,
+      baseEnergy: 20 // The human brain consumes ~20% of resting metabolic energy
     },
 
-    // 4 Anatomical Brain Lobes with SVG Paths, Colors, Functions, and ESL Formula
+    // 4 Primary Lobes + Cerebellum & Brainstem with organic vector parameters
     lobes: {
       frontal: {
         id: 'frontal',
         name: 'Frontal Lobe',
-        color: '#f59e0b',       // Amber / Yellow
-        glowColor: '#fbbf24',
-        accentBg: 'rgba(245, 158, 11, 0.18)',
-        borderColor: '#d97706',
+        alias: 'The Thinking & Planning Chief',
+        color: '#f59e0b', // Solar Amber
+        glowColor: 'rgba(245, 158, 11, 0.45)',
+        region: 'Anterior Cortex (Forehead)',
         icon: '💡',
-        shortRole: 'Thinking & Speaking',
-        actionVerb: 'think, plan, and speak',
-        formulaSentence: 'The Frontal Lobe helps us think and speak.',
-        eslPrompt: 'We use our Frontal Lobe to understand and say words!',
-        locationText: 'Front of the brain (behind your forehead)',
-        readingRole: 'Understands the meaning and controls your voice to speak the word aloud.',
-        readingStepNumber: 4,
-        svgPath: 'M 130 95 C 130 65 170 60 215 65 C 265 72 295 105 305 145 C 312 175 305 210 280 235 C 255 255 220 255 195 240 C 185 225 180 200 175 180 C 165 170 145 155 130 145 C 120 135 125 110 130 95 Z',
-        center: { x: 235, y: 150 }
+        functions: ['Thinking & Logic', 'Speaking Words Aloud', 'Problem Solving', 'Focus & Decisions'],
+        primaryFormula: 'The Frontal Lobe helps us think and speak.',
+        useFormula: 'We use our Frontal Lobe to solve problems and understand meaning.',
+        roleInReading: 'Step 4: Understands word meaning and commands vocal cords to speak aloud.',
+        badgeTitle: 'Frontal Thinker'
       },
-
       parietal: {
         id: 'parietal',
         name: 'Parietal Lobe',
-        color: '#10b981',       // Emerald / Green
-        glowColor: '#34d399',
-        accentBg: 'rgba(16, 185, 129, 0.18)',
-        borderColor: '#059669',
+        alias: 'The Touch & Sensory Navigator',
+        color: '#10b981', // Vivid Emerald
+        glowColor: 'rgba(16, 185, 129, 0.45)',
+        region: 'Superior-Posterior (Crown of Head)',
         icon: '🖐️',
-        shortRole: 'Touch & Space',
-        actionVerb: 'feel touch, taste, and know where our hands are',
-        formulaSentence: 'The Parietal Lobe helps us feel touch and turn pages.',
-        eslPrompt: 'We use our Parietal Lobe to hold the book and turn the page!',
-        locationText: 'Top-middle of the brain',
-        readingRole: 'Controls hand touch, holding the book, and tracking where words are on the page.',
-        readingStepNumber: 3,
-        svgPath: 'M 130 95 C 145 65 195 45 250 50 C 275 52 285 58 295 70 C 270 66 220 62 180 80 C 150 95 135 110 130 95 Z M 130 95 C 140 110 160 115 175 140 C 150 145 125 135 110 120 C 100 105 115 95 130 95 Z M 175 80 C 220 62 270 66 295 70 C 275 100 240 120 205 135 C 190 115 185 95 175 80 Z',
-        // Consolidated full anatomical contour:
-        contourPath: 'M 130 92 C 150 55 210 40 270 48 C 290 52 300 62 305 75 C 280 115 240 135 195 145 C 175 125 150 110 130 92 Z',
-        center: { x: 215, y: 90 }
+        functions: ['Touch & Texture', 'Taste Sensation', 'Spatial Tracking', 'Book Handling'],
+        primaryFormula: 'The Parietal Lobe helps us feel touch and track words.',
+        useFormula: 'We use our Parietal Lobe to track lines of text from left to right.',
+        roleInReading: 'Step 3: Keeps track of word order and controls finger/hand coordination.',
+        badgeTitle: 'Parietal Navigator'
       },
-
       occipital: {
         id: 'occipital',
         name: 'Occipital Lobe',
-        color: '#ef4444',       // Red / Coral
-        glowColor: '#f87171',
-        accentBg: 'rgba(239, 68, 68, 0.18)',
-        borderColor: '#dc2626',
+        alias: 'The Visual Camera',
+        color: '#f43f5e', // Neon Coral / Crimson
+        glowColor: 'rgba(244, 63, 94, 0.45)',
+        region: 'Posterior Pole (Back of Head)',
         icon: '👁️',
-        shortRole: 'Vision & Seeing',
-        actionVerb: 'see letters, colors, and shapes',
-        formulaSentence: 'The Occipital Lobe helps us see letters and words.',
-        eslPrompt: 'We use our Occipital Lobe to see the letters on the page!',
-        locationText: 'Back of the brain',
-        readingRole: 'First reading step: Your eyes capture the visual shape of each letter.',
-        readingStepNumber: 1,
-        svgPath: 'M 95 135 C 115 120 145 130 165 145 C 150 175 130 205 105 215 C 80 205 70 175 75 155 C 80 142 88 138 95 135 Z',
-        center: { x: 115, y: 170 }
+        functions: ['Seeing Colors', 'Recognizing Shapes', 'Detecting Letters', 'Visual Memory'],
+        primaryFormula: 'The Occipital Lobe helps us see letters and words.',
+        useFormula: 'We use our Occipital Lobe to capture the curved shapes of letters.',
+        roleInReading: 'Step 1: Eyes send visual signals to decode the ink lines and shapes on page.',
+        badgeTitle: 'Occipital Visionary'
       },
-
       temporal: {
         id: 'temporal',
         name: 'Temporal Lobe',
-        color: '#a855f7',       // Purple / Violet
-        glowColor: '#c084fc',
-        accentBg: 'rgba(168, 85, 247, 0.18)',
-        borderColor: '#9333ea',
+        alias: 'The Phonics Sound Studio',
+        color: '#a855f7', // Electric Violet
+        glowColor: 'rgba(168, 85, 247, 0.45)',
+        region: 'Lateral Sides (Near Ears)',
         icon: '👂',
-        shortRole: 'Hearing & Word Sounds',
-        actionVerb: 'hear sounds, music, and spoken phonemes',
-        formulaSentence: 'The Temporal Lobe helps us hear word sounds.',
-        eslPrompt: 'We use our Temporal Lobe to remember what letter sounds sound like!',
-        locationText: 'Sides of the brain (near your ears)',
-        readingRole: 'Matches the visual letters to their phonemes (/k/ /æ/ /t/).',
-        readingStepNumber: 2,
-        svgPath: 'M 140 165 C 165 155 195 160 215 180 C 220 205 210 230 190 242 C 160 250 135 235 125 210 C 120 190 130 175 140 165 Z',
-        center: { x: 170, y: 205 }
+        functions: ['Hearing Sounds', 'Matching Phonics / Phonemes', 'Music & Rhythm', 'Language Memory'],
+        primaryFormula: 'The Temporal Lobe helps us hear sounds and phonics.',
+        useFormula: 'We use our Temporal Lobe to match letters to sounds like /k/ - /æ/ - /t/.',
+        roleInReading: 'Step 2: Connects written letter shapes to phonetic voice sounds in memory.',
+        badgeTitle: 'Temporal Listener'
       }
     },
 
-    // Phase 1: Sensory Discovery Tokens
-    // Learners inspect sensory cards and match them to the correct lobe
-    sensoryTokens: [
-      {
-        id: 'token-letters',
-        name: 'Printed Letters',
-        icon: '📖',
-        targetLobe: 'occipital',
-        description: 'Looking at black letters printed on a white page.',
-        spokenFormula: 'The Occipital Lobe helps us see letters!',
-        clue: 'Seeing with your eyes'
+    // Additional anatomical structures for educational depth
+    structures: {
+      cerebellum: {
+        name: 'Cerebellum',
+        color: '#64748b',
+        role: 'Balance, posture, and smooth motor coordination.'
       },
-      {
-        id: 'token-colors',
-        name: 'Bright Rainbow',
-        icon: '🌈',
-        targetLobe: 'occipital',
-        description: 'Noticing bright red, blue, and yellow colors in a picture.',
-        spokenFormula: 'The Occipital Lobe helps us see colors!',
-        clue: 'Visual shapes & light'
-      },
-      {
-        id: 'token-phonics',
-        name: 'Letter Sounds (/b/-/æ/-/t/)',
-        icon: '🔊',
-        targetLobe: 'temporal',
-        description: 'Hearing teacher sound out the letters in a word.',
-        spokenFormula: 'The Temporal Lobe helps us hear word sounds!',
-        clue: 'Listening with your ears'
-      },
-      {
-        id: 'token-music',
-        name: 'Song Melody',
-        icon: '🎵',
-        targetLobe: 'temporal',
-        description: 'Hearing a rhythm, drum beat, or alphabet song.',
-        spokenFormula: 'The Temporal Lobe helps us hear music!',
-        clue: 'Hearing rhythms & tones'
-      },
-      {
-        id: 'token-touch',
-        name: 'Smooth Book Cover',
-        icon: '📘',
-        targetLobe: 'parietal',
-        description: 'Feeling the smooth paper cover as your fingers hold the book.',
-        spokenFormula: 'The Parietal Lobe helps us feel touch!',
-        clue: 'Touching with your fingers'
-      },
-      {
-        id: 'token-turn-page',
-        name: 'Page Turning',
-        icon: '📄',
-        targetLobe: 'parietal',
-        description: 'Knowing where your hand is as you turn to page two.',
-        spokenFormula: 'The Parietal Lobe helps us know where our hands are!',
-        clue: 'Body & space sense'
-      },
-      {
-        id: 'token-speaking',
-        name: 'Speaking Aloud',
-        icon: '🗣️',
-        targetLobe: 'frontal',
-        description: 'Using your mouth and tongue to speak "Hello class!"',
-        spokenFormula: 'The Frontal Lobe helps us speak words aloud!',
-        clue: 'Language & speaking'
-      },
-      {
-        id: 'token-thinking',
-        name: 'Story Question',
-        icon: '🧩',
-        targetLobe: 'frontal',
-        description: 'Thinking about what happens next in the mystery story.',
-        spokenFormula: 'The Frontal Lobe helps us think and solve problems!',
-        clue: 'Thinking & planning'
+      brainstem: {
+        name: 'Brainstem',
+        color: '#475569',
+        role: 'Involuntary vital life functions (heartbeat, breathing, and blood pressure).'
       }
-    ],
+    },
 
-    // Phase 2: Reading Teamwork Scenarios
-    // "Reading is a whole-team effort!" — Step-by-step synapse relay
-    readingJourney: {
-      word: 'C - A - T',
-      wordPronunciation: '/kæt/',
-      imageIcon: '🐱',
-      headline: 'How Does Your Brain Read a Word?',
-      teamworkMotto: 'Reading is a whole-team effort! All 4 lobes work together in 0.3 seconds!',
-      steps: [
+    // PHASE 1: SENSORY SORTING ARCADE (6 Dynamic Chips)
+    phase1_atlas: {
+      title: 'PHASE 1: THE NEURO-ATLAS',
+      subtitle: 'Sort sensory impulses to their anatomical control centers on the cortex hologram!',
+      instructions: 'Click or drag each sensory chip to the matching brain lobe. Listen to the audio clues!',
+      targetFormula: 'The [lobe] helps us [verb]. We use our [lobe] to [verb].',
+      chips: [
         {
-          step: 1,
-          lobeId: 'occipital',
-          lobeName: 'Occipital Lobe',
-          color: '#ef4444',
-          action: '1. EYES SEE THE LETTERS',
-          detail: 'Your eyes see the visual shapes: curved C, tall A, and crossed T.',
-          voicePrompt: 'First, the Occipital Lobe sees the shapes of C, A, and T.',
-          badge: '👁️ Seeing Letters'
+          id: 'chip-rainbow',
+          name: 'Rainbow Letters',
+          icon: '👁️',
+          targetLobe: 'occipital',
+          targetName: 'Occipital Lobe',
+          color: '#f43f5e',
+          description: 'Recognizing colorful letters: curved C, tall A, and crossed T.',
+          audioPrompt: 'Looking at bright rainbow letters and bold shapes!',
+          spokenFact: 'The Occipital Lobe at the back of your head helps you see letters!',
+          softFailClue: 'Remember: Your eyes look forward, but seeing happens at the back of your head!'
         },
         {
-          step: 2,
-          lobeId: 'temporal',
-          lobeName: 'Temporal Lobe',
+          id: 'chip-phonics',
+          name: 'Phoneme Sounds',
+          icon: '🎧',
+          targetLobe: 'temporal',
+          targetName: 'Temporal Lobe',
           color: '#a855f7',
-          action: '2. EARS MATCH THE SOUNDS',
-          detail: 'Your brain connects letter shapes to phonemes: /k/ - /æ/ - /t/.',
-          voicePrompt: 'Next, the Temporal Lobe matches each letter to its sound.',
-          badge: '👂 Letter Sounds'
+          description: 'Sounding out phonemes like /b/ - /æ/ - /t/ and musical beats.',
+          audioPrompt: 'Hearing the letter sounds through your ears!',
+          spokenFact: 'The Temporal Lobe near your ears helps you hear letter sounds!',
+          softFailClue: 'Look near the ears! Which lobe listens to voice sounds and music?'
         },
         {
-          step: 3,
-          lobeId: 'parietal',
-          lobeName: 'Parietal Lobe',
+          id: 'chip-flavor',
+          name: 'Ice Cream Flavor',
+          icon: '🍦',
+          targetLobe: 'parietal',
+          targetName: 'Parietal Lobe',
           color: '#10b981',
-          action: '3. SPATIAL SENSE TRACKS WORDS',
-          detail: 'Your hands hold the book still and your brain tracks left-to-right reading order.',
-          voicePrompt: 'Then, the Parietal Lobe keeps track of reading from left to right.',
-          badge: '🖐️ Spatial Tracking'
+          description: 'Tasting cold strawberry sweetness and feeling tongue sensation.',
+          audioPrompt: 'Tasting cold sweet ice cream on your tongue!',
+          spokenFact: 'The Parietal Lobe processes physical touch, taste, and temperature!',
+          softFailClue: 'Taste and touch are sensory! Place this chip on the green crown lobe!'
         },
         {
-          step: 4,
-          lobeId: 'frontal',
-          lobeName: 'Frontal Lobe',
+          id: 'chip-story',
+          name: 'Story Meaning',
+          icon: '📖',
+          targetLobe: 'frontal',
+          targetName: 'Frontal Lobe',
           color: '#f59e0b',
-          action: '4. MEANING & SPEAKING ALOUD',
-          detail: 'You understand: "A furry pet cat!" and your mouth says "CAT!"',
-          voicePrompt: 'Finally, the Frontal Lobe understands the meaning and speaks the word: Cat!',
-          badge: '💡 Meaning & Speech'
+          description: 'Understanding the story plot and thinking what happens next.',
+          audioPrompt: 'Thinking about the story and solving the mystery!',
+          spokenFact: 'The Frontal Lobe is your thinking engine for logic and planning!',
+          softFailClue: 'Thinking and planning happen right behind your forehead!'
+        },
+        {
+          id: 'chip-paper',
+          name: 'Smooth Paper',
+          icon: '✋',
+          targetLobe: 'parietal',
+          targetName: 'Parietal Lobe',
+          color: '#10b981',
+          description: 'Feeling the smooth paper cover and turning page two.',
+          audioPrompt: 'Feeling the texture of the page with your fingertips!',
+          spokenFact: 'The Parietal Lobe senses touch, texture, and finger position!',
+          softFailClue: 'Touching and turning pages is spatial sense. Try the Parietal Lobe!'
+        },
+        {
+          id: 'chip-speech',
+          name: 'Reading Aloud',
+          icon: '🗣️',
+          targetLobe: 'frontal',
+          targetName: 'Frontal Lobe',
+          color: '#f59e0b',
+          description: 'Moving your lips, jaw, and tongue to speak "Hello class!"',
+          audioPrompt: 'Speaking the word aloud with your mouth and voice!',
+          spokenFact: 'The Frontal Lobe contains Broca\'s area that controls speech production!',
+          softFailClue: 'Speaking aloud is controlled by the executive lobe behind your forehead!'
         }
       ]
     },
 
-    // Additional Reading Challenge Words for replayability
-    challengeWords: [
-      { word: 'C - A - T', emoji: '🐱', meaning: 'A playful furry pet that purrs!' },
-      { word: 'S - U - N', emoji: '☀️', meaning: 'The bright star that gives us daylight!' },
-      { word: 'B - O - O - K', emoji: '📚', meaning: 'Pages full of stories and new facts!' },
-      { word: 'S - T - A - R', emoji: '⭐', meaning: 'A glowing light shining in the night sky!' }
-    ],
+    // PHASE 2: SYNAPTIC SPEED RELAY (3 Progressive Rounds under 0.3s)
+    phase2_relay: {
+      title: 'PHASE 2: SYNAPTIC SPEED RELAY',
+      subtitle: 'Route the reading electrical signal through all 3 cortex stations in under 0.30 seconds!',
+      instructions: 'Click the highlighted lobes in sequence: Occipital (See) → Temporal (Hear) → Frontal (Speak)!',
+      teamworkMotto: 'Reading is a whole-team effort!',
+      rounds: [
+        {
+          roundNumber: 1,
+          word: 'C - A - T',
+          pronunciation: '/kæt/',
+          icon: '🐱',
+          meaning: 'A furry pet that purrs',
+          targetTimeSeconds: 0.30,
+          steps: [
+            {
+              lobeId: 'occipital',
+              name: 'Occipital Lobe',
+              actionLabel: '1. EYES SEE LETTERS',
+              formula: 'The Occipital Lobe SEES "C-A-T"',
+              color: '#f43f5e'
+            },
+            {
+              lobeId: 'temporal',
+              name: 'Temporal Lobe',
+              actionLabel: '2. EARS MATCH SOUNDS',
+              formula: 'The Temporal Lobe HEARS /k/-/æ/-/t/',
+              color: '#a855f7'
+            },
+            {
+              lobeId: 'frontal',
+              name: 'Frontal Lobe',
+              actionLabel: '3. MOUTH SPEAKS "CAT!"',
+              formula: 'The Frontal Lobe UNDERSTANDS & SPEAKS "CAT!"',
+              color: '#f59e0b'
+            }
+          ]
+        },
+        {
+          roundNumber: 2,
+          word: 'B - R - A - I - N',
+          pronunciation: '/breɪn/',
+          icon: '🧠',
+          meaning: 'Your amazing super-computer',
+          targetTimeSeconds: 0.28,
+          steps: [
+            {
+              lobeId: 'occipital',
+              name: 'Occipital Lobe',
+              actionLabel: '1. EYES CAPTURE "BRAIN"',
+              formula: 'The Occipital Lobe scans 5 letters',
+              color: '#f43f5e'
+            },
+            {
+              lobeId: 'temporal',
+              name: 'Temporal Lobe',
+              actionLabel: '2. EARS BLEND /breɪn/',
+              formula: 'The Temporal Lobe blends letter phonemes',
+              color: '#a855f7'
+            },
+            {
+              lobeId: 'frontal',
+              name: 'Frontal Lobe',
+              actionLabel: '3. MIND RECOGNIZES "BRAIN!"',
+              formula: 'The Frontal Lobe decodes the word "BRAIN!"',
+              color: '#f59e0b'
+            }
+          ]
+        },
+        {
+          roundNumber: 3,
+          word: 'L - E - A - R - N',
+          pronunciation: '/lɜːn/',
+          icon: '⭐',
+          meaning: 'Growing new neural connections',
+          targetTimeSeconds: 0.25,
+          steps: [
+            {
+              lobeId: 'occipital',
+              name: 'Occipital Lobe',
+              actionLabel: '1. EYES READ "LEARN"',
+              formula: 'The Occipital Lobe detects glyphs in 0.08s',
+              color: '#f43f5e'
+            },
+            {
+              lobeId: 'temporal',
+              name: 'Temporal Lobe',
+              actionLabel: '2. EARS HEAR /lɜːn/',
+              formula: 'The Temporal Lobe routes phonemes in 0.16s',
+              color: '#a855f7'
+            },
+            {
+              lobeId: 'frontal',
+              name: 'Frontal Lobe',
+              actionLabel: '3. MIND MASTERED "LEARN!"',
+              formula: 'The Frontal Lobe completes reading in 0.25s!',
+              color: '#f59e0b'
+            }
+          ]
+        }
+      ]
+    },
 
-    // Phase 3: Neuro-Energy Challenge (Battery & Neuroplasticity)
-    // The brain uses 20% of body energy. Practice makes neurons stronger!
-    energyHabits: [
-      {
-        id: 'habit-sleep',
-        name: '9–10 Hours of Sleep',
-        icon: '💤',
-        isBooster: true,
-        energyChange: +25,
-        scienceFact: 'While you sleep, your brain organizes memories and clears waste!',
-        speech: 'Great job! Sleep helps your brain remember what you learned.'
-      },
-      {
-        id: 'habit-water',
-        name: 'Drinking Clean Water',
-        icon: '💧',
-        isBooster: true,
-        energyChange: +20,
-        scienceFact: 'Your brain is about 75% water! Hydration speeds up thinking.',
-        speech: 'Water powers your electrical brain signals!'
-      },
-      {
-        id: 'habit-healthy-food',
-        name: 'Berries, Nuts & Veggies',
-        icon: '🥗',
-        isBooster: true,
-        energyChange: +25,
-        scienceFact: 'Your brain needs 20% of your daily food calories to send signals.',
-        speech: 'Healthy food provides glucose fuel for active neurons!'
-      },
-      {
-        id: 'habit-practice',
-        name: 'Daily Reading Practice',
-        icon: '📚',
-        isBooster: true,
-        energyChange: +30,
-        scienceFact: 'Neuroplasticity: Practicing makes your neural pathways thicker and faster!',
-        speech: 'Practice makes neural connections stronger and stronger!'
-      },
-      {
-        id: 'drain-nosleep',
-        name: 'Staying Up Too Late',
-        icon: '🥱',
-        isBooster: false,
-        energyChange: -15,
-        scienceFact: 'Lack of sleep slows down your Frontal Lobe and makes focus hard.',
-        speech: 'Being tired drains your brain energy and slows thinking.'
-      },
-      {
-        id: 'drain-sugarcrash',
-        name: 'Too Much Sugary Soda',
-        icon: '🥤',
-        isBooster: false,
-        energyChange: -15,
-        scienceFact: 'Big sugar spikes lead to crashes, leaving you feeling foggy.',
-        speech: 'Too much sugar causes energy crashes in brain cells.'
-      }
-    ],
+    // PHASE 3: NEURO-GYM & BATTERY OVERCHARGE (20% -> 100% Neuroplasticity)
+    phase3_gym: {
+      title: 'PHASE 3: NEURO-GYM & METABOLIC BATTERY',
+      subtitle: 'Your brain burns 20% of your daily body fuel! Supercharge it to 100% with healthy neuro-habits!',
+      instructions: 'Select the 4 healthy habits to thicken your neuron axon with protective myelin sheathing!',
+      habits: [
+        {
+          id: 'habit-sleep',
+          name: '9 to 10 Hours Sleep',
+          icon: '💤',
+          type: 'booster',
+          energyDelta: 20,
+          scienceFact: 'During deep sleep, brain waves wash away toxins and store words into long-term memory!',
+          spokenFact: 'Sleep supercharges your memory and cleans your brain cells!'
+        },
+        {
+          id: 'habit-water',
+          name: 'Hydration & Water',
+          icon: '💧',
+          type: 'booster',
+          energyDelta: 20,
+          scienceFact: 'Your brain is 75% water! Dehydration slows synaptic signal speed by 30%.',
+          spokenFact: 'Water keeps electrical signals racing fast between neurons!'
+        },
+        {
+          id: 'habit-reading',
+          name: 'Daily Reading Practice',
+          icon: '📚',
+          type: 'booster',
+          energyDelta: 20,
+          scienceFact: 'Neuroplasticity: Every time you practice, the myelin insulation thickens, making reading automatic!',
+          spokenFact: 'Reading practice physically thickens your neural highways!'
+        },
+        {
+          id: 'habit-nutrients',
+          name: 'Berries & Omega-3 Fuel',
+          icon: '🥑',
+          type: 'booster',
+          energyDelta: 20,
+          scienceFact: 'Neurons need stable glucose and healthy fatty acids to construct cell membranes.',
+          spokenFact: 'Healthy berries and vegetables give constant energy to your brain!'
+        },
+        {
+          id: 'distract-screens',
+          name: 'All-Night Gaming Screen',
+          icon: '📱',
+          type: 'drainer',
+          energyDelta: -10,
+          scienceFact: 'Blue light late at night suppresses melatonin and prevents memory consolidation.',
+          spokenFact: 'Late screen time drains your brain battery! Try reading a real book instead.'
+        },
+        {
+          id: 'distract-sugar',
+          name: 'Sugary Energy Drink',
+          icon: '🍭',
+          type: 'drainer',
+          energyDelta: -10,
+          scienceFact: 'Sugar causes a rapid spike followed by a steep glucose crash, leaving neurons sluggish.',
+          spokenFact: 'Sugar causes a brain crash! Clean water is the true super-fuel.'
+        }
+      ]
+    },
 
-    // ESL Sentence Completion Frames for worksheet and interactive HUD
-    sentenceFrames: [
-      {
-        lobe: 'Frontal Lobe',
-        color: '#f59e0b',
-        frame: 'The Frontal Lobe helps us ________ and ________.',
-        options: ['think and speak', 'see in the dark', 'grow taller'],
-        correct: 'think and speak'
-      },
-      {
-        lobe: 'Occipital Lobe',
-        color: '#ef4444',
-        frame: 'The Occipital Lobe helps us see ________ and ________.',
-        options: ['letters and words', 'taste and smell', 'footprints'],
-        correct: 'letters and words'
-      },
-      {
-        lobe: 'Temporal Lobe',
-        color: '#a855f7',
-        frame: 'The Temporal Lobe helps us hear ________.',
-        options: ['word sounds', 'sunlight', 'heavy rocks'],
-        correct: 'word sounds'
-      },
-      {
-        lobe: 'Parietal Lobe',
-        color: '#10b981',
-        frame: 'The Parietal Lobe helps us feel ________ and turn pages.',
-        options: ['touch', 'music', 'colors'],
-        correct: 'touch'
-      }
-    ],
-
-    // Phase 4: Live Teleprompter Broadcast Studio
-    // Language formula: "The [lobe] helps us [verb]." / "We use our [lobe] to [verb]." / "Reading is a whole-team effort."
-    teleprompter: {
-      title: "LIVE NEWS BROADCAST STUDIO",
-      headline: "BRAIN EXPLORER LIVE: HOW YOUR BRAIN READS",
-      instruction: "Step up to the microphone! Read each line on the teleprompter to broadcast live to the class.",
-      motto: "Reading is a whole-team effort!",
-      teleprompterLines: [
+    // PHASE 4: LIVE TELEPROMPTER & NEURO-BROADCAST (Karaoke Teleprompter Studio)
+    phase4_broadcast: {
+      title: 'PHASE 4: LIVE TELEPROMPTER & NEURO-BROADCAST',
+      subtitle: 'Step into the TV newsroom! Deliver your capstone science report live to the class!',
+      instructions: 'Speak each sentence with confidence as the teleprompter highlights the target words in neon cyan.',
+      scriptLines: [
         {
           id: 1,
-          speaker: "NEWS ANCHOR",
-          role: "Anchor",
-          icon: "🎙️",
-          color: "#38bdf8",
-          text: "Welcome to Brain Explorer News! I am your Junior Neuroscientist.",
-          focusFormula: "Intro & Identity",
-          clue: "Stand up tall and speak clearly into the microphone!"
+          speaker: 'NEWS ANCHOR',
+          lobe: null,
+          color: '#38bdf8',
+          text: 'Reading is a whole-team effort!',
+          words: ['Reading', 'is', 'a', 'whole-team', 'effort!'],
+          formulaType: 'Core Axiom',
+          clue: 'Start with high energy and an anchor smile!'
         },
         {
           id: 2,
-          speaker: "OCCIPITAL LOBE",
-          role: "Vision Station",
-          icon: "👁️",
-          color: "#ef4444",
-          text: "The Occipital Lobe helps us see letters, words, and bright colors.",
-          focusFormula: "The [lobe] helps us [verb]",
-          clue: "Points to the back of the head!"
+          speaker: 'OCCIPITAL REPORTER',
+          lobe: 'occipital',
+          color: '#f43f5e',
+          text: 'My red lobe helps me SEE the words.',
+          words: ['My', 'red', 'lobe', 'helps', 'me', 'SEE', 'the', 'words.'],
+          formulaType: 'The [lobe] helps us [verb]',
+          clue: 'Point to the back of your head!'
         },
         {
           id: 3,
-          speaker: "TEMPORAL LOBE",
-          role: "Hearing Station",
-          icon: "👂",
-          color: "#a855f7",
-          text: "The Temporal Lobe helps us hear letter sounds and understand spoken words.",
-          focusFormula: "The [lobe] helps us [verb]",
-          clue: "Points near the ears!"
+          speaker: 'TEMPORAL REPORTER',
+          lobe: 'temporal',
+          color: '#a855f7',
+          text: 'My purple lobe helps me HEAR the sounds.',
+          words: ['My', 'purple', 'lobe', 'helps', 'me', 'HEAR', 'the', 'sounds.'],
+          formulaType: 'The [lobe] helps us [verb]',
+          clue: 'Touch your ears with both fingers!'
         },
         {
           id: 4,
-          speaker: "PARIETAL LOBE",
-          role: "Spatial Station",
-          icon: "🖐️",
-          color: "#10b981",
-          text: "We use our Parietal Lobe to feel touch and track words across the page.",
-          focusFormula: "We use our [lobe] to [verb]",
-          clue: "Points to the top of the head!"
+          speaker: 'FRONTAL REPORTER',
+          lobe: 'frontal',
+          color: '#f59e0b',
+          text: 'My yellow lobe helps me THINK and SPEAK!',
+          words: ['My', 'yellow', 'lobe', 'helps', 'me', 'THINK', 'and', 'SPEAK!'],
+          formulaType: 'The [lobe] helps us [verb]',
+          clue: 'Touch your forehead with confidence!'
         },
         {
           id: 5,
-          speaker: "FRONTAL LOBE",
-          role: "Control Station",
-          icon: "💡",
-          color: "#f59e0b",
-          text: "We use our Frontal Lobe to understand meaning, think, and speak aloud.",
-          focusFormula: "We use our [lobe] to [verb]",
-          clue: "Points to the forehead!"
-        },
-        {
-          id: 6,
-          speaker: "THE READING CIRCUIT",
-          role: "0.3s Relay",
-          icon: "⚡",
-          color: "#06b6d4",
-          text: "Reading is a whole-team effort! All four lobes connect in 0.3 seconds!",
-          focusFormula: "Reading is a whole-team effort",
-          clue: "High energy team message!"
-        },
-        {
-          id: 7,
-          speaker: "NEUROPLASTICITY",
-          role: "Growth Highway",
-          icon: "🚀",
-          color: "#ec4899",
-          text: "When we practice every day, our neural highways grow stronger and faster!",
-          focusFormula: "Brain Growth Formula",
-          clue: "Final sign-off with a smile!"
+          speaker: 'NEURO-ENGINEER',
+          lobe: null,
+          color: '#10b981',
+          text: 'When we practice every day, our brain gets stronger and faster!',
+          words: ['When', 'we', 'practice', 'every', 'day,', 'our', 'brain', 'gets', 'stronger', 'and', 'faster!'],
+          formulaType: 'Neuroplasticity Axiom',
+          clue: 'Wave to the audience and conclude your report!'
         }
       ]
     },
 
-    // Badges awarded during the mission
+    // Badges and Diplomas
     badges: [
-      { id: 'atlas_explorer', name: 'Neuro-Atlas Explorer', icon: '🧠', desc: 'Discovered all 4 brain lobes and their powers' },
-      { id: 'teamwork_champion', name: 'Reading Team Champion', icon: '⚡', desc: 'Connected all 4 lobes in the 0.3s reading relay' },
-      { id: 'battery_master', name: 'Neuro-Battery Master', icon: '🔋', desc: 'Supercharged the brain to 100% with healthy habits' },
-      { id: 'teleprompter_broadcaster', name: 'Master Broadcaster', icon: '🎙️', desc: 'Delivered a live news broadcast on how the brain learns' },
-      { id: 'licensed_neuroscientist', name: 'Junior Neuro-Explorer', icon: '🎓', desc: 'Completed the full curriculum and unlocked the Diploma' }
+      { id: 'atlas_explorer', name: 'Neuro-Atlas Master', icon: '🧭', desc: 'Sorted all 6 sensory chips to their exact cortical lobes' },
+      { id: 'synaptic_racer', name: 'Synaptic Speed Champion', icon: '⚡', desc: 'Routed reading impulses in under 0.30 seconds across 3 rounds' },
+      { id: 'battery_overcharge', name: 'Metabolic Overcharge 100%', icon: '🔋', desc: 'Charged brain metabolic battery to 100% with myelin upgrades' },
+      { id: 'broadcaster_license', name: 'Licensed Neuro-Broadcaster', icon: '🎙️', desc: 'Delivered a live teleprompter report on how the brain reads' },
+      { id: 'licensed_neuroscientist', name: 'Certified Neuro-Engineer', icon: '🎓', desc: 'Completed the master curriculum and earned the Golden Diploma' }
     ]
   };
 

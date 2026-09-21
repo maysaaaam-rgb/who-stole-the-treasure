@@ -1,37 +1,45 @@
-/* ==========================================================================
-   LEARNING AND YOUR BRAIN — ARCADE NEURO-GRID STYLESHEET
-   Zero external dependencies. Dark arcade theme (#090d16) with cyan & amber neon.
-   ========================================================================== */
+/**
+ * BRAIN EXPLORERS: CYBER-BIOLOGY COMMERCIAL THEME
+ * Glassmorphic UI, Organic Holographic SVG Cortex, Dynamic Synaptic Arcs
+ */
 
 :root {
-  --bg-deep: #090d16;
-  --bg-surface: #0f172a;
-  --bg-card: #1e293b;
-  --bg-card-hover: #27354f;
-  
-  --border-subtle: #334155;
-  --border-bright: #475569;
-  
+  --bg-deep: #060911;
+  --bg-radial-top: #0c1a30;
+  --bg-card: rgba(15, 23, 42, 0.78);
+  --bg-card-elevated: rgba(22, 33, 58, 0.88);
+  --border-glass: #1e293b;
+  --border-highlight: rgba(255, 255, 255, 0.12);
+
+  --color-occipital: #f43f5e;
+  --glow-occipital: rgba(244, 63, 94, 0.45);
+
+  --color-temporal: #a855f7;
+  --glow-temporal: rgba(168, 85, 247, 0.45);
+
+  --color-parietal: #10b981;
+  --glow-parietal: rgba(16, 185, 129, 0.45);
+
+  --color-frontal: #f59e0b;
+  --glow-frontal: rgba(245, 158, 11, 0.45);
+
+  --color-cyan: #06b6d4;
+  --glow-cyan: rgba(6, 182, 212, 0.45);
+
+  --color-sky: #38bdf8;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-subtle: #64748b;
 
-  --neon-cyan: #38bdf8;
-  --neon-amber: #f59e0b;
-  --neon-green: #10b981;
-  --neon-red: #ef4444;
-  --neon-purple: #a855f7;
-
-  /* Anatomical Lobe Palette */
-  --lobe-frontal: #f59e0b;
-  --lobe-parietal: #10b981;
-  --lobe-occipital: #ef4444;
-  --lobe-temporal: #a855f7;
-
-  --font-system: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-  --radius-lg: 20px;
-  --radius-md: 14px;
   --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-bounce: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 * {
@@ -44,33 +52,36 @@
 body {
   background-color: var(--bg-deep);
   background-image: 
-    radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
-    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 36px 36px, 36px 36px;
+    radial-gradient(circle at 50% 0%, var(--bg-radial-top) 0%, transparent 65%),
+    radial-gradient(circle at 90% 80%, rgba(59, 7, 100, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(2, 132, 199, 0.12) 0%, transparent 45%);
+  background-attachment: fixed;
   color: var(--text-main);
-  font-family: var(--font-system);
+  font-family: var(--font-family);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  user-select: none;
 }
 
 /* ==========================================================================
    TOP HUD BAR
    ========================================================================== */
 .neuro-hud {
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 2px solid var(--border-subtle);
-  padding: 0.85rem 1.8rem;
+  background: rgba(6, 9, 17, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1.5px solid var(--border-glass);
+  padding: 0.75rem 1.75rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
   position: sticky;
   top: 0;
   z-index: 100;
-  gap: 1rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
 .hud-left {
@@ -82,853 +93,1127 @@ body {
 .hud-logo-badge {
   width: 46px;
   height: 46px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
-  border: 1.5px solid var(--neon-cyan);
-  display: grid;
-  place-items: center;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(168, 85, 247, 0.3));
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.6rem;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
 }
 
 .hud-title-wrap h1 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 900;
-  letter-spacing: 0.5px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hud-title-wrap p {
-  font-size: 0.76rem;
-  color: var(--text-muted);
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-cyan);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Phase Selector Nav */
+/* Phase Navigation Tabs */
 .hud-phase-nav {
   display: flex;
-  background: #090d16;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.7);
   padding: 0.3rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--border-subtle);
-  gap: 0.35rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-glass);
+  gap: 0.25rem;
 }
 
 .phase-btn {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  padding: 0.45rem 1.1rem;
-  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.84rem;
   font-weight: 800;
-  font-size: 0.82rem;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  gap: 0.5rem;
+  transition: var(--transition-smooth);
 }
 
 .phase-btn:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .phase-btn.active {
   background: linear-gradient(135deg, #0284c7, #2563eb);
   color: #fff;
-  box-shadow: 0 0 14px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.5);
 }
 
-/* Brain Battery Gauge */
+/* Metabolic Energy Battery Meter */
 .hud-battery-box {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  background: #090d16;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-subtle);
+  gap: 0.65rem;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-glass);
 }
 
 .battery-icon-label {
   font-size: 0.75rem;
   font-weight: 900;
-  color: var(--neon-amber);
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
+  color: #fbbf24;
+  letter-spacing: 0.05em;
 }
 
 .battery-shell {
-  width: 110px;
-  height: 20px;
-  border-radius: 6px;
-  border: 2px solid var(--border-bright);
-  background: #0a0f1d;
+  width: 90px;
+  height: 14px;
+  background: #020617;
+  border: 1.5px solid #334155;
+  border-radius: 999px;
+  padding: 1.5px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  padding: 2px;
-}
-
-.battery-shell::after {
-  content: '';
-  position: absolute;
-  right: -5px;
-  top: 4px;
-  width: 3px;
-  height: 8px;
-  background: var(--border-bright);
-  border-radius: 0 2px 2px 0;
 }
 
 .battery-fill {
-  height: 100%;
   width: 20%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, #f59e0b, #10b981);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
-  transition: width 0.4s ease-out;
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #10b981, #06b6d4);
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .battery-pct-text {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 900;
-  color: #fff;
+  color: #f8fafc;
   min-width: 38px;
-  text-align: right;
 }
 
-/* Audio & Passport Controls */
+/* Control Action Buttons */
 .hud-controls {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .hud-btn {
-  background: var(--bg-card);
-  border: 1.5px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-glass);
   color: var(--text-main);
-  padding: 0.5rem 0.9rem;
+  padding: 0.5rem 0.85rem;
   border-radius: var(--radius-sm);
+  font-size: 0.8rem;
   font-weight: 800;
-  font-size: 0.82rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: var(--transition-smooth);
 }
 
 .hud-btn:hover {
-  border-color: var(--neon-cyan);
-  background: var(--bg-card-hover);
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #38bdf8;
+  color: #fff;
   transform: translateY(-1px);
 }
 
 /* ==========================================================================
-   MAIN VIEWPORT WORKSPACE
+   MAIN DUAL-VIEWPORT ARENA
    ========================================================================== */
 .neuro-main-workspace {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 1540px;
   width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2.5rem 2rem;
+  display: grid;
+  grid-template-columns: 540px 1fr;
+  gap: 1.75rem;
+  align-items: start;
 }
 
-.stage-header-banner {
-  margin-bottom: 1.25rem;
+/* ==========================================================================
+   PERSISTENT HERO STAGE: ORGANIC ANATOMICAL CORTEX HOLOGRAM
+   ========================================================================== */
+.cortex-hero-stage {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 16px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 5rem;
+}
+
+.cortex-hero-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.85rem;
+}
+
+.cortex-hero-header h2 {
+  font-size: 1.05rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.cortex-status-chip {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid var(--color-cyan);
+  color: var(--color-cyan);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  animation: pulse-glow 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from { box-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
+  to { box-shadow: 0 0 16px rgba(6, 182, 212, 0.6); }
+}
+
+/* Hologram Canvas Viewport */
+.cortex-svg-viewport {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  background: radial-gradient(circle at 50% 50%, #0a1326 0%, #03060e 90%);
+  border: 1.5px solid #1e293b;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+}
+
+.cortex-svg-viewport svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.25));
+}
+
+/* Lobe Interactive SVG Styling */
+.lobe-path-group {
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.lobe-path-group path.lobe-fill {
+  transition: fill 0.3s ease, filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: center;
+}
+
+.lobe-path-group:hover path.lobe-fill {
+  filter: brightness(1.25) drop-shadow(0 0 16px currentColor);
+  opacity: 0.95 !important;
+}
+
+.lobe-path-group.active path.lobe-fill {
+  filter: brightness(1.35) drop-shadow(0 0 24px currentColor);
+  opacity: 1 !important;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+
+.lobe-path-group.drag-target-hover path.lobe-fill {
+  animation: lobe-target-pulsate 0.6s infinite alternate;
+}
+
+@keyframes lobe-target-pulsate {
+  from { filter: brightness(1.2) drop-shadow(0 0 10px currentColor); }
+  to { filter: brightness(1.6) drop-shadow(0 0 35px currentColor); }
+}
+
+/* Dynamic Synaptic Arcs */
+.synaptic-flow-arc {
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.synaptic-flow-arc.active-circuit {
+  opacity: 1;
+  stroke-dasharray: 12, 8;
+  animation: flow-synapse 1s linear infinite;
+}
+
+@keyframes flow-synapse {
+  to { stroke-dashoffset: -40; }
+}
+
+/* Gyri & Sulci Cortex Folds */
+.cortex-sulcus-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+/* Floating Radial Pulse Wave on Correct Placement */
+.electrical-pulse-wave {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: ripple-wave 0.8s ease-out forwards;
+}
+
+@keyframes ripple-wave {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.9;
+    border: 3px solid #38bdf8;
+    box-shadow: 0 0 10px #38bdf8;
+  }
+  100% {
+    width: 240px;
+    height: 240px;
+    opacity: 0;
+    border: 1px solid rgba(56, 189, 248, 0);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0);
+  }
+}
+
+/* Live Lobe Inspector Card underneath Hologram */
+.cortex-inspector-strip {
+  background: rgba(11, 18, 33, 0.85);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.inspector-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inspector-lobe-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inspector-formula-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inspector-body-text {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.inspector-body-text strong {
+  color: #fff;
+}
+
+.cortex-quick-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.quick-lobe-pill {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: var(--transition-smooth);
+}
+
+.quick-lobe-pill:hover,
+.quick-lobe-pill.active {
+  color: #fff;
+  border-color: currentColor;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   DYNAMIC COCKPIT STAGE (RIGHT COLUMN)
+   ========================================================================== */
+.phase-cockpit-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Stage Header Banner */
+.cockpit-banner {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.35rem 1.75rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 8px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
-.stage-header-banner h2 {
-  font-size: 1.55rem;
+.banner-title-box h2 {
+  font-size: 1.25rem;
   font-weight: 900;
-  color: #fff;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
-.stage-header-banner p {
-  font-size: 0.9rem;
+.banner-title-box p {
+  font-size: 0.82rem;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 0.25rem;
 }
 
-.pedagogical-formula-pill {
-  background: rgba(56, 189, 248, 0.12);
-  border: 1.5px solid var(--neon-cyan);
-  color: var(--neon-cyan);
-  padding: 0.45rem 1.1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
+.pedagogy-pill {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1.5px solid rgba(6, 182, 212, 0.4);
+  color: var(--color-cyan);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
   font-weight: 800;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+/* Cockpit Inner Card */
+.cockpit-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 12px 36px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* ==========================================================================
-   PHASE 1: NEURO-ATLAS (LOBE DISCOVERY & SENSORY MAPPING)
+   PHASE 1: SENSORY SORTING ARCADE
    ========================================================================== */
-.atlas-grid {
-  display: grid;
-  grid-template-columns: 380px 1fr 320px;
+.sorting-arcade-layout {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  min-height: 540px;
 }
 
-/* Column 1: Sensory Tokens Tray */
-.tokens-tray-card {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-subtle);
+.current-chip-spotlight {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.8));
+  border: 2px solid #38bdf8;
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.4rem;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.tray-header {
-  border-bottom: 1.5px solid var(--border-subtle);
-  padding-bottom: 0.75rem;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+  transition: var(--transition-bounce);
 }
 
-.tray-header h3 {
-  font-size: 0.95rem;
-  font-weight: 900;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.current-chip-spotlight.soft-fail-shake {
+  animation: fail-elastic-bounce 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: #ef4444;
 }
 
-.token-count-badge {
-  font-size: 0.75rem;
-  font-weight: 800;
-  background: var(--bg-card);
-  padding: 2px 8px;
-  border-radius: 999px;
-  color: var(--neon-cyan);
+@keyframes fail-elastic-bounce {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(5px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-.tokens-list {
+.spotlight-left {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  overflow-y: auto;
-  max-height: 440px;
-  padding-right: 4px;
+  align-items: center;
+  gap: 1.25rem;
 }
 
-/* Sensory Token Target (minimum 64x64px touch compliant) */
-.sensory-token {
-  min-height: 64px;
-  background: var(--bg-card);
-  border: 2px solid var(--border-subtle);
+.spotlight-icon-box {
+  width: 68px;
+  height: 68px;
+  min-width: 68px;
   border-radius: var(--radius-md);
-  padding: 0.65rem 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.sensory-token:hover {
-  border-color: var(--neon-cyan);
-  background: var(--bg-card-hover);
-  transform: translateX(4px);
-}
-
-.sensory-token.is-selected {
-  border-color: var(--neon-cyan) !important;
-  background: rgba(56, 189, 248, 0.15) !important;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35) !important;
-}
-
-.sensory-token.is-matched {
-  border-color: var(--neon-green) !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-  opacity: 0.75;
-}
-
-.token-icon-box {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  background: #090d16;
-  border: 1px solid var(--border-subtle);
-  display: grid;
-  place-items: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.token-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.token-name {
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.token-clue {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.token-status-icon {
-  font-size: 1.1rem;
-  color: var(--neon-green);
-  opacity: 0;
-}
-
-.sensory-token.is-matched .token-status-icon {
-  opacity: 1;
-}
-
-/* Column 2: Interactive SVG Brain Viewport */
-.brain-viewport-card {
-  background: radial-gradient(circle at 50% 50%, #171b30 0%, #090d16 85%);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.6);
-}
-
-.brain-stage-title-hud {
-  position: absolute;
-  top: 1rem;
-  left: 1.25rem;
-  right: 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.stage-status-pill {
-  font-size: 0.72rem;
-  font-weight: 900;
-  color: var(--neon-cyan);
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid var(--neon-cyan);
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  letter-spacing: 0.5px;
-}
-
-.svg-brain-container {
-  width: 100%;
-  max-width: 480px;
-  height: 380px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  font-size: 2.4rem;
 }
 
-.interactive-brain-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.7));
-}
-
-.lobe-interactive-path {
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  fill-opacity: 0.45;
-  stroke-width: 3.5;
-}
-
-.lobe-interactive-path:hover {
-  fill-opacity: 0.82;
-  filter: drop-shadow(0 0 16px var(--lobe-color));
-  stroke-width: 4.5;
-}
-
-.lobe-interactive-path.active {
-  fill-opacity: 0.95;
-  stroke-width: 5;
-  filter: drop-shadow(0 0 24px var(--lobe-color));
-}
-
-.lobe-interactive-path.highlighted {
-  animation: lobePulse 1.6s ease-in-out infinite alternate;
-}
-
-@keyframes lobePulse {
-  0% { fill-opacity: 0.55; stroke-width: 3.5; }
-  100% { fill-opacity: 0.95; stroke-width: 5.5; }
-}
-
-.synaptic-cable-line {
-  stroke-dasharray: 6, 6;
-  animation: pulseElectricity 1.2s linear infinite;
-}
-
-@keyframes pulseElectricity {
-  to { stroke-dashoffset: -24; }
-}
-
-/* Target Drop Rings on Brain */
-.lobe-pin-target {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.lobe-pin-target:hover {
-  transform: scale(1.15);
-}
-
-/* Prompt Banner at Bottom of Brain Viewport */
-.brain-instruction-banner {
-  position: absolute;
-  bottom: 1rem;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: 999px;
-  padding: 0.5rem 1.4rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
-}
-
-/* Column 3: Active Lobe Inspector / Formula Card */
-.lobe-inspector-card {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.inspector-top {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.inspector-lobe-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding-bottom: 1rem;
-  border-bottom: 1.5px solid var(--border-subtle);
-}
-
-.lobe-color-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-size: 1.7rem;
-  box-shadow: 0 0 16px rgba(0,0,0,0.4);
-}
-
-.inspector-lobe-badge h3 {
-  font-size: 1.15rem;
+.spotlight-info h3 {
+  font-size: 1.2rem;
   font-weight: 900;
   color: #fff;
+  margin-bottom: 0.25rem;
 }
 
-.inspector-lobe-badge span {
-  font-size: 0.75rem;
-  font-weight: 800;
+.spotlight-info p {
+  font-size: 0.86rem;
   color: var(--text-muted);
-}
-
-.inspector-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.inspector-section-label {
-  font-size: 0.7rem;
-  font-weight: 900;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.inspector-formula-box {
-  background: #0b1120;
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 0.85rem;
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: #fff;
   line-height: 1.4;
 }
 
-.inspector-esl-cue {
-  background: rgba(56, 189, 248, 0.08);
-  border-left: 3px solid var(--neon-cyan);
-  padding: 0.6rem 0.8rem;
-  border-radius: 0 8px 8px 0;
-  font-size: 0.78rem;
-  color: #cbd5e1;
-  line-height: 1.35;
-}
-
-.inspector-btn-action {
-  background: linear-gradient(135deg, #0284c7, #2563eb);
-  color: #fff;
-  font-size: 0.88rem;
-  font-weight: 900;
-  padding: 0.8rem;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+.spotlight-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
+  gap: 0.75rem;
 }
 
-.inspector-btn-action:hover {
-  filter: brightness(1.15);
-  transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   PHASE 2: READING TEAMWORK PATHWAY BUILDER
-   ========================================================================== */
-.reading-stage-layout {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 1.5rem;
-  min-height: 520px;
-}
-
-.reading-interactive-board {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.reading-word-hero {
-  background: #0a0f1d;
-  border: 2px solid var(--neon-cyan);
-  border-radius: var(--radius-md);
-  padding: 1.25rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
-}
-
-.word-hero-left {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.word-emoji-box {
-  font-size: 3rem;
-}
-
-.word-letters-text {
-  font-size: 2.2rem;
-  font-weight: 900;
-  letter-spacing: 6px;
-  color: #fff;
-  font-family: monospace;
-}
-
-.word-phonemes-tag {
-  font-size: 0.88rem;
-  color: var(--neon-cyan);
+.btn-chip-clue {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid #334155;
+  padding: 0.6rem 0.95rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
   font-weight: 800;
-}
-
-.teamwork-relay-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.85rem;
-  margin: 1.5rem 0;
-}
-
-.relay-step-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  position: relative;
-  transition: all 0.25s ease;
-  min-height: 160px;
-}
-
-.relay-step-card.active {
-  border-color: var(--card-color) !important;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 16px var(--card-color-glow);
-  transform: translateY(-3px);
-}
-
-.relay-step-card.completed {
-  border-color: var(--neon-green) !important;
-  background: rgba(16, 185, 129, 0.08);
-}
-
-.relay-step-badge {
-  font-size: 0.72rem;
-  font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 999px;
-  width: fit-content;
-  color: #fff;
-}
-
-.relay-lobe-title {
-  font-size: 0.88rem;
-  font-weight: 900;
-  color: #fff;
-}
-
-.relay-action-text {
-  font-size: 0.76rem;
-  color: var(--text-muted);
-  line-height: 1.35;
-  flex: 1;
-}
-
-.relay-time-pill {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: var(--neon-amber);
-  background: #090d16;
-  padding: 2px 6px;
-  border-radius: 4px;
-  width: fit-content;
-}
-
-/* Reading Circuit Action Bar */
-.reading-action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 1rem;
-  border-top: 1.5px solid var(--border-subtle);
-}
-
-.motto-banner {
-  font-size: 0.95rem;
-  font-weight: 900;
-  color: var(--neon-amber);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-trigger-circuit {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  border: none;
-  padding: 0.85rem 1.6rem;
-  border-radius: var(--radius-md);
-  font-weight: 900;
-  font-size: 0.95rem;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
-  transition: all 0.2s;
+  gap: 0.4rem;
+  transition: var(--transition-smooth);
 }
 
-.btn-trigger-circuit:hover {
-  filter: brightness(1.15);
-  transform: translateY(-2px);
+.btn-chip-clue:hover {
+  background: #0284c7;
+  color: #fff;
 }
 
-/* Side Reading Visualizer SVG */
-.reading-side-canvas {
-  background: radial-gradient(circle at 50% 50%, #171b30 0%, #090d16 85%);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ==========================================================================
-   PHASE 3: NEURO-ENERGY CHALLENGE & NEUROPLASTICITY
-   ========================================================================== */
-.energy-stage-layout {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 1.5rem;
-  min-height: 520px;
-}
-
-.habits-pane-card {
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.habits-grid {
+/* Lobe Target Placement Grid */
+.lobe-target-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.habit-interactive-card {
-  min-height: 100px;
-  background: var(--bg-card);
-  border: 2px solid var(--border-subtle);
+.lobe-target-card {
+  background: rgba(11, 18, 33, 0.85);
+  border: 2px dashed #334155;
   border-radius: var(--radius-md);
-  padding: 1rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  padding: 1.2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative;
+  overflow: hidden;
 }
 
-.habit-interactive-card:hover {
-  border-color: var(--neon-cyan);
-  background: var(--bg-card-hover);
+.lobe-target-card:hover {
+  border-color: #64748b;
   transform: translateY(-2px);
+  background: rgba(15, 23, 42, 0.95);
 }
 
-.habit-interactive-card.applied {
-  border-color: var(--neon-green) !important;
-  background: rgba(16, 185, 129, 0.1) !important;
-  opacity: 0.65;
-  pointer-events: none;
+.lobe-target-card.highlight-target {
+  border-style: solid;
+  border-color: currentColor;
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.3);
+  transform: scale(1.02);
 }
 
-.habit-icon-badge {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  background: #0a0f1d;
+.target-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.target-lobe-label {
+  font-size: 0.95rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.target-badge-mini {
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.target-formula-preview {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.target-matched-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 32px;
+  align-items: center;
+}
+
+.matched-chip-pill {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  animation: pop-pill 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop-pill {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Sorting Progress Row */
+.arcade-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.streak-counter {
+  font-weight: 900;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   PHASE 2: SYNAPTIC SPEED RELAY
+   ========================================================================== */
+.relay-stage-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Progressive Word Selector */
+.relay-rounds-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.round-pill-btn {
+  flex: 1;
+  background: rgba(11, 18, 33, 0.85);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 0.88rem;
+  transition: var(--transition-smooth);
+}
+
+.round-pill-btn:hover {
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  border-color: #38bdf8;
+}
+
+.round-pill-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(37, 99, 235, 0.3));
+  border-color: var(--color-cyan);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.round-pill-btn.completed {
+  border-color: #10b981;
+}
+
+/* Millisecond Stopwatch & Circuit Board */
+.speed-stopwatch-display {
+  background: #020617;
+  border: 2px solid #1e293b;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+}
+
+.timer-digits-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.timer-digits-label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--color-cyan);
+  letter-spacing: 0.1em;
+}
+
+.timer-digits-val {
+  font-family: monospace, sans-serif;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #f8fafc;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+
+.timer-digits-val.speed-success {
+  color: #10b981;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+}
+
+.word-hero-box {
+  text-align: right;
+}
+
+.word-hero-letters {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: 0.2em;
+}
+
+.word-hero-phonics {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Interactive 3-Station Synaptic Nodes */
+.relay-nodes-chain {
   display: grid;
-  place-items: center;
-  font-size: 1.8rem;
-  flex-shrink: 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
-.habit-content h4 {
+.relay-node-card {
+  background: rgba(11, 18, 33, 0.85);
+  border: 2px solid #1e293b;
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  transition: var(--transition-bounce);
+  position: relative;
+}
+
+.relay-node-card:hover:not(.locked) {
+  transform: translateY(-4px);
+  border-color: currentColor;
+}
+
+.relay-node-card.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.relay-node-card.waiting-activation {
+  border-color: #38bdf8;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+  animation: pulse-waiting 0.8s infinite alternate;
+}
+
+@keyframes pulse-waiting {
+  from { transform: scale(1); }
+  to { transform: scale(1.04); }
+}
+
+.relay-node-card.activated {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+}
+
+.node-step-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.node-icon-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.node-title {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.node-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   PHASE 3: NEURO-GYM & METABOLIC OVERCHARGE
+   ========================================================================== */
+.gym-stage-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.neuron-schematic-card {
+  background: #030712;
+  border: 2px solid #1e293b;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: inset 0 0 35px rgba(0,0,0,0.8);
+}
+
+.neuron-viewport {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, #0c1a30 0%, #030712 85%);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.neuron-viewport svg {
+  width: 100%;
+  height: 100%;
+}
+
+.myelin-sheath-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-glass);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+}
+
+.habits-selector-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.habit-choice-card {
+  background: rgba(11, 18, 33, 0.85);
+  border: 1.5px solid #1e293b;
+  border-radius: var(--radius-md);
+  padding: 0.95rem 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.habit-choice-card:hover {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.habit-choice-card.applied {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  cursor: default;
+}
+
+.habit-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.habit-icon {
+  font-size: 1.8rem;
+}
+
+.habit-name {
   font-size: 0.92rem;
   font-weight: 800;
   color: #fff;
 }
 
-.habit-fact-text {
-  font-size: 0.74rem;
+.habit-sub {
+  font-size: 0.75rem;
   color: var(--text-muted);
-  margin-top: 4px;
-  line-height: 1.35;
 }
 
-.energy-tag {
-  display: inline-block;
-  font-size: 0.7rem;
+.habit-boost-badge {
+  font-size: 0.78rem;
   font-weight: 900;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-top: 6px;
-}
-
-.energy-tag.plus {
+  color: #10b981;
   background: rgba(16, 185, 129, 0.2);
-  color: var(--neon-green);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
 }
 
-.energy-tag.minus {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--neon-red);
+/* ==========================================================================
+   PHASE 4: LIVE TELEPROMPTER & NEURO-BROADCAST
+   ========================================================================== */
+.broadcast-stage-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* Side Neuroplasticity Cable Visualizer */
-.neuroplasticity-pane-card {
-  background: #0b1120;
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+.broadcast-studio-frame {
+  background: #030712;
+  border: 2.5px solid #1e293b;
+  border-radius: var(--radius-xl);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+  position: relative;
+}
+
+.broadcast-header-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  text-align: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1rem;
 }
 
-.cable-visualizer-box {
-  width: 100%;
-  height: 220px;
-  background: #080d1a;
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-subtle);
-  display: grid;
-  place-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.cable-thickness-badge {
-  font-size: 0.8rem;
+.broadcast-title-group h3 {
+  font-size: 1.2rem;
   font-weight: 900;
-  color: var(--neon-cyan);
-  background: rgba(56, 189, 248, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.broadcast-title-group p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.on-air-pill {
+  background: rgba(239, 68, 68, 0.15);
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  padding: 0.4rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition-smooth);
+}
+
+.on-air-pill.live {
+  background: #ef4444;
+  color: #fff;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.7);
+  animation: on-air-flash 1s infinite alternate;
+}
+
+@keyframes on-air-flash {
+  from { opacity: 0.85; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+/* Teleprompter Monitor Screen */
+.karaoke-prompter-screen {
+  background: radial-gradient(circle at 50% 50%, #0f172a 0%, #030712 90%);
+  border: 2px solid #334155;
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 2rem;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.25rem;
+  position: relative;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+}
+
+.prompter-speaker-badge {
+  font-size: 0.78rem;
+  font-weight: 900;
   padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid var(--neon-cyan);
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.prompter-karaoke-line {
+  font-size: 1.85rem;
+  font-weight: 900;
+  line-height: 1.5;
+  color: #94a3b8;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.karaoke-word {
+  transition: all 0.15s ease;
+  padding: 0 0.2rem;
+  border-radius: 4px;
+}
+
+.karaoke-word.spoken {
+  color: #38bdf8;
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+}
+
+.karaoke-word.active-word {
+  color: #ffffff;
+  background: rgba(6, 182, 212, 0.3);
+  text-shadow: 0 0 20px #06b6d4;
+  transform: scale(1.08);
+}
+
+/* Sound-Wave Visualizer */
+.sound-wave-visualizer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 24px;
+}
+
+.wave-bar {
+  width: 4px;
+  height: 6px;
+  background: var(--color-cyan);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+
+.wave-bar.animated {
+  animation: wave-bounce 0.8s infinite ease-in-out alternate;
+}
+
+@keyframes wave-bounce {
+  0% { height: 4px; }
+  100% { height: 22px; }
+}
+
+/* Teleprompter Control Bar */
+.prompter-controls-deck {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn-broadcast-action {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.4);
+}
+
+.btn-broadcast-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(2, 132, 199, 0.6);
 }
 
 /* ==========================================================================
@@ -937,434 +1222,126 @@ body {
 .victory-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(4, 7, 15, 0.88);
-  backdrop-filter: blur(14px);
-  z-index: 1000;
-  display: none;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
   padding: 1.5rem;
 }
 
 .victory-modal-overlay.open {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.victory-modal-window {
+.victory-modal-card {
+  background: var(--bg-card-elevated);
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  max-width: 640px;
   width: 100%;
-  max-width: 680px;
-  background: var(--bg-surface);
-  border: 2px solid var(--border-bright);
-  border-radius: 24px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 45px rgba(56, 189, 248, 0.2);
-  padding: 2.2rem;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+  gap: 1.25rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(56, 189, 248, 0.25);
+  animation: modal-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.victory-badge-glow {
-  width: 90px;
-  height: 90px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  display: grid;
-  place-items: center;
-  font-size: 3.2rem;
-  box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
-  margin-bottom: 1.25rem;
+@keyframes modal-enter {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-.victory-modal-window h2 {
-  font-size: 1.75rem;
+.diploma-seal-large {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px #fbbf24);
+  animation: logo-float 3s ease-in-out infinite;
+}
+
+.victory-modal-card h2 {
+  font-size: 1.8rem;
   font-weight: 900;
-  color: #fff;
-  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ffffff 40%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.victory-modal-window p {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-  max-width: 520px;
-}
-
-.badges-earned-row {
+.badges-row-flex {
   display: flex;
-  gap: 0.75rem;
-  margin: 1.5rem 0;
   flex-wrap: wrap;
+  gap: 0.6rem;
   justify-content: center;
 }
 
-.badge-item-pill {
-  background: #0a0f1d;
-  border: 1.5px solid var(--border-subtle);
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.badge-pill-item {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 0.9rem;
   font-size: 0.8rem;
   font-weight: 800;
-  color: #fff;
-}
-
-.victory-actions-box {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  width: 100%;
-  max-width: 440px;
-}
-
-.btn-open-diploma {
-  flex: 1;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff;
-  border: none;
-  padding: 0.9rem;
-  border-radius: var(--radius-md);
-  font-weight: 900;
-  font-size: 0.92rem;
-  cursor: pointer;
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-open-diploma:hover {
-  filter: brightness(1.15);
-}
-
-.btn-close-victory {
-  background: var(--bg-card);
-  border: 1.5px solid var(--border-subtle);
-  color: var(--text-muted);
-  padding: 0.9rem 1.4rem;
-  border-radius: var(--radius-md);
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* ==========================================================================
-   PHASE 4: LIVE TELEPROMPTER BROADCAST STUDIO
-   ========================================================================== */
-.broadcast-stage-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-.broadcast-main-shell {
-  background: var(--bg-card);
-  border: 2px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  position: relative;
-}
-
-.broadcast-studio-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1.5px solid var(--border-subtle);
-  padding-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.studio-title-box h2 {
-  font-size: 1.35rem;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  letter-spacing: -0.02em;
-}
-
-.studio-title-box p {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
-}
-
-.on-air-badge {
-  background: rgba(239, 68, 68, 0.15);
-  border: 2px solid #ef4444;
-  color: #ef4444;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 0.82rem;
-  letter-spacing: 0.1em;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s;
+  gap: 0.4rem;
 }
 
-.on-air-badge.live {
-  background: #ef4444;
-  color: #fff;
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.8);
-  animation: pulse-on-air 1s infinite alternate;
-}
-
-@keyframes pulse-on-air {
-  from { opacity: 0.85; transform: scale(1); }
-  to { opacity: 1; transform: scale(1.05); }
-}
-
-/* Teleprompter Monitor */
-.teleprompter-monitor {
-  background: #030712;
-  border: 3px solid #1e293b;
-  border-radius: var(--radius-md);
-  padding: 1.25rem;
-  min-height: 420px;
-  max-height: 520px;
-  overflow-y: auto;
+.victory-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  scroll-behavior: smooth;
-  position: relative;
-  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
-}
-
-.prompter-line-card {
-  background: #0f172a;
-  border: 1.5px solid #334155;
-  border-radius: 12px;
-  padding: 1.1rem 1.3rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.prompter-line-card:hover {
-  border-color: #64748b;
-  transform: translateX(4px);
-}
-
-.prompter-line-card.active-reading {
-  background: linear-gradient(135deg, rgba(6,182,212,0.18), rgba(59,7,100,0.25));
-  border: 2.5px solid var(--neon-cyan);
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.35);
-  transform: scale(1.02);
-}
-
-.prompter-line-left {
-  display: flex;
-  align-items: center;
   gap: 1rem;
-  flex: 1;
-}
-
-.prompter-speaker-tag {
-  font-size: 0.72rem;
-  font-weight: 900;
-  padding: 0.3rem 0.65rem;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-.prompter-line-text {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #f8fafc;
-  line-height: 1.45;
-}
-
-.prompter-line-card.active-reading .prompter-line-text {
-  color: #ffffff;
-  font-size: 1.25rem;
-  text-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
-}
-
-.prompter-listen-btn {
-  background: #1e293b;
-  color: #38bdf8;
-  border: 1.5px solid #334155;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-
-.prompter-listen-btn:hover {
-  background: var(--neon-cyan);
-  color: #030712;
-  transform: scale(1.1);
-}
-
-/* Broadcast Control Deck */
-.broadcast-control-deck {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0b1120;
-  border: 1.5px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
   flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.deck-btn-primary {
-  background: linear-gradient(135deg, #0284c7, #3b82f6);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 0.85rem 1.6rem;
-  font-size: 0.95rem;
-  font-weight: 900;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(2,132,199,0.4);
-}
-
-.deck-btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(2,132,199,0.6);
-}
-
-.deck-btn-primary:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.deck-speed-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.speed-chip {
-  background: #1e293b;
-  color: #94a3b8;
-  border: 1px solid #334155;
-  padding: 0.35rem 0.75rem;
-  border-radius: 6px;
-  font-weight: 800;
-  font-size: 0.76rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.speed-chip.active {
-  background: var(--neon-cyan);
-  color: #090d16;
-  border-color: var(--neon-cyan);
-}
-
-/* Broadcast Side Panel (Anchor & Language Tips) */
-.broadcast-side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.side-anchor-card,
-.side-formula-card {
-  background: var(--bg-card);
-  border: 1.5px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
-}
-
-.side-anchor-card h3,
-.side-formula-card h3 {
-  font-size: 0.95rem;
-  font-weight: 800;
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #f8fafc;
-}
-
-.formula-pill-item {
-  background: #0f172a;
-  border-left: 3px solid var(--neon-cyan);
-  padding: 0.6rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
-}
-
-.formula-pill-item strong {
-  color: var(--neon-amber);
-}
-
-.anchor-avatar-box {
-  text-align: center;
-  padding: 0.5rem 0;
-}
-
-.anchor-avatar-icon {
-  font-size: 3.5rem;
-  filter: drop-shadow(0 0 15px rgba(56,189,248,0.4));
-  display: inline-block;
-  animation: float-avatar 3s ease-in-out infinite;
-}
-
-@keyframes float-avatar {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-.teleprompter-progress-track {
-  width: 100%;
-  height: 6px;
-  background: #1e293b;
-  border-radius: 3px;
-  overflow: hidden;
+  justify-content: center;
   margin-top: 0.5rem;
 }
 
-.teleprompter-progress-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #06b6d4, #10b981);
-  transition: width 0.3s ease;
+.btn-open-diploma {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #0f172a;
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+  transition: var(--transition-smooth);
+}
+
+.btn-open-diploma:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(251, 191, 36, 0.6);
+}
+
+.btn-close-modal {
+  background: #1e293b;
+  color: #fff;
+  border: 1.5px solid #334155;
+  padding: 0.9rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-close-modal:hover {
+  background: #334155;
 }
 
 /* ==========================================================================
-   FOOTER BAR
+   FOOTER
    ========================================================================== */
 .neuro-footer {
-  background: #090d16;
-  border-top: 1.5px solid var(--border-subtle);
+  background: rgba(6, 9, 17, 0.85);
+  border-top: 1.5px solid var(--border-glass);
   padding: 0.85rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -1375,48 +1352,45 @@ body {
   gap: 0.75rem;
 }
 
-.footer-tip {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.footer-tip strong {
-  color: var(--neon-cyan);
-}
-
 /* ==========================================================================
-   RESPONSIVE LAYOUTS
+   RESPONSIVE DESIGN
    ========================================================================== */
-@media (max-width: 1100px) {
-  .atlas-grid {
-    grid-template-columns: 320px 1fr;
+@media (max-width: 1200px) {
+  .neuro-main-workspace {
+    grid-template-columns: 460px 1fr;
+    gap: 1.25rem;
   }
-  .lobe-inspector-card {
-    grid-column: span 2;
-  }
-  .reading-stage-layout,
-  .energy-stage-layout {
+}
+
+@media (max-width: 980px) {
+  .neuro-main-workspace {
     grid-template-columns: 1fr;
   }
+  .cortex-hero-stage {
+    position: static;
+  }
+  .gym-stage-layout {
+    grid-template-columns: 1fr;
+  }
+  .hud-phase-nav {
+    overflow-x: auto;
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .neuro-hud {
     flex-direction: column;
     align-items: stretch;
     padding: 0.75rem 1rem;
   }
-  .hud-phase-nav {
-    overflow-x: auto;
-  }
-  .atlas-grid {
+  .lobe-target-grid {
     grid-template-columns: 1fr;
   }
-  .teamwork-relay-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .habits-grid {
+  .relay-nodes-chain {
     grid-template-columns: 1fr;
+  }
+  .spotlight-left {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

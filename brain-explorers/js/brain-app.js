@@ -1,6 +1,7 @@
 /**
- * LEARNING AND YOUR BRAIN — INTERACTIVE APPLICATION ENGINE
- * Reactive state machine (playerSession) & 3-phase DOM renderers.
+ * BRAIN EXPLORERS: MASTER GAME ARCHITECTURE & STATE MACHINE
+ * Grade 3-4 CEFR A1+ | CLIL Human Biology & Neuroscience
+ * Production-Grade Cyber-Biology Engine
  */
 
 (function() {
@@ -9,19 +10,44 @@
   const DATA = window.BRAIN_DATA;
   const AUDIO = window.BrainAudio;
 
-  // Reactive Game State
+  // Reactive Session State
   const playerSession = {
-    phase: 'atlas',            // 'atlas' | 'reading' | 'energy'
-    energy: 20,                // Brain consumes 20% base energy
-    selectedTokenId: null,
-    matchedTokens: new Set(),
-    activeLobeId: 'frontal',
-    discoveredLobes: new Set(['frontal']),
-    readingStep: 0,
-    readingCompleted: false,
-    appliedHabits: new Set(),
-    practiceCount: 0,
-    cableThickness: 2,
+    phase: 'atlas',             // 'atlas' | 'relay' | 'gym' | 'broadcast'
+    energy: 20,                 // Metabolic baseline: ~20% of resting energy
+    xp: 0,
+    selectedLobe: 'occipital',
+
+    // Phase 1: Neuro-Atlas Sorting
+    atlas: {
+      currentChipIndex: 0,
+      sortedChips: new Set(),
+      streak: 0
+    },
+
+    // Phase 2: Synaptic Speed Relay
+    relay: {
+      activeRoundIdx: 0,
+      activeStepIdx: 0,        // 0: Occipital, 1: Temporal, 2: Frontal
+      isRunning: false,
+      elapsedMs: 0,
+      timerInterval: null,
+      completedRounds: new Set()
+    },
+
+    // Phase 3: Neuro-Gym & Battery
+    gym: {
+      appliedHabits: new Set(),
+      myelinLevel: 1           // 1 to 5 thickness
+    },
+
+    // Phase 4: Live Teleprompter Broadcast
+    broadcast: {
+      currentLineIdx: 0,
+      isBroadcasting: false,
+      activeWordIdx: -1,
+      broadcastInterval: null
+    },
+
     badgesEarned: new Set(['atlas_explorer'])
   };
 
@@ -29,30 +55,32 @@
      INIT & BOOTSTRAP
      ========================================================================== */
   document.addEventListener('DOMContentLoaded', () => {
-    initPhaseNavigation();
-    initAudioButtons();
+    initTopNavigation();
+    initHudControls();
+    renderPersistentCortexHologram();
     renderCurrentPhase();
     updateEnergyMeter();
+    selectLobe('occipital', false);
   });
 
-  function initPhaseNavigation() {
+  function initTopNavigation() {
     document.querySelectorAll('.phase-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
         AUDIO.playSynapticPulse(720);
-        const phase = btn.dataset.phase;
-        switchPhase(phase);
+        const targetPhase = btn.dataset.phase;
+        switchPhase(targetPhase);
       });
     });
   }
 
-  function initAudioButtons() {
-    const btnMute = document.getElementById('btn-toggle-sound');
-    if (btnMute) {
-      btnMute.addEventListener('click', () => {
+  function initHudControls() {
+    const btnSound = document.getElementById('btn-toggle-sound');
+    if (btnSound) {
+      btnSound.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
-        const isMuted = AUDIO.toggleMute();
-        btnMute.innerHTML = isMuted ? '<span>🔇</span> Unmute' : '<span>🔊</span> Sound';
+        const muted = AUDIO.toggleMute();
+        btnSound.innerHTML = muted ? '<span>🔇</span> Unmute' : '<span>🔊</span> Sound';
       });
     }
 
@@ -60,28 +88,37 @@
     if (btnTts) {
       btnTts.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
-        const isTts = AUDIO.toggleTts();
-        btnTts.innerHTML = isTts ? '<span>🗣️</span> Voice On' : '<span>🤐</span> Voice Off';
+        const ttsOn = AUDIO.toggleTts();
+        btnTts.innerHTML = ttsOn ? '<span>🗣️</span> Voice On' : '<span>🤐</span> Voice Off';
       });
     }
   }
 
-  function switchPhase(phase) {
-    playerSession.phase = phase;
-    document.querySelectorAll('.phase-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.phase === phase);
+  function switchPhase(phaseKey) {
+    playerSession.phase = phaseKey;
+
+    document.querySelectorAll('.phase-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.phase === phaseKey);
     });
+
     renderCurrentPhase();
+    updateCortexForPhase(phaseKey);
   }
 
-  function addEnergy(amount) {
-    playerSession.energy = Math.min(100, Math.max(0, playerSession.energy + amount));
+  function addEnergy(delta) {
+    playerSession.energy = Math.min(100, Math.max(20, playerSession.energy + delta));
     updateEnergyMeter();
 
-    if (playerSession.energy >= 100 && !playerSession.badgesEarned.has('licensed_neuroscientist')) {
-      awardBadge('battery_master');
-      awardBadge('licensed_neuroscientist');
-      setTimeout(showVictoryModal, 600);
+    if (playerSession.energy >= 100) {
+      awardBadge('battery_overcharge');
+    }
+  }
+
+  function addXP(points) {
+    playerSession.xp = Math.min(100, playerSession.xp + points);
+    // Sync with school platform store if present
+    if (window.schoolStore && typeof window.schoolStore.addStudentXP === 'function') {
+      try { window.schoolStore.addStudentXP(points); } catch(e) {}
     }
   }
 
@@ -90,830 +127,903 @@
   }
 
   function updateEnergyMeter() {
-    const fillEl = document.getElementById('battery-fill');
-    const textEl = document.getElementById('battery-pct');
-    if (fillEl) fillEl.style.width = playerSession.energy + '%';
-    if (textEl) textEl.textContent = playerSession.energy + '%';
+    const fill = document.getElementById('battery-fill');
+    const text = document.getElementById('battery-pct');
+    if (fill) fill.style.width = playerSession.energy + '%';
+    if (text) text.textContent = playerSession.energy + '%';
   }
 
+  /* ==========================================================================
+     PERSISTENT HOLOGRAPHIC CORTEX (LEFT HERO STAGE)
+     ========================================================================== */
+  function renderPersistentCortexHologram() {
+    const stage = document.getElementById('cortex-hero-stage');
+    if (!stage) return;
+
+    stage.innerHTML = `
+      <div class="cortex-hero-header">
+        <h2><span>🧠</span> Human Cortex Hologram</h2>
+        <div class="cortex-status-chip" id="cortex-status-chip">
+          <span>⚡</span> 86B NEURONS ACTIVE
+        </div>
+      </div>
+
+      <!-- Organic Lateral Human Brain SVG -->
+      <div class="cortex-svg-viewport" id="cortex-svg-viewport">
+        <svg viewBox="0 0 600 480">
+          <defs>
+            <!-- Drop Shadow & Glow Filters -->
+            <filter id="glow-frontal" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f59e0b" flood-opacity="0.6"/>
+            </filter>
+            <filter id="glow-parietal" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#10b981" flood-opacity="0.6"/>
+            </filter>
+            <filter id="glow-occipital" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f43f5e" flood-opacity="0.6"/>
+            </filter>
+            <filter id="glow-temporal" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#a855f7" flood-opacity="0.6"/>
+            </filter>
+
+            <!-- Radial Background Glow -->
+            <radialGradient id="holo-ambient-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0284c7" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Ambient Holographic Aura -->
+          <circle cx="300" cy="230" r="210" fill="url(#holo-ambient-glow)"/>
+
+          <!-- 1. BRAINSTEM (Pons & Medulla) -->
+          <g id="holo-brainstem" opacity="0.85">
+            <path d="M 285 340 C 285 380 290 420 300 460 L 325 460 C 335 420 330 380 325 340 Z" 
+                  fill="#475569" stroke="#64748b" stroke-width="2"/>
+            <path d="M 280 370 Q 308 385 332 370" fill="none" stroke="#94a3b8" stroke-width="2" opacity="0.6"/>
+            <path d="M 288 405 Q 310 415 328 405" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.6"/>
+          </g>
+
+          <!-- 2. CEREBELLUM (Balance & Motor Striations) -->
+          <g id="holo-cerebellum" opacity="0.9">
+            <path d="M 370 330 C 350 360 360 415 400 430 C 440 440 485 425 500 380 C 510 345 480 330 440 325 Z" 
+                  fill="#334155" stroke="#64748b" stroke-width="2.5"/>
+            <!-- Cerebellar Folia (Horizontal Striation Waves) -->
+            <path d="M 380 355 Q 435 345 480 350" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
+            <path d="M 375 375 Q 440 368 490 372" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
+            <path d="M 385 395 Q 440 390 480 398" fill="none" stroke="#94a3b8" stroke-width="1.8" opacity="0.75"/>
+            <path d="M 400 415 Q 440 412 465 418" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.65"/>
+          </g>
+
+          <!-- 3. TEMPORAL LOBE (Electric Violet) -->
+          <g id="lobe-temporal-group" class="lobe-path-group" data-lobe="temporal">
+            <path class="lobe-fill" 
+                  d="M 180 270 C 235 240 310 240 380 250 C 410 255 425 285 410 315 C 390 355 330 365 240 355 C 190 350 160 310 180 270 Z" 
+                  fill="#a855f7" fill-opacity="0.32" stroke="#a855f7" stroke-width="2.5"/>
+            <!-- Superior & Inferior Temporal Gyri Folds -->
+            <path d="M 210 285 Q 295 275 375 285" class="cortex-sulcus-line"/>
+            <path d="M 220 315 Q 305 310 370 320" class="cortex-sulcus-line"/>
+            <!-- Hotspot Node Pin -->
+            <circle cx="300" cy="300" r="6" fill="#a855f7" filter="url(#glow-temporal)"/>
+            <circle cx="300" cy="300" r="16" fill="none" stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
+            <text x="300" y="304" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">👂</text>
+          </g>
+
+          <!-- 4. OCCIPITAL LOBE (Neon Coral / Crimson) -->
+          <g id="lobe-occipital-group" class="lobe-path-group" data-lobe="occipital">
+            <path class="lobe-fill" 
+                  d="M 445 155 C 490 180 540 215 540 275 C 540 315 500 345 440 325 C 420 280 430 210 445 155 Z" 
+                  fill="#f43f5e" fill-opacity="0.32" stroke="#f43f5e" stroke-width="2.5"/>
+            <!-- Visual Cortex / Calcarine Sulcus Folds -->
+            <path d="M 455 210 Q 500 230 525 250" class="cortex-sulcus-line"/>
+            <path d="M 450 255 Q 490 275 515 295" class="cortex-sulcus-line"/>
+            <!-- Hotspot Node Pin -->
+            <circle cx="485" cy="250" r="6" fill="#f43f5e" filter="url(#glow-occipital)"/>
+            <circle cx="485" cy="250" r="16" fill="none" stroke="#f43f5e" stroke-width="1.5" opacity="0.6"/>
+            <text x="485" y="254" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">👁️</text>
+          </g>
+
+          <!-- 5. PARIETAL LOBE (Vivid Emerald) -->
+          <g id="lobe-parietal-group" class="lobe-path-group" data-lobe="parietal">
+            <path class="lobe-fill" 
+                  d="M 270 52 C 345 52 425 90 445 155 C 430 210 380 250 310 240 C 275 190 270 110 270 52 Z" 
+                  fill="#10b981" fill-opacity="0.32" stroke="#10b981" stroke-width="2.5"/>
+            <!-- Postcentral & Intraparietal Sulci -->
+            <path d="M 315 75 Q 365 130 385 195" class="cortex-sulcus-line"/>
+            <path d="M 360 90 Q 405 135 415 175" class="cortex-sulcus-line"/>
+            <!-- Hotspot Node Pin -->
+            <circle cx="360" cy="145" r="6" fill="#10b981" filter="url(#glow-parietal)"/>
+            <circle cx="360" cy="145" r="16" fill="none" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
+            <text x="360" y="149" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">🖐️</text>
+          </g>
+
+          <!-- 6. FRONTAL LOBE (Solar Amber) -->
+          <g id="lobe-frontal-group" class="lobe-path-group" data-lobe="frontal">
+            <path class="lobe-fill" 
+                  d="M 80 230 C 70 140 140 60 270 52 C 270 110 275 190 310 240 C 265 245 210 265 180 270 C 130 280 90 270 80 230 Z" 
+                  fill="#f59e0b" fill-opacity="0.32" stroke="#f59e0b" stroke-width="2.5"/>
+            <!-- Superior Frontal & Precentral Sulci -->
+            <path d="M 125 180 Q 185 130 240 100" class="cortex-sulcus-line"/>
+            <path d="M 115 220 Q 190 190 260 160" class="cortex-sulcus-line"/>
+            <path d="M 155 245 Q 220 230 265 205" class="cortex-sulcus-line"/>
+            <!-- Hotspot Node Pin -->
+            <circle cx="180" cy="160" r="6" fill="#f59e0b" filter="url(#glow-frontal)"/>
+            <circle cx="180" cy="160" r="16" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.6"/>
+            <text x="180" y="164" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">💡</text>
+          </g>
+
+          <!-- DYNAMIC SYNAPTIC FLOW ARCS (Occipital -> Temporal -> Frontal) -->
+          <!-- Arc 1: Vision to Sound (Occipital -> Temporal) -->
+          <path id="arc-vision-sound" class="synaptic-flow-arc" 
+                d="M 485 250 C 440 300 370 320 300 300" 
+                stroke="#38bdf8" stroke-width="4"/>
+
+          <!-- Arc 2: Sound to Speech (Temporal -> Frontal) -->
+          <path id="arc-sound-speech" class="synaptic-flow-arc" 
+                d="M 300 300 C 240 280 210 220 180 160" 
+                stroke="#fbbf24" stroke-width="4"/>
+
+          <!-- Arc 3: Spatial Tracking (Parietal connector) -->
+          <path id="arc-spatial-relay" class="synaptic-flow-arc" 
+                d="M 360 145 Q 270 140 180 160" 
+                stroke="#10b981" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <!-- Quick Lobe Selector Tabs -->
+      <div class="cortex-quick-tabs">
+        <button class="quick-lobe-pill" data-lobe="frontal" style="color:var(--color-frontal);">Frontal 💡</button>
+        <button class="quick-lobe-pill" data-lobe="parietal" style="color:var(--color-parietal);">Parietal 🖐️</button>
+        <button class="quick-lobe-pill" data-lobe="temporal" style="color:var(--color-temporal);">Temporal 👂</button>
+        <button class="quick-lobe-pill" data-lobe="occipital" style="color:var(--color-occipital);">Occipital 👁️</button>
+      </div>
+
+      <!-- Live Lobe Inspector Strip -->
+      <div class="cortex-inspector-strip" id="cortex-inspector-strip">
+        <!-- Rendered dynamically by selectLobe -->
+      </div>
+    `;
+
+    bindCortexEvents();
+  }
+
+  function bindCortexEvents() {
+    // Click on SVG lobe groups
+    document.querySelectorAll('.lobe-path-group').forEach(group => {
+      const lobeKey = group.dataset.lobe;
+      group.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        AUDIO.playSynapticPulse(560);
+        selectLobe(lobeKey, true);
+
+        // If in Phase 1 and dragging/waiting for a chip, check placement
+        if (playerSession.phase === 'atlas') {
+          handleAtlasLobePlacement(lobeKey);
+        } else if (playerSession.phase === 'relay') {
+          handleRelayNodeClick(lobeKey);
+        }
+      });
+
+      // Drag and Drop support
+      group.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        group.classList.add('drag-target-hover');
+      });
+
+      group.addEventListener('dragleave', () => {
+        group.classList.remove('drag-target-hover');
+      });
+
+      group.addEventListener('drop', (e) => {
+        e.preventDefault();
+        group.classList.remove('drag-target-hover');
+        handleAtlasLobePlacement(lobeKey);
+      });
+    });
+
+    // Quick bottom buttons
+    document.querySelectorAll('.quick-lobe-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        AUDIO.playSynapticPulse(600);
+        selectLobe(pill.dataset.lobe, true);
+      });
+    });
+  }
+
+  function selectLobe(lobeKey, speakPrompt = false) {
+    playerSession.selectedLobe = lobeKey;
+    const lobeData = DATA.lobes[lobeKey];
+    if (!lobeData) return;
+
+    // Update active highlight classes on SVG groups
+    document.querySelectorAll('.lobe-path-group').forEach(grp => {
+      grp.classList.toggle('active', grp.dataset.lobe === lobeKey);
+    });
+
+    // Update quick pill tabs
+    document.querySelectorAll('.quick-lobe-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.lobe === lobeKey);
+    });
+
+    // Render Inspector Strip
+    const strip = document.getElementById('cortex-inspector-strip');
+    if (strip) {
+      strip.style.borderColor = lobeData.color;
+      strip.innerHTML = `
+        <div class="inspector-top-row">
+          <div class="inspector-lobe-name" style="color:${lobeData.color};">
+            <span>${lobeData.icon}</span> ${lobeData.name}
+          </div>
+          <div class="inspector-formula-badge" style="background:${lobeData.color}22; color:${lobeData.color}; border:1px solid ${lobeData.color}66;">
+            ${lobeData.alias}
+          </div>
+        </div>
+        <div class="inspector-body-text">
+          <strong>Language Formula:</strong> "${lobeData.primaryFormula}"
+        </div>
+        <div class="inspector-body-text" style="font-size:0.78rem; color:#cbd5e1;">
+          <strong>Role in Reading:</strong> ${lobeData.roleInReading}
+        </div>
+      `;
+    }
+
+    if (speakPrompt) {
+      AUDIO.speak(lobeData.primaryFormula);
+    }
+  }
+
+  function triggerLobePulseEffect(lobeKey) {
+    const viewport = document.getElementById('cortex-svg-viewport');
+    if (!viewport) return;
+
+    const coords = {
+      frontal: { x: '30%', y: '35%' },
+      parietal: { x: '60%', y: '30%' },
+      occipital: { x: '80%', y: '52%' },
+      temporal: { x: '50%', y: '62%' }
+    };
+
+    const pt = coords[lobeKey] || { x: '50%', y: '50%' };
+    const wave = document.createElement('div');
+    wave.className = 'electrical-pulse-wave';
+    wave.style.left = pt.x;
+    wave.style.top = pt.y;
+    wave.style.borderColor = DATA.lobes[lobeKey]?.color || '#38bdf8';
+    wave.style.boxShadow = `0 0 20px ${DATA.lobes[lobeKey]?.color || '#38bdf8'}`;
+
+    viewport.appendChild(wave);
+    setTimeout(() => wave.remove(), 900);
+  }
+
+  function updateCortexForPhase(phaseKey) {
+    const statusChip = document.getElementById('cortex-status-chip');
+    const arc1 = document.getElementById('arc-vision-sound');
+    const arc2 = document.getElementById('arc-sound-speech');
+    const arc3 = document.getElementById('arc-spatial-relay');
+
+    if (arc1) arc1.classList.remove('active-circuit');
+    if (arc2) arc2.classList.remove('active-circuit');
+    if (arc3) arc3.classList.remove('active-circuit');
+
+    if (phaseKey === 'atlas') {
+      if (statusChip) statusChip.innerHTML = '<span>🧭</span> SENSORY SORTING MODE';
+    } else if (phaseKey === 'relay') {
+      if (statusChip) statusChip.innerHTML = '<span>⚡</span> 0.3s SPEED RELAY ACTIVE';
+      if (arc1) arc1.classList.add('active-circuit');
+      if (arc2) arc2.classList.add('active-circuit');
+    } else if (phaseKey === 'gym') {
+      if (statusChip) statusChip.innerHTML = '<span>🔋</span> NEURO-METABOLIC OVERCHARGE';
+      if (arc3) arc3.classList.add('active-circuit');
+    } else if (phaseKey === 'broadcast') {
+      if (statusChip) statusChip.innerHTML = '<span>🎙️</span> ON-AIR TELEPROMPTER';
+      if (arc1) arc1.classList.add('active-circuit');
+      if (arc2) arc2.classList.add('active-circuit');
+      if (arc3) arc3.classList.add('active-circuit');
+    }
+  }
+
+  /* ==========================================================================
+     PHASE ROUTER
+     ========================================================================== */
   function renderCurrentPhase() {
-    const container = document.getElementById('phase-workspace-container');
+    const container = document.getElementById('phase-cockpit-stage');
     if (!container) return;
 
     if (playerSession.phase === 'atlas') {
       renderPhase1Atlas(container);
-    } else if (playerSession.phase === 'reading') {
-      renderPhase2Reading(container);
-    } else if (playerSession.phase === 'energy') {
-      renderPhase3Energy(container);
+    } else if (playerSession.phase === 'relay') {
+      renderPhase2Relay(container);
+    } else if (playerSession.phase === 'gym') {
+      renderPhase3Gym(container);
     } else if (playerSession.phase === 'broadcast') {
       renderPhase4Broadcast(container);
     }
   }
 
   /* ==========================================================================
-     PHASE 1: NEURO-ATLAS (LOBE DISCOVERY & SENSORY MAPPING)
+     PHASE 1: SENSORY SORTING ARCADE
      ========================================================================== */
   function renderPhase1Atlas(container) {
+    const atlasData = DATA.phase1_atlas;
+    const chips = atlasData.chips;
+    const currentChip = chips[playerSession.atlas.currentChipIndex] || chips[chips.length - 1];
+    const isFinished = playerSession.atlas.sortedChips.size >= chips.length;
+
     container.innerHTML = `
-      <div class="stage-header-banner">
-        <div>
-          <h2><span>🧭</span> Phase 1: The Neuro-Atlas</h2>
-          <p>Match sensory discovery tokens to their brain lobe. Touch a lobe to inspect its power!</p>
+      <div class="cockpit-banner">
+        <div class="banner-title-box">
+          <h2><span>🧭</span> ${atlasData.title}</h2>
+          <p>${atlasData.subtitle}</p>
         </div>
-        <div class="pedagogical-formula-pill">
-          Formula: "The [Lobe] helps us [Verb]."
+        <div class="pedagogy-pill">
+          ${atlasData.targetFormula}
         </div>
       </div>
 
-      <div class="atlas-grid">
-        <!-- 1. LEFT: Sensory Tokens Tray -->
-        <div class="tokens-tray-card">
-          <div class="tray-header">
-            <h3>Sensory Tokens</h3>
-            <span class="token-count-badge" id="tray-matched-count">
-              ${playerSession.matchedTokens.size} / ${DATA.sensoryTokens.length} Matched
-            </span>
+      <div class="cockpit-card">
+        ${isFinished ? `
+          <div style="text-align:center; padding:2rem; display:flex; flex-direction:column; align-items:center; gap:1rem;">
+            <div style="font-size:3.5rem;">🎉</div>
+            <h3 style="font-size:1.6rem; font-weight:900; color:#38bdf8;">All 6 Sensory Signals Sorted!</h3>
+            <p style="color:var(--text-muted); max-width:480px;">
+              You have mastered the human neuro-atlas! The cortex is fully connected and ready for high-speed reading.
+            </p>
+            <button type="button" class="btn-broadcast-action" id="btn-goto-relay" style="margin-top:0.5rem;">
+              <span>⚡</span> Launch Phase 2: Synaptic Relay
+            </button>
           </div>
-          <div class="tokens-list" id="sensory-tokens-list">
-            <!-- Rendered dynamically -->
-          </div>
-        </div>
+        ` : `
+          <div class="sorting-arcade-layout">
+            <!-- Active Chip Spotlight -->
+            <div class="current-chip-spotlight" id="current-chip-spotlight" draggable="true">
+              <div class="spotlight-left">
+                <div class="spotlight-icon-box" style="border-color:${currentChip.color};">
+                  ${currentChip.icon}
+                </div>
+                <div class="spotlight-info">
+                  <span style="font-size:0.72rem; font-weight:900; color:${currentChip.color}; text-transform:uppercase;">
+                    SIGNAL ${playerSession.atlas.currentChipIndex + 1} OF ${chips.length}
+                  </span>
+                  <h3>${currentChip.name}</h3>
+                  <p>${currentChip.description}</p>
+                </div>
+              </div>
+              <div class="spotlight-actions">
+                <button type="button" class="btn-chip-clue" id="btn-audio-clue">
+                  <span>🔊</span> Listen Clue
+                </button>
+              </div>
+            </div>
 
-        <!-- 2. CENTER: Interactive SVG Brain Rig -->
-        <div class="brain-viewport-card">
-          <div class="brain-stage-title-hud">
-            <span class="stage-status-pill">● LATERAL NEURO-MAP (LEFT HEMISPHERE)</span>
-            <span style="font-size:0.75rem; color:#94a3b8; font-weight:800;">Touch any lobe to inspect</span>
-          </div>
+            <!-- 4 Interactive Lobe Drop Cards -->
+            <div class="lobe-target-grid">
+              ${Object.values(DATA.lobes).map(lobe => {
+                const matchedForLobe = chips.filter(c => playerSession.atlas.sortedChips.has(c.id) && c.targetLobe === lobe.id);
+                return `
+                  <div class="lobe-target-card" data-target-lobe="${lobe.id}" style="color:${lobe.color};">
+                    <div class="target-card-header">
+                      <div class="target-lobe-label">
+                        <span>${lobe.icon}</span> ${lobe.name}
+                      </div>
+                      <span class="target-badge-mini">${matchedForLobe.length} matched</span>
+                    </div>
+                    <div class="target-formula-preview">
+                      "${lobe.primaryFormula}"
+                    </div>
+                    <div class="target-matched-chips">
+                      ${matchedForLobe.map(c => `
+                        <span class="matched-chip-pill" style="background:${lobe.color}22; border-color:${lobe.color}66; color:#fff;">
+                          ${c.icon} ${c.name}
+                        </span>
+                      `).join('')}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
 
-          <div class="svg-brain-container" id="svg-brain-stage">
-            ${generateBrainSvgMarkup()}
+            <!-- Arcade Score & Streak Footer -->
+            <div class="arcade-status-row">
+              <div class="streak-counter">
+                <span>🔥</span> Streak: ${playerSession.atlas.streak}x
+              </div>
+              <div>
+                Click a lobe card or drop the signal chip onto the cortex hologram!
+              </div>
+            </div>
           </div>
-
-          <div class="brain-instruction-banner" id="atlas-instruction-banner">
-            <span>👇</span>
-            <span id="instruction-text">Select a sensory token on the left, then touch its matching lobe!</span>
-          </div>
-        </div>
-
-        <!-- 3. RIGHT: Lobe Inspector & Formula Card -->
-        <div class="lobe-inspector-card" id="lobe-inspector-container">
-          <!-- Rendered dynamically -->
-        </div>
+        `}
       </div>
     `;
 
-    renderSensoryTokensList();
-    bindBrainSvgEvents();
-    renderLobeInspector(playerSession.activeLobeId);
+    bindAtlasEvents();
   }
 
-  function generateBrainSvgMarkup() {
-    const lobes = DATA.lobes;
-    return `
-      <svg class="interactive-brain-svg" viewBox="50 30 280 230" id="main-brain-svg">
-        <defs>
-          <filter id="neuroGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
+  function bindAtlasEvents() {
+    const btnClue = document.getElementById('btn-audio-clue');
+    const chips = DATA.phase1_atlas.chips;
+    const currentChip = chips[playerSession.atlas.currentChipIndex];
 
-        <!-- Brain Stem & Cerebellum Backing -->
-        <path d="M 120 220 C 130 245 155 255 175 255 C 190 255 200 240 195 220 Z" fill="#334155" stroke="#1e293b" stroke-width="2" />
-        <ellipse cx="105" cy="225" rx="28" ry="18" fill="#1e293b" stroke="#475569" stroke-width="2.5" />
-        <text x="92" y="229" fill="#94a3b8" font-size="9" font-weight="900">Cerebellum</text>
+    if (btnClue && currentChip) {
+      btnClue.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        AUDIO.playSynapticPulse(700);
+        AUDIO.speak(currentChip.audioPrompt);
+      });
+    }
 
-        <!-- 1. Occipital Lobe (Red / Vision) -->
-        <path id="svg-lobe-occipital" class="lobe-interactive-path ${playerSession.activeLobeId === 'occipital' ? 'active' : ''}"
-              data-lobe="occipital"
-              style="--lobe-color: ${lobes.occipital.color};"
-              d="${lobes.occipital.svgPath}"
-              fill="${lobes.occipital.color}"
-              stroke="${lobes.occipital.borderColor}" />
+    // Drag-and-drop on spotlight chip
+    const spotlight = document.getElementById('current-chip-spotlight');
+    if (spotlight && currentChip) {
+      spotlight.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', currentChip.id);
+      });
+    }
 
-        <!-- 2. Temporal Lobe (Purple / Hearing) -->
-        <path id="svg-lobe-temporal" class="lobe-interactive-path ${playerSession.activeLobeId === 'temporal' ? 'active' : ''}"
-              data-lobe="temporal"
-              style="--lobe-color: ${lobes.temporal.color};"
-              d="${lobes.temporal.svgPath}"
-              fill="${lobes.temporal.color}"
-              stroke="${lobes.temporal.borderColor}" />
-
-        <!-- 3. Parietal Lobe (Green / Touch & Space) -->
-        <path id="svg-lobe-parietal" class="lobe-interactive-path ${playerSession.activeLobeId === 'parietal' ? 'active' : ''}"
-              data-lobe="parietal"
-              style="--lobe-color: ${lobes.parietal.color};"
-              d="${lobes.parietal.contourPath}"
-              fill="${lobes.parietal.color}"
-              stroke="${lobes.parietal.borderColor}" />
-
-        <!-- 4. Frontal Lobe (Amber / Thinking & Speech) -->
-        <path id="svg-lobe-frontal" class="lobe-interactive-path ${playerSession.activeLobeId === 'frontal' ? 'active' : ''}"
-              data-lobe="frontal"
-              style="--lobe-color: ${lobes.frontal.color};"
-              d="${lobes.frontal.svgPath}"
-              fill="${lobes.frontal.color}"
-              stroke="${lobes.frontal.borderColor}" />
-
-        <!-- Center Interactive Pin Nodes with Icons -->
-        <g class="lobe-pin-target" data-lobe="frontal" transform="translate(235, 150)">
-          <circle r="16" fill="rgba(15,23,42,0.85)" stroke="${lobes.frontal.color}" stroke-width="2.5" />
-          <text text-anchor="middle" dy="5" font-size="14">${lobes.frontal.icon}</text>
-        </g>
-        <g class="lobe-pin-target" data-lobe="parietal" transform="translate(210, 95)">
-          <circle r="16" fill="rgba(15,23,42,0.85)" stroke="${lobes.parietal.color}" stroke-width="2.5" />
-          <text text-anchor="middle" dy="5" font-size="14">${lobes.parietal.icon}</text>
-        </g>
-        <g class="lobe-pin-target" data-lobe="occipital" transform="translate(115, 170)">
-          <circle r="16" fill="rgba(15,23,42,0.85)" stroke="${lobes.occipital.color}" stroke-width="2.5" />
-          <text text-anchor="middle" dy="5" font-size="14">${lobes.occipital.icon}</text>
-        </g>
-        <g class="lobe-pin-target" data-lobe="temporal" transform="translate(170, 205)">
-          <circle r="16" fill="rgba(15,23,42,0.85)" stroke="${lobes.temporal.color}" stroke-width="2.5" />
-          <text text-anchor="middle" dy="5" font-size="14">${lobes.temporal.icon}</text>
-        </g>
-      </svg>
-    `;
-  }
-
-  function renderSensoryTokensList() {
-    const listEl = document.getElementById('sensory-tokens-list');
-    if (!listEl) return;
-
-    listEl.innerHTML = DATA.sensoryTokens.map(token => {
-      const isMatched = playerSession.matchedTokens.has(token.id);
-      const isSelected = playerSession.selectedTokenId === token.id;
-
-      return `
-        <div class="sensory-token ${isSelected ? 'is-selected' : ''} ${isMatched ? 'is-matched' : ''}"
-             data-token-id="${token.id}">
-          <div class="token-icon-box">${token.icon}</div>
-          <div class="token-info">
-            <div class="token-name">${token.name}</div>
-            <div class="token-clue">🔍 ${token.clue}</div>
-          </div>
-          <div class="token-status-icon">✓</div>
-        </div>
-      `;
-    }).join('');
-
-    // Bind token selection events
-    listEl.querySelectorAll('.sensory-token').forEach(card => {
+    // Click on lobe target cards
+    document.querySelectorAll('.lobe-target-card').forEach(card => {
+      const targetLobe = card.dataset.targetLobe;
       card.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        const tokenId = card.dataset.tokenId;
-        handleSelectToken(tokenId);
+        handleAtlasLobePlacement(targetLobe);
       });
     });
-  }
 
-  function handleSelectToken(tokenId) {
-    if (playerSession.matchedTokens.has(tokenId)) {
-      AUDIO.playSynapticPulse(540);
-      return;
-    }
-
-    AUDIO.playNodeConnect(600);
-    playerSession.selectedTokenId = tokenId;
-    renderSensoryTokensList();
-
-    const token = DATA.sensoryTokens.find(t => t.id === tokenId);
-    if (token) {
-      updateInstructionBanner(`Selected "${token.name}". Which lobe helps with: ${token.clue}? Touch the brain!`);
-      AUDIO.speak(token.description);
+    // Advance button when finished
+    const btnGotoRelay = document.getElementById('btn-goto-relay');
+    if (btnGotoRelay) {
+      btnGotoRelay.addEventListener('click', () => {
+        switchPhase('relay');
+      });
     }
   }
 
-  function bindBrainSvgEvents() {
-    const svgStage = document.getElementById('svg-brain-stage');
-    if (!svgStage) return;
+  function handleAtlasLobePlacement(chosenLobe) {
+    const chips = DATA.phase1_atlas.chips;
+    const currentChip = chips[playerSession.atlas.currentChipIndex];
+    if (!currentChip) return;
 
-    const lobeElements = svgStage.querySelectorAll('.lobe-interactive-path, .lobe-pin-target');
-    lobeElements.forEach(el => {
-      el.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        const lobeId = el.dataset.lobe;
-        handleLobeClick(lobeId);
-      });
-    });
-  }
+    AUDIO.ensureUnlocked();
 
-  function handleLobeClick(lobeId) {
-    playerSession.activeLobeId = lobeId;
-    playerSession.discoveredLobes.add(lobeId);
+    if (chosenLobe === currentChip.targetLobe) {
+      // SUCCESS!
+      playerSession.atlas.sortedChips.add(currentChip.id);
+      playerSession.atlas.streak++;
+      addEnergy(12);
+      addXP(15);
 
-    // Update active highlight in SVG
-    document.querySelectorAll('.lobe-interactive-path').forEach(p => {
-      p.classList.toggle('active', p.dataset.lobe === lobeId);
-    });
+      triggerLobePulseEffect(chosenLobe);
+      selectLobe(chosenLobe, false);
+      AUDIO.playMajorThirdChime();
+      AUDIO.speak(currentChip.spokenFact);
 
-    renderLobeInspector(lobeId);
-
-    // If a token is currently selected, check for match!
-    if (playerSession.selectedTokenId) {
-      const token = DATA.sensoryTokens.find(t => t.id === playerSession.selectedTokenId);
-      if (token) {
-        if (token.targetLobe === lobeId) {
-          // SUCCESS MATCH!
-          AUDIO.playSuccessArpeggio();
-          playerSession.matchedTokens.add(token.id);
-          playerSession.selectedTokenId = null;
-          addEnergy(10);
-
-          updateInstructionBanner(`🎉 MATCH! ${token.spokenFormula}`);
-          AUDIO.speak(token.spokenFormula);
-
-          renderSensoryTokensList();
-
-          const matchCountEl = document.getElementById('tray-matched-count');
-          if (matchCountEl) {
-            matchCountEl.textContent = `${playerSession.matchedTokens.size} / ${DATA.sensoryTokens.length} Matched`;
-          }
-
-          // Check if all tokens are matched
-          if (playerSession.matchedTokens.size === DATA.sensoryTokens.length) {
-            setTimeout(() => {
-              AUDIO.playPowerUpSweep();
-              updateInstructionBanner(`🌟 EXCELLENT! All sensory tokens matched. Ready for Phase 2: Reading Teamwork!`);
-              AUDIO.speak("Fantastic exploration! Now let's see how reading is a whole-team effort!");
-            }, 1200);
-          }
-        } else {
-          // SOFT FAIL / RETRY
-          AUDIO.playSoftFail();
-          const targetLobeData = DATA.lobes[token.targetLobe];
-          updateInstructionBanner(`🤔 Not quite! ${token.name} is used for ${token.clue}. Try the ${targetLobeData.name}!`);
-          AUDIO.speak(`Not quite. Try the ${targetLobeData.name}!`);
-        }
-        return;
+      playerSession.atlas.currentChipIndex++;
+      if (playerSession.atlas.currentChipIndex >= chips.length) {
+        awardBadge('atlas_explorer');
+        AUDIO.playVictoryFanfare();
       }
-    }
 
-    // Otherwise just inspecting the lobe
-    AUDIO.playSynapticPulse(680);
-    const lobeData = DATA.lobes[lobeId];
-    if (lobeData) {
-      updateInstructionBanner(`Inspecting ${lobeData.name}: ${lobeData.formulaSentence}`);
-      AUDIO.speak(lobeData.formulaSentence);
-    }
-  }
+      setTimeout(() => {
+        renderCurrentPhase();
+      }, 500);
 
-  function renderLobeInspector(lobeId) {
-    const container = document.getElementById('lobe-inspector-container');
-    if (!container) return;
+    } else {
+      // SOFT-FAIL
+      playerSession.atlas.streak = 0;
+      AUDIO.playSoftFail();
+      AUDIO.speak(currentChip.softFailClue);
 
-    const lobe = DATA.lobes[lobeId];
-    if (!lobe) return;
-
-    container.innerHTML = `
-      <div class="inspector-top">
-        <div class="inspector-lobe-badge">
-          <div class="lobe-color-avatar" style="background:${lobe.color};">
-            ${lobe.icon}
-          </div>
-          <div>
-            <h3>${lobe.name}</h3>
-            <span>${lobe.shortRole}</span>
-          </div>
-        </div>
-
-        <div class="inspector-section">
-          <div class="inspector-section-label">Core ESL Formula</div>
-          <div class="inspector-formula-box" style="border-left: 4px solid ${lobe.color};">
-            "${lobe.formulaSentence}"
-          </div>
-        </div>
-
-        <div class="inspector-section">
-          <div class="inspector-section-label">What It Does</div>
-          <div class="inspector-esl-cue">
-            ${lobe.eslPrompt}
-          </div>
-        </div>
-
-        <div class="inspector-section">
-          <div class="inspector-section-label">Reading Teamwork Role</div>
-          <p style="font-size:0.8rem; color:#94a3b8; line-height:1.4;">
-            <strong>Step ${lobe.readingStepNumber}:</strong> ${lobe.readingRole}
-          </p>
-        </div>
-      </div>
-
-      <button class="inspector-btn-action" id="btn-speak-lobe-formula">
-        <span>🔊</span> Listen &amp; Repeat Formula
-      </button>
-    `;
-
-    const speakBtn = document.getElementById('btn-speak-lobe-formula');
-    if (speakBtn) {
-      speakBtn.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        AUDIO.speak(lobe.formulaSentence);
-      });
-    }
-  }
-
-  function updateInstructionBanner(text) {
-    const bannerText = document.getElementById('instruction-text');
-    if (bannerText) {
-      bannerText.textContent = text;
+      const spotlight = document.getElementById('current-chip-spotlight');
+      if (spotlight) {
+        spotlight.classList.remove('soft-fail-shake');
+        void spotlight.offsetWidth; // CSS reflow
+        spotlight.classList.add('soft-fail-shake');
+      }
     }
   }
 
   /* ==========================================================================
-     PHASE 2: READING TEAMWORK PATHWAY BUILDER
+     PHASE 2: SYNAPTIC SPEED RELAY (Under 0.30s Simulation)
      ========================================================================== */
-  function renderPhase2Reading(container) {
-    const rData = DATA.readingJourney;
+  function renderPhase2Relay(container) {
+    const relayData = DATA.phase2_relay;
+    const rounds = relayData.rounds;
+    const currentRound = rounds[playerSession.relay.activeRoundIdx] || rounds[0];
 
     container.innerHTML = `
-      <div class="stage-header-banner">
-        <div>
-          <h2><span>⚡</span> Phase 2: Reading Teamwork Pathway</h2>
-          <p>Watch how all 4 lobes connect in 0.3 seconds to read a word aloud!</p>
+      <div class="cockpit-banner">
+        <div class="banner-title-box">
+          <h2><span>⚡</span> ${relayData.title}</h2>
+          <p>${relayData.subtitle}</p>
         </div>
-        <div class="pedagogical-formula-pill" style="border-color:var(--neon-amber); color:var(--neon-amber);">
-          ${rData.teamworkMotto}
+        <div class="pedagogy-pill">
+          ${relayData.teamworkMotto}
         </div>
       </div>
 
-      <div class="reading-stage-layout">
-        <!-- 1. LEFT: Interactive Pathway Board -->
-        <div class="reading-interactive-board">
-          <!-- Word Hero Card -->
-          <div class="reading-word-hero">
-            <div class="word-hero-left">
-              <div class="word-emoji-box">${rData.imageIcon}</div>
-              <div>
-                <div class="word-letters-text">${rData.word}</div>
-                <div class="word-phonemes-tag">Phonemes: ${rData.wordPronunciation}</div>
-              </div>
-            </div>
-            <button class="hud-btn" id="btn-listen-word" style="background:#090d16;">
-              <span>🔊</span> Hear Word
-            </button>
-          </div>
-
-          <!-- 4-Step Teamwork Relay Grid -->
-          <div class="teamwork-relay-grid" id="teamwork-relay-container">
-            ${rData.steps.map(s => `
-              <div class="relay-step-card ${playerSession.readingStep >= s.step ? 'completed' : ''} ${playerSession.readingStep === s.step - 1 ? 'active' : ''}"
-                   id="relay-card-${s.step}"
-                   style="--card-color:${s.color}; --card-color-glow:${s.color}66;">
-                <div class="relay-step-badge" style="background:${s.color};">
-                  Step ${s.step}
-                </div>
-                <div class="relay-lobe-title">${s.lobeName}</div>
-                <div class="relay-action-text">${s.detail}</div>
-                <div class="relay-time-pill">⏱ ~0.0${s.step * 7}s</div>
-              </div>
+      <div class="cockpit-card">
+        <div class="relay-stage-layout">
+          <!-- 3 Progressive Rounds Selector -->
+          <div class="relay-rounds-row">
+            ${rounds.map((rnd, idx) => `
+              <button type="button" class="round-pill-btn ${idx === playerSession.relay.activeRoundIdx ? 'active' : ''} ${playerSession.relay.completedRounds.has(idx) ? 'completed' : ''}" data-round-idx="${idx}">
+                <span>Round ${idx + 1}: ${rnd.word}</span>
+                <span>${playerSession.relay.completedRounds.has(idx) ? '✓' : rnd.icon}</span>
+              </button>
             `).join('')}
           </div>
 
-          <!-- Action & Trigger Bar -->
-          <div class="reading-action-bar">
-            <div class="motto-banner">
-              <span>🤝</span>
-              <span>"Reading is a whole-team effort!"</span>
+          <!-- Digital Milliseconds Stopwatch -->
+          <div class="speed-stopwatch-display">
+            <div class="timer-digits-box">
+              <span class="timer-digits-label">SYNAPTIC TRANSMISSION TIME</span>
+              <span class="timer-digits-val" id="relay-stopwatch-digits">
+                ${(playerSession.relay.elapsedMs / 1000).toFixed(2)}s
+              </span>
             </div>
-            <button class="btn-trigger-circuit" id="btn-run-reading-relay">
-              <span>⚡</span> Trigger 0.3s Neural Relay!
+            <div class="word-hero-box">
+              <div class="word-hero-letters">${currentRound.word}</div>
+              <div class="word-hero-phonics">${currentRound.pronunciation} &bull; ${currentRound.meaning}</div>
+            </div>
+          </div>
+
+          <!-- Interactive 3-Station Synaptic Nodes -->
+          <div class="relay-nodes-chain">
+            ${currentRound.steps.map((step, idx) => {
+              const isWaiting = idx === playerSession.relay.activeStepIdx && playerSession.relay.isRunning;
+              const isActivated = idx < playerSession.relay.activeStepIdx;
+              const isLocked = idx > playerSession.relay.activeStepIdx;
+
+              return `
+                <div class="relay-node-card ${isWaiting ? 'waiting-activation' : ''} ${isActivated ? 'activated' : ''} ${isLocked ? 'locked' : ''}" 
+                     data-node-lobe="${step.lobeId}" data-step-idx="${idx}" style="color:${step.color};">
+                  <div class="node-step-badge">STEP ${idx + 1}</div>
+                  <div class="node-icon-circle">
+                    ${step.lobeId === 'occipital' ? '👁️' : step.lobeId === 'temporal' ? '👂' : '💡'}
+                  </div>
+                  <div class="node-title">${step.name}</div>
+                  <div class="node-desc">${step.actionLabel}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Relay Action Controls -->
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
+            <button type="button" class="btn-broadcast-action" id="btn-start-relay">
+              <span>${playerSession.relay.isRunning ? '⏹️ Reset Run' : '⚡ Start Reading Relay'}</span>
             </button>
-          </div>
-        </div>
-
-        <!-- 2. RIGHT: Synaptic Circuit Visualizer SVG -->
-        <div class="reading-side-canvas">
-          <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-            <span class="stage-status-pill">SYNAPTIC RELAY CIRCUIT</span>
-            <span id="relay-status-text" style="font-size:0.75rem; font-weight:800; color:#fbbf24;">Ready to fire</span>
-          </div>
-
-          <div style="width:100%; height:320px; display:flex; align-items:center; justify-content:center;">
-            ${generateCircuitSvgMarkup()}
-          </div>
-
-          <div style="background:#090d16; border:1px solid #334155; padding:0.6rem 1rem; border-radius:10px; width:100%; text-align:center;">
-            <span style="font-size:0.8rem; font-weight:800; color:#94a3b8;" id="circuit-live-caption">
-              Click "Trigger 0.3s Neural Relay" to watch the electrical spark connect all 4 lobes!
-            </span>
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+              Goal: Fire all 3 nodes before the <strong>${currentRound.targetTimeSeconds.toFixed(2)}s</strong> timer expires!
+            </div>
           </div>
         </div>
       </div>
     `;
 
-    bindReadingEvents();
+    bindRelayEvents();
   }
 
-  function generateCircuitSvgMarkup() {
-    const lobes = DATA.lobes;
-    return `
-      <svg viewBox="60 40 260 210" width="100%" height="100%" id="circuit-svg">
-        <!-- Connecting Synaptic Cable Lines -->
-        <!-- Step 1 to 2: Occipital -> Temporal -->
-        <line id="cable-1-2" x1="115" y1="170" x2="170" y2="205"
-              stroke="#475569" stroke-width="4" stroke-linecap="round" />
-        <!-- Step 2 to 3: Temporal -> Parietal -->
-        <line id="cable-2-3" x1="170" y1="205" x2="210" y2="95"
-              stroke="#475569" stroke-width="4" stroke-linecap="round" />
-        <!-- Step 3 to 4: Parietal -> Frontal -->
-        <line id="cable-3-4" x1="210" y1="95" x2="235" y2="150"
-              stroke="#475569" stroke-width="4" stroke-linecap="round" />
-
-        <!-- 4 Lobe Relay Nodes -->
-        <!-- 1. Occipital -->
-        <g id="circuit-node-occipital" transform="translate(115, 170)">
-          <circle r="22" fill="#0f172a" stroke="${lobes.occipital.color}" stroke-width="3" />
-          <text text-anchor="middle" dy="6" font-size="16">${lobes.occipital.icon}</text>
-          <text text-anchor="middle" dy="34" fill="#ef4444" font-size="9" font-weight="900">1. Occipital</text>
-        </g>
-
-        <!-- 2. Temporal -->
-        <g id="circuit-node-temporal" transform="translate(170, 205)">
-          <circle r="22" fill="#0f172a" stroke="${lobes.temporal.color}" stroke-width="3" />
-          <text text-anchor="middle" dy="6" font-size="16">${lobes.temporal.icon}</text>
-          <text text-anchor="middle" dy="34" fill="#a855f7" font-size="9" font-weight="900">2. Temporal</text>
-        </g>
-
-        <!-- 3. Parietal -->
-        <g id="circuit-node-parietal" transform="translate(210, 95)">
-          <circle r="22" fill="#0f172a" stroke="${lobes.parietal.color}" stroke-width="3" />
-          <text text-anchor="middle" dy="6" font-size="16">${lobes.parietal.icon}</text>
-          <text text-anchor="middle" dy="-26" fill="#10b981" font-size="9" font-weight="900">3. Parietal</text>
-        </g>
-
-        <!-- 4. Frontal -->
-        <g id="circuit-node-frontal" transform="translate(235, 150)">
-          <circle r="22" fill="#0f172a" stroke="${lobes.frontal.color}" stroke-width="3" />
-          <text text-anchor="middle" dy="6" font-size="16">${lobes.frontal.icon}</text>
-          <text text-anchor="middle" dy="34" fill="#f59e0b" font-size="9" font-weight="900">4. Frontal</text>
-        </g>
-      </svg>
-    `;
-  }
-
-  function bindReadingEvents() {
-    const btnHear = document.getElementById('btn-listen-word');
-    if (btnHear) {
-      btnHear.addEventListener('click', () => {
+  function bindRelayEvents() {
+    // Round selector buttons
+    document.querySelectorAll('.round-pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
-        AUDIO.speak('Cat! C, A, T. Cat!');
+        AUDIO.playSynapticPulse(600);
+        playerSession.relay.activeRoundIdx = parseInt(btn.dataset.roundIdx, 10);
+        resetRelayTimer();
+        renderCurrentPhase();
+      });
+    });
+
+    // Start / Reset Relay button
+    const btnStart = document.getElementById('btn-start-relay');
+    if (btnStart) {
+      btnStart.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        if (playerSession.relay.isRunning) {
+          resetRelayTimer();
+          renderCurrentPhase();
+        } else {
+          startSpeedRelay();
+        }
       });
     }
 
-    const btnRelay = document.getElementById('btn-run-reading-relay');
-    if (btnRelay) {
-      btnRelay.addEventListener('click', runReadingRelaySequence);
-    }
+    // Node click
+    document.querySelectorAll('.relay-node-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const lobeId = card.dataset.nodeLobe;
+        handleRelayNodeClick(lobeId);
+      });
+    });
   }
 
-  function runReadingRelaySequence() {
-    AUDIO.ensureUnlocked();
-    const btn = document.getElementById('btn-run-reading-relay');
-    if (btn) btn.disabled = true;
+  function startSpeedRelay() {
+    playerSession.relay.isRunning = true;
+    playerSession.relay.activeStepIdx = 0;
+    playerSession.relay.elapsedMs = 0;
 
-    const captionEl = document.getElementById('circuit-live-caption');
-    const statusEl = document.getElementById('relay-status-text');
+    AUDIO.playStudioCueBeep();
 
-    const steps = DATA.readingJourney.steps;
-    let curStepIndex = 0;
+    const rounds = DATA.phase2_relay.rounds;
+    const currentRound = rounds[playerSession.relay.activeRoundIdx];
 
-    function executeNextStep() {
-      if (curStepIndex >= steps.length) {
-        // Complete relay!
-        AUDIO.playSuccessArpeggio();
-        if (captionEl) captionEl.innerHTML = '🎉 <strong>WHOLE-TEAM EFFORT COMPLETE!</strong> All 4 lobes fired in 0.3s!';
-        if (statusEl) statusEl.textContent = 'Circuit Locked & Active!';
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<span>⚡</span> Replay Relay!';
+    // Highlight Occipital Lobe on Hologram
+    selectLobe('occipital', false);
+
+    const startTime = performance.now();
+    clearInterval(playerSession.relay.timerInterval);
+
+    playerSession.relay.timerInterval = setInterval(() => {
+      playerSession.relay.elapsedMs = Math.round(performance.now() - startTime);
+      const digits = document.getElementById('relay-stopwatch-digits');
+      if (digits) {
+        digits.textContent = (playerSession.relay.elapsedMs / 1000).toFixed(2) + 's';
+      }
+    }, 15);
+
+    renderCurrentPhase();
+  }
+
+  function resetRelayTimer() {
+    playerSession.relay.isRunning = false;
+    clearInterval(playerSession.relay.timerInterval);
+    playerSession.relay.activeStepIdx = 0;
+    playerSession.relay.elapsedMs = 0;
+  }
+
+  function handleRelayNodeClick(clickedLobe) {
+    if (!playerSession.relay.isRunning) return;
+
+    const rounds = DATA.phase2_relay.rounds;
+    const currentRound = rounds[playerSession.relay.activeRoundIdx];
+    const targetStep = currentRound.steps[playerSession.relay.activeStepIdx];
+
+    if (!targetStep) return;
+
+    if (clickedLobe === targetStep.lobeId) {
+      // Activated node in sequence
+      playerSession.relay.activeStepIdx++;
+      triggerLobePulseEffect(clickedLobe);
+      AUDIO.playSpeedRelayZap(playerSession.relay.activeStepIdx);
+
+      if (playerSession.relay.activeStepIdx === 1) {
+        selectLobe('temporal', false);
+      } else if (playerSession.relay.activeStepIdx === 2) {
+        selectLobe('frontal', false);
+      }
+
+      if (playerSession.relay.activeStepIdx >= currentRound.steps.length) {
+        // ROUND COMPLETED!
+        clearInterval(playerSession.relay.timerInterval);
+        playerSession.relay.isRunning = false;
+        playerSession.relay.completedRounds.add(playerSession.relay.activeRoundIdx);
+
+        addEnergy(15);
+        addXP(25);
+        AUDIO.playMajorThirdChime();
+        AUDIO.playVictoryFanfare();
+
+        const digits = document.getElementById('relay-stopwatch-digits');
+        if (digits) digits.classList.add('speed-success');
+
+        AUDIO.speak(`Success! Reading ${currentRound.word} took only ${(playerSession.relay.elapsedMs / 1000).toFixed(2)} seconds! Reading is a whole-team effort!`);
+
+        if (playerSession.relay.completedRounds.size >= rounds.length) {
+          awardBadge('synaptic_racer');
         }
 
-        if (!playerSession.readingCompleted) {
-          playerSession.readingCompleted = true;
-          awardBadge('teamwork_champion');
-          addEnergy(15);
-        }
-
-        AUDIO.speak('Reading is a whole-team effort! Cat!');
-        return;
+        setTimeout(() => {
+          renderCurrentPhase();
+        }, 1200);
+      } else {
+        renderCurrentPhase();
       }
-
-      const s = steps[curStepIndex];
-      playerSession.readingStep = s.step;
-
-      // Update Relay Card UI
-      document.querySelectorAll('.relay-step-card').forEach((card, idx) => {
-        card.classList.toggle('active', idx === curStepIndex);
-        card.classList.toggle('completed', idx < curStepIndex);
-      });
-
-      // Highlight cable & node
-      if (curStepIndex === 0) {
-        AUDIO.playSynapticPulse(520);
-        highlightCircuitNode('occipital', s.color);
-      } else if (curStepIndex === 1) {
-        AUDIO.playSynapticPulse(650);
-        highlightCircuitCable('cable-1-2', s.color);
-        highlightCircuitNode('temporal', s.color);
-      } else if (curStepIndex === 2) {
-        AUDIO.playSynapticPulse(780);
-        highlightCircuitCable('cable-2-3', s.color);
-        highlightCircuitNode('parietal', s.color);
-      } else if (curStepIndex === 3) {
-        AUDIO.playSynapticPulse(1040);
-        highlightCircuitCable('cable-3-4', s.color);
-        highlightCircuitNode('frontal', s.color);
-      }
-
-      if (captionEl) {
-        captionEl.innerHTML = `<strong>Step ${s.step}:</strong> ${s.action} (${s.lobeName})`;
-      }
-
-      AUDIO.speak(s.voicePrompt, () => {
-        curStepIndex++;
-        setTimeout(executeNextStep, 350);
-      });
-    }
-
-    executeNextStep();
-  }
-
-  function highlightCircuitNode(lobeId, color) {
-    const node = document.getElementById(`circuit-node-${lobeId}`);
-    if (node) {
-      const circle = node.querySelector('circle');
-      if (circle) {
-        circle.setAttribute('fill', color);
-        circle.setAttribute('stroke', '#fff');
-        circle.setAttribute('filter', 'url(#neuroGlow)');
-      }
-    }
-  }
-
-  function highlightCircuitCable(cableId, color) {
-    const cable = document.getElementById(cableId);
-    if (cable) {
-      cable.setAttribute('stroke', color);
-      cable.setAttribute('stroke-width', '6');
-      cable.classList.add('synaptic-cable-line');
+    } else {
+      // Clicked wrong node out of sequence
+      AUDIO.playSoftFail();
     }
   }
 
   /* ==========================================================================
-     PHASE 3: NEURO-ENERGY CHALLENGE & NEUROPLASTICITY
+     PHASE 3: NEURO-GYM & METABOLIC OVERCHARGE (20% -> 100%)
      ========================================================================== */
-  function renderPhase3Energy(container) {
+  function renderPhase3Gym(container) {
+    const gymData = DATA.phase3_gym;
+    const habits = gymData.habits;
+
     container.innerHTML = `
-      <div class="stage-header-banner">
-        <div>
-          <h2><span>🔋</span> Phase 3: Power Your Brain!</h2>
-          <p>Your brain uses 20% of your body's energy. Practice makes your neural pathways stronger!</p>
+      <div class="cockpit-banner">
+        <div class="banner-title-box">
+          <h2><span>🔋</span> ${gymData.title}</h2>
+          <p>${gymData.subtitle}</p>
         </div>
-        <div class="pedagogical-formula-pill" style="border-color:var(--neon-green); color:var(--neon-green);">
-          ⚡ Target: Charge Brain Battery to 100%!
+        <div class="pedagogy-pill">
+          ${gymData.instructions}
         </div>
       </div>
 
-      <div class="energy-stage-layout">
-        <!-- 1. LEFT: Interactive Habits Grid -->
-        <div class="habits-pane-card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="font-size:1.1rem; font-weight:900; color:#fff;">Brain Habits &amp; Energy Boosters</h3>
-            <span style="font-size:0.8rem; color:#94a3b8; font-weight:800;">Choose healthy habits to charge up</span>
+      <div class="cockpit-card">
+        <div class="gym-stage-layout">
+          <!-- Left: Live Pulsing Neuron Cell Schematic -->
+          <div class="neuron-schematic-card">
+            <div class="neuron-viewport" id="neuron-viewport">
+              <svg viewBox="0 0 500 240">
+                <!-- Dendrites (Inputs) -->
+                <path d="M 80 120 Q 30 70 20 40" stroke="#06b6d4" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 80 120 Q 25 120 10 130" stroke="#06b6d4" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 80 120 Q 40 170 25 210" stroke="#06b6d4" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 50 95 Q 20 100 5 90" stroke="#38bdf8" stroke-width="2" fill="none"/>
+                <path d="M 55 145 Q 25 155 10 170" stroke="#38bdf8" stroke-width="2" fill="none"/>
+
+                <!-- Soma (Cell Body) & Nucleus -->
+                <circle cx="100" cy="120" r="32" fill="#0284c7" opacity="0.85"/>
+                <circle cx="100" cy="120" r="14" fill="#38bdf8"/>
+                <text x="100" y="124" font-size="10" font-weight="900" fill="#0f172a" text-anchor="middle">DNA</text>
+
+                <!-- Axon (Transmission Cable) -->
+                <line id="neuron-axon-core" x1="132" y1="120" x2="400" y2="120" 
+                      stroke="#fbbf24" stroke-width="${3 + playerSession.gym.myelinLevel * 2.5}" stroke-linecap="round"/>
+
+                <!-- Myelin Sheath Insulators (Expand with level) -->
+                <rect x="155" y="${110 - playerSession.gym.myelinLevel * 1.5}" width="50" height="${20 + playerSession.gym.myelinLevel * 3}" rx="6" fill="#10b981" opacity="0.85"/>
+                <rect x="220" y="${110 - playerSession.gym.myelinLevel * 1.5}" width="50" height="${20 + playerSession.gym.myelinLevel * 3}" rx="6" fill="#10b981" opacity="0.85"/>
+                <rect x="285" y="${110 - playerSession.gym.myelinLevel * 1.5}" width="50" height="${20 + playerSession.gym.myelinLevel * 3}" rx="6" fill="#10b981" opacity="0.85"/>
+                <rect x="350" y="${110 - playerSession.gym.myelinLevel * 1.5}" width="40" height="${20 + playerSession.gym.myelinLevel * 3}" rx="6" fill="#10b981" opacity="0.85"/>
+
+                <!-- Synaptic Terminals (Outputs) -->
+                <path d="M 400 120 Q 450 80 480 60" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 400 120 Q 460 120 490 120" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M 400 120 Q 450 160 480 180" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+                <!-- Terminal Buttons -->
+                <circle cx="480" cy="60" r="5" fill="#f59e0b"/>
+                <circle cx="490" cy="120" r="5" fill="#f59e0b"/>
+                <circle cx="480" cy="180" r="5" fill="#f59e0b"/>
+              </svg>
+            </div>
+
+            <div class="myelin-sheath-indicator">
+              <span style="font-size:0.84rem; font-weight:800; color:#10b981;">
+                🛡️ Myelin Insulation: Level ${playerSession.gym.myelinLevel} / 5
+              </span>
+              <span style="font-size:0.78rem; color:var(--text-muted);">
+                Transmission Speed: ${(120 + playerSession.gym.myelinLevel * 30)} m/s
+              </span>
+            </div>
           </div>
 
-          <div class="habits-grid">
-            ${DATA.energyHabits.map(h => {
-              const isApplied = playerSession.appliedHabits.has(h.id);
+          <!-- Right: Brain Habit Booster Cards -->
+          <div class="habits-selector-panel">
+            ${habits.map(habit => {
+              const isApplied = playerSession.gym.appliedHabits.has(habit.id);
               return `
-                <div class="habit-interactive-card ${isApplied ? 'applied' : ''}" data-habit-id="${h.id}">
-                  <div class="habit-icon-badge">${h.icon}</div>
-                  <div class="habit-content">
-                    <h4>${h.name}</h4>
-                    <p class="habit-fact-text">${h.scienceFact}</p>
-                    <span class="energy-tag ${h.isBooster ? 'plus' : 'minus'}">
-                      ${h.isBooster ? '+' : ''}${h.energyChange}% Energy
-                    </span>
+                <div class="habit-choice-card ${isApplied ? 'applied' : ''}" data-habit-id="${habit.id}">
+                  <div class="habit-left">
+                    <span class="habit-icon">${habit.icon}</span>
+                    <div>
+                      <div class="habit-name">${habit.name}</div>
+                      <div class="habit-sub">${habit.scienceFact}</div>
+                    </div>
+                  </div>
+                  <div class="habit-boost-badge">
+                    ${isApplied ? '✓ Added' : (habit.energyDelta > 0 ? `+${habit.energyDelta}%` : `${habit.energyDelta}%`)}
                   </div>
                 </div>
               `;
             }).join('')}
           </div>
         </div>
-
-        <!-- 2. RIGHT: Neuroplasticity Synaptic Cable Simulator -->
-        <div class="neuroplasticity-pane-card">
-          <div>
-            <h3 style="font-size:1.1rem; font-weight:900; color:#fff; margin-bottom:4px;">Neuroplasticity Cable</h3>
-            <p style="font-size:0.78rem; color:#94a3b8;">"The more we practice, the stronger neurons connect!"</p>
-          </div>
-
-          <div class="cable-visualizer-box">
-            <svg viewBox="0 0 240 140" width="100%" height="100%">
-              <!-- Left Neuron Node -->
-              <circle cx="40" cy="70" r="20" fill="#0f172a" stroke="#38bdf8" stroke-width="3" />
-              <text x="40" y="75" text-anchor="middle" font-size="14">🧠</text>
-
-              <!-- Axon Cable Pathway -->
-              <line id="plasticity-axon" x1="60" y1="70" x2="180" y2="70"
-                    stroke="#38bdf8" stroke-width="${playerSession.cableThickness}"
-                    stroke-linecap="round" stroke-dasharray="${playerSession.cableThickness < 6 ? '6,6' : 'none'}" />
-
-              <!-- Right Neuron Node -->
-              <circle cx="200" cy="70" r="20" fill="#0f172a" stroke="#10b981" stroke-width="3" />
-              <text x="200" y="75" text-anchor="middle" font-size="14">💡</text>
-            </svg>
-          </div>
-
-          <div class="cable-thickness-badge" id="cable-strength-text">
-            Pathway Strength: ${playerSession.practiceCount === 0 ? 'Normal (Practice to strengthen!)' : 'Supercharged ' + playerSession.practiceCount + 'x!'}
-          </div>
-
-          <button class="inspector-btn-action" id="btn-practice-neuroplasticity" style="width:100%; margin-top:1rem; background:linear-gradient(135deg, #10b981, #059669);">
-            <span>📖</span> Practice Reading (+Thicken Pathway)
-          </button>
-        </div>
       </div>
     `;
 
-    bindEnergyEvents();
+    bindGymEvents();
   }
 
-  function bindEnergyEvents() {
-    document.querySelectorAll('.habit-interactive-card').forEach(card => {
+  function bindGymEvents() {
+    document.querySelectorAll('.habit-choice-card').forEach(card => {
       card.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
         const habitId = card.dataset.habitId;
-        handleApplyHabit(habitId);
+        const habit = DATA.phase3_gym.habits.find(h => h.id === habitId);
+        if (!habit || playerSession.gym.appliedHabits.has(habitId)) return;
+
+        AUDIO.ensureUnlocked();
+
+        if (habit.type === 'booster') {
+          playerSession.gym.appliedHabits.add(habitId);
+          playerSession.gym.myelinLevel = Math.min(5, playerSession.gym.myelinLevel + 1);
+          addEnergy(habit.energyDelta);
+          addXP(20);
+
+          AUDIO.playPowerUpSweep();
+          AUDIO.speak(habit.spokenFact);
+
+          renderCurrentPhase();
+        } else {
+          // Distractor drainer
+          AUDIO.playSoftFail();
+          AUDIO.speak(habit.spokenFact);
+        }
       });
     });
-
-    const btnPractice = document.getElementById('btn-practice-neuroplasticity');
-    if (btnPractice) {
-      btnPractice.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        handlePracticeNeuroplasticity();
-      });
-    }
-  }
-
-  function handleApplyHabit(habitId) {
-    if (playerSession.appliedHabits.has(habitId)) return;
-
-    const habit = DATA.energyHabits.find(h => h.id === habitId);
-    if (!habit) return;
-
-    playerSession.appliedHabits.add(habitId);
-
-    if (habit.isBooster) {
-      AUDIO.playPowerUpSweep();
-      addEnergy(habit.energyChange);
-    } else {
-      AUDIO.playSoftFail();
-      addEnergy(habit.energyChange);
-    }
-
-    AUDIO.speak(habit.speech);
-
-    const card = document.querySelector(`.habit-interactive-card[data-habit-id="${habitId}"]`);
-    if (card) card.classList.add('applied');
-  }
-
-  function handlePracticeNeuroplasticity() {
-    playerSession.practiceCount++;
-    playerSession.cableThickness = Math.min(14, playerSession.cableThickness + 2.5);
-
-    AUDIO.playSuccessArpeggio();
-    addEnergy(15);
-
-    const axon = document.getElementById('plasticity-axon');
-    if (axon) {
-      axon.setAttribute('stroke-width', playerSession.cableThickness);
-      if (playerSession.cableThickness >= 6) {
-        axon.setAttribute('stroke-dasharray', 'none');
-        axon.setAttribute('stroke', '#10b981');
-      }
-    }
-
-    const badge = document.getElementById('cable-strength-text');
-    if (badge) {
-      badge.textContent = `Pathway Strength: Supercharged ${playerSession.practiceCount}x!`;
-      badge.style.borderColor = '#10b981';
-      badge.style.color = '#10b981';
-    }
-
-    AUDIO.speak("Practice strengthens your neural pathways! The more you read, the faster you get!");
   }
 
   /* ==========================================================================
-     PHASE 4: LIVE TELEPROMPTER BROADCAST STUDIO
+     PHASE 4: LIVE TELEPROMPTER & NEURO-BROADCAST (Karaoke Studio)
      ========================================================================== */
-  const broadcastState = {
-    activeLineIdx: -1,
-    isPlaying: false,
-    timerId: null,
-    speedMs: 4500
-  };
-
   function renderPhase4Broadcast(container) {
-    const data = DATA.teleprompter;
-    const lines = data.teleprompterLines;
+    const bData = DATA.phase4_broadcast;
+    const lines = bData.scriptLines;
+    const currentLine = lines[playerSession.broadcast.currentLineIdx] || lines[0];
 
     container.innerHTML = `
-      <div class="stage-header-banner">
-        <div>
-          <h2><span>🎙️</span> Phase 4: Live Teleprompter Broadcast</h2>
-          <p>${data.subtitle}</p>
+      <div class="cockpit-banner">
+        <div class="banner-title-box">
+          <h2><span>🎙️</span> ${bData.title}</h2>
+          <p>${bData.subtitle}</p>
         </div>
-        <div class="pedagogical-formula-pill">
-          Formula: "The [Lobe] helps us [Verb]." &bull; "We use our [Lobe] to [Verb]."
+        <div class="pedagogy-pill">
+          ${bData.instructions}
         </div>
       </div>
 
-      <div class="broadcast-stage-layout">
-        <!-- Main Teleprompter Monitor & Controls -->
-        <div class="broadcast-main-shell">
-          <div class="broadcast-studio-header">
-            <div class="studio-title-box">
-              <h2><span>📺</span> ${data.headline}</h2>
-              <p>${data.instruction}</p>
+      <div class="cockpit-card">
+        <div class="broadcast-stage-layout">
+          <div class="broadcast-studio-frame">
+            <!-- Newsroom Header -->
+            <div class="broadcast-header-row">
+              <div class="broadcast-title-group">
+                <h3><span>📡</span> BRAIN EXPLORER NEWSROOM</h3>
+                <p>Broadcasting Live: How Your Brain Reads</p>
+              </div>
+              <div class="on-air-pill ${playerSession.broadcast.isBroadcasting ? 'live' : ''}" id="on-air-pill">
+                <span>●</span> ${playerSession.broadcast.isBroadcasting ? 'LIVE ON AIR' : 'STANDBY'}
+              </div>
             </div>
-            <div class="on-air-badge" id="on-air-badge">
-              <span>●</span> STANDBY
-            </div>
-          </div>
 
-          <!-- Scrolling Monitor Screen -->
-          <div class="teleprompter-monitor" id="teleprompter-monitor">
-            ${lines.map((item, idx) => `
-              <div class="prompter-line-card" id="prompter-line-${idx}" data-line-index="${idx}">
-                <div class="prompter-line-left">
-                  <span class="prompter-speaker-tag" style="background:${item.color}22; color:${item.color}; border:1px solid ${item.color}66;">
-                    ${item.icon} ${item.speaker}
+            <!-- Karaoke-Style Teleprompter Monitor -->
+            <div class="karaoke-prompter-screen" id="karaoke-prompter-screen">
+              <div class="prompter-speaker-badge" style="background:${currentLine.color}22; color:${currentLine.color}; border:1.5px solid ${currentLine.color};">
+                ${currentLine.speaker} &bull; ${currentLine.formulaType}
+              </div>
+
+              <div class="prompter-karaoke-line" id="prompter-karaoke-line">
+                ${currentLine.words.map((w, wIdx) => `
+                  <span class="karaoke-word ${wIdx <= playerSession.broadcast.activeWordIdx ? 'spoken' : ''} ${wIdx === playerSession.broadcast.activeWordIdx ? 'active-word' : ''}">
+                    ${w}
                   </span>
-                  <div class="prompter-line-text">
-                    ${item.text}
-                  </div>
-                </div>
-                <button type="button" class="prompter-listen-btn" title="Listen to model speech" data-listen-idx="${idx}">
-                  🔊
+                `).join('')}
+              </div>
+
+              <!-- Animated Sound Wave Visualizer -->
+              <div class="sound-wave-visualizer" id="sound-wave-visualizer">
+                <div class="wave-bar ${playerSession.broadcast.isBroadcasting ? 'animated' : ''}" style="animation-delay:0.1s;"></div>
+                <div class="wave-bar ${playerSession.broadcast.isBroadcasting ? 'animated' : ''}" style="animation-delay:0.3s;"></div>
+                <div class="wave-bar ${playerSession.broadcast.isBroadcasting ? 'animated' : ''}" style="animation-delay:0.2s;"></div>
+                <div class="wave-bar ${playerSession.broadcast.isBroadcasting ? 'animated' : ''}" style="animation-delay:0.4s;"></div>
+                <div class="wave-bar ${playerSession.broadcast.isBroadcasting ? 'animated' : ''}" style="animation-delay:0.15s;"></div>
+              </div>
+
+              <div style="font-size:0.8rem; color:var(--text-muted); font-style:italic;">
+                ${currentLine.clue}
+              </div>
+            </div>
+
+            <!-- Control Bar -->
+            <div class="prompter-controls-deck">
+              <div style="display:flex; gap:0.75rem; align-items:center;">
+                <button type="button" class="btn-broadcast-action" id="btn-run-broadcast">
+                  <span>${playerSession.broadcast.isBroadcasting ? '⏸️ Pause Teleprompter' : '🎙️ Start Broadcast'}</span>
+                </button>
+                <button type="button" class="btn-close-modal" id="btn-next-line">
+                  <span>⏭️ Next Line</span>
                 </button>
               </div>
-            `).join('')}
-          </div>
 
-          <!-- Progress Bar for active line -->
-          <div class="teleprompter-progress-track">
-            <div class="teleprompter-progress-fill" id="teleprompter-progress-fill"></div>
-          </div>
-
-          <!-- Studio Control Deck -->
-          <div class="broadcast-control-deck">
-            <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
-              <button type="button" class="deck-btn-primary" id="btn-start-broadcast">
-                <span>🎙️</span> START LIVE BROADCAST
+              <button type="button" class="btn-open-diploma" id="btn-finish-broadcast" style="padding:0.75rem 1.4rem;">
+                <span>🎓</span> Finish &amp; Claim Diploma
               </button>
-              <button type="button" class="action-btn-secondary" id="btn-reset-broadcast" style="background:#1e293b; color:#fff; border:1px solid #334155; padding:0.85rem 1.2rem; border-radius:10px; font-weight:800; cursor:pointer;">
-                ⏹️ Reset
-              </button>
-            </div>
-
-            <div class="deck-speed-group">
-              <span>Speed:</span>
-              <button type="button" class="speed-chip ${broadcastState.speedMs === 6000 ? 'active' : ''}" data-speed="6000">Slow (6s)</button>
-              <button type="button" class="speed-chip ${broadcastState.speedMs === 4500 ? 'active' : ''}" data-speed="4500">Normal (4.5s)</button>
-              <button type="button" class="speed-chip ${broadcastState.speedMs === 3000 ? 'active' : ''}" data-speed="3000">Fast (3s)</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Side: News Anchor Avatar & Target Sentence Frames -->
-        <div class="broadcast-side-panel">
-          <div class="side-anchor-card">
-            <h3><span>🧑‍🔬</span> On-Camera Anchor</h3>
-            <div class="anchor-avatar-box">
-              <span class="anchor-avatar-icon">🎙️</span>
-              <p style="font-size:0.88rem; font-weight:800; margin-top:0.5rem; color:#38bdf8;">Junior Neuroscientist</p>
-              <p style="font-size:0.75rem; color:var(--text-muted);">Broadcasting from the Adventure Academy Neuro-Lab!</p>
-            </div>
-          </div>
-
-          <div class="side-formula-card">
-            <h3><span>📋</span> Speaking Target Formulas</h3>
-            <div class="formula-pill-item">
-              <span>The <strong>[lobe]</strong> helps us <strong>[verb]</strong>.</span><br>
-              <em style="color:#94a3b8; font-size:0.75rem;">"The Occipital Lobe helps us see letters."</em>
-            </div>
-            <div class="formula-pill-item">
-              <span>We use our <strong>[lobe]</strong> to <strong>[verb]</strong>.</span><br>
-              <em style="color:#94a3b8; font-size:0.75rem;">"We use our Frontal Lobe to understand meaning."</em>
-            </div>
-            <div class="formula-pill-item" style="border-left-color:var(--neon-amber);">
-              <strong>Reading is a whole-team effort!</strong><br>
-              <em style="color:#94a3b8; font-size:0.75rem;">All 4 lobes connect in 0.3 seconds!</em>
             </div>
           </div>
         </div>
@@ -924,215 +1034,112 @@
   }
 
   function bindBroadcastEvents() {
-    const lines = DATA.teleprompter.teleprompterLines;
-
-    // Per-line listen buttons
-    document.querySelectorAll('.prompter-listen-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
+    const btnRun = document.getElementById('btn-run-broadcast');
+    if (btnRun) {
+      btnRun.addEventListener('click', () => {
         AUDIO.ensureUnlocked();
-        const idx = parseInt(btn.dataset.listenIdx, 10);
-        if (lines[idx]) {
-          AUDIO.playSynapticPulse(640);
-          AUDIO.speak(lines[idx].text);
-          highlightPrompterLine(idx);
-        }
-      });
-    });
-
-    // Per-line card click to jump/speak
-    document.querySelectorAll('.prompter-line-card').forEach(card => {
-      card.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        const idx = parseInt(card.dataset.lineIndex, 10);
-        if (lines[idx]) {
-          highlightPrompterLine(idx);
-          AUDIO.speak(lines[idx].text);
-        }
-      });
-    });
-
-    // Start / Pause broadcast button
-    const btnStart = document.getElementById('btn-start-broadcast');
-    if (btnStart) {
-      btnStart.addEventListener('click', () => {
-        AUDIO.ensureUnlocked();
-        if (broadcastState.isPlaying) {
-          pauseTeleprompterBroadcast();
+        if (playerSession.broadcast.isBroadcasting) {
+          pauseBroadcast();
         } else {
-          startTeleprompterBroadcast();
+          startLiveBroadcast();
         }
       });
     }
 
-    // Reset button
-    const btnReset = document.getElementById('btn-reset-broadcast');
-    if (btnReset) {
-      btnReset.addEventListener('click', () => {
-        resetTeleprompterBroadcast();
+    const btnNext = document.getElementById('btn-next-line');
+    if (btnNext) {
+      btnNext.addEventListener('click', () => {
+        AUDIO.ensureUnlocked();
+        advanceBroadcastLine();
       });
     }
 
-    // Speed chips
-    document.querySelectorAll('.speed-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const spd = parseInt(chip.dataset.speed, 10);
-        broadcastState.speedMs = spd;
-        document.querySelectorAll('.speed-chip').forEach(c => c.classList.toggle('active', c === chip));
-        AUDIO.playSynapticPulse(800);
+    const btnFinish = document.getElementById('btn-finish-broadcast');
+    if (btnFinish) {
+      btnFinish.addEventListener('click', () => {
+        finishAndOpenDiploma();
       });
+    }
+  }
+
+  function startLiveBroadcast() {
+    playerSession.broadcast.isBroadcasting = true;
+    AUDIO.playStudioCueBeep();
+
+    const lines = DATA.phase4_broadcast.scriptLines;
+    const line = lines[playerSession.broadcast.currentLineIdx];
+
+    if (line && line.lobe) {
+      selectLobe(line.lobe, false);
+      triggerLobePulseEffect(line.lobe);
+    }
+
+    AUDIO.speakKaraoke(line.text, line.words, (wIdx) => {
+      playerSession.broadcast.activeWordIdx = wIdx;
+      updateKaraokeWordsDOM();
+    }, () => {
+      // Completed line
+      setTimeout(() => {
+        if (playerSession.broadcast.isBroadcasting) {
+          advanceBroadcastLine();
+        }
+      }, 1000);
+    });
+
+    renderCurrentPhase();
+  }
+
+  function pauseBroadcast() {
+    playerSession.broadcast.isBroadcasting = false;
+    AUDIO.stopSpeaking();
+    renderCurrentPhase();
+  }
+
+  function advanceBroadcastLine() {
+    const lines = DATA.phase4_broadcast.scriptLines;
+    playerSession.broadcast.currentLineIdx = (playerSession.broadcast.currentLineIdx + 1) % lines.length;
+    playerSession.broadcast.activeWordIdx = -1;
+
+    if (playerSession.broadcast.isBroadcasting) {
+      startLiveBroadcast();
+    } else {
+      renderCurrentPhase();
+    }
+  }
+
+  function updateKaraokeWordsDOM() {
+    const lineEl = document.getElementById('prompter-karaoke-line');
+    if (!lineEl) return;
+
+    const words = lineEl.querySelectorAll('.karaoke-word');
+    words.forEach((w, idx) => {
+      w.classList.toggle('spoken', idx <= playerSession.broadcast.activeWordIdx);
+      w.classList.toggle('active-word', idx === playerSession.broadcast.activeWordIdx);
     });
   }
 
-  function startTeleprompterBroadcast() {
-    broadcastState.isPlaying = true;
-    const btnStart = document.getElementById('btn-start-broadcast');
-    if (btnStart) {
-      btnStart.innerHTML = '<span>⏸️</span> PAUSE BROADCAST';
-      btnStart.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-    }
-
-    const onAir = document.getElementById('on-air-badge');
-    if (onAir) {
-      onAir.classList.add('live');
-      onAir.innerHTML = '<span>🔴</span> ON AIR';
-    }
-
-    AUDIO.playSuccessArpeggio();
-
-    const lines = DATA.teleprompter.teleprompterLines;
-    if (broadcastState.activeLineIdx < 0 || broadcastState.activeLineIdx >= lines.length - 1) {
-      broadcastState.activeLineIdx = 0;
-    }
-
-    runBroadcastStep();
-  }
-
-  function pauseTeleprompterBroadcast() {
-    broadcastState.isPlaying = false;
-    clearTimeout(broadcastState.timerId);
-
-    const btnStart = document.getElementById('btn-start-broadcast');
-    if (btnStart) {
-      btnStart.innerHTML = '<span>▶️</span> RESUME BROADCAST';
-      btnStart.style.background = 'linear-gradient(135deg, #0284c7, #3b82f6)';
-    }
-
-    const onAir = document.getElementById('on-air-badge');
-    if (onAir) {
-      onAir.classList.remove('live');
-      onAir.innerHTML = '<span>⏸️</span> PAUSED';
-    }
-  }
-
-  function resetTeleprompterBroadcast() {
-    broadcastState.isPlaying = false;
-    clearTimeout(broadcastState.timerId);
-    broadcastState.activeLineIdx = -1;
-
-    document.querySelectorAll('.prompter-line-card').forEach(card => card.classList.remove('active-reading'));
-
-    const btnStart = document.getElementById('btn-start-broadcast');
-    if (btnStart) {
-      btnStart.innerHTML = '<span>🎙️</span> START LIVE BROADCAST';
-      btnStart.style.background = 'linear-gradient(135deg, #0284c7, #3b82f6)';
-    }
-
-    const onAir = document.getElementById('on-air-badge');
-    if (onAir) {
-      onAir.classList.remove('live');
-      onAir.innerHTML = '<span>●</span> STANDBY';
-    }
-
-    const progFill = document.getElementById('teleprompter-progress-fill');
-    if (progFill) progFill.style.width = '0%';
-  }
-
-  function highlightPrompterLine(idx) {
-    document.querySelectorAll('.prompter-line-card').forEach((card, i) => {
-      card.classList.toggle('active-reading', i === idx);
-      if (i === idx) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    });
-
-    const lines = DATA.teleprompter.teleprompterLines;
-    const progFill = document.getElementById('teleprompter-progress-fill');
-    if (progFill && lines.length > 0) {
-      const pct = Math.round(((idx + 1) / lines.length) * 100);
-      progFill.style.width = pct + '%';
-    }
-  }
-
-  function runBroadcastStep() {
-    if (!broadcastState.isPlaying) return;
-
-    const lines = DATA.teleprompter.teleprompterLines;
-    const idx = broadcastState.activeLineIdx;
-
-    if (idx >= lines.length) {
-      finishTeleprompterBroadcast();
-      return;
-    }
-
-    const line = lines[idx];
-    highlightPrompterLine(idx);
-    AUDIO.playNodeConnect();
-
-    AUDIO.speak(line.text);
-
-    broadcastState.timerId = setTimeout(() => {
-      if (!broadcastState.isPlaying) return;
-      broadcastState.activeLineIdx++;
-      runBroadcastStep();
-    }, broadcastState.speedMs);
-  }
-
-  function finishTeleprompterBroadcast() {
-    broadcastState.isPlaying = false;
-    clearTimeout(broadcastState.timerId);
-
-    const onAir = document.getElementById('on-air-badge');
-    if (onAir) {
-      onAir.classList.remove('live');
-      onAir.innerHTML = '<span>🏆</span> BROADCAST COMPLETE';
-      onAir.style.background = 'rgba(16, 185, 129, 0.2)';
-      onAir.style.borderColor = '#10b981';
-      onAir.style.color = '#10b981';
-    }
-
-    const btnStart = document.getElementById('btn-start-broadcast');
-    if (btnStart) {
-      btnStart.innerHTML = '<span>🔄</span> BROADCAST AGAIN';
-      btnStart.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-    }
-
-    awardBadge('teleprompter_broadcaster');
-    addEnergy(25);
+  function finishAndOpenDiploma() {
+    pauseBroadcast();
+    awardBadge('broadcaster_license');
+    awardBadge('licensed_neuroscientist');
+    addXP(100);
     AUDIO.playVictoryFanfare();
-    setTimeout(showVictoryModal, 1000);
+
+    const modal = document.getElementById('victory-modal');
+    if (modal) {
+      modal.classList.add('open');
+    }
   }
 
   /* ==========================================================================
-     VICTORY & DIPLOMA CELEBRATION MODAL
+     GLOBAL EXPORTS
      ========================================================================== */
-  function showVictoryModal() {
-    AUDIO.playVictoryFanfare();
-
-    const overlay = document.getElementById('victory-modal');
-    if (!overlay) return;
-
-    overlay.classList.add('open');
-
-    AUDIO.speak("Congratulations! Your brain is now 100% supercharged! You are an official Junior Neuro-Explorer!");
-  }
-
-  // Global window exports
   window.BrainApp = {
     playerSession,
     switchPhase,
+    selectLobe,
     addEnergy,
-    showVictoryModal
+    finishAndOpenDiploma
   };
 
 })();
