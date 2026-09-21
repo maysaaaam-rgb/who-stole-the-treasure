@@ -12027,9 +12027,89 @@ window.switchClassroomSubTab = function(subTab) {
     }).join('');
   };
 
+  const CLOTHING_ASSETS = {
+    explorer_vest: {
+      id: 'explorer_vest',
+      name: 'Explorer Vest',
+      svgMarkup: `
+        <g filter="url(#bodyGlow)">
+          <!-- Sturdy Khaki Safari Utility Vest with Brass Buttons -->
+          <path d="M 68 116 L 86 156 L 96 156 L 94 122 Q 80 120 68 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M 132 116 L 114 156 L 104 156 L 106 122 Q 120 120 132 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M 72 116 L 90 128 L 88 148 L 74 146 Z" fill="#d97706" />
+          <path d="M 128 116 L 110 128 L 112 148 L 126 146 Z" fill="#d97706" />
+          <rect x="74" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <rect x="114" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="94" cy="132" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="94" cy="144" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        </g>
+      `
+    },
+    hero_cape: {
+      id: 'hero_cape',
+      name: 'Hero Cape',
+      svgMarkup: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`
+    }
+  };
+  CLOTHING_ASSETS.vest = CLOTHING_ASSETS.explorer_vest;
+  CLOTHING_ASSETS['clothing-vest'] = CLOTHING_ASSETS.explorer_vest;
+  CLOTHING_ASSETS.cape = CLOTHING_ASSETS.hero_cape;
+  CLOTHING_ASSETS['clothing-cape'] = CLOTHING_ASSETS.hero_cape;
+
+  const CAPE_ASSETS = {
+    hero_cape: {
+      id: 'hero_cape',
+      name: 'Hero Cape',
+      svgMarkup: `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`
+    },
+    wings: {
+      id: 'wings',
+      name: 'Crystal Wings',
+      svgMarkup: `
+        <path d="M 58 118 C 20 85 10 115 28 142 C 40 148 52 140 58 132 Z" fill="#38bdf8" fill-opacity="0.7" stroke="#0284c7" stroke-width="2"/>
+        <path d="M 142 118 C 180 85 190 115 172 142 C 160 148 148 140 142 132 Z" fill="#38bdf8" fill-opacity="0.7" stroke="#0284c7" stroke-width="2"/>
+      `
+    }
+  };
+  CAPE_ASSETS.cape = CAPE_ASSETS.hero_cape;
+  CAPE_ASSETS['clothing-cape'] = CAPE_ASSETS.hero_cape;
+  CAPE_ASSETS['crystal-wings'] = CAPE_ASSETS.wings;
+  CAPE_ASSETS.crystal_wings = CAPE_ASSETS.wings;
+  CAPE_ASSETS['wings-fairy'] = CAPE_ASSETS.wings;
+  CAPE_ASSETS['bp-wings'] = CAPE_ASSETS.wings;
+
+  window.CLOTHING_ASSETS = CLOTHING_ASSETS;
+  window.CAPE_ASSETS = CAPE_ASSETS;
+
   window.currentMonster = {
     get equipped() {
-      return monsterCreatorDraft ? monsterCreatorDraft.equipped : {};
+      if (!monsterCreatorDraft) return {};
+      if (!monsterCreatorDraft.equipped) monsterCreatorDraft.equipped = {};
+      return new Proxy(monsterCreatorDraft.equipped, {
+        get(target, prop) {
+          if (prop === 'mouths') return target.mouth || target.mouths;
+          if (prop === 'hat') return target.hats || target.hat;
+          if (prop === 'cape') {
+            if (target.cape && target.cape !== 'none') return target.cape;
+            if (target.clothing && (target.clothing.includes('cape') || target.clothing === 'clothing-cape')) return target.clothing;
+            if (target.backpack && target.backpack.includes('cape')) return target.backpack;
+            return target.cape || '';
+          }
+          return target[prop];
+        },
+        set(target, prop, val) {
+          if (prop === 'mouths') prop = 'mouth';
+          else if (prop === 'hat') prop = 'hats';
+          else if (prop === 'wings' || prop === 'satchel') prop = 'backpack';
+          if (prop === 'cape') {
+            target.cape = val;
+            target.clothing = val;
+            return true;
+          }
+          target[prop] = val;
+          return true;
+        }
+      });
     }
   };
 
@@ -12041,9 +12121,35 @@ window.switchClassroomSubTab = function(subTab) {
     window.renderMonsterCreatorItems();
   };
 
-  window.updateMonsterPreview = function() {
-    window.updateMonsterCreatorPreview();
-  };
+  function updateMonsterPreview() {
+    if (typeof window.updateMonsterCreatorPreview === 'function') {
+      window.updateMonsterCreatorPreview();
+    }
+
+    const clothingLayer = document.getElementById('layer-clothing');
+    const backGearLayer = document.getElementById('layer-back-gear');
+
+    const equippedClothingId = currentMonster.equipped ? currentMonster.equipped.clothing : null; // e.g. 'explorer_vest'
+
+    if (!equippedClothingId || equippedClothingId === 'none') {
+      if (clothingLayer) clothingLayer.innerHTML = '';
+    } else {
+      const clothingData = CLOTHING_ASSETS[equippedClothingId];
+      if (clothingData) {
+        // If vector/SVG:
+        if (clothingLayer) clothingLayer.innerHTML = clothingData.svgMarkup;
+        // Or if PNG overlay:
+        // clothingLayer.innerHTML = `<img src="${clothingData.src}" class="absolute inset-0 w-full h-full pointer-events-none" />`;
+      }
+    }
+
+    // Handle cape / wings if equipped in back-gear
+    const equippedCapeId = currentMonster.equipped ? currentMonster.equipped.cape : null;
+    if (equippedCapeId) {
+      if (backGearLayer) backGearLayer.innerHTML = CAPE_ASSETS[equippedCapeId]?.svgMarkup || '';
+    }
+  }
+  window.updateMonsterPreview = updateMonsterPreview;
 
   function equipItem(category, item) {
     // 1. Update State
