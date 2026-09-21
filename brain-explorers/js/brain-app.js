@@ -295,7 +295,9 @@
 
     // Update active highlight classes on SVG groups
     document.querySelectorAll('.cortex-lobe, .lobe-path-group').forEach(grp => {
-      grp.classList.toggle('active', grp.dataset.lobe === lobeKey);
+      const isActive = grp.dataset.lobe === lobeKey;
+      grp.classList.toggle('active', isActive);
+      grp.classList.toggle('active-target', isActive);
     });
 
     // Update quick pill tabs
@@ -364,8 +366,8 @@
     if (arc1) arc1.classList.remove('active-circuit');
     if (arc2) arc2.classList.remove('active-circuit');
     if (arc3) arc3.classList.remove('active-circuit');
-    if (syn1) { syn1.classList.remove('active-circuit'); syn1.style.opacity = '0'; }
-    if (syn2) { syn2.classList.remove('active-circuit'); syn2.style.opacity = '0'; }
+    if (syn1) { syn1.classList.remove('active-circuit', 'synapse-firing'); syn1.style.opacity = '0'; }
+    if (syn2) { syn2.classList.remove('active-circuit', 'synapse-firing'); syn2.style.opacity = '0'; }
 
     if (phaseKey === 'atlas') {
       if (statusChip) statusChip.innerHTML = '<span>🧭</span> SENSORY SORTING MODE';
@@ -373,8 +375,8 @@
       if (statusChip) statusChip.innerHTML = '<span>⚡</span> 0.3s SPEED RELAY ACTIVE';
       if (arc1) arc1.classList.add('active-circuit');
       if (arc2) arc2.classList.add('active-circuit');
-      if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
-      if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
+      if (syn1) { syn1.classList.add('active-circuit', 'synapse-firing'); syn1.style.opacity = '1'; }
+      if (syn2) { syn2.classList.add('active-circuit', 'synapse-firing'); syn2.style.opacity = '1'; }
     } else if (phaseKey === 'gym') {
       if (statusChip) statusChip.innerHTML = '<span>🔋</span> NEURO-METABOLIC OVERCHARGE';
       if (arc3) arc3.classList.add('active-circuit');
@@ -383,8 +385,8 @@
       if (arc1) arc1.classList.add('active-circuit');
       if (arc2) arc2.classList.add('active-circuit');
       if (arc3) arc3.classList.add('active-circuit');
-      if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
-      if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
+      if (syn1) { syn1.classList.add('active-circuit', 'synapse-firing'); syn1.style.opacity = '1'; }
+      if (syn2) { syn2.classList.add('active-circuit', 'synapse-firing'); syn2.style.opacity = '1'; }
     }
   }
 
@@ -718,8 +720,8 @@
     selectLobe('occipital', false);
     const syn1 = document.getElementById('synapse-occ-temp');
     const syn2 = document.getElementById('synapse-temp-front');
-    if (syn1) { syn1.classList.remove('active-circuit'); syn1.style.opacity = '0.35'; }
-    if (syn2) { syn2.classList.remove('active-circuit'); syn2.style.opacity = '0.35'; }
+    if (syn1) { syn1.classList.remove('active-circuit', 'synapse-firing'); syn1.style.opacity = '0.35'; }
+    if (syn2) { syn2.classList.remove('active-circuit', 'synapse-firing'); syn2.style.opacity = '0.35'; }
 
     const startTime = performance.now();
     clearInterval(playerSession.relay.timerInterval);
@@ -760,11 +762,11 @@
       if (playerSession.relay.activeStepIdx === 1) {
         selectLobe('temporal', false);
         const syn1 = document.getElementById('synapse-occ-temp');
-        if (syn1) { syn1.classList.add('active-circuit'); syn1.style.opacity = '1'; }
+        if (syn1) { syn1.classList.add('active-circuit', 'synapse-firing'); syn1.style.opacity = '1'; }
       } else if (playerSession.relay.activeStepIdx === 2) {
         selectLobe('frontal', false);
         const syn2 = document.getElementById('synapse-temp-front');
-        if (syn2) { syn2.classList.add('active-circuit'); syn2.style.opacity = '1'; }
+        if (syn2) { syn2.classList.add('active-circuit', 'synapse-firing'); syn2.style.opacity = '1'; }
       }
 
       if (playerSession.relay.activeStepIdx >= currentRound.steps.length) {
