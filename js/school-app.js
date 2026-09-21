@@ -12040,9 +12040,11 @@ window.switchClassroomSubTab = function(subTab) {
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
-    } else if (category === 'glasses') {
+    } else if (category === 'glasses' || (itemId && itemId.startsWith('glasses-'))) {
       monsterCreatorDraft.equipped.glasses = itemId;
       if (monsterCreatorDraft.equipped.accessory === 'none') monsterCreatorDraft.equipped.accessory = '';
+    } else if (category === 'backpack' || (itemId && (itemId.startsWith('bp-') || itemId.includes('satchel')))) {
+      monsterCreatorDraft.equipped.backpack = itemId;
     } else {
       monsterCreatorDraft.equipped[category] = itemId;
     }
@@ -12096,7 +12098,8 @@ window.switchClassroomSubTab = function(subTab) {
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
         size: 270,
-        animated: monsterCreatorIsAnimated
+        animated: monsterCreatorIsAnimated,
+        rawSvg: true
       });
     }
 
@@ -12106,7 +12109,9 @@ window.switchClassroomSubTab = function(subTab) {
         color: monsterCreatorDraft.baseColor,
         equipped: monsterCreatorDraft.equipped,
         size: 46,
-        animated: false
+        animated: false,
+        rawSvg: true,
+        isAvatar: true
       });
     }
 
