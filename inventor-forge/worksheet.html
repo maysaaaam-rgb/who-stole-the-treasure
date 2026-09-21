@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚙️ Inventor's Forge: Blueprint Schematic & Master Inventor Diploma | Printable Kit</title>
+  <style>
+    :root {
+      --ink-dark: #0f172a;
+      --ink-blue: #0369a1;
+      --ink-gray: #475569;
+      --ink-border: #cbd5e1;
+      --blueprint-bg: #f8fafc;
+      --font-print: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-print);
+      color: var(--ink-dark);
+      background: #e2e8f0;
+      line-height: 1.4;
+      padding: 20px;
+    }
+
+    /* Screen Control Bar (Hidden when printed) */
+    .screen-control-bar {
+      max-width: 860px;
+      margin: 0 auto 20px auto;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 14px 24px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .screen-control-bar h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-print {
+      background: #f59e0b;
+      color: #000;
+      border: none;
+      font-family: var(--font-print);
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-print:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: #334155;
+      color: #fff;
+      border: none;
+      font-family: var(--font-print);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-back:hover {
+      background: #475569;
+    }
+
+    /* Printable A4 Container */
+    .page-container {
+      max-width: 840px;
+      margin: 0 auto 30px auto;
+      background: #ffffff;
+      padding: 36px 42px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+    }
+
+    .blueprint-header {
+      border-bottom: 2px solid var(--ink-dark);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .blueprint-title h2 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--ink-dark);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .blueprint-title p {
+      font-size: 0.85rem;
+      color: var(--ink-gray);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    /* Student Meta Grid */
+    .student-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: var(--blueprint-bg);
+      border: 1px solid var(--ink-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+    }
+
+    .meta-field label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--ink-gray);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .meta-field .line {
+      border-bottom: 1.5px dotted #64748b;
+      height: 18px;
+    }
+
+    /* Section Boxes */
+    .section-title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--ink-dark);
+      text-transform: uppercase;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin: 18px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drawing-grid-canvas {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      height: 220px;
+      background: #fafafa;
+      position: relative;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .canvas-guidelines {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(3, 105, 161, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(3, 105, 161, 0.08) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .writing-line-fill {
+      border-bottom: 1.5px solid #64748b;
+      height: 22px;
+      margin-bottom: 10px;
+    }
+
+    /* Diploma Seal Box */
+    .diploma-seal-box {
+      border: 2px solid #b45309;
+      background: #fffbeb;
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .diploma-seal-text h4 {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #78350f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diploma-seal-text p {
+      font-size: 0.82rem;
+      color: #92400e;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .diploma-sign-box {
+      text-align: center;
+      border-top: 1.5px solid #b45309;
+      padding-top: 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #78350f;
+    }
+
+    /* Print Overrides */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+
+      .screen-control-bar {
+        display: none !important;
+      }
+
+      .page-container {
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        page-break-after: always;
+      }
+
+      .page-container:last-child {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Control Bar (Hidden when printed) -->
+  <aside class="screen-control-bar" aria-label="Worksheet Actions">
+    <h1>
+      <span>⚙️</span> <span>Inventor's Forge: Blueprint & Master Diploma</span>
+    </h1>
+    <div class="control-actions">
+      <button class="btn-print" onclick="window.print()" title="Print Blueprint (Ctrl+P)">
+        <span>🖨️</span> <span>Print Blueprint</span>
+      </button>
+      <a href="index.html" class="btn-back" title="Return to Forge">
+        <span>⬅️</span> <span>Back to Forge</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       PAGE 1: INVENTOR'S BLUEPRINT SCHEMATIC
+       ========================================================================= -->
+  <main class="page-container">
+    <header class="blueprint-header">
+      <div class="blueprint-title">
+        <h2><span>⚙️</span> Official Inventor's Blueprint Schematic</h2>
+        <p>Adventure Academy • CLIL Design Thinking & Invention Laboratory</p>
+      </div>
+      <div style="text-align: right; font-weight: 900; font-size: 0.88rem; color: #0369a1;">
+        Stage 2 Workshop Output
+      </div>
+    </header>
+
+    <!-- Student Metadata -->
+    <section class="student-meta-grid" aria-label="Student Information">
+      <div class="meta-field">
+        <label>Apprentice Name:</label>
+        <div class="line"></div>
+      </div>
+      <div class="meta-field">
+        <label>Grade / Class:</label>
+        <div class="line"></div>
+      </div>
+      <div class="meta-field">
+        <label>Date:</label>
+        <div class="line"></div>
+      </div>
+      <div class="meta-field">
+        <label>Guild Rank:</label>
+        <div class="line"></div>
+      </div>
+    </section>
+
+    <!-- Part 1: Problem Definition -->
+    <h3 class="section-title"><span>🎯</span> 1. The Everyday Obstacle to Solve</h3>
+    <div style="margin-bottom: 14px; font-size: 0.85rem; color: #334155;">
+      What everyday problem did you choose? (e.g. Dark Backpack, Wet Commute, Noisy Room, Rolling Pencil):
+    </div>
+    <div class="writing-line-fill"></div>
+
+    <!-- Part 2: Prototype Schematic Drawing Canvas -->
+    <h3 class="section-title"><span>📐</span> 2. Modular Prototype Schematic</h3>
+    <div class="drawing-grid-canvas">
+      <div class="canvas-guidelines"></div>
+      <span style="position: relative; z-index: 2; font-size: 0.78rem; color: #475569; font-style: italic;">
+        Draw your invention blueprint below. Label Relic 1, Relic 2, and the Power Source:
+      </span>
+      <span style="position: relative; z-index: 2; align-self: flex-end; font-size: 0.72rem; color: #64748b;">
+        Technical Blueprint Scale: 1:1
+      </span>
+    </div>
+
+    <!-- Part 3: The Invention Formula -->
+    <h3 class="section-title"><span>⚡</span> 3. The Target Language Formula</h3>
+    <div style="background: #f8fafc; border: 1px solid var(--ink-border); border-radius: 8px; padding: 12px; font-size: 0.85rem; margin-bottom: 12px;">
+      <p style="margin-bottom: 6px;"><strong>Target Sentence Frame:</strong></p>
+      <p style="font-style: italic; color: #0369a1;">
+        "The [Invention Name] uses [Relic 1] and [Relic 2] to [Action Verb] and solve [Obstacle]."
+      </p>
+    </div>
+    <div class="writing-line-fill"></div>
+    <div class="writing-line-fill"></div>
+  </main>
+
+  <!-- =========================================================================
+       PAGE 2: THE 60-SECOND PITCH SCRIPT & GUILD DIPLOMA
+       ========================================================================= -->
+  <main class="page-container">
+    <header class="blueprint-header">
+      <div class="blueprint-title">
+        <h2><span>🎤</span> 60-Second Investor Pitch Script</h2>
+        <p>Grand Guild of Investors Capstone Presentation Deck</p>
+      </div>
+    </header>
+
+    <!-- Pitch Script Steps -->
+    <h3 class="section-title"><span>📢</span> 1. The Hook / Problem</h3>
+    <p style="font-size: 0.8rem; color: #475569; margin-bottom: 4px;">Start with an engaging question to the investors:</p>
+    <div class="writing-line-fill"></div>
+
+    <h3 class="section-title"><span>✨</span> 2. The Innovation Reveal</h3>
+    <p style="font-size: 0.8rem; color: #475569; margin-bottom: 4px;">State your prototype's official name with pride:</p>
+    <div class="writing-line-fill"></div>
+
+    <h3 class="section-title"><span>⚙️</span> 3. The Tech Mechanism</h3>
+    <p style="font-size: 0.8rem; color: #475569; margin-bottom: 4px;">Explain how Relic 1 and Relic 2 work together:</p>
+    <div class="writing-line-fill"></div>
+    <div class="writing-line-fill"></div>
+
+    <h3 class="section-title"><span>👑</span> 4. The Grand Call to Action</h3>
+    <p style="font-size: 0.8rem; color: #475569; margin-bottom: 4px;">Invite the investors to fund your creation:</p>
+    <div class="writing-line-fill"></div>
+
+    <!-- Official Master Inventor Diploma Seal -->
+    <section class="diploma-seal-box">
+      <div class="diploma-seal-text">
+        <h4><span>🏆</span> Certified Master Inventor Diploma</h4>
+        <p>This certifies that the apprentice named above completed the 3-stage Inventor's Forge RPG, unlocked historical failure mindsets, engineered a functional prototype, and pitched to the Grand Guild of Investors!</p>
+      </div>
+      <div class="diploma-sign-box">
+        <div style="height: 24px;"></div>
+        Guild Master Signature & Seal
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

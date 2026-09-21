@@ -1,0 +1,985 @@
+/**
+ * INVENTOR'S FORGE — STEAMPUNK BLUEPRINT & FORGE THEME
+ * 60-30-10 Dark Blueprint Palette | High-Contrast Tactile Controls
+ * Pure CSS3 | Zero External Fonts or CDNs
+ */
+
+:root {
+  /* 60% Canvas Blueprint Obsidian Base */
+  --forge-bg: #070b14;
+  --forge-grid-line: rgba(56, 189, 248, 0.07);
+  --forge-grid-bold: rgba(56, 189, 248, 0.14);
+
+  /* 30% Structural Glass Panels */
+  --glass-panel: rgba(15, 23, 42, 0.85);
+  --glass-panel-elevated: rgba(23, 37, 66, 0.92);
+  --glass-border: #1e293b;
+  --glass-border-light: rgba(255, 255, 255, 0.12);
+  --glass-inset: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+
+  /* 10% Active Accents */
+  --brass-amber: #f59e0b;
+  --brass-glow: rgba(245, 158, 11, 0.45);
+  --blueprint-cyan: #38bdf8;
+  --blueprint-glow: rgba(56, 189, 248, 0.4);
+  --insight-emerald: #10b981;
+  --insight-glow: rgba(16, 185, 129, 0.4);
+  --relic-magenta: #c084fc;
+  --relic-glow: rgba(192, 132, 252, 0.4);
+  --danger-coral: #f43f5e;
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+
+  /* System Font Stack */
+  --font-main: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--forge-bg);
+  background-image: 
+    linear-gradient(var(--forge-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--forge-grid-line) 1px, transparent 1px),
+    linear-gradient(var(--forge-grid-bold) 2px, transparent 2px),
+    linear-gradient(90deg, var(--forge-grid-bold) 2px, transparent 2px),
+    radial-gradient(circle at 50% 0%, #1e1b4b 0%, transparent 65%),
+    linear-gradient(180deg, var(--forge-bg) 0%, #030712 100%);
+  background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px, 100% 100%, 100% 100%;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* =========================================================================
+   PERSISTENT HUD & ACTION POINT (AP) BAR
+   ========================================================================= */
+.forge-hud {
+  background: rgba(11, 17, 32, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 2px solid var(--glass-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 10px var(--brass-amber));
+  animation: gearSpin 12s infinite linear;
+}
+
+@keyframes gearSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, var(--brass-amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+.brand-sub {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--blueprint-cyan);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Action Point (AP) Meter */
+.ap-meter-box {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ap-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--brass-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ap-orbs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ap-orb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #334155;
+  border: 1.5px solid #475569;
+  transition: all 0.25s ease;
+}
+
+.ap-orb.active {
+  background: var(--brass-amber);
+  border-color: #fef08a;
+  box-shadow: 0 0 8px var(--brass-glow);
+  transform: scale(1.1);
+}
+
+/* Stage Navigation Tabs */
+.stage-tabs {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.stage-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stage-tab-btn:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.stage-tab-btn.active {
+  background: var(--blueprint-cyan);
+  color: #041226;
+  box-shadow: 0 0 14px var(--blueprint-glow);
+}
+
+.stage-tab-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* XP & Insight Stats */
+.hud-stat-pill {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--glass-border);
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-xp { color: var(--brass-amber); border-color: rgba(245, 158, 11, 0.4); }
+.stat-insight { color: var(--insight-emerald); border-color: rgba(16, 185, 129, 0.4); }
+
+.hud-btn {
+  background: rgba(30, 41, 59, 0.7);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hud-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: var(--blueprint-cyan);
+  transform: translateY(-2px);
+}
+
+.hud-btn.gold {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--brass-amber);
+  color: #fde68a;
+}
+
+.hud-btn.gold:hover {
+  background: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 14px var(--brass-glow);
+}
+
+/* =========================================================================
+   MAIN APP CONTAINER
+   ========================================================================= */
+.forge-main-container {
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+/* Stage Header Banner */
+.stage-hero-banner {
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 20px 26px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glass-inset);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stage-hero-title h2 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stage-hero-title p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.stage-badge-pill {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--blueprint-cyan);
+  color: var(--blueprint-cyan);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================================
+   STAGE 1: THE ARCHIVE VAULT
+   ========================================================================= */
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.archive-card {
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.archive-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+  border-color: var(--blueprint-cyan);
+}
+
+.archive-card.unlocked {
+  border-color: var(--insight-emerald);
+  box-shadow: 0 0 20px var(--insight-glow);
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.inventor-avatar-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid var(--brass-amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 0 12px var(--brass-glow);
+}
+
+.archive-year-badge {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--glass-border);
+  color: var(--brass-amber);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.inventor-info h3 {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.invention-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--blueprint-cyan);
+  line-height: 1.35;
+}
+
+.failure-log-box {
+  background: rgba(15, 23, 42, 0.7);
+  border-left: 3px solid var(--brass-amber);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.try-again-quote {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: #a7f3d0;
+  margin-top: 6px;
+  display: block;
+}
+
+.inspect-archive-btn {
+  min-height: 50px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: 12px;
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.inspect-archive-btn:hover {
+  background: var(--blueprint-cyan);
+  color: #041226;
+  border-color: var(--blueprint-cyan);
+  box-shadow: 0 4px 14px var(--blueprint-glow);
+}
+
+.inspect-archive-btn.completed {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--insight-emerald);
+  color: #a7f3d0;
+  cursor: default;
+}
+
+/* =========================================================================
+   STAGE 2: THE CORE LOOP WORKSHOP & FORGE SOCKETS
+   ========================================================================= */
+.workshop-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .workshop-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left: Obstacle Picker Column */
+.obstacle-picker-column {
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glass-inset);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-tag {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brass-amber);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.obstacle-card-btn {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.obstacle-card-btn:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: var(--blueprint-cyan);
+  transform: translateX(4px);
+}
+
+.obstacle-card-btn.selected {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: var(--blueprint-cyan);
+  box-shadow: 0 0 16px var(--blueprint-glow);
+}
+
+.obs-btn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.obs-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.obs-summary {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Right: The Hydraulic Forge Stage */
+.forge-station-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sockets Dock */
+.sockets-dock {
+  background: var(--glass-panel-elevated);
+  border: 2px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), var(--glass-inset);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .sockets-dock {
+    grid-template-columns: 1fr;
+  }
+}
+
+.socket-slot {
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px dashed #475569;
+  border-radius: 16px;
+  min-height: 140px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.socket-slot.filled {
+  border-style: solid;
+  border-color: var(--blueprint-cyan);
+  background: rgba(56, 189, 248, 0.08);
+  box-shadow: 0 0 16px var(--blueprint-glow);
+}
+
+.socket-slot.filled.relic {
+  border-color: var(--brass-amber);
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 0 16px var(--brass-glow);
+}
+
+.socket-placeholder-icon {
+  font-size: 2rem;
+  color: #64748b;
+}
+
+.socket-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.socket-content-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.clear-socket-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(244, 63, 94, 0.2);
+  border: 1px solid var(--danger-coral);
+  color: #fecdd3;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+/* Modern Relics Component Grid */
+.relics-picker-box {
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), var(--glass-inset);
+}
+
+.relics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.relic-card {
+  min-height: 64px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.relic-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border-color: var(--brass-amber);
+}
+
+.relic-card.socketed {
+  border-color: var(--brass-amber);
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 14px var(--brass-glow);
+}
+
+.relic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.relic-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.relic-trait {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* Big Forge Action Button */
+.forge-action-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.forge-btn {
+  min-height: 64px;
+  min-width: 280px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #000;
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 25px var(--brass-glow);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.forge-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 32px rgba(245, 158, 11, 0.65);
+}
+
+.forge-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+/* Prototype Reveal Card */
+.prototype-reveal-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 2px solid var(--brass-amber);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 25px var(--brass-glow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.prototype-title {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #fef08a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prototype-formula-box {
+  background: rgba(15, 23, 42, 0.75);
+  border-left: 4px solid var(--blueprint-cyan);
+  padding: 12px 18px;
+  border-radius: 0 10px 10px 0;
+  font-size: 1rem;
+  color: #f8fafc;
+  line-height: 1.45;
+}
+
+/* =========================================================================
+   STAGE 3: THE PITCH ARENA (60-SECOND PRESENTATION DECK)
+   ========================================================================= */
+.pitch-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.timer-cockpit-bar {
+  background: var(--glass-panel-elevated);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timer-seconds-big {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--blueprint-cyan);
+  background: #0f172a;
+  padding: 4px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.timer-seconds-big.urgent {
+  color: var(--danger-coral);
+  animation: pulseUrgent 0.8s infinite alternate;
+}
+
+@keyframes pulseUrgent {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-btn {
+  min-height: 48px;
+  padding: 0 20px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timer-btn:hover {
+  background: var(--blueprint-cyan);
+  color: #041226;
+}
+
+/* Teleprompter Cards Deck */
+.pitch-cards-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pitch-card-step {
+  background: var(--glass-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.pitch-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--blueprint-cyan);
+  color: #041226;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.pitch-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.pitch-teleprompter-text {
+  background: rgba(15, 23, 42, 0.8);
+  border-left: 3px solid var(--brass-amber);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  line-height: 1.45;
+}
+
+.listen-pitch-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--blueprint-cyan);
+  color: var(--blueprint-cyan);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.listen-pitch-btn:hover {
+  background: var(--blueprint-cyan);
+  color: #041226;
+}
+
+/* =========================================================================
+   FLOATING TOAST & MODAL WINDOWS
+   ========================================================================= */
+.forge-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid var(--insight-emerald);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--insight-glow);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.forge-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.forge-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.forge-modal-box {
+  background: var(--glass-panel-elevated);
+  border: 1px solid var(--glass-border-light);
+  border-radius: 24px;
+  max-width: 540px;
+  width: 100%;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.modal-close-btn:hover {
+  background: var(--danger-coral);
+  border-color: var(--danger-coral);
+}
