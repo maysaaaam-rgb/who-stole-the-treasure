@@ -595,6 +595,93 @@ const GAMES_REGISTRY = [
     </svg>`
   },
   {
+    "id": "freeze-game",
+    "aliases": ["the-20-energy-freeze-game", "energy-freeze", "brain-power-check"],
+    "title": "⚡ The 20% Energy Freeze Game",
+    "description": "High-energy CLIL science and movement game demonstrating human metabolic energy. Kids dance and freeze to compare muscle stillness with the 20% fuel their brain burns while thinking!",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "⚡ Biology & Neuroscience",
+    "level": "A1 / A2",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–11",
+    "ageGroup": "7-11",
+    "grade": "Grade 2–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 150,
+    "skills": [
+      "CLIL Human Biology",
+      "Mental Arithmetic",
+      "Sensory & Lobe Vocabulary",
+      "Listening & Kinesthetic Response"
+    ],
+    "topic": "Brain Energy, Neurons, and the 4 Lobes",
+    "topics": [
+      "Metabolic Energy",
+      "20% Brain Fuel",
+      "0% Muscle Energy",
+      "Frontal Lobe",
+      "Occipital Lobe",
+      "Temporal Lobe",
+      "Parietal Lobe",
+      "Physical Movement vs Mental Stillness"
+    ],
+    "languageFocus": "My muscles stopped, but my brain burned energy! The frontal lobe thinks. The occipital lobe sees.",
+    "activityMode": "Interactive Classroom Movement & Neuro-Science Challenge",
+    "interactionType": "Dual Live Energy Gauges, Dancing vs Frozen Statue Stage, 528Hz Neuron Hum, Closed-Eyes Prompt Solver, Printable A4 Diploma",
+    "difficulty": "Scaffolded A1 / A2",
+    "tags": [
+      "freeze-game",
+      "brain-energy",
+      "clil",
+      "stem",
+      "biology",
+      "kinesthetic",
+      "movement",
+      "science"
+    ],
+    "learningObjectives": [
+      "Compare the physiological difference between 0% muscle energy in stillness and 20% continuous brain energy",
+      "Understand that the brain consumes 20% of resting metabolic energy even during sleep or stillness",
+      "Identify the 4 cerebral lobes and their roles in calculation, visualization, hearing, and touch",
+      "Follow closed-eye oral instructions and execute physical reveal actions on unfreeze cues",
+      "Complete the Science Activity Log & certified Brain Power Diploma"
+    ],
+    "teacherInstructions": "Launch on Smart Board. Lead the class in 120 BPM dancing, call FREEZE to drop muscle fuel to 0%, have students close eyes for the 528Hz neuron hum task, and call UNFREEZE for the physical answer reveal!",
+    "studentInstructions": "Dance to the beat! When the music cuts, freeze like an ice statue with eyes closed, solve the secret brain task, and unfreeze to shout your answer!",
+    "route": "freeze-game/index.html",
+    "worksheet": "freeze-game/worksheet.html",
+    "worksheetRoute": "freeze-game/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⚡",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #f97316 100%)",
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="freezeThumbGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#090d16"/>
+          <stop offset="50%" stop-color="#1e1b4b"/>
+          <stop offset="100%" stop-color="#f97316"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#freezeThumbGrad)"/>
+      <circle cx="100" cy="65" r="40" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="6,4"/>
+      <circle cx="100" cy="65" r="26" fill="#38bdf8" opacity="0.85"/>
+      <text x="100" y="73" font-size="24" text-anchor="middle">❄️</text>
+      <rect x="18" y="106" width="164" height="20" rx="10" fill="#ea580c"/>
+      <text x="100" y="120" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">20% FREEZE GAME ⚡</text>
+    </svg>`
+  },
+  {
   "id": "young-inventor",
   "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
   "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",

@@ -1,0 +1,886 @@
+/**
+ * THE 20% ENERGY FREEZE GAME: DARK CYBER-BIOLOGY STYLESHEET
+ * 60-30-10 Palette Architecture, Dual Energy Meter Physics, 60fps Avatar Animations
+ */
+
+:root {
+  /* 60% Obsidian / Void Canvas */
+  --bg-deep: #060911;
+  --bg-radial-top: #0c1a30;
+
+  /* 30% Structural Glass Panels */
+  --bg-panel: rgba(15, 23, 42, 0.82);
+  --bg-panel-elevated: rgba(22, 33, 58, 0.9);
+  --border-glass: #1e293b;
+  --border-glass-light: rgba(56, 189, 248, 0.25);
+  --border-highlight: rgba(255, 255, 255, 0.12);
+
+  /* 10% Active Focal Accents */
+  --color-muscle: #f97316;       /* Kinetic Muscle Orange */
+  --glow-muscle: rgba(249, 115, 22, 0.5);
+
+  --color-brain: #38bdf8;        /* Synaptic Cyan */
+  --glow-brain: rgba(56, 189, 248, 0.5);
+
+  --color-frontal: #f59e0b;      /* Frontal Amber */
+  --color-neuron: #10b981;       /* Neuron Emerald */
+  --color-occipital: #f43f5e;    /* Occipital Crimson */
+  --color-temporal: #a855f7;     /* Temporal Violet */
+
+  /* Neutral Typography */
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  /* Geometry & Physics */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-deep);
+  background-image: 
+    radial-gradient(circle at 50% 0%, var(--bg-radial-top) 0%, transparent 65%),
+    radial-gradient(circle at 92% 85%, rgba(249, 115, 22, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 8% 90%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* ==========================================================================
+   TOP ACADEMY HUD BAR
+   ========================================================================== */
+.freeze-hud {
+  background: rgba(6, 9, 17, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1.5px solid var(--border-glass);
+  padding: 0.75rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.65);
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hud-logo-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(56, 189, 248, 0.3));
+  border: 1.5px solid var(--border-glass-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0 16px var(--glow-muscle);
+  animation: logoPulse 3s infinite alternate;
+}
+
+@keyframes logoPulse {
+  from { transform: scale(1); box-shadow: 0 0 10px var(--glow-muscle); }
+  to { transform: scale(1.04); box-shadow: 0 0 24px var(--glow-brain); }
+}
+
+.hud-title-wrap h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.hud-title-wrap p {
+  font-size: 0.68rem;
+  color: var(--color-muscle);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Status Mode Pill (Manual Teacher vs Auto Timer) */
+.hud-mode-pill {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-brain);
+}
+
+/* Controls */
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.hud-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: var(--color-brain);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   MAIN DUAL-VIEWPORT ARENA
+   ========================================================================== */
+.freeze-arena {
+  flex: 1;
+  max-width: 1540px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 2.5rem 2rem;
+  display: grid;
+  grid-template-columns: 560px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+/* ==========================================================================
+   LEFT HERO VIEWPORT: CHARACTER STAGE & BRAIN LOBES HOLOGRAM
+   ========================================================================== */
+.character-hero-viewport {
+  background: var(--bg-panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 16px 40px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 5rem;
+}
+
+.viewport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.85rem;
+}
+
+.viewport-header h2 {
+  font-size: 1.05rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phase-state-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.phase-state-badge.state-dance {
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid var(--color-muscle);
+  color: var(--color-muscle);
+  animation: pulse-orange 1.5s infinite alternate;
+}
+
+.phase-state-badge.state-freeze {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid var(--color-brain);
+  color: var(--color-brain);
+  animation: pulse-cyan 1.5s infinite alternate;
+}
+
+@keyframes pulse-orange {
+  from { box-shadow: 0 0 6px var(--glow-muscle); }
+  to { box-shadow: 0 0 18px var(--color-muscle); }
+}
+
+@keyframes pulse-cyan {
+  from { box-shadow: 0 0 6px var(--glow-brain); }
+  to { box-shadow: 0 0 18px var(--color-brain); }
+}
+
+/* Stage Canvas Viewport */
+.avatar-stage-canvas {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  aspect-ratio: 5 / 4;
+  background: radial-gradient(circle at 50% 50%, #0a1326 0%, #03060e 90%);
+  border: 1.5px solid #1e293b;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.85);
+}
+
+.avatar-stage-canvas svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
+}
+
+/* Avatar States: Dancing vs Frozen */
+.dancing-avatar-rig {
+  transform-origin: 300px 380px;
+  animation: danceGroove 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes danceGroove {
+  0% { transform: translateY(0) rotate(-3deg) scaleY(1); }
+  100% { transform: translateY(-14px) rotate(3deg) scaleY(1.02); }
+}
+
+.frozen-statue-rig {
+  filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.6)) brightness(1.15);
+  animation: iceShimmer 2s ease-in-out infinite alternate;
+}
+
+@keyframes iceShimmer {
+  0% { filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.4)); }
+  100% { filter: drop-shadow(0 0 28px rgba(125, 211, 252, 0.9)); }
+}
+
+/* Brain Lobe SVG Highlighting */
+.cortex-lobe-path {
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.cortex-lobe-path.active-thinking-lobe {
+  filter: brightness(1.4) drop-shadow(0 0 24px currentColor) !important;
+  opacity: 1 !important;
+  animation: lobeThinkingPulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes lobeThinkingPulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 10px currentColor); }
+  100% { transform: scale(1.04); filter: drop-shadow(0 0 28px currentColor); }
+}
+
+/* Radial Lobe Sparkle Pulse */
+.lobe-sparkle-wave {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: sparkleWaveRipple 0.85s ease-out forwards;
+}
+
+@keyframes sparkleWaveRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.95;
+    border: 3px solid var(--color-brain);
+    box-shadow: 0 0 16px var(--color-brain);
+  }
+  100% {
+    width: 260px;
+    height: 260px;
+    opacity: 0;
+    border: 1px solid rgba(56, 189, 248, 0);
+    box-shadow: 0 0 35px rgba(56, 189, 248, 0);
+  }
+}
+
+/* 4 Lobe Indicator Tabs */
+.lobe-status-indicators {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.lobe-ind-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  transition: var(--transition-fast);
+}
+
+.lobe-ind-card.active {
+  border-color: currentColor;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 12px currentColor;
+}
+
+/* Physiological Science Inspector Panel */
+.science-inspector-strip {
+  background: rgba(11, 18, 33, 0.85);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.inspector-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inspector-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inspector-tag {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.inspector-body {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   DYNAMIC RIGHT-HAND STAGE: DUAL ENERGY GAUGES & GAME LOOP
+   ========================================================================== */
+.dynamic-freeze-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* DUAL LIVE ENERGY METERS (The 90% Muscle vs 20% Brain Contrast) */
+.dual-energy-dashboard {
+  background: var(--bg-panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.energy-meter-card {
+  background: rgba(11, 18, 33, 0.9);
+  border: 2px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.energy-meter-card.meter-muscle {
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+.energy-meter-card.meter-brain {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.meter-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meter-name-tag {
+  font-size: 0.85rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  letter-spacing: 0.02em;
+}
+
+.meter-value-big {
+  font-family: monospace;
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.meter-muscle .meter-value-big {
+  color: var(--color-muscle);
+  text-shadow: 0 0 16px var(--glow-muscle);
+}
+
+.meter-brain .meter-value-big {
+  color: var(--color-brain);
+  text-shadow: 0 0 16px var(--glow-brain);
+}
+
+.gauge-track-shell {
+  width: 100%;
+  height: 16px;
+  background: #060911;
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+
+.gauge-fill-bar {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+}
+
+.gauge-fill-muscle {
+  width: 90%;
+  background: linear-gradient(90deg, #ea580c, #f97316);
+  box-shadow: 0 0 16px var(--glow-muscle);
+}
+
+.gauge-fill-brain {
+  width: 20%;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  box-shadow: 0 0 16px var(--glow-brain);
+}
+
+.meter-status-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   INTERACTIVE GAMEPLAY COCKPIT
+   ========================================================================== */
+.game-cockpit-card {
+  background: var(--bg-panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: inset 0 1px 1px var(--border-highlight), 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+/* Host / Teacher Control Bar (Touch Target >= 64px) */
+.stage-trigger-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-freeze-action {
+  flex: 1;
+  min-height: 64px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  letter-spacing: 0.02em;
+  transition: var(--transition-spring);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.btn-freeze-action.btn-start-dance {
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: #ffffff;
+  box-shadow: 0 6px 20px var(--glow-muscle);
+}
+
+.btn-freeze-action.btn-call-freeze {
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  color: #ffffff;
+  box-shadow: 0 6px 20px var(--glow-brain);
+  animation: freezeBtnPulse 0.9s infinite alternate;
+}
+
+@keyframes freezeBtnPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.03); }
+}
+
+.btn-freeze-action:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+}
+
+/* CLOSED-EYES MIND TASK BANNER */
+.mind-task-banner {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  border: 2px solid var(--color-brain);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+  animation: bannerEnter 0.35s ease-out;
+}
+
+@keyframes bannerEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mind-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closed-eyes-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(244, 63, 94, 0.2);
+  border: 1.5px solid var(--color-occipital);
+  color: #fff;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  animation: blinkWarning 1s infinite alternate;
+}
+
+@keyframes blinkWarning {
+  from { opacity: 0.8; }
+  to { opacity: 1; filter: drop-shadow(0 0 8px var(--color-occipital)); }
+}
+
+.mind-task-question {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.target-lobe-indicator {
+  font-size: 0.85rem;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+/* REVEAL ACTIONS & MCQ TILES (Touch Targets >= 64px) */
+.reveal-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.reveal-option-btn {
+  min-height: 64px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: var(--transition-spring);
+}
+
+.reveal-option-btn:hover {
+  border-color: var(--color-brain);
+  transform: translateY(-3px);
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+}
+
+.reveal-option-btn.correct-choice {
+  border-color: var(--color-neuron);
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 20px var(--color-neuron);
+}
+
+/* Action Banner ("Unfreeze! Shout the answer!") */
+.unfreeze-action-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+  border: 1.5px solid var(--color-neuron);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   STEP 5: SCIENCE DEBRIEF STRIP
+   ========================================================================== */
+.science-debrief-container {
+  background: rgba(11, 18, 33, 0.85);
+  border: 1.5px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.debrief-header {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.debrief-comparison-dial {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+}
+
+.dial-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-weight: 900;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.dial-pill.muscle {
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--color-muscle);
+  border: 1px solid var(--color-muscle);
+}
+
+.dial-pill.brain {
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--color-brain);
+  border: 1px solid var(--color-brain);
+}
+
+.karaoke-debrief-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.karaoke-debrief-text strong {
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   VICTORY & DIPLOMA MODAL
+   ========================================================================== */
+.victory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 6, 14, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.victory-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.victory-modal-card {
+  max-width: 640px;
+  width: 100%;
+  background: linear-gradient(145deg, #0f172a, #16223b);
+  border: 2px solid var(--color-muscle);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(249, 115, 22, 0.35);
+  transform: scale(0.92);
+  transition: var(--transition-spring);
+}
+
+.victory-modal-overlay.open .victory-modal-card {
+  transform: scale(1);
+}
+
+.diploma-seal-giant {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  border: 3px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: 0 0 30px var(--glow-muscle);
+  animation: sealSpin 20s linear infinite;
+}
+
+@keyframes sealSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.badges-earned-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.badge-pill-item {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--color-brain);
+  color: #ffffff;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.freeze-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border-glass);
+  background: rgba(6, 9, 17, 0.75);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1180px) {
+  .freeze-arena {
+    grid-template-columns: 1fr;
+  }
+  .character-hero-viewport {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .freeze-hud {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+  }
+  .dual-energy-dashboard {
+    grid-template-columns: 1fr;
+  }
+  .reveal-options-grid {
+    grid-template-columns: 1fr;
+  }
+  .mind-task-question {
+    font-size: 1.25rem;
+  }
+}
