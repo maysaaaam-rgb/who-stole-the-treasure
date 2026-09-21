@@ -12027,6 +12027,37 @@ window.switchClassroomSubTab = function(subTab) {
     }).join('');
   };
 
+  window.currentMonster = {
+    get equipped() {
+      return monsterCreatorDraft ? monsterCreatorDraft.equipped : {};
+    }
+  };
+
+  window.renderEquippedList = function() {
+    window.updateMonsterCreatorPreview();
+  };
+
+  window.renderItemsGrid = function(category) {
+    window.renderMonsterCreatorItems();
+  };
+
+  window.updateMonsterPreview = function() {
+    window.updateMonsterCreatorPreview();
+  };
+
+  function equipItem(category, item) {
+    // 1. Update State
+    currentMonster.equipped[category] = item.id;
+
+    // 2. Sync Sidebar & Grid UI
+    renderEquippedList();
+    renderItemsGrid(category);
+
+    // 3. Immediately re-render the visual stage
+    updateMonsterPreview();
+  }
+  window.equipItem = equipItem;
+
   window.handleSelectMonsterItem = function(itemId, category, isNone) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
@@ -12037,20 +12068,23 @@ window.switchClassroomSubTab = function(subTab) {
       } else {
         monsterCreatorDraft.equipped[category] = 'none';
       }
+      renderEquippedList();
+      renderItemsGrid(category);
+      updateMonsterPreview();
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
+      renderEquippedList();
+      renderItemsGrid(category);
+      updateMonsterPreview();
     } else if (category === 'glasses' || (itemId && itemId.startsWith('glasses-'))) {
-      monsterCreatorDraft.equipped.glasses = itemId;
       if (monsterCreatorDraft.equipped.accessory === 'none') monsterCreatorDraft.equipped.accessory = '';
+      equipItem('glasses', { id: itemId });
     } else if (category === 'backpack' || (itemId && (itemId.startsWith('bp-') || itemId.includes('satchel')))) {
-      monsterCreatorDraft.equipped.backpack = itemId;
+      equipItem('backpack', { id: itemId });
     } else {
-      monsterCreatorDraft.equipped[category] = itemId;
+      equipItem(category, { id: itemId });
     }
-
-    window.renderMonsterCreatorItems();
-    window.updateMonsterCreatorPreview();
   };
 
   window.toggleMonsterCreatorAnimation = function() {

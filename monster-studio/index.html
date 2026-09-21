@@ -972,6 +972,84 @@
     let isBobbing = true;
     let currentStudent = null;
 
+    let equippedProxy = new Proxy(workingState, {
+      set(target, prop, val) {
+        if (prop === 'mouths') prop = 'mouth';
+        else if (prop === 'hat') prop = 'hats';
+        else if (prop === 'wings' || prop === 'satchel') prop = 'backpack';
+        target[prop] = val;
+        return true;
+      },
+      get(target, prop) {
+        if (prop === 'mouths') return target.mouth;
+        if (prop === 'hat') return target.hats;
+        return target[prop];
+      }
+    });
+
+    let currentMonster = {
+      equipped: equippedProxy
+    };
+
+    function renderEquippedList() {
+      const specMap = {
+        furName: "spec-color",
+        eyes: "spec-eyes",
+        glasses: "spec-glasses",
+        mouth: "spec-mouth",
+        hats: "spec-hats",
+        horns: "spec-horns",
+        backpack: "spec-backpack",
+        clothing: "spec-clothing",
+        pedestal: "spec-pedestal"
+      };
+
+      const getName = (cat, val) => {
+        if (!val || val === 'none') return 'None';
+        let list = [];
+        if (cat === 'eyes') list = EYE_PRESETS;
+        else if (cat === 'mouth') list = MOUTH_PRESETS;
+        else if (cat === 'glasses') list = GLASSES_PRESETS;
+        else if (cat === 'backpack') list = BACKPACK_PRESETS;
+        else if (cat === 'hats') list = HAT_PRESETS;
+        else if (cat === 'horns') list = HORN_PRESETS;
+        else if (cat === 'clothing') list = CLOTHING_PRESETS;
+        else if (cat === 'pedestal') list = PEDESTAL_PRESETS;
+        const found = list.find(i => i.id === val || (i.aliases && i.aliases.includes(val)));
+        return found ? found.name : val;
+      };
+
+      for (const [key, domId] of Object.entries(specMap)) {
+        const el = document.getElementById(domId);
+        if (el) {
+          if (key === 'furName') el.innerText = workingState.furName;
+          else el.innerText = getName(key, workingState[key]);
+        }
+      }
+    }
+
+    function renderItemsGrid(category) {
+      if (typeof renderOptions === 'function') {
+        renderOptions(category || activeCategory);
+      }
+    }
+
+    function updateMonsterPreview() {
+      renderMonsterRig();
+    }
+
+    function equipItem(category, item) {
+      // 1. Update State
+      currentMonster.equipped[category] = item.id;
+
+      // 2. Sync Sidebar & Grid UI
+      renderEquippedList();
+      renderItemsGrid(category);
+
+      // 3. Immediately re-render the visual stage
+      updateMonsterPreview();
+    }
+
     function getAssetSvg(category, id) {
       if (!id || id === 'none') return '';
       let list = [];
@@ -1171,51 +1249,21 @@
         `;
 
         card.onclick = () => {
-          if (type === 'eyes') {
-            workingState.eyes = item.id;
-            const specEl = document.getElementById("spec-eyes");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'mouths') {
-            workingState.mouth = item.id;
-            const specEl = document.getElementById("spec-mouth");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'glasses') {
-            workingState.glasses = item.id;
-            const specEl = document.getElementById("spec-glasses");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'hats') {
-            workingState.hats = item.id;
-            const specEl = document.getElementById("spec-hats");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'backpack') {
-            workingState.backpack = item.id;
-            const specEl = document.getElementById("spec-backpack");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'horns') {
-            workingState.horns = item.id;
-            const specEl = document.getElementById("spec-horns");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'clothing') {
-            workingState.clothing = item.id;
-            const frontLayer = document.getElementById("layer-front-gear");
-            if (frontLayer) frontLayer.innerHTML = item.svgFront || "";
-            const specEl = document.getElementById("spec-clothing");
-            if (specEl) specEl.innerText = item.name;
+          if (type === 'body') {
+            setFurColor(item.fill, item.stroke, item.belly, item.name.split(' ')[0]);
+            renderMonsterRig();
+            renderOptions(type);
           } else if (type === 'pedestal') {
-            workingState.pedestal = item.id;
             const disk = document.getElementById("pedestal-disk");
             if (disk) {
               disk.style.background = item.css;
               disk.style.border = item.border;
               disk.style.boxShadow = item.glow;
             }
-            const specEl = document.getElementById("spec-pedestal");
-            if (specEl) specEl.innerText = item.name;
-          } else if (type === 'body') {
-            setFurColor(item.fill, item.stroke, item.belly, item.name.split(' ')[0]);
+            equipItem('pedestal', item);
+          } else {
+            equipItem(type, item);
           }
-          renderMonsterRig();
-          renderOptions(type);
         };
         container.appendChild(card);
       });
@@ -1309,6 +1357,11 @@
     window.renderMonsterRig = renderMonsterRig;
     window.workingState = workingState;
     window.currentConfig = currentConfig;
+    window.currentMonster = currentMonster;
+    window.renderEquippedList = renderEquippedList;
+    window.renderItemsGrid = renderItemsGrid;
+    window.updateMonsterPreview = updateMonsterPreview;
+    window.equipItem = equipItem;
     window.getAssetSvg = getAssetSvg;
     window.updateBodyColors = updateBodyColors;
     window.EYE_PRESETS = EYE_PRESETS;
