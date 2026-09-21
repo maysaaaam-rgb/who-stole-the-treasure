@@ -1,0 +1,1116 @@
+/* ==========================================================================
+   LEARNING AND YOUR BRAIN — ARCADE NEURO-GRID STYLESHEET
+   Zero external dependencies. Dark arcade theme (#090d16) with cyan & amber neon.
+   ========================================================================== */
+
+:root {
+  --bg-deep: #090d16;
+  --bg-surface: #0f172a;
+  --bg-card: #1e293b;
+  --bg-card-hover: #27354f;
+  
+  --border-subtle: #334155;
+  --border-bright: #475569;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --neon-cyan: #38bdf8;
+  --neon-amber: #f59e0b;
+  --neon-green: #10b981;
+  --neon-red: #ef4444;
+  --neon-purple: #a855f7;
+
+  /* Anatomical Lobe Palette */
+  --lobe-frontal: #f59e0b;
+  --lobe-parietal: #10b981;
+  --lobe-occipital: #ef4444;
+  --lobe-temporal: #a855f7;
+
+  --font-system: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-deep);
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 60%),
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 36px 36px, 36px 36px;
+  color: var(--text-main);
+  font-family: var(--font-system);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   TOP HUD BAR
+   ========================================================================== */
+.neuro-hud {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--border-subtle);
+  padding: 0.85rem 1.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 1rem;
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hud-logo-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+  border: 1.5px solid var(--neon-cyan);
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+.hud-title-wrap h1 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud-title-wrap p {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* Phase Selector Nav */
+.hud-phase-nav {
+  display: flex;
+  background: #090d16;
+  padding: 0.3rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-subtle);
+  gap: 0.35rem;
+}
+
+.phase-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.phase-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.phase-btn.active {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(37, 99, 235, 0.45);
+}
+
+/* Brain Battery Gauge */
+.hud-battery-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #090d16;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-subtle);
+}
+
+.battery-icon-label {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--neon-amber);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.battery-shell {
+  width: 110px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--border-bright);
+  background: #0a0f1d;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.battery-shell::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 4px;
+  width: 3px;
+  height: 8px;
+  background: var(--border-bright);
+  border-radius: 0 2px 2px 0;
+}
+
+.battery-fill {
+  height: 100%;
+  width: 20%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #f59e0b, #10b981);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  transition: width 0.4s ease-out;
+}
+
+.battery-pct-text {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #fff;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* Audio & Passport Controls */
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hud-btn {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.hud-btn:hover {
+  border-color: var(--neon-cyan);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   MAIN VIEWPORT WORKSPACE
+   ========================================================================== */
+.neuro-main-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.stage-header-banner {
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.stage-header-banner h2 {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stage-header-banner p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.pedagogical-formula-pill {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1.5px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+/* ==========================================================================
+   PHASE 1: NEURO-ATLAS (LOBE DISCOVERY & SENSORY MAPPING)
+   ========================================================================== */
+.atlas-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr 320px;
+  gap: 1.5rem;
+  min-height: 540px;
+}
+
+/* Column 1: Sensory Tokens Tray */
+.tokens-tray-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tray-header {
+  border-bottom: 1.5px solid var(--border-subtle);
+  padding-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tray-header h3 {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.token-count-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: var(--bg-card);
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--neon-cyan);
+}
+
+.tokens-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  overflow-y: auto;
+  max-height: 440px;
+  padding-right: 4px;
+}
+
+/* Sensory Token Target (minimum 64x64px touch compliant) */
+.sensory-token {
+  min-height: 64px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.sensory-token:hover {
+  border-color: var(--neon-cyan);
+  background: var(--bg-card-hover);
+  transform: translateX(4px);
+}
+
+.sensory-token.is-selected {
+  border-color: var(--neon-cyan) !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35) !important;
+}
+
+.sensory-token.is-matched {
+  border-color: var(--neon-green) !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  opacity: 0.75;
+}
+
+.token-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: #090d16;
+  border: 1px solid var(--border-subtle);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.token-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.token-name {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.token-clue {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.token-status-icon {
+  font-size: 1.1rem;
+  color: var(--neon-green);
+  opacity: 0;
+}
+
+.sensory-token.is-matched .token-status-icon {
+  opacity: 1;
+}
+
+/* Column 2: Interactive SVG Brain Viewport */
+.brain-viewport-card {
+  background: radial-gradient(circle at 50% 50%, #171b30 0%, #090d16 85%);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.6);
+}
+
+.brain-stage-title-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stage-status-pill {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--neon-cyan);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--neon-cyan);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.svg-brain-container {
+  width: 100%;
+  max-width: 480px;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.interactive-brain-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.7));
+}
+
+.lobe-interactive-path {
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  fill-opacity: 0.45;
+  stroke-width: 3.5;
+}
+
+.lobe-interactive-path:hover {
+  fill-opacity: 0.82;
+  filter: drop-shadow(0 0 16px var(--lobe-color));
+  stroke-width: 4.5;
+}
+
+.lobe-interactive-path.active {
+  fill-opacity: 0.95;
+  stroke-width: 5;
+  filter: drop-shadow(0 0 24px var(--lobe-color));
+}
+
+.lobe-interactive-path.highlighted {
+  animation: lobePulse 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes lobePulse {
+  0% { fill-opacity: 0.55; stroke-width: 3.5; }
+  100% { fill-opacity: 0.95; stroke-width: 5.5; }
+}
+
+.synaptic-cable-line {
+  stroke-dasharray: 6, 6;
+  animation: pulseElectricity 1.2s linear infinite;
+}
+
+@keyframes pulseElectricity {
+  to { stroke-dashoffset: -24; }
+}
+
+/* Target Drop Rings on Brain */
+.lobe-pin-target {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.lobe-pin-target:hover {
+  transform: scale(1.15);
+}
+
+/* Prompt Banner at Bottom of Brain Viewport */
+.brain-instruction-banner {
+  position: absolute;
+  bottom: 1rem;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.5rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}
+
+/* Column 3: Active Lobe Inspector / Formula Card */
+.lobe-inspector-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.inspector-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inspector-lobe-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid var(--border-subtle);
+}
+
+.lobe-color-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.7rem;
+  box-shadow: 0 0 16px rgba(0,0,0,0.4);
+}
+
+.inspector-lobe-badge h3 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.inspector-lobe-badge span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.inspector-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.inspector-section-label {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inspector-formula-box {
+  background: #0b1120;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.inspector-esl-cue {
+  background: rgba(56, 189, 248, 0.08);
+  border-left: 3px solid var(--neon-cyan);
+  padding: 0.6rem 0.8rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.inspector-btn-action {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 900;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.inspector-btn-action:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   PHASE 2: READING TEAMWORK PATHWAY BUILDER
+   ========================================================================== */
+.reading-stage-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 1.5rem;
+  min-height: 520px;
+}
+
+.reading-interactive-board {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reading-word-hero {
+  background: #0a0f1d;
+  border: 2px solid var(--neon-cyan);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
+}
+
+.word-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.word-emoji-box {
+  font-size: 3rem;
+}
+
+.word-letters-text {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #fff;
+  font-family: monospace;
+}
+
+.word-phonemes-tag {
+  font-size: 0.88rem;
+  color: var(--neon-cyan);
+  font-weight: 800;
+}
+
+.teamwork-relay-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+  margin: 1.5rem 0;
+}
+
+.relay-step-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  transition: all 0.25s ease;
+  min-height: 160px;
+}
+
+.relay-step-card.active {
+  border-color: var(--card-color) !important;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 16px var(--card-color-glow);
+  transform: translateY(-3px);
+}
+
+.relay-step-card.completed {
+  border-color: var(--neon-green) !important;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.relay-step-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+  color: #fff;
+}
+
+.relay-lobe-title {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.relay-action-text {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  flex: 1;
+}
+
+.relay-time-pill {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--neon-amber);
+  background: #090d16;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+/* Reading Circuit Action Bar */
+.reading-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1.5px solid var(--border-subtle);
+}
+
+.motto-banner {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--neon-amber);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-trigger-circuit {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+  transition: all 0.2s;
+}
+
+.btn-trigger-circuit:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+/* Side Reading Visualizer SVG */
+.reading-side-canvas {
+  background: radial-gradient(circle at 50% 50%, #171b30 0%, #090d16 85%);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   PHASE 3: NEURO-ENERGY CHALLENGE & NEUROPLASTICITY
+   ========================================================================== */
+.energy-stage-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  min-height: 520px;
+}
+
+.habits-pane-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.habits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.habit-interactive-card {
+  min-height: 100px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.habit-interactive-card:hover {
+  border-color: var(--neon-cyan);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.habit-interactive-card.applied {
+  border-color: var(--neon-green) !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.habit-icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: #0a0f1d;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.habit-content h4 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.habit-fact-text {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+.energy-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+.energy-tag.plus {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--neon-green);
+}
+
+.energy-tag.minus {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--neon-red);
+}
+
+/* Side Neuroplasticity Cable Visualizer */
+.neuroplasticity-pane-card {
+  background: #0b1120;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.cable-visualizer-box {
+  width: 100%;
+  height: 220px;
+  background: #080d1a;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-subtle);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cable-thickness-badge {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--neon-cyan);
+  background: rgba(56, 189, 248, 0.15);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--neon-cyan);
+}
+
+/* ==========================================================================
+   VICTORY & DIPLOMA CELEBRATION MODAL
+   ========================================================================== */
+.victory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 15, 0.88);
+  backdrop-filter: blur(14px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.victory-modal-overlay.open {
+  display: flex;
+}
+
+.victory-modal-window {
+  width: 100%;
+  max-width: 680px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-bright);
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 45px rgba(56, 189, 248, 0.2);
+  padding: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.victory-badge-glow {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  display: grid;
+  place-items: center;
+  font-size: 3.2rem;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.5);
+  margin-bottom: 1.25rem;
+}
+
+.victory-modal-window h2 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.victory-modal-window p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  max-width: 520px;
+}
+
+.badges-earned-row {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge-item-pill {
+  background: #0a0f1d;
+  border: 1.5px solid var(--border-subtle);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.victory-actions-box {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.btn-open-diploma {
+  flex: 1;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  padding: 0.9rem;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-open-diploma:hover {
+  filter: brightness(1.15);
+}
+
+.btn-close-victory {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--text-muted);
+  padding: 0.9rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   FOOTER BAR
+   ========================================================================== */
+.neuro-footer {
+  background: #090d16;
+  border-top: 1.5px solid var(--border-subtle);
+  padding: 0.85rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.footer-tip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-tip strong {
+  color: var(--neon-cyan);
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUTS
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .atlas-grid {
+    grid-template-columns: 320px 1fr;
+  }
+  .lobe-inspector-card {
+    grid-column: span 2;
+  }
+  .reading-stage-layout,
+  .energy-stage-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .neuro-hud {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem 1rem;
+  }
+  .hud-phase-nav {
+    overflow-x: auto;
+  }
+  .atlas-grid {
+    grid-template-columns: 1fr;
+  }
+  .teamwork-relay-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .habits-grid {
+    grid-template-columns: 1fr;
+  }
+}

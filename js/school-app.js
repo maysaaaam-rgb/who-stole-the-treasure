@@ -878,7 +878,10 @@
       'the-brain-hackers': 'brain-hackers/index.html',
       'brain-hacker': 'brain-hackers/index.html',
       'mission-unlock': 'brain-hackers/index.html',
-      'brain-hackers-mission': 'brain-hackers/index.html'
+      'brain-hackers-mission': 'brain-hackers/index.html',
+      'brain-explorers': 'brain-explorers/index.html',
+      'learning-and-your-brain': 'brain-explorers/index.html',
+      'learning-brain': 'brain-explorers/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];

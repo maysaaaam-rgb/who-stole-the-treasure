@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neuro-Explorer Mission Passport &amp; Diploma — Learning &amp; Your Brain</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      padding: 20px;
+    }
+
+    /* On-Screen Action Bar (Hidden when printed) */
+    .screen-control-bar {
+      max-width: 1050px;
+      margin: 0 auto 20px auto;
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .screen-control-bar h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+      background: #334155;
+      color: #fff;
+    }
+
+    .action-btn.secondary:hover {
+      background: #475569;
+    }
+
+    /* A4 Document Pages */
+    .passport-document {
+      max-width: 1050px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .passport-page {
+      background: #fff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .header-branding h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-branding p {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .student-id-lines {
+      display: flex;
+      gap: 20px;
+    }
+
+    .id-field {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .id-field .blank-line {
+      display: inline-block;
+      min-width: 130px;
+      border-bottom: 1.5px solid #0f172a;
+    }
+
+    /* 4 Panels Grid */
+    .panel-section {
+      margin-bottom: 22px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      background: #fafafa;
+    }
+
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.82rem;
+      color: #475569;
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    /* Panel 1: Brain Diagram & Color Key */
+    .brain-activity-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .brain-diagram-box {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .coloring-sentences-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .formula-sentence-item {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-left: 5px solid #64748b;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .formula-sentence-item.yellow { border-left-color: #f59e0b; }
+    .formula-sentence-item.red { border-left-color: #ef4444; }
+    .formula-sentence-item.purple { border-left-color: #a855f7; }
+    .formula-sentence-item.green { border-left-color: #10b981; }
+
+    .inline-blank {
+      display: inline-block;
+      min-width: 140px;
+      border-bottom: 1.5px solid #0f172a;
+      height: 16px;
+      vertical-align: bottom;
+      margin: 0 4px;
+    }
+
+    /* Panel 2: Reading Teamwork Flowchart */
+    .flowchart-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .flowchart-step {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .step-number-tag {
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      width: fit-content;
+      margin-bottom: 6px;
+    }
+
+    .flowchart-step h4 {
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .flowchart-step p {
+      font-size: 0.76rem;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    /* Panel 3: Brain Fuel Checklist */
+    .fuel-checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .fuel-item-box {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fuel-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #0f172a;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .fuel-text strong {
+      font-size: 0.88rem;
+      color: #0f172a;
+    }
+
+    .fuel-text p {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* Panel 4: Official Junior Neuroscientist Diploma */
+    .diploma-frame {
+      border: 4px double #0f172a;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      background: #fdfefe;
+      position: relative;
+    }
+
+    .diploma-seal {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #f59e0b;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      margin: 0 auto 10px auto;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .diploma-frame h3 {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .diploma-tagline {
+      font-size: 0.82rem;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .diploma-body-text {
+      font-size: 0.92rem;
+      color: #334155;
+      line-height: 1.5;
+      max-width: 620px;
+      margin: 0 auto 16px auto;
+    }
+
+    .recipient-line {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #0f172a;
+      border-bottom: 2px solid #0f172a;
+      min-width: 320px;
+      display: inline-block;
+      padding: 0 20px;
+      margin: 8px 0;
+    }
+
+    .diploma-signatures {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid #cbd5e1;
+    }
+
+    .sig-block {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .sig-line {
+      width: 180px;
+      border-bottom: 1.5px solid #0f172a;
+      margin-bottom: 6px;
+      height: 20px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .screen-control-bar {
+        display: none !important;
+      }
+      .passport-page {
+        border: none;
+        box-shadow: none;
+        padding: 10mm;
+        page-break-after: always;
+      }
+      .passport-page:last-child {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Control Bar -->
+  <div class="screen-control-bar">
+    <h1><span>🧠</span> Learning &amp; Your Brain: Mission Passport &amp; Diploma</h1>
+    <div class="action-btn-group">
+      <button class="action-btn" onclick="window.print()">
+        <span>🖨️</span> Print / Save PDF
+      </button>
+      <a href="index.html" class="action-btn secondary">
+        <span>🎮</span> Back to Interactive Game
+      </a>
+    </div>
+  </div>
+
+  <div class="passport-document">
+
+    <!-- PAGE 1: 4-LOBE NEURO-ATLAS & READING TEAMWORK -->
+    <div class="passport-page">
+      <div class="page-header">
+        <div class="header-branding">
+          <h2><span>🧭</span> NEURO-EXPLORER MISSION PASSPORT</h2>
+          <p>ADVENTURE ACADEMY &bull; PRIMARY CLIL SCIENCE &bull; GRADE 2–5</p>
+        </div>
+        <div class="student-id-lines">
+          <div class="id-field">Name: <span class="blank-line" id="print-name"></span></div>
+          <div class="id-field">Date: <span class="blank-line" id="print-date"></span></div>
+        </div>
+      </div>
+
+      <!-- PANEL 1: LOBE COLOR & FORMULA SENTENCES -->
+      <section class="panel-section">
+        <h3 class="panel-title"><span>🎨</span> Panel 1: Color &amp; Complete the 4 Brain Lobes</h3>
+        <p class="panel-subtitle">Color each lobe on the diagram using the color key, then fill in the blank words below.</p>
+
+        <div class="brain-activity-layout">
+          <!-- B&W Anatomical Outline for Coloring -->
+          <div class="brain-diagram-box">
+            <svg viewBox="50 30 280 230" width="220" height="170">
+              <!-- Cerebellum & Stem -->
+              <path d="M 120 220 C 130 245 155 255 175 255 C 190 255 200 240 195 220 Z" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+              <ellipse cx="105" cy="225" rx="28" ry="18" fill="#f1f5f9" stroke="#0f172a" stroke-width="2" />
+
+              <!-- Occipital (Back) -->
+              <path d="M 95 135 C 115 120 145 130 165 145 C 150 175 130 205 105 215 C 80 205 70 175 75 155 C 80 142 88 138 95 135 Z" fill="#fff" stroke="#0f172a" stroke-width="2" />
+              <text x="95" y="175" font-size="9" font-weight="800" text-anchor="middle">Occipital (Red)</text>
+
+              <!-- Temporal (Bottom Center) -->
+              <path d="M 140 165 C 165 155 195 160 215 180 C 220 205 210 230 190 242 C 160 250 135 235 125 210 C 120 190 130 175 140 165 Z" fill="#fff" stroke="#0f172a" stroke-width="2" />
+              <text x="170" y="210" font-size="9" font-weight="800" text-anchor="middle">Temporal (Purple)</text>
+
+              <!-- Parietal (Top Center) -->
+              <path d="M 130 92 C 150 55 210 40 270 48 C 290 52 300 62 305 75 C 280 115 240 135 195 145 C 175 125 150 110 130 92 Z" fill="#fff" stroke="#0f172a" stroke-width="2" />
+              <text x="210" y="95" font-size="9" font-weight="800" text-anchor="middle">Parietal (Green)</text>
+
+              <!-- Frontal (Front) -->
+              <path d="M 130 95 C 130 65 170 60 215 65 C 265 72 295 105 305 145 C 312 175 305 210 280 235 C 255 255 220 255 195 240 C 185 225 180 200 175 180 C 165 170 145 155 130 145 C 120 135 125 110 130 95 Z" fill="#fff" stroke="#0f172a" stroke-width="2" />
+              <text x="235" y="160" font-size="9" font-weight="800" text-anchor="middle">Frontal (Yellow)</text>
+            </svg>
+            <span style="font-size:0.75rem; color:#64748b; font-weight:700; margin-top:4px;">Color each lobe carefully!</span>
+          </div>
+
+          <!-- Sentence Completion -->
+          <div class="coloring-sentences-list">
+            <div class="formula-sentence-item yellow">
+              1. The <strong>Frontal Lobe</strong> (Yellow) helps us <span class="inline-blank"></span> and speak aloud.
+            </div>
+            <div class="formula-sentence-item red">
+              2. The <strong>Occipital Lobe</strong> (Red) helps us see <span class="inline-blank"></span> and words.
+            </div>
+            <div class="formula-sentence-item purple">
+              3. The <strong>Temporal Lobe</strong> (Purple) helps us hear letter <span class="inline-blank"></span>.
+            </div>
+            <div class="formula-sentence-item green">
+              4. The <strong>Parietal Lobe</strong> (Green) helps us feel <span class="inline-blank"></span> and hold the book.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 2: THE READING TEAMWORK RELAY -->
+      <section class="panel-section">
+        <h3 class="panel-title"><span>⚡</span> Panel 2: The 0.3-Second Reading Relay</h3>
+        <p class="panel-subtitle"><strong>"Reading is a whole-team effort!"</strong> Put the 4 reading steps in order from 1 to 4.</p>
+
+        <div class="flowchart-row">
+          <div class="flowchart-step" style="border-top:4px solid #ef4444;">
+            <span class="step-number-tag" style="background:#ef4444;">Step 1 &bull; Occipital</span>
+            <h4>Eyes See Letters</h4>
+            <p>Your eyes see the shapes: <strong>C - A - T</strong>.</p>
+          </div>
+          <div class="flowchart-step" style="border-top:4px solid #a855f7;">
+            <span class="step-number-tag" style="background:#a855f7;">Step 2 &bull; Temporal</span>
+            <h4>Ears Match Sounds</h4>
+            <p>Your brain links letters to phonemes: <strong>/k/ /æ/ /t/</strong>.</p>
+          </div>
+          <div class="flowchart-step" style="border-top:4px solid #10b981;">
+            <span class="step-number-tag" style="background:#10b981;">Step 3 &bull; Parietal</span>
+            <h4>Hands &amp; Space</h4>
+            <p>Your brain tracks words from <strong>left to right</strong>.</p>
+          </div>
+          <div class="flowchart-step" style="border-top:4px solid #f59e0b;">
+            <span class="step-number-tag" style="background:#f59e0b;">Step 4 &bull; Frontal</span>
+            <h4>Meaning &amp; Speech</h4>
+            <p>You understand a furry pet and say <strong>"CAT!"</strong></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PAGE 2: BRAIN FUEL CHECKLIST & OFFICIAL DIPLOMA -->
+    <div class="passport-page">
+      <div class="page-header">
+        <div class="header-branding">
+          <h2><span>🔋</span> NEURO-ENERGY &amp; GRADUATION HONORS</h2>
+          <p>ADVENTURE ACADEMY &bull; BRAIN POWER &amp; NEUROPLASTICITY</p>
+        </div>
+        <div class="id-field" style="font-weight:900; color:#0f172a;">
+          Brain Energy: <strong>20% Daily Fuel</strong>
+        </div>
+      </div>
+
+      <!-- PANEL 3: BRAIN FUEL & NEUROPLASTICITY -->
+      <section class="panel-section">
+        <h3 class="panel-title"><span>🥗</span> Panel 3: Brain Fuel &amp; Neuroplasticity Challenge</h3>
+        <p class="panel-subtitle">Check the 4 healthy habits that give your brain energy, and complete the science fact.</p>
+
+        <div class="fuel-checklist-grid">
+          <div class="fuel-item-box">
+            <div class="fuel-checkbox"></div>
+            <div class="fuel-text">
+              <strong>💤 9 to 10 Hours of Sleep</strong>
+              <p>Cleans waste and organizes memories.</p>
+            </div>
+          </div>
+          <div class="fuel-item-box">
+            <div class="fuel-checkbox"></div>
+            <div class="fuel-text">
+              <strong>💧 Drinking Clean Water</strong>
+              <p>Your brain is 75% water!</p>
+            </div>
+          </div>
+          <div class="fuel-item-box">
+            <div class="fuel-checkbox"></div>
+            <div class="fuel-text">
+              <strong>🥗 Healthy Berries &amp; Veggies</strong>
+              <p>Gives 20% glucose energy to neurons.</p>
+            </div>
+          </div>
+          <div class="fuel-item-box">
+            <div class="fuel-checkbox"></div>
+            <div class="fuel-text">
+              <strong>📚 Daily Reading Practice</strong>
+              <p>Neuroplasticity: makes pathways thicker!</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; background:#fff; border:1.5px solid #cbd5e1; border-radius:6px; padding:10px 14px; font-size:0.88rem;">
+          <strong>Neuroplasticity Fact:</strong> When we practice every day, our brain connections become 
+          <span class="inline-blank" style="min-width:160px;"></span> <em>(stronger / weaker)</em> and 
+          <span class="inline-blank" style="min-width:160px;"></span> <em>(faster / slower)</em>!
+        </div>
+      </section>
+
+      <!-- PANEL 4: OFFICIAL DIPLOMA -->
+      <div class="diploma-frame">
+        <div class="diploma-seal">🎓</div>
+        <h3>Junior Neuro-Explorer Diploma</h3>
+        <div class="diploma-tagline">ADVENTURE ACADEMY &bull; COGNITIVE SCIENCE DEPARTMENT</div>
+        
+        <p class="diploma-body-text">
+          This certifies that our brilliant young scientist
+        </p>
+
+        <div class="recipient-line" id="diploma-recipient-name">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+
+        <p class="diploma-body-text" style="margin-top:12px;">
+          has successfully explored the human brain, identified the <strong>4 cognitive lobes</strong>, proven that <strong>reading is a whole-team effort</strong>, and mastered healthy habits to keep their brain supercharged!
+        </p>
+
+        <div class="diploma-signatures">
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <span>Teacher / Mentor Signature</span>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <span>Mission Completion Date</span>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line">⭐ ⭐ ⭐ ⭐ ⭐</div>
+            <span>Certified Junior Neuro-Explorer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Pull student name from parent or URL if available
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const studentName = urlParams.get('name');
+      if (studentName) {
+        document.getElementById('print-name').textContent = studentName;
+        document.getElementById('diploma-recipient-name').textContent = studentName;
+      }
+      const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('print-date').textContent = today;
+    } catch (e) {}
+  </script>
+</body>
+</html>
