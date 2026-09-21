@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ The 20% Energy Freeze Game: Brain Power Check</title>
+  <link rel="stylesheet" href="css/freeze-game.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP ACADEMY HUD BAR
+       ========================================================================== -->
+  <header class="freeze-hud">
+    <div class="hud-left">
+      <div class="hud-logo-badge">⚡</div>
+      <div class="hud-title-wrap">
+        <h1>The 20% Energy Freeze Game</h1>
+        <p>BRAIN POWER CHECK &bull; 0% MUSCLE VS 20% CONTINUOUS BRAIN FUEL</p>
+      </div>
+    </div>
+
+    <!-- Mode Controller & XP Counter -->
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <button type="button" class="hud-mode-pill" id="btn-toggle-mode" title="Switch between Teacher Manual and Auto 6s Timer">
+        <span>🎮</span> Mode: Teacher Manual
+      </button>
+      <div class="hud-mode-pill" style="color:var(--color-frontal); border-color:var(--color-frontal);" title="Earned XP">
+        <span>⭐</span> XP: <span id="hud-xp-val" style="margin-left:3px; font-weight:900;">0</span> / 150
+      </div>
+    </div>
+
+    <!-- Action & Audio Controls -->
+    <div class="hud-controls">
+      <button type="button" class="hud-btn" id="btn-toggle-sound" title="Toggle Synthesized Sound Effects">
+        <span>🔊</span> Sound
+      </button>
+      <button type="button" class="hud-btn" id="btn-toggle-tts" title="Toggle Spoken Speech">
+        <span>🗣️</span> Voice On
+      </button>
+      <a href="worksheet.html" target="_blank" class="hud-btn" title="Print Science Activity Log &amp; Diploma">
+        <span>🎓</span> Passport &amp; Diploma
+      </a>
+      <a href="../index.html" class="hud-btn" title="Return to Adventure Academy platform">
+        <span>🏠</span> Academy
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN DUAL-VIEWPORT ARENA
+       ========================================================================== -->
+  <main class="freeze-arena">
+    <!-- 1. LEFT: Character Avatar & Brain Lobes Hologram -->
+    <aside class="character-hero-viewport" id="character-hero-viewport">
+      <!-- Injected by freeze-app.js -->
+    </aside>
+
+    <!-- 2. RIGHT: Dual Energy Gauges & Interactive 5-Step Loop Deck -->
+    <section class="dynamic-freeze-deck" id="dynamic-freeze-deck">
+      <!-- Injected dynamically by freeze-app.js -->
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       VICTORY & MASTER DIPLOMA MODAL
+       ========================================================================== -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-modal-card">
+      <div class="diploma-seal-giant">🏆</div>
+      <h2 style="font-size:1.8rem; font-weight:900; color:var(--color-brain);">BRAIN POWER CHECK COMPLETE!</h2>
+      <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">
+        Incredible neuro-science investigation! You proved that while physical muscles drop to <strong>0% energy</strong> during stillness, your brain burns <strong>20% continuous fuel</strong> to calculate, visualize, and remember!
+      </p>
+
+      <div class="badges-earned-row">
+        <div class="badge-pill-item">
+          <span>❄️</span> Freeze Master (0% Muscle)
+        </div>
+        <div class="badge-pill-item">
+          <span>⚡</span> 20% Brain Burner
+        </div>
+        <div class="badge-pill-item">
+          <span>🧠</span> Synapse Sparker
+        </div>
+        <div class="badge-pill-item">
+          <span>🎙️</span> Science Debriefer
+        </div>
+        <div class="badge-pill-item" style="border-color:#fbbf24; color:#fbbf24;">
+          <span>🎓</span> Master Neuro-Diploma
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1rem; margin-top:0.75rem;">
+        <a href="worksheet.html" target="_blank" class="hud-btn" style="background:linear-gradient(135deg, #0284c7, #38bdf8); color:#fff; padding:0.75rem 1.6rem; font-size:1rem;">
+          <span>📄</span> Print Activity Log &amp; Diploma
+        </a>
+        <button type="button" class="hud-btn" onclick="document.getElementById('victory-modal').classList.remove('open')">
+          Keep Playing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER BAR
+       ========================================================================== -->
+  <footer class="freeze-footer">
+    <div>
+      <span>⚡ <strong>CLIL Core Fact:</strong> Your brain is 2% of body weight, but consumes 20% of your metabolic energy every second!</span>
+    </div>
+    <div>
+      <span>Language Formula: <strong>"My muscles stopped, but my brain burned energy!"</strong></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/freeze-data.js"></script>
+  <script src="js/freeze-audio.js"></script>
+  <script src="js/freeze-app.js"></script>
+</body>
+</html>

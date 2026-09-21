@@ -884,7 +884,10 @@
       'learning-brain': 'brain-explorers/index.html',
       'adventure-engine': 'adventure-engine/index.html',
       'adventure-academy-engine': 'adventure-engine/index.html',
-      'eco-rover': 'adventure-engine/index.html'
+      'eco-rover': 'adventure-engine/index.html',
+      'freeze-game': 'freeze-game/index.html',
+      'the-20-energy-freeze-game': 'freeze-game/index.html',
+      'freeze': 'freeze-game/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];
