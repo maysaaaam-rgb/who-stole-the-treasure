@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>⚙️ Inventor's Forge: The RPG Invention Lab | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/inventor-forge.css">
+</head>
+<body>
+
+  <!-- Top Persistent HUD & AP Bar -->
+  <header class="forge-hud" role="banner">
+    <div class="hud-left">
+      <button class="hud-brand" onclick="window.inventorApp.switchStage(1)" title="Return to Archive Vault">
+        <span class="brand-icon">⚙️</span>
+        <div>
+          <span class="brand-title">INVENTOR'S FORGE</span>
+          <span class="brand-sub">THE RPG INVENTION LAB ⚡</span>
+        </div>
+      </button>
+
+      <!-- Action Point (AP) Meter -->
+      <div class="ap-meter-box" title="Action Points remaining for today's forge">
+        <span class="ap-label">Energy AP:</span>
+        <div class="ap-orbs" id="hud-ap-orbs">
+          <div class="ap-orb active"></div>
+          <div class="ap-orb active"></div>
+          <div class="ap-orb active"></div>
+        </div>
+      </div>
+
+      <!-- Stage Navigation Tabs -->
+      <nav class="stage-tabs" aria-label="Quest Stages">
+        <button class="stage-tab-btn active" data-stage="1" onclick="window.inventorApp.switchStage(1)">
+          <span>🏛️</span> <span>1. Archive</span>
+        </button>
+        <button class="stage-tab-btn" data-stage="2" onclick="window.inventorApp.switchStage(2)">
+          <span>⚙️</span> <span>2. Workshop</span>
+        </button>
+        <button class="stage-tab-btn" data-stage="3" onclick="window.inventorApp.switchStage(3)">
+          <span>🎤</span> <span>3. Pitch</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="hud-right">
+      <!-- Total Score XP -->
+      <div class="hud-stat-pill stat-xp" title="Adventure XP">
+        <span>⚡</span> <span id="hud-xp-val">0 XP</span>
+      </div>
+
+      <!-- Insight Buffs Collected -->
+      <div class="hud-stat-pill stat-insight" title="Insight Buffs from Historical Failures">
+        <span>✨</span> <span id="hud-insight-val">0</span>
+      </div>
+
+      <!-- SFX Toggle -->
+      <button class="hud-btn" id="btn-toggle-sfx" onclick="const on = window.inventorAudio.toggleSfx(); this.innerHTML = on ? '🔊 <span>SFX</span>' : '🔇 <span>SFX</span>';" title="Toggle Sound Effects">
+        🔊 <span>SFX</span>
+      </button>
+
+      <!-- TTS Toggle -->
+      <button class="hud-btn" id="btn-toggle-tts" onclick="const on = window.inventorAudio.toggleSpeech(); this.innerHTML = on ? '🗣️ <span>TTS</span>' : '🤐 <span>TTS</span>';" title="Toggle Speech Narration">
+        🗣️ <span>TTS</span>
+      </button>
+
+      <!-- Printable Blueprint Worksheet -->
+      <a href="worksheet.html" target="_blank" class="hud-btn gold" title="Printable A4 Blueprint & Diploma">
+        🖨️ <span>Blueprint</span>
+      </a>
+
+      <!-- Return to Library -->
+      <a href="../index.html#library" class="hud-btn" title="Back to Game Library">
+        📚 <span>Library</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Viewport Area (Rendered dynamically by inventor-app.js) -->
+  <main class="forge-main-container">
+    <div id="forge-viewport"></div>
+  </main>
+
+  <!-- Reusable Modal (Dossiers, Checks & Victory Celebration) -->
+  <div class="forge-modal-overlay" id="forge-modal" style="display:none;" onclick="if(event.target === this) window.inventorApp.closeModal();">
+    <div class="forge-modal-box">
+      <button class="modal-close-btn" onclick="window.inventorApp.closeModal()" aria-label="Close Modal">✕</button>
+      <div id="modal-content-area"></div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="forge-toast" class="forge-toast"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/inventor-data.js"></script>
+  <script src="js/inventor-audio.js"></script>
+  <script src="js/inventor-app.js"></script>
+</body>
+</html>

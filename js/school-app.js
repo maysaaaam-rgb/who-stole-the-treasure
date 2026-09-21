@@ -887,7 +887,10 @@
       'eco-rover': 'adventure-engine/index.html',
       'freeze-game': 'freeze-game/index.html',
       'the-20-energy-freeze-game': 'freeze-game/index.html',
-      'freeze': 'freeze-game/index.html'
+      'freeze': 'freeze-game/index.html',
+      'inventor-forge': 'inventor-forge/index.html',
+      'inventors-forge': 'inventor-forge/index.html',
+      'forge-game': 'inventor-forge/index.html'
     };
     if (routeMap[gameOrActivityId]) {
       window.location.href = routeMap[gameOrActivityId];
