@@ -12089,18 +12089,29 @@ window.switchClassroomSubTab = function(subTab) {
     const summaryEl = document.getElementById('monster-creator-equipped-summary');
     const countSummaryEl = document.getElementById('monster-creator-equipped-count');
 
+    const liveStageRenderer = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterLiveStage : window.renderMonsterLiveStage;
     const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
     const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
 
-    if (box && renderFn) {
-      box.innerHTML = renderFn({
-        stage: previewStage,
-        color: monsterCreatorDraft.baseColor,
-        equipped: monsterCreatorDraft.equipped,
-        size: 270,
-        animated: monsterCreatorIsAnimated,
-        rawSvg: true
-      });
+    if (box) {
+      if (liveStageRenderer) {
+        box.innerHTML = liveStageRenderer({
+          stage: previewStage,
+          color: monsterCreatorDraft.baseColor,
+          equipped: monsterCreatorDraft.equipped,
+          size: 280,
+          animated: monsterCreatorIsAnimated
+        });
+      } else if (renderFn) {
+        box.innerHTML = renderFn({
+          stage: previewStage,
+          color: monsterCreatorDraft.baseColor,
+          equipped: monsterCreatorDraft.equipped,
+          size: 270,
+          animated: monsterCreatorIsAnimated,
+          rawSvg: true
+        });
+      }
     }
 
     if (miniAvatarBox && renderFn) {

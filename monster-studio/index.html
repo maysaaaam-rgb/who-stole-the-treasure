@@ -512,6 +512,7 @@
 
             <!-- Layer 4: Clothing / Vest (Over Body) -->
             <g id="layer-front-gear"></g>
+            <g id="layer-clothing"></g>
 
             <!-- Layer 5: Eye Style (Swappable) -->
             <g id="layer-eyes"></g>
@@ -524,6 +525,9 @@
 
             <!-- Layer 8: Headwear / Hats -->
             <g id="layer-headwear"></g>
+
+            <!-- Layer 9: Held Items -->
+            <g id="layer-held"></g>
           </svg>
 
           <!-- 3D Grounding Pedestal -->
@@ -871,18 +875,42 @@
       },
       {
         id: "vest",
+        aliases: ["clothing-vest", "vest"],
         name: "Explorer Vest",
         rarity: "rare",
+        svg: `
+          <g filter="url(#bodyGlow)">
+            <!-- Sturdy Khaki Safari Utility Vest with Brass Buttons -->
+            <path d="M 68 116 L 86 156 L 96 156 L 94 122 Q 80 120 68 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+            <path d="M 132 116 L 114 156 L 104 156 L 106 122 Q 120 120 132 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+            <path d="M 72 116 L 90 128 L 88 148 L 74 146 Z" fill="#d97706" />
+            <path d="M 128 116 L 110 128 L 112 148 L 126 146 Z" fill="#d97706" />
+            <rect x="74" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+            <rect x="114" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+            <circle cx="94" cy="132" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+            <circle cx="94" cy="144" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          </g>
+        `,
         svgFront: `
-          <path d="M 72 118 L 88 152 L 112 152 L 128 118 Q 100 130 72 118 Z" fill="#d97706" stroke="#92400e" stroke-width="3" />
-          <circle cx="100" cy="136" r="3" fill="#fef08a" />
+          <g filter="url(#bodyGlow)">
+            <path d="M 68 116 L 86 156 L 96 156 L 94 122 Q 80 120 68 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+            <path d="M 132 116 L 114 156 L 104 156 L 106 122 Q 120 120 132 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+            <path d="M 72 116 L 90 128 L 88 148 L 74 146 Z" fill="#d97706" />
+            <path d="M 128 116 L 110 128 L 112 148 L 126 146 Z" fill="#d97706" />
+            <rect x="74" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+            <rect x="114" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+            <circle cx="94" cy="132" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+            <circle cx="94" cy="144" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          </g>
         `,
         svgBack: ""
       },
       {
         id: "cape",
+        aliases: ["clothing-cape", "cape"],
         name: "Hero Cape",
         rarity: "epic",
+        svg: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`,
         svgFront: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`,
         svgBack: `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`
       }
@@ -954,8 +982,12 @@
       else if (category === 'hats') list = HAT_PRESETS;
       else if (category === 'horns') list = HORN_PRESETS;
       else if (category === 'clothing') list = CLOTHING_PRESETS;
+      else if (category === 'clothingBack') {
+        const item = CLOTHING_PRESETS.find(entry => entry.id === id || (entry.aliases && entry.aliases.includes(id)));
+        return item ? item.svgBack || '' : '';
+      }
 
-      const item = list.find(entry => entry.id === id);
+      const item = list.find(entry => entry.id === id || (entry.aliases && entry.aliases.includes(id)));
       if (!item) return '';
       return item.svg || item.svgFront || '';
     }
@@ -984,9 +1016,17 @@
       document.getElementById('layer-eyes').innerHTML = getAssetSvg('eyes', workingState.eyes);
       document.getElementById('layer-mouth').innerHTML = getAssetSvg('mouth', workingState.mouth);
       document.getElementById('layer-glasses').innerHTML = getAssetSvg('glasses', workingState.glasses);
-      document.getElementById('layer-back-gear').innerHTML = getAssetSvg('backpack', workingState.backpack);
+      document.getElementById('layer-back-gear').innerHTML = getAssetSvg('backpack', workingState.backpack) || getAssetSvg('clothingBack', workingState.clothing);
       document.getElementById('layer-headwear').innerHTML = getAssetSvg('hats', workingState.hats);
       document.getElementById('layer-horns').innerHTML = getAssetSvg('horns', workingState.horns);
+
+      // Clothing / Costume Overlay Rendering
+      const clothingSvg = getAssetSvg('clothing', workingState.clothing);
+      const elClothing = document.getElementById('layer-clothing');
+      if (elClothing) elClothing.innerHTML = clothingSvg;
+      const elFrontGear = document.getElementById('layer-front-gear');
+      if (elFrontGear) elFrontGear.innerHTML = clothingSvg;
+
       updateBodyColors(workingState.furColor, workingState.furStroke);
     }
 

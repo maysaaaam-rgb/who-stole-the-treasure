@@ -717,6 +717,157 @@
     return renderMonsterSingleSVG(options);
   }
 
+  /**
+   * Live Layered Compositor Pipeline:
+   * Generates the 8 stacked layer DOM container as specified for the Monster Studio & Customizer:
+   * #layer-aura-back (z-0)
+   * #layer-back-gear (z-10)
+   * #layer-monster-body (z-20)
+   * #layer-face (z-30)
+   * #layer-clothing (z-40)
+   * #layer-glasses (z-50)
+   * #layer-headwear (z-60)
+   * #layer-held (z-70)
+   */
+  function renderMonsterLiveStage(options = {}) {
+    const stage = normalizeStageKey(options.stage);
+    let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
+    const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
+    const equipped = Object.assign({}, options.equipped || {});
+    const animated = options.animated !== false;
+    const animClass = animated ? 'eaa-monster-animated bobbing' : '';
+    const defs = getSharedDefs(colorKey, palette);
+
+    const g = getStageGeometry(stage);
+    const cX = 100;
+    const cY = (g.topY + g.botY) / 2;
+    const rx = g.bW;
+    const ry = (g.botY - g.topY) / 2;
+
+    // 1. Background Aura / FX
+    let auraMarkup = '';
+    try { auraMarkup = renderAuraLayer(equipped.aura, stage, palette); } catch (e) { auraMarkup = ''; }
+    const auraSvg = auraMarkup ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${auraMarkup}</svg>` : '';
+
+    // 2. Back Gear (Wings, Capes, Tails behind torso, Backpacks)
+    let wingsMarkup = '';
+    try { wingsMarkup = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsMarkup = ''; }
+    let tailMarkup = '';
+    try { tailMarkup = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailMarkup = ''; }
+    let backpackMarkup = '';
+    try { backpackMarkup = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackMarkup = ''; }
+    const backGearSvg = (wingsMarkup || tailMarkup || backpackMarkup)
+      ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${wingsMarkup}${tailMarkup}${backpackMarkup}</svg>`
+      : '';
+
+    // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso, Horns)
+    let bodySvg = '';
+    if (stage === 'egg') {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
+    } else if (stage === 'cracking_egg') {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
+    } else {
+      const pedestalMarkup = renderPedestalDais();
+      const contactShadowMarkup = renderContactShadow(stage);
+      let underBodyMarkup = '';
+      let feetMarkup = '';
+      let torsoMarkup = '';
+      let overBodyMarkup = '';
+      try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
+      try { feetMarkup = renderGroundedFeet(palette, colorKey, cX, g); } catch (e) {}
+      try { torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped); } catch (e) {}
+      try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
+
+      bodySvg = `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          ${defs}
+          ${pedestalMarkup}
+          ${contactShadowMarkup}
+          ${underBodyMarkup}
+          ${feetMarkup}
+          ${torsoMarkup}
+          ${overBodyMarkup}
+        </svg>
+      `;
+    }
+
+    // 4. Face Features (Eyes, Mouth, Blushes)
+    let faceSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg') {
+      try {
+        const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
+        faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
+      } catch (e) {}
+    }
+
+    // 5. Clothing & Outfits (Vests, Jackets, Coats, Capes)
+    let clothingSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg') {
+      try {
+        const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+        if (clothingMarkup) {
+          clothingSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${clothingMarkup}</svg>`;
+        }
+      } catch (e) {}
+    }
+
+    // 6. Face Accessories & Glasses (Round Wire Glasses, Goggles)
+    let glassesSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.glasses && equipped.glasses !== 'none') {
+      try {
+        const fg = renderForegroundAccessories(stage, { glasses: equipped.glasses }, palette);
+        if (fg) glassesSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+      } catch (e) {}
+    }
+
+    // 7. Headgear (Horns, Hats, Crowns)
+    let headwearSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.hat && equipped.hat !== 'none') {
+      try {
+        const fg = renderForegroundAccessories(stage, { hat: equipped.hat }, palette);
+        if (fg) headwearSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+      } catch (e) {}
+    }
+
+    // 8. Held Items (Wands, Compasses, Bags)
+    let heldSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.accessory && equipped.accessory !== 'none') {
+      try {
+        const fg = renderForegroundAccessories(stage, { accessory: equipped.accessory }, palette);
+        if (fg) heldSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+      } catch (e) {}
+    }
+
+    return `
+      <div class="monster-live-stage ${animClass}" id="monster-live-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
+        <!-- 1. Background Aura / FX -->
+        <div id="layer-aura-back" class="layer-item z-0">${auraSvg}</div>
+        
+        <!-- 2. Back Gear (Wings, Capes, Tails behind torso) -->
+        <div id="layer-back-gear" class="layer-item z-10">${backGearSvg}</div>
+
+        <!-- 3. Base Monster Body & Fur (e.g., Gold, Blue, Violet) -->
+        <div id="layer-monster-body" class="layer-item z-20">${bodySvg}</div>
+
+        <!-- 4. Face Features (Eyes, Mouth, Blushes) -->
+        <div id="layer-face" class="layer-item z-30">${faceSvg}</div>
+
+        <!-- 5. Clothing & Outfits (Vests, Jackets, Coats, Capes) -->
+        <div id="layer-clothing" class="layer-item z-40">${clothingSvg}</div>
+
+        <!-- 6. Face Accessories & Glasses (Round Wire Glasses, Goggles) -->
+        <div id="layer-glasses" class="layer-item z-50">${glassesSvg}</div>
+
+        <!-- 7. Headgear (Horns, Hats, Crowns) -->
+        <div id="layer-headwear" class="layer-item z-60">${headwearSvg}</div>
+
+        <!-- 8. Held Items (Wands, Compasses, Bags) -->
+        <div id="layer-held" class="layer-item z-70">${heldSvg}</div>
+      </div>
+    `.trim();
+  }
+
   // --- BACKGROUND LAYER ---
   function renderBackgroundLayer(bgId, stage) {
     if (!bgId || bgId === 'none') {
@@ -1717,21 +1868,26 @@
   // --- CLOTHING LAYER ---
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
+    const norm = String(clothingId).toLowerCase().trim();
 
-    // Adventure
-    if (clothingId === 'clothing-vest') {
+    // Adventure Explorer Vest
+    if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest')) {
       return `
         <!-- Adventure Explorer Vest -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX - 12} ${cY + 4} ${cX - 12} ${cY + ry - 4} L ${cX - rx + 8} ${cY + ry - 4} Z" fill="#78350f" stroke="#451a03" stroke-width="1.8" />
-          <path d="M ${cX + rx - 4} ${cY + 2} Q ${cX + 12} ${cY + 4} ${cX + 12} ${cY + ry - 4} L ${cX + rx - 8} ${cY + ry - 4} Z" fill="#78350f" stroke="#451a03" stroke-width="1.8" />
-          <circle cx="${cX - 8}" cy="${cY + 16}" r="2" fill="#facc15" />
-          <circle cx="${cX - 8}" cy="${cY + 26}" r="2" fill="#facc15" />
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX - 12} ${cY + 4} ${cX - 12} ${cY + ry - 4} L ${cX - rx + 8} ${cY + ry - 4} Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M ${cX + rx - 4} ${cY + 2} Q ${cX + 12} ${cY + 4} ${cX + 12} ${cY + ry - 4} L ${cX + rx - 8} ${cY + ry - 4} Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M ${cX - rx + 7} ${cY + 2} L ${cX - 11} ${cY + 12} L ${cX - 13} ${cY + 30} L ${cX - rx + 9} ${cY + 28} Z" fill="#d97706" />
+          <path d="M ${cX + rx - 7} ${cY + 2} L ${cX + 11} ${cY + 12} L ${cX + 13} ${cY + 30} L ${cX + rx - 9} ${cY + 28} Z" fill="#d97706" />
+          <rect x="${cX - rx + 8}" y="${cY + 16}" width="10" height="10" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <rect x="${cX + rx - 18}" y="${cY + 16}" width="10" height="10" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="${cX - 8}" cy="${cY + 14}" r="2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="${cX - 8}" cy="${cY + 24}" r="2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
         </g>
       `;
     }
 
-    if (clothingId === 'clothing-cape') {
+    if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape')) {
       return `
         <!-- Hero Adventure Cape -->
         <g filter="url(#mf-shadow)">
@@ -3145,6 +3301,7 @@
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
+    renderMonsterLiveStage: renderMonsterLiveStage,
     renderMonsterWithPedestal: renderMonsterWithPedestal,
     renderMonsterViewport: renderMonsterSingleSVG,
     renderMonsterImageViewport: renderMonsterImageViewport,
@@ -3157,6 +3314,7 @@
 
   root.getMonsterAsset = getMonsterAsset;
   root.renderMonsterSVG = renderMonsterSVG;
+  root.renderMonsterLiveStage = renderMonsterLiveStage;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterSingleSVG;
   root.renderMonsterImageViewport = renderMonsterImageViewport;

@@ -2311,13 +2311,15 @@ button, input, select, textarea {
 }
 
 /* Monster Layer Stack (Exact Coordinate Overlays) */
-.monster-compositor {
+.monster-compositor,
+.monster-live-stage {
   position: relative;
   width: 280px;
   height: 280px;
   margin: 0 auto;
 }
 
+.monster-live-stage .layer-item,
 .monster-compositor .layer {
   position: absolute;
   top: 0;
@@ -2326,8 +2328,28 @@ button, input, select, textarea {
   height: 100%;
   pointer-events: none;
   object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s ease-out;
 }
+
+.monster-live-stage .layer-item svg,
+.monster-live-stage .layer-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.monster-live-stage .z-0 { z-index: 0; }
+.monster-live-stage .z-10 { z-index: 10; }
+.monster-live-stage .z-20 { z-index: 20; }
+.monster-live-stage .z-30 { z-index: 30; }
+.monster-live-stage .z-40 { z-index: 40; }
+.monster-live-stage .z-50 { z-index: 50; }
+.monster-live-stage .z-60 { z-index: 60; }
+.monster-live-stage .z-70 { z-index: 70; }
 
 /* Optional subtle idle float animation */
 .monster-compositor:hover .layer-body,
