@@ -510,6 +510,91 @@ const GAMES_REGISTRY = [
     </svg>`
   },
   {
+    "id": "adventure-engine",
+    "aliases": ["adventure-academy-engine", "eco-rover"],
+    "title": "⚡ Adventure Academy Engine: Eco-Rover Expedition",
+    "description": "Commercial-grade cyber-glassmorphic interactive learning module. Power the quantum core, align solar, kinetic, radar, and shield subsystems, solve speed hazard relays, and broadcast live on the glowing teleprompter!",
+    "type": "game",
+    "category": "CLIL & STEM Games",
+    "categoryLabel": "⚡ CLIL & Clean Energy",
+    "level": "A1+ / A2",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–12",
+    "ageGroup": "8-12",
+    "grade": "Grade 3–5",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": [
+      "CLIL Clean Energy",
+      "Engineering Design Cycle",
+      "Oral Debrief & Presentation",
+      "Functional Modals (uses [Energy] to [Verb])"
+    ],
+    "topic": "Clean Energy & Eco-Rover Engineering",
+    "topics": [
+      "Solar Power",
+      "Kinetic Energy",
+      "Telemetry Radar",
+      "Plasma Shielding",
+      "Hazard Navigation",
+      "Live Teleprompter Broadcast"
+    ],
+    "languageFocus": "The [Subsystem] uses [Energy] to [Verb]. Teamwork powers adventure!",
+    "activityMode": "Interactive Cyber-Glassmorphism Lab / Smart Board Challenge",
+    "interactionType": "Persistent Holographic Rover SVG, Subsystem Slotting, Speed Hazard Relay, Glowing Karaoke Teleprompter, Printable A4 Diploma",
+    "difficulty": "Scaffolded A1+ / A2",
+    "tags": [
+      "adventure-engine",
+      "eco-rover",
+      "clean-energy",
+      "clil",
+      "stem",
+      "teleprompter",
+      "engineering",
+      "speaking"
+    ],
+    "learningObjectives": [
+      "Identify 4 renewable and mechanical energy types powering modern exploration rovers",
+      "Formulate functional purpose sentences: 'The [Subsystem] uses [Energy] to [Verb]'",
+      "React to dynamic terrain hazards under 0.45s with multi-station teamwork sequencing",
+      "Deliver an oral expedition broadcast debrief on-air with real-time teleprompter tracking",
+      "Earn the Certified Master Explorer Diploma & Mission Passport"
+    ],
+    "teacherInstructions": "Launch on Smart Board or individual student tablets. Guide students through Subsystem Alignment, the 3-round Hazard Speed Relay, and the Live Studio Teleprompter Speech.",
+    "studentInstructions": "Power the quantum core of the Eco-Rover! Slot the energy subsystems, survive the dust storms and thermal chasms, and broadcast live to Earth!",
+    "route": "adventure-engine/index.html",
+    "worksheet": "adventure-engine/worksheet.html",
+    "worksheetRoute": "adventure-engine/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⚡",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c1a30 50%, #0284c7 100%)",
+    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="advEngGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#060911"/>
+          <stop offset="50%" stop-color="#0c1a30"/>
+          <stop offset="100%" stop-color="#0284c7"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="140" fill="url(#advEngGrad)"/>
+      <circle cx="100" cy="70" r="42" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <circle cx="100" cy="70" r="28" fill="#0284c7" opacity="0.8"/>
+      <text x="100" y="78" font-size="26" text-anchor="middle">⚡</text>
+      <rect x="18" y="106" width="164" height="20" rx="10" fill="#0284c7"/>
+      <text x="100" y="120" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">ADVENTURE ENGINE ⚡</text>
+    </svg>`
+  },
+  {
   "id": "young-inventor",
   "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
   "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",
