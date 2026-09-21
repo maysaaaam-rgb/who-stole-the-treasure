@@ -682,61 +682,38 @@ const GAMES_REGISTRY = [
     </svg>`
   },
   {
-    "id": "inventor-forge",
-    "aliases": ["inventors-forge", "rpg-invention-lab", "forge-game"],
-    "title": "⚙️ Inventor's Forge: The RPG Invention Lab",
-    "description": "High-engagement 3-stage CLIL RPG invention module. Students unlock historical inventor failure archives, socket modern relics to forge functional prototypes, and deliver a 60-second pitch to the Grand Guild!",
-    "type": "game",
-    "category": "CLIL & STEM Games",
-    "categoryLabel": "⚙️ Engineering & Inventions",
-    "level": "A1+ / A2",
-    "cefrLevel": "A1–A2",
-    "age": "Ages 8–12",
-    "ageGroup": "8-12",
-    "grade": "Grade 3–5",
-    "grades": ["Grade 3", "Grade 4", "Grade 5"],
-    "duration": 35,
-    "durationText": "35 min",
-    "estimatedMinutes": 35,
-    "xp": 200,
-    "skills": [
-      "CLIL Design Thinking",
-      "Historical Resilience & Mindsets",
-      "Technical Schematic Formulation",
-      "Public Speaking & 60-Second Pitches"
+    id: "inventor-forge",
+    aliases: ["inventors-forge", "rpg-invention-lab", "forge-game", "apprentice-quest"],
+    title: "🛠️ Inventor's Forge: The Apprentice Quest",
+    description: "Playable classroom RPG loop. Reconnect historical inventor relics, craft prototypes with the 'Try Again' buff, fuse modern relics in the forge, and deliver a 60-second invention pitch!",
+    type: "game",
+    category: "CLIL & Engineering",
+    categoryLabel: "🛠️ CLIL & Inventions",
+    level: "A1 / A2",
+    cefrLevel: "A1+",
+    age: "Ages 7–11",
+    ageGroup: "7-11",
+    grade: "Grade 3–5",
+    grades: ["Grade 3", "Grade 4", "Grade 5"],
+    duration: 35,
+    durationText: "35 min",
+    estimatedMinutes: 35,
+    xp: 150,
+    skills: [
+      "Invention Vocabulary",
+      "Infinitive of Purpose (to + verb)",
+      "Compound Problem Solving",
+      "60-Second Timed Pitching"
     ],
-    "topic": "Inventions, Prototyping & Capstone Pitching",
-    "topics": [
-      "Historical Inventors (Edison, Da Vinci, Benz, Wright)",
-      "Try-Again Resilience Mindsets",
-      "Everyday Obstacle Identification",
-      "Modern Relics (Solar, Sensors, Hydrophobic, Nanotech)",
-      "Target Language Formulas & Persuasive Pitches"
-    ],
-    "languageFocus": "The [Invention] uses [Relic 1] and [Relic 2] to [Action Verb] and solve [Obstacle].",
-    "activityMode": "Interactive Multi-Stage RPG Lab & Smartboard Arena",
-    "interactionType": "Action Point HUD, Archive Dossier Check, 3-Socket Hydraulic Forge, 60s Mechanical Clock Teleprompter, Printable Blueprint Diploma",
-    "difficulty": "Scaffolded (A1+ to A2)",
-    "tags": ["inventor-forge", "clil", "stem", "inventions", "engineering", "pitch", "edison", "da-vinci"],
-    "learningObjectives": [
-      "Understand historical failure logs and adopt the resilient 'try again' inventor mindset",
-      "Combine modern technological relics to address everyday classroom and commute obstacles",
-      "Formulate accurate causative sentences: 'uses X and Y to Z'",
-      "Deliver a structured 60-second oral pitch utilizing the 4-part teleprompter deck",
-      "Print and complete the official Schematic Blueprint & Master Inventor Diploma"
-    ],
-    "teacherInstructions": "Launch on Smart Board. Guide students through Stage 1 Archive Dossiers, have pairs combine relics in the Stage 2 Forge, and run the 60-second clock in the Stage 3 Pitch Arena!",
-    "studentInstructions": "Unlock historical secrets, combine modern tech relics in the hydraulic forge, and pitch your custom invention to the Grand Guild of Investors!",
-    "route": "inventor-forge/index.html",
-    "worksheet": "inventor-forge/worksheet.html",
-    "worksheetRoute": "inventor-forge/worksheet.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailIcon": "⚙️",
-    "gradient": "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #f59e0b 100%)",
-    "thumbnailSvg": `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    topic: "Inventors, Engineering Design Loop & Creative Pitches",
+    languageFocus: "People invented [item] to [verb]. My invention solves [problem] by [mechanic].",
+    route: "inventor-forge/index.html",
+    worksheet: "inventor-forge/worksheet.html",
+    worksheetRoute: "inventor-forge/worksheet.html",
+    featured: true,
+    thumbnailIcon: "🛠️",
+    gradient: "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #f59e0b 100%)",
+    thumbnailSvg: `<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="forgeThumbGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#070b14"/>
@@ -746,7 +723,7 @@ const GAMES_REGISTRY = [
       </defs>
       <rect width="200" height="140" fill="url(#forgeThumbGrad)"/>
       <circle cx="100" cy="55" r="28" fill="#38bdf8" opacity="0.25"/>
-      <text x="100" y="66" font-size="34" text-anchor="middle">⚙️</text>
+      <text x="100" y="66" font-size="34" text-anchor="middle">🛠️</text>
       <rect x="18" y="104" width="164" height="22" rx="11" fill="#f59e0b"/>
       <text x="100" y="119" font-family="sans-serif" font-weight="900" font-size="8.5" fill="#070b14" text-anchor="middle" letter-spacing="0.5">INVENTOR'S FORGE ⚡</text>
     </svg>`
