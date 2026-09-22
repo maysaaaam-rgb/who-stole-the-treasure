@@ -1,0 +1,785 @@
+/**
+ * ADVENTURE ACADEMY: MEME RULES CLIL LESSON STYLING
+ * 60-30-10 Cyber-Glassmorphic Design Tokens & Spring Physics
+ */
+
+:root {
+  /* 60% Void & Deep Space */
+  --bg-void: #060911;
+  --bg-gradient: radial-gradient(circle at 50% 20%, #0c1a30 0%, #060911 80%);
+
+  /* 30% Structural Panels (Glassmorphism) */
+  --panel-glass: rgba(15, 23, 42, 0.82);
+  --panel-glass-border: #1e293b;
+  --panel-blur: blur(14px);
+
+  /* 10% Active Neon Accents */
+  --accent-cyan: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-coral: #f43f5e;
+  --accent-purple: #a855f7;
+
+  /* Typography */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg-void);
+  background-image: var(--bg-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* =========================================================================
+   TOP CYBER HUD
+   ========================================================================= */
+.cyber-hud {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6, 9, 17, 0.88);
+  backdrop-filter: var(--panel-blur);
+  border-bottom: 1px solid var(--panel-glass-border);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-logo-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+}
+
+.hud-title-wrap h1 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-tag {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.hud-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.energy-meter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--panel-glass-border);
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.meter-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.meter-track {
+  width: 90px;
+  height: 8px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.xp-pill {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.3));
+  border: 1px solid var(--accent-amber);
+  color: #fde68a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 5px 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Phase Navigation Steps */
+.phase-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-tab {
+  background: transparent;
+  border: 1px solid var(--panel-glass-border);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-tab.is-active {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+}
+
+.step-tab.is-completed {
+  border-color: var(--accent-emerald);
+  color: #a7f3d0;
+}
+
+/* =========================================================================
+   STAGE ROUTER VIEWPORT
+   ========================================================================= */
+.main-stage-viewport {
+  max-width: 1200px;
+  width: 95%;
+  margin: 20px auto 40px auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-view {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeInStage 0.35s ease forwards;
+}
+
+.stage-view.is-visible {
+  display: flex;
+}
+
+@keyframes fadeInStage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stage Header Banner */
+.stage-hero-banner {
+  background: var(--panel-glass);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--panel-glass-border);
+  border-radius: 18px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.stage-hero-left h2 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stage-hero-left p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* =========================================================================
+   PHASE 1: MEME REACTION SCANNER
+   ========================================================================= */
+.scanner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.scanner-card {
+  background: var(--panel-glass);
+  backdrop-filter: var(--panel-blur);
+  border: 1.5px solid var(--panel-glass-border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 310px;
+  justify-content: space-between;
+}
+
+.scanner-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 12px 30px rgba(56, 189, 248, 0.25);
+}
+
+.scanner-card.is-scanned {
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.meme-avatar-box {
+  width: 96px;
+  height: 96px;
+  margin: 6px auto;
+  border-radius: 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 8px 0 2px 0;
+}
+
+.scanner-mood-tag {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.15);
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.scanner-verb-pill {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-size: 0.8rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scanner-sentence {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.scanner-badge-status {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  width: 100%;
+}
+
+.scanner-badge-status.locked {
+  background: #1e293b;
+  color: var(--text-muted);
+}
+
+.scanner-badge-status.collected {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid var(--accent-emerald);
+}
+
+/* =========================================================================
+   PHASE 2: GREEN LIGHT / RED LIGHT RELAY WORKBENCH
+   ========================================================================= */
+.relay-workbench-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Magnetic Dropzones Lane */
+.relay-dropzones-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .relay-dropzones-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dropzone-lane {
+  background: var(--panel-glass);
+  backdrop-filter: var(--panel-blur);
+  border-radius: 18px;
+  padding: 18px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropzone-lane.green-lane {
+  border: 2px dashed rgba(16, 185, 129, 0.4);
+}
+
+.dropzone-lane.green-lane.drag-over {
+  border-color: var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.35);
+}
+
+.dropzone-lane.red-lane {
+  border: 2px dashed rgba(244, 63, 94, 0.4);
+}
+
+.dropzone-lane.red-lane.drag-over {
+  border-color: var(--accent-coral);
+  background: rgba(244, 63, 94, 0.12);
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.35);
+}
+
+.lane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--panel-glass-border);
+}
+
+.lane-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.green-lane .lane-title { color: var(--accent-emerald); }
+.red-lane .lane-title { color: var(--accent-coral); }
+
+.lane-formula {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  color: var(--text-secondary);
+}
+
+.lane-cards-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  max-height: 420px;
+}
+
+/* Card Queue Arena (Current Meme Deck) */
+.relay-queue-arena {
+  background: var(--panel-glass);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--panel-glass-border);
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.queue-cards-carousel {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 8px 4px 16px 4px;
+  scroll-behavior: smooth;
+}
+
+/* Interactive Meme Draggable Card */
+.relay-meme-card {
+  min-width: 240px;
+  max-width: 260px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1.5px solid var(--panel-glass-border);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.relay-meme-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+}
+
+.relay-meme-card.is-dragging {
+  opacity: 0.65;
+  cursor: grabbing;
+  transform: scale(0.98);
+}
+
+.relay-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.relay-mini-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.relay-card-info h4 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.relay-verb-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+.relay-rule-text {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+.relay-card-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.btn-send-lane {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-send-lane:hover {
+  filter: brightness(1.15);
+  transform: scale(1.03);
+}
+
+.btn-send-green {
+  background: var(--accent-emerald);
+  color: #042f2e;
+}
+
+.btn-send-red {
+  background: var(--accent-coral);
+  color: #fff;
+}
+
+/* Soft-Fail Wobble Animation */
+@keyframes elasticWobble {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.wobble-fail {
+  animation: elasticWobble 0.4s ease;
+  border-color: var(--accent-coral) !important;
+}
+
+/* =========================================================================
+   PHASE 3: TELEPROMPTER STUDIO
+   ========================================================================= */
+.teleprompter-studio-container {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .teleprompter-studio-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.teleprompter-left-panel {
+  background: var(--panel-glass);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--panel-glass-border);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.teleprompter-right-screen {
+  background: #050811;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.8);
+  min-height: 420px;
+  position: relative;
+}
+
+.teleprompter-screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  padding-bottom: 12px;
+}
+
+.live-rec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #f87171;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+
+.rec-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulseDot 1s infinite alternate;
+}
+
+@keyframes pulseDot {
+  from { opacity: 0.4; }
+  to { opacity: 1; box-shadow: 0 0 8px #ef4444; }
+}
+
+/* Teleprompter Scrolling Speech Lines */
+.teleprompter-script-box {
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.teleprompter-line {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #64748b;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.teleprompter-line.is-active-line {
+  color: #ffffff;
+}
+
+.speech-word {
+  display: inline-block;
+  padding: 1px 3px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.speech-word.highlight-karaoke {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.25);
+  text-shadow: 0 0 14px var(--accent-cyan);
+  transform: scale(1.08);
+}
+
+/* Audio & Action Bar */
+.teleprompter-actions-bar {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-teleprompter {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.btn-read-aloud {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+}
+
+.btn-read-aloud:hover {
+  background: linear-gradient(135deg, #0369a1, #1d4ed8);
+}
+
+.btn-claim-mastery {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+/* =========================================================================
+   COMPLETION / DIPLOMA MODAL
+   ========================================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 9, 17, 0.88);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.is-active {
+  display: flex;
+}
+
+.diploma-card {
+  background: #0f172a;
+  border: 2px solid var(--accent-amber);
+  border-radius: 20px;
+  max-width: 640px;
+  width: 100%;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(245, 158, 11, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: zoomDiploma 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes zoomDiploma {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.diploma-seal {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 20px #fbbf24);
+}
+
+.diploma-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fbbf24;
+}
+
+.diploma-desc {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
