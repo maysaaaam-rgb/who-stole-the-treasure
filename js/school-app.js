@@ -4351,6 +4351,30 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
     } else if (libSortOrder === 'title-desc') {
       sorted.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+    } else if (libSortOrder === 'objective') {
+      sorted.sort((a, b) => {
+        const objA = (a.learningObjectives && a.learningObjectives[0]) || a.description || '';
+        const objB = (b.learningObjectives && b.learningObjectives[0]) || b.description || '';
+        return objA.localeCompare(objB);
+      });
+    } else if (libSortOrder === 'words') {
+      sorted.sort((a, b) => {
+        const wA = (a.vocabulary && a.vocabulary.core && a.vocabulary.core[0]) || (a.words && a.words[0]) || '';
+        const wB = (b.vocabulary && b.vocabulary.core && b.vocabulary.core[0]) || (b.words && b.words[0]) || '';
+        return wA.localeCompare(wB);
+      });
+    } else if (libSortOrder === 'grammar') {
+      sorted.sort((a, b) => {
+        const gA = (a.grammar && (a.grammar.focusPattern || a.grammar.pattern)) || a.languageFocus || '';
+        const gB = (b.grammar && (b.grammar.focusPattern || b.grammar.pattern)) || b.languageFocus || '';
+        return gA.localeCompare(gB);
+      });
+    } else if (libSortOrder === 'topic') {
+      sorted.sort((a, b) => {
+        const tA = (a.topics && a.topics[0]) || a.topic || a.clilDomain || a.category || '';
+        const tB = (b.topics && b.topics[0]) || b.topic || b.clilDomain || b.category || '';
+        return tA.localeCompare(tB);
+      });
     } else if (libSortOrder === 'level') {
       const order = { 'pre-a1': 1, 'a1': 2, 'a1+': 3, 'a1plus': 3, 'level 2': 3, 'a2': 4, 'level 3': 4, 'b1': 5 };
       sorted.sort((a, b) => {
@@ -4549,157 +4573,104 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return getPlaceholderSvg(item).trim();
   }
 
-  function renderResourceCard(item) {
-    const isWs = Boolean(item.isWorksheet);
-    const isFeatured = Boolean(item.featured);
-    const rawLevel = item.cefrLevel || item.level || 'A1';
-    const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-
-    let typeIcon = '🎮';
-    let typeLabel = 'Game';
-    const catLower = (item.type || item.category || '').toLowerCase();
-    if (isWs) {
-      typeIcon = '📄';
-      typeLabel = 'Worksheet';
-    } else if (catLower.includes('story') || catLower.includes('reading')) {
-      typeIcon = '📖';
-      typeLabel = 'Story';
-    } else if (catLower.includes('roleplay')) {
-      typeIcon = '🎭';
-      typeLabel = 'Roleplay';
-    } else if (catLower.includes('phonics')) {
-      typeIcon = '🔤';
-      typeLabel = 'Phonics';
-    } else if (catLower.includes('textbook') || catLower.includes('curriculum')) {
-      typeIcon = '📚';
-      typeLabel = 'Textbook';
-    } else if (catLower.includes('clil') || catLower.includes('science')) {
-      typeIcon = '🌍';
-      typeLabel = 'CLIL';
-    } else if (catLower.includes('warmup') || catLower.includes('prep')) {
-      typeIcon = '⚡';
-      typeLabel = 'Warm-up';
+  window.openResourceInspector = function(id) {
+    if (typeof openResourcePreviewModal === 'function') {
+      openResourcePreviewModal(id);
     }
+  };
 
-    const topicText = (Array.isArray(item.topics) && item.topics.length > 0) ? item.topics[0] : (item.topic || item.category || 'Classroom Practice');
-    const durationText = item.estimatedMinutes ? (item.estimatedMinutes + ' min') : (item.duration ? (typeof item.duration === 'number' ? item.duration + ' min' : item.duration) : (isWs ? '20 min' : '30 min'));
-    const primarySkill = (Array.isArray(item.skills) && item.skills.length > 0) ? item.skills[0] : (item.skill || 'Speaking');
-    const langFocus = item.languageFocus || null;
-    const xpAmount = item.xp || (isWs ? 40 : 50);
-
-    let primaryActionHtml = '';
-    if (isWs) {
-      primaryActionHtml = 
-        '<a href="' + (item.pdfUrl || item.route || '#') + '" class="btn-resource-primary" target="_blank" rel="noopener" title="Open and print ' + item.title + '">' +
-          '<span>📄</span> <span>Open Worksheet</span>' +
-        '</a>';
-    } else if (item.type === 'story_adventure' || item.id === 'story-engine-alice' || (item.id && item.id.startsWith('story-engine'))) {
-      primaryActionHtml = 
-        '<a href="' + (item.route || 'story-engine/index.html?story=alice') + '" class="btn-resource-primary" style="background:linear-gradient(135deg, #10b981, #059669); font-weight:800;" title="Play Interactive Adventure: ' + item.title + '">' +
-          '<span>🚀</span> <span>Play Adventure</span>' +
-        '</a>';
-    } else if (catLower.includes('story') || catLower.includes('reading')) {
-      primaryActionHtml = 
-        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Read ' + item.title + '">' +
-          '<span>📖</span> <span>Read Story</span>' +
-        '</a>';
-    } else if (catLower.includes('curriculum') || catLower.includes('textbook')) {
-      primaryActionHtml = 
-        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + '">' +
-          '<span>📚</span> <span>Start Lesson</span>' +
-        '</a>';
+  window.launchResource = function(routeOrId) {
+    if (!routeOrId) return;
+    let target = routeOrId;
+    if (!target.includes('.html') && !target.includes('/') && !target.includes('#')) {
+      const found = (window.GAMES_REGISTRY && window.GAMES_REGISTRY.find(g => g.id === target)) ||
+                    (store && store.getResource && store.getResource(target));
+      if (found) {
+        target = found.route || found.pdfUrl || target;
+      }
+    }
+    if (target.endsWith('.pdf')) {
+      window.open(target, '_blank');
     } else {
-      primaryActionHtml = 
-        '<a href="' + (item.route || '#') + '" class="btn-resource-primary" title="Launch ' + item.title + ' in full screen">' +
-          '<span>▶</span> <span>Start Game</span>' +
-        '</a>';
+      window.location.href = target;
     }
+  };
 
-    const companionWsBtn = (!isWs && item.worksheetRoute) ? (
-      '<a href="' + item.worksheetRoute + '" class="btn-resource-secondary btn-companion-ws" target="_blank" rel="noopener" title="Open companion printable worksheet">' +
-        '<span>📄 WS</span>' +
-      '</a>'
-    ) : '';
-
-    const isCloudSynced = item.cloudStatus === 'saved' || !item.cloudStatus || item.cloudSynced;
-    const cloudBadgeHtml = isCloudSynced
-      ? '<span class="thumb-cloud-badge is-synced" title="Synced to Online Supabase Cloud Database (Live)">☁️ Synced</span>'
-      : '<span class="thumb-cloud-badge is-pending" title="Local Resource — Click menu to sync to Supabase">☁️ Local</span>';
-
-    const dropdownMenuHtml = isWs ? (
-      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openWorksheetEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Worksheet</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateWorksheet(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveWorksheet(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Worksheet</span></button>'
-    ) : (
-      '<button type="button" class="dropdown-item-btn" onclick="openResourcePreviewModal(\'' + item.id + '\')"><span>👁️</span> <span>Preview Details</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openAssignModal(\'' + item.id + '\')"><span>📝</span> <span>Assign to Class</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleSyncSingleResource(\'' + item.id + '\', event)"><span>☁️</span> <span>Sync to Cloud</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="openResourceEditor(\'' + item.id + '\')"><span>✏️</span> <span>Edit Resource</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleDuplicateResource(\'' + item.id + '\')"><span>📋</span> <span>Duplicate</span></button>' +
-      '<button type="button" class="dropdown-item-btn" onclick="handleToggleFeaturedResource(\'' + item.id + '\')"><span>⭐</span> <span>' + (item.featured ? 'Unfavorite' : 'Mark Favorite') + '</span></button>' +
-      '<button type="button" class="dropdown-item-btn text-danger" onclick="handleArchiveResource(\'' + item.id + '\')"><span>🗑️</span> <span>Archive Resource</span></button>'
-    );
-
+  function renderResourceCard(item) {
+    // Safe fallbacks to prevent undefined
+    const topic = (item.topics && item.topics[0]) || item.topic || "General";
+    const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern)) 
+                    || item.languageFocus 
+                    || "Grammar Structure";
+    const words = (item.vocabulary && item.vocabulary.core) 
+                  ? item.vocabulary.core.slice(0, 3).join(", ") 
+                  : (item.words ? item.words.slice(0, 3).join(", ") : "");
+    const objectives = item.learningObjectives || item.objectives || [];
+    const primaryObjective = objectives[0] || item.description || "";
     const thumbnailSvg = getResourceThumbnail(item);
-    const catGroup = item.categoryGroup || null;
-    const vocabChips = (item.vocabulary && Array.isArray(item.vocabulary.core) && item.vocabulary.core.length > 0)
-      ? item.vocabulary.core.slice(0, 3).map(w => '<span class="card-vocab-chip" style="display:inline-block; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:999px; background:rgba(56,189,248,0.12); color:#0284c7; border:1px solid rgba(56,189,248,0.25);">' + w + '</span>').join(' ')
-      : '';
-    const grammarPatternPill = (item.grammar && item.grammar.focusPattern)
-      ? '<span class="card-pill grammar-pill" title="Grammar Pattern: ' + item.grammar.focusPattern.replace(/"/g, '&quot;') + '" style="background:rgba(168,85,247,0.1); color:#7e22ce; border-color:rgba(168,85,247,0.25);">📐 ' + item.grammar.focusPattern + '</span>'
-      : '';
+    const isWs = Boolean(item.isWorksheet);
+    const launchRoute = isWs ? (item.pdfUrl || item.route || item.id) : (item.route || item.id);
+    const launchLabel = isWs ? '📄 Open Worksheet' : (item.type === 'story' ? '📖 Read Story' : '▶ Start Game');
 
-    return '' +
-      '<div class="resource-card ' + (isFeatured ? 'is-featured' : '') + '" id="resource-card-' + item.id + '">' +
-        '<div class="card-thumbnail-banner">' +
-          '<div class="card-thumb-art">' +
-            thumbnailSvg +
-            '<div class="card-thumb-gradient-overlay"></div>' +
-          '</div>' +
-          '<div class="card-thumb-badges">' +
-            '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
-            (catGroup ? '<span class="thumb-group-badge" style="background:rgba(15,23,42,0.85); color:#cbd5e1; font-size:0.66rem; font-weight:700; padding:3px 7px; border-radius:6px; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.12);">' + catGroup + '</span>' : '') +
-            '<span class="thumb-type-badge">' + typeIcon + ' ' + typeLabel + '</span>' +
-            '<span class="thumb-time-badge">⏱️ ' + durationText + '</span>' +
-            '<span class="thumb-xp-badge">⭐ ' + xpAmount + ' XP</span>' +
-          '</div>' +
-          cloudBadgeHtml +
-          '<button type="button" class="btn-card-fav ' + (isFeatured ? 'is-favorited' : '') + '" onclick="handleToggleFavoriteCard(\'' + item.id + '\', event)" title="' + (isFeatured ? 'Remove from favorites' : 'Add to favorites') + '">' +
-            (isFeatured ? '★' : '☆') +
-          '</button>' +
-          '<button type="button" class="card-thumb-kebab btn-card-more" onclick="toggleCardDropdown(\'' + item.id + '\', event)" title="Resource Actions">⋯</button>' +
-          '<div class="card-dropdown-menu ' + (activeCardMenuId === item.id ? 'is-open' : '') + '" id="menu-' + item.id + '">' +
-            dropdownMenuHtml +
-          '</div>' +
-        '</div>' +
+    return `
+      <div class="resource-card" data-id="${item.id}" data-category="${item.category || ''}" data-topic="${topic.replace(/"/g, '&quot;')}">
+        <!-- Card Visual Banner -->
+        <div class="card-hero-banner" style="background: ${item.gradient || 'linear-gradient(135deg, #1e1b4b, #090d16)'}">
+          ${thumbnailSvg ? `<div class="card-hero-art">${thumbnailSvg}</div>` : ''}
+          <span class="card-type-badge">${item.thumbnailIcon || (isWs ? '📄' : '🎮')} ${item.type || (isWs ? 'Worksheet' : 'Game')}</span>
+          <span class="sync-status">🟢 Synced</span>
+        </div>
 
-        '<div class="card-body-content">' +
-          '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '" onclick="openResourcePreviewModal(\'' + item.id + '\')">' + item.title + '</h3>' +
-          '<p class="resource-card-desc" title="' + (item.description || '').replace(/"/g, '&quot;') + '">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
-          '<div class="card-pills-row">' +
-            (catGroup ? '<span class="card-pill group-pill" style="font-weight:700; background:rgba(30,41,59,0.06); color:#475569;">🏛️ ' + catGroup + '</span>' : '') +
-            '<span class="card-pill skill-pill">🎯 ' + primarySkill + '</span>' +
-            '<span class="card-pill topic-pill">📌 ' + topicText + '</span>' +
-            grammarPatternPill +
-            (langFocus && !grammarPatternPill ? '<span class="card-pill lang-pill" title="Language Focus">💡 ' + langFocus + '</span>' : '') +
-          '</div>' +
-          (vocabChips ? '<div class="card-vocab-preview-row" style="margin-top:6px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;"><span style="font-size:0.68rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">🔤 Vocab:</span> ' + vocabChips + (item.vocabulary.core.length > 3 ? '<span style="font-size:0.65rem; color:#94a3b8; font-weight:700;">+' + (item.vocabulary.core.length - 3) + '</span>' : '') + '</div>' : '') +
-        '</div>' +
+        <!-- Card Header -->
+        <div class="card-content">
+          <h3 class="card-title" onclick="openResourceInspector('${item.id}')">${item.title}</h3>
+          <p class="card-objective-snippet" title="${primaryObjective.replace(/"/g, '&quot;')}">
+            🎯 <strong>Objective:</strong> ${primaryObjective.length > 80 ? primaryObjective.substring(0, 80) + '...' : primaryObjective}
+          </p>
 
-        '<div class="resource-card-footer">' +
-          primaryActionHtml +
-          '<button type="button" class="btn-resource-secondary btn-card-preview" onclick="openResourcePreviewModal(\'' + item.id + '\')" title="Preview details & objectives">' +
-            '<span>👁️</span> <span>Preview</span>' +
-          '</button>' +
-          '<button type="button" class="btn-resource-secondary btn-card-assign" onclick="openAssignModal(\'' + item.id + '\')" title="Assign to Class">' +
-            '<span>📋</span> <span>Assign</span>' +
-          '</button>' +
-          companionWsBtn +
-        '</div>' +
-      '</div>';
+          <!-- 4-Pillar Categorized Badges -->
+          <div class="card-meta-pillars">
+            <!-- Pillar 1: Topic / CLIL -->
+            <span class="pillar-pill pillar-topic" title="CLIL Topic: ${topic.replace(/"/g, '&quot;')}">
+              🏷️ <strong>Topic:</strong> ${topic}
+            </span>
+
+            <!-- Pillar 2: Grammar Target -->
+            <span class="pillar-pill pillar-grammar" title="Target Grammar: ${grammar.replace(/"/g, '&quot;')}">
+              📐 <strong>Grammar:</strong> ${grammar}
+            </span>
+
+            <!-- Pillar 3: Target Words -->
+            ${words ? `
+              <span class="pillar-pill pillar-vocab" title="Core Vocabulary: ${words.replace(/"/g, '&quot;')}">
+                🔤 <strong>Words:</strong> ${words}
+              </span>
+            ` : ''}
+
+            <!-- Pillar 4: CEFR Level & XP -->
+            <span class="pillar-pill pillar-level">
+              ⭐ ${item.cefrLevel || item.level || 'A1'} · +${item.xp || 100} XP
+            </span>
+          </div>
+
+          <!-- Action Controls -->
+          <div class="card-action-bar">
+            <button class="btn-action-primary" onclick="launchResource('${launchRoute}')">
+              ${launchLabel}
+            </button>
+            <button class="btn-action-secondary" onclick="openResourceInspector('${item.id}')">
+              👁️ Preview / Details
+            </button>
+            <button class="btn-action-assign" onclick="openAssignModal('${item.id}')">
+              📋 Assign
+            </button>
+            ${item.worksheetRoute ? `
+              <a href="${item.worksheetRoute}" target="_blank" rel="noopener" class="btn-action-ws" title="Print Worksheet">📄 WS</a>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   function renderGameCard(r) {
@@ -4910,6 +4881,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
           '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
             '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
+            '<option value="objective" ' + (libSortOrder === 'objective' ? 'selected' : '') + '>🎯 Lesson Objectives (A to Z)</option>' +
+            '<option value="words" ' + (libSortOrder === 'words' ? 'selected' : '') + '>🔤 Target Words (A to Z)</option>' +
+            '<option value="grammar" ' + (libSortOrder === 'grammar' ? 'selected' : '') + '>📐 Grammar Pattern (A to Z)</option>' +
+            '<option value="topic" ' + (libSortOrder === 'topic' ? 'selected' : '') + '>🏷️ CLIL Topic / Category</option>' +
             '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
             '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
             '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
