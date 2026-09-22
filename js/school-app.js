@@ -4601,77 +4601,68 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
   };
 
+  window.openResourceDetails = function(id) {
+    if (typeof openResourceInspector === 'function') {
+      openResourceInspector(id);
+    } else if (typeof openResourcePreviewModal === 'function') {
+      openResourcePreviewModal(id);
+    }
+  };
+
   function renderResourceCard(item) {
-    // Safe fallbacks to prevent undefined
-    const topic = (item.topics && item.topics[0]) || item.topic || item.clilDomain || item.clilTheme || "General";
-    const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) 
-                    || item.languageFocus 
-                    || "Grammar Structure";
-    const words = (item.vocabulary && item.vocabulary.core && item.vocabulary.core.length > 0) 
-                  ? item.vocabulary.core.slice(0, 3).join(", ") 
-                  : (item.words ? item.words.slice(0, 3).join(", ") : "");
-    const objectives = item.learningObjectives || item.objectives || [];
-    const primaryObjective = objectives[0] || item.description || "";
+    const primaryObjective = (item.learningObjectives && item.learningObjectives[0]) 
+                             || item.description 
+                             || "Master target communicative structures.";
+    const grammarFocus = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) 
+                         || item.languageFocus 
+                         || "Key Sentence Structure";
+    const vocabList = (item.vocabulary && item.vocabulary.core) 
+                      ? item.vocabulary.core.slice(0, 4).join(" • ") 
+                      : (item.skills ? item.skills.slice(0, 3).join(" • ") : "");
+    const topicPill = (item.topics && item.topics[0]) || item.topic || item.clilDomain || item.category || "General";
     const thumbnailSvg = getResourceThumbnail(item);
-    const isWs = Boolean(item.isWorksheet);
-    const launchRoute = isWs ? (item.pdfUrl || item.route || item.id) : (item.route || item.id);
-    const launchLabel = isWs ? '📄 Open Worksheet' : (item.type === 'story' ? '📖 Read Story' : '▶ Start Game');
+    const launchRoute = item.isWorksheet ? (item.pdfUrl || item.route || item.id) : (item.route || item.id);
 
     return `
-      <div class="resource-card" data-id="${item.id}" data-category="${item.category || ''}" data-topic="${topic.replace(/"/g, '&quot;')}">
-        <!-- Card Visual Banner -->
-        <div class="card-hero-banner" style="background: ${item.gradient || 'linear-gradient(135deg, #1e1b4b, #090d16)'}">
-          ${thumbnailSvg ? `<div class="card-hero-art">${thumbnailSvg}</div>` : ''}
-          <span class="card-type-badge">${item.thumbnailIcon || (isWs ? '📄' : '🎮')} ${item.type || (isWs ? 'Worksheet' : 'Game')}</span>
-          <span class="sync-status">🟢 Synced</span>
+      <div class="resource-card-v2 resource-card" data-id="${item.id}" data-category="${item.category || ''}" data-topic="${topicPill.replace(/"/g, '&quot;')}">
+        <!-- Visual Banner -->
+        <div class="card-hero" style="background: ${item.gradient || 'linear-gradient(135deg, #1e1b4b, #090d16)'};">
+          ${thumbnailSvg ? `<div class="card-hero-art" style="position:absolute; inset:0; opacity:0.35; pointer-events:none; overflow:hidden;">${thumbnailSvg}</div>` : ''}
+          <span class="card-icon">${item.thumbnailIcon || (item.isWorksheet ? '📄' : '🎮')}</span>
+          <span class="card-level-chip">${item.cefrLevel || item.level || 'A1'} • +${item.xp || 100} XP</span>
+          <span class="card-sync-status">🟢 Synced</span>
         </div>
 
-        <!-- Card Header -->
-        <div class="card-content">
-          <h3 class="card-title" onclick="openResourceInspector('${item.id}')">${item.title}</h3>
-          <p class="card-objective-snippet" title="${primaryObjective.replace(/"/g, '&quot;')}">
-            🎯 <strong>Objective:</strong> ${primaryObjective.length > 80 ? primaryObjective.substring(0, 80) + '...' : primaryObjective}
-          </p>
+        <!-- Card Core Body -->
+        <div class="card-body">
+          <h3 class="card-title" onclick="openResourceDetails('${item.id}')">${item.title}</h3>
+          
+          <!-- Objective Banner -->
+          <div class="pillar-box pillar-objective" title="${primaryObjective.replace(/"/g, '&quot;')}">
+            🎯 <strong>Goal:</strong> ${primaryObjective.length > 70 ? primaryObjective.substring(0, 70) + '...' : primaryObjective}
+          </div>
 
-          <!-- 4-Pillar Categorized Badges -->
-          <div class="card-meta-pillars">
-            <!-- Pillar 1: Topic / CLIL -->
-            <span class="pillar-pill pillar-topic" title="CLIL Topic: ${topic.replace(/"/g, '&quot;')}">
-              🏷️ <strong>Topic:</strong> ${topic}
-            </span>
-
-            <!-- Pillar 2: Grammar Target -->
-            <span class="pillar-pill pillar-grammar" title="Target Grammar: ${grammar.replace(/"/g, '&quot;')}">
-              📐 <strong>Grammar:</strong> ${grammar}
-            </span>
-
-            <!-- Pillar 3: Target Words -->
-            ${words ? `
-              <span class="pillar-pill pillar-vocab" title="Core Vocabulary: ${words.replace(/"/g, '&quot;')}">
-                🔤 <strong>Words:</strong> ${words}
-              </span>
+          <!-- Linguistic Pillars -->
+          <div class="pillar-grid">
+            <div class="pillar-tag pillar-topic" title="CLIL Topic: ${topicPill.replace(/"/g, '&quot;')}">
+              🏷️ <strong>Topic:</strong> ${topicPill}
+            </div>
+            <div class="pillar-tag pillar-grammar" title="Target Grammar: ${grammarFocus.replace(/"/g, '&quot;')}">
+              📐 <strong>Grammar:</strong> ${grammarFocus}
+            </div>
+            ${vocabList ? `
+              <div class="pillar-tag pillar-vocab" title="Core Vocabulary: ${vocabList.replace(/"/g, '&quot;')}">
+                🔤 <strong>Words:</strong> ${vocabList}
+              </div>
             ` : ''}
-
-            <!-- Pillar 4: CEFR Level & XP -->
-            <span class="pillar-pill pillar-level">
-              ⭐ ${item.cefrLevel || item.level || 'A1'} · +${item.xp || 100} XP
-            </span>
           </div>
 
           <!-- Action Controls -->
-          <div class="card-action-bar">
-            <button class="btn-action-primary" onclick="launchResource('${launchRoute}')">
-              ${launchLabel}
-            </button>
-            <button class="btn-action-secondary" onclick="openResourceInspector('${item.id}')">
-              👁️ Preview / Details
-            </button>
-            <button class="btn-action-assign" onclick="openAssignModal('${item.id}')">
-              📋 Assign
-            </button>
-            ${item.worksheetRoute ? `
-              <a href="${item.worksheetRoute}" target="_blank" rel="noopener" class="btn-action-ws" title="Print Worksheet">📄 WS</a>
-            ` : ''}
+          <div class="card-footer-actions">
+            <button class="btn-play" onclick="launchResource('${launchRoute}')">▶ Start Game</button>
+            <button class="btn-inspect" onclick="openResourceDetails('${item.id}')">👁️ Details</button>
+            <button class="btn-assign" onclick="openAssignModal('${item.id}')">📋 Assign</button>
+            ${item.worksheetRoute ? `<a href="${item.worksheetRoute}" target="_blank" class="btn-ws" title="Worksheet">📄 WS</a>` : ''}
           </div>
         </div>
       </div>
