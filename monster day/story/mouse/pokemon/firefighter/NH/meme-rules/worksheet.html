@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🖨️ Printable Worksheets: Classroom Meme Rules | English Adventure Academy</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #0f172a;
+      --green-do: #059669;
+      --red-dont: #dc2626;
+      --amber: #d97706;
+      --border-color: #cbd5e1;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', system-ui, sans-serif;
+      color: #1e293b;
+      background: #f1f5f9;
+      line-height: 1.35;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Floating Toolbar (Screen only) */
+    .print-bar {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .print-bar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #10b981;
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .print-bar-btn.back {
+      background: #334155;
+    }
+
+    .print-bar-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    /* Page Container */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      padding: 14mm 16mm;
+      background: #ffffff;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header */
+    .sheet-header {
+      border-bottom: 2.5px solid #0f172a;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .sheet-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .sheet-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sheet-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .sheet-badge {
+      padding: 3px 10px;
+      background: #eff6ff;
+      border: 1.5px solid #3b82f6;
+      border-radius: 6px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: #1d4ed8;
+    }
+
+    /* Student Info Line */
+    .student-info-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .info-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .fill-line {
+      flex: 1;
+      border-bottom: 1.5px dotted #94a3b8;
+      height: 14px;
+    }
+
+    /* Grammar Formula Box */
+    .grammar-formula-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+
+    .formula-card {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1.5px solid;
+    }
+
+    .formula-card.do {
+      background: #f0fdf4;
+      border-color: var(--green-do);
+      color: #065f46;
+    }
+
+    .formula-card.dont {
+      background: #fef2f2;
+      border-color: var(--red-dont);
+      color: #991b1b;
+    }
+
+    .formula-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .formula-pattern {
+      font-weight: 800;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 3px;
+    }
+
+    .formula-example {
+      font-size: 11.5px;
+      font-style: italic;
+    }
+
+    /* Section Headings */
+    .activity-section {
+      margin-bottom: 12px;
+    }
+
+    .activity-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      border-left: 4px solid #3b82f6;
+      padding-left: 6px;
+    }
+
+    /* Task 1 Matching Table */
+    .matching-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .matching-table th {
+      background: #f1f5f9;
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: 800;
+      border: 1px solid #cbd5e1;
+    }
+
+    .matching-table td {
+      padding: 6px 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .checkbox-box {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid #0f172a;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* Task 2 Meme Creation Frames */
+    .create-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .meme-draw-card {
+      border: 2px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      height: 180px;
+      background: #fafafa;
+      position: relative;
+    }
+
+    .draw-area {
+      flex: 1;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+
+    .caption-writing-line {
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .writing-guide-line {
+      border-bottom: 1.5px solid #0f172a;
+      height: 20px;
+      margin-top: 4px;
+    }
+
+    .stamp-selection-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* Word Bank */
+    .word-bank-pill {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .word-item {
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* PAGE 2: 4-UP CUT & COLLECT TRADING CARDS */
+    .flashcards-4up-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+      margin: 10px 0;
+    }
+
+    .cutout-card {
+      border: 2px dashed #64748b;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .cutout-card::before {
+      content: '✂️ Cut along dashed line';
+      position: absolute;
+      top: -9px;
+      left: 14px;
+      background: #ffffff;
+      padding: 0 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #64748b;
+    }
+
+    .card-cut-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .card-cut-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .cut-stamp-badge {
+      font-size: 11px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+
+    .cut-stamp-badge.do { background: var(--green-do); }
+    .cut-stamp-badge.dont { background: var(--red-dont); }
+
+    .card-cut-art-box {
+      height: 120px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .card-cut-art-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-cut-rule {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+      margin: 4px 0 8px;
+      color: #0f172a;
+    }
+
+    .card-cut-tasks {
+      background: #f8fafc;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Print Specific Tweaks */
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .print-bar {
+        display: none !important;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+        width: 100%;
+        min-height: 100vh;
+        padding: 10mm 12mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Navigation Toolbar -->
+  <header class="print-bar">
+    <div style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800;">
+      🎭 Classroom Meme Rules: Printable Student Worksheets
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="index.html" class="print-bar-btn back">⬅️ Back to Game</a>
+      <button onclick="window.print()" class="print-bar-btn">🖨️ Print Worksheets (A4)</button>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       PAGE 1: CLASSROOM MEME POSTER ACTIVITY
+       ====================================================================== -->
+  <section class="page">
+    <header class="sheet-header">
+      <div class="sheet-top-meta">
+        <span>English Adventure Academy • ESL Primary (CEFR A1–A2)</span>
+        <span>Unit: Classroom Behavior & Social Communication</span>
+      </div>
+      <div class="sheet-title-row">
+        <h1 class="sheet-title">🎭 Official Classroom Meme Rules Poster</h1>
+        <div class="sheet-badge">Grammar & Speaking Lab</div>
+      </div>
+
+      <div class="student-info-grid">
+        <div class="info-line"><span>Name:</span><div class="fill-line"></div></div>
+        <div class="info-line"><span>Class:</span><div class="fill-line"></div></div>
+        <div class="info-line"><span>Date:</span><div class="fill-line"></div></div>
+      </div>
+    </header>
+
+    <!-- Grammar Formula Anchor -->
+    <div class="grammar-formula-box">
+      <div class="formula-card do">
+        <div class="formula-title">🟢 POSITIVE IMPERATIVE (DO)</div>
+        <div class="formula-pattern">[Base Verb] + [Object / Adverb]</div>
+        <div class="formula-example">"Raise your hand before answering!" • "Whisper in pairs!"</div>
+      </div>
+
+      <div class="formula-card dont">
+        <div class="formula-title">🔴 NEGATIVE IMPERATIVE (DON'T)</div>
+        <div class="formula-pattern">Don't + [Base Verb] + [Object / Adverb]</div>
+        <div class="formula-example">"Don't shout across the room!" • "Don't run in the hall!"</div>
+      </div>
+    </div>
+
+    <!-- Task 1: Matching & Imperative Classification -->
+    <div class="activity-section">
+      <h2 class="activity-title">Task 1: Classify & Formulate Imperatives</h2>
+      <table class="matching-table">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Classroom Scenario</th>
+            <th style="width: 45%;">Rule Sentence</th>
+            <th style="width: 25%;">Stamp Classification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Speaking during group work</td>
+            <td><strong>Whisper</strong> when working in pairs!</td>
+            <td><span class="checkbox-box"></span> 🟢 DO &nbsp; <span class="checkbox-box"></span> 🔴 DON'T</td>
+          </tr>
+          <tr>
+            <td>Hallway transitions</td>
+            <td><strong>Don't run</strong> in the hallways!</td>
+            <td><span class="checkbox-box"></span> 🟢 DO &nbsp; <span class="checkbox-box"></span> 🔴 DON'T</td>
+          </tr>
+          <tr>
+            <td>Answering teacher's question</td>
+            <td><strong>Raise</strong> your hand before answering!</td>
+            <td><span class="checkbox-box"></span> 🟢 DO &nbsp; <span class="checkbox-box"></span> 🔴 DON'T</td>
+          </tr>
+          <tr>
+            <td>Packing school bag</td>
+            <td><strong>Don't pack up</strong> before the bell rings!</td>
+            <td><span class="checkbox-box"></span> 🟢 DO &nbsp; <span class="checkbox-box"></span> 🔴 DON'T</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Task 2: Create Your Own Meme Rule -->
+    <div class="activity-section">
+      <h2 class="activity-title">Task 2: Design 2 Classroom Meme Rules</h2>
+      <div class="create-grid">
+        <!-- Meme 1 -->
+        <div class="meme-draw-card">
+          <div class="draw-area">
+            ✏️ Draw your meme character here<br>(e.g. Doge, Cat, Spider-Man)
+          </div>
+          <div class="caption-writing-line">Classroom Rule:</div>
+          <div class="writing-guide-line"></div>
+          <div class="stamp-selection-row">
+            <span>Stamp:</span>
+            <label><span class="checkbox-box"></span> 🟢 DO!</label>
+            <label><span class="checkbox-box"></span> 🔴 DON'T!</label>
+          </div>
+        </div>
+
+        <!-- Meme 2 -->
+        <div class="meme-draw-card">
+          <div class="draw-area">
+            ✏️ Draw your meme character here<br>(e.g. Kermit, Pikachu, Harold)
+          </div>
+          <div class="caption-writing-line">Classroom Rule:</div>
+          <div class="writing-guide-line"></div>
+          <div class="stamp-selection-row">
+            <span>Stamp:</span>
+            <label><span class="checkbox-box"></span> 🟢 DO!</label>
+            <label><span class="checkbox-box"></span> 🔴 DON'T!</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Word Bank Reference -->
+    <div class="activity-section" style="margin-bottom: 0;">
+      <h2 class="activity-title" style="border-left-color: var(--amber);">Classroom Action Verbs Word Bank</h2>
+      <div class="word-bank-pill">
+        <span class="word-item">raise</span>
+        <span class="word-item">speak</span>
+        <span class="word-item">listen</span>
+        <span class="word-item">clean</span>
+        <span class="word-item">line up</span>
+        <span class="word-item">wait</span>
+        <span class="word-item">open</span>
+        <span class="word-item">close</span>
+        <span class="word-item">push in</span>
+        <span class="word-item">write</span>
+        <span class="word-item">share</span>
+        <span class="word-item">whisper</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       PAGE 2: 4-UP CUT & COLLECT TRADING FLASHCARDS
+       ====================================================================== -->
+  <section class="page">
+    <header class="sheet-header">
+      <div class="sheet-top-meta">
+        <span>English Adventure Academy • Classroom Collectibles</span>
+        <span>Cut-and-Keep Speaking Flashcards</span>
+      </div>
+      <div class="sheet-title-row">
+        <h1 class="sheet-title">✂️ 4-Up Cut & Collect Meme Flashcards</h1>
+        <div class="sheet-badge">Pair Speaking Drills</div>
+      </div>
+    </header>
+
+    <div class="flashcards-4up-grid">
+      <!-- Card 1: Roll Safe -->
+      <div class="cutout-card">
+        <div>
+          <div class="card-cut-header">
+            <div class="card-cut-title">#01 Roll Safe</div>
+            <span class="cut-stamp-badge do">DO</span>
+          </div>
+          <div class="card-cut-art-box">
+            <img src="https://api.memegen.link/images/rollsafe.png" alt="Roll Safe" onerror="this.src='https://api.memegen.link/images/rollsafe.png'">
+          </div>
+          <div class="card-cut-rule">"Think before you speak!"</div>
+        </div>
+        <div class="card-cut-tasks">
+          <div>🎯 <strong>Verb:</strong> Think / Speak</div>
+          <div>🗣️ <strong>Speaking Drill:</strong> "In English class, always think before you speak!"</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Pikachu -->
+      <div class="cutout-card">
+        <div>
+          <div class="card-cut-header">
+            <div class="card-cut-title">#02 Pikachu</div>
+            <span class="cut-stamp-badge dont">DON'T</span>
+          </div>
+          <div class="card-cut-art-box">
+            <img src="https://api.memegen.link/images/pika.png" alt="Pikachu" onerror="this.src='https://api.memegen.link/images/pika.png'">
+          </div>
+          <div class="card-cut-rule">"Don't forget your homework!"</div>
+        </div>
+        <div class="card-cut-tasks">
+          <div>🎯 <strong>Verb:</strong> Forget</div>
+          <div>🗣️ <strong>Speaking Drill:</strong> "Check your backpack! Don't forget your homework!"</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Success Kid -->
+      <div class="cutout-card">
+        <div>
+          <div class="card-cut-header">
+            <div class="card-cut-title">#06 Success Kid</div>
+            <span class="cut-stamp-badge do">DO</span>
+          </div>
+          <div class="card-cut-art-box">
+            <img src="https://api.memegen.link/images/sk.png" alt="Success Kid" onerror="this.src='https://api.memegen.link/images/sk.png'">
+          </div>
+          <div class="card-cut-rule">"Raise your hand before answering!"</div>
+        </div>
+        <div class="card-cut-tasks">
+          <div>🎯 <strong>Verb:</strong> Raise</div>
+          <div>🗣️ <strong>Speaking Drill:</strong> "Want to answer? Raise your hand high!"</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Drake -->
+      <div class="cutout-card">
+        <div>
+          <div class="card-cut-header">
+            <div class="card-cut-title">#12 Drake</div>
+            <span class="cut-stamp-badge do">DO</span>
+          </div>
+          <div class="card-cut-art-box">
+            <img src="https://api.memegen.link/images/drake.png" alt="Drake" onerror="this.src='https://api.memegen.link/images/drake.png'">
+          </div>
+          <div class="card-cut-rule">"Whisper when working in pairs!"</div>
+        </div>
+        <div class="card-cut-tasks">
+          <div>🎯 <strong>Verb:</strong> Whisper</div>
+          <div>🗣️ <strong>Speaking Drill:</strong> "Don't shout! Whisper when working in pairs!"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Oral Assessment Rubric Box -->
+    <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 11px;">
+      <div style="font-weight: 900; color: #0f172a; margin-bottom: 4px; display: flex; justify-content: space-between;">
+        <span>🏅 Teleprompter Peer Broadcast Rubric</span>
+        <span>Score: ⭐ ⭐ ⭐</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #475569;">
+        <span>[ ] Clear Pronunciation</span>
+        <span>[ ] Correct Base Verb Form</span>
+        <span>[ ] Used "Don't" for Negatives</span>
+        <span>[ ] Energetic Broadcast Delivery</span>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎭 Classroom Meme Rules: Imperatives in Action | English Adventure Academy</title>
+  <meta name="description" content="Commercial-grade EdTech interactive learning arcade game teaching positive and negative imperatives through classroom memes. CEFR A1-A2.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Arcade Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Particle Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="game-app">
+    
+    <!-- Top Persistent HUD -->
+    <header id="game-hud">
+      <div class="hud-cluster">
+        <!-- Hub Return Button -->
+        <a href="../index.html" class="btn-3d btn-hub" id="hud-hub-btn" title="Back to Adventure Academy Hub">
+          🏠 <span>Hub</span>
+        </a>
+
+        <!-- Phase Stepper -->
+        <nav class="phase-stepper" aria-label="Game Phases">
+          <button class="phase-step-btn active" data-phase="1" id="step-btn-1">
+            <span>1.</span> 🔍 Scanner
+          </button>
+          <button class="phase-step-btn" data-phase="2" id="step-btn-2">
+            <span>2.</span> ⚔️ Arena
+          </button>
+          <button class="phase-step-btn" data-phase="3" id="step-btn-3">
+            <span>3.</span> 📢 Studio
+          </button>
+        </nav>
+      </div>
+
+      <div class="hud-cluster">
+        <!-- Energy Fuel Meter -->
+        <div class="energy-tracker" title="Game Fuel / Progress Meter">
+          <span class="energy-label">⚡ FUEL</span>
+          <div class="energy-bar-wrap">
+            <div class="energy-bar-fill" id="hud-energy-bar"></div>
+          </div>
+        </div>
+
+        <!-- Star XP Counter -->
+        <div class="xp-counter-pill" title="Student XP Earned">
+          <span class="xp-star">⭐</span>
+          <span id="hud-xp-display">0 XP</span>
+        </div>
+      </div>
+
+      <div class="hud-cluster">
+        <!-- Audio Controls -->
+        <button class="hud-icon-btn" id="hud-voice-toggle" title="Toggle Voice Narration">
+          🔊
+        </button>
+        <button class="hud-icon-btn" id="hud-sfx-toggle" title="Toggle Sound Effects">
+          🎵
+        </button>
+
+        <!-- Printable Worksheet Link -->
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-print" id="hud-worksheet-btn" title="Open Printable A4 Poster & Flashcards">
+          🖨️ <span>Worksheet</span>
+        </a>
+
+        <!-- Teacher Jump Dropdown -->
+        <div class="teacher-dropdown-wrap">
+          <button class="btn-3d btn-hub" id="hud-teacher-btn" title="Teacher Controls & Jump Menu" style="padding: 10px 14px;">
+            👩‍🏫 <span>Teacher</span> ▾
+          </button>
+          <div class="teacher-modal" id="teacher-menu-modal">
+            <h4>Curriculum Quick Jump</h4>
+            <button class="teacher-modal-btn" data-jump-phase="1">1. Phase 1: 3D Meme Scanner (Cards 1–5)</button>
+            <button class="teacher-modal-btn" data-jump-phase="2">2. Phase 2: Green / Red Arena (Cards 6–20)</button>
+            <button class="teacher-modal-btn" data-jump-phase="3">3. Phase 3: Teleprompter Studio (Oral Showcase)</button>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
+            <h4>Classroom Activities</h4>
+            <a href="worksheet.html" target="_blank" class="teacher-modal-btn" style="text-decoration:none; display:block;">🖨️ Print Student Activity Poster</a>
+            <button class="teacher-modal-btn" id="teacher-reset-btn" style="color:#f87171;">🔄 Reset Session Progress</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Game Viewport -->
+    <main id="stage-viewport">
+
+      <!-- ====================================================================
+           PHASE 1: 3D FLIP FLASHCARDS (MEME SCANNER)
+           ==================================================================== -->
+      <section id="screen-phase-1" class="game-screen active" aria-label="Phase 1 Meme Scanner">
+        <div class="stage-title-wrap">
+          <div class="stage-badge">PHASE 1 • CEFR A1–A2 DISCOVERY</div>
+          <h1 class="stage-title">Meme Scanner: Discover the Imperatives</h1>
+          <p class="stage-subtitle">Tap each card to scan the meme, hear the target action verb, and unlock the classroom rule!</p>
+        </div>
+
+        <div class="scanner-carousel-wrap">
+          <div class="scanner-cards-grid" id="scanner-cards-grid">
+            <!-- Dynamically populated via meme-app.js -->
+          </div>
+        </div>
+
+        <div class="scanner-progress-bar-card">
+          <span style="font-size: 13px; font-weight: 900; color: #94a3b8; text-transform: uppercase;">Missions Scanned:</span>
+          <div class="scanner-stars-group" id="scanner-stars-group">
+            <!-- 5 star slots -->
+          </div>
+          <button id="phase1-advance-btn" class="btn-3d btn-green-do" style="display: none; margin-left: 12px;">
+            ⚡ ENTER GREEN / RED ARENA ➔
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           PHASE 2: THE GREEN LIGHT / RED LIGHT ARENA (FOCUS CARD SHOWDOWN)
+           ==================================================================== -->
+      <section id="screen-phase-2" class="game-screen" aria-label="Phase 2 Arena Showdown">
+        <div class="stage-title-wrap">
+          <div class="stage-badge">PHASE 2 • FOCUS CARD SHOWDOWN</div>
+          <h2 class="stage-title">Green Light / Red Light Arena</h2>
+          <p class="stage-subtitle">Sort the active meme rule! Click the 3D button or drag the card into the drop zone.</p>
+        </div>
+
+        <div class="arena-stage-container">
+          <!-- 🟢 GREEN LIGHT ZONE (DO) -->
+          <div class="arena-zone arena-zone-do" id="zone-green-do" data-type="DO">
+            <div>
+              <div class="zone-header-icon">🟢</div>
+              <div class="zone-title">GREEN LIGHT: DO!</div>
+              <div class="zone-formula">Base Verb + Object</div>
+            </div>
+            <div class="zone-drop-indicator">⬇️ DROP CARD HERE ⬇️</div>
+            <button class="btn-3d btn-green-do zone-big-btn" id="arena-btn-do">
+              🟢 DO! (Base Verb)
+            </button>
+          </div>
+
+          <!-- CENTER ACTIVE FOCUS CARD -->
+          <div class="arena-card-dock" id="arena-card-dock">
+            <!-- Dynamically injected active card with stamps -->
+          </div>
+
+          <!-- 🔴 RED LIGHT ZONE (DON'T) -->
+          <div class="arena-zone arena-zone-dont" id="zone-red-dont" data-type="DONT">
+            <div>
+              <div class="zone-header-icon">🔴</div>
+              <div class="zone-title">RED LIGHT: DON'T!</div>
+              <div class="zone-formula">Don't + Base Verb</div>
+            </div>
+            <div class="zone-drop-indicator">⬇️ DROP CARD HERE ⬇️</div>
+            <button class="btn-3d btn-red-dont zone-big-btn" id="arena-btn-dont">
+              🔴 DON'T! (Don't + Verb)
+            </button>
+          </div>
+        </div>
+
+        <!-- Supportive ESL Scaffolding Hint -->
+        <div class="arena-hint-box" id="arena-hint-box">
+          <span>💡 Listen carefully to sort this classroom rule!</span>
+        </div>
+
+        <div class="arena-counter-pill" id="arena-card-counter">Card 1 of 15</div>
+      </section>
+
+      <!-- ====================================================================
+           PHASE 3: LIVE MEME TELEPROMPTER STUDIO (ORAL SHOWCASE)
+           ==================================================================== -->
+      <section id="screen-phase-3" class="game-screen" aria-label="Phase 3 Teleprompter Studio">
+        <div class="stage-title-wrap">
+          <div class="stage-badge">PHASE 3 • ORAL PRODUCTION CEILING</div>
+          <h2 class="stage-title">Live Meme Teleprompter Studio</h2>
+          <p class="stage-subtitle">Choose your classroom meme poster, rehearse the 3-sentence broadcast, and speak to the class!</p>
+        </div>
+
+        <div class="studio-layout">
+          <!-- Left: Chosen Meme Poster Frame -->
+          <div class="studio-poster-side">
+            <div class="studio-poster-frame" id="studio-poster-frame">
+              <img id="studio-poster-img" class="studio-poster-img" src="https://api.memegen.link/images/sk.png" alt="Classroom Meme">
+              <div class="studio-poster-footer">
+                <div class="studio-poster-rule" id="studio-poster-rule">"Raise your hand before answering!"</div>
+              </div>
+            </div>
+
+            <!-- Meme Poster Selector -->
+            <div class="meme-selector-pill">
+              <label for="studio-meme-select" style="font-size: 13px; font-weight: 800; color: #94a3b8;">Choose Poster:</label>
+              <select id="studio-meme-select" aria-label="Select Classroom Meme Poster"></select>
+            </div>
+          </div>
+
+          <!-- Right: Glowing Karaoke Teleprompter Monitor -->
+          <div class="studio-teleprompter-side">
+            <div class="teleprompter-monitor" id="teleprompter-monitor">
+              <div class="teleprompter-header">
+                <div class="teleprompter-live-badge">🔴 LIVE ON AIR</div>
+                <div class="teleprompter-speed">SPEECH RATE: 0.88x</div>
+              </div>
+
+              <div class="teleprompter-script" id="teleprompter-script">
+                <!-- 3 Karaoke Sentences Injected Dynamically -->
+              </div>
+            </div>
+
+            <!-- Broadcast Trigger -->
+            <div class="broadcast-btn-wrap">
+              <button class="btn-3d btn-amber-boost btn-broadcast" id="studio-broadcast-btn">
+                📢 BROADCAST TO CLASSROOM
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Celebration Modal -->
+    <div class="modal-overlay" id="celebration-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="celebration-card">
+        <div class="celebration-trophy">🏆</div>
+        <h3 class="celebration-title" id="modal-title">Master of Classroom Rules!</h3>
+        <p class="celebration-desc">Outstanding work! You mastered both Positive and Negative Imperatives and completed your live teleprompter broadcast.</p>
+
+        <div class="celebration-stats">
+          <div class="stat-item">
+            <div class="stat-val" id="modal-final-xp">150 XP</div>
+            <div class="stat-lbl">Total Score</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="modal-final-rules">20/20</div>
+            <div class="stat-lbl">Rules Mastered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val" id="modal-final-streak">15 🔥</div>
+            <div class="stat-lbl">Best Streak</div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <a href="worksheet.html" target="_blank" class="btn-3d btn-print">
+            🖨️ Print Poster Worksheet
+          </a>
+          <button class="btn-3d btn-cyan" id="modal-close-btn">
+            ✨ Continue Exploring
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="game-toast" role="alert"></div>
+
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="js/meme-data.js"></script>
+  <script src="js/meme-audio.js"></script>
+  <script src="js/meme-app.js"></script>
+</body>
+</html>
