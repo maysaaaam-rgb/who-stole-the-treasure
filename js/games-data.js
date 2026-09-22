@@ -18,6 +18,118 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "solar-system",
+    "aliases": [
+      "planets",
+      "space-explorer",
+      "planetary-comparatives",
+      "solar"
+    ],
+    "title": "🪐 Solar System Explorer: Planetary Comparatives Lab",
+    "description": "High-end 3D arcade space lab (CEFR A1–A2 | 150 XP). Explore planets with interactive 3D flip trading cards, master comparative adjectives (bigger, colder, farther than) with physical DO/DON'T impact rubber stamps, and broadcast from the orbital teleprompter studio!",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryLabel": "🪐 Astronomy & Space Science",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 8–11",
+    "ageGroup": "8-11",
+    "grade": "Grade 3–5",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 150,
+    "skills": [
+      "Comparative Adjectives (-er than / more than)",
+      "Planetary Science & Astronomy",
+      "Interactive 3D Card Analysis",
+      "Real-Time Speech Teleprompter Karaoke",
+      "Tactile Decision Making"
+    ],
+    "topic": "Solar System, Planetary Comparatives & Deep Space Science",
+    "topics": [
+      "Solar System & Planets",
+      "Comparative Adjectives",
+      "Astronomy & Space Exploration",
+      "Atmospheres & Gravity",
+      "Scientific Observations"
+    ],
+    "languageFocus": "Comparative Adjectives: bigger than, colder than, hotter than, smaller than, farther than, closer than, more massive than. Formula: Planet A + is + comparative adjective + than + Planet B.",
+    "activityMode": "3D Single-Focus Arena / Smart Board Challenge",
+    "interactionType": "3D Card Flips, 65/35 Full-Bleed Arena Cards, 3D Push Buttons, DO/DON'T Rubber Stamps, Teleprompter Karaoke, Printable Passport",
+    "difficulty": "Grade 3–5 (A1–A2)",
+    "tags": [
+      "solar-system",
+      "planets",
+      "space",
+      "comparatives",
+      "grammar",
+      "clil",
+      "science",
+      "astronomy",
+      "3d-cards"
+    ],
+    "learningObjectives": [
+      "Form and use comparative adjectives with -er than and more than to compare planets",
+      "Identify the key characteristics and orders of the 5 inner and outer planets",
+      "Accurately evaluate comparative planetary statements using evidence and clues",
+      "Deliver a 3-sentence deep space broadcast report with real-time teleprompter speech tracking",
+      "Complete and print an A4 Space Cadet Mission Passport"
+    ],
+    "teacherInstructions": "Launch on interactive display or assign independently. In Phase 1, learners tap 3D cards to flip between orbital views and planetary spec sheets. In Phase 2, cadets classify 12 comparative statements using 3D TRUE/FALSE buttons or hotkeys [T] and [F]. In Phase 3, learners read aloud with the real-time karaoke broadcast studio.",
+    "studentInstructions": "Power up your rocket! Flip 3D planet cards to gather data, then enter the Showdown Arena to verify planetary comparatives and earn your Master Space Cadet Diploma!",
+    "route": "solar-system/index.html",
+    "worksheetRoute": "solar-system/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🪐",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #10b981 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"solarThumbGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#151f38\"/>\n          <stop offset=\"100%\" stop-color=\"#38bdf8\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#solarThumbGrad)\"/>\n      <ellipse cx=\"100\" cy=\"105\" rx=\"55\" ry=\"18\" fill=\"#38bdf8\" opacity=\"0.3\"/>\n      <ellipse cx=\"100\" cy=\"102\" rx=\"42\" ry=\"12\" fill=\"#0c1222\" stroke=\"#38bdf8\" stroke-width=\"2\"/>\n      <text x=\"100\" y=\"72\" font-size=\"44\" text-anchor=\"middle\">🪐</text>\n    </svg>",
+    "categoryGroup": "Astronomy & Space Science",
+    "vocabulary": {
+      "core": [
+        "orbit",
+        "planet",
+        "gravity",
+        "crater",
+        "atmosphere",
+        "solar",
+        "asteroid",
+        "satellite"
+      ],
+      "supporting": [
+        "terrestrial",
+        "gas giant",
+        "greenhouse",
+        "massive",
+        "dense",
+        "exoplanet"
+      ],
+      "phonics": [
+        "/pl/ in planet",
+        "/gr/ in gravity",
+        "/st/ in asteroid"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Subject + is + [adjective + -er] + than + Object",
+      "formula": "Planet A is [bigger / colder / farther] than Planet B. Planet A is more [massive / dense] than Planet B.",
+      "formulas": [
+        "Comparative with -er: Planet A is [colder / hotter / bigger] than Planet B",
+        "Comparative with more: Planet A is more [massive] than Planet B"
+      ]
+    },
+    "clilDomain": "Astronomy & Earth Science",
+    "clilTheme": "Planetary Systems & Celestial Bodies"
+  },
+  {
     "id": "dino-dig",
     "aliases": [
       "dino",
