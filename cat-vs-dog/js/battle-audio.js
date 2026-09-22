@@ -1,414 +1,451 @@
 /**
- * CAT VS DOG: PREPOSITION CATAPULT — POLYPHONIC WEB AUDIO ENGINE
- * Zero External Dependencies • Pure Browser Synthesis & Procedural BGM
- * Multi-track synthesis: Walking Bass BGM, Doppler Whistle, Layered Impacts & TTS Narrator
+ * CAT VS. DOG: PREPOSITION CATAPULT — POLYPHONIC WEB AUDIO SYNTHESIZER
+ * Zero MP3/WAV dependencies. Pure native Web Audio API & Web Speech TTS.
  */
+
 (function(root) {
   'use strict';
 
   class BattleAudioEngine {
     constructor() {
       this.ctx = null;
-      this.isMuted = false;
-      this.isBgmPlaying = false;
-      this.bgmTimer = null;
-      this.bgmStep = 0;
       this.masterGain = null;
-      this.sfxGain = null;
       this.bgmGain = null;
+      this.sfxGain = null;
+      this.isMuted = false;
+      this.bgmPlaying = false;
+      this.bgmInterval = null;
+      this.currentWhistleNode = null;
+      this.unlocked = false;
+
+      // TTS setup
+      this.ttsVoice = null;
+      this.ttsRate = 0.88;
+      this.ttsPitch = 1.05;
+      this.ttsLang = 'en-US';
+
+      this._initTTSVoices();
     }
 
-    init() {
-      if (!this.ctx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) {
-          this.ctx = new AudioContext();
-          
+    // Lazy initialization guarded by user interaction
+    ensureAudioContext() {
+      if (this.ctx && this.ctx.state === 'running') return true;
+
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return false;
+
+        if (!this.ctx) {
+          this.ctx = new AudioContextClass();
           this.masterGain = this.ctx.createGain();
-          this.masterGain.gain.setValueAtTime(0.85, this.ctx.currentTime);
-          this.masterGain.connect(this.ctx.destination);
-
-          this.sfxGain = this.ctx.createGain();
-          this.sfxGain.gain.setValueAtTime(1.0, this.ctx.currentTime);
-          this.sfxGain.connect(this.masterGain);
-
           this.bgmGain = this.ctx.createGain();
-          this.bgmGain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+          this.sfxGain = this.ctx.createGain();
+
+          this.masterGain.gain.setValueAtTime(0.85, this.ctx.currentTime);
+          this.bgmGain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+          this.sfxGain.gain.setValueAtTime(0.75, this.ctx.currentTime);
+
           this.bgmGain.connect(this.masterGain);
+          this.sfxGain.connect(this.masterGain);
+          this.masterGain.connect(this.ctx.destination);
         }
+
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+
+        this.unlocked = true;
+        return true;
+      } catch (e) {
+        console.warn('AudioContext initialization deferred:', e);
+        return false;
       }
-      if (this.ctx && this.ctx.state === 'suspended') {
-        this.ctx.resume();
+    }
+
+    _initTTSVoices() {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      const pickVoice = () => {
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return;
+        // Find English voice, preferably child/female friendly
+        const preferred = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny') || v.name.includes('David')));
+        this.ttsVoice = preferred || voices.find(v => v.lang.startsWith('en')) || voices[0];
+      };
+
+      pickVoice();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = pickVoice;
+      }
+    }
+
+    // Calibrated Speech Synthesis
+    speak(text, onWordBoundary, onEnd) {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+      try {
+        window.speechSynthesis.cancel(); // Clear pending utterances
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = this.ttsRate;
+        utterance.pitch = this.ttsPitch;
+        utterance.lang = this.ttsLang;
+        if (this.ttsVoice) utterance.voice = this.ttsVoice;
+
+        if (onWordBoundary) {
+          utterance.onboundary = (e) => {
+            if (e.name === 'word') {
+              onWordBoundary(e.charIndex, e.charLength || 5);
+            }
+          };
+        }
+
+        if (onEnd) {
+          utterance.onend = onEnd;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('TTS error:', err);
+      }
+    }
+
+    stopSpeech() {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
       }
     }
 
     toggleMute() {
-      this.init();
       this.isMuted = !this.isMuted;
-      if (this.masterGain) {
+      if (this.masterGain && this.ctx) {
         this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.85, this.ctx.currentTime);
-      }
-      if (this.isMuted && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
       }
       return this.isMuted;
     }
 
-    toggleBgm() {
-      this.init();
-      if (this.isBgmPlaying) {
-        this.stopBgm();
-        return false;
-      } else {
-        this.startBgm();
-        return true;
-      }
-    }
+    // 85 BPM Walking Bassline BGM
+    startBGM() {
+      if (this.bgmPlaying) return;
+      if (!this.ensureAudioContext()) return;
 
-    /* =========================================================================
-       85 BPM PROCEDURAL ARCADE BASSLINE & ARPEGGIO
-       ========================================================================= */
-    startBgm() {
-      this.init();
-      if (!this.ctx || this.isBgmPlaying) return;
-      this.isBgmPlaying = true;
-      this.bgmStep = 0;
-      this.scheduleBgmTick();
-    }
-
-    stopBgm() {
-      this.isBgmPlaying = false;
-      if (this.bgmTimer) {
-        clearTimeout(this.bgmTimer);
-        this.bgmTimer = null;
-      }
-    }
-
-    scheduleBgmTick() {
-      if (!this.isBgmPlaying || !this.ctx) return;
-
-      // 85 BPM = 1.416 beats/sec = ~353ms per eighth-note
-      const stepIntervalMs = 353;
-      const now = this.ctx.currentTime;
-
-      // 16-step funk/arcade walking bass progression in C minor / Dorian
-      const bassNotes = [
-        130.81, 0, 155.56, 174.61,  // C3, rest, Eb3, F3
-        196.00, 174.61, 155.56, 0,   // G3, F3, Eb3, rest
-        116.54, 0, 146.83, 174.61,  // Bb2, rest, D3, F3
-        196.00, 233.08, 196.00, 130.81 // G3, Bb3, G3, C3
+      this.bgmPlaying = true;
+      const bpm = 85;
+      const beatDuration = 60 / bpm; // ~0.705s
+      const bassLine = [
+        65.41, // C2
+        82.41, // E2
+        98.00, // G2
+        110.00, // A2
+        116.54, // Bb2
+        110.00, // A2
+        98.00,  // G2
+        73.42   // D2
       ];
 
-      const currentFreq = bassNotes[this.bgmStep % bassNotes.length];
-      if (currentFreq > 0 && !this.isMuted) {
-        this.playBassNote(currentFreq, now, 0.28);
-      }
+      let step = 0;
+      const playStep = () => {
+        if (!this.bgmPlaying || !this.ctx || this.isMuted) return;
 
-      // High-hat / vinyl click syncopation
-      if (this.bgmStep % 2 === 1 && !this.isMuted) {
-        this.playHiHat(now);
-      }
+        const freq = bassLine[step % bassLine.length];
+        const now = this.ctx.currentTime;
 
-      this.bgmStep++;
-      this.bgmTimer = setTimeout(() => this.scheduleBgmTick(), stepIntervalMs);
+        // Triangle Bass Note with Low-Pass warmth
+        const osc = this.ctx.createOscillator();
+        const noteGain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
+
+        noteGain.gain.setValueAtTime(0.001, now);
+        noteGain.gain.linearRampToValueAtTime(0.24, now + 0.05);
+        noteGain.gain.exponentialRampToValueAtTime(0.001, now + (beatDuration * 0.85));
+
+        osc.connect(filter);
+        filter.connect(noteGain);
+        noteGain.connect(this.bgmGain);
+
+        osc.start(now);
+        osc.stop(now + beatDuration);
+
+        // Hi-hat tick every quarter beat
+        this._playGentleTick(now);
+
+        step++;
+      };
+
+      playStep();
+      this.bgmInterval = setInterval(playStep, beatDuration * 1000);
     }
 
-    playBassNote(freq, startTime, duration) {
+    stopBGM() {
+      this.bgmPlaying = false;
+      if (this.bgmInterval) {
+        clearInterval(this.bgmInterval);
+        this.bgmInterval = null;
+      }
+    }
+
+    _playGentleTick(time) {
+      if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-      const filter = this.ctx.createBiquadFilter();
+      osc.type = 'highpass';
+      osc.frequency.setValueAtTime(8000, time);
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0.02, time);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.03);
 
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(650, startTime);
-      filter.frequency.exponentialRampToValueAtTime(180, startTime + duration);
-
-      gain.gain.setValueAtTime(0.24, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-      osc.connect(filter);
-      filter.connect(gain);
+      osc.connect(gain);
       gain.connect(this.bgmGain);
-
-      osc.start(startTime);
-      osc.stop(startTime + duration + 0.05);
+      osc.start(time);
+      osc.stop(time + 0.04);
     }
 
-    playHiHat(startTime) {
-      // Subtle synthesized closed hi-hat noise
-      const bufferSize = this.ctx.sampleRate * 0.035;
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
-      }
-
-      const noise = this.ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.setValueAtTime(7000, startTime);
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.06, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.035);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.bgmGain);
-
-      noise.start(startTime);
-    }
-
-    /* =========================================================================
-       DOPPLER ARTILLERY WHISTLE & CARTOON WHOOSH
-       ========================================================================= */
-    playWhistle(type = 'fish') {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
+    // Artillery Whistle: 1600 Hz -> 380 Hz with subtle pitch vibrato during flight
+    startArtilleryWhistle() {
+      if (!this.ensureAudioContext() || this.isMuted) return null;
 
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
+      const vibrato = this.ctx.createOscillator();
+      const vibratoGain = this.ctx.createGain();
 
-      if (type === 'anvil') {
-        // Heavy low whoosh
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.exponentialRampToValueAtTime(70, now + 0.7);
-        gain.gain.setValueAtTime(0.35, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
-      } else {
-        // High Doppler artillery whistle
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1550, now);
-        osc.frequency.exponentialRampToValueAtTime(420, now + 0.65);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1600, now);
+      osc.frequency.exponentialRampToValueAtTime(380, now + 1.6);
 
-        // Add subtle pitch vibrato via secondary oscillator
-        const vibrato = this.ctx.createOscillator();
-        const vibratoGain = this.ctx.createGain();
-        vibrato.frequency.setValueAtTime(14, now);
-        vibratoGain.gain.setValueAtTime(45, now);
-        vibrato.connect(osc.frequency);
-        vibrato.start(now);
-        vibrato.stop(now + 0.7);
+      // Vibrato
+      vibrato.frequency.setValueAtTime(8, now);
+      vibratoGain.gain.setValueAtTime(18, now);
+      vibrato.connect(osc.frequency);
 
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-      }
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.1);
 
       osc.connect(gain);
       gain.connect(this.sfxGain);
+
+      vibrato.start(now);
       osc.start(now);
-      osc.stop(now + 0.75);
+
+      this.currentWhistleNode = { osc, gain, vibrato, vibratoGain };
+      return this.currentWhistleNode;
     }
 
-    /* =========================================================================
-       PUNCHY COMIC IMPACT (WHITE NOISE TRANSIENT + RESONANT SINE BOOM)
-       ========================================================================= */
-    playImpact(isHeavy = false) {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
+    stopArtilleryWhistle() {
+      if (!this.currentWhistleNode || !this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        this.currentWhistleNode.gain.gain.linearRampToValueAtTime(0.0001, now + 0.05);
+        this.currentWhistleNode.osc.stop(now + 0.06);
+        this.currentWhistleNode.vibrato.stop(now + 0.06);
+      } catch (e) {
+        // Ignored
+      }
+      this.currentWhistleNode = null;
+    }
+
+    // Impact Crunch: 40ms white-noise transient + sub-boom sine drop (140 Hz -> 40 Hz)
+    playImpactCrunch() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
 
       const now = this.ctx.currentTime;
 
-      // 1. Noise transient crunch (40ms)
-      const noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.05, this.ctx.sampleRate);
-      const data = noiseBuffer.getChannelData(0);
-      for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.3));
+      // 1. White-Noise Transient (40ms)
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.045);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
       }
-      const noiseSrc = this.ctx.createBufferSource();
-      noiseSrc.buffer = noiseBuffer;
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
 
       const noiseFilter = this.ctx.createBiquadFilter();
-      noiseFilter.type = 'lowpass';
-      noiseFilter.frequency.setValueAtTime(isHeavy ? 1800 : 2600, now);
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(1800, now);
+      noiseFilter.Q.setValueAtTime(1.5, now);
 
       const noiseGain = this.ctx.createGain();
-      noiseGain.gain.setValueAtTime(isHeavy ? 0.45 : 0.3, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      noiseGain.gain.setValueAtTime(0.35, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
 
-      noiseSrc.connect(noiseFilter);
+      noise.connect(noiseFilter);
       noiseFilter.connect(noiseGain);
       noiseGain.connect(this.sfxGain);
-      noiseSrc.start(now);
+      noise.start(now);
 
-      // 2. Resonant sub-boom (130Hz -> 45Hz)
+      // 2. Sub-Boom Sine Drop (140 Hz -> 40 Hz)
+      const subOsc = this.ctx.createOscillator();
+      const subGain = this.ctx.createGain();
+
+      subOsc.type = 'sine';
+      subOsc.frequency.setValueAtTime(140, now);
+      subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+
+      subGain.gain.setValueAtTime(0.5, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+      subOsc.connect(subGain);
+      subGain.connect(this.sfxGain);
+
+      subOsc.start(now);
+      subOsc.stop(now + 0.4);
+    }
+
+    // Wood Splinter: Rapid square-wave tick sequence (180 Hz, 110 Hz, 75 Hz)
+    playWoodSplinter() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
+
+      const freqs = [180, 110, 75];
+      freqs.forEach((freq, idx) => {
+        const time = this.ctx.currentTime + (idx * 0.035);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, time);
+
+        gain.gain.setValueAtTime(0.22, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(time);
+        osc.stop(time + 0.06);
+      });
+    }
+
+    // Acoustic Snap Click for Stage 2 Drag-and-Drop
+    playSnapClick() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
+
+      const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
-      const boomGain = this.ctx.createGain();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(750, now);
+      osc.frequency.exponentialRampToValueAtTime(220, now + 0.04);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+
+      osc.start(now);
+      osc.stop(now + 0.055);
+    }
+
+    // Pentatonic Ascending Bell Chime (Stage 1 Card Inspection)
+    playBellChime() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
+
+      // C5, D5, E5, G5, A5
+      const notes = [523.25, 587.33, 659.25, 783.99, 880.00];
+      notes.forEach((freq, idx) => {
+        const t = this.ctx.currentTime + (idx * 0.07);
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.18, t + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(t);
+        osc.stop(t + 0.5);
+      });
+    }
+
+    // 5-Note Major Fanfare for Victory (Stage 4)
+    playVictoryFanfare() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
+
+      // C4, E4, G4, C5, E5
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+      const durations = [0.15, 0.15, 0.15, 0.22, 0.65];
+      let offset = 0;
+
+      notes.forEach((freq, idx) => {
+        const t = this.ctx.currentTime + offset;
+        const dur = durations[idx];
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, t);
+
+        gain.gain.setValueAtTime(0.001, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(t);
+        osc.stop(t + dur + 0.05);
+
+        offset += dur * 0.85;
+      });
+    }
+
+    // Cat Meow Vocal
+    playCatVocal() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(isHeavy ? 95 : 135, now);
-      osc.frequency.exponentialRampToValueAtTime(42, now + 0.35);
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(780, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(520, now + 0.35);
 
-      boomGain.gain.setValueAtTime(isHeavy ? 0.55 : 0.4, now);
-      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.2, now + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
 
-      osc.connect(boomGain);
-      boomGain.connect(this.sfxGain);
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+
       osc.start(now);
       osc.stop(now + 0.4);
     }
 
-    /* =========================================================================
-       WOOD SPLINTER CLATTER (FENCE COLLISION)
-       ========================================================================= */
-    playWoodHit() {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      // 3 rapid micro-burst clicks (clatter)
-      [0, 0.04, 0.09].forEach((offset, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(320 - idx * 60, now + offset);
-        osc.frequency.exponentialRampToValueAtTime(75, now + offset + 0.08);
-
-        gain.gain.setValueAtTime(0.22 - idx * 0.04, now + offset);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
-
-        osc.connect(gain);
-        gain.connect(this.sfxGain);
-        osc.start(now + offset);
-        osc.stop(now + offset + 0.1);
-      });
-    }
-
-    /* =========================================================================
-       SPECIAL WEAPON SFX: WATER SPLASH, BOING & ANVIL CLANG
-       ========================================================================= */
-    playWaterSplash() {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      // White noise bandpass sweep for gush/splash
-      const buffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.25, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.4));
-      }
-      const src = this.ctx.createBufferSource();
-      src.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(1400, now);
-      filter.frequency.exponentialRampToValueAtTime(450, now + 0.25);
-      filter.Q.value = 3.0;
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.4, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
-
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.sfxGain);
-      src.start(now);
-    }
-
-    playBoing() {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
-
+    // Dog Bark Vocal
+    playDogVocal() {
+      if (!this.ensureAudioContext() || this.isMuted) return;
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(140, now);
-      osc.frequency.exponentialRampToValueAtTime(520, now + 0.18);
-      osc.frequency.exponentialRampToValueAtTime(260, now + 0.32);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(190, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.18);
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 
       osc.connect(gain);
       gain.connect(this.sfxGain);
+
       osc.start(now);
-      osc.stop(now + 0.36);
-    }
-
-    /* =========================================================================
-       HARMONIC CHIME & VICTORY FANFARE
-       ========================================================================= */
-    playChime() {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
-        gain.gain.setValueAtTime(0.18, now + idx * 0.07);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.45);
-        osc.connect(gain);
-        gain.connect(this.sfxGain);
-        osc.start(now + idx * 0.07);
-        osc.stop(now + idx * 0.07 + 0.48);
-      });
-    }
-
-    playFanfare() {
-      if (this.isMuted) return;
-      this.init();
-      if (!this.ctx) return;
-
-      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-      notes.forEach((freq, i) => {
-        setTimeout(() => {
-          if (this.isMuted || !this.ctx) return;
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now);
-          gain.gain.setValueAtTime(0.28, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
-          osc.connect(gain);
-          gain.connect(this.sfxGain);
-          osc.start(now);
-          osc.stop(now + 0.58);
-        }, i * 130);
-      });
-    }
-
-    /* =========================================================================
-       SPATIAL SPEECH SYNTHESIS ENGINE (CEFR A1 PACING)
-       ========================================================================= */
-    speak(text, onEnd) {
-      if (this.isMuted || !('speechSynthesis' in window)) {
-        if (onEnd) onEnd();
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.88;
-      utterance.pitch = 1.05;
-      utterance.lang = 'en-US';
-      if (onEnd) utterance.onend = onEnd;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    stopSpeech() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      osc.stop(now + 0.22);
     }
   }
 
   root.BattleAudio = new BattleAudioEngine();
-})(typeof window !== 'undefined' ? window : global);
+
+})(typeof window !== 'undefined' ? window : this);

@@ -3,173 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐱 Cat vs. Dog: Preposition Catapult | English Adventure Academy</title>
+  <title>Cat vs. Dog: Preposition Catapult | English Adventure Academy</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
 </head>
 <body>
 
-  <div class="game-wrapper">
-    <!-- Top Tactical Glassmorphism HUD Bar -->
-    <header class="hud-bar">
-      <!-- Navigation & Audio Synthesizer Controls -->
-      <div class="hud-nav-group">
-        <a href="../index.html" class="btn-hud-icon" title="Return to Academy Hub">
-          🏛️ <span>Hub</span>
-        </a>
-        <button id="btn-bgm-toggle" class="btn-hud-icon" title="Toggle 85 BPM Arcade Walking Bassline">
-          🎵 <span>BGM Off</span>
-        </button>
-        <button id="btn-sound-toggle" class="btn-hud-icon" title="Toggle Audio Sound Synthesis">
-          🔊
-        </button>
-
-        <!-- Mode Toggle Pill (1P Solo vs 2P Smartboard) -->
-        <div class="mode-selector-pill">
-          <button class="btn-mode-tab active" data-mode="1p" title="1-Player vs AI Yard Dog">1P Solo</button>
-          <button class="btn-mode-tab" data-mode="2p" title="2-Player Smartboard Arena">2P Arena</button>
-        </div>
-
-        <select id="difficultySelect" class="difficulty-select" title="AI Opponent Difficulty">
-          <option value="rookie">Rookie AI</option>
-          <option value="pro" selected>Pro AI</option>
-          <option value="master">Master AI</option>
-        </select>
+  <!-- ==========================================================================
+       TOP APP HEADER & 4-STAGE PEDAGOGICAL STEPPER
+       ========================================================================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="icon-box">🎯</div>
+      <div class="brand-titles">
+        <h1>CAT VS. DOG: PREPOSITION CATAPULT</h1>
+        <p>CEFR A1 Spatial Prepositions • 3D Physics Arcade</p>
       </div>
-
-      <!-- Player 1: Alley Cat Health HUD -->
-      <div class="player-hud">
-        <div class="hud-avatar" id="cat-avatar">🐱</div>
-        <div class="hp-container">
-          <div class="hp-label-row">
-            <span>Alley Cat</span>
-            <span id="cat-hp-text">100 HP</span>
-          </div>
-          <div class="hp-track">
-            <div class="hp-fill hp-cat" id="cat-hp-bar"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Center Wind Speed & Direction Gauge -->
-      <div class="wind-center-gauge">
-        <div class="wind-title">WIND VECTOR</div>
-        <div class="wind-arrow-box">
-          <span id="wind-dir-icon">➔</span>
-          <span id="wind-speed-text">6 km/h</span>
-        </div>
-        <div class="wind-meter-bar">
-          <div class="wind-meter-fill" id="wind-fill"></div>
-        </div>
-      </div>
-
-      <!-- Player 2 / CPU: Yard Dog Health HUD -->
-      <div class="player-hud dog-side">
-        <div class="hud-avatar" id="dog-avatar">🐶</div>
-        <div class="hp-container">
-          <div class="hp-label-row">
-            <span>Yard Dog</span>
-            <span id="dog-hp-text">100 HP</span>
-          </div>
-          <div class="hp-track">
-            <div class="hp-fill hp-dog" id="dog-hp-bar"></div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Arcade Viewport (Pseudo-3D Volumetric Canvas) -->
-    <main class="arena-viewport" id="arenaViewport">
-      <div class="turn-indicator-pill" id="turnBanner">
-        🎯 <strong>YOUR TURN</strong> (Alley Cat)
-      </div>
-      <canvas id="gameCanvas" width="960" height="500"></canvas>
-      <div class="combat-toast" id="combatToast">DIRECT HIT!</div>
-    </main>
-
-    <!-- Bottom Controls Deck (Arsenal, Angle Dial, Power Charge & Cards) -->
-    <footer class="controls-deck">
-      <div class="controls-row-top">
-        <!-- 4-Item Tactical Arsenal -->
-        <div class="arsenal-selector-tray">
-          <span class="arsenal-title">Arsenal:</span>
-          <button class="btn-weapon-chip active" data-weapon="fish" title="Stinky Fish: Standard trajectory (20 DMG)">
-            <span>🐟</span> Stinky Fish
-          </button>
-          <button class="btn-weapon-chip" data-weapon="balloon" title="Water Balloon: Floats lightly; dampens wind speed (15 DMG)">
-            <span>🎈</span> Splash Balloon
-          </button>
-          <button class="btn-weapon-chip" data-weapon="anvil" title="Heavy Anvil: Steep plunging arc; heavy impact (35 DMG)">
-            <span>🪨</span> Iron Anvil
-          </button>
-          <button class="btn-weapon-chip" data-weapon="bouncy" title="Bouncy Ball: Elastic rubber; bounces once off surfaces (18 DMG)">
-            <span>🎾</span> Bouncy Ball
-          </button>
-        </div>
-
-        <!-- 4 Preposition Linguistic Power-Up Cards -->
-        <div class="powerups-tray">
-          <button class="btn-powerup" id="btnPowerX2" title="Double Volley (x2): Launch two projectiles simultaneously">🎯</button>
-          <button class="btn-powerup" id="btnPowerFist" title="Wind Inverter (⚡): Reverse wind direction">⚡</button>
-          <button class="btn-powerup" id="btnPowerFence" title="Fence Shield (🛡️): Add +45px barrier defense">🛡️</button>
-          <button class="btn-powerup" id="btnPowerHeal" title="Grammar First-Aid (🩹): Restore +25 HP">🩹</button>
-        </div>
-      </div>
-
-      <div class="controls-row-bottom">
-        <!-- Angle Slider Dial -->
-        <div class="angle-dial-box">
-          <span class="angle-label">📐 Launch Angle:</span>
-          <input type="range" min="20" max="75" value="45" class="angle-slider" id="angleSlider">
-          <span class="angle-val-readout" id="angleValReadout">45°</span>
-        </div>
-
-        <!-- 3D Hold-to-Charge Launch Button -->
-        <div class="power-throw-zone">
-          <button class="btn-3d btn-throw" id="throwBtn">
-            <span>🚀 HOLD [SPACE] TO LAUNCH</span>
-          </button>
-          <div class="power-track-box">
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#94a3b8;">
-              <span>CATAPULT VELOCITY</span>
-              <span id="powerPercent">0%</span>
-            </div>
-            <div class="power-track">
-              <div class="power-fill" id="powerFill"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- A1 Preposition Linguistic Challenge Modal -->
-  <div class="modal-overlay" id="prepositionModal">
-    <div class="challenge-card">
-      <span class="challenge-badge-tag">CEFR A1 PREPOSITION POWER GATE</span>
-      <div class="challenge-icon" id="challengeIcon">🪜</div>
-      <div class="challenge-question" id="challengeText">Where does the projectile fly?</div>
-      <div class="challenge-options" id="challengeOptions"></div>
     </div>
-  </div>
 
-  <!-- Teleprompter Victory Screen -->
-  <div class="modal-overlay" id="victoryModal">
-    <div class="teleprompter-card">
-      <div style="font-size: 3.8rem;" id="winnerTrophy">🐱🏆</div>
-      <h2 style="font-size: 2rem; font-weight:900;" id="winnerText">ALLEY CAT WINS!</h2>
-      <div class="teleprompter-box">
-        <div class="tele-line active" id="line-0">"The cat threw the fish OVER the tall fence!"</div>
-        <div class="tele-line" id="line-1">"The bone went INTO the trash bin!"</div>
-        <div class="tele-line" id="line-2">"We mastered our prepositions and won the match!"</div>
+    <!-- Stepper Navigation -->
+    <nav class="stepper-nav" aria-label="Lesson Stages">
+      <div class="step-pill active" data-stage="1">
+        <span class="step-number">1</span>
+        <span class="step-text">Explorer</span>
       </div>
-      <button class="btn-3d btn-play-again" id="btnPlayAgain">
-        🔄 PLAY AGAIN
+      <div class="step-pill" data-stage="2">
+        <span class="step-number">2</span>
+        <span class="step-text">Spatial Lab</span>
+      </div>
+      <div class="step-pill" data-stage="3">
+        <span class="step-number">3</span>
+        <span class="step-text">Catapult Arena</span>
+      </div>
+      <div class="step-pill" data-stage="4">
+        <span class="step-number">4</span>
+        <span class="step-text">Live Studio</span>
+      </div>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-controls">
+      <button class="btn-3d btn-icon-round" id="btn-bgm-toggle" title="Toggle 85 BPM Walking Bassline BGM">🎵</button>
+      <button class="btn-3d btn-icon-round" id="btn-mute-toggle" title="Toggle Sound FX">🔊</button>
+      <a href="worksheet.html" target="_blank" class="btn-3d btn-gold" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">📄 Worksheet</a>
+      <a href="../index.html" class="btn-3d btn-cat" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">🏠 Hub</a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       STAGE 1: 3D PREPOSITION EXPLORER (DISCOVERY & RECEPTIVE LISTENING)
+       ========================================================================== -->
+  <main class="stage-viewport active" id="stage-1-viewport">
+    <div class="explorer-intro">
+      <h2>Stage 1: 3D Preposition Explorer</h2>
+      <p>Tap each spatial diorama card to examine the vector scene and hear the spoken grammar rule.</p>
+    </div>
+
+    <div class="diorama-grid" id="diorama-cards-grid">
+      <!-- Populated dynamically by battle-app.js -->
+    </div>
+
+    <div class="explorer-footer">
+      <div class="receptive-tip">
+        💡 <strong>Teacher Tip:</strong> Encourage students to echo the Web Speech TTS pronunciation aloud!
+      </div>
+      <button class="btn-3d btn-cat" id="btn-explorer-continue">
+        Listen to All 4 to Unlock Stage 2 ➔
       </button>
     </div>
+  </main>
+
+  <!-- ==========================================================================
+       STAGE 2: SPATIAL PLACEMENT LAB (TACTILE DRAG & SNAP)
+       ========================================================================== -->
+  <main class="stage-viewport" id="stage-2-viewport">
+    <div class="lab-layout">
+      <div class="lab-instruction-bar">
+        <div class="lab-instruction-text" id="lab-instruction">
+          <strong>Challenge 1/2:</strong> Drag the Alley Cat ON TOP OF the metal trash bin!
+        </div>
+        <div class="lab-badge">🎯 Spatial Lab</div>
+      </div>
+
+      <!-- Workbench Alley Staging Area -->
+      <div class="lab-workbench" id="labWorkbench">
+        <!-- Background Elements -->
+        <div class="workbench-ground"></div>
+
+        <!-- Scenery Anchors -->
+        <div class="anchor-trashbin">
+          <svg viewBox="0 0 100 110" width="100" height="110">
+            <polygon points="12,25 88,25 80,105 20,105" fill="#475569"/>
+            <ellipse cx="50" cy="25" rx="42" ry="9" fill="#94a3b8"/>
+          </svg>
+        </div>
+
+        <div class="anchor-fence">
+          <svg viewBox="0 0 100 240" width="90" height="220">
+            <polygon points="5,20 18,5 32,20 32,240 5,240" fill="#b45309"/>
+            <polygon points="35,18 48,3 62,18 62,240 35,240" fill="#92400e"/>
+            <polygon points="65,22 78,7 92,22 92,240 65,240" fill="#b45309"/>
+            <rect x="0" y="55" width="98" height="22" fill="#78350f"/>
+            <rect x="0" y="165" width="98" height="22" fill="#78350f"/>
+          </svg>
+        </div>
+
+        <!-- Magnetic Drop Sockets -->
+        <div class="drop-socket" id="socket-cat">
+          <span class="socket-label">ON TOP OF<br>TRASH BIN</span>
+        </div>
+
+        <div class="drop-socket" id="socket-dog">
+          <span class="socket-label">BEHIND<br>THE FENCE</span>
+        </div>
+      </div>
+
+      <!-- Draggable Tokens Dock -->
+      <div class="tokens-dock" id="tokens-dock">
+        <div class="drag-token" id="token-cat" title="Drag me!">
+          <svg viewBox="0 0 120 120" width="100" height="100">
+            <circle cx="60" cy="60" r="42" fill="#0284c7"/>
+            <polygon points="34,35 46,15 56,38" fill="#0284c7"/>
+            <polygon points="68,38 78,15 90,35" fill="#0284c7"/>
+            <ellipse cx="50" cy="55" rx="7" ry="9" fill="#ffffff"/>
+            <ellipse cx="70" cy="55" rx="7" ry="9" fill="#ffffff"/>
+            <circle cx="50" cy="55" r="4" fill="#0c4a6e"/>
+            <circle cx="70" cy="55" r="4" fill="#0c4a6e"/>
+            <polygon points="58,68 62,68 60,72" fill="#f43f5e"/>
+          </svg>
+        </div>
+
+        <div class="drag-token" id="token-dog" title="Drag me!">
+          <svg viewBox="0 0 120 120" width="100" height="100">
+            <circle cx="60" cy="60" r="42" fill="#ea580c"/>
+            <path d="M 32 40 C 20 40, 18 55, 26 65 Z" fill="#9a3412"/>
+            <path d="M 88 40 C 100 40, 102 55, 94 65 Z" fill="#9a3412"/>
+            <circle cx="48" cy="54" r="6" fill="#ffffff"/>
+            <circle cx="72" cy="54" r="6" fill="#ffffff"/>
+            <circle cx="48" cy="54" r="3.5" fill="#431407"/>
+            <circle cx="72" cy="54" r="3.5" fill="#431407"/>
+            <ellipse cx="60" cy="70" rx="14" ry="10" fill="#fed7aa"/>
+            <circle cx="60" cy="65" r="4" fill="#1c1917"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       STAGE 3: 3D ALLEY CATAPULT ARENA (CORE PHYSICS GAME)
+       ========================================================================== -->
+  <main class="stage-viewport" id="stage-3-viewport">
+    <div class="arena-container">
+      
+      <!-- Top HUD Stats & Wind Gauge -->
+      <div class="arena-top-bar">
+        <!-- Team Cat -->
+        <div class="team-hud team-cat">
+          <div class="team-avatar">🐱</div>
+          <div class="team-info">
+            <span class="team-name">Alley Cat (P1)</span>
+            <div class="hp-bar-outer">
+              <div class="hp-bar-inner" id="cat-hp-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center Wind Gauge -->
+        <div class="wind-indicator">
+          <span class="wind-label">ALLEY WIND</span>
+          <div class="wind-dial">
+            <span id="windArrow">➔</span>
+            <span id="windValue">3 km/h</span>
+          </div>
+        </div>
+
+        <!-- Team Dog -->
+        <div class="team-hud team-dog">
+          <div class="team-info" style="align-items: flex-end;">
+            <span class="team-name">Yard Dog (AI)</span>
+            <div class="hp-bar-outer">
+              <div class="hp-bar-inner" id="dog-hp-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div class="team-avatar">🐶</div>
+        </div>
+      </div>
+
+      <!-- 16:9 Arcade Canvas Viewport -->
+      <div class="canvas-wrapper">
+        <canvas id="battleCanvas"></canvas>
+        <div class="comic-toast" id="comic-toast">💥 Direct hit OVER the fence!</div>
+      </div>
+
+      <!-- Tactical Controls Dock -->
+      <div class="tactical-dock">
+        <!-- Angle Slider -->
+        <div class="angle-box">
+          <div class="control-label">
+            <span>TRAJECTORY ANGLE</span>
+            <strong id="angleValue" style="color: var(--cat-glow);">45°</strong>
+          </div>
+          <input type="range" id="angleSlider" class="range-slider" min="25" max="75" value="45">
+        </div>
+
+        <!-- Weapons Arsenal Bar -->
+        <div class="weapons-selector" id="weapons-selector">
+          <!-- Populated dynamically by battle-app.js -->
+        </div>
+
+        <!-- Fire / Charge Button -->
+        <div class="fire-box">
+          <div class="power-meter-outer">
+            <div class="power-meter-inner" id="powerMeter"></div>
+          </div>
+          <button class="btn-3d btn-cat" id="btn-fire">
+            🚀 HOLD TO CHARGE
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       STAGE 4: LIVE TELEPROMPTER STUDIO (ORAL PRODUCTION)
+       ========================================================================== -->
+  <main class="stage-viewport" id="stage-4-viewport">
+    <div class="studio-layout">
+      <!-- Victory Podium -->
+      <div class="victory-podium">
+        <div class="podium-mascot-box">
+          <img id="podium-mascot-img" src="" alt="Winner Mascot">
+        </div>
+        <div class="victory-titles">
+          <h2 id="winner-team-title">Cat Champions!</h2>
+          <p style="color: #94a3b8; font-weight: 600;">Match Complete • Ready for Classroom Broadcast</p>
+        </div>
+      </div>
+
+      <!-- Live Karaoke Teleprompter Box -->
+      <div class="teleprompter-box">
+        <div class="teleprompter-header">
+          <div class="on-air-badge">
+            <span class="on-air-dot"></span>
+            LIVE BROADCAST ON AIR
+          </div>
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">ORAL PRODUCTION STUDIO</span>
+        </div>
+
+        <div class="teleprompter-script" id="teleprompter-script-content">
+          <!-- Populated with interactive word-spans -->
+        </div>
+
+        <div class="studio-actions">
+          <button class="btn-3d btn-gold" id="btn-broadcast-report">
+            📢 BROADCAST REPORT (READ ALOUD)
+          </button>
+          <button class="btn-3d btn-emerald" id="btn-studio-replay">
+            🔄 REPLAY MATCH
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       CEFR A1 QUESTION MODAL
+       ========================================================================== -->
+  <div class="modal-overlay" id="question-modal">
+    <div class="question-card">
+      <div class="question-header">
+        <span style="font-size: 0.8rem; font-weight: 800; color: #38bdf8;">🧠 CEFR A1 TACTICAL REPAIR</span>
+        <span style="font-size: 0.8rem; color: #f59e0b; font-weight: 800;">+15 XP</span>
+      </div>
+      <div class="question-prompt" id="question-prompt-text">
+        The fish flies _____ the high wooden fence.
+      </div>
+      <div class="options-grid" id="question-options-grid">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
   </div>
 
-  <!-- Script Pipeline -->
+  <!-- JavaScript Modules -->
   <script src="js/battle-data.js"></script>
   <script src="js/battle-audio.js"></script>
   <script src="js/battle-app.js"></script>
