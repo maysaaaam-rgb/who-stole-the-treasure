@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦖 Dino Arena: Top Trumps Paleontology Clash | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦖</text></svg>">
+</head>
+<body>
+
+  <!-- Confetti Canvas for Victory Celebrations -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Tactical HUD -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <a href="../index.html" class="btn-icon-hud" title="Return to Academy Hub">
+        🏛️ <span>Academy Hub</span>
+      </a>
+      <button id="btn-sound-toggle" class="btn-icon-hud" title="Toggle Sound Synthesis">
+        🔊 <span>Audio Active</span>
+      </button>
+    </div>
+
+    <div class="hud-center">
+      <div class="energy-track-wrap">
+        <span class="energy-label">Arena Energy</span>
+        <div class="energy-bar-outer" id="hud-energy-outer">
+          <div class="energy-bar-inner" id="hud-energy-fill"></div>
+        </div>
+        <span id="hud-xp-label" style="font-size:13px; font-weight:800; color:#f59e0b;">0 / 150 XP</span>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="streak-pill" id="hud-streak-pill" title="Clash Streak Multiplier">
+        <span class="streak-flame">🔥</span>
+        <span id="hud-streak-count">0x</span>
+      </div>
+      <button id="btn-fullscreen-toggle" class="btn-icon-hud" title="Toggle Fullscreen Arena">
+        ⛶ <span>Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Phase Selector Bar -->
+  <nav class="phase-selector" aria-label="Game Phases">
+    <button class="phase-tab" data-phase="1">
+      <span>🔍</span> Phase 1: Fossil Scanner
+    </button>
+    <button class="phase-tab active" data-phase="2">
+      <span>⚡</span> Phase 2: Dino Clash 1v1
+    </button>
+    <button class="phase-tab" data-phase="3">
+      <span>🎙️</span> Phase 3: Teleprompter Studio
+    </button>
+  </nav>
+
+  <!-- Main Stage Viewport (Anti-Dashboard Single Focus) -->
+  <main class="main-stage-container">
+
+    <!-- Phase 1: Holographic Fossil Scanner -->
+    <section class="phase-panel" id="panel-phase-1" data-phase="1">
+      <div class="arena-headline-bar">
+        <h2 class="arena-title">🔍 HOLOGRAPHIC FOSSIL SCANNER</h2>
+        <p class="arena-instruction">Inspect prehistoric adaptations! Tap Diet, Weapon, Speed, or Armor hotspots to listen and unlock the Master Badge.</p>
+      </div>
+
+      <div class="scanner-badge-alert" id="scanner-badge-alert" style="display:none;"></div>
+      <div class="scanner-carousel-wrap" id="scanner-grid"></div>
+    </section>
+
+    <!-- Phase 2: Dino Clash 1v1 Showdown -->
+    <section class="phase-panel active" id="panel-phase-2" data-phase="2">
+      <div class="clash-battle-stage">
+        
+        <!-- Announcer Board -->
+        <div class="clash-announcer-board">
+          <span class="announcer-prompt-label">⚔️ ARENA SHOWDOWN CHALLENGE</span>
+          <h2 class="announcer-question" id="clash-question">Who is FASTER?</h2>
+          <p class="announcer-subtext" id="clash-subtext">Battle 1 of 8 • Click the winning champion or press hotkeys [1] / [2]!</p>
+          <span class="hotkey-hint" id="clash-counter" style="margin-top:8px;">Round 1 / 8</span>
+        </div>
+
+        <!-- 1v1 Clash Dock with VS Emblem -->
+        <div class="clash-cards-dock">
+          <div id="card-left-container"></div>
+          <div class="clash-vs-emblem">VS</div>
+          <div id="card-right-container"></div>
+        </div>
+
+        <!-- Chunky 3D Push Decision Buttons -->
+        <div class="arena-clash-actions">
+          <button class="btn-clash-pick btn-pick-left" id="btn-pick-left">
+            <span class="btn-main-text">👈 Pick Left Champion <span class="hotkey-hint">[1]</span></span>
+            <span class="btn-sub-text">Stat Champion</span>
+          </button>
+          <button class="btn-clash-pick btn-pick-right" id="btn-pick-right">
+            <span class="btn-main-text">👉 Pick Right Champion <span class="hotkey-hint">[2]</span></span>
+            <span class="btn-sub-text">Stat Champion</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Phase 3: Paleontologist Teleprompter Studio -->
+    <section class="phase-panel" id="panel-phase-3" data-phase="3">
+      <div class="teleprompter-stage">
+        <div class="arena-headline-bar">
+          <h2 class="arena-title">🎙️ PALEONTOLOGIST TELEPROMPTER STUDIO</h2>
+          <p class="arena-instruction">Broadcast your champion discovery live! Follow along as the speech synthesis highlights words in real-time karaoke.</p>
+        </div>
+
+        <div class="teleprompter-card-wrap">
+          <span class="teleprompter-badge-tag" id="teleprompter-badge-tag">🎙️ Apex Arena Broadcast</span>
+          <div class="teleprompter-art-podium" id="teleprompter-art-podium"></div>
+          
+          <div class="teleprompter-display">
+            <div class="teleprompter-script" id="teleprompter-script"></div>
+            
+            <div class="teleprompter-controls">
+              <button class="btn-speak-teleprompter" id="btn-speak-teleprompter">
+                📢 BROADCAST DISCOVERY
+              </button>
+              <button class="btn-next-teleprompter" id="btn-next-teleprompter">
+                Next Champion ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Victory / Master Paleontologist Diploma Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="diploma-card">
+      <div class="diploma-seal">🦖</div>
+      <h2 class="diploma-title">ARENA GRAND CHAMPION</h2>
+      <p class="diploma-subtitle">Top Trumps Paleontology Clash Certified • 150 XP</p>
+      
+      <div class="diploma-stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="modal-xp-val">150 XP</div>
+          <div class="stat-label">Total XP</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-streak-val">8x</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-accuracy-val">100%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <label for="student-name-input" style="font-size:13px; font-weight:700; color:#94a3b8; margin-bottom:6px;">Cadet Paleontologist Name:</label>
+      <input type="text" id="student-name-input" class="student-name-input" placeholder="Enter Your Name..." value="Apex Paleontologist">
+
+      <div class="diploma-actions">
+        <button class="btn-print-passport" id="btn-print-passport">
+          🖨️ Open A4 Battle Passport
+        </button>
+        <button class="btn-replay-game" id="btn-replay-game">
+          🔄 Battle Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zero-Dependency Scripts -->
+  <script src="js/dino-data.js"></script>
+  <script src="js/dino-audio.js"></script>
+  <script src="js/dino-app.js"></script>
+</body>
+</html>
