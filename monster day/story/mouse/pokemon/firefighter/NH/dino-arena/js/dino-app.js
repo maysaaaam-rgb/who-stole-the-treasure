@@ -175,6 +175,18 @@
   /* ==========================================================================
      CARD BUILDER COMPONENT (65/35 TOP TRUMPS RATIO FOR BATTLES)
      ========================================================================== */
+  function renderDino3DStage(dino, customClass = '') {
+    const glowRgb = dino.glowRgb || '245, 158, 11';
+    const glowColor = dino.glowColor || '#f59e0b';
+    const imgPath = dino.imagePath || 'assets/trex.png';
+    return `
+      <div class="dino-stage-viewport ${customClass}" style="--glow-rgb: ${glowRgb}; --glow-color: ${glowColor};">
+        <div class="dino-pedestal-ring"></div>
+        <img src="${imgPath}" alt="${dino.name}" class="dino-hero-image" loading="lazy" />
+      </div>
+    `;
+  }
+
   function createDinoCardHtml(dino, sideKey = 'card') {
     const isCarnivore = (dino.diet === 'Carnivore');
     const dietBadgeClass = isCarnivore ? 'card-diet-carnivore' : 'card-diet-herbivore';
@@ -187,7 +199,7 @@
     return `
       <div class="dino-card" id="${sideKey}-${dino.id}" data-id="${dino.id}">
         
-        <!-- Top 65% Hero Visual Zone -->
+        <!-- Top 65% Hero Visual Zone with 3D Isometric Viewport & Pedestal -->
         <div class="card-hero-zone">
           <div class="card-diet-badge ${dietBadgeClass}">
             <span>${dino.dietIcon}</span>
@@ -198,10 +210,8 @@
             🔊
           </button>
 
-          <!-- 100% Self-Contained Multi-Layered Anatomical Vector Artwork with Breathing Physics -->
-          <div class="card-vector-stage">
-            ${dino.svgArtwork}
-          </div>
+          <!-- 3D Full-Bleed Creature Viewport with Isometric Glowing Pedestal -->
+          ${renderDino3DStage(dino, 'in-card')}
         </div>
 
         <!-- Dynamic Physical Rubber Stamp Overlays -->
@@ -298,11 +308,11 @@
     mysteryStatusBanner.textContent = "Listen to the audio hints and match the 3 paleontological clues below:";
     btnNextMystery.style.display = 'none';
 
-    // Reset Silhouette Stage to Dark Fog with Pure Vector Silhouette
+    // Reset Silhouette Stage to Dark Fog with 3D Creature Silhouette
     mysteryArtStage.className = 'mystery-art-stage';
     mysteryArtStage.innerHTML = `
-      <div class="mystery-vector-art-wrap">
-        ${targetDino.svgArtwork}
+      <div class="mystery-silhouette-wrap">
+        ${renderDino3DStage(targetDino, 'in-mystery')}
       </div>
     `;
 
@@ -430,8 +440,8 @@
     dietFeedbackBanner.style.display = 'none';
 
     dietSpecimenCard.innerHTML = `
-      <div class="diet-vector-stage">
-        ${currentDino.svgArtwork}
+      <div class="diet-specimen-viewport-wrap">
+        ${renderDino3DStage(currentDino, 'in-diet')}
       </div>
       <h3 class="diet-specimen-title">${currentDino.fallbackIcon} ${currentDino.name}</h3>
       <div class="diet-tooth-callout">
@@ -547,15 +557,15 @@
     builderFeedbackBanner.style.display = 'none';
     btnBuilderNext.style.display = 'none';
 
-    // Populate Scale Dishes with Vector Art
+    // Populate Scale Dishes with 3D Creature Viewports
     dishLeft.innerHTML = `
-      <div class="dish-vector-stage">
-        ${dinoA.svgArtwork}
+      <div class="dish-scale-viewport">
+        ${renderDino3DStage(dinoA, 'in-scale')}
       </div>
     `;
     dishRight.innerHTML = `
-      <div class="dish-vector-stage">
-        ${dinoB.svgArtwork}
+      <div class="dish-scale-viewport">
+        ${renderDino3DStage(dinoB, 'in-scale')}
       </div>
     `;
 
@@ -881,10 +891,10 @@
 
     teleprompterBadgeTag.textContent = `🎙️ ${dino.fallbackIcon} ${dino.name} — ${arch.title}`;
     
-    // Podium with dedicated 3D vector artwork stage
+    // Podium with dedicated 3D creature showcase stage
     teleprompterArtPodium.innerHTML = `
-      <div class="teleprompter-vector-stage">
-        ${dino.svgArtwork}
+      <div class="teleprompter-stage-wrap">
+        ${renderDino3DStage(dino, 'in-teleprompter')}
       </div>
     `;
 

@@ -26,6 +26,9 @@
       clue: "I am the 8,000 kg apex predator with 20cm serrated teeth!",
       dietFact: "T-Rex is a carnivore because it has 20cm sharp teeth to hunt prey.",
       fallbackIcon: "🦖",
+      imagePath: "assets/trex.png",
+      glowColor: "#ef4444",
+      glowRgb: "239, 68, 68",
       pedestalColor: "#ef4444",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
@@ -74,6 +77,9 @@
       clue: "I am a swift 60 km/h runner hunting with curved foot claws!",
       dietFact: "Velociraptor is a carnivore because it hunts meat with sharp sickle claws.",
       fallbackIcon: "🦅",
+      imagePath: "assets/raptor.png",
+      glowColor: "#f97316",
+      glowRgb: "249, 115, 22",
       pedestalColor: "#f97316",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
@@ -120,6 +126,9 @@
       clue: "I have a massive skull shield and 3 solid ivory horns!",
       dietFact: "Triceratops is a herbivore because it shears tough palm fronds with grinding teeth.",
       fallbackIcon: "🦏",
+      imagePath: "assets/triceratops.png",
+      glowColor: "#10b981",
+      glowRgb: "16, 185, 129",
       pedestalColor: "#10b981",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
@@ -170,6 +179,9 @@
       clue: "I weigh 40,000 kg and can browse leaves 15 meters high!",
       dietFact: "Brachiosaurus is a herbivore because it reaches tall treetops to eat leaves.",
       fallbackIcon: "🦒",
+      imagePath: "assets/brachiosaurus.png",
+      glowColor: "#06b6d4",
+      glowRgb: "6, 182, 212",
       pedestalColor: "#06b6d4",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
@@ -218,6 +230,9 @@
       clue: "I am a living battle tank with bone plates and a heavy tail club!",
       dietFact: "Ankylosaurus is a herbivore because it feeds on low forest ferns and shrub roots.",
       fallbackIcon: "🛡️",
+      imagePath: "assets/ankylosaurus.png",
+      glowColor: "#eab308",
+      glowRgb: "234, 179, 8",
       pedestalColor: "#eab308",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
@@ -269,6 +284,9 @@
       clue: "I have vertical kite plates along my spine and 4 sharp tail spikes!",
       dietFact: "Stegosaurus is a herbivore because it eats soft ground mosses and low shrubs.",
       fallbackIcon: "🐊",
+      imagePath: "assets/stegosaurus.png",
+      glowColor: "#22c55e",
+      glowRgb: "34, 197, 94",
       pedestalColor: "#10b981",
       svgArtwork: `
         <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
