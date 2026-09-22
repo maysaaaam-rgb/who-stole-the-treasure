@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📄 Meme Rules: Classroom Imperatives A4 Group Poster &amp; Flashcard Sheet</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>📄</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.35;
+      padding: 16px;
+    }
+
+    /* Print Navigation Bar */
+    .print-nav-bar {
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action {
+      background: #38bdf8;
+      color: #041226;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #fff;
+    }
+
+    /* A4 Sheet Container */
+    .a4-sheet {
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+      break-after: page;
+    }
+
+    /* Worksheet Header */
+    .ws-header {
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .ws-title-wrap h1 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ws-title-wrap p {
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .ws-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+    }
+
+    .meta-item strong {
+      color: #334155;
+    }
+
+    /* Section Styling */
+    .ws-section {
+      margin-bottom: 16px;
+    }
+
+    .ws-section-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 4px solid #0284c7;
+      padding-left: 8px;
+    }
+
+    /* 2-Column Rules Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .rule-card-col {
+      border-radius: 10px;
+      padding: 12px;
+      border: 1.5px solid;
+    }
+
+    .rule-card-col.green-col {
+      background: #f0fdf4;
+      border-color: #22c55e;
+    }
+
+    .rule-card-col.red-col {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    .rule-col-hdr {
+      font-size: 0.88rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .green-col .rule-col-hdr { color: #15803d; }
+    .red-col .rule-col-hdr { color: #b91c1c; }
+
+    .rule-fill-item {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .blank-line {
+      display: inline-block;
+      min-width: 100px;
+      border-bottom: 1.5px dashed #64748b;
+      margin: 0 4px;
+    }
+
+    /* Flashcards Cut-Out Grid */
+    .flashcards-4up {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .cut-card {
+      border: 1.5px dashed #64748b;
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .cut-scissors {
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      font-size: 0.8rem;
+      background: #ffffff;
+      padding: 0 4px;
+    }
+
+    .card-svg-box {
+      width: 64px;
+      height: 64px;
+      margin: 6px 0;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .print-nav-bar {
+        display: none !important;
+      }
+      .a4-sheet {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Navigation Bar (Hidden in Print) -->
+  <nav class="print-nav-bar">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="index.html" class="btn-action btn-secondary">← Back to Interactive Lab</a>
+      <span style="font-weight:900;">😂 Meme Rules Activity Dossier</span>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button type="button" class="btn-action" onclick="window.print()">🖨️ Print A4 Dossier</button>
+    </div>
+  </nav>
+
+  <!-- SHEET 1: CLASSROOM MEME CHARTER & SPEECH BLUEPRINT -->
+  <main class="a4-sheet">
+    <header class="ws-header">
+      <div class="ws-title-wrap">
+        <h1><span>😂</span> MEME RULES: CLASSROOM CHARTER</h1>
+        <p>English Adventure Academy • Positive &amp; Negative Imperatives (CEFR A1–A2)</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:#0284c7; color:#fff; font-size:0.75rem; font-weight:900; padding:4px 10px; border-radius:6px;">GRADE 3-4 • CLIL</span>
+      </div>
+    </header>
+
+    <div class="ws-meta-grid">
+      <div class="meta-item"><strong>Student:</strong> _______________</div>
+      <div class="meta-item"><strong>Date:</strong> _________________</div>
+      <div class="meta-item"><strong>Class:</strong> ________________</div>
+      <div class="meta-item"><strong>XP Award:</strong> ⭐ +50 XP</div>
+    </div>
+
+    <!-- PART 1: GREEN LIGHT / RED LIGHT CHARTER -->
+    <section class="ws-section">
+      <h2 class="ws-section-title">PART 1: The Classroom Meme Rules Charter</h2>
+      <p style="font-size:0.8rem; color:#475569; margin-bottom:8px;">
+        Complete each classroom rule using the target imperative verbs: <em>Raise, Listen, Share, Clean, Line up, Shout, Run, Copy, Panic.</em>
+      </p>
+
+      <div class="rules-grid">
+        <!-- Green Column -->
+        <div class="rule-card-col green-col">
+          <div class="rule-col-hdr">
+            <span>🟢 GREEN LIGHT (DO)</span>
+            <span style="font-size:0.72rem;">Base Verb</span>
+          </div>
+
+          <div class="rule-fill-item">
+            <span>1.</span>
+            <span><span class="blank-line" style="min-width:70px;"></span> your hand to ask a question.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>2.</span>
+            <span><span class="blank-line" style="min-width:70px;"></span> carefully to teacher instructions.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>3.</span>
+            <span><span class="blank-line" style="min-width:70px;"></span> your pencils and markers with friends.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>4.</span>
+            <span><span class="blank-line" style="min-width:70px;"></span> up your workstation after science class.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>5.</span>
+            <span><span class="blank-line" style="min-width:70px;"></span> up quietly when walking to the lab.</span>
+          </div>
+        </div>
+
+        <!-- Red Column -->
+        <div class="rule-card-col red-col">
+          <div class="rule-col-hdr">
+            <span>🔴 RED LIGHT (DON'T)</span>
+            <span style="font-size:0.72rem;">Don't + Base Verb</span>
+          </div>
+
+          <div class="rule-fill-item">
+            <span>1.</span>
+            <span><strong>Don't</strong> <span class="blank-line" style="min-width:70px;"></span> across the science lab.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>2.</span>
+            <span><strong>Don't</strong> <span class="blank-line" style="min-width:70px;"></span> answers from your classmate.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>3.</span>
+            <span><strong>Don't</strong> <span class="blank-line" style="min-width:70px;"></span> loudly during quiet reading.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>4.</span>
+            <span><strong>Don't</strong> <span class="blank-line" style="min-width:70px;"></span> when a grammar test is tricky.</span>
+          </div>
+          <div class="rule-fill-item">
+            <span>5.</span>
+            <span><strong>Don't</strong> <span class="blank-line" style="min-width:70px;"></span> others in the lunch queue.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 2: ORAL TELEPROMPTER SPEECH BLUEPRINT -->
+    <section class="ws-section" style="margin-top:14px;">
+      <h2 class="ws-section-title">PART 2: Show &amp; Tell Teleprompter Speech Blueprint</h2>
+      <p style="font-size:0.8rem; color:#475569; margin-bottom:8px;">
+        Pick your favorite meme archetype. Write your 3-sentence presentation to deliver in front of the class!
+      </p>
+
+      <div style="background:#f8fafc; border:1.5px solid #0284c7; border-radius:10px; padding:12px; font-size:0.85rem; display:flex; flex-direction:column; gap:8px;">
+        <div>
+          <strong>Sentence 1:</strong> This is our classroom meme: <span class="blank-line" style="min-width:240px;"></span>.
+        </div>
+        <div>
+          <strong>Sentence 2:</strong> Our golden rule is: <span class="blank-line" style="min-width:280px;"></span>!
+        </div>
+        <div>
+          <strong>Sentence 3:</strong> Remember: (Always / Never) <span class="blank-line" style="min-width:230px;"></span>!
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 3: 4-UP PRINTABLE MEME FLASHCARDS -->
+    <section class="ws-section" style="margin-top:16px;">
+      <h2 class="ws-section-title">PART 3: 4-Up Cut-Out Rule Flashcards</h2>
+
+      <div class="flashcards-4up">
+        <!-- Card 1 -->
+        <div class="cut-card">
+          <span class="cut-scissors">✂️ Cut Here</span>
+          <div style="font-size:0.75rem; font-weight:900; color:#0284c7;">MEME #1: ROLL SAFE</div>
+          <div class="card-svg-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <circle cx="50" cy="50" r="40" fill="#0284c7"/>
+              <text x="50" y="60" font-size="34" text-anchor="middle">🧠</text>
+            </svg>
+          </div>
+          <strong style="font-size:0.84rem; color:#0f172a;">&ldquo;Think before you speak!&rdquo;</strong>
+          <span style="font-size:0.72rem; color:#16a34a; font-weight:800; margin-top:4px;">🟢 Positive Imperative</span>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="cut-card">
+          <span class="cut-scissors">✂️ Cut Here</span>
+          <div style="font-size:0.75rem; font-weight:900; color:#d97706;">MEME #2: SURPRISED PIKACHU</div>
+          <div class="card-svg-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <circle cx="50" cy="50" r="40" fill="#fbbf24"/>
+              <text x="50" y="60" font-size="34" text-anchor="middle">⚡</text>
+            </svg>
+          </div>
+          <strong style="font-size:0.84rem; color:#0f172a;">&ldquo;Listen carefully in class!&rdquo;</strong>
+          <span style="font-size:0.72rem; color:#16a34a; font-weight:800; margin-top:4px;">🟢 Positive Imperative</span>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="cut-card">
+          <span class="cut-scissors">✂️ Cut Here</span>
+          <div style="font-size:0.75rem; font-weight:900; color:#dc2626;">MEME #5: GRUMPY CAT</div>
+          <div class="card-svg-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <circle cx="50" cy="50" r="40" fill="#f43f5e"/>
+              <text x="50" y="60" font-size="34" text-anchor="middle">😾</text>
+            </svg>
+          </div>
+          <strong style="font-size:0.84rem; color:#0f172a;">&ldquo;Don't shout in the hallway!&rdquo;</strong>
+          <span style="font-size:0.72rem; color:#dc2626; font-weight:800; margin-top:4px;">🔴 Negative Imperative</span>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="cut-card">
+          <span class="cut-scissors">✂️ Cut Here</span>
+          <div style="font-size:0.75rem; font-weight:900; color:#7c3aed;">MEME #10: BOROMIR</div>
+          <div class="card-svg-box">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <circle cx="50" cy="50" r="40" fill="#a855f7"/>
+              <text x="50" y="60" font-size="34" text-anchor="middle">🛡️</text>
+            </svg>
+          </div>
+          <strong style="font-size:0.84rem; color:#0f172a;">&ldquo;Don't run across the lab!&rdquo;</strong>
+          <span style="font-size:0.72rem; color:#dc2626; font-weight:800; margin-top:4px;">🔴 Negative Imperative</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Teacher Solution Key Footer -->
+    <footer style="margin-top:14px; border-top:1px dashed #cbd5e1; padding-top:8px; display:flex; justify-content:space-between; font-size:0.72rem; color:#64748b;">
+      <span><strong>Teacher Key:</strong> DO: Raise, Listen, Share, Clean, Line up | DON'T: Run, Copy, Shout, Panic, Push</span>
+      <span>Adventure Academy Curriculum • Unit 3 Imperatives</span>
+    </footer>
+  </main>
+
+</body>
+</html>

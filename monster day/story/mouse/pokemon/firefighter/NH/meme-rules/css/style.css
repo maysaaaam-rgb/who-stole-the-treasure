@@ -1,0 +1,1441 @@
+/* ==========================================================================
+   ADVENTURE ACADEMY - MEME RULES: IMPERATIVES IN ACTION
+   High-End EdTech Arcade Styling (Blooket / Duolingo / Kahoot Fidelity)
+   ========================================================================== */
+
+:root {
+  /* Color Palette - 60-30-10 Rule */
+  --bg-dark: #070b14;
+  --bg-surface: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.72);
+  --bg-card-border: rgba(255, 255, 255, 0.14);
+
+  /* Primary Action Colors */
+  --green-do: #10b981;
+  --green-do-dark: #047857;
+  --green-do-light: #34d399;
+  --green-glow: rgba(16, 185, 129, 0.45);
+
+  --red-dont: #ef4444;
+  --red-dont-dark: #b91c1c;
+  --red-dont-light: #f87171;
+  --red-glow: rgba(239, 68, 68, 0.45);
+
+  --amber-boost: #f59e0b;
+  --amber-boost-dark: #b45309;
+  --amber-glow: rgba(245, 158, 11, 0.45);
+
+  --cyan-accent: #06b6d4;
+  --cyan-dark: #0e7490;
+  --purple-accent: #8b5cf6;
+  --purple-dark: #6d28d9;
+
+  /* Typography */
+  --font-main: 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', var(--font-main);
+  --font-impact: 'Bungee', 'Fredoka', 'Outfit', sans-serif;
+
+  /* UI Tokens */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+  --radius-full: 9999px;
+
+  --shadow-tactile: 0 6px 0 var(--shadow-color, #020617);
+  --shadow-tactile-active: 0 2px 0 var(--shadow-color, #020617);
+  --shadow-glow: 0 12px 32px -4px rgba(0, 0, 0, 0.6);
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-dark);
+  font-family: var(--font-main);
+  color: #f8fafc;
+  line-height: 1.4;
+}
+
+/* Background animated glow grid */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 15%, rgba(16, 185, 129, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 80% 25%, rgba(239, 68, 68, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.12) 0%, transparent 50%),
+    linear-gradient(180deg, #070b14 0%, #0c1220 100%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Cyber grid lines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 48px 48px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* App Viewport Container */
+#game-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ==========================================================================
+   TOP PERSISTENT HUD
+   ========================================================================== */
+#game-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  gap: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.hud-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 3D Tactile Push-Buttons (Global Style) */
+.btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+  --shadow-color: #020617;
+  box-shadow: 0 5px 0 var(--shadow-color);
+  transform: translateY(0);
+}
+
+.btn-3d:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--shadow-color);
+}
+
+.btn-3d:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 1px 0 var(--shadow-color) !important;
+}
+
+/* Button Variants */
+.btn-hub {
+  background: #334155;
+  color: #f8fafc;
+  --shadow-color: #1e293b;
+}
+
+.btn-green-do {
+  background: var(--green-do);
+  color: #ffffff;
+  --shadow-color: var(--green-do-dark);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-red-dont {
+  background: var(--red-dont);
+  color: #ffffff;
+  --shadow-color: var(--red-dont-dark);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-amber-boost {
+  background: var(--amber-boost);
+  color: #0f172a;
+  --shadow-color: var(--amber-boost-dark);
+  font-weight: 900;
+}
+
+.btn-cyan {
+  background: var(--cyan-accent);
+  color: #0f172a;
+  --shadow-color: var(--cyan-dark);
+}
+
+.btn-print {
+  background: #ecfdf5;
+  color: #065f46;
+  --shadow-color: #a7f3d0;
+  font-weight: 800;
+}
+
+/* Stepper Phase Pills in HUD */
+.phase-stepper {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phase-step-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 800;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.phase-step-btn.active {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.6);
+}
+
+.phase-step-btn.completed {
+  color: var(--green-do-light);
+}
+
+/* Energy Fuel Meter */
+.energy-tracker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.energy-label {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--amber-boost);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.energy-bar-wrap {
+  width: 100px;
+  height: 12px;
+  background: #1e293b;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.energy-bar-fill {
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(90deg, #10b981, #06b6d4, #f59e0b);
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
+}
+
+/* Star XP Counter Pill */
+.xp-counter-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1.5px solid var(--amber-boost);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 15px;
+  color: #fef08a;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.xp-counter-pill .xp-star {
+  display: inline-block;
+  animation: starPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes starPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25) rotate(15deg); }
+}
+
+/* Audio Controls */
+.hud-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: #e2e8f0;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0f172a;
+  transition: all 0.1s ease;
+}
+
+.hud-icon-btn:hover {
+  background: #334155;
+}
+
+.hud-icon-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0f172a;
+}
+
+.hud-icon-btn.muted {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+/* Teacher Jump Dropdown */
+.teacher-dropdown-wrap {
+  position: relative;
+}
+
+.teacher-modal {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 290px;
+  background: #0f172a;
+  border: 2px solid #3b82f6;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+  z-index: 100;
+}
+
+.teacher-modal.show {
+  display: block;
+  animation: slideDown 0.18s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.teacher-modal h4 {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  color: #38bdf8;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.teacher-modal-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.teacher-modal-btn:hover {
+  background: #1e293b;
+  border-color: #38bdf8;
+}
+
+/* ==========================================================================
+   GAME STAGE & PHASE SCREENS
+   ========================================================================== */
+#stage-viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 40px;
+  position: relative;
+}
+
+.game-screen {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.game-screen.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Section Header Bar */
+.stage-title-wrap {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid #6366f1;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 900;
+  color: #a5b4fc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.stage-title {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.stage-subtitle {
+  font-size: 15px;
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 6px auto 0;
+}
+
+/* ==========================================================================
+   FULL-BLEED TRADING CARD ARCHITECTURE
+   ========================================================================== */
+.trading-card-container {
+  perspective: 1200px;
+  width: 290px;
+  height: 410px;
+  position: relative;
+  cursor: pointer;
+}
+
+.trading-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 2px var(--bg-card-border);
+}
+
+.trading-card-container.flipped .trading-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Card Faces */
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+}
+
+.card-face-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  padding: 24px 20px;
+  justify-content: space-between;
+}
+
+/* Top 65% Meme Image */
+.card-media {
+  height: 65%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #020617;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.trading-card-container:hover .card-img {
+  transform: scale(1.04);
+}
+
+/* Meme Type Corner Pill */
+.card-type-pill {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.card-type-pill.do {
+  background: var(--green-do);
+  color: #ffffff;
+}
+
+.card-type-pill.dont {
+  background: var(--red-dont);
+  color: #ffffff;
+}
+
+/* Bottom 35% Chunky Caption Plate */
+.card-caption-plate {
+  height: 35%;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #0f172a;
+  border-top: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-caption-text {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: #ffffff;
+  text-align: center;
+}
+
+.card-verb-tag {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--amber-boost);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Back of Card Elements */
+.card-back-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-back-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.card-star-badge {
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.8));
+}
+
+.card-back-body {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.card-back-imperative {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.card-back-rule-type {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.card-back-rule-type.do {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.card-back-rule-type.dont {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid #ef4444;
+}
+
+.card-back-hint {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+
+.card-back-footer {
+  text-align: center;
+}
+
+/* Flip Hint Indicator */
+.flip-hint-pill {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 800;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ANIMATED STAMPING ENGINE
+   ========================================================================== */
+.rubber-stamp {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.3);
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 8px 18px;
+  border: 4px solid currentColor;
+  border-radius: 8px;
+  outline: 2px dashed currentColor;
+  outline-offset: 3px;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.4);
+}
+
+.rubber-stamp.stamp-do {
+  color: var(--green-do-light);
+  transform: translate(-50%, -50%) rotate(-12deg) scale(1.3);
+  background: rgba(6, 78, 59, 0.85);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.8), inset 0 0 12px rgba(0,0,0,0.5);
+}
+
+.rubber-stamp.stamp-dont {
+  color: var(--red-dont-light);
+  transform: translate(-50%, -50%) rotate(12deg) scale(1.3);
+  background: rgba(127, 29, 29, 0.85);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.8), inset 0 0 12px rgba(0,0,0,0.5);
+}
+
+.rubber-stamp.active-stamp-do {
+  animation: slamStampDo 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.rubber-stamp.active-stamp-dont {
+  animation: slamStampDont 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slamStampDo {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-25deg) scale(2.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-10deg) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-12deg) scale(1);
+  }
+}
+
+@keyframes slamStampDont {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(25deg) scale(2.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(10deg) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(12deg) scale(1);
+  }
+}
+
+/* ==========================================================================
+   PHASE 1: 3D FLIP FLASHCARDS (MEME SCANNER)
+   ========================================================================== */
+.scanner-carousel-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 10px 0 24px;
+  position: relative;
+}
+
+.scanner-cards-grid {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 16px 12px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+  max-width: 100%;
+}
+
+.scanner-cards-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scanner-cards-grid::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.scanner-nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #0f172a;
+  flex-shrink: 0;
+  transition: all 0.1s ease;
+}
+
+.scanner-nav-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0f172a;
+}
+
+.scanner-progress-bar-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.scanner-stars-group {
+  display: flex;
+  gap: 8px;
+}
+
+.scanner-star-slot {
+  font-size: 22px;
+  color: #475569;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.scanner-star-slot.unlocked {
+  color: #fbbf24;
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));
+}
+
+/* ==========================================================================
+   PHASE 2: GREEN LIGHT / RED LIGHT ARENA (FOCUS CARD SHOWDOWN)
+   ========================================================================== */
+.arena-stage-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vw, 60px);
+  width: 100%;
+  max-width: 1100px;
+  margin: 10px auto;
+  position: relative;
+}
+
+/* Target Drop Zones & Big 3D Buttons */
+.arena-zone {
+  flex: 1;
+  max-width: 280px;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  border: 3px dashed transparent;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+}
+
+/* Green Light Zone */
+.arena-zone-do {
+  background: radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0.35) 100%);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.15);
+  animation: pulseGreenGlow 3s infinite ease-in-out;
+}
+
+@keyframes pulseGreenGlow {
+  0%, 100% { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
+  50% { border-color: rgba(52, 211, 153, 0.8); box-shadow: 0 0 35px rgba(16, 185, 129, 0.45); }
+}
+
+.arena-zone-do.drag-over {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: var(--green-do-light);
+  transform: scale(1.04);
+}
+
+/* Red Light Zone */
+.arena-zone-dont {
+  background: radial-gradient(circle at 50% 30%, rgba(239, 68, 68, 0.18) 0%, rgba(127, 29, 29, 0.35) 100%);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.15);
+  animation: pulseRedGlow 3s infinite ease-in-out;
+}
+
+@keyframes pulseRedGlow {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+  50% { border-color: rgba(248, 113, 113, 0.8); box-shadow: 0 0 35px rgba(239, 68, 68, 0.45); }
+}
+
+.arena-zone-dont.drag-over {
+  background: rgba(239, 68, 68, 0.35);
+  border-color: var(--red-dont-light);
+  transform: scale(1.04);
+}
+
+.zone-header-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.zone-title {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.arena-zone-do .zone-title {
+  color: #34d399;
+}
+
+.arena-zone-dont .zone-title {
+  color: #f87171;
+}
+
+.zone-formula {
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.35);
+  margin-top: 4px;
+}
+
+.arena-zone-do .zone-formula {
+  color: #a7f3d0;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.arena-zone-dont .zone-formula {
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.zone-drop-indicator {
+  font-size: 13px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 12px 0;
+}
+
+.zone-big-btn {
+  width: 100%;
+  padding: 14px 12px;
+  font-size: 16px;
+}
+
+/* Center Stage Active Card */
+.arena-card-dock {
+  width: 310px;
+  height: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.arena-focus-card {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 2.5px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.arena-focus-card:active {
+  cursor: grabbing;
+}
+
+/* Elastic card entrance animation */
+.card-spring-in {
+  animation: cardSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cardSpring {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(60px);
+  }
+  70% {
+    transform: scale(1.05) translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Soft-Fail Gentle Wobble with Zero Penalty */
+.card-soft-wobble {
+  animation: gentleWobble 0.45s ease-in-out;
+}
+
+@keyframes gentleWobble {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px) rotate(-1.5deg); }
+  40% { transform: translateX(8px) rotate(1.5deg); }
+  60% { transform: translateX(-5px) rotate(-1deg); }
+  80% { transform: translateX(5px) rotate(1deg); }
+}
+
+/* Supportive Voiceover / Hint Toast */
+.arena-hint-box {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1.5px solid var(--amber-boost);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.25s ease-out;
+}
+
+.arena-hint-box span {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fef08a;
+}
+
+/* Arena Progress Info */
+.arena-counter-pill {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 900;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+
+/* ==========================================================================
+   PHASE 3: LIVE MEME TELEPROMPTER STUDIO (ORAL SHOWCASE)
+   ========================================================================== */
+.studio-layout {
+  display: flex;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+  margin: 10px auto;
+}
+
+.studio-poster-side {
+  flex: 1;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.studio-poster-frame {
+  width: 100%;
+  height: 420px;
+  border-radius: var(--radius-lg);
+  background: #0f172a;
+  border: 4px solid #3b82f6;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 20px 40px rgba(0,0,0,0.8);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.studio-poster-img {
+  height: 70%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.studio-poster-footer {
+  height: 30%;
+  background: #020617;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.studio-poster-rule {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 900;
+  color: #ffffff;
+  text-align: center;
+}
+
+.meme-selector-pill {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meme-selector-pill select {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Glowing Karaoke-Style Teleprompter Screen */
+.studio-teleprompter-side {
+  flex: 1.2;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teleprompter-monitor {
+  width: 100%;
+  background: #020617;
+  border: 3px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Monitor Scanlines */
+.teleprompter-monitor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+.teleprompter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  padding-bottom: 10px;
+}
+
+.teleprompter-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: var(--radius-full);
+  letter-spacing: 1px;
+  animation: liveBlink 1.5s infinite;
+}
+
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.teleprompter-speed {
+  font-size: 12px;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+/* Teleprompter Script Lines */
+.teleprompter-script {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.teleprompter-line {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}
+
+.teleprompter-line.active-line {
+  color: #f8fafc;
+}
+
+/* Karaoke Word Span */
+.k-word {
+  display: inline-block;
+  padding: 1px 3px;
+  border-radius: 4px;
+  transition: all 0.12s ease;
+}
+
+.k-word.highlight {
+  background: var(--amber-boost);
+  color: #0f172a;
+  font-weight: 900;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.9);
+  transform: scale(1.12);
+}
+
+/* Big Broadcast 3D Button */
+.broadcast-btn-wrap {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.btn-broadcast {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   CONFETTI CANVAS & CELEBRATION MODAL
+   ========================================================================== */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.show {
+  display: flex;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.celebration-card {
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
+  border: 3px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.4), 0 20px 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+  animation: cardSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.celebration-trophy {
+  font-size: 64px;
+  margin-bottom: 12px;
+  display: inline-block;
+  animation: trophyWobble 2s infinite ease-in-out;
+}
+
+@keyframes trophyWobble {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(-6deg); }
+  75% { transform: translateY(-8px) rotate(6deg); }
+}
+
+.celebration-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.celebration-desc {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin-bottom: 24px;
+}
+
+.celebration-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+}
+
+.stat-val {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 900;
+  color: #fbbf24;
+}
+
+.stat-lbl {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Toast System */
+#game-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #0f172a;
+  border: 2px solid #38bdf8;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 15px;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  z-index: 300;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#game-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT QUERIES
+   ========================================================================== */
+@media (max-width: 900px) {
+  .arena-stage-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .arena-zone {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    min-height: 130px;
+    padding: 16px;
+  }
+
+  .arena-zone .zone-drop-indicator {
+    display: none;
+  }
+
+  .studio-layout {
+    flex-direction: column;
+  }
+
+  .studio-poster-side, .studio-teleprompter-side {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .studio-poster-frame {
+    height: 320px;
+  }
+}
+
+@media (max-width: 640px) {
+  #game-hud {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .energy-tracker {
+    display: none;
+  }
+
+  .phase-step-btn span {
+    display: none;
+  }
+
+  .trading-card-container, .arena-card-dock {
+    width: 270px;
+    height: 380px;
+  }
+
+  .stage-title {
+    font-size: 22px;
+  }
+}
