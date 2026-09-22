@@ -77,6 +77,7 @@
   let libFilterSkill = 'all';
   let libFilterTopic = 'all';
   let libFilterCategory = 'all';
+  let libFilterCategoryGroup = 'all';
   let libFilterGrade = 'all';
   let libFilterDuration = 'all';
   let libFilterFavoritesOnly = false;
@@ -4233,20 +4234,36 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       all = all.filter(r => Boolean(r.featured));
     }
 
-    // Search query
+    // Category Group filter
+    if (libFilterCategoryGroup && libFilterCategoryGroup !== 'all') {
+      all = all.filter(r => r.categoryGroup === libFilterCategoryGroup);
+    }
+
+    // Search query (5-Pillar deep index: Title, Description, Category, Vocab, Grammar, Topics, CLIL Domain)
     if (libSearchQuery && libSearchQuery.trim()) {
       const q = libSearchQuery.toLowerCase().trim();
       all = all.filter(item => {
         const inTitle = (item.title || '').toLowerCase().includes(q);
         const inDesc = (item.description || '').toLowerCase().includes(q);
         const inCategory = (item.category || '').toLowerCase().includes(q);
+        const inCategoryGroup = (item.categoryGroup || '').toLowerCase().includes(q);
+        const inClilDomain = (item.clilDomain || '').toLowerCase().includes(q);
         const inLevel = (item.cefrLevel || item.level || '').toLowerCase().includes(q);
         const inLang = (item.languageFocus || '').toLowerCase().includes(q);
         const inTopics = Array.isArray(item.topics) ? item.topics.some(t => t.toLowerCase().includes(q)) : (item.topic || '').toLowerCase().includes(q);
         const inObjectives = Array.isArray(item.learningObjectives) ? item.learningObjectives.some(o => o.toLowerCase().includes(q)) : (Array.isArray(item.objectives) ? item.objectives.some(o => o.toLowerCase().includes(q)) : false);
         const inSkills = Array.isArray(item.skills) ? item.skills.some(s => s.toLowerCase().includes(q)) : (item.skill || '').toLowerCase().includes(q);
         const inTags = Array.isArray(item.tags) ? item.tags.some(t => t.toLowerCase().includes(q)) : false;
-        return inTitle || inDesc || inCategory || inLevel || inLang || inTopics || inObjectives || inSkills || inTags;
+        const inVocab = item.vocabulary ? (
+          (Array.isArray(item.vocabulary.core) && item.vocabulary.core.some(w => w.toLowerCase().includes(q))) ||
+          (Array.isArray(item.vocabulary.supporting) && item.vocabulary.supporting.some(w => w.toLowerCase().includes(q))) ||
+          (Array.isArray(item.vocabulary.phonics) && item.vocabulary.phonics.some(p => p.toLowerCase().includes(q)))
+        ) : false;
+        const inGrammar = item.grammar ? (
+          ((item.grammar.focusPattern || '').toLowerCase().includes(q)) ||
+          (Array.isArray(item.grammar.formulas) && item.grammar.formulas.some(f => f.toLowerCase().includes(q)))
+        ) : false;
+        return inTitle || inDesc || inCategory || inCategoryGroup || inClilDomain || inLevel || inLang || inTopics || inObjectives || inSkills || inTags || inVocab || inGrammar;
       });
     }
 
@@ -4627,6 +4644,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     );
 
     const thumbnailSvg = getResourceThumbnail(item);
+    const catGroup = item.categoryGroup || null;
+    const vocabChips = (item.vocabulary && Array.isArray(item.vocabulary.core) && item.vocabulary.core.length > 0)
+      ? item.vocabulary.core.slice(0, 3).map(w => '<span class="card-vocab-chip" style="display:inline-block; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:999px; background:rgba(56,189,248,0.12); color:#0284c7; border:1px solid rgba(56,189,248,0.25);">' + w + '</span>').join(' ')
+      : '';
+    const grammarPatternPill = (item.grammar && item.grammar.focusPattern)
+      ? '<span class="card-pill grammar-pill" title="Grammar Pattern: ' + item.grammar.focusPattern.replace(/"/g, '&quot;') + '" style="background:rgba(168,85,247,0.1); color:#7e22ce; border-color:rgba(168,85,247,0.25);">📐 ' + item.grammar.focusPattern + '</span>'
+      : '';
 
     return '' +
       '<div class="resource-card ' + (isFeatured ? 'is-featured' : '') + '" id="resource-card-' + item.id + '">' +
@@ -4637,6 +4661,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
           '<div class="card-thumb-badges">' +
             '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr badge-cefr-' + levelSlug + '">' + rawLevel + '</span>' +
+            (catGroup ? '<span class="thumb-group-badge" style="background:rgba(15,23,42,0.85); color:#cbd5e1; font-size:0.66rem; font-weight:700; padding:3px 7px; border-radius:6px; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.12);">' + catGroup + '</span>' : '') +
             '<span class="thumb-type-badge">' + typeIcon + ' ' + typeLabel + '</span>' +
             '<span class="thumb-time-badge">⏱️ ' + durationText + '</span>' +
             '<span class="thumb-xp-badge">⭐ ' + xpAmount + ' XP</span>' +
@@ -4655,10 +4680,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h3 class="resource-card-title" title="' + item.title.replace(/"/g, '&quot;') + '" onclick="openResourcePreviewModal(\'' + item.id + '\')">' + item.title + '</h3>' +
           '<p class="resource-card-desc" title="' + (item.description || '').replace(/"/g, '&quot;') + '">' + (item.description || 'Interactive classroom lesson and student practice drill.') + '</p>' +
           '<div class="card-pills-row">' +
+            (catGroup ? '<span class="card-pill group-pill" style="font-weight:700; background:rgba(30,41,59,0.06); color:#475569;">🏛️ ' + catGroup + '</span>' : '') +
             '<span class="card-pill skill-pill">🎯 ' + primarySkill + '</span>' +
             '<span class="card-pill topic-pill">📌 ' + topicText + '</span>' +
-            (langFocus ? '<span class="card-pill lang-pill" title="Language Focus">💡 ' + langFocus + '</span>' : '') +
+            grammarPatternPill +
+            (langFocus && !grammarPatternPill ? '<span class="card-pill lang-pill" title="Language Focus">💡 ' + langFocus + '</span>' : '') +
           '</div>' +
+          (vocabChips ? '<div class="card-vocab-preview-row" style="margin-top:6px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;"><span style="font-size:0.68rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.04em;">🔤 Vocab:</span> ' + vocabChips + (item.vocabulary.core.length > 3 ? '<span style="font-size:0.65rem; color:#94a3b8; font-weight:700;">+' + (item.vocabulary.core.length - 3) + '</span>' : '') + '</div>' : '') +
         '</div>' +
 
         '<div class="resource-card-footer">' +
@@ -4699,7 +4727,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     });
     const availableTopics = Array.from(topicSet).sort();
 
-    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterCategoryGroup !== 'all' || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
     const filteredItems = getFilteredResources();
 
     let tabHeading = 'All Resources';
@@ -4760,6 +4788,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
         '</div>' +
         '<div class="library-filters-row">' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'categoryGroup\', this.value)">' +
+              '<option value="all" ' + (libFilterCategoryGroup === 'all' ? 'selected' : '') + '>All Groups ▾</option>' +
+              '<option value="Science &amp; Engineering" ' + (libFilterCategoryGroup === 'Science & Engineering' ? 'selected' : '') + '>🔬 Science &amp; Engineering</option>' +
+              '<option value="Literature &amp; Storytelling" ' + (libFilterCategoryGroup === 'Literature & Storytelling' ? 'selected' : '') + '>📖 Literature &amp; Storytelling</option>' +
+              '<option value="Communication &amp; Roleplay" ' + (libFilterCategoryGroup === 'Communication & Roleplay' ? 'selected' : '') + '>🎭 Communication &amp; Roleplay</option>' +
+              '<option value="Grammar &amp; Phonics" ' + (libFilterCategoryGroup === 'Grammar & Phonics' ? 'selected' : '') + '>🔤 Grammar &amp; Phonics</option>' +
+              '<option value="Curriculum &amp; Textbooks" ' + (libFilterCategoryGroup === 'Curriculum & Textbooks' ? 'selected' : '') + '>📚 Curriculum &amp; Textbooks</option>' +
+            '</select>' +
+          '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
               '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
@@ -5168,7 +5206,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   window.setLibFilter = function(filterKey, value) {
-    if (filterKey === 'level') libFilterLevel = value;
+    if (filterKey === 'categoryGroup') libFilterCategoryGroup = value;
+    else if (filterKey === 'level') libFilterLevel = value;
     else if (filterKey === 'type') libFilterType = value;
     else if (filterKey === 'skill') libFilterSkill = value;
     else if (filterKey === 'topic') libFilterTopic = value;
@@ -5220,6 +5259,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   window.clearAllLibFilters = function() {
     libSearchQuery = '';
+    libFilterCategoryGroup = 'all';
     libFilterLevel = 'all';
     libFilterType = 'all';
     libFilterSkill = 'all';
@@ -5316,6 +5356,41 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const thumbnailSvg = getResourceThumbnail(res);
     const isFav = store.isFavorite ? store.isFavorite(res.id) : Boolean(res.featured);
 
+    // Pillar 2: Target Vocabulary Matrix
+    let vocabSection = '';
+    if (res.vocabulary && (res.vocabulary.core || res.vocabulary.supporting || res.vocabulary.phonics)) {
+      const coreChips = (Array.isArray(res.vocabulary.core) && res.vocabulary.core.length > 0)
+        ? res.vocabulary.core.map(w => '<span class="preview-vocab-chip core-chip" style="display:inline-block; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:8px; background:rgba(56,189,248,0.12); color:#0284c7; border:1px solid rgba(56,189,248,0.3); margin:2px 4px 2px 0;">' + w + '</span>').join('')
+        : '';
+      const suppChips = (Array.isArray(res.vocabulary.supporting) && res.vocabulary.supporting.length > 0)
+        ? res.vocabulary.supporting.map(w => '<span class="preview-vocab-chip supp-chip" style="display:inline-block; font-size:0.8rem; font-weight:600; padding:4px 10px; border-radius:8px; background:rgba(100,116,139,0.1); color:#475569; border:1px solid rgba(100,116,139,0.25); margin:2px 4px 2px 0;">' + w + '</span>').join('')
+        : '';
+      const phonicsChips = (Array.isArray(res.vocabulary.phonics) && res.vocabulary.phonics.length > 0)
+        ? res.vocabulary.phonics.map(p => '<span class="preview-vocab-chip phonics-chip" style="display:inline-block; font-size:0.8rem; font-weight:700; padding:4px 10px; border-radius:8px; background:rgba(245,158,11,0.12); color:#d97706; border:1px solid rgba(245,158,11,0.3); margin:2px 4px 2px 0;">' + p + '</span>').join('')
+        : '';
+      vocabSection = 
+        '<div class="preview-section preview-vocab-box" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; margin-bottom:14px;">' +
+          '<h4 class="preview-section-title" style="margin-top:0;">🔤 Target Vocabulary &amp; Lexical Chunks</h4>' +
+          (coreChips ? '<div style="margin-bottom:8px;"><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Core Target Words:</strong>' + coreChips + '</div>' : '') +
+          (suppChips ? '<div style="margin-bottom:8px;"><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Supporting Vocabulary:</strong>' + suppChips + '</div>' : '') +
+          (phonicsChips ? '<div><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Phonics &amp; Sound Cues:</strong>' + phonicsChips + '</div>' : '') +
+        '</div>';
+    }
+
+    // Pillar 3: Grammar Focus & Sentence Formulas
+    let grammarSection = '';
+    if (res.grammar && (res.grammar.focusPattern || (Array.isArray(res.grammar.formulas) && res.grammar.formulas.length > 0))) {
+      const formulasHtml = (Array.isArray(res.grammar.formulas) && res.grammar.formulas.length > 0)
+        ? res.grammar.formulas.map(f => '<div class="preview-formula-item" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:0.82rem; background:rgba(147,51,234,0.06); padding:6px 12px; border-radius:6px; margin-top:5px; border-left:3px solid #8b5cf6; color:#5b21b6;"><code>' + f + '</code></div>').join('')
+        : '';
+      grammarSection = 
+        '<div class="preview-section preview-grammar-box" style="background:#faf5ff; border:1px solid #f3e8ff; border-radius:10px; padding:12px 16px; margin-bottom:14px;">' +
+          '<h4 class="preview-section-title" style="margin-top:0; color:#6b21a8;">📐 Grammar Focus &amp; Sentence Formulas</h4>' +
+          (res.grammar.focusPattern ? '<p style="font-weight:700; color:#581c87; margin:0 0 8px 0; font-size:0.92rem;">Target Pattern: &ldquo;' + res.grammar.focusPattern + '&rdquo;</p>' : '') +
+          (formulasHtml ? '<div class="preview-formulas-wrap">' + formulasHtml + '</div>' : '') +
+        '</div>';
+    }
+
     let launchBtnText = '▶ Start Game';
     if (isWs) {
       launchBtnText = '📄 Open Worksheet';
@@ -5336,6 +5411,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="preview-hero-info">' +
           '<div class="preview-hero-badges">' +
             '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr">' + rawLevel + '</span>' +
+            (res.categoryGroup ? '<span class="preview-group-badge" style="background:#0f172a; color:#38bdf8; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.3);">🏛️ ' + res.categoryGroup + '</span>' : '') +
             '<span class="preview-grade-badge">🎓 ' + gradeText + '</span>' +
             '<span class="preview-time-badge">⏱️ ' + durationText + '</span>' +
             '<span class="preview-xp-badge">⭐ ' + xpText + '</span>' +
@@ -5354,6 +5430,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div class="preview-focus-pill-box">' +
             '<span class="preview-pill"><strong>🎯 Target Skills:</strong> ' + skillsText + '</span>' +
             '<span class="preview-pill"><strong>💡 Language Focus:</strong> ' + langFocus + '</span>' +
+            (res.clilDomain ? '<span class="preview-pill" style="border-color:#38bdf8; background:rgba(56,189,248,0.06); color:#0369a1;"><strong>🏛️ CLIL Domain:</strong> ' + res.clilDomain + '</span>' : '') +
+            (res.categoryGroup ? '<span class="preview-pill" style="border-color:#a855f7; background:rgba(168,85,247,0.06); color:#6b21a8;"><strong>🏷️ Category Group:</strong> ' + res.categoryGroup + '</span>' : '') +
           '</div>' +
         '</div>' +
 
@@ -5364,6 +5442,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             objectives.map(obj => '<li><span class="obj-check">✓</span> <span>' + obj + '</span></li>').join('') +
           '</ul>' +
         '</div>' +
+
+        // Pillar 2 & 3: Vocabulary and Grammar Sections
+        vocabSection +
+        grammarSection +
 
         // Teacher Guide
         '<div class="preview-section preview-guide-box">' +
