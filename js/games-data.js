@@ -18,6 +18,120 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "dino-dig",
+    "aliases": [
+      "dino",
+      "dinosaurs",
+      "prehistoric-lab",
+      "past-tense-dino"
+    ],
+    "title": "🦕 Dino Dig: Prehistoric Past Tense Lab",
+    "description": "Commercial-grade arcade paleontology showdown (CEFR A1–A2 | 200 XP). Excavate ancient fossils, master regular (-ed) vs. irregular past simple verbs, stamp classifications with 3D physical tactile feedback, and present museum exhibits with calibrated karaoke speech synthesis!",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryLabel": "🦕 Paleontology & Past Tense",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 8–12",
+    "ageGroup": "8-12",
+    "grade": "Grade 3–6",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5",
+      "Grade 6"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 200,
+    "skills": [
+      "Regular Past Simple Verbs (-ed)",
+      "Irregular Past Simple Verbs",
+      "Paleontology & Fossil Classification",
+      "Interactive Speech Presentation",
+      "Tactile Arcade Decision Making"
+    ],
+    "topic": "Prehistoric Life, Dinosaurs, Excavation & Past Simple Grammar",
+    "topics": [
+      "Dinosaurs & Prehistoric World",
+      "Fossils & Excavation",
+      "Regular vs Irregular Past Verbs",
+      "Museum Presentations",
+      "Scientific Inquiry"
+    ],
+    "languageFocus": "Regular Past Simple: discovered, hunted, roared, protected, lived, climbed, walked, escaped. Irregular Past Simple: dug, found, ate, flew, ran, saw, swam. Formula: Subject + Past Verb + Object.",
+    "activityMode": "Tactile Single-Focus Arena / Classroom Smart Board Challenge",
+    "interactionType": "65/35 Full-Bleed Arena Cards, 3D Push Buttons, Tactile Rubber-Stamp Slam, Calibrated Speech Karaoke, Printable Dossier",
+    "difficulty": "Grade 3–6 (A1–A2)",
+    "tags": [
+      "dinosaur",
+      "fossils",
+      "past-tense",
+      "regular-verbs",
+      "irregular-verbs",
+      "paleontology",
+      "clil",
+      "science",
+      "grammar",
+      "speech-karaoke"
+    ],
+    "learningObjectives": [
+      "Identify and classify regular past tense verbs with -ed ending versus irregular vowel-change verbs",
+      "Accurately use 10+ target prehistoric verbs in descriptive past simple sentences",
+      "Explore 5 iconic dinosaur species and their unique prehistoric adaptations",
+      "Deliver a guided museum teleprompter exhibit report with calibrated pronunciation support",
+      "Complete and print an A4 Fossil Excavation Field Dossier with blueprint diagram"
+    ],
+    "teacherInstructions": "Launch on interactive display or assign as independent practice. In Phase 1, students scan specimens and listen to native pronunciation. In Phase 2, students use 3D buttons or keyboard hotkeys [R] and [I] to sort 15 fossils into Regular and Irregular verbs. In Phase 3, students read aloud with the karaoke teleprompter before printing their Field Dossier.",
+    "studentInstructions": "Grab your paleontology hammer! Identify whether excavated dinosaur verbs are Regular (-ed) or Irregular to build a massive score streak. Then step up to the museum teleprompter to present your discoveries!",
+    "route": "dino-dig/index.html",
+    "featured": true,
+    "thumbnailIcon": "🦕",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #1e293b 50%, #f59e0b 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"dinoGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#090d16\"/>\n          <stop offset=\"50%\" stop-color=\"#1e293b\"/>\n          <stop offset=\"100%\" stop-color=\"#f59e0b\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#dinoGrad)\"/>\n      <ellipse cx=\"100\" cy=\"105\" rx=\"55\" ry=\"18\" fill=\"#f59e0b\" opacity=\"0.3\"/>\n      <ellipse cx=\"100\" cy=\"102\" rx=\"42\" ry=\"12\" fill=\"#0f172a\" stroke=\"#38bdf8\" stroke-width=\"2\"/>\n      <text x=\"100\" y=\"72\" font-size=\"44\" text-anchor=\"middle\">🦕</text>\n    </svg>",
+    "categoryGroup": "Paleontology & CLIL Science",
+    "vocabulary": {
+      "core": [
+        "fossil",
+        "excavate",
+        "skeleton",
+        "discovered",
+        "dug",
+        "found",
+        "hunted",
+        "roared"
+      ],
+      "supporting": [
+        "claws",
+        "amber",
+        "herbivore",
+        "carnivore",
+        "footprint",
+        "prehistoric",
+        "specimen"
+      ],
+      "phonics": [
+        "/-ed/ voiced /d/ in roared, lived",
+        "/-ed/ unvoiced /t/ in walked, hunted",
+        "/-ed/ syllable /ɪd/ in protected"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Subject + Past Simple Verb + Prepositional Phrase",
+      "formula": "Regular: Base + -ed (discover ➔ discovered). Irregular: Vowel / Form Change (dig ➔ dug, find ➔ found).",
+      "formulas": [
+        "Regular Past Simple: Base + -ed / -d",
+        "Irregular Past Simple: Unique Past Form (dig -> dug, fly -> flew)"
+      ]
+    },
+    "clilDomain": "Paleontology & Earth History",
+    "clilTheme": "Prehistoric Life & Fossil Evidence"
+  },
+  {
     "id": "good-ideas-lab",
     "aliases": [
       "inventors-odyssey",
