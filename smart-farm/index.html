@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌾 The Smart Farm: Young Inventors Mission • Children's Adventure Game</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🌾</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ZERO-DEPENDENCY CONFETTI CELEBRATION CANVAS -->
+  <canvas id="farmConfettiCanvas" class="confetti-canvas"></canvas>
+
+  <!-- SVG METALLIC PIPE DEFINITIONS FOR 3D SHADING -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="metalGradStraight" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#94a3b8"/>
+        <stop offset="30%" stop-color="#f8fafc"/>
+        <stop offset="70%" stop-color="#475569"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </linearGradient>
+      <linearGradient id="metalGradCorner" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#94a3b8"/>
+        <stop offset="40%" stop-color="#f8fafc"/>
+        <stop offset="75%" stop-color="#475569"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- TOP GAME HUD (Visible after Start Screen) -->
+  <header class="farm-hud" id="farmTopHUD" style="display: none;">
+    <div class="hud-left">
+      <span class="hud-mascot">🤖</span>
+      <div class="hud-title">
+        <h1>
+          <span>The Smart Farm</span>
+          <span style="font-size:0.75rem; background:#0284c7; color:#fff; padding:2px 8px; border-radius:999px;">A1 Mission</span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Power & XP Meters -->
+    <div class="hud-right-stats">
+      <div class="power-meter-pill" title="Farm System Restoration Level">
+        <span style="font-size:0.8rem; font-weight:900; color:#94a3b8;">System:</span>
+        <div class="power-track">
+          <div class="power-fill" id="hudPowerBarFill"></div>
+        </div>
+        <span style="font-size:0.82rem; font-weight:900; color:#38bdf8;" id="hudPowerNumber">0% Power</span>
+      </div>
+
+      <div class="xp-counter-pill" id="hudFarmXP" title="Total XP Earned">
+        ⭐ +0 XP
+      </div>
+
+      <button type="button" class="btn-game-3d btn-blue" onclick="FarmEngine.switchScene('map')" style="font-size:0.88rem; padding:8px 16px;">
+        🗺️ Farm Map
+      </button>
+
+      <a href="../index.html" class="btn-game-3d btn-amber" style="font-size:0.88rem; padding:8px 16px;" title="Exit to Academy Hub">
+        ✕ Exit
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN GAME VIEWPORT -->
+  <main class="game-viewport">
+
+    <!-- ===================================================================
+         1. START SCREEN: DRAMATIC SYSTEM FAILURE & ROBO-SPROUT
+         =================================================================== -->
+    <section class="game-screen is-active-screen" id="screen-start">
+      <div class="screen-start-container">
+        <!-- Visual Lightning / Sparks Background -->
+        <div class="start-sparkles-layer"></div>
+        <div class="start-failure-blackout" id="startFailureOverlay"></div>
+
+        <div class="start-title-badge">
+          ⚡ SYSTEM EMERGENCY • SMART FARM POWER LOST
+        </div>
+
+        <h1 class="start-hero-heading">
+          🌾 THE SMART FARM<br>
+          <span>YOUNG INVENTORS MISSION</span>
+        </h1>
+
+        <p class="start-hero-desc">
+          A sudden power blackout has hit the smart farm! The animals need water, warmth, and supplies. Can you solve the repairs and invent new farm machines?
+        </p>
+
+        <!-- Companion Robot Mascot Stage -->
+        <div class="start-robot-stage">
+          <div class="start-robot-avatar">🤖</div>
+          <div class="robot-speech-bubble" id="startRobotSpeech" style="display: none;">
+            "Beep-boop! Young Inventor! We need your help! The smart farm lost its power!"
+          </div>
+        </div>
+
+        <!-- Initial Dramatic Failure Button -->
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; z-index: 20;">
+          <button type="button" class="btn-game-3d btn-red" id="btnTriggerFailure" onclick="FarmEngine.startStoryIntro()">
+            ⚡ SIMULATE BLACKOUT ALARM!
+          </button>
+          <button type="button" class="btn-game-3d btn-green" id="btnStartMission" onclick="FarmEngine.enterFarmMap()" style="display: none; font-size: 1.3rem; padding: 18px 36px;">
+            🚀 START MISSION ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         2. FARM MAP: INTERACTIVE 3D CARTOON WORLD
+         =================================================================== -->
+    <section class="game-screen" id="screen-map">
+      <div class="farm-map-world">
+        <div class="farm-map-header">
+          <div>
+            <h2 style="font-size: 1.5rem; font-weight: 900; color: #fff;">
+              🌾 Interactive Smart Farm Map
+            </h2>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+              Tap an active zone to begin emergency repairs and earn machine parts!
+            </p>
+          </div>
+          <div class="power-meter-pill">
+            <span style="font-size: 0.9rem; font-weight: 900; color: #fde047;" id="hudBadgeCount">🏅 0/4 Badges</span>
+          </div>
+        </div>
+
+        <!-- 4 Interactive Farm Zones -->
+        <div class="farm-zones-grid" id="farmMapGrid">
+          <!-- Populated dynamically by FarmEngine.renderMapZones() -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         3. MISSION 1: SAVE THE COW 🐄 (PIPE PUZZLE)
+         =================================================================== -->
+    <section class="game-screen" id="screen-mission-1">
+      <div style="background: #0f172a; border: 3px solid #334155; border-radius: 24px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: #38bdf8;">
+            🐄 Mission 1: Save the Thirsty Cow
+          </h2>
+          <p style="font-size: 0.92rem; color: #cbd5e1;">
+            Rotate the pipes to connect the water tank to the drinking trough!
+          </p>
+        </div>
+        <button type="button" class="btn-game-3d btn-blue" onclick="FarmEngine.switchScene('map')">
+          ← Back to Map
+        </button>
+      </div>
+
+      <div class="pipe-arena-layout">
+        <!-- Left: 4x3 Interactive Pipe Grid -->
+        <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 800; font-size: 0.9rem; color: #38bdf8;">
+            <span>💧 Water Tank (Start)</span>
+            <span>Trough (Finish) ➔</span>
+          </div>
+          <div class="pipe-grid-box" id="pipeGridContainer">
+            <!-- Rendered by MiniGames.renderPipeGrid() -->
+          </div>
+          <div style="margin-top: 10px; font-size: 0.85rem; color: #94a3b8; text-align: center;">
+            💡 Tap or click any pipe to rotate it 90 degrees!
+          </div>
+        </div>
+
+        <!-- Right: Cow Character & Reaction Box -->
+        <div class="pipe-target-panel" id="cowReactionBox">
+          <div class="animal-speech-bubble">
+            "Mooo! I am so thirsty! Please bring water to my trough!" 💧
+          </div>
+          <div class="cow-avatar">
+            <span style="font-size: 5.5rem;">🐄</span>
+          </div>
+          <div style="background: #1e293b; border-radius: 14px; padding: 10px 16px; font-weight: 800; font-size: 0.95rem; color: #fde047;">
+            Target: "The cow needs water."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         4. MISSION 2: SAVE THE CHICKEN 🐔 (CLIMATE CONTROL)
+         =================================================================== -->
+    <section class="game-screen" id="screen-mission-2">
+      <div style="background: #0f172a; border: 3px solid #334155; border-radius: 24px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: #f59e0b;">
+            🐔 Mission 2: Smart Chicken House (Climate Control)
+          </h2>
+          <p style="font-size: 0.92rem; color: #cbd5e1;">
+            It is nighttime! Use the smart devices to reach the ideal warm temperature (21°C–25°C).
+          </p>
+        </div>
+        <button type="button" class="btn-game-3d btn-blue" onclick="FarmEngine.switchScene('map')">
+          ← Back to Map
+        </button>
+      </div>
+
+      <div class="climate-arena-layout">
+        <!-- Left: Smart Coop Interior & Animated Chicken Reaction -->
+        <div class="coop-interior-stage">
+          <div id="coopChickenDisplay">
+            <!-- Populated dynamically by MiniGames.updateClimateUI() -->
+          </div>
+
+          <!-- Digital Thermometer Bar -->
+          <div style="width: 100%; max-width: 450px; background: #0f172a; border: 2.5px solid #334155; border-radius: 20px; padding: 16px; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 900; color: #cbd5e1;">Inside Temperature:</span>
+              <span style="font-size: 1.5rem; font-weight: 900; color: #38bdf8;" id="coopTempDisplay">12°C</span>
+            </div>
+            <div style="width: 100%; height: 16px; background: #1e293b; border-radius: 999px; overflow: hidden; border: 1px solid #475569;">
+              <div id="coopTempGaugeBar" style="width: 30%; height: 100%; background: #38bdf8; transition: width 0.4s ease, background 0.4s ease;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: #94a3b8; margin-top: 6px;">
+              <span>0°C (Cold)</span>
+              <span style="color: #10b981; font-weight: 900;">21°C–25°C (Warm &amp; Cozy)</span>
+              <span>40°C (Hot)</span>
+            </div>
+          </div>
+
+          <div id="coopClimateStatus" style="margin-top: 14px; font-weight: 800; font-size: 1rem;">
+            <!-- Status message -->
+          </div>
+        </div>
+
+        <!-- Right: 4 Interactive Device Toggles -->
+        <div class="coop-controls-panel">
+          <h3 style="font-size: 1.15rem; font-weight: 900; color: #fff; margin-bottom: 4px;">
+            🕹️ Smart Coop Devices
+          </h3>
+          <p style="font-size: 0.85rem; color: #94a3b8;">
+            Tap devices to warm up or cool down the coop:
+          </p>
+
+          <button type="button" class="climate-device-btn" id="btnClimate-heater" onclick="MiniGames.toggleClimateDevice('heater')">
+            <div class="device-left">
+              <span>🔥</span>
+              <span>Thermal Floor Heater (+10°C)</span>
+            </div>
+            <span class="toggle-state">OFF</span>
+          </button>
+
+          <button type="button" class="climate-device-btn" id="btnClimate-light" onclick="MiniGames.toggleClimateDevice('light')">
+            <div class="device-left">
+              <span>💡</span>
+              <span>Heat Glow Lamp (+5°C)</span>
+            </div>
+            <span class="toggle-state">OFF</span>
+          </button>
+
+          <button type="button" class="climate-device-btn" id="btnClimate-fan" onclick="MiniGames.toggleClimateDevice('fan')">
+            <div class="device-left">
+              <span>❄️</span>
+              <span>Ventilation Fan (-6°C)</span>
+            </div>
+            <span class="toggle-state">OFF</span>
+          </button>
+
+          <button type="button" class="climate-device-btn" id="btnClimate-door" onclick="MiniGames.toggleClimateDevice('door')">
+            <div class="device-left">
+              <span>🚪</span>
+              <span>Coop Draft Door (-3°C)</span>
+            </div>
+            <span class="toggle-state">OFF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. MISSION 3: FARM ROBOT 🤖 (BLOCK SEQUENCING)
+         =================================================================== -->
+    <section class="game-screen" id="screen-mission-3">
+      <div style="background: #0f172a; border: 3px solid #334155; border-radius: 24px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: #a855f7;">
+            🤖 Mission 3: Farm Robot Box Carrier
+          </h2>
+          <p style="font-size: 0.92rem; color: #cbd5e1;">
+            Program Robo-Sprout to go to the box, pick it up, carry it, and stop at the barn!
+          </p>
+        </div>
+        <button type="button" class="btn-game-3d btn-blue" onclick="FarmEngine.switchScene('map')">
+          ← Back to Map
+        </button>
+      </div>
+
+      <div class="robot-arena-layout">
+        <!-- Visual Runway Track -->
+        <div class="robot-runway-container" id="robotRunwayTrack">
+          <!-- Rendered by MiniGames.renderRobotTrack() -->
+        </div>
+
+        <!-- Programming Workspace -->
+        <div class="program-workspace-row">
+          <!-- Command Block Toolbox -->
+          <div class="command-toolbox">
+            <h3 style="font-size: 1.1rem; font-weight: 900; color: #fff;">
+              🧩 Available Command Blocks
+            </h3>
+            <p style="font-size: 0.84rem; color: #94a3b8;">
+              Tap blocks to add them to your program sequence:
+            </p>
+
+            <div class="command-buttons-grid">
+              <button type="button" class="cmd-block-btn" onclick="MiniGames.addCommandToProgram('go')">
+                <span>▶️</span> <span>1. GO</span>
+              </button>
+              <button type="button" class="cmd-block-btn" onclick="MiniGames.addCommandToProgram('pickup')">
+                <span>📦</span> <span>2. PICK UP</span>
+              </button>
+              <button type="button" class="cmd-block-btn" onclick="MiniGames.addCommandToProgram('carry')">
+                <span>🚚</span> <span>3. CARRY</span>
+              </button>
+              <button type="button" class="cmd-block-btn" onclick="MiniGames.addCommandToProgram('stop')">
+                <span>🛑</span> <span>4. STOP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Program Slots & Runner -->
+          <div class="program-slots-container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 1.1rem; font-weight: 900; color: #fff;">
+                📜 Robot Execution Sequence
+              </h3>
+              <button type="button" class="btn-game-3d btn-red" onclick="MiniGames.clearProgram()" style="font-size: 0.8rem; padding: 6px 12px;">
+                Clear ✕
+              </button>
+            </div>
+
+            <div class="program-slots-row" id="programSlotsRow">
+              <!-- Rendered by MiniGames.renderProgramSlots() -->
+            </div>
+
+            <div id="robotProgramHint" style="display: none; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; border-radius: 12px; padding: 8px 12px; font-size: 0.85rem; color: #fde68a;">
+              <!-- Educational hint on soft-fail -->
+            </div>
+
+            <button type="button" class="btn-game-3d btn-green" onclick="MiniGames.executeProgram()" style="width: 100%; font-size: 1.15rem; padding: 14px;">
+              ▶️ RUN PROGRAM!
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         6. MISSION 4: INVENTOR LAB 🛠️ & TELEPROMPTER PRESENTATION
+         =================================================================== -->
+    <section class="game-screen" id="screen-lab">
+      <div style="background: #0f172a; border: 3px solid #334155; border-radius: 24px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 900; color: #10b981;">
+            🛠️ Final Mission: Young Inventor Lab
+          </h2>
+          <p style="font-size: 0.92rem; color: #cbd5e1;">
+            Combine body, power, and tool to build your custom farm machine!
+          </p>
+        </div>
+        <button type="button" class="btn-game-3d btn-blue" onclick="FarmEngine.switchScene('map')">
+          ← Back to Map
+        </button>
+      </div>
+
+      <div class="lab-arena-grid">
+        <!-- Left: Modular Machine Configurator -->
+        <div style="background: #0f172a; border: 3px solid #334155; border-radius: 28px; padding: 22px; display: flex; flex-direction: column; gap: 16px;">
+          <!-- 1. Body Selection -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 900; color: #38bdf8; margin-bottom: 6px;">
+              1. Choose Machine Body:
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="pickerBodiesList"></div>
+          </div>
+
+          <!-- 2. Power Selection -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 900; color: #f59e0b; margin-bottom: 6px;">
+              2. Choose Clean Power Source:
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="pickerPowersList"></div>
+          </div>
+
+          <!-- 3. Tool Selection -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 900; color: #10b981; margin-bottom: 6px;">
+              3. Choose Farm Tool:
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="pickerToolsList"></div>
+          </div>
+
+          <!-- 4. Recipient Selection -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 900; color: #a855f7; margin-bottom: 6px;">
+              4. Who does your invention help?
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="pickerRecipientsList"></div>
+          </div>
+        </div>
+
+        <!-- Right: Assembled Machine Stage & Teleprompter -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Assembled Preview -->
+          <div id="assembledMachineDisplay">
+            <!-- Populated by MiniGames.updateAssembledPreview() -->
+          </div>
+
+          <!-- Teleprompter Presentation Box -->
+          <div class="teleprompter-script-console">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid rgba(56, 189, 248, 0.3); padding-bottom: 10px;">
+              <span style="font-size: 0.88rem; font-weight: 900; color: #38bdf8;">🎙️ A1 Speaking Presentation</span>
+              <span style="font-size: 0.74rem; background: #ef4444; color: #fff; padding: 2px 8px; border-radius: 999px;">LIVE MIC</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="tele-line" id="tpLine1">This is my invention.</div>
+              <div class="tele-line" id="tpLine2">It is a Smart Machine powered by Solar Energy.</div>
+              <div class="tele-line" id="tpLine3">It gives water.</div>
+              <div class="tele-line" id="tpLine4">It helps the cow!</div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn-game-3d btn-blue" id="btnPresentSpeech" onclick="MiniGames.readPresentationKaraoke()" style="flex: 1;">
+                <span>🎙️</span> <span>Read Aloud (Karaoke Mode)</span>
+              </button>
+              <button type="button" class="btn-game-3d btn-green" onclick="FarmEngine.finishAllMissionsShowcase()" style="flex: 1;">
+                <span>🏆</span> <span>Complete &amp; Restore Farm!</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. RESTORED SMART FARM SHOWCASE (VICTORY SCENE)
+         =================================================================== -->
+    <section class="game-screen" id="screen-restored">
+      <div class="restored-farm-hero">
+        <div style="font-size: 4.5rem; margin-bottom: 10px;">☀️🌾🚜✨</div>
+        <h1 style="font-size: 2.8rem; font-weight: 900; color: #065f46; margin-bottom: 8px;">
+          THE SMART FARM IS 100% RESTORED!
+        </h1>
+        <p style="font-size: 1.25rem; font-weight: 800; color: #047857; max-width: 680px; margin: 0 auto 24px auto;">
+          The cow has fresh water, the chicken is warm and cozy, the boxes are stored, and your custom invention is running across the fields!
+        </p>
+
+        <!-- Working Farm Elements Showcase -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto 28px auto;">
+          <div style="background: rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;">
+            <div style="font-size: 3rem;">🐄💧</div>
+            <strong style="color: #065f46;">Cow Pasture</strong>
+            <p style="font-size: 0.82rem; color: #166534;">Automated water flow active</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;">
+            <div style="font-size: 3rem;">🐔☀️</div>
+            <strong style="color: #065f46;">Smart Coop</strong>
+            <p style="font-size: 0.82rem; color: #166534;">Warm &amp; cozy temperature 23°C</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;">
+            <div style="font-size: 3rem;">🤖📦</div>
+            <strong style="color: #065f46;">Robot Silo</strong>
+            <p style="font-size: 0.82rem; color: #166534;">Grain boxes safely organized</p>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.85); border-radius: 18px; padding: 16px;">
+            <div style="font-size: 3rem;">🚜💡</div>
+            <strong style="color: #065f46;">Your Invention</strong>
+            <p style="font-size: 0.82rem; color: #166534;">Custom eco-machine operating</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" class="btn-game-3d btn-green" onclick="FarmEngine.enterFarmMap()" style="font-size: 1.15rem; padding: 14px 28px;">
+            🗺️ Revisit Farm Map
+          </button>
+          <button type="button" class="btn-game-3d btn-amber" onclick="FarmEngine.restartGame()" style="font-size: 1.15rem; padding: 14px 28px;">
+            ↺ Play Again from Beginning
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MISSION SUCCESS REWARD MODAL -->
+  <div class="modal-overlay" id="rewardSuccessModal" onclick="FarmEngine.closeRewardModal()">
+    <div class="reward-card" onclick="event.stopPropagation()">
+      <div style="font-size: 4rem; filter: drop-shadow(0 0 20px #f59e0b);">🏆</div>
+      <h2 style="font-size: 1.8rem; font-weight: 900; color: #facc15;" id="rewardModalTitle">
+        Mission Complete!
+      </h2>
+      <p style="font-size: 1.1rem; color: #cbd5e1;" id="rewardModalDesc">
+        You successfully repaired the farm system!
+      </p>
+
+      <div style="background: #1e293b; border: 2px solid #38bdf8; border-radius: 16px; padding: 10px 20px; font-size: 1rem; font-weight: 900; color: #38bdf8;" id="rewardPartName">
+        Unlocked: Hydro-Sprayer &amp; Water Valve
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 8px;">
+        <span class="xp-counter-pill" style="font-size: 1.1rem; padding: 8px 20px;">
+          ⭐ +50 XP
+        </span>
+      </div>
+
+      <button type="button" class="btn-game-3d btn-green" onclick="FarmEngine.closeRewardModal()" style="width: 100%; margin-top: 10px; font-size: 1.15rem;">
+        Continue Adventure ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/farm-data.js"></script>
+  <script src="js/farm-audio.js"></script>
+  <script src="js/mini-games.js"></script>
+  <script src="js/farm-engine.js"></script>
+</body>
+</html>
