@@ -4618,57 +4618,52 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   function renderResourceCard(item) {
-    const primaryObjective = (item.learningObjectives && item.learningObjectives[0]) 
-                             || item.description 
-                             || "Master target communicative structures.";
-    const grammarFocus = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) 
-                         || item.languageFocus 
-                         || "Key Sentence Structure";
-    const vocabList = (item.vocabulary && item.vocabulary.core) 
-                      ? item.vocabulary.core.slice(0, 4).join(" • ") 
-                      : (item.skills ? item.skills.slice(0, 3).join(" • ") : "");
-    const topicPill = (item.topics && item.topics[0]) || item.topic || item.clilDomain || item.category || "General";
-    const thumbnailSvg = getResourceThumbnail(item);
+    const objective = (item.learningObjectives && item.learningObjectives[0]) || item.description || "Core communicative practice";
+    const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) || item.languageFocus || "Sentence Structure";
+    const words = (item.vocabulary && item.vocabulary.core) 
+                  ? item.vocabulary.core.slice(0, 4).join(" • ") 
+                  : (item.skills ? item.skills.slice(0, 3).join(" • ") : "");
+    const topic = (item.topics && item.topics[0]) || item.topic || item.category || "General";
+    const thumbnailSvg = typeof getResourceThumbnail === 'function' ? getResourceThumbnail(item) : '';
     const launchRoute = item.isWorksheet ? (item.pdfUrl || item.route || item.id) : (item.route || item.id);
 
     return `
-      <div class="resource-card-v2 resource-card" data-id="${item.id}" data-category="${item.category || ''}" data-topic="${topicPill.replace(/"/g, '&quot;')}">
-        <!-- Visual Banner -->
+      <div class="resource-card-v2" data-id="${item.id}" data-category="${item.category || ''}">
         <div class="card-hero" style="background: ${item.gradient || 'linear-gradient(135deg, #1e1b4b, #090d16)'};">
           ${thumbnailSvg ? `<div class="card-hero-art" style="position:absolute; inset:0; opacity:0.35; pointer-events:none; overflow:hidden;">${thumbnailSvg}</div>` : ''}
           <span class="card-icon">${item.thumbnailIcon || (item.isWorksheet ? '📄' : '🎮')}</span>
           <span class="card-level-chip">${item.cefrLevel || item.level || 'A1'} • +${item.xp || 100} XP</span>
-          <span class="card-sync-status">🟢 Synced</span>
+          <span class="card-sync-pill">🟢 Synced</span>
         </div>
 
-        <!-- Card Core Body -->
         <div class="card-body">
-          <h3 class="card-title" onclick="openResourceDetails('${item.id}')">${item.title}</h3>
+          <h3 class="card-title" onclick="openResourceInspector('${item.id}')">${item.title}</h3>
           
-          <!-- Objective Banner -->
-          <div class="pillar-box pillar-objective" title="${primaryObjective.replace(/"/g, '&quot;')}">
-            🎯 <strong>Goal:</strong> ${primaryObjective.length > 70 ? primaryObjective.substring(0, 70) + '...' : primaryObjective}
+          <!-- Pillar 1: Objectives -->
+          <div class="card-pillar pillar-goal" title="${objective.replace(/"/g, '&quot;')}">
+            🎯 <strong>Goal:</strong> ${objective.length > 68 ? objective.substring(0, 68) + '...' : objective}
           </div>
 
-          <!-- Linguistic Pillars -->
-          <div class="pillar-grid">
-            <div class="pillar-tag pillar-topic" title="CLIL Topic: ${topicPill.replace(/"/g, '&quot;')}">
-              🏷️ <strong>Topic:</strong> ${topicPill}
-            </div>
-            <div class="pillar-tag pillar-grammar" title="Target Grammar: ${grammarFocus.replace(/"/g, '&quot;')}">
-              📐 <strong>Grammar:</strong> ${grammarFocus}
-            </div>
-            ${vocabList ? `
-              <div class="pillar-tag pillar-vocab" title="Core Vocabulary: ${vocabList.replace(/"/g, '&quot;')}">
-                🔤 <strong>Words:</strong> ${vocabList}
-              </div>
-            ` : ''}
+          <!-- Pillar 2: Topics -->
+          <div class="card-pillar pillar-topic">
+            🏷️ <strong>Topic:</strong> ${topic}
           </div>
 
-          <!-- Action Controls -->
-          <div class="card-footer-actions">
+          <!-- Pillar 3: Grammar Pattern -->
+          <div class="card-pillar pillar-grammar">
+            📐 <strong>Grammar:</strong> ${grammar}
+          </div>
+
+          <!-- Pillar 4: Words / Vocabulary -->
+          ${words ? `
+            <div class="card-pillar pillar-vocab">
+              🔤 <strong>Words:</strong> ${words}
+            </div>
+          ` : ''}
+
+          <div class="card-actions-bar">
             <button class="btn-play" onclick="launchResource('${launchRoute}')">▶ Start Game</button>
-            <button class="btn-inspect" onclick="openResourceDetails('${item.id}')">👁️ Details</button>
+            <button class="btn-preview" onclick="openResourceInspector('${item.id}')">👁️ Details</button>
             <button class="btn-assign" onclick="openAssignModal('${item.id}')">📋 Assign</button>
             ${item.worksheetRoute ? `<a href="${item.worksheetRoute}" target="_blank" class="btn-ws" title="Worksheet">📄 WS</a>` : ''}
           </div>
