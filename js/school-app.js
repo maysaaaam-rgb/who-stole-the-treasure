@@ -4234,6 +4234,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       all = all.filter(r => Boolean(r.featured));
     }
 
+    // Category filter (4 Core Pillars)
+    if (libFilterCategory && libFilterCategory !== 'all') {
+      all = all.filter(r => r.category === libFilterCategory);
+    }
+
     // Category Group filter
     if (libFilterCategoryGroup && libFilterCategoryGroup !== 'all') {
       all = all.filter(r => r.categoryGroup === libFilterCategoryGroup);
@@ -4598,11 +4603,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   function renderResourceCard(item) {
     // Safe fallbacks to prevent undefined
-    const topic = (item.topics && item.topics[0]) || item.topic || "General";
-    const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern)) 
+    const topic = (item.topics && item.topics[0]) || item.topic || item.clilDomain || item.clilTheme || "General";
+    const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) 
                     || item.languageFocus 
                     || "Grammar Structure";
-    const words = (item.vocabulary && item.vocabulary.core) 
+    const words = (item.vocabulary && item.vocabulary.core && item.vocabulary.core.length > 0) 
                   ? item.vocabulary.core.slice(0, 3).join(", ") 
                   : (item.words ? item.words.slice(0, 3).join(", ") : "");
     const objectives = item.learningObjectives || item.objectives || [];
@@ -4677,6 +4682,112 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return renderResourceCard(r);
   }
 
+  const CATALOG_SECTIONS = [
+    {
+      id: "clil-science",
+      title: "🔬 CLIL & Science",
+      subtitle: "Integrated science, astronomy, neuroscience, geography & natural phenomena missions",
+      categoryKey: "CLIL & Science",
+      badgeColor: "rgba(56, 189, 248, 0.15)",
+      textColor: "#0284c7",
+      borderColor: "rgba(56, 189, 248, 0.35)"
+    },
+    {
+      id: "engineering-inventions",
+      title: "🛠️ Engineering & Inventions",
+      subtitle: "Hands-on design thinking, biomimicry, historical relics, blueprinting & STEM build labs",
+      categoryKey: "Engineering & Inventions",
+      badgeColor: "rgba(6, 182, 212, 0.15)",
+      textColor: "#0891b2",
+      borderColor: "rgba(6, 182, 212, 0.35)"
+    },
+    {
+      id: "story-literature",
+      title: "📖 Story & Literature",
+      subtitle: "Narrative adventures, theatre plays, skimming quests & interactive literature",
+      categoryKey: "Story & Literature",
+      badgeColor: "rgba(168, 85, 247, 0.15)",
+      textColor: "#9333ea",
+      borderColor: "rgba(168, 85, 247, 0.35)"
+    },
+    {
+      id: "phonics-language",
+      title: "🔤 Phonics & Language Quests",
+      subtitle: "Modal mastery, past tense journeys, phonological awareness & syntactic fluency",
+      categoryKey: "Phonics & Language Quests",
+      badgeColor: "rgba(245, 158, 11, 0.15)",
+      textColor: "#d97706",
+      borderColor: "rgba(245, 158, 11, 0.35)"
+    }
+  ];
+
+  function renderCategorizedCatalog(items) {
+    if (!items || items.length === 0) {
+      return (
+        '<div class="library-empty-state">' +
+          '<div class="library-empty-icon">🔍</div>' +
+          '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
+          '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
+          '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
+            '<span>↺</span> <span>Clear all filters</span>' +
+          '</button>' +
+        '</div>'
+      );
+    }
+
+    let html = '<div class="library-catalog-container">';
+    const matchedCategoryKeys = new Set();
+
+    CATALOG_SECTIONS.forEach(sec => {
+      const secItems = items.filter(r => r.category === sec.categoryKey);
+      if (secItems.length > 0) {
+        matchedCategoryKeys.add(sec.categoryKey);
+        html += 
+          '<section class="library-catalog-section" id="catalog-section-' + sec.id + '">' +
+            '<div class="catalog-section-header">' +
+              '<div class="catalog-section-left">' +
+                '<div class="catalog-section-title-row">' +
+                  '<span class="catalog-section-badge" style="background:' + sec.badgeColor + '; color:' + sec.textColor + '; border:1px solid ' + sec.borderColor + ';">' + sec.title + '</span>' +
+                '</div>' +
+                '<p class="catalog-section-desc">' + sec.subtitle + '</p>' +
+              '</div>' +
+              '<div class="catalog-section-right">' +
+                '<span class="catalog-section-counter">' + secItems.length + (secItems.length === 1 ? ' Lesson' : ' Lessons') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="resource-library-grid">' +
+              secItems.map(r => renderResourceCard(r)).join('') +
+            '</div>' +
+          '</section>';
+      }
+    });
+
+    // Check for remaining items (e.g. Worksheets or items outside the 4 main categories)
+    const remainingItems = items.filter(r => !matchedCategoryKeys.has(r.category));
+    if (remainingItems.length > 0) {
+      html += 
+        '<section class="library-catalog-section" id="catalog-section-practice">' +
+          '<div class="catalog-section-header">' +
+            '<div class="catalog-section-left">' +
+              '<div class="catalog-section-title-row">' +
+                '<span class="catalog-section-badge" style="background:rgba(16, 185, 129, 0.15); color:#059669; border:1px solid rgba(16, 185, 129, 0.35);">📄 Printable Worksheets &amp; Practice Drills</span>' +
+              '</div>' +
+              '<p class="catalog-section-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
+            '</div>' +
+            '<div class="catalog-section-right">' +
+              '<span class="catalog-section-counter">' + remainingItems.length + (remainingItems.length === 1 ? ' Resource' : ' Resources') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="resource-library-grid">' +
+            remainingItems.map(r => renderResourceCard(r)).join('') +
+          '</div>' +
+        '</section>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
   function renderLibraryView(container) {
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
@@ -4698,7 +4809,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     });
     const availableTopics = Array.from(topicSet).sort();
 
-    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterCategoryGroup !== 'all' || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const hasActiveFilters = Boolean(libSearchQuery.trim()) || libFilterCategory !== 'all' || libFilterCategoryGroup !== 'all' || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
     const filteredItems = getFilteredResources();
 
     let tabHeading = 'All Resources';
@@ -4759,6 +4870,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
         '</div>' +
         '<div class="library-filters-row">' +
+          '<div class="filter-dropdown-wrap">' +
+            '<select class="library-select" onchange="setLibFilter(\'category\', this.value)">' +
+              '<option value="all" ' + (libFilterCategory === 'all' ? 'selected' : '') + '>All Categories ▾</option>' +
+              '<option value="CLIL &amp; Science" ' + (libFilterCategory === 'CLIL & Science' ? 'selected' : '') + '>🔬 CLIL &amp; Science</option>' +
+              '<option value="Engineering &amp; Inventions" ' + (libFilterCategory === 'Engineering & Inventions' ? 'selected' : '') + '>🛠️ Engineering &amp; Inventions</option>' +
+              '<option value="Story &amp; Literature" ' + (libFilterCategory === 'Story & Literature' ? 'selected' : '') + '>📖 Story &amp; Literature</option>' +
+              '<option value="Phonics &amp; Language Quests" ' + (libFilterCategory === 'Phonics & Language Quests' ? 'selected' : '') + '>🔤 Phonics &amp; Language Quests</option>' +
+            '</select>' +
+          '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'categoryGroup\', this.value)">' +
               '<option value="all" ' + (libFilterCategoryGroup === 'all' ? 'selected' : '') + '>All Groups ▾</option>' +
@@ -5140,19 +5260,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</div>' +
           '</div>' +
         '</div>' : '') +
-      // 5. Resource Grid Container
-      '<div id="library-resource-grid" class="resource-library-grid">' +
-        (filteredItems.length === 0 ? 
-          '<div class="library-empty-state">' +
-            '<div class="library-empty-icon">🔍</div>' +
-            '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
-            '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
-            '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
-              '<span>↺</span> <span>Clear all filters</span>' +
-            '</button>' +
-          '</div>' :
-          filteredItems.map(r => renderResourceCard(r)).join('')
-        ) +
+      // 5. Categorized Resource Catalog Shelves
+      '<div id="library-resource-grid">' +
+        renderCategorizedCatalog(filteredItems) +
       '</div>';
   }
 
@@ -5181,7 +5291,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   window.setLibFilter = function(filterKey, value) {
-    if (filterKey === 'categoryGroup') libFilterCategoryGroup = value;
+    if (filterKey === 'category') libFilterCategory = value;
+    else if (filterKey === 'categoryGroup') libFilterCategoryGroup = value;
     else if (filterKey === 'level') libFilterLevel = value;
     else if (filterKey === 'type') libFilterType = value;
     else if (filterKey === 'skill') libFilterSkill = value;
@@ -5234,6 +5345,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   window.clearAllLibFilters = function() {
     libSearchQuery = '';
+    libFilterCategory = 'all';
     libFilterCategoryGroup = 'all';
     libFilterLevel = 'all';
     libFilterType = 'all';
@@ -5258,19 +5370,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       return;
     }
     const filtered = getFilteredResources();
-    if (filtered.length === 0) {
-      grid.innerHTML = 
-        '<div class="library-empty-state">' +
-          '<div class="library-empty-icon">🔍</div>' +
-          '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
-          '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
-          '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
-            '<span>↺</span> <span>Clear all filters</span>' +
-          '</button>' +
-        '</div>';
-    } else {
-      grid.innerHTML = filtered.map(r => renderResourceCard(r)).join('');
-    }
+    grid.innerHTML = renderCategorizedCatalog(filtered);
 
     const countBadge = document.getElementById('lib-count-badge');
     if (countBadge) {
@@ -5278,7 +5378,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       countBadge.textContent = 'Showing ' + filtered.length + ' of ' + totalAll + ' resources';
     }
 
-    const hasActive = Boolean(libSearchQuery.trim()) || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
+    const hasActive = Boolean(libSearchQuery.trim()) || libFilterCategory !== 'all' || libFilterCategoryGroup !== 'all' || libFilterLevel !== 'all' || libFilterType !== 'all' || libFilterSkill !== 'all' || libFilterTopic !== 'all' || libFilterGrade !== 'all' || libFilterDuration !== 'all' || libFilterFavoritesOnly;
     const clearRowBtn = document.getElementById('lib-clear-filters-btn');
     if (clearRowBtn) {
       clearRowBtn.style.display = hasActive ? 'inline-flex' : 'none';
