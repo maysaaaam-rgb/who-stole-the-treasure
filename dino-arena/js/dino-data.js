@@ -1,7 +1,13 @@
 /**
  * DINO ARENA: TOP TRUMPS PALEONTOLOGY CLASH — CURRICULUM & ASSET DATA
  * Primary ESL / CLIL CEFR A1+-A2 | Comparative Adjectives & Adaptations
- * Zero external runtime dependencies. Resilient offline SVG fallbacks.
+ * 6-Stage Full Interactive Arcade Lesson:
+ * 1. Mystery Silhouette & Roar Guessing Hook
+ * 2. CLIL Diet & Adaptation Lab
+ * 3. Comparative Adjective Balance Gym
+ * 4. 1v1 Dino Top Trumps Battle Arena
+ * 5. Paleontologist Teleprompter Broadcast Studio
+ * 6. Exit Diagnostic Checkpoint & Field Passport
  */
 (function(root) {
   'use strict';
@@ -60,12 +66,16 @@
       diet: "Carnivore",
       dietIcon: "🥩",
       dietColor: "#ef4444",
+      lengthM: 12,
       lengthMeters: 12,
       weightKg: 8000,
       speedKmh: 27,
       armorRating: 3,
       weapon: "Bone-Crushing Jaws",
       weaponDesc: "Huge 20cm teeth that can crush bones!",
+      teeth: "20cm serrated dagger teeth",
+      clue: "I am the king of carnivores with 20cm teeth!",
+      dietFact: "T-Rex is a carnivore because it has 20cm sharp teeth to hunt prey.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Tyrannosaurus_BW.png/640px-Tyrannosaurus_BW.png",
       fallbackIcon: "🦖",
       pedestalColor: "#ef4444",
@@ -84,12 +94,16 @@
       diet: "Carnivore",
       dietIcon: "🥩",
       dietColor: "#ef4444",
+      lengthM: 2,
       lengthMeters: 2,
       weightKg: 15,
       speedKmh: 60,
       armorRating: 1,
       weapon: "Sickle Claws",
       weaponDesc: "Curved foot claws designed for swift jumping attacks!",
+      teeth: "Sharp backward-curving teeth & sickle claws",
+      clue: "I am small, feather-covered, and run at 60 km/h!",
+      dietFact: "Velociraptor is a carnivore because it hunts meat with sharp sickle claws.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Velociraptor_BW.png/640px-Velociraptor_BW.png",
       fallbackIcon: "🦅",
       pedestalColor: "#fbbf24",
@@ -108,12 +122,16 @@
       diet: "Herbivore",
       dietIcon: "🌿",
       dietColor: "#10b981",
+      lengthM: 9,
       lengthMeters: 9,
       weightKg: 6000,
       speedKmh: 32,
       armorRating: 8,
       weapon: "Triple Horn Shield",
       weaponDesc: "Three sharp solid horns and a heavy neck frill for protection!",
+      teeth: "Beak & scissor-like grinding tooth batteries",
+      clue: "I have a massive skull frill and 3 sharp facial horns!",
+      dietFact: "Triceratops is a herbivore because it shears tough palm fronds with grinding teeth.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Triceratops_BW.png/640px-Triceratops_BW.png",
       fallbackIcon: "🦏",
       pedestalColor: "#10b981",
@@ -132,12 +150,16 @@
       diet: "Herbivore",
       dietIcon: "🌿",
       dietColor: "#10b981",
+      lengthM: 26,
       lengthMeters: 26,
       weightKg: 40000,
       speedKmh: 15,
       armorRating: 4,
       weapon: "Colossal Stomp",
       weaponDesc: "Gigantic height and tree-trunk legs reaching tallest trees!",
+      teeth: "Peg-like chisel teeth for stripping tall trees",
+      clue: "I weigh 40,000 kg and eat leaves from the tallest trees!",
+      dietFact: "Brachiosaurus is a herbivore because it reaches tall treetops to eat leaves.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Brachiosaurus_BW.png/640px-Brachiosaurus_BW.png",
       fallbackIcon: "🦒",
       pedestalColor: "#06b6d4",
@@ -156,12 +178,16 @@
       diet: "Herbivore",
       dietIcon: "🌿",
       dietColor: "#10b981",
+      lengthM: 8,
       lengthMeters: 8,
       weightKg: 6000,
       speedKmh: 10,
       armorRating: 10,
       weapon: "Heavy Tail Club",
       weaponDesc: "Thick bone armor plates and a heavy stone tail club!",
+      teeth: "Small leaf-shaped teeth for crushing low ferns",
+      clue: "I am a walking fortress with a bone club on my tail!",
+      dietFact: "Ankylosaurus is a herbivore because it feeds on low forest ferns and shrub roots.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Ankylosaurus_BW.png/640px-Ankylosaurus_BW.png",
       fallbackIcon: "🛡️",
       pedestalColor: "#8b5cf6",
@@ -180,12 +206,16 @@
       diet: "Herbivore",
       dietIcon: "🌿",
       dietColor: "#10b981",
+      lengthM: 9,
       lengthMeters: 9,
       weightKg: 5000,
       speedKmh: 18,
       armorRating: 7,
       weapon: "Spiked Thagomizer",
       weaponDesc: "Four sharp tail spikes and dorsal plates along its spine!",
+      teeth: "Small triangular teeth for grinding soft plants",
+      clue: "I have kite-shaped plates on my back and 4 tail spikes!",
+      dietFact: "Stegosaurus is a herbivore because it eats soft ground mosses and low shrubs.",
       img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Stegosaurus_BW.png/640px-Stegosaurus_BW.png",
       fallbackIcon: "🐊",
       pedestalColor: "#eab308",
@@ -199,7 +229,147 @@
     }
   ];
 
-  // Phase 2: Dino Clash 1v1 Battle Rounds
+  // Stage 1: Mystery Silhouette & Roar Guessing Game
+  const MYSTERY_ROUNDS = [
+    {
+      id: "mystery-1",
+      dinoId: "triceratops",
+      title: "Prehistoric Beast #1",
+      clues: [
+        { icon: "🌿", label: "Diet", text: "Herbivore (Plant-Eater)" },
+        { icon: "⚖️", label: "Weight", text: "6,000 kg (6 metric tons)" },
+        { icon: "🛡️", label: "Weapon", text: "3 facial horns & solid bone skull frill" }
+      ],
+      options: ["triceratops", "trex", "raptor", "ankylosaurus"],
+      soundHint: "Heavy stomps echo in the dense palm forest..."
+    },
+    {
+      id: "mystery-2",
+      dinoId: "trex",
+      title: "Prehistoric Beast #2",
+      clues: [
+        { icon: "🥩", label: "Diet", text: "Apex Carnivore (Meat-Eater)" },
+        { icon: "⚡", label: "Speed", text: "27 km/h sprint speed" },
+        { icon: "🦷", label: "Weapon", text: "Huge jaws with 20cm bone-crushing teeth" }
+      ],
+      options: ["trex", "stegosaurus", "brachiosaurus", "raptor"],
+      soundHint: "A deafening, earth-shaking roar vibrates through the canyon!"
+    },
+    {
+      id: "mystery-3",
+      dinoId: "raptor",
+      title: "Prehistoric Beast #3",
+      clues: [
+        { icon: "🥩", label: "Diet", text: "Fast Pack-Hunting Carnivore" },
+        { icon: "⚡", label: "Speed", text: "Lightning fast: 60 km/h sprint" },
+        { icon: "🦅", label: "Weapon", text: "Feathered body & sharp sickle foot claws" }
+      ],
+      options: ["raptor", "triceratops", "stegosaurus", "brachiosaurus"],
+      soundHint: "Rapid, agile claw clicks tap against the rocky ground..."
+    },
+    {
+      id: "mystery-4",
+      dinoId: "brachiosaurus",
+      title: "Prehistoric Beast #4",
+      clues: [
+        { icon: "🌿", label: "Diet", text: "Towering Herbivore (Eats tall cycads)" },
+        { icon: "⚖️", label: "Weight", text: "Colossal mass: 40,000 kg (Living Mountain)" },
+        { icon: "🦒", label: "Height", text: "13-meter neck reaching the highest trees" }
+      ],
+      options: ["brachiosaurus", "ankylosaurus", "trex", "stegosaurus"],
+      soundHint: "Tremendous, slow vibrations shake ancient tree trunks..."
+    },
+    {
+      id: "mystery-5",
+      dinoId: "ankylosaurus",
+      title: "Prehistoric Beast #5",
+      clues: [
+        { icon: "🌿", label: "Diet", text: "Low-Browsing Herbivore (Fern-Eater)" },
+        { icon: "🛡️", label: "Armor", text: "Impenetrable fused armor plates (Rating 10/10)" },
+        { icon: "🔨", label: "Weapon", text: "Massive solid-bone club on its tail" }
+      ],
+      options: ["ankylosaurus", "raptor", "trex", "triceratops"],
+      soundHint: "A heavy metallic-sounding armored scrape in the underbrush..."
+    },
+    {
+      id: "mystery-6",
+      dinoId: "stegosaurus",
+      title: "Prehistoric Beast #6",
+      clues: [
+        { icon: "🌿", label: "Diet", text: "Jurassic Ground Herbivore" },
+        { icon: "⚖️", label: "Weight", text: "5,000 kg with walnut-sized brain" },
+        { icon: "🗡️", label: "Weapon", text: "17 upright back plates & 4 sharp tail spikes" }
+      ],
+      options: ["stegosaurus", "brachiosaurus", "raptor", "ankylosaurus"],
+      soundHint: "Tail spikes swish swiftly through ancient ferns..."
+    }
+  ];
+
+  // Stage 3: The Comparative Adjective Balance Gym
+  const GRAMMAR_GYM_ROUNDS = [
+    {
+      id: "gym-1",
+      dinoA: "brachiosaurus",
+      dinoB: "stegosaurus",
+      statLabel: "WEIGHT",
+      statA: "40,000 kg",
+      statB: "5,000 kg",
+      tilt: "left",
+      formulaTokens: ["Brachiosaurus", "is heavier than", "Stegosaurus", "."],
+      distractors: ["lighter than", "fast"],
+      voiceText: "Brachiosaurus is heavier than Stegosaurus."
+    },
+    {
+      id: "gym-2",
+      dinoA: "raptor",
+      dinoB: "trex",
+      statLabel: "SPEED",
+      statA: "60 km/h",
+      statB: "27 km/h",
+      tilt: "left",
+      formulaTokens: ["Velociraptor", "is faster than", "Tyrannosaurus Rex", "."],
+      distractors: ["slower than", "heavy"],
+      voiceText: "Velociraptor is faster than Tyrannosaurus Rex."
+    },
+    {
+      id: "gym-3",
+      dinoA: "brachiosaurus",
+      dinoB: "triceratops",
+      statLabel: "LENGTH",
+      statA: "26 m",
+      statB: "9 m",
+      tilt: "left",
+      formulaTokens: ["Brachiosaurus", "is longer than", "Triceratops", "."],
+      distractors: ["shorter than", "sharp"],
+      voiceText: "Brachiosaurus is longer than Triceratops."
+    },
+    {
+      id: "gym-4",
+      dinoA: "ankylosaurus",
+      dinoB: "trex",
+      statLabel: "ARMOR",
+      statA: "Armor 10",
+      statB: "Armor 3",
+      tilt: "left",
+      formulaTokens: ["Ankylosaurus", "has stronger armor than", "Tyrannosaurus Rex", "."],
+      distractors: ["weaker than", "quick"],
+      voiceText: "Ankylosaurus has stronger armor than Tyrannosaurus Rex."
+    },
+    {
+      id: "gym-5",
+      dinoA: "trex",
+      dinoB: "raptor",
+      statLabel: "SIZE",
+      statA: "12 m / 8,000 kg",
+      statB: "2 m / 15 kg",
+      tilt: "left",
+      formulaTokens: ["Tyrannosaurus Rex", "is bigger than", "Velociraptor", "."],
+      distractors: ["smaller than", "plates"],
+      voiceText: "Tyrannosaurus Rex is bigger than Velociraptor."
+    }
+  ];
+
+  // Stage 4: Dino Clash 1v1 Battle Rounds
   const BATTLE_ROUNDS = [
     {
       id: "clash-1",
@@ -291,41 +461,95 @@
     }
   ];
 
-  // Phase 3: Teleprompter Broadcast Templates
+  // Stage 5: Teleprompter Broadcast Templates (One per dinosaur)
   const TELEPROMPTER_ARCHETYPES = [
     {
       dinoId: "trex",
       title: "Apex Predator Arena Broadcast",
       sentence1: "Welcome to Dino Arena! This is the mighty Tyrannosaurus Rex.",
       sentence2: "It is bigger and heavier than the agile Velociraptor.",
-      sentence3: "It is a ferocious carnivore and it has bone-crushing jaws to hunt large prey!"
-    },
-    {
-      dinoId: "triceratops",
-      title: "Horned Guardian Arena Broadcast",
-      sentence1: "Welcome to Dino Arena! This is the armored Triceratops.",
-      sentence2: "It is heavier and has stronger armor than the ferocious T-Rex.",
-      sentence3: "It is a peaceful herbivore and it has three sharp horns to protect itself!"
+      sentence3: "It is an apex carnivore and it uses its bone-crushing jaws to hunt!"
     },
     {
       dinoId: "raptor",
-      title: "Speed Striker Arena Broadcast",
-      sentence1: "Welcome to Dino Arena! This is the lightning-fast Velociraptor.",
-      sentence2: "It is much faster and more agile than the heavy Tyrannosaurus Rex.",
-      sentence3: "It is a clever carnivore and it has sharp sickle claws to leap and hunt!"
+      title: "Lightning Striker Broadcast",
+      sentence1: "Welcome to Dino Arena! This is the swift Velociraptor.",
+      sentence2: "It is much faster than the giant Tyrannosaurus Rex.",
+      sentence3: "It is an agile carnivore and it uses its sickle claws to hunt in packs!"
+    },
+    {
+      dinoId: "triceratops",
+      title: "Horned Defender Broadcast",
+      sentence1: "Welcome to Dino Arena! This is the armored Triceratops.",
+      sentence2: "It has stronger armor than the fearsome Tyrannosaurus Rex.",
+      sentence3: "It is a peaceful herbivore and it uses its triple horns to defend its family!"
+    },
+    {
+      dinoId: "brachiosaurus",
+      title: "Colossal Titan Broadcast",
+      sentence1: "Welcome to Dino Arena! This is the towering Brachiosaurus.",
+      sentence2: "It is heavier and longer than all other prehistoric creatures.",
+      sentence3: "It is a gentle herbivore and it uses its tall neck to reach high tree leaves!"
     },
     {
       dinoId: "ankylosaurus",
-      title: "Armored Tank Arena Broadcast",
-      sentence1: "Welcome to Dino Arena! This is the fortress-like Ankylosaurus.",
-      sentence2: "It has stronger armor and a heavier tail than the Stegosaurus.",
-      sentence3: "It is an armored herbivore and it has a heavy stone tail club to defend its herd!"
+      title: "Living Tank Broadcast",
+      sentence1: "Welcome to Dino Arena! This is the impenetrable Ankylosaurus.",
+      sentence2: "It has stronger armor than any carnivore in the Cretaceous valley.",
+      sentence3: "It is a tough herbivore and it uses its heavy tail club to shatter enemy attacks!"
+    },
+    {
+      dinoId: "stegosaurus",
+      title: "Spike-Tailed Guardian Broadcast",
+      sentence1: "Welcome to Dino Arena! This is the iconic Stegosaurus.",
+      sentence2: "It is faster and lighter than the armored Ankylosaurus.",
+      sentence3: "It is a Jurassic herbivore and it uses its sharp tail spikes to protect itself!"
+    }
+  ];
+
+  // Stage 6: Exit Ticket Rapid Diagnostic Quiz
+  const EXIT_QUIZ_QUESTIONS = [
+    {
+      id: "quiz-1",
+      question: "Which comparative adjective correctly finishes the sentence?\n'Velociraptor is _______ than Tyrannosaurus Rex.'",
+      options: [
+        { text: "faster", isCorrect: true },
+        { text: "fastest", isCorrect: false },
+        { text: "more fast", isCorrect: false },
+        { text: "fast", isCorrect: false }
+      ],
+      explanation: "Add '-er than' for one-syllable adjectives: fast ➔ faster than!"
+    },
+    {
+      id: "quiz-2",
+      question: "Why is Tyrannosaurus Rex classified as a CARNIVORE?",
+      options: [
+        { text: "It has 20cm sharp dagger teeth to hunt meat", isCorrect: true },
+        { text: "It eats leaves from the tallest Jurassic trees", isCorrect: false },
+        { text: "It has a solid bone club on its tail", isCorrect: false },
+        { text: "It only grazes on soft forest ferns", isCorrect: false }
+      ],
+      explanation: "Carnivores eat meat and evolve sharp cutting or bone-crushing teeth!"
+    },
+    {
+      id: "quiz-3",
+      question: "How does Triceratops use its physiological adaptations?",
+      options: [
+        { text: "It has 3 hard horns and a bone frill to defend against predators", isCorrect: true },
+        { text: "It has feathered wings to fly away across canyons", isCorrect: false },
+        { text: "It has a venomous bite to capture small prey", isCorrect: false },
+        { text: "It swims deep underwater to escape enemies", isCorrect: false }
+      ],
+      explanation: "Herbivores evolve defensive horns, frills, armor, or clubs for protection!"
     }
   ];
 
   root.DINO_ARENA_DATA = {
     dinosaurs: DINO_DATA,
+    mysteryRounds: MYSTERY_ROUNDS,
+    grammarGymRounds: GRAMMAR_GYM_ROUNDS,
     battles: BATTLE_ROUNDS,
-    teleprompter: TELEPROMPTER_ARCHETYPES
+    teleprompter: TELEPROMPTER_ARCHETYPES,
+    exitQuiz: EXIT_QUIZ_QUESTIONS
   };
 })(typeof window !== 'undefined' ? window : global);

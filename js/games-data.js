@@ -26,7 +26,7 @@ const GAMES_REGISTRY = [
       "dino-battle"
     ],
     "title": "🦖 Dino Clash: The Ultimate Cretaceous Showdown",
-    "description": "High-octane Top Trumps paleontology showdown (CEFR A1+–A2 | 150 XP). Inspect dinosaur adaptations with interactive holographic hotspot cards, clash head-to-head on speed, weight, armor, and length with physical rubber stamps, and deliver live teleprompter broadcast discoveries!",
+    "description": "Complete 6-stage commercial-grade EdTech CLIL master lesson (CEFR A1+–A2 | 200 XP). 1. Mystery Silhouette & Roar Guessing Hook, 2. CLIL Diet Sorter (Carnivore vs. Herbivore), 3. Comparative Adjective Balance Gym, 4. 1v1 Dino Top Trumps Battle Arena, 5. Spoken Teleprompter Broadcast Studio, 6. Rapid Exit Checkpoint & Printable Field Passport.",
     "type": "game",
     "category": "CLIL & Science",
     "categoryLabel": "🦖 Paleontology & Top Trumps",
@@ -40,27 +40,29 @@ const GAMES_REGISTRY = [
       "Grade 4",
       "Grade 5"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
-    "xp": 150,
+    "duration": 60,
+    "durationText": "60 min",
+    "estimatedMinutes": 60,
+    "xp": 200,
     "skills": [
-      "Comparative Adjectives (faster, heavier, bigger than)",
-      "CLIL Dinosaur Science & Adaptations",
-      "Physical Function & Purpose (horns to protect, teeth to hunt)",
-      "Top Trumps Data Analysis",
-      "Oral Broadcast Teleprompter Presentation"
+      "Silhouette & Prehistoric Roar Deduction",
+      "CLIL Diet Classification & Anatomical Adaptations",
+      "Comparative Adjective Sentence Building (-er than)",
+      "Top Trumps 1v1 Stat Clash Analysis",
+      "Spoken Teleprompter Karaoke Presentation",
+      "Diagnostic Exit Assessment"
     ],
     "topic": "Dinosaurs, Comparative Adjectives, Animal Adaptations & Paleontology",
     "topics": [
       "Paleontology",
       "Comparative Adjectives",
       "Animal Adaptations",
-      "Cretaceous Period"
+      "Cretaceous Period",
+      "Diet Classification"
     ],
-    "languageFocus": "Comparative Adjectives: [Dino A] is [bigger / faster / heavier / longer] than [Dino B]. Classification & Function: [Dino] is a [carnivore / herbivore]. It has [sharp claws / horns] to [hunt / protect itself].",
-    "activityMode": "Head-to-Head 1v1 Battle Arena / Smart Board Challenge",
-    "interactionType": "Top Trumps 65/35 Cards, 3D Decision Buttons, Energy Shockwave Clash, WINNER/DEFEATED Stamps, Teleprompter Karaoke, Printable Passport",
+    "languageFocus": "Comparative Adjectives: [Dino A] is [bigger / faster / heavier / longer] than [Dino B]. Classification & Function: [Dino] is a [carnivore / herbivore]. It has [sharp claws / horns / armor] to [hunt / protect itself].",
+    "activityMode": "6-Stage Interactive CLIL Master Arcade / Smart Board Challenge",
+    "interactionType": "Silhouette Mystery Chamber, Drag & Drop Diet Crates, Digital Balance Scale Beam, Top Trumps 65/35 Cards, Slap Winner Stamps, Teleprompter Karaoke, Diagnostic Exit Passport",
     "difficulty": "Grade 3–5 (A1+–A2)",
     "tags": [
       "dino-arena",
@@ -70,15 +72,20 @@ const GAMES_REGISTRY = [
       "clil",
       "science",
       "paleontology",
-      "speech-karaoke"
+      "speech-karaoke",
+      "guessing-game",
+      "sentence-builder"
     ],
     "learningObjectives": [
-      "Compare physical dinosaur stats using comparative adjectives (bigger, faster, heavier).",
-      "Classify dinosaurs by diet (carnivore vs. herbivore) and physiological adaptations.",
-      "Deliver a 3-part oral teleprompter report comparing two prehistoric creatures."
+      "Identify dinosaurs by silhouette, roar, and anatomical clues.",
+      "Classify dinosaurs by diet (carnivore vs. herbivore) based on teeth and adaptations.",
+      "Construct comparative adjective sentences using physical digital balance mechanics.",
+      "Compare dinosaur physical stats in 1v1 Top Trumps showdown battles.",
+      "Deliver a 3-part oral teleprompter report with calibrated speech synthesis.",
+      "Demonstrate mastery in a 3-question diagnostic checkpoint and export a printable Field Passport."
     ],
-    "teacherInstructions": "Launch on interactive Smart Board for whole-class team battles or assign individually. In Phase 1, learners tap hotspots (Teeth, Armor, Speed) to listen to speech explanations. In Phase 2, cadets compare stats and slap winning dinosaurs in 1v1 clashes. In Phase 3, learners broadcast their champion findings with the teleprompter.",
-    "studentInstructions": "Step into the Dino Arena! Inspect dinosaur adaptations, challenge rival titans in 1v1 Top Trumps clashes, and broadcast your discovery to earn the Arena Grandmaster Diploma!",
+    "teacherInstructions": "Run through all 6 sequential stages: 1. Silhouette Guessing Hook (audio cues + 3 clues), 2. CLIL Diet Sorter (teeth inspection + drag/drop crates), 3. Grammar Gym (interactive balance scale + sentence formula builder), 4. 1v1 Battle Arena (8 Top Trumps clash rounds), 5. Teleprompter Studio (karaoke speech presentation), 6. Exit Checkpoint (diagnostic quiz + A4 printable passport).",
+    "studentInstructions": "Enter the 6-stage Dino Arena! Solve the silhouette mysteries, sort dinosaur diets, balance giant prehistoric titans, clash in 1v1 showdowns, broadcast your discovery, and earn your Certified Field Passport!",
     "route": "dino-arena/index.html",
     "worksheetRoute": "dino-arena/worksheet.html",
     "featured": true,
