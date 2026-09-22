@@ -25,24 +25,24 @@ const GAMES_REGISTRY = [
       "paleo-clash",
       "dino-battle"
     ],
-    "title": "🦖 Dino Arena: Top Trumps Paleontology Clash",
+    "title": "🦖 Dino Clash: The Ultimate Cretaceous Showdown",
     "description": "High-octane Top Trumps paleontology showdown (CEFR A1+–A2 | 150 XP). Inspect dinosaur adaptations with interactive holographic hotspot cards, clash head-to-head on speed, weight, armor, and length with physical rubber stamps, and deliver live teleprompter broadcast discoveries!",
     "type": "game",
     "category": "CLIL & Science",
     "categoryLabel": "🦖 Paleontology & Top Trumps",
     "level": "A1+ / A2",
-    "cefrLevel": "A1+–A2",
+    "cefrLevel": "A1–A2",
     "age": "Ages 7–11",
-    "ageGroup": "7-11",
+    "ageGroup": "7–11",
     "grade": "Grade 3–5",
     "grades": [
       "Grade 3",
       "Grade 4",
       "Grade 5"
     ],
-    "duration": 25,
-    "durationText": "25 min",
-    "estimatedMinutes": 25,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
     "xp": 150,
     "skills": [
       "Comparative Adjectives (faster, heavier, bigger than)",
@@ -53,11 +53,10 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Dinosaurs, Comparative Adjectives, Animal Adaptations & Paleontology",
     "topics": [
-      "Dinosaurs & Prehistoric Life",
+      "Paleontology",
       "Comparative Adjectives",
-      "Animal Adaptations (Weapons & Armor)",
-      "Diet (Carnivores vs Herbivores)",
-      "Scientific Observations"
+      "Animal Adaptations",
+      "Cretaceous Period"
     ],
     "languageFocus": "Comparative Adjectives: [Dino A] is [bigger / faster / heavier / longer] than [Dino B]. Classification & Function: [Dino] is a [carnivore / herbivore]. It has [sharp claws / horns] to [hunt / protect itself].",
     "activityMode": "Head-to-Head 1v1 Battle Arena / Smart Board Challenge",
@@ -74,11 +73,9 @@ const GAMES_REGISTRY = [
       "speech-karaoke"
     ],
     "learningObjectives": [
-      "Formulate comparative adjective sentences comparing dinosaur speeds, weights, lengths, and armor",
-      "Classify dinosaurs as carnivores or herbivores and identify their survival adaptations",
-      "Analyze Top Trumps combat metrics to identify winning prehistoric champions in 1v1 clashes",
-      "Deliver a 3-sentence live broadcast presentation using the real-time teleprompter speech engine",
-      "Complete and print an A4 Dino Arena Battle Passport with custom titan sketch"
+      "Compare physical dinosaur stats using comparative adjectives (bigger, faster, heavier).",
+      "Classify dinosaurs by diet (carnivore vs. herbivore) and physiological adaptations.",
+      "Deliver a 3-part oral teleprompter report comparing two prehistoric creatures."
     ],
     "teacherInstructions": "Launch on interactive Smart Board for whole-class team battles or assign individually. In Phase 1, learners tap hotspots (Teeth, Armor, Speed) to listen to speech explanations. In Phase 2, cadets compare stats and slap winning dinosaurs in 1v1 clashes. In Phase 3, learners broadcast their champion findings with the teleprompter.",
     "studentInstructions": "Step into the Dino Arena! Inspect dinosaur adaptations, challenge rival titans in 1v1 Top Trumps clashes, and broadcast your discovery to earn the Arena Grandmaster Diploma!",
@@ -86,30 +83,28 @@ const GAMES_REGISTRY = [
     "worksheetRoute": "dino-arena/worksheet.html",
     "featured": true,
     "thumbnailIcon": "🦖",
-    "gradient": "linear-gradient(135deg, #070a14 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
     "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"dinoArenaThumbGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#070a14\"/>\n          <stop offset=\"50%\" stop-color=\"#151f38\"/>\n          <stop offset=\"100%\" stop-color=\"#f59e0b\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#dinoArenaThumbGrad)\"/>\n      <ellipse cx=\"100\" cy=\"105\" rx=\"55\" ry=\"18\" fill=\"#f59e0b\" opacity=\"0.3\"/>\n      <ellipse cx=\"100\" cy=\"102\" rx=\"42\" ry=\"12\" fill=\"#0c1222\" stroke=\"#f59e0b\" stroke-width=\"2\"/>\n      <text x=\"100\" y=\"72\" font-size=\"44\" text-anchor=\"middle\">🦖</text>\n    </svg>",
-    "categoryGroup": "Paleontology & Top Trumps Science",
+    "categoryGroup": "Science & Paleontology",
     "vocabulary": {
       "core": [
         "carnivore",
         "herbivore",
-        "fossil",
         "claws",
         "horns",
         "armor",
-        "weight",
-        "speed"
+        "heavy",
+        "fast"
       ],
       "supporting": [
-        "prehistoric",
-        "jawbone",
-        "thagomizer",
-        "frill",
+        "predator",
         "tail club",
-        "predator"
+        "protect",
+        "weight",
+        "extinct"
       ],
       "phonics": [
         "/k/ in carnivore",
@@ -118,11 +113,12 @@ const GAMES_REGISTRY = [
       ]
     },
     "grammar": {
-      "focusPattern": "[Dino A] is [bigger / faster / heavier] than [Dino B]",
-      "formula": "[Dino] is a [carnivore / herbivore]. It has [horns / claws] to [protect itself / hunt].",
+      "focusPattern": "[Dino A] is [comparative] than [Dino B] / It has [feature] to [action]",
+      "formula": "[Dino A] is [bigger / faster / heavier] than [Dino B] / It has [feature] to [action]",
       "formulas": [
-        "Comparative: Subject A + is + comparative adjective + than + Subject B",
-        "Function & Purpose: Subject + has + Object + to + Base Verb"
+        "T-Rex is bigger than Velociraptor.",
+        "Velociraptor is faster than T-Rex.",
+        "Triceratops has three horns to fight predators."
       ]
     },
     "clilDomain": "Paleontology & Animal Biology",
