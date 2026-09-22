@@ -3976,6 +3976,271 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Macmillan Primary Literacy Syllabus (Level 3)",
     "clilTheme": "Macmillan Primary Literacy Syllabus (Level 3)"
+  },
+  {
+    "id": "alice-homework",
+    "title": "🐇 Alice in Wonderland: Homework Deck",
+    "description": "Interactive homework presentation and quest deck with 6 animated story scenes, voice recording rehearsal, and gradebook integration.",
+    "category": "Story & Literature",
+    "categoryGroup": "Alice in Wonderland",
+    "level": "A1 / A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–10",
+    "ageGroup": "7-10",
+    "grade": "Grade 3",
+    "grades": ["Grade 3", "Grade 4"],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 120,
+    "skills": ["Speaking", "Reading", "Story Sequencing", "Oral Recaps"],
+    "topic": "Wonderland Scenes, Character Dialogue & Past Simple",
+    "topics": ["Classic English Literature", "Theatre Recaps", "Homework Presentation"],
+    "languageFocus": "First, Alice [fell/saw]. Then she [drank/met] the [character].",
+    "learningObjectives": [
+      "Review and present 6 Wonderland scenes and story sequences",
+      "Practice Past Simple regular and irregular verbs in homework recaps",
+      "Deliver a structured oral report summarizing Alice's adventures"
+    ],
+    "teacherInstructions": "Have students present their homework deck scene-by-scene and record their oral reflection using the integrated voice recorder.",
+    "studentInstructions": "Click through each scene, solve the comprehension prompts, and record your voice talking about Alice in Wonderland!",
+    "route": "alice-homework/index.html",
+    "worksheet": "alice-homework-quest/index.html",
+    "worksheetRoute": "alice-homework-quest/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailIcon": "🐇",
+    "gradient": "linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #7c3aed 100%)",
+    "tags": ["alice", "homework", "past-simple", "literature", "theatre"],
+    "vocabulary": {
+      "core": ["rabbit", "potion", "caterpillar", "tea party", "croquet"],
+      "supporting": ["curious", "adventurer", "shrink", "grow", "pocket watch"]
+    },
+    "grammar": {
+      "focusPattern": "Past Simple Narrative (Alice was... / Alice drank...)",
+      "formula": "First, Alice [fell/saw]. Then she [drank/met] the [character].",
+      "formulas": [
+        "First, Alice followed the White Rabbit down the hole.",
+        "She found a tiny key and drank a magic potion.",
+        "The Queen shouted: 'Off with their heads!'"
+      ]
+    },
+    "clilDomain": "Classic Children's Literature",
+    "clilTheme": "Narrative Sequencing & Performance Recaps"
+  },
+  {
+    "id": "bamboozle",
+    "title": "🎮 Bamboozle Meme Arena",
+    "description": "High-octane classroom quiz battle arena. 16 mystery tiles, animated meme power-ups, swap scores, point steals, and curriculum trivia.",
+    "category": "Engineering & Inventions",
+    "categoryGroup": "Invention Game Show",
+    "level": "A1 / A2",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–12",
+    "ageGroup": "7-12",
+    "grade": "Grade 3–5",
+    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": ["Speaking", "Listening", "Vocabulary Recall", "Team Collaboration"],
+    "topic": "Invention Trivia, Science Facts & Rapid Problem Solving",
+    "topics": ["Team Trivia", "Inventions", "Engineering Quiz"],
+    "languageFocus": "We choose Card [number]. We believe the answer is [answer] because [reason].",
+    "learningObjectives": [
+      "Answer fast-paced team quiz questions across science and historical inventors",
+      "Communicate strategically using swap, trap, and 2x points power-ups",
+      "Articulate team consensus answers within 20-second countdowns"
+    ],
+    "teacherInstructions": "Split class into 2 to 4 teams. Teams take turns picking tiles, answering questions, and triggering wacky game-show power-ups.",
+    "studentInstructions": "Pick a lucky tile for your team, answer the curriculum question correctly, and dodge the score-swapping traps!",
+    "route": "bamboozle/index.html",
+    "worksheet": "bamboozle/index.html",
+    "worksheetRoute": "bamboozle/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⚡",
+    "gradient": "linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%)",
+    "tags": ["bamboozle", "quiz", "game-show", "speaking", "teamwork"],
+    "vocabulary": {
+      "core": ["points", "swap", "team", "challenge", "power-up"],
+      "supporting": ["bonus", "double", "steal", "mystery", "congratulations"]
+    },
+    "grammar": {
+      "focusPattern": "Wh- Questions & Modal Answers (Can we swap? / It is...)",
+      "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
+      "formulas": [
+        "Which inventor created the light bulb?",
+        "Can Team Red swap points with Team Blue?",
+        "If we get this right, we will earn fifty bonus points!"
+      ]
+    },
+    "clilDomain": "Interactive EdTech Game Mechanics",
+    "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval"
+  },
+  {
+    "id": "monster-lab",
+    "title": "🧪 Monster Morphology & Bio Lab",
+    "description": "Interactive genetic creature builder. Combine animal traits, balance biological stats, and articulate physical anatomy in English.",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Monster Morphology",
+    "level": "Pre-A1 / A1",
+    "cefrLevel": "A1",
+    "age": "Ages 6–10",
+    "ageGroup": "6-10",
+    "grade": "Grade 2–4",
+    "grades": ["Grade 2", "Grade 3", "Grade 4"],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 130,
+    "skills": ["Speaking", "Vocabulary", "Physical Descriptions", "Classification"],
+    "topic": "Creature Anatomy, Body Parts & Sensory Adjectives",
+    "topics": ["Biology & Anatomy", "Creature Design", "Physical Descriptions"],
+    "languageFocus": "My monster has [number] [body part] and can [action].",
+    "learningObjectives": [
+      "Construct alien creatures using body part and sensory adjectives",
+      "Use 'has got / hasn't got' to specify creature attributes",
+      "Synthesize monster health stats and diet requirements"
+    ],
+    "teacherInstructions": "Guide students to combine different heads, horns, and appendages. Have each learner describe their monster's special adaptations to the class.",
+    "studentInstructions": "Pick wild parts from the Bio Lab tanks to build your custom monster companion, then present its powers!",
+    "route": "monster-lab/index.html",
+    "worksheet": "monster-lab/index.html",
+    "worksheetRoute": "monster-lab/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailIcon": "🧪",
+    "gradient": "linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%)",
+    "tags": ["monsters", "anatomy", "has-got", "biology", "adjectives"],
+    "vocabulary": {
+      "core": ["horns", "tentacles", "claws", "fur", "wings"],
+      "supporting": ["spiky", "slimy", "fluffy", "gigantic", "scales"]
+    },
+    "grammar": {
+      "focusPattern": "Has / Has Got for Physical Anatomy",
+      "formula": "My monster has [number] [body part] and can [action].",
+      "formulas": [
+        "It has got three bright purple eyes and long green wings.",
+        "It hasn't got any fur, but it has thick protective scales.",
+        "My monster can breathe underwater and run at super speed."
+      ]
+    },
+    "clilDomain": "Comparative Animal Biology",
+    "clilTheme": "Adaptations & Anatomical Morphology"
+  },
+  {
+    "id": "monster-studio",
+    "title": "🎨 Monster Creator Studio & Wardrobe",
+    "description": "Dynamic avatar wardrobe customizer. Equip hats, capes, tech goggles, and describe character outfits using present continuous.",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Monster Morphology",
+    "level": "A1 / A1+",
+    "cefrLevel": "A1",
+    "age": "Ages 6–10",
+    "ageGroup": "6-10",
+    "grade": "Grade 2–4",
+    "grades": ["Grade 2", "Grade 3", "Grade 4"],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 120,
+    "skills": ["Speaking", "Vocabulary", "Present Continuous", "Color Adjectives"],
+    "topic": "Clothing Items, Accessories & Character Styling",
+    "topics": ["Fashion & Clothing", "Character Customization", "Present Continuous"],
+    "languageFocus": "My monster is wearing a [color] [clothing item] to protect against [weather].",
+    "learningObjectives": [
+      "Customize student monster companions with accessories and outfits",
+      "Describe clothing, colors, and gear using present continuous",
+      "Deliver personal avatar introductions to classmates"
+    ],
+    "teacherInstructions": "Ask students: 'What is your monster wearing today?' Prompt complete sentences: 'He is wearing a red hat and sunglasses.'",
+    "studentInstructions": "Dress up your monster for an adventure! Choose hats, boots, and tools, then tell your partner what it is wearing.",
+    "route": "monster-studio/index.html",
+    "worksheet": "monster-studio/index.html",
+    "worksheetRoute": "monster-studio/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailIcon": "🎨",
+    "gradient": "linear-gradient(135deg, #581c87 0%, #7e22ce 50%, #a855f7 100%)",
+    "tags": ["monster", "customizer", "clothes", "present-continuous", "colors"],
+    "vocabulary": {
+      "core": ["hat", "glasses", "cape", "boots", "scarf"],
+      "supporting": ["wearing", "colorful", "stylish", "accessory", "jacket"]
+    },
+    "grammar": {
+      "focusPattern": "Present Continuous with Clothes (He is wearing...)",
+      "formula": "My monster is wearing a [color] [clothing item] to protect against [weather].",
+      "formulas": [
+        "She is wearing bright yellow boots and a purple rain jacket.",
+        "He is wearing steampunk goggles on his forehead.",
+        "They are wearing warm scarves because it is cold in the lab."
+      ]
+    },
+    "clilDomain": "Visual Design & Self-Expression",
+    "clilTheme": "Seasonal Dress & Character Identity"
+  },
+  {
+    "id": "wizard-of-oz",
+    "title": "🌪️ The Wizard of Oz Interactive Stage",
+    "description": "Classroom reader's theatre & story quest along the Yellow Brick Road. Help Dorothy, Scarecrow, Tin Man, and Lion solve dilemmas.",
+    "category": "Story & Literature",
+    "categoryGroup": "The Wizard of Oz",
+    "level": "A1+ / A2",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–11",
+    "ageGroup": "7-11",
+    "grade": "Grade 3–5",
+    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 160,
+    "skills": ["Reading", "Speaking", "Dialogue Roleplay", "Character Needs"],
+    "topic": "Classic American Literature, Character Goals & Desires",
+    "topics": ["Classic American Literature", "Character Motivations", "Story Sequencing"],
+    "languageFocus": "I don't have [noun], but I want to [verb] because [reason].",
+    "learningObjectives": [
+      "Follow Dorothy along the Yellow Brick Road across 5 story scenes",
+      "Identify character needs (brain, heart, courage, home)",
+      "Roleplay dialogues between Dorothy, Scarecrow, Tin Man, and Lion"
+    ],
+    "teacherInstructions": "Assign student character roles. Perform the interactive stage dialogues with choral reading and sound effects.",
+    "studentInstructions": "Travel to the Emerald City with Dorothy! Choose lines for your character and help your friends find what they are looking for.",
+    "route": "wizard-of-oz/index.html",
+    "worksheet": "wizard-of-oz/worksheet.html",
+    "worksheetRoute": "wizard-of-oz/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🌪️",
+    "gradient": "linear-gradient(135deg, #14532d 0%, #15803d 50%, #eab308 100%)",
+    "tags": ["oz", "literature", "theatre", "wants-to", "roleplay"],
+    "vocabulary": {
+      "core": ["tornado", "brick road", "scarecrow", "courage", "heart"],
+      "supporting": ["emerald", "slippers", "journey", "wizard", "cunning"]
+    },
+    "grammar": {
+      "focusPattern": "Need / Want to + Verb (The Scarecrow wants to have a brain)",
+      "formula": "I don't have [noun], but I want to [verb] because [reason].",
+      "formulas": [
+        "The Scarecrow wants to have a brain so he can think.",
+        "The Tin Woodman needs a warm heart to feel love.",
+        "The Cowardly Lion wishes to find true courage."
+      ]
+    },
+    "clilDomain": "Children's Literature & Theatre",
+    "clilTheme": "Narrative Journey & Character Values"
   }
 ];
 

@@ -11279,32 +11279,73 @@
     }
 
     getStandardizedResources(includeArchived = false) {
-      const games = (this.getResources(includeArchived) || []).map(r => ({
-        ...r,
-        isWorksheet: false,
-        type: r.type || (r.category && r.category.toLowerCase().includes('story') ? 'story' : (r.category && r.category.toLowerCase().includes('textbook') ? 'textbook' : (r.category && r.category.toLowerCase().includes('roleplay') ? 'roleplay' : 'game'))),
-        cefrLevel: r.cefrLevel || r.level || 'A1',
-        grades: r.grades || (r.grade ? [r.grade] : ['Grade 3']),
-        estimatedMinutes: r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || 30,
-        xp: r.xp || 50,
-        worksheetRoute: r.worksheetRoute || r.worksheet || null,
-        learningObjectives: r.learningObjectives || r.objectives || []
-      }));
+      const WS_CATEGORY_MAP = {
+        'ws-1': { category: 'Phonics & Language Quests', categoryGroup: 'Everyday Roleplay', vocab: ['menu', 'order', 'server', 'delicious'], grammar: "I would like [item], please / How much is it?" },
+        'ws-2': { category: 'CLIL & Science', categoryGroup: 'Community Civics & Safety', vocab: ['engine', 'hydrant', 'alarm', 'ladder'], grammar: "Firefighters use [equipment] to [action]." },
+        'ws-3': { category: 'CLIL & Science', categoryGroup: 'Urban Geography', vocab: ['bakery', 'library', 'corner', 'street'], grammar: "Turn left at the [landmark] / It is opposite the [place]." },
+        'ws-4': { category: 'Phonics & Language Quests', categoryGroup: 'Grammar Detectives', vocab: ['alibi', 'suspect', 'clue', 'witness'], grammar: "Where were you at [time]? I was [action] at [place]." },
+        'ws-robots': { category: 'Engineering & Inventions', categoryGroup: 'Robotics Around the World', vocab: ['sensor', 'arm', 'battery', 'automate'], grammar: "Robots can [action] to assist humans." },
+        'ws-feelings': { category: 'Phonics & Language Quests', categoryGroup: 'Socio-Emotional Communication', vocab: ['proud', 'nervous', 'calm', 'cheerful'], grammar: "I feel [emotion] when [trigger event]." },
+        'ws-advice': { category: 'Phonics & Language Quests', categoryGroup: 'Modals & Advice Quests', vocab: ['should', 'shouldn\'t', 'advice', 'rest'], grammar: "You should [verb] because [reason]." },
+        'ws-predictions': { category: 'Phonics & Language Quests', categoryGroup: 'Future Tense Quests', vocab: ['will', 'won\'t', 'future', 'predict'], grammar: "In fifty years, people will [verb]." },
+        'ws-brain-quit': { category: 'CLIL & Science', categoryGroup: 'Neuroscience & Reading Science', vocab: ['synapse', 'neuron', 'remember', 'focus'], grammar: "The brain needs [habit] to function properly." },
+        'ws-city-mouse': { category: 'Story & Literature', categoryGroup: "Aesop's Fables", vocab: ['country', 'city', 'feast', 'peaceful'], grammar: "Past Simple fable narrative (The mouse visited...)" }
+      };
 
-      const worksheets = (this.getWorksheets ? this.getWorksheets(includeArchived) : []).map(w => ({
-        ...w,
-        isWorksheet: true,
-        type: 'worksheet',
-        cefrLevel: w.cefrLevel || w.level || 'A1',
-        grades: w.grades || (w.grade ? [w.grade] : ['Grade 3']),
-        estimatedMinutes: w.estimatedMinutes || (typeof w.duration === 'number' ? w.duration : parseInt(w.duration, 10)) || 25,
-        xp: w.xp || 40,
-        route: w.pdfUrl || w.route || '#',
-        worksheetRoute: w.pdfUrl || w.route || null,
-        skills: w.skills || (w.skill ? [w.skill] : ['Writing']),
-        topics: w.topics || (w.topic ? [w.topic] : ['Worksheet Practice']),
-        learningObjectives: w.learningObjectives || w.objectives || [w.instructions || 'Complete classroom worksheet activities']
-      }));
+      const games = (this.getResources(includeArchived) || []).map(r => {
+        let cat = r.category || 'CLIL & Science';
+        let group = r.categoryGroup || 'Curriculum Quests';
+        let vocab = r.vocabulary;
+        let gram = r.grammar;
+        if (r.id === 'res-global-readings-2') {
+          cat = 'Story & Literature';
+          group = 'Curriculum Anthologies';
+          vocab = vocab || { core: ['invent', 'try again', 'mirror', 'machine', 'solution'], supporting: ['tidy', 'messy', 'creative'] };
+          gram = gram || { focusPattern: 'Primary Stage 2 Literacy sentence frames & story sequencing', formula: 'First, [action]. Then, [action]. Next, [action].' };
+        } else if (r.id === 'res-global-readings-3') {
+          cat = 'CLIL & Science';
+          group = 'Curriculum Anthologies';
+          vocab = vocab || { core: ['brain', 'synapse', 'neuron', 'remember', 'imagine'], supporting: ['focus', 'memory', 'intelligence'] };
+          gram = gram || { focusPattern: 'Primary Stage 3 Literacy non-fiction text structures', formula: 'Your brain uses [neurons] to [think/learn/remember].' };
+        }
+        return {
+          ...r,
+          isWorksheet: false,
+          category: cat,
+          categoryGroup: group,
+          vocabulary: vocab,
+          grammar: gram,
+          type: r.type || (cat.toLowerCase().includes('story') ? 'story' : (cat.toLowerCase().includes('textbook') ? 'textbook' : (cat.toLowerCase().includes('roleplay') ? 'roleplay' : 'game'))),
+          cefrLevel: r.cefrLevel || r.level || 'A1',
+          grades: r.grades || (r.grade ? [r.grade] : ['Grade 3']),
+          estimatedMinutes: r.estimatedMinutes || (typeof r.duration === 'number' ? r.duration : parseInt(r.duration, 10)) || 30,
+          xp: r.xp || 50,
+          worksheetRoute: r.worksheetRoute || r.worksheet || null,
+          learningObjectives: r.learningObjectives || r.objectives || [r.description || 'Master target communicative structures.']
+        };
+      });
+
+      const worksheets = (this.getWorksheets ? this.getWorksheets(includeArchived) : []).map(w => {
+        const meta = WS_CATEGORY_MAP[w.id] || { category: 'CLIL & Science', categoryGroup: 'Worksheet Practice', vocab: ['practice', 'review', 'skills'], grammar: 'Key communicative sentence structure' };
+        return {
+          ...w,
+          isWorksheet: true,
+          type: 'worksheet',
+          category: meta.category,
+          categoryGroup: meta.categoryGroup,
+          cefrLevel: w.cefrLevel || w.level || 'A1',
+          grades: w.grades || (w.grade ? [w.grade] : ['Grade 3']),
+          estimatedMinutes: w.estimatedMinutes || (typeof w.duration === 'number' ? w.duration : parseInt(w.duration, 10)) || 25,
+          xp: w.xp || 40,
+          route: w.pdfUrl || w.route || '#',
+          worksheetRoute: w.pdfUrl || w.route || null,
+          skills: w.skills || (w.skill ? [w.skill] : ['Writing']),
+          topics: w.topics || (w.topic ? [w.topic] : [meta.categoryGroup]),
+          vocabulary: w.vocabulary || { core: meta.vocab, supporting: [] },
+          grammar: w.grammar || { focusPattern: meta.grammar, formula: meta.grammar },
+          learningObjectives: w.learningObjectives || w.objectives || [w.instructions || 'Complete classroom worksheet activities and practice target grammar.']
+        };
+      });
 
       return games.concat(worksheets);
     }
