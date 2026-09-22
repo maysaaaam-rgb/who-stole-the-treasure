@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 Space Cadet Mission! • Interactive STEM &amp; CLIL Dossier (A2)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🚀</text></svg>">
+  <style>
+    :root {
+      --space-bg: #0b132b;
+      --space-card: #ffffff;
+      --space-accent: #38bdf8;
+      --space-gold: #fbbf24;
+      --space-green: #10b981;
+      --space-purple: #a855f7;
+      --space-border: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: #090e1a;
+      background-image: 
+        radial-gradient(circle at 20% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 85%, rgba(168, 85, 247, 0.15) 0%, transparent 45%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px 20px 60px 20px;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      max-width: 1280px;
+      margin: 0 auto 16px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 14px;
+      padding: 10px 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-badge {
+      background: #38bdf8;
+      color: #0b132b;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: #38bdf8;
+    }
+
+    .btn-nav-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border: none;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-nav-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+    }
+
+    /* Main 3-Panel Tri-Fold Layout */
+    .dossier-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .dossier-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 2px solid #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    /* Panel Headers */
+    .panel-header {
+      padding: 14px 18px;
+      color: #fff;
+      position: relative;
+    }
+
+    .panel-1-hdr {
+      background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%);
+      border-bottom: 3px solid #38bdf8;
+    }
+
+    .panel-2-hdr {
+      background: linear-gradient(135deg, #0f766e 0%, #0369a1 100%);
+      border-bottom: 3px solid #2dd4bf;
+    }
+
+    .panel-3-hdr {
+      background: linear-gradient(135deg, #4338ca 0%, #1e1b4b 100%);
+      border-bottom: 3px solid #fbbf24;
+    }
+
+    .panel-title-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-level {
+      background: #fbbf24;
+      color: #78350f;
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.8rem;
+      color: #e0f2fe;
+      font-weight: 600;
+    }
+
+    .panel-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #fafbfc;
+    }
+
+    /* Sub-sections */
+    .section-block {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .section-title {
+      font-size: 0.86rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-step-num {
+      width: 22px;
+      height: 22px;
+      background: #0284c7;
+      color: #fff;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Inputs & Form Rows */
+    .form-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #475569;
+      min-width: 50px;
+    }
+
+    .form-input {
+      flex: 1;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.15s ease;
+      background: #ffffff;
+    }
+
+    .form-input:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    /* Checkbox Choices Grid */
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .choice-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+      transition: all 0.15s ease;
+    }
+
+    .choice-item:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .choice-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #0284c7;
+      cursor: pointer;
+    }
+
+    .choice-item.is-selected {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: #38bdf8;
+      color: #0369a1;
+      font-weight: 700;
+    }
+
+    /* Tech icons grid */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 8px;
+    }
+
+    .tech-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tech-card:hover {
+      border-color: #38bdf8;
+      background: #f0f9ff;
+    }
+
+    .tech-card.is-selected {
+      background: #e0f2fe;
+      border-color: #0284c7;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+    }
+
+    .tech-icon {
+      font-size: 1.3rem;
+    }
+
+    .tech-name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #334155;
+      line-height: 1.2;
+    }
+
+    /* Sticky note callout */
+    .sticky-note {
+      background: #fef08a;
+      border: 1px solid #fde047;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #713f12;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-top: 8px;
+      box-shadow: 0 2px 8px rgba(250, 204, 21, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Sentence Builder */
+    .sentence-box {
+      background: #f0fdf4;
+      border: 1.5px dashed #22c55e;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 4px;
+    }
+
+    .sentence-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #15803d;
+      margin-bottom: 6px;
+    }
+
+    .sentence-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .chip-btn {
+      background: #ffffff;
+      border: 1px solid #86efac;
+      color: #166534;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:hover {
+      background: #dcfce7;
+    }
+
+    .chip-btn.is-active {
+      background: #16a34a;
+      color: #fff;
+      border-color: #15803d;
+    }
+
+    /* Blueprint Drawing Canvas (Panel 2) */
+    .blueprint-canvas-wrap {
+      background: #0f172a;
+      background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.15) 1px, transparent 1px);
+      background-size: 16px 16px;
+      border: 2px solid #0284c7;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+
+    #blueprintCanvas {
+      width: 100%;
+      height: 320px;
+      display: block;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #0f172a;
+      padding: 6px 10px;
+      border-top: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .canvas-tools {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .tool-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tool-btn.is-active {
+      background: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+    }
+
+    /* Speech Card (Panel 3) */
+    .speech-box {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .speech-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #1e293b;
+      flex-wrap: wrap;
+    }
+
+    .speech-input {
+      flex: 1;
+      min-width: 120px;
+      border: none;
+      border-bottom: 2px dashed #0284c7;
+      background: transparent;
+      padding: 2px 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0369a1;
+      outline: none;
+    }
+
+    .speech-input:focus {
+      border-bottom-style: solid;
+      border-bottom-color: #2563eb;
+      background: #f0f9ff;
+    }
+
+    /* Voice Recorder Widget */
+    .recorder-card {
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      border: 1.5px solid #818cf8;
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .recorder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .recorder-timer {
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 900;
+      color: #a7f3d0;
+    }
+
+    .record-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-record {
+      flex: 1;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-record.is-recording {
+      animation: pulseRecord 1s infinite alternate;
+    }
+
+    @keyframes pulseRecord {
+      from { background: #ef4444; transform: scale(1); }
+      to { background: #b91c1c; transform: scale(0.98); }
+    }
+
+    .btn-play-audio {
+      flex: 1;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Success Score & Stars */
+    .score-card {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stars-row {
+      display: flex;
+      gap: 6px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .star-item {
+      color: #cbd5e1;
+      transition: color 0.15s ease;
+    }
+
+    .star-item.is-lit {
+      color: #f59e0b;
+    }
+
+    .quote-badge {
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      color: #9d174d;
+      font-size: 0.76rem;
+      font-style: italic;
+      padding: 6px 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    /* Print media styling */
+    @media print {
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+      }
+      .top-nav, .canvas-toolbar, .recorder-card {
+        display: none !important;
+      }
+      .dossier-grid {
+        grid-template-columns: 1fr 1fr 1fr !important;
+        gap: 8mm !important;
+      }
+      .panel-card {
+        box-shadow: none !important;
+        border: 1px solid #94a3b8 !important;
+        break-inside: avoid;
+      }
+      #blueprintCanvas {
+        border: 1px solid #000 !important;
+        background: #fff !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a href="../index.html#homework" class="btn-nav">← Back to Homework Hub</a>
+      <span class="nav-title">
+        <span>🚀</span> <span>Space Cadet Mission!</span>
+      </span>
+      <span class="nav-badge">CEFR A2 • STEM CLIL</span>
+    </div>
+    <div class="nav-actions">
+      <button type="button" class="btn-nav" onclick="openOriginalPosterModal()">🖼️ View Reference Poster</button>
+      <button type="button" class="btn-nav" onclick="window.print()">🖨️ Print Dossier</button>
+      <button type="button" class="btn-nav btn-nav-primary" onclick="submitMissionForXP()">⭐ Submit &amp; Claim 50 XP</button>
+    </div>
+  </nav>
+
+  <!-- 3-Panel Master Tri-Fold Grid -->
+  <main class="dossier-grid">
+
+    <!-- PANEL 1: MISSION LAUNCH & TECH PROFILE -->
+    <section class="panel-card">
+      <header class="panel-header panel-1-hdr">
+        <div class="panel-title-wrap">
+          <h2 class="panel-title"><span>🚀</span> SPACE CADET MISSION!</h2>
+          <span class="panel-level">A2</span>
+        </div>
+        <p class="panel-subtitle">Big Ideas • Brighter Tomorrow!</p>
+      </header>
+
+      <div class="panel-body">
+        <!-- 1. Cadet Profile -->
+        <div class="section-block">
+          <h3 class="section-title"><span class="section-step-num">1</span> My Cadet Profile</h3>
+          <div class="form-row">
+            <span class="form-label">Name:</span>
+            <input type="text" id="cadetName" class="form-input" placeholder="Cadet name..." oninput="syncReportCardName(this.value)" />
+          </div>
+          <div class="form-row">
+            <span class="form-label">Rank:</span>
+            <input type="text" id="cadetRank" class="form-input" placeholder="e.g. Commander, Flight Officer" />
+          </div>
+          <div class="sticky-note" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1;">
+            💡 <span><strong>I am an explorer!</strong> Ready for discovery.</span>
+          </div>
+        </div>
+
+        <!-- 2. Mission Goal -->
+        <div class="section-block">
+          <h3 class="section-title"><span class="section-step-num">2</span> What is your mission goal?</h3>
+          <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">(Choose all that apply)</p>
+          <div class="choice-list">
+            <label class="choice-item">
+              <input type="checkbox" name="goal" value="Study new planet" onchange="toggleChoice(this)" />
+              <span>🪐 Study new planet.</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="goal" value="Hunt for space life" onchange="toggleChoice(this)" />
+              <span>👽 Hunt for space life.</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="goal" value="Map a star system" onchange="toggleChoice(this)" />
+              <span>🗺️ Map a star system.</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="goal" value="Rescue stranded pilot" onchange="toggleChoice(this)" />
+              <span>🧑‍🚀 Rescue stranded pilot.</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="goal" value="Build a moon base" onchange="toggleChoice(this)" />
+              <span>🏛️ Build a moon base.</span>
+            </label>
+          </div>
+          <div class="sticky-note">
+            💡 <span>Small ideas can make a <strong>BIG</strong> difference!</span>
+          </div>
+        </div>
+
+        <!-- 3. Ship's Technology -->
+        <div class="section-block">
+          <h3 class="section-title"><span class="section-step-num">3</span> Choose your ship's technology</h3>
+          <p style="font-size:0.75rem; color:#64748b; margin-bottom:6px;">(Choose all that apply)</p>
+          <div class="tech-grid">
+            <div class="tech-card" onclick="toggleTech(this, 'Faster-than-light')">
+              <span class="tech-icon">⚡</span>
+              <span class="tech-name">Faster-than-light</span>
+            </div>
+            <div class="tech-card" onclick="toggleTech(this, 'Solar sails')">
+              <span class="tech-icon">⛵</span>
+              <span class="tech-name">Solar sails</span>
+            </div>
+            <div class="tech-card" onclick="toggleTech(this, 'Advanced AI')">
+              <span class="tech-icon">🧠</span>
+              <span class="tech-name">Advanced AI</span>
+            </div>
+            <div class="tech-card" onclick="toggleTech(this, 'Plasma engines')">
+              <span class="tech-icon">🚀</span>
+              <span class="tech-name">Plasma engines</span>
+            </div>
+            <div class="tech-card" onclick="toggleTech(this, 'Cryosleep pods')">
+              <span class="tech-icon">💊</span>
+              <span class="tech-name">Cryosleep pods</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Build Your Mission Sentence -->
+        <div class="section-block">
+          <h3 class="section-title"><span class="section-step-num">4</span> Build Your Mission Sentence</h3>
+          
+          <div class="sentence-box">
+            <div class="sentence-label">🎯 My mission is to...</div>
+            <div class="sentence-chips">
+              <button type="button" class="chip-btn" onclick="setSentenceGoal('fly rocket')">🚀 fly rocket</button>
+              <button type="button" class="chip-btn" onclick="setSentenceGoal('scan with probe')">🔍 scan with probe</button>
+              <button type="button" class="chip-btn" onclick="setSentenceGoal('drive rover')">🚙 drive rover</button>
+              <button type="button" class="chip-btn" onclick="setSentenceGoal('plant flag')">🚩 plant flag</button>
+              <button type="button" class="chip-btn" onclick="setSentenceGoal('build station')">🔬 build station</button>
+            </div>
+            <input type="text" id="sentenceGoalInput" class="form-input" placeholder="Write or tap goal above..." oninput="syncSpeechCardGoal(this.value)" />
+          </div>
+
+          <div class="sentence-box" style="margin-top:8px; background:#eff6ff; border-color:#60a5fa;">
+            <div class="sentence-label" style="color:#1d4ed8;">⚙️ It will...</div>
+            <div class="sentence-chips">
+              <button type="button" class="chip-btn" style="border-color:#93c5fd; color:#1e40af;" onclick="setSentenceAction('travel far')">✈️ travel far</button>
+              <button type="button" class="chip-btn" style="border-color:#93c5fd; color:#1e40af;" onclick="setSentenceAction('scan deep')">🔍 scan deep</button>
+              <button type="button" class="chip-btn" style="border-color:#93c5fd; color:#1e40af;" onclick="setSentenceAction('carry cargo')">📦 carry cargo</button>
+              <button type="button" class="chip-btn" style="border-color:#93c5fd; color:#1e40af;" onclick="setSentenceAction('build base')">⛺ build base</button>
+              <button type="button" class="chip-btn" style="border-color:#93c5fd; color:#1e40af;" onclick="setSentenceAction('transmit data')">💻 transmit data</button>
+            </div>
+            <input type="text" id="sentenceActionInput" class="form-input" placeholder="Write or tap action above..." oninput="syncSpeechCardAction(this.value)" />
+          </div>
+
+          <div style="font-size:0.74rem; font-weight:800; color:#475569; text-align:center; margin-top:8px;">
+            🌟 Be brave! The universe is waiting! There are no wrong steps! ⚙️
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: MY MISSION BLUEPRINT (DRAWING CANVAS) -->
+    <section class="panel-card">
+      <header class="panel-header panel-2-hdr">
+        <div class="panel-title-wrap">
+          <h2 class="panel-title"><span>2️⃣</span> MY MISSION BLUEPRINT</h2>
+          <span class="panel-level" style="background:#2dd4bf; color:#042f2e;">DRAW &amp; DESIGN</span>
+        </div>
+        <p class="panel-subtitle">Draw • Label • Design • Create!</p>
+      </header>
+
+      <div class="panel-body">
+        <div class="form-row">
+          <span class="form-label" style="min-width:130px; font-weight:900; color:#0f766e;">My Space Vehicle:</span>
+          <input type="text" id="vehicleNameInput" class="form-input" placeholder="e.g. Star Explorer X-1" oninput="syncReportCardVehicle(this.value)" />
+        </div>
+
+        <!-- Interactive Blueprint Grid Drawing Area -->
+        <div class="blueprint-canvas-wrap">
+          <canvas id="blueprintCanvas" width="400" height="320"></canvas>
+          <div class="canvas-toolbar">
+            <div class="canvas-tools">
+              <button type="button" class="tool-btn is-active" id="toolPencil" onclick="setDrawTool('pencil')">✏️ Pencil</button>
+              <button type="button" class="tool-btn" id="toolEraser" onclick="setDrawTool('eraser')">🧹 Eraser</button>
+              <input type="color" id="drawColor" value="#38bdf8" style="width:26px; height:24px; border:none; background:transparent; cursor:pointer;" title="Line Color" />
+            </div>
+            <div class="canvas-tools">
+              <button type="button" class="tool-btn" onclick="clearCanvas()">🗑️ Clear</button>
+              <button type="button" class="tool-btn" onclick="stampSticker('🚀')">🚀</button>
+              <button type="button" class="tool-btn" onclick="stampSticker('🛸')">🛸</button>
+              <button type="button" class="tool-btn" onclick="stampSticker('🛰️')">🛰️</button>
+              <button type="button" class="tool-btn" onclick="stampSticker('🌟')">🌟</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Equipment Checklist -->
+        <div class="section-block">
+          <h3 class="section-title"><span>🔧</span> My vehicle has: (Choose all that apply)</h3>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Thrusters" onchange="toggleEquipment(this)" />
+              <span>🚀 Thrusters</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Solar panels" onchange="toggleEquipment(this)" />
+              <span>🟦 Solar panels</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Telescope" onchange="toggleEquipment(this)" />
+              <span>🔭 Telescope</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Communication dish" onchange="toggleEquipment(this)" />
+              <span>📡 Comms dish</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Lander legs" onchange="toggleEquipment(this)" />
+              <span>🛸 Lander legs</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Shielding" onchange="toggleEquipment(this)" />
+              <span>🛡️ Shielding</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Drill" onchange="toggleEquipment(this)" />
+              <span>🔩 Drill</span>
+            </label>
+            <label class="choice-item">
+              <input type="checkbox" name="equipment" value="Habitat pod" onchange="toggleEquipment(this)" />
+              <span>💺 Habitat pod</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:8px 12px; font-size:0.78rem; font-weight:800; color:#166534; display:flex; align-items:center; justify-content:space-between;">
+          <span>🌍 Discover today for a new future!</span>
+          <span>🛰️</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3: MISSION REPORT CARD & SHOW AND TELL -->
+    <section class="panel-card">
+      <header class="panel-header panel-3-hdr">
+        <div class="panel-title-wrap">
+          <h2 class="panel-title"><span>⭐</span> MISSION REPORT CARD</h2>
+          <span class="panel-level" style="background:#fbbf24; color:#78350f;">Show &amp; Tell!</span>
+        </div>
+        <p class="panel-subtitle">COMMUNICATE &amp; REPORT!</p>
+      </header>
+
+      <div class="panel-body">
+        <!-- Speech Formulation Prompts -->
+        <div class="speech-box">
+          <div class="speech-row">
+            <span>👨‍🚀 Greetings! My name is</span>
+            <input type="text" id="reportName" class="speech-input" placeholder="Cadet name..." />
+          </div>
+          <div class="speech-row">
+            <span>💡 My mission is a</span>
+            <input type="text" id="reportMission" class="speech-input" placeholder="e.g. planetary survey" />
+          </div>
+          <div class="speech-row">
+            <span>⚙️ It will</span>
+            <input type="text" id="reportAction" class="speech-input" placeholder="e.g. scan deep exoplanet atmosphere" />
+          </div>
+          <div class="speech-row">
+            <span>📦 It has</span>
+            <input type="text" id="reportFeatures" class="speech-input" placeholder="e.g. plasma thrusters and solar sails" />
+          </div>
+          <div class="speech-row">
+            <span>❤️ I am doing this mission because</span>
+            <input type="text" id="reportReason" class="speech-input" placeholder="e.g. I want to discover space life" />
+          </div>
+          <div class="speech-row" style="color:#0284c7; font-weight:900;">
+            <span>🚀 Thank you! Over and out!</span>
+          </div>
+        </div>
+
+        <!-- Integrated Oral Voice Recorder for Show & Tell -->
+        <div class="recorder-card">
+          <div class="recorder-header">
+            <span style="font-size:0.84rem; font-weight:800;">🎙️ Record Your Oral Pitch:</span>
+            <span class="recorder-timer" id="recordingTimer">00:00</span>
+          </div>
+          <div class="record-controls">
+            <button type="button" class="btn-record" id="btnRecord" onclick="toggleAudioRecording()">
+              <span>🔴</span> <span id="recordBtnText">Record Speech</span>
+            </button>
+            <button type="button" class="btn-play-audio" id="btnPlayAudio" onclick="playbackAudio()" style="opacity:0.5; pointer-events:none;">
+              <span>▶️</span> <span>Listen Back</span>
+            </button>
+          </div>
+          <div style="font-size:0.72rem; color:#cbd5e1; text-align:center;">
+            Be curious! You are part of history!
+          </div>
+        </div>
+
+        <!-- Success Score & Quality Rating -->
+        <div class="score-card">
+          <h4 style="font-size:0.86rem; font-weight:900; color:#78350f; margin-bottom:6px;">🏆 My Mission Success Score:</h4>
+          <p style="font-size:0.75rem; color:#92400e; margin-bottom:6px;">My Mission is: (Choose all that apply)</p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+            <label class="choice-item" style="padding:4px 8px; font-size:0.75rem;">
+              <input type="checkbox" name="scoreFactor" value="Discovery" />
+              <span>🔍 Discovery</span>
+            </label>
+            <label class="choice-item" style="padding:4px 8px; font-size:0.75rem;">
+              <input type="checkbox" name="scoreFactor" value="New Data" />
+              <span>📈 New Data</span>
+            </label>
+            <label class="choice-item" style="padding:4px 8px; font-size:0.75rem;">
+              <input type="checkbox" name="scoreFactor" value="Achievement" />
+              <span>🏅 Achievement</span>
+            </label>
+            <label class="choice-item" style="padding:4px 8px; font-size:0.75rem;">
+              <input type="checkbox" name="scoreFactor" value="Helpful" />
+              <span>🏆 Helpful</span>
+            </label>
+            <label class="choice-item" style="padding:4px 8px; font-size:0.75rem;">
+              <input type="checkbox" name="scoreFactor" value="Amazing" />
+              <span>🚀 Amazing</span>
+            </label>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; font-weight:800; color:#78350f;">I give my invention:</span>
+            <div class="stars-row" id="starsRow">
+              <span class="star-item is-lit" onclick="setStars(1)">★</span>
+              <span class="star-item is-lit" onclick="setStars(2)">★</span>
+              <span class="star-item is-lit" onclick="setStars(3)">★</span>
+              <span class="star-item is-lit" onclick="setStars(4)">★</span>
+              <span class="star-item is-lit" onclick="setStars(5)">★</span>
+            </div>
+            <span style="font-size:0.86rem; font-weight:900; color:#b45309;" id="starNumber">5 / 5</span>
+          </div>
+        </div>
+
+        <div class="quote-badge">
+          &ldquo;Every great explorer starts with a question.&rdquo; ❤️
+        </div>
+        <div style="font-size:0.72rem; color:#64748b; text-align:center;">
+          Little explorers, A universe of possibilities. 🌟
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- High-Res Reference Poster Modal -->
+  <div id="posterModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; padding:20px;" onclick="closeOriginalPosterModal()">
+    <div style="position:relative; max-width:900px; width:100%; max-height:90vh; background:#0f172a; border:2px solid #38bdf8; border-radius:16px; padding:16px; overflow-y:auto; text-align:center;" onclick="event.stopPropagation()">
+      <button style="position:absolute; top:12px; right:12px; background:#ef4444; color:#fff; border:none; width:32px; height:32px; border-radius:50%; font-weight:900; cursor:pointer;" onclick="closeOriginalPosterModal()">✕</button>
+      <h3 style="color:#38bdf8; margin-bottom:12px; font-weight:900;">🚀 Space Cadet Mission! Reference Poster</h3>
+      <img src="../assets/homework/space-cadet-mission-poster.jpg" alt="Space Cadet Mission Poster" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.5);" />
+      <div style="margin-top:14px; display:flex; justify-content:center; gap:10px;">
+        <a href="../assets/homework/space-cadet-mission-poster.jpg" target="_blank" download="space-cadet-mission.jpg" class="btn-nav" style="background:#0284c7; color:#fff;">📥 Download Poster</a>
+        <button type="button" class="btn-nav" onclick="closeOriginalPosterModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Canvas Drawing Logic ---
+    const canvas = document.getElementById('blueprintCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentTool = 'pencil';
+    let drawColor = '#38bdf8';
+    let lastX = 0;
+    let lastY = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * (window.devicePixelRatio || 1);
+      canvas.height = rect.height * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      drawGrid();
+    }
+
+    function drawGrid() {
+      // Grid background is handled via CSS, canvas is transparent overlay
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      const pos = getCanvasCoords(e);
+      lastX = pos.x;
+      lastY = pos.y;
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getCanvasCoords(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (currentTool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 14;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = document.getElementById('drawColor').value || '#38bdf8';
+        ctx.lineWidth = 3;
+      }
+      ctx.stroke();
+      lastX = pos.x;
+      lastY = pos.y;
+    }
+
+    function stopDraw() {
+      isDrawing = false;
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDraw);
+
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('touchend', stopDraw);
+
+    function setDrawTool(tool) {
+      currentTool = tool;
+      document.getElementById('toolPencil').classList.toggle('is-active', tool === 'pencil');
+      document.getElementById('toolEraser').classList.toggle('is-active', tool === 'eraser');
+    }
+
+    function clearCanvas() {
+      if (confirm('Clear the entire blueprint canvas?')) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function stampSticker(emoji) {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.font = '36px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const x = 50 + Math.random() * (canvas.getBoundingClientRect().width - 100);
+      const y = 50 + Math.random() * (canvas.getBoundingClientRect().height - 100);
+      ctx.fillText(emoji, x, y);
+    }
+
+    // --- Choice & Tech Toggles ---
+    function toggleChoice(checkbox) {
+      checkbox.closest('.choice-item').classList.toggle('is-selected', checkbox.checked);
+    }
+
+    const selectedTech = new Set();
+    function toggleTech(card, techName) {
+      if (selectedTech.has(techName)) {
+        selectedTech.delete(techName);
+        card.classList.remove('is-selected');
+      } else {
+        selectedTech.add(techName);
+        card.classList.add('is-selected');
+      }
+      updateReportFeatures();
+    }
+
+    const selectedEquipment = new Set();
+    function toggleEquipment(checkbox) {
+      checkbox.closest('.choice-item').classList.toggle('is-selected', checkbox.checked);
+      if (checkbox.checked) selectedEquipment.add(checkbox.value);
+      else selectedEquipment.delete(checkbox.value);
+      updateReportFeatures();
+    }
+
+    function updateReportFeatures() {
+      const combined = Array.from(selectedEquipment).concat(Array.from(selectedTech));
+      const el = document.getElementById('reportFeatures');
+      if (el && combined.length > 0) {
+        el.value = combined.slice(0, 3).join(', ');
+      }
+    }
+
+    // --- Interactive Sentence Syncing ---
+    function setSentenceGoal(verbPhrase) {
+      document.getElementById('sentenceGoalInput').value = verbPhrase;
+      syncSpeechCardGoal(verbPhrase);
+    }
+
+    function setSentenceAction(actionPhrase) {
+      document.getElementById('sentenceActionInput').value = actionPhrase;
+      syncSpeechCardAction(actionPhrase);
+    }
+
+    function syncReportCardName(val) {
+      const el = document.getElementById('reportName');
+      if (el) el.value = val;
+    }
+
+    function syncSpeechCardGoal(val) {
+      const el = document.getElementById('reportMission');
+      if (el) el.value = val;
+    }
+
+    function syncSpeechCardAction(val) {
+      const el = document.getElementById('reportAction');
+      if (el) el.value = val;
+    }
+
+    function syncReportCardVehicle(val) {
+      const el = document.getElementById('reportReason');
+      if (el && !el.value) el.value = 'explore space with ' + val;
+    }
+
+    // --- Star Rating ---
+    let currentStars = 5;
+    function setStars(count) {
+      currentStars = count;
+      const stars = document.getElementById('starsRow').children;
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].classList.toggle('is-lit', i < count);
+      }
+      document.getElementById('starNumber').textContent = count + ' / 5';
+    }
+
+    // --- Simulated Voice Recording ---
+    let mediaRecorder = null;
+    let isRecording = false;
+    let recordingSecs = 0;
+    let timerInterval = null;
+
+    function toggleAudioRecording() {
+      const btn = document.getElementById('btnRecord');
+      const text = document.getElementById('recordBtnText');
+      const playBtn = document.getElementById('btnPlayAudio');
+      const timer = document.getElementById('recordingTimer');
+
+      if (!isRecording) {
+        isRecording = true;
+        recordingSecs = 0;
+        btn.classList.add('is-recording');
+        text.textContent = 'Stop Recording';
+        timerInterval = setInterval(() => {
+          recordingSecs++;
+          const mins = String(Math.floor(recordingSecs / 60)).padStart(2, '0');
+          const secs = String(recordingSecs % 60).padStart(2, '0');
+          timer.textContent = mins + ':' + secs;
+        }, 1000);
+      } else {
+        isRecording = false;
+        clearInterval(timerInterval);
+        btn.classList.remove('is-recording');
+        text.textContent = 'Record Again';
+        playBtn.style.opacity = '1';
+        playBtn.style.pointerEvents = 'auto';
+        alert('🎙️ Oral Show & Tell presentation successfully recorded (' + recordingSecs + 's)! Ready for XP submission.');
+      }
+    }
+
+    function playbackAudio() {
+      alert('▶️ Playing back your Space Cadet oral Show & Tell speech!');
+    }
+
+    // --- Poster Modal ---
+    function openOriginalPosterModal() {
+      document.getElementById('posterModal').style.display = 'flex';
+    }
+    function closeOriginalPosterModal() {
+      document.getElementById('posterModal').style.display = 'none';
+    }
+
+    // --- Save & Submit for XP ---
+    function submitMissionForXP() {
+      const cadet = document.getElementById('cadetName').value.trim() || 'Cadet Explorer';
+      const vehicle = document.getElementById('vehicleNameInput').value.trim() || 'Starship';
+
+      // Submit to parent school store if loaded in iframe / window
+      try {
+        if (window.opener && window.opener.store) {
+          window.opener.store.recordHomeworkSubmission('hw-space-cadet', 'student-3a-224', {
+            status: 'COMPLETED',
+            score: 100,
+            xpAwarded: 50,
+            notes: 'Completed Space Cadet Blueprint for ' + vehicle
+          });
+        }
+      } catch (e) {}
+
+      alert('🎉 MISSION COMPLETE, ' + cadet.toUpperCase() + '!\n\n' +
+            '🚀 Vehicle: ' + vehicle + '\n' +
+            '⭐ XP Awarded: +50 XP (+15 Bonus XP for Oral Report)\n' +
+            '📜 Mission Dossier recorded in your Academy Portfolio!');
+    }
+  </script>
+</body>
+</html>
