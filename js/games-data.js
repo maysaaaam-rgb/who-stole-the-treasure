@@ -26,14 +26,15 @@ const GAMES_REGISTRY = [
       "dog-vs-cat"
     ],
     "title": "🐱 Cat vs. Dog: Preposition Catapult",
-    "description": "Real-time 60FPS parabolic physics catapult clash (CEFR A1 | 150 XP). Launch fish bones over the tall wooden fence, calculate wind vectors, and solve preposition linguistic gates to unlock tactical Double Shot, Super Power, and Grammar Medic power-ups!",
+    "description": "Real-time 60FPS parabolic physics catapult clash (CEFR A1 | 130 XP). Launch fish bones over the tall wooden fence, calculate wind vectors, and solve preposition linguistic gates to unlock tactical Double Shot, Super Power, and Grammar Medic power-ups!",
     "type": "game",
-    "category": "Phonics & Language Quests",
+    "category": "Grammar & Communication",
+    "categoryGroup": "Grammar & Speaking Quests",
     "categoryLabel": "🐱 Arcade Physics & Prepositions",
     "level": "A1",
     "cefrLevel": "A1",
-    "age": "Ages 6–10",
-    "ageGroup": "6–10",
+    "age": "Ages 7–10",
+    "ageGroup": "7–10",
     "grade": "Grade 2–4",
     "grades": [
       "Grade 2",
@@ -43,7 +44,7 @@ const GAMES_REGISTRY = [
     "duration": 30,
     "durationText": "30 min",
     "estimatedMinutes": 30,
-    "xp": 150,
+    "xp": 130,
     "skills": [
       "Prepositions of Place (over, into, behind, under, on top of)",
       "Directional Prepositions & Movement (across, through)",
@@ -52,33 +53,35 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Prepositions of Place & Movement, Trajectory Physics & Turn-Based Strategy",
     "topics": [
-      "Prepositions",
-      "Grammar Mechanics",
-      "Physics Catapult",
-      "Interactive Arcade"
+      "Prepositions of Place",
+      "Action Verbs",
+      "Trajectory Physics"
     ],
     "learningObjectives": [
-      "Identify and use prepositions of place (over, under, into, behind, on top of, between).",
-      "Apply prepositions of direction and movement (across, through) in context.",
-      "Read aloud spoken victory teleprompter summaries using target prepositions."
+      "Identify and apply spatial prepositions (over, into, on top of, behind).",
+      "Calculate projectile trajectory angles and force against dynamic wind meters.",
+      "Express spatial actions orally using 'The cat threw the projectile OVER the fence'."
     ],
     "vocabulary": {
-      "core": ["over", "under", "into", "behind", "on top of", "across", "between", "next to"],
-      "supporting": ["fence", "trash bin", "dog bowl", "bone", "fish", "wind", "force"]
+      "core": ["over", "into", "on top of", "behind", "throw", "hit", "fence", "yard"],
+      "supporting": ["wind", "angle", "power", "catapult", "trajectory"]
     },
     "grammar": {
-      "focusPattern": "Subject + Verb + Prepositional Phrase (The cat threw the fish OVER the fence)",
+      "focusPattern": "Prepositions of Place: over / into / on top of / behind",
       "formula": "[Noun] + [Verb] + [Preposition] + [Noun Phrase]",
       "formulas": [
-        "The fish flies OVER the tall fence.",
-        "The cat sits ON TOP OF the trash bin.",
-        "The bone lands INTO the dog bowl.",
-        "The dog lives BEHIND the fence."
+        "The cat throws the fish over the fence.",
+        "The bone lands into the dog's bowl.",
+        "The cat sits on top of the trash bin."
       ]
     },
     "path": "cat-vs-dog/index.html",
     "url": "cat-vs-dog/index.html",
+    "route": "cat-vs-dog/index.html",
+    "worksheetRoute": "cat-vs-dog/worksheet.html",
     "icon": "🐱",
+    "thumbnailIcon": "🐱",
+    "gradient": "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #0284c7 100%)",
     "status": "ready"
   },
   {
