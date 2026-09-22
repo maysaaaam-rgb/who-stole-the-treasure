@@ -5929,3 +5929,95 @@ body.classroom-mode-active .classroom-students-grid {
   background: rgba(16, 185, 129, 0.2);
 }
 
+/* =========================================================================
+   CATEGORIZED CATALOG SHELVES & SECTIONS
+   ========================================================================= */
+.library-catalog-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.library-catalog-section {
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.library-catalog-section:hover {
+  box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.07);
+}
+
+.catalog-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+}
+
+.catalog-section-left {
+  flex: 1;
+  min-width: 260px;
+}
+
+.catalog-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.catalog-section-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.catalog-section-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.catalog-section-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.catalog-section-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalog-section-counter {
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: var(--bg-card-secondary, #f1f5f9);
+  color: var(--text-secondary, #334155);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-light, #cbd5e1);
+  white-space: nowrap;
+}
