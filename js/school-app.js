@@ -4684,40 +4684,28 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   const CATALOG_SECTIONS = [
     {
-      id: "clil-science",
-      title: "🔬 CLIL & Science",
-      subtitle: "Integrated science, astronomy, neuroscience, geography & natural phenomena missions",
-      categoryKey: "CLIL & Science",
-      badgeColor: "rgba(56, 189, 248, 0.15)",
-      textColor: "#0284c7",
-      borderColor: "rgba(56, 189, 248, 0.35)"
+      id: "stem-space",
+      title: "🚀 STEM & Space Exploration",
+      subtitle: "Planetary science, survival needs, and exoplanet discovery.",
+      categoryKey: "CLIL & Science"
     },
     {
       id: "engineering-inventions",
-      title: "🛠️ Engineering & Inventions",
-      subtitle: "Hands-on design thinking, biomimicry, historical relics, blueprinting & STEM build labs",
-      categoryKey: "Engineering & Inventions",
-      badgeColor: "rgba(6, 182, 212, 0.15)",
-      textColor: "#0891b2",
-      borderColor: "rgba(6, 182, 212, 0.35)"
+      title: "🛠️ Engineering, Design & Inventions",
+      subtitle: "Hands-on design thinking, biomimicry, historical relics, blueprinting and STEM build labs.",
+      categoryKey: "Engineering & Inventions"
     },
     {
       id: "story-literature",
-      title: "📖 Story & Literature",
-      subtitle: "Narrative adventures, theatre plays, skimming quests & interactive literature",
-      categoryKey: "Story & Literature",
-      badgeColor: "rgba(168, 85, 247, 0.15)",
-      textColor: "#9333ea",
-      borderColor: "rgba(168, 85, 247, 0.35)"
+      title: "📖 Story, Theatre & Literature",
+      subtitle: "Narrative adventures, Wonderland theatre plays, skimming quests and interactive literature.",
+      categoryKey: "Story & Literature"
     },
     {
       id: "phonics-language",
-      title: "🔤 Phonics & Language Quests",
-      subtitle: "Modal mastery, past tense journeys, phonological awareness & syntactic fluency",
-      categoryKey: "Phonics & Language Quests",
-      badgeColor: "rgba(245, 158, 11, 0.15)",
-      textColor: "#d97706",
-      borderColor: "rgba(245, 158, 11, 0.35)"
+      title: "🔤 Phonics, Grammar & Language Quests",
+      subtitle: "Modal mastery, past tense journeys, phonological awareness and syntactic fluency.",
+      categoryKey: "Phonics & Language Quests"
     }
   ];
 
@@ -4743,19 +4731,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (secItems.length > 0) {
         matchedCategoryKeys.add(sec.categoryKey);
         html += 
-          '<section class="library-catalog-section" id="catalog-section-' + sec.id + '">' +
-            '<div class="catalog-section-header">' +
-              '<div class="catalog-section-left">' +
-                '<div class="catalog-section-title-row">' +
-                  '<span class="catalog-section-badge" style="background:' + sec.badgeColor + '; color:' + sec.textColor + '; border:1px solid ' + sec.borderColor + ';">' + sec.title + '</span>' +
-                '</div>' +
-                '<p class="catalog-section-desc">' + sec.subtitle + '</p>' +
-              '</div>' +
-              '<div class="catalog-section-right">' +
-                '<span class="catalog-section-counter">' + secItems.length + (secItems.length === 1 ? ' Lesson' : ' Lessons') + '</span>' +
-              '</div>' +
+          '<section class="library-category-group library-catalog-section" id="group-' + sec.id + '">' +
+            '<div class="category-group-header catalog-section-header">' +
+              '<h2>' + sec.title + ' <span class="badge-count catalog-section-counter">' + secItems.length + (secItems.length === 1 ? ' Lesson' : ' Lessons') + '</span></h2>' +
+              '<p class="category-group-desc catalog-section-desc">' + sec.subtitle + '</p>' +
             '</div>' +
-            '<div class="resource-library-grid">' +
+            '<div class="cards-grid resource-library-grid">' +
               secItems.map(r => renderResourceCard(r)).join('') +
             '</div>' +
           '</section>';
@@ -4766,19 +4747,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const remainingItems = items.filter(r => !matchedCategoryKeys.has(r.category));
     if (remainingItems.length > 0) {
       html += 
-        '<section class="library-catalog-section" id="catalog-section-practice">' +
-          '<div class="catalog-section-header">' +
-            '<div class="catalog-section-left">' +
-              '<div class="catalog-section-title-row">' +
-                '<span class="catalog-section-badge" style="background:rgba(16, 185, 129, 0.15); color:#059669; border:1px solid rgba(16, 185, 129, 0.35);">📄 Printable Worksheets &amp; Practice Drills</span>' +
-              '</div>' +
-              '<p class="catalog-section-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
-            '</div>' +
-            '<div class="catalog-section-right">' +
-              '<span class="catalog-section-counter">' + remainingItems.length + (remainingItems.length === 1 ? ' Resource' : ' Resources') + '</span>' +
-            '</div>' +
+        '<section class="library-category-group library-catalog-section" id="group-practice">' +
+          '<div class="category-group-header catalog-section-header">' +
+            '<h2>📄 Printable Worksheets &amp; Practice Drills <span class="badge-count catalog-section-counter">' + remainingItems.length + (remainingItems.length === 1 ? ' Resource' : ' Resources') + '</span></h2>' +
+            '<p class="category-group-desc catalog-section-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
           '</div>' +
-          '<div class="resource-library-grid">' +
+          '<div class="cards-grid resource-library-grid">' +
             remainingItems.map(r => renderResourceCard(r)).join('') +
           '</div>' +
         '</section>';
