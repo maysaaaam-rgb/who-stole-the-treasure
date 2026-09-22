@@ -4684,8 +4684,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   const CATALOG_SECTIONS = [
     {
       id: "stem-space",
-      title: "🚀 STEM & Space Exploration",
-      subtitle: "Planetary science, survival needs, and exoplanet discovery.",
+      title: "🔬 STEM & Science CLIL",
+      subtitle: "Hands-on planetary science, biological needs, and physical properties.",
       categoryKey: "CLIL & Science"
     },
     {
@@ -4730,15 +4730,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (secItems.length > 0) {
         matchedCategoryKeys.add(sec.categoryKey);
         html += 
-          '<section class="library-category-group library-catalog-section" id="group-' + sec.id + '">' +
-            '<div class="category-group-header catalog-section-header">' +
-              '<h2>' + sec.title + ' <span class="badge-count catalog-section-counter">' + secItems.length + (secItems.length === 1 ? ' Lesson' : ' Lessons') + '</span></h2>' +
-              '<p class="category-group-desc catalog-section-desc">' + sec.subtitle + '</p>' +
+          '<div class="library-category-group" data-category="' + sec.categoryKey.replace(/"/g, '&quot;') + '" id="group-' + sec.id + '">' +
+            '<div class="group-header category-group-header">' +
+              '<h3>' + sec.title + ' <span class="badge-count">' + secItems.length + (secItems.length === 1 ? ' Module' : ' Modules') + '</span></h3>' +
+              '<p class="group-desc category-group-desc">' + sec.subtitle + '</p>' +
             '</div>' +
-            '<div class="cards-grid resource-library-grid">' +
+            '<div class="resource-cards-grid cards-grid">' +
               secItems.map(r => renderResourceCard(r)).join('') +
             '</div>' +
-          '</section>';
+          '</div>';
       }
     });
 
@@ -4746,15 +4746,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const remainingItems = items.filter(r => !matchedCategoryKeys.has(r.category));
     if (remainingItems.length > 0) {
       html += 
-        '<section class="library-category-group library-catalog-section" id="group-practice">' +
-          '<div class="category-group-header catalog-section-header">' +
-            '<h2>📄 Printable Worksheets &amp; Practice Drills <span class="badge-count catalog-section-counter">' + remainingItems.length + (remainingItems.length === 1 ? ' Resource' : ' Resources') + '</span></h2>' +
-            '<p class="category-group-desc catalog-section-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
+        '<div class="library-category-group" data-category="Printable Worksheets & Practice" id="group-practice">' +
+          '<div class="group-header category-group-header">' +
+            '<h3>📄 Printable Worksheets &amp; Practice Drills <span class="badge-count">' + remainingItems.length + (remainingItems.length === 1 ? ' Module' : ' Modules') + '</span></h3>' +
+            '<p class="group-desc category-group-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
           '</div>' +
-          '<div class="cards-grid resource-library-grid">' +
+          '<div class="resource-cards-grid cards-grid">' +
             remainingItems.map(r => renderResourceCard(r)).join('') +
           '</div>' +
-        '</section>';
+        '</div>';
     }
 
     html += '</div>';
