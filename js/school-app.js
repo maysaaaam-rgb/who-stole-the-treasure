@@ -4194,7 +4194,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
 
     // Tab filter
-    if (libActiveTab === 'games') {
+    if (libActiveTab === 'clil') {
+      all = all.filter(r => r.category === 'CLIL & Science');
+    } else if (libActiveTab === 'engineering') {
+      all = all.filter(r => r.category === 'Engineering & Inventions');
+    } else if (libActiveTab === 'literature') {
+      all = all.filter(r => r.category === 'Story & Literature');
+    } else if (libActiveTab === 'phonics') {
+      all = all.filter(r => r.category === 'Phonics & Language Quests');
+    } else if (libActiveTab === 'games') {
       all = all.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story');
     } else if (libActiveTab === 'worksheets') {
       all = all.filter(r => r.isWorksheet);
@@ -4759,6 +4767,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
     const totalResources = allCombined.length;
 
+    const clilCount = allCombined.filter(r => r.category === 'CLIL & Science').length;
+    const engCount = allCombined.filter(r => r.category === 'Engineering & Inventions').length;
+    const litCount = allCombined.filter(r => r.category === 'Story & Literature').length;
+    const phonicsCount = allCombined.filter(r => r.category === 'Phonics & Language Quests').length;
     const gamesCount = allCombined.filter(r => !r.isWorksheet && r.type !== 'textbook' && r.type !== 'story').length;
     const worksheetsCount = allCombined.filter(r => r.isWorksheet).length;
     const storiesCount = allCombined.filter(r => r.type === 'story' || (r.category || '').toLowerCase().includes('story') || (r.category || '').toLowerCase().includes('reading')).length;
@@ -4779,6 +4791,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     let tabHeading = 'All Resources';
     if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'clil') tabHeading = '🚀 CLIL & Science Exploration';
+    else if (libActiveTab === 'engineering') tabHeading = '🛠️ Engineering, Design & Inventions';
+    else if (libActiveTab === 'literature') tabHeading = '📖 Story, Theatre & Literature';
+    else if (libActiveTab === 'phonics') tabHeading = '🔤 Phonics, Grammar & Language Quests';
     else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
     else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
     else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
@@ -4927,9 +4943,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>All Resources</span>' +
             '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'games' ? 'is-active' : '') + '" onclick="setLibTab(\'games\')">' +
-            '<span>🎮 Games</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + gamesCount + '</span>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'clil' ? 'is-active' : '') + '" onclick="setLibTab(\'clil\')">' +
+            '<span>🚀 CLIL &amp; Science</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + clilCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'engineering' ? 'is-active' : '') + '" onclick="setLibTab(\'engineering\')">' +
+            '<span>🛠️ Engineering</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + engCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'literature' ? 'is-active' : '') + '" onclick="setLibTab(\'literature\')">' +
+            '<span>📖 Literature &amp; Story</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + litCount + '</span>' +
+          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'phonics' ? 'is-active' : '') + '" onclick="setLibTab(\'phonics\')">' +
+            '<span>🔤 Phonics &amp; Language</span>' +
+            '<span class="cat-pill-count tab-count-badge">' + phonicsCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
             '<span>📄 Worksheets</span>' +
@@ -4937,18 +4965,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button><button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'stories' ? 'is-active' : '') + '" onclick="setLibTab(\'stories\')">' +
-            '<span>📚 Stories</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + storiesCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'roleplays' ? 'is-active' : '') + '" onclick="setLibTab(\'roleplays\')">' +
-            '<span>🎭 Roleplays</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + roleplaysCount + '</span>' +
-          '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'textbooks' ? 'is-active' : '') + '" onclick="setLibTab(\'textbooks\')">' +
-            '<span>📖 Textbooks</span>' +
-            '<span class="cat-pill-count tab-count-badge">' + textbooksCount + '</span>' +
-          '</button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
             '<span>⭐ Favorites</span>' +
             '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
