@@ -4340,6 +4340,58 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Media Literacy & Social-Emotional Learning",
     "clilTheme": "Classroom Community & Digital Communication"
+  },
+  {
+    "id": "smart-farm",
+    "aliases": ["farm-inventor", "smart-farm-mission", "farm-robot"],
+    "title": "🌾 The Smart Farm: Young Inventors Mission",
+    "description": "AAA-style children's adventure game. Save the animals after a farm-wide system failure: connect pipes for the thirsty cow, balance temperatures in the smart coop, program a delivery robot, and assemble an original farm invention!",
+    "category": "Inventions & Engineering",
+    "categoryGroup": "Engineering & Technology",
+    "cefrLevel": "A1–A1+",
+    "level": "A1 / A1+",
+    "ageGroup": "7–10",
+    "grade": "Grade 3",
+    "grades": ["Grade 2", "Grade 3", "Grade 4", "Grade 5"],
+    "xp": 200,
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "type": "game",
+    "topics": ["Smart Agriculture", "Robotics & Coding", "Invention & Design", "Animal Care"],
+    "learningObjectives": [
+      "Identify farm animals and basic biological needs (water, warmth, food)",
+      "Formulate imperative purpose statements (It gives water, It keeps animals warm)",
+      "Program a robot using sequential imperative commands (Go, Pick Up, Carry, Stop)",
+      "Deliver a 4-part invention presentation using a live teleprompter"
+    ],
+    "teacherInstructions": "Guide students through the 4 emergency repair missions. Have learners customize their own farm machines in the Inventor Lab and present their inventions orally.",
+    "route": "smart-farm/index.html",
+    "worksheet": "smart-farm/worksheet.html",
+    "worksheetRoute": "smart-farm/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🌾",
+    "gradient": "linear-gradient(135deg, #064e3b 0%, #065f46 50%, #0284c7 100%)",
+    "tags": ["farm", "animals", "robot", "engineering", "clil", "inventions"],
+    "vocabulary": {
+      "core": ["cow", "chicken", "water", "warm", "cold", "carry"],
+      "supporting": ["heater", "pipes", "robot", "invention", "solar", "wind"]
+    },
+    "grammar": {
+      "focusPattern": "Subject + Verb + Object (Needs & Purpose Statements)",
+      "formula": "The [Animal] needs [Noun] / It [Verbs] [Noun] to the [Animal]!",
+      "formulas": [
+        "The cow needs water.",
+        "It gives water to the cow.",
+        "The chicken is warm and happy.",
+        "The robot carries the heavy box."
+      ]
+    },
+    "clilDomain": "Agro-Technology & Ecological Engineering",
+    "clilTheme": "Automated Farm Systems & Animal Welfare"
   }
 ];
 
