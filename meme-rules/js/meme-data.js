@@ -6,29 +6,52 @@
 (function(root) {
   'use strict';
 
-  // SVG Avatar Generator helper for crisp, vibrant meme archetypes with glowing filters
+  // SVG Avatar Generator: Rich, vibrant EdTech arcade collectible art with starburst rays & shiny frame
   function getMemeSvg(archetype, color1, color2, iconSymbol) {
-    return `<svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    return `<svg viewBox="0 0 140 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad-${archetype}" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${color1}"/>
           <stop offset="100%" stop-color="${color2}"/>
         </linearGradient>
+        <radialGradient id="sunburst-${archetype}" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="${color1}" stop-opacity="0.05"/>
+        </radialGradient>
         <filter id="glow-${archetype}" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="${color1}" flood-opacity="0.45"/>
+          <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="${color1}" flood-opacity="0.65"/>
         </filter>
       </defs>
-      <rect width="120" height="120" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
-      <circle cx="60" cy="56" r="42" fill="url(#grad-${archetype})" filter="url(#glow-${archetype})"/>
-      <circle cx="60" cy="56" r="38" fill="#090d16" opacity="0.4"/>
-      <!-- Inner Archetype Icon / Character Silhouette -->
-      <g transform="translate(60, 56) scale(1.1)">
-        <text x="0" y="14" font-size="36" text-anchor="middle" dominant-baseline="central">${iconSymbol}</text>
+      <!-- Outer Card Shield with 3D Bevel -->
+      <rect x="4" y="4" width="132" height="132" rx="26" fill="#0f172a" stroke="#334155" stroke-width="3"/>
+      <rect x="7" y="7" width="126" height="126" rx="23" fill="url(#grad-${archetype})" opacity="0.9"/>
+      
+      <!-- Dynamic Starburst Action Rays -->
+      <g opacity="0.25">
+        <polygon points="70,70 40,8 100,8" fill="#ffffff"/>
+        <polygon points="70,70 132,40 132,100" fill="#ffffff"/>
+        <polygon points="70,70 100,132 40,132" fill="#ffffff"/>
+        <polygon points="70,70 8,100 8,40" fill="#ffffff"/>
+        <polygon points="70,70 12,12 36,8" fill="#ffffff"/>
+        <polygon points="70,70 128,12 124,36" fill="#ffffff"/>
+        <polygon points="70,70 128,128 104,132" fill="#ffffff"/>
+        <polygon points="70,70 12,128 16,104" fill="#ffffff"/>
       </g>
-      <!-- Cyber Frame Badging -->
-      <path d="M 24 104 L 96 104" stroke="${color1}" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
-      <circle cx="24" cy="104" r="3" fill="#ffffff"/>
-      <circle cx="96" cy="104" r="3" fill="#ffffff"/>
+      
+      <!-- Inner Stage Spotlight Circle -->
+      <circle cx="70" cy="68" r="44" fill="#0b1120" stroke="#ffffff" stroke-width="3" opacity="0.88" filter="url(#glow-${archetype})"/>
+      <circle cx="70" cy="68" r="41" fill="url(#sunburst-${archetype})"/>
+      
+      <!-- Huge Expressive Character Emoji / Silhouette -->
+      <g transform="translate(70, 68)">
+        <text x="0" y="4" font-size="52" text-anchor="middle" dominant-baseline="central" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.5))">${iconSymbol}</text>
+      </g>
+      
+      <!-- Arcade Rarity Sparks & Stars -->
+      <circle cx="28" cy="24" r="5" fill="#fde047" opacity="0.9"/>
+      <circle cx="112" cy="24" r="5" fill="#fde047" opacity="0.9"/>
+      <rect x="42" y="118" width="56" height="12" rx="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5" opacity="0.9"/>
+      <text x="70" y="125" font-size="8" font-weight="900" fill="#fde047" text-anchor="middle" dominant-baseline="central" letter-spacing="1">ARCADE</text>
     </svg>`;
   }
 

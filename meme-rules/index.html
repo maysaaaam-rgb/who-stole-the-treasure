@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎭 Classroom Meme Rules: Imperatives in Action • Adventure Academy (A1–A2)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🎭</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- TOP CYBER HUD -->
+  <!-- ZERO-DEPENDENCY CONFETTI CELEBRATION CANVAS -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <!-- TOP ARCADE CYBER HUD -->
   <header class="cyber-hud">
     <div class="hud-brand">
       <span class="hud-logo-icon">🎭</span>
@@ -21,31 +27,38 @@
       </div>
     </div>
 
-    <!-- Phase Stepper Navigation -->
+    <!-- 3D Tactile Phase Stepper Navigation -->
     <div class="phase-stepper">
       <button type="button" class="step-tab is-active" id="tabPhase1" onclick="switchPhase(1)">
-        <span>1</span> <span>Reaction Scanner</span>
+        <span class="step-badge">1</span> <span>🔍 Scanner</span>
       </button>
       <button type="button" class="step-tab" id="tabPhase2" onclick="switchPhase(2)">
-        <span>2</span> <span>Relay Workbench</span>
+        <span class="step-badge">2</span> <span>🚦 Relay Workbench</span>
       </button>
       <button type="button" class="step-tab" id="tabPhase3" onclick="switchPhase(3)">
-        <span>3</span> <span>Teleprompter Studio</span>
+        <span class="step-badge">3</span> <span>🎙️ Teleprompter Studio</span>
       </button>
     </div>
 
-    <!-- Player Stats & XP -->
+    <!-- Player Stats, Streak & XP -->
     <div class="hud-stats">
+      <!-- Streak Counter -->
+      <div class="streak-pill" id="hudStreak" title="Consecutive Correct Answers">
+        🔥 0 Streak
+      </div>
+
+      <!-- XP Pill -->
+      <div class="xp-pill" id="hudXP" title="Total XP Earned">
+        ⭐ +0 XP
+      </div>
+
+      <!-- Energy Meter -->
       <div class="energy-meter-wrap" title="Classroom Energy & Mastery Level">
-        <span class="meter-label">Energy:</span>
+        <span style="font-size:0.75rem; font-weight:900; color:#94a3b8;">Energy:</span>
         <div class="meter-track">
           <div class="meter-fill" id="hudEnergyFill"></div>
         </div>
         <span style="font-size:0.75rem; font-weight:900; color:#38bdf8;" id="hudEnergyNumber">20%</span>
-      </div>
-
-      <div class="xp-pill" id="hudXP">
-        ⭐ +0 XP
       </div>
 
       <a href="worksheet.html" target="_blank" class="step-tab" style="color:#fbbf24; border-color:#f59e0b; text-decoration:none;" title="Printable A4 Worksheet">
@@ -70,7 +83,7 @@
           <p>Tap each character's facial expression to inspect their mood, hear the core imperative verb, and collect your 5 Explorer Badges.</p>
         </div>
         <div>
-          <button type="button" class="btn-teleprompter btn-read-aloud" onclick="switchPhase(2)">
+          <button type="button" class="btn-game-action" onclick="switchPhase(2)">
             Next: Relay Workbench →
           </button>
         </div>
@@ -82,83 +95,96 @@
       </div>
 
       <!-- Success Callout Banner -->
-      <div id="phase1SuccessNotice" style="display:none; background:rgba(16,185,129,0.15); border:1.5px solid #10b981; border-radius:14px; padding:18px 24px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; box-shadow:0 0 30px rgba(16,185,129,0.25);">
+      <div id="phase1SuccessNotice" style="display:none; background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(6,78,59,0.3)); border:3px solid #10b981; border-bottom:6px solid #047857; border-radius:22px; padding:22px 28px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; box-shadow:0 0 35px rgba(16,185,129,0.35);">
         <div>
-          <h3 style="font-size:1.15rem; font-weight:900; color:#a7f3d0; margin-bottom:4px;">🎉 All 5 Reaction Badges Collected!</h3>
-          <p style="font-size:0.86rem; color:#f0fdf4;">You mastered receptive observation. Now test your tactical sorting skills in the Relay Workbench!</p>
+          <h3 style="font-size:1.35rem; font-weight:900; color:#a7f3d0; margin-bottom:4px;">🎉 All 5 Reaction Badges Collected!</h3>
+          <p style="font-size:0.95rem; color:#f0fdf4;">You mastered receptive observation. Now test your tactical sorting skills in the Relay Workbench!</p>
         </div>
-        <button type="button" class="btn-teleprompter btn-claim-mastery" onclick="switchPhase(2)">
+        <button type="button" class="btn-game-do" onclick="switchPhase(2)" style="font-size:1.15rem; padding:16px 32px;">
           Enter Phase 2: Green Light / Red Light →
         </button>
       </div>
     </section>
 
     <!-- ===================================================================
-         PHASE 2: GREEN LIGHT / RED LIGHT WORKBENCH
+         PHASE 2: GREEN LIGHT / RED LIGHT RELAY SHOWDOWN ARENA
          =================================================================== -->
     <section class="stage-view" id="stagePhase2">
       <div class="stage-hero-banner">
         <div class="stage-hero-left">
           <h2><span>🚦</span> Phase 2: Green Light / Red Light Relay Workbench</h2>
-          <p>Drag or send each meme rule to the correct lane. 🟢 <strong>GREEN LIGHT (DO)</strong> = Base Verb. 🔴 <strong>RED LIGHT (DON'T)</strong> = Don't + Verb.</p>
+          <p>Sort each rule into the right lane! 🟢 <strong>GREEN LIGHT (DO)</strong> = Base Verb. 🔴 <strong>RED LIGHT (DON'T)</strong> = Don't + Verb.</p>
         </div>
-        <div>
-          <button type="button" class="btn-teleprompter btn-claim-mastery" onclick="switchPhase(3)">
-            Next: Teleprompter Studio →
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:0.92rem; font-weight:900; color:#38bdf8; background:#1e293b; padding:6px 14px; border-radius:12px; border:1px solid #334155;" id="queueRemainingCount">
+            15 Memes Remaining
+          </span>
+          <button type="button" class="btn-game-action" onclick="switchPhase(3)">
+            Teleprompter Studio →
           </button>
         </div>
       </div>
 
-      <!-- Active Meme Card Queue -->
-      <div class="relay-queue-arena">
-        <div class="queue-header">
-          <h3 style="font-size:1.05rem; font-weight:900; color:#fff; display:flex; align-items:center; gap:8px;">
-            <span>🃏</span> <span>Incoming Meme Queue</span>
-          </h3>
-          <span style="font-size:0.82rem; font-weight:800; color:#38bdf8;" id="queueRemainingCount">15 Memes Remaining</span>
-        </div>
+      <!-- Main 3-Column Showdown Arena Grid -->
+      <div class="relay-showdown-grid">
 
-        <div class="queue-cards-carousel" id="relayQueueCarousel">
-          <!-- Rendered dynamically by meme-app.js -->
-        </div>
-
-        <!-- Supportive Audio & Text Hint Message on Soft-Fail -->
-        <div id="relayHintMessage" style="display:none; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; border-radius:10px; padding:10px 14px; font-size:0.84rem; color:#fde68a;">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-
-      <!-- Split Magnetic Dropzones -->
-      <div class="relay-dropzones-row">
-        <!-- 🟢 GREEN LIGHT LANE -->
+        <!-- 🟢 GREEN LIGHT STADIUM (LEFT LANE) -->
         <div class="dropzone-lane green-lane" id="greenLightDropzone" data-lane-type="DO">
           <div class="lane-header">
             <h3 class="lane-title">
-              <span>🟢</span> <span>GREEN LIGHT (DO)</span>
+              <span>🟢 GREEN LIGHT (DO)</span>
+              <span id="greenCountChip" style="font-size:0.8rem; background:rgba(16,185,129,0.25); color:#a7f3d0; padding:2px 8px; border-radius:8px;">0 Sorted</span>
             </h3>
             <span class="lane-formula">Base Verb + Object</span>
           </div>
           <div class="lane-cards-slot" id="greenLaneSlot">
-            <div style="text-align:center; padding:40px 10px; color:#64748b; font-size:0.85rem; font-style:italic;">
-              Drag positive rule cards here or tap 🟢 DO
+            <div style="text-align:center; padding:50px 10px; color:#64748b; font-size:0.9rem; font-style:italic;">
+              Drag positive rule cards here or tap 🟢 DO below
             </div>
           </div>
         </div>
 
-        <!-- 🔴 RED LIGHT LANE -->
+        <!-- 🕹️ ACTIVE SHOWDOWN ARENA (CENTER COLUMN) -->
+        <div class="relay-center-arena">
+
+          <!-- Active Showdown Card (Rendered Dynamically) -->
+          <div id="relayActiveCardContainer">
+            <!-- Populated by renderRelayQueue() in meme-app.js -->
+          </div>
+
+          <!-- Supportive Audio & Text Hint Message on Soft-Fail -->
+          <div id="relayHintMessage" style="display:none; background:linear-gradient(135deg, rgba(245,158,11,0.2), rgba(180,83,9,0.3)); border:2px solid #f59e0b; border-bottom:4px solid #b45309; border-radius:16px; padding:14px 18px; font-size:0.92rem; color:#fde68a; box-shadow:0 6px 18px rgba(245,158,11,0.25);">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Upcoming Queue Mini Carousel Preview -->
+          <div style="background:#0f172a; border:2px solid #1e293b; border-radius:18px; padding:12px 16px;">
+            <div style="font-size:0.78rem; font-weight:900; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">
+              👀 Next Up in Deck:
+            </div>
+            <div id="relayUpcomingCarousel" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;">
+              <!-- Mini upcoming avatars -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 🔴 RED LIGHT STADIUM (RIGHT LANE) -->
         <div class="dropzone-lane red-lane" id="redLightDropzone" data-lane-type="DONT">
           <div class="lane-header">
             <h3 class="lane-title">
-              <span>🔴</span> <span>RED LIGHT (DON'T)</span>
+              <span>🔴 RED LIGHT (DON'T)</span>
+              <span id="redCountChip" style="font-size:0.8rem; background:rgba(239,68,68,0.25); color:#fca5a5; padding:2px 8px; border-radius:8px;">0 Sorted</span>
             </h3>
             <span class="lane-formula">Don't + Base Verb + Object</span>
           </div>
           <div class="lane-cards-slot" id="redLaneSlot">
-            <div style="text-align:center; padding:40px 10px; color:#64748b; font-size:0.85rem; font-style:italic;">
-              Drag negative rule cards here or tap 🔴 DON'T
+            <div style="text-align:center; padding:50px 10px; color:#64748b; font-size:0.9rem; font-style:italic;">
+              Drag negative rule cards here or tap 🔴 DON'T below
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -172,7 +198,7 @@
           <p>Deliver your 3-sentence speaking presentation! Follow the live karaoke reader and earn your Classroom Ambassador Diploma.</p>
         </div>
         <div>
-          <button type="button" class="btn-teleprompter btn-read-aloud" onclick="switchPhase(2)">
+          <button type="button" class="btn-game-action" onclick="switchPhase(2)">
             ← Back to Workbench
           </button>
         </div>
@@ -181,12 +207,12 @@
       <div class="teleprompter-studio-container">
         <!-- Left Panel: Meme Selector -->
         <div class="teleprompter-left-panel">
-          <h3 style="font-size:1rem; font-weight:900; color:#fff; display:flex; align-items:center; gap:8px;">
+          <h3 style="font-size:1.15rem; font-weight:900; color:#fff; display:flex; align-items:center; gap:8px;">
             <span>🎭</span> <span>Choose Presentation Meme</span>
           </h3>
-          <p style="font-size:0.78rem; color:#94a3b8;">Select your classroom archetype to load into the cyber teleprompter:</p>
+          <p style="font-size:0.84rem; color:#94a3b8;">Select your classroom archetype to load into the cyber teleprompter:</p>
 
-          <div style="display:flex; flex-direction:column; gap:8px;" id="teleprompterMemesList">
+          <div style="display:flex; flex-direction:column; gap:10px;" id="teleprompterMemesList">
             <!-- Rendered dynamically by meme-app.js -->
           </div>
         </div>
@@ -194,16 +220,16 @@
         <!-- Right Panel: Cyber Teleprompter Screen -->
         <div class="teleprompter-right-screen">
           <div class="teleprompter-screen-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <span style="font-size:1.4rem;">🎙️</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:1.8rem;">🎙️</span>
               <div>
-                <strong style="color:#ffffff; font-size:1rem;" id="teleprompterActiveMemeName">Scientist Dog in Lab</strong>
-                <div style="font-size:0.75rem; color:#38bdf8;">Production Ceiling: 3 Scaffolded Sentences</div>
+                <strong style="color:#ffffff; font-size:1.15rem;" id="teleprompterActiveMemeName">Scientist Dog in Lab</strong>
+                <div style="font-size:0.8rem; color:#38bdf8; font-weight:700;">Production Ceiling: 3 Scaffolded Sentences</div>
               </div>
             </div>
             <div class="live-rec-badge">
               <span class="rec-pulse-dot"></span>
-              <span>LIVE SPEECH STUDIO</span>
+              <span>LIVE BROADCAST STUDIO</span>
             </div>
           </div>
 
@@ -220,12 +246,12 @@
             </div>
           </div>
 
-          <!-- Teleprompter Control Bar -->
+          <!-- Teleprompter Control Bar with 3D Tactile Buttons -->
           <div class="teleprompter-actions-bar">
-            <button type="button" class="btn-teleprompter btn-read-aloud" id="btnReadAloud" onclick="readTeleprompterAloud()">
+            <button type="button" class="btn-game-action" id="btnReadAloud" onclick="readTeleprompterAloud()" style="font-size:1.1rem; padding:14px 28px;">
               <span>🎙️</span> <span>Read Aloud (Karaoke Mode)</span>
             </button>
-            <button type="button" class="btn-teleprompter btn-claim-mastery" onclick="finishLessonQuest()">
+            <button type="button" class="btn-game-gold" onclick="finishLessonQuest()" style="font-size:1.1rem; padding:14px 28px;">
               <span>🏆</span> <span>Complete Quest &amp; Claim Diploma (+50 XP)</span>
             </button>
           </div>
@@ -235,7 +261,7 @@
 
   </main>
 
-  <!-- COMPLETION / DIPLOMA MODAL -->
+  <!-- COMPLETION / DIPLOMA MODAL (Arcade Celebration) -->
   <div class="modal-overlay" id="completionModal" onclick="closeCompletionModal()">
     <div class="diploma-card" onclick="event.stopPropagation()">
       <div class="diploma-seal">🏆</div>
@@ -245,19 +271,19 @@
       </p>
 
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0;">
-        <span class="xp-pill" style="font-size:1rem; padding:8px 18px;" id="diplomaTotalXP">
-          ⭐ +245 XP
+        <span class="xp-pill" style="font-size:1.15rem; padding:10px 22px;" id="diplomaTotalXP">
+          ⭐ +150 XP
         </span>
-        <span class="hud-tag" style="font-size:0.85rem; padding:8px 14px; background:rgba(16,185,129,0.2); color:#34d399; border-color:#10b981;">
-          ✓ CEFR A1-A2 Mastery
+        <span class="hud-tag" style="font-size:0.9rem; padding:10px 18px; background:rgba(16,185,129,0.25); color:#34d399; border-color:#10b981;">
+          ✓ CEFR A1–A2 Mastery
         </span>
       </div>
 
-      <div style="display:flex; gap:10px; width:100%; margin-top:8px;">
-        <a href="worksheet.html" target="_blank" class="btn-teleprompter btn-read-aloud" style="text-decoration:none;">
+      <div style="display:flex; gap:14px; width:100%; margin-top:10px;">
+        <a href="worksheet.html" target="_blank" class="btn-game-action" style="flex:1;">
           <span>📄</span> <span>Print Group Poster &amp; Flashcards</span>
         </a>
-        <button type="button" class="btn-teleprompter btn-claim-mastery" onclick="closeCompletionModal()">
+        <button type="button" class="btn-game-do" onclick="closeCompletionModal()" style="flex:1;">
           <span>✓</span> <span>Done</span>
         </button>
       </div>
