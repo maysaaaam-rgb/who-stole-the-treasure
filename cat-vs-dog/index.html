@@ -3,541 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cat vs. Dog: Preposition Catapult | English Adventure Academy</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap">
-  <style>
-    :root {
-      --bg-dark: #070b14;
-      --panel-bg: rgba(15, 23, 42, 0.88);
-      --border-glow: rgba(56, 189, 248, 0.35);
-      --cat-blue: #0284c7;
-      --cat-shadow: #0369a1;
-      --dog-amber: #ea580c;
-      --dog-shadow: #c2410c;
-      --emerald: #10b981;
-      --emerald-dark: #047857;
-      --ruby: #ef4444;
-      --ruby-dark: #b91c1c;
-      --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    body {
-      font-family: var(--font-family);
-      background: var(--bg-dark);
-      background-image: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #070b14 85%);
-      color: #f8fafc;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
-    }
-
-    /* Container Shell */
-    .game-wrapper {
-      width: 100%;
-      max-width: 980px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 10px;
-    }
-
-    /* Top HUD */
-    .hud-bar {
-      width: 100%;
-      background: var(--panel-bg);
-      border: 2px solid var(--border-glow);
-      backdrop-filter: blur(14px);
-      border-radius: 20px;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-      gap: 12px;
-    }
-
-    .hud-nav-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-hud-icon {
-      background: rgba(15, 23, 42, 0.9);
-      border: 2px solid var(--border-glow);
-      border-bottom: 4px solid var(--cat-shadow);
-      color: #f8fafc;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 800;
-      text-decoration: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.1s ease;
-      font-family: inherit;
-    }
-
-    .btn-hud-icon:hover {
-      transform: translateY(-2px);
-      border-bottom-width: 5px;
-      color: #38bdf8;
-    }
-
-    .btn-hud-icon:active {
-      transform: translateY(2px);
-      border-bottom-width: 2px;
-    }
-
-    .player-hud {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      width: 32%;
-    }
-
-    .player-hud.dog-side {
-      flex-direction: row-reverse;
-      text-align: right;
-    }
-
-    .hud-avatar {
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      border: 3px solid #38bdf8;
-      background: #0f172a;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    .dog-side .hud-avatar {
-      border-color: #f97316;
-    }
-
-    .hp-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .hp-label {
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #cbd5e1;
-    }
-
-    .hp-track {
-      width: 100%;
-      height: 18px;
-      background: #1e293b;
-      border: 2px solid #334155;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .hp-fill {
-      height: 100%;
-      width: 100%;
-      border-radius: 999px;
-      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .hp-cat { background: linear-gradient(90deg, #38bdf8, #10b981); }
-    .hp-dog { background: linear-gradient(90deg, #f59e0b, #ef4444); }
-
-    /* Wind Indicator Center */
-    .wind-center-gauge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      width: 24%;
-      background: rgba(15, 23, 42, 0.9);
-      border: 2px solid #334155;
-      border-radius: 14px;
-      padding: 6px 12px;
-    }
-
-    .wind-title {
-      font-size: 0.75rem;
-      font-weight: 900;
-      color: #94a3b8;
-      letter-spacing: 1.5px;
-    }
-
-    .wind-arrow-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: #facc15;
-    }
-
-    .wind-meter-bar {
-      width: 110px;
-      height: 8px;
-      background: #1e293b;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .wind-meter-fill {
-      height: 100%;
-      width: 50%;
-      background: #facc15;
-      transition: width 0.3s ease, margin 0.3s ease;
-    }
-
-    /* Primary Arena Stage */
-    .arena-viewport {
-      width: 100%;
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 3px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-      background: #000;
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 960 / 500;
-    }
-
-    /* Floating Feedback Overlay */
-    .combat-toast {
-      position: absolute;
-      top: 25%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: rgba(15, 23, 42, 0.95);
-      border: 3px solid #f59e0b;
-      padding: 14px 28px;
-      border-radius: 18px;
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: #fef08a;
-      box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
-      pointer-events: none;
-      z-index: 20;
-      text-align: center;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .combat-toast.show {
-      transform: translate(-50%, -50%) scale(1) rotate(-3deg);
-    }
-
-    /* Bottom Control Bar */
-    .controls-deck {
-      width: 100%;
-      background: var(--panel-bg);
-      border: 2px solid var(--border-glow);
-      backdrop-filter: blur(14px);
-      border-radius: 20px;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .power-throw-zone {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex: 1;
-    }
-
-    /* 3D Tactile Push-Buttons */
-    .btn-3d {
-      position: relative;
-      border: none;
-      border-radius: 16px;
-      color: #ffffff;
-      font-weight: 900;
-      font-size: 1.1rem;
-      padding: 14px 28px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transform: translateY(0);
-      transition: all 0.08s ease;
-      letter-spacing: 0.5px;
-    }
-
-    .btn-throw {
-      background: #10b981;
-      border-bottom: 6px solid #047857;
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-      min-width: 230px;
-    }
-
-    .btn-throw:hover {
-      border-bottom-width: 7px;
-      transform: translateY(-2px);
-    }
-
-    .btn-throw:active, .btn-throw.charging {
-      border-bottom-width: 2px;
-      transform: translateY(4px);
-      background: #059669;
-    }
-
-    .power-track-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .power-track {
-      width: 100%;
-      height: 22px;
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .power-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #f59e0b, #ef4444);
-      border-radius: 999px;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
-    }
-
-    /* Tactical Power-Ups */
-    .powerups-tray {
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn-powerup {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: #1e293b;
-      border: 2px solid #475569;
-      border-bottom: 5px solid #0f172a;
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: all 0.1s ease;
-    }
-
-    .btn-powerup:hover {
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-    }
-
-    .btn-powerup:active {
-      transform: translateY(3px);
-      border-bottom-width: 2px;
-    }
-
-    .btn-powerup.active {
-      border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.2);
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
-    }
-
-    /* Preposition Challenge Modal (A1 Linguistic Gate) */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 9, 17, 0.88);
-      backdrop-filter: blur(8px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 100;
-    }
-
-    .challenge-card {
-      width: 100%;
-      max-width: 540px;
-      background: #0f172a;
-      border: 3px solid #38bdf8;
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.25);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      text-align: center;
-      animation: modalPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes modalPop {
-      0% { transform: scale(0.85); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .challenge-icon {
-      font-size: 3.5rem;
-      animation: floatIcon 2.5s ease-in-out infinite;
-    }
-
-    @keyframes floatIcon {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .challenge-question {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.4;
-    }
-
-    .challenge-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-      margin-top: 8px;
-    }
-
-    .btn-opt {
-      background: #1e293b;
-      border: 2px solid #334155;
-      border-bottom: 5px solid #0f172a;
-      border-radius: 16px;
-      color: #f8fafc;
-      font-size: 1.15rem;
-      font-weight: 800;
-      padding: 14px 10px;
-      cursor: pointer;
-      transition: all 0.08s ease;
-    }
-
-    .btn-opt:hover {
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-    }
-
-    .btn-opt:active {
-      transform: translateY(3px);
-      border-bottom-width: 2px;
-    }
-
-    /* Teleprompter Victory Screen */
-    .teleprompter-card {
-      width: 100%;
-      max-width: 600px;
-      background: #0f172a;
-      border: 3px solid #10b981;
-      border-radius: 24px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      text-align: center;
-      box-shadow: 0 0 50px rgba(16, 185, 129, 0.4);
-    }
-
-    .teleprompter-box {
-      width: 100%;
-      background: #020617;
-      border: 2px solid #1e293b;
-      border-radius: 16px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .tele-line {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #64748b;
-      transition: all 0.2s ease;
-    }
-
-    .tele-line.active {
-      color: #facc15;
-      transform: scale(1.04);
-    }
-  </style>
+  <title>🐱 Cat vs. Dog: Preposition Catapult | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
 </head>
 <body>
 
   <div class="game-wrapper">
-    <!-- Top HUD Bar -->
+    <!-- Top Tactical Glassmorphism HUD Bar -->
     <header class="hud-bar">
-      <!-- Hub & Audio Controls -->
+      <!-- Navigation & Audio Synthesizer Controls -->
       <div class="hud-nav-group">
         <a href="../index.html" class="btn-hud-icon" title="Return to Academy Hub">
           🏛️ <span>Hub</span>
         </a>
-        <button id="btn-sound-toggle" class="btn-hud-icon" title="Toggle Sound">
+        <button id="btn-bgm-toggle" class="btn-hud-icon" title="Toggle 85 BPM Arcade Walking Bassline">
+          🎵 <span>BGM Off</span>
+        </button>
+        <button id="btn-sound-toggle" class="btn-hud-icon" title="Toggle Audio Sound Synthesis">
           🔊
         </button>
+
+        <!-- Mode Toggle Pill (1P Solo vs 2P Smartboard) -->
+        <div class="mode-selector-pill">
+          <button class="btn-mode-tab active" data-mode="1p" title="1-Player vs AI Yard Dog">1P Solo</button>
+          <button class="btn-mode-tab" data-mode="2p" title="2-Player Smartboard Arena">2P Arena</button>
+        </div>
+
+        <select id="difficultySelect" class="difficulty-select" title="AI Opponent Difficulty">
+          <option value="rookie">Rookie AI</option>
+          <option value="pro" selected>Pro AI</option>
+          <option value="master">Master AI</option>
+        </select>
       </div>
 
-      <!-- Player 1: Cat -->
+      <!-- Player 1: Alley Cat Health HUD -->
       <div class="player-hud">
-        <div class="hud-avatar">🐱</div>
+        <div class="hud-avatar" id="cat-avatar">🐱</div>
         <div class="hp-container">
-          <div class="hp-label">Alley Cat (P1)</div>
+          <div class="hp-label-row">
+            <span>Alley Cat</span>
+            <span id="cat-hp-text">100 HP</span>
+          </div>
           <div class="hp-track">
             <div class="hp-fill hp-cat" id="cat-hp-bar"></div>
           </div>
         </div>
       </div>
 
-      <!-- Center Wind Gauge -->
+      <!-- Center Wind Speed & Direction Gauge -->
       <div class="wind-center-gauge">
-        <div class="wind-title">WIND SPEED</div>
+        <div class="wind-title">WIND VECTOR</div>
         <div class="wind-arrow-box">
           <span id="wind-dir-icon">➔</span>
-          <span id="wind-speed-text">8 km/h</span>
+          <span id="wind-speed-text">6 km/h</span>
         </div>
         <div class="wind-meter-bar">
           <div class="wind-meter-fill" id="wind-fill"></div>
         </div>
       </div>
 
-      <!-- Player 2 / CPU: Dog -->
+      <!-- Player 2 / CPU: Yard Dog Health HUD -->
       <div class="player-hud dog-side">
-        <div class="hud-avatar">🐶</div>
+        <div class="hud-avatar" id="dog-avatar">🐶</div>
         <div class="hp-container">
-          <div class="hp-label">Yard Dog (CPU)</div>
+          <div class="hp-label-row">
+            <span>Yard Dog</span>
+            <span id="dog-hp-text">100 HP</span>
+          </div>
           <div class="hp-track">
             <div class="hp-fill hp-dog" id="dog-hp-bar"></div>
           </div>
@@ -545,33 +78,67 @@
       </div>
     </header>
 
-    <!-- Main Arcade Viewport -->
-    <main class="arena-viewport">
+    <!-- Main Arcade Viewport (Pseudo-3D Volumetric Canvas) -->
+    <main class="arena-viewport" id="arenaViewport">
+      <div class="turn-indicator-pill" id="turnBanner">
+        🎯 <strong>YOUR TURN</strong> (Alley Cat)
+      </div>
       <canvas id="gameCanvas" width="960" height="500"></canvas>
       <div class="combat-toast" id="combatToast">DIRECT HIT!</div>
     </main>
 
-    <!-- Bottom Controls & Power Bar -->
+    <!-- Bottom Controls Deck (Arsenal, Angle Dial, Power Charge & Cards) -->
     <footer class="controls-deck">
-      <div class="power-throw-zone">
-        <button class="btn-3d btn-throw" id="throwBtn">
-          <span>🚀 HOLD [SPACE] TO THROW</span>
-        </button>
-        <div class="power-track-box">
-          <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#94a3b8;">
-            <span>TRAJECTORY POWER</span>
-            <span id="powerPercent">0%</span>
-          </div>
-          <div class="power-track">
-            <div class="power-fill" id="powerFill"></div>
-          </div>
+      <div class="controls-row-top">
+        <!-- 4-Item Tactical Arsenal -->
+        <div class="arsenal-selector-tray">
+          <span class="arsenal-title">Arsenal:</span>
+          <button class="btn-weapon-chip active" data-weapon="fish" title="Stinky Fish: Standard trajectory (20 DMG)">
+            <span>🐟</span> Stinky Fish
+          </button>
+          <button class="btn-weapon-chip" data-weapon="balloon" title="Water Balloon: Floats lightly; dampens wind speed (15 DMG)">
+            <span>🎈</span> Splash Balloon
+          </button>
+          <button class="btn-weapon-chip" data-weapon="anvil" title="Heavy Anvil: Steep plunging arc; heavy impact (35 DMG)">
+            <span>🪨</span> Iron Anvil
+          </button>
+          <button class="btn-weapon-chip" data-weapon="bouncy" title="Bouncy Ball: Elastic rubber; bounces once off surfaces (18 DMG)">
+            <span>🎾</span> Bouncy Ball
+          </button>
+        </div>
+
+        <!-- 4 Preposition Linguistic Power-Up Cards -->
+        <div class="powerups-tray">
+          <button class="btn-powerup" id="btnPowerX2" title="Double Volley (x2): Launch two projectiles simultaneously">🎯</button>
+          <button class="btn-powerup" id="btnPowerFist" title="Wind Inverter (⚡): Reverse wind direction">⚡</button>
+          <button class="btn-powerup" id="btnPowerFence" title="Fence Shield (🛡️): Add +45px barrier defense">🛡️</button>
+          <button class="btn-powerup" id="btnPowerHeal" title="Grammar First-Aid (🩹): Restore +25 HP">🩹</button>
         </div>
       </div>
 
-      <div class="powerups-tray">
-        <button class="btn-powerup" id="btnPowerX2" title="Double Shot (x2)">🎯</button>
-        <button class="btn-powerup" id="btnPowerFist" title="Super Power (+50% Force)">⚡</button>
-        <button class="btn-powerup" id="btnPowerHeal" title="Grammar Medic (+25 HP)">🩹</button>
+      <div class="controls-row-bottom">
+        <!-- Angle Slider Dial -->
+        <div class="angle-dial-box">
+          <span class="angle-label">📐 Launch Angle:</span>
+          <input type="range" min="20" max="75" value="45" class="angle-slider" id="angleSlider">
+          <span class="angle-val-readout" id="angleValReadout">45°</span>
+        </div>
+
+        <!-- 3D Hold-to-Charge Launch Button -->
+        <div class="power-throw-zone">
+          <button class="btn-3d btn-throw" id="throwBtn">
+            <span>🚀 HOLD [SPACE] TO LAUNCH</span>
+          </button>
+          <div class="power-track-box">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#94a3b8;">
+              <span>CATAPULT VELOCITY</span>
+              <span id="powerPercent">0%</span>
+            </div>
+            <div class="power-track">
+              <div class="power-fill" id="powerFill"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   </div>
@@ -579,8 +146,9 @@
   <!-- A1 Preposition Linguistic Challenge Modal -->
   <div class="modal-overlay" id="prepositionModal">
     <div class="challenge-card">
+      <span class="challenge-badge-tag">CEFR A1 PREPOSITION POWER GATE</span>
       <div class="challenge-icon" id="challengeIcon">🪜</div>
-      <div class="challenge-question" id="challengeText">Where does the bone go?</div>
+      <div class="challenge-question" id="challengeText">Where does the projectile fly?</div>
       <div class="challenge-options" id="challengeOptions"></div>
     </div>
   </div>
@@ -588,915 +156,22 @@
   <!-- Teleprompter Victory Screen -->
   <div class="modal-overlay" id="victoryModal">
     <div class="teleprompter-card">
-      <div style="font-size: 3.5rem;" id="winnerTrophy">🏆</div>
+      <div style="font-size: 3.8rem;" id="winnerTrophy">🐱🏆</div>
       <h2 style="font-size: 2rem; font-weight:900;" id="winnerText">ALLEY CAT WINS!</h2>
       <div class="teleprompter-box">
         <div class="tele-line active" id="line-0">"The cat threw the fish OVER the tall fence!"</div>
         <div class="tele-line" id="line-1">"The bone went INTO the trash bin!"</div>
         <div class="tele-line" id="line-2">"We mastered our prepositions and won the match!"</div>
       </div>
-      <button class="btn-3d" id="btnPlayAgain" style="background:#10b981; border-bottom:5px solid #047857; min-width:200px;">
+      <button class="btn-3d btn-play-again" id="btnPlayAgain">
         🔄 PLAY AGAIN
       </button>
     </div>
   </div>
 
-  <script>
-    /* =========================================================================
-       1. PURE WEB AUDIO SYNTHESIZER ENGINE (Zero External MP3 Files)
-       ========================================================================= */
-    class HarmonicSoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.muted = false;
-      }
-
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) this.ctx = new AudioContext();
-        }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-      }
-
-      toggleMute() {
-        this.muted = !this.muted;
-        return this.muted;
-      }
-
-      // Parabolic flight whoosh (Filtered noise/sine sweep)
-      playWhoosh() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(280, now);
-        osc.frequency.exponentialRampToValueAtTime(750, now + 0.3);
-        osc.frequency.exponentialRampToValueAtTime(320, now + 0.6);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.65);
-      }
-
-      // Punchy cartoon bonk for direct hits
-      playBonk() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(340, now);
-        osc.frequency.exponentialRampToValueAtTime(60, now + 0.28);
-        gain.gain.setValueAtTime(0.35, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.3);
-      }
-
-      // Wooden fence clatter impact
-      playWoodHit() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(120, now);
-        osc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.15);
-      }
-
-      // Positive XP / Healing Bell Chime
-      playChime() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-          gain.gain.setValueAtTime(0.15, now + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now + idx * 0.08);
-          osc.stop(now + idx * 0.08 + 0.4);
-        });
-      }
-
-      // Victory Fanfare
-      playFanfare() {
-        if (this.muted) return;
-        this.init();
-        if (!this.ctx) return;
-        const notes = [523.25, 659.25, 783.99, 1046.5];
-        notes.forEach((freq, i) => {
-          setTimeout(() => {
-            if (this.muted || !this.ctx) return;
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, now);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.5);
-          }, i * 140);
-        });
-      }
-
-      // Native Web Speech Synthesis with A1 pacing
-      speak(text, onEnd) {
-        if (this.muted || !('speechSynthesis' in window)) return;
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.88;
-        utterance.pitch = 1.05;
-        utterance.lang = 'en-US';
-        if (onEnd) utterance.onend = onEnd;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
-
-    const sound = new HarmonicSoundEngine();
-
-    // Sound toggle button in HUD
-    const soundBtn = document.getElementById("btn-sound-toggle");
-    if (soundBtn) {
-      soundBtn.onclick = () => {
-        const muted = sound.toggleMute();
-        soundBtn.innerHTML = muted ? "🔇" : "🔊";
-      };
-    }
-
-    /* =========================================================================
-       2. A1 PREPOSITION CURRICULUM QUESTIONS
-       ========================================================================= */
-    const PREPOSITION_CHALLENGES = [
-      {
-        icon: "🧱",
-        prompt: "Where must the fish fly to hit the dog?",
-        options: ["OVER the fence", "UNDER the fence", "INTO the ground", "BEHIND the tree"],
-        correct: 0,
-        reinforce: "Great! The fish flies OVER the tall fence!"
-      },
-      {
-        icon: "🗑️",
-        prompt: "The cat is sitting _______ the trash bin.",
-        options: ["ON TOP OF", "UNDER", "BEHIND", "INSIDE"],
-        correct: 0,
-        reinforce: "Yes! The cat sits ON TOP OF the bin!"
-      },
-      {
-        icon: "🦴",
-        prompt: "The bone lands _______ the dog's bowl.",
-        options: ["INTO", "UNDER", "THROUGH", "ACROSS"],
-        correct: 0,
-        reinforce: "Direct hit! It landed INTO the bowl!"
-      },
-      {
-        icon: "🌳",
-        prompt: "The dog lives _______ the fence in the yard.",
-        options: ["BEHIND", "UNDER", "BETWEEN", "ON"],
-        correct: 0,
-        reinforce: "Correct! The dog is BEHIND the wooden fence!"
-      },
-      {
-        icon: "🚀",
-        prompt: "Throw the projectile _______ the yard!",
-        options: ["ACROSS", "UNDER", "INSIDE", "DOWN"],
-        correct: 0,
-        reinforce: "Super power! Throw it ACROSS the whole yard!"
-      },
-      {
-        icon: "📦",
-        prompt: "The kitten is hiding _______ the wooden bench.",
-        options: ["UNDER", "OVER", "ACROSS", "THROUGH"],
-        correct: 0,
-        reinforce: "That's it! It is hiding UNDER the bench!"
-      },
-      {
-        icon: "🚪",
-        prompt: "The fence stands _______ the cat and the dog.",
-        options: ["BETWEEN", "INSIDE", "ACROSS", "OVER"],
-        correct: 0,
-        reinforce: "Spot on! The fence is BETWEEN the cat and dog!"
-      },
-      {
-        icon: "💨",
-        prompt: "The fish flies _______ the sky!",
-        options: ["THROUGH", "UNDER", "BEHIND", "DOWN"],
-        correct: 0,
-        reinforce: "Brilliant! Flying fast THROUGH the sky!"
-      },
-      {
-        icon: "🥣",
-        prompt: "The dog's toy is lying _______ the bowl.",
-        options: ["NEXT TO", "INSIDE", "THROUGH", "UNDER"],
-        correct: 0,
-        reinforce: "Awesome! The toy is NEXT TO the food bowl!"
-      }
-    ];
-
-    /* =========================================================================
-       3. 60FPS REAL-TIME ARCADE CANVAS & PHYSICS ENGINE
-       ========================================================================= */
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    const V_WIDTH = 960;
-    const V_HEIGHT = 500;
-
-    // Environmental entities
-    const FENCE = { x: 465, y: 190, width: 30, height: 260 };
-    const CAT = { x: 90, y: 310, width: 95, height: 110, hp: 100 };
-    const DOG = { x: 775, y: 310, width: 105, height: 110, hp: 100 };
-
-    let currentTurn = 'CAT'; // 'CAT' or 'DOG'
-    let windSpeed = 6;       // -12 to +12
-    let powerCharging = false;
-    let currentPower = 0;
-    let powerDirection = 1;
-    let gameLoopRunning = false;
-
-    // Power-up flags
-    let isDoubleShot = false;
-    let isSuperFist = false;
-
-    // Active projectiles in flight
-    let activeProjectiles = [];
-    let particleBursts = [];
-
-    // Initialize wind
-    function randomizeWind() {
-      windSpeed = Math.floor(Math.random() * 25) - 12; // -12 to +12
-      const absSpeed = Math.abs(windSpeed);
-      document.getElementById("wind-speed-text").innerText = `${absSpeed} km/h`;
-      const arrowIcon = document.getElementById("wind-dir-icon");
-      const windFill = document.getElementById("wind-fill");
-      
-      if (windSpeed > 0) {
-        arrowIcon.innerText = "➔";
-        arrowIcon.style.color = "#38bdf8";
-        windFill.style.marginLeft = "50%";
-        windFill.style.width = `${(absSpeed / 12) * 50}%`;
-      } else if (windSpeed < 0) {
-        arrowIcon.innerText = "⬅";
-        arrowIcon.style.color = "#f43f5e";
-        windFill.style.marginLeft = `${50 - (absSpeed / 12) * 50}%`;
-        windFill.style.width = `${(absSpeed / 12) * 50}%`;
-      } else {
-        arrowIcon.innerText = "●";
-        arrowIcon.style.color = "#facc15";
-        windFill.style.marginLeft = "50%";
-        windFill.style.width = "0%";
-      }
-    }
-
-    // Launch Projectile Mechanics
-    function launchProjectile(originX, originY, angleDeg, forceVal, type) {
-      sound.playWhoosh();
-      const rad = (angleDeg * Math.PI) / 180;
-      const speedMult = isSuperFist ? 0.28 : 0.23;
-      
-      activeProjectiles.push({
-        x: originX,
-        y: originY,
-        vx: Math.cos(rad) * (forceVal * speedMult),
-        vy: -Math.sin(rad) * (forceVal * speedMult),
-        rotation: 0,
-        type: type, // 'fish' or 'bone'
-        active: true
-      });
-
-      if (isDoubleShot) {
-        setTimeout(() => {
-          sound.playWhoosh();
-          activeProjectiles.push({
-            x: originX,
-            y: originY - 15,
-            vx: Math.cos(rad + 0.08) * (forceVal * speedMult),
-            vy: -Math.sin(rad + 0.08) * (forceVal * speedMult),
-            rotation: 0.5,
-            type: type,
-            active: true
-          });
-        }, 180);
-        isDoubleShot = false;
-        document.getElementById("btnPowerX2").classList.remove("active");
-      }
-
-      if (isSuperFist) {
-        isSuperFist = false;
-        document.getElementById("btnPowerFist").classList.remove("active");
-      }
-    }
-
-    // Particle Burst System
-    function spawnParticles(x, y, colorHex) {
-      for (let i = 0; i < 16; i++) {
-        particleBursts.push({
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 8,
-          vy: (Math.random() - 0.5) * 8,
-          size: Math.random() * 6 + 3,
-          color: colorHex,
-          life: 1.0
-        });
-      }
-    }
-
-    // Feedback Toast Pill
-    function showToast(text, color = "#f59e0b") {
-      const toast = document.getElementById("combatToast");
-      toast.innerText = text;
-      toast.style.borderColor = color;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 1800);
-    }
-
-    /* =========================================================================
-       4. DRAWING ROUTINES (Stylized Alley Art & Characters)
-       ========================================================================= */
-    function drawSkyAndAlley() {
-      // Atmospheric Sky
-      const skyGrad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
-      skyGrad.addColorStop(0, "#0c1527");
-      skyGrad.addColorStop(0.7, "#1e293b");
-      skyGrad.addColorStop(1, "#334155");
-      ctx.fillStyle = skyGrad;
-      ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
-
-      // Distant City Skyline Silhouettes
-      ctx.fillStyle = "rgba(10, 15, 30, 0.7)";
-      ctx.fillRect(40, 110, 80, 200);
-      ctx.fillRect(160, 80, 90, 230);
-      ctx.fillRect(660, 100, 110, 210);
-      ctx.fillRect(810, 70, 80, 240);
-
-      // Left Side: Alley Wall & Trash Bin
-      ctx.fillStyle = "#1e1b4b";
-      ctx.fillRect(0, 140, 180, 280);
-
-      // Trash Can (Pedestal for Cat)
-      ctx.fillStyle = "#475569";
-      ctx.beginPath();
-      ctx.roundRect(85, 370, 105, 80, [8, 8, 0, 0]);
-      ctx.fill();
-      ctx.strokeStyle = "#334155";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Right Side: Yard Grass Lawn
-      const grassGrad = ctx.createLinearGradient(0, 420, 0, V_HEIGHT);
-      grassGrad.addColorStop(0, "#15803d");
-      grassGrad.addColorStop(1, "#14532d");
-      ctx.fillStyle = grassGrad;
-      ctx.fillRect(500, 420, 460, 80);
-
-      // Dog Bowl
-      ctx.fillStyle = "#ea580c";
-      ctx.beginPath();
-      ctx.ellipse(820, 435, 38, 14, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(810, 430, 20, 8);
-
-      // Center Wooden Fence with Planks
-      ctx.fillStyle = "#78350f";
-      ctx.fillRect(FENCE.x, FENCE.y, FENCE.width, FENCE.height);
-      ctx.strokeStyle = "#451a03";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(FENCE.x, FENCE.y, FENCE.width, FENCE.height);
-
-      // Fence Vertical Planks Detail
-      for (let py = FENCE.y + 20; py < FENCE.y + FENCE.height; py += 38) {
-        ctx.strokeStyle = "#92400e";
-        ctx.beginPath();
-        ctx.moveTo(FENCE.x + 4, py);
-        ctx.lineTo(FENCE.x + FENCE.width - 4, py);
-        ctx.stroke();
-      }
-
-      // Ground Street / Pavement
-      ctx.fillStyle = "#0f172a";
-      ctx.fillRect(0, 440, V_WIDTH, 60);
-      ctx.strokeStyle = "rgba(255,255,255,0.08)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(0, 440, V_WIDTH, 2);
-    }
-
-    // Draw Stylized Alley Cat
-    function drawCat(x, y) {
-      ctx.save();
-      ctx.translate(x, y);
-
-      // Shadow Disk
-      ctx.fillStyle = "rgba(0,0,0,0.4)";
-      ctx.beginPath();
-      ctx.ellipse(50, 75, 45, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Body & Fur
-      ctx.fillStyle = "#0284c7";
-      ctx.beginPath();
-      ctx.roundRect(22, 20, 56, 52, 16);
-      ctx.fill();
-
-      // Cat Ears
-      ctx.fillStyle = "#0369a1";
-      ctx.beginPath();
-      ctx.moveTo(25, 20); ctx.lineTo(15, -6); ctx.lineTo(42, 15); ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(75, 20); ctx.lineTo(85, -6); ctx.lineTo(58, 15); ctx.fill();
-
-      // Big Stylized Cartoon Eyes
-      ctx.fillStyle = "#fef08a";
-      ctx.beginPath();
-      ctx.ellipse(38, 38, 9, 13, 0, 0, Math.PI * 2);
-      ctx.ellipse(62, 38, 9, 13, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pupils looking at opponent
-      ctx.fillStyle = "#090d16";
-      ctx.beginPath();
-      ctx.arc(41, 38, 4.5, 0, Math.PI * 2);
-      ctx.arc(65, 38, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Whiskers
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(18, 44); ctx.lineTo(-4, 40);
-      ctx.moveTo(18, 50); ctx.lineTo(-4, 52);
-      ctx.moveTo(82, 44); ctx.lineTo(104, 40);
-      ctx.moveTo(82, 50); ctx.lineTo(104, 52);
-      ctx.stroke();
-
-      // Paw Holding Fish Ready
-      ctx.fillStyle = "#38bdf8";
-      ctx.beginPath();
-      ctx.arc(80, 56, 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    // Draw Stylized Yard Dog
-    function drawDog(x, y) {
-      ctx.save();
-      ctx.translate(x, y);
-
-      // Ground Shadow
-      ctx.fillStyle = "rgba(0,0,0,0.4)";
-      ctx.beginPath();
-      ctx.ellipse(50, 78, 48, 14, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Body & Fur
-      ctx.fillStyle = "#d97706";
-      ctx.beginPath();
-      ctx.roundRect(20, 18, 62, 58, 18);
-      ctx.fill();
-
-      // Floppy Brown Ears
-      ctx.fillStyle = "#92400e";
-      ctx.beginPath();
-      ctx.ellipse(18, 32, 10, 22, 0.3, 0, Math.PI * 2);
-      ctx.ellipse(82, 32, 10, 22, -0.3, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Spiked Dog Collar
-      ctx.fillStyle = "#dc2626";
-      ctx.fillRect(20, 60, 62, 12);
-      ctx.fillStyle = "#ffffff";
-      for (let sp = 26; sp <= 74; sp += 12) {
-        ctx.beginPath();
-        ctx.moveTo(sp, 60); ctx.lineTo(sp + 4, 54); ctx.lineTo(sp + 8, 60); ctx.fill();
-      }
-
-      // Tough Snout & Big Eyes
-      ctx.fillStyle = "#fef08a";
-      ctx.beginPath();
-      ctx.ellipse(38, 36, 8, 11, 0, 0, Math.PI * 2);
-      ctx.ellipse(62, 36, 8, 11, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#000000";
-      ctx.beginPath();
-      ctx.arc(36, 36, 4, 0, Math.PI * 2);
-      ctx.arc(60, 36, 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Muzzle & Black Nose
-      ctx.fillStyle = "#b45309";
-      ctx.beginPath();
-      ctx.ellipse(50, 48, 18, 12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#090d16";
-      ctx.beginPath();
-      ctx.arc(50, 44, 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    // Render Fish Skeleton / Bone Projectile
-    function drawProjectile(p) {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-
-      if (p.type === 'fish') {
-        // Cyan Fish Skeleton
-        ctx.fillStyle = "#e0f2fe";
-        ctx.strokeStyle = "#0284c7";
-        ctx.lineWidth = 2.5;
-
-        // Head
-        ctx.beginPath();
-        ctx.moveTo(14, 0); ctx.lineTo(4, -8); ctx.lineTo(4, 8); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-
-        // Spine & Ribs
-        ctx.beginPath();
-        ctx.moveTo(4, 0); ctx.lineTo(-18, 0);
-        ctx.moveTo(-2, -6); ctx.lineTo(-2, 6);
-        ctx.moveTo(-8, -6); ctx.lineTo(-8, 6);
-        ctx.moveTo(-14, -6); ctx.lineTo(-14, 6);
-        // Tail
-        ctx.moveTo(-18, 0); ctx.lineTo(-24, -8);
-        ctx.moveTo(-18, 0); ctx.lineTo(-24, 8);
-        ctx.stroke();
-      } else {
-        // Dog Bone
-        ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = "#94a3b8";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.roundRect(-12, -4, 24, 8, 4);
-        ctx.fill(); ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(-13, -5, 4, 0, Math.PI * 2);
-        ctx.arc(-13, 5, 4, 0, Math.PI * 2);
-        ctx.arc(13, -5, 4, 0, Math.PI * 2);
-        ctx.arc(13, 5, 4, 0, Math.PI * 2);
-        ctx.fill(); ctx.stroke();
-      }
-
-      ctx.restore();
-    }
-
-    /* =========================================================================
-       5. GAME LOOP & PHYSICS ENGINE
-       ========================================================================= */
-    const GRAVITY = 0.32;
-
-    function startGameLoop() {
-      if (!gameLoopRunning) {
-        gameLoopRunning = true;
-        requestAnimationFrame(gameLoop);
-      }
-    }
-
-    function gameLoop() {
-      if (!gameLoopRunning) return;
-
-      // 1. Clear & Background
-      ctx.clearRect(0, 0, V_WIDTH, V_HEIGHT);
-      drawSkyAndAlley();
-
-      // 2. Draw Characters
-      drawCat(CAT.x, CAT.y);
-      drawDog(DOG.x, DOG.y);
-
-      // 3. Update & Draw Particles
-      for (let i = particleBursts.length - 1; i >= 0; i--) {
-        const pt = particleBursts[i];
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.life -= 0.035;
-        if (pt.life <= 0) {
-          particleBursts.splice(i, 1);
-          continue;
-        }
-        ctx.fillStyle = pt.color;
-        ctx.globalAlpha = pt.life;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-      }
-
-      // 4. Update & Draw Flying Projectiles
-      for (let i = activeProjectiles.length - 1; i >= 0; i--) {
-        const p = activeProjectiles[i];
-
-        // Apply wind acceleration & gravity
-        p.vx += windSpeed * 0.009;
-        p.vy += GRAVITY;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rotation += (p.vx > 0 ? 0.14 : -0.14);
-
-        drawProjectile(p);
-
-        // --- COLLISION: Tall Wooden Fence ---
-        if (p.x >= FENCE.x && p.x <= FENCE.x + FENCE.width && p.y >= FENCE.y && p.y <= FENCE.y + FENCE.height) {
-          sound.playWoodHit();
-          spawnParticles(p.x, p.y, "#b45309");
-          showToast("HIT THE FENCE!", "#ef4444");
-          sound.speak("Oh no! It hit the fence! Throw higher OVER the fence!");
-          activeProjectiles.splice(i, 1);
-          checkTurnEnd();
-          continue;
-        }
-
-        // --- COLLISION: Dog Hit (Cat threw) ---
-        if (p.type === 'fish' && p.x >= DOG.x && p.x <= DOG.x + DOG.width && p.y >= DOG.y && p.y <= DOG.y + DOG.height) {
-          sound.playBonk();
-          spawnParticles(p.x, p.y, "#facc15");
-          showToast("DIRECT HIT! -20 HP", "#10b981");
-          sound.speak("Direct hit! Over the fence!");
-          DOG.hp = Math.max(0, DOG.hp - 20);
-          updateHealthBars();
-          activeProjectiles.splice(i, 1);
-          if (checkMatchOver()) return;
-          checkTurnEnd();
-          continue;
-        }
-
-        // --- COLLISION: Cat Hit (Dog threw) ---
-        if (p.type === 'bone' && p.x >= CAT.x && p.x <= CAT.x + CAT.width && p.y >= CAT.y && p.y <= CAT.y + CAT.height) {
-          sound.playBonk();
-          spawnParticles(p.x, p.y, "#ef4444");
-          showToast("OUCH! CAT HIT! -20 HP", "#ef4444");
-          sound.speak("The dog threw the bone over the fence!");
-          CAT.hp = Math.max(0, CAT.hp - 20);
-          updateHealthBars();
-          activeProjectiles.splice(i, 1);
-          if (checkMatchOver()) return;
-          checkTurnEnd();
-          continue;
-        }
-
-        // --- COLLISION: Ground / Out of Bounds ---
-        if (p.y >= 450 || p.x < 0 || p.x > V_WIDTH) {
-          spawnParticles(p.x, 450, "#64748b");
-          activeProjectiles.splice(i, 1);
-          checkTurnEnd();
-          continue;
-        }
-      }
-
-      // 5. Update Power Charging Bar
-      if (powerCharging) {
-        currentPower += powerDirection * 2.2;
-        if (currentPower >= 100) { currentPower = 100; powerDirection = -1; }
-        if (currentPower <= 5) { currentPower = 5; powerDirection = 1; }
-        document.getElementById("powerFill").style.width = `${currentPower}%`;
-        document.getElementById("powerPercent").innerText = `${Math.round(currentPower)}%`;
-      }
-
-      requestAnimationFrame(gameLoop);
-    }
-
-    // Check Turn Progression
-    function checkTurnEnd() {
-      if (activeProjectiles.length === 0) {
-        if (currentTurn === 'CAT') {
-          currentTurn = 'DOG';
-          randomizeWind();
-          setTimeout(executeDogTurn, 1200);
-        } else {
-          currentTurn = 'CAT';
-          randomizeWind();
-          document.getElementById("throwBtn").disabled = false;
-        }
-      }
-    }
-
-    // Health Bar Updates
-    function updateHealthBars() {
-      document.getElementById("cat-hp-bar").style.width = `${CAT.hp}%`;
-      document.getElementById("dog-hp-bar").style.width = `${DOG.hp}%`;
-    }
-
-    // Match Over / Victory Presentation
-    function checkMatchOver() {
-      if (CAT.hp <= 0 || DOG.hp <= 0) {
-        gameLoopRunning = false;
-        const isCatWinner = CAT.hp > 0;
-        sound.playFanfare();
-        document.getElementById("winnerTrophy").innerText = isCatWinner ? "🐱🏆" : "🐶🏆";
-        document.getElementById("winnerText").innerText = isCatWinner ? "ALLEY CAT WINS!" : "YARD DOG WINS!";
-        
-        const lines = isCatWinner ? [
-          "\"The cat threw the fish OVER the tall fence!\"",
-          "\"The projectile landed INTO the dog's yard!\"",
-          "\"We scored victory with " + CAT.hp + " HP remaining!\""
-        ] : [
-          "\"The dog threw the bone ACROSS the fence!\"",
-          "\"The bone landed ON TOP OF the trash bin!\"",
-          "\"Good practice! Try again to beat the dog!\""
-        ];
-
-        lines.forEach((l, i) => {
-          const el = document.getElementById(`line-${i}`);
-          if (el) el.innerText = l;
-        });
-
-        document.getElementById("victoryModal").style.display = "flex";
-        sound.speak(isCatWinner ? "Alley Cat Wins! You mastered your prepositions!" : "Yard Dog Wins! Good effort!");
-        return true;
-      }
-      return false;
-    }
-
-    /* =========================================================================
-       6. AI OPPONENT LOGIC (Dog Throws Over Fence)
-       ========================================================================= */
-    function executeDogTurn() {
-      if (DOG.hp <= 0 || CAT.hp <= 0) return;
-      document.getElementById("throwBtn").disabled = true;
-
-      // When wind > 0 (blowing East towards Dog), Dog throwing West needs MORE force
-      // When wind < 0 (blowing West towards Cat), wind helps Dog so Dog needs LESS force
-      const baseForce = 62;
-      const windCorrection = windSpeed * 1.5;
-      const finalForce = Math.min(95, Math.max(45, baseForce + windCorrection + (Math.random() * 8 - 4)));
-
-      showToast("DOG IS AIMING...", "#ea580c");
-      setTimeout(() => {
-        launchProjectile(DOG.x + 10, DOG.y + 35, 142, finalForce, 'bone');
-      }, 900);
-    }
-
-    /* =========================================================================
-       7. USER CONTROLS & PREPOSITION CHALLENGE TRIGGERS
-       ========================================================================= */
-    const throwBtn = document.getElementById("throwBtn");
-
-    function startCharge(e) {
-      if (currentTurn !== 'CAT' || activeProjectiles.length > 0) return;
-      if (e) e.preventDefault();
-      sound.init();
-      powerCharging = true;
-      currentPower = 10;
-      powerDirection = 1;
-      throwBtn.classList.add("charging");
-    }
-
-    function releaseCharge(e) {
-      if (!powerCharging) return;
-      if (e) e.preventDefault();
-      powerCharging = false;
-      throwBtn.classList.remove("charging");
-      throwBtn.disabled = true;
-
-      // Cat launches to the right at ~40 degrees
-      launchProjectile(CAT.x + CAT.width - 15, CAT.y + 35, 40, currentPower, 'fish');
-      currentPower = 0;
-      document.getElementById("powerFill").style.width = "0%";
-      document.getElementById("powerPercent").innerText = "0%";
-    }
-
-    // Mouse & Touch Support
-    throwBtn.addEventListener("mousedown", startCharge);
-    window.addEventListener("mouseup", releaseCharge);
-    throwBtn.addEventListener("touchstart", startCharge, { passive: false });
-    window.addEventListener("touchend", releaseCharge, { passive: false });
-    window.addEventListener("touchcancel", releaseCharge, { passive: false });
-
-    // Keyboard Spacebar to Charge and Launch
-    window.addEventListener("keydown", (e) => {
-      if (e.code === "Space" && !e.repeat && currentTurn === 'CAT' && !powerCharging && activeProjectiles.length === 0) {
-        const modal1 = document.getElementById("prepositionModal");
-        const modal2 = document.getElementById("victoryModal");
-        if (modal1.style.display !== "flex" && modal2.style.display !== "flex") {
-          e.preventDefault();
-          startCharge(e);
-        }
-      }
-    });
-
-    window.addEventListener("keyup", (e) => {
-      if (e.code === "Space" && powerCharging) {
-        e.preventDefault();
-        releaseCharge(e);
-      }
-    });
-
-    // Power-Up 1: Double Shot
-    document.getElementById("btnPowerX2").onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          isDoubleShot = true;
-          document.getElementById("btnPowerX2").classList.add("active");
-          showToast("DOUBLE SHOT ACTIVATED! 🎯", "#38bdf8");
-        }
-      });
-    };
-
-    // Power-Up 2: Super Power
-    document.getElementById("btnPowerFist").onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          isSuperFist = true;
-          document.getElementById("btnPowerFist").classList.add("active");
-          showToast("SUPER POWER LOADED! ⚡", "#f59e0b");
-        }
-      });
-    };
-
-    // Power-Up 3: Grammar Medic (Heal +25 HP)
-    document.getElementById("btnPowerHeal").onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          CAT.hp = Math.min(100, CAT.hp + 25);
-          updateHealthBars();
-          sound.playChime();
-          showToast("MEDIC HEAL! +25 HP 🩹", "#10b981");
-        }
-      });
-    };
-
-    // Interactive Preposition Gate Modal
-    function triggerPrepositionGate(callback) {
-      const modal = document.getElementById("prepositionModal");
-      const question = PREPOSITION_CHALLENGES[Math.floor(Math.random() * PREPOSITION_CHALLENGES.length)];
-      
-      document.getElementById("challengeIcon").innerText = question.icon;
-      document.getElementById("challengeText").innerText = question.prompt;
-      const optsContainer = document.getElementById("challengeOptions");
-      optsContainer.innerHTML = "";
-
-      sound.speak(question.prompt);
-
-      question.options.forEach((opt, idx) => {
-        const btn = document.createElement("button");
-        btn.className = "btn-opt";
-        btn.innerText = opt;
-        btn.onclick = () => {
-          modal.style.display = "none";
-          if (idx === question.correct) {
-            sound.playChime();
-            sound.speak(question.reinforce);
-            callback(true);
-          } else {
-            sound.playWoodHit();
-            sound.speak("Not quite! Try to throw OVER the fence next time!");
-            callback(false);
-          }
-        };
-        optsContainer.appendChild(btn);
-      });
-
-      modal.style.display = "flex";
-    }
-
-    // Play Again Reset
-    document.getElementById("btnPlayAgain").onclick = () => {
-      document.getElementById("victoryModal").style.display = "none";
-      CAT.hp = 100;
-      DOG.hp = 100;
-      updateHealthBars();
-      currentTurn = 'CAT';
-      activeProjectiles = [];
-      particleBursts = [];
-      randomizeWind();
-      document.getElementById("throwBtn").disabled = false;
-      startGameLoop();
-    };
-
-    // Initial Launch Setup
-    randomizeWind();
-    startGameLoop();
-  </script>
+  <!-- Script Pipeline -->
+  <script src="js/battle-data.js"></script>
+  <script src="js/battle-audio.js"></script>
+  <script src="js/battle-app.js"></script>
 </body>
 </html>
