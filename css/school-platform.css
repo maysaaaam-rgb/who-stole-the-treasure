@@ -6148,59 +6148,38 @@ body.classroom-mode-active .classroom-students-grid {
 }
 
 .card-pillar {
-  font-size: 0.75rem;
-  padding: 0.28rem 0.55rem;
+  font-size: 0.74rem;
+  padding: 0.3rem 0.55rem;
   border-radius: 6px;
-  line-height: 1.35;
+  margin-bottom: 0.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
 }
 
-.pillar-box,
 .pillar-goal {
-  font-size: 0.78rem;
-  line-height: 1.35;
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
-  margin: 0.2rem 0;
-}
-.pillar-goal,
-.pillar-objective {
   background: rgba(15, 23, 42, 0.6);
   border-left: 3px solid #38bdf8;
   color: #cbd5e1;
-  white-space: normal;
 }
-.pillar-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin: 0.5rem 0;
-}
-.pillar-tag {
-  font-size: 0.74rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
 .pillar-topic {
   background: rgba(56, 189, 248, 0.12);
+  border-left: 3px solid #38bdf8;
   color: #38bdf8;
-  border-left: 2px solid #38bdf8;
 }
+
 .pillar-grammar {
   background: rgba(245, 158, 11, 0.12);
+  border-left: 3px solid #f59e0b;
   color: #fbbf24;
-  border-left: 2px solid #f59e0b;
 }
+
 .pillar-vocab {
   background: rgba(168, 85, 247, 0.12);
+  border-left: 3px solid #a855f7;
   color: #c084fc;
-  border-left: 2px solid #a855f7;
 }
 
 .card-actions-bar,
