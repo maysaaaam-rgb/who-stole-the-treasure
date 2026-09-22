@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦕 Fossil Excavation Dossier — Worksheet | English Adventure Academy</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --paper: #ffffff;
+      --accent: #b45309;
+      --border-gray: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Comic Neue', sans-serif;
+      background: #f1f5f9;
+      color: var(--ink);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .no-print-bar {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #1e293b;
+      padding: 12px 20px;
+      border-radius: 12px;
+      color: #ffffff;
+    }
+
+    .btn-print {
+      background: #f59e0b;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 15px;
+      color: #0f172a;
+    }
+
+    .btn-print:hover {
+      background: #fbbf24;
+    }
+
+    .dossier-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      padding: 18mm 18mm;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dossier-header {
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .dossier-title-block h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+    }
+
+    .dossier-title-block p {
+      font-size: 13px;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .meta-box {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field-line {
+      border-bottom: 1px dashed #64748b;
+      padding-bottom: 2px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Part 1: Table */
+    .fossil-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    .fossil-table th, .fossil-table td {
+      border: 1px solid var(--border-gray);
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .fossil-table th {
+      background: #e2e8f0;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    .fossil-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .check-box {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid #0f172a;
+      border-radius: 3px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* Part 2: Drawing Box */
+    .blueprint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .blueprint-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    /* Part 3: Speech Scaffold */
+    .scaffold-box {
+      background: #fdf6ec;
+      border: 1px solid #fbd38d;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .scaffold-blank {
+      display: inline-block;
+      min-width: 100px;
+      border-bottom: 1px solid #0f172a;
+      margin: 0 4px;
+    }
+
+    /* Part 4: Badges */
+    .badges-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      border-top: 2px dashed #94a3b8;
+      padding-top: 14px;
+      margin-top: auto;
+    }
+
+    .badge-card {
+      border: 1.5px dashed #475569;
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      background: #f8fafc;
+    }
+
+    .badge-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .badge-name {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .badge-tag {
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .scissors-hint {
+      font-size: 9px;
+      color: #94a3b8;
+      text-align: right;
+      margin-bottom: 4px;
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none;
+      }
+      .dossier-page {
+        box-shadow: none;
+        margin: 0;
+        padding: 12mm 14mm;
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar (Hidden on Print) -->
+  <div class="no-print-bar">
+    <div>
+      <strong>🦕 Fossil Excavation Dossier (A4 Printable)</strong>
+      <span style="font-size: 12px; opacity: 0.8; margin-left: 8px;">English Adventure Academy</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Worksheet</button>
+  </div>
+
+  <!-- A4 Page Canvas -->
+  <div class="dossier-page">
+    
+    <div class="dossier-header">
+      <div class="dossier-title-block">
+        <h1>🦕 PALEONTOLOGY FIELD DOSSIER</h1>
+        <p>Prehistoric Past Tense Lab • CEFR A1-A2 • English Adventure Academy</p>
+      </div>
+      <div style="font-size: 28px;">🦖</div>
+    </div>
+
+    <!-- Cadet Details Box -->
+    <div class="meta-box">
+      <div><strong>Cadet Paleontologist:</strong> <span class="field-line" id="cadet-name-display">_____________________</span></div>
+      <div><strong>Date:</strong> <span class="field-line">____________</span></div>
+      <div><strong>Score:</strong> <span class="field-line">____ / 200 XP</span></div>
+    </div>
+
+    <!-- Part 1: Sorting Matrix -->
+    <div class="section-title">⚡ PART 1: FOSSIL VERB CLASSIFICATION MATRIX</div>
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 6px;">
+      Read each past tense verb excavated from the stone. Check whether it is <strong>REGULAR (-ed)</strong> or <strong>IRREGULAR</strong>, then write its base verb form.
+    </p>
+
+    <table class="fossil-table">
+      <thead>
+        <tr>
+          <th>Excavated Verb</th>
+          <th>Past Sentence Clue</th>
+          <th>Regular (-ed)</th>
+          <th>Irregular</th>
+          <th>Base Verb Form</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>discovered</strong></td>
+          <td>Scientists ____________ a giant footprint.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td><em>discover</em></td>
+        </tr>
+        <tr>
+          <td><strong>dug</strong></td>
+          <td>Paleontologists ____________ deep into rock.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+        <tr>
+          <td><strong>found</strong></td>
+          <td>The research team ____________ ancient amber.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+        <tr>
+          <td><strong>roared</strong></td>
+          <td>The ferocious dinosaur ____________ loudly.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+        <tr>
+          <td><strong>ate</strong></td>
+          <td>The herbivore ____________ tall fern leaves.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+        <tr>
+          <td><strong>flew</strong></td>
+          <td>The giant Pterodactyl ____________ high in the sky.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+        <tr>
+          <td><strong>protected</strong></td>
+          <td>Triceratops ____________ its herd with horns.</td>
+          <td><span class="check-box"></span> Regular</td>
+          <td><span class="check-box"></span> Irregular</td>
+          <td>______________</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Part 2: Blueprint & Drawing -->
+    <div class="blueprint-grid">
+      <div>
+        <div class="section-title">🎨 PART 2: SPECIMEN BLUEPRINT SKETCH</div>
+        <div class="blueprint-box">
+          <span style="font-size: 26px; margin-bottom: 4px;">🦴</span>
+          <span>Draw your excavated dinosaur fossil or skeleton here!</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">🎤 PART 3: MUSEUM PRESENTATION SPEECH</div>
+        <div class="scaffold-box">
+          Welcome to my exhibit! This is the mighty <span class="scaffold-blank"></span>.<br>
+          Millions of years ago, it lived in the <span class="scaffold-blank"></span> period.<br>
+          It <strong>(hunted / ate)</strong> <span class="scaffold-blank"></span> and <strong>(roared / flew)</strong> across the valley.<br>
+          Last week, our team <strong>discovered</strong> its <span class="scaffold-blank"></span>!
+        </div>
+      </div>
+    </div>
+
+    <!-- Part 4: Badges -->
+    <div class="scissors-hint">✂️ Cut out your verified cadet badges when completed!</div>
+    <div class="badges-container">
+      <div class="badge-card">
+        <div class="badge-icon">🦖</div>
+        <div class="badge-name">Apex Roar</div>
+        <div class="badge-tag">Past Tense Master</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🦕</div>
+        <div class="badge-name">Triple Shield</div>
+        <div class="badge-tag">Grammar Guardian</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🦅</div>
+        <div class="badge-name">Sky Sovereign</div>
+        <div class="badge-tag">Irregular Ace</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🏆</div>
+        <div class="badge-name">Lead Paleontologist</div>
+        <div class="badge-tag">Lab Certified 200 XP</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Autofill Cadet Name from URL params if present
+    const params = new URLSearchParams(window.location.search);
+    const cadetName = params.get('name');
+    if (cadetName) {
+      document.getElementById('cadet-name-display').textContent = decodeURIComponent(cadetName);
+    }
+  </script>
+</body>
+</html>
