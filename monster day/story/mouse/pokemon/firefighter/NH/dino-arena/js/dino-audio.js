@@ -239,6 +239,125 @@
     }
 
     /**
+     * playRoar(): Fearsome synthesized prehistoric dinosaur roar
+     * Uses FM modulation and resonant bandpass noise sweeps
+     */
+    playRoar() {
+      if (this.isMuted) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+
+      // 1. Guttural sub-bass sweep
+      const osc = this.ctx.createOscillator();
+      const oscGain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(55, now + 0.55);
+
+      oscGain.gain.setValueAtTime(0.35, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+      // Lowpass filter for deep beast resonance
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(450, now);
+      filter.frequency.exponentialRampToValueAtTime(160, now + 0.6);
+
+      osc.connect(filter);
+      filter.connect(oscGain);
+      oscGain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.68);
+
+      // 2. Modulated breath/roar crunch noise
+      try {
+        const bufferSize = this.ctx.sampleRate * 0.45;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.8;
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const noiseFilter = this.ctx.createBiquadFilter();
+        noiseFilter.type = 'bandpass';
+        noiseFilter.Q.value = 2.5;
+        noiseFilter.frequency.setValueAtTime(800, now);
+        noiseFilter.frequency.exponentialRampToValueAtTime(220, now + 0.45);
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.25, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+
+        noise.start(now);
+        noise.stop(now + 0.46);
+      } catch (e) {}
+    }
+
+    /**
+     * playFootsteps(): Heavy prehistoric ground stomps
+     */
+    playFootsteps() {
+      if (this.isMuted) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      [0, 0.28].forEach((offset) => {
+        const t = this.ctx.currentTime + offset;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(95, t);
+        osc.frequency.exponentialRampToValueAtTime(35, t + 0.16);
+
+        gain.gain.setValueAtTime(0.32, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(t);
+        osc.stop(t + 0.19);
+      });
+    }
+
+    /**
+     * playThud(): Deep physical scale impact when dinosaurs drop onto the balance
+     */
+    playThud() {
+      if (this.isMuted) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.exponentialRampToValueAtTime(32, now + 0.26);
+
+      gain.gain.setValueAtTime(0.45, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.29);
+    }
+
+    /**
      * speak(text, onBoundary, onEnd): Calibrated native speech synthesis
      * rate: 0.88, pitch: 1.05, lang: "en-US"
      */
