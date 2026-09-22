@@ -35,17 +35,17 @@
   const MEME_RULES_DATA = {
     meta: {
       id: "meme-rules",
-      title: "Meme Rules: Classroom Imperatives Lab",
-      subtitle: "Learn Positive & Negative Imperatives with 25 Legendary Memes",
-      cefrLevel: "A1-A2",
+      title: "🎭 Classroom Meme Rules: Imperatives in Action",
+      subtitle: "Master Positive & Negative Imperatives with Classroom Memes",
+      cefrLevel: "A1–A2",
       totalMemes: 25,
+      xp: 150,
       grammarFormula: {
-        positive: "Base Verb + Object/Adverb",
-        negative: "Don't + Base Verb + Object/Adverb"
+        positive: "Base Verb + Object",
+        negative: "Don't + Base Verb"
       },
       targetVocab: [
-        "raise", "listen", "share", "clean", "line up", "whisper",
-        "shout", "run", "cheat", "panic", "argue", "forget", "push in"
+        "raise", "speak", "listen", "whisper", "share", "wait"
       ]
     },
 
