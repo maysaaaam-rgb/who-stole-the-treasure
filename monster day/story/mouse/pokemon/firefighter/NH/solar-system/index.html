@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🪐 Solar System Explorer: Planetary Comparatives Lab | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+</head>
+<body>
+
+  <!-- Celebratory Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Tactical Space HUD -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <a href="../index.html" class="btn-icon-hud" title="Return to Academy Hub">
+        🏛️ <span>Academy Hub</span>
+      </a>
+      <button id="btn-sound-toggle" class="btn-icon-hud" title="Toggle Sound Synthesis">
+        🔊 <span>Audio Active</span>
+      </button>
+    </div>
+
+    <div class="hud-center">
+      <div class="energy-track-wrap">
+        <span class="energy-label">Solar Energy</span>
+        <div class="energy-bar-outer" id="hud-energy-outer">
+          <div class="energy-bar-inner" id="hud-energy-fill"></div>
+        </div>
+        <span id="hud-xp-label" style="font-size:13px; font-weight:800; color:#38bdf8;">0 / 150 XP</span>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="streak-pill" id="hud-streak-pill" title="Orbit Streak Multiplier">
+        <span class="streak-flame">🔥</span>
+        <span id="hud-streak-count">0x</span>
+      </div>
+      <button id="btn-fullscreen-toggle" class="btn-icon-hud" title="Toggle Fullscreen Arena">
+        ⛶ <span>Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Phase Selector Bar -->
+  <nav class="phase-selector" aria-label="Exploration Stages">
+    <button class="phase-tab" data-phase="1">
+      <span>🔍</span> Phase 1: 3D Discovery Scanner
+    </button>
+    <button class="phase-tab active" data-phase="2">
+      <span>⚡</span> Phase 2: Arena Showdown
+    </button>
+    <button class="phase-tab" data-phase="3">
+      <span>🎙️</span> Phase 3: Teleprompter Studio
+    </button>
+  </nav>
+
+  <!-- Main Viewport Arena Stage (Anti-Dashboard Single Focus) -->
+  <main class="main-stage-container">
+
+    <!-- Phase 1: 3D Discovery Scanner (Interactive 3D Flips) -->
+    <section class="phase-panel" id="panel-phase-1" data-phase="1">
+      <div class="arena-headline-bar">
+        <h2 class="arena-title">🔍 3D DISCOVERY SCANNER</h2>
+        <p class="arena-instruction">Click or press Enter on any planetary card to flip its 3D spec sheet and collect explorer badges!</p>
+      </div>
+      <div class="scanner-grid" id="scanner-grid"></div>
+    </section>
+
+    <!-- Phase 2: The Arena Showdown (Tactile Workbench) -->
+    <section class="phase-panel active" id="panel-phase-2" data-phase="2">
+      <div class="showdown-arena">
+        
+        <div class="arena-headline-bar">
+          <div class="arena-title">
+            <span>🪐 PLANETARY COMPARATIVE ARENA</span>
+            <span class="hotkey-hint" id="arena-counter">Round 1 of 12</span>
+          </div>
+          <p class="arena-instruction">
+            Verify the comparative statement! Click buttons or press <span class="hotkey-hint">[T]</span> for TRUE or <span class="hotkey-hint">[F]</span> for FALSE.
+          </p>
+        </div>
+
+        <!-- 65/35 Full-Bleed Focal Arena Card -->
+        <div class="arena-card-anchor" id="arena-card-anchor">
+          <div class="arena-card">
+            
+            <!-- Pronounce Statement Button -->
+            <button class="card-audio-btn" id="arena-card-audio-btn" title="Pronounce Statement">
+              🔊
+            </button>
+
+            <!-- 65% Celestial Hero Visual Zone -->
+            <div class="card-hero-zone" id="arena-hero-zone"></div>
+
+            <!-- 35% Glassmorphic Caption Plate -->
+            <div class="card-caption-plate">
+              <div class="caption-statement-row">
+                <span class="caption-comparative-chip" id="arena-caption-comparative">Pattern: "bigger than"</span>
+              </div>
+              <p class="caption-statement-text" id="arena-caption-statement">"Jupiter is bigger than Mars."</p>
+              <div class="caption-hint" id="arena-caption-hint">💡 Clue: Jupiter is a gas giant; Mars is small and rocky.</div>
+            </div>
+
+            <!-- Impact Rubber Stamps (DO / CORRECT vs DON'T / TRY AGAIN) -->
+            <div class="stamp-impact stamp-correct" id="stamp-correct">
+              ✨ DO / CORRECT
+            </div>
+            <div class="stamp-impact stamp-incorrect" id="stamp-incorrect">
+              ⚠️ DON'T / TRY AGAIN
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Chunky 3D Action Buttons -->
+        <div class="arena-action-dock">
+          <button class="btn-game-decision btn-game-true" id="btn-choose-true">
+            <span class="btn-main-text">✨ TRUE / CORRECT <span class="hotkey-hint">[T]</span></span>
+            <span class="btn-sub-text">Comparative statement is accurate</span>
+          </button>
+          <button class="btn-game-decision btn-game-false" id="btn-choose-false">
+            <span class="btn-main-text">❌ FALSE / INCORRECT <span class="hotkey-hint">[F]</span></span>
+            <span class="btn-sub-text">Comparative statement is false</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Phase 3: Live Teleprompter Studio -->
+    <section class="phase-panel" id="panel-phase-3" data-phase="3">
+      <div class="teleprompter-stage">
+        <div class="arena-headline-bar">
+          <h2 class="arena-title">🎙️ LIVE TELEPROMPTER STUDIO</h2>
+          <p class="arena-instruction">Deliver your astronaut research broadcast! Follow along as spoken words highlight in real-time karaoke.</p>
+        </div>
+
+        <div class="teleprompter-card-wrap">
+          <span class="teleprompter-badge-tag" id="teleprompter-badge-tag">🪐 Commander Orion</span>
+          <div class="teleprompter-art-podium" id="teleprompter-art-podium"></div>
+          
+          <div class="teleprompter-display">
+            <div class="teleprompter-script" id="teleprompter-script"></div>
+            
+            <div class="teleprompter-controls">
+              <button class="btn-speak-teleprompter" id="btn-speak-teleprompter">
+                🎙️ Read With Me
+              </button>
+              <button class="btn-next-teleprompter" id="btn-next-teleprompter">
+                Next Mission ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Victory Mission Passport Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="diploma-card">
+      <div class="diploma-seal">🪐</div>
+      <h2 class="diploma-title">MASTER SPACE CADET</h2>
+      <p class="diploma-subtitle">Planetary Comparatives Lab Certified • 150 XP</p>
+      
+      <div class="diploma-stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="modal-xp-val">150 XP</div>
+          <div class="stat-label">Total XP</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-streak-val">12x</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-accuracy-val">100%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <label for="student-name-input" style="font-size:13px; font-weight:700; color:#94a3b8; margin-bottom:6px;">Space Cadet Name:</label>
+      <input type="text" id="student-name-input" class="student-name-input" placeholder="Enter Your Name..." value="Junior Astronaut">
+
+      <div class="diploma-actions">
+        <button class="btn-print-passport" id="btn-print-passport">
+          🖨️ Open A4 Mission Passport
+        </button>
+        <button class="btn-replay-game" id="btn-replay-game">
+          🔄 Play Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zero-Dependency Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

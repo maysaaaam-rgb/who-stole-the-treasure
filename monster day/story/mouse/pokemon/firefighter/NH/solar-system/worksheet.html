@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🪐 Space Cadet Mission Passport — Worksheet | English Adventure Academy</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap">
+  <style>
+    :root {
+      --ink: #0b1120;
+      --paper: #ffffff;
+      --accent: #0284c7;
+      --border-gray: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Comic Neue', sans-serif;
+      background: #f1f5f9;
+      color: var(--ink);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .no-print-bar {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #0f172a;
+      padding: 12px 20px;
+      border-radius: 12px;
+      color: #ffffff;
+    }
+
+    .btn-print {
+      background: #38bdf8;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 15px;
+      color: #070a14;
+    }
+
+    .btn-print:hover {
+      background: #7dd3fc;
+    }
+
+    .passport-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      padding: 18mm 18mm;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .passport-header {
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .passport-title-block h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #0c152e;
+    }
+
+    .passport-title-block p {
+      font-size: 13px;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .meta-box {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field-line {
+      border-bottom: 1px dashed #64748b;
+      padding-bottom: 2px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Part 1: Table */
+    .comparative-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    .comparative-table th, .comparative-table td {
+      border: 1px solid var(--border-gray);
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .comparative-table th {
+      background: #e2e8f0;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    .comparative-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .check-box {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid #0f172a;
+      border-radius: 3px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* Part 2: Blueprint & Drawing */
+    .blueprint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .blueprint-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    /* Part 3: Speech Scaffold */
+    .scaffold-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .scaffold-blank {
+      display: inline-block;
+      min-width: 90px;
+      border-bottom: 1px solid #0f172a;
+      margin: 0 4px;
+    }
+
+    /* Part 4: Badges */
+    .badges-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      border-top: 2px dashed #94a3b8;
+      padding-top: 14px;
+      margin-top: auto;
+    }
+
+    .badge-card {
+      border: 1.5px dashed #475569;
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      background: #f8fafc;
+    }
+
+    .badge-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .badge-name {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .badge-tag {
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .scissors-hint {
+      font-size: 9px;
+      color: #94a3b8;
+      text-align: right;
+      margin-bottom: 4px;
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none;
+      }
+      .passport-page {
+        box-shadow: none;
+        margin: 0;
+        padding: 12mm 14mm;
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar (Hidden on Print) -->
+  <div class="no-print-bar">
+    <div>
+      <strong>🪐 Space Cadet Mission Passport (A4 Printable)</strong>
+      <span style="font-size: 12px; opacity: 0.8; margin-left: 8px;">English Adventure Academy</span>
+    </div>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Passport</button>
+  </div>
+
+  <!-- A4 Page Canvas -->
+  <div class="passport-page">
+    
+    <div class="passport-header">
+      <div class="passport-title-block">
+        <h1>🪐 SPACE CADET MISSION PASSPORT</h1>
+        <p>Planetary Comparatives Lab • CEFR A1-A2 • English Adventure Academy</p>
+      </div>
+      <div style="font-size: 28px;">🚀</div>
+    </div>
+
+    <!-- Cadet Details Box -->
+    <div class="meta-box">
+      <div><strong>Space Cadet Name:</strong> <span class="field-line" id="cadet-name-display">_____________________</span></div>
+      <div><strong>Flight Date:</strong> <span class="field-line">____________</span></div>
+      <div><strong>Orbital Score:</strong> <span class="field-line">____ / 150 XP</span></div>
+    </div>
+
+    <!-- Part 1: Comparative Matrix -->
+    <div class="section-title">⚡ PART 1: PLANETARY COMPARATIVES MATRIX</div>
+    <p style="font-size: 11.5px; color: #475569; margin-bottom: 6px;">
+      Read each cosmic statement. Decide whether it is <strong>TRUE</strong> or <strong>FALSE</strong>, then circle the comparative adjective form.
+    </p>
+
+    <table class="comparative-table">
+      <thead>
+        <tr>
+          <th>Planetary Statement</th>
+          <th>Comparative Pattern</th>
+          <th>TRUE</th>
+          <th>FALSE</th>
+          <th>Rule Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Jupiter is <strong>bigger than</strong> Mars.</td>
+          <td><em>bigger than</em></td>
+          <td><span class="check-box"></span> True</td>
+          <td><span class="check-box"></span> False</td>
+          <td>Jupiter is a massive gas giant.</td>
+        </tr>
+        <tr>
+          <td>Venus is <strong>hotter than</strong> Mercury.</td>
+          <td><em>hotter than</em></td>
+          <td><span class="check-box"></span> True</td>
+          <td><span class="check-box"></span> False</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td>Mars is <strong>colder than</strong> Earth.</td>
+          <td><em>colder than</em></td>
+          <td><span class="check-box"></span> True</td>
+          <td><span class="check-box"></span> False</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td>Mercury is <strong>closer to</strong> the Sun than Neptune.</td>
+          <td><em>closer than</em></td>
+          <td><span class="check-box"></span> True</td>
+          <td><span class="check-box"></span> False</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td>Earth is <strong>more massive than</strong> the Moon.</td>
+          <td><em>more massive than</em></td>
+          <td><span class="check-box"></span> True</td>
+          <td><span class="check-box"></span> False</td>
+          <td>__________________________________</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Part 2: Blueprint & Drawing -->
+    <div class="blueprint-grid">
+      <div>
+        <div class="section-title">🎨 PART 2: DESIGN AN EXOPLANET</div>
+        <div class="blueprint-box">
+          <span style="font-size: 26px; margin-bottom: 4px;">🪐</span>
+          <span>Draw your newly discovered planet with rings, moons, or craters!</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">🎤 PART 3: ASTRONAUT BROADCAST LOG</div>
+        <div class="scaffold-box">
+          Welcome to my deep space broadcast! This is Planet <span class="scaffold-blank"></span>.<br>
+          My planet is <strong>(bigger / smaller)</strong> than <span class="scaffold-blank"></span>.<br>
+          It is <strong>(colder / hotter)</strong> than Earth and has <span class="scaffold-blank"></span> moons.<br>
+          Our probe discovered that its gravity is <strong>(stronger / weaker)</strong>!
+        </div>
+      </div>
+    </div>
+
+    <!-- Part 4: Badges -->
+    <div class="scissors-hint">✂️ Cut out your verified astronaut mission badges when completed!</div>
+    <div class="badges-container">
+      <div class="badge-card">
+        <div class="badge-icon">🪨</div>
+        <div class="badge-name">Swift Orbit</div>
+        <div class="badge-tag">Mercury Scout</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🔥</div>
+        <div class="badge-name">Inferno Shield</div>
+        <div class="badge-tag">Venus Explorer</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🌍</div>
+        <div class="badge-name">Living Ocean</div>
+        <div class="badge-tag">Earth Steward</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon">🪐</div>
+        <div class="badge-name">Titan Sovereign</div>
+        <div class="badge-tag">Lab Certified 150 XP</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Autofill Cadet Name from URL params if present
+    const params = new URLSearchParams(window.location.search);
+    const cadetName = params.get('name');
+    if (cadetName) {
+      document.getElementById('cadet-name-display').textContent = decodeURIComponent(cadetName);
+    }
+  </script>
+</body>
+</html>

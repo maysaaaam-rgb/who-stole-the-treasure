@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦕 Dino Dig: Prehistoric Past Tense Lab | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦕</text></svg>">
+</head>
+<body>
+
+  <!-- Confetti Canvas for Victory Celebrations -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Tactical HUD -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <a href="../index.html" class="btn-icon-hud" title="Return to Academy Hub">
+        🏛️ <span>Academy Hub</span>
+      </a>
+      <button id="btn-sound-toggle" class="btn-icon-hud" title="Toggle Sound Synthesis">
+        🔊 <span>Audio Active</span>
+      </button>
+    </div>
+
+    <div class="hud-center">
+      <div class="energy-track-wrap">
+        <span class="energy-label">Fossil Energy</span>
+        <div class="energy-bar-outer" id="hud-energy-outer">
+          <div class="energy-bar-inner" id="hud-energy-fill"></div>
+        </div>
+        <span id="hud-xp-label" style="font-size:13px; font-weight:800; color:#38bdf8;">0 / 200 XP</span>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="streak-pill" id="hud-streak-pill" title="Excavation Streak Multiplier">
+        <span class="streak-flame">🔥</span>
+        <span id="hud-streak-count">0x</span>
+      </div>
+      <button id="btn-fullscreen-toggle" class="btn-icon-hud" title="Toggle Fullscreen Arena">
+        ⛶ <span>Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Phase Selector Bar -->
+  <nav class="phase-selector" aria-label="Game Phases">
+    <button class="phase-tab" data-phase="1">
+      <span>🔍</span> Phase 1: Fossil Scanner
+    </button>
+    <button class="phase-tab active" data-phase="2">
+      <span>⚡</span> Phase 2: Excavation Arena
+    </button>
+    <button class="phase-tab" data-phase="3">
+      <span>🏛️</span> Phase 3: Museum Hologram
+    </button>
+  </nav>
+
+  <!-- Main Viewport Stage (Anti-Dashboard Single Focus) -->
+  <main class="main-stage-container">
+
+    <!-- Phase 1: Fossil Resonance Scanner -->
+    <section class="phase-panel" id="panel-phase-1" data-phase="1">
+      <div class="scanner-container">
+        <div class="arena-headline-bar">
+          <h2 class="arena-title">🔍 PREHISTORIC FOSSIL SCANNER</h2>
+          <p class="arena-instruction">Analyze 5 legendary ancient species. Click any specimen to hear its past tense report!</p>
+        </div>
+        <div class="species-carousel" id="species-carousel"></div>
+      </div>
+    </section>
+
+    <!-- Phase 2: The Showdown Arena (Excavation Time Sorter) -->
+    <section class="phase-panel active" id="panel-phase-2" data-phase="2">
+      <div class="showdown-arena">
+        
+        <div class="arena-headline-bar">
+          <div class="arena-title">
+            <span>🦕 EXCAVATION TIME SORTER</span>
+            <span class="hotkey-hint" id="arena-counter">Fossil 1 of 15</span>
+          </div>
+          <p class="arena-instruction">
+            Classify the past tense verb! Use buttons or press <span class="hotkey-hint">[R]</span> for Regular or <span class="hotkey-hint">[I]</span> for Irregular.
+          </p>
+        </div>
+
+        <!-- 65/35 Full Bleed Focal Arena Card -->
+        <div class="arena-card-anchor" id="arena-card-anchor">
+          <div class="arena-card">
+            
+            <!-- Pronounce Clue Button -->
+            <button class="card-audio-btn" id="arena-card-audio-btn" title="Speak Clue Sentence">
+              🔊
+            </button>
+
+            <!-- 65% Hero Visual Zone with 3D Pedestal & Dinosaurs -->
+            <div class="card-hero-zone" id="arena-hero-zone"></div>
+
+            <!-- 35% Caption Plate -->
+            <div class="card-caption-plate">
+              <div class="caption-verb-row">
+                <span class="caption-target-verb" id="arena-caption-verb">discovered</span>
+                <span class="caption-base-tag" id="arena-caption-base">Base: "discover"</span>
+              </div>
+              <p class="caption-sentence" id="arena-caption-sentence">"Scientists discovered a giant footprint in the rock."</p>
+              <div class="caption-hint" id="arena-caption-hint">💡 Clue: Ends in -ed!</div>
+            </div>
+
+            <!-- Tactile Rubber-Stamp Overlays -->
+            <div class="stamp-impact stamp-regular" id="stamp-regular">
+              ✨ REGULAR -ED
+            </div>
+            <div class="stamp-impact stamp-irregular" id="stamp-irregular">
+              ⚡ IRREGULAR
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Chunky 3D Action Buttons -->
+        <div class="arena-action-dock">
+          <button class="btn-game-decision btn-game-regular" id="btn-choose-regular">
+            <span class="btn-main-text">✨ REGULAR (-ed) <span class="hotkey-hint">[R]</span></span>
+            <span class="btn-sub-text">Standard Past Tense (+ed)</span>
+          </button>
+          <button class="btn-game-decision btn-game-irregular" id="btn-choose-irregular">
+            <span class="btn-main-text">⚡ IRREGULAR <span class="hotkey-hint">[I]</span></span>
+            <span class="btn-sub-text">Spelling / Vowel Change</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Phase 3: Museum Hologram Teleprompter -->
+    <section class="phase-panel" id="panel-phase-3" data-phase="3">
+      <div class="teleprompter-stage">
+        <div class="arena-headline-bar">
+          <h2 class="arena-title">🏛️ MUSEUM HOLOGRAM TELEPROMPTER</h2>
+          <p class="arena-instruction">Narrate the ancient exhibit! Listen to calibrated speech and follow along with real-time karaoke highlight.</p>
+        </div>
+
+        <div class="holo-card-wrap">
+          <span class="holo-species-badge" id="holo-species-badge">🦖 Tyrannosaurus Rex</span>
+          <div class="holo-art-podium" id="holo-art-podium"></div>
+          
+          <div class="teleprompter-display">
+            <div class="teleprompter-script" id="teleprompter-script"></div>
+            
+            <div class="teleprompter-controls">
+              <button class="btn-speak-teleprompter" id="btn-speak-holo">
+                🎙️ Read With Me
+              </button>
+              <button class="btn-next-teleprompter" id="btn-next-holo">
+                Next Exhibit ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Victory / Master Paleontologist Diploma Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="diploma-card">
+      <div class="diploma-seal">🦕</div>
+      <h2 class="diploma-title">MASTER PALEONTOLOGIST</h2>
+      <p class="diploma-subtitle">Prehistoric Past Tense Lab Certified • 200 XP</p>
+      
+      <div class="diploma-stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="modal-xp-val">200 XP</div>
+          <div class="stat-label">Total XP</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-streak-val">15x</div>
+          <div class="stat-label">Best Streak</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="modal-accuracy-val">100%</div>
+          <div class="stat-label">Accuracy</div>
+        </div>
+      </div>
+
+      <label for="student-name-input" style="font-size:13px; font-weight:700; color:#94a3b8; margin-bottom:6px;">Cadet Paleontologist Name:</label>
+      <input type="text" id="student-name-input" class="student-name-input" placeholder="Enter Your Name..." value="Junior Paleontologist">
+
+      <div class="diploma-actions">
+        <button class="btn-print-dossier" id="btn-print-dossier">
+          🖨️ Open A4 Fossil Dossier
+        </button>
+        <button class="btn-replay-game" id="btn-replay-game">
+          🔄 Play Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Scripts (Zero External Dependencies) -->
+  <script src="js/dino-data.js"></script>
+  <script src="js/dino-audio.js"></script>
+  <script src="js/dino-app.js"></script>
+</body>
+</html>
