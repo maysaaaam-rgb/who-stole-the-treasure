@@ -2201,6 +2201,47 @@
 
   const DEFAULT_HOMEWORK_QUESTS = [
     {
+      id: 'hw-space-cadet',
+      title: '🚀 Space Cadet Mission: Blueprint & Report Card',
+      description: 'Design your space vehicle, select mission tech, build mission sentences, and present your Show & Tell report card!',
+      subject: 'English / Science CLIL',
+      skill: 'CLIL & Writing',
+      cefrLevel: 'A2',
+      classId: 'class-3a',
+      className: 'Grade 3A',
+      studentIds: 'all',
+      dueDate: 'Oct 10, 2026',
+      estimatedTime: '30 minutes',
+      xpReward: 50,
+      optionalChallenge: true,
+      optionalChallengeXp: 15,
+      optionalChallengeDesc: 'Record your oral Show & Tell speech and complete the blueprint drawing!',
+      resources: [
+        { id: 'res-ws-space-cadet', type: 'worksheet', title: 'Space Cadet Mission Interactive Worksheet', url: 'space-cadet/index.html' },
+        { id: 'res-poster-space-cadet', type: 'poster', title: 'Space Cadet Mission Poster', url: 'assets/homework/space-cadet-mission-poster.jpg' }
+      ],
+      instructions: [
+        '1. Fill out your Cadet Profile and choose your mission goal',
+        '2. Choose your ship\'s technology and build your mission sentences',
+        '3. Draw and label your vehicle blueprint on the engineering canvas',
+        '4. Complete the Mission Report Card and record your Show & Tell speech',
+        '5. Submit your mission log to earn +50 XP'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      thumbnail: 'assets/homework/space-cadet-mission-poster.jpg',
+      poster: 'assets/homework/space-cadet-mission-poster.jpg',
+      companionImage: 'assets/homework/space-cadet-mission-poster.jpg',
+      submittedCount: 9,
+      archived: false,
+      submissions: {
+        'student-3a-224': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 65, xpTxId: 'tx-hw-space-224' },
+        'student-3a-229': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 65, xpTxId: 'tx-hw-space-229' },
+        'student-3a-354': { status: 'COMPLETED', attempted: 10, correct: 10, score: 100, completedDate: 'Sep 22, 2026', optionalDone: true, xpAwarded: 65, xpTxId: 'tx-hw-space-354' },
+        'student-3a-203': { status: 'COMPLETED', attempted: 10, correct: 9, score: 90, completedDate: 'Sep 22, 2026', optionalDone: false, xpAwarded: 50, xpTxId: 'tx-hw-space-203' }
+      }
+    },
+    {
       id: 'hw-animals',
       title: 'Vocabulary Quest: Animals',
       description: 'Learn and use 10 animal words. Complete the worksheet and play the mini-game. Try the extra challenge for more XP!',

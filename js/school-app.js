@@ -5873,6 +5873,39 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
         '</div>' +
 
+        // Featured Space Cadet Mission Showcase Banner
+        '<div style="background: linear-gradient(135deg, #0b132b 0%, #0f172a 45%, #0369a1 85%, #0284c7 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 16px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
+          '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #38bdf8; cursor: pointer; box-shadow: 0 6px 20px rgba(56,189,248,0.35);" onclick="openModal(\'modal-space-cadet-poster\')">' +
+            '<img src="assets/homework/space-cadet-mission-poster.jpg" alt="Space Cadet Mission" style="width:100%; height:100%; object-fit: cover;" />' +
+            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
+          '</div>' +
+          '<div style="flex: 1; min-width: 260px;">' +
+            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
+              '<span style="background: #38bdf8; color: #0b132b; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">FEATURED STEM &amp; CLIL QUEST</span>' +
+              '<span style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">CEFR A2 • +50 XP</span>' +
+              '<span style="background: rgba(16,185,129,0.25); color: #34d399; font-size: 0.72rem; font-weight: 800; padding: 2px 9px; border-radius: 999px;">3-PANEL INTERACTIVE DOSSIER</span>' +
+            '</div>' +
+            '<h2 style="font-size: 1.35rem; font-weight: 900; margin: 0 0 4px 0; color: #fff; line-height: 1.2;">🚀 Space Cadet Mission: Blueprint &amp; Report Card</h2>' +
+            '<p style="font-size: 0.86rem; color: #cbd5e1; margin: 0 0 12px 0; line-height: 1.35;">' +
+              '&ldquo;Big Ideas • Brighter Tomorrow!&rdquo; Build mission sentences, draw your spacecraft blueprint on the engineering canvas, and deliver your Show &amp; Tell mission report with voice recording.' +
+            '</p>' +
+            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+              '<button type="button" onclick="window.open(\'space-cadet/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(2,132,199,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
+                '🚀 Launch Space Cadet Dossier' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-space-cadet-poster\')" style="background: #38bdf8; color: #0b132b; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
+                '🖼️ View High-Res Poster' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-space-cadet\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '👥 Submissions (9)' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '⭐ Award Mission XP' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
         // Featured Alice in Wonderland Reference Poster Showcase Banner
         '<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #064e3b 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
           '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #fbbf24; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.4);" onclick="openModal(\'modal-alice-poster\')">' +

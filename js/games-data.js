@@ -4241,6 +4241,55 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Children's Literature & Theatre",
     "clilTheme": "Narrative Journey & Character Values"
+  },
+  {
+    "id": "space-cadet",
+    "aliases": ["space-cadet-mission", "cadet-mission", "space-mission-homework"],
+    "title": "🚀 Space Cadet Mission: Blueprint & Report Card",
+    "description": "Design your space vehicle on the interactive blueprint canvas, select mission technology, build mission sentences, and present your Show & Tell report card!",
+    "category": "CLIL & Science",
+    "categoryGroup": "Science & Engineering",
+    "cefrLevel": "A2",
+    "level": "A2",
+    "grade": "Grade 4",
+    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "xp": 200,
+    "duration": 30,
+    "durationText": "30 mins",
+    "estimatedMinutes": 30,
+    "type": "game",
+    "topics": ["Space Exploration", "Spacecraft Engineering", "Scientific Reporting"],
+    "learningObjectives": [
+      "Formulate mission goals using 'My mission is to + Verb' and 'It will + Verb'",
+      "Identify aerospace engineering parts (thrusters, solar sails, telescope, lander legs)",
+      "Deliver an oral Show & Tell report summarizing vehicle features and mission purpose"
+    ],
+    "teacherInstructions": "Have students blueprint their space vehicle on the canvas and record their oral Show & Tell speech using the integrated voice recorder.",
+    "route": "space-cadet/index.html",
+    "worksheet": "space-cadet/index.html",
+    "worksheetRoute": "space-cadet/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🚀",
+    "gradient": "linear-gradient(135deg, #0b132b 0%, #0f172a 45%, #0369a1 85%, #0284c7 100%)",
+    "tags": ["space", "cadet", "blueprint", "science", "clil", "homework"],
+    "vocabulary": {
+      "core": ["rocket", "thrusters", "solar sails", "telescope", "rover"],
+      "supporting": ["probe", "cryosleep", "shielding", "lander legs", "habitat pod"]
+    },
+    "grammar": {
+      "focusPattern": "Purpose and Future Action (My mission is to + Verb / It will + Verb)",
+      "formula": "My mission is to [verb] so it will [action].",
+      "formulas": [
+        "My mission is to study a new planet.",
+        "It will travel far and scan deep atmosphere.",
+        "It has plasma engines and lander legs."
+      ]
+    },
+    "clilDomain": "Planetary Science & Aerospace Engineering",
+    "clilTheme": "Exoplanet Exploration & Mission Design"
   }
 ];
 
