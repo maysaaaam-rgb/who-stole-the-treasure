@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cat vs. Dog: Alley Prepositions Passport | Printable Worksheet</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.4;
+      padding: 12px;
+    }
+    .page-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 24px;
+      border: 2px solid #0284c7;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .worksheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .header-titles h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .header-titles p {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ea580c;
+    }
+    .student-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+      background: #f1f5f9;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .field-box {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .field-line {
+      display: inline-block;
+      width: 120px;
+      border-bottom: 1px solid #94a3b8;
+      margin-left: 6px;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      background: #e0f2fe;
+      padding: 6px 12px;
+      border-left: 4px solid #0284c7;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    /* Section 1: Preposition Match */
+    .matching-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .match-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+    }
+    .match-badge {
+      font-size: 0.75rem;
+      font-weight: 900;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      min-width: 80px;
+      text-align: center;
+    }
+    .match-sentence {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .blank-slot {
+      display: inline-block;
+      width: 70px;
+      border-bottom: 1.5px solid #0284c7;
+    }
+
+    /* Section 2: Trajectory Canvas Draw */
+    .trajectory-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 10px;
+      height: 160px;
+      position: relative;
+      background: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 16px 30px;
+    }
+    .diorama-element {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .draw-instruction {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #ea580c;
+    }
+
+    /* Section 3: Comic Battle Log */
+    .battle-log-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .log-line {
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .log-underline {
+      flex: 1;
+      border-bottom: 1.5px solid #94a3b8;
+      min-height: 20px;
+    }
+
+    /* Footer & Stamp */
+    .worksheet-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+    .teacher-stamp {
+      border: 2px dashed #ea580c;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 800;
+      color: #ea580c;
+      text-transform: uppercase;
+    }
+
+    @media print {
+      body { background: #ffffff; padding: 0; }
+      .page-container { border: none; box-shadow: none; padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-container">
+    <!-- Header -->
+    <header class="worksheet-header">
+      <div class="header-titles">
+        <h1>🎯 Alley Prepositions Passport</h1>
+        <p>Cat vs. Dog: Preposition Catapult • CEFR A1 Writing & Spatial Geometry</p>
+      </div>
+      <button class="no-print" onclick="window.print()" style="padding: 8px 16px; background: #0284c7; color: #fff; font-weight: 800; border: none; border-radius: 8px; cursor: pointer;">
+        🖨️ Print A4 Worksheet
+      </button>
+    </header>
+
+    <!-- Student Metadata Fields -->
+    <div class="student-fields">
+      <div class="field-box">Name: <span class="field-line"></span></div>
+      <div class="field-box">Date: <span class="field-line"></span></div>
+      <div class="field-box">Class / XP: <span class="field-line"></span></div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section-title">1. Spatial Preposition Fill-in-the-Blank</div>
+    <div class="matching-grid">
+      <div class="match-item">
+        <span class="match-badge">OVER</span>
+        <span class="match-sentence">The fish flies <span class="blank-slot"></span> the high wooden fence.</span>
+      </div>
+      <div class="match-item">
+        <span class="match-badge">ON TOP OF</span>
+        <span class="match-sentence">The Alley Cat sits proudly <span class="blank-slot"></span> the metal trash bin.</span>
+      </div>
+      <div class="match-item">
+        <span class="match-badge">BEHIND</span>
+        <span class="match-sentence">The Yard Dog barks safely <span class="blank-slot"></span> the fence.</span>
+      </div>
+      <div class="match-item">
+        <span class="match-badge">INTO</span>
+        <span class="match-sentence">The heavy bone dropped <span class="blank-slot"></span> the red dog bowl.</span>
+      </div>
+      <div class="match-item">
+        <span class="match-badge">BETWEEN</span>
+        <span class="match-sentence">The projectile flew <span class="blank-slot"></span> the chimney and the fence.</span>
+      </div>
+      <div class="match-item">
+        <span class="match-badge">THROUGH</span>
+        <span class="match-sentence">The water balloon squeezed <span class="blank-slot"></span> the fence gap.</span>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section-title">2. Tactical Trajectory Mission (Draw Your Shot)</div>
+    <div class="trajectory-box">
+      <div class="draw-instruction">
+        ✏️ <strong>Mission:</strong> Draw the curved trajectory dotted arc from the Alley Cat <strong>OVER</strong> the fence and <strong>INTO</strong> the Yard Dog's bowl!
+      </div>
+
+      <!-- Cat on Trash Bin -->
+      <div class="diorama-element">
+        <div style="font-size: 28px;">🐱</div>
+        <div style="width: 44px; height: 35px; background: #64748b; border-radius: 4px 4px 0 0; text-align: center; color: #fff; font-size: 10px; line-height: 35px;">BIN</div>
+        <span>Cat on Bin</span>
+      </div>
+
+      <!-- Fence in Center -->
+      <div class="diorama-element">
+        <div style="width: 22px; height: 85px; background: #b45309; border-radius: 3px 3px 0 0; text-align: center; color: #fff; font-size: 9px; writing-mode: vertical-rl; line-height: 22px;">FENCE</div>
+        <span>Barrier</span>
+      </div>
+
+      <!-- Dog next to bowl -->
+      <div class="diorama-element">
+        <div style="font-size: 28px;">🐶</div>
+        <div style="width: 40px; height: 18px; background: #dc2626; border-radius: 0 0 10px 10px; text-align: center; color: #fff; font-size: 9px; line-height: 18px;">BOWL</div>
+        <span>Dog & Bowl</span>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section-title">3. Comic Battle Broadcast Log (Oral & Written Production)</div>
+    <div class="battle-log-lines">
+      <div class="log-line">
+        <strong>Sentence 1:</strong> We played Cat vs. Dog <span class="log-underline"></span>
+      </div>
+      <div class="log-line">
+        <strong>Sentence 2:</strong> My team threw the projectile <strong>OVER</strong> <span class="log-underline"></span>
+      </div>
+      <div class="log-line">
+        <strong>Sentence 3:</strong> It landed <strong>INTO</strong> <span class="log-underline"></span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="worksheet-footer">
+      <div>English Adventure Academy • CLIL Science & Spatial English • Level A1+</div>
+      <div class="teacher-stamp">Official Arena Stamp: ⭐⭐⭐⭐⭐</div>
+    </footer>
+  </div>
+
+</body>
+</html>

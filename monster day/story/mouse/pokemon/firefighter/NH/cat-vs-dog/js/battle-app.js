@@ -1,1296 +1,1058 @@
 /**
- * CAT VS DOG: PREPOSITION CATAPULT — 60FPS ARCADE CANVAS GAME ENGINE
- * Pseudo-3D Volumetric Rendering • Dynamic Eye Tracking • Realistic Parabolic Physics
- * Dual Modes (1P Solo vs CPU & 2P Smartboard Classroom)
+ * CAT VS. DOG: PREPOSITION CATAPULT — MASTER ARCADE & PEDAGOGICAL ENGINE
+ * 4-Stage Arc: Preposition Explorer -> Spatial Lab -> 3D Catapult Arena -> Live Studio
+ * 60 FPS Canvas Physics, SVG Rig Bitmaps, Dynamic Pupil Tracking, Web Audio Synth
  */
-(function() {
+
+(function(root) {
   'use strict';
 
-  const DATA = window.CAT_VS_DOG_DATA;
-  const AUDIO = window.BattleAudio;
+  class CatVsDogEngine {
+    constructor() {
+      this.currentStage = 1; // 1: Explorer, 2: Lab, 3: Arena, 4: Studio
+      this.inspectedDioramas = new Set();
+      this.labCompleted = false;
+      this.currentLabIndex = 0;
+      this.unlockedBonusWeapons = false;
 
-  // DOM Elements
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const arenaViewport = document.getElementById('arenaViewport');
-  const combatToast = document.getElementById('combatToast');
-  const turnBanner = document.getElementById('turnBanner');
+      // Arena Physics & State
+      this.canvas = null;
+      this.ctx = null;
+      this.animationFrameId = null;
+      this.lastTimestamp = 0;
+      this.gameTime = 0;
 
-  // HUD Elements
-  const catHpBar = document.getElementById('cat-hp-bar');
-  const dogHpBar = document.getElementById('dog-hp-bar');
-  const catHpText = document.getElementById('cat-hp-text');
-  const dogHpText = document.getElementById('dog-hp-text');
-  const catAvatar = document.getElementById('cat-avatar');
-  const dogAvatar = document.getElementById('dog-avatar');
-  const windSpeedText = document.getElementById('wind-speed-text');
-  const windDirIcon = document.getElementById('wind-dir-icon');
-  const windFill = document.getElementById('wind-fill');
-  const btnBgmToggle = document.getElementById('btn-bgm-toggle');
-  const btnSoundToggle = document.getElementById('btn-sound-toggle');
-  const modeTabs = document.querySelectorAll('.btn-mode-tab');
-  const difficultySelect = document.getElementById('difficultySelect');
+      this.mode = '1p'; // '1p' (vs AI) or '2p' (Smartboard)
+      this.activeTurn = 'cat'; // 'cat' or 'dog'
+      this.winner = null;
 
-  // Controls Elements
-  const angleSlider = document.getElementById('angleSlider');
-  const angleValReadout = document.getElementById('angleValReadout');
-  const throwBtn = document.getElementById('throwBtn');
-  const powerFill = document.getElementById('powerFill');
-  const powerPercent = document.getElementById('powerPercent');
-  const weaponChips = document.querySelectorAll('.btn-weapon-chip');
+      // Stats
+      this.catHP = 100;
+      this.dogHP = 100;
+      this.windSpeed = 2.5; // -15 to +15 km/h
+      this.currentAngle = 45; // 25 to 75 deg
+      this.currentPower = 0; // 0 to 100
+      this.isCharging = false;
+      this.chargeDir = 1;
+      this.selectedWeaponId = 'fish';
 
-  // Modals
-  const prepositionModal = document.getElementById('prepositionModal');
-  const challengeIcon = document.getElementById('challengeIcon');
-  const challengeText = document.getElementById('challengeText');
-  const challengeOptions = document.getElementById('challengeOptions');
-  const victoryModal = document.getElementById('victoryModal');
-  const winnerTrophy = document.getElementById('winnerTrophy');
-  const winnerText = document.getElementById('winnerText');
-  const btnPlayAgain = document.getElementById('btnPlayAgain');
+      // Screen Shake
+      this.screenShake = 0;
 
-  // Virtual Canvas Dimension
-  const V_WIDTH = 960;
-  const V_HEIGHT = 500;
-  const BASE_GRAVITY = 0.32;
+      // Physics Objects
+      this.projectile = null;
+      this.particles = [];
+      this.comicDecals = [];
 
-  // Game State
-  const gameState = {
-    gameMode: '1p', // '1p' or '2p'
-    difficulty: 'pro',
-    currentTurn: 'CAT', // 'CAT' or 'DOG'
-    catHp: 100,
-    dogHp: 100,
-    catAngle: 45,
-    dogAngle: 45,
-    currentWeaponId: 'fish',
-    windSpeed: 6, // -12 to +12
-    powerCharging: false,
-    currentPower: 0,
-    powerDirection: 1,
-    activeProjectiles: [],
-    particleBursts: [],
-    smokeTrails: [],
-    impactStars: [],
-    isGameOver: false,
-    gameLoopRunning: false,
-    fenceShieldBonus: 0, // temporary +35px shield
-    isDoubleVolley: false,
-    isSuperPower: false,
-    screenShakeTimer: 0
-  };
+      // Bitmaps Cache
+      this.bitmaps = {};
+      this.bitmapsLoaded = false;
 
-  // Environmental Entities
-  const FENCE = { x: 462, y: 185, width: 36, height: 265 };
-  const CAT = { x: 85, y: 300, width: 95, height: 110 };
-  const DOG = { x: 775, y: 300, width: 105, height: 110 };
-
-  /* =========================================================================
-     INITIALIZATION & HUD CONTROL BINDINGS
-     ========================================================================= */
-  function initGame() {
-    randomizeWind();
-    updateHealthHUD();
-    updateTurnIndicator();
-    bindControls();
-    startAnimationLoop();
-  }
-
-  function bindControls() {
-    // Mode switcher
-    modeTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        modeTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        gameState.gameMode = tab.dataset.mode;
-        difficultySelect.style.display = (gameState.gameMode === '1p') ? 'inline-block' : 'none';
-        AUDIO.playChime();
-        showToast(gameState.gameMode === '1p' ? '1P VS CPU MODE' : '2P SMARTBOARD MODE', '#38bdf8');
-      });
-    });
-
-    if (difficultySelect) {
-      difficultySelect.addEventListener('change', (e) => {
-        gameState.difficulty = e.target.value;
-        AUDIO.playChime();
-      });
+      // Sound Guard
+      this.audioStarted = false;
     }
 
-    // Audio & BGM toggles
-    if (btnBgmToggle) {
-      btnBgmToggle.addEventListener('click', () => {
-        const isPlaying = AUDIO.toggleBgm();
-        btnBgmToggle.classList.toggle('active', isPlaying);
-        btnBgmToggle.innerHTML = isPlaying ? '🎵 <span>BGM On</span>' : '🎵 <span>BGM Off</span>';
-      });
+    init() {
+      this._loadBitmaps();
+      this._bindHeader();
+      this._initStage1Explorer();
+      this._initStage2Lab();
+      this._initStage3Arena();
+      this._initStage4Studio();
+      this._initGlobalAudioUnlock();
+
+      // Show initial stage
+      this.goToStage(1);
     }
 
-    if (btnSoundToggle) {
-      btnSoundToggle.addEventListener('click', () => {
-        const isMuted = AUDIO.toggleMute();
-        btnSoundToggle.innerHTML = isMuted ? '🔇' : '🔊';
-      });
-    }
+    // Pre-cache SVG data URIs into Image() elements for 60fps canvas blitting
+    _loadBitmaps() {
+      const assets = root.BATTLE_DATA.SVG_ASSETS;
+      const keys = Object.keys(assets);
+      let loadedCount = 0;
 
-    // Angle slider
-    if (angleSlider) {
-      angleSlider.addEventListener('input', (e) => {
-        const val = parseInt(e.target.value, 10);
-        if (gameState.currentTurn === 'CAT') {
-          gameState.catAngle = val;
-        } else {
-          gameState.dogAngle = val;
-        }
-        angleValReadout.textContent = `${val}°`;
-      });
-    }
-
-    // Weapon selector
-    weaponChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        weaponChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        gameState.currentWeaponId = chip.dataset.weapon;
-        AUDIO.playWhistle('fish');
-        const wp = DATA.weapons[gameState.currentWeaponId];
-        showToast(`${wp.name.toUpperCase()} ARMED!`, wp.color);
-      });
-    });
-
-    // Hold-to-Charge Throw Button
-    throwBtn.addEventListener('mousedown', startCharge);
-    window.addEventListener('mouseup', releaseCharge);
-    throwBtn.addEventListener('touchstart', startCharge, { passive: false });
-    window.addEventListener('touchend', releaseCharge, { passive: false });
-    window.addEventListener('touchcancel', releaseCharge, { passive: false });
-
-    // Keyboard Spacebar for Charge & Launch
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !e.repeat && canActivePlayerThrow() && !gameState.powerCharging) {
-        if (!isAnyModalOpen()) {
-          e.preventDefault();
-          startCharge(e);
-        }
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space' && gameState.powerCharging) {
-        e.preventDefault();
-        releaseCharge(e);
-      }
-    });
-
-    // Power-Up 1: Double Volley
-    document.getElementById('btnPowerX2').onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          gameState.isDoubleVolley = true;
-          document.getElementById('btnPowerX2').classList.add('active');
-          showToast('DOUBLE VOLLEY READY! 🎯', '#38bdf8');
-        }
-      });
-    };
-
-    // Power-Up 2: Wind Inverter
-    document.getElementById('btnPowerFist').onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          gameState.windSpeed = -gameState.windSpeed;
-          updateWindDisplay();
-          showToast('WIND INVERTED! ⚡', '#f59e0b');
-          AUDIO.playWhistle('fish');
-        }
-      });
-    };
-
-    // Power-Up 3: Fence Extension Shield
-    document.getElementById('btnPowerFence').onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          gameState.fenceShieldBonus = 45;
-          showToast('FENCE SHIELD RAISED +45px! 🛡️', '#10b981');
-          AUDIO.playWoodHit();
-        }
-      });
-    };
-
-    // Power-Up 4: Grammar First-Aid
-    document.getElementById('btnPowerHeal').onclick = () => {
-      triggerPrepositionGate((success) => {
-        if (success) {
-          if (gameState.currentTurn === 'CAT') {
-            gameState.catHp = Math.min(100, gameState.catHp + 25);
-          } else {
-            gameState.dogHp = Math.min(100, gameState.dogHp + 25);
+      keys.forEach(key => {
+        const img = new Image();
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === keys.length) {
+            this.bitmapsLoaded = true;
           }
-          updateHealthHUD();
-          AUDIO.playChime();
-          showToast('GRAMMAR MEDIC! +25 HP 🩹', '#10b981');
-        }
+        };
+        img.src = assets[key];
+        this.bitmaps[key] = img;
       });
-    };
-
-    // Play Again button
-    if (btnPlayAgain) {
-      btnPlayAgain.onclick = resetMatch;
-    }
-  }
-
-  function isAnyModalOpen() {
-    return prepositionModal.style.display === 'flex' || victoryModal.style.display === 'flex';
-  }
-
-  function canActivePlayerThrow() {
-    if (gameState.isGameOver || gameState.activeProjectiles.length > 0) return false;
-    if (gameState.gameMode === '1p' && gameState.currentTurn === 'DOG') return false;
-    return true;
-  }
-
-  /* =========================================================================
-     LAUNCH CHARGING MECHANICS
-     ========================================================================= */
-  function startCharge(e) {
-    if (!canActivePlayerThrow()) return;
-    if (e && e.preventDefault) e.preventDefault();
-    AUDIO.init();
-
-    gameState.powerCharging = true;
-    gameState.currentPower = 12;
-    gameState.powerDirection = 1;
-    throwBtn.classList.add('charging');
-  }
-
-  function releaseCharge(e) {
-    if (!gameState.powerCharging) return;
-    if (e && e.preventDefault) e.preventDefault();
-
-    gameState.powerCharging = false;
-    throwBtn.classList.remove('charging');
-    throwBtn.disabled = true;
-
-    const angle = (gameState.currentTurn === 'CAT') ? gameState.catAngle : gameState.dogAngle;
-    const force = gameState.currentPower;
-    const weapon = DATA.weapons[gameState.currentWeaponId] || DATA.weapons.fish;
-
-    if (gameState.currentTurn === 'CAT') {
-      // Cat throws from left to right (e.g. angle ~ 45 deg)
-      launchProjectile(CAT.x + CAT.width - 15, CAT.y + 35, angle, force, weapon, 'CAT');
-    } else {
-      // Dog throws from right to left (angle inverted to 180 - angle)
-      launchProjectile(DOG.x + 15, DOG.y + 35, 180 - angle, force, weapon, 'DOG');
     }
 
-    // Reset power meter
-    gameState.currentPower = 0;
-    powerFill.style.width = '0%';
-    powerPercent.textContent = '0%';
-  }
-
-  function launchProjectile(originX, originY, angleDeg, forceVal, weapon, shooter) {
-    AUDIO.playWhistle(weapon.id);
-    const rad = (angleDeg * Math.PI) / 180;
-    const speedMult = weapon.speedMult;
-
-    gameState.activeProjectiles.push({
-      x: originX,
-      y: originY,
-      vx: Math.cos(rad) * (forceVal * speedMult),
-      vy: -Math.sin(rad) * (forceVal * speedMult),
-      rotation: 0,
-      weapon: weapon,
-      shooter: shooter,
-      bouncesLeft: weapon.bounces,
-      lifeTicks: 0
-    });
-
-    // Double volley power-up
-    if (gameState.isDoubleVolley) {
-      setTimeout(() => {
-        AUDIO.playWhistle(weapon.id);
-        gameState.activeProjectiles.push({
-          x: originX,
-          y: originY - 18,
-          vx: Math.cos(rad + 0.08) * (forceVal * speedMult),
-          vy: -Math.sin(rad + 0.08) * (forceVal * speedMult),
-          rotation: 0.3,
-          weapon: weapon,
-          shooter: shooter,
-          bouncesLeft: weapon.bounces,
-          lifeTicks: 0
-        });
-      }, 190);
-      gameState.isDoubleVolley = false;
-      document.getElementById('btnPowerX2').classList.remove('active');
-    }
-  }
-
-  /* =========================================================================
-     WIND ENGINE
-     ========================================================================= */
-  function randomizeWind() {
-    gameState.windSpeed = Math.floor(Math.random() * 25) - 12; // -12 to +12
-    updateWindDisplay();
-  }
-
-  function updateWindDisplay() {
-    const absSpeed = Math.abs(gameState.windSpeed);
-    windSpeedText.textContent = `${absSpeed} km/h`;
-
-    if (gameState.windSpeed > 0) {
-      windDirIcon.textContent = '➔';
-      windDirIcon.style.color = '#38bdf8';
-      windFill.style.marginLeft = '50%';
-      windFill.style.width = `${(absSpeed / 12) * 50}%`;
-    } else if (gameState.windSpeed < 0) {
-      windDirIcon.textContent = '⬅';
-      windDirIcon.style.color = '#f43f5e';
-      windFill.style.marginLeft = `${50 - (absSpeed / 12) * 50}%`;
-      windFill.style.width = `${(absSpeed / 12) * 50}%`;
-    } else {
-      windDirIcon.textContent = '●';
-      windDirIcon.style.color = '#facc15';
-      windFill.style.marginLeft = '50%';
-      windFill.style.width = '0%';
-    }
-  }
-
-  /* =========================================================================
-     HUD UPDATES & TURN SWITCHING
-     ========================================================================= */
-  function updateHealthHUD() {
-    catHpBar.style.width = `${Math.max(0, gameState.catHp)}%`;
-    dogHpBar.style.width = `${Math.max(0, gameState.dogHp)}%`;
-    catHpText.textContent = `${gameState.catHp} HP`;
-    dogHpText.textContent = `${gameState.dogHp} HP`;
-  }
-
-  function updateTurnIndicator() {
-    const isCat = (gameState.currentTurn === 'CAT');
-    catAvatar.classList.toggle('turn-active', isCat);
-    dogAvatar.classList.toggle('turn-active', !isCat);
-
-    if (gameState.gameMode === '1p') {
-      turnBanner.innerHTML = isCat ? '🎯 <strong>YOUR TURN</strong> (Alley Cat)' : '⏳ <strong>CPU DOG THINKING...</strong>';
-    } else {
-      turnBanner.innerHTML = isCat ? '🐱 <strong>PLAYER 1: ALLEY CAT</strong>' : '🐶 <strong>PLAYER 2: YARD DOG</strong>';
-    }
-
-    // Update angle slider value to reflect active player's stored angle
-    const activeAngle = isCat ? gameState.catAngle : gameState.dogAngle;
-    if (angleSlider) angleSlider.value = activeAngle;
-    if (angleValReadout) angleValReadout.textContent = `${activeAngle}°`;
-  }
-
-  function checkTurnEnd() {
-    if (gameState.activeProjectiles.length === 0 && !gameState.isGameOver) {
-      // Decay fence shield bonus if active
-      if (gameState.fenceShieldBonus > 0) {
-        gameState.fenceShieldBonus = Math.max(0, gameState.fenceShieldBonus - 20);
-      }
-
-      gameState.currentTurn = (gameState.currentTurn === 'CAT') ? 'DOG' : 'CAT';
-      randomizeWind();
-      updateTurnIndicator();
-
-      if (gameState.gameMode === '1p' && gameState.currentTurn === 'DOG') {
-        throwBtn.disabled = true;
-        executeAiTurn();
-      } else {
-        throwBtn.disabled = false;
-      }
-    }
-  }
-
-  /* =========================================================================
-     AI DOG ENGINE (ROOKIE, PRO, MASTER TIERS)
-     ========================================================================= */
-  function executeAiTurn() {
-    if (gameState.dogHp <= 0 || gameState.catHp <= 0 || gameState.isGameOver) return;
-
-    const diffCfg = DATA.aiDifficulties[gameState.difficulty] || DATA.aiDifficulties.pro;
-    showToast('DOG IS AIMING...', '#ea580c');
-
-    setTimeout(() => {
-      if (gameState.isGameOver) return;
-
-      // Base force to reach cat (~700px horizontal span) at 45 degree angle
-      const baseForce = 63;
-      // Headwind blowing East (+wind) resists throw -> Dog needs MORE force
-      // Tailwind blowing West (-wind) assists throw -> Dog needs LESS force
-      const windAdj = gameState.windSpeed * (1.5 * diffCfg.windCompensation);
-      const variance = (Math.random() * 2 - 1) * diffCfg.errorVariance;
-      const targetForce = Math.min(96, Math.max(42, baseForce + windAdj + variance));
-
-      // AI weapon selection
-      let aiWeapon = DATA.weapons.fish;
-      if (gameState.difficulty === 'master' && Math.random() > 0.4) {
-        aiWeapon = DATA.weapons.anvil;
-      } else if (Math.random() > 0.6) {
-        aiWeapon = DATA.weapons.bouncy;
-      }
-
-      gameState.dogAngle = Math.round(42 + (Math.random() * 6 - 3));
-      launchProjectile(DOG.x + 15, DOG.y + 35, 180 - gameState.dogAngle, targetForce, aiWeapon, 'DOG');
-    }, diffCfg.delayMs);
-  }
-
-  /* =========================================================================
-     MATCH OVER & VICTORY PRESENTATION
-     ========================================================================= */
-  function checkMatchOver() {
-    if (gameState.catHp <= 0 || gameState.dogHp <= 0) {
-      gameState.isGameOver = true;
-      AUDIO.playFanfare();
-
-      const isCatWinner = (gameState.catHp > 0);
-      winnerTrophy.textContent = isCatWinner ? '🐱🏆' : '🐶🏆';
-      winnerText.textContent = isCatWinner ? 'ALLEY CAT WINS!' : 'YARD DOG WINS!';
-
-      const lines = isCatWinner ? [
-        `"The cat threw the projectile OVER the tall fence!"`,
-        `"The missile splashed directly INTO the dog's yard!"`,
-        `"Victory achieved with ${gameState.catHp} HP remaining!"`
-      ] : [
-        `"The dog hurled the bone ACROSS the wooden barrier!"`,
-        `"The bone landed right ON TOP OF the metal bin!"`,
-        `"Brilliant effort! Practice prepositions to win next time!"`
-      ];
-
-      lines.forEach((txt, idx) => {
-        const el = document.getElementById(`line-${idx}`);
-        if (el) el.textContent = txt;
-      });
-
-      victoryModal.style.display = 'flex';
-      AUDIO.speak(isCatWinner ? 'Alley Cat Wins! You mastered your prepositions!' : 'Yard Dog Wins! Good effort!');
-      return true;
-    }
-    return false;
-  }
-
-  function resetMatch() {
-    victoryModal.style.display = 'none';
-    gameState.catHp = 100;
-    gameState.dogHp = 100;
-    gameState.isGameOver = false;
-    gameState.currentTurn = 'CAT';
-    gameState.activeProjectiles = [];
-    gameState.particleBursts = [];
-    gameState.smokeTrails = [];
-    gameState.impactStars = [];
-    gameState.fenceShieldBonus = 0;
-    gameState.isDoubleVolley = false;
-    randomizeWind();
-    updateHealthHUD();
-    updateTurnIndicator();
-    throwBtn.disabled = false;
-    AUDIO.playChime();
-  }
-
-  /* =========================================================================
-     PREPOSITION LINGUISTIC GATE MODAL
-     ========================================================================= */
-  function triggerPrepositionGate(callback) {
-    const list = DATA.challenges;
-    const q = list[Math.floor(Math.random() * list.length)];
-
-    challengeIcon.textContent = q.icon;
-    challengeText.textContent = q.prompt;
-    challengeOptions.innerHTML = '';
-
-    AUDIO.speak(q.prompt);
-
-    q.options.forEach((optText, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-opt';
-      btn.textContent = optText;
-      btn.onclick = () => {
-        prepositionModal.style.display = 'none';
-        if (idx === q.correct) {
-          AUDIO.playChime();
-          AUDIO.speak(q.reinforce);
-          callback(true);
-        } else {
-          AUDIO.playWoodHit();
-          AUDIO.speak('Not quite! Remember your prepositions and try again!');
-          callback(false);
+    _initGlobalAudioUnlock() {
+      const unlock = () => {
+        if (!this.audioStarted && root.BattleAudio) {
+          root.BattleAudio.ensureAudioContext();
+          this.audioStarted = true;
         }
       };
-      challengeOptions.appendChild(btn);
-    });
+      window.addEventListener('click', unlock, { once: true });
+      window.addEventListener('touchstart', unlock, { once: true });
+    }
 
-    prepositionModal.style.display = 'flex';
-  }
-
-  function showToast(text, color = '#f59e0b') {
-    combatToast.textContent = text;
-    combatToast.style.borderColor = color;
-    combatToast.classList.add('show');
-    setTimeout(() => combatToast.classList.remove('show'), 1600);
-  }
-
-  function triggerScreenShake() {
-    arenaViewport.classList.remove('screen-shake');
-    // Force reflow
-    void arenaViewport.offsetWidth;
-    arenaViewport.classList.add('screen-shake');
-  }
-
-  /* =========================================================================
-     PSEUDO-3D VOLUMETRIC RENDERING ROUTINES
-     ========================================================================= */
-  function drawSkyAndAlley() {
-    // 1. Night sky with moonlight bloom
-    const sky = ctx.createRadialGradient(240, 100, 20, 240, 100, 480);
-    sky.addColorStop(0, '#1e2952');
-    sky.addColorStop(0.4, '#0f172a');
-    sky.addColorStop(1, '#050814');
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
-
-    // Moonlight Disc
-    ctx.fillStyle = 'rgba(254, 240, 138, 0.15)';
-    ctx.beginPath();
-    ctx.arc(240, 100, 75, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fef9c3';
-    ctx.beginPath();
-    ctx.arc(240, 100, 36, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 2. Layered distant city skyline with warm glowing windows
-    ctx.fillStyle = 'rgba(10, 15, 30, 0.85)';
-    const buildings = [
-      { x: 30, y: 130, w: 90, h: 220 },
-      { x: 140, y: 90, w: 105, h: 260 },
-      { x: 270, y: 160, w: 80, h: 190 },
-      { x: 620, y: 140, w: 95, h: 210 },
-      { x: 740, y: 80, w: 115, h: 270 },
-      { x: 880, y: 120, w: 90, h: 230 }
-    ];
-    buildings.forEach(b => {
-      ctx.fillRect(b.x, b.y, b.w, b.h);
-      // Windows
-      ctx.fillStyle = 'rgba(253, 224, 71, 0.45)';
-      for (let wx = b.x + 12; wx < b.x + b.w - 15; wx += 22) {
-        for (let wy = b.y + 20; wy < b.y + b.h - 40; wy += 32) {
-          if (Math.sin(wx * 11 + wy) > -0.2) {
-            ctx.fillRect(wx, wy, 10, 14);
+    _bindHeader() {
+      // Stepper pill clicks
+      document.querySelectorAll('.step-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          const targetStage = parseInt(pill.dataset.stage, 10);
+          if (targetStage === 1 || 
+             (targetStage === 2 && this.inspectedDioramas.size >= 4) ||
+             (targetStage === 3 && this.labCompleted) ||
+             (targetStage === 4 && this.winner)) {
+            this.goToStage(targetStage);
+          } else {
+            this.showToast('⚠️ Complete the previous stage first!');
           }
-        }
-      }
-      ctx.fillStyle = 'rgba(10, 15, 30, 0.85)';
-    });
-
-    // 3. Streetlamp on alley wall casting radial light cone
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(40, 190, 8, 190); // pole
-    ctx.fillStyle = '#f59e0b';
-    ctx.beginPath();
-    ctx.arc(44, 185, 14, 0, Math.PI * 2); // bulb
-    ctx.fill();
-
-    // Streetlamp Light Cone
-    const lampCone = ctx.createRadialGradient(44, 185, 10, 44, 280, 220);
-    lampCone.addColorStop(0, 'rgba(253, 224, 71, 0.28)');
-    lampCone.addColorStop(0.7, 'rgba(245, 158, 11, 0.06)');
-    lampCone.addColorStop(1, 'transparent');
-    ctx.fillStyle = lampCone;
-    ctx.beginPath();
-    ctx.moveTo(44, 185);
-    ctx.lineTo(-40, 450);
-    ctx.lineTo(240, 450);
-    ctx.closePath();
-    ctx.fill();
-
-    // 4. Alley Wall & 3D Trash Can (Cat's Pedestal)
-    ctx.fillStyle = '#1e1b4b';
-    ctx.fillRect(0, 170, 160, 250);
-
-    draw3DTrashCan(85, 365, 105, 85);
-
-    // 5. Right Yard Lawn & 3D Dog Bowl
-    const lawn = ctx.createLinearGradient(0, 410, 0, V_HEIGHT);
-    lawn.addColorStop(0, '#15803d');
-    lawn.addColorStop(1, '#052e16');
-    ctx.fillStyle = lawn;
-    ctx.fillRect(495, 415, 465, 85);
-
-    draw3DDogBowl(815, 435, 46, 20);
-
-    // 6. Ground Cobblestone Pavement
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(0, 440, V_WIDTH, 60);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 440, V_WIDTH, 2);
-
-    // 7. The 3D Wooden Fence with Beveled Planks, Cap & Metallic Nails
-    draw3DFence();
-  }
-
-  function draw3DTrashCan(x, y, w, h) {
-    // 3D Metallic Cylinder
-    const metalGrad = ctx.createLinearGradient(x, 0, x + w, 0);
-    metalGrad.addColorStop(0, '#475569');
-    metalGrad.addColorStop(0.3, '#94a3b8');
-    metalGrad.addColorStop(0.7, '#64748b');
-    metalGrad.addColorStop(1, '#1e293b');
-
-    // Body
-    ctx.fillStyle = metalGrad;
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, [6, 6, 2, 2]);
-    ctx.fill();
-
-    // Metallic corrugated ribs
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 2;
-    [y + 20, y + 42, y + 64].forEach(ry => {
-      ctx.beginPath();
-      ctx.moveTo(x + 4, ry);
-      ctx.lineTo(x + w - 4, ry);
-      ctx.stroke();
-    });
-
-    // Lid Rim
-    ctx.fillStyle = '#cbd5e1';
-    ctx.beginPath();
-    ctx.ellipse(x + w / 2, y, w / 2 + 5, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-
-  function draw3DDogBowl(x, y, rx, ry) {
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.beginPath();
-    ctx.ellipse(x, y + 10, rx + 6, ry + 2, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Red Ceramic Bowl Outer Rim
-    const bowlGrad = ctx.createLinearGradient(x - rx, 0, x + rx, 0);
-    bowlGrad.addColorStop(0, '#dc2626');
-    bowlGrad.addColorStop(0.4, '#f87171');
-    bowlGrad.addColorStop(1, '#7f1d1d');
-    ctx.fillStyle = bowlGrad;
-    ctx.beginPath();
-    ctx.ellipse(x, y + 4, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Inner Dish Cavity with Bone Debris
-    ctx.fillStyle = '#450a0a';
-    ctx.beginPath();
-    ctx.ellipse(x, y, rx - 6, ry - 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bone inside bowl
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.roundRect(x - 14, y - 4, 28, 8, 3);
-    ctx.fill();
-  }
-
-  function draw3DFence() {
-    const fenceTopY = FENCE.y - gameState.fenceShieldBonus;
-    const fenceHeight = FENCE.height + gameState.fenceShieldBonus;
-
-    // Ground Shadow for Fence
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
-    ctx.beginPath();
-    ctx.ellipse(FENCE.x + FENCE.width / 2, 445, FENCE.width + 10, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Vertical wooden planks with bevels
-    const plankWidth = 18;
-    for (let px = FENCE.x; px < FENCE.x + FENCE.width; px += plankWidth) {
-      const wood = ctx.createLinearGradient(px, 0, px + plankWidth, 0);
-      wood.addColorStop(0, '#92400e');
-      wood.addColorStop(0.35, '#d97706');
-      wood.addColorStop(0.7, '#b45309');
-      wood.addColorStop(1, '#78350f');
-
-      ctx.fillStyle = wood;
-      ctx.fillRect(px, fenceTopY, plankWidth - 2, fenceHeight);
-
-      // Wood Grain Texture Highlights
-      ctx.strokeStyle = 'rgba(254, 240, 138, 0.2)';
-      ctx.lineWidth = 1.2;
-      for (let py = fenceTopY + 15; py < fenceTopY + fenceHeight; py += 32) {
-        ctx.beginPath();
-        ctx.moveTo(px + 3, py);
-        ctx.lineTo(px + plankWidth - 5, py);
-        ctx.stroke();
-      }
-
-      // Metallic Nail Studs
-      ctx.fillStyle = '#cbd5e1';
-      ctx.beginPath();
-      ctx.arc(px + plankWidth / 2 - 1, fenceTopY + 28, 3, 0, Math.PI * 2);
-      ctx.arc(px + plankWidth / 2 - 1, fenceTopY + fenceHeight - 45, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Top Bevel Cap
-    ctx.fillStyle = '#b45309';
-    ctx.fillRect(FENCE.x - 4, fenceTopY - 6, FENCE.width + 8, 10);
-    ctx.strokeStyle = '#451a03';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(FENCE.x - 4, fenceTopY - 6, FENCE.width + 8, 10);
-
-    // Glowing Shield Barrier when Power-up is active
-    if (gameState.fenceShieldBonus > 0) {
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.85)';
-      ctx.lineWidth = 3;
-      ctx.shadowColor = '#10b981';
-      ctx.shadowBlur = 18;
-      ctx.strokeRect(FENCE.x - 8, fenceTopY - 10, FENCE.width + 16, fenceHeight + 12);
-      ctx.shadowBlur = 0;
-    }
-  }
-
-  /* =========================================================================
-     VOLUMETRIC CHARACTER RENDERING & EYE TRACKING
-     ========================================================================= */
-  function drawVolumetricCat(x, y) {
-    ctx.save();
-    ctx.translate(x, y);
-
-    // Ground Shadow Disk
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.beginPath();
-    ctx.ellipse(50, 78, 44, 13, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Spherical Volumetric Body
-    const bodyGrad = ctx.createRadialGradient(38, 36, 6, 50, 48, 45);
-    bodyGrad.addColorStop(0, '#38bdf8');
-    bodyGrad.addColorStop(0.55, '#0284c7');
-    bodyGrad.addColorStop(1, '#034a75');
-
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.roundRect(20, 16, 58, 54, 18);
-    ctx.fill();
-
-    // Cat Ears with depth
-    ctx.fillStyle = '#0369a1';
-    ctx.beginPath();
-    ctx.moveTo(24, 18); ctx.lineTo(12, -8); ctx.lineTo(44, 14); ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(74, 18); ctx.lineTo(86, -8); ctx.lineTo(56, 14); ctx.fill();
-
-    // Inner pink ears
-    ctx.fillStyle = '#f472b6';
-    ctx.beginPath();
-    ctx.moveTo(24, 15); ctx.lineTo(16, -2); ctx.lineTo(38, 14); ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(74, 15); ctx.lineTo(82, -2); ctx.lineTo(60, 14); ctx.fill();
-
-    // Ambient Specular Highlight on head
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.beginPath();
-    ctx.ellipse(36, 24, 12, 6, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Eyes tracking flying projectile
-    const targetPos = getProjectileFocusPos();
-    const eyeAngle = Math.atan2(targetPos.y - (y + 38), targetPos.x - (x + 50));
-    const pupilDx = Math.cos(eyeAngle) * 3.5;
-    const pupilDy = Math.sin(eyeAngle) * 2.5;
-
-    // Eyeballs
-    ctx.fillStyle = '#fef08a';
-    ctx.beginPath();
-    ctx.ellipse(38, 38, 9, 13, 0, 0, Math.PI * 2);
-    ctx.ellipse(62, 38, 9, 13, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Dynamic Pupils
-    ctx.fillStyle = '#0b0f19';
-    ctx.beginPath();
-    ctx.arc(38 + pupilDx, 38 + pupilDy, 4.5, 0, Math.PI * 2);
-    ctx.arc(62 + pupilDx, 38 + pupilDy, 4.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Eye catch-light glints
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(36 + pupilDx, 36 + pupilDy, 1.8, 0, Math.PI * 2);
-    ctx.arc(60 + pupilDx, 36 + pupilDy, 1.8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Whiskers
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(18, 44); ctx.lineTo(-6, 40);
-    ctx.moveTo(18, 50); ctx.lineTo(-6, 52);
-    ctx.moveTo(82, 44); ctx.lineTo(106, 40);
-    ctx.moveTo(82, 50); ctx.lineTo(106, 52);
-    ctx.stroke();
-
-    // Paw
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(80, 56, 12, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawVolumetricDog(x, y) {
-    ctx.save();
-    ctx.translate(x, y);
-
-    // Ground Shadow Disk
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.beginPath();
-    ctx.ellipse(50, 80, 48, 14, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Spherical Volumetric Body
-    const bodyGrad = ctx.createRadialGradient(38, 34, 8, 50, 48, 48);
-    bodyGrad.addColorStop(0, '#f97316');
-    bodyGrad.addColorStop(0.55, '#d97706');
-    bodyGrad.addColorStop(1, '#78350f');
-
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.roundRect(18, 16, 64, 60, 20);
-    ctx.fill();
-
-    // Floppy 3D Ears
-    ctx.fillStyle = '#92400e';
-    ctx.beginPath();
-    ctx.ellipse(16, 32, 11, 24, 0.28, 0, Math.PI * 2);
-    ctx.ellipse(84, 32, 11, 24, -0.28, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Spiked Collar
-    ctx.fillStyle = '#dc2626';
-    ctx.fillRect(18, 62, 64, 12);
-    ctx.fillStyle = '#ffffff';
-    for (let sp = 24; sp <= 76; sp += 12) {
-      ctx.beginPath();
-      ctx.moveTo(sp, 62); ctx.lineTo(sp + 4, 55); ctx.lineTo(sp + 8, 62); ctx.fill();
-    }
-
-    // Ambient Specular Highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.beginPath();
-    ctx.ellipse(36, 24, 14, 6, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Eye Tracking
-    const targetPos = getProjectileFocusPos();
-    const eyeAngle = Math.atan2(targetPos.y - (y + 36), targetPos.x - (x + 50));
-    const pupilDx = Math.cos(eyeAngle) * 3.5;
-    const pupilDy = Math.sin(eyeAngle) * 2.5;
-
-    // Eyes
-    ctx.fillStyle = '#fef08a';
-    ctx.beginPath();
-    ctx.ellipse(38, 36, 8.5, 12, 0, 0, Math.PI * 2);
-    ctx.ellipse(62, 36, 8.5, 12, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#050814';
-    ctx.beginPath();
-    ctx.arc(38 + pupilDx, 36 + pupilDy, 4.2, 0, Math.PI * 2);
-    ctx.arc(62 + pupilDx, 36 + pupilDy, 4.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Glint
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(36 + pupilDx, 34 + pupilDy, 1.8, 0, Math.PI * 2);
-    ctx.arc(60 + pupilDx, 34 + pupilDy, 1.8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 3D Muzzle & Black Snout
-    ctx.fillStyle = '#b45309';
-    ctx.beginPath();
-    ctx.ellipse(50, 48, 18, 12, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#050814';
-    ctx.beginPath();
-    ctx.arc(50, 44, 5.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function getProjectileFocusPos() {
-    if (gameState.activeProjectiles.length > 0) {
-      return { x: gameState.activeProjectiles[0].x, y: gameState.activeProjectiles[0].y };
-    }
-    // Idle focus: look across fence toward each other
-    return (gameState.currentTurn === 'CAT') ? { x: DOG.x + 40, y: DOG.y + 40 } : { x: CAT.x + 40, y: CAT.y + 40 };
-  }
-
-  /* =========================================================================
-     PROJECTILE RENDERING & PREDICTIVE GUIDELINE
-     ========================================================================= */
-  function drawProjectile(p) {
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rotation);
-
-    if (p.weapon.id === 'fish') {
-      // 3D Stinky Cyan Fish
-      ctx.fillStyle = '#e0f2fe';
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 2.5;
-
-      ctx.beginPath();
-      ctx.moveTo(14, 0); ctx.lineTo(4, -8); ctx.lineTo(4, 8); ctx.closePath();
-      ctx.fill(); ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(4, 0); ctx.lineTo(-18, 0);
-      ctx.moveTo(-2, -6); ctx.lineTo(-2, 6);
-      ctx.moveTo(-8, -6); ctx.lineTo(-8, 6);
-      ctx.moveTo(-14, -6); ctx.lineTo(-14, 6);
-      ctx.moveTo(-18, 0); ctx.lineTo(-24, -8);
-      ctx.moveTo(-18, 0); ctx.lineTo(-24, 8);
-      ctx.stroke();
-
-    } else if (p.weapon.id === 'balloon') {
-      // Shaded Water Balloon
-      const balGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, 14);
-      balGrad.addColorStop(0, '#67e8f9');
-      balGrad.addColorStop(0.7, '#06b6d4');
-      balGrad.addColorStop(1, '#0e7490');
-      ctx.fillStyle = balGrad;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 14, 11, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#0891b2';
-      ctx.fillRect(-17, -2, 4, 4);
-
-    } else if (p.weapon.id === 'anvil') {
-      // Heavy Metallic Iron Anvil
-      ctx.fillStyle = '#475569';
-      ctx.beginPath();
-      ctx.moveTo(-18, -12); ctx.lineTo(18, -12); ctx.lineTo(14, -2);
-      ctx.lineTo(8, 12); ctx.lineTo(-14, 12); ctx.lineTo(-14, -2);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-    } else if (p.weapon.id === 'bouncy') {
-      // Green Bouncy Ball with highlights
-      const ballGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, 12);
-      ballGrad.addColorStop(0, '#bef264');
-      ballGrad.addColorStop(0.65, '#84cc16');
-      ballGrad.addColorStop(1, '#4d7c0f');
-      ctx.fillStyle = ballGrad;
-      ctx.beginPath();
-      ctx.arc(0, 0, 12, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }
-
-  function drawPredictiveArc() {
-    if (!canActivePlayerThrow()) return;
-
-    const angle = (gameState.currentTurn === 'CAT') ? gameState.catAngle : gameState.dogAngle;
-    const originX = (gameState.currentTurn === 'CAT') ? (CAT.x + CAT.width - 15) : (DOG.x + 15);
-    const originY = (gameState.currentTurn === 'CAT') ? (CAT.y + 35) : (DOG.y + 35);
-    const rad = ((gameState.currentTurn === 'CAT') ? angle : (180 - angle)) * Math.PI / 180;
-
-    // Use current charging power or default reference force 60 for the dotted line
-    const simForce = Math.max(35, gameState.currentPower || 60);
-    const weapon = DATA.weapons[gameState.currentWeaponId] || DATA.weapons.fish;
-
-    let sx = originX;
-    let sy = originY;
-    let svx = Math.cos(rad) * (simForce * weapon.speedMult);
-    let svy = -Math.sin(rad) * (simForce * weapon.speedMult);
-
-    ctx.save();
-    ctx.setLineDash([4, 6]);
-    ctx.strokeStyle = (gameState.currentTurn === 'CAT') ? 'rgba(56, 189, 248, 0.5)' : 'rgba(251, 146, 60, 0.5)';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-
-    // Show first 15 steps (~15% trajectory)
-    for (let step = 0; step < 14; step++) {
-      svx += gameState.windSpeed * 0.009;
-      svy += (BASE_GRAVITY * weapon.gravityMult);
-      sx += svx;
-      sy += svy;
-      ctx.lineTo(sx, sy);
-    }
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  /* =========================================================================
-     60FPS MASTER ANIMATION & PHYSICS ENGINE
-     ========================================================================= */
-  function startAnimationLoop() {
-    if (!gameState.gameLoopRunning) {
-      gameState.gameLoopRunning = true;
-      requestAnimationFrame(gameLoop);
-    }
-  }
-
-  function gameLoop() {
-    // 1. Clear & Render Background
-    ctx.clearRect(0, 0, V_WIDTH, V_HEIGHT);
-    drawSkyAndAlley();
-
-    // 2. Render Characters & Predictive Arc
-    drawVolumetricCat(CAT.x, CAT.y);
-    drawVolumetricDog(DOG.x, DOG.y);
-    drawPredictiveArc();
-
-    // 3. Update & Draw Fading Smoke Trails
-    for (let i = gameState.smokeTrails.length - 1; i >= 0; i--) {
-      const smk = gameState.smokeTrails[i];
-      smk.alpha -= 0.032;
-      smk.size += 0.25;
-      if (smk.alpha <= 0) {
-        gameState.smokeTrails.splice(i, 1);
-        continue;
-      }
-      ctx.fillStyle = smk.color;
-      ctx.globalAlpha = smk.alpha;
-      ctx.beginPath();
-      ctx.arc(smk.x, smk.y, smk.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1.0;
-    }
-
-    // 4. Update & Draw Impact Particle Bursts
-    for (let i = gameState.particleBursts.length - 1; i >= 0; i--) {
-      const pt = gameState.particleBursts[i];
-      pt.x += pt.vx;
-      pt.y += pt.vy;
-      pt.life -= 0.038;
-      if (pt.life <= 0) {
-        gameState.particleBursts.splice(i, 1);
-        continue;
-      }
-      ctx.fillStyle = pt.color;
-      ctx.globalAlpha = pt.life;
-      ctx.beginPath();
-      ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1.0;
-    }
-
-    // 5. Update & Draw Comic Starburst Decals
-    for (let i = gameState.impactStars.length - 1; i >= 0; i--) {
-      const star = gameState.impactStars[i];
-      star.life -= 0.045;
-      star.scale += 0.04;
-      if (star.life <= 0) {
-        gameState.impactStars.splice(i, 1);
-        continue;
-      }
-      drawComicStarburst(star.x, star.y, star.scale, star.color, star.life);
-    }
-
-    // 6. Update Active Projectiles
-    for (let i = gameState.activeProjectiles.length - 1; i >= 0; i--) {
-      const p = gameState.activeProjectiles[i];
-
-      // Physics acceleration: wind + weapon gravity
-      p.vx += (gameState.windSpeed * 0.009);
-      p.vy += (BASE_GRAVITY * p.weapon.gravityMult);
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rotation += (p.vx > 0 ? 0.16 : -0.16);
-      p.lifeTicks++;
-
-      // Leave smoke trail
-      if (p.lifeTicks % 2 === 0) {
-        gameState.smokeTrails.push({
-          x: p.x,
-          y: p.y,
-          size: Math.random() * 4 + 3,
-          color: p.weapon.trailColor,
-          alpha: 0.65
+        });
+      });
+
+      // BGM Toggle
+      const bgmBtn = document.getElementById('btn-bgm-toggle');
+      if (bgmBtn) {
+        bgmBtn.addEventListener('click', () => {
+          if (!root.BattleAudio) return;
+          if (root.BattleAudio.bgmPlaying) {
+            root.BattleAudio.stopBGM();
+            bgmBtn.style.opacity = '0.5';
+          } else {
+            root.BattleAudio.startBGM();
+            bgmBtn.style.opacity = '1';
+          }
         });
       }
 
-      drawProjectile(p);
+      // Audio Mute Toggle
+      const muteBtn = document.getElementById('btn-mute-toggle');
+      if (muteBtn) {
+        muteBtn.addEventListener('click', () => {
+          if (!root.BattleAudio) return;
+          const muted = root.BattleAudio.toggleMute();
+          muteBtn.textContent = muted ? '🔇' : '🔊';
+        });
+      }
+    }
 
-      // --- COLLISION: Fence ---
-      const fenceTopY = FENCE.y - gameState.fenceShieldBonus;
-      const fenceHeight = FENCE.height + gameState.fenceShieldBonus;
+    goToStage(stageNum) {
+      this.currentStage = stageNum;
 
-      if (p.x >= FENCE.x && p.x <= FENCE.x + FENCE.width && p.y >= fenceTopY && p.y <= fenceTopY + fenceHeight) {
-        if (p.weapon.id === 'bouncy' && p.bouncesLeft > 0) {
-          // Bouncy ball bounces off fence
-          p.bouncesLeft--;
-          p.vx = -p.vx * 0.75;
-          p.vy = -p.vy * 0.65;
-          AUDIO.playBoing();
-          spawnParticles(p.x, p.y, '#84cc16', 8);
-          showToast('BOUNCED OFF FENCE! 🎾', '#84cc16');
-          continue;
+      // Update Nav Stepper
+      document.querySelectorAll('.step-pill').forEach(pill => {
+        const s = parseInt(pill.dataset.stage, 10);
+        pill.classList.remove('active');
+        if (s === stageNum) {
+          pill.classList.add('active');
         }
+      });
 
-        AUDIO.playWoodHit();
-        spawnParticles(p.x, p.y, '#b45309', 14);
-        showToast('HIT THE FENCE!', '#ef4444');
-        AUDIO.speak('Oh no! It hit the fence! Throw higher OVER the fence!');
-        gameState.activeProjectiles.splice(i, 1);
-        checkTurnEnd();
-        continue;
+      // Update Viewports
+      document.querySelectorAll('.stage-viewport').forEach(vp => {
+        vp.classList.remove('active');
+      });
+      const currentVp = document.getElementById(`stage-${stageNum}-viewport`);
+      if (currentVp) currentVp.classList.add('active');
+
+      if (stageNum === 3) {
+        this._startArenaLoop();
+      } else {
+        this._stopArenaLoop();
       }
 
-      // --- COLLISION: Hit Dog (Cat threw) ---
-      if (p.shooter === 'CAT' && p.x >= DOG.x && p.x <= DOG.x + DOG.width && p.y >= DOG.y && p.y <= DOG.y + DOG.height) {
-        handleDirectHit(p, 'DOG');
-        gameState.activeProjectiles.splice(i, 1);
-        if (checkMatchOver()) return;
-        checkTurnEnd();
-        continue;
+      if (stageNum === 4) {
+        this._setupTeleprompter();
+      }
+    }
+
+    // ==========================================================================
+    // STAGE 1: 3D PREPOSITION EXPLORER
+    // ==========================================================================
+    _initStage1Explorer() {
+      const container = document.getElementById('diorama-cards-grid');
+      if (!container) return;
+
+      container.innerHTML = '';
+      root.BATTLE_DATA.DIORAMAS.forEach(diorama => {
+        const card = document.createElement('div');
+        card.className = 'diorama-card';
+        card.id = `diorama-${diorama.id}`;
+        card.innerHTML = `
+          <div class="diorama-art-box">
+            ${diorama.svgScene}
+          </div>
+          <div class="diorama-header">
+            <span class="diorama-pill" style="background: ${diorama.color}">${diorama.prep}</span>
+            <span class="diorama-status" id="status-${diorama.id}">⚪ Unseen</span>
+          </div>
+          <p class="diorama-sentence">${diorama.sentence}</p>
+          <p class="diorama-rule">${diorama.ruleText}</p>
+        `;
+
+        card.addEventListener('click', () => {
+          this._inspectDiorama(diorama, card);
+        });
+
+        container.appendChild(card);
+      });
+
+      // Continue Button
+      const contBtn = document.getElementById('btn-explorer-continue');
+      if (contBtn) {
+        contBtn.addEventListener('click', () => {
+          if (this.inspectedDioramas.size >= 4) {
+            this.goToStage(2);
+          } else {
+            this.showToast('Tap all 4 cards to listen and unlock Stage 2!');
+          }
+        });
+      }
+    }
+
+    _inspectDiorama(diorama, cardEl) {
+      if (root.BattleAudio) {
+        root.BattleAudio.playBellChime();
+        root.BattleAudio.speak(diorama.speechText);
       }
 
-      // --- COLLISION: Hit Cat (Dog threw) ---
-      if (p.shooter === 'DOG' && p.x >= CAT.x && p.x <= CAT.x + CAT.width && p.y >= CAT.y && p.y <= CAT.y + CAT.height) {
-        handleDirectHit(p, 'CAT');
-        gameState.activeProjectiles.splice(i, 1);
-        if (checkMatchOver()) return;
-        checkTurnEnd();
-        continue;
-      }
+      // Visual feedback
+      document.querySelectorAll('.diorama-card').forEach(c => c.classList.remove('active-reading'));
+      cardEl.classList.add('active-reading', 'inspected');
 
-      // --- COLLISION: Ground Lawn / Out of Bounds ---
-      if (p.y >= 445) {
-        if (p.weapon.id === 'bouncy' && p.bouncesLeft > 0) {
-          p.bouncesLeft--;
-          p.vy = -Math.abs(p.vy) * 0.7;
-          AUDIO.playBoing();
-          spawnParticles(p.x, 445, '#84cc16', 8);
-          showToast('GROUND BOUNCE! 🎾', '#84cc16');
-          continue;
+      const statusEl = document.getElementById(`status-${diorama.id}`);
+      if (statusEl) statusEl.textContent = '✅ Mastered';
+
+      this.inspectedDioramas.add(diorama.id);
+
+      // Check unlock
+      if (this.inspectedDioramas.size >= 4) {
+        const pill1 = document.querySelector('.step-pill[data-stage="1"]');
+        if (pill1) pill1.classList.add('completed');
+
+        const contBtn = document.getElementById('btn-explorer-continue');
+        if (contBtn) {
+          contBtn.classList.remove('disabled');
+          contBtn.classList.add('btn-emerald');
+          contBtn.innerHTML = '✨ Stage 2 Unlocked! (+30 XP) ➔';
         }
+      }
+    }
 
-        if (p.weapon.id === 'balloon') {
-          AUDIO.playWaterSplash();
-          spawnParticles(p.x, 445, '#38bdf8', 18);
-          gameState.windSpeed = 0; // Water balloon dampens wind
-          updateWindDisplay();
-          showToast('SPLASH! WIND CALMED!', '#38bdf8');
+    // ==========================================================================
+    // STAGE 2: SPATIAL PLACEMENT LAB (DRAG & SNAP)
+    // ==========================================================================
+    _initStage2Lab() {
+      this._updateLabInstruction();
+      this._setupDraggable('token-cat', 'socket-cat', 'cat_on_top');
+      this._setupDraggable('token-dog', 'socket-dog', 'dog_behind');
+    }
+
+    _updateLabInstruction() {
+      const challenge = root.BATTLE_DATA.LAB_CHALLENGES[this.currentLabIndex] || root.BATTLE_DATA.LAB_CHALLENGES[0];
+      const textEl = document.getElementById('lab-instruction');
+      if (textEl) {
+        textEl.innerHTML = `<strong>Challenge ${this.currentLabIndex + 1}/2:</strong> ${challenge.instruction}`;
+      }
+      if (root.BattleAudio) {
+        root.BattleAudio.speak(challenge.speechPrompt);
+      }
+    }
+
+    _setupDraggable(tokenId, socketId, challengeId) {
+      const token = document.getElementById(tokenId);
+      const socket = document.getElementById(socketId);
+      if (!token || !socket) return;
+
+      let isDragging = false;
+      let startX, startY;
+      let initialLeft, initialTop;
+
+      const onPointerDown = (e) => {
+        if (token.classList.contains('snapped')) return;
+        isDragging = true;
+        token.setPointerCapture(e.pointerId);
+
+        const rect = token.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = token.offsetLeft;
+        initialTop = token.offsetTop;
+
+        socket.classList.add('highlight');
+      };
+
+      const onPointerMove = (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        token.style.position = 'absolute';
+        token.style.left = `${initialLeft + dx}px`;
+        token.style.top = `${initialTop + dy}px`;
+        token.style.zIndex = '50';
+      };
+
+      const onPointerUp = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        socket.classList.remove('highlight');
+
+        // Check bounding overlap
+        const tokenRect = token.getBoundingClientRect();
+        const socketRect = socket.getBoundingClientRect();
+
+        const overlapX = Math.abs((tokenRect.left + tokenRect.width / 2) - (socketRect.left + socketRect.width / 2));
+        const overlapY = Math.abs((tokenRect.top + tokenRect.height / 2) - (socketRect.top + socketRect.height / 2));
+
+        if (overlapX < 60 && overlapY < 60) {
+          // Successful Snap!
+          this._snapToken(token, socket, challengeId);
         } else {
-          AUDIO.playImpact(false);
-          spawnParticles(p.x, 445, '#64748b', 10);
+          // Snap back
+          token.style.position = '';
+          token.style.left = '';
+          token.style.top = '';
+          token.style.zIndex = '';
         }
+      };
 
-        gameState.activeProjectiles.splice(i, 1);
-        checkTurnEnd();
-        continue;
+      token.addEventListener('pointerdown', onPointerDown);
+      token.addEventListener('pointermove', onPointerMove);
+      token.addEventListener('pointerup', onPointerUp);
+      token.addEventListener('pointercancel', onPointerUp);
+    }
+
+    _snapToken(token, socket, challengeId) {
+      token.classList.add('snapped');
+      socket.classList.add('snapped');
+      socket.innerHTML = '';
+      socket.appendChild(token);
+
+      token.style.position = 'relative';
+      token.style.left = '0px';
+      token.style.top = '0px';
+      token.style.zIndex = '10';
+
+      if (root.BattleAudio) {
+        root.BattleAudio.playSnapClick();
+      }
+      this._spawnConfetti(socket);
+
+      const challenge = root.BATTLE_DATA.LAB_CHALLENGES.find(c => c.id === challengeId);
+      if (challenge && root.BattleAudio) {
+        root.BattleAudio.speak(challenge.successAudio);
       }
 
-      if (p.x < -40 || p.x > V_WIDTH + 40 || p.y < -150) {
-        gameState.activeProjectiles.splice(i, 1);
-        checkTurnEnd();
-        continue;
+      this.currentLabIndex++;
+      if (this.currentLabIndex < root.BATTLE_DATA.LAB_CHALLENGES.length) {
+        setTimeout(() => {
+          this._updateLabInstruction();
+        }, 1200);
+      } else {
+        // Complete Lab!
+        this.labCompleted = true;
+        this.unlockedBonusWeapons = true;
+        const pill2 = document.querySelector('.step-pill[data-stage="2"]');
+        if (pill2) pill2.classList.add('completed');
+
+        setTimeout(() => {
+          this.showToast('🎉 Lab Complete! Bonus Arsenal Unlocked: Water Balloon & Iron Anvil!');
+          setTimeout(() => {
+            this.goToStage(3);
+          }, 1800);
+        }, 800);
       }
     }
 
-    // 7. Update Hold-to-Charge Power Fill
-    if (gameState.powerCharging) {
-      gameState.currentPower += gameState.powerDirection * 2.2;
-      if (gameState.currentPower >= 100) {
-        gameState.currentPower = 100;
-        gameState.powerDirection = -1;
-      } else if (gameState.currentPower <= 6) {
-        gameState.currentPower = 6;
-        gameState.powerDirection = 1;
+    _spawnConfetti(targetEl) {
+      const rect = targetEl.getBoundingClientRect();
+      const colors = ['#38bdf8', '#ea580c', '#10b981', '#f59e0b', '#ec4899'];
+      for (let i = 0; i < 25; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti-particle';
+        conf.style.left = `${rect.left + Math.random() * rect.width}px`;
+        conf.style.top = `${rect.top}px`;
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 1800);
       }
-      powerFill.style.width = `${gameState.currentPower}%`;
-      powerPercent.textContent = `${Math.round(gameState.currentPower)}%`;
     }
 
-    requestAnimationFrame(gameLoop);
-  }
+    // ==========================================================================
+    // STAGE 3: 3D ALLEY CATAPULT ARENA (60 FPS CANVAS & PHYSICS)
+    // ==========================================================================
+    _initStage3Arena() {
+      this.canvas = document.getElementById('battleCanvas');
+      if (!this.canvas) return;
+      this.ctx = this.canvas.getContext('2d');
 
-  function handleDirectHit(p, victim) {
-    const isAnvil = (p.weapon.id === 'anvil');
-    AUDIO.playImpact(isAnvil);
+      // Set internal resolution
+      this.canvas.width = 960;
+      this.canvas.height = 480;
 
-    triggerScreenShake();
-    gameState.impactStars.push({
-      x: p.x,
-      y: p.y,
-      scale: 0.4,
-      color: isAnvil ? '#94a3b8' : '#facc15',
-      life: 1.0
-    });
-
-    spawnParticles(p.x, p.y, isAnvil ? '#e2e8f0' : '#facc15', 20);
-
-    const dmg = p.weapon.damage;
-    if (victim === 'DOG') {
-      gameState.dogHp = Math.max(0, gameState.dogHp - dmg);
-      showToast(`DIRECT HIT! -${dmg} HP`, '#10b981');
-      AUDIO.speak('Direct hit! The projectile flew OVER the fence!');
-    } else {
-      gameState.catHp = Math.max(0, gameState.catHp - dmg);
-      showToast(`OUCH! CAT HIT! -${dmg} HP`, '#ef4444');
-      AUDIO.speak('The bone landed across the fence!');
+      this._bindArenaControls();
+      this._generateWind();
+      this._renderWeaponsBar();
     }
 
-    updateHealthHUD();
-  }
+    _bindArenaControls() {
+      // Angle Slider
+      const angleSlider = document.getElementById('angleSlider');
+      const angleValue = document.getElementById('angleValue');
+      if (angleSlider && angleValue) {
+        angleSlider.addEventListener('input', (e) => {
+          this.currentAngle = parseInt(e.target.value, 10);
+          angleValue.textContent = `${this.currentAngle}°`;
+        });
+      }
 
-  function drawComicStarburst(x, y, scale, color, alpha) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = color;
+      // Fire / Charge Button
+      const fireBtn = document.getElementById('btn-fire');
+      const powerMeter = document.getElementById('powerMeter');
 
-    // 8-point comic starburst polygon
-    ctx.beginPath();
-    const points = 10;
-    const outerR = 34;
-    const innerR = 14;
-    for (let i = 0; i < points * 2; i++) {
-      const r = (i % 2 === 0) ? outerR : innerR;
-      const angle = (i * Math.PI) / points;
-      const sx = Math.cos(angle) * r;
-      const sy = Math.sin(angle) * r;
-      if (i === 0) ctx.moveTo(sx, sy);
-      else ctx.lineTo(sx, sy);
+      const startCharge = (e) => {
+        e.preventDefault();
+        if (this.projectile || this.activeTurn !== 'cat') return;
+        this.isCharging = true;
+        this.currentPower = 10;
+        fireBtn.classList.add('depressed');
+      };
+
+      const endCharge = (e) => {
+        e.preventDefault();
+        if (!this.isCharging) return;
+        this.isCharging = false;
+        fireBtn.classList.remove('depressed');
+        this._launchProjectile('cat', this.currentAngle, this.currentPower);
+        this.currentPower = 0;
+        if (powerMeter) powerMeter.style.width = '0%';
+      };
+
+      if (fireBtn) {
+        fireBtn.addEventListener('mousedown', startCharge);
+        window.addEventListener('mouseup', endCharge);
+        fireBtn.addEventListener('touchstart', startCharge);
+        window.addEventListener('touchend', endCharge);
+      }
     }
-    ctx.closePath();
-    ctx.fill();
 
-    ctx.restore();
-  }
+    _renderWeaponsBar() {
+      const container = document.getElementById('weapons-selector');
+      if (!container) return;
+      container.innerHTML = '';
 
-  function spawnParticles(x, y, colorHex, count = 14) {
-    for (let i = 0; i < count; i++) {
-      gameState.particleBursts.push({
-        x: x,
-        y: y,
-        vx: (Math.random() - 0.5) * 9,
-        vy: (Math.random() - 0.5) * 9 - 1,
-        size: Math.random() * 5 + 3,
-        color: colorHex,
-        life: 1.0
+      root.BATTLE_DATA.WEAPONS.forEach(w => {
+        const btn = document.createElement('div');
+        btn.className = `weapon-btn ${w.id === this.selectedWeaponId ? 'active' : ''}`;
+        btn.id = `weapon-btn-${w.id}`;
+        btn.innerHTML = `
+          <img src="${w.iconSvg}" alt="${w.name}"/>
+          <span class="weapon-name">${w.name}</span>
+        `;
+        btn.addEventListener('click', () => {
+          this.selectedWeaponId = w.id;
+          document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          this.showToast(`Selected: ${w.name} (${w.damage} DMG)`);
+        });
+        container.appendChild(btn);
       });
     }
+
+    _generateWind() {
+      // Wind speed between -12 and +12
+      this.windSpeed = (Math.random() * 24 - 12);
+      const windVal = document.getElementById('windValue');
+      const windArrow = document.getElementById('windArrow');
+      if (windVal) {
+        windVal.textContent = `${Math.abs(Math.round(this.windSpeed))} km/h`;
+      }
+      if (windArrow) {
+        windArrow.textContent = this.windSpeed >= 0 ? '➔' : '⬅';
+        windArrow.style.color = this.windSpeed >= 0 ? '#38bdf8' : '#fb923c';
+      }
+    }
+
+    _startArenaLoop() {
+      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+      this.lastTimestamp = performance.now();
+      const loop = (timestamp) => {
+        const dt = Math.min((timestamp - this.lastTimestamp) / 1000, 0.1);
+        this.lastTimestamp = timestamp;
+        this.gameTime += dt;
+
+        this._update(dt);
+        this._render();
+
+        this.animationFrameId = requestAnimationFrame(loop);
+      };
+      this.animationFrameId = requestAnimationFrame(loop);
+    }
+
+    _stopArenaLoop() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+    }
+
+    _update(dt) {
+      // Charge Meter Physics
+      if (this.isCharging) {
+        this.currentPower += dt * 90 * this.chargeDir;
+        if (this.currentPower >= 100) {
+          this.currentPower = 100;
+          this.chargeDir = -1;
+        } else if (this.currentPower <= 15) {
+          this.currentPower = 15;
+          this.chargeDir = 1;
+        }
+        const meter = document.getElementById('powerMeter');
+        if (meter) meter.style.width = `${this.currentPower}%`;
+      }
+
+      // Projectile Physics
+      if (this.projectile) {
+        const p = this.projectile;
+        const weapon = root.BATTLE_DATA.WEAPONS.find(w => w.id === p.weaponId) || root.BATTLE_DATA.WEAPONS[0];
+
+        // Apply Forces: Gravity, Wind, Drag
+        const gravity = 980 * weapon.gravityMultiplier;
+        const windForce = this.windSpeed * 12;
+
+        p.vx += windForce * dt;
+        p.vy += gravity * dt;
+
+        p.vx *= weapon.airResistance;
+        p.vy *= weapon.airResistance;
+
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+
+        p.rotation += (p.vx > 0 ? 1 : -1) * 6 * dt;
+
+        // Trail particle
+        if (Math.random() < 0.6) {
+          this.particles.push({
+            x: p.x,
+            y: p.y,
+            vx: (Math.random() - 0.5) * 20,
+            vy: (Math.random() - 0.5) * 20,
+            size: Math.random() * 4 + 2,
+            color: p.owner === 'cat' ? '#38bdf8' : '#fb923c',
+            alpha: 0.8,
+            life: 0.4
+          });
+        }
+
+        // Collision: Central Fence (x: 440 to 520, y: 190 to 440)
+        if (p.x >= 450 && p.x <= 510 && p.y >= 210 && p.y <= 440) {
+          this._onFenceHit(p);
+          return;
+        }
+
+        // Collision: Targets
+        if (p.owner === 'cat' && p.x >= 790 && p.x <= 890 && p.y >= 280 && p.y <= 410) {
+          this._onTargetHit('dog', p);
+          return;
+        } else if (p.owner === 'dog' && p.x >= 70 && p.x <= 170 && p.y >= 280 && p.y <= 410) {
+          this._onTargetHit('cat', p);
+          return;
+        }
+
+        // Collision: Ground (y: 430)
+        if (p.y >= 430) {
+          this._onGroundHit(p);
+          return;
+        }
+
+        // Out of Bounds
+        if (p.x < -100 || p.x > 1060) {
+          this._clearProjectile();
+          this._nextTurn();
+        }
+      }
+
+      // Update Particles
+      for (let i = this.particles.length - 1; i >= 0; i--) {
+        const pt = this.particles[i];
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.alpha -= dt / pt.life;
+        if (pt.alpha <= 0) {
+          this.particles.splice(i, 1);
+        }
+      }
+
+      // Decay Screen Shake
+      if (this.screenShake > 0) {
+        this.screenShake = Math.max(0, this.screenShake - dt * 25);
+      }
+    }
+
+    _launchProjectile(owner, angleDeg, powerPct) {
+      const rad = (angleDeg * Math.PI) / 180;
+      const velocity = (powerPct / 100) * 880 + 260; // 260 to 1140 px/s
+
+      const startX = owner === 'cat' ? 140 : 820;
+      const startY = 320;
+      const dir = owner === 'cat' ? 1 : -1;
+
+      this.projectile = {
+        owner,
+        weaponId: this.selectedWeaponId,
+        x: startX,
+        y: startY,
+        vx: Math.cos(rad) * velocity * dir,
+        vy: -Math.sin(rad) * velocity,
+        rotation: 0
+      };
+
+      if (root.BattleAudio) {
+        root.BattleAudio.startArtilleryWhistle();
+      }
+    }
+
+    _onFenceHit(p) {
+      if (root.BattleAudio) {
+        root.BattleAudio.stopArtilleryWhistle();
+        root.BattleAudio.playWoodSplinter();
+      }
+      this.screenShake = 6;
+      this._spawnBurst(p.x, p.y, '#b45309', 18);
+      this._clearProjectile();
+
+      this.showToast('🪵 Too low! Aim higher OVER the fence!');
+      if (root.BattleAudio) {
+        root.BattleAudio.speak('Too low! Aim higher OVER the fence!');
+      }
+
+      setTimeout(() => this._nextTurn(), 1400);
+    }
+
+    _onTargetHit(target, p) {
+      if (root.BattleAudio) {
+        root.BattleAudio.stopArtilleryWhistle();
+        root.BattleAudio.playImpactCrunch();
+      }
+      this.screenShake = 12;
+      this._spawnBurst(p.x, p.y, '#ef4444', 30);
+
+      const weapon = root.BATTLE_DATA.WEAPONS.find(w => w.id === p.weaponId) || root.BATTLE_DATA.WEAPONS[0];
+      if (target === 'dog') {
+        this.dogHP = Math.max(0, this.dogHP - weapon.damage);
+        const hpEl = document.getElementById('dog-hp-fill');
+        if (hpEl) hpEl.style.width = `${this.dogHP}%`;
+        if (root.BattleAudio) root.BattleAudio.playDogVocal();
+      } else {
+        this.catHP = Math.max(0, this.catHP - weapon.damage);
+        const hpEl = document.getElementById('cat-hp-fill');
+        if (hpEl) hpEl.style.width = `${this.catHP}%`;
+        if (root.BattleAudio) root.BattleAudio.playCatVocal();
+      }
+
+      this._clearProjectile();
+      this.showToast(`💥 Direct hit OVER the fence! (-${weapon.damage} HP)`);
+      if (root.BattleAudio) {
+        root.BattleAudio.speak('Direct hit OVER the fence!');
+      }
+
+      // Check Match Victory
+      if (this.dogHP <= 0) {
+        this._onVictory('Cat');
+        return;
+      } else if (this.catHP <= 0) {
+        this._onVictory('Dog');
+        return;
+      }
+
+      // Pop CEFR Challenge question before next turn
+      setTimeout(() => {
+        this._showQuestionModal(() => {
+          this._nextTurn();
+        });
+      }, 1200);
+    }
+
+    _onGroundHit(p) {
+      if (root.BattleAudio) {
+        root.BattleAudio.stopArtilleryWhistle();
+      }
+      this._spawnBurst(p.x, 430, '#64748b', 10);
+      this._clearProjectile();
+      setTimeout(() => this._nextTurn(), 600);
+    }
+
+    _clearProjectile() {
+      if (this.projectile && root.BattleAudio) {
+        root.BattleAudio.stopArtilleryWhistle();
+      }
+      this.projectile = null;
+    }
+
+    _nextTurn() {
+      this._generateWind();
+      this.activeTurn = this.activeTurn === 'cat' ? 'dog' : 'cat';
+
+      if (this.activeTurn === 'dog' && this.mode === '1p') {
+        // AI Turn
+        setTimeout(() => {
+          this._executeAITurn();
+        }, 1000);
+      }
+    }
+
+    _executeAITurn() {
+      // AI calculates trajectory
+      const aiAngle = 40 + Math.random() * 25; // 40 to 65
+      const aiPower = 55 + Math.random() * 30; // 55 to 85
+      this._launchProjectile('dog', aiAngle, aiPower);
+    }
+
+    _onVictory(winnerName) {
+      this.winner = winnerName;
+      const pill3 = document.querySelector('.step-pill[data-stage="3"]');
+      if (pill3) pill3.classList.add('completed');
+      const pill4 = document.querySelector('.step-pill[data-stage="4"]');
+      if (pill4) pill4.classList.add('completed');
+
+      if (root.BattleAudio) {
+        root.BattleAudio.playVictoryFanfare();
+      }
+
+      this.showToast(`🏆 Match Victory! ${winnerName} Wins! Proceeding to Studio...`);
+      setTimeout(() => {
+        this.goToStage(4);
+      }, 2000);
+    }
+
+    _spawnBurst(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd = Math.random() * 180 + 40;
+        this.particles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd,
+          size: Math.random() * 5 + 3,
+          color,
+          alpha: 1.0,
+          life: 0.5
+        });
+      }
+    }
+
+    // ==========================================================================
+    // 60 FPS CANVAS RENDERING
+    // ==========================================================================
+    _render() {
+      if (!this.ctx) return;
+      const ctx = this.ctx;
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+
+      ctx.save();
+
+      // Screen Shake
+      if (this.screenShake > 0) {
+        const sx = (Math.random() - 0.5) * this.screenShake;
+        const sy = (Math.random() - 0.5) * this.screenShake;
+        ctx.translate(sx, sy);
+      }
+
+      // 1. Atmospheric Alley Backdrop
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      skyGrad.addColorStop(0, '#070b14');
+      skyGrad.addColorStop(0.65, '#0f172a');
+      skyGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Distant Alley Bricks
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      for (let y = 50; y < 400; y += 22) {
+        const offset = (y % 44 === 0) ? 0 : 25;
+        for (let x = -20 + offset; x < w; x += 55) {
+          ctx.fillRect(x, y, 48, 16);
+        }
+      }
+
+      // Streetlamp Conical Light Beam
+      const lampGrad = ctx.createRadialGradient(120, 40, 10, 140, 240, 260);
+      lampGrad.addColorStop(0, 'rgba(254, 240, 138, 0.35)');
+      lampGrad.addColorStop(0.5, 'rgba(253, 224, 71, 0.12)');
+      lampGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = lampGrad;
+      ctx.beginPath();
+      ctx.moveTo(120, 40);
+      ctx.lineTo(20, 440);
+      ctx.lineTo(260, 440);
+      ctx.closePath();
+      ctx.fill();
+
+      // 2. Cobblestone Ground & Grass
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 430, w, 50);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 426, w, 4);
+
+      // Yard Grass on Right
+      ctx.fillStyle = '#065f46';
+      ctx.fillRect(490, 430, w - 490, 50);
+      ctx.fillStyle = '#059669';
+      ctx.fillRect(490, 426, w - 490, 4);
+
+      // 3. Central Wooden Barrier Fence (Beveled Planks & Studs)
+      if (this.bitmaps.fence) {
+        ctx.drawImage(this.bitmaps.fence, 450, 200, 70, 230);
+      }
+
+      // 4. Cat Base: Metal Trash Can
+      if (this.bitmaps.trashbin) {
+        ctx.drawImage(this.bitmaps.trashbin, 90, 320, 85, 110);
+      }
+
+      // 5. Dog Base: Ceramic Bowl
+      if (this.bitmaps.dogbowl) {
+        ctx.drawImage(this.bitmaps.dogbowl, 770, 375, 75, 55);
+      }
+
+      // 6. Idle Bobbing & Dynamic Eye Tracking
+      const bobCat = Math.sin(this.gameTime * 3) * 3;
+      const bobDog = Math.cos(this.gameTime * 3) * 3;
+
+      // Draw Shadow Ellipses
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(132, 330, 24, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.ellipse(835, 430, 32, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Blue Alley Cat (On top of trash can)
+      if (this.bitmaps.cat) {
+        ctx.drawImage(this.bitmaps.cat, 82, 230 + bobCat, 100, 100);
+      }
+
+      // Draw Brown Yard Dog (Behind fence / in yard)
+      if (this.bitmaps.dog) {
+        ctx.drawImage(this.bitmaps.dog, 785, 330 + bobDog, 100, 100);
+      }
+
+      // 7. Trajectory Guideline (15% Preview for Cat)
+      if (!this.projectile && this.activeTurn === 'cat') {
+        this._renderTrajectoryGuideline(ctx);
+      }
+
+      // 8. Render Flying Projectile (Vector Sprite Bitmaps)
+      if (this.projectile) {
+        const p = this.projectile;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+
+        const bmpKey = `projectile_${p.weaponId}`;
+        const bmp = this.bitmaps[bmpKey] || this.bitmaps.projectile_fish;
+        if (bmp) {
+          ctx.drawImage(bmp, -22, -14, 44, 28);
+        }
+        ctx.restore();
+      }
+
+      // 9. Render Particles
+      this.particles.forEach(pt => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, pt.alpha);
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      ctx.restore();
+    }
+
+    _renderTrajectoryGuideline(ctx) {
+      const rad = (this.currentAngle * Math.PI) / 180;
+      const v = 500;
+      let x = 140;
+      let y = 320;
+      let vx = Math.cos(rad) * v;
+      let vy = -Math.sin(rad) * v;
+      const g = 980;
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+
+      for (let i = 0; i < 12; i++) {
+        x += vx * 0.025;
+        y += vy * 0.025;
+        vy += g * 0.025;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ==========================================================================
+    // STAGE 4: LIVE TELEPROMPTER STUDIO (ORAL PRODUCTION)
+    // ==========================================================================
+    _initStage4Studio() {
+      const broadcastBtn = document.getElementById('btn-broadcast-report');
+      if (broadcastBtn) {
+        broadcastBtn.addEventListener('click', () => {
+          this._startBroadcast();
+        });
+      }
+
+      const replayBtn = document.getElementById('btn-studio-replay');
+      if (replayBtn) {
+        replayBtn.addEventListener('click', () => {
+          this.catHP = 100;
+          this.dogHP = 100;
+          this.winner = null;
+          const hpCat = document.getElementById('cat-hp-fill');
+          const hpDog = document.getElementById('dog-hp-fill');
+          if (hpCat) hpCat.style.width = '100%';
+          if (hpDog) hpDog.style.width = '100%';
+          this.goToStage(1);
+        });
+      }
+    }
+
+    _setupTeleprompter() {
+      const mascotImg = document.getElementById('podium-mascot-img');
+      const winnerTitle = document.getElementById('winner-team-title');
+      if (mascotImg && winnerTitle) {
+        const isCat = (this.winner || 'Cat') === 'Cat';
+        mascotImg.src = isCat ? root.BATTLE_DATA.SVG_ASSETS.cat : root.BATTLE_DATA.SVG_ASSETS.dog;
+        winnerTitle.textContent = `${this.winner || 'Cat'} Champions!`;
+      }
+
+      // Populate Teleprompter Script with wrap spans for real-time karaoke highlight
+      const scriptBox = document.getElementById('teleprompter-script-content');
+      if (!scriptBox) return;
+
+      scriptBox.innerHTML = '';
+      root.BATTLE_DATA.TELEPROMPTER_SCRIPT.forEach((line, sIdx) => {
+        const p = document.createElement('div');
+        p.className = 'script-sentence';
+
+        const words = line.text.split(' ');
+        words.forEach((w, wIdx) => {
+          const span = document.createElement('span');
+          span.className = 'script-word';
+          span.id = `tele-word-${sIdx}-${wIdx}`;
+          span.textContent = w + ' ';
+          if (line.prep && w.toUpperCase().includes(line.prep)) {
+            span.classList.add('script-prep');
+          }
+          p.appendChild(span);
+        });
+
+        scriptBox.appendChild(p);
+      });
+    }
+
+    _startBroadcast() {
+      const fullText = root.BATTLE_DATA.TELEPROMPTER_SCRIPT.map(s => s.text).join(' ');
+      const wordsSpans = Array.from(document.querySelectorAll('.script-word'));
+
+      wordsSpans.forEach(s => s.classList.remove('active-reading'));
+
+      let wordPointer = 0;
+      if (root.BattleAudio) {
+        root.BattleAudio.speak(
+          fullText,
+          () => {
+            // Word boundary callback
+            wordsSpans.forEach(s => s.classList.remove('active-reading'));
+            if (wordsSpans[wordPointer]) {
+              wordsSpans[wordPointer].classList.add('active-reading');
+              wordPointer++;
+            }
+          },
+          () => {
+            // End of speech
+            wordsSpans.forEach(s => s.classList.remove('active-reading'));
+            this.showToast('🎙️ Live Broadcast Completed! Excellent Speaking!');
+          }
+        );
+      }
+    }
+
+    // ==========================================================================
+    // CEFR A1 QUESTION MODAL
+    // ==========================================================================
+    _showQuestionModal(onClose) {
+      const modal = document.getElementById('question-modal');
+      const promptEl = document.getElementById('question-prompt-text');
+      const optionsGrid = document.getElementById('question-options-grid');
+      if (!modal || !promptEl || !optionsGrid) {
+        if (onClose) onClose();
+        return;
+      }
+
+      const q = root.BATTLE_DATA.QUESTIONS[Math.floor(Math.random() * root.BATTLE_DATA.QUESTIONS.length)];
+      promptEl.textContent = q.sentence;
+      optionsGrid.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+
+        btn.addEventListener('click', () => {
+          if (opt === q.correct) {
+            btn.classList.add('correct');
+            if (root.BattleAudio) root.BattleAudio.playBellChime();
+            this.showToast('✨ Correct Preposition! (+15 XP)');
+            setTimeout(() => {
+              modal.classList.remove('active');
+              if (onClose) onClose();
+            }, 800);
+          } else {
+            btn.classList.add('wrong');
+            this.showToast(`Not quite! ${q.explanation}`);
+            setTimeout(() => {
+              modal.classList.remove('active');
+              if (onClose) onClose();
+            }, 1600);
+          }
+        });
+
+        optionsGrid.appendChild(btn);
+      });
+
+      modal.classList.add('active');
+    }
+
+    showToast(message) {
+      const toast = document.getElementById('comic-toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 2200);
+    }
   }
 
-  // Auto-boot on load
-  window.addEventListener('DOMContentLoaded', initGame);
+  // Auto-launch when DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    root.CatVsDogApp = new CatVsDogEngine();
+    root.CatVsDogApp.init();
+  });
 
-})(typeof window !== 'undefined' ? window : global);
+})(typeof window !== 'undefined' ? window : this);
