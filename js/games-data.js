@@ -4294,24 +4294,25 @@ const GAMES_REGISTRY = [
   {
     "id": "meme-rules",
     "aliases": ["meme-imperatives", "classroom-memes", "meme-workbench"],
-    "title": "😂 Meme Rules: Classroom Imperatives Lab",
+    "title": "🎭 Classroom Meme Rules: Imperatives in Action",
     "description": "Tactical 3-phase interactive CLIL lab. Scan 25 iconic meme reactions, sort rules into Green Light (Base Verb) and Red Light (Don't + Verb) dropzones, and deliver a live teleprompter speech!",
-    "category": "Phonics & Language Quests",
-    "categoryGroup": "Grammar & Phonics",
-    "cefrLevel": "A1-A2",
-    "level": "A1-A2",
+    "category": "Grammar & Speaking Quests",
+    "categoryGroup": "Grammar & Communication",
+    "cefrLevel": "A1–A2",
+    "level": "A1 / A2",
+    "ageGroup": "8–12",
     "grade": "Grade 4",
     "grades": ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
-    "xp": 250,
-    "duration": 30,
-    "durationText": "30 mins",
-    "estimatedMinutes": 30,
+    "xp": 150,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
     "type": "game",
-    "topics": ["Classroom Etiquette", "Meme Culture", "Imperatives & Commands"],
+    "topics": ["Classroom Rules", "Imperatives", "Social Communication"],
     "learningObjectives": [
-      "Distinguish positive imperatives (Base Verb) from negative imperatives (Don't + Base Verb)",
-      "Formulate respectful classroom conduct rules using 12 target action verbs",
-      "Deliver a structured 3-sentence speaking presentation using the cyber teleprompter"
+      "Construct positive imperatives using Base Verb + Object.",
+      "Construct negative imperatives using Don't + Base Verb.",
+      "Deliver classroom behavior rules orally using a 3-part teleprompter."
     ],
     "teacherInstructions": "Use the Green/Red light relay for tactile sorting practice, then have students present their favorite meme rule using the teleprompter studio.",
     "route": "meme-rules/index.html",
@@ -4321,20 +4322,20 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "thumbnailIcon": "😂",
-    "gradient": "linear-gradient(135deg, #0c1a30 0%, #1e1b4b 50%, #064e3b 100%)",
+    "thumbnailIcon": "🎭",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
     "tags": ["memes", "imperatives", "grammar", "rules", "speaking", "clil"],
     "vocabulary": {
-      "core": ["raise", "listen", "share", "clean", "line up", "whisper"],
-      "supporting": ["shout", "run", "cheat", "panic", "argue", "push in"]
+      "core": ["raise", "speak", "listen", "whisper", "share", "wait"],
+      "supporting": ["hallway", "supplies", "patiently", "carefully"]
     },
     "grammar": {
-      "focusPattern": "Positive & Negative Imperatives (Base Verb vs Don't + Base Verb)",
-      "formula": "Do: [Base Verb] + [Object]! / Don't: Don't + [Base Verb] + [Object]!",
+      "focusPattern": "Base Verb + Object / Don't + Base Verb",
+      "formula": "Base Verb + Object / Don't + Base Verb",
       "formulas": [
-        "Raise your hand to ask a question.",
-        "Don't shout loudly across the classroom.",
-        "Clean up your desk after art experiments."
+        "Raise your hand before answering!",
+        "Don't shout across the room!",
+        "Whisper when working in pairs!"
       ]
     },
     "clilDomain": "Media Literacy & Social-Emotional Learning",
