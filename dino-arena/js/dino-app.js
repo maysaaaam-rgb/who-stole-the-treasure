@@ -198,15 +198,13 @@
             🔊
           </button>
 
-          <!-- Resilient Primary Image with Automatic SVG Fallback -->
-          <img class="card-hero-img" src="${dino.img}" alt="${dino.name}" 
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="card-hero-svg-fallback">
-            ${dino.svg}
+          <!-- 100% Self-Contained Multi-Layered Anatomical Vector Artwork with Breathing Physics -->
+          <div class="card-vector-stage">
+            ${dino.svgArtwork}
           </div>
         </div>
 
-        <!-- Dynamic Stamp Overlays -->
+        <!-- Dynamic Physical Rubber Stamp Overlays -->
         <div class="stamp-overlay stamp-winner" id="${sideKey}-stamp-win">
           WINNER!
         </div>
@@ -300,12 +298,12 @@
     mysteryStatusBanner.textContent = "Listen to the audio hints and match the 3 paleontological clues below:";
     btnNextMystery.style.display = 'none';
 
-    // Reset Silhouette Stage to Dark Fog
+    // Reset Silhouette Stage to Dark Fog with Pure Vector Silhouette
     mysteryArtStage.className = 'mystery-art-stage';
     mysteryArtStage.innerHTML = `
-      <img src="${targetDino.img}" alt="Mystery Dinosaur Silhouette"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-      <div class="card-hero-svg-fallback" style="filter:brightness(0);">${targetDino.svg}</div>
+      <div class="mystery-vector-art-wrap">
+        ${targetDino.svgArtwork}
+      </div>
     `;
 
     // Populate Clues with staggered animation
@@ -348,10 +346,8 @@
       playerSession.isLocked = true;
       btnEl.classList.add('correct');
 
-      // Unmask Silhouette to full vibrant color
+      // Unmask Silhouette to full vibrant color & elemental aura
       mysteryArtStage.classList.add('revealed');
-      const fallbackSvg = mysteryArtStage.querySelector('.card-hero-svg-fallback');
-      if (fallbackSvg) fallbackSvg.style.filter = 'none';
 
       // Celebratory Audio & Confetti
       window.DinoArenaAudio.playRoar();
@@ -434,9 +430,9 @@
     dietFeedbackBanner.style.display = 'none';
 
     dietSpecimenCard.innerHTML = `
-      <img class="diet-specimen-img" src="${currentDino.img}" alt="${currentDino.name}"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div style="display:none; width:100%; height:160px;">${currentDino.svg}</div>
+      <div class="diet-vector-stage">
+        ${currentDino.svgArtwork}
+      </div>
       <h3 class="diet-specimen-title">${currentDino.fallbackIcon} ${currentDino.name}</h3>
       <div class="diet-tooth-callout">
         🦷 <strong>Anatomy &amp; Teeth:</strong> ${currentDino.teeth}
@@ -551,16 +547,16 @@
     builderFeedbackBanner.style.display = 'none';
     btnBuilderNext.style.display = 'none';
 
-    // Populate Scale Dishes
+    // Populate Scale Dishes with Vector Art
     dishLeft.innerHTML = `
-      <img src="${dinoA.img}" alt="${dinoA.name}"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div style="display:none; width:100%; height:90px;">${dinoA.svg}</div>
+      <div class="dish-vector-stage">
+        ${dinoA.svgArtwork}
+      </div>
     `;
     dishRight.innerHTML = `
-      <img src="${dinoB.img}" alt="${dinoB.name}"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div style="display:none; width:100%; height:90px;">${dinoB.svg}</div>
+      <div class="dish-vector-stage">
+        ${dinoB.svgArtwork}
+      </div>
     `;
 
     panStatLeft.textContent = `${dinoA.fallbackIcon} ${round.statA}`;
@@ -885,11 +881,11 @@
 
     teleprompterBadgeTag.textContent = `🎙️ ${dino.fallbackIcon} ${dino.name} — ${arch.title}`;
     
-    // Podium with high-res image and SVG fallback
+    // Podium with dedicated 3D vector artwork stage
     teleprompterArtPodium.innerHTML = `
-      <img src="${dino.img}" alt="${dino.name}" style="max-height:190px; width:auto; object-fit:contain; filter:drop-shadow(0 10px 20px rgba(0,0,0,0.8));"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-      <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">${dino.svg}</div>
+      <div class="teleprompter-vector-stage">
+        ${dino.svgArtwork}
+      </div>
     `;
 
     // 3-part oral report template
