@@ -4290,6 +4290,55 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Planetary Science & Aerospace Engineering",
     "clilTheme": "Exoplanet Exploration & Mission Design"
+  },
+  {
+    "id": "meme-rules",
+    "aliases": ["meme-imperatives", "classroom-memes", "meme-workbench"],
+    "title": "😂 Meme Rules: Classroom Imperatives Lab",
+    "description": "Tactical 3-phase interactive CLIL lab. Scan 25 iconic meme reactions, sort rules into Green Light (Base Verb) and Red Light (Don't + Verb) dropzones, and deliver a live teleprompter speech!",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Grammar & Phonics",
+    "cefrLevel": "A1-A2",
+    "level": "A1-A2",
+    "grade": "Grade 4",
+    "grades": ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
+    "xp": 250,
+    "duration": 30,
+    "durationText": "30 mins",
+    "estimatedMinutes": 30,
+    "type": "game",
+    "topics": ["Classroom Etiquette", "Meme Culture", "Imperatives & Commands"],
+    "learningObjectives": [
+      "Distinguish positive imperatives (Base Verb) from negative imperatives (Don't + Base Verb)",
+      "Formulate respectful classroom conduct rules using 12 target action verbs",
+      "Deliver a structured 3-sentence speaking presentation using the cyber teleprompter"
+    ],
+    "teacherInstructions": "Use the Green/Red light relay for tactile sorting practice, then have students present their favorite meme rule using the teleprompter studio.",
+    "route": "meme-rules/index.html",
+    "worksheet": "meme-rules/worksheet.html",
+    "worksheetRoute": "meme-rules/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "😂",
+    "gradient": "linear-gradient(135deg, #0c1a30 0%, #1e1b4b 50%, #064e3b 100%)",
+    "tags": ["memes", "imperatives", "grammar", "rules", "speaking", "clil"],
+    "vocabulary": {
+      "core": ["raise", "listen", "share", "clean", "line up", "whisper"],
+      "supporting": ["shout", "run", "cheat", "panic", "argue", "push in"]
+    },
+    "grammar": {
+      "focusPattern": "Positive & Negative Imperatives (Base Verb vs Don't + Base Verb)",
+      "formula": "Do: [Base Verb] + [Object]! / Don't: Don't + [Base Verb] + [Object]!",
+      "formulas": [
+        "Raise your hand to ask a question.",
+        "Don't shout loudly across the classroom.",
+        "Clean up your desk after art experiments."
+      ]
+    },
+    "clilDomain": "Media Literacy & Social-Emotional Learning",
+    "clilTheme": "Classroom Community & Digital Communication"
   }
 ];
 
