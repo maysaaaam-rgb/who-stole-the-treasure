@@ -5939,7 +5939,8 @@ body.classroom-mode-active .classroom-students-grid {
   width: 100%;
 }
 
-.library-catalog-section {
+.library-catalog-section,
+.library-category-group {
   background: var(--bg-surface, #ffffff);
   border: 1px solid var(--border-light, #e2e8f0);
   border-radius: 20px;
@@ -5948,10 +5949,32 @@ body.classroom-mode-active .classroom-students-grid {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: visible;
+  margin-bottom: 28px;
 }
 
-.library-catalog-section:hover {
+.library-catalog-section:hover,
+.library-category-group:hover {
   box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.07);
+}
+
+.catalog-section-header,
+.category-group-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+}
+
+.category-group-header h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-main, #0f172a);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  letter-spacing: -0.02em;
 }
 
 .catalog-section-header {
@@ -5960,9 +5983,6 @@ body.classroom-mode-active .classroom-students-grid {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light, #e2e8f0);
 }
 
 .catalog-section-left {
@@ -5998,11 +6018,12 @@ body.classroom-mode-active .classroom-students-grid {
   gap: 6px;
 }
 
-.catalog-section-desc {
-  font-size: 0.85rem;
+.catalog-section-desc,
+.category-group-desc {
+  font-size: 0.88rem;
   color: var(--text-muted, #64748b);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .catalog-section-right {
@@ -6011,13 +6032,20 @@ body.classroom-mode-active .classroom-students-grid {
   gap: 10px;
 }
 
-.catalog-section-counter {
+.catalog-section-counter,
+.badge-count {
   font-size: 0.8rem;
   font-weight: 800;
   background: var(--bg-card-secondary, #f1f5f9);
   color: var(--text-secondary, #334155);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 9999px;
   border: 1px solid var(--border-light, #cbd5e1);
   white-space: nowrap;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 20px;
 }
