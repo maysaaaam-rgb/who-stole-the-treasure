@@ -4,7 +4,7 @@
  * Theme: "Keep It Wild! Buy the Toy Lamp!"
  */
 
-const GAME_DATA = {
+export const GAME_DATA = {
   lexicon: {
     core: [
       "wetland",
