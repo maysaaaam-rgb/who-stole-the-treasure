@@ -5,188 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wildlife Detective: Keep It Wild! | English Adventure Academy</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
 </head>
 <body>
 
-  <!-- ==========================================================================
-       TOP APP HEADER & 3-PHASE STEPPER
-       ========================================================================== -->
-  <header class="ranger-header">
-    <div class="brand-badge">
-      <div class="brand-icon">🐾</div>
-      <div class="brand-titles">
-        <h1>WILDLIFE DETECTIVE</h1>
-        <p>Keep It Wild! • Animal Habitats & Media Literacy (CEFR A1+)</p>
+  <div id="game-arena">
+    <canvas id="confetti-canvas"></canvas>
+
+    <header>
+      <div class="title-shield">
+        <span>🐾</span> WILDLIFE DETECTIVE
       </div>
-    </div>
 
-    <!-- Stepper Navigation -->
-    <nav class="phase-stepper" aria-label="Investigation Phases">
-      <div class="phase-pill active" data-phase="1">
-        <span class="phase-number">1</span>
-        <span class="phase-text">Habitat Scanner</span>
-      </div>
-      <div class="phase-pill" data-phase="2">
-        <span class="phase-number">2</span>
-        <span class="phase-text">Viral Trend Lab</span>
-      </div>
-      <div class="phase-pill" data-phase="3">
-        <span class="phase-number">3</span>
-        <span class="phase-text">Ranger Studio</span>
-      </div>
-    </nav>
-
-    <!-- Header Controls -->
-    <div class="header-actions">
-      <button class="btn-3d btn-icon-round" id="btn-bgm-toggle" title="Toggle Ranger Ambient Audio">🎵</button>
-      <button class="btn-3d btn-icon-round" id="btn-mute-toggle" title="Toggle Sound FX">🔊</button>
-      <a href="worksheet.html" target="_blank" class="btn-3d btn-amber" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">📄 Log & Cert</a>
-      <a href="../index.html" class="btn-3d btn-emerald" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">🏠 Hub</a>
-    </div>
-  </header>
-
-  <!-- ==========================================================================
-       PHASE 1: WILD HABITAT & ANIMAL NEEDS SCANNER
-       ========================================================================== -->
-  <main class="phase-viewport active" id="phase-1-viewport">
-    <div class="phase-intro">
-      <h2>Phase 1: Exotic Pets vs. Wild Habitats Scanner</h2>
-      <p>Investigate wild survival requirements. Real animals belong in their natural habitats, not bedrooms!</p>
-    </div>
-
-    <!-- Animals Grid -->
-    <div class="animals-grid" id="animals-grid">
-      <!-- Injected dynamically from GAME_DATA.phase1Cards -->
-    </div>
-
-    <div class="scanner-footer">
-      <div style="font-size: 0.82rem; color: #94a3b8;">
-        💡 <strong>Grammar Formula:</strong> <em>The [animal] needs [requirement].</em>
-      </div>
-      <button class="btn-3d btn-cyan" id="btn-scanner-continue">
-        Examine All to Unlock Phase 2 ➔
-      </button>
-    </div>
-  </main>
-
-  <!-- ==========================================================================
-       PHASE 2: VIRAL TREND DETECTOR (CAPYBARA LAB)
-       ========================================================================== -->
-  <main class="phase-viewport" id="phase-2-viewport">
-    <div class="phase-intro">
-      <h2>Phase 2: Viral Trend Detector — Keep It Wild!</h2>
-      <p>Evaluate internet trends: Is it harmful wild animal captivity or a safe eco-friendly toy?</p>
-    </div>
-
-    <div class="lab-container">
-      <!-- Smartphone Simulator -->
-      <div class="phone-mockup" id="phoneMockup">
-        <div class="phone-speaker-bar"></div>
-
-        <!-- Post Author Header -->
-        <div class="post-header">
-          <div class="post-author-box">
-            <div class="post-avatar" id="post-avatar">🛁</div>
-            <div>
-              <div class="post-author-name" id="post-author">Viral Trend: Capybara in Bathtub</div>
-              <div style="font-size: 0.68rem; color: #64748b;" id="lab-progress-label">Scenario 1 of 2</div>
-            </div>
-          </div>
-          <div class="post-metrics">
-            <span id="post-likes">❤️ 2.4M</span>
-            <span id="post-shares">↗️ 540K</span>
-          </div>
+      <div class="meter-container">
+        <div class="meter-label-row">
+          <span id="phase-label">Stage 1: Habitat Scanner</span>
+          <span id="progress-percent">33%</span>
         </div>
-
-        <!-- Simulated Video Window -->
-        <div class="video-simulation-card">
-          <p class="video-description-text" id="video-preview-text">A viral creator keeps a 50kg capybara inside a small apartment bathtub.</p>
-        </div>
-
-        <!-- Post Headline Caption -->
-        <div class="post-caption" id="post-caption">
-          A viral creator keeps a 50kg capybara inside a small apartment bathtub.
-        </div>
-
-        <!-- Decision Buttons -->
-        <div class="decision-grid" id="decision-buttons">
-          <button class="btn-decision btn-real" id="btn-vote-real">
-            🚨 HARMFUL WILD CAPTIVITY
-          </button>
-          <button class="btn-decision btn-fake" id="btn-vote-fake">
-            ✅ SAFE ECO-FRIENDLY TOY
-          </button>
-        </div>
-
-        <!-- Feedback & Scientific Explanation -->
-        <div class="feedback-box" id="feedback-box">
-          <div class="feedback-tag" id="feedback-tag">🎯 EXCELLENT WILDLIFE RANGER JUDGMENT!</div>
-          <div class="feedback-text" id="feedback-text">Keep it wild! A capybara cannot live in an apartment. It needs a wetland and a herd!</div>
-          <div class="feedback-advice" id="feedback-advice">Rule: Keep it wild! Buy the toy lamp!</div>
-        </div>
-
-        <!-- Next Post Button -->
-        <button class="btn-3d btn-cyan" id="btn-next-post" style="display:none; width:100%; margin-top:6px;">
-          Next Scenario ➔
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- ==========================================================================
-       PHASE 3: LIVE TELEPROMPTER STUDIO (ORAL PRODUCTION)
-       ========================================================================== -->
-  <main class="phase-viewport" id="phase-3-viewport">
-    <div class="studio-container">
-      <!-- Ranger Podium -->
-      <div class="ranger-badge-podium">
-        <div class="badge-seal">🛡️</div>
-        <div class="podium-titles">
-          <h2>Master Wildlife Detective</h2>
-          <p id="total-earned-xp">Total XP Earned: 160 XP • Ready for Live Broadcast</p>
+        <div class="meter-track">
+          <div class="meter-fill" id="meter-fill" style="width: 33%;"></div>
         </div>
       </div>
 
-      <!-- Live Broadcast Teleprompter -->
-      <div class="teleprompter-glass-box">
-        <div class="teleprompter-top-strip">
-          <div class="on-air-badge">
-            <span class="on-air-dot"></span>
-            LIVE BROADCAST ON AIR
-          </div>
-          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">ORAL PRODUCTION TELEPROMPTER</span>
+      <div class="header-right">
+        <div class="xp-counter">
+          <span>⭐</span> <span id="xp-val">0</span> XP
         </div>
-
-        <div class="teleprompter-script-viewport" id="teleprompter-script">
-          <!-- Populated from GAME_DATA.teleprompterScript -->
-        </div>
-
-        <div class="studio-buttons-row">
-          <button class="btn-3d btn-amber" id="btn-broadcast-report">
-            📢 BROADCAST REPORT (READ ALOUD)
-          </button>
-          <a href="worksheet.html" target="_blank" class="btn-3d btn-emerald" style="text-decoration:none;">
-            📄 PRINT A4 RANGER LOG
-          </a>
-          <button class="btn-3d btn-cyan" id="btn-restart-mission">
-            🔄 RESTART MISSION
-          </button>
-        </div>
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-amber btn-nav-compact" title="Printable Field Log & Certificate">📄 Log</a>
+        <a href="../index.html" class="btn-3d btn-green btn-nav-compact" title="Return to Academy Hub">🏠 Hub</a>
       </div>
-    </div>
-  </main>
+    </header>
 
-  <!-- Toast Notification -->
-  <div class="ranger-toast" id="ranger-toast"></div>
+    <main id="stage">
+      <!-- Stage content injected dynamically by app.js -->
+    </main>
+  </div>
 
-  <!-- JavaScript Modules -->
   <script src="js/data.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/app.js"></script>
