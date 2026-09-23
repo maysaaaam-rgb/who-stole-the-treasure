@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildlife Detective: Conservation & Adaptations | English Adventure Academy</title>
+  <title>Wildlife Detective: Keep It Wild! | English Adventure Academy</title>
   
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
       <div class="brand-icon">🐾</div>
       <div class="brand-titles">
         <h1>WILDLIFE DETECTIVE</h1>
-        <p>CLIL Science • Animal Adaptations & Media Literacy (CEFR A1+)</p>
+        <p>Keep It Wild! • Animal Habitats & Media Literacy (CEFR A1+)</p>
       </div>
     </div>
 
@@ -31,11 +31,11 @@
     <nav class="phase-stepper" aria-label="Investigation Phases">
       <div class="phase-pill active" data-phase="1">
         <span class="phase-number">1</span>
-        <span class="phase-text">Adaptation Scanner</span>
+        <span class="phase-text">Habitat Scanner</span>
       </div>
       <div class="phase-pill" data-phase="2">
         <span class="phase-number">2</span>
-        <span class="phase-text">Viral Truth Lab</span>
+        <span class="phase-text">Viral Trend Lab</span>
       </div>
       <div class="phase-pill" data-phase="3">
         <span class="phase-number">3</span>
@@ -53,36 +53,36 @@
   </header>
 
   <!-- ==========================================================================
-       PHASE 1: WILDLIFE ADAPTATION BIOMETRIC SCANNER
+       PHASE 1: WILD HABITAT & ANIMAL NEEDS SCANNER
        ========================================================================== -->
   <main class="phase-viewport active" id="phase-1-viewport">
     <div class="phase-intro">
-      <h2>Phase 1: Wildlife Adaptation Biometric Scanner</h2>
-      <p>Scan all 6 endangered species to analyze their survival adaptations, habitats, and threat statuses.</p>
+      <h2>Phase 1: Exotic Pets vs. Wild Habitats Scanner</h2>
+      <p>Investigate wild survival requirements. Real animals belong in their natural habitats, not bedrooms!</p>
     </div>
 
-    <!-- 6 Animals Grid -->
+    <!-- Animals Grid -->
     <div class="animals-grid" id="animals-grid">
-      <!-- Injected dynamically by app.js -->
+      <!-- Injected dynamically from GAME_DATA.phase1Cards -->
     </div>
 
     <div class="scanner-footer">
       <div style="font-size: 0.82rem; color: #94a3b8;">
-        💡 <strong>Field Tip:</strong> Structural adaptations help animals survive extreme cold, predators, and food shortages!
+        💡 <strong>Grammar Formula:</strong> <em>The [animal] needs [requirement].</em>
       </div>
       <button class="btn-3d btn-cyan" id="btn-scanner-continue">
-        Scan All 6 to Unlock Phase 2 ➔
+        Examine All to Unlock Phase 2 ➔
       </button>
     </div>
   </main>
 
   <!-- ==========================================================================
-       PHASE 2: SOCIAL MEDIA LITERACY LAB (TIKTOK / REELS DETECTOR)
+       PHASE 2: VIRAL TREND DETECTOR (CAPYBARA LAB)
        ========================================================================== -->
   <main class="phase-viewport" id="phase-2-viewport">
     <div class="phase-intro">
-      <h2>Phase 2: Social Media Literacy Lab</h2>
-      <p>Analyze viral video posts: Is it verified conservation science or fake clickbait that harms wildlife?</p>
+      <h2>Phase 2: Viral Trend Detector — Keep It Wild!</h2>
+      <p>Evaluate internet trends: Is it harmful wild animal captivity or a safe eco-friendly toy?</p>
     </div>
 
     <div class="lab-container">
@@ -93,49 +93,48 @@
         <!-- Post Author Header -->
         <div class="post-header">
           <div class="post-author-box">
-            <div class="post-avatar" id="post-avatar">🐒</div>
+            <div class="post-avatar" id="post-avatar">🛁</div>
             <div>
-              <div class="post-author-name" id="post-author">@JungleCuteness_Viral</div>
-              <div style="font-size: 0.68rem; color: #64748b;" id="lab-progress-label">Video Investigation 1 of 5</div>
+              <div class="post-author-name" id="post-author">Viral Trend: Capybara in Bathtub</div>
+              <div style="font-size: 0.68rem; color: #64748b;" id="lab-progress-label">Scenario 1 of 2</div>
             </div>
           </div>
           <div class="post-metrics">
-            <span id="post-likes">❤️ 4.8M</span>
-            <span id="post-shares">↗️ 620K</span>
+            <span id="post-likes">❤️ 2.4M</span>
+            <span id="post-shares">↗️ 540K</span>
           </div>
         </div>
 
         <!-- Simulated Video Window -->
         <div class="video-simulation-card">
-          <div class="video-play-icon">▶️</div>
-          <p class="video-description-text" id="video-preview-text">"Slow loris holding its arms raised while a human hand tickles its belly on a couch."</p>
+          <p class="video-description-text" id="video-preview-text">A viral creator keeps a 50kg capybara inside a small apartment bathtub.</p>
         </div>
 
         <!-- Post Headline Caption -->
         <div class="post-caption" id="post-caption">
-          "This cute slow loris LOVES having its arms tickled! Look at that smile! 😍"
+          A viral creator keeps a 50kg capybara inside a small apartment bathtub.
         </div>
 
         <!-- Decision Buttons -->
         <div class="decision-grid" id="decision-buttons">
           <button class="btn-decision btn-real" id="btn-vote-real">
-            ✅ REAL SCIENCE
+            🚨 HARMFUL WILD CAPTIVITY
           </button>
           <button class="btn-decision btn-fake" id="btn-vote-fake">
-            ❌ FAKE CLICKBAIT
+            ✅ SAFE ECO-FRIENDLY TOY
           </button>
         </div>
 
         <!-- Feedback & Scientific Explanation -->
         <div class="feedback-box" id="feedback-box">
-          <div class="feedback-tag" id="feedback-tag">🎯 EXCELLENT INVESTIGATION!</div>
-          <div class="feedback-text" id="feedback-text">Explanation text will populate here.</div>
-          <div class="feedback-advice" id="feedback-advice">Ranger Rule advice.</div>
+          <div class="feedback-tag" id="feedback-tag">🎯 EXCELLENT WILDLIFE RANGER JUDGMENT!</div>
+          <div class="feedback-text" id="feedback-text">Keep it wild! A capybara cannot live in an apartment. It needs a wetland and a herd!</div>
+          <div class="feedback-advice" id="feedback-advice">Rule: Keep it wild! Buy the toy lamp!</div>
         </div>
 
         <!-- Next Post Button -->
         <button class="btn-3d btn-cyan" id="btn-next-post" style="display:none; width:100%; margin-top:6px;">
-          Next Investigation ➔
+          Next Scenario ➔
         </button>
       </div>
     </div>
@@ -166,7 +165,7 @@
         </div>
 
         <div class="teleprompter-script-viewport" id="teleprompter-script">
-          <!-- Populated dynamically with interactive word-spans -->
+          <!-- Populated from GAME_DATA.teleprompterScript -->
         </div>
 
         <div class="studio-buttons-row">

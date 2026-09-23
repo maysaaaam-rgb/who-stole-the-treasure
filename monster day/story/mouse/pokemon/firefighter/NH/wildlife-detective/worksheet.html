@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildlife Detective: Ranger Mission Log & Certificate | Printable Worksheet</title>
+  <title>Wildlife Detective: Keep It Wild! | Printable Worksheet</title>
   <style>
     @page {
       size: A4 portrait;
@@ -40,7 +40,7 @@
       margin-bottom: 14px;
     }
     .header-titles h1 {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 900;
       color: #065f46;
       text-transform: uppercase;
@@ -73,7 +73,7 @@
       margin-left: 6px;
     }
     .section-title {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 800;
       color: #065f46;
       background: #dcfce7;
@@ -84,7 +84,28 @@
       text-transform: uppercase;
     }
 
-    /* Section 1: Matching Matrix */
+    /* Word Bank */
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: #f1f5f9;
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+    }
+    .word-tag {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    /* Section 1: Matching Table */
     .matching-table {
       width: 100%;
       border-collapse: collapse;
@@ -107,7 +128,7 @@
       font-weight: 800;
     }
 
-    /* Section 2: Social Media Fact Checker */
+    /* Section 2: Viral Trend Fact-Checker */
     .fact-check-box {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -140,7 +161,7 @@
       margin-top: 4px;
     }
 
-    /* Section 3: Field Broadcast Report */
+    /* Section 3: Teleprompter Written Report */
     .report-lines {
       display: flex;
       flex-direction: column;
@@ -159,7 +180,7 @@
       min-height: 18px;
     }
 
-    /* Section 4: Certificate of Verification */
+    /* Section 4: Certificate */
     .cert-box {
       border: 2px dashed #059669;
       border-radius: 10px;
@@ -203,8 +224,8 @@
     <!-- Header -->
     <header class="worksheet-header">
       <div class="header-titles">
-        <h1>🐾 Wildlife Detective: Field Mission Log</h1>
-        <p>Animal Adaptations & Social Media Fact-Checker • CEFR A1+ / Grade 4 CLIL</p>
+        <h1>🐾 Wildlife Detective: Keep It Wild!</h1>
+        <p>Exotic Pets vs. Wild Habitats • Grade 4 ESL / CEFR A1+ CLIL</p>
       </div>
       <button class="no-print" onclick="window.print()" style="padding: 6px 14px; background: #059669; color: #fff; font-weight: 800; border: none; border-radius: 6px; cursor: pointer;">
         🖨️ Print Mission Log
@@ -215,109 +236,107 @@
     <div class="student-fields">
       <div class="field-box">Ranger Name: <span class="field-line"></span></div>
       <div class="field-box">Date: <span class="field-line"></span></div>
-      <div class="field-box">Patrol Rank: <span class="field-line">Junior Ranger</span></div>
+      <div class="field-box">Patrol Rank: <span class="field-line">Certified Wildlife Ranger</span></div>
+    </div>
+
+    <!-- Lexicon Word Bank -->
+    <div class="word-bank">
+      <span style="font-size:0.75rem; font-weight:900; color:#065f46; width:100%; margin-bottom:4px;">🎯 Ranger Word Bank:</span>
+      <span class="word-tag">wetland</span>
+      <span class="word-tag">herd</span>
+      <span class="word-tag">chew</span>
+      <span class="word-tag">teeth</span>
+      <span class="word-tag">webbed feet</span>
+      <span class="word-tag">snorkel face</span>
+      <span class="word-tag">lamp</span>
+      <span class="word-tag">expert</span>
+      <span class="word-tag">zookeeper</span>
+      <span class="word-tag">wild</span>
+      <span class="word-tag">pet</span>
     </div>
 
     <!-- Section 1 -->
-    <div class="section-title">1. Adaptation Matching Matrix</div>
+    <div class="section-title">1. Animal Habitat Requirements (Formula: The [animal] needs [requirement])</div>
     <table class="matching-table">
       <thead>
         <tr>
           <th class="match-num">#</th>
-          <th>Animal</th>
-          <th>Key Survival Adaptation</th>
-          <th>Habitat & Function</th>
+          <th>Wild Animal</th>
+          <th>What does it need to survive?</th>
+          <th>Can it live in a bedroom?</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td class="match-num">1</td>
-          <td><strong>Snow Leopard</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] Wide furry paws & long balancing tail</td>
-          <td>Blends into Himalayan cliffs for stealth hunting</td>
+          <td><strong>Axolotl</strong></td>
+          <td>Needs cold, clean water in Mexican lakes</td>
+          <td>[ &nbsp; ] NO — It needs specialized wild lake waters</td>
         </tr>
         <tr>
           <td class="match-num">2</td>
-          <td><strong>African Elephant</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] Giant radiator ears & 40,000-muscle trunk</td>
-          <td>Cools blood vessels under extreme savanna heat</td>
+          <td><strong>Bearded Dragon</strong></td>
+          <td>Needs hot desert sunshine and heat lamps</td>
+          <td>[ &nbsp; ] NO — It needs desert heat & UVB rays</td>
         </tr>
         <tr>
           <td class="match-num">3</td>
-          <td><strong>Red-Eyed Tree Frog</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] Startle coloration & suction cup toes</td>
-          <td>Grips rain leaves & shocks predators with scarlet eyes</td>
-        </tr>
-        <tr>
-          <td class="match-num">4</td>
-          <td><strong>Barn Owl</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] Heart-shaped facial disc & silent feathers</td>
-          <td>Mutes flight noise to hunt mice in total darkness</td>
-        </tr>
-        <tr>
-          <td class="match-num">5</td>
-          <td><strong>Sea Turtle</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] Paddle flippers & salt-excreting eye glands</td>
-          <td>Pumps excess sea salt out of body while feeding</td>
-        </tr>
-        <tr>
-          <td class="match-num">6</td>
-          <td><strong>Honey Badger</strong></td>
-          <td>[ &nbsp;&nbsp;&nbsp;&nbsp; ] 6mm rubbery loose skin & venom resistance</td>
-          <td>Neutralizes snake venom and twists to counter-attack</td>
+          <td><strong>Ball Python</strong></td>
+          <td>Needs warm African grasslands with tight burrows</td>
+          <td>[ &nbsp; ] NO — It needs African grassland burrows</td>
         </tr>
       </tbody>
     </table>
 
     <!-- Section 2 -->
-    <div class="section-title">2. Viral Video Fact-Check Investigation</div>
+    <div class="section-title">2. Social Media Investigation: Capybara Bathtub vs. Toy Nightlight</div>
     <div class="fact-check-box">
       <div class="fact-card">
-        <div class="fact-title">Claim A: "Pet Slow Lorises love being tickled on the belly!"</div>
+        <div class="fact-title">Case A: "Keeping a 50kg Capybara inside an apartment bathtub"</div>
         <div class="checkbox-row">
-          <label><input type="checkbox"> Real Science</label>
-          <label><input type="checkbox"> Fake Clickbait</label>
+          <label><input type="checkbox"> Harmful Captivity</label>
+          <label><input type="checkbox"> Safe Pet</label>
         </div>
-        <div style="font-size: 0.72rem; color: #475569;">Scientific Reason:</div>
-        <div class="write-line"></div>
-        <div class="write-line"></div>
+        <div style="font-size: 0.72rem; color: #475569;">Why? (Use formula: <em>It cannot live in a bedroom because...</em>):</div>
+        <div class="write-line">It cannot live in a bedroom because it needs ___________________</div>
+        <div class="write-line">and a _____________________________________________________.</div>
       </div>
 
       <div class="fact-card">
-        <div class="fact-title">Claim B: "Mother sea turtles cry real tears on nesting beaches!"</div>
+        <div class="fact-title">Case B: "Buying a squishy silicone Capybara desk nightlight"</div>
         <div class="checkbox-row">
-          <label><input type="checkbox"> Real Science</label>
-          <label><input type="checkbox"> Fake Clickbait</label>
+          <label><input type="checkbox"> Harmful Captivity</label>
+          <label><input type="checkbox"> Safe Eco-Toy</label>
         </div>
-        <div style="font-size: 0.72rem; color: #475569;">Scientific Reason:</div>
-        <div class="write-line"></div>
-        <div class="write-line"></div>
+        <div style="font-size: 0.72rem; color: #475569;">Why? (Use formula: <em>Keep it wild! Buy the...</em>):</div>
+        <div class="write-line">Keep it wild! Buy the ______________________________________!</div>
+        <div class="write-line">Leave living animals in ____________________________________.</div>
       </div>
     </div>
 
     <!-- Section 3 -->
-    <div class="section-title">3. Ranger Broadcast Dispatch (Written Report)</div>
+    <div class="section-title">3. Official Ranger Dispatch (Teleprompter Speaking & Writing)</div>
     <div class="report-lines">
       <div class="report-sentence">
-        <strong>1. Field Discovery:</strong> I investigated the <span class="underline-fill"></span> because its adaptation is <span class="underline-fill"></span>.
+        <strong>Line 1:</strong> This is the wild <span class="underline-fill">capybara</span>.
       </div>
       <div class="report-sentence">
-        <strong>2. Threat Check:</strong> This species is threatened by <span class="underline-fill"></span> in its natural habitat.
+        <strong>Line 2:</strong> It cannot live in a <span class="underline-fill">bedroom</span> because it needs a <span class="underline-fill">wetland</span> and a <span class="underline-fill">herd</span>!
       </div>
       <div class="report-sentence">
-        <strong>3. Ranger Rule:</strong> When I see wild animals on social media, I should <span class="underline-fill"></span>.
+        <strong>Line 3:</strong> Keep it <span class="underline-fill">wild</span>! Buy the toy <span class="underline-fill">lamp</span>!
       </div>
     </div>
 
     <!-- Section 4 -->
     <div class="cert-box">
       <div class="cert-text">
-        <h3>🛡️ OFFICIAL WILDLIFE DETECTIVE CERTIFICATION</h3>
-        <p>This certifies that the named ranger has demonstrated critical science literacy and animal advocacy.</p>
+        <h3>🛡️ CERTIFIED WILDLIFE DETECTIVE RANGER</h3>
+        <p>This certifies that the named student understands wild animal welfare and advocates: "Keep It Wild!"</p>
         <p style="margin-top: 4px; font-weight: 700; color: #065f46;">Teacher Signature / Stamp: _______________________</p>
       </div>
       <div class="stamp-badge">
-        VERIFIED RANGER<br>⭐⭐⭐⭐⭐
+        KEEP IT WILD!<br>⭐⭐⭐⭐⭐
       </div>
     </div>
   </div>
