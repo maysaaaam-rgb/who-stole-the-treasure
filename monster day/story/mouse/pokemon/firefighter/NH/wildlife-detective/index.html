@@ -1,47 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildlife Detective: Keep It Wild! | English Adventure Academy</title>
-  
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wildlife Detective: TikTok vs. Nature</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-
   <div id="game-arena">
-    <canvas id="confetti-canvas"></canvas>
-
     <header>
-      <div class="title-shield">
-        <span>🐾</span> WILDLIFE DETECTIVE
-      </div>
-
+      <div class="title-shield">🐾 Wildlife Detective</div>
       <div class="meter-container">
         <div class="meter-label-row">
-          <span>PROGRESS</span>
-          <span id="meter-perc">25%</span>
+          <span>Wild Energy</span>
+          <span id="meter-perc">20%</span>
         </div>
         <div class="meter-track">
-          <div class="meter-fill" id="meter-fill" style="width: 25%;"></div>
+          <div id="meter-fill" class="meter-fill"></div>
         </div>
       </div>
-
-      <div class="header-right">
-        <div class="xp-counter">
-          <span>⭐</span> <span id="score-val">0</span> XP
-        </div>
-        <a href="worksheet.html" target="_blank" class="btn-3d btn-amber btn-nav-compact" title="Printable Field Log & Certificate">📄 Log</a>
-        <a href="../index.html" class="btn-3d btn-green btn-nav-compact" title="Return to Academy Hub">🏠 Hub</a>
+      <div class="xp-counter">
+        <span>⭐</span>
+        <span id="score-val">0</span>
+        <span style="font-size:0.75rem; color:#fff;">XP</span>
       </div>
     </header>
-
-    <main id="stage">
-      <!-- Stage content injected dynamically by app.js -->
-    </main>
+    <main id="stage"></main>
   </div>
-
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
