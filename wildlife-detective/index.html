@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildlife Detective: Conservation & Adaptations | English Adventure Academy</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP APP HEADER & 3-PHASE STEPPER
+       ========================================================================== -->
+  <header class="ranger-header">
+    <div class="brand-badge">
+      <div class="brand-icon">🐾</div>
+      <div class="brand-titles">
+        <h1>WILDLIFE DETECTIVE</h1>
+        <p>CLIL Science • Animal Adaptations & Media Literacy (CEFR A1+)</p>
+      </div>
+    </div>
+
+    <!-- Stepper Navigation -->
+    <nav class="phase-stepper" aria-label="Investigation Phases">
+      <div class="phase-pill active" data-phase="1">
+        <span class="phase-number">1</span>
+        <span class="phase-text">Adaptation Scanner</span>
+      </div>
+      <div class="phase-pill" data-phase="2">
+        <span class="phase-number">2</span>
+        <span class="phase-text">Viral Truth Lab</span>
+      </div>
+      <div class="phase-pill" data-phase="3">
+        <span class="phase-number">3</span>
+        <span class="phase-text">Ranger Studio</span>
+      </div>
+    </nav>
+
+    <!-- Header Controls -->
+    <div class="header-actions">
+      <button class="btn-3d btn-icon-round" id="btn-bgm-toggle" title="Toggle Ranger Ambient Audio">🎵</button>
+      <button class="btn-3d btn-icon-round" id="btn-mute-toggle" title="Toggle Sound FX">🔊</button>
+      <a href="worksheet.html" target="_blank" class="btn-3d btn-amber" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">📄 Log & Cert</a>
+      <a href="../index.html" class="btn-3d btn-emerald" style="padding: 8px 12px; font-size: 0.75rem; text-decoration: none;">🏠 Hub</a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       PHASE 1: WILDLIFE ADAPTATION BIOMETRIC SCANNER
+       ========================================================================== -->
+  <main class="phase-viewport active" id="phase-1-viewport">
+    <div class="phase-intro">
+      <h2>Phase 1: Wildlife Adaptation Biometric Scanner</h2>
+      <p>Scan all 6 endangered species to analyze their survival adaptations, habitats, and threat statuses.</p>
+    </div>
+
+    <!-- 6 Animals Grid -->
+    <div class="animals-grid" id="animals-grid">
+      <!-- Injected dynamically by app.js -->
+    </div>
+
+    <div class="scanner-footer">
+      <div style="font-size: 0.82rem; color: #94a3b8;">
+        💡 <strong>Field Tip:</strong> Structural adaptations help animals survive extreme cold, predators, and food shortages!
+      </div>
+      <button class="btn-3d btn-cyan" id="btn-scanner-continue">
+        Scan All 6 to Unlock Phase 2 ➔
+      </button>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       PHASE 2: SOCIAL MEDIA LITERACY LAB (TIKTOK / REELS DETECTOR)
+       ========================================================================== -->
+  <main class="phase-viewport" id="phase-2-viewport">
+    <div class="phase-intro">
+      <h2>Phase 2: Social Media Literacy Lab</h2>
+      <p>Analyze viral video posts: Is it verified conservation science or fake clickbait that harms wildlife?</p>
+    </div>
+
+    <div class="lab-container">
+      <!-- Smartphone Simulator -->
+      <div class="phone-mockup" id="phoneMockup">
+        <div class="phone-speaker-bar"></div>
+
+        <!-- Post Author Header -->
+        <div class="post-header">
+          <div class="post-author-box">
+            <div class="post-avatar" id="post-avatar">🐒</div>
+            <div>
+              <div class="post-author-name" id="post-author">@JungleCuteness_Viral</div>
+              <div style="font-size: 0.68rem; color: #64748b;" id="lab-progress-label">Video Investigation 1 of 5</div>
+            </div>
+          </div>
+          <div class="post-metrics">
+            <span id="post-likes">❤️ 4.8M</span>
+            <span id="post-shares">↗️ 620K</span>
+          </div>
+        </div>
+
+        <!-- Simulated Video Window -->
+        <div class="video-simulation-card">
+          <div class="video-play-icon">▶️</div>
+          <p class="video-description-text" id="video-preview-text">"Slow loris holding its arms raised while a human hand tickles its belly on a couch."</p>
+        </div>
+
+        <!-- Post Headline Caption -->
+        <div class="post-caption" id="post-caption">
+          "This cute slow loris LOVES having its arms tickled! Look at that smile! 😍"
+        </div>
+
+        <!-- Decision Buttons -->
+        <div class="decision-grid" id="decision-buttons">
+          <button class="btn-decision btn-real" id="btn-vote-real">
+            ✅ REAL SCIENCE
+          </button>
+          <button class="btn-decision btn-fake" id="btn-vote-fake">
+            ❌ FAKE CLICKBAIT
+          </button>
+        </div>
+
+        <!-- Feedback & Scientific Explanation -->
+        <div class="feedback-box" id="feedback-box">
+          <div class="feedback-tag" id="feedback-tag">🎯 EXCELLENT INVESTIGATION!</div>
+          <div class="feedback-text" id="feedback-text">Explanation text will populate here.</div>
+          <div class="feedback-advice" id="feedback-advice">Ranger Rule advice.</div>
+        </div>
+
+        <!-- Next Post Button -->
+        <button class="btn-3d btn-cyan" id="btn-next-post" style="display:none; width:100%; margin-top:6px;">
+          Next Investigation ➔
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       PHASE 3: LIVE TELEPROMPTER STUDIO (ORAL PRODUCTION)
+       ========================================================================== -->
+  <main class="phase-viewport" id="phase-3-viewport">
+    <div class="studio-container">
+      <!-- Ranger Podium -->
+      <div class="ranger-badge-podium">
+        <div class="badge-seal">🛡️</div>
+        <div class="podium-titles">
+          <h2>Master Wildlife Detective</h2>
+          <p id="total-earned-xp">Total XP Earned: 160 XP • Ready for Live Broadcast</p>
+        </div>
+      </div>
+
+      <!-- Live Broadcast Teleprompter -->
+      <div class="teleprompter-glass-box">
+        <div class="teleprompter-top-strip">
+          <div class="on-air-badge">
+            <span class="on-air-dot"></span>
+            LIVE BROADCAST ON AIR
+          </div>
+          <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 800;">ORAL PRODUCTION TELEPROMPTER</span>
+        </div>
+
+        <div class="teleprompter-script-viewport" id="teleprompter-script">
+          <!-- Populated dynamically with interactive word-spans -->
+        </div>
+
+        <div class="studio-buttons-row">
+          <button class="btn-3d btn-amber" id="btn-broadcast-report">
+            📢 BROADCAST REPORT (READ ALOUD)
+          </button>
+          <a href="worksheet.html" target="_blank" class="btn-3d btn-emerald" style="text-decoration:none;">
+            📄 PRINT A4 RANGER LOG
+          </a>
+          <button class="btn-3d btn-cyan" id="btn-restart-mission">
+            🔄 RESTART MISSION
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="ranger-toast" id="ranger-toast"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

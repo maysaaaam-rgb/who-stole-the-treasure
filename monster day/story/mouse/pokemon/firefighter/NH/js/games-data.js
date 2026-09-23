@@ -18,6 +18,75 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "wildlife-detective",
+    "aliases": [
+      "wildlife",
+      "detective",
+      "animal-adaptations",
+      "conservation",
+      "ranger"
+    ],
+    "title": "🐾 Wildlife Detective: Conservation & Adaptations",
+    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 160 XP). Scan survival adaptations across 6 endangered species, expose fake viral animal clickbait in the Social Media Literacy Lab, and broadcast live field reports in the Teleprompter Studio.",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryGroup": "CLIL & Science",
+    "categoryLabel": "🐾 Wildlife Conservation & Science Literacy",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–11",
+    "ageGroup": "8–11",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 160,
+    "skills": [
+      "Animal Structural & Behavioral Adaptations",
+      "Wildlife Conservation & Habitat Protection",
+      "Critical Social Media & Viral Clickbait Literacy",
+      "Oral Field Dispatch Teleprompter Recitation"
+    ],
+    "topic": "Animal Adaptations, Endangered Species Conservation & Media Literacy",
+    "topics": [
+      "Animal Adaptations",
+      "Conservation Science",
+      "Media Literacy",
+      "Oral Production"
+    ],
+    "learningObjectives": [
+      "Identify key structural and behavioral adaptations of diverse animals (camouflage, radiator ears, startle eyes, silent flight, flippers, venom resistance).",
+      "Differentiate between verified conservation science facts and harmful social media animal clickbait.",
+      "Deliver a structured oral ranger report summarizing field observations and conservation ethics."
+    ],
+    "vocabulary": {
+      "core": ["adaptation", "camouflage", "habitat", "endangered", "predator", "prey", "species", "conserve"],
+      "supporting": ["structural", "behavioral", "clickbait", "misinformation", "biometrics", "teleprompter"]
+    },
+    "grammar": {
+      "focusPattern": "Cause & Effect / Purpose (uses [feature] to [verb] in order to [survive])",
+      "formula": "[Subject] + [uses / has] + [adaptation] + [to / for] + [survival function]",
+      "formulas": [
+        "The snow leopard uses its thick fur to survive freezing mountain cliffs.",
+        "The elephant flaps its giant ears to cool down its body.",
+        "The frog flashes red eyes to startle dangerous predators."
+      ]
+    },
+    "path": "wildlife-detective/index.html",
+    "url": "wildlife-detective/index.html",
+    "route": "wildlife-detective/index.html",
+    "worksheetRoute": "wildlife-detective/worksheet.html",
+    "icon": "🐾",
+    "thumbnailIcon": "🐾",
+    "gradient": "linear-gradient(135deg, #030a0f 0%, #064e3b 50%, #06b6d4 100%)",
+    "status": "ready"
+  },
+  {
     "id": "cat-vs-dog",
     "aliases": [
       "preposition-catapult",
