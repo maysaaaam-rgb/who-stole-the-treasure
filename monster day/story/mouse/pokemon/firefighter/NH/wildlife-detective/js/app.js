@@ -1,5 +1,6 @@
 /**
  * WILDLIFE DETECTIVE: APP ENGINE & REACTIVE STATE MACHINE
+ * Powered by GAME_DATA: "Keep It Wild! Buy the Toy Lamp!"
  * English Adventure Academy | Grade 4 ESL / CEFR A1+ CLIL
  */
 
@@ -10,8 +11,7 @@
     constructor() {
       this.currentPhase = 1; // 1: Scanner, 2: Viral Lab, 3: Studio
       this.scannedAnimals = new Set();
-      this.currentPostIndex = 0;
-      this.verifiedPostsCount = 0;
+      this.currentScenarioIndex = 0;
       this.earnedXP = 0;
       this.isBroadcasting = false;
       this.audioUnlocked = false;
@@ -19,12 +19,12 @@
 
     init() {
       this._bindHeader();
-      this._initPhase1Scanner();
-      this._initPhase2ViralLab();
+      this._initPhase1Cards();
+      this._initPhase2Scenarios();
       this._initPhase3Studio();
       this._setupAudioAutoUnlock();
 
-      // Show Phase 1 initially
+      // Start on Phase 1
       this.goToPhase(1);
     }
 
@@ -44,9 +44,13 @@
       document.querySelectorAll('.phase-pill').forEach(pill => {
         pill.addEventListener('click', () => {
           const targetPhase = parseInt(pill.dataset.phase, 10);
+          const data = root.GAME_DATA || root.WILDLIFE_DATA;
+          const totalCards = (data.phase1Cards || []).length;
+          const totalScenarios = (data.phase2Scenarios || []).length;
+
           if (targetPhase === 1 ||
-             (targetPhase === 2 && this.scannedAnimals.size >= 6) ||
-             (targetPhase === 3 && this.currentPostIndex >= root.WILDLIFE_DATA.VIRAL_POSTS.length)) {
+             (targetPhase === 2 && this.scannedAnimals.size >= totalCards) ||
+             (targetPhase === 3 && this.currentScenarioIndex >= totalScenarios)) {
             this.goToPhase(targetPhase);
           } else {
             this.showToast('🔒 Complete current phase requirements first!');
@@ -54,7 +58,7 @@
         });
       });
 
-      // BGM Ambient Drone Toggle
+      // BGM Toggle
       const bgmBtn = document.getElementById('btn-bgm-toggle');
       if (bgmBtn) {
         bgmBtn.addEventListener('click', () => {
@@ -79,16 +83,14 @@
     goToPhase(phaseNum) {
       this.currentPhase = phaseNum;
 
-      // Update Stepper Pills
+      // Update Stepper Navigation
       document.querySelectorAll('.phase-pill').forEach(pill => {
         const p = parseInt(pill.dataset.phase, 10);
         pill.classList.remove('active');
-        if (p === phaseNum) {
-          pill.classList.add('active');
-        }
+        if (p === phaseNum) pill.classList.add('active');
       });
 
-      // Switch Viewports
+      // Update Viewports
       document.querySelectorAll('.phase-viewport').forEach(vp => {
         vp.classList.remove('active');
       });
@@ -96,7 +98,7 @@
       if (currentVp) currentVp.classList.add('active');
 
       if (phaseNum === 2) {
-        this._renderCurrentViralPost();
+        this._renderCurrentScenario();
       }
 
       if (phaseNum === 3) {
@@ -105,42 +107,41 @@
     }
 
     // ==========================================================================
-    // PHASE 1: WILDLIFE ADAPTATION SCANNER
+    // PHASE 1: WILD HABITAT & ANIMAL NEEDS SCANNER
     // ==========================================================================
-    _initPhase1Scanner() {
+    _initPhase1Cards() {
       const container = document.getElementById('animals-grid');
       if (!container) return;
 
+      const data = root.GAME_DATA || root.WILDLIFE_DATA;
       container.innerHTML = '';
-      root.WILDLIFE_DATA.ANIMALS_DATA.forEach(animal => {
+
+      data.phase1Cards.forEach(cardData => {
         const card = document.createElement('div');
         card.className = 'animal-card';
-        card.id = `animal-card-${animal.id}`;
+        card.id = `card-${cardData.id}`;
         card.innerHTML = `
           <div class="radar-sweep-line"></div>
           <div class="animal-art-box">
-            <img src="${animal.iconSvg}" alt="${animal.name}"/>
+            ${cardData.svg}
           </div>
           <div class="animal-meta">
-            <span class="animal-name">${animal.name}</span>
-            <span class="threat-badge">${animal.threatLevel}</span>
+            <span class="animal-name">${cardData.name}</span>
+            <span class="threat-badge">Wild Animal 🌿</span>
           </div>
-          <div class="adaptation-highlight">⚡ ${animal.keyAdaptation}</div>
-          <p class="animal-habitat">📍 <strong>Habitat:</strong> ${animal.habitat}</p>
+          <p class="animal-habitat">📌 <strong>Need:</strong> ${cardData.requirement}</p>
           <div class="clues-list">
-            ${animal.clues.map(c => `
-              <div class="clue-item"><strong>${c.label}:</strong> ${c.desc}</div>
-            `).join('')}
+            <div class="clue-item"><strong>Formula:</strong> The ${cardData.name.toLowerCase()} needs ${cardData.requirement.toLowerCase()}</div>
           </div>
-          <button class="btn-3d btn-emerald" style="width:100%; margin-top:auto;" id="scan-btn-${animal.id}">
-            🔍 SCAN BIOMETRICS
+          <button class="btn-3d btn-emerald" style="width:100%; margin-top:auto;" id="btn-scan-${cardData.id}">
+            🔍 INVESTIGATE HABITAT
           </button>
         `;
 
-        const scanBtn = card.querySelector(`#scan-btn-${animal.id}`);
+        const scanBtn = card.querySelector(`#btn-scan-${cardData.id}`);
         scanBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          this._scanAnimal(animal, card, scanBtn);
+          this._examineCard(cardData, card, scanBtn);
         });
 
         container.appendChild(card);
@@ -150,42 +151,43 @@
       const contBtn = document.getElementById('btn-scanner-continue');
       if (contBtn) {
         contBtn.addEventListener('click', () => {
-          if (this.scannedAnimals.size >= 6) {
+          const total = data.phase1Cards.length;
+          if (this.scannedAnimals.size >= total) {
             this.goToPhase(2);
           } else {
-            this.showToast(`Please scan all 6 animals first! (${this.scannedAnimals.size}/6 scanned)`);
+            this.showToast(`Investigate all ${total} animals first! (${this.scannedAnimals.size}/${total})`);
           }
         });
       }
     }
 
-    _scanAnimal(animal, cardEl, btnEl) {
+    _examineCard(cardData, cardEl, btnEl) {
       if (root.WildlifeAudio) {
         root.WildlifeAudio.playScannerBeep();
       }
 
       cardEl.classList.add('scanning');
-      btnEl.textContent = 'SCANNING...';
+      btnEl.textContent = 'ANALYZING...';
 
       setTimeout(() => {
         cardEl.classList.remove('scanning');
         cardEl.classList.add('scanned');
-        btnEl.textContent = '✅ VERIFIED';
+        btnEl.textContent = '✅ VERIFIED WILD';
         btnEl.classList.remove('btn-emerald');
         btnEl.classList.add('btn-cyan');
 
-        this.scannedAnimals.add(animal.id);
+        this.scannedAnimals.add(cardData.id);
 
         if (root.WildlifeAudio) {
-          root.WildlifeAudio.playAnimalVocal(animal.soundType);
-          root.WildlifeAudio.speak(animal.ttsAudio);
+          root.WildlifeAudio.playCameraShutter();
+          root.WildlifeAudio.speak(cardData.ttsPrompt);
         }
 
-        this.earnedXP += 10;
-        this.showToast(`✨ Scanned ${animal.name}! (+10 XP)`);
+        this.earnedXP += 15;
+        this.showToast(`✨ Verified: ${cardData.name}! (+15 XP)`);
 
-        // Check if all 6 are scanned
-        if (this.scannedAnimals.size >= 6) {
+        const total = (root.GAME_DATA || root.WILDLIFE_DATA).phase1Cards.length;
+        if (this.scannedAnimals.size >= total) {
           const pill1 = document.querySelector('.phase-pill[data-phase="1"]');
           if (pill1) pill1.classList.add('completed');
 
@@ -193,37 +195,40 @@
           if (contBtn) {
             contBtn.classList.remove('btn-cyan');
             contBtn.classList.add('btn-emerald');
-            contBtn.innerHTML = '✨ Phase 2 Unlocked: Enter Viral Lab ➔';
+            contBtn.innerHTML = '✨ Phase 2 Unlocked: Enter Viral Trend Lab ➔';
           }
         }
-      }, 900);
+      }, 750);
     }
 
     // ==========================================================================
-    // PHASE 2: SOCIAL MEDIA LITERACY LAB (TIKTOK / REELS DETECTOR)
+    // PHASE 2: VIRAL TRENDS VS WILD NATURE LAB
     // ==========================================================================
-    _initPhase2ViralLab() {
+    _initPhase2Scenarios() {
       const btnReal = document.getElementById('btn-vote-real');
       const btnFake = document.getElementById('btn-vote-fake');
       const btnNext = document.getElementById('btn-next-post');
 
       if (btnReal) {
-        btnReal.addEventListener('click', () => this._handleViralVote(true));
+        btnReal.textContent = '🚨 HARMFUL WILD CAPTIVITY';
+        btnReal.addEventListener('click', () => this._handleScenarioChoice(true));
       }
       if (btnFake) {
-        btnFake.addEventListener('click', () => this._handleViralVote(false));
+        btnFake.textContent = '✅ SAFE ECO-FRIENDLY TOY';
+        btnFake.addEventListener('click', () => this._handleScenarioChoice(false));
       }
       if (btnNext) {
         btnNext.addEventListener('click', () => {
-          this.currentPostIndex++;
-          if (this.currentPostIndex < root.WILDLIFE_DATA.VIRAL_POSTS.length) {
-            this._renderCurrentViralPost();
+          const data = root.GAME_DATA || root.WILDLIFE_DATA;
+          this.currentScenarioIndex++;
+          if (this.currentScenarioIndex < data.phase2Scenarios.length) {
+            this._renderCurrentScenario();
           } else {
-            // Lab Complete!
+            // Lab Complete
             const pill2 = document.querySelector('.phase-pill[data-phase="2"]');
             if (pill2) pill2.classList.add('completed');
 
-            this.showToast('🎉 Social Media Detective Training Complete! Proceeding to Studio...');
+            this.showToast('🎉 Investigation Complete! Advancing to Teleprompter Studio...');
             if (root.WildlifeAudio) root.WildlifeAudio.playPromotionFanfare();
             setTimeout(() => {
               this.goToPhase(3);
@@ -233,43 +238,44 @@
       }
     }
 
-    _renderCurrentViralPost() {
-      const posts = root.WILDLIFE_DATA.VIRAL_POSTS;
-      if (this.currentPostIndex >= posts.length) return;
+    _renderCurrentScenario() {
+      const data = root.GAME_DATA || root.WILDLIFE_DATA;
+      if (this.currentScenarioIndex >= data.phase2Scenarios.length) return;
 
-      const post = posts[this.currentPostIndex];
+      const sc = data.phase2Scenarios[this.currentScenarioIndex];
 
       const authorEl = document.getElementById('post-author');
       const avatarEl = document.getElementById('post-avatar');
-      const likesEl = document.getElementById('post-likes');
-      const sharesEl = document.getElementById('post-shares');
       const captionEl = document.getElementById('post-caption');
       const previewTextEl = document.getElementById('video-preview-text');
       const progressLabel = document.getElementById('lab-progress-label');
       const feedbackBox = document.getElementById('feedback-box');
       const nextBtn = document.getElementById('btn-next-post');
+      const previewCard = document.querySelector('.video-simulation-card');
 
-      if (authorEl) authorEl.textContent = post.author;
-      if (avatarEl) avatarEl.textContent = post.avatar;
-      if (likesEl) likesEl.textContent = `❤️ ${post.likes}`;
-      if (sharesEl) sharesEl.textContent = `↗️ ${post.shares}`;
-      if (captionEl) captionEl.textContent = post.headline;
-      if (previewTextEl) previewTextEl.textContent = `🎬 "${post.videoPreview}"`;
-      if (progressLabel) progressLabel.textContent = `Video Investigation ${this.currentPostIndex + 1} of ${posts.length}`;
+      if (authorEl) authorEl.textContent = sc.title;
+      if (avatarEl) avatarEl.textContent = sc.isWildHarm ? '🛁' : '💡';
+      if (captionEl) captionEl.textContent = sc.description;
+      if (previewTextEl) previewTextEl.textContent = sc.description;
+      if (progressLabel) progressLabel.textContent = `Scenario ${this.currentScenarioIndex + 1} of ${data.phase2Scenarios.length}`;
+
+      if (previewCard && sc.svg) {
+        previewCard.innerHTML = `<div style="width:130px; height:110px;">${sc.svg}</div>`;
+      }
 
       if (feedbackBox) feedbackBox.style.display = 'none';
       if (nextBtn) nextBtn.style.display = 'none';
-
       document.getElementById('decision-buttons').style.display = 'grid';
 
       if (root.WildlifeAudio) {
-        root.WildlifeAudio.speak(post.headline);
+        root.WildlifeAudio.speak(sc.title + '. ' + sc.description);
       }
     }
 
-    _handleViralVote(isRealVote) {
-      const post = root.WILDLIFE_DATA.VIRAL_POSTS[this.currentPostIndex];
-      const isCorrect = (isRealVote === post.isRealScience);
+    _handleScenarioChoice(choseHarmful) {
+      const data = root.GAME_DATA || root.WILDLIFE_DATA;
+      const sc = data.phase2Scenarios[this.currentScenarioIndex];
+      const isCorrect = (choseHarmful === sc.isWildHarm);
 
       const feedbackBox = document.getElementById('feedback-box');
       const tagEl = document.getElementById('feedback-tag');
@@ -281,32 +287,33 @@
       decisionBtns.style.display = 'none';
 
       if (feedbackBox && tagEl && textEl && adviceEl) {
-        tagEl.textContent = isCorrect ? `🎯 EXCELLENT INVESTIGATION! ${post.tag}` : `⚠️ WARNING: MISINFORMATION! ${post.tag}`;
-        tagEl.style.color = isCorrect ? '#34d399' : '#ef4444';
-        textEl.textContent = post.explanation;
-        adviceEl.textContent = `🛡️ Ranger Rule: ${post.rangerAdvice}`;
+        tagEl.textContent = isCorrect ? '🎯 EXCELLENT WILDLIFE RANGER JUDGMENT!' : '⚠️ WATCH OUT!';
+        tagEl.style.color = isCorrect ? '#34d399' : '#f59e0b';
+        textEl.textContent = sc.ruleSpeech;
+        adviceEl.textContent = sc.isWildHarm 
+          ? 'Rule: Keep it wild! Animals need their natural wetland & herd.'
+          : 'Rule: Buy the toy nightlight and leave real animals in nature!';
         feedbackBox.style.display = 'flex';
       }
 
       if (isCorrect) {
         if (root.WildlifeAudio) root.WildlifeAudio.playTruthChime();
-        this.earnedXP += 20;
-        this.verifiedPostsCount++;
-        this.showToast('✅ Verified correctly! (+20 XP)');
+        this.earnedXP += 25;
+        this.showToast('✅ Correct Ranger Decision! (+25 XP)');
       } else {
         if (root.WildlifeAudio) root.WildlifeAudio.playBuzzer();
-        this.showToast('❌ Clickbait trap identified! Learn the science!');
+        this.showToast('Learn the rule: Keep wild animals in nature!');
       }
 
       if (root.WildlifeAudio) {
-        root.WildlifeAudio.speak(post.explanation);
+        root.WildlifeAudio.speak(sc.ruleSpeech);
       }
 
       if (nextBtn) {
         nextBtn.style.display = 'inline-flex';
-        nextBtn.textContent = (this.currentPostIndex + 1 < root.WILDLIFE_DATA.VIRAL_POSTS.length)
-          ? 'Next Investigation ➔'
-          : 'Finalize Ranger Mission ➔';
+        nextBtn.textContent = (this.currentScenarioIndex + 1 < data.phase2Scenarios.length)
+          ? 'Next Scenario ➔'
+          : 'Proceed to Ranger Teleprompter Studio ➔';
       }
     }
 
@@ -321,14 +328,13 @@
         });
       }
 
-      const replayBtn = document.getElementById('btn-restart-mission');
-      if (replayBtn) {
-        replayBtn.addEventListener('click', () => {
+      const restartBtn = document.getElementById('btn-restart-mission');
+      if (restartBtn) {
+        restartBtn.addEventListener('click', () => {
           this.scannedAnimals.clear();
-          this.currentPostIndex = 0;
-          this.verifiedPostsCount = 0;
+          this.currentScenarioIndex = 0;
           this.goToPhase(1);
-          this._initPhase1Scanner();
+          this._initPhase1Cards();
         });
       }
     }
@@ -337,35 +343,35 @@
       const scriptBox = document.getElementById('teleprompter-script');
       if (!scriptBox) return;
 
+      const data = root.GAME_DATA || root.WILDLIFE_DATA;
       scriptBox.innerHTML = '';
-      root.WILDLIFE_DATA.TELEPROMPTER_TEMPLATE.forEach((line, sIdx) => {
-        const p = document.createElement('div');
-        p.className = 'script-sentence-block';
 
-        const words = line.text.split(' ');
-        words.forEach((w, wIdx) => {
-          const span = document.createElement('span');
-          span.className = 'tele-word';
-          span.id = `tele-word-${sIdx}-${wIdx}`;
-          span.textContent = w + ' ';
-          if (w.toLowerCase().includes(line.highlightKey)) {
-            span.classList.add('keyword');
-          }
-          p.appendChild(span);
-        });
+      const p = document.createElement('div');
+      p.className = 'script-sentence-block';
 
-        scriptBox.appendChild(p);
+      data.teleprompterScript.forEach((word, wIdx) => {
+        const span = document.createElement('span');
+        span.className = 'tele-word';
+        span.id = `tele-word-${wIdx}`;
+        span.textContent = word + ' ';
+        if (['wild', 'capybara.', 'wetland', 'herd!'].includes(word.toLowerCase())) {
+          span.classList.add('keyword');
+        }
+        p.appendChild(span);
       });
 
+      scriptBox.appendChild(p);
+
       const totalXpEl = document.getElementById('total-earned-xp');
-      if (totalXpEl) totalXpEl.textContent = `Total XP Earned: ${this.earnedXP} XP`;
+      if (totalXpEl) totalXpEl.textContent = `Total XP Earned: ${this.earnedXP} XP • Master Conservationist`;
     }
 
     _startOralBroadcast() {
       if (this.isBroadcasting) return;
       this.isBroadcasting = true;
 
-      const fullText = root.WILDLIFE_DATA.TELEPROMPTER_TEMPLATE.map(s => s.text).join(' ');
+      const data = root.GAME_DATA || root.WILDLIFE_DATA;
+      const fullText = data.teleprompterScript.join(' ');
       const wordsSpans = Array.from(document.querySelectorAll('.tele-word'));
 
       wordsSpans.forEach(s => s.classList.remove('active-reading'));
@@ -384,7 +390,7 @@
           () => {
             wordsSpans.forEach(s => s.classList.remove('active-reading'));
             this.isBroadcasting = false;
-            this.showToast('🎙️ Live Ranger Broadcast Complete! Outstanding Speaking!');
+            this.showToast('🎙️ Live Broadcast Complete! Excellent Speaking!');
             if (root.WildlifeAudio) root.WildlifeAudio.playPromotionFanfare();
           }
         );

@@ -26,8 +26,8 @@ const GAMES_REGISTRY = [
       "conservation",
       "ranger"
     ],
-    "title": "🐾 Wildlife Detective: Conservation & Adaptations",
-    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 160 XP). Scan survival adaptations across 6 endangered species, expose fake viral animal clickbait in the Social Media Literacy Lab, and broadcast live field reports in the Teleprompter Studio.",
+    "title": "🐾 Wildlife Detective: Keep It Wild!",
+    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 160 XP). Investigate the wild habitat requirements of exotic animals (Axolotl, Bearded Dragon, Ball Python), analyze viral trends like the bathtub capybara vs. silicone nightlight, and broadcast the live Ranger Dispatch: 'Keep it wild! Buy the toy lamp!'.",
     "type": "game",
     "category": "CLIL & Science",
     "categoryGroup": "CLIL & Science",
@@ -60,21 +60,22 @@ const GAMES_REGISTRY = [
       "Oral Production"
     ],
     "learningObjectives": [
-      "Identify key structural and behavioral adaptations of diverse animals (camouflage, radiator ears, startle eyes, silent flight, flippers, venom resistance).",
-      "Differentiate between verified conservation science facts and harmful social media animal clickbait.",
-      "Deliver a structured oral ranger report summarizing field observations and conservation ethics."
+      "Identify the specific environmental requirements of wild animals (Axolotl, Bearded Dragon, Ball Python, Capybara).",
+      "Understand why wild animals cannot live in human bedrooms or domestic bathtubs.",
+      "Differentiate between harmful wild pet trends and eco-friendly animal merchandise (toy nightlights).",
+      "Recite the Ranger Field Dispatch: 'Keep it wild! Buy the toy lamp!'."
     ],
     "vocabulary": {
-      "core": ["adaptation", "camouflage", "habitat", "endangered", "predator", "prey", "species", "conserve"],
-      "supporting": ["structural", "behavioral", "clickbait", "misinformation", "biometrics", "teleprompter"]
+      "core": ["wetland", "herd", "chew", "teeth", "webbed feet", "snorkel face", "lamp", "expert", "zookeeper", "wild", "pet"],
+      "supporting": ["requirement", "captivity", "burrow", "silicone", "clickbait", "teleprompter"]
     },
     "grammar": {
-      "focusPattern": "Cause & Effect / Purpose (uses [feature] to [verb] in order to [survive])",
-      "formula": "[Subject] + [uses / has] + [adaptation] + [to / for] + [survival function]",
+      "focusPattern": "Needs & Habitat Constraints (The [animal] needs [requirement] / It cannot live in a bedroom because...)",
+      "formula": "The [animal] needs [requirement]. / Keep it wild! Buy the [item]!",
       "formulas": [
-        "The snow leopard uses its thick fur to survive freezing mountain cliffs.",
-        "The elephant flaps its giant ears to cool down its body.",
-        "The frog flashes red eyes to startle dangerous predators."
+        "The [animal] needs [requirement].",
+        "It cannot live in a bedroom because it needs [habitat/herd].",
+        "Keep it wild! Buy the toy lamp!"
       ]
     },
     "path": "wildlife-detective/index.html",
