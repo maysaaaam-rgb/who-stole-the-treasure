@@ -26,13 +26,13 @@ const GAMES_REGISTRY = [
       "conservation",
       "ranger"
     ],
-    "title": "🐾 Wildlife Detective: Keep It Wild!",
-    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 160 XP). Investigate the wild habitat requirements of exotic animals (Axolotl, Bearded Dragon, Ball Python), analyze viral trends like the bathtub capybara vs. silicone nightlight, and broadcast the live Ranger Dispatch: 'Keep it wild! Buy the toy lamp!'.",
+    "title": "🐾 Wildlife Detective: TikTok vs. Nature",
+    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 150 XP). Investigate the wild habitat requirements of exotic animals (Axolotl, Bearded Dragon, Ball Python), analyze viral trends like the bathtub capybara vs. silicone nightlight, and broadcast the live Ranger Dispatch: 'Keep it wild! Buy the toy lamp!'.",
     "type": "game",
     "category": "CLIL & Science",
-    "categoryGroup": "CLIL & Science",
+    "categoryGroup": "Ecology & Wildlife",
     "categoryLabel": "🐾 Wildlife Conservation & Science Literacy",
-    "level": "A1+",
+    "level": "A1+ / A2",
     "cefrLevel": "A1+",
     "age": "Ages 8–11",
     "ageGroup": "8–11",
@@ -42,10 +42,10 @@ const GAMES_REGISTRY = [
       "Grade 4",
       "Grade 5"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
-    "xp": 160,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 150,
     "skills": [
       "Animal Structural & Behavioral Adaptations",
       "Wildlife Conservation & Habitat Protection",
@@ -54,28 +54,27 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Animal Adaptations, Endangered Species Conservation & Media Literacy",
     "topics": [
+      "Wildlife Conservation",
       "Animal Adaptations",
-      "Conservation Science",
       "Media Literacy",
-      "Oral Production"
+      "Social Media Trends"
     ],
     "learningObjectives": [
-      "Identify the specific environmental requirements of wild animals (Axolotl, Bearded Dragon, Ball Python, Capybara).",
-      "Understand why wild animals cannot live in human bedrooms or domestic bathtubs.",
-      "Differentiate between harmful wild pet trends and eco-friendly animal merchandise (toy nightlights).",
-      "Recite the Ranger Field Dispatch: 'Keep it wild! Buy the toy lamp!'."
+      "Differentiate wild animals from domestic pets based on physiological needs.",
+      "Formulate requirement and prohibition sentences using 'needs' and 'cannot live in'.",
+      "Deliver a structured 3-sentence conservation broadcast using the karaoke teleprompter."
     ],
     "vocabulary": {
       "core": ["wetland", "herd", "chew", "teeth", "webbed feet", "snorkel face", "lamp", "expert", "zookeeper", "wild", "pet"],
-      "supporting": ["requirement", "captivity", "burrow", "silicone", "clickbait", "teleprompter"]
+      "supporting": ["habitat", "protect", "apartment", "swimming", "adaptations"]
     },
     "grammar": {
-      "focusPattern": "Needs & Habitat Constraints (The [animal] needs [requirement] / It cannot live in a bedroom because...)",
+      "focusPattern": "It needs [noun] / It cannot [verb] / Keep it wild!",
       "formula": "The [animal] needs [requirement]. / Keep it wild! Buy the [item]!",
       "formulas": [
-        "The [animal] needs [requirement].",
-        "It cannot live in a bedroom because it needs [habitat/herd].",
-        "Keep it wild! Buy the toy lamp!"
+        "The axolotl needs cold, clean water.",
+        "A capybara cannot live in a bedroom because it needs a wetland.",
+        "Keep wild animals in nature and buy the toy lamp!"
       ]
     },
     "path": "wildlife-detective/index.html",
@@ -84,7 +83,7 @@ const GAMES_REGISTRY = [
     "worksheetRoute": "wildlife-detective/worksheet.html",
     "icon": "🐾",
     "thumbnailIcon": "🐾",
-    "gradient": "linear-gradient(135deg, #030a0f 0%, #064e3b 50%, #06b6d4 100%)",
+    "gradient": "linear-gradient(135deg, #060d0a 0%, #0f241a 50%, #10b981 100%)",
     "status": "ready"
   },
   {
