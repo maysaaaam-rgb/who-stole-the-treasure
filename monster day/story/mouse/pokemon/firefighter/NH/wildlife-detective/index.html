@@ -6,26 +6,27 @@
   <title>Wildlife Detective: TikTok vs. Nature</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-void: #060d0a;
-      --bg-panel: rgba(16, 33, 24, 0.88);
-      --panel-border: #1f4231;
-      --primary-emerald: #10b981;
-      --emerald-lip: #047857;
-      --accent-amber: #f59e0b;
-      --amber-lip: #b45309;
-      --accent-cyan: #38bdf8;
-      --danger-coral: #ef4444;
-      --coral-lip: #b91c1c;
-      --text-white: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg-dark: #07130c;
+      --panel-bg: rgba(13, 31, 21, 0.92);
+      --border: #1e4530;
+      --primary: #10b981;
+      --primary-dark: #047857;
+      --accent: #f59e0b;
+      --accent-dark: #b45309;
+      --cyan: #38bdf8;
+      --danger: #ef4444;
+      --danger-dark: #b91c1c;
+      --text: #f8fafc;
+      --muted: #94a3b8;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      background: radial-gradient(circle at 50% 10%, #0f2d1e 0%, var(--bg-void) 85%);
-      color: var(--text-white);
+      background: radial-gradient(circle at 50% 10%, #0d2b1a 0%, var(--bg-dark) 85%);
+      color: var(--text);
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       min-height: 100vh;
       display: flex;
@@ -33,13 +34,14 @@
       align-items: center;
       padding: 16px;
     }
+
     #game-arena {
-      background: var(--bg-panel);
+      background: var(--panel-bg);
       backdrop-filter: blur(16px);
-      border: 2px solid var(--panel-border);
+      border: 2px solid var(--border);
       border-radius: 28px;
       width: 100%;
-      max-width: 960px;
+      max-width: 920px;
       min-height: 640px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.6);
       display: flex;
@@ -47,59 +49,70 @@
       position: relative;
       overflow: hidden;
     }
+
     header {
       padding: 16px 24px;
-      background: rgba(6, 13, 10, 0.6);
-      border-bottom: 2px solid var(--panel-border);
+      background: rgba(7, 19, 12, 0.7);
+      border-bottom: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
     }
-    .title-shield {
+
+    .badge-title {
       font-family: 'Fredoka', cursive;
       font-size: 1.35rem;
       font-weight: 800;
-      color: var(--primary-emerald);
+      color: var(--primary);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .meter-container { flex: 1; max-width: 300px; display: flex; flex-direction: column; gap: 4px; }
-    .meter-label-row {
+
+    .meter-container {
+      flex: 1;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .meter-label {
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
-      color: var(--accent-cyan);
+      color: var(--cyan);
     }
     .meter-track {
-      background: #0d1a13;
-      height: 14px;
-      border-radius: 10px;
+      background: #08150f;
+      height: 12px;
+      border-radius: 8px;
       overflow: hidden;
-      border: 1px solid var(--panel-border);
+      border: 1px solid var(--border);
     }
     .meter-fill {
       height: 100%;
-      width: 25%;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--primary-emerald));
-      transition: width 0.4s ease;
+      width: 10%;
+      background: linear-gradient(90deg, var(--cyan), var(--primary));
+      transition: width 0.3s ease;
     }
+
     .xp-counter {
-      background: #11281c;
-      border: 1px solid #235439;
-      padding: 8px 18px;
+      background: #11291b;
+      border: 1px solid #1f5035;
+      padding: 8px 16px;
       border-radius: 50px;
       font-family: 'Fredoka', cursive;
       font-size: 1.15rem;
-      color: var(--accent-amber);
+      color: var(--accent);
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     main#stage {
       flex: 1;
       padding: 24px;
@@ -108,213 +121,232 @@
       align-items: center;
       justify-content: center;
     }
-    .btn-3d {
-      border: none;
-      font-family: 'Fredoka', cursive;
-      font-size: 1.1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 16px 32px;
-      border-radius: 18px;
-      cursor: pointer;
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-      min-height: 60px;
-    }
-    .btn-green { background: var(--primary-emerald); box-shadow: 0 6px 0 var(--emerald-lip); }
-    .btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--emerald-lip); }
-    .btn-green:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--emerald-lip); }
-    .btn-coral { background: var(--danger-coral); box-shadow: 0 6px 0 var(--coral-lip); }
-    .btn-coral:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--coral-lip); }
-    .btn-coral:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--coral-lip); }
-    .btn-amber { background: var(--accent-amber); box-shadow: 0 6px 0 var(--amber-lip); color: #1a1303; }
-    .btn-amber:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--amber-lip); }
-    .btn-amber:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--amber-lip); }
 
-    .stage-prompt { text-align: center; margin-bottom: 24px; max-width: 680px; }
-    .stage-prompt h2 { font-family: 'Fredoka', cursive; font-size: 2rem; color: #fff; margin-bottom: 6px; }
-    .stage-prompt p { font-size: 1.05rem; color: var(--text-muted); font-weight: 600; }
-    .stage-prompt .pill-target {
+    .stage-prompt { text-align: center; margin-bottom: 20px; max-width: 700px; }
+    .stage-prompt h2 { font-family: 'Fredoka', cursive; font-size: 2rem; color: #fff; margin-bottom: 4px; }
+    .stage-prompt p { font-size: 1rem; color: var(--muted); font-weight: 600; }
+    .stage-prompt .pill-rule {
       background: rgba(16, 185, 129, 0.15);
-      border: 1px solid var(--primary-emerald);
+      border: 1px solid var(--primary);
       color: #34d399;
       padding: 4px 14px;
       border-radius: 20px;
       display: inline-block;
       margin-top: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 700;
     }
 
-    .card-deck {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    /* 3D Tactile Buttons */
+    .btn-3d {
+      border: none;
+      font-family: 'Fredoka', cursive;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      border-radius: 16px;
+      cursor: pointer;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+    .btn-green { background: var(--primary); box-shadow: 0 5px 0 var(--primary-dark); }
+    .btn-green:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--primary-dark); }
+    .btn-green:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--primary-dark); }
+    .btn-coral { background: var(--danger); box-shadow: 0 5px 0 var(--danger-dark); }
+    .btn-coral:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--danger-dark); }
+    .btn-coral:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--danger-dark); }
+    .btn-amber { background: var(--accent); box-shadow: 0 5px 0 var(--accent-dark); color: #1a1303; }
+    .btn-amber:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--accent-dark); }
+    .btn-amber:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--accent-dark); }
+
+    /* Mission 1: 5-Animal Care Swiper */
+    .care-swiper-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 16px;
       width: 100%;
-      perspective: 1200px;
-    }
-    .flip-card {
-      height: 250px;
-      cursor: pointer;
-      border-radius: 20px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .flip-card.flipped { transform: rotateY(180deg); }
-    .card-face {
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      backface-visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      border: 2px solid var(--panel-border);
-    }
-    .card-front { background: linear-gradient(180deg, #163223 0%, #0d1e15 100%); }
-    .card-front:hover { border-color: var(--primary-emerald); }
-    .card-back {
-      background: linear-gradient(180deg, #102a1b 0%, #08150d 100%);
-      transform: rotateY(180deg);
-      border-color: var(--accent-cyan);
-      text-align: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .arena-showdown { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
-    .trading-card {
-      width: 320px;
-      min-height: 380px;
-      background: #0f241a;
-      border: 3px solid var(--primary-emerald);
-      border-radius: 24px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.5);
-    }
-    .trading-card-img {
-      height: 220px;
-      background: #06130c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .trading-card-caption {
-      padding: 18px;
-      flex: 1;
-      text-align: center;
-      background: rgba(13, 26, 19, 0.95);
-      border-top: 2px solid var(--panel-border);
-    }
-    .trading-card-caption h4 { font-family: 'Fredoka', cursive; font-size: 1.25rem; margin-bottom: 6px; }
-    .trading-card-caption p { font-size: 0.95rem; color: #cbd5e1; }
-
-    .rubber-stamp {
-      position: absolute;
-      top: 35%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(2);
-      opacity: 0;
-      font-family: 'Fredoka', cursive;
-      font-size: 2.1rem;
-      font-weight: 800;
-      padding: 10px 22px;
-      border: 6px solid currentColor;
-      border-radius: 18px;
-      pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .stamp-do { color: #10b981; transform: translate(-50%, -50%) rotate(-14deg) scale(1); opacity: 1; }
-    .stamp-dont { color: #ef4444; transform: translate(-50%, -50%) rotate(12deg) scale(1); opacity: 1; }
-    .wobble { animation: softWobble 0.4s ease; }
-    @keyframes softWobble {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-
-    .habitat-viewport {
-      width: 100%;
       max-width: 650px;
-      height: 220px;
-      background: radial-gradient(circle at 50% 80%, #1e4620 0%, #06150c 80%);
-      border: 3px solid var(--panel-border);
+    }
+    .animal-showcase-card {
+      background: #0d2116;
+      border: 3px solid var(--border);
       border-radius: 24px;
+      width: 100%;
+      padding: 24px;
       display: flex;
+      gap: 20px;
+      align-items: center;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+    }
+    .animal-art { font-size: 4.5rem; background: #07150e; border: 2px solid var(--border); border-radius: 20px; padding: 10px 20px; }
+    .animal-info h3 { font-family: 'Fredoka', cursive; font-size: 1.6rem; color: #fff; margin-bottom: 4px; }
+    .animal-info p { color: var(--muted); font-size: 0.95rem; font-weight: 600; line-height: 1.4; }
+    .needs-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    .need-btn {
+      background: #0d261a;
+      border: 2px solid var(--border);
+      color: #fff;
+      padding: 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: left;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .need-btn:hover { border-color: var(--cyan); transform: translateY(-2px); background: #133524; }
+
+    /* Mission 2: TikTok Feed Phone */
+    .phone-stage {
+      width: 100%;
+      max-width: 480px;
+      background: #030805;
+      border: 4px solid #1f3828;
+      border-radius: 28px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    }
+    .tiktok-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; color: #64748b; }
+    .tiktok-video {
+      background: #0a1b12;
+      border-radius: 20px;
+      border: 2px solid var(--border);
+      height: 220px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
+      text-align: center;
+      padding: 16px;
     }
-    .capy-rig { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .tiktok-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .tiktok-desc { font-weight: 700; font-size: 0.95rem; margin-top: 8px; color: #e2e8f0; }
+    .tiktok-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .tiktok-actions button { min-height: 48px; font-size: 0.85rem; }
 
-    .adaptation-tray {
+    /* Mission 3: Living Room Disaster Simulator */
+    .room-sim {
+      width: 100%;
+      max-width: 700px;
+      background: #091a11;
+      border: 3px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .disaster-viewport {
+      background: radial-gradient(circle, #133a24 0%, #05140b 90%);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .disaster-sprite { font-size: 4.5rem; transition: transform 0.4s ease; }
+    .crisis-banner {
+      position: absolute;
+      bottom: 12px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    }
+    .disaster-tools {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      width: 100%;
-      max-width: 680px;
-      margin-top: 16px;
     }
-    .adapt-btn {
-      background: rgba(15, 36, 26, 0.85);
-      border: 2px solid var(--panel-border);
-      border-radius: 18px;
+    .solve-card {
+      background: #0e291b;
+      border: 2px solid var(--border);
+      border-radius: 16px;
       padding: 12px;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
+      text-align: center;
       cursor: pointer;
+      color: #fff;
       transition: all 0.2s ease;
     }
-    .adapt-btn:hover { border-color: var(--accent-cyan); transform: translateY(-3px); }
-    .adapt-btn.unlocked {
-      border-color: var(--primary-emerald);
-      background: rgba(16, 185, 129, 0.2);
+    .solve-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+    .solve-card.resolved {
+      border-color: var(--primary);
+      background: rgba(16, 185, 129, 0.15);
       pointer-events: none;
       opacity: 0.7;
     }
 
-    .teleprompter-box {
+    /* Teleprompter */
+    .tele-box {
       width: 100%;
-      max-width: 720px;
-      background: #08150f;
-      border: 2px solid var(--accent-cyan);
+      max-width: 680px;
+      background: #07150e;
+      border: 2px solid var(--cyan);
       border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+      padding: 18px;
       text-align: center;
       margin-top: 14px;
     }
-    .teleprompter-text { font-size: 1.25rem; line-height: 1.7; font-weight: 700; color: #cbd5e1; }
-    .teleprompter-text .word { display: inline-block; padding: 2px 5px; border-radius: 6px; transition: all 0.15s ease; }
-    .teleprompter-text .word.glow {
-      background: var(--accent-amber);
-      color: #1a1303;
-      transform: scale(1.1);
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+    .tele-words { font-size: 1.25rem; font-weight: 700; line-height: 1.7; color: #cbd5e1; }
+    .tele-words .word { display: inline-block; padding: 2px 5px; border-radius: 6px; }
+    .tele-words .word.active { background: var(--accent); color: #1a1303; transform: scale(1.1); box-shadow: 0 0 12px rgba(245, 158, 11, 0.8); }
+
+    .wobble { animation: shake 0.35s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
     }
   </style>
 </head>
 <body>
+
 <div id="game-arena">
   <header>
-    <div class="title-shield">🐾 Wildlife Detective</div>
+    <div class="badge-title">🐾 Wildlife Detective: TikTok vs. Nature</div>
     <div class="meter-container">
-      <div class="meter-label-row">
-        <span>Wild Energy</span>
-        <span id="meter-perc">25%</span>
+      <div class="meter-label">
+        <span id="meter-title">Investigation Progress</span>
+        <span id="meter-perc">10%</span>
       </div>
       <div class="meter-track">
         <div id="meter-fill" class="meter-fill"></div>
@@ -326,318 +358,424 @@
       <span style="font-size:0.75rem; color:#fff;">XP</span>
     </div>
   </header>
+
   <main id="stage"></main>
 </div>
 
 <script>
-class SoundEngine {
+// --- PURE WEB AUDIO SYNTHESIZERS ---
+class SFX {
   constructor() { this.ctx = null; }
   init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (this.ctx.state === 'suspended') this.ctx.resume();
   }
-  playSnap() {
+  snap() {
     this.init(); if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(1100, now);
-    osc.frequency.exponentialRampToValueAtTime(320, now + 0.08);
-    gain.gain.setValueAtTime(0.3, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(now); osc.stop(now + 0.08);
+    const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+    osc.frequency.setValueAtTime(900, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.2, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+    osc.connect(g); g.connect(this.ctx.destination);
+    osc.start(); osc.stop(this.ctx.currentTime + 0.08);
   }
-  playXP() {
+  xp() {
     this.init(); if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    [987.77, 1318.51].forEach((freq, idx) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-      gain.gain.setValueAtTime(0.2, now + idx * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.3);
+    [523.25, 659.25, 783.99].forEach((f, i) => {
+      const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+      osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.07);
+      g.gain.setValueAtTime(0.18, this.ctx.currentTime + i * 0.07);
+      g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.07 + 0.25);
+      osc.connect(g); g.connect(this.ctx.destination);
+      osc.start(this.ctx.currentTime + i * 0.07); osc.stop(this.ctx.currentTime + i * 0.07 + 0.25);
     });
   }
-  playSoftFail() {
+  fail() {
     this.init(); if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(246.94, now);
-    osc.frequency.exponentialRampToValueAtTime(220.00, now + 0.25);
-    gain.gain.setValueAtTime(0.25, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(now); osc.stop(now + 0.25);
+    const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(220, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(160, this.ctx.currentTime + 0.25);
+    g.gain.setValueAtTime(0.2, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+    osc.connect(g); g.connect(this.ctx.destination);
+    osc.start(); osc.stop(this.ctx.currentTime + 0.25);
   }
-  playFanfare() {
+  fanfare() {
     this.init(); if (!this.ctx) return;
-    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.12);
-      gain.gain.setValueAtTime(0.2, this.ctx.currentTime + idx * 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.12 + 0.35);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(this.ctx.currentTime + idx * 0.12);
-      osc.stop(this.ctx.currentTime + idx * 0.12 + 0.35);
+    [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+      const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+      osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.1);
+      g.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.1);
+      g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.1 + 0.35);
+      osc.connect(g); g.connect(this.ctx.destination);
+      osc.start(this.ctx.currentTime + i * 0.1); osc.stop(this.ctx.currentTime + i * 0.1 + 0.35);
     });
   }
-  speak(text, onComplete) {
-    if (!('speechSynthesis' in window)) { if (onComplete) onComplete(); return; }
+  say(text, cb) {
+    if (!('speechSynthesis' in window)) { if (cb) cb(); return; }
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.88; u.pitch = 1.05; u.lang = "en-US";
-    if (onComplete) u.onend = onComplete;
+    u.rate = 0.9; u.pitch = 1.05; u.lang = "en-US";
+    if (cb) u.onend = cb;
     window.speechSynthesis.speak(u);
   }
 }
 
-const audio = new SoundEngine();
-const SVGS = {
-  axolotl: `<svg viewBox="0 0 100 90" width="90" height="80"><ellipse cx="50" cy="50" rx="32" ry="24" fill="#f472b6"/><circle cx="40" cy="46" r="4" fill="#0f172a"/><circle cx="60" cy="46" r="4" fill="#0f172a"/><path d="M44 56 Q50 62 56 56" stroke="#0f172a" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M22 40 Q10 32 18 24 Q24 35 24 44" fill="#db2777"/><path d="M78 40 Q90 32 82 24 Q76 35 76 44" fill="#db2777"/></svg>`,
-  dragon: `<svg viewBox="0 0 100 90" width="90" height="80"><ellipse cx="50" cy="52" rx="30" ry="22" fill="#d97706"/><circle cx="40" cy="48" r="4" fill="#1c1917"/><circle cx="60" cy="48" r="4" fill="#1c1917"/><path d="M30 62 Q50 72 70 62" stroke="#78350f" stroke-width="4" fill="none"/></svg>`,
-  snake: `<svg viewBox="0 0 100 90" width="90" height="80"><path d="M30 70 Q20 45 45 45 Q70 45 60 25 Q50 10 35 25" stroke="#15803d" stroke-width="14" fill="none" stroke-linecap="round"/><circle cx="34" cy="22" r="3" fill="#fff"/></svg>`,
-  lamp: `<svg viewBox="0 0 100 100" width="110" height="110"><rect x="25" y="30" width="50" height="42" rx="16" fill="#fef08a" stroke="#ca8a04" stroke-width="3"/><circle cx="42" cy="48" r="4" fill="#854d0e"/><circle cx="58" cy="48" r="4" fill="#854d0e"/><path d="M46 56 Q50 60 54 56" stroke="#854d0e" stroke-width="2" fill="none"/><rect x="35" y="72" width="30" height="8" rx="4" fill="#cbd5e1"/></svg>`,
-  capy: `<svg viewBox="0 0 140 120" width="130" height="110"><ellipse cx="70" cy="70" rx="46" ry="34" fill="#92400e"/><ellipse cx="102" cy="52" rx="24" ry="20" fill="#a16207"/><circle cx="108" cy="46" r="3.5" fill="#1c1917"/><ellipse cx="94" cy="38" rx="5" ry="7" fill="#78350f"/><rect x="52" y="92" width="12" height="20" rx="6" fill="#78350f"/><rect x="80" y="92" width="12" height="20" rx="6" fill="#78350f"/></svg>`
-};
+const sfx = new SFX();
 
+// --- STATE REPOSITORY ---
 const state = {
   score: 0,
-  unlockedCards: new Set(),
-  p2Index: 0,
-  adaptationsUnlocked: new Set()
+  m1Index: 0,
+  m2Index: 0,
+  m3Resolved: new Set()
 };
 
-function addXP(pts) {
-  state.score += pts;
+function addXP(n) {
+  state.score += n;
   document.getElementById('score-val').innerText = state.score;
 }
 
-function updateProgress(perc) {
-  document.getElementById('meter-fill').style.width = perc + "%";
-  document.getElementById('meter-perc').innerText = perc + "%";
+function updateProgress(p) {
+  document.getElementById('meter-fill').style.width = p + "%";
+  document.getElementById('meter-perc').innerText = p + "%";
 }
 
-function renderPhase1() {
-  updateProgress(25);
-  const cards = [
-    { id: "axolotl", name: "Axolotl", svg: SVGS.axolotl, tag: "Needs cold, clean water in Mexican lakes.", speech: "The axolotl is wild. It needs cold, clean water in Mexico!" },
-    { id: "dragon", name: "Bearded Dragon", svg: SVGS.dragon, tag: "Needs hot desert sunshine.", speech: "The bearded dragon is wild. It needs hot desert sunshine!" },
-    { id: "snake", name: "Ball Python", svg: SVGS.snake, tag: "Needs warm African grasslands.", speech: "The ball python is wild. It needs warm grasslands in Africa!" }
-  ];
-
-  document.getElementById('stage').innerHTML = `
-    <div class="stage-prompt">
-      <h2>Mission 1: The Care Card Scanner</h2>
-      <p>Tap each wild animal to inspect its true biological requirements.</p>
-      <div class="pill-target">Grammar: It needs [noun]</div>
-    </div>
-    <div class="card-deck">
-      ${cards.map(c => `
-        <div class="flip-card" id="card-${c.id}" onclick="flipCard('${c.id}', '${c.speech}')">
-          <div class="card-face card-front">
-            <div>${c.svg}</div>
-            <h3>${c.name}</h3>
-            <span style="font-size:0.8rem; color:var(--accent-cyan); font-weight:700;">👆 TAP TO SCAN</span>
-          </div>
-          <div class="card-face card-back">
-            <span style="background:var(--accent-amber); color:#1a1303; padding:4px 10px; border-radius:12px; font-weight:800; font-size:0.75rem;">SCANNED ✔</span>
-            <p style="font-weight:700; font-size:1.05rem; color:#fff;">${c.tag}</p>
-            <span style="font-size:0.8rem; color:var(--primary-emerald); font-weight:800;">+10 XP EARNED</span>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function flipCard(id, speech) {
-  audio.playSnap();
-  const el = document.getElementById(`card-${id}`);
-  if (!el.classList.contains('flipped')) {
-    el.classList.add('flipped');
-    audio.speak(speech);
-    if (!state.unlockedCards.has(id)) {
-      state.unlockedCards.add(id);
-      addXP(10);
-      audio.playXP();
-    }
-    if (state.unlockedCards.size === 3) {
-      setTimeout(() => { audio.playFanfare(); renderPhase2(); }, 2200);
-    }
+// ==========================================
+// MISSION 1: 5-ANIMAL CARE SWIPER
+// ==========================================
+const M1_ANIMALS = [
+  {
+    name: "Axolotl",
+    icon: "🦎",
+    habitat: "Lakes in Mexico",
+    question: "What does this wild animal need to survive?",
+    options: [
+      { text: "Cold, clean water & zero heat", correct: true, feedback: "Correct! The axolotl is wild. It needs cold, clean water in Mexican lakes." },
+      { text: "A dry sofa with blankets", correct: false, feedback: "No! Axolotls have gills and cannot live on dry sofas." }
+    ]
+  },
+  {
+    name: "Bearded Dragon",
+    icon: "🐲",
+    habitat: "Australian Deserts",
+    question: "What does this desert reptile need?",
+    options: [
+      { text: "Deep ice water to swim", correct: false, feedback: "No! Dragons are desert lizards, not fish." },
+      { text: "A hot basking lamp & UV rays", correct: true, feedback: "Correct! A bearded dragon needs a hot lamp to digest its food." }
+    ]
+  },
+  {
+    name: "Ball Python",
+    icon: "🐍",
+    habitat: "African Grasslands",
+    question: "What does this shy snake need?",
+    options: [
+      { text: "A warm, tight dark hideout", correct: true, feedback: "Correct! It cannot live open in a bedroom. It needs a tight, warm burrow." },
+      { text: "A noisy bedroom with music", correct: false, feedback: "No! Loud noises cause dangerous stress for wild snakes." }
+    ]
+  },
+  {
+    name: "Fennec Fox",
+    icon: "🦊",
+    habitat: "Sahara Desert Sands",
+    question: "What do its giant ears and paws need?",
+    options: [
+      { text: "A cold tiled apartment floor", correct: false, feedback: "No! Walking on cold tile ruins its digging claws." },
+      { text: "Deep sand to dig burrows", correct: true, feedback: "Correct! The fennec fox is wild. It needs deep desert sand to burrow." }
+    ]
+  },
+  {
+    name: "Sugar Glider",
+    icon: "🐿️",
+    habitat: "Australian Tree Canopies",
+    question: "What does this tiny marsupial need?",
+    options: [
+      { text: "A wild colony of 10+ friends", correct: true, feedback: "Correct! Gliders die of loneliness alone in cages. They need a wild colony." },
+      { text: "A tiny solitary hamster cage", correct: false, feedback: "No! Solitary cages cause depression. It needs a tree canopy and a group!" }
+    ]
   }
-}
-
-const P2_ROUNDS = [
-  { title: "Viral Trend: Capybara in Bathtub", desc: "A TikTok creator keeps a 50kg capybara inside a tiny apartment bathroom.", svg: SVGS.capy, ruleSpeech: "Keep it wild! A capybara needs a wild wetland and a herd of friends!" },
-  { title: "Viral Decor: Capybara Nightlight", desc: "A cute silicone desk lamp that taps on and off. No river or food needed!", svg: SVGS.lamp, ruleSpeech: "Great choice! Buy the toy nightlight and leave the real animal in nature!" }
 ];
 
-function renderPhase2() {
-  updateProgress(55);
-  const round = P2_ROUNDS[state.p2Index];
+function renderMission1() {
+  updateProgress(10 + state.m1Index * 6);
+  const animal = M1_ANIMALS[state.m1Index];
   document.getElementById('stage').innerHTML = `
     <div class="stage-prompt">
-      <h2>Mission 2: Screen vs. Reality Arena</h2>
-      <p>Look at the TikTok feed. What is the Ranger-approved choice?</p>
-      <div class="pill-target">Imperatives: Keep it wild! / Buy the toy!</div>
+      <h2>Mission 1: The Care Card Swipe</h2>
+      <p>Pair all 5 exotic species with their true biological requirements!</p>
+      <div class="pill-rule">Animal ${state.m1Index + 1} of 5 • Target: "It needs [requirement]"</div>
     </div>
-    <div class="arena-showdown">
-      <div class="trading-card" id="focus-card">
-        <div class="trading-card-img">
-          ${round.svg}
-          <div id="stamp-slot" class="rubber-stamp"></div>
-        </div>
-        <div class="trading-card-caption">
-          <h4>${round.title}</h4>
-          <p>${round.desc}</p>
+    <div class="care-swiper-box">
+      <div class="animal-showcase-card" id="anim-card">
+        <div class="animal-art">${animal.icon}</div>
+        <div class="animal-info">
+          <h3>${animal.name}</h3>
+          <p><b>Natural Habitat:</b> ${animal.habitat}</p>
+          <p style="color:#38bdf8; margin-top:4px;">${animal.question}</p>
         </div>
       </div>
-      <div style="display:flex; gap:16px;">
-        <button class="btn-3d btn-green" onclick="evaluateChoice(true)">🌿 KEEP IT WILD / BUY TOY!</button>
-        <button class="btn-3d btn-coral" onclick="evaluateChoice(false)">📦 ORDER LIVE BEDROOM PET</button>
+      <div class="needs-selector">
+        ${animal.options.map((opt, i) => `
+          <button class="need-btn" onclick="checkM1Choice(${opt.correct}, '${opt.feedback.replace(/'/g, "\\'")}')">
+            <span>🔘</span> ${opt.text}
+          </button>
+        `).join('')}
       </div>
     </div>
   `;
 }
 
-function evaluateChoice(isEcoChoice) {
-  const card = document.getElementById('focus-card');
-  const stamp = document.getElementById('stamp-slot');
-  if (isEcoChoice) {
-    audio.playXP();
-    stamp.className = "rubber-stamp stamp-do";
-    stamp.innerText = "KEEP IT WILD!";
-    audio.speak(P2_ROUNDS[state.p2Index].ruleSpeech);
-    addXP(25);
+function checkM1Choice(isCorrect, speech) {
+  const card = document.getElementById('anim-card');
+  if (isCorrect) {
+    sfx.xp();
+    addXP(15);
+    sfx.say(speech);
+    card.style.borderColor = "var(--primary)";
     setTimeout(() => {
-      state.p2Index++;
-      if (state.p2Index < P2_ROUNDS.length) renderPhase2();
-      else { audio.playFanfare(); renderPhase3(); }
-    }, 2400);
+      state.m1Index++;
+      if (state.m1Index < M1_ANIMALS.length) {
+        renderMission1();
+      } else {
+        sfx.fanfare();
+        renderMission2();
+      }
+    }, 2200);
   } else {
-    audio.playSoftFail();
-    stamp.className = "rubber-stamp stamp-dont";
-    stamp.innerText = "DON'T BUY!";
+    sfx.fail();
     card.classList.add('wobble');
-    audio.speak("Wait, detective! Wild animals cannot live in human bedrooms. Try again!");
-    setTimeout(() => { card.classList.remove('wobble'); stamp.className = "rubber-stamp"; }, 1200);
+    sfx.say(speech);
+    setTimeout(() => card.classList.remove('wobble'), 500);
   }
 }
 
-function renderPhase3() {
-  updateProgress(80);
+// ==========================================
+// MISSION 2: SCREEN VS. REALITY (4 TIKTOK TYPES)
+// ==========================================
+const M2_FEED = [
+  {
+    typeTag: "Viral Trend #1",
+    art: "🛋️🦫💥",
+    caption: "@petlover: 'Look at my cute new bedroom pet! It can sleep in my bed!'",
+    reality: "Living 50kg wild capybara inside an apartment.",
+    correctChoice: "report",
+    buttonPrompt: "Identify the situation:",
+    speech: "Keep it wild! A capybara is a wild animal, not a bedroom pet. It cannot live in an apartment!"
+  },
+  {
+    typeTag: "Viral Trend #2",
+    art: "💡✨🦫",
+    caption: "@roomdecor: 'This soft capybara nightlight taps on and off! Cozy vibes!'",
+    reality: "A silicone LED battery lamp.",
+    correctChoice: "buy",
+    buttonPrompt: "Identify the situation:",
+    speech: "Smart choice! Buy the toy nightlight. It brings cute decor and needs no food or river!"
+  },
+  {
+    typeTag: "Viral Trend #3",
+    art: "🩺🦅🩹",
+    caption: "@wildliferescue: 'Bandaging an injured hawk's wing before flight release!'",
+    reality: "Licensed wildlife sanctuary rehabilitation clinic.",
+    correctChoice: "expert",
+    buttonPrompt: "Identify the situation:",
+    speech: "Approved! That is a licensed zookeeper and wildlife expert helping animals return to nature!"
+  },
+  {
+    typeTag: "Viral Trend #4",
+    art: "🤖✨🦦",
+    caption: "@ai_magic: 'Look at this purple baby otter drinking a strawberry smoothie!'",
+    reality: "Generated AI digital animation.",
+    correctChoice: "cartoon",
+    buttonPrompt: "Identify the situation:",
+    speech: "Detective eye! That is an AI cartoon. It is not real wildlife!"
+  }
+];
+
+function renderMission2() {
+  updateProgress(45 + state.m2Index * 10);
+  const post = M2_FEED[state.m2Index];
   document.getElementById('stage').innerHTML = `
     <div class="stage-prompt">
-      <h2>Mission 3: Living Room Escape & Teleprompter</h2>
-      <p>Unlock 3 biological adaptations to teleport the capybara to the Pantanal wetland!</p>
-      <div class="pill-target">Target: It needs [wetland] / It cannot live in a bedroom</div>
+      <h2>Mission 2: Screen vs. Reality Feed</h2>
+      <p>Analyze the viral post! Decide: Is it a Fake Pet, a Toy, an Expert, or a Cartoon?</p>
+      <div class="pill-rule">Post ${state.m2Index + 1} of 4 • Media Literacy Detective</div>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-      <div class="habitat-viewport" id="viewport">
-        <div class="capy-rig" id="capy-rig">${SVGS.capy}</div>
+    <div class="phone-stage" id="phone-box">
+      <div class="tiktok-header">
+        <span>● LIVE DETECTIVE FEED</span>
+        <span>${state.m2Index + 1}/4</span>
       </div>
-      <div class="adaptation-tray" id="adapt-tray">
-        <button class="adapt-btn" id="ad-snorkel" onclick="unlockAdaptation('snorkel')">
-          <span style="font-size:1.8rem;">👀</span><b>Snorkel Face</b>
-          <span style="font-size:0.75rem; color:#94a3b8;">Eyes & nose on top</span>
-        </button>
-        <button class="adapt-btn" id="ad-feet" onclick="unlockAdaptation('feet')">
-          <span style="font-size:1.8rem;">🐾</span><b>Webbed Feet</b>
-          <span style="font-size:0.75rem; color:#94a3b8;">Paddle flippers to swim</span>
-        </button>
-        <button class="adapt-btn" id="ad-herd" onclick="unlockAdaptation('herd')">
-          <span style="font-size:1.8rem;">🌿</span><b>Herd Life</b>
-          <span style="font-size:0.75rem; color:#94a3b8;">Needs 20+ companions</span>
-        </button>
+      <div class="tiktok-video">
+        <span class="tiktok-tag">${post.typeTag}</span>
+        <div style="font-size:3.5rem;">${post.art}</div>
+        <p class="tiktok-desc">${post.caption}</p>
       </div>
-      <div class="teleprompter-box" id="teleprompter" style="display:none;">
-        <div class="teleprompter-text" id="tele-text">
-          <span class="word">This</span> <span class="word">is</span> <span class="word">the</span> <span class="word">wild</span> <span class="word">capybara.</span>
-          <span class="word">It</span> <span class="word">cannot</span> <span class="word">live</span> <span class="word">in</span> <span class="word">a</span> <span class="word">bedroom</span>
-          <span class="word">because</span> <span class="word">it</span> <span class="word">needs</span> <span class="word">a</span> <span class="word">wetland</span> <span class="word">and</span> <span class="word">a</span> <span class="word">herd!</span>
-          <span class="word">Keep</span> <span class="word">it</span> <span class="word">wild!</span>
-        </div>
-        <button class="btn-3d btn-amber" style="margin-top:16px;" onclick="broadcastTeleprompter()">📢 BROADCAST TO CLASSROOM</button>
+      <div class="tiktok-actions">
+        <button class="btn-3d btn-green" onclick="checkM2Choice('report')">🚫 Keep It Wild!</button>
+        <button class="btn-3d btn-amber" onclick="checkM2Choice('buy')">💡 Buy The Toy!</button>
+        <button class="btn-3d btn-green" onclick="checkM2Choice('expert')">🩺 Zoo Expert!</button>
+        <button class="btn-3d btn-coral" onclick="checkM2Choice('cartoon')">🎨 AI Cartoon!</button>
       </div>
     </div>
   `;
 }
 
-function unlockAdaptation(type) {
-  if (state.adaptationsUnlocked.has(type)) return;
-  state.adaptationsUnlocked.add(type);
-  audio.playSnap(); audio.playXP(); addXP(15);
-  const btn = document.getElementById(`ad-${type}`);
-  btn.classList.add('unlocked');
-  btn.innerHTML += `<span style="color:var(--primary-emerald); font-weight:800;">ACTIVE ✔</span>`;
+function checkM2Choice(choice) {
+  const current = M2_FEED[state.m2Index];
+  const box = document.getElementById('phone-box');
 
-  if (type === 'snorkel') audio.speak("Snorkel face! Eyes and nostrils are high up to breathe while swimming!");
-  if (type === 'feet') audio.speak("Webbed feet! Toes have skin flaps to paddle fast across rivers!");
-  if (type === 'herd') audio.speak("Herd life! Capybaras get sick and lonely without a giant group!");
-
-  if (state.adaptationsUnlocked.size === 3) {
+  if (choice === current.correctChoice) {
+    sfx.xp();
+    addXP(20);
+    sfx.say(current.speech);
+    box.style.borderColor = "var(--primary)";
     setTimeout(() => {
-      audio.playFanfare();
+      state.m2Index++;
+      if (state.m2Index < M2_FEED.length) {
+        renderMission2();
+      } else {
+        sfx.fanfare();
+        renderMission3();
+      }
+    }, 2400);
+  } else {
+    sfx.fail();
+    box.classList.add('wobble');
+    sfx.say("Detective, look closer at the evidence! Try again.");
+    setTimeout(() => box.classList.remove('wobble'), 500);
+  }
+}
+
+// ==========================================
+// MISSION 3: LIVING ROOM RESCUE & TELEPROMPTER
+// ==========================================
+function renderMission3() {
+  updateProgress(85);
+  document.getElementById('stage').innerHTML = `
+    <div class="stage-prompt">
+      <h2>Mission 3: The 60kg Hamster Rescue</h2>
+      <p>A giant wild capybara is trapped in a living room! Diagnose the 3 biological crises to teleport it to the wetland:</p>
+      <div class="pill-rule">Active Crises: Couch chewing • Overflowing bathtub • Solitary crying</div>
+    </div>
+
+    <div class="room-sim">
+      <div class="disaster-viewport" id="disaster-view">
+        <div class="disaster-sprite" id="capy-sprite">🛋️🦫💧</div>
+        <div class="crisis-banner" id="crisis-tag">⚠️ CRISIS: Chewing wooden furniture!</div>
+      </div>
+
+      <div class="disaster-tools" id="tools-tray">
+        <div class="solve-card" id="card-teeth" onclick="resolveCrisis('teeth')">
+          <span style="font-size:2rem;">🦷</span>
+          <h4 style="margin:6px 0 2px;">Ever-Growing Teeth</h4>
+          <p style="font-size:0.75rem; color:#cbd5e1;">It must chew river grass, not chairs!</p>
+        </div>
+        <div class="solve-card" id="card-snorkel" onclick="resolveCrisis('snorkel')">
+          <span style="font-size:2rem;">👀</span>
+          <h4 style="margin:6px 0 2px;">Snorkel Face & Toes</h4>
+          <p style="font-size:0.75rem; color:#cbd5e1;">Eyes on top & webbed feet need a real wetland!</p>
+        </div>
+        <div class="solve-card" id="card-herd" onclick="resolveCrisis('herd')">
+          <span style="font-size:2rem;">🌿</span>
+          <h4 style="margin:6px 0 2px;">Giant Herd Life</h4>
+          <p style="font-size:0.75rem; color:#cbd5e1;">It is sad and lonely without 20 companions!</p>
+        </div>
+      </div>
+
+      <div class="tele-box" id="tele-panel" style="display:none;">
+        <div class="tele-words" id="tele-script">
+          <span class="word">This</span> <span class="word">is</span> <span class="word">the</span> <span class="word">wild</span> <span class="word">capybara.</span>
+          <span class="word">It</span> <span class="word">cannot</span> <span class="word">live</span> <span class="word">in</span> <span class="word">a</span> <span class="word">bedroom</span>
+          <span class="word">because</span> <span class="word">its</span> <span class="word">teeth</span> <span class="word">chew</span> <span class="word">and</span> <span class="word">it</span> <span class="word">needs</span> <span class="word">a</span> <span class="word">wetland</span> <span class="word">and</span> <span class="word">a</span> <span class="word">herd!</span>
+          <span class="word">Keep</span> <span class="word">it</span> <span class="word">wild!</span>
+        </div>
+        <button class="btn-3d btn-amber" style="margin-top:14px;" onclick="broadcastRangerReport()">📢 BROADCAST TO CLASSROOM</button>
+      </div>
+    </div>
+  `;
+}
+
+function resolveCrisis(type) {
+  if (state.m3Resolved.has(type)) return;
+  state.m3Resolved.add(type);
+  sfx.snap(); sfx.xp(); addXP(20);
+
+  const card = document.getElementById(`card-${type}`);
+  card.classList.add('resolved');
+  card.innerHTML += `<div style="color:var(--primary); font-weight:800; font-size:0.8rem; margin-top:4px;">RESOLVED ✔</div>`;
+
+  if (type === 'teeth') {
+    sfx.say("Its teeth never stop growing! In nature it chews tough river grass. In a bedroom, it chews the table!");
+    document.getElementById('crisis-tag').innerText = "⚠️ Bathtub is overflowing with water!";
+    document.getElementById('capy-sprite').innerText = "🛁🦫💦";
+  } else if (type === 'snorkel') {
+    sfx.say("Snorkel face and webbed feet! Its eyes and nose are placed on top to breathe while swimming across rivers!");
+    document.getElementById('crisis-tag').innerText = "⚠️ Capybara is crying for companions!";
+    document.getElementById('capy-sprite').innerText = "🦫🥺💔";
+  } else if (type === 'herd') {
+    sfx.say("Herd power! Capybaras need a herd of 20 friends to stay safe from predators.");
+  }
+
+  if (state.m3Resolved.size === 3) {
+    setTimeout(() => {
+      sfx.fanfare();
       updateProgress(100);
-      document.getElementById('capy-rig').style.transform = "scale(1.25) translateY(-8px)";
-      document.getElementById('viewport').style.background = "radial-gradient(circle at 50% 60%, #065f46 0%, #022c22 85%)";
-      document.getElementById('adapt-tray').style.display = 'none';
-      document.getElementById('teleprompter').style.display = 'block';
-      audio.speak("Teleport success! Capybara returned safely to the South American Pantanal. Ready for broadcast!");
+      document.getElementById('disaster-view').style.background = "radial-gradient(circle, #065f46 0%, #022c22 90%)";
+      document.getElementById('capy-sprite').innerText = "🌴🦫🦫🦫🌊";
+      document.getElementById('crisis-tag').innerText = "✔ SAFE IN SOUTH AMERICAN WETLANDS!";
+      document.getElementById('crisis-tag').style.background = "var(--primary)";
+      document.getElementById('tools-tray').style.display = "none";
+      document.getElementById('tele-panel').style.display = "block";
+      sfx.say("Teleport success! The capybara has returned to its wetland herd. Time for your official Ranger broadcast!");
     }, 1800);
   }
 }
 
-function broadcastTeleprompter() {
-  const words = document.querySelectorAll('#tele-text .word');
+function broadcastRangerReport() {
+  const words = document.querySelectorAll('#tele-script .word');
   let idx = 0;
-  audio.speak("This is the wild capybara. It cannot live in a bedroom because it needs a wetland and a herd! Keep it wild!", () => {
-    words.forEach(w => w.classList.remove('glow'));
-    audio.playFanfare();
+  const fullText = "This is the wild capybara. It cannot live in a bedroom because its teeth chew and it needs a wetland and a herd! Keep it wild!";
+  
+  sfx.say(fullText, () => {
+    words.forEach(w => w.classList.remove('active'));
+    sfx.fanfare();
     renderDiploma();
   });
-  const interval = setInterval(() => {
+
+  const timer = setInterval(() => {
     if (idx < words.length) {
-      words.forEach(w => w.classList.remove('glow'));
-      words[idx].classList.add('glow');
+      words.forEach(w => w.classList.remove('active'));
+      words[idx].classList.add('active');
       idx++;
     } else {
-      clearInterval(interval);
+      clearInterval(timer);
     }
-  }, 310);
+  }, 290);
 }
 
 function renderDiploma() {
   document.getElementById('stage').innerHTML = `
     <div style="text-align:center; padding:20px; max-width:600px;">
-      <div style="font-size:4.5rem; margin-bottom:12px;">🎖️</div>
-      <h2 style="font-size:2.4rem; color:var(--primary-emerald); margin-bottom:8px; font-family:'Fredoka';">Junior Wildlife Ranger!</h2>
-      <p style="font-size:1.15rem; color:#cbd5e1; margin-bottom:20px; font-weight:600;">
-        Mission Accomplished! You protected wild species from social media fads and returned Capy to the wetland.
+      <div style="font-size:4.5rem; margin-bottom:8px;">🎖️</div>
+      <h2 style="font-family:'Fredoka'; font-size:2.3rem; color:var(--primary); margin-bottom:8px;">Junior Wildlife Ranger!</h2>
+      <p style="font-size:1.05rem; color:#cbd5e1; margin-bottom:18px; font-weight:600;">
+        You analyzed 5 wild species, debunked 4 viral TikTok fads, and safely returned Capy to the South American Pantanal!
       </p>
-      <div style="background:#0b1d14; border:2px dashed var(--panel-border); border-radius:20px; padding:20px; margin-bottom:24px;">
-        <h4 style="color:var(--accent-amber); font-size:1.2rem; font-family:'Fredoka';">RANGER CODE:</h4>
-        <p style="color:#fff; font-weight:700; margin-top:6px;">"Wild animals stay in nature. Buy the toy, keep the wild!"</p>
-        <div style="margin-top:10px; font-size:1.2rem; font-weight:800; color:var(--accent-cyan);">Total Score: ${state.score} XP</div>
+      <div style="background:#071c11; border:2px dashed var(--border); border-radius:20px; padding:18px; margin-bottom:20px;">
+        <h4 style="color:var(--accent); font-family:'Fredoka'; font-size:1.2rem;">OFFICIAL RANGER CODE:</h4>
+        <p style="color:#fff; font-weight:700; margin-top:4px;">"Wild animals stay in nature. Buy the toy, keep the wild!"</p>
+        <div style="margin-top:10px; font-size:1.15rem; font-weight:800; color:var(--cyan);">Final Score: ${state.score} XP</div>
       </div>
-      <button class="btn-3d btn-green" onclick="location.reload()">🔄 PLAY AGAIN</button>
+      <button class="btn-3d btn-green" onclick="location.reload()">🔄 INVESTIGATE AGAIN</button>
     </div>
   `;
 }
 
-renderPhase1();
+// Start
+renderMission1();
 </script>
 </body>
 </html>
