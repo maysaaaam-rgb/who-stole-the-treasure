@@ -1,531 +1,792 @@
 /**
- * Sound Detective Pro: Reactive Engine & 5-Stage Controller
- * Level: CEFR A2 / A2+ | Primary CLIL & ESL
+ * SOUND DETECTIVE: ARCADE CONTROLLER & REACTIVE ENGINE
+ * Implements 4 Interactive Stages, Canvas Oscilloscope Visualizer,
+ * Soundboard DJ & Karaoke Teleprompter Speech Tracking.
  */
-(function() {
+(function(root) {
   'use strict';
 
-  const data = window.SOUND_PRO_DATA || window.SOUND_DETECTIVE_DATA;
+  class SoundDetectiveApp {
+    constructor() {
+      this.data = window.SOUND_DATA;
+      this.audio = window.SoundAudio;
+      this.xp = 0;
+      this.currentStage = 1;
 
-  const state = {
-    xp: 0,
-    currentStage: 1,
-    // Stage 1
-    s1TargetIndex: 0,
-    s1Target: null,
-    waveAnimId: null,
-    // Stage 2
-    s2TargetIndex: 0,
-    s2PlacedParts: new Set(),
-    // Stage 3
-    s3Index: 0,
-    s3SelectedCard: null,
-    // Stage 4
-    s4Broadcasting: false,
-    // Stage 5 (Baamboozle)
-    bActiveTeam: 'cyan', // 'cyan' | 'amber'
-    bScores: { cyan: 0, amber: 0 },
-    bClaimedCards: new Set(),
-    bCurrentCard: null,
-    bTimerInterval: null,
-    bTimeLeft: 15,
-    bDoubleBuff: { cyan: false, amber: false }
-  };
+      // Stage 1 State
+      this.s1RoundsTotal = 5;
+      this.s1CurrentRound = 0;
+      this.s1TargetItem = null;
+      this.s1Answered = false;
 
-  const dom = {
-    hudXP: document.getElementById('hud-xp'),
-    hudTimerChip: document.getElementById('hud-timer-chip'),
-    hudTimer: document.getElementById('hud-timer'),
-    // Steppers
-    steps: [1, 2, 3, 4, 5].map(i => document.getElementById(`step-${i}`)),
-    // Panels
-    panels: {
-      1: document.getElementById('stage-scanner'),
-      2: document.getElementById('stage-anatomy'),
-      3: document.getElementById('stage-deduction'),
-      4: document.getElementById('stage-foley'),
-      5: document.getElementById('stage-baamboozle')
-    },
-    // Stage 1
-    wavePath: document.getElementById('wave-path'),
-    sliderPitch: document.getElementById('slider-pitch'),
-    sliderTexture: document.getElementById('slider-texture'),
-    valPitch: document.getElementById('val-pitch'),
-    valTexture: document.getElementById('val-texture'),
-    btnScannerPlay: document.getElementById('btn-scanner-play'),
-    btnScannerConfirm: document.getElementById('btn-scanner-confirm'),
-    scannerFeedback: document.getElementById('scanner-feedback'),
-    // Stage 2
-    anatomyMachineName: document.getElementById('anatomy-machine-name'),
-    anatomySentenceStem: document.getElementById('anatomy-sentence-stem'),
-    anatomyPartsTray: document.getElementById('anatomy-parts-tray'),
-    btnAnatomyNext: document.getElementById('btn-anatomy-next'),
-    // Stage 3
-    deductionClue: document.getElementById('deduction-clue'),
-    cardChoiceA: document.getElementById('card-choice-a'),
-    iconChoiceA: document.getElementById('icon-choice-a'),
-    labelChoiceA: document.getElementById('label-choice-a'),
-    cardChoiceB: document.getElementById('card-choice-b'),
-    iconChoiceB: document.getElementById('icon-choice-b'),
-    labelChoiceB: document.getElementById('label-choice-b'),
-    btnDeduceMust: document.getElementById('btn-deduce-must'),
-    btnDeduceCant: document.getElementById('btn-deduce-cant'),
-    // Stage 4
-    proTele1: document.getElementById('pro-tele-1'),
-    proTele2: document.getElementById('pro-tele-2'),
-    proTele3: document.getElementById('pro-tele-3'),
-    btnFoleyBroadcast: document.getElementById('btn-foley-broadcast'),
-    // Stage 5
-    scoreCyan: document.getElementById('score-cyan'),
-    scoreAmber: document.getElementById('score-amber'),
-    turnIndicator: document.getElementById('turn-indicator'),
-    baamboozleBoard: document.getElementById('baamboozle-board'),
-    cardModal: document.getElementById('card-modal'),
-    modalCardHeader: document.getElementById('modal-card-header'),
-    modalTimerBar: document.getElementById('modal-timer-bar'),
-    timerFill: document.getElementById('timer-fill'),
-    modalCardContent: document.getElementById('modal-card-content'),
-    modalCardAnswer: document.getElementById('modal-card-answer'),
-    btnShowAnswer: document.getElementById('btn-show-answer'),
-    evalBtns: document.getElementById('eval-btns'),
-    btnEvalCorrect: document.getElementById('btn-eval-correct'),
-    btnEvalWrong: document.getElementById('btn-eval-wrong'),
-    btnCloseTrap: document.getElementById('btn-close-trap')
-  };
+      // Stage 2 State
+      this.s2RoundsTotal = 5;
+      this.s2CurrentRound = 0;
+      this.s2TargetItem = null;
+      this.s2TimerInterval = null;
+      this.s2TimeRemaining = 6.0;
+      this.s2Answered = false;
 
-  function addXP(amount) {
-    state.xp += amount;
-    if (dom.hudXP) dom.hudXP.textContent = state.xp;
-    if (window.SoundAudio) window.SoundAudio.playXP();
-  }
+      // Stage 3 State
+      this.s3Locks = [];
+      this.s3CurrentLockIdx = 0;
+      this.s3TargetItem = null;
+      this.s3Answered = false;
 
-  // --- STAGE SWITCHING ---
-  window.switchStage = function(stageNum) {
-    state.currentStage = stageNum;
-    dom.steps.forEach((chip, i) => {
-      if (chip) chip.classList.toggle('active', i + 1 === stageNum);
-    });
-    Object.keys(dom.panels).forEach(k => {
-      const panel = dom.panels[k];
-      if (panel) panel.style.display = (parseInt(k, 10) === stageNum) ? 'flex' : 'none';
-    });
+      // Stage 4 State
+      this.s4FeaturedItem = null;
+      this.s4SoundboardChannels = [];
+      this.s4IsBroadcasting = false;
 
-    if (dom.hudTimerChip) {
-      dom.hudTimerChip.style.display = (stageNum === 5) ? 'flex' : 'none';
+      // Oscilloscope state
+      this.osciCanvas = null;
+      this.osciCtx = null;
+      this.osciIntensity = 0.2;
+      this.osciDecay = 0.95;
+      this.osciFreq = 2.0;
+      this.osciPhase = 0;
+
+      this.init();
     }
 
-    if (stageNum === 1) initStage1();
-    if (stageNum === 2) initStage2();
-    if (stageNum === 3) initStage3();
-    if (stageNum === 4) initStage4();
-    if (stageNum === 5) initStage5();
-  };
+    init() {
+      document.addEventListener('DOMContentLoaded', () => {
+        this.cacheDom();
+        this.initOscilloscope();
+        this.bindEvents();
+        this.setupStage1();
+        this.setupStage2();
+        this.setupStage3();
+        this.setupStage4();
+        this.updateHUD();
+      });
+    }
 
-  // =========================================================================
-  // STAGE 1: SONIC SPECTRUM SCANNER
-  // =========================================================================
-  const pitchLabels = { 1: "Low", 2: "Medium", 3: "High" };
-  const textureLabels = { 1: "Intermittent", 2: "Continuous" };
-
-  function initStage1() {
-    state.s1Target = data.mechanics[state.s1TargetIndex % data.mechanics.length];
-    if (dom.scannerFeedback) dom.scannerFeedback.style.display = 'none';
-    startOscilloscope();
-
-    dom.sliderPitch.oninput = () => {
-      dom.valPitch.textContent = pitchLabels[dom.sliderPitch.value];
-    };
-    dom.sliderTexture.oninput = () => {
-      dom.valTexture.textContent = textureLabels[dom.sliderTexture.value];
-    };
-
-    dom.btnScannerPlay.onclick = () => {
-      if (window.SoundAudio && window.SoundAudio[state.s1Target.audioMethod]) {
-        window.SoundAudio[state.s1Target.audioMethod]();
+    cacheDom() {
+      // Oscilloscope
+      this.osciCanvas = document.getElementById('osci-canvas');
+      if (this.osciCanvas) {
+        this.osciCtx = this.osciCanvas.getContext('2d');
       }
-    };
 
-    dom.btnScannerConfirm.onclick = () => {
-      const userPitch = parseInt(dom.sliderPitch.value, 10);
-      const userTexture = parseInt(dom.sliderTexture.value, 10);
-      const isPitchMatch = (userPitch === state.s1Target.pitchVal);
-      const isTextureMatch = (userTexture === state.s1Target.textureVal);
+      // HUD
+      this.hudXp = document.getElementById('hud-xp-val');
 
-      if (isPitchMatch && isTextureMatch) {
-        dom.scannerFeedback.className = "feedback-banner success";
-        dom.scannerFeedback.innerHTML = `🎯 <strong>CALIBRATION LOCKED!</strong> ${state.s1Target.name} confirmed (${state.s1Target.soundType}). (+20 XP)`;
-        addXP(20);
-        if (window.SoundAudio) {
-          window.SoundAudio.speak(`Excellent calibration! That is the ${state.s1Target.name}, which ${state.s1Target.actionVerb}.`);
-        }
-        setTimeout(() => {
-          window.switchStage(2);
-        }, 1800);
+      // Stage 1
+      this.chamberCardsGrid = document.getElementById('chamber-cards-grid');
+      this.btnPlayChamberSound = document.getElementById('btn-play-chamber-sound');
+      this.chamberStatusIndicator = document.getElementById('chamber-status-indicator');
+      this.chamberFeedbackText = document.getElementById('chamber-feedback-text');
+      this.btnChamberNext = document.getElementById('btn-chamber-next');
+
+      // Stage 2
+      this.speedTimerFill = document.getElementById('speed-timer-fill');
+      this.slapObjIcon = document.getElementById('slap-obj-icon');
+      this.slapObjName = document.getElementById('slap-obj-name');
+      this.slapPromptStrip = document.getElementById('slap-prompt-strip');
+      this.slapVerbsGrid = document.getElementById('slap-verbs-grid');
+      this.slapObjectStage = document.getElementById('slap-object-stage');
+      this.slapSentenceSubject = document.getElementById('slap-sentence-subject');
+      this.slapSentenceVerb = document.getElementById('slap-sentence-verb');
+
+      // Stage 3
+      this.vaultChassis = document.getElementById('vault-chassis');
+      this.safePlaySound = document.getElementById('safe-play-sound');
+      this.safeClueText = document.getElementById('safe-clue-text');
+      this.btnGrammarSingular = document.getElementById('btn-grammar-singular');
+      this.btnGrammarPlural = document.getElementById('btn-grammar-plural');
+      this.modalSafeVictory = document.getElementById('modal-safe-victory');
+
+      // Stage 4
+      this.soundboardChannels = document.getElementById('soundboard-channels');
+      this.foleySelectorPills = document.getElementById('foley-selector-pills');
+      this.prompterScript = document.getElementById('prompter-script');
+      this.btnBroadcastReport = document.getElementById('btn-broadcast-report');
+      this.modalBroadcastVictory = document.getElementById('modal-broadcast-victory');
+    }
+
+    bindEvents() {
+      // Audio Visualizer hook
+      this.audio.setVisualizer((intensity, duration) => {
+        this.triggerOscilloscopeWave(intensity);
+      });
+
+      // Stage 1
+      if (this.btnPlayChamberSound) {
+        this.btnPlayChamberSound.addEventListener('click', () => this.playCurrentChamberSound());
+      }
+      if (this.btnChamberNext) {
+        this.btnChamberNext.addEventListener('click', () => this.nextChamberRound());
+      }
+
+      // Stage 3
+      if (this.safePlaySound) {
+        this.safePlaySound.addEventListener('click', () => this.playCurrentVaultSound());
+      }
+      if (this.btnGrammarSingular) {
+        this.btnGrammarSingular.addEventListener('click', () => this.handleSafeGrammarChoice('singular'));
+      }
+      if (this.btnGrammarPlural) {
+        this.btnGrammarPlural.addEventListener('click', () => this.handleSafeGrammarChoice('plural'));
+      }
+
+      // Stage 4
+      if (this.btnBroadcastReport) {
+        this.btnBroadcastReport.addEventListener('click', () => this.broadcastTeleprompter());
+      }
+    }
+
+    addXP(amount) {
+      this.xp += amount;
+      this.updateHUD();
+    }
+
+    updateHUD() {
+      if (this.hudXp) {
+        this.hudXp.textContent = this.xp;
+      }
+    }
+
+    goToStage(stageNum) {
+      this.currentStage = stageNum;
+
+      // Update Nav Buttons
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`step-btn-${i}`);
+        const panel = document.getElementById(`stage-panel-${i}`);
+        if (btn) btn.classList.toggle('active', i === stageNum);
+        if (panel) panel.classList.toggle('active', i === stageNum);
+      }
+
+      // Pause / resume stage specific loops
+      if (stageNum === 2) {
+        this.startStage2Round();
       } else {
-        dom.scannerFeedback.className = "feedback-banner fail";
-        dom.scannerFeedback.innerHTML = `⚠️ <strong>CALIBRATION MISMATCH:</strong> Listen again! Is the acoustic frequency high or low? Continuous or intermittent?`;
-        if (window.SoundAudio) {
-          window.SoundAudio.playSoftFail();
-          window.SoundAudio.speak("Acoustic mismatch. Adjust the frequency and texture sliders.");
-        }
+        clearInterval(this.s2TimerInterval);
       }
-    };
-  }
 
-  function startOscilloscope() {
-    let phase = 0;
-    function renderWave() {
-      if (state.currentStage !== 1) return;
-      phase += 0.08;
-      const pitch = parseInt(dom.sliderPitch ? dom.sliderPitch.value : 2, 10);
-      const texture = parseInt(dom.sliderTexture ? dom.sliderTexture.value : 1, 10);
-
-      const freq = pitch === 1 ? 0.02 : pitch === 2 ? 0.04 : 0.07;
-      const amp = texture === 1 ? 26 : 38;
-
-      let d = `M 0 80`;
-      for (let x = 0; x <= 600; x += 15) {
-        const y = 80 + Math.sin(x * freq + phase) * amp;
-        d += ` L ${x} ${y.toFixed(1)}`;
+      if (stageNum === 3) {
+        this.loadVaultLock(this.s3CurrentLockIdx);
       }
-      if (dom.wavePath) dom.wavePath.setAttribute('d', d);
-      requestAnimationFrame(renderWave);
+
+      if (stageNum === 4) {
+        this.updateTeleprompterScript();
+      }
     }
-    requestAnimationFrame(renderWave);
-  }
 
-  // =========================================================================
-  // STAGE 2: ACOUSTIC ANATOMY LAB
-  // =========================================================================
-  function initStage2() {
-    const item = data.mechanics[state.s2TargetIndex % data.mechanics.length];
-    state.s2PlacedParts.clear();
+    // ================================================================
+    // CENTER STAGE OSCILLOSCOPE CANVAS ANIMATION
+    // ================================================================
 
-    dom.anatomyMachineName.textContent = `${item.name} Assembly`;
-    dom.anatomySentenceStem.textContent = `When [Component] vibrates, it ${item.actionVerb}.`;
+    initOscilloscope() {
+      if (!this.osciCanvas || !this.osciCtx) return;
 
-    // Reset sockets
-    ['p1', 'p2', 'p3'].forEach((pId, idx) => {
-      const socket = document.getElementById(`socket-${pId}`);
-      if (socket) {
-        socket.className = 'blueprint-socket';
-        socket.querySelector('.socket-name').textContent = `${item.parts[idx].name} Socket`;
+      const render = () => {
+        this.drawOscilloscope();
+        requestAnimationFrame(render);
+      };
+      requestAnimationFrame(render);
+    }
+
+    triggerOscilloscopeWave(intensity = 1.0) {
+      this.osciIntensity = Math.min(2.5, this.osciIntensity + intensity * 1.5);
+      const freqLabel = document.getElementById('osci-frequency-label');
+      if (freqLabel) {
+        const rndFreq = Math.floor(600 + Math.random() * 1200);
+        freqLabel.textContent = `FREQ: ${rndFreq} Hz • BURST`;
       }
-    });
+    }
 
-    // Populate Parts Tray
-    dom.anatomyPartsTray.innerHTML = '';
-    const shuffledParts = [...item.parts].sort(() => 0.5 - Math.random());
-    shuffledParts.forEach(part => {
-      const chip = document.createElement('div');
-      chip.className = 'component-chip';
-      chip.id = `chip-${part.id}`;
-      chip.innerHTML = `
-        <h4>⚙️ ${part.name}</h4>
-        <p>${part.function}</p>
-      `;
-      chip.onclick = () => placeAnatomyPart(part, item, chip);
-      dom.anatomyPartsTray.appendChild(chip);
-    });
+    drawOscilloscope() {
+      const cvs = this.osciCanvas;
+      const ctx = this.osciCtx;
+      const width = cvs.width;
+      const height = cvs.height;
+      const centerY = height / 2;
 
-    dom.btnAnatomyNext.onclick = () => {
-      if (state.s2PlacedParts.size >= 3) {
-        if (window.SoundAudio && window.SoundAudio[item.audioMethod]) {
-          window.SoundAudio[item.audioMethod]();
+      ctx.clearRect(0, 0, width, height);
+
+      // Decay intensity back towards baseline 0.15
+      this.osciIntensity = Math.max(0.15, this.osciIntensity * this.osciDecay);
+      this.osciPhase += 0.08 + (this.osciIntensity * 0.05);
+
+      // Neon Waveform Line
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = this.osciIntensity > 0.6 ? '#38bdf8' : '#0284c7';
+      ctx.shadowBlur = this.osciIntensity > 0.6 ? 16 : 6;
+      ctx.shadowColor = '#38bdf8';
+
+      ctx.beginPath();
+      for (let x = 0; x < width; x++) {
+        const normX = x / width;
+        const envelope = Math.sin(normX * Math.PI); // Windowing at sides
+        const wave1 = Math.sin(normX * 18 + this.osciPhase) * 18 * this.osciIntensity;
+        const wave2 = Math.cos(normX * 36 - this.osciPhase * 1.5) * 10 * this.osciIntensity;
+        const y = centerY + (wave1 + wave2) * envelope;
+
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Secondary ghost wave
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.4)';
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = '#a855f7';
+      ctx.beginPath();
+      for (let x = 0; x < width; x++) {
+        const normX = x / width;
+        const envelope = Math.sin(normX * Math.PI);
+        const wave = Math.sin(normX * 24 - this.osciPhase * 0.8) * 12 * this.osciIntensity;
+        const y = centerY + wave * envelope;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    // ================================================================
+    // STAGE 1: THE BLIND SOUND CHAMBER
+    // ================================================================
+
+    setupStage1() {
+      this.s1CurrentRound = 0;
+      this.loadStage1Round();
+    }
+
+    loadStage1Round() {
+      this.s1Answered = false;
+      if (this.btnChamberNext) this.btnChamberNext.style.display = 'none';
+      if (this.chamberFeedbackText) {
+        this.chamberFeedbackText.innerHTML = `🎧 <strong>Round ${this.s1CurrentRound + 1} of ${this.s1RoundsTotal}:</strong> Listen to the acoustic clue above, then choose a card!`;
+      }
+
+      // Pick target object
+      const allItems = [...this.data.items];
+      this.s1TargetItem = allItems[Math.floor(Math.random() * allItems.length)];
+
+      // Pick 2 distinct distractors
+      const distractors = allItems
+        .filter(i => i.id !== this.s1TargetItem.id)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 2);
+
+      const trio = [this.s1TargetItem, ...distractors].sort(() => 0.5 - Math.random());
+
+      // Render 3 Cards
+      if (!this.chamberCardsGrid) return;
+      this.chamberCardsGrid.innerHTML = '';
+
+      trio.forEach((item, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flip-card-wrapper';
+        wrapper.dataset.itemId = item.id;
+
+        wrapper.innerHTML = `
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="mystery-number">CARD 0${idx + 1}</span>
+              <div class="mystery-icon-box">❓</div>
+              <div class="mystery-label">Mystery Object</div>
+            </div>
+            <div class="flip-card-back">
+              <div class="card-back-icon">${item.icon}</div>
+              <div class="card-back-title">${item.name}</div>
+              <div class="card-back-action">It ${item.soundVerb3rd}!</div>
+            </div>
+          </div>
+        `;
+
+        wrapper.addEventListener('click', () => this.handleChamberCardClick(wrapper, item));
+        this.chamberCardsGrid.appendChild(wrapper);
+      });
+
+      if (this.chamberStatusIndicator) {
+        this.chamberStatusIndicator.innerHTML = `👂 Round ${this.s1CurrentRound + 1}: Click <strong>PLAY MYSTERY SOUND</strong> to begin!`;
+      }
+    }
+
+    playCurrentChamberSound() {
+      if (!this.s1TargetItem) return;
+      const method = this.s1TargetItem.audioMethod;
+      if (typeof this.audio[method] === 'function') {
+        this.audio[method]();
+      }
+      if (this.chamberStatusIndicator) {
+        this.chamberStatusIndicator.innerHTML = `🔊 Playing acoustic soundwave: <em>"${this.s1TargetItem.soundLabel}"</em> — Which object is it?`;
+      }
+    }
+
+    handleChamberCardClick(cardEl, item) {
+      if (this.s1Answered) return;
+
+      // Flip card
+      cardEl.classList.add('flipped');
+
+      if (item.id === this.s1TargetItem.id) {
+        // Correct!
+        this.s1Answered = true;
+        this.audio.playXP();
+        this.addXP(10);
+
+        // Add stamp
+        const back = cardEl.querySelector('.flip-card-back');
+        if (back && !back.querySelector('.stamp-match')) {
+          const stamp = document.createElement('div');
+          stamp.className = 'stamp-match';
+          stamp.textContent = 'MATCH!';
+          back.appendChild(stamp);
         }
-        addXP(30);
-        if (window.SoundAudio) {
-          window.SoundAudio.speak(`Mechanism test successful! ${item.deduction}`);
+
+        // Feedback Sentence & TTS
+        const sentence = item.grammarType === 'plural'
+          ? `Listen! They're ${item.name}. They ${item.soundVerb}!`
+          : `Listen! It's a ${item.name}. It ${item.soundVerb3rd}!`;
+
+        if (this.chamberFeedbackText) {
+          this.chamberFeedbackText.innerHTML = `✅ <span class="highlight">${sentence}</span>`;
         }
-        setTimeout(() => {
-          window.switchStage(3);
-        }, 2200);
+        this.audio.speak(sentence);
+
+        if (this.btnChamberNext) {
+          this.btnChamberNext.style.display = 'inline-flex';
+        }
       } else {
-        if (window.SoundAudio) window.SoundAudio.speak("Mount all three internal components first.");
-      }
-    };
-  }
-
-  function placeAnatomyPart(part, item, chipElement) {
-    if (state.s2PlacedParts.has(part.id)) return;
-    state.s2PlacedParts.add(part.id);
-    chipElement.classList.add('placed');
-
-    const socket = document.getElementById(`socket-${part.id}`);
-    if (socket) {
-      socket.classList.add('filled');
-      socket.querySelector('.socket-name').innerHTML = `✅ <strong>${part.name}</strong> (${part.function})`;
-    }
-
-    if (window.SoundAudio) {
-      window.SoundAudio.playXP();
-      window.SoundAudio.speak(part.name + ": " + part.function);
-    }
-
-    if (state.s2PlacedParts.size >= 3) {
-      dom.anatomySentenceStem.innerHTML = `🌟 <strong>COMPLETE MECHANISM:</strong> ${item.deduction}`;
-    }
-  }
-
-  // =========================================================================
-  // STAGE 3: THE DEDUCTION ARENA
-  // =========================================================================
-  function initStage3() {
-    renderDeductionTrial();
-  }
-
-  function renderDeductionTrial() {
-    const trial = data.deductionTrials[state.s3Index % data.deductionTrials.length];
-    state.s3SelectedCard = null;
-
-    dom.deductionClue.textContent = `"${trial.cue}"`;
-
-    dom.iconChoiceA.textContent = trial.correctIcon;
-    dom.labelChoiceA.textContent = trial.correctLabel;
-    dom.cardChoiceA.className = "versus-card";
-    dom.cardChoiceA.onclick = () => selectDeductionCard('correct', dom.cardChoiceA);
-
-    dom.iconChoiceB.textContent = trial.distractorIcon;
-    dom.labelChoiceB.textContent = trial.distractorLabel;
-    dom.cardChoiceB.className = "versus-card";
-    dom.cardChoiceB.onclick = () => selectDeductionCard('distractor', dom.cardChoiceB);
-
-    dom.btnDeduceMust.onclick = () => handleDeductionChoice('must', trial);
-    dom.btnDeduceCant.onclick = () => handleDeductionChoice('cant', trial);
-  }
-
-  function selectDeductionCard(type, element) {
-    state.s3SelectedCard = type;
-    dom.cardChoiceA.classList.remove('selected');
-    dom.cardChoiceB.classList.remove('selected');
-    element.classList.add('selected');
-    if (window.SoundAudio) window.SoundAudio.playXP();
-  }
-
-  function handleDeductionChoice(modalVerb, trial) {
-    if (!state.s3SelectedCard) {
-      if (window.SoundAudio) window.SoundAudio.speak("Select a machine card first!");
-      return;
-    }
-
-    const isTarget = (state.s3SelectedCard === 'correct');
-    const isMust = (modalVerb === 'must');
-
-    if (isTarget && isMust) {
-      addXP(20);
-      if (window.SoundAudio) window.SoundAudio.speak(trial.mustReason);
-      advanceDeduction();
-    } else if (!isTarget && !isMust) {
-      addXP(20);
-      if (window.SoundAudio) window.SoundAudio.speak(trial.cantReason);
-      advanceDeduction();
-    } else {
-      if (window.SoundAudio) {
-        window.SoundAudio.playSoftFail();
-        window.SoundAudio.speak(isTarget ? "Use 'must be' for evidence that matches!" : "Use 'can't be' for impossible matches!");
-      }
-    }
-  }
-
-  function advanceDeduction() {
-    state.s3Index++;
-    if (state.s3Index >= 3) {
-      setTimeout(() => window.switchStage(4), 1600);
-    } else {
-      setTimeout(renderDeductionTrial, 1400);
-    }
-  }
-
-  // =========================================================================
-  // STAGE 4: FOLEY STUDIO & BROADCAST
-  // =========================================================================
-  function initStage4() {
-    dom.btnFoleyBroadcast.disabled = false;
-    dom.btnFoleyBroadcast.onclick = runFoleyBroadcast;
-  }
-
-  function runFoleyBroadcast() {
-    if (state.s4Broadcasting) return;
-    state.s4Broadcasting = true;
-    dom.btnFoleyBroadcast.disabled = true;
-
-    dom.proTele1.classList.add('active');
-    dom.proTele2.classList.remove('active');
-    dom.proTele3.classList.remove('active');
-
-    if (window.SoundAudio) {
-      window.SoundAudio.speak(
-        "We analyzed the acoustic frequency of the mystery household object.",
-        () => {
-          dom.proTele1.classList.remove('active');
-          dom.proTele2.classList.add('active');
-          window.SoundAudio.speak(
-            "It produces a continuous, high-pitched sound, so it must be a kettle.",
-            () => {
-              dom.proTele2.classList.remove('active');
-              dom.proTele3.classList.add('active');
-              window.SoundAudio.speak(
-                "The whistle occurs when pressurized steam forces through the narrow nozzle.",
-                () => {
-                  window.SoundAudio.playKettleBoil();
-                  addXP(40);
-                  state.s4Broadcasting = false;
-                  setTimeout(() => window.switchStage(5), 2400);
-                }
-              );
-            }
-          );
+        // Soft fail
+        this.audio.playSoftFail();
+        cardEl.classList.add('card-wrong');
+        if (this.chamberFeedbackText) {
+          this.chamberFeedbackText.innerHTML = `❌ That's a <strong>${item.name}</strong>. Listen again! What's that sound?`;
         }
-      );
+        this.audio.speak("Not that one. Listen again! What's that sound?");
+        setTimeout(() => {
+          cardEl.classList.remove('flipped');
+          cardEl.classList.remove('card-wrong');
+        }, 1200);
+      }
     }
-  }
 
-  // =========================================================================
-  // STAGE 5: 24-GRID BAAMBOOZLE TOURNAMENT
-  // =========================================================================
-  function initStage5() {
-    renderBaamboozleBoard();
-    updateBaamboozleHUD();
-  }
+    nextChamberRound() {
+      this.s1CurrentRound++;
+      if (this.s1CurrentRound < this.s1RoundsTotal) {
+        this.loadStage1Round();
+        this.playCurrentChamberSound();
+      } else {
+        // Stage 1 Complete
+        const step1Btn = document.getElementById('step-btn-1');
+        if (step1Btn) step1Btn.classList.add('completed');
+        this.audio.playFanfare();
+        if (this.chamberFeedbackText) {
+          this.chamberFeedbackText.innerHTML = `🎉 <strong>Chamber Cleared!</strong> 5/5 Matches Found! Moving to Stage 2: Speed Slap!`;
+        }
+        setTimeout(() => this.goToStage(2), 1600);
+      }
+    }
 
-  function renderBaamboozleBoard() {
-    dom.baamboozleBoard.innerHTML = '';
-    data.baamboozleDeck.forEach(card => {
-      const btn = document.createElement('button');
-      btn.className = `baamboozle-card ${state.bClaimedCards.has(card.id) ? 'claimed' : ''}`;
-      btn.textContent = card.id < 10 ? `0${card.id}` : `${card.id}`;
-      btn.onclick = () => openBaamboozleModal(card, btn);
-      dom.baamboozleBoard.appendChild(btn);
-    });
-  }
+    // ================================================================
+    // STAGE 2: SOUND-VERB SPEED SLAP
+    // ================================================================
 
-  function updateBaamboozleHUD() {
-    dom.scoreCyan.textContent = state.bScores.cyan;
-    dom.scoreAmber.textContent = state.bScores.amber;
-    dom.turnIndicator.innerHTML = `TURN: <strong style="color:var(--${state.bActiveTeam})">TEAM ${state.bActiveTeam.toUpperCase()}</strong>`;
-  }
+    setupStage2() {
+      this.s2CurrentRound = 0;
+    }
 
-  function openBaamboozleModal(card, cardBtn) {
-    if (state.bClaimedCards.has(card.id)) return;
-    state.bCurrentCard = card;
+    startStage2Round() {
+      this.s2Answered = false;
+      clearInterval(this.s2TimerInterval);
 
-    dom.cardModal.style.display = 'flex';
-    dom.modalCardAnswer.style.display = 'none';
-    dom.evalBtns.style.display = 'none';
+      const allItems = [...this.data.items];
+      this.s2TargetItem = allItems[Math.floor(Math.random() * allItems.length)];
 
-    if (card.type === 'trap') {
-      dom.modalCardHeader.textContent = `Card ${card.id} • TRAP EVENT!`;
-      dom.modalTimerBar.style.display = 'none';
-      dom.modalCardContent.innerHTML = `
-        <div style="font-size:2.8rem; margin-bottom:8px;">⚠️</div>
-        <h3 style="color:var(--amber); margin-bottom:8px;">${card.title}</h3>
-        <p style="font-size:1.15rem; color:#cbd5e1;">${card.desc}</p>
+      // Populate Object Center Card
+      if (this.slapObjIcon) this.slapObjIcon.textContent = this.s2TargetItem.icon;
+      if (this.slapObjName) this.slapObjName.textContent = this.s2TargetItem.name;
+      if (this.slapSentenceSubject) this.slapSentenceSubject.textContent = this.s2TargetItem.name;
+      if (this.slapSentenceVerb) this.slapSentenceVerb.textContent = '__________';
+
+      // Play object sound
+      const method = this.s2TargetItem.audioMethod;
+      if (typeof this.audio[method] === 'function') {
+        this.audio[method]();
+      }
+
+      // 4 Verb Options: 1 correct + 3 random from 8 verbs
+      const correctVerb = this.s2TargetItem.soundVerb;
+      const otherVerbs = this.data.verbs
+        .filter(v => v.verb !== correctVerb)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(v => v.verb);
+
+      const options = [correctVerb, ...otherVerbs].sort(() => 0.5 - Math.random());
+
+      // Render 4 3D buttons
+      if (!this.slapVerbsGrid) return;
+      this.slapVerbsGrid.innerHTML = '';
+
+      const btnStyles = ['btn-cyan', 'btn-amber', 'btn-purple', 'btn-emerald'];
+
+      options.forEach((verb, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `btn-3d ${btnStyles[idx % btnStyles.length]} btn-verb`;
+        btn.textContent = verb.toUpperCase();
+        btn.addEventListener('click', () => this.handleVerbSlap(btn, verb));
+        this.slapVerbsGrid.appendChild(btn);
+      });
+
+      // 6-Second Timer Countdown
+      this.s2TimeRemaining = 6.0;
+      this.updateTimerBar();
+
+      this.s2TimerInterval = setInterval(() => {
+        this.s2TimeRemaining -= 0.05;
+        this.updateTimerBar();
+
+        if (this.s2TimeRemaining <= 0) {
+          clearInterval(this.s2TimerInterval);
+          this.handleVerbSlapTimeout();
+        }
+      }, 50);
+    }
+
+    updateTimerBar() {
+      if (!this.speedTimerFill) return;
+      const pct = Math.max(0, (this.s2TimeRemaining / 6.0) * 100);
+      this.speedTimerFill.style.width = `${pct}%`;
+    }
+
+    handleVerbSlap(btnEl, chosenVerb) {
+      if (this.s2Answered) return;
+      this.s2Answered = true;
+      clearInterval(this.s2TimerInterval);
+
+      const isCorrect = chosenVerb === this.s2TargetItem.soundVerb;
+
+      if (isCorrect) {
+        this.audio.playXP();
+        this.addXP(10);
+        if (this.slapObjectStage) this.slapObjectStage.classList.add('pulse-active');
+
+        // Auto-complete sentence strip
+        const verb3rd = this.s2TargetItem.soundVerb3rd;
+        if (this.slapSentenceVerb) this.slapSentenceVerb.textContent = verb3rd;
+
+        const sentence = `The ${this.s2TargetItem.name} ${verb3rd}!`;
+        this.audio.speak(sentence);
+
+        setTimeout(() => {
+          if (this.slapObjectStage) this.slapObjectStage.classList.remove('pulse-active');
+          this.advanceStage2();
+        }, 1500);
+      } else {
+        this.audio.playSoftFail();
+        btnEl.style.opacity = '0.4';
+        if (this.slapSentenceVerb) this.slapSentenceVerb.textContent = this.s2TargetItem.soundVerb3rd;
+        this.audio.speak(`No, the ${this.s2TargetItem.name} ${this.s2TargetItem.soundVerb3rd}!`);
+        setTimeout(() => this.advanceStage2(), 1600);
+      }
+    }
+
+    handleVerbSlapTimeout() {
+      if (this.s2Answered) return;
+      this.s2Answered = true;
+      this.audio.playSoftFail();
+      if (this.slapSentenceVerb) this.slapSentenceVerb.textContent = this.s2TargetItem.soundVerb3rd;
+      this.audio.speak(`Time's up! The ${this.s2TargetItem.name} ${this.s2TargetItem.soundVerb3rd}!`);
+      setTimeout(() => this.advanceStage2(), 1600);
+    }
+
+    advanceStage2() {
+      this.s2CurrentRound++;
+      if (this.s2CurrentRound < this.s2RoundsTotal) {
+        this.startStage2Round();
+      } else {
+        // Stage 2 Complete
+        const step2Btn = document.getElementById('step-btn-2');
+        if (step2Btn) step2Btn.classList.add('completed');
+        this.audio.playFanfare();
+        setTimeout(() => this.goToStage(3), 1200);
+      }
+    }
+
+    // ================================================================
+    // STAGE 3: THE SONIC SAFE CRACKER
+    // ================================================================
+
+    setupStage3() {
+      // Pick 3 items for locks: 1 plural guaranteed, 2 singulars
+      const plurals = this.data.items.filter(i => i.grammarType === 'plural');
+      const singulars = this.data.items.filter(i => i.grammarType === 'singular');
+
+      const pluralItem = plurals[Math.floor(Math.random() * plurals.length)];
+      const randomSingulars = singulars.sort(() => 0.5 - Math.random()).slice(0, 2);
+
+      this.s3Locks = [randomSingulars[0], pluralItem, randomSingulars[1]].sort(() => 0.5 - Math.random());
+      this.s3CurrentLockIdx = 0;
+    }
+
+    loadVaultLock(index) {
+      if (index >= this.s3Locks.length) {
+        this.unlockVaultFull();
+        return;
+      }
+
+      this.s3CurrentLockIdx = index;
+      this.s3TargetItem = this.s3Locks[index];
+      this.s3Answered = false;
+
+      // Update LEDs
+      for (let i = 1; i <= 3; i++) {
+        const led = document.getElementById(`tumbler-${i}`);
+        if (led) {
+          led.classList.toggle('cracked', i - 1 < index);
+          led.classList.toggle('active', i - 1 === index);
+        }
+      }
+
+      // Update Clue Box
+      if (this.safeClueText) {
+        this.safeClueText.innerHTML = `
+          <span>Lock 0${index + 1} Armed: Analyzing acoustic mystery signature...</span>
+          <small>Click 🔊 to hear Lock ${index + 1}'s sound!</small>
+        `;
+      }
+
+      this.playCurrentVaultSound();
+    }
+
+    playCurrentVaultSound() {
+      if (!this.s3TargetItem) return;
+      const method = this.s3TargetItem.audioMethod;
+      if (typeof this.audio[method] === 'function') {
+        this.audio[method]();
+      }
+    }
+
+    handleSafeGrammarChoice(choice) {
+      if (this.s3Answered || !this.s3TargetItem) return;
+      this.s3Answered = true;
+
+      const isCorrect = choice === this.s3TargetItem.grammarType;
+
+      if (isCorrect) {
+        this.audio.playXP();
+        this.addXP(15);
+
+        const phrase = choice === 'plural'
+          ? `They're ${this.s3TargetItem.name}!`
+          : `It's a ${this.s3TargetItem.name}!`;
+
+        if (this.safeClueText) {
+          this.safeClueText.innerHTML = `
+            <span style="color:var(--emerald);">🔓 Tumbler 0${this.s3CurrentLockIdx + 1} CRACKED: ${phrase}</span>
+            <small>Acoustic match confirmed!</small>
+          `;
+        }
+        this.audio.speak(`Correct! ${phrase}`);
+
+        setTimeout(() => {
+          this.loadVaultLock(this.s3CurrentLockIdx + 1);
+        }, 1600);
+      } else {
+        this.audio.playSoftFail();
+        const correctPhrase = this.s3TargetItem.grammarType === 'plural'
+          ? `They're ${this.s3TargetItem.name}! (Plural)`
+          : `It's a ${this.s3TargetItem.name}! (Singular)`;
+
+        if (this.safeClueText) {
+          this.safeClueText.innerHTML = `
+            <span style="color:var(--ruby);">❌ Tumbler jammed! It was: ${correctPhrase}</span>
+            <small>Listen again and try the next lock!</small>
+          `;
+        }
+        this.audio.speak(`Incorrect lock combination. It was: ${correctPhrase}`);
+
+        setTimeout(() => {
+          this.loadVaultLock(this.s3CurrentLockIdx + 1);
+        }, 2000);
+      }
+    }
+
+    unlockVaultFull() {
+      // Rotate vault graphic
+      if (this.vaultChassis) this.vaultChassis.classList.add('unlocked');
+      const step3Btn = document.getElementById('step-btn-3');
+      if (step3Btn) step3Btn.classList.add('completed');
+
+      this.audio.playFanfare();
+      this.addXP(50);
+
+      setTimeout(() => {
+        if (this.modalSafeVictory) this.modalSafeVictory.style.display = 'flex';
+      }, 800);
+    }
+
+    onSafeVictoryContinue() {
+      if (this.modalSafeVictory) this.modalSafeVictory.style.display = 'none';
+      this.goToStage(4);
+    }
+
+    // ================================================================
+    // STAGE 4: FOLEY DJ STUDIO & TELEPROMPTER
+    // ================================================================
+
+    setupStage4() {
+      // Setup 4 Initial Channels on Soundboard
+      this.s4SoundboardChannels = [
+        this.data.items.find(i => i.id === 'clock'),
+        this.data.items.find(i => i.id === 'kettle'),
+        this.data.items.find(i => i.id === 'door'),
+        this.data.items.find(i => i.id === 'cards')
+      ];
+
+      this.s4FeaturedItem = this.s4SoundboardChannels[0];
+      this.renderSoundboard();
+      this.renderSelectorPills();
+      this.updateTeleprompterScript();
+    }
+
+    renderSoundboard() {
+      if (!this.soundboardChannels) return;
+      this.soundboardChannels.innerHTML = '';
+
+      this.s4SoundboardChannels.forEach((item, idx) => {
+        const pad = document.createElement('div');
+        pad.className = 'sound-pad';
+        pad.innerHTML = `
+          <div class="pad-icon">${item.icon}</div>
+          <div class="pad-name">${item.name}</div>
+          <div class="pad-verb">CH 0${idx + 1} • ${item.soundVerb}</div>
+        `;
+
+        pad.addEventListener('click', () => {
+          pad.classList.add('firing');
+          const method = item.audioMethod;
+          if (typeof this.audio[method] === 'function') {
+            this.audio[method]();
+          }
+          setTimeout(() => pad.classList.remove('firing'), 300);
+        });
+
+        this.soundboardChannels.appendChild(pad);
+      });
+    }
+
+    renderSelectorPills() {
+      if (!this.foleySelectorPills) return;
+      this.foleySelectorPills.innerHTML = '';
+
+      this.data.items.forEach(item => {
+        const pill = document.createElement('div');
+        pill.className = `selector-pill ${item.id === this.s4FeaturedItem.id ? 'active' : ''}`;
+        pill.innerHTML = `${item.icon} ${item.name}`;
+
+        pill.addEventListener('click', () => {
+          this.s4FeaturedItem = item;
+          // Update Soundboard Channel 1 to this item
+          this.s4SoundboardChannels[0] = item;
+          this.renderSoundboard();
+          this.renderSelectorPills();
+          this.updateTeleprompterScript();
+
+          // Play sound
+          const method = item.audioMethod;
+          if (typeof this.audio[method] === 'function') {
+            this.audio[method]();
+          }
+        });
+
+        this.foleySelectorPills.appendChild(pill);
+      });
+    }
+
+    updateTeleprompterScript() {
+      if (!this.prompterScript || !this.s4FeaturedItem) return;
+      const item = this.s4FeaturedItem;
+
+      const line1 = "Listen to our sound effects!";
+      const line2 = `When the ${item.name} moves, it goes ${item.soundVerb}!`;
+      const line3 = item.grammarType === 'plural'
+        ? `Answer: They're ${item.name}. They ${item.soundVerb}!`
+        : `Answer: It's a ${item.name}. It ${item.soundVerb3rd}!`;
+
+      this.prompterScript.innerHTML = `
+        <div class="script-line" id="script-line-1">${this.wrapWords(line1)}</div>
+        <div class="script-line" id="script-line-2">${this.wrapWords(line2)}</div>
+        <div class="script-line" id="script-line-3">${this.wrapWords(line3)}</div>
       `;
-      dom.btnShowAnswer.style.display = 'none';
-      dom.btnCloseTrap.style.display = 'inline-flex';
-      dom.btnCloseTrap.onclick = () => executeTrap(card, cardBtn);
-      if (window.SoundAudio) window.SoundAudio.playSoftFail();
-    } else {
-      dom.modalCardHeader.textContent = `Card ${card.id} • ${card.pts} Pts`;
-      dom.modalTimerBar.style.display = 'block';
-      dom.timerFill.style.width = '100%';
-      dom.modalCardContent.textContent = card.q;
-      dom.modalCardAnswer.textContent = "Answer: " + card.a;
-      dom.btnShowAnswer.style.display = 'inline-flex';
-      dom.btnCloseTrap.style.display = 'none';
+    }
 
-      startModalTimer(data.config.timerSeconds || 15);
+    wrapWords(text) {
+      return text.split(' ').map(w => `<span class="word">${w}</span>`).join(' ');
+    }
 
-      dom.btnShowAnswer.onclick = () => {
-        clearInterval(state.bTimerInterval);
-        dom.modalCardAnswer.style.display = 'block';
-        dom.btnShowAnswer.style.display = 'none';
-        dom.evalBtns.style.display = 'flex';
+    broadcastTeleprompter() {
+      if (this.s4IsBroadcasting) return;
+      this.s4IsBroadcasting = true;
+      if (this.btnBroadcastReport) this.btnBroadcastReport.disabled = true;
+
+      const lines = [
+        document.getElementById('script-line-1'),
+        document.getElementById('script-line-2'),
+        document.getElementById('script-line-3')
+      ];
+
+      let lineIdx = 0;
+
+      const speakNextLine = () => {
+        if (lineIdx >= lines.length) {
+          // Completed broadcast!
+          this.s4IsBroadcasting = false;
+          if (this.btnBroadcastReport) this.btnBroadcastReport.disabled = false;
+          lines.forEach(l => l.classList.remove('active'));
+
+          const step4Btn = document.getElementById('step-btn-4');
+          if (step4Btn) step4Btn.classList.add('completed');
+
+          this.audio.playFanfare();
+          this.addXP(100);
+
+          setTimeout(() => {
+            if (this.modalBroadcastVictory) this.modalBroadcastVictory.style.display = 'flex';
+          }, 800);
+          return;
+        }
+
+        lines.forEach((l, i) => l.classList.toggle('active', i === lineIdx));
+        const currentLineEl = lines[lineIdx];
+        const lineText = currentLineEl.textContent.trim();
+
+        // Animate words during speech
+        const words = currentLineEl.querySelectorAll('.word');
+        let wordIdx = 0;
+        const wordInterval = setInterval(() => {
+          words.forEach((w, wi) => w.classList.toggle('karaoke-glow', wi === wordIdx));
+          wordIdx++;
+          if (wordIdx >= words.length) clearInterval(wordInterval);
+        }, 300);
+
+        this.audio.speak(lineText, () => {
+          clearInterval(wordInterval);
+          words.forEach(w => w.classList.remove('karaoke-glow'));
+          lineIdx++;
+          setTimeout(speakNextLine, 400);
+        });
       };
 
-      dom.btnEvalCorrect.onclick = () => scoreBaamboozleCard(true, card, cardBtn);
-      dom.btnEvalWrong.onclick = () => scoreBaamboozleCard(false, card, cardBtn);
+      speakNextLine();
+    }
 
-      if (window.SoundAudio) window.SoundAudio.speak(card.q);
+    restartGame() {
+      if (this.modalBroadcastVictory) this.modalBroadcastVictory.style.display = 'none';
+      this.setupStage1();
+      this.setupStage2();
+      this.setupStage3();
+      this.setupStage4();
+      this.goToStage(1);
     }
   }
 
-  function startModalTimer(seconds) {
-    clearInterval(state.bTimerInterval);
-    state.bTimeLeft = seconds;
-    if (dom.hudTimer) dom.hudTimer.textContent = state.bTimeLeft;
-
-    state.bTimerInterval = setInterval(() => {
-      state.bTimeLeft--;
-      if (dom.hudTimer) dom.hudTimer.textContent = state.bTimeLeft;
-      if (dom.timerFill) {
-        dom.timerFill.style.width = `${(state.bTimeLeft / seconds) * 100}%`;
-      }
-      if (state.bTimeLeft <= 0) {
-        clearInterval(state.bTimerInterval);
-        if (window.SoundAudio) window.SoundAudio.playSoftFail();
-      }
-    }, 1000);
-  }
-
-  function scoreBaamboozleCard(isCorrect, card, cardBtn) {
-    clearInterval(state.bTimerInterval);
-    dom.cardModal.style.display = 'none';
-    state.bClaimedCards.add(card.id);
-    cardBtn.classList.add('claimed');
-
-    if (isCorrect) {
-      let pts = card.pts || 15;
-      if (state.bDoubleBuff[state.bActiveTeam]) {
-        pts *= 2;
-        state.bDoubleBuff[state.bActiveTeam] = false;
-      }
-      state.bScores[state.bActiveTeam] += pts;
-      addXP(pts);
-      if (window.SoundAudio) window.SoundAudio.playXP();
-    } else {
-      if (window.SoundAudio) window.SoundAudio.playSoftFail();
-    }
-
-    // Switch turn
-    state.bActiveTeam = (state.bActiveTeam === 'cyan') ? 'amber' : 'cyan';
-    updateBaamboozleHUD();
-  }
-
-  function executeTrap(card, cardBtn) {
-    dom.cardModal.style.display = 'none';
-    state.bClaimedCards.add(card.id);
-    cardBtn.classList.add('claimed');
-
-    const otherTeam = (state.bActiveTeam === 'cyan') ? 'amber' : 'cyan';
-
-    if (card.trapType === 'swap') {
-      const tmp = state.bScores.cyan;
-      state.bScores.cyan = state.bScores.amber;
-      state.bScores.amber = tmp;
-    } else if (card.trapType === 'steal') {
-      const stolen = Math.min(state.bScores[otherTeam], card.pts || 20);
-      state.bScores[otherTeam] -= stolen;
-      state.bScores[state.bActiveTeam] += stolen;
-    } else if (card.trapType === 'bankrupt') {
-      state.bScores[state.bActiveTeam] = 0;
-    } else if (card.trapType === 'double') {
-      state.bDoubleBuff[state.bActiveTeam] = true;
-    } else if (card.trapType === 'bonus') {
-      state.bScores[state.bActiveTeam] += (card.pts || 25);
-    } else if (card.trapType === 'drain') {
-      state.bScores[state.bActiveTeam] = Math.max(0, state.bScores[state.bActiveTeam] - (card.pts || 15));
-    }
-
-    state.bActiveTeam = otherTeam;
-    updateBaamboozleHUD();
-  }
-
-  // --- BOOT ENGINE ---
-  document.addEventListener('DOMContentLoaded', () => {
-    window.switchStage(1);
-  });
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    window.switchStage(1);
-  }
-})();
+  root.SoundApp = new SoundDetectiveApp();
+})(typeof window !== 'undefined' ? window : this);

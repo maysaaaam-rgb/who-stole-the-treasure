@@ -1,178 +1,238 @@
 /**
- * Sound Detective Pro: Acoustic Physics & Deduction Engine
- * Level: CEFR A2 / A2+ | Target: Primary CLIL & ESL (Ages 8–12)
+ * SOUND DETECTIVE: CURRICULUM DATA
+ * Level: CEFR A1+ | Target: Primary ESL (Ages 7–10)
+ * Core Targets: 20 Vocabulary Words (12 Objects + 8 Sound Verbs)
+ * Grammar: "What's that sound?" / "It's a [object]. It [verbs]!" / "They're [objects]. They [verb]!"
  */
-const SOUND_PRO_DATA = {
-  config: {
-    totalXP: 150,
-    timerSeconds: 15,
-    stages: ["scanner", "anatomy", "deduction", "foley", "baamboozle"]
-  },
+(function(root) {
+  'use strict';
 
-  // Stage 1 & 2: Acoustic Physics & Anatomy Models
-  mechanics: [
-    {
-      id: "clock",
-      name: "Mechanical Clock",
-      soundType: "Rhythmic & Intermittent",
-      pitch: "Medium",
-      pitchVal: 2,
-      textureVal: 1,
-      actionVerb: "ticks",
-      deduction: "It must be a clock because the escapement gear releases a rhythmic tick every second.",
-      audioMethod: "playClockTick",
-      icon: "⏰",
-      parts: [
-        { id: "p1", name: "Pendulum", function: "Swings side to side to regulate timing." },
-        { id: "p2", name: "Escapement Gear", function: "Strikes the tooth to produce the crisp tick." },
-        { id: "p3", name: "Clock Face", function: "Displays hours and minutes with rotating hands." }
+  const SOUND_DATA = {
+    meta: {
+      id: "sound-detective",
+      title: "Sound Detective: Household Sound Arcade",
+      subtitle: "Listen • Slap • Crack the Safe • Broadcast Live",
+      level: "A1+",
+      cefrLevel: "A1+",
+      ageGroup: "7–10",
+      totalXP: 250,
+      grammarFormulas: {
+        inquiry: "What's that sound?",
+        singular: "It's a [object]. It [verbs]!",
+        plural: "They're [objects]. They [verb]!"
+      }
+    },
+
+    // Exactly 20 Target Words: 12 Objects & 8 Sound Verbs
+    vocabulary: {
+      objects: [
+        "clock", "bell", "tap", "light switch", "kettle", "door",
+        "computer", "cards", "dice", "cup", "spoon", "backpack"
+      ],
+      soundVerbs: [
+        "tick", "ring", "drip", "click", "whistle", "knock", "clink", "shuffle"
       ]
     },
-    {
-      id: "kettle",
-      name: "Boiling Kettle",
-      soundType: "Continuous & High-Pitched",
-      pitch: "High",
-      pitchVal: 3,
-      textureVal: 2,
-      actionVerb: "whistles",
-      deduction: "It must be a kettle because pressurized steam is escaping through a narrow nozzle.",
-      audioMethod: "playKettleBoil",
-      icon: "🫖",
-      parts: [
-        { id: "p1", name: "Heating Element", function: "Heats the cold water to 100°C." },
-        { id: "p2", name: "Whistle Nozzle", function: "Vibrates as hot steam forces its way out." },
-        { id: "p3", name: "Insulated Handle", function: "Allows safe pouring without burns." }
-      ]
-    },
-    {
-      id: "tap",
-      name: "Leaking Water Tap",
-      soundType: "Liquid & Intermittent",
-      pitch: "Low-to-Medium",
-      pitchVal: 2,
-      textureVal: 1,
-      actionVerb: "drips",
-      deduction: "It must be a tap because water droplets are falling at irregular intervals.",
-      audioMethod: "playWaterTap",
-      icon: "🚰",
-      parts: [
-        { id: "p1", name: "Rubber Washer", function: "Seals the pipe to stop water flow." },
-        { id: "p2", name: "Spout Valve", function: "Directs pressurized water into the basin." },
-        { id: "p3", name: "Rotary Handle", function: "Turns clockwise to compress the internal seal." }
-      ]
-    },
-    {
-      id: "door",
-      name: "Heavy Wooden Door",
-      soundType: "Deep & Resonant",
-      pitch: "Low",
-      pitchVal: 1,
-      textureVal: 1,
-      actionVerb: "creaks and knocks",
-      deduction: "It must be a door because solid timber vibrates when struck by knuckles.",
-      audioMethod: "playDoorKnock",
-      icon: "🚪",
-      parts: [
-        { id: "p1", name: "Solid Wood Panel", function: "Absorbs and reflects acoustic sound waves." },
-        { id: "p2", name: "Steel Hinges", function: "Pivot the frame, creaking when unlubricated." },
-        { id: "p3", name: "Brass Latch", function: "Clicks firmly into the door jamb." }
+
+    // 12 Target Household Objects with Audio Mappings & Grammar Types
+    items: [
+      {
+        id: "clock",
+        name: "clock",
+        pluralName: "clocks",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "tick",
+        soundVerb3rd: "ticks",
+        soundLabel: "Tick... tock... tick...",
+        audioMethod: "playClockTick",
+        icon: "⏰",
+        hint: "It counts the seconds on the wall or table.",
+        sentence: "It's a clock. It ticks!"
+      },
+      {
+        id: "bell",
+        name: "bell",
+        pluralName: "bells",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "ring",
+        soundVerb3rd: "rings",
+        soundLabel: "Ding-dong! Ding-dong!",
+        audioMethod: "playBellRing",
+        icon: "🔔",
+        hint: "Someone rings it at the front door.",
+        sentence: "It's a bell. It rings!"
+      },
+      {
+        id: "tap",
+        name: "tap",
+        pluralName: "taps",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "drip",
+        soundVerb3rd: "drips",
+        soundLabel: "Drip... drop... splash!",
+        audioMethod: "playWaterTap",
+        icon: "🚰",
+        hint: "Water drops from it in the sink.",
+        sentence: "It's a tap. It drips!"
+      },
+      {
+        id: "light-switch",
+        name: "light switch",
+        pluralName: "light switches",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "click",
+        soundVerb3rd: "clicks",
+        soundLabel: "Click... clack!",
+        audioMethod: "playSwitchClick",
+        icon: "💡",
+        hint: "Press it on the wall to turn on the lights.",
+        sentence: "It's a light switch. It clicks!"
+      },
+      {
+        id: "kettle",
+        name: "kettle",
+        pluralName: "kettles",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "whistle",
+        soundVerb3rd: "whistles",
+        soundLabel: "Psssshhh... fweeeee!",
+        audioMethod: "playKettleBoil",
+        icon: "🫖",
+        hint: "It boils water for hot tea.",
+        sentence: "It's a kettle. It whistles!"
+      },
+      {
+        id: "door",
+        name: "door",
+        pluralName: "doors",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "knock",
+        soundVerb3rd: "knocks",
+        soundLabel: "Knock! Knock! Knock!",
+        audioMethod: "playDoorKnock",
+        icon: "🚪",
+        hint: "Someone is tapping on the wooden frame.",
+        sentence: "It's a door. It knocks!"
+      },
+      {
+        id: "computer",
+        name: "computer",
+        pluralName: "computers",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "click",
+        soundVerb3rd: "clicks",
+        soundLabel: "Click-clack-tap-tap...",
+        audioMethod: "playComputerType",
+        icon: "💻",
+        hint: "Fingers typing fast on the keyboard.",
+        sentence: "It's a computer. It clicks!"
+      },
+      {
+        id: "cards",
+        name: "cards",
+        pluralName: "cards",
+        grammarType: "plural",
+        article: "",
+        soundVerb: "shuffle",
+        soundVerb3rd: "shuffle",
+        soundLabel: "Flutter... flrrrp-flrrrp!",
+        audioMethod: "playCardShuffle",
+        icon: "🃏",
+        hint: "A deck of 52 paper game cards bending fast.",
+        sentence: "They're cards. They shuffle!"
+      },
+      {
+        id: "dice",
+        name: "dice",
+        pluralName: "dice",
+        grammarType: "plural",
+        article: "",
+        soundVerb: "clink",
+        soundVerb3rd: "clink",
+        soundLabel: "Rattle... tumble... clatter!",
+        audioMethod: "playDiceRoll",
+        icon: "🎲",
+        hint: "Two numbered cubes tumbling across the table.",
+        sentence: "They're dice. They clink!"
+      },
+      {
+        id: "cup",
+        name: "cup",
+        pluralName: "cups",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "clink",
+        soundVerb3rd: "clinks",
+        soundLabel: "Ting! Ting!",
+        audioMethod: "playCupClink",
+        icon: "☕",
+        hint: "Ceramic glass gently tapping against a saucer.",
+        sentence: "It's a cup. It clinks!"
+      },
+      {
+        id: "spoon",
+        name: "spoon",
+        pluralName: "spoons",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "clink",
+        soundVerb3rd: "clinks",
+        soundLabel: "Ding! Clink!",
+        audioMethod: "playSpoonDing",
+        icon: "🥄",
+        hint: "A metal utensil stirring soup in a bowl.",
+        sentence: "It's a spoon. It clinks!"
+      },
+      {
+        id: "backpack",
+        name: "backpack",
+        pluralName: "backpacks",
+        grammarType: "singular",
+        article: "a",
+        soundVerb: "shuffle",
+        soundVerb3rd: "shuffles",
+        soundLabel: "Zzzzzzzip! Swish!",
+        audioMethod: "playBackpackZip",
+        icon: "🎒",
+        hint: "Pulling the metal zipper closed for school.",
+        sentence: "It's a backpack. It zips and shuffles!"
+      }
+    ],
+
+    // 8 Sound Verbs definitions & distractor sets
+    verbs: [
+      { id: "tick", verb: "tick", thirdPerson: "ticks", icon: "⏱️", definition: "A sharp, steady mechanical sound every second." },
+      { id: "ring", verb: "ring", thirdPerson: "rings", icon: "🔔", definition: "A clear, resonant chime from a bell or chime." },
+      { id: "drip", verb: "drip", thirdPerson: "drips", icon: "💧", definition: "Liquid droplets falling one by one." },
+      { id: "click", verb: "click", thirdPerson: "clicks", icon: "🔘", definition: "A short, sharp snap when a switch or key triggers." },
+      { id: "whistle", verb: "whistle", thirdPerson: "whistles", icon: "💨", definition: "A high-pitched tone made by steam or air pressure." },
+      { id: "knock", verb: "knock", thirdPerson: "knocks", icon: "✊", definition: "A heavy, hollow thump on wood." },
+      { id: "clink", verb: "clink", thirdPerson: "clinks", icon: "✨", definition: "A light, sharp ringing sound of glass, ceramic, or metal." },
+      { id: "shuffle", verb: "shuffle", thirdPerson: "shuffles", icon: "🔀", definition: "A rapid fluttering or sliding sound of paper or fabric." }
+    ],
+
+    // Stage 4 Teleprompter Presentation Scripts
+    teleprompter: {
+      intros: [
+        "Welcome to the Foley Sound Studio!",
+        "Detective reporting live from the sound lab!",
+        "Listen carefully to our acoustic mystery!"
+      ],
+      formulas: [
+        "When the {object} moves, it goes {sound}!",
+        "Can you guess what made that sound?",
+        "Answer: {sentence}"
       ]
     }
-  ],
+  };
 
-  // Stage 3: Deduction Clue Trials (Must Be vs Can't Be)
-  deductionTrials: [
-    {
-      cue: "A high-pitched, piercing continuous whistle with rising steam.",
-      correct: "kettle",
-      distractor: "computer",
-      correctIcon: "🫖",
-      distractorIcon: "💻",
-      correctLabel: "Boiling Kettle",
-      distractorLabel: "Computer",
-      mustReason: "It must be a kettle because escaping steam produces a continuous high whistle.",
-      cantReason: "It can't be a computer because computers type and do not boil water."
-    },
-    {
-      cue: "A steady, metallic tick-tock repeating exactly 60 times a minute.",
-      correct: "clock",
-      distractor: "door",
-      correctIcon: "⏰",
-      distractorIcon: "🚪",
-      correctLabel: "Mechanical Clock",
-      distractorLabel: "Wooden Door",
-      mustReason: "It must be a clock because internal gears release rhythmic ticks.",
-      cantReason: "It can't be a door because doors do not tick rhythmically."
-    },
-    {
-      cue: "A rapid fluttering of plastic-coated cards being shuffled together.",
-      correct: "cards",
-      distractor: "bell",
-      correctIcon: "🃏",
-      distractorIcon: "🔔",
-      correctLabel: "Playing Cards",
-      distractorLabel: "Doorbell",
-      mustReason: "They must be cards because sliding paper sheets create a soft fluttering shuffle.",
-      cantReason: "It can't be a bell because bells chime with resonant metallic tones."
-    },
-    {
-      cue: "A crisp, single electrical snap that changes room lighting.",
-      correct: "light-switch",
-      distractor: "tap",
-      correctIcon: "💡",
-      distractorIcon: "🚰",
-      correctLabel: "Light Switch",
-      distractorLabel: "Water Tap",
-      mustReason: "It must be a light switch because the internal copper spring snaps into contact.",
-      cantReason: "It can't be a tap because taps produce liquid droplets, not electrical clicks."
-    },
-    {
-      cue: "Multiple wooden cubes bouncing and rolling across a tabletop.",
-      correct: "dice",
-      distractor: "cup",
-      correctIcon: "🎲",
-      distractorIcon: "☕",
-      correctLabel: "Board Game Dice",
-      distractorLabel: "Coffee Cup",
-      mustReason: "They must be dice because multiple cubes tumble with a rhythmic rattle.",
-      cantReason: "It can't be a cup because a cup is a single ceramic object that clinks."
-    }
-  ],
-
-  // Stage 5: The 24-Grid Baamboozle Arena Deck
-  baamboozleDeck: [
-    { id: 1, type: "q", pts: 15, q: "I make a steady, rhythmic ticking sound every second. What am I?", a: "A clock (It's a clock)." },
-    { id: 2, type: "q", pts: 20, q: "Grammar Fix: Correct this sentence: 'The cards is making a loud sound.'", a: "'The cards ARE making...' or 'They're cards.'" },
-    { id: 3, type: "q", pts: 25, q: "Acoustic CLIL: Is a dripping tap 'continuous' or 'intermittent'?", a: "Intermittent (it drips drop by drop)." },
-    { id: 4, type: "trap", trapType: "swap", title: "⚡ TEAM POINT SWAP!", desc: "Scores swap between Team Cyan and Team Amber!" },
-    { id: 5, type: "q", pts: 15, q: "Action Verb: What sound does a boiling kettle make? (buzz / whistle / scrape)", a: "It whistles (or hisses)." },
-    { id: 6, type: "q", pts: 20, q: "Modal Logic: You hear 'ding-dong'. Complete: 'It _____ be a bell.' (must / can't)", a: "It MUST be a bell." },
-    { id: 7, type: "twister", pts: 25, q: "Tongue Twister (15s): Repeat 3 times: 'Twelve clicking clocks tick-tock together!'", a: "Spoken clearly 3 times before the timer!" },
-    { id: 8, type: "trap", trapType: "steal", pts: 20, title: "🏴‍☠️ PIRATE STEAL!", desc: "Steal 20 points from the leading team!" },
-    { id: 9, type: "q", pts: 15, q: "Acoustic Physics: Why does a wooden door make a deep sound when knocked?", a: "Solid timber is dense and creates low-frequency vibrations." },
-    { id: 10, type: "q", pts: 20, q: "Contrast: Dice make a [wooden/metallic] sound, but bells make a [metallic/liquid] sound.", a: "wooden / metallic." },
-    { id: 11, type: "q", pts: 25, q: "Grammar Sort: Which two objects are plural: spoon, dice, chair, cards?", a: "Dice and cards (They're dice / They're cards)." },
-    { id: 12, type: "trap", trapType: "bankrupt", title: "💥 BANKRUPT!", desc: "Your team score resets to 0 XP!" },
-    { id: 13, type: "q", pts: 15, q: "Sensory Simile: Complete: 'The mechanical keyboard sounds _____ a machine gun.'", a: "sounds LIKE a machine gun." },
-    { id: 14, type: "q", pts: 20, q: "Pitch Test: Which has a higher pitch: a metal spoon clinking a teacup or a door slamming?", a: "The metal spoon clinking a teacup." },
-    { id: 15, type: "q", pts: 25, q: "Cause & Effect: Why does a light switch click when flipped?", a: "An internal spring snaps the copper contact into place." },
-    { id: 16, type: "trap", trapType: "double", title: "⭐ DOUBLE XP BUFF!", desc: "Your next correct answer scores double points!" },
-    { id: 17, type: "q", pts: 15, q: "Spelling Check: Spell the past tense of 'click' and 'drip'.", a: "Clicked and Dripped (double 'p')." },
-    { id: 18, type: "q", pts: 20, q: "Sound Riddle: You roll me on a table to get random numbers. What are we?", a: "They're dice." },
-    { id: 19, type: "twister", pts: 25, q: "Speed Twister (15s): Repeat 3 times: 'Six sharp switches snapped softly!'", a: "Spoken cleanly 3 times!" },
-    { id: 20, type: "trap", trapType: "bonus", pts: 25, title: "🎁 MYSTERY CRATE!", desc: "+25 free points awarded to your team!" },
-    { id: 21, type: "q", pts: 15, q: "Mechanism: What part of a tap turns to stop water dripping?", a: "The valve (or handle / rubber washer)." },
-    { id: 22, type: "q", pts: 20, q: "Full Sentence: Make a sentence using 'must be', 'kettle', and 'whistle'.", a: "'It must be a kettle because it makes a whistle.'" },
-    { id: 23, type: "q", pts: 25, q: "CLIL Science: What is the difference between an echo and a direct sound?", a: "An echo is a sound wave that bounces back off a surface." },
-    { id: 24, type: "trap", trapType: "drain", pts: 15, title: "⚠️ ENERGY DRAIN!", desc: "Loose wires! 15 points deducted from your team." }
-  ]
-};
-
-if (typeof window !== 'undefined') {
-  window.SOUND_PRO_DATA = SOUND_PRO_DATA;
-  window.SOUND_DETECTIVE_DATA = SOUND_PRO_DATA;
-}
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { SOUND_PRO_DATA, SOUND_DETECTIVE_DATA: SOUND_PRO_DATA };
-}
+  root.SOUND_DATA = SOUND_DATA;
+  root.SOUND_DETECTIVE_DATA = SOUND_DATA; // Backwards-compatible alias
+})(typeof window !== 'undefined' ? window : this);
