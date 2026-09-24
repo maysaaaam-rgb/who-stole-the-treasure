@@ -915,6 +915,12 @@
     }
     renderNavigation();
     renderCurrentView();
+    const floatingToolkit = document.getElementById('classroom-floating-toolkit');
+    if (floatingToolkit) {
+      const role = (store && typeof store.getRole === 'function') ? store.getRole() : 'teacher';
+      const teacherViews = ['dashboard', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
+      floatingToolkit.style.display = (role === 'teacher' && teacherViews.includes(currentView)) ? 'flex' : 'none';
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -12791,11 +12797,85 @@ window.switchClassroomSubTab = function(subTab) {
             '</div>' +
           '</div>';
         break;
+      case 'sounds':
+        container.innerHTML = renderToolkitSoundsView();
+        break;
       default:
         container.innerHTML = renderToolkitTimerView();
         break;
     }
   };
+
+  function renderToolkitSoundsView() {
+    return '' +
+      '<div style="background:var(--bg-canvas); border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:24px 20px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">' +
+          '<div>' +
+            '<h3 style="font-size:1.25rem; font-weight:900; color:var(--text-main); margin:0;">Classroom Soundboard</h3>' +
+            '<p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Zero-latency Web Audio sound effects for classroom management &amp; celebrations</p>' +
+          '</div>' +
+          '<div style="font-size:0.8rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); padding:5px 12px; border-radius:999px;">⌨️ Keyboard Hotkeys Active</div>' +
+        '</div>' +
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(245,158,11,0.4); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playPartyHorn()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">🥳</span>' +
+              '<span style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px;">HOTKEY: P / 1</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Party Horn</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">18Hz paper flutter noisemaker</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(56,189,248,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playAttentionBell()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">🔔</span>' +
+              '<span style="background:#1e293b; color:#38bdf8; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #38bdf8;">HOTKEY: 2</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Attention Bell</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">High-resonance triple-sine bell</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(56,189,248,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playQuietChime()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">🤫</span>' +
+              '<span style="background:#1e293b; color:#38bdf8; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #38bdf8;">HOTKEY: 3</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Quiet Chime</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">432 Hz warm singing bowl tone</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(239,68,68,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playCountdownBuzzer()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">⏰</span>' +
+              '<span style="background:#1e293b; color:#f87171; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #f87171;">HOTKEY: 4</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Countdown Buzzer</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">3 pips + 140 Hz staccato buzzer</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(16,185,129,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playApplause()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">👏</span>' +
+              '<span style="background:#1e293b; color:#34d399; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #34d399;">HOTKEY: 5</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Applause &amp; Cheer</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">Pink-noise crowd claps burst</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playCoinChime()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">🪙</span>' +
+              '<span style="background:#1e293b; color:#fbbf24; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #fbbf24;">HOTKEY: 6</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">XP Coin Chime</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">987 Hz -&gt; 1318 Hz arpeggio</span>' +
+          '</div>' +
+          '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(168,85,247,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playFanfare()">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+              '<span style="font-size:2rem;">🎺</span>' +
+              '<span style="background:#1e293b; color:#c084fc; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #c084fc;">HOTKEY: 7</span>' +
+            '</div>' +
+            '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Victory Fanfare</strong>' +
+            '<span style="font-size:0.78rem; color:#94a3b8;">4-note triumphant victory chord</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
 
   // TOOL 1: TIMER
   function renderToolkitTimerView() {
