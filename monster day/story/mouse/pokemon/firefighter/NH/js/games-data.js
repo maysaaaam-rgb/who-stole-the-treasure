@@ -23,45 +23,52 @@ const GAMES_REGISTRY = [
       "sound",
       "household-sound",
       "household-mystery",
+      "sound-detective-pro",
+      "sound-pro",
+      "acoustic-physics",
+      "baamboozle-sound",
       "what-is-that-sound"
     ],
-    "title": "🎧 Sound Detective: Household Mystery Objects",
-    "description": "Auditory CLIL module for primary ESL learners. Identify household objects from blind synthesized sound cues, sort singular 'It's a...' vs. plural 'They're...' grammar structures, and present mystery sound challenges using an interactive teleprompter.",
+    "title": "🎧 Sound Detective Pro: Acoustic Physics & Deduction Engine",
+    "description": "Advanced 5-stage Acoustic Physics & Modal Deduction CLIL module (CEFR A2/A2+ | 150 XP). Analyze sound wave oscilloscope metrics (frequency, pitch, texture), dissect exploded component blueprints, test modal logic ('It must be...' vs. 'It can't be...'), record live Foley soundscapes, and compete in the 24-card Baamboozle tournament.",
     "type": "game",
-    "category": "Listening & Speaking",
-    "categoryGroup": "Phonics & Language Quests",
-    "categoryLabel": "🎧 Listening & Speaking",
-    "level": "A1 / A2",
-    "cefrLevel": "A1-A2",
-    "age": "Ages 6–10",
-    "ageGroup": "6–10",
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
+    "category": "CLIL & Science",
+    "categoryGroup": "Acoustic Physics & Logic",
+    "categoryLabel": "🔬 Acoustic Physics & Deduction",
+    "level": "A2 / A2+",
+    "cefrLevel": "A2-A2+",
+    "age": "Ages 8–12",
+    "ageGroup": "8–12",
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 150,
     "learningObjectives": [
-      "Identify 13 common household objects by their sound effects and visual forms.",
-      "Correctly differentiate singular ('It's a...') and plural ('They're...') structures.",
-      "Present a structured 3-part oral debrief via the live teleprompter."
+      "Analyze acoustic waveform metrics (frequency, pitch, timbre/texture) using a real-time oscilloscope.",
+      "Explore mechanical sound anatomy and internal component physics across 4 household objects.",
+      "Apply modal deduction formulas: 'It must be [noun] because [reason]' and 'It can't be [noun] because [reason]'.",
+      "Perform a 3-part oral teleprompter report with procedural Foley soundboard playback.",
+      "Compete in a 24-grid Baamboozle team tournament with interactive strategic trap cards."
     ],
-    "languageFocus": "What's that sound? It's a [bell / clock / tap]. They're [cards / dice].",
+    "languageFocus": "Modal deduction: It must be a... because... / It can't be a... because...",
     "topics": [
-      "Household Objects",
-      "Auditory Recognition",
-      "Demonstratives",
-      "Singular vs Plural"
+      "Acoustic Physics",
+      "Waveforms",
+      "Modal Deduction",
+      "Foley Sound",
+      "Tournament Arena"
     ],
     "vocabulary": {
-      "core": ["clock", "bell", "tap", "light switch", "kettle", "computer", "cards", "dice", "door", "chair", "cup", "spoon", "backpack"],
-      "supporting": ["sound", "listen", "singular", "plural", "guess", "mystery"]
+      "core": ["frequency", "pitch", "vibration", "escapement gear", "whistle vent", "valve stem", "spring latch", "must be", "can't be", "oscilloscope"],
+      "supporting": ["acoustic", "physics", "wavelength", "amplitude", "timbre", "steam pressure", "resonance"]
     },
     "grammar": {
-      "focusPattern": "Demonstrative Pronouns & Copula: It's a... vs. They're...",
-      "formula": "What's that sound? It's a [singular noun]. / They're [plural noun].",
+      "focusPattern": "Modals of Deduction: It must be... because... / It can't be... because...",
+      "formula": "It [must / can't] be [a + noun] because [present tense explanation].",
       "formulas": [
-        "It's a clock.",
-        "They're cards.",
-        "What's that sound? Can you guess?"
+        "It must be a clock because the escapement gear releases a rhythmic tick every second.",
+        "It can't be a tap because water flows with fluid gurgles, not sharp metallic strikes.",
+        "It must be a kettle because pressurized steam forces the whistle chamber to vibrate."
       ]
     },
     "path": "sound-detective/index.html",

@@ -157,7 +157,7 @@
       } else if (pathname.includes('wonderland') || pathname.includes('welcome-to-wonderland')) {
         targetUrl = basePrefix + 'wonderland/index.html';
         targetName = 'Welcome to Wonderland';
-      } else if (pathname.includes('detective') || pathname.includes('yesterday') || pathname.includes('mystery')) {
+      } else if (pathname.includes('detectives') || pathname.includes('yesterday') || (pathname.includes('detective') && !pathname.includes('sound') && !pathname.includes('wildlife'))) {
         targetUrl = basePrefix + 'detectives/index.html';
         targetName = 'The Mystery of Yesterday';
       } else if (pathname.includes('city-mouse') || pathname.includes('mouse')) {
@@ -226,10 +226,10 @@
       } else if (pathname.includes('cat-vs-dog') || pathname.includes('cat-dog') || pathname.includes('catapult')) {
         targetUrl = basePrefix + 'cat-vs-dog/index.html';
         targetName = 'Cat vs. Dog: Preposition Catapult';
-      } else if (pathname.includes('sound-detective') || pathname.includes('sound') || pathname.includes('household')) {
+      } else if (pathname.includes('sound-detective') || pathname.includes('sound-pro') || pathname.includes('sound') || pathname.includes('household')) {
         targetUrl = basePrefix + 'sound-detective/index.html';
-        targetName = 'Sound Detective: Household Mystery Objects';
-      } else if (pathname.includes('wildlife-detective') || pathname.includes('capybara') || pathname.includes('tiktok-nature') || pathname.includes('wildlife') || pathname.includes('detective')) {
+        targetName = 'Sound Detective Pro: Acoustic Physics & Deduction Engine';
+      } else if (pathname.includes('wildlife-detective') || pathname.includes('capybara') || pathname.includes('tiktok-nature') || pathname.includes('wildlife')) {
         targetUrl = basePrefix + 'wildlife-detective/index.html';
         targetName = 'Wildlife Detective: TikTok vs. Nature';
       } else if (pathname.includes('library')) {

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sound Detective: Household Mystery Log - Adventure Academy</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --cyan: #0284c7;
+      --amber: #d97706;
+      --green: #059669;
+      --purple: #7c3aed;
+      --rose: #e11d48;
+      --tint: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 0;
+    }
+
+    .sheet-wrapper {
+      max-width: 190mm;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Header Strip */
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--cyan);
+      padding-bottom: 6px;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-icon {
+      font-size: 2.2rem;
+      background: #e0f2fe;
+      border: 2px solid var(--cyan);
+      border-radius: 12px;
+      padding: 2px 8px;
+    }
+    .title-block h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .title-block p {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .student-id-box {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr;
+      gap: 6px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .id-line {
+      border-bottom: 1.5px dashed #94a3b8;
+      width: 90px;
+      display: inline-block;
+    }
+
+    /* Section Cards */
+    .card {
+      background: var(--tint);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+    }
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 3px;
+    }
+
+    /* Part 1: Sound Matcher Grid */
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      font-size: 0.84rem;
+    }
+    .match-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .sound-tag {
+      font-weight: 800;
+      color: var(--purple);
+      font-family: monospace;
+      font-size: 0.88rem;
+    }
+    .select-slot {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-weight: 700;
+      color: var(--cyan);
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* Part 2: Grammar Trap Sorter */
+    .grammar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .bucket-box {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .bucket-header {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      border-bottom: 2px solid transparent;
+    }
+    .bucket-singular .bucket-header {
+      color: var(--green);
+      border-color: var(--green);
+    }
+    .bucket-plural .bucket-header {
+      color: var(--purple);
+      border-color: var(--purple);
+    }
+    .write-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .write-line {
+      border-bottom: 1.5px dashed #cbd5e1;
+      height: 18px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: flex-end;
+      color: #334155;
+    }
+
+    .word-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .word-chip {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    /* Part 3: Show & Tell Teleprompter Card */
+    .presentation-card {
+      background: #fffbeb;
+      border: 2px solid var(--amber);
+      border-radius: 10px;
+      padding: 9px 12px;
+    }
+    .teleprompter-script {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      color: #78350f;
+    }
+    .teleprompter-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .speech-slot {
+      border-bottom: 1.5px solid var(--amber);
+      min-width: 90px;
+      display: inline-block;
+    }
+
+    /* Footer */
+    .sheet-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sheet-wrapper">
+
+  <!-- Header -->
+  <header class="sheet-header">
+    <div class="header-branding">
+      <div class="badge-icon">🎧</div>
+      <div class="title-block">
+        <h1>Sound Detective Log</h1>
+        <p>Adventure Academy • Household Mystery Objects (CEFR A1–A2)</p>
+      </div>
+    </div>
+    <div class="student-id-box">
+      <span>Name:</span><span class="id-line"></span>
+      <span>Class:</span><span class="id-line"></span>
+      <span>Date:</span><span class="id-line"></span>
+      <span>Badge:</span><span style="color:var(--amber);">⭐ Detective</span>
+    </div>
+  </header>
+
+  <!-- Part 1: Auditory Matcher -->
+  <section class="card">
+    <div class="card-title">🔍 1. Auditory Matcher: Connect the Sound to the Object</div>
+    <div class="match-grid">
+      <div class="match-row">
+        <span>1. <em>"Tick... tock... tick..."</em></span>
+        <span class="select-slot">clock</span>
+      </div>
+      <div class="match-row">
+        <span>2. <em>"Ding-dong! Ding-dong!"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>3. <em>"Drip... drop... drip..."</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>4. <em>"Click-clack! (Lights on!)"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>5. <em>"Clickity-clack-tap! (Typing)"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>6. <em>"Shhh-whistle! (Hot water)"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>7. <em>"Rattle... rattle... roll!"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+      <div class="match-row">
+        <span>8. <em>"Fffffp-flutter! (Shuffling)"</em></span>
+        <span class="select-slot">____________</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Part 2: Singular vs Plural Sorting Arena -->
+  <section class="card">
+    <div class="card-title">⚖️ 2. The Grammar Trap: Sort into "It's a..." vs. "They're..."</div>
+    <div class="word-pool">
+      <span class="word-chip">door</span>
+      <span class="word-chip">cards</span>
+      <span class="word-chip">bell</span>
+      <span class="word-chip">dice</span>
+      <span class="word-chip">backpack</span>
+      <span class="word-chip">cup</span>
+      <span class="word-chip">tap</span>
+      <span class="word-chip">spoon</span>
+      <span class="word-chip">kettle</span>
+      <span class="word-chip">chair</span>
+      <span class="word-chip">computer</span>
+      <span class="word-chip">light switch</span>
+      <span class="word-chip">clock</span>
+    </div>
+
+    <div class="grammar-grid">
+      <!-- Singular Bucket -->
+      <div class="bucket-box bucket-singular">
+        <div class="bucket-header">🟢 "It's a..." (Singular Objects)</div>
+        <div class="write-lines">
+          <div class="write-line">1. It's a door.</div>
+          <div class="write-line">2. It's a ____________________________</div>
+          <div class="write-line">3. It's a ____________________________</div>
+          <div class="write-line">4. It's a ____________________________</div>
+          <div class="write-line">5. It's a ____________________________</div>
+        </div>
+      </div>
+
+      <!-- Plural Bucket -->
+      <div class="bucket-box bucket-plural">
+        <div class="bucket-header">🟣 "They're..." (Plural Objects)</div>
+        <div class="write-lines">
+          <div class="write-line">1. They're cards.</div>
+          <div class="write-line">2. They're ___________________________</div>
+          <div class="write-line" style="border:none; color:var(--muted); font-style:italic; font-size:0.75rem;">
+            ⚠️ Notice: No "a" before cards or dice!
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Part 3: Show & Tell Teleprompter -->
+  <section class="presentation-card">
+    <div class="card-title" style="color:var(--amber); border-bottom-color:#fde68a;">
+      🎙️ 3. Classroom Showcase: "Now It's Your Turn!"
+    </div>
+    <p style="font-size:0.78rem; color:#92400e; margin-bottom:6px;">
+      Pick an object in your classroom or backpack. Make its sound. Read your 3 sentences to your partner:
+    </p>
+    <div class="teleprompter-script">
+      <div class="teleprompter-line">
+        <span>📢 1. "Listen to this sound: [ <span class="speech-slot"></span> ]!"</span>
+      </div>
+      <div class="teleprompter-line">
+        <span>📢 2. "What's that sound? Can you guess?"</span>
+      </div>
+      <div class="teleprompter-line" style="grid-column: span 2;">
+        <span>📢 3. "Answer: [ It's a / They're ] <span class="speech-slot" style="min-width:180px;"></span>!"</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="sheet-footer">
+    <span>Adventure Academy CLIL Listening & Speaking Series</span>
+    <span>Syllabus: CEFR A1 Identification • Singular vs. Plural Demonstratives</span>
+    <span>Score: [ &nbsp;&nbsp;&nbsp;&nbsp; / 150 XP ] ⭐</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
