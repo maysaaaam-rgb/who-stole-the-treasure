@@ -8329,7 +8329,7 @@
           routes: {
             smartboardBriefing: "quiz-briefing/index.html",
             printableWorksheet: "quiz-briefing/assets/unit1-vault-page1.jpg",
-            liveGradingModal: "quiz-briefing/index.html#ledger"
+            liveGradingModal: "quiz-briefing/index.html#g4-grader"
           },
           archived: false
         },
@@ -8407,7 +8407,7 @@
           routes: {
             smartboardBriefing: "quiz-briefing/index.html#g3",
             printableWorksheet: "quiz-briefing/assets/unit1-inventor-page1.jpg",
-            liveGradingModal: "quiz-briefing/index.html#g3-ledger"
+            liveGradingModal: "quiz-briefing/index.html#g3-grader"
           },
           archived: false
         },
@@ -11920,7 +11920,7 @@
           routes: {
             smartboardBriefing: "quiz-briefing/index.html",
             printableWorksheet: "quiz-briefing/assets/unit1-vault-page1.jpg",
-            liveGradingModal: "quiz-briefing/index.html#ledger"
+            liveGradingModal: "quiz-briefing/index.html#g4-grader"
           },
           archived: false
         };
@@ -12001,7 +12001,7 @@
           routes: {
             smartboardBriefing: "quiz-briefing/index.html#g3",
             printableWorksheet: "quiz-briefing/assets/unit1-inventor-page1.jpg",
-            liveGradingModal: "quiz-briefing/index.html#g3-ledger"
+            liveGradingModal: "quiz-briefing/index.html#g3-grader"
           },
           archived: false
         };
