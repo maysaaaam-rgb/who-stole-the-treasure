@@ -1617,6 +1617,15 @@
     // Initialize
     updateDisplay();
     loadStudents();
+
+    function handleHashChange() {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (['briefing', 'quiz', 'ledger', 'dossier'].includes(hash)) {
+        switchTab(hash);
+      }
+    }
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
   </script>
 </body>
 </html>
