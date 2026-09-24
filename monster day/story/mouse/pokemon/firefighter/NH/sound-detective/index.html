@@ -3,110 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sound Detective: Household Mystery Objects | English Adventure Academy</title>
+  <title>Sound Detective Pro: Acoustic Physics & Deduction Arena</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎧</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔬</text></svg>">
 </head>
 <body>
 
-  <!-- Top Header HUD -->
+  <!-- Top Glass HUD -->
   <header class="game-header">
     <div class="brand-badge">
-      <div class="brand-icon">🎧</div>
+      <div class="brand-icon">🔬</div>
       <div class="brand-title">
-        <h1>SOUND DETECTIVE</h1>
-        <p>Household Mystery Objects (A1-A2)</p>
+        <h1>SOUND DETECTIVE PRO</h1>
+        <p>Acoustic Physics & Deduction Lab • CEFR A2/A2+</p>
       </div>
     </div>
+    
+    <!-- Stage Progress Navigation -->
+    <nav class="stage-stepper">
+      <div class="step-chip active" id="step-1" onclick="window.switchStage(1)">1. Scanner</div>
+      <div class="step-chip" id="step-2" onclick="window.switchStage(2)">2. Anatomy</div>
+      <div class="step-chip" id="step-3" onclick="window.switchStage(3)">3. Deduction</div>
+      <div class="step-chip" id="step-4" onclick="window.switchStage(4)">4. Foley</div>
+      <div class="step-chip" id="step-5" onclick="window.switchStage(5)">5. Baamboozle</div>
+    </nav>
+
     <div class="hud-stats">
       <div class="stat-chip">⭐ <span id="hud-xp">0</span> XP</div>
-      <div class="stat-chip">🔍 <span id="hud-phase">Phase 1/3</span></div>
-      <a href="worksheet.html" target="_blank" class="stat-chip" style="color:var(--amber); text-decoration:none;" title="Printable Detective Log">📄 Log</a>
-      <a href="../index.html" class="stat-chip" style="color:var(--cyan); text-decoration:none;" title="Adventure Academy Hub">🏠 Hub</a>
+      <div class="stat-chip" id="hud-timer-chip" style="display:none;">⏳ <span id="hud-timer">15</span>s</div>
+      <a href="worksheet.html" target="_blank" class="stat-chip" style="color:var(--amber); text-decoration:none;" title="Printable Log">📄 Log</a>
+      <a href="../index.html" class="stat-chip" style="color:var(--cyan); text-decoration:none;" title="Academy Hub">🏠 Hub</a>
     </div>
   </header>
 
-  <!-- Interactive Stage Viewport -->
   <main class="viewport">
-    
-    <!-- PHASE 1: The Dark Sound Chamber -->
-    <section class="phase-card" id="stage-phase1">
-      <h2 style="color:var(--cyan); font-weight:900;">Phase 1: The Dark Sound Chamber</h2>
-      <p style="color:var(--text-muted); font-size:0.95rem; margin-top:4px;">
-        Listen closely to the audio cue. Which household object is making the sound?
-      </p>
 
-      <div class="waveform-box" id="waveform-visualizer">
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
+    <!-- STAGE 1: SONIC SPECTRUM SCANNER (00:00 - 06:00) -->
+    <section class="stage-panel" id="stage-scanner">
+      <div class="stage-headline">
+        <h2>Stage 1: Sonic Spectrum Scanner</h2>
+        <p>Calibrate the frequency and rhythm sliders to match the mystery acoustic sound wave.</p>
       </div>
 
-      <button class="btn-3d" id="btn-replay-cue">
-        🔊 REPLAY SOUND EFFECT
-      </button>
+      <!-- Real-Time SVG Oscilloscope -->
+      <div class="oscilloscope-container">
+        <svg id="oscilloscope-svg" viewBox="0 0 600 160" width="100%" height="100%">
+          <defs>
+            <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.2"/>
+              <stop offset="50%" stop-color="#38bdf8" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#818cf8" stop-opacity="0.2"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <path id="wave-path" d="M 0 80 Q 75 80, 150 80 T 300 80 T 450 80 T 600 80" stroke="url(#cyan-glow)" stroke-width="3" fill="none" filter="url(#glow)"/>
+        </svg>
+      </div>
 
-      <div class="cards-trio" id="phase1-cards-container">
-        <!-- 3 Guess Cards Mounted Dynamically -->
+      <!-- Tuning Knobs & Sliders -->
+      <div class="tuner-matrix">
+        <div class="tuner-control">
+          <label>Pitch Frequency: <span id="val-pitch" class="tuner-val">Medium</span></label>
+          <input type="range" id="slider-pitch" min="1" max="3" value="2" step="1">
+          <div class="slider-ticks"><span>Low</span><span>Medium</span><span>High</span></div>
+        </div>
+        <div class="tuner-control">
+          <label>Acoustic Texture: <span id="val-texture" class="tuner-val">Intermittent</span></label>
+          <input type="range" id="slider-texture" min="1" max="2" value="1" step="1">
+          <div class="slider-ticks"><span>Intermittent</span><span>Continuous</span></div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-3d" id="btn-scanner-play">🔊 EMIT MYSTERY FREQUENCY</button>
+        <button class="btn-3d btn-green" id="btn-scanner-confirm">🔬 LOCK CALIBRATION (+20 XP)</button>
+      </div>
+      <div class="feedback-banner" id="scanner-feedback"></div>
+    </section>
+
+    <!-- STAGE 2: ACOUSTIC ANATOMY LAB (06:00 - 14:00) -->
+    <section class="stage-panel" id="stage-anatomy" style="display:none;">
+      <div class="stage-headline">
+        <h2>Stage 2: Acoustic Anatomy Lab</h2>
+        <p>Assemble the internal mechanical components to observe how physical vibration creates sound.</p>
+      </div>
+
+      <div class="anatomy-grid">
+        <!-- Exploded Machine Blueprint Viewport -->
+        <div class="machine-chassis">
+          <div class="chassis-header" id="anatomy-machine-name">Mechanical Clock Assembly</div>
+          <div class="chassis-blueprint" id="chassis-dropzone">
+            <div class="blueprint-socket" data-socket="p1" id="socket-p1">
+              <span class="socket-num">1</span>
+              <span class="socket-name">Pendulum Socket</span>
+            </div>
+            <div class="blueprint-socket" data-socket="p2" id="socket-p2">
+              <span class="socket-num">2</span>
+              <span class="socket-name">Escapement Gear Socket</span>
+            </div>
+            <div class="blueprint-socket" data-socket="p3" id="socket-p3">
+              <span class="socket-num">3</span>
+              <span class="socket-name">Face Dial Socket</span>
+            </div>
+          </div>
+          <div class="scaffold-strip" id="anatomy-sentence-stem">
+            When [Component] vibrates, it produces a [Sound] sound.
+          </div>
+        </div>
+
+        <!-- Component Parts Tray -->
+        <div class="components-tray" id="anatomy-parts-tray">
+          <!-- Parts mounted dynamically via JavaScript -->
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn-3d btn-green" id="btn-anatomy-next">⚡ TEST MACHINE MECHANISM (+30 XP)</button>
       </div>
     </section>
 
-    <!-- PHASE 2: The Grammar Trap Arena -->
-    <section class="phase-card" id="stage-phase2" style="display: none;">
-      <h2 style="color:var(--amber); font-weight:900;">Phase 2: The Grammar Trap Arena</h2>
-      <p style="color:var(--text-muted); font-size:0.95rem; margin-top:4px;">
-        Is it singular or plural? Tap the correct grammatical sentence!
-      </p>
-
-      <div class="grammar-target-card" id="grammar-focus-card">
-        <div class="target-icon" id="grammar-card-icon">⏰</div>
-        <div class="target-label" id="grammar-card-label">Clock</div>
+    <!-- STAGE 3: THE DEDUCTION ARENA (14:00 - 20:00) -->
+    <section class="stage-panel" id="stage-deduction" style="display:none;">
+      <div class="stage-headline">
+        <h2>Stage 3: The Deduction Arena</h2>
+        <p>Apply modal deduction logic: <em>"It must be..."</em> vs. <em>"It can't be..."</em></p>
       </div>
 
-      <div class="grammar-choice-tray">
-        <button class="btn-3d btn-green" id="btn-choice-singular">
-          🟢 "It's a..."
-        </button>
-        <button class="btn-3d btn-purple" id="btn-choice-plural">
-          🟣 "They're..."
+      <div class="deduction-card">
+        <div class="sound-clue-bubble" id="deduction-clue">
+          "A high-pitched, piercing continuous whistle with rising steam."
+        </div>
+        <div class="options-versus">
+          <div class="versus-card" id="card-choice-a">
+            <div class="versus-icon" id="icon-choice-a">🫖</div>
+            <div class="versus-label" id="label-choice-a">Kettle</div>
+          </div>
+          <div class="versus-badge">VS</div>
+          <div class="versus-card" id="card-choice-b">
+            <div class="versus-icon" id="icon-choice-b">💻</div>
+            <div class="versus-label" id="label-choice-b">Computer</div>
+          </div>
+        </div>
+
+        <div class="deduction-action-tray">
+          <button class="btn-3d btn-green" id="btn-deduce-must">
+            🟢 "IT MUST BE..."
+          </button>
+          <button class="btn-3d btn-ruby" id="btn-deduce-cant">
+            🔴 "IT CAN'T BE..."
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 4: FOLEY STUDIO & BROADCAST (20:00 - 26:00) -->
+    <section class="stage-panel" id="stage-foley" style="display:none;">
+      <div class="stage-headline">
+        <h2>Stage 4: Foley Sound Studio & Teleprompter</h2>
+        <p>Trigger sound effects in time with the scene and broadcast your scientific findings.</p>
+      </div>
+
+      <div class="foley-studio-layout">
+        <!-- 4-Channel Tactile Soundboard -->
+        <div class="foley-soundboard">
+          <button class="soundboard-pad" id="pad-clock" onclick="window.SoundAudio.playClockTick()">
+            ⏰ <span>Clock Tick</span>
+          </button>
+          <button class="soundboard-pad" id="pad-kettle" onclick="window.SoundAudio.playKettleBoil()">
+            🫖 <span>Kettle Whistle</span>
+          </button>
+          <button class="soundboard-pad" id="pad-tap" onclick="window.SoundAudio.playWaterTap()">
+            🚰 <span>Tap Drip</span>
+          </button>
+          <button class="soundboard-pad" id="pad-door" onclick="window.SoundAudio.playDoorKnock()">
+            🚪 <span>Door Knock</span>
+          </button>
+        </div>
+
+        <!-- 3-Sentence Scientific Teleprompter -->
+        <div class="teleprompter-box">
+          <div class="tele-line active" id="pro-tele-1">
+            📢 1. "We analyzed the acoustic frequency of the mystery household object."
+          </div>
+          <div class="tele-line" id="pro-tele-2">
+            📢 2. "It produces a [ continuous / high-pitched ] sound, so it must be a kettle."
+          </div>
+          <div class="tele-line" id="pro-tele-3">
+            📢 3. "The whistle occurs when pressurized steam forces through the narrow nozzle."
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-3d btn-green" id="btn-foley-broadcast">
+          🎙️ BROADCAST LAB REPORT (+40 XP)
         </button>
       </div>
     </section>
 
-    <!-- PHASE 3: Foley Sound Studio & Teleprompter -->
-    <section class="phase-card" id="stage-phase3" style="display: none;">
-      <h2 style="color:var(--emerald); font-weight:900;">Phase 3: Foley Studio & Showcase</h2>
-      <p style="color:var(--text-muted); font-size:0.95rem; margin-top:4px;">
-        Present your mystery household sound to the class!
-      </p>
-
-      <div class="teleprompter-box">
-        <div class="tele-line active" id="tele-line-1">
-          📢 1. "Listen carefully... what's that sound?"
+    <!-- STAGE 5: 24-GRID BAAMBOOZLE ARENA (26:00 - 35:00) -->
+    <section class="stage-panel" id="stage-baamboozle" style="display:none;">
+      <div class="baamboozle-header">
+        <div class="team-score team-cyan" id="team-cyan-box">
+          <h3>TEAM CYAN</h3>
+          <span class="score-display" id="score-cyan">0</span>
         </div>
-        <div class="tele-line" id="tele-line-2">
-          📢 2. "Can you guess the household object?"
+        <div class="turn-indicator" id="turn-indicator">
+          TURN: <strong>TEAM CYAN</strong>
         </div>
-        <div class="tele-line" id="tele-line-3">
-          📢 3. "Answer: It's a clock!"
+        <div class="team-score team-amber" id="team-amber-box">
+          <h3>TEAM AMBER</h3>
+          <span class="score-display" id="score-amber">0</span>
         </div>
       </div>
 
-      <div style="display:flex; gap:14px; margin-top:10px; flex-wrap:wrap; justify-content:center;">
-        <button class="btn-3d" id="btn-test-foley">
-          🔊 PLAY FOLEY SOUND
-        </button>
-        <button class="btn-3d btn-green" id="btn-broadcast-report">
-          🎙️ BROADCAST PRESENTATION (+50 XP)
-        </button>
+      <!-- 24-Card Tournament Board -->
+      <div class="baamboozle-grid" id="baamboozle-board">
+        <!-- 24 Cards Mounted Dynamically -->
       </div>
     </section>
 
   </main>
+
+  <!-- Modal Dialog for Baamboozle Cards -->
+  <div class="modal-overlay" id="card-modal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-card-badge" id="modal-card-header">Card 01 • 15 Pts</div>
+      <div class="modal-timer-bar" id="modal-timer-bar" style="display:none;">
+        <div class="timer-fill" id="timer-fill"></div>
+      </div>
+      <div class="modal-body" id="modal-card-content">Question Text Here</div>
+      <div class="modal-answer" id="modal-card-answer" style="display:none;">Answer Text Here</div>
+
+      <div class="modal-controls">
+        <button class="btn-3d" id="btn-show-answer">👁️ SHOW ANSWER</button>
+        <div class="evaluation-btns" id="eval-btns" style="display:none;">
+          <button class="btn-3d btn-green" id="btn-eval-correct">✅ OKAY! (+PTS)</button>
+          <button class="btn-3d btn-ruby" id="btn-eval-wrong">❌ OOPS! (0 PTS)</button>
+        </div>
+        <button class="btn-3d btn-amber" id="btn-close-trap" style="display:none;">⚡ ACTIVATE TRAP</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/sound-data.js"></script>
   <script src="js/sound-audio.js"></script>
