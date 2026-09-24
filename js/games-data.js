@@ -18,6 +18,63 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "sound-detective",
+    "aliases": [
+      "sound",
+      "household-sound",
+      "household-mystery",
+      "what-is-that-sound"
+    ],
+    "title": "🎧 Sound Detective: Household Mystery Objects",
+    "description": "Auditory CLIL module for primary ESL learners. Identify household objects from blind synthesized sound cues, sort singular 'It's a...' vs. plural 'They're...' grammar structures, and present mystery sound challenges using an interactive teleprompter.",
+    "type": "game",
+    "category": "Listening & Speaking",
+    "categoryGroup": "Phonics & Language Quests",
+    "categoryLabel": "🎧 Listening & Speaking",
+    "level": "A1 / A2",
+    "cefrLevel": "A1-A2",
+    "age": "Ages 6–10",
+    "ageGroup": "6–10",
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "learningObjectives": [
+      "Identify 13 common household objects by their sound effects and visual forms.",
+      "Correctly differentiate singular ('It's a...') and plural ('They're...') structures.",
+      "Present a structured 3-part oral debrief via the live teleprompter."
+    ],
+    "languageFocus": "What's that sound? It's a [bell / clock / tap]. They're [cards / dice].",
+    "topics": [
+      "Household Objects",
+      "Auditory Recognition",
+      "Demonstratives",
+      "Singular vs Plural"
+    ],
+    "vocabulary": {
+      "core": ["clock", "bell", "tap", "light switch", "kettle", "computer", "cards", "dice", "door", "chair", "cup", "spoon", "backpack"],
+      "supporting": ["sound", "listen", "singular", "plural", "guess", "mystery"]
+    },
+    "grammar": {
+      "focusPattern": "Demonstrative Pronouns & Copula: It's a... vs. They're...",
+      "formula": "What's that sound? It's a [singular noun]. / They're [plural noun].",
+      "formulas": [
+        "It's a clock.",
+        "They're cards.",
+        "What's that sound? Can you guess?"
+      ]
+    },
+    "path": "sound-detective/index.html",
+    "url": "sound-detective/index.html",
+    "route": "sound-detective/index.html",
+    "worksheetRoute": "sound-detective/worksheet.html",
+    "featured": true,
+    "icon": "🎧",
+    "thumbnailIcon": "🎧",
+    "gradient": "linear-gradient(135deg, #070b14 0%, #0f172a 50%, #0284c7 100%)",
+    "status": "ready"
+  },
+  {
     "id": "wildlife-detective",
     "aliases": [
       "wildlife",
