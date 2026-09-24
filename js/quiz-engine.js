@@ -229,8 +229,8 @@
     }
   }
 
-  root.ClassroomSoundboard = ClassroomSoundboard;
-  root.classSoundboard = new ClassroomSoundboard();
+  root.ClassroomSoundboard = root.ClassroomSoundboard || ClassroomSoundboard;
+  root.classSoundboard = root.classSoundboard || new ClassroomSoundboard();
 
   // Audio helper aliases
   root.playCoinChime = function() { root.classSoundboard.playCoinChime(); };

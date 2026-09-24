@@ -1947,6 +1947,51 @@
         <span class="toolkit-icon">⏱</span>
         <span class="toolkit-label">Timer</span>
       </button>
+
+      <!-- Persistent Cyber-Glassmorphic Classroom SFX Dock -->
+      <div class="toolkit-sound-bar" id="toolkit-sound-bar" aria-label="Classroom Soundboard Dock">
+        <div class="sfx-dock-badge">
+          <span class="sfx-badge-dot"></span>
+          <span class="sfx-badge-title">SFX DOCK</span>
+        </div>
+        <div class="sfx-btn-group">
+          <button type="button" class="sfx-btn sfx-btn-party" data-sound="party" onclick="window.classSoundboard.playPartyHorn()" title="Party Horn (Press P or 1)">
+            <span class="sfx-icon">🥳</span>
+            <span class="sfx-label">Party</span>
+            <span class="sfx-key">1</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="bell" onclick="window.classSoundboard.playAttentionBell()" title="Attention Bell (Press 2)">
+            <span class="sfx-icon">🔔</span>
+            <span class="sfx-label">Bell</span>
+            <span class="sfx-key">2</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="shhh" onclick="window.classSoundboard.playQuietChime()" title="Quiet Singing Bowl (Press 3)">
+            <span class="sfx-icon">🤫</span>
+            <span class="sfx-label">Shhh</span>
+            <span class="sfx-key">3</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="buzzer" onclick="window.classSoundboard.playCountdownBuzzer()" title="Countdown Buzzer (Press 4)">
+            <span class="sfx-icon">⏰</span>
+            <span class="sfx-label">Buzzer</span>
+            <span class="sfx-key">4</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="clap" onclick="window.classSoundboard.playApplause()" title="Applause &amp; Cheer (Press 5)">
+            <span class="sfx-icon">👏</span>
+            <span class="sfx-label">Clap</span>
+            <span class="sfx-key">5</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="coin" onclick="window.classSoundboard.playCoinChime()" title="XP Coin Chime (Press 6)">
+            <span class="sfx-icon">🪙</span>
+            <span class="sfx-label">Coin</span>
+            <span class="sfx-key">6</span>
+          </button>
+          <button type="button" class="sfx-btn" data-sound="fanfare" onclick="window.classSoundboard.playFanfare()" title="Victory Tada Fanfare (Press 7)">
+            <span class="sfx-icon">🎺</span>
+            <span class="sfx-label">Fanfare</span>
+            <span class="sfx-key">7</span>
+          </button>
+        </div>
+      </div>
       <button type="button" class="toolkit-item-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Groups">
         <span class="toolkit-icon">👥</span>
         <span class="toolkit-label">Groups</span>
@@ -2868,6 +2913,7 @@
         <button type="button" id="tab-tool-bamboozle" class="classroom-nav-tab-btn" onclick="switchToolkitTool('bamboozle')">⚡ Baamboozle Arena</button>
         <button type="button" id="tab-tool-ideas" class="classroom-nav-tab-btn" onclick="switchToolkitTool('ideas')">💡 Good Ideas Lab</button>
         <button type="button" id="tab-tool-brain" class="classroom-nav-tab-btn" onclick="switchToolkitTool('brain')">🧠 Brain Hackers</button>
+        <button type="button" id="tab-tool-sounds" class="classroom-nav-tab-btn" onclick="switchToolkitTool('sounds')">🎵 Soundboard</button>
       </div>
 
       <!-- Tool Body Views -->
@@ -3099,6 +3145,7 @@
   <script src="js/progress-check.js?v=3.0"></script>
   <script src="js/school-app.js?v=3.0"></script>
   <script src="js/simon-says-game.js?v=3.0"></script>
+  <script src="js/classroom-sounds.js"></script>
   <script src="js/quiz-engine.js?v=1.0"></script>
 
 
@@ -4150,6 +4197,131 @@
       padding: 8px 14px; cursor: pointer; font-weight: 700;
     }
     .btn-secondary:hover { background: #475569; }
+
+    /* 60-30-10 Cyber-Glassmorphic Classroom SFX Dock */
+    .toolkit-sound-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #060911;
+      background: linear-gradient(135deg, rgba(6, 9, 17, 0.95) 0%, rgba(17, 26, 46, 0.90) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 12px;
+      padding: 4px 8px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-shrink: 0;
+    }
+    .sfx-dock-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 6px;
+      user-select: none;
+    }
+    .sfx-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: sfxPulse 2s infinite ease-in-out;
+    }
+    @keyframes sfxPulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .sfx-badge-title {
+      font-size: 0.62rem;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .sfx-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sfx-btn {
+      background: #111a2e;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-bottom: 2.5px solid rgba(15, 23, 42, 0.95);
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 4px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 700;
+      transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .sfx-btn:hover {
+      background: #1e293b;
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.25);
+    }
+    .sfx-btn:active,
+    .sfx-btn.is-active-press {
+      transform: translateY(2px) !important;
+      border-bottom-width: 1px !important;
+      background: #0f172a !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.45) !important;
+    }
+    .sfx-btn.sfx-btn-party {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000000;
+      border-color: #fbbf24;
+      border-bottom-color: #92400e;
+      font-weight: 900;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+    }
+    .sfx-btn.sfx-btn-party:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      box-shadow: 0 3px 14px rgba(245, 158, 11, 0.55);
+    }
+    .sfx-btn.sfx-btn-party:active,
+    .sfx-btn.sfx-btn-party.is-active-press {
+      transform: translateY(2px) !important;
+      border-bottom-width: 1px !important;
+      background: #d97706 !important;
+    }
+    .sfx-icon {
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .sfx-label {
+      font-size: 0.70rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .sfx-key {
+      display: inline-block;
+      font-size: 0.56rem;
+      font-weight: 900;
+      font-family: monospace;
+      padding: 1px 3px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      line-height: 1.1;
+    }
+    .sfx-btn-party .sfx-key {
+      background: rgba(0, 0, 0, 0.25);
+      color: #000000;
+      border-color: rgba(0, 0, 0, 0.3);
+    }
   </style>
 
 </body>
