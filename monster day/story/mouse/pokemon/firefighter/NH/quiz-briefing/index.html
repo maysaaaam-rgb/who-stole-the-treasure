@@ -62,6 +62,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .hud-badge {
@@ -88,6 +89,38 @@
       font-size: 0.78rem;
       color: var(--muted);
       font-weight: 600;
+    }
+
+    /* Grade Switcher Chips */
+    .grade-switcher {
+      display: flex;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .grade-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .grade-btn:hover {
+      color: var(--text);
+    }
+
+    .grade-btn.active {
+      background: linear-gradient(135deg, var(--cyan-deep), var(--cyan));
+      color: #04121d;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
     }
 
     /* Navigation Mode Tabs */
@@ -165,9 +198,7 @@
     .timer-btn.subtle { background: #334155; color: #fff; padding: 0.5rem 0.8rem; }
     .timer-btn.subtle:hover { background: #475569; }
 
-    /* ================================================================= */
-    /* TAB SECTIONS CONTAINER                                            */
-    /* ================================================================= */
+    /* Tab Sections Container */
     .tab-content {
       display: none;
       animation: fadeIn 0.3s ease-out forwards;
@@ -206,9 +237,7 @@
       gap: 0.5rem;
     }
 
-    /* ================================================================= */
-    /* TAB 1: MISSION BRIEFING & TIMER HUD                               */
-    /* ================================================================= */
+    /* TAB 1: BRIEFING LAYOUT */
     .briefing-grid {
       display: grid;
       grid-template-columns: 1.35fr 1fr;
@@ -313,15 +342,14 @@
       align-items: center;
       gap: 0.5rem;
       transition: all 0.2s;
+      text-decoration: none;
     }
 
     .tool-btn:hover { background: #334155; border-color: var(--cyan); }
     .tool-btn.primary { background: linear-gradient(135deg, var(--cyan-deep), var(--cyan)); color: #022c22; border: none; }
     .tool-btn.primary:hover { filter: brightness(1.1); }
 
-    /* ================================================================= */
-    /* TAB 2: INTERACTIVE VAULT QUIZ & ANSWER KEY                        */
-    /* ================================================================= */
+    /* TAB 2: VAULT QUIZ & KEYS */
     .quiz-layout {
       display: flex;
       flex-direction: column;
@@ -393,7 +421,6 @@
       line-height: 1.4;
     }
 
-    /* Interactive Options Grid */
     .interactive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -439,9 +466,7 @@
       display: block;
     }
 
-    /* ================================================================= */
-    /* TAB 3: STUDENT CHECK-IN & XP SCORING LEDGER                       */
-    /* ================================================================= */
+    /* TAB 3: STUDENT CHECK-IN & LEDGER */
     .ledger-container {
       display: grid;
       grid-template-columns: 360px 1fr;
@@ -452,7 +477,6 @@
       .ledger-container { grid-template-columns: 1fr; }
     }
 
-    /* Left Scoring Panel */
     .scoring-box {
       display: flex;
       flex-direction: column;
@@ -488,7 +512,6 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
-    /* Vault Sliders / Quick Scorers */
     .vault-score-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -526,7 +549,6 @@
       width: 100%;
     }
 
-    /* Priority Draft Role Selector */
     .role-select {
       background: #1e293b;
       border: 1px solid var(--purple);
@@ -538,10 +560,7 @@
       cursor: pointer;
     }
 
-    /* Table Ledger */
-    .ledger-table-wrap {
-      overflow-x: auto;
-    }
+    .ledger-table-wrap { overflow-x: auto; }
 
     .ledger-table {
       width: 100%;
@@ -567,9 +586,7 @@
       vertical-align: middle;
     }
 
-    .ledger-table tr:hover {
-      background: rgba(56, 189, 248, 0.04);
-    }
+    .ledger-table tr:hover { background: rgba(56, 189, 248, 0.04); }
 
     .rank-badge {
       font-weight: 900;
@@ -625,9 +642,7 @@
       color: var(--amber);
     }
 
-    /* ================================================================= */
-    /* TAB 4: ILLUSTRATED DOSSIER SHEETS (IMAGES)                        */
-    /* ================================================================= */
+    /* TAB 4: DOSSIER IMAGES */
     .dossier-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -658,11 +673,8 @@
       transition: transform 0.2s ease;
     }
 
-    .dossier-img:hover {
-      transform: scale(1.01);
-    }
+    .dossier-img:hover { transform: scale(1.01); }
 
-    /* Responsive */
     @media (max-width: 768px) {
       header { flex-direction: column; align-items: stretch; }
       .hud-tabs { overflow-x: auto; }
@@ -675,10 +687,20 @@
   <!-- Top Navigation Ribbon -->
   <header>
     <div class="hud-left">
-      <span class="hud-badge">GRADE 4 • UNIT 1</span>
+      <div class="grade-switcher">
+        <button class="grade-btn" id="btn-grade-g3" onclick="setCurriculumGrade('g3')">
+          🛠️ Grade 3: Inventions
+        </button>
+        <button class="grade-btn active" id="btn-grade-g4" onclick="setCurriculumGrade('g4')">
+          🍄 Grade 4: Brain Lab
+        </button>
+      </div>
+
+      <span class="hud-badge" id="hud-badge-label">GRADE 4 • UNIT 1</span>
+      
       <div class="hud-title">
-        <h1>🍄 Unit 1 Master Quest: Briefing &amp; Live Podium</h1>
-        <p>Wonderland Storyboard &amp; Neuroscience Brain Lab • 100 Base XP + 20 Bonus XP</p>
+        <h1 id="hud-main-title">🍄 Unit 1 Master Quest: Briefing &amp; Live Podium</h1>
+        <p id="hud-sub-title">Wonderland Storyboard &amp; Neuroscience Brain Lab • 100 Base XP + 20 Bonus XP</p>
       </div>
     </div>
 
@@ -720,12 +742,8 @@
           <span>Teacher Teleprompter Script (Read Aloud Before Starting)</span>
         </div>
 
-        <div class="speech-box">
-          "Explorers, eyes on the smartboard! Today is the <strong>Unit 1 Master Quest: Wonderland &amp; Brain Lab</strong>! 
-          You have 4 Vaults to unlock: <span class="speech-highlight">Bronze, Silver, Gold, and Diamond Boss</span>. 
-          Every point you earn goes straight to your Adventure Academy XP ledger to evolve your companion monster. 
-          <strong>Most importantly:</strong> Tonight's leaderboard rank decides who picks their Wonderland Tea Party character first at tomorrow's Priority Draft! 
-          Listen to these 4 survival tips before you open your quest sheets!"
+        <div class="speech-box" id="briefing-speech-content">
+          <!-- Populated dynamically based on Grade 3 or Grade 4 -->
         </div>
 
         <div class="card-label" style="color: var(--cyan);">
@@ -733,23 +751,8 @@
           <span>The 4 Survival Tips</span>
         </div>
 
-        <div class="tips-list">
-          <div class="tip-item">
-            <div class="tip-num">1</div>
-            <div><strong>THE SKIM RADAR (Bronze Vault):</strong> Skim the icons—do NOT read every single word! Match symbols directly to Fiction, Nonfiction, or Both.</div>
-          </div>
-          <div class="tip-item">
-            <div class="tip-num">2</div>
-            <div><strong>THE 4-LOBE ANATOMY (Silver Vault):</strong> Remember the team: <em>Parietal</em> (Taste/Touch), <em>Occipital</em> (Seeing), <em>Temporal</em> (Hearing), <em>Frontal</em> (Speaking/Math). Check the <strong>20%</strong> battery!</div>
-          </div>
-          <div class="tip-item">
-            <div class="tip-num">3</div>
-            <div><strong>DUAL CRATE SORT (Gold Vault):</strong> Fiction is for FUN (Alice, cats, cards); Nonfiction is for FACTS (neurons, brain scanners, energy).</div>
-          </div>
-          <div class="tip-item">
-            <div class="tip-num">4</div>
-            <div><strong>DIAMOND BOSS VAULT (Level 4):</strong> Save at least <strong>7 minutes</strong>! Sketch your scene and <strong>label at least 2 items</strong> to unlock the maximum +20 Bonus XP!</div>
-          </div>
+        <div class="tips-list" id="briefing-tips-list">
+          <!-- Populated dynamically -->
         </div>
 
         <div class="controls-bar">
@@ -799,16 +802,16 @@
           <div class="rule-icon">🤫</div>
           <div class="rule-content">
             <h3>No Voice Traps (Stealth Mode)</h3>
-            <p>"Work independently in stealth mode. Protect your answers and your rank for the character draft!"</p>
+            <p>"Work independently in stealth mode. Protect your answers and your rank for the priority draft!"</p>
           </div>
         </div>
 
-        <!-- Tomorrow's Priority Draft Hook -->
-        <div class="prize-callout">
-          <div style="font-size: 2.6rem;">🫖</div>
+        <!-- Priority Draft Hook -->
+        <div class="prize-callout" id="prize-callout-box">
+          <div style="font-size: 2.6rem;" id="prize-callout-icon">🫖</div>
           <div>
-            <h4>Tomorrow: Wonderland Priority Draft</h4>
-            <p>Leaderboard rank decides who picks their Tea Party role first (The Mad Hatter, Alice, White Rabbit, Cheshire Cat...). Earn your XP now!</p>
+            <h4 id="prize-callout-title">Tomorrow: Priority Role Draft</h4>
+            <p id="prize-callout-desc">Leaderboard rank decides who picks their role first at tomorrow's priority draft! Earn your XP now!</p>
           </div>
         </div>
       </div>
@@ -821,10 +824,10 @@
   <section class="tab-content" id="tab-pane-quiz">
     <div class="quiz-layout">
       <!-- Toolbar -->
-      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--panel); padding:1rem 1.5rem; border-radius:16px; border:1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--panel); padding:1rem 1.5rem; border-radius:16px; border:1px solid var(--border); flex-wrap:wrap; gap:0.8rem;">
         <div>
-          <h2 style="font-size:1.2rem; font-weight:900;">📝 Interactive Vault Quiz &amp; Answer Review</h2>
-          <p style="font-size:0.85rem; color:var(--muted);">Review classroom tasks or walk through answers directly on the smartboard.</p>
+          <h2 style="font-size:1.2rem; font-weight:900;" id="quiz-tab-heading">📝 Interactive Vault Quiz &amp; Answer Review</h2>
+          <p style="font-size:0.85rem; color:var(--muted);" id="quiz-tab-subheading">Review classroom tasks or walk through answers directly on the smartboard.</p>
         </div>
         <div style="display:flex; gap:0.6rem;">
           <button class="tool-btn primary" onclick="toggleAnswerKeys()">
@@ -838,222 +841,9 @@
         </div>
       </div>
 
-      <!-- LEVEL 1: BRONZE VAULT (30 XP) -->
-      <div class="vault-banner bronze">
-        <div class="vault-title">
-          <span>📦</span>
-          <span>LEVEL 1: BRONZE VAULT (Easy • Visual Recognition &amp; Phonics)</span>
-        </div>
-        <span class="vault-xp-pill">30 XP MAX</span>
-      </div>
-
-      <!-- Task 1: Skim & Scan -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 1: The 10-Second "Skim &amp; Scan" Radar</span>
-          <span class="vault-xp-pill">10 XP</span>
-        </div>
-        <p class="task-desc">Connect each visual icon to its correct Unit 1 text category:</p>
-        <div class="interactive-grid">
-          <div class="interactive-row">
-            <span>🐰 White Rabbit with watch</span>
-            <select class="quiz-select">
-              <option>Select Match...</option>
-              <option value="B">B. Fiction: "Alice's Adventures"</option>
-              <option value="A">A. Nonfiction: "Learning and Your Brain"</option>
-              <option value="C">C. Both Texts: Teamwork</option>
-            </select>
-          </div>
-          <div class="interactive-row">
-            <span>🧠 Human Brain &amp; Neuron</span>
-            <select class="quiz-select">
-              <option>Select Match...</option>
-              <option value="A">A. Nonfiction: "Learning and Your Brain"</option>
-              <option value="B">B. Fiction: "Alice's Adventures"</option>
-              <option value="C">C. Both Texts: Teamwork</option>
-            </select>
-          </div>
-          <div class="interactive-row">
-            <span>🚪 Golden Key &amp; 38cm Door</span>
-            <select class="quiz-select">
-              <option>Select Match...</option>
-              <option value="B">B. Fiction: "Alice's Adventures"</option>
-              <option value="A">A. Nonfiction: "Learning and Your Brain"</option>
-              <option value="C">C. Both Texts: Teamwork</option>
-            </select>
-          </div>
-          <div class="interactive-row">
-            <span>🔋 20% Energy Battery</span>
-            <select class="quiz-select">
-              <option>Select Match...</option>
-              <option value="A">A. Nonfiction: "Learning and Your Brain"</option>
-              <option value="B">B. Fiction: "Alice's Adventures"</option>
-              <option value="C">C. Both Texts: Teamwork</option>
-            </select>
-          </div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> White Rabbit = B (Fiction) • Brain/Neuron = A (Nonfiction) • 38cm Door = B (Fiction) • 20% Battery = A (Nonfiction)
-        </div>
-      </div>
-
-      <!-- Task 2: SEL Emotion Scanner -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 2: SEL Emotion Scanner</span>
-          <span class="vault-xp-pill">10 XP</span>
-        </div>
-        <p class="task-desc">Word Bank: [ SURPRISED | BORED | WORRIED | INTERESTED ]</p>
-        <div class="interactive-grid">
-          <div class="interactive-row">
-            <span>1. Alice sits by the river with nothing to do:</span>
-            <select class="quiz-select"><option>Select Emotion...</option><option>BORED</option><option>SURPRISED</option><option>WORRIED</option><option>INTERESTED</option></select>
-          </div>
-          <div class="interactive-row">
-            <span>2. Alice sees a white rabbit wearing clothes:</span>
-            <select class="quiz-select"><option>Select Emotion...</option><option>SURPRISED</option><option>BORED</option><option>WORRIED</option><option>INTERESTED</option></select>
-          </div>
-          <div class="interactive-row">
-            <span>3. Rabbit shouts "I'm going to be late!":</span>
-            <select class="quiz-select"><option>Select Emotion...</option><option>WORRIED</option><option>BORED</option><option>SURPRISED</option><option>INTERESTED</option></select>
-          </div>
-          <div class="interactive-row">
-            <span>4. Alice looks at books in the rabbit hole:</span>
-            <select class="quiz-select"><option>Select Emotion...</option><option>INTERESTED</option><option>BORED</option><option>SURPRISED</option><option>WORRIED</option></select>
-          </div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> 1 = BORED • 2 = SURPRISED • 3 = WORRIED • 4 = INTERESTED
-        </div>
-      </div>
-
-      <!-- Task 3: Phonics Lock -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 3: The Final -er Phonics Lock</span>
-          <span class="vault-xp-pill">10 XP</span>
-        </div>
-        <p class="task-desc">Complete each Unit 1 word with the spelling pattern <strong>-er</strong>:</p>
-        <div class="interactive-grid">
-          <div class="interactive-row"><span>1. riv<strong>___</strong> (river)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ river</span></div>
-          <div class="interactive-row"><span>2. cent<strong>___</strong> (center)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ center</span></div>
-          <div class="interactive-row"><span>3. teach<strong>___</strong> (teacher)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ teacher</span></div>
-          <div class="interactive-row"><span>4. fib<strong>___</strong> (fiber)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ fiber</span></div>
-          <div class="interactive-row"><span>5. corn<strong>___</strong> (corner)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ corner</span></div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> 1. river • 2. center • 3. teacher • 4. fiber • 5. corner
-        </div>
-      </div>
-
-      <!-- LEVEL 2: SILVER VAULT (40 XP) -->
-      <div class="vault-banner silver">
-        <div class="vault-title">
-          <span>📦</span>
-          <span>LEVEL 2: SILVER VAULT (Medium • Sequencing &amp; Brain Anatomy)</span>
-        </div>
-        <span class="vault-xp-pill">40 XP MAX</span>
-      </div>
-
-      <!-- Task 4: Storyboard -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 4: Alice's Down-the-Hole Storyboard</span>
-          <span class="vault-xp-pill">20 XP</span>
-        </div>
-        <p class="task-desc">Number the visual storyboard panels in chronological order from 1 to 4:</p>
-        <div class="interactive-grid">
-          <div class="interactive-row"><span>Panel A: Alice finds golden key &amp; 38cm door</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>3</option><option>4 (Final)</option></select></div>
-          <div class="interactive-row"><span>Panel B: Alice sits bored by river with sister</span> <select class="quiz-select"><option>Order...</option><option>1 (First)</option><option>2</option><option>3</option><option>4</option></select></div>
-          <div class="interactive-row"><span>Panel C: Alice falls past bookshelves</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>3 (Third)</option><option>4</option></select></div>
-          <div class="interactive-row"><span>Panel D: White Rabbit runs past in waistcoat</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2 (Second)</option><option>3</option><option>4</option></select></div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key Chronology:</strong> Panel B (1: River) ➔ Panel D (2: Rabbit runs) ➔ Panel C (3: Falling) ➔ Panel A (4: Door &amp; Key)
-        </div>
-      </div>
-
-      <!-- Task 5: Brain Anatomy -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 5: The 4-Lobe Brain Diagnostic Console</span>
-          <span class="vault-xp-pill">20 XP</span>
-        </div>
-        <div class="interactive-grid">
-          <div class="interactive-row"><span>Parietal Lobe (Top)</span> <span style="color:var(--amber); font-weight:800;">🍕 Tasting &amp; Touching (cold ice &amp; food)</span></div>
-          <div class="interactive-row"><span>Occipital Lobe (Back)</span> <span style="color:var(--amber); font-weight:800;">👁️ Seeing Words (reads print on page)</span></div>
-          <div class="interactive-row"><span>Temporal Lobe (Lower side)</span> <span style="color:var(--amber); font-weight:800;">🎧 Hearing Sounds (music &amp; voices)</span></div>
-          <div class="interactive-row"><span>Frontal Lobe (Front)</span> <span style="color:var(--amber); font-weight:800;">💡 Speaking &amp; Thinking (math &amp; talking)</span></div>
-          <div class="interactive-row" style="grid-column: 1 / -1; background:rgba(245,158,11,0.1);">
-            <span>⚡ Quick Check: Body's total energy used by brain?</span>
-            <span style="color:var(--gold); font-weight:900; font-size:1.1rem;">20% (Not 5% or 80%)</span>
-          </div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> Parietal = Tasting/Touch • Occipital = Seeing Words • Temporal = Hearing Sounds • Frontal = Speaking/Math • Battery = 20%
-        </div>
-      </div>
-
-      <!-- LEVEL 3: GOLD VAULT (30 XP) -->
-      <div class="vault-banner gold">
-        <div class="vault-title">
-          <span>📦</span>
-          <span>LEVEL 3: GOLD VAULT (Challenging • Analysis &amp; Cause/Effect)</span>
-        </div>
-        <span class="vault-xp-pill">30 XP MAX</span>
-      </div>
-
-      <!-- Task 6: Crate Sort -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 6: The "Why We Read" Dual Crate Sort</span>
-          <span class="vault-xp-pill">15 XP</span>
-        </div>
-        <div class="interactive-grid">
-          <div class="interactive-row"><span>Crate 1: FICTION (Read for FUN)</span> <span style="color:#d8b4fe; font-weight:800;">Cards A (Cheshire Cat), C (Earth Hole), E (Rose Painting)</span></div>
-          <div class="interactive-row"><span>Crate 2: NONFICTION (Read for FACTS)</span> <span style="color:#38bdf8; font-weight:800;">Cards B (Neuron fibers), D (fMRI scanner), F (20% Energy)</span></div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> Fiction = Cards A, C, E • Nonfiction = Cards B, D, F
-        </div>
-      </div>
-
-      <!-- Task 7: Cause & Effect -->
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 7: Cause &amp; Effect Detective</span>
-          <span class="vault-xp-pill">15 XP</span>
-        </div>
-        <div class="interactive-grid">
-          <div class="interactive-row"><span>1. Alice chased rabbit down deep hole</span> <span style="color:var(--cyan); font-weight:800;">➔ B. Alice fell for a very long time</span></div>
-          <div class="interactive-row"><span>2. The door to lovely garden was 38 cm</span> <span style="color:var(--cyan); font-weight:800;">➔ C. Alice was too big to go inside</span></div>
-          <div class="interactive-row"><span>3. You read books and learn new words</span> <span style="color:var(--cyan); font-weight:800;">➔ A. Brain connections become stronger</span></div>
-          <div class="interactive-row"><span>4. Billions of neurons connect fibers</span> <span style="color:var(--cyan); font-weight:800;">➔ D. They can send messages and info</span></div>
-        </div>
-        <div class="quiz-answer-reveal">
-          🔑 <strong>Key:</strong> 1 ➔ B • 2 ➔ C • 3 ➔ A • 4 ➔ D
-        </div>
-      </div>
-
-      <!-- LEVEL 4: DIAMOND BOSS VAULT (20 BONUS XP) -->
-      <div class="vault-banner diamond">
-        <div class="vault-title">
-          <span>💎</span>
-          <span>LEVEL 4: DIAMOND BOSS VAULT (Master • Synthesis &amp; Production)</span>
-        </div>
-        <span class="vault-xp-pill">10 Base + 20 Bonus XP</span>
-      </div>
-
-      <div class="task-card">
-        <div class="task-header">
-          <span class="task-title">⭐ Task 8: Neural Drafting Canvas &amp; Live Teleprompter</span>
-          <span class="vault-xp-pill">Up to 30 XP</span>
-        </div>
-        <p class="task-desc">Students sketch their scene, label at least 2 items, complete the scientific reflection, and read their draft claim at the podium.</p>
-        <div style="background:rgba(15,23,42,0.6); padding:1rem; border-radius:12px; border:1px solid var(--border); line-height:1.7;">
-          <div><strong>Scientific Reflection Sample:</strong> "When I read, my brain uses 20% of my energy to <em>connect neurons and imagine pictures</em>. Reading stories makes my imagination more <em>creative and powerful</em>."</div>
-          <div style="margin-top:0.5rem;"><strong>Podium Teleprompter:</strong> "1. My name is [Name], and my brain finished the Unit 1 Workout! 2. I read for fun AND I read for facts! 3. For our Wonderland Tea Party, I choose: [Character Name]!"</div>
-        </div>
+      <!-- Dynamic Vault Cards Container -->
+      <div id="vaults-dynamic-container">
+        <!-- Rendered based on selected grade -->
       </div>
     </div>
   </section>
@@ -1067,12 +857,12 @@
       <div class="glass-card scoring-box">
         <div class="card-label" style="color: var(--amber);">
           <span>✍️</span>
-          <span>Check In Student &amp; Assign XP</span>
+          <span id="ledger-panel-title">Check In Student &amp; Assign XP</span>
         </div>
 
         <div class="input-group">
           <label class="input-label">Student Name</label>
-          <input type="text" class="text-input" id="input-student-name" placeholder="e.g. Alice Smith" />
+          <input type="text" class="text-input" id="input-student-name" placeholder="e.g. Clara Smith or Leo Miller" />
         </div>
 
         <div class="input-group">
@@ -1080,12 +870,13 @@
           <select class="text-input" id="input-student-avatar">
             <option value="👧">👧 Explorer</option>
             <option value="👦">👦 Cadet</option>
-            <option value="🍄">🍄 Mushroom Scout</option>
+            <option value="🛠️">🛠️ Inventor</option>
+            <option value="💡">💡 Idea Master</option>
+            <option value="🤖">🤖 Bot Builder</option>
             <option value="🎩">🎩 Mad Hatter</option>
             <option value="🐰">🐰 White Rabbit</option>
             <option value="🐱">🐱 Cheshire Cat</option>
-            <option value="👑">👑 Royal Queen</option>
-            <option value="🧠">🧠 Neuro-Scientist</option>
+            <option value="👑">👑 Royal Leader</option>
           </select>
         </div>
 
@@ -1123,22 +914,9 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label">Tomorrow's Priority Tea Party Role</label>
+          <label class="input-label" id="role-select-label">Priority Draft Role Pick</label>
           <select class="role-select" id="input-student-role">
-            <option value="Unassigned">-- Choose Tea Party Character --</option>
-            <option value="Alice">Alice (Lead Adventurer)</option>
-            <option value="The Mad Hatter">The Mad Hatter (Tea Master)</option>
-            <option value="The White Rabbit">The White Rabbit (Time Keeper)</option>
-            <option value="The Cheshire Cat">The Cheshire Cat (Riddle Purr)</option>
-            <option value="The Queen of Hearts">The Queen of Hearts (Royal Judge)</option>
-            <option value="The King of Hearts">The King of Hearts (Gentle Monarch)</option>
-            <option value="The March Hare">The March Hare (Tea Pourer)</option>
-            <option value="The Dormouse">The Dormouse (Teapot Dreamer)</option>
-            <option value="The Caterpillar">The Caterpillar (Wisdom Oracle)</option>
-            <option value="The Duchess">The Duchess (Kitchen Philosopher)</option>
-            <option value="The Knave of Hearts">The Knave of Hearts (Tart Guardian)</option>
-            <option value="Bill the Lizard">Bill the Lizard (Chimney Explorer)</option>
-            <option value="The Dodo">The Dodo (Caucus Runner)</option>
+            <!-- Populated dynamically based on grade -->
           </select>
         </div>
 
@@ -1153,7 +931,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
           <div class="card-label" style="color: var(--gold); margin:0;">
             <span>🏆</span>
-            <span>Live Priority Draft Leaderboard (Sorted by XP)</span>
+            <span id="leaderboard-heading">Live Priority Draft Leaderboard</span>
           </div>
           <div style="display:flex; gap:0.5rem;">
             <button class="tool-btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="seedSampleStudents()">
@@ -1171,7 +949,6 @@
           </div>
         </div>
 
-        <!-- Ledger Table -->
         <div class="ledger-table-wrap">
           <table class="ledger-table">
             <thead>
@@ -1181,7 +958,7 @@
                 <th>Check-In</th>
                 <th>Vault Breakdown</th>
                 <th>Total XP</th>
-                <th>Priority Role Pick</th>
+                <th id="th-role-title">Priority Role Pick</th>
                 <th style="width:65px;">Action</th>
               </tr>
             </thead>
@@ -1201,15 +978,15 @@
     <div class="glass-card" style="margin-bottom:1rem;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
         <div>
-          <h2 style="font-size:1.2rem; font-weight:900;">🖼️ Official Unit 1 Master Quest Dossier Scans</h2>
-          <p style="font-size:0.85rem; color:var(--muted);">High-resolution printable worksheet pages for smartboard projection and reference.</p>
+          <h2 style="font-size:1.2rem; font-weight:900;" id="dossier-heading">🖼️ Official Unit 1 Master Quest Dossier Scans</h2>
+          <p style="font-size:0.85rem; color:var(--muted);" id="dossier-subheading">High-resolution printable worksheet pages for smartboard projection and reference.</p>
         </div>
         <div style="display:flex; gap:0.6rem;">
-          <a href="assets/unit1-vault-page1.jpg" target="_blank" class="tool-btn primary">
+          <a href="#" target="_blank" class="tool-btn primary" id="btn-view-page1">
             <span>🔍</span>
             <span>View Full Page 1</span>
           </a>
-          <a href="assets/unit1-vault-page2.jpg" target="_blank" class="tool-btn primary">
+          <a href="#" target="_blank" class="tool-btn primary" id="btn-view-page2">
             <span>🔍</span>
             <span>View Full Page 2</span>
           </a>
@@ -1221,30 +998,524 @@
       <div class="dossier-card">
         <div class="card-label" style="color:var(--amber);">
           <span>📄</span>
-          <span>Page 1: Level 1 (Bronze Vault) &amp; Level 2 (Silver Vault)</span>
+          <span id="dossier-label-p1">Page 1: Level 1 (Bronze Vault) &amp; Level 2 (Silver Vault)</span>
         </div>
-        <a href="assets/unit1-vault-page1.jpg" target="_blank" title="Click to view full size">
-          <img src="assets/unit1-vault-page1.jpg" alt="Unit 1 Master Quest Page 1" class="dossier-img" />
+        <a href="#" target="_blank" id="dossier-link-p1" title="Click to view full size">
+          <img src="" alt="Master Quest Page 1" class="dossier-img" id="dossier-img-p1" />
         </a>
       </div>
 
       <div class="dossier-card">
         <div class="card-label" style="color:var(--gold);">
           <span>📄</span>
-          <span>Page 2: Level 3 (Gold Vault) &amp; Level 4 (Diamond Boss Vault)</span>
+          <span id="dossier-label-p2">Page 2: Level 3 (Gold Vault) &amp; Level 4 (Diamond Boss Vault)</span>
         </div>
-        <a href="assets/unit1-vault-page2.jpg" target="_blank" title="Click to view full size">
-          <img src="assets/unit1-vault-page2.jpg" alt="Unit 1 Master Quest Page 2" class="dossier-img" />
+        <a href="#" target="_blank" id="dossier-link-p2" title="Click to view full size">
+          <img src="" alt="Master Quest Page 2" class="dossier-img" id="dossier-img-p2" />
         </a>
       </div>
     </div>
   </section>
 
   <!-- =============================================================== -->
-  <!-- AUDIO & APP LOGIC                                               -->
+  <!-- CURRICULUM DATASETS & APP ENGINE                                -->
   <!-- =============================================================== -->
   <script>
-    // 1. Zero-Dependency Web Audio Synthesizer
+    // 1. Dual Curriculum Datasets (Grade 3 & Grade 4)
+    const CURRICULA = {
+      g3: {
+        id: "quiz-g3-u1-after-school-inventor",
+        gradeLabel: "GRADE 3 • UNIT 1",
+        title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
+        subtitle: "What Does It Do? • The After-School Inventor & My Good Ideas Book • 100 Base XP + 20 Bonus XP",
+        script: `"Young inventors, eyes on the smartboard! Today is the <strong>Unit 1 Master Quest: The After-School Inventor</strong>! 
+        You have 4 Vaults to unlock: <span class="speech-highlight">Bronze (Inventions &amp; cl- Phonics), Silver (4-Step Timeline &amp; Inventors), Gold (Biomimicry &amp; Problem Solving), and Diamond Boss (Your Blueprint &amp; Pitch)</span>. 
+        Every point you earn goes straight to your Adventure Academy XP ledger. 
+        <strong>Most importantly:</strong> Tonight's leaderboard rank decides who picks their Inventor &amp; Tea Party priority role at tomorrow's draft! 
+        Listen to these 4 survival tips before opening your quest sheets!"`,
+        ttsScript: `Young inventors, eyes on the smartboard! Today is the Unit 1 Master Quest: The After-School Inventor. You have four vaults to unlock: Bronze, Silver, Gold, and Diamond Boss. Every point you earn goes straight to your Adventure Academy XP ledger. Tonight's leaderboard rank decides who picks their Inventor priority role at tomorrow's draft. Good luck!`,
+        tips: [
+          { num: 1, title: "VISUAL SKIM RADAR (Bronze):", desc: "Check Clara's mirror and Edison's light bulb—match quickly to Fiction, Nonfiction, or Both!" },
+          { num: 2, title: "CL- PHONICS & WACKY INVENTIONS (Bronze):", desc: "Remember the cl- blend (climb, cloud, clean, clock, clap) and Clara's musical alarm clock pillow!" },
+          { num: 3, title: "THE 4-STEP TIMELINE (Silver):", desc: "Sequence: Have Idea (1) ➔ Write in Notebook (2) ➔ Draw picture to test (3) ➔ Share & Improve (4)!" },
+          { num: 4, title: "BIOMIMICRY & 3 WHEELS (Gold & Silver):", desc: "Prickly burrs made Velcro, kingfishers shaped bullet trains, and Karl Benz's first motorcar had 3 wheels!" }
+        ],
+        prize: {
+          icon: "💡",
+          title: "Tomorrow: Inventor Priority Draft",
+          desc: "Rank #1 gets first pick of Inventor roles (Chief Inventor, Biomimicry Scout, Robotics Engineer, Blueprint Drafter...)!"
+        },
+        roles: [
+          "Chief Inventor (Lead Designer)",
+          "Biomimicry Scout (Nature Clues)",
+          "Robotics Engineer (Clean-up Bot)",
+          "Blueprint Drafter (Diagrams)",
+          "Materials Specialist (Velcro & Motors)",
+          "Prototype Tester (Timeline Lead)",
+          "The Mad Hatter (Tea Master)",
+          "Alice (Explorer)",
+          "The White Rabbit (Time Keeper)",
+          "The Cheshire Cat (Riddle Purr)"
+        ],
+        page1Img: "assets/unit1-inventor-page1.jpg",
+        page2Img: "assets/unit1-inventor-page2.jpg",
+        vaultsHtml: `
+          <!-- LEVEL 1: BRONZE VAULT (30 XP) -->
+          <div class="vault-banner bronze">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 1: BRONZE VAULT (Easy • Visual Recognition &amp; Phonics cl-)</span>
+            </div>
+            <span class="vault-xp-pill">30 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 1: The 10-Second Visual Skim Radar</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Match each picture icon to the correct Unit 1 text:</p>
+            <div class="interactive-grid">
+              <div class="interactive-row">
+                <span>1. Clara &amp; Special Mirror</span>
+                <select class="quiz-select"><option>Match Text...</option><option value="B">B. Fiction: "The After-School Inventor"</option><option value="A">A. Nonfiction: "My Good Ideas Book"</option><option value="C">C. Both Texts</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>2. Thomas Edison &amp; Light Bulb</span>
+                <select class="quiz-select"><option>Match Text...</option><option value="A">A. Nonfiction: "My Good Ideas Book"</option><option value="B">B. Fiction: "The After-School Inventor"</option><option value="C">C. Both Texts</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>3. Kingfisher Bird &amp; Bullet Train</span>
+                <select class="quiz-select"><option>Match Text...</option><option value="C">C. Both Texts: Inventions &amp; Ideas</option><option value="A">A. Nonfiction</option><option value="B">B. Fiction</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>4. Alarm Clock Pillow</span>
+                <select class="quiz-select"><option>Match Text...</option><option value="B">B. Fiction: "The After-School Inventor"</option><option value="A">A. Nonfiction</option><option value="C">C. Both Texts</option></select>
+              </div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 = B (Fiction) • 2 = A (Nonfiction: Edison) • 3 = C (Both: Kingfisher/Train) • 4 = B (Fiction: Pillow)
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 2: Clara Doodle's Wacky Inventions</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Word Bank: [ ALARM CLOCK PILLOW | SMART ERASER | SPECIAL MIRROR | CLEAN-UP MACHINE ]</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. Wakes Clara with sweet song:</span> <select class="quiz-select"><option>Choose...</option><option>ALARM CLOCK PILLOW</option><option>SMART ERASER</option><option>SPECIAL MIRROR</option><option>CLEAN-UP MACHINE</option></select></div>
+              <div class="interactive-row"><span>2. Tells when she makes homework mistake:</span> <select class="quiz-select"><option>Choose...</option><option>SMART ERASER</option><option>ALARM CLOCK PILLOW</option><option>SPECIAL MIRROR</option><option>CLEAN-UP MACHINE</option></select></div>
+              <div class="interactive-row"><span>3. Buttons to see back, gives purple hair:</span> <select class="quiz-select"><option>Choose...</option><option>SPECIAL MIRROR</option><option>ALARM CLOCK PILLOW</option><option>SMART ERASER</option><option>CLEAN-UP MACHINE</option></select></div>
+              <div class="interactive-row"><span>4. Draws because room is a mess:</span> <select class="quiz-select"><option>Choose...</option><option>CLEAN-UP MACHINE</option><option>ALARM CLOCK PILLOW</option><option>SMART ERASER</option><option>SPECIAL MIRROR</option></select></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 = ALARM CLOCK PILLOW • 2 = SMART ERASER • 3 = SPECIAL MIRROR • 4 = CLEAN-UP MACHINE
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 3: The Initial cl- Phonics Lock</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Complete each Unit 1 vocabulary word using the blend <strong>cl-</strong>:</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. <strong>cl</strong>imb (high tree/ladder)</span> <span style="color:var(--cyan); font-weight:800;">cl- + imb = climb</span></div>
+              <div class="interactive-row"><span>2. <strong>cl</strong>oud (white &amp; fluffy)</span> <span style="color:var(--cyan); font-weight:800;">cl- + oud = cloud</span></div>
+              <div class="interactive-row"><span>3. <strong>cl</strong>ean (tidy room)</span> <span style="color:var(--cyan); font-weight:800;">cl- + ean = clean</span></div>
+              <div class="interactive-row"><span>4. <strong>cl</strong>ock (musical pillow)</span> <span style="color:var(--cyan); font-weight:800;">cl- + ock = clock</span></div>
+              <div class="interactive-row"><span>5. <strong>cl</strong>ap (hands together)</span> <span style="color:var(--cyan); font-weight:800;">cl- + ap = clap</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1. climb • 2. cloud • 3. clean • 4. clock • 5. clap
+            </div>
+          </div>
+
+          <!-- LEVEL 2: SILVER VAULT (40 XP) -->
+          <div class="vault-banner silver">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 2: SILVER VAULT (Medium • Sequencing &amp; Famous Inventors)</span>
+            </div>
+            <span class="vault-xp-pill">40 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 4: The 4-Step Inventor's Timeline</span>
+              <span class="vault-xp-pill">20 XP</span>
+            </div>
+            <p class="task-desc">Put the steps of making an invention in order (1, 2, 3, or 4):</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>Step A: Share idea with friends &amp; improve it!</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>3</option><option>Order 4 (Final)</option></select></div>
+              <div class="interactive-row"><span>Step B: Have a good idea to solve problem!</span> <select class="quiz-select"><option>Order...</option><option>Order 1 (First)</option><option>2</option><option>3</option><option>4</option></select></div>
+              <div class="interactive-row"><span>Step C: Write idea down in notebook!</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>Order 2 (Second)</option><option>3</option><option>4</option></select></div>
+              <div class="interactive-row"><span>Step D: Draw a picture to test &amp; see problems!</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>Order 3 (Third)</option><option>4</option></select></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key Order:</strong> Step B (1: Have Idea) ➔ Step C (2: Write in notebook) ➔ Step D (3: Draw picture) ➔ Step A (4: Share &amp; improve)
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 5: The Hall of Famous Inventors Console</span>
+              <span class="vault-xp-pill">20 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>Leonardo da Vinci</span> <span style="color:var(--amber); font-weight:800;">🪂 The Parachute ➔ To travel safely in air</span></div>
+              <div class="interactive-row"><span>Thomas Edison</span> <span style="color:var(--amber); font-weight:800;">💡 Light Bulb &amp; Movies ➔ To show movies &amp; light</span></div>
+              <div class="interactive-row"><span>Karl Benz</span> <span style="color:var(--amber); font-weight:800;">🚗 The First Motorcar ➔ To travel fast (no horse)</span></div>
+              <div class="interactive-row"><span>Clara Doodle</span> <span style="color:var(--amber); font-weight:800;">⏰ Alarm Clock Pillow ➔ To wake up on time</span></div>
+              <div class="interactive-row" style="grid-column: 1 / -1; background:rgba(245,158,11,0.1);">
+                <span>⚙️ Quick Check: Wheels on Karl Benz's first motorcar?</span>
+                <span style="color:var(--gold); font-weight:900; font-size:1.1rem;">3 wheels (Not 2 or 4)</span>
+              </div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> Da Vinci = Parachute • Edison = Light/Movies • Karl Benz = Motorcar • Clara = Clock Pillow • Quick Check = 3 wheels!
+            </div>
+          </div>
+
+          <!-- LEVEL 3: GOLD VAULT (30 XP) -->
+          <div class="vault-banner gold">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 3: GOLD VAULT (Challenging • Nature Clues &amp; Problem Solving)</span>
+            </div>
+            <span class="vault-xp-pill">30 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 6: Biomimicry Detective ("Ideas from Nature")</span>
+              <span class="vault-xp-pill">15 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. A prickly plant burr sticks to clothes</span> <span style="color:var(--cyan); font-weight:800;">➔ C. Sticky shoes (Velcro) that stick</span></div>
+              <div class="interactive-row"><span>2. Kingfisher bird dives with pointed beak</span> <span style="color:var(--cyan); font-weight:800;">➔ A. Nose shape of fast bullet train</span></div>
+              <div class="interactive-row"><span>3. Flying birds and flapping wings</span> <span style="color:var(--cyan); font-weight:800;">➔ B. Flying machine and parachute</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 ➔ C (Velcro) • 2 ➔ A (Bullet train) • 3 ➔ B (Flying machine)
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 7: Problem &amp; Solution Lab</span>
+              <span class="vault-xp-pill">15 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. Clara's round pencils roll off desk</span> <span style="color:var(--cyan); font-weight:800;">➔ B. Hexagon-shaped pencils</span></div>
+              <div class="interactive-row"><span>2. Clara's bedroom is a total mess</span> <span style="color:var(--cyan); font-weight:800;">➔ A. Big Clean-Up Machine</span></div>
+              <div class="interactive-row"><span>3. An idea doesn't work first time</span> <span style="color:var(--cyan); font-weight:800;">➔ D. Don't give up! Make a plan &amp; try again!</span></div>
+              <div class="interactive-row"><span>4. Traveling with horses takes too long</span> <span style="color:var(--cyan); font-weight:800;">➔ C. Car with a motor</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 ➔ B • 2 ➔ A • 3 ➔ D • 4 ➔ C
+            </div>
+          </div>
+
+          <!-- LEVEL 4: DIAMOND BOSS VAULT (20 BONUS XP) -->
+          <div class="vault-banner diamond">
+            <div class="vault-title">
+              <span>💎</span>
+              <span>LEVEL 4: DIAMOND BOSS VAULT (Master • My Good Ideas Blueprint)</span>
+            </div>
+            <span class="vault-xp-pill">10 Base + 20 Bonus XP</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 8: The Young Inventor's Blueprint Canvas</span>
+              <span class="vault-xp-pill">Up to 30 XP</span>
+            </div>
+            <p class="task-desc">Students sketch their invention, label at least 2 parts (button, wheels, wings, battery, sensor), and complete the Inventor's Log.</p>
+            <div style="background:rgba(15,23,42,0.6); padding:1rem; border-radius:12px; border:1px solid var(--border); line-height:1.7;">
+              <div><strong>Inventor's Log Structure:</strong><br>
+              1. "The problem I want to solve is <em>[e.g. keeping my room tidy without losing socks]</em>."<br>
+              2. "My invention is called the <em>[e.g. Robo-Sweeper 3000]</em>."<br>
+              3. "It can <em>[e.g. roll on 3 wheels and pick up toys]</em> to help people."</div>
+            </div>
+          </div>
+        `
+      },
+
+      g4: {
+        id: "quiz-unit1-wonderland-brain",
+        gradeLabel: "GRADE 4 • UNIT 1",
+        title: "🍄 Unit 1 Master Quest: Wonderland & Brain Lab",
+        subtitle: "Wonderland Storyboard & Neuroscience Brain Lab • 100 Base XP + 20 Bonus XP",
+        script: `"Explorers, eyes on the smartboard! Today is the <strong>Unit 1 Master Quest: Wonderland &amp; Brain Lab</strong>! 
+        You have 4 Vaults to unlock: <span class="speech-highlight">Bronze, Silver, Gold, and Diamond Boss</span>. 
+        Every point you earn goes straight to your Adventure Academy XP ledger to evolve your companion monster. 
+        <strong>Most importantly:</strong> Tonight's leaderboard rank decides who picks their Wonderland Tea Party character first at tomorrow's Priority Draft! 
+        Listen to these 4 survival tips before you open your quest sheets!"`,
+        ttsScript: `Explorers, eyes on the smartboard! Today is the Unit 1 Master Quest: Wonderland and Brain Lab. You have four vaults to unlock: Bronze, Silver, Gold, and Diamond Boss. Every point you earn goes straight to your Adventure Academy XP ledger. Tonight's leaderboard rank decides who picks their Wonderland Tea Party character first at tomorrow's Priority Draft! Good luck!`,
+        tips: [
+          { num: 1, title: "THE SKIM RADAR (Bronze Vault):", desc: "Skim the icons—do NOT read every single word! Match symbols directly to Fiction, Nonfiction, or Both." },
+          { num: 2, title: "THE 4-LOBE ANATOMY (Silver Vault):", desc: "Remember the team: Parietal (Taste/Touch), Occipital (Seeing), Temporal (Hearing), Frontal (Speaking/Math). Check the 20% battery!" },
+          { num: 3, title: "DUAL CRATE SORT (Gold Vault):", desc: "Fiction is for FUN (Alice, cats, cards); Nonfiction is for FACTS (neurons, brain scanners, energy)." },
+          { num: 4, title: "DIAMOND BOSS VAULT (Level 4):", desc: "Save at least 7 minutes! Sketch your scene and label at least 2 items to unlock the maximum +20 Bonus XP!" }
+        ],
+        prize: {
+          icon: "🫖",
+          title: "Tomorrow: Wonderland Priority Draft",
+          desc: "Leaderboard rank decides who picks their Tea Party role first (The Mad Hatter, Alice, White Rabbit, Cheshire Cat...)!"
+        },
+        roles: [
+          "Alice (Lead Adventurer)",
+          "The Mad Hatter (Tea Master)",
+          "The White Rabbit (Time Keeper)",
+          "The Cheshire Cat (Riddle Purr)",
+          "The Queen of Hearts (Royal Judge)",
+          "The King of Hearts (Gentle Monarch)",
+          "The March Hare (Tea Pourer)",
+          "The Dormouse (Teapot Dreamer)",
+          "The Caterpillar (Wisdom Oracle)",
+          "The Duchess (Kitchen Philosopher)"
+        ],
+        page1Img: "assets/unit1-vault-page1.jpg",
+        page2Img: "assets/unit1-vault-page2.jpg",
+        vaultsHtml: `
+          <!-- LEVEL 1: BRONZE VAULT (30 XP) -->
+          <div class="vault-banner bronze">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 1: BRONZE VAULT (Easy • Visual Recognition &amp; Phonics)</span>
+            </div>
+            <span class="vault-xp-pill">30 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 1: The 10-Second "Skim &amp; Scan" Radar</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Connect each visual icon to its correct Unit 1 text category:</p>
+            <div class="interactive-grid">
+              <div class="interactive-row">
+                <span>🐰 White Rabbit with watch</span>
+                <select class="quiz-select"><option>Select Match...</option><option value="B">B. Fiction: "Alice's Adventures"</option><option value="A">A. Nonfiction: "Learning and Your Brain"</option><option value="C">C. Both Texts</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>🧠 Human Brain &amp; Neuron</span>
+                <select class="quiz-select"><option>Select Match...</option><option value="A">A. Nonfiction: "Learning and Your Brain"</option><option value="B">B. Fiction: "Alice's Adventures"</option><option value="C">C. Both Texts</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>🚪 Golden Key &amp; 38cm Door</span>
+                <select class="quiz-select"><option>Select Match...</option><option value="B">B. Fiction: "Alice's Adventures"</option><option value="A">A. Nonfiction: "Learning and Your Brain"</option><option value="C">C. Both Texts</option></select>
+              </div>
+              <div class="interactive-row">
+                <span>🔋 20% Energy Battery</span>
+                <select class="quiz-select"><option>Select Match...</option><option value="A">A. Nonfiction: "Learning and Your Brain"</option><option value="B">B. Fiction: "Alice's Adventures"</option><option value="C">C. Both Texts</option></select>
+              </div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> White Rabbit = B (Fiction) • Brain/Neuron = A (Nonfiction) • 38cm Door = B (Fiction) • 20% Battery = A (Nonfiction)
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 2: SEL Emotion Scanner</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Word Bank: [ SURPRISED | BORED | WORRIED | INTERESTED ]</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. Alice sits by river with nothing to do:</span> <select class="quiz-select"><option>Choose...</option><option>BORED</option><option>SURPRISED</option><option>WORRIED</option><option>INTERESTED</option></select></div>
+              <div class="interactive-row"><span>2. Sees a white rabbit wearing clothes:</span> <select class="quiz-select"><option>Choose...</option><option>SURPRISED</option><option>BORED</option><option>WORRIED</option><option>INTERESTED</option></select></div>
+              <div class="interactive-row"><span>3. Rabbit shouts "I'm going to be late!":</span> <select class="quiz-select"><option>Choose...</option><option>WORRIED</option><option>BORED</option><option>SURPRISED</option><option>INTERESTED</option></select></div>
+              <div class="interactive-row"><span>4. Looks at bookshelves inside rabbit hole:</span> <select class="quiz-select"><option>Choose...</option><option>INTERESTED</option><option>BORED</option><option>SURPRISED</option><option>WORRIED</option></select></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 = BORED • 2 = SURPRISED • 3 = WORRIED • 4 = INTERESTED
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 3: The Final -er Phonics Lock</span>
+              <span class="vault-xp-pill">10 XP</span>
+            </div>
+            <p class="task-desc">Complete each Unit 1 word with the spelling pattern <strong>-er</strong>:</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. riv<strong>___</strong> (river)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ river</span></div>
+              <div class="interactive-row"><span>2. cent<strong>___</strong> (center)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ center</span></div>
+              <div class="interactive-row"><span>3. teach<strong>___</strong> (teacher)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ teacher</span></div>
+              <div class="interactive-row"><span>4. fib<strong>___</strong> (fiber)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ fiber</span></div>
+              <div class="interactive-row"><span>5. corn<strong>___</strong> (corner)</span> <span style="color:var(--cyan); font-weight:800;">+er ➔ corner</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1. river • 2. center • 3. teacher • 4. fiber • 5. corner
+            </div>
+          </div>
+
+          <!-- LEVEL 2: SILVER VAULT (40 XP) -->
+          <div class="vault-banner silver">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 2: SILVER VAULT (Medium • Sequencing &amp; Brain Anatomy)</span>
+            </div>
+            <span class="vault-xp-pill">40 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 4: Alice's Down-the-Hole Storyboard</span>
+              <span class="vault-xp-pill">20 XP</span>
+            </div>
+            <p class="task-desc">Number the visual storyboard panels in chronological order from 1 to 4:</p>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>Panel A: Alice finds golden key &amp; 38cm door</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>3</option><option>Order 4 (Final)</option></select></div>
+              <div class="interactive-row"><span>Panel B: Alice sits bored by river with sister</span> <select class="quiz-select"><option>Order...</option><option>Order 1 (First)</option><option>2</option><option>3</option><option>4</option></select></div>
+              <div class="interactive-row"><span>Panel C: Alice falls past bookshelves</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>2</option><option>Order 3 (Third)</option><option>4</option></select></div>
+              <div class="interactive-row"><span>Panel D: White Rabbit runs past in waistcoat</span> <select class="quiz-select"><option>Order...</option><option>1</option><option>Order 2 (Second)</option><option>3</option><option>4</option></select></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key Chronology:</strong> Panel B (1: River) ➔ Panel D (2: Rabbit runs) ➔ Panel C (3: Falling) ➔ Panel A (4: Door &amp; Key)
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 5: The 4-Lobe Brain Diagnostic Console</span>
+              <span class="vault-xp-pill">20 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>Parietal Lobe (Top)</span> <span style="color:var(--amber); font-weight:800;">🍕 Tasting &amp; Touching (cold ice &amp; food)</span></div>
+              <div class="interactive-row"><span>Occipital Lobe (Back)</span> <span style="color:var(--amber); font-weight:800;">👁️ Seeing Words (reads print on page)</span></div>
+              <div class="interactive-row"><span>Temporal Lobe (Lower side)</span> <span style="color:var(--amber); font-weight:800;">🎧 Hearing Sounds (music &amp; voices)</span></div>
+              <div class="interactive-row"><span>Frontal Lobe (Front)</span> <span style="color:var(--amber); font-weight:800;">💡 Speaking &amp; Thinking (math &amp; talking)</span></div>
+              <div class="interactive-row" style="grid-column: 1 / -1; background:rgba(245,158,11,0.1);">
+                <span>⚡ Quick Check: Body's total energy used by brain?</span>
+                <span style="color:var(--gold); font-weight:900; font-size:1.1rem;">20% (Not 5% or 80%)</span>
+              </div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> Parietal = Tasting/Touch • Occipital = Seeing Words • Temporal = Hearing Sounds • Frontal = Speaking/Math • Battery = 20%
+            </div>
+          </div>
+
+          <!-- LEVEL 3: GOLD VAULT (30 XP) -->
+          <div class="vault-banner gold">
+            <div class="vault-title">
+              <span>📦</span>
+              <span>LEVEL 3: GOLD VAULT (Challenging • Analysis &amp; Cause/Effect)</span>
+            </div>
+            <span class="vault-xp-pill">30 XP MAX</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 6: The "Why We Read" Dual Crate Sort</span>
+              <span class="vault-xp-pill">15 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>Crate 1: FICTION (Read for FUN)</span> <span style="color:#d8b4fe; font-weight:800;">Cards A (Cheshire Cat), C (Earth Hole), E (Rose Painting)</span></div>
+              <div class="interactive-row"><span>Crate 2: NONFICTION (Read for FACTS)</span> <span style="color:#38bdf8; font-weight:800;">Cards B (Neuron fibers), D (fMRI scanner), F (20% Energy)</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> Fiction = Cards A, C, E • Nonfiction = Cards B, D, F
+            </div>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 7: Cause &amp; Effect Detective</span>
+              <span class="vault-xp-pill">15 XP</span>
+            </div>
+            <div class="interactive-grid">
+              <div class="interactive-row"><span>1. Alice chased rabbit down deep hole</span> <span style="color:var(--cyan); font-weight:800;">➔ B. Alice fell for a very long time</span></div>
+              <div class="interactive-row"><span>2. The door to lovely garden was 38 cm</span> <span style="color:var(--cyan); font-weight:800;">➔ C. Alice was too big to go inside</span></div>
+              <div class="interactive-row"><span>3. You read books and learn new words</span> <span style="color:var(--cyan); font-weight:800;">➔ A. Brain connections become stronger</span></div>
+              <div class="interactive-row"><span>4. Billions of neurons connect fibers</span> <span style="color:var(--cyan); font-weight:800;">➔ D. They can send messages and info</span></div>
+            </div>
+            <div class="quiz-answer-reveal">
+              🔑 <strong>Key:</strong> 1 ➔ B • 2 ➔ C • 3 ➔ A • 4 ➔ D
+            </div>
+          </div>
+
+          <!-- LEVEL 4: DIAMOND BOSS VAULT (20 BONUS XP) -->
+          <div class="vault-banner diamond">
+            <div class="vault-title">
+              <span>💎</span>
+              <span>LEVEL 4: DIAMOND BOSS VAULT (Master • Synthesis &amp; Production)</span>
+            </div>
+            <span class="vault-xp-pill">10 Base + 20 Bonus XP</span>
+          </div>
+
+          <div class="task-card">
+            <div class="task-header">
+              <span class="task-title">⭐ Task 8: Neural Drafting Canvas &amp; Live Teleprompter</span>
+              <span class="vault-xp-pill">Up to 30 XP</span>
+            </div>
+            <p class="task-desc">Students sketch their scene, label at least 2 items, complete the scientific reflection, and read their draft claim at the podium.</p>
+            <div style="background:rgba(15,23,42,0.6); padding:1rem; border-radius:12px; border:1px solid var(--border); line-height:1.7;">
+              <div><strong>Scientific Reflection Sample:</strong> "When I read, my brain uses 20% of my energy to <em>connect neurons and imagine pictures</em>. Reading stories makes my imagination more <em>creative and powerful</em>."</div>
+              <div style="margin-top:0.5rem;"><strong>Podium Teleprompter:</strong> "1. My name is [Name], and my brain finished the Unit 1 Workout! 2. I read for fun AND I read for facts! 3. For our Wonderland Tea Party, I choose: [Character Name]!"</div>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    let currentGrade = 'g4';
+
+    function setCurriculumGrade(gradeKey) {
+      if (!CURRICULA[gradeKey]) return;
+      currentGrade = gradeKey;
+
+      // Update switcher buttons
+      document.getElementById('btn-grade-g3').classList.toggle('active', gradeKey === 'g3');
+      document.getElementById('btn-grade-g4').classList.toggle('active', gradeKey === 'g4');
+
+      const cur = CURRICULA[gradeKey];
+
+      // Update Header
+      document.getElementById('hud-badge-label').textContent = cur.gradeLabel;
+      document.getElementById('hud-main-title').innerHTML = cur.title;
+      document.getElementById('hud-sub-title').textContent = cur.subtitle;
+
+      // Update Tab 1: Briefing
+      document.getElementById('briefing-speech-content').innerHTML = cur.script;
+      document.getElementById('briefing-tips-list').innerHTML = cur.tips.map(t => `
+        <div class="tip-item">
+          <div class="tip-num">${t.num}</div>
+          <div><strong>${t.title}</strong> ${t.desc}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('prize-callout-icon').textContent = cur.prize.icon;
+      document.getElementById('prize-callout-title').textContent = cur.prize.title;
+      document.getElementById('prize-callout-desc').textContent = cur.prize.desc;
+
+      // Update Tab 2: Vault Quiz
+      document.getElementById('vaults-dynamic-container').innerHTML = cur.vaultsHtml;
+
+      // Update Tab 3: Priority Role Select options
+      const roleSelect = document.getElementById('input-student-role');
+      if (roleSelect) {
+        roleSelect.innerHTML = `<option value="Unassigned">-- Choose Priority Role --</option>` +
+          cur.roles.map(r => `<option value="${r}">${r}</option>`).join('');
+      }
+
+      // Update Tab 4: Dossier Images
+      document.getElementById('btn-view-page1').href = cur.page1Img;
+      document.getElementById('btn-view-page2').href = cur.page2Img;
+      document.getElementById('dossier-link-p1').href = cur.page1Img;
+      document.getElementById('dossier-link-p2').href = cur.page2Img;
+      document.getElementById('dossier-img-p1').src = cur.page1Img;
+      document.getElementById('dossier-img-p2').src = cur.page2Img;
+
+      // Reload students for this grade
+      loadStudents();
+    }
+
+    // 2. Zero-Dependency Web Audio Synthesizer
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) {
@@ -1293,7 +1564,7 @@
       setTimeout(() => playTone(1046.50, 'triangle', 0.8, 0.25), 450); // C6
     }
 
-    // 2. 25-Minute Classroom Countdown Timer
+    // 3. 25-Minute Classroom Countdown Timer
     let totalSeconds = 25 * 60;
     let timerRunning = false;
     let timerInterval = null;
@@ -1349,7 +1620,7 @@
       toggleBtn.classList.remove("pause");
     }
 
-    // 3. Calibrated Speech Synthesis (TTS)
+    // 4. Calibrated Speech Synthesis (TTS)
     function readBriefingTTS() {
       if (!window.speechSynthesis) return;
       if (window.speechSynthesis.speaking) {
@@ -1358,12 +1629,7 @@
         return;
       }
 
-      const scriptText = `Explorers, eyes on the smartboard! Today is the Unit 1 Master Quest: Wonderland and Brain Lab. 
-      You have four vaults to unlock: Bronze, Silver, Gold, and Diamond Boss. 
-      Every point you earn goes straight to your Adventure Academy XP ledger. 
-      Tonight's leaderboard rank decides who picks their Wonderland Tea Party character first at tomorrow's Priority Draft! 
-      Remember the rules: 25 minutes on the timer, write neatly, and work independently. Good luck!`;
-
+      const scriptText = CURRICULA[currentGrade].ttsScript;
       const utter = new SpeechSynthesisUtterance(scriptText);
       utter.rate = 0.88;
       utter.pitch = 1.05;
@@ -1387,7 +1653,7 @@
       }
     }
 
-    // 4. Tab Switching
+    // 5. Tab Switching
     function switchTab(tabKey) {
       ['briefing', 'quiz', 'ledger', 'dossier'].forEach(k => {
         const btn = document.getElementById(`tab-btn-${k}`);
@@ -1397,7 +1663,7 @@
       });
     }
 
-    // 5. Quiz Answer Key Reveal Toggle
+    // 6. Quiz Answer Key Reveal Toggle
     let answersRevealed = false;
     function toggleAnswerKeys() {
       answersRevealed = !answersRevealed;
@@ -1416,24 +1682,35 @@
       }
     }
 
-    // 6. Student Roster & XP Ledger Engine
-    const STORAGE_KEY = 'wonderland_unit1_students_roster';
+    // 7. Student Roster & XP Ledger Engine (Per Grade Storage)
+    function getStorageKey() {
+      return `master_quest_roster_${currentGrade}`;
+    }
+
     let students = [];
 
     function loadStudents() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const saved = localStorage.getItem(getStorageKey());
         if (saved) {
           students = JSON.parse(saved);
         } else {
-          // Default starter roster
-          students = [
-            { id: 1, name: "Alice King", avatar: "👧", checkedIn: true, bronze: 30, silver: 40, gold: 30, diamond: 20, totalXP: 120, role: "Alice" },
-            { id: 2, name: "Leo Miller", avatar: "🎩", checkedIn: true, bronze: 30, silver: 35, gold: 30, diamond: 18, totalXP: 113, role: "The Mad Hatter" },
-            { id: 3, name: "Maya Chen", avatar: "🐰", checkedIn: true, bronze: 30, silver: 40, gold: 25, diamond: 15, totalXP: 110, role: "The White Rabbit" },
-            { id: 4, name: "Sam Wilson", avatar: "🐱", checkedIn: true, bronze: 28, silver: 35, gold: 28, diamond: 15, totalXP: 106, role: "The Cheshire Cat" },
-            { id: 5, name: "Chloe Patel", avatar: "👑", checkedIn: false, bronze: 25, silver: 30, gold: 25, diamond: 10, totalXP: 90, role: "The Queen of Hearts" }
-          ];
+          // Default starter rosters for Grade 3 vs Grade 4
+          if (currentGrade === 'g3') {
+            students = [
+              { id: 101, name: "Clara Doodle", avatar: "🛠️", checkedIn: true, bronze: 30, silver: 40, gold: 30, diamond: 20, totalXP: 120, role: "Chief Inventor (Lead Designer)" },
+              { id: 102, name: "Lucas Vance", avatar: "💡", checkedIn: true, bronze: 30, silver: 35, gold: 28, diamond: 18, totalXP: 111, role: "Biomimicry Scout (Nature Clues)" },
+              { id: 103, name: "Emma Watson", avatar: "🤖", checkedIn: true, bronze: 28, silver: 40, gold: 25, diamond: 15, totalXP: 108, role: "Robotics Engineer (Clean-up Bot)" },
+              { id: 104, name: "Noah Miller", avatar: "👦", checkedIn: true, bronze: 30, silver: 30, gold: 28, diamond: 15, totalXP: 103, role: "Blueprint Drafter (Diagrams)" }
+            ];
+          } else {
+            students = [
+              { id: 1, name: "Alice King", avatar: "👧", checkedIn: true, bronze: 30, silver: 40, gold: 30, diamond: 20, totalXP: 120, role: "Alice (Lead Adventurer)" },
+              { id: 2, name: "Leo Miller", avatar: "🎩", checkedIn: true, bronze: 30, silver: 35, gold: 30, diamond: 18, totalXP: 113, role: "The Mad Hatter (Tea Master)" },
+              { id: 3, name: "Maya Chen", avatar: "🐰", checkedIn: true, bronze: 30, silver: 40, gold: 25, diamond: 15, totalXP: 110, role: "The White Rabbit (Time Keeper)" },
+              { id: 4, name: "Sam Wilson", avatar: "🐱", checkedIn: true, bronze: 28, silver: 35, gold: 28, diamond: 15, totalXP: 106, role: "The Cheshire Cat (Riddle Purr)" }
+            ];
+          }
           saveStudents();
         }
       } catch(e) {
@@ -1444,7 +1721,7 @@
 
     function saveStudents() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+        localStorage.setItem(getStorageKey(), JSON.stringify(students));
       } catch(e) {}
     }
 
@@ -1478,7 +1755,6 @@
       const role = document.getElementById('input-student-role').value;
       const totalXP = bronze + silver + gold + diamond;
 
-      // Check if student exists
       const existingIdx = students.findIndex(s => s.name.toLowerCase() === name.toLowerCase());
       if (existingIdx >= 0) {
         students[existingIdx].avatar = avatar;
@@ -1528,7 +1804,7 @@
     }
 
     function seedSampleStudents() {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(getStorageKey());
       loadStudents();
       playStartChime();
     }
@@ -1546,7 +1822,7 @@
         alert("Roster is empty!");
         return;
       }
-      let csv = "Rank,Student Name,Check In Status,Bronze (30),Silver (40),Gold (30),Diamond (20),Total XP,Priority Role Pick\n";
+      let csv = `Rank,Student Name,Check In Status,Bronze (30),Silver (40),Gold (30),Diamond (20),Total XP,Priority Role Pick (${currentGrade.toUpperCase()})\n`;
       const sorted = [...students].sort((a, b) => b.totalXP - a.totalXP);
       sorted.forEach((s, idx) => {
         csv += `${idx + 1},"${s.name}",${s.checkedIn ? 'Present' : 'Absent'},${s.bronze},${s.silver},${s.gold},${s.diamond},${s.totalXP},"${s.role}"\n`;
@@ -1556,7 +1832,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = "Unit1_Master_Quest_XP_Ledger.csv";
+      a.download = `${currentGrade.toUpperCase()}_Unit1_Master_Quest_XP_Ledger.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -1565,7 +1841,6 @@
       const tbody = document.getElementById('roster-table-body');
       if (!tbody) return;
 
-      // Sort by total XP descending
       const sorted = [...students].sort((a, b) => b.totalXP - a.totalXP);
 
       if (sorted.length === 0) {
@@ -1604,7 +1879,7 @@
               <span class="xp-pill-ledger">⭐ ${s.totalXP}</span>
             </td>
             <td>
-              <span style="color:#d8b4fe; font-weight:800;">🫖 ${s.role || 'Unassigned'}</span>
+              <span style="color:#d8b4fe; font-weight:800;">💡 ${s.role || 'Unassigned'}</span>
             </td>
             <td>
               <button style="background:transparent; border:none; color:var(--rose); cursor:pointer; font-weight:800;" onclick="deleteStudent(${s.id})" title="Delete">✕</button>
@@ -1614,18 +1889,32 @@
       }).join('');
     }
 
-    // Initialize
-    updateDisplay();
-    loadStudents();
-
-    function handleHashChange() {
+    // 8. Hash-Based Deep Link Navigation & Initialization
+    function handleHashNavigation() {
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (['briefing', 'quiz', 'ledger', 'dossier'].includes(hash)) {
-        switchTab(hash);
+      if (hash.startsWith('g3')) {
+        setCurriculumGrade('g3');
+      } else if (hash.startsWith('g4')) {
+        setCurriculumGrade('g4');
+      }
+
+      if (hash.includes('quiz')) {
+        switchTab('quiz');
+      } else if (hash.includes('ledger')) {
+        switchTab('ledger');
+      } else if (hash.includes('dossier')) {
+        switchTab('dossier');
+      } else if (hash.includes('briefing')) {
+        switchTab('briefing');
       }
     }
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
+
+    window.addEventListener('hashchange', handleHashNavigation);
+
+    // Initial Bootstrap
+    updateDisplay();
+    setCurriculumGrade('g4'); // Default Grade 4, overrideable by hash
+    handleHashNavigation();
   </script>
 </body>
 </html>

@@ -8334,6 +8334,84 @@
           archived: false
         },
         {
+          id: "quiz-g3-u1-after-school-inventor",
+          title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
+          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          type: "diagnostic-quiz",
+          section: "quizzes-and-tests",
+          category: "Unit Progress Checks",
+          grade: "Grade 3",
+          classTarget: "Grade 3A",
+          targetCefr: "A1",
+          skill: "Reading & Inventions CLIL",
+          curriculumRef: "Global Readings 2 • Unit 1 (pp. 8–23)",
+          durationMinutes: 25,
+          scoring: {
+            baseXP: 100,
+            bonusXP: 20,
+            totalXP: 120,
+            passingScore: 70
+          },
+          stations: [
+            {
+              id: "vault-1-bronze",
+              name: "Level 1: Bronze Vault",
+              type: "Visual Recognition & cl- Phonics",
+              maxPoints: 30,
+              tasks: [
+                { id: "t1_skim", name: "10-Second Visual Skim Radar", xp: 10 },
+                { id: "t2_inventions", name: "Clara Doodle's Wacky Inventions", xp: 10 },
+                { id: "t3_cl_phonics", name: "Initial cl- Phonics Lock", xp: 10 }
+              ]
+            },
+            {
+              id: "vault-2-silver",
+              name: "Level 2: Silver Vault",
+              type: "Sequencing & Famous Inventors",
+              maxPoints: 40,
+              tasks: [
+                { id: "t4_timeline", name: "The 4-Step Inventor's Timeline", xp: 20 },
+                { id: "t5_hall_of_fame", name: "The Hall of Famous Inventors Console", xp: 20 }
+              ]
+            },
+            {
+              id: "vault-3-gold",
+              name: "Level 3: Gold Vault",
+              type: "Nature Clues & Problem Solving",
+              maxPoints: 30,
+              tasks: [
+                { id: "t6_biomimicry", name: "Biomimicry Detective (Ideas from Nature)", xp: 15 },
+                { id: "t7_problem_solution", name: "Problem & Solution Lab", xp: 15 }
+              ]
+            },
+            {
+              id: "vault-4-diamond",
+              name: "Level 4: Diamond Boss Vault",
+              type: "Mastery Synthesis & Creative Production",
+              maxPoints: 20,
+              tasks: [
+                { id: "t8_blueprint", name: "Young Inventor's Blueprint Canvas & Pitch", xp: 10, bonusXP: 20 }
+              ]
+            }
+          ],
+          questions: [
+            { id: "t1", question: "Task 1: 10-Second Visual Skim Radar (Fiction vs Nonfiction vs Both)", xp: 10 },
+            { id: "t2", question: "Task 2: Clara Doodle's Wacky Inventions (Pillow, Eraser, Mirror, Machine)", xp: 10 },
+            { id: "t3", question: "Task 3: Initial cl- Phonics Lock (climb, cloud, clean, clock, clap)", xp: 10 },
+            { id: "t4", question: "Task 4: The 4-Step Inventor's Timeline (Idea -> Notebook -> Draw -> Share)", xp: 20 },
+            { id: "t5", question: "Task 5: Hall of Famous Inventors (Da Vinci, Edison, Karl Benz, Clara) + 3 Wheels", xp: 20 },
+            { id: "t6", question: "Task 6: Biomimicry Detective (Burrs->Velcro, Kingfisher->Bullet Train, Birds->Wings)", xp: 15 },
+            { id: "t7", question: "Task 7: Problem & Solution Lab (Hexagon pencils, Clean-up machine, etc.)", xp: 15 },
+            { id: "t8", question: "Task 8: Young Inventor's Blueprint Canvas & Pitch", xp: 20 }
+          ],
+          routes: {
+            smartboardBriefing: "quiz-briefing/index.html#g3",
+            printableWorksheet: "quiz-briefing/assets/unit1-inventor-page1.jpg",
+            liveGradingModal: "quiz-briefing/index.html#g3-ledger"
+          },
+          archived: false
+        },
+        {
           id: 'quiz-1',
           title: 'Unit 1 & 2 Vocabulary & Speaking Check',
           targetCefr: 'A1',
@@ -11847,6 +11925,87 @@
           archived: false
         };
         this.state.quizzes.unshift(masterQuiz);
+      }
+      if (this.state && Array.isArray(this.state.quizzes) && !this.state.quizzes.some(q => q.id === 'quiz-g3-u1-after-school-inventor')) {
+        const g3Quiz = {
+          id: "quiz-g3-u1-after-school-inventor",
+          title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
+          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          type: "diagnostic-quiz",
+          section: "quizzes-and-tests",
+          category: "Unit Progress Checks",
+          grade: "Grade 3",
+          classTarget: "Grade 3A",
+          targetCefr: "A1",
+          skill: "Reading & Inventions CLIL",
+          curriculumRef: "Global Readings 2 • Unit 1 (pp. 8–23)",
+          durationMinutes: 25,
+          scoring: {
+            baseXP: 100,
+            bonusXP: 20,
+            totalXP: 120,
+            passingScore: 70
+          },
+          stations: [
+            {
+              id: "vault-1-bronze",
+              name: "Level 1: Bronze Vault",
+              type: "Visual Recognition & cl- Phonics",
+              maxPoints: 30,
+              tasks: [
+                { id: "t1_skim", name: "10-Second Visual Skim Radar", xp: 10 },
+                { id: "t2_inventions", name: "Clara Doodle's Wacky Inventions", xp: 10 },
+                { id: "t3_cl_phonics", name: "Initial cl- Phonics Lock", xp: 10 }
+              ]
+            },
+            {
+              id: "vault-2-silver",
+              name: "Level 2: Silver Vault",
+              type: "Sequencing & Famous Inventors",
+              maxPoints: 40,
+              tasks: [
+                { id: "t4_timeline", name: "The 4-Step Inventor's Timeline", xp: 20 },
+                { id: "t5_hall_of_fame", name: "The Hall of Famous Inventors Console", xp: 20 }
+              ]
+            },
+            {
+              id: "vault-3-gold",
+              name: "Level 3: Gold Vault",
+              type: "Nature Clues & Problem Solving",
+              maxPoints: 30,
+              tasks: [
+                { id: "t6_biomimicry", name: "Biomimicry Detective (Ideas from Nature)", xp: 15 },
+                { id: "t7_problem_solution", name: "Problem & Solution Lab", xp: 15 }
+              ]
+            },
+            {
+              id: "vault-4-diamond",
+              name: "Level 4: Diamond Boss Vault",
+              type: "Mastery Synthesis & Creative Production",
+              maxPoints: 20,
+              tasks: [
+                { id: "t8_blueprint", name: "Young Inventor's Blueprint Canvas & Pitch", xp: 10, bonusXP: 20 }
+              ]
+            }
+          ],
+          questions: [
+            { id: "t1", question: "Task 1: 10-Second Visual Skim Radar (Fiction vs Nonfiction vs Both)", xp: 10 },
+            { id: "t2", question: "Task 2: Clara Doodle's Wacky Inventions (Pillow, Eraser, Mirror, Machine)", xp: 10 },
+            { id: "t3", question: "Task 3: Initial cl- Phonics Lock (climb, cloud, clean, clock, clap)", xp: 10 },
+            { id: "t4", question: "Task 4: The 4-Step Inventor's Timeline (Idea -> Notebook -> Draw -> Share)", xp: 20 },
+            { id: "t5", question: "Task 5: Hall of Famous Inventors (Da Vinci, Edison, Karl Benz, Clara) + 3 Wheels", xp: 20 },
+            { id: "t6", question: "Task 6: Biomimicry Detective (Burrs->Velcro, Kingfisher->Bullet Train, Birds->Wings)", xp: 15 },
+            { id: "t7", question: "Task 7: Problem & Solution Lab (Hexagon pencils, Clean-up machine, etc.)", xp: 15 },
+            { id: "t8", question: "Task 8: Young Inventor's Blueprint Canvas & Pitch", xp: 20 }
+          ],
+          routes: {
+            smartboardBriefing: "quiz-briefing/index.html#g3",
+            printableWorksheet: "quiz-briefing/assets/unit1-inventor-page1.jpg",
+            liveGradingModal: "quiz-briefing/index.html#g3-ledger"
+          },
+          archived: false
+        };
+        this.state.quizzes.push(g3Quiz);
       }
       return this.state.quizzes.filter(q => includeArchived || !q.archived);
     }

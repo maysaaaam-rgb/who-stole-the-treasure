@@ -6902,15 +6902,49 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         quizzes.map(q => {
           const qCount = (q.questions || []).length;
           const subCount = Object.keys(q.submissions || {}).length;
-          const isMasterQuest = q.id === 'quiz-unit1-wonderland-brain' || q.type === 'diagnostic-quiz';
+          if (q.id === 'quiz-g3-u1-after-school-inventor') {
+            return '' +
+              '<div style="background:linear-gradient(145deg, rgba(20, 30, 48, 0.95), rgba(15, 23, 42, 0.98)); border:2px solid #38bdf8; border-radius:18px; padding:22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 12px 36px rgba(0,0,0,0.6); grid-column: 1 / -1; margin-bottom:12px;">' +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
+                    '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
+                      '<span style="background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">🛠️ GRADE 3 UNIT 1 MASTER QUEST</span>' +
+                      '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 3 • 25 MINS</span>' +
+                      '<span style="background:rgba(16, 185, 129, 0.15); color:#34d399; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">100 BASE + 20 BONUS XP</span>' +
+                      '<span style="background:rgba(168, 85, 247, 0.15); color:#d8b4fe; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">4 VAULTS</span>' +
+                    '</div>' +
+                    '<span style="color:#38bdf8; font-weight:800; font-size:0.82rem; display:flex; align-items:center; gap:4px;">💡 Unlocks Inventor &amp; Tea Party Priority Draft</span>' +
+                  '</div>' +
+                  '<h2 style="font-size:1.38rem; font-weight:900; margin-bottom:6px; color:#fff;">' + q.title + '</h2>' +
+                  '<p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px;">' + (q.subtitle || '') + ' · Global Readings 2 • Unit 1 (pp. 8–23)</p>' +
+                  '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;">' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(205,127,50,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Bronze Vault (30 XP):</strong><br><span style="color:#94a3b8;">Clara Inventions, cl- Phonics</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(148,163,184,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Silver Vault (40 XP):</strong><br><span style="color:#94a3b8;">4-Step Timeline, Da Vinci, Edison, Benz</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(245,158,11,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Gold Vault (30 XP):</strong><br><span style="color:#94a3b8;">Biomimicry, Problem &amp; Solution</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(56,189,248,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>💎 Diamond Boss (20 XP):</strong><br><span style="color:#94a3b8;">Blueprint Canvas &amp; Pitch</span></div>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
+                  '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+                    '<a href="quiz-briefing/index.html#g3" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
+                    '<a href="quiz-briefing/index.html#g3-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #38bdf8; color:#38bdf8;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
+                    '<a href="quiz-briefing/index.html#g3-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">📝 Vault Quiz &amp; Answer Keys</a>' +
+                  '</div>' +
+                  '<div style="display:flex; gap:6px;">' +
+                    '<a href="quiz-briefing/assets/unit1-inventor-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">📄 Page 1</a>' +
+                    '<a href="quiz-briefing/assets/unit1-inventor-page2.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 2">📄 Page 2</a>' +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+          }
 
-          if (isMasterQuest) {
+          if (q.id === 'quiz-unit1-wonderland-brain') {
             return '' +
               '<div style="background:linear-gradient(145deg, rgba(30, 27, 75, 0.95), rgba(15, 23, 42, 0.98)); border:2px solid #f59e0b; border-radius:18px; padding:22px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 12px 36px rgba(0,0,0,0.6); grid-column: 1 / -1; margin-bottom:12px;">' +
                 '<div>' +
                   '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
                     '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
-                      '<span style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">⭐ UNIT 1 MASTER QUEST</span>' +
+                      '<span style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">⭐ GRADE 4 UNIT 1 MASTER QUEST</span>' +
                       '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 4 • 25 MINS</span>' +
                       '<span style="background:rgba(16, 185, 129, 0.15); color:#34d399; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">100 BASE + 20 BONUS XP</span>' +
                       '<span style="background:rgba(168, 85, 247, 0.15); color:#d8b4fe; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">4 VAULTS</span>' +
@@ -6928,9 +6962,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-                    '<a href="quiz-briefing/index.html" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
-                    '<a href="quiz-briefing/index.html#ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
-                    '<a href="quiz-briefing/index.html#quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">📝 Vault Quiz &amp; Answer Keys</a>' +
+                    '<a href="quiz-briefing/index.html#g4" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
+                    '<a href="quiz-briefing/index.html#g4-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
+                    '<a href="quiz-briefing/index.html#g4-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">📝 Vault Quiz &amp; Answer Keys</a>' +
                   '</div>' +
                   '<div style="display:flex; gap:6px;">' +
                     '<a href="quiz-briefing/assets/unit1-vault-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">📄 Page 1</a>' +
