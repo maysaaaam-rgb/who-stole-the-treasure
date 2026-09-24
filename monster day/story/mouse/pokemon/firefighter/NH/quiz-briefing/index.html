@@ -2011,10 +2011,23 @@
             ];
           } else {
             students = [
-              { id: 1, name: "Alice King", avatar: "👧", checkedIn: true, bronze: 30, silver: 40, gold: 30, diamond: 20, totalXP: 120, role: "Alice (Lead Adventurer)" },
-              { id: 2, name: "Leo Miller", avatar: "🎩", checkedIn: true, bronze: 30, silver: 35, gold: 30, diamond: 18, totalXP: 113, role: "The Mad Hatter (Tea Master)" },
-              { id: 3, name: "Maya Chen", avatar: "🐰", checkedIn: true, bronze: 30, silver: 40, gold: 25, diamond: 15, totalXP: 110, role: "The White Rabbit (Time Keeper)" },
-              { id: 4, name: "Sam Wilson", avatar: "🐱", checkedIn: true, bronze: 28, silver: 35, gold: 28, diamond: 15, totalXP: 106, role: "The Cheshire Cat (Riddle Purr)" }
+              { id: "s1", name: "İpek İlhan", avatar: "👧", checkedIn: true, bronze: 30, silver: 40, gold: 30, diamond: 20, totalXP: 120, role: "The Mad Hatter" },
+              { id: "s2", name: "Bahriye Ada Güler", avatar: "👧", checkedIn: true, bronze: 30, silver: 35, gold: 30, diamond: 18, totalXP: 113, role: "Alice Kingsleigh" },
+              { id: "s3", name: "Ahmet Mete İnal", avatar: "👦", checkedIn: true, bronze: 30, silver: 40, gold: 25, diamond: 15, totalXP: 110, role: "The Cheshire Cat" },
+              { id: "s4", name: "Şimal Koyun", avatar: "👧", checkedIn: true, bronze: 28, silver: 35, gold: 28, diamond: 15, totalXP: 106, role: "The White Rabbit" },
+              { id: "s5", name: "Kemal Tahsin Demirtaş", avatar: "👦", checkedIn: true, bronze: 30, silver: 30, gold: 25, diamond: 15, totalXP: 100, role: "The March Hare" },
+              { id: "s6", name: "Melik Emir Başara", avatar: "👦", checkedIn: true, bronze: 25, silver: 35, gold: 25, diamond: 15, totalXP: 100, role: "The Dormouse" },
+              { id: "s7", name: "Rüzgar Dener", avatar: "👦", checkedIn: true, bronze: 30, silver: 30, gold: 25, diamond: 10, totalXP: 95, role: "The Caterpillar" },
+              { id: "s8", name: "Sühan Bilbey", avatar: "👧", checkedIn: true, bronze: 25, silver: 35, gold: 25, diamond: 10, totalXP: 95, role: "Tweedledum" },
+              { id: "s9", name: "Ozan Topçu", avatar: "👦", checkedIn: true, bronze: 30, silver: 25, gold: 25, diamond: 10, totalXP: 90, role: "Tweedledee" },
+              { id: "s10", name: "Zeynep Derin Kılıç", avatar: "👧", checkedIn: true, bronze: 25, silver: 30, gold: 20, diamond: 10, totalXP: 85, role: "The Knave of Hearts" },
+              { id: "s11", name: "Ali İhsan Bıçakçı", avatar: "👦", checkedIn: true, bronze: 25, silver: 25, gold: 20, diamond: 10, totalXP: 80, role: "The Dodo" },
+              { id: "s12", name: "Derin Küçük", avatar: "👧", checkedIn: true, bronze: 25, silver: 25, gold: 15, diamond: 10, totalXP: 75, role: "The Bandersnatch" },
+              { id: "s13", name: "Egehan Tekin", avatar: "👦", checkedIn: true, bronze: 30, silver: 35, gold: 25, diamond: 10, totalXP: 100, role: "The White Queen" },
+              { id: "s14", name: "Elif Asya Durmaz", avatar: "👧", checkedIn: true, bronze: 20, silver: 25, gold: 15, diamond: 10, totalXP: 70, role: "The Red Queen" },
+              { id: "s15", name: "Emir Ali Gökalp", avatar: "👦", checkedIn: true, bronze: 20, silver: 20, gold: 15, diamond: 10, totalXP: 65, role: "Bayard the Bloodhound" },
+              { id: "s16", name: "Emir Ertem", avatar: "👦", checkedIn: true, bronze: 20, silver: 20, gold: 10, diamond: 10, totalXP: 60, role: "Royal Card Soldier" },
+              { id: "s17", name: "İclal Gökalp", avatar: "👧", checkedIn: true, bronze: 20, silver: 25, gold: 15, diamond: 10, totalXP: 70, role: "Underland Teapot Master" }
             ];
           }
           saveStudents();
@@ -2199,10 +2212,13 @@
     }
 
     // -------------------------------------------------------------
-    // 8. Rapid Worksheet Grading Modal Engine
+    // 8. Worksheet Task Grading Engine
     // -------------------------------------------------------------
-    let currentGradingStudentId = null;
-    let currentGraderScores = {
+    let currentStudentIndex = 0;
+    let classRoster = [];
+
+    // Individual Task Score State for the currently selected student
+    let activeWorksheetScores = {
       t1: 10,
       t2: 10,
       t3: 10,
@@ -2211,19 +2227,42 @@
       t6: 15,
       t7: 15,
       t8_base: 10,
-      t8_bonus: 10
+      t8_bonus: 20
     };
 
     function playClickSound() {
       playTone(580, 'sine', 0.04, 0.08);
     }
 
-    function populateGraderStudentDropdown() {
-      const select = document.getElementById('grader-student-dropdown');
-      if (!select) return;
-      select.innerHTML = students.map(s => `
-        <option value="${s.id}">${s.avatar || '👤'} ${s.name} (${s.totalXP || 0} XP)</option>
-      `).join('');
+    function playCoinChime() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(987.77, now);
+        gain1.gain.setValueAtTime(0.2, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(1318.51, now + 0.08);
+        gain2.gain.setValueAtTime(0.25, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.45);
+      } catch (e) {
+        if (typeof playXpChime === "function") playXpChime();
+      }
     }
 
     function populateGraderDraftRoles() {
@@ -2241,201 +2280,226 @@
         roles.map((r, i) => `<option value="${r}">${String(i+1).padStart(2, '0')} • ${r}</option>`).join('');
     }
 
-    function openGraderModal(studentId) {
-      const modal = document.getElementById('worksheet-grading-modal');
-      if (!modal) return;
+    // 1. Initialize Grader with Class Roster
+    function openWorksheetGraderModal() {
+      // Pull active roster from platform state or fallback
+      classRoster = (window.AdventureAcademy && window.AdventureAcademy.getActiveStudents) 
+        ? window.AdventureAcademy.getActiveStudents() 
+        : (students && students.length > 0 ? students : [
+            { id: "s1", name: "İpek İlhan", xp: 170 },
+            { id: "s2", name: "Bahriye Ada Güler", xp: 160 },
+            { id: "s3", name: "Ahmet Mete İnal", xp: 150 },
+            { id: "s4", name: "Şimal Koyun", xp: 120 }
+          ]);
 
-      if (!students || students.length === 0) {
-        seedSampleStudents();
+      const dropdown = document.getElementById("grader-student-dropdown");
+      if (dropdown) {
+        dropdown.innerHTML = classRoster.map((s, idx) => 
+          `<option value="${idx}">${s.name} (${s.xp || s.totalXP || 0} XP)</option>`
+        ).join("");
       }
 
-      populateGraderStudentDropdown();
       populateGraderDraftRoles();
 
-      const targetId = studentId || (students[0] ? students[0].id : null);
-      if (targetId) {
-        loadStudentGradeSheet(targetId);
-      }
-      modal.style.display = 'flex';
+      const modal = document.getElementById("worksheet-grading-modal");
+      if (modal) modal.style.display = "flex";
+      loadStudentGradeSheet(0);
       playStartChime();
     }
 
-    function closeGraderModal() {
-      const modal = document.getElementById('worksheet-grading-modal');
-      if (modal) modal.style.display = 'none';
+    // Alias for compatibility
+    function openGraderModal(indexOrId) {
+      openWorksheetGraderModal();
+      if (indexOrId !== undefined && indexOrId !== null) {
+        let targetIdx = 0;
+        if (typeof indexOrId === 'number' && indexOrId < classRoster.length) {
+          targetIdx = indexOrId;
+        } else {
+          const found = classRoster.findIndex(s => s.id == indexOrId || s.name === indexOrId);
+          if (found >= 0) targetIdx = found;
+        }
+        loadStudentGradeSheet(targetIdx);
+      }
     }
 
-    function loadStudentGradeSheet(studentId) {
-      const id = parseInt(studentId) || studentId;
-      const student = students.find(s => s.id == id);
-      if (!student) return;
+    function closeGraderModal() {
+      const modal = document.getElementById("worksheet-grading-modal");
+      if (modal) modal.style.display = "none";
+    }
 
-      currentGradingStudentId = student.id;
-
-      // Update dropdown
-      const select = document.getElementById('grader-student-dropdown');
-      if (select) select.value = student.id;
-
-      // Update role
-      const roleSelect = document.getElementById('grader-draft-role');
-      if (roleSelect) roleSelect.value = student.role || '';
-
-      // Load tasks or default from student's existing breakdown
-      if (student.tasks) {
-        currentGraderScores = { ...student.tasks };
+    // 2. Load Student & Reset Task Chips to Full Default
+    function loadStudentGradeSheet(index) {
+      currentStudentIndex = parseInt(index, 10);
+      const dropdown = document.getElementById("grader-student-dropdown");
+      if (dropdown) dropdown.value = currentStudentIndex;
+      
+      const student = classRoster[currentStudentIndex];
+      const roleElem = document.getElementById("grader-draft-role");
+      if (roleElem) {
+        roleElem.value = (student && (student.claimedDraftRole || student.role)) ? (student.claimedDraftRole || student.role) : "";
+      }
+      
+      // Default all tasks to full points (optimistic grading)
+      if (student && student.taskBreakdown) {
+        activeWorksheetScores = { ...student.taskBreakdown };
+      } else if (student && student.tasks) {
+        activeWorksheetScores = { ...student.tasks };
       } else {
-        const b = student.bronze !== undefined ? student.bronze : 30;
-        const s = student.silver !== undefined ? student.silver : 40;
-        const g = student.gold !== undefined ? student.gold : 30;
-        const d = student.diamond !== undefined ? student.diamond : 20;
-
-        currentGraderScores = {
-          t1: b >= 10 ? 10 : (b >= 5 ? 5 : 0),
-          t2: b >= 20 ? 10 : (b >= 15 ? 5 : 0),
-          t3: b >= 30 ? 10 : (b >= 25 ? 5 : 0),
-          t4: s >= 20 ? 20 : (s >= 10 ? 10 : 0),
-          t5: s >= 40 ? 20 : (s >= 30 ? 10 : 0),
-          t6: g >= 15 ? 15 : (g >= 8 ? 8 : 0),
-          t7: g >= 30 ? 15 : (g >= 23 ? 8 : 0),
-          t8_base: d >= 10 ? 10 : (d >= 5 ? 5 : 0),
-          t8_bonus: d >= 20 ? 10 : 0
+        activeWorksheetScores = {
+          t1: 10, t2: 10, t3: 10, t4: 20, t5: 20, t6: 15, t7: 15, t8_base: 10, t8_bonus: 20
         };
       }
-
-      syncGraderChipsUI();
-      recalculateGraderTotal();
+      refreshChipUI();
+      updateTotalXPDisplay();
     }
 
-    function syncGraderChipsUI() {
-      document.querySelectorAll('.grader-task-grid .task-row').forEach(row => {
-        const taskId = row.getAttribute('data-task-id');
-        const score = currentGraderScores[taskId] !== undefined ? currentGraderScores[taskId] : 0;
-        const chips = row.querySelectorAll('.xp-chip');
+    // 3. Task Chip Selection Handler
+    function setTaskScore(taskId, points, buttonElem) {
+      activeWorksheetScores[taskId] = parseInt(points, 10);
+
+      // Update UI chip active state
+      const parent = buttonElem ? buttonElem.closest(".xp-toggle-group") : null;
+      if (parent) {
+        parent.querySelectorAll(".xp-chip").forEach(chip => chip.classList.remove("active"));
+        buttonElem.classList.add("active");
+      }
+
+      updateTotalXPDisplay();
+      playClickSound();
+    }
+
+    function updateTotalXPDisplay() {
+      const total = Object.values(activeWorksheetScores).reduce((acc, curr) => acc + curr, 0);
+      const displayElem = document.getElementById("grader-total-xp");
+      if (displayElem) displayElem.innerText = total;
+    }
+
+    function refreshChipUI() {
+      Object.keys(activeWorksheetScores).forEach(taskId => {
+        const row = document.querySelector(`.task-row[data-task-id="${taskId}"]`);
+        if (!row) return;
+        const chips = row.querySelectorAll(".xp-chip");
         chips.forEach(chip => {
-          const chipScore = parseInt(chip.textContent.replace(/[^0-9]/g, '')) || 0;
-          if (chipScore === score) {
-            chip.classList.add('active');
-          } else {
-            chip.classList.remove('active');
-          }
+          chip.classList.toggle("active", parseInt(chip.innerText, 10) === activeWorksheetScores[taskId]);
         });
       });
     }
 
-    function setTaskScore(taskId, score, chipElement) {
-      currentGraderScores[taskId] = score;
-
-      if (chipElement && chipElement.parentElement) {
-        chipElement.parentElement.querySelectorAll('.xp-chip').forEach(c => c.classList.remove('active'));
-        chipElement.classList.add('active');
-      }
-
-      recalculateGraderTotal();
-      playClickSound();
-    }
-
-    function recalculateGraderTotal() {
-      const t1 = currentGraderScores.t1 || 0;
-      const t2 = currentGraderScores.t2 || 0;
-      const t3 = currentGraderScores.t3 || 0;
-      const t4 = currentGraderScores.t4 || 0;
-      const t5 = currentGraderScores.t5 || 0;
-      const t6 = currentGraderScores.t6 || 0;
-      const t7 = currentGraderScores.t7 || 0;
-      const t8_base = currentGraderScores.t8_base || 0;
-      const t8_bonus = currentGraderScores.t8_bonus || 0;
-
-      const bronze = t1 + t2 + t3;
-      const silver = t4 + t5;
-      const gold = t6 + t7;
-      const diamond = Math.min(20, t8_base + t8_bonus);
-      const total = Math.min(120, bronze + silver + gold + diamond);
-
-      const display = document.getElementById('grader-total-xp');
-      if (display) {
-        display.innerText = total;
-      }
-      return { bronze, silver, gold, diamond, total };
-    }
-
-    function prevStudent() {
-      if (students.length === 0) return;
-      const idx = students.findIndex(s => s.id == currentGradingStudentId);
-      const prevIdx = idx > 0 ? idx - 1 : students.length - 1;
-      loadStudentGradeSheet(students[prevIdx].id);
-      playClickSound();
-    }
-
-    function nextStudent() {
-      if (students.length === 0) return;
-      const idx = students.findIndex(s => s.id == currentGradingStudentId);
-      const nextIdx = idx < students.length - 1 ? idx + 1 : 0;
-      loadStudentGradeSheet(students[nextIdx].id);
-      playClickSound();
-    }
-
     function resetCurrentScores() {
-      Object.keys(currentGraderScores).forEach(k => currentGraderScores[k] = 0);
-      syncGraderChipsUI();
-      recalculateGraderTotal();
-      const roleSelect = document.getElementById('grader-draft-role');
-      if (roleSelect) roleSelect.value = '';
+      activeWorksheetScores = {
+        t1: 0, t2: 0, t3: 0, t4: 0, t5: 0, t6: 0, t7: 0, t8_base: 0, t8_bonus: 0
+      };
+      refreshChipUI();
+      updateTotalXPDisplay();
+      const roleElem = document.getElementById("grader-draft-role");
+      if (roleElem) roleElem.value = "";
       playClickSound();
     }
 
+    // 4. Save Score, Write to XP Ledger, Trigger Audio, and Advance
     function saveAndNextStudent() {
-      if (!currentGradingStudentId) return;
-      const student = students.find(s => s.id == currentGradingStudentId);
+      const student = classRoster[currentStudentIndex];
       if (!student) return;
 
-      const { bronze, silver, gold, diamond, total } = recalculateGraderTotal();
-      student.bronze = bronze;
-      student.silver = silver;
-      student.gold = gold;
-      student.diamond = diamond;
-      student.totalXP = total;
-      student.tasks = { ...currentGraderScores };
-      student.checkedIn = true;
+      const totalEarnedXP = Object.values(activeWorksheetScores).reduce((acc, curr) => acc + curr, 0);
+      const chosenCharacter = document.getElementById("grader-draft-role").value || "Pending Draft";
 
-      const roleSelect = document.getElementById('grader-draft-role');
-      if (roleSelect && roleSelect.value) {
-        student.role = roleSelect.value;
+      // A. Award to Platform XP Ledger
+      if (window.AdventureAcademy && window.AdventureAcademy.awardXP) {
+        window.AdventureAcademy.awardXP({
+          studentId: student.id,
+          amount: totalEarnedXP,
+          source: `Worksheet: Unit 1 Master Quest (${totalEarnedXP} XP)`,
+          metadata: {
+            taskBreakdown: { ...activeWorksheetScores },
+            claimedDraftRole: chosenCharacter
+          },
+          timestamp: new Date().toISOString()
+        });
       }
 
+      // Sync local roster state
+      student.xp = (student.xp || 0) + totalEarnedXP;
+      student.totalXP = totalEarnedXP;
+      student.claimedDraftRole = chosenCharacter;
+      student.role = chosenCharacter;
+      student.taskBreakdown = { ...activeWorksheetScores };
+      student.tasks = { ...activeWorksheetScores };
+
+      const b = (activeWorksheetScores.t1 || 0) + (activeWorksheetScores.t2 || 0) + (activeWorksheetScores.t3 || 0);
+      const s = (activeWorksheetScores.t4 || 0) + (activeWorksheetScores.t5 || 0);
+      const g = (activeWorksheetScores.t6 || 0) + (activeWorksheetScores.t7 || 0);
+      const d = Math.min(20, (activeWorksheetScores.t8_base || 0) + (activeWorksheetScores.t8_bonus || 0));
+
+      const existingIdx = students.findIndex(st => st.id == student.id || st.name.toLowerCase() === student.name.toLowerCase());
+      if (existingIdx >= 0) {
+        students[existingIdx].bronze = b;
+        students[existingIdx].silver = s;
+        students[existingIdx].gold = g;
+        students[existingIdx].diamond = d;
+        students[existingIdx].totalXP = totalEarnedXP;
+        students[existingIdx].role = chosenCharacter;
+        students[existingIdx].checkedIn = true;
+      } else {
+        students.push({
+          id: student.id,
+          name: student.name,
+          avatar: student.avatar || "👧",
+          checkedIn: true,
+          bronze: b,
+          silver: s,
+          gold: g,
+          diamond: d,
+          totalXP: totalEarnedXP,
+          role: chosenCharacter
+        });
+      }
       saveStudents();
       renderRoster();
-      populateGraderStudentDropdown();
 
-      // Audio & UI Celebration
-      playXpChime();
+      // Refresh dropdown option label with updated XP
+      const dropdown = document.getElementById("grader-student-dropdown");
+      if (dropdown && dropdown.options[currentStudentIndex]) {
+        dropdown.options[currentStudentIndex].innerText = `${student.name} (${student.xp || student.totalXP} XP)`;
+      }
 
-      // Advance to next student
-      const idx = students.findIndex(s => s.id == currentGradingStudentId);
-      if (idx < students.length - 1) {
-        loadStudentGradeSheet(students[idx + 1].id);
+      // B. Trigger Web Audio Coin & Fanfare Chime
+      if (typeof playCoinChime === "function") {
+        playCoinChime();
+      }
+
+      // C. Advance to next student in the stack
+      if (currentStudentIndex < classRoster.length - 1) {
+        loadStudentGradeSheet(currentStudentIndex + 1);
       } else {
-        // All students audited!
-        playFinishFanfare();
-        alert(`🎉 All ${students.length} students audited! Roster XP and Priority Leaderboard have been updated.`);
+        alert("🎉 All 17 students graded! Leaderboard is ready for the Mad Tea Party Draft!");
+        closeGraderModal();
       }
     }
 
-    // Keyboard Shortcuts for Rapid Grading
-    document.addEventListener('keydown', (e) => {
-      const modal = document.getElementById('worksheet-grading-modal');
-      if (!modal || modal.style.display === 'none') return;
-
-      if (e.key === 'Escape') {
-        closeGraderModal();
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        saveAndNextStudent();
-      } else if (e.key === 'ArrowLeft' && e.target.tagName !== 'SELECT' && e.target.tagName !== 'INPUT') {
-        prevStudent();
-      } else if (e.key === 'ArrowRight' && e.target.tagName !== 'SELECT' && e.target.tagName !== 'INPUT') {
-        nextStudent();
+    // Keyboard shortcuts for rapid grading (Enter = Save & Next)
+    window.addEventListener("keydown", (e) => {
+      const modal = document.getElementById("worksheet-grading-modal");
+      if (modal && modal.style.display !== "none") {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          saveAndNextStudent();
+        } else if (e.key === "Escape") {
+          closeGraderModal();
+        } else if (e.key === "ArrowLeft" && e.target.tagName !== "SELECT" && e.target.tagName !== "INPUT") {
+          prevStudent();
+        } else if (e.key === "ArrowRight" && e.target.tagName !== "SELECT" && e.target.tagName !== "INPUT") {
+          nextStudent();
+        }
       }
     });
+
+    function nextStudent() {
+      if (currentStudentIndex < classRoster.length - 1) loadStudentGradeSheet(currentStudentIndex + 1);
+    }
+    function prevStudent() {
+      if (currentStudentIndex > 0) loadStudentGradeSheet(currentStudentIndex - 1);
+    }
 
     // 9. Hash-Based Deep Link Navigation & Initialization
     function handleHashNavigation() {
