@@ -230,7 +230,7 @@
       console.warn('[AdventureAcademy.awardXP] Invalid payload:', payload);
       return null;
     }
-    const store = root.store;
+    const store = root.store || root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
     if (!store || typeof store.giveXP !== 'function') {
       console.warn('[AdventureAcademy.awardXP] Platform store is not ready.');
       return null;
