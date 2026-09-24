@@ -44,6 +44,33 @@ const GAMES_REGISTRY = [
     "status": "ready"
   },
   {
+    "id": "quiz-g3-u1-after-school-inventor",
+    "aliases": [
+      "inventor-quiz",
+      "after-school-inventor",
+      "grade3-unit1-quiz",
+      "inventor-briefing",
+      "clara-doodle-quiz"
+    ],
+    "title": "🛠️ Unit 1 Master Quest: The After-School Inventor",
+    "subtitle": "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+    "description": "Smartboard mission briefing, 4-step inventor timeline, famous inventors console (Da Vinci, Edison, Karl Benz), biomimicry clues, and Young Inventor blueprint grading ledger.",
+    "type": "tool",
+    "category": "Classroom Tools",
+    "categoryGroup": "Classroom Management & Timers",
+    "categoryLabel": "⏱️ Briefing & Timer",
+    "level": "Grade 3",
+    "duration": 25,
+    "durationText": "25 min",
+    "xp": 120,
+    "route": "quiz-briefing/index.html#g3",
+    "url": "quiz-briefing/index.html#g3",
+    "path": "quiz-briefing/index.html",
+    "thumbnailIcon": "🛠️",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0f2744 50%, #38bdf8 100%)",
+    "status": "ready"
+  },
+  {
     "id": "sound-detective",
     "aliases": [
       "sound",
