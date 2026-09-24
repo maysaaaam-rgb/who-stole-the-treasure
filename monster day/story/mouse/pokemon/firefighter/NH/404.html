@@ -148,7 +148,10 @@
       let targetUrl = null;
       let targetName = '';
 
-      if (pathname.includes('wonderland-story') || pathname.includes('we-are-the-story') || pathname.includes('lesson3') || pathname.includes('lesson-3')) {
+      if (pathname.includes('quiz-briefing') || pathname.includes('briefing') || pathname.includes('master-quest') || pathname.includes('pre-quiz')) {
+        targetUrl = basePrefix + 'quiz-briefing/index.html';
+        targetName = 'Unit 1 Master Quest: Briefing & Timer HUD';
+      } else if (pathname.includes('wonderland-story') || pathname.includes('we-are-the-story') || pathname.includes('lesson3') || pathname.includes('lesson-3')) {
         targetUrl = basePrefix + 'wonderland-story/index.html';
         targetName = 'We Are the Wonderland Story (Lesson 3)';
       } else if (pathname.includes('time-machine') || pathname.includes('lesson2') || pathname.includes('lesson-2')) {

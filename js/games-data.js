@@ -18,6 +18,32 @@
 
 const GAMES_REGISTRY = [
   {
+    "id": "wonderland-quiz-briefing",
+    "aliases": [
+      "quiz-briefing",
+      "wonderland-briefing",
+      "master-quest-briefing",
+      "unit-1-quiz",
+      "pre-quiz-hud"
+    ],
+    "title": "🍄 Unit 1 Master Quest: Briefing & Timer HUD",
+    "description": "Smartboard mission briefing, teleprompter rules, 25-minute timer with Web Audio cues, interactive 4-vault quiz with answer key, student check-in, and Wonderland Character Draft prize ledger.",
+    "type": "tool",
+    "category": "Classroom Tools",
+    "categoryGroup": "Classroom Management & Timers",
+    "categoryLabel": "⏱️ Briefing & Timer",
+    "level": "Grade 4",
+    "duration": 25,
+    "durationText": "25 min",
+    "xp": 120,
+    "route": "quiz-briefing/index.html",
+    "url": "quiz-briefing/index.html",
+    "path": "quiz-briefing/index.html",
+    "thumbnailIcon": "🍄",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "status": "ready"
+  },
+  {
     "id": "sound-detective",
     "aliases": [
       "sound",
