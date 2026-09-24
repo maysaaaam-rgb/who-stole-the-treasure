@@ -6888,6 +6888,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const quizzes = store.getQuizzes();
 
     container.innerHTML = 
+      '<div id="quizzes-section">' +
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Diagnostic Quizzes &amp; Tests</h1>' +
@@ -6926,6 +6927,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">📝 Check Worksheets (One-by-One)</button>' +
                     '<a href="quiz-briefing/index.html#g3" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
                     '<a href="quiz-briefing/index.html#g3-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">⚡ Rapid 8-Task Grader</a>' +
                     '<a href="quiz-briefing/index.html#g3-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #38bdf8; color:#38bdf8;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
@@ -6963,6 +6965,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">📝 Check Worksheets (One-by-One)</button>' +
                     '<a href="quiz-briefing/index.html#g4" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
                     '<a href="quiz-briefing/index.html#g4-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">⚡ Rapid 8-Task Grader</a>' +
                     '<a href="quiz-briefing/index.html#g4-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
@@ -6997,6 +7000,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
             '</div>';
         }).join('') +
+      '</div>' +
       '</div>';
   }
 
