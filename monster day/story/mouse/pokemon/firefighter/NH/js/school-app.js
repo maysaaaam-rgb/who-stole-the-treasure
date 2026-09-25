@@ -1109,6 +1109,9 @@
       ? (profile.monsterName || profile.element).toLowerCase().replace(/\s+/g, '')
       : (element === 'ember' ? 'emberwing' : 'monster');
 
+    const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+    const archetypeClass = 'archetype-' + archetype;
+
     let avatarMarkup = '';
     const customImg = options.image || s.monsterAvatar;
     if (customImg) {
@@ -1118,6 +1121,8 @@
         stage: mState.stageKey || 'baby',
         color: (profile && profile.baseColor) || 'blue',
         equipped: (profile && profile.equipped) || {},
+        archetype: archetype,
+        studentId: studentId,
         size: 120,
         animated: true,
         isAvatar: true
@@ -1127,16 +1132,17 @@
       avatarMarkup = '<img src="' + assetUrl + '" class="monster-avatar" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
     }
 
-    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, ''));
+    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
     const streak = s.streakDays || 0;
 
     return '' +
-      '<div class="student-card ' + elementClass + '" data-student-id="' + studentId + '">' +
+      '<div class="student-card ' + elementClass + ' ' + archetypeClass + '" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
         // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
         '<div class="card-overlay-top">' +
           '<div class="card-overlay-left">' +
             '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
             '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+            '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
           '</div>' +
           '<div class="card-overlay-right">' +
             '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -1170,12 +1176,11 @@
             '<h3 class="student-name">' + studentName + '</h3>' +
             '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + '</span>' +
           '</div>' +
-          '<p class="student-grade">' + gradeLabel + '</p>' +
           '<div class="student-xp-progress-bar" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
             '<div class="student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%;"></div>' +
           '</div>' +
           '<div class="student-card-action-bar">' +
-            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
+            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
               '⚡ +10 XP' +
             '</button>' +
           '</div>' +
@@ -3086,6 +3091,8 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
+              const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+              const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
               let avatarMarkup = '';
@@ -3096,6 +3103,8 @@
                   stage: (mState && mState.stageKey) ? mState.stageKey : 'baby',
                   color: (mState && mState.profile) ? mState.profile.baseColor : 'blue',
                   equipped: (mState && mState.profile) ? mState.profile.equipped : {},
+                  archetype: archetype,
+                  studentId: s.id,
                   size: 120,
                   animated: true,
                   isAvatar: true
@@ -3105,7 +3114,7 @@
               }
 
               return '' +
-                '<div class="student-directory-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
+                '<div class="student-directory-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
                   '<div class="card-overlay-top">' +
                     '<div class="card-overlay-left">' +
@@ -3114,6 +3123,7 @@
                       ) +
                       '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
                       '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                      '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
                     '</div>' +
                     '<div class="card-overlay-right">' +
                       '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3138,7 +3148,7 @@
                       avatarMarkup +
                     '</div>' +
                     '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3147,7 +3157,6 @@
                       '<h3 class="student-name">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
                       '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
                     '</div>' +
-                    '<p class="student-grade">' + (cls ? cls.name : 'Unenrolled') + ' · ' + (s.grade || 'Grade 4') + '</p>' +
                     '<div class="student-xp-progress-bar" title="Evolution Progress: ' + progressPct + '%">' +
                       '<div class="student-xp-progress-fill" style="width:' + progressPct + '%;"></div>' +
                     '</div>' +
@@ -3160,7 +3169,7 @@
 
                     // Dominant Tactile 3D Action Button (+10 XP)
                     '<div class="student-card-action-bar">' +
-                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                         '⚡ +10 XP' +
                       '</button>' +
                     '</div>' +
@@ -3483,6 +3492,8 @@
         else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
         else elementKey = 'aqua';
       }
+      const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+      const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
 
       let avatarMarkup = '';
@@ -3493,6 +3504,8 @@
           stage: (monsterState && monsterState.stageKey) ? monsterState.stageKey : 'baby',
           color: (monsterState && monsterState.profile) ? monsterState.profile.baseColor : 'blue',
           equipped: (monsterState && monsterState.profile) ? monsterState.profile.equipped : {},
+          archetype: archetype,
+          studentId: s.id,
           size: 120,
           animated: true,
           isAvatar: true
@@ -3502,7 +3515,7 @@
       }
 
       return '' +
-        '<div class="classroom-student-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+        '<div class="classroom-student-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
           '<div class="card-overlay-top">' +
             '<div class="card-overlay-left">' +
@@ -3511,6 +3524,7 @@
               ) +
               '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
               '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+              '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
             '</div>' +
             '<div class="card-overlay-right">' +
               '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3535,7 +3549,7 @@
               avatarMarkup +
             '</div>' +
             '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3544,7 +3558,6 @@
               '<h3 class="student-name">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
               '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
             '</div>' +
-            '<p class="student-grade">' + (s.grade || cls.name || 'Grade 4') + '</p>' +
             '<div class="student-xp-progress-bar" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
               '<div class="student-xp-progress-fill" style="width:' + monsterState.progressPct + '%;"></div>' +
             '</div>' +
@@ -3554,7 +3567,7 @@
 
             // Dominant Tactile 3D Action Button (+10 XP)
             '<div class="student-card-action-bar">' +
-              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                 '⚡ +10 XP' +
               '</button>' +
             '</div>' +
@@ -3644,7 +3657,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const today = new Date().toISOString().split('T')[0];
     const attRecords = store.getAttendanceRecords(cls.id);
     const todayAttCount = attRecords.filter(r => r.date === today).length;
-    const attStatusText = todayAttCount > 0 ? 'Completed today (' + todayAttCount + ' logged)' : 'Roll call needed today';
+    const isAttCompleted = todayAttCount > 0;
 
     return '' +
       '<div class="dashboard-hero-grid">' +
@@ -3654,31 +3667,43 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
           '</h3>' +
           '<div class="hero-tiles-grid">' +
-            '<div class="hero-tile-card">' +
+            // Rich Preview Tile with Visual Depth for Next Lesson
+            '<div class="hero-tile-card next-lesson-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Next Lesson</div>' +
+                '<div class="hero-tile-tag"><span>🚀</span> Next Lesson</div>' +
                 '<div class="hero-tile-heading">Fire Station Adventure</div>' +
-                '<div class="hero-tile-sub">A1+ • Emergency & Jobs Vocabulary</div>' +
+                '<div class="hero-tile-sub">A1+ • Emergency &amp; Jobs Vocabulary</div>' +
               '</div>' +
-              '<a href="firefighter/index.html" class="btn-3d btn-3d-primary" style="padding:6px 14px; font-size:0.78rem; text-decoration:none; display:inline-flex; width:fit-content; border-radius:9px;">▶ Start Lesson</a>' +
+              '<a href="firefighter/index.html" class="btn-launch-lesson">' +
+                '<span>▶</span> <span>Start Lesson</span>' +
+              '</a>' +
             '</div>' +
 
-            '<div class="hero-tile-card">' +
+            // Interactive Quick-Action Roll Call Card with Status Chips
+            '<div class="hero-tile-card roll-call-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Active Assignment</div>' +
+                '<div class="hero-tile-tag"><span>📋</span> Roll Call &amp; Attendance</div>' +
+                '<div class="hero-tile-heading">Daily Roll Call</div>' +
+                '<div class="hero-tile-sub">Roster verification for ' + students.length + ' enrolled learners</div>' +
+                (isAttCompleted ? 
+                  '<span class="roll-call-chip chip-completed">✓ Live attendance (' + todayAttCount + ' Logged)</span>' : 
+                  '<span class="roll-call-chip chip-pending">⏱️ Roll call needed today</span>'
+                ) +
+              '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">' +
+                '📋 ' + (isAttCompleted ? 'Edit Roll Call' : 'Open Roll Call') +
+              '</button>' +
+            '</div>' +
+
+            // Active Assignment Card
+            '<div class="hero-tile-card assignment-tile">' +
+              '<div>' +
+                '<div class="hero-tile-tag"><span>📝</span> Active Assignment</div>' +
                 '<div class="hero-tile-heading">My Town Prepositions</div>' +
                 '<div class="hero-tile-sub">' + students.length + ' Learners Assigned · Due Friday</div>' +
+                '<span class="roll-call-chip chip-pending" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;">⏳ In Progress</span>' +
               '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">View Submissions</button>' +
-            '</div>' +
-
-            '<div class="hero-tile-card">' +
-              '<div>' +
-                '<div class="hero-tile-tag">Attendance Status</div>' +
-                '<div class="hero-tile-heading">' + attStatusText + '</div>' +
-                '<div class="hero-tile-sub">Daily Roll Call &amp; Verification</div>' +
-              '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openFastAttendanceModal()" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">📋 Open Roll Call</button>' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">View Submissions</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -3689,17 +3714,34 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>⚠️</span> <span>Needs Attention</span>' +
           '</h3>' +
           '<div class="needs-attention-list">' +
-            '<div class="needs-attention-item needs-ruby">' +
-              '<div class="needs-icon-badge">🗣️</div>' +
-              '<div><strong>Speaking Practice:</strong> 2 learners need targeted pronunciation focus</div>' +
+            // Speaking Practice: Ruby/Red icon badge with action link
+            '<div class="needs-attention-card alert-ruby">' +
+              '<div class="needs-status-badge badge-ruby">🗣️ Speaking Focus</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Targeted Pronunciation</div>' +
+                '<div class="needs-desc">2 learners need targeted pronunciation focus on phonics pairs.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-ruby" onclick="openClass(\'' + cls.id + '\', \'progress\'); return false;">Practice ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-amber">' +
-              '<div class="needs-icon-badge">✍️</div>' +
-              '<div><strong>Homework Review:</strong> 1 workbook submission ready for feedback</div>' +
+
+            // Homework Review: Amber icon badge
+            '<div class="needs-attention-card alert-amber">' +
+              '<div class="needs-status-badge badge-amber">📝 1 Awaiting Review</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Workbook Submission</div>' +
+                '<div class="needs-desc">1 workbook submission ready for feedback and grading.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-amber" onclick="openClass(\'' + cls.id + '\', \'assignments\'); return false;">Review ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-cyan">' +
-              '<div class="needs-icon-badge">🎯</div>' +
-              '<div><strong>Assessment Ahead:</strong> Prepositions quiz scheduled for Thursday</div>' +
+
+            // Scheduled Quiz: Violet icon badge
+            '<div class="needs-attention-card alert-violet">' +
+              '<div class="needs-status-badge badge-violet">🎯 Quiz Upcoming</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Prepositions Diagnostic</div>' +
+                '<div class="needs-desc">Assessment quiz scheduled for Thursday morning.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-violet" onclick="openQuickAssessmentModal(); return false;">Prepare ➔</a>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -7335,96 +7377,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabBodyHtml = '';
 
     if (activeTab === 'levels') {
+      const activeStudent = (store.getStudents ? store.getStudents() : [])[0] || null;
+      const currentActiveLevel = activeStudent ? (store.calculateMonsterState ? store.calculateMonsterState(activeStudent.id).currentLevel : 1) : 1;
+
       tabBodyHtml = (window.MonsterRenderer && window.MonsterRenderer.renderMonsterEvolutionStagesBanner ? window.MonsterRenderer.renderMonsterEvolutionStagesBanner() : '') +
-        
-        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
-            '<div>' +
-              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Stages &amp; XP Thresholds</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Configure progression level names, XP required, stage keys, descriptions, and perks. Changes dynamically update all active students.</p>' +
-            '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
-          '</div>' +
-
-          '<!-- Horizontal Monster Evolution Progression Timeline -->' +
+        (window.GamificationMilestones && window.GamificationMilestones.renderEvolutionJourney ? 
+          window.GamificationMilestones.renderEvolutionJourney(levels, currentActiveLevel, { onEdit: 'openProgressionLevelEditorModal' }) :
           '<div class="monster-evolution-timeline">' +
-            levels.map((l, idx) => {
-              const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                stage: l.stageKey,
-                color: 'blue',
-                size: 80,
-                animated: false
-              }) : '👾';
-              const isLast = idx === levels.length - 1;
-              const chevronHtml = !isLast ? (
-                '<div class="evolution-timeline-chevron" title="Evolution Step">' +
-                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-                    '<polyline points="9 18 15 12 9 6"></polyline>' +
-                  '</svg>' +
-                '</div>'
-              ) : '';
-
-              return '' +
-                '<div class="evolution-stage-card">' +
-                  '<div style="font-size:0.68rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Level ' + l.level + '</div>' +
-                  '<div style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' +
-                    stageSvg +
-                  '</div>' +
-                  '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); margin-bottom:4px; line-height:1.2;">' + l.name + '</div>' +
-                  '<div style="font-size:0.72rem; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); padding:2px 8px; border-radius:10px; white-space:nowrap;">' + l.xpRequired.toLocaleString() + ' ⭐ XP</div>' +
-                '</div>' +
-                chevronHtml;
-            }).join('') +
-          '</div>' +
-
-          '<div style="overflow-x:auto;">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
-              '<thead>' +
-                '<tr style="background:var(--bg-muted); text-align:left; border-bottom:1px solid var(--border-light);">' +
-                  '<th style="padding:10px 12px;">Stage &amp; Icon</th>' +
-                  '<th style="padding:10px 12px;">Level #</th>' +
-                  '<th style="padding:10px 12px;">Level Name</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">XP Required</th>' +
-                  '<th style="padding:10px 12px;">Description</th>' +
-                  '<th style="padding:10px 12px;">Perks &amp; Rewards</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Status</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Reorder</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">Actions</th>' +
-                '</tr>' +
-              '</thead>' +
-              '<tbody>' +
-                levels.map(l => {
-                  const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                    stage: l.stageKey,
-                    color: 'blue',
-                    size: 40,
-                    animated: false
-                  }) : '👾';
-                  const isArchived = l.status === 'archived';
-
-                  return '' +
-                    '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isArchived ? '0.6' : '1') + ';">' +
-                      '<td style="padding:10px 12px;"><div style="width:40px; height:40px;">' + stageSvg + '</div></td>' +
-                      '<td style="padding:10px 12px; font-weight:800;">Level ' + l.level + '</td>' +
-                      '<td style="padding:10px 12px; font-weight:700; color:var(--color-primary);">' + l.name + '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; font-weight:800;">' + l.xpRequired.toLocaleString() + ' ⭐</td>' +
-                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:240px;">' + (l.description || 'Evolutionary milestone') + '</td>' +
-                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (Array.isArray(l.rewards) ? l.rewards.join(', ') : (l.rewards || 'Base avatar perks')) + '</td>' +
-                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:' + (isArchived ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)') + '; color:' + (isArchived ? '#dc2626' : '#059669') + '; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">' + (isArchived ? 'Archived' : 'Active') + '</span></td>' +
-                      '<td style="padding:10px 12px; text-align:center; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'up\')" title="Move Up" style="padding:1px 5px; font-size:0.7rem; margin-right:2px;">▲</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'down\')" title="Move Down" style="padding:1px 5px; font-size:0.7rem;">▼</button>' +
-                      '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="openProgressionLevelEditorModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; margin-right:4px;">✏️ Edit</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? '↩️ Restore' : '📦 Archive') + '</button>' +
-                      '</td>' +
-                    '</tr>';
-                }).join('') +
-              '</tbody>' +
-            '</table>' +
-          '</div>' +
-        '</div>';
+            levels.map(l => '<div class="evolution-stage-card"><div class="milestone-title">' + l.name + '</div></div>').join('') +
+          '</div>'
+        );
     } else if (activeTab === 'items') {
       const categories = ['all', 'body', 'eyes', 'mouth', 'horns', 'wings', 'tail', 'hat', 'glasses', 'backpack', 'accessory', 'environment', 'aura'];
       let filteredItems = allItems.slice();
@@ -7551,8 +7513,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Classroom Badges (' + badges.length + ')</h2>' +
             '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
+          '<div id="badges-grid" class="badges-trading-grid" style="margin-bottom:30px;">' +
             badges.map(b => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderBadgeTradingCard) {
+                return window.GamificationMilestones.renderBadgeTradingCard(b, {
+                  onAward: 'openAwardBadgeModal',
+                  onEdit: 'openEditBadgeModal'
+                });
+              }
               const isArchived = b.status === 'archived' || b.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -7584,8 +7552,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Learning Achievements (' + achievements.length + ')</h2>' +
             '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
+          '<div id="achievements-grid" class="achievements-trading-grid">' +
             achievements.map(a => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderAchievementTradingCard) {
+                return window.GamificationMilestones.renderAchievementTradingCard(a, {
+                  onEdit: 'openEditAchievementModal'
+                });
+              }
               const isArchived = a.status === 'archived' || a.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -8081,26 +8054,48 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
-      '<div class="kpi-grid" style="margin-bottom:24px;">' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Enrolled Learners</span><div class="kpi-icon-wrap icon-blue">👥</div></div>' +
-          '<span class="kpi-val">' + students.length + '</span>' +
-          '<span class="kpi-badge-sub badge-blue">' + cls.name + '</span>' +
+      // High-Impact Stats Bar (Unified Elevated Container, zero thin 1px individual card borders)
+      '<div class="dashboard-stats-hud-container" style="margin-bottom:24px;">' +
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Enrolled Learners</span>' +
+            '<div class="stats-hud-icon icon-blue">👥</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + students.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-blue">👥 ' + cls.name + ' Active</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Attendance Rate</span><div class="kpi-icon-wrap icon-emerald">✓</div></div>' +
-          '<span class="kpi-val">' + attRate + '%</span>' +
-          '<span class="kpi-badge-sub badge-emerald">Live Attendance</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Attendance Rate</span>' +
+            '<div class="stats-hud-icon icon-emerald">✓</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + attRate + '%</div>' +
+          '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Active Assignments</span><div class="kpi-icon-wrap icon-amber">📝</div></div>' +
-          '<span class="kpi-val">' + assignments.length + '</span>' +
-          '<span class="kpi-badge-sub badge-amber">' + (assignments.length === 1 ? '1 Pending' : assignments.length + ' Active') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Active Assignments</span>' +
+            '<div class="stats-hud-icon icon-amber">📝</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + assignments.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-amber">Pending completion</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Target CEFR</span><div class="kpi-icon-wrap icon-purple">🎯</div></div>' +
-          '<span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span>' +
-          '<span class="kpi-badge-sub badge-purple">' + (cls.academicYear || '2026–2027') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Proficiency Target</span>' +
+            '<div class="stats-hud-icon icon-indigo">🎯</div>' +
+          '</div>' +
+          '<div class="stats-hud-number" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A2') + ' Level</div>' +
+          '<div class="stats-hud-micro-badge badge-indigo">CEFR Target</div>' +
         '</div>' +
       '</div>' +
 
@@ -8859,6 +8854,7 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.updateMultiSelectBar = function() {
     const bar = document.getElementById('floating-multiselect-bar');
+    const dock = document.getElementById('classroom-floating-toolkit');
     const badge = document.getElementById('multiselect-count-badge');
     const totalBadge = document.getElementById('multiselect-total-class-count');
     if (!bar) return;
@@ -8868,6 +8864,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (selectedStudentIds.size > 0) {
       bar.style.display = 'flex';
+      if (dock) dock.style.display = 'flex';
       if (badge) badge.textContent = selectedStudentIds.size;
     } else {
       bar.style.display = 'none';
@@ -12568,13 +12565,17 @@ window.switchClassroomSubTab = function(subTab) {
     };
     const targetId = document.getElementById(`layer-${category}`) ? `layer-${category}` : (layerMap[category] || `layer-${category}`);
     const layerTarget = document.getElementById(targetId);
-    if (layerTarget && typeof item === 'object' && (item.svgMarkup || item.imageSrc)) {
-      if (item.svgMarkup) {
-        layerTarget.innerHTML = item.svgMarkup.trim().startsWith('<svg')
-          ? item.svgMarkup
-          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${item.svgMarkup}</svg>`;
-      } else if (item.imageSrc) {
-        layerTarget.innerHTML = `<img src="${item.imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
+    const assetObj = (item && typeof item === 'object') ? item : (window.CLOTHING_ASSETS?.[itemId] || window.CAPE_ASSETS?.[itemId] || {});
+    const svgContent = item.svgMarkup || assetObj.svgMarkup;
+    const imageSrc = item.imageSrc || assetObj.imageSrc;
+
+    if (layerTarget && (svgContent || imageSrc)) {
+      if (svgContent) {
+        layerTarget.innerHTML = svgContent.trim().startsWith('<svg')
+          ? svgContent
+          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${svgContent}</svg>`;
+      } else if (imageSrc) {
+        layerTarget.innerHTML = `<img src="${imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
       }
     }
 
@@ -14395,6 +14396,12 @@ window.switchClassroomSubTab = function(subTab) {
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
     const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
 
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, toLvl);
+      return;
+    }
+
     const titleEl = document.getElementById('m-levelup-title');
     if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
@@ -14442,42 +14449,20 @@ window.switchClassroomSubTab = function(subTab) {
     currentCelebrationStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
-    const profile = store.getMonsterProfile(studentId);
-
-    const titleEl = document.getElementById('m-hatch-title') || document.getElementById('modal-hatch-title');
-    if (titleEl) titleEl.innerText = '🥚 ✨ ' + student.firstName.toUpperCase() + "'S EGG HAS HATCHED! ✨ 🐣";
-
-    const xpInfoEl = document.getElementById('m-hatch-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ Level 3 Baby Monster Unlocked!';
-
-    const renderWrap = document.getElementById('m-hatch-monster-svg') || document.getElementById('modal-hatch-monster-render');
-    if (renderWrap && window.renderMonsterSVG) {
-      const svg = window.renderMonsterSVG({
-        stage: 'baby',
-        color: profile.baseColor || 'blue',
-        size: 160,
-        animated: true
-      });
-      renderWrap.innerHTML = '' +
-        '<div class="monster-avatar-container">' +
-          '<div class="monster-sprite">' + svg + '</div>' +
-          '<div class="monster-pedestal"></div>' +
-        '</div>';
-    }
 
     // Mark as hatched in store
-    store.updateMonsterProfile(studentId, { isHatched: true });
-    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
+    if (store.updateMonsterProfile) store.updateMonsterProfile(studentId, { isHatched: true });
+    if (store.logMonsterHistory) store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
 
-    const btnCloset = document.getElementById('btn-modal-hatch-closet');
-    if (btnCloset) {
-      btnCloset.onclick = function() {
-        window.closeModal('modal-monster-hatch');
-        window.openStudentDetail(studentId, 'monster');
-      };
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, {
+        name: 'Baby Monster',
+        stageKey: 'baby',
+        description: 'The dormant shell has cracked wide open, revealing an adorable companion ready for classroom adventure!'
+      });
+      return;
     }
-
-    window.openModal('modal-monster-hatch');
   };
 
   window.openEvolutionPathModal = function(studentId) {

@@ -124,6 +124,23 @@
     return 'baby';
   }
 
+  // =========================================================================
+  // 4 DISTINCT SPECIES ARCHETYPES (SINGLE SOURCE OF TRUTH)
+  // 1. Ignis (Dragon/Flame): Pointed horns, dragon snout, warm ember underglow (#f97316)
+  // 2. Flora (Fox/Forest): Fluffy fox ears, leaf tail, emerald nature glow (#10b981)
+  // 3. Volt (Pikachu/Electric): Lightning-bolt ears, cheek pouches, electric amber glow (#eab308)
+  // 4. Astral (Owl/Cosmic): Feathered crest, star eyes, violet celestial glow (#8b5cf6)
+  // =========================================================================
+  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+
+  function getStudentArchetype(student) {
+    if (!student) return SPECIES_ARCHETYPES[0];
+    const s = (typeof student === 'object') ? student : { id: String(student) };
+    if (s.archetype) return s.archetype;
+    const code = (s.id || s.name || "").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    return SPECIES_ARCHETYPES[code % SPECIES_ARCHETYPES.length];
+  }
+
   /**
    * Comprehensive Shared SVG Defs (Volumetric Gradients & Filters)
    */
@@ -429,6 +446,8 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
+    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
+    equipped.archetype = archetype;
     const size = options.size || 200;
     const animated = options.animated !== false;
 
@@ -456,7 +475,7 @@
     try {
       const auraLayer = renderAuraLayer(equipped.aura, stage, palette);
       const wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
-      const tailLayer = renderTailLayer(stage, equipped.tail, palette);
+      const tailLayer = renderTailLayer(stage, equipped.tail, palette, archetype);
       const backpackLayer = renderBackpackLayer(stage, equipped.backpack);
       let rearUnderBody = '';
       if (stage !== 'egg' && stage !== 'cracking_egg') {
@@ -551,6 +570,8 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
+    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
+    equipped.archetype = archetype;
     const size = options.size || 200;
     const animated = options.animated !== false;
 
@@ -568,6 +589,18 @@
       }
     }
 
+    const archetypeGlowColors = {
+      ignis: '#f97316',
+      flora: '#10b981',
+      volt: '#eab308',
+      astral: '#8b5cf6'
+    };
+    const glowColor = archetypeGlowColors[archetype] || '#38bdf8';
+    const archetypeUnderglow = `
+      <!-- Archetype Underglow (${archetype}) -->
+      <ellipse cx="100" cy="158" rx="58" ry="13" fill="${glowColor}" opacity="${stage === 'egg' ? '0.22' : '0.45'}" filter="url(#plush-contact-blur)" />
+    `;
+
     const pedestalMarkup = renderPedestalDais();
     const contactShadowMarkup = renderContactShadow(stage);
 
@@ -578,7 +611,7 @@
     try { wingsLayer = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsLayer = ''; }
 
     let tailLayer = '';
-    try { tailLayer = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailLayer = ''; }
+    try { tailLayer = renderTailLayer(stage, equipped.tail, palette, archetype); } catch (e) { tailLayer = ''; }
 
     let backpackLayer = '';
     try { backpackLayer = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackLayer = ''; }
@@ -621,9 +654,10 @@
     `;
 
     return `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass} archetype-${archetype}" data-stage="${stage}" data-color="${colorKey}" data-archetype="${archetype}">
         ${defs}
         ${bgLayer}
+        ${archetypeUnderglow}
         ${pedestalMarkup}
         ${contactShadowMarkup}
         ${bobGroup}
@@ -735,6 +769,8 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
+    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
+    equipped.archetype = archetype;
     const animated = options.animated !== false;
     const animClass = animated ? 'eaa-monster-animated bobbing' : '';
     const defs = getSharedDefs(colorKey, palette);
@@ -754,7 +790,7 @@
     let wingsMarkup = '';
     try { wingsMarkup = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsMarkup = ''; }
     let tailMarkup = '';
-    try { tailMarkup = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailMarkup = ''; }
+    try { tailMarkup = renderTailLayer(stage, equipped.tail, palette, archetype); } catch (e) { tailMarkup = ''; }
     let backpackMarkup = '';
     try { backpackMarkup = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackMarkup = ''; }
     let capeMarkup = '';
@@ -1400,16 +1436,27 @@
   }
 
   // --- TAIL LAYER ---
-  function renderTailLayer(stage, tailId, palette) {
+  function renderTailLayer(stage, tailId, palette, archetype) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effectiveTail = tailId;
     if (!effectiveTail || effectiveTail === 'default') {
-      if (stage === 'baby') effectiveTail = 'tail-puff';
-      else if (stage === 'growing') effectiveTail = 'tail-perky';
-      else if (stage === 'adventurer') effectiveTail = 'tail-perky';
-      else if (stage === 'advanced') effectiveTail = 'tail-dragon';
-      else if (stage === 'ultimate') effectiveTail = 'tail-celestial';
+      const arch = archetype || (palette && palette.archetype) || 'ignis';
+      if (arch === 'ignis') {
+        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-flame';
+      } else if (arch === 'flora') {
+        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-fox';
+      } else if (arch === 'volt') {
+        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-volt';
+      } else if (arch === 'astral') {
+        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-star';
+      } else {
+        if (stage === 'baby') effectiveTail = 'tail-puff';
+        else if (stage === 'growing') effectiveTail = 'tail-perky';
+        else if (stage === 'adventurer') effectiveTail = 'tail-perky';
+        else if (stage === 'advanced') effectiveTail = 'tail-dragon';
+        else if (stage === 'ultimate') effectiveTail = 'tail-celestial';
+      }
     }
 
     if (effectiveTail === 'none' || effectiveTail === 'tail-none') return '';
@@ -1446,7 +1493,7 @@
 
     if (effectiveTail === 'tail-flame') {
       return `
-        <!-- Blazing Flame Tail -->
+        <!-- Blazing Flame Tail (Ignis) -->
         <g class="monster-tail-layer tail-flame" filter="url(#mf-glow)">
           <path d="M 132 136 C 158 132 172 118 168 98 C 162 92 154 100 146 114 Z" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.4" />
           <!-- Animated flame cluster on tip -->
@@ -1457,9 +1504,29 @@
       `;
     }
 
+    if (effectiveTail === 'tail-volt') {
+      return `
+        <!-- Zigzag Lightning Tail (Volt) -->
+        <g class="monster-tail-layer tail-volt" filter="url(#mf-glow)">
+          <polygon points="132,136 148,124 142,118 162,104 152,98 174,74 164,88 152,92 158,104 142,114 136,138" fill="#facc15" stroke="#ca8a04" stroke-width="2.2" />
+          <polygon points="166,78 174,74 168,86" fill="#fef08a" />
+        </g>
+      `;
+    }
+
+    if (effectiveTail === 'tail-fox') {
+      return `
+        <!-- Lush Bushy Fox Tail with White Brush Tip (Flora) -->
+        <g class="monster-tail-layer tail-fox" filter="url(#plush-shadow)">
+          <path d="M 132 136 C 160 134 182 118 178 90 C 172 76 156 82 144 102 C 136 116 128 134 132 136 Z" fill="${palette.primaryDark || '#15803d'}" stroke="${palette.shadowDark || '#052e16'}" stroke-width="2.5" />
+          <path d="M 178 90 C 176 82 168 78 158 84 C 164 92 168 96 178 90 Z" fill="#ecfdf5" stroke="${palette.shadowDark || '#052e16'}" stroke-width="1.8" />
+        </g>
+      `;
+    }
+
     if (effectiveTail === 'tail-star') {
       return `
-        <!-- Star-Tipped Tail -->
+        <!-- Star-Tipped Tail (Astral) -->
         <g class="monster-tail-layer tail-star">
           <path d="M 134 134 C 156 128 170 114 166 100 C 160 94 152 100 146 112 Z" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
           <polygon points="166,96 170,102 176,102 172,106 174,112 166,108 158,112 160,106 156,102 162,102" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" filter="url(#mf-glow)" />
@@ -1562,11 +1629,95 @@
     return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
   }
 
+  // --- ARCHETYPE REAR EARS / HORNS SILHOUETTE (Left / Rear) ---
+  function renderArchetypeEarRear(archetype, stage, palette, colorKey, cX, topY, cW, scale) {
+    const isGrowing = stage === 'growing';
+    const isAdvanced = stage === 'advanced' || stage === 'ultimate';
+    const darkShade = palette.shadowDark || palette.shadow || '#0c4a6e';
+
+    if (archetype === 'ignis') {
+      // Dragon Horn: Pointed, swept-back dragon horn with flame ridge spines
+      const hornLength = isGrowing ? 1.25 : (isAdvanced ? 1.4 : 1.0);
+      return `
+        <!-- Ignis Rear Dragon Horn -->
+        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-ignis">
+          <path d="M ${cX - cW * 0.35} ${topY + 10 * scale}
+                   C ${cX - cW * 0.75} ${topY - 8 * scale * hornLength} ${cX - cW * 1.15 * scale} ${topY - 22 * scale * hornLength} ${cX - cW * 1.35 * scale * hornLength} ${topY - 32 * scale * hornLength}
+                   C ${cX - cW * 1.10 * scale * hornLength} ${topY - 26 * scale * hornLength} ${cX - cW * 0.60 * scale} ${topY - 14 * scale} ${cX - cW * 0.18} ${topY + 4 * scale} Z"
+                fill="${darkShade}" stroke="#7c2d12" stroke-width="2.6" stroke-linejoin="round" />
+          <!-- Flame dorsal ridge spines along horn -->
+          <polygon points="${cX - cW * 0.65},${topY - 10 * scale} ${cX - cW * 0.85 * scale},${topY - 18 * scale * hornLength} ${cX - cW * 0.60 * scale},${topY - 14 * scale}" fill="#ea580c" />
+          <polygon points="${cX - cW * 0.95 * scale},${topY - 22 * scale * hornLength} ${cX - cW * 1.15 * scale * hornLength},${topY - 30 * scale * hornLength} ${cX - cW * 0.90 * scale * hornLength},${topY - 24 * scale * hornLength}" fill="#f97316" />
+          ${isGrowing ? `<circle cx="${cX - cW * 1.32 * scale * hornLength}" cy="${topY - 31 * scale * hornLength}" r="2" fill="#fdba74" filter="url(#plush-glow)" />` : ''}
+        </g>
+      `;
+    }
+
+    if (archetype === 'flora') {
+      // Fox Ear: Fluffy pointed triangular fox ear with inner shadow cavity
+      const earSpan = isGrowing ? 1.15 : (isAdvanced ? 1.25 : 0.95);
+      return `
+        <!-- Flora Rear Fox Ear -->
+        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-flora">
+          <path d="M ${cX - cW * 0.38} ${topY + 12 * scale}
+                   C ${cX - cW * 0.70} ${topY + 2 * scale} ${cX - cW * 0.95 * scale * earSpan} ${topY - 18 * scale * earSpan} ${cX - cW * 0.82 * scale * earSpan} ${topY - 34 * scale * earSpan}
+                   C ${cX - cW * 0.62 * scale * earSpan} ${topY - 26 * scale * earSpan} ${cX - cW * 0.42 * scale} ${topY - 8 * scale} ${cX - cW * 0.22 * scale} ${topY + 4 * scale} Z"
+                fill="${darkShade}" stroke="#064e3b" stroke-width="2.6" stroke-linejoin="round" />
+          <!-- Rear inner ear depth cavity -->
+          <path d="M ${cX - cW * 0.42} ${topY + 8 * scale}
+                   C ${cX - cW * 0.65} ${topY} ${cX - cW * 0.80 * scale * earSpan} ${topY - 14 * scale * earSpan} ${cX - cW * 0.72 * scale * earSpan} ${topY - 24 * scale * earSpan}
+                   C ${cX - cW * 0.58 * scale} ${topY - 18 * scale} ${cX - cW * 0.38 * scale} ${topY - 4 * scale} ${cX - cW * 0.30 * scale} ${topY + 4 * scale} Z"
+                fill="#064e3b" opacity="0.65" />
+        </g>
+      `;
+    }
+
+    if (archetype === 'volt') {
+      // Lightning Ear: Zigzag electric bolt ear with dark-dipped tip
+      const voltScale = isGrowing ? 1.2 : (isAdvanced ? 1.3 : 1.0);
+      return `
+        <!-- Volt Rear Lightning-Bolt Ear -->
+        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-volt">
+          <path d="M ${cX - cW * 0.32} ${topY + 10 * scale}
+                   L ${cX - cW * 0.65} ${topY - 4 * scale * voltScale}
+                   L ${cX - cW * 0.50} ${topY - 8 * scale * voltScale}
+                   L ${cX - cW * 0.88 * scale * voltScale} ${topY - 24 * scale * voltScale}
+                   L ${cX - cW * 0.68 * scale * voltScale} ${topY - 26 * scale * voltScale}
+                   L ${cX - cW * 1.05 * scale * voltScale} ${topY - 40 * scale * voltScale}
+                   L ${cX - cW * 0.75 * scale * voltScale} ${topY - 32 * scale * voltScale}
+                   L ${cX - cW * 0.42 * scale} ${topY - 14 * scale}
+                   L ${cX - cW * 0.18} ${topY + 6 * scale} Z"
+                fill="${darkShade}" stroke="#713f12" stroke-width="2.6" stroke-linejoin="round" />
+          <!-- Dark dipped tip -->
+          <polygon points="${cX - cW * 1.05 * scale * voltScale},${topY - 40 * scale * voltScale} ${cX - cW * 0.75 * scale * voltScale},${topY - 32 * scale * voltScale} ${cX - cW * 0.82 * scale * voltScale},${topY - 30 * scale * voltScale}" fill="#1e293b" />
+          ${isGrowing ? `<circle cx="${cX - cW * 0.90 * scale * voltScale}" cy="${topY - 26 * scale * voltScale}" r="2" fill="#facc15" filter="url(#plush-glow)" />` : ''}
+        </g>
+      `;
+    }
+
+    // Default / Astral: Winged celestial feathered crest / owl horn-tuft
+    const owlSpread = isGrowing ? 1.2 : (isAdvanced ? 1.35 : 1.0);
+    return `
+      <!-- Astral Rear Celestial Owl Feathered Crest -->
+      <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-astral">
+        <path d="M ${cX - cW * 0.36} ${topY + 12 * scale}
+                 C ${cX - cW * 0.68} ${topY + 4 * scale} ${cX - cW * 1.10 * scale * owlSpread} ${topY - 12 * scale * owlSpread} ${cX - cW * 1.22 * scale * owlSpread} ${topY - 26 * scale * owlSpread}
+                 C ${cX - cW * 0.95 * scale * owlSpread} ${topY - 24 * scale * owlSpread} ${cX - cW * 0.80 * scale} ${topY - 16 * scale} ${cX - cW * 0.75 * scale} ${topY - 8 * scale}
+                 C ${cX - cW * 0.55 * scale} ${topY - 4 * scale} ${cX - cW * 0.38 * scale} ${topY + 6 * scale} ${cX - cW * 0.20 * scale} ${topY + 8 * scale} Z"
+              fill="${darkShade}" stroke="#4c1d95" stroke-width="2.6" stroke-linejoin="round" />
+        <!-- Feather notch lines -->
+        <path d="M ${cX - cW * 0.85 * scale * owlSpread} ${topY - 16 * scale * owlSpread} L ${cX - cW * 1.05 * scale * owlSpread} ${topY - 22 * scale * owlSpread}" stroke="#a855f7" stroke-width="1.8" />
+        <circle cx="${cX - cW * 1.18 * scale * owlSpread}" cy="${topY - 24 * scale * owlSpread}" r="2.2" fill="#fde047" opacity="0.9" />
+      </g>
+    `;
+  }
+
   // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
   function renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
     const cW = g.cW;
     const scale = g.earScale;
+    const archetype = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
 
     let hornId = equipped.horns;
     if (!hornId || hornId === 'default') {
@@ -1575,22 +1726,8 @@
       else hornId = 'none';
     }
 
-    // Left (Rear) Ear: Layered beneath body with volumetric darker tone
-    const rearEarMarkup = `
-      <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
-      <g filter="url(#plush-shadow)" class="monster-ear-rear">
-        <path d="M ${cX - cW * 0.44} ${topY + 12 * scale}
-                 C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
-                 C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
-                 C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
-              fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
-        <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
-        <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
-                 C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
-                 C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
-              fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
-      </g>
-    `;
+    // Left (Rear) Archetype Ear / Horn
+    const rearEarMarkup = renderArchetypeEarRear(archetype, stage, palette, colorKey, cX, topY, cW, scale);
 
     // Rear Horn (if curved or crystal, renders behind skull)
     let rearHornMarkup = '';
@@ -1700,11 +1837,109 @@
     return '';
   }
 
+  // --- ARCHETYPE FRONT EARS / HORNS SILHOUETTE (Right / Front) ---
+  function renderArchetypeEarFront(archetype, stage, palette, colorKey, cX, topY, cW, scale) {
+    const isGrowing = stage === 'growing';
+    const isAdvanced = stage === 'advanced' || stage === 'ultimate';
+
+    if (archetype === 'ignis') {
+      // Ignis Front Dragon Horn: Majestic swept-back dragon horn with ember highlights & flame dorsal ridge
+      const hornLength = isGrowing ? 1.25 : (isAdvanced ? 1.4 : 1.0);
+      return `
+        <!-- Ignis Front Dragon Horn (Swept-Back Flame Spire) -->
+        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-ignis">
+          <path d="M ${cX + cW * 0.18} ${topY + 4 * scale}
+                   C ${cX + cW * 0.55} ${topY - 14 * scale} ${cX + cW * 0.95 * scale * hornLength} ${topY - 28 * scale * hornLength} ${cX + cW * 1.35 * scale * hornLength} ${topY - 34 * scale * hornLength}
+                   C ${cX + cW * 1.15 * scale * hornLength} ${topY - 24 * scale * hornLength} ${cX + cW * 0.75 * scale} ${topY - 8 * scale * hornLength} ${cX + cW * 0.35} ${topY + 10 * scale} Z"
+                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+          <!-- Flame Ridge Dorsal Spikes -->
+          <polygon points="${cX + cW * 0.60 * scale},${topY - 14 * scale} ${cX + cW * 0.85 * scale * hornLength},${topY - 20 * scale * hornLength} ${cX + cW * 0.68 * scale},${topY - 10 * scale}" fill="#ea580c" />
+          <polygon points="${cX + cW * 0.90 * scale * hornLength},${topY - 24 * scale * hornLength} ${cX + cW * 1.20 * scale * hornLength},${topY - 30 * scale * hornLength} ${cX + cW * 0.98 * scale * hornLength},${topY - 20 * scale * hornLength}" fill="#f97316" />
+          <!-- Specular Ridge Crest -->
+          <path d="M ${cX + cW * 0.30} ${topY + 2 * scale} Q ${cX + cW * 0.70 * scale} ${topY - 16 * scale * hornLength} ${cX + cW * 1.25 * scale * hornLength} ${topY - 30 * scale * hornLength}"
+                fill="none" stroke="#fef08a" stroke-width="2.0" stroke-linecap="round" opacity="0.85" />
+          ${isGrowing ? `<circle cx="${cX + cW * 1.32 * scale * hornLength}" cy="${topY - 33 * scale * hornLength}" r="2.5" fill="#fde047" filter="url(#plush-glow)" />` : ''}
+        </g>
+      `;
+    }
+
+    if (archetype === 'flora') {
+      // Flora Front Fox Ear: Pointed triangular fluffy fox ear with lush layered inner tufts
+      const earSpan = isGrowing ? 1.15 : (isAdvanced ? 1.25 : 0.95);
+      return `
+        <!-- Flora Front Fox Ear (Triangular Woodland Ear with Fluff Tufts) -->
+        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-flora">
+          <path d="M ${cX + cW * 0.22 * scale} ${topY + 4 * scale}
+                   C ${cX + cW * 0.42 * scale} ${topY - 8 * scale} ${cX + cW * 0.62 * scale * earSpan} ${topY - 26 * scale * earSpan} ${cX + cW * 0.82 * scale * earSpan} ${topY - 34 * scale * earSpan}
+                   C ${cX + cW * 0.95 * scale * earSpan} ${topY - 18 * scale * earSpan} ${cX + cW * 0.70} ${topY + 2 * scale} ${cX + cW * 0.38} ${topY + 12 * scale} Z"
+                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+          <!-- Velvet Inner Ear Cavity -->
+          <path d="M ${cX + cW * 0.30 * scale} ${topY + 4 * scale}
+                   C ${cX + cW * 0.44 * scale} ${topY - 6 * scale} ${cX + cW * 0.60 * scale * earSpan} ${topY - 20 * scale * earSpan} ${cX + cW * 0.74 * scale * earSpan} ${topY - 26 * scale * earSpan}
+                   C ${cX + cW * 0.80 * scale * earSpan} ${topY - 14 * scale} ${cX + cW * 0.62 * scale} ${topY + 2 * scale} ${cX + cW * 0.42 * scale} ${topY + 8 * scale} Z"
+                fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
+          <!-- Layered White Inner Fur Tufts -->
+          <path d="M ${cX + cW * 0.34 * scale} ${topY + 2 * scale} Q ${cX + cW * 0.52 * scale} ${topY - 2 * scale} ${cX + cW * 0.48 * scale} ${topY + 7 * scale}
+                   Q ${cX + cW * 0.60 * scale} ${topY + 1 * scale} ${cX + cW * 0.54 * scale} ${topY + 9 * scale}"
+                fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity="0.9" />
+          <!-- Outer Specular Arc -->
+          <path d="M ${cX + cW * 0.45 * scale} ${topY - 12 * scale * earSpan} Q ${cX + cW * 0.62 * scale * earSpan} ${topY - 28 * scale * earSpan} ${cX + cW * 0.78 * scale * earSpan} ${topY - 32 * scale * earSpan}"
+                fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
+        </g>
+      `;
+    }
+
+    if (archetype === 'volt') {
+      // Volt Front Lightning Ear: Dynamic zigzag lightning bolt ear with iconic dark dipped tip
+      const voltScale = isGrowing ? 1.2 : (isAdvanced ? 1.3 : 1.0);
+      return `
+        <!-- Volt Front Lightning-Bolt Ear -->
+        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-volt">
+          <path d="M ${cX + cW * 0.18} ${topY + 6 * scale}
+                   L ${cX + cW * 0.42 * scale} ${topY - 14 * scale}
+                   L ${cX + cW * 0.75 * scale * voltScale} ${topY - 32 * scale * voltScale}
+                   L ${cX + cW * 1.05 * scale * voltScale} ${topY - 40 * scale * voltScale}
+                   L ${cX + cW * 0.68 * scale * voltScale} ${topY - 26 * scale * voltScale}
+                   L ${cX + cW * 0.88 * scale * voltScale} ${topY - 24 * scale * voltScale}
+                   L ${cX + cW * 0.50} ${topY - 8 * scale * voltScale}
+                   L ${cX + cW * 0.65} ${topY - 4 * scale * voltScale}
+                   L ${cX + cW * 0.32} ${topY + 10 * scale} Z"
+                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+          <!-- Iconic Dark Dipped Tip -->
+          <polygon points="${cX + cW * 1.05 * scale * voltScale},${topY - 40 * scale * voltScale} ${cX + cW * 0.75 * scale * voltScale},${topY - 32 * scale * voltScale} ${cX + cW * 0.82 * scale * voltScale},${topY - 30 * scale * voltScale}" fill="#1e293b" />
+          <!-- Electric Amber Inner Energy Line -->
+          <path d="M ${cX + cW * 0.30} ${topY + 4 * scale} L ${cX + cW * 0.52 * scale} ${topY - 10 * scale} L ${cX + cW * 0.78 * scale * voltScale} ${topY - 28 * scale * voltScale}"
+                fill="none" stroke="#fef08a" stroke-width="2.2" stroke-linecap="round" opacity="0.9" />
+          ${isGrowing ? `<circle cx="${cX + cW * 0.90 * scale * voltScale}" cy="${topY - 26 * scale * voltScale}" r="2.5" fill="#facc15" filter="url(#plush-glow)" />` : ''}
+        </g>
+      `;
+    }
+
+    // Default / Astral: Winged celestial feathered crest / owl horn-tuft
+    const owlSpread = isGrowing ? 1.2 : (isAdvanced ? 1.35 : 1.0);
+    return `
+      <!-- Astral Front Celestial Owl Feathered Crest -->
+      <g filter="url(#plush-shadow)" class="monster-ear-front archetype-astral">
+        <path d="M ${cX + cW * 0.20 * scale} ${topY + 8 * scale}
+                 C ${cX + cW * 0.38 * scale} ${topY + 6 * scale} ${cX + cW * 0.55 * scale} ${topY - 4 * scale} ${cX + cW * 0.75 * scale} ${topY - 8 * scale}
+                 C ${cX + cW * 0.80 * scale} ${topY - 16 * scale} ${cX + cW * 0.95 * scale * owlSpread} ${topY - 24 * scale * owlSpread} ${cX + cW * 1.22 * scale * owlSpread} ${topY - 26 * scale * owlSpread}
+                 C ${cX + cW * 1.10 * scale * owlSpread} ${topY - 12 * scale * owlSpread} ${cX + cW * 0.68} ${topY + 4 * scale} ${cX + cW * 0.36} ${topY + 12 * scale} Z"
+              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+        <!-- Feather vanes / ribs -->
+        <path d="M ${cX + cW * 0.40 * scale} ${topY + 4 * scale} Q ${cX + cW * 0.75 * scale * owlSpread} ${topY - 10 * scale} ${cX + cW * 1.10 * scale * owlSpread} ${topY - 20 * scale * owlSpread}"
+              fill="none" stroke="#f3e8ff" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
+        <!-- Radiant Forehead Crest Star Gem -->
+        <polygon points="${cX + cW * 0.35},${topY + 1 * scale} ${cX + cW * 0.39},${topY - 4 * scale} ${cX + cW * 0.45},${topY - 2 * scale} ${cX + cW * 0.41},${topY + 3 * scale} ${cX + cW * 0.43},${topY + 8 * scale} ${cX + cW * 0.37},${topY + 5 * scale} ${cX + cW * 0.31},${topY + 7 * scale} ${cX + cW * 0.33},${topY + 2 * scale}" fill="#fde047" stroke="#ca8a04" stroke-width="1.0" filter="url(#plush-glow)" />
+      </g>
+    `;
+  }
+
   // --- FOREGROUND OVER-BODY ACCESSORIES (Flared Roots & Front Elements) ---
   function renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, includeHorns = true) {
     const topY = g.topY;
     const cW = g.cW;
     const scale = g.earScale;
+    const archetype = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
 
     let hornId = equipped.horns;
     if (!hornId || hornId === 'default') {
@@ -1713,24 +1948,8 @@
       else hornId = 'none';
     }
 
-    // Right (Front) Ear: Flared root transition blending into skull envelope with keylit velvet gradient and pastel cavity
-    const frontEarMarkup = `
-      <!-- Front Ear (Flared Root Fillet Transition) -->
-      <g filter="url(#plush-shadow)" class="monster-ear-front">
-        <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
-                 C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
-                 C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
-                 C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
-              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-        <!-- Front Inner Ear Cavity (Velvet Tone) -->
-        <path d="M ${cX + cW * 0.34 * scale} ${topY + 3 * scale}
-                 C ${cX + cW * 0.48 * scale} ${topY - 6 * scale} ${cX + cW * 0.68 * scale} ${topY - 25 * scale} ${cX + cW * 0.88 * scale} ${topY - 22 * scale}
-                 C ${cX + cW * 1.08 * scale} ${topY - 14 * scale} ${cX + cW * 0.82 * scale} ${topY + 1 * scale} ${cX + cW * 0.48 * scale} ${topY + 8 * scale} Z"
-              fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
-        <path d="M ${cX + cW * 0.50 * scale} ${topY - 18 * scale} Q ${cX + cW * 0.62 * scale} ${topY - 28 * scale} ${cX + cW * 0.82 * scale} ${topY - 26 * scale}"
-              fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
-      </g>
-    `;
+    // Right (Front) Archetype Ear / Horn
+    const frontEarMarkup = renderArchetypeEarFront(archetype, stage, palette, colorKey, cX, topY, cW, scale);
 
     if (!includeHorns || hornId === 'none' || hornId === 'horns-none') {
       return frontEarMarkup;
@@ -2154,30 +2373,94 @@
 
   // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
   function renderFaceElements(stage, palette, colorKey, equipped, cX, g) {
-    let eyesId = equipped.eyes || 'eyes-sparkle';
-    if (eyesId === 'default') eyesId = 'eyes-sparkle';
-    const mouthId = equipped.mouth || 'mouth-smile';
+    const arch = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
+    let eyesId = equipped.eyes || 'default';
+    if (eyesId === 'default') {
+      if (arch === 'ignis') eyesId = 'eyes-dragon';
+      else if (arch === 'astral') eyesId = 'eyes-star';
+      else if (arch === 'volt') eyesId = 'eyes-sparkle';
+      else eyesId = 'eyes-sparkle';
+    }
+    const mouthId = equipped.mouth || (arch === 'volt' ? 'mouth-cheer' : 'mouth-smile');
 
     // Low Horizon Placement (Lower 38%-42% of cranial mass for peak cute chibi appeal)
     const eyeY = g.eyeY;
     const eyeSpacing = g.eyeSpacing;
     const mouthY = eyeY + 13;
 
-    // Warm signature pink blush cheeks nestled directly into the cheek swell
-    const cheeks = `
-      <!-- Soft Velvet Cheek Blush -->
-      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
-      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
-    `;
+    // Signature cheeks tailored by archetype
+    let cheeks = '';
+    if (arch === 'volt') {
+      cheeks = `
+        <!-- Volt Signature Electric Cheek Pouches -->
+        <circle cx="${cX - eyeSpacing - 9}" cy="${eyeY + 10}" r="8.5" fill="#ef4444" stroke="#dc2626" stroke-width="1.2" />
+        <circle cx="${cX - eyeSpacing - 9}" cy="${eyeY + 10}" r="5.5" fill="#f87171" opacity="0.6" />
+        <circle cx="${cX + eyeSpacing + 9}" cy="${eyeY + 10}" r="8.5" fill="#ef4444" stroke="#dc2626" stroke-width="1.2" />
+        <circle cx="${cX + eyeSpacing + 9}" cy="${eyeY + 10}" r="5.5" fill="#f87171" opacity="0.6" />
+      `;
+    } else if (arch === 'ignis') {
+      cheeks = `
+        <!-- Ignis Warm Ember Blush -->
+        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#ea580c" opacity="0.75" />
+        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#ea580c" opacity="0.75" />
+      `;
+    } else if (arch === 'astral') {
+      cheeks = `
+        <!-- Astral Violet Shimmer Blush -->
+        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#a855f7" opacity="0.65" />
+        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#a855f7" opacity="0.65" />
+      `;
+    } else {
+      cheeks = `
+        <!-- Soft Velvet Cheek Blush (Flora / Default) -->
+        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+      `;
+    }
 
-    // 3D Snout & Muzzle Dome with Curved Button Nose
-    const snoutDome = `
-      <!-- 3D Snout & Muzzle Dome (Volumetric Dimensional Pad) -->
-      <ellipse cx="${cX}" cy="${eyeY + 7}" rx="14.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
-      <!-- Cute Curved Button Snout Nose with Specular Highlight -->
-      <ellipse cx="${cX}" cy="${eyeY + 4.5}" rx="3.2" ry="2.4" fill="#0f172a" />
-      <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
-    `;
+    // 3D Snout & Muzzle Dome tailored by archetype
+    let snoutDome = '';
+    if (arch === 'ignis') {
+      snoutDome = `
+        <!-- Ignis Dragon Snout with Dual Nostril Slits & Fangs -->
+        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="15.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+        <ellipse cx="${cX - 3.5}" cy="${eyeY + 6.5}" rx="1.5" ry="2.2" transform="rotate(-15, ${cX - 3.5}, ${eyeY + 6.5})" fill="#7c2d12" />
+        <ellipse cx="${cX + 3.5}" cy="${eyeY + 6.5}" rx="1.5" ry="2.2" transform="rotate(15, ${cX + 3.5}, ${eyeY + 6.5})" fill="#7c2d12" />
+        <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
+        <!-- Cute dragon baby fangs -->
+        <polygon points="${cX - 5},${mouthY + 1} ${cX - 3},${mouthY + 6} ${cX - 1},${mouthY + 1}" fill="#ffffff" stroke="#7c2d12" stroke-width="0.8" />
+        <polygon points="${cX + 1},${mouthY + 1} ${cX + 3},${mouthY + 6} ${cX + 5},${mouthY + 1}" fill="#ffffff" stroke="#7c2d12" stroke-width="0.8" />
+      `;
+    } else if (arch === 'flora') {
+      snoutDome = `
+        <!-- Flora Fox Muzzle with Triangular Nose & Whiskers -->
+        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="13.5" ry="8.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+        <path d="M ${cX - 3.5} ${eyeY + 4} Q ${cX} ${eyeY + 3.2} ${cX + 3.5} ${eyeY + 4} Q ${cX} ${eyeY + 7.5} ${cX - 3.5} ${eyeY + 4} Z" fill="#0f172a" />
+        <circle cx="${cX - 0.8}" cy="${eyeY + 3.8}" r="0.8" fill="#ffffff" opacity="0.9" />
+        <circle cx="${cX - 9}" cy="${eyeY + 8}" r="0.8" fill="#475569" />
+        <circle cx="${cX - 11}" cy="${eyeY + 10}" r="0.8" fill="#475569" />
+        <circle cx="${cX + 9}" cy="${eyeY + 8}" r="0.8" fill="#475569" />
+        <circle cx="${cX + 11}" cy="${eyeY + 10}" r="0.8" fill="#475569" />
+      `;
+    } else if (arch === 'astral') {
+      snoutDome = `
+        <!-- Astral Owl Facial Disc & Golden Curved Beak -->
+        <ellipse cx="${cX}" cy="${eyeY + 6}" rx="12" ry="7" fill="url(#plush-snout-${colorKey})" opacity="0.75" />
+        <!-- Golden Curved Beak -->
+        <polygon points="${cX},${eyeY + 3} ${cX - 3.5},${eyeY + 8} ${cX},${eyeY + 12} ${cX + 3.5},${eyeY + 8}" fill="#f59e0b" stroke="#b45309" stroke-width="1.2" />
+        <line x1="${cX}" y1="${eyeY + 3}" x2="${cX}" y2="${eyeY + 10}" stroke="#ffffff" stroke-width="0.8" opacity="0.8" />
+        <!-- Astral Forehead 4-Point Radiant Star Gem -->
+        <polygon points="${cX},${eyeY - 14} ${cX + 2.5},${eyeY - 9} ${cX + 7.5},${eyeY - 9} ${cX + 3.5},${eyeY - 6} ${cX + 5},${eyeY - 1} ${cX},${eyeY - 4.5} ${cX - 5},${eyeY - 1} ${cX - 3.5},${eyeY - 6} ${cX - 7.5},${eyeY - 9} ${cX - 2.5},${eyeY - 9}" fill="#fde047" stroke="#ca8a04" stroke-width="1.0" filter="url(#plush-glow)" />
+      `;
+    } else {
+      // Volt / Default
+      snoutDome = `
+        <!-- 3D Snout & Muzzle Dome -->
+        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="14.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+        <ellipse cx="${cX}" cy="${eyeY + 4.5}" rx="3.2" ry="2.4" fill="#0f172a" />
+        <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
+      `;
+    }
 
     let eyesMarkup = '';
     if (eyesId === 'eyes-wink' || eyesId === 'eyes-curious') {
@@ -3331,7 +3614,9 @@
     getStageInfo: getStageInfo,
     getBadgeColors: getBadgeColors,
     palettes: MONSTER_PALETTES,
-    stages: STAGE_META
+    stages: STAGE_META,
+    SPECIES_ARCHETYPES: SPECIES_ARCHETYPES,
+    getStudentArchetype: getStudentArchetype
   };
 
   root.getMonsterAsset = getMonsterAsset;
@@ -3347,6 +3632,8 @@
   root.getMonsterStageImage = getMonsterStageImage;
   root.renderMonsterArtwork = renderMonsterArtwork;
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
+  root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
+  root.getStudentArchetype = getStudentArchetype;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;

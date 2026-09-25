@@ -629,8 +629,134 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   4b. ELEVATED KPI METRIC STAT CARDS
+   4b. HIGH-IMPACT UNIFIED STATS HUD CONTAINER (Zero thin 1px individual card borders)
    ========================================================================== */
+.dashboard-stats-hud-container,
+.kpi-unified-bar {
+  background: #ffffff;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  border: none;
+}
+
+@media (max-width: 992px) {
+  .dashboard-stats-hud-container,
+  .kpi-unified-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 20px 24px;
+  }
+  .stats-hud-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .dashboard-stats-hud-container,
+  .kpi-unified-bar {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+
+.stats-hud-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.stats-hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stats-hud-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.stats-hud-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+.stats-hud-icon.icon-blue { background: #eff6ff; color: #2563eb; }
+.stats-hud-icon.icon-emerald { background: #ecfdf5; color: #059669; }
+.stats-hud-icon.icon-amber { background: #fffbeb; color: #d97706; }
+.stats-hud-icon.icon-indigo,
+.stats-hud-icon.icon-purple { background: #f5f3ff; color: #7c3aed; }
+
+.stats-hud-number {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #0f172a;
+  line-height: 1.05;
+}
+
+.stats-hud-micro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.stats-hud-micro-badge.badge-blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+}
+
+.stats-hud-micro-badge.badge-emerald {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.stats-hud-micro-badge.badge-amber {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.stats-hud-micro-badge.badge-indigo {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.stats-hud-divider {
+  width: 1px;
+  height: 56px;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -2203,8 +2329,8 @@ button, input, select, textarea {
 .student-card:hover,
 .classroom-student-card:hover,
 .student-directory-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -2px rgba(0, 0, 0, 0.08);
 }
 
 /* Element Affinity Border & Glow Themes */
@@ -2398,72 +2524,74 @@ button, input, select, textarea {
   }
 }
 
+.roster-sprite,
 .roster-monster-sprite {
-  animation: monsterFloat 3s ease-in-out infinite;
-  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+  animation: idleBob 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
 }
 
-.roster-pedestal-disk {
-  width: 80px;
-  height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.4) 0%, transparent 70%);
-  margin-top: -6px;
-}
-
-@keyframes monsterFloat {
+@keyframes idleBob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-5px); }
 }
 
-/* Isometric Grounding Pedestal Disc */
-.pedestal-disc,
-.pedestal-shadow {
-  width: 96px;
+.roster-pedestal-disk,
+.pedestal-disc {
+  width: 90px;
   height: 20px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.45) 0%, rgba(37, 99, 235, 0.18) 50%, transparent 75%);
-  animation: pedestalPulse 3s ease-in-out infinite;
-  margin-top: -10px;
-  margin-bottom: 2px;
+  margin-top: -6px;
   z-index: 1;
 }
 
-@keyframes pedestalPulse {
-  0%, 100% {
-    transform: scaleX(1) scaleY(1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scaleX(0.85) scaleY(0.85);
-    opacity: 0.35;
-  }
-}
-
+/* Elemental Pedestal Glow Variations:
+   Fire/Ember: Crimson/Orange radial glow (rgba(239, 68, 68, 0.35))
+   Nature/Forest: Emerald radial glow (rgba(16, 185, 129, 0.35))
+   Astral/Cosmic: Violet radial glow (rgba(139, 92, 246, 0.35))
+   Thunder/Electric: Amber/Yellow radial glow (rgba(234, 179, 8, 0.35))
+*/
+.element-ember .roster-pedestal-disk,
+.element-fire .roster-pedestal-disk,
+.element-ember .pedestal-shadow,
+.element-fire .pedestal-shadow,
 .element-ember .pedestal-disc,
-.element-ember .pedestal-shadow {
-  background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.55) 0%, rgba(220, 38, 38, 0.22) 50%, transparent 75%);
+.element-fire .pedestal-disc {
+  background: radial-gradient(ellipse at center, rgba(239, 68, 68, 0.35) 0%, rgba(249, 115, 22, 0.15) 50%, transparent 75%);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
 }
 
-.element-verdant .pedestal-disc,
+.element-verdant .roster-pedestal-disk,
+.element-nature .roster-pedestal-disk,
+.element-forest .roster-pedestal-disk,
 .element-verdant .pedestal-shadow,
-.element-nature .pedestal-disc,
-.element-nature .pedestal-shadow {
-  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.55) 0%, rgba(16, 185, 129, 0.22) 50%, transparent 75%);
+.element-nature .pedestal-shadow,
+.element-verdant .pedestal-disc,
+.element-nature .pedestal-disc {
+  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.35) 0%, rgba(16, 185, 129, 0.12) 50%, transparent 75%);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
 }
 
-.element-astral .pedestal-disc,
+.element-astral .roster-pedestal-disk,
+.element-cosmic .roster-pedestal-disk,
+.element-void .roster-pedestal-disk,
 .element-astral .pedestal-shadow,
-.element-void .pedestal-disc,
-.element-void .pedestal-shadow {
-  background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.55) 0%, rgba(99, 102, 241, 0.22) 50%, transparent 75%);
+.element-void .pedestal-shadow,
+.element-astral .pedestal-disc,
+.element-void .pedestal-disc {
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0.12) 50%, transparent 75%);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
 }
 
-.element-spark .pedestal-disc,
+.element-spark .roster-pedestal-disk,
+.element-thunder .roster-pedestal-disk,
+.element-electric .roster-pedestal-disk,
+.element-gold .roster-pedestal-disk,
 .element-spark .pedestal-shadow,
-.element-gold .pedestal-disc,
-.element-gold .pedestal-shadow {
-  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.55) 0%, rgba(217, 119, 6, 0.22) 50%, transparent 75%);
+.element-gold .pedestal-shadow,
+.element-spark .pedestal-disc,
+.element-gold .pedestal-disc {
+  background: radial-gradient(ellipse at center, rgba(234, 179, 8, 0.35) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 75%);
+  box-shadow: 0 8px 20px rgba(234, 179, 8, 0.25);
 }
 
 /* Stage Level Badge */
@@ -2509,7 +2637,7 @@ button, input, select, textarea {
 
 .student-card-content .student-name,
 .student-info .student-name {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.2px;
@@ -2522,24 +2650,24 @@ button, input, select, textarea {
 
 .student-card-content .student-grade,
 .student-info .student-grade {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #64748b;
-  margin: 0;
-  line-height: 1.2;
+  display: none; /* Eliminate redundant repeated grade subtitles */
 }
 
 .student-xp-pill,
 .student-card-xp-badge {
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 8px;
+  padding: 2.5px 9px;
+  border-radius: 9999px;
   background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  color: #b45309;
+  border: 1.5px solid #f59e0b;
   white-space: nowrap;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.15);
 }
 
 .student-xp-progress-bar,
@@ -2572,12 +2700,35 @@ button, input, select, textarea {
   gap: 6px;
 }
 
-.student-card-action-bar .btn-dominant-xp {
+.student-card-action-bar .btn-dominant-xp,
+.btn-xp-3d {
   width: 100%;
   justify-content: center;
-  font-size: 0.85rem;
-  padding: 8px 12px;
-  border-radius: 10px;
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 800;
+  border: none;
+  border-bottom: 4px solid #047857;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.08s ease, border-bottom-width 0.08s ease;
+  font-size: 0.95rem;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.student-card-action-bar .btn-dominant-xp:active,
+.btn-xp-3d:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+.student-card-action-bar .btn-dominant-xp:hover,
+.btn-xp-3d:hover {
+  background: #059669;
 }
 
 /* ==========================================================================
@@ -2623,7 +2774,7 @@ button, input, select, textarea {
 .hero-tile-card {
   background: #f8fafc;
   border-radius: 14px;
-  padding: 16px;
+  padding: 18px;
   border: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
@@ -2646,10 +2797,10 @@ button, input, select, textarea {
 }
 
 .hero-tile-heading {
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.3;
 }
 
@@ -2659,74 +2810,266 @@ button, input, select, textarea {
   margin-bottom: 12px;
 }
 
-/* Needs Attention High-Contrast Warning Cards */
+/* Rich Preview Tile with Visual Depth for Next Lesson */
+.hero-tile-card.next-lesson-tile {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero-tile-card.next-lesson-tile::before {
+  content: "";
+  position: absolute;
+  top: -24px;
+  right: -24px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-tile-card.next-lesson-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.35);
+}
+
+.hero-tile-card.next-lesson-tile .hero-tile-tag {
+  color: #93c5fd;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-tile-card.next-lesson-tile .hero-tile-heading {
+  color: #ffffff;
+  font-size: 1.15rem;
+  margin-top: 4px;
+}
+
+.hero-tile-card.next-lesson-tile .hero-tile-sub {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+/* Tactile 3D Launch Button */
+.btn-launch-lesson {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 4px solid #1d4ed8;
+  border-radius: 12px;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.08s ease, border-bottom-width 0.08s ease;
+  width: fit-content;
+  user-select: none;
+}
+
+.btn-launch-lesson:hover {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.btn-launch-lesson:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* Interactive Roll Call Quick-Action Tile */
+.hero-tile-card.roll-call-tile {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.04);
+}
+
+.hero-tile-card.roll-call-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -2px rgba(0, 0, 0, 0.08);
+}
+
+.roll-call-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  width: fit-content;
+  margin: 6px 0 10px 0;
+}
+
+.roll-call-chip.chip-completed {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.roll-call-chip.chip-pending {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+/* ==========================================================================
+   HIGH-CONTRAST NEEDS ATTENTION ALERT CARDS
+   ========================================================================== */
 .needs-attention-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.needs-attention-item {
+.needs-attention-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 0.86rem;
-  font-weight: 600;
-  line-height: 1.4;
-  transition: transform 0.15s ease;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.needs-attention-item:hover {
-  transform: translateX(3px);
+.needs-attention-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
 }
 
-.needs-attention-item .needs-icon-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
+.needs-attention-card.alert-ruby {
+  border-left: 4px solid #ef4444;
+}
+.needs-attention-card.alert-ruby:hover {
+  border-color: #fca5a5;
+  border-left-color: #ef4444;
+}
+
+.needs-attention-card.alert-amber {
+  border-left: 4px solid #f59e0b;
+}
+.needs-attention-card.alert-amber:hover {
+  border-color: #fcd34d;
+  border-left-color: #f59e0b;
+}
+
+.needs-attention-card.alert-violet {
+  border-left: 4px solid #8b5cf6;
+}
+.needs-attention-card.alert-violet:hover {
+  border-color: #c4b5fd;
+  border-left-color: #8b5cf6;
+}
+
+.needs-status-badge {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
   flex-shrink: 0;
 }
 
-.needs-ruby {
-  background: #fff1f2;
-  color: #9f1239;
-  border: 1px solid #fecdd3;
-  border-left: 4px solid #e11d48;
+.needs-status-badge.badge-ruby {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
 }
 
-.needs-ruby .needs-icon-badge {
-  background: #ffe4e6;
-  color: #e11d48;
-}
-
-.needs-amber {
+.needs-status-badge.badge-amber {
   background: #fffbeb;
-  color: #92400e;
+  color: #b45309;
   border: 1px solid #fde68a;
-  border-left: 4px solid #f59e0b;
 }
 
-.needs-amber .needs-icon-badge {
+.needs-status-badge.badge-violet {
+  background: #f5f3ff;
+  color: #6d28d9;
+  border: 1px solid #ddd6fe;
+}
+
+.needs-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.needs-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.needs-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.needs-action-link {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.needs-action-link.link-ruby {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+.needs-action-link.link-ruby:hover {
+  background: #fee2e2;
+}
+
+.needs-action-link.link-amber {
+  color: #b45309;
+  background: #fffbeb;
+}
+.needs-action-link.link-amber:hover {
   background: #fef3c7;
-  color: #d97706;
 }
 
-.needs-cyan {
-  background: #f0f9ff;
-  color: #075985;
-  border: 1px solid #bae6fd;
-  border-left: 4px solid #0284c7;
+.needs-action-link.link-violet {
+  color: #6d28d9;
+  background: #f5f3ff;
 }
-
-.needs-cyan .needs-icon-badge {
-  background: #e0f2fe;
-  color: #0284c7;
+.needs-action-link.link-violet:hover {
+  background: #ede9fe;
 }
 
 /* =========================================================================
@@ -3567,7 +3910,8 @@ button, input, select, textarea {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 18px;
-  margin-bottom: 80px; /* Space for bottom toolkit dock */
+  padding-bottom: 100px; /* Space so bottom floating utility bar never overlaps bottom row of cards */
+  margin-bottom: 40px;
 }
 
 .classroom-student-card {
@@ -4079,22 +4423,18 @@ button, input, select, textarea {
   font-weight: 700;
 }
 
-/* 6. Contextual Floating Multi-Select Action Bar */
+/* 6. Contextual Floating Multi-Select Cluster (Integrated into Unified Action Bar) */
+.dock-multiselect-cluster,
 .floating-multiselect-bar {
-  position: fixed;
-  bottom: 74px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #0f172a;
+  gap: 10px;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: #ffffff;
-  padding: 10px 20px;
+  padding: 4px 12px;
   border-radius: 999px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
-  animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .multiselect-count {
@@ -6039,8 +6379,8 @@ body.classroom-mode-active .classroom-students-grid {
 #layer-clothing { z-index: 30; }
 #layer-face { z-index: 40; }
 #layer-glasses { z-index: 50; }
-#layer-horns { z-index: 60; }
-#layer-headwear { z-index: 70; }
+#layer-horns { z-index: 55; }
+#layer-headwear { z-index: 60; }
 
 #preview-pedestal,
 .pedestal-disk {
@@ -6909,3 +7249,713 @@ body.classroom-mode-active .classroom-students-grid {
 .btn-ws:hover {
   background: rgba(16, 185, 129, 0.2);
 }
+
+/* ==========================================================================
+   CONSOLIDATED FLOATING MASTER DOCK
+   ========================================================================== */
+.floating-master-dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+/* Tactile elastic press feedback to all dock icons and main action buttons */
+.dock-action-btn:active,
+.dock-pill-btn:active,
+.dock-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
+
+/* ==========================================================================
+   INTERACTIVE EVOLUTION JOURNEY TRACK & 3D ISOMETRIC PEDESTALS
+   ========================================================================== */
+.evolution-journey-container {
+  position: relative;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 70%, #030712 100%);
+  border-radius: 24px;
+  padding: 32px 24px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.evolution-journey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.evolution-journey-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.evolution-journey-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 40px 10px 20px;
+  overflow-x: auto;
+  min-height: 260px;
+}
+
+/* Glowing Energy Conduit Line connecting milestones */
+.evolution-conduit-line {
+  position: absolute;
+  top: 145px;
+  left: 50px;
+  right: 50px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  z-index: 1;
+}
+
+.evolution-conduit-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #8b5cf6 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.7), 0 0 30px rgba(16, 185, 129, 0.4);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Milestone Node */
+.evolution-milestone-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+  flex: 1;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.evolution-milestone-node:hover {
+  transform: translateY(-6px);
+}
+
+/* 3D Isometric Pedestal */
+.pedestal-3d-wrap {
+  position: relative;
+  width: 120px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.stage-character-float {
+  position: relative;
+  z-index: 3;
+  margin-bottom: -15px;
+  animation: idleBob 3s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+}
+
+.pedestal-isometric-3d {
+  width: 100px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 30%, #38bdf8 0%, #0284c7 40%, #0369a1 85%, #082f49 100%);
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  box-shadow: 0 10px 24px rgba(2, 132, 199, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  position: relative;
+}
+
+.evolution-milestone-node.is-unlocked .pedestal-isometric-3d {
+  background: radial-gradient(ellipse at 50% 30%, #34d399 0%, #059669 45%, #047857 85%, #022c22 100%);
+  border-color: rgba(52, 211, 153, 0.7);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.7);
+}
+
+.evolution-milestone-node.is-active-stage .pedestal-isometric-3d {
+  background: radial-gradient(ellipse at 50% 30%, #a78bfa 0%, #7c3aed 45%, #6d28d9 85%, #2e1065 100%);
+  border-color: rgba(167, 139, 250, 0.85);
+  box-shadow: 0 14px 32px rgba(139, 92, 246, 0.55), inset 0 3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.milestone-meta-card {
+  margin-top: 12px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 130px;
+}
+
+.milestone-level-tag {
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #38bdf8;
+}
+
+.evolution-milestone-node.is-unlocked .milestone-level-tag {
+  color: #34d399;
+}
+
+.evolution-milestone-node.is-active-stage .milestone-level-tag {
+  color: #c084fc;
+}
+
+.milestone-title {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 2px 0 4px 0;
+}
+
+.milestone-xp-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+/* Sleek Hover Gear / Pencil Admin Icon */
+.milestone-admin-gear {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.evolution-milestone-node:hover .milestone-admin-gear {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.milestone-admin-gear:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #60a5fa;
+  transform: scale(1.15) rotate(45deg);
+}
+
+/* ==========================================================================
+   PHYSICALIZED BADGE & ACHIEVEMENT TRADING CARDS (TROPHY ENAMEL PINS)
+   ========================================================================== */
+.badges-trading-grid,
+.achievements-trading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.badge-trading-card {
+  min-width: 160px;
+  background: radial-gradient(circle at 50% 15%, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  border: 2px solid #e2e8f0;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+}
+
+.badge-trading-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12);
+}
+
+/* Tier 1: Emerald Explorer (100–150 XP) */
+.badge-trading-card.tier-emerald-explorer {
+  border-color: #10b981;
+  background: radial-gradient(circle at 50% 12%, #ecfdf5 0%, #ffffff 70%);
+}
+.badge-trading-card.tier-emerald-explorer:hover {
+  box-shadow: 0 14px 28px -4px rgba(16, 185, 129, 0.25);
+}
+
+/* Tier 2: Solar Amber (200–350 XP) */
+.badge-trading-card.tier-solar-amber {
+  border-color: #f59e0b;
+  background: radial-gradient(circle at 50% 12%, #fffbeb 0%, #ffffff 70%);
+}
+.badge-trading-card.tier-solar-amber:hover {
+  box-shadow: 0 14px 28px -4px rgba(245, 158, 11, 0.28);
+}
+
+/* Tier 3: Cosmic Violet Legendary (400+ XP) with Holographic Border Glow */
+.badge-trading-card.tier-cosmic-violet {
+  border-color: #8b5cf6;
+  background: radial-gradient(circle at 50% 12%, #f5f3ff 0%, #ffffff 65%);
+  box-shadow: 0 6px 20px -2px rgba(139, 92, 246, 0.28);
+  position: relative;
+}
+
+.badge-trading-card.tier-cosmic-violet::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4), rgba(59, 130, 246, 0.4));
+  z-index: -1;
+  filter: blur(3px);
+  opacity: 0.75;
+}
+
+.badge-trading-card.tier-cosmic-violet:hover {
+  box-shadow: 0 16px 32px -4px rgba(139, 92, 246, 0.4), 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+/* Glowing Circular Bezel Enamel Pin (48px–56px inner crest) */
+.badge-enamel-bezel {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.06);
+  margin-bottom: 10px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.badge-trading-card:hover .badge-enamel-bezel {
+  transform: scale(1.12) rotate(6deg);
+}
+
+.tier-emerald-explorer .badge-enamel-bezel {
+  border-color: #10b981;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35), inset 0 2px 4px rgba(16, 185, 129, 0.15);
+}
+
+.tier-solar-amber .badge-enamel-bezel {
+  border-color: #f59e0b;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.4), inset 0 2px 4px rgba(245, 158, 11, 0.15);
+}
+
+.tier-cosmic-violet .badge-enamel-bezel {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5), inset 0 2px 4px rgba(139, 92, 246, 0.2);
+}
+
+.badge-crest-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.badge-trading-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.badge-trading-desc {
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge-rarity-pill {
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.tier-emerald-explorer .badge-rarity-pill {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.tier-solar-amber .badge-rarity-pill {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.tier-cosmic-violet .badge-rarity-pill {
+  background: #f5f3ff;
+  color: #6d28d9;
+  border: 1px solid #ddd6fe;
+}
+
+/* 3D Tactile Award Badge Push Button */
+.btn-award-badge-3d {
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.78rem;
+  border: none;
+  border-bottom: 3px solid #047857;
+  border-radius: 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: transform 0.08s ease, border-bottom-width 0.08s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-award-badge-3d:hover {
+  background: #059669;
+}
+
+.btn-award-badge-3d:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+/* ==========================================================================
+   CINEMATIC HATCHING & EVOLUTION OVERLAY
+   ========================================================================== */
+#evolution-ceremony-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: radial-gradient(circle at 50% 35%, rgba(30, 27, 75, 0.96) 0%, rgba(15, 23, 42, 0.98) 60%, #030712 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: overlayFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ceremony-card {
+  position: relative;
+  width: 90%;
+  max-width: 580px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 24px 64px -8px rgba(0, 0, 0, 0.6), 0 0 50px rgba(139, 92, 246, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Upward Volumetric Light Beam */
+.ceremony-card::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 380px;
+  background: radial-gradient(ellipse at 50% 65%, rgba(56, 189, 248, 0.4) 0%, rgba(139, 92, 246, 0.25) 45%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: pulseGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { transform: translateX(-50%) scale(0.95); opacity: 0.7; }
+  100% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+}
+
+.ceremony-stage-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 10px 0 24px 0;
+}
+
+.ceremony-sprite-box {
+  position: relative;
+  z-index: 3;
+  margin-bottom: -20px;
+  animation: ceremonyTransform 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards, idleBob 3s ease-in-out infinite 1.6s;
+  filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.85));
+}
+
+@keyframes ceremonyTransform {
+  0% {
+    transform: scale(0.4) rotate(-15deg);
+    filter: drop-shadow(0 0 40px #ffffff) brightness(2.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.25) rotate(5deg);
+    filter: drop-shadow(0 0 60px #38bdf8) brightness(1.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.7)) brightness(1);
+    opacity: 1;
+  }
+}
+
+.ceremony-pedestal {
+  width: 180px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 30%, #38bdf8 0%, #2563eb 45%, #1d4ed8 80%, #0f172a 100%);
+  border: 3px solid rgba(147, 197, 253, 0.75);
+  box-shadow: 0 16px 40px rgba(37, 99, 235, 0.6), inset 0 3px 8px rgba(255, 255, 255, 0.8);
+}
+
+.ceremony-tag {
+  font-size: 0.85rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fde047;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.ceremony-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.ceremony-sub {
+  font-size: 1.05rem;
+  color: #93c5fd;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.ceremony-desc {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  max-width: 440px;
+  margin-bottom: 24px;
+  line-height: 1.45;
+}
+
+/* 3D Tactile Congratulate Button */
+.btn-ceremony-congratulate {
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.05rem;
+  border: none;
+  border-bottom: 4px solid #047857;
+  border-radius: 14px;
+  padding: 12px 28px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.08s ease, border-bottom-width 0.08s ease;
+  user-select: none;
+}
+
+.btn-ceremony-congratulate:hover {
+  background: #059669;
+}
+
+.btn-ceremony-congratulate:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* Confetti Shower Particles */
+.ceremony-confetti {
+  position: absolute;
+  width: 10px;
+  height: 14px;
+  pointer-events: none;
+  border-radius: 2px;
+  animation: confettiFall 2.8s linear forwards;
+  z-index: 100001;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   4 DISTINCT SPECIES ARCHETYPES UNDERGLOW & BADGES
+   1. Ignis (Dragon/Flame): Warm ember underglow (#f97316)
+   2. Flora (Fox/Forest): Emerald nature glow (#10b981)
+   3. Volt (Pikachu/Electric): Electric amber glow (#eab308)
+   4. Astral (Owl/Cosmic): Violet celestial glow (#8b5cf6)
+   ========================================================================= */
+
+/* Card Border & Glow Accents */
+.student-card.archetype-ignis {
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 4px 18px rgba(249, 115, 22, 0.18), inset 0 0 16px rgba(249, 115, 22, 0.08);
+}
+.student-card.archetype-ignis:hover {
+  border-color: #f97316;
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.35), inset 0 0 20px rgba(249, 115, 22, 0.14);
+}
+
+.student-card.archetype-flora {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.18), inset 0 0 16px rgba(16, 185, 129, 0.08);
+}
+.student-card.archetype-flora:hover {
+  border-color: #10b981;
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.35), inset 0 0 20px rgba(16, 185, 129, 0.14);
+}
+
+.student-card.archetype-volt {
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow: 0 4px 18px rgba(234, 179, 8, 0.18), inset 0 0 16px rgba(234, 179, 8, 0.08);
+}
+.student-card.archetype-volt:hover {
+  border-color: #eab308;
+  box-shadow: 0 8px 28px rgba(234, 179, 8, 0.35), inset 0 0 20px rgba(234, 179, 8, 0.14);
+}
+
+.student-card.archetype-astral {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.18), inset 0 0 16px rgba(139, 92, 246, 0.08);
+}
+.student-card.archetype-astral:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.35), inset 0 0 20px rgba(139, 92, 246, 0.14);
+}
+
+/* Badge Archetype Pills */
+.badge-archetype {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  line-height: 1;
+  user-select: none;
+}
+.badge-archetype.archetype-ignis {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.45);
+}
+.badge-archetype.archetype-flora {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+}
+.badge-archetype.archetype-volt {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.45);
+}
+.badge-archetype.archetype-astral {
+  background: rgba(139, 92, 246, 0.18);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.45);
+}
+
+/* Sprite Container Underglow Highlights */
+.eaa-monster-svg.archetype-ignis {
+  filter: drop-shadow(0 8px 16px rgba(249, 115, 22, 0.38));
+}
+.eaa-monster-svg.archetype-flora {
+  filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.38));
+}
+.eaa-monster-svg.archetype-volt {
+  filter: drop-shadow(0 8px 16px rgba(234, 179, 8, 0.38));
+}
+.eaa-monster-svg.archetype-astral {
+  filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.38));
+}
+
+

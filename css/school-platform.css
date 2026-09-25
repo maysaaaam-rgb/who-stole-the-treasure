@@ -7865,3 +7865,97 @@ body.classroom-mode-active .classroom-students-grid {
   }
 }
 
+/* =========================================================================
+   4 DISTINCT SPECIES ARCHETYPES UNDERGLOW & BADGES
+   1. Ignis (Dragon/Flame): Warm ember underglow (#f97316)
+   2. Flora (Fox/Forest): Emerald nature glow (#10b981)
+   3. Volt (Pikachu/Electric): Electric amber glow (#eab308)
+   4. Astral (Owl/Cosmic): Violet celestial glow (#8b5cf6)
+   ========================================================================= */
+
+/* Card Border & Glow Accents */
+.student-card.archetype-ignis {
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 4px 18px rgba(249, 115, 22, 0.18), inset 0 0 16px rgba(249, 115, 22, 0.08);
+}
+.student-card.archetype-ignis:hover {
+  border-color: #f97316;
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.35), inset 0 0 20px rgba(249, 115, 22, 0.14);
+}
+
+.student-card.archetype-flora {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.18), inset 0 0 16px rgba(16, 185, 129, 0.08);
+}
+.student-card.archetype-flora:hover {
+  border-color: #10b981;
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.35), inset 0 0 20px rgba(16, 185, 129, 0.14);
+}
+
+.student-card.archetype-volt {
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow: 0 4px 18px rgba(234, 179, 8, 0.18), inset 0 0 16px rgba(234, 179, 8, 0.08);
+}
+.student-card.archetype-volt:hover {
+  border-color: #eab308;
+  box-shadow: 0 8px 28px rgba(234, 179, 8, 0.35), inset 0 0 20px rgba(234, 179, 8, 0.14);
+}
+
+.student-card.archetype-astral {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.18), inset 0 0 16px rgba(139, 92, 246, 0.08);
+}
+.student-card.archetype-astral:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.35), inset 0 0 20px rgba(139, 92, 246, 0.14);
+}
+
+/* Badge Archetype Pills */
+.badge-archetype {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  line-height: 1;
+  user-select: none;
+}
+.badge-archetype.archetype-ignis {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.45);
+}
+.badge-archetype.archetype-flora {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+}
+.badge-archetype.archetype-volt {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.45);
+}
+.badge-archetype.archetype-astral {
+  background: rgba(139, 92, 246, 0.18);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.45);
+}
+
+/* Sprite Container Underglow Highlights */
+.eaa-monster-svg.archetype-ignis {
+  filter: drop-shadow(0 8px 16px rgba(249, 115, 22, 0.38));
+}
+.eaa-monster-svg.archetype-flora {
+  filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.38));
+}
+.eaa-monster-svg.archetype-volt {
+  filter: drop-shadow(0 8px 16px rgba(234, 179, 8, 0.38));
+}
+.eaa-monster-svg.archetype-astral {
+  filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.38));
+}
+
+

@@ -1109,6 +1109,9 @@
       ? (profile.monsterName || profile.element).toLowerCase().replace(/\s+/g, '')
       : (element === 'ember' ? 'emberwing' : 'monster');
 
+    const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+    const archetypeClass = 'archetype-' + archetype;
+
     let avatarMarkup = '';
     const customImg = options.image || s.monsterAvatar;
     if (customImg) {
@@ -1118,6 +1121,8 @@
         stage: mState.stageKey || 'baby',
         color: (profile && profile.baseColor) || 'blue',
         equipped: (profile && profile.equipped) || {},
+        archetype: archetype,
+        studentId: studentId,
         size: 120,
         animated: true,
         isAvatar: true
@@ -1131,12 +1136,13 @@
     const streak = s.streakDays || 0;
 
     return '' +
-      '<div class="student-card ' + elementClass + '" data-student-id="' + studentId + '">' +
+      '<div class="student-card ' + elementClass + ' ' + archetypeClass + '" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
         // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
         '<div class="card-overlay-top">' +
           '<div class="card-overlay-left">' +
             '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
             '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+            '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
           '</div>' +
           '<div class="card-overlay-right">' +
             '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3085,6 +3091,8 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
+              const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+              const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
               let avatarMarkup = '';
@@ -3095,6 +3103,8 @@
                   stage: (mState && mState.stageKey) ? mState.stageKey : 'baby',
                   color: (mState && mState.profile) ? mState.profile.baseColor : 'blue',
                   equipped: (mState && mState.profile) ? mState.profile.equipped : {},
+                  archetype: archetype,
+                  studentId: s.id,
                   size: 120,
                   animated: true,
                   isAvatar: true
@@ -3104,7 +3114,7 @@
               }
 
               return '' +
-                '<div class="student-directory-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
+                '<div class="student-directory-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
                   '<div class="card-overlay-top">' +
                     '<div class="card-overlay-left">' +
@@ -3113,6 +3123,7 @@
                       ) +
                       '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
                       '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                      '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
                     '</div>' +
                     '<div class="card-overlay-right">' +
                       '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3481,6 +3492,8 @@
         else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
         else elementKey = 'aqua';
       }
+      const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+      const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
 
       let avatarMarkup = '';
@@ -3491,6 +3504,8 @@
           stage: (monsterState && monsterState.stageKey) ? monsterState.stageKey : 'baby',
           color: (monsterState && monsterState.profile) ? monsterState.profile.baseColor : 'blue',
           equipped: (monsterState && monsterState.profile) ? monsterState.profile.equipped : {},
+          archetype: archetype,
+          studentId: s.id,
           size: 120,
           animated: true,
           isAvatar: true
@@ -3500,7 +3515,7 @@
       }
 
       return '' +
-        '<div class="classroom-student-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+        '<div class="classroom-student-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
           '<div class="card-overlay-top">' +
             '<div class="card-overlay-left">' +
@@ -3509,6 +3524,7 @@
               ) +
               '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
               '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+              '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
             '</div>' +
             '<div class="card-overlay-right">' +
               '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
