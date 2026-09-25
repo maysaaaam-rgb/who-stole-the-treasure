@@ -1157,10 +1157,10 @@
 
         // Monster Stage Platform with idleBob & Pedestal Disc
         '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
-          '<div class="monster-avatar-container">' +
+          '<div class="monster-avatar-container roster-monster-sprite">' +
             avatarMarkup +
           '</div>' +
-          '<div class="pedestal-disc"></div>' +
+          '<div class="pedestal-disc roster-pedestal-disk"></div>' +
           '<span class="stage-level-badge">' + evolutionBadge + '</span>' +
         '</div>' +
 
@@ -3134,10 +3134,10 @@
 
                   // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
                   '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
-                    '<div class="monster-avatar-container">' +
+                    '<div class="monster-avatar-container roster-monster-sprite">' +
                       avatarMarkup +
                     '</div>' +
-                    '<div class="pedestal-disc"></div>' +
+                    '<div class="pedestal-disc roster-pedestal-disk"></div>' +
                     '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
                   '</div>' +
 
@@ -3531,10 +3531,10 @@
 
           // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
           '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
-            '<div class="monster-avatar-container">' +
+            '<div class="monster-avatar-container roster-monster-sprite">' +
               avatarMarkup +
             '</div>' +
-            '<div class="pedestal-disc"></div>' +
+            '<div class="pedestal-disc roster-pedestal-disk"></div>' +
             '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
           '</div>' +
 
