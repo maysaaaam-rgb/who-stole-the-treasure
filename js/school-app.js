@@ -1170,12 +1170,11 @@
             '<h3 class="student-name">' + studentName + '</h3>' +
             '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + '</span>' +
           '</div>' +
-          '<p class="student-grade">' + gradeLabel + '</p>' +
           '<div class="student-xp-progress-bar" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
             '<div class="student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%;"></div>' +
           '</div>' +
           '<div class="student-card-action-bar">' +
-            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
+            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
               '⚡ +10 XP' +
             '</button>' +
           '</div>' +
@@ -3147,7 +3146,6 @@
                       '<h3 class="student-name">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
                       '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
                     '</div>' +
-                    '<p class="student-grade">' + (cls ? cls.name : 'Unenrolled') + ' · ' + (s.grade || 'Grade 4') + '</p>' +
                     '<div class="student-xp-progress-bar" title="Evolution Progress: ' + progressPct + '%">' +
                       '<div class="student-xp-progress-fill" style="width:' + progressPct + '%;"></div>' +
                     '</div>' +
@@ -3160,7 +3158,7 @@
 
                     // Dominant Tactile 3D Action Button (+10 XP)
                     '<div class="student-card-action-bar">' +
-                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                         '⚡ +10 XP' +
                       '</button>' +
                     '</div>' +
@@ -3544,7 +3542,6 @@
               '<h3 class="student-name">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
               '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
             '</div>' +
-            '<p class="student-grade">' + (s.grade || cls.name || 'Grade 4') + '</p>' +
             '<div class="student-xp-progress-bar" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
               '<div class="student-xp-progress-fill" style="width:' + monsterState.progressPct + '%;"></div>' +
             '</div>' +
@@ -3554,7 +3551,7 @@
 
             // Dominant Tactile 3D Action Button (+10 XP)
             '<div class="student-card-action-bar">' +
-              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                 '⚡ +10 XP' +
               '</button>' +
             '</div>' +
