@@ -12515,28 +12515,72 @@ window.switchClassroomSubTab = function(subTab) {
   }
   window.updateMonsterPreview = updateMonsterPreview;
 
+  window.renderCatalogCards = function(category) {
+    if (typeof window.renderMonsterCreatorItems === 'function') {
+      window.renderMonsterCreatorItems();
+    }
+  };
+
   function equipItem(category, item) {
-    if (!monsterCreatorDraft) return;
-    if (!monsterCreatorDraft.equipped) monsterCreatorDraft.equipped = {};
+    if (!item) return;
+
+    // Strict block on locked cosmetics
+    const unlockLevel = (item && item.unlockLevel) || (item && item.unlockRequirement && item.unlockRequirement.level);
+    const curLevel = (window.currentMonster && window.currentMonster.level) || 1;
+    if (unlockLevel && unlockLevel > curLevel) {
+      console.warn("Item is level locked (Req Lvl " + unlockLevel + " > " + curLevel + "):", item.name || item.id);
+      return; // Strict block on locked cosmetics
+    }
 
     const itemId = (item && typeof item === 'object') ? item.id : item;
 
     // 1. Update State
-    if (category === 'hat' || category === 'hats') {
-      monsterCreatorDraft.equipped.hat = itemId;
-      monsterCreatorDraft.equipped.hats = itemId;
-    } else {
-      monsterCreatorDraft.equipped[category] = itemId;
-    }
     if (window.currentMonster && window.currentMonster.equipped) {
       window.currentMonster.equipped[category] = itemId;
     }
+    if (monsterCreatorDraft && monsterCreatorDraft.equipped) {
+      if (category === 'hat' || category === 'hats') {
+        monsterCreatorDraft.equipped.hat = itemId;
+        monsterCreatorDraft.equipped.hats = itemId;
+      } else {
+        monsterCreatorDraft.equipped[category] = itemId;
+      }
+    }
 
-    // 2. Sync Sidebar & Grid UI
+    // 2. Update live stage layer
+    const layerMap = {
+      aura: 'layer-aura-back',
+      wings: 'layer-back-gear',
+      tail: 'layer-back-gear',
+      backpack: 'layer-back-gear',
+      cape: 'layer-back-gear',
+      body: 'layer-body',
+      clothing: 'layer-clothing',
+      face: 'layer-face',
+      eyes: 'layer-face',
+      mouth: 'layer-face',
+      glasses: 'layer-glasses',
+      horns: 'layer-horns',
+      hat: 'layer-headwear',
+      hats: 'layer-headwear',
+      headwear: 'layer-headwear',
+      accessory: 'layer-headwear'
+    };
+    const targetId = document.getElementById(`layer-${category}`) ? `layer-${category}` : (layerMap[category] || `layer-${category}`);
+    const layerTarget = document.getElementById(targetId);
+    if (layerTarget && typeof item === 'object' && (item.svgMarkup || item.imageSrc)) {
+      if (item.svgMarkup) {
+        layerTarget.innerHTML = item.svgMarkup.trim().startsWith('<svg')
+          ? item.svgMarkup
+          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${item.svgMarkup}</svg>`;
+      } else if (item.imageSrc) {
+        layerTarget.innerHTML = `<img src="${item.imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
+      }
+    }
+
+    // 3. Sync UI and Stage Viewports
     renderEquippedList();
-    renderItemsGrid(category);
-
-    // 3. Immediately re-render the visual stage
+    renderCatalogCards();
     updateMonsterPreview();
   }
   window.equipItem = equipItem;
@@ -12544,19 +12588,18 @@ window.switchClassroomSubTab = function(subTab) {
   window.handleSelectMonsterItem = function(itemId, category, isNone) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
+    const allItems = (store && typeof store.getMonsterItems === 'function') ? store.getMonsterItems() : [];
+    const targetItem = allItems.find(i => i.id === itemId) || { id: itemId, category: category };
+
     // Strict Level Lock Enforcement
     const curLevel = (window.currentMonster && window.currentMonster.level) || 
       (store && monsterCreatorStudentId && typeof store.calculateMonsterState === 'function' ? (store.calculateMonsterState(monsterCreatorStudentId)?.currentLevel || 1) : 1);
 
-    if (!isNone && store && typeof store.getMonsterItems === 'function') {
-      const allItems = store.getMonsterItems();
-      const targetItem = allItems.find(i => i.id === itemId);
-      if (targetItem) {
-        const reqLevel = (targetItem.unlockRequirement && targetItem.unlockRequirement.level) || targetItem.unlockLevel || 1;
-        if (reqLevel > curLevel) {
-          console.warn("Item is level locked (Req Lvl " + reqLevel + " > " + curLevel + "):", targetItem.name);
-          return; // Block equipping or state changes
-        }
+    if (!isNone) {
+      const reqLevel = (targetItem.unlockRequirement && targetItem.unlockRequirement.level) || targetItem.unlockLevel || 1;
+      if (reqLevel > curLevel) {
+        console.warn("Item is level locked (Req Lvl " + reqLevel + " > " + curLevel + "):", targetItem.name || itemId);
+        return; // Block equipping or state changes
       }
     }
 
@@ -12572,28 +12615,30 @@ window.switchClassroomSubTab = function(subTab) {
       }
       renderEquippedList();
       renderItemsGrid(category);
+      renderCatalogCards();
       updateMonsterPreview();
     } else if (category === 'body') {
       monsterCreatorDraft.equipped.body = itemId;
       monsterCreatorDraft.baseColor = itemId.replace('body-', '');
       renderEquippedList();
       renderItemsGrid(category);
+      renderCatalogCards();
       updateMonsterPreview();
     } else if (category === 'glasses' || (itemId && itemId.startsWith('glasses-'))) {
       if (monsterCreatorDraft.equipped.accessory === 'none') monsterCreatorDraft.equipped.accessory = '';
-      equipItem('glasses', { id: itemId });
+      equipItem('glasses', targetItem);
     } else if (category === 'backpack' || (itemId && (itemId.startsWith('bp-') || itemId.includes('satchel')))) {
-      equipItem('backpack', { id: itemId });
+      equipItem('backpack', targetItem);
     } else if (category === 'hat' || category === 'hats' || (itemId && itemId.startsWith('hat-'))) {
-      equipItem('hat', { id: itemId });
+      equipItem('hat', targetItem);
     } else if (category === 'horns' || (itemId && itemId.startsWith('horns-'))) {
-      equipItem('horns', { id: itemId });
+      equipItem('horns', targetItem);
     } else if (category === 'wings' || (itemId && itemId.startsWith('wings-'))) {
-      equipItem('wings', { id: itemId });
+      equipItem('wings', targetItem);
     } else if (category === 'tail' || (itemId && itemId.startsWith('tail-'))) {
-      equipItem('tail', { id: itemId });
+      equipItem('tail', targetItem);
     } else {
-      equipItem(category, { id: itemId });
+      equipItem(category, targetItem);
     }
   };
 
