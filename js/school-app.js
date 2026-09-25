@@ -7361,96 +7361,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabBodyHtml = '';
 
     if (activeTab === 'levels') {
+      const activeStudent = (store.getStudents ? store.getStudents() : [])[0] || null;
+      const currentActiveLevel = activeStudent ? (store.calculateMonsterState ? store.calculateMonsterState(activeStudent.id).currentLevel : 1) : 1;
+
       tabBodyHtml = (window.MonsterRenderer && window.MonsterRenderer.renderMonsterEvolutionStagesBanner ? window.MonsterRenderer.renderMonsterEvolutionStagesBanner() : '') +
-        
-        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
-            '<div>' +
-              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Stages &amp; XP Thresholds</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Configure progression level names, XP required, stage keys, descriptions, and perks. Changes dynamically update all active students.</p>' +
-            '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
-          '</div>' +
-
-          '<!-- Horizontal Monster Evolution Progression Timeline -->' +
+        (window.GamificationMilestones && window.GamificationMilestones.renderEvolutionJourney ? 
+          window.GamificationMilestones.renderEvolutionJourney(levels, currentActiveLevel, { onEdit: 'openProgressionLevelEditorModal' }) :
           '<div class="monster-evolution-timeline">' +
-            levels.map((l, idx) => {
-              const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                stage: l.stageKey,
-                color: 'blue',
-                size: 80,
-                animated: false
-              }) : '👾';
-              const isLast = idx === levels.length - 1;
-              const chevronHtml = !isLast ? (
-                '<div class="evolution-timeline-chevron" title="Evolution Step">' +
-                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-                    '<polyline points="9 18 15 12 9 6"></polyline>' +
-                  '</svg>' +
-                '</div>'
-              ) : '';
-
-              return '' +
-                '<div class="evolution-stage-card">' +
-                  '<div style="font-size:0.68rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Level ' + l.level + '</div>' +
-                  '<div style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' +
-                    stageSvg +
-                  '</div>' +
-                  '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); margin-bottom:4px; line-height:1.2;">' + l.name + '</div>' +
-                  '<div style="font-size:0.72rem; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); padding:2px 8px; border-radius:10px; white-space:nowrap;">' + l.xpRequired.toLocaleString() + ' ⭐ XP</div>' +
-                '</div>' +
-                chevronHtml;
-            }).join('') +
-          '</div>' +
-
-          '<div style="overflow-x:auto;">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
-              '<thead>' +
-                '<tr style="background:var(--bg-muted); text-align:left; border-bottom:1px solid var(--border-light);">' +
-                  '<th style="padding:10px 12px;">Stage &amp; Icon</th>' +
-                  '<th style="padding:10px 12px;">Level #</th>' +
-                  '<th style="padding:10px 12px;">Level Name</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">XP Required</th>' +
-                  '<th style="padding:10px 12px;">Description</th>' +
-                  '<th style="padding:10px 12px;">Perks &amp; Rewards</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Status</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Reorder</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">Actions</th>' +
-                '</tr>' +
-              '</thead>' +
-              '<tbody>' +
-                levels.map(l => {
-                  const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                    stage: l.stageKey,
-                    color: 'blue',
-                    size: 40,
-                    animated: false
-                  }) : '👾';
-                  const isArchived = l.status === 'archived';
-
-                  return '' +
-                    '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isArchived ? '0.6' : '1') + ';">' +
-                      '<td style="padding:10px 12px;"><div style="width:40px; height:40px;">' + stageSvg + '</div></td>' +
-                      '<td style="padding:10px 12px; font-weight:800;">Level ' + l.level + '</td>' +
-                      '<td style="padding:10px 12px; font-weight:700; color:var(--color-primary);">' + l.name + '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; font-weight:800;">' + l.xpRequired.toLocaleString() + ' ⭐</td>' +
-                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:240px;">' + (l.description || 'Evolutionary milestone') + '</td>' +
-                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (Array.isArray(l.rewards) ? l.rewards.join(', ') : (l.rewards || 'Base avatar perks')) + '</td>' +
-                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:' + (isArchived ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)') + '; color:' + (isArchived ? '#dc2626' : '#059669') + '; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">' + (isArchived ? 'Archived' : 'Active') + '</span></td>' +
-                      '<td style="padding:10px 12px; text-align:center; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'up\')" title="Move Up" style="padding:1px 5px; font-size:0.7rem; margin-right:2px;">▲</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'down\')" title="Move Down" style="padding:1px 5px; font-size:0.7rem;">▼</button>' +
-                      '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="openProgressionLevelEditorModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; margin-right:4px;">✏️ Edit</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? '↩️ Restore' : '📦 Archive') + '</button>' +
-                      '</td>' +
-                    '</tr>';
-                }).join('') +
-              '</tbody>' +
-            '</table>' +
-          '</div>' +
-        '</div>';
+            levels.map(l => '<div class="evolution-stage-card"><div class="milestone-title">' + l.name + '</div></div>').join('') +
+          '</div>'
+        );
     } else if (activeTab === 'items') {
       const categories = ['all', 'body', 'eyes', 'mouth', 'horns', 'wings', 'tail', 'hat', 'glasses', 'backpack', 'accessory', 'environment', 'aura'];
       let filteredItems = allItems.slice();
@@ -7577,8 +7497,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Classroom Badges (' + badges.length + ')</h2>' +
             '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
+          '<div id="badges-grid" class="badges-trading-grid" style="margin-bottom:30px;">' +
             badges.map(b => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderBadgeTradingCard) {
+                return window.GamificationMilestones.renderBadgeTradingCard(b, {
+                  onAward: 'openAwardBadgeModal',
+                  onEdit: 'openEditBadgeModal'
+                });
+              }
               const isArchived = b.status === 'archived' || b.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -7610,8 +7536,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Learning Achievements (' + achievements.length + ')</h2>' +
             '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
+          '<div id="achievements-grid" class="achievements-trading-grid">' +
             achievements.map(a => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderAchievementTradingCard) {
+                return window.GamificationMilestones.renderAchievementTradingCard(a, {
+                  onEdit: 'openEditAchievementModal'
+                });
+              }
               const isArchived = a.status === 'archived' || a.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -14449,6 +14380,12 @@ window.switchClassroomSubTab = function(subTab) {
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
     const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
 
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, toLvl);
+      return;
+    }
+
     const titleEl = document.getElementById('m-levelup-title');
     if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
@@ -14496,42 +14433,20 @@ window.switchClassroomSubTab = function(subTab) {
     currentCelebrationStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
-    const profile = store.getMonsterProfile(studentId);
-
-    const titleEl = document.getElementById('m-hatch-title') || document.getElementById('modal-hatch-title');
-    if (titleEl) titleEl.innerText = '🥚 ✨ ' + student.firstName.toUpperCase() + "'S EGG HAS HATCHED! ✨ 🐣";
-
-    const xpInfoEl = document.getElementById('m-hatch-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ Level 3 Baby Monster Unlocked!';
-
-    const renderWrap = document.getElementById('m-hatch-monster-svg') || document.getElementById('modal-hatch-monster-render');
-    if (renderWrap && window.renderMonsterSVG) {
-      const svg = window.renderMonsterSVG({
-        stage: 'baby',
-        color: profile.baseColor || 'blue',
-        size: 160,
-        animated: true
-      });
-      renderWrap.innerHTML = '' +
-        '<div class="monster-avatar-container">' +
-          '<div class="monster-sprite">' + svg + '</div>' +
-          '<div class="monster-pedestal"></div>' +
-        '</div>';
-    }
 
     // Mark as hatched in store
-    store.updateMonsterProfile(studentId, { isHatched: true });
-    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
+    if (store.updateMonsterProfile) store.updateMonsterProfile(studentId, { isHatched: true });
+    if (store.logMonsterHistory) store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
 
-    const btnCloset = document.getElementById('btn-modal-hatch-closet');
-    if (btnCloset) {
-      btnCloset.onclick = function() {
-        window.closeModal('modal-monster-hatch');
-        window.openStudentDetail(studentId, 'monster');
-      };
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, {
+        name: 'Baby Monster',
+        stageKey: 'baby',
+        description: 'The dormant shell has cracked wide open, revealing an adorable companion ready for classroom adventure!'
+      });
+      return;
     }
-
-    window.openModal('modal-monster-hatch');
   };
 
   window.openEvolutionPathModal = function(studentId) {
