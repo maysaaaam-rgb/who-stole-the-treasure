@@ -2398,6 +2398,24 @@ button, input, select, textarea {
   }
 }
 
+.roster-monster-sprite {
+  animation: monsterFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+}
+
+.roster-pedestal-disk {
+  width: 80px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.4) 0%, transparent 70%);
+  margin-top: -6px;
+}
+
+@keyframes monsterFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 /* Isometric Grounding Pedestal Disc */
 .pedestal-disc,
 .pedestal-shadow {
