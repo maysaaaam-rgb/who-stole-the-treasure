@@ -1127,7 +1127,7 @@
       avatarMarkup = '<img src="' + assetUrl + '" class="monster-avatar" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
     }
 
-    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, ''));
+    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
     const streak = s.streakDays || 0;
 
     return '' +
@@ -3137,7 +3137,7 @@
                       avatarMarkup +
                     '</div>' +
                     '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3533,7 +3533,7 @@
               avatarMarkup +
             '</div>' +
             '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)

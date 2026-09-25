@@ -11,6 +11,41 @@
 (function(root) {
   'use strict';
 
+  // =========================================================================
+  // MONSTER EVOLUTION TIERS & XP DYNAMIC SYNCHRONIZATION (SINGLE SOURCE OF TRUTH)
+  // =========================================================================
+  const EVOLUTION_TIERS = [
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+  ];
+
+  function getStageFromXP(rawXP) {
+    const xp = Math.max(0, Number(rawXP) || 0);
+    for (let i = EVOLUTION_TIERS.length - 1; i >= 0; i--) {
+      if (xp >= EVOLUTION_TIERS[i].minXP) {
+        const tier = EVOLUTION_TIERS[i];
+        const nextThreshold = tier.maxXP === Infinity ? tier.minXP : tier.maxXP + 1;
+        const progressInTier = tier.maxXP === Infinity 
+          ? 100 
+          : Math.min(100, Math.round(((xp - tier.minXP) / (nextThreshold - tier.minXP)) * 100));
+        return {
+          level: tier.level,
+          levelName: tier.name,
+          isEgg: tier.isEgg,
+          spriteType: tier.spriteType,
+          progressPct: progressInTier,
+          xpToNext: tier.maxXP === Infinity ? 0 : (nextThreshold - xp)
+        };
+      }
+    }
+    return EVOLUTION_TIERS[0];
+  }
+
   function getBadgeRarityTier(xp) {
     const numXP = Number(xp) || 0;
     if (numXP >= 400) {
@@ -321,14 +356,21 @@
 
   // Exports
   const GamificationMilestones = {
+    EVOLUTION_TIERS,
+    getStageFromXP,
     renderEvolutionJourney,
     renderBadgeTradingCard,
     renderAchievementTradingCard,
     triggerEvolutionCeremony
   };
 
+  root.EVOLUTION_TIERS = EVOLUTION_TIERS;
+  root.getStageFromXP = getStageFromXP;
+
   if (typeof window !== 'undefined') {
     window.GamificationMilestones = GamificationMilestones;
+    window.EVOLUTION_TIERS = EVOLUTION_TIERS;
+    window.getStageFromXP = getStageFromXP;
     window.triggerEvolutionCeremony = triggerEvolutionCeremony;
   }
 

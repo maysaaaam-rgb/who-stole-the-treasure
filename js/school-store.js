@@ -2063,115 +2063,65 @@
 
   // =========================================================================
   // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS (7 STAGES)
+  // Single Source of Truth: Evaluated strictly from student.xp
   // =========================================================================
+
+  const EVOLUTION_TIERS = [
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+  ];
+
+  function getStageFromXP(rawXP) {
+    const xp = Math.max(0, Number(rawXP) || 0);
+    for (let i = EVOLUTION_TIERS.length - 1; i >= 0; i--) {
+      if (xp >= EVOLUTION_TIERS[i].minXP) {
+        const tier = EVOLUTION_TIERS[i];
+        const nextThreshold = tier.maxXP === Infinity ? tier.minXP : tier.maxXP + 1;
+        const progressInTier = tier.maxXP === Infinity 
+          ? 100 
+          : Math.min(100, Math.round(((xp - tier.minXP) / (nextThreshold - tier.minXP)) * 100));
+        return {
+          level: tier.level,
+          levelName: tier.name,
+          isEgg: tier.isEgg,
+          spriteType: tier.spriteType,
+          progressPct: progressInTier,
+          xpToNext: tier.maxXP === Infinity ? 0 : (nextThreshold - xp)
+        };
+      }
+    }
+    return EVOLUTION_TIERS[0];
+  }
 
   function evaluateMonsterStage(student) {
     if (!student) return student;
-    const xp = Number(student.xp) || 0;
+    const rawXP = (student.xp !== undefined && student.xp !== null) ? student.xp : 0;
+    const stage = getStageFromXP(rawXP);
 
-    if (xp >= 5000) {
-      student.level = 7;
-      student.levelName = "Level 7 • Ultimate Monster";
-      student.stageName = "Level 7 • Ultimate Monster";
-      student.stageKey = "ultimate";
-      student.isEgg = false;
-      student.nextThreshold = 5000;
-      student.remainingXP = 0;
-      student.progressPct = 100;
-      student.progressToNext = 100;
-      student.progress = 100;
-      student.crackProgress = 100;
-      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
-        student.equippedMonster = 'Ultimate Monster';
-      }
-    } else if (xp >= 2000) {
-      student.level = 6;
-      student.levelName = "Level 6 • Advanced Monster";
-      student.stageName = "Level 6 • Advanced Monster";
-      student.stageKey = "advanced";
-      student.isEgg = false;
-      student.nextThreshold = 5000;
-      student.remainingXP = 5000 - xp;
-      student.progressPct = Math.round(((xp - 2000) / 3000) * 100);
-      student.progressToNext = student.progressPct;
-      student.progress = student.progressPct;
-      student.crackProgress = 100;
-      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
-        student.equippedMonster = 'Advanced Monster';
-      }
-    } else if (xp >= 1000) {
-      student.level = 5;
-      student.levelName = "Level 5 • Adventurer Monster";
-      student.stageName = "Level 5 • Adventurer Monster";
-      student.stageKey = "adventurer";
-      student.isEgg = false;
-      student.nextThreshold = 2000;
-      student.remainingXP = 2000 - xp;
-      student.progressPct = Math.round(((xp - 1000) / 1000) * 100);
-      student.progressToNext = student.progressPct;
-      student.progress = student.progressPct;
-      student.crackProgress = 100;
-      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
-        student.equippedMonster = 'Adventurer Monster';
-      }
-    } else if (xp >= 500) {
-      student.level = 4;
-      student.levelName = "Level 4 • Growing Monster";
-      student.stageName = "Level 4 • Growing Monster";
-      student.stageKey = "growing";
-      student.isEgg = false;
-      student.nextThreshold = 1000;
-      student.remainingXP = 1000 - xp;
-      student.progressPct = Math.round(((xp - 500) / 500) * 100);
-      student.progressToNext = student.progressPct;
-      student.progress = student.progressPct;
-      student.crackProgress = 100;
-      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
-        student.equippedMonster = 'Growing Monster';
-      }
-    } else if (xp >= 200) {
-      student.level = 3;
-      student.levelName = "Level 3 • Baby Monster";
-      student.stageName = "Level 3 • Baby Monster";
-      student.stageKey = "baby";
-      student.isEgg = false;
-      student.nextThreshold = 500;
-      student.progressPct = Math.round(((xp - 200) / 300) * 100);
-      student.progressToNext = Math.round(((xp - 200) / (500 - 200)) * 100);
-      student.progress = student.progressPct;
-      student.remainingXP = 500 - xp;
-      student.crackProgress = 100;
-      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
-        student.equippedMonster = 'Baby Monster';
-      }
-    } else if (xp >= 30) {
-      student.level = 2;
-      student.levelName = "Level 2 • Cracking Egg";
-      student.stageName = "Level 2 • Cracking Egg";
-      student.stageKey = "cracking_egg";
-      student.avatar = "cracked-egg.png";
-      student.isEgg = true;
-      student.nextThreshold = 200;
-      student.crackProgress = Math.min(100, Math.round(((xp - 30) / (200 - 30)) * 100));
-      student.progressPct = student.crackProgress;
-      student.progressToNext = student.crackProgress;
-      student.progress = student.crackProgress;
-      student.remainingXP = 200 - xp;
-      student.equippedMonster = 'Cracking Egg';
+    student.level = stage.level;
+    student.levelName = stage.levelName;
+    student.stageName = stage.levelName;
+    student.stageKey = stage.spriteType;
+    student.isEgg = stage.isEgg;
+    student.progressPct = stage.progressPct;
+    student.progressToNext = stage.progressPct;
+    student.progress = stage.progressPct;
+    student.remainingXP = stage.xpToNext;
+    student.xpToNext = stage.xpToNext;
+    student.crackProgress = stage.level === 1 ? Math.min(95, Math.round((Number(rawXP) / 30) * 100)) : (stage.level === 2 ? Math.min(100, Math.round(((Number(rawXP) - 30) / (200 - 30)) * 100)) : 100);
+    student.nextThreshold = stage.level === 7 ? 5000 : (EVOLUTION_TIERS[stage.level] ? EVOLUTION_TIERS[stage.level].minXP : 5000);
+
+    if (stage.isEgg) {
+      student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
+      student.avatar = stage.level === 1 ? 'mystery-egg.png' : 'cracked-egg.png';
     } else {
-      student.level = 1;
-      student.levelName = "Level 1 • Mystery Egg";
-      student.stageName = "Level 1 • Mystery Egg";
-      student.stageKey = "egg";
-      student.avatar = "mystery-egg.png";
-      student.isEgg = true;
-      student.nextThreshold = 30;
-      student.crackProgress = Math.min(100, Math.round((xp / 30) * 100));
-      student.progressPct = student.crackProgress;
-      student.progressToNext = student.crackProgress;
-      student.progress = student.crackProgress;
-      student.remainingXP = 30 - xp;
-      student.equippedMonster = 'Mystery Egg';
+      const cleanName = stage.levelName.replace(/^Level \d+\s*•\s*/, '');
+      student.equippedMonster = cleanName;
     }
 
     return student;
@@ -2186,92 +2136,10 @@
       (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
     
     const updatedStudents = students.map(student => {
-      const xp = Number(student.xp) || 0;
-      
-      if (xp >= 5000) {
-        student.level = 7;
-        student.levelName = "Level 7 • Ultimate Monster";
-        student.stageName = "Level 7 • Ultimate Monster";
-        student.stageKey = "ultimate";
-        student.isEgg = false;
-        student.nextThreshold = 5000;
-        student.remainingXP = 0;
-        student.progressPct = 100;
-        student.progressToNext = 100;
-        student.crackProgress = 100;
-      } else if (xp >= 2000) {
-        student.level = 6;
-        student.levelName = "Level 6 • Advanced Monster";
-        student.stageName = "Level 6 • Advanced Monster";
-        student.stageKey = "advanced";
-        student.isEgg = false;
-        student.nextThreshold = 5000;
-        student.remainingXP = 5000 - xp;
-        student.progressPct = Math.round(((xp - 2000) / 3000) * 100);
-        student.progressToNext = student.progressPct;
-        student.crackProgress = 100;
-      } else if (xp >= 1000) {
-        student.level = 5;
-        student.levelName = "Level 5 • Adventurer Monster";
-        student.stageName = "Level 5 • Adventurer Monster";
-        student.stageKey = "adventurer";
-        student.isEgg = false;
-        student.nextThreshold = 2000;
-        student.remainingXP = 2000 - xp;
-        student.progressPct = Math.round(((xp - 1000) / 1000) * 100);
-        student.progressToNext = student.progressPct;
-        student.crackProgress = 100;
-      } else if (xp >= 500) {
-        student.level = 4;
-        student.levelName = "Level 4 • Growing Monster";
-        student.stageName = "Level 4 • Growing Monster";
-        student.stageKey = "growing";
-        student.isEgg = false;
-        student.nextThreshold = 1000;
-        student.remainingXP = 1000 - xp;
-        student.progressPct = Math.round(((xp - 500) / 500) * 100);
-        student.progressToNext = student.progressPct;
-        student.crackProgress = 100;
-      } else if (xp >= 200) {
-        student.level = 3;
-        student.levelName = "Level 3 • Baby Monster";
-        student.stageName = "Level 3 • Baby Monster";
-        student.stageKey = "baby";
-        student.isEgg = false;
-        student.nextThreshold = 500;
-        student.progressPct = Math.round(((xp - 200) / 300) * 100);
-        student.progressToNext = Math.round(((xp - 200) / (500 - 200)) * 100);
-        student.remainingXP = 500 - xp;
-        student.crackProgress = 100;
-      } else if (xp >= 30) {
-        student.level = 2;
-        student.levelName = "Level 2 • Cracking Egg";
-        student.stageName = "Level 2 • Cracking Egg";
-        student.stageKey = "cracking_egg";
-        student.avatar = "cracked-egg.png";
-        student.isEgg = true;
-        student.nextThreshold = 200;
-        student.crackProgress = Math.round(((xp - 30) / 170) * 100);
-        student.progressPct = student.crackProgress;
-        student.progressToNext = student.crackProgress;
-        student.remainingXP = 200 - xp;
-      } else {
-        student.level = 1;
-        student.levelName = "Level 1 • Mystery Egg";
-        student.stageName = "Level 1 • Mystery Egg";
-        student.stageKey = "egg";
-        student.avatar = "mystery-egg.png";
-        student.isEgg = true;
-        student.nextThreshold = 30;
-        student.crackProgress = Math.round((xp / 30) * 100);
-        student.progressPct = student.crackProgress;
-        student.progressToNext = student.crackProgress;
-        student.remainingXP = 30 - xp;
-      }
+      evaluateMonsterStage(student);
       return student;
     });
 
-    // Save back to storage and re-render grid
     if (typeof window !== 'undefined' && window.AdventureAcademy?.saveStudents) {
       window.AdventureAcademy.saveStudents(updatedStudents);
     } else if (typeof localStorage !== 'undefined') {
@@ -9682,14 +9550,12 @@
       if (!this.state || !Array.isArray(this.state.students)) return [];
       const updated = this.state.students.map(student => {
         const txTotal = this.getStudentTotalXP(student.id);
-        if (txTotal > 0 || (this.state.xpTransactions && this.state.xpTransactions.some(t => t.studentId === student.id))) {
-          student.xp = txTotal;
-        }
+        student.xp = Math.max(Number(student.xp) || 0, txTotal);
         evaluateMonsterStage(student);
         const profile = this.getMonsterProfile(student.id);
         if (profile) {
-          profile.highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, student.level);
-          if (student.level >= 3) profile.isHatched = true;
+          profile.highestUnlockedLevel = student.level;
+          profile.isHatched = (student.level >= 3);
         }
         return student;
       });
@@ -10379,8 +10245,10 @@
       if (!this.state.students || !id) return null;
       const strId = String(id).trim();
       const s = this.state.students.find(s => s.id === strId || (s.studentIdNumber && String(s.studentIdNumber).trim() === strId));
-      if (s && !s.monsterProfile) {
-        s.monsterProfile = this.getMonsterProfile(s.id);
+      if (s) {
+        if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+        evaluateMonsterStage(s);
+        if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       }
       return s;
     }
@@ -10511,12 +10379,16 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!this.state.xpTransactions || !studentId) return 0;
-      const s = this.getStudent(studentId);
+      if (!studentId) return 0;
+      const s = (this.state && this.state.students) ? this.state.students.find(std => std.id === studentId || std.studentIdNumber === studentId) : null;
+      const sXP = s ? (Number(s.xp) || 0) : 0;
+      if (!this.state || !this.state.xpTransactions || !this.state.xpTransactions.length) {
+        return sXP;
+      }
       const resolvedId = s ? s.id : studentId;
-      // Strictly recalculate from active transactions only
       const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
-      return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      const txSum = txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      return Math.max(sXP, txSum);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
@@ -12788,44 +12660,30 @@
 
     calculateMonsterState(studentId) {
       const totalXP = this.getStudentTotalXP(studentId);
-      const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
-      const profile = this.getMonsterProfile(studentId);
+      const stage = getStageFromXP(totalXP);
+      const profile = this.getMonsterProfile(studentId) || {};
 
-      let levelFromXP = 1;
-      for (let i = 0; i < levels.length; i++) {
-        if (totalXP >= levels[i].xpRequired) {
-          levelFromXP = levels[i].level;
-        } else {
-          break;
-        }
+      // Permanent Evolution Rule & Dynamic XP Single Source of Truth:
+      // Synchronize profile level and hatch state strictly to XP stage
+      profile.highestUnlockedLevel = stage.level;
+      if (stage.level >= 3) {
+        profile.isHatched = true;
       }
 
-      // Permanent Evolution Rule: highestUnlockedLevel never downgrades even if XP decreases
-      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, levelFromXP);
-      if (highestUnlockedLevel > (profile.highestUnlockedLevel || 1)) {
-        profile.highestUnlockedLevel = highestUnlockedLevel;
-        if (highestUnlockedLevel >= 3) profile.isHatched = true;
-        this.saveState();
-      }
+      const currentDisplayedLevel = stage.level;
+      const currentLevelTier = EVOLUTION_TIERS[stage.level - 1] || EVOLUTION_TIERS[0];
+      const nextLevelTier = EVOLUTION_TIERS[stage.level] || null;
 
-      const currentDisplayedLevel = highestUnlockedLevel;
-      const currentLevelObj = levels.find(l => l.level === currentDisplayedLevel) || levels[0];
-      const nextLevelObj = levels.find(l => l.level === currentDisplayedLevel + 1) || null;
+      const currentLevel = stage.level;
+      const stageKey = stage.spriteType;
+      const stageName = stage.levelName;
+      const stageDescription = `Level ${stage.level} monster companion.`;
+      const levelXP = currentLevelTier.minXP;
+      const nextLevelXP = nextLevelTier ? nextLevelTier.minXP : levelXP;
+      const xpToNext = stage.xpToNext;
+      const progressPct = stage.progressPct;
 
-      const currentLevel = currentLevelObj.level;
-      const stageKey = currentLevelObj.stageKey;
-      const stageName = currentLevelObj.name;
-      const stageDescription = currentLevelObj.description || 'Companion in English Adventure Academy.';
-      const levelXP = currentLevelObj.xpRequired;
-      const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : levelXP;
-      const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
-      
-      let progressPct = 100;
-      if (nextLevelObj && nextLevelXP > levelXP) {
-        progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
-      }
-
-      const isHatched = (currentDisplayedLevel >= 3) || !!profile.isHatched;
+      const isHatched = !stage.isEgg;
 
       let eggCrackPct = 0;
       if (currentDisplayedLevel === 1) {
@@ -12835,6 +12693,20 @@
       } else {
         eggCrackPct = 100;
       }
+
+      const currentLevelObj = {
+        level: stage.level,
+        name: stage.levelName,
+        stageKey: stage.spriteType,
+        xpRequired: levelXP,
+        description: stageDescription
+      };
+      const nextLevelObj = nextLevelTier ? {
+        level: nextLevelTier.level,
+        name: nextLevelTier.name,
+        stageKey: nextLevelTier.spriteType,
+        xpRequired: nextLevelTier.minXP
+      } : null;
 
       const allItems = this.getMonsterItems(null, true);
       const unlockedItemIds = new Set(profile.unlockedItems || []);
@@ -12869,7 +12741,7 @@
         progressPct,
         progressPctToNextLevel: progressPct,
         isHatched,
-        isEgg: currentDisplayedLevel < 3,
+        isEgg: stage.isEgg,
         avatar: currentDisplayedLevel === 1 ? "mystery-egg.png" : (currentDisplayedLevel === 2 ? "cracked-egg.png" : null),
         crackProgress: eggCrackPct,
         eggCrackPct,
@@ -12877,7 +12749,7 @@
         unlockedItemIds,
         currentLevelObj,
         nextLevelObj,
-        highestUnlockedLevel,
+        highestUnlockedLevel: stage.level,
         profile
       };
     }
