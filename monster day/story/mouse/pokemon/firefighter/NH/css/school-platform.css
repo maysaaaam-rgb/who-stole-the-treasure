@@ -5991,6 +5991,54 @@ body.classroom-mode-active .classroom-students-grid {
 }
 
 /* ==========================================================================
+   MONSTER COMPOSITE STAGE & LAYER PIPELINE
+   ========================================================================== */
+.monster-composite-stage {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+}
+
+.monster-composite-stage .layer-item {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.monster-composite-stage .layer-item svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+#layer-aura-back { z-index: 0; }
+#layer-back-gear { z-index: 10; }
+#layer-body, #layer-monster-body { z-index: 20; }
+#layer-clothing { z-index: 30; }
+#layer-face { z-index: 40; }
+#layer-glasses { z-index: 50; }
+#layer-horns { z-index: 60; }
+#layer-headwear { z-index: 70; }
+
+#preview-pedestal,
+.pedestal-disk {
+  width: 140px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.65) 0%, rgba(37, 99, 235, 0.25) 55%, transparent 75%);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+  margin: -16px auto 0 auto;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  animation: pedestalPulse 3s ease-in-out infinite;
+}
+
+/* ==========================================================================
    SIMON SAYS — PROJECTOR-OPTIMIZED CLASSROOM PHYSICAL GAME STYLES
    ========================================================================== */
 

@@ -12356,16 +12356,16 @@ window.switchClassroomSubTab = function(subTab) {
         isSelected = (monsterCreatorDraft.equipped[cat] === item.id);
       }
 
-      const isUnlocked = item.isNone || unlockedSet.has(item.id);
-      let lockText = '';
-      if (!isUnlocked) {
-        if (item.unlockType === 'level' && item.unlockRequirement && item.unlockRequirement.level) {
-          lockText = 'Level ' + item.unlockRequirement.level;
-        } else if (item.unlockType === 'achievement') {
-          lockText = 'Achievement';
-        } else {
-          lockText = 'Locked';
-        }
+      const curLevel = (window.currentMonster && window.currentMonster.level) || (mState ? mState.currentLevel : 1);
+      const reqLevel = (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1;
+      const isLevelLocked = !item.isNone && (reqLevel > curLevel);
+      const isUnlocked = item.isNone || (!isLevelLocked && (unlockedSet.has(item.id) || !item.unlockType || item.unlockType === 'level'));
+
+      let lockBadge = '';
+      if (isLevelLocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🔒 Level ' + reqLevel + '</span>';
+      } else if (!isUnlocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🔒 Locked</span>';
       }
 
       const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
@@ -12375,12 +12375,13 @@ window.switchClassroomSubTab = function(subTab) {
         rarityBadge = '<span class="monster-item-rarity-pill is-' + item.rarity + '">' + item.rarity + '</span>';
       }
 
+      const isCardLocked = isLevelLocked || !isUnlocked;
       return '' +
-        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (!isUnlocked ? 'is-locked' : '') + '" ' +
-             (!isUnlocked ? 'style="pointer-events:none !important; opacity:0.42 !important; filter:grayscale(0.7) !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
+        '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
+             (isCardLocked ? 'style="pointer-events:none !important; opacity:0.45 !important; filter:grayscale(0.7) !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
              'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
           (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
-          (!isUnlocked ? '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>' : '') +
+          (isCardLocked ? lockBadge : '') +
           '<div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:2px auto;">' +
             thumbSvg +
           '</div>' +
@@ -12447,25 +12448,46 @@ window.switchClassroomSubTab = function(subTab) {
   window.CAPE_ASSETS = CAPE_ASSETS;
 
   window.currentMonster = {
+    get level() {
+      if (monsterCreatorStudentId && store && typeof store.calculateMonsterState === 'function') {
+        const mState = store.calculateMonsterState(monsterCreatorStudentId);
+        if (mState && mState.currentLevel) return mState.currentLevel;
+      }
+      return 1;
+    },
     get equipped() {
       if (!monsterCreatorDraft) return {};
       if (!monsterCreatorDraft.equipped) monsterCreatorDraft.equipped = {};
       return new Proxy(monsterCreatorDraft.equipped, {
         get(target, prop) {
-          if (prop === 'mouths') return target.mouth || target.mouths;
-          if (prop === 'hat') return target.hats || target.hat;
+          if (prop === 'mouths') return target.mouth || target.mouths || 'mouth-smile';
+          if (prop === 'hat' || prop === 'hats') return target.hat || target.hats || 'none';
           if (prop === 'cape') {
             if (target.cape && target.cape !== 'none') return target.cape;
             if (target.clothing && (target.clothing.includes('cape') || target.clothing === 'clothing-cape')) return target.clothing;
             if (target.backpack && target.backpack.includes('cape')) return target.backpack;
-            return target.cape || '';
+            return target.cape || 'none';
           }
           return target[prop];
         },
         set(target, prop, val) {
-          if (prop === 'mouths') prop = 'mouth';
-          else if (prop === 'hat') prop = 'hats';
-          else if (prop === 'wings' || prop === 'satchel') prop = 'backpack';
+          if (prop === 'mouths') {
+            target.mouth = val;
+            return true;
+          }
+          if (prop === 'hat' || prop === 'hats') {
+            target.hat = val;
+            target.hats = val;
+            return true;
+          }
+          if (prop === 'wings') {
+            target.wings = val;
+            return true;
+          }
+          if (prop === 'satchel') {
+            target.backpack = val;
+            return true;
+          }
           if (prop === 'cape') {
             target.cape = val;
             target.clothing = val;
@@ -12490,35 +12512,25 @@ window.switchClassroomSubTab = function(subTab) {
     if (typeof window.updateMonsterCreatorPreview === 'function') {
       window.updateMonsterCreatorPreview();
     }
-
-    const clothingLayer = document.getElementById('layer-clothing');
-    const backGearLayer = document.getElementById('layer-back-gear');
-
-    const equippedClothingId = currentMonster.equipped ? currentMonster.equipped.clothing : null; // e.g. 'explorer_vest'
-
-    if (!equippedClothingId || equippedClothingId === 'none') {
-      if (clothingLayer) clothingLayer.innerHTML = '';
-    } else {
-      const clothingData = CLOTHING_ASSETS[equippedClothingId];
-      if (clothingData) {
-        // If vector/SVG:
-        if (clothingLayer) clothingLayer.innerHTML = clothingData.svgMarkup;
-        // Or if PNG overlay:
-        // clothingLayer.innerHTML = `<img src="${clothingData.src}" class="absolute inset-0 w-full h-full pointer-events-none" />`;
-      }
-    }
-
-    // Handle cape / wings if equipped in back-gear
-    const equippedCapeId = currentMonster.equipped ? currentMonster.equipped.cape : null;
-    if (equippedCapeId) {
-      if (backGearLayer) backGearLayer.innerHTML = CAPE_ASSETS[equippedCapeId]?.svgMarkup || '';
-    }
   }
   window.updateMonsterPreview = updateMonsterPreview;
 
   function equipItem(category, item) {
+    if (!monsterCreatorDraft) return;
+    if (!monsterCreatorDraft.equipped) monsterCreatorDraft.equipped = {};
+
+    const itemId = (item && typeof item === 'object') ? item.id : item;
+
     // 1. Update State
-    currentMonster.equipped[category] = item.id;
+    if (category === 'hat' || category === 'hats') {
+      monsterCreatorDraft.equipped.hat = itemId;
+      monsterCreatorDraft.equipped.hats = itemId;
+    } else {
+      monsterCreatorDraft.equipped[category] = itemId;
+    }
+    if (window.currentMonster && window.currentMonster.equipped) {
+      window.currentMonster.equipped[category] = itemId;
+    }
 
     // 2. Sync Sidebar & Grid UI
     renderEquippedList();
@@ -12533,14 +12545,16 @@ window.switchClassroomSubTab = function(subTab) {
     if (!monsterCreatorStudentId || !monsterCreatorDraft) return;
 
     // Strict Level Lock Enforcement
-    if (!isNone && store && typeof store.getMonsterCosmeticItems === 'function') {
-      const allCosmetics = store.getMonsterCosmeticItems();
-      const targetItem = allCosmetics.find(i => i.id === itemId);
-      if (targetItem && targetItem.unlockType === 'level' && targetItem.unlockRequirement && targetItem.unlockRequirement.level) {
-        const mState = store.calculateMonsterState(monsterCreatorStudentId);
-        const curLevel = mState ? mState.currentLevel : 1;
-        if (targetItem.unlockRequirement.level > curLevel) {
-          console.warn("Item is level locked (Req Lvl " + targetItem.unlockRequirement.level + " > " + curLevel + "):", targetItem.name);
+    const curLevel = (window.currentMonster && window.currentMonster.level) || 
+      (store && monsterCreatorStudentId && typeof store.calculateMonsterState === 'function' ? (store.calculateMonsterState(monsterCreatorStudentId)?.currentLevel || 1) : 1);
+
+    if (!isNone && store && typeof store.getMonsterItems === 'function') {
+      const allItems = store.getMonsterItems();
+      const targetItem = allItems.find(i => i.id === itemId);
+      if (targetItem) {
+        const reqLevel = (targetItem.unlockRequirement && targetItem.unlockRequirement.level) || targetItem.unlockLevel || 1;
+        if (reqLevel > curLevel) {
+          console.warn("Item is level locked (Req Lvl " + reqLevel + " > " + curLevel + "):", targetItem.name);
           return; // Block equipping or state changes
         }
       }
@@ -12550,6 +12564,9 @@ window.switchClassroomSubTab = function(subTab) {
       if (category === 'accessory') {
         monsterCreatorDraft.equipped.accessory = 'none';
         monsterCreatorDraft.equipped.glasses = 'none';
+      } else if (category === 'hat' || category === 'hats') {
+        monsterCreatorDraft.equipped.hat = 'none';
+        monsterCreatorDraft.equipped.hats = 'none';
       } else {
         monsterCreatorDraft.equipped[category] = 'none';
       }
@@ -12567,6 +12584,14 @@ window.switchClassroomSubTab = function(subTab) {
       equipItem('glasses', { id: itemId });
     } else if (category === 'backpack' || (itemId && (itemId.startsWith('bp-') || itemId.includes('satchel')))) {
       equipItem('backpack', { id: itemId });
+    } else if (category === 'hat' || category === 'hats' || (itemId && itemId.startsWith('hat-'))) {
+      equipItem('hat', { id: itemId });
+    } else if (category === 'horns' || (itemId && itemId.startsWith('horns-'))) {
+      equipItem('horns', { id: itemId });
+    } else if (category === 'wings' || (itemId && itemId.startsWith('wings-'))) {
+      equipItem('wings', { id: itemId });
+    } else if (category === 'tail' || (itemId && itemId.startsWith('tail-'))) {
+      equipItem('tail', { id: itemId });
     } else {
       equipItem(category, { id: itemId });
     }
