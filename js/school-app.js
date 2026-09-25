@@ -8859,6 +8859,7 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.updateMultiSelectBar = function() {
     const bar = document.getElementById('floating-multiselect-bar');
+    const dock = document.getElementById('classroom-floating-toolkit');
     const badge = document.getElementById('multiselect-count-badge');
     const totalBadge = document.getElementById('multiselect-total-class-count');
     if (!bar) return;
@@ -8868,6 +8869,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (selectedStudentIds.size > 0) {
       bar.style.display = 'flex';
+      if (dock) dock.style.display = 'flex';
       if (badge) badge.textContent = selectedStudentIds.size;
     } else {
       bar.style.display = 'none';
@@ -12568,13 +12570,17 @@ window.switchClassroomSubTab = function(subTab) {
     };
     const targetId = document.getElementById(`layer-${category}`) ? `layer-${category}` : (layerMap[category] || `layer-${category}`);
     const layerTarget = document.getElementById(targetId);
-    if (layerTarget && typeof item === 'object' && (item.svgMarkup || item.imageSrc)) {
-      if (item.svgMarkup) {
-        layerTarget.innerHTML = item.svgMarkup.trim().startsWith('<svg')
-          ? item.svgMarkup
-          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${item.svgMarkup}</svg>`;
-      } else if (item.imageSrc) {
-        layerTarget.innerHTML = `<img src="${item.imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
+    const assetObj = (item && typeof item === 'object') ? item : (window.CLOTHING_ASSETS?.[itemId] || window.CAPE_ASSETS?.[itemId] || {});
+    const svgContent = item.svgMarkup || assetObj.svgMarkup;
+    const imageSrc = item.imageSrc || assetObj.imageSrc;
+
+    if (layerTarget && (svgContent || imageSrc)) {
+      if (svgContent) {
+        layerTarget.innerHTML = svgContent.trim().startsWith('<svg')
+          ? svgContent
+          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${svgContent}</svg>`;
+      } else if (imageSrc) {
+        layerTarget.innerHTML = `<img src="${imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
       }
     }
 

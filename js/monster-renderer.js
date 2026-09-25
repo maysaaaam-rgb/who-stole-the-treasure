@@ -871,11 +871,11 @@
         <!-- 6. Face Accessories & Glasses (z-50) -->
         <div id="layer-glasses" class="layer-item z-50" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
 
-        <!-- 7. Horns & Crests (z-60) -->
-        <div id="layer-horns" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">${hornsSvg}</div>
+        <!-- 7. Horns & Crests (z-55) -->
+        <div id="layer-horns" class="layer-item z-55" style="position: absolute; inset: 0; z-index: 55; pointer-events: none;">${hornsSvg}</div>
 
-        <!-- 8. Headwear (Hats, Caps, Crowns) (z-70) -->
-        <div id="layer-headwear" class="layer-item z-70" style="position: absolute; inset: 0; z-index: 70; pointer-events: none;">${headwearSvg}</div>
+        <!-- 8. Headwear (Hats, Caps, Crowns) (z-60) -->
+        <div id="layer-headwear" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">${headwearSvg}</div>
       </div>
       <div class="pedestal-disk" id="preview-pedestal"></div>
     `.trim();

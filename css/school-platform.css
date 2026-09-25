@@ -4079,22 +4079,18 @@ button, input, select, textarea {
   font-weight: 700;
 }
 
-/* 6. Contextual Floating Multi-Select Action Bar */
+/* 6. Contextual Floating Multi-Select Cluster (Integrated into Unified Action Bar) */
+.dock-multiselect-cluster,
 .floating-multiselect-bar {
-  position: fixed;
-  bottom: 74px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #0f172a;
+  gap: 10px;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: #ffffff;
-  padding: 10px 20px;
+  padding: 4px 12px;
   border-radius: 999px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
-  animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .multiselect-count {
@@ -6039,8 +6035,8 @@ body.classroom-mode-active .classroom-students-grid {
 #layer-clothing { z-index: 30; }
 #layer-face { z-index: 40; }
 #layer-glasses { z-index: 50; }
-#layer-horns { z-index: 60; }
-#layer-headwear { z-index: 70; }
+#layer-horns { z-index: 55; }
+#layer-headwear { z-index: 60; }
 
 #preview-pedestal,
 .pedestal-disk {
