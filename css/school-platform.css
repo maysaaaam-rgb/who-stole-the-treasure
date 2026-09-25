@@ -6931,3 +6931,32 @@ body.classroom-mode-active .classroom-students-grid {
 .btn-ws:hover {
   background: rgba(16, 185, 129, 0.2);
 }
+
+/* ==========================================================================
+   CONSOLIDATED FLOATING MASTER DOCK
+   ========================================================================== */
+.floating-master-dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+/* Tactile elastic press feedback to all dock icons and main action buttons */
+.dock-action-btn:active,
+.dock-pill-btn:active,
+.dock-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.08s ease;
+}
