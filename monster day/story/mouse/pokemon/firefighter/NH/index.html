@@ -379,7 +379,7 @@
 
         <!-- Prominent + Create Dropdown Quick Action -->
         <div class="create-dropdown-wrap" id="header-create-wrap">
-          <button class="btn-header-create" id="btn-header-create" onclick="toggleCreateDropdown(event)" title="Quick Action Menu">
+          <button class="btn-header-create btn-3d btn-3d-primary" id="btn-header-create" onclick="toggleCreateDropdown(event)" title="Quick Action Menu">
             <span>+ Create</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
@@ -1896,125 +1896,87 @@
     </div>
   </div>
 
-  <!-- Bottom Classroom Toolkit Dock -->
-  <div id="classroom-floating-toolkit" class="classroom-toolkit-dock" style="display:none;">
-    <div class="toolkit-inner">
-      <button type="button" class="toolkit-item-btn toolkit-btn-drawer" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit" style="background:var(--color-primary); color:#ffffff; font-weight:800;">
-        <span class="toolkit-icon">🧰</span>
-        <span class="toolkit-label">Toolkit</span>
+  <!-- Consolidated Sleek Floating Glassmorphic Classroom Utility Dock -->
+  <div id="classroom-floating-toolkit" class="classroom-unified-dock classroom-toolkit-dock" style="display:none;" role="toolbar" aria-label="Classroom Command Dock">
+    <!-- Tools Cluster -->
+    <div class="dock-cluster">
+      <button type="button" class="dock-pill-btn dock-btn-primary" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit (Games, Worksheets, Evidence)">
+        <span class="dock-btn-icon">🧰</span>
+        <span class="dock-btn-label">Toolkit</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openSimonSaysModal()" title="Simon Says Physical Classroom Game" style="font-weight:800; color:#059669;">
-        <span class="toolkit-icon">🗣️</span>
-        <span class="toolkit-label">Simon Says</span>
+      <button type="button" class="dock-pill-btn" onclick="toggleFloatingTimer()" title="Classroom Timer (Stopwatch & Countdown)">
+        <span class="dock-btn-icon">⏱</span>
+        <span class="dock-btn-label">Timer</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('baamboozle/index.html', '_blank')" title="Baamboozle Arena 24-Card Showdown" style="font-weight:800; color:#f59e0b;">
-        <span class="toolkit-icon">⚡</span>
-        <span class="toolkit-label">Baamboozle</span>
+      <button type="button" class="dock-pill-btn" onclick="openRandomStudentModal()" title="Random Student Picker Wheel">
+        <span class="dock-btn-icon">🎲</span>
+        <span class="dock-btn-label">Random</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('meme-rules/index.html', '_blank')" title="Meme Rules: Imperatives Arena" style="font-weight:800; color:#10b981;">
-        <span class="toolkit-icon">🎭</span>
-        <span class="toolkit-label">Meme Rules</span>
+      <button type="button" class="dock-pill-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Group Work">
+        <span class="dock-btn-icon">👥</span>
+        <span class="dock-btn-label">Groups</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('smart-farm/index.html', '_blank')" title="The Smart Farm: Young Inventors Mission" style="font-weight:800; color:#38bdf8;">
-        <span class="toolkit-icon">🌾</span>
-        <span class="toolkit-label">Smart Farm</span>
+      <button type="button" class="dock-pill-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
+        <span class="dock-btn-icon">✓</span>
+        <span class="dock-btn-label">Roll Call</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('dino-dig/index.html', '_blank')" title="Dino Dig: Prehistoric Past Tense Lab" style="font-weight:800; color:#f59e0b;">
-        <span class="toolkit-icon">🦕</span>
-        <span class="toolkit-label">Dino Dig</span>
+      <button type="button" class="dock-pill-btn dock-btn-award" onclick="openGiveFeedbackModal('class')" title="Award Whole Class +XP">
+        <span class="dock-btn-icon">⭐</span>
+        <span class="dock-btn-label">+XP Class</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('solar-system/index.html', '_blank')" title="Solar System Explorer: Planetary Comparatives" style="font-weight:800; color:#38bdf8;">
-        <span class="toolkit-icon">🪐</span>
-        <span class="toolkit-label">Solar Lab</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('dino-arena/index.html', '_blank')" title="Dino Clash: The Ultimate Cretaceous Showdown" style="font-weight:800; color:#059669;">
-        <span class="toolkit-icon">🦖</span>
-        <span class="toolkit-label">Dino Clash</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('cat-vs-dog/index.html', '_blank')" title="Cat vs. Dog: Preposition Catapult" style="font-weight:800; color:#38bdf8;">
-        <span class="toolkit-icon">🐱</span>
-        <span class="toolkit-label">Cat vs Dog</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="window.open('wildlife-detective/index.html', '_blank')" title="Wildlife Detective: Conservation & Adaptations" style="font-weight:800; color:#10b981;">
-        <span class="toolkit-icon">🐾</span>
-        <span class="toolkit-label">Wildlife</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="openRandomStudentModal()" title="Random Student Selector">
-        <span class="toolkit-icon">🎲</span>
-        <span class="toolkit-label">Random</span>
-      </button>
-      <button type="button" class="toolkit-item-btn" onclick="toggleFloatingTimer()" title="Classroom Timer">
-        <span class="toolkit-icon">⏱</span>
-        <span class="toolkit-label">Timer</span>
-      </button>
+    </div>
 
-      <!-- Persistent Cyber-Glassmorphic Classroom SFX Dock -->
-      <div class="toolkit-sound-bar" id="toolkit-sound-bar" aria-label="Classroom Soundboard Dock">
-        <div class="sfx-dock-badge">
-          <span class="sfx-badge-dot"></span>
-          <span class="sfx-badge-title">SFX DOCK</span>
-        </div>
-        <div class="sfx-btn-group">
-          <button type="button" class="sfx-btn sfx-btn-party" data-sound="party" onclick="window.classSoundboard.playPartyHorn()" title="Party Horn (Press P or 1)">
-            <span class="sfx-icon">🥳</span>
-            <span class="sfx-label">Party</span>
-            <span class="sfx-key">1</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="bell" onclick="window.classSoundboard.playAttentionBell()" title="Attention Bell (Press 2)">
-            <span class="sfx-icon">🔔</span>
-            <span class="sfx-label">Bell</span>
-            <span class="sfx-key">2</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="shhh" onclick="window.classSoundboard.playQuietChime()" title="Quiet Singing Bowl (Press 3)">
-            <span class="sfx-icon">🤫</span>
-            <span class="sfx-label">Shhh</span>
-            <span class="sfx-key">3</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="buzzer" onclick="window.classSoundboard.playCountdownBuzzer()" title="Countdown Buzzer (Press 4)">
-            <span class="sfx-icon">⏰</span>
-            <span class="sfx-label">Buzzer</span>
-            <span class="sfx-key">4</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="clap" onclick="window.classSoundboard.playApplause()" title="Applause &amp; Cheer (Press 5)">
-            <span class="sfx-icon">👏</span>
-            <span class="sfx-label">Clap</span>
-            <span class="sfx-key">5</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="coin" onclick="window.classSoundboard.playCoinChime()" title="XP Coin Chime (Press 6)">
-            <span class="sfx-icon">🪙</span>
-            <span class="sfx-label">Coin</span>
-            <span class="sfx-key">6</span>
-          </button>
-          <button type="button" class="sfx-btn" data-sound="fanfare" onclick="window.classSoundboard.playFanfare()" title="Victory Tada Fanfare (Press 7)">
-            <span class="sfx-icon">🎺</span>
-            <span class="sfx-label">Fanfare</span>
-            <span class="sfx-key">7</span>
-          </button>
-        </div>
-      </div>
-      <button type="button" class="toolkit-item-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Groups">
-        <span class="toolkit-icon">👥</span>
-        <span class="toolkit-label">Groups</span>
+    <!-- Cluster Divider -->
+    <div class="dock-divider" aria-hidden="true"></div>
+
+    <!-- Live Native Web Audio Soundboard Dock -->
+    <div class="dock-cluster" id="toolkit-sound-bar" aria-label="Classroom Soundboard">
+      <span class="dock-sfx-tag">SFX</span>
+      <button type="button" class="dock-sfx-btn sfx-btn-party" data-sound="party" onclick="window.classSoundboard.playPartyHorn()" title="Party Horn (Press P or 1)">
+        <span class="sfx-icon">🥳</span>
+        <span class="sfx-label">Party</span>
+        <span class="dock-sfx-key">1</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
-        <span class="toolkit-icon">✓</span>
-        <span class="toolkit-label">Attendance</span>
+      <button type="button" class="dock-sfx-btn" data-sound="bell" onclick="window.classSoundboard.playAttentionBell()" title="Attention Bell (Press 2)">
+        <span class="sfx-icon">🔔</span>
+        <span class="sfx-label">Bell</span>
+        <span class="dock-sfx-key">2</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openGiveFeedbackModal('class')" title="Give Whole Class Feedback" style="font-weight:800; color:#b45309;">
-        <span class="toolkit-icon">⭐</span>
-        <span class="toolkit-label">Feedback</span>
+      <button type="button" class="dock-sfx-btn" data-sound="shhh" onclick="window.classSoundboard.playQuietChime()" title="Quiet Singing Bowl (Press 3)">
+        <span class="sfx-icon">🤫</span>
+        <span class="sfx-label">Shhh</span>
+        <span class="dock-sfx-key">3</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openQuickAssessmentModal()" title="Quick Formative Assessment">
-        <span class="toolkit-icon">📝</span>
-        <span class="toolkit-label">Assess</span>
+      <button type="button" class="dock-sfx-btn" data-sound="buzzer" onclick="window.classSoundboard.playCountdownBuzzer()" title="Countdown Buzzer (Press 4)">
+        <span class="sfx-icon">⏰</span>
+        <span class="sfx-label">Buzzer</span>
+        <span class="dock-sfx-key">4</span>
       </button>
-      <button type="button" class="toolkit-item-btn" onclick="openQuickEvidenceModal()" title="Quick Worksheet Scoring">
-        <span class="toolkit-icon">📄</span>
-        <span class="toolkit-label">Evidence</span>
+      <button type="button" class="dock-sfx-btn" data-sound="clap" onclick="window.classSoundboard.playApplause()" title="Applause & Cheer (Press 5)">
+        <span class="sfx-icon">👏</span>
+        <span class="sfx-label">Clap</span>
+        <span class="dock-sfx-key">5</span>
       </button>
-      <button type="button" class="toolkit-item-btn toolkit-btn-mode" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
-        <span class="toolkit-icon">🎓</span>
-        <span class="toolkit-label" id="label-smartboard-mode">Classroom Mode</span>
+      <button type="button" class="dock-sfx-btn" data-sound="coin" onclick="window.classSoundboard.playCoinChime()" title="XP Coin Chime (Press 6)">
+        <span class="sfx-icon">🪙</span>
+        <span class="sfx-label">Coin</span>
+        <span class="dock-sfx-key">6</span>
+      </button>
+      <button type="button" class="dock-sfx-btn" data-sound="fanfare" onclick="window.classSoundboard.playFanfare()" title="Victory Fanfare (Press 7)">
+        <span class="sfx-icon">🎺</span>
+        <span class="sfx-label">Fanfare</span>
+        <span class="dock-sfx-key">7</span>
+      </button>
+    </div>
+
+    <!-- Cluster Divider -->
+    <div class="dock-divider" aria-hidden="true"></div>
+
+    <!-- Smartboard & Classroom Mode Toggle -->
+    <div class="dock-cluster">
+      <button type="button" class="dock-pill-btn dock-btn-smartboard" onclick="toggleSmartboardMode()" title="Toggle Classroom Smartboard Mode">
+        <span class="dock-btn-icon">📺</span>
+        <span class="dock-btn-label" id="label-smartboard-mode">Smartboard</span>
       </button>
     </div>
   </div>
