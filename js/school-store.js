@@ -2155,9 +2155,87 @@
     return updatedStudents;
   }
 
+  function recalculateAllStudents() {
+    if (typeof localStorage === 'undefined') return;
+    const storageKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'];
+    
+    storageKeys.forEach(key => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      try {
+        const list = JSON.parse(raw);
+        if (Array.isArray(list)) {
+          const updated = list.map(student => {
+            const evalStage = getStageFromXP(student.xp);
+            student.level = evalStage.level;
+            student.levelName = evalStage.levelName;
+            student.stageName = evalStage.levelName;
+            student.isEgg = evalStage.isEgg;
+            student.progressPct = evalStage.progressPct;
+            student.remainingXP = evalStage.xpToNext;
+            student.xpToNext = evalStage.xpToNext;
+            return student;
+          });
+          localStorage.setItem(key, JSON.stringify(updated));
+        }
+      } catch (e) {
+        console.error("Migration error on " + key, e);
+      }
+    });
+
+    // Also update master school store if present
+    try {
+      const masterRaw = localStorage.getItem('eaa_master_school_v6');
+      if (masterRaw) {
+        const masterData = JSON.parse(masterRaw);
+        if (masterData && Array.isArray(masterData.students)) {
+          masterData.students.forEach(student => {
+            const evalStage = getStageFromXP(student.xp);
+            student.level = evalStage.level;
+            student.levelName = evalStage.levelName;
+            student.stageName = evalStage.levelName;
+            student.isEgg = evalStage.isEgg;
+            student.progressPct = evalStage.progressPct;
+            student.remainingXP = evalStage.xpToNext;
+            student.xpToNext = evalStage.xpToNext;
+          });
+          localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterData));
+        }
+      }
+    } catch (e) {}
+
+    // Also update in-memory active store
+    if (typeof window !== 'undefined' && window.AdventureAcademy?.students) {
+      window.AdventureAcademy.students.forEach(s => {
+        Object.assign(s, getStageFromXP(s.xp));
+      });
+    }
+
+    if (typeof window !== 'undefined' && window.schoolStore?.state?.students) {
+      window.schoolStore.state.students.forEach(s => {
+        const evalStage = getStageFromXP(s.xp);
+        s.level = evalStage.level;
+        s.levelName = evalStage.levelName;
+        s.stageName = evalStage.levelName;
+        s.isEgg = evalStage.isEgg;
+        s.progressPct = evalStage.progressPct;
+        s.remainingXP = evalStage.xpToNext;
+        s.xpToNext = evalStage.xpToNext;
+      });
+    }
+  }
+
+  if (typeof localStorage !== 'undefined') {
+    recalculateAllStudents();
+  }
+
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
+    root.recalculateAllStudents = recalculateAllStudents;
+    if (typeof window !== 'undefined') {
+      window.recalculateAllStudents = recalculateAllStudents;
+    }
     if (!root.AdventureAcademy.getStudents) {
       root.AdventureAcademy.getStudents = function() {
         const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
@@ -2199,6 +2277,7 @@
       };
     }
     root.AdventureAcademy.syncAllStudentLevels = syncAllStudentLevels;
+    root.AdventureAcademy.recalculateAllStudents = recalculateAllStudents;
   }
 
   const DEFAULT_PROGRESSION_LEVELS = [
