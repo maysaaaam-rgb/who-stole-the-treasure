@@ -14522,6 +14522,14 @@ window.switchClassroomSubTab = function(subTab) {
 
   // Expose key view renderers to window
   window.renderStudentsView = renderStudentsView;
+  window.renderStudentRoster = function() {
+    const container = document.getElementById('view-container') || document.querySelector('.main-content');
+    if (container && typeof renderStudentsView === 'function') {
+      renderStudentsView(container);
+    } else if (typeof renderCurrentView === 'function') {
+      renderCurrentView();
+    }
+  };
   window.renderClassroomStudentsGrid = renderClassroomStudentsGrid;
   window.renderClassroomGroupsGrid = renderClassroomGroupsGrid;
   window.renderLeaderboardView = renderLeaderboardView;

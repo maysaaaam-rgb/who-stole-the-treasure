@@ -2062,40 +2062,116 @@
   };
 
   // =========================================================================
-  // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS
+  // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS (7 STAGES)
   // =========================================================================
 
   function evaluateMonsterStage(student) {
     if (!student) return student;
     const xp = Number(student.xp) || 0;
 
-    // Set Level 3 hatch milestone higher so 170 XP remains a Cracking Egg
-    if (xp >= 500) {
+    if (xp >= 5000) {
+      student.level = 7;
+      student.levelName = "Level 7 • Ultimate Monster";
+      student.stageName = "Level 7 • Ultimate Monster";
+      student.stageKey = "ultimate";
+      student.isEgg = false;
+      student.nextThreshold = 5000;
+      student.remainingXP = 0;
+      student.progressPct = 100;
+      student.progressToNext = 100;
+      student.progress = 100;
+      student.crackProgress = 100;
+      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
+        student.equippedMonster = 'Ultimate Monster';
+      }
+    } else if (xp >= 2000) {
+      student.level = 6;
+      student.levelName = "Level 6 • Advanced Monster";
+      student.stageName = "Level 6 • Advanced Monster";
+      student.stageKey = "advanced";
+      student.isEgg = false;
+      student.nextThreshold = 5000;
+      student.remainingXP = 5000 - xp;
+      student.progressPct = Math.round(((xp - 2000) / 3000) * 100);
+      student.progressToNext = student.progressPct;
+      student.progress = student.progressPct;
+      student.crackProgress = 100;
+      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
+        student.equippedMonster = 'Advanced Monster';
+      }
+    } else if (xp >= 1000) {
+      student.level = 5;
+      student.levelName = "Level 5 • Adventurer Monster";
+      student.stageName = "Level 5 • Adventurer Monster";
+      student.stageKey = "adventurer";
+      student.isEgg = false;
+      student.nextThreshold = 2000;
+      student.remainingXP = 2000 - xp;
+      student.progressPct = Math.round(((xp - 1000) / 1000) * 100);
+      student.progressToNext = student.progressPct;
+      student.progress = student.progressPct;
+      student.crackProgress = 100;
+      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
+        student.equippedMonster = 'Adventurer Monster';
+      }
+    } else if (xp >= 500) {
       student.level = 4;
-      student.stageName = "Level 4 - Growing Monster";
+      student.levelName = "Level 4 • Growing Monster";
+      student.stageName = "Level 4 • Growing Monster";
+      student.stageKey = "growing";
       student.isEgg = false;
-      student.progress = Math.min(100, Math.round(((xp - 500) / 500) * 100));
+      student.nextThreshold = 1000;
+      student.remainingXP = 1000 - xp;
+      student.progressPct = Math.round(((xp - 500) / 500) * 100);
+      student.progressToNext = student.progressPct;
+      student.progress = student.progressPct;
       student.crackProgress = 100;
-    } else if (xp >= 200) { // Hatch threshold
+      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
+        student.equippedMonster = 'Growing Monster';
+      }
+    } else if (xp >= 200) {
       student.level = 3;
-      student.stageName = "Level 3 - Baby Monster";
+      student.levelName = "Level 3 • Baby Monster";
+      student.stageName = "Level 3 • Baby Monster";
+      student.stageKey = "baby";
       student.isEgg = false;
-      student.progress = Math.min(100, Math.round(((xp - 200) / 300) * 100));
+      student.nextThreshold = 500;
+      student.progressPct = Math.round(((xp - 200) / 300) * 100);
+      student.progressToNext = Math.round(((xp - 200) / (500 - 200)) * 100);
+      student.progress = student.progressPct;
+      student.remainingXP = 500 - xp;
       student.crackProgress = 100;
+      if (!student.equippedMonster || student.equippedMonster.includes('Egg')) {
+        student.equippedMonster = 'Baby Monster';
+      }
     } else if (xp >= 30) {
       student.level = 2;
-      student.stageName = "Level 2 - Cracking Egg";
-      student.avatar = "cracked-egg.png"; // Standard cracked egg sprite
+      student.levelName = "Level 2 • Cracking Egg";
+      student.stageName = "Level 2 • Cracking Egg";
+      student.stageKey = "cracking_egg";
+      student.avatar = "cracked-egg.png";
       student.isEgg = true;
+      student.nextThreshold = 200;
       student.crackProgress = Math.min(100, Math.round(((xp - 30) / (200 - 30)) * 100));
+      student.progressPct = student.crackProgress;
+      student.progressToNext = student.crackProgress;
       student.progress = student.crackProgress;
+      student.remainingXP = 200 - xp;
+      student.equippedMonster = 'Cracking Egg';
     } else {
       student.level = 1;
-      student.stageName = "Level 1 - Mystery Egg";
+      student.levelName = "Level 1 • Mystery Egg";
+      student.stageName = "Level 1 • Mystery Egg";
+      student.stageKey = "egg";
       student.avatar = "mystery-egg.png";
       student.isEgg = true;
+      student.nextThreshold = 30;
       student.crackProgress = Math.min(100, Math.round((xp / 30) * 100));
+      student.progressPct = student.crackProgress;
+      student.progressToNext = student.crackProgress;
       student.progress = student.crackProgress;
+      student.remainingXP = 30 - xp;
+      student.equippedMonster = 'Mystery Egg';
     }
 
     return student;
@@ -2103,6 +2179,158 @@
 
   function updateStudentEvolution(student) {
     return evaluateMonsterStage(student);
+  }
+
+  function syncAllStudentLevels() {
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.getStudents?.()) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    
+    const updatedStudents = students.map(student => {
+      const xp = Number(student.xp) || 0;
+      
+      if (xp >= 5000) {
+        student.level = 7;
+        student.levelName = "Level 7 • Ultimate Monster";
+        student.stageName = "Level 7 • Ultimate Monster";
+        student.stageKey = "ultimate";
+        student.isEgg = false;
+        student.nextThreshold = 5000;
+        student.remainingXP = 0;
+        student.progressPct = 100;
+        student.progressToNext = 100;
+        student.crackProgress = 100;
+      } else if (xp >= 2000) {
+        student.level = 6;
+        student.levelName = "Level 6 • Advanced Monster";
+        student.stageName = "Level 6 • Advanced Monster";
+        student.stageKey = "advanced";
+        student.isEgg = false;
+        student.nextThreshold = 5000;
+        student.remainingXP = 5000 - xp;
+        student.progressPct = Math.round(((xp - 2000) / 3000) * 100);
+        student.progressToNext = student.progressPct;
+        student.crackProgress = 100;
+      } else if (xp >= 1000) {
+        student.level = 5;
+        student.levelName = "Level 5 • Adventurer Monster";
+        student.stageName = "Level 5 • Adventurer Monster";
+        student.stageKey = "adventurer";
+        student.isEgg = false;
+        student.nextThreshold = 2000;
+        student.remainingXP = 2000 - xp;
+        student.progressPct = Math.round(((xp - 1000) / 1000) * 100);
+        student.progressToNext = student.progressPct;
+        student.crackProgress = 100;
+      } else if (xp >= 500) {
+        student.level = 4;
+        student.levelName = "Level 4 • Growing Monster";
+        student.stageName = "Level 4 • Growing Monster";
+        student.stageKey = "growing";
+        student.isEgg = false;
+        student.nextThreshold = 1000;
+        student.remainingXP = 1000 - xp;
+        student.progressPct = Math.round(((xp - 500) / 500) * 100);
+        student.progressToNext = student.progressPct;
+        student.crackProgress = 100;
+      } else if (xp >= 200) {
+        student.level = 3;
+        student.levelName = "Level 3 • Baby Monster";
+        student.stageName = "Level 3 • Baby Monster";
+        student.stageKey = "baby";
+        student.isEgg = false;
+        student.nextThreshold = 500;
+        student.progressPct = Math.round(((xp - 200) / 300) * 100);
+        student.progressToNext = Math.round(((xp - 200) / (500 - 200)) * 100);
+        student.remainingXP = 500 - xp;
+        student.crackProgress = 100;
+      } else if (xp >= 30) {
+        student.level = 2;
+        student.levelName = "Level 2 • Cracking Egg";
+        student.stageName = "Level 2 • Cracking Egg";
+        student.stageKey = "cracking_egg";
+        student.avatar = "cracked-egg.png";
+        student.isEgg = true;
+        student.nextThreshold = 200;
+        student.crackProgress = Math.round(((xp - 30) / 170) * 100);
+        student.progressPct = student.crackProgress;
+        student.progressToNext = student.crackProgress;
+        student.remainingXP = 200 - xp;
+      } else {
+        student.level = 1;
+        student.levelName = "Level 1 • Mystery Egg";
+        student.stageName = "Level 1 • Mystery Egg";
+        student.stageKey = "egg";
+        student.avatar = "mystery-egg.png";
+        student.isEgg = true;
+        student.nextThreshold = 30;
+        student.crackProgress = Math.round((xp / 30) * 100);
+        student.progressPct = student.crackProgress;
+        student.progressToNext = student.crackProgress;
+        student.remainingXP = 30 - xp;
+      }
+      return student;
+    });
+
+    // Save back to storage and re-render grid
+    if (typeof window !== 'undefined' && window.AdventureAcademy?.saveStudents) {
+      window.AdventureAcademy.saveStudents(updatedStudents);
+    } else if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(updatedStudents));
+    }
+    
+    if (typeof renderStudentRoster === 'function') {
+      renderStudentRoster();
+    } else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') {
+      window.renderStudentRoster();
+    }
+
+    return updatedStudents;
+  }
+
+  // Global AdventureAcademy Hub & Store Bridge
+  if (typeof root !== 'undefined') {
+    root.AdventureAcademy = root.AdventureAcademy || {};
+    if (!root.AdventureAcademy.getStudents) {
+      root.AdventureAcademy.getStudents = function() {
+        const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
+        if (activeStore && activeStore.state && Array.isArray(activeStore.state.students) && activeStore.state.students.length > 0) {
+          return activeStore.state.students;
+        }
+        if (typeof localStorage !== 'undefined') {
+          const raw = localStorage.getItem('adventure_students');
+          if (raw) {
+            try { return JSON.parse(raw); } catch (e) {}
+          }
+          const master = localStorage.getItem(STORAGE_KEY);
+          if (master) {
+            try {
+              const parsed = JSON.parse(master);
+              if (parsed && Array.isArray(parsed.students) && parsed.students.length > 0) {
+                return parsed.students;
+              }
+            } catch (e) {}
+          }
+        }
+        return [];
+      };
+    }
+    if (!root.AdventureAcademy.saveStudents) {
+      root.AdventureAcademy.saveStudents = function(updatedStudents) {
+        const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
+        if (activeStore && activeStore.state && Array.isArray(updatedStudents)) {
+          activeStore.state.students = updatedStudents;
+          if (typeof activeStore.saveState === 'function') {
+            activeStore.saveState();
+          }
+        }
+        if (typeof localStorage !== 'undefined') {
+          try {
+            localStorage.setItem('adventure_students', JSON.stringify(updatedStudents));
+          } catch (e) {}
+        }
+      };
+    }
+    root.AdventureAcademy.syncAllStudentLevels = syncAllStudentLevels;
   }
 
   const DEFAULT_PROGRESSION_LEVELS = [
@@ -9444,19 +9672,39 @@
         this.state.students.forEach(s => {
           if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
         });
-        const ipek = this.state.students.find(s => {
-          const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
-          return name.includes("ipek") || name.includes("i̇pek");
-        });
-        if (ipek) {
-          ipek.level = 2;
-          ipek.stageName = "Level 2 - Cracking Egg";
-          ipek.avatar = "cracked-egg.png";
-          ipek.crackProgress = 100;
-        }
       }
+      this.syncAllStudentLevels();
       this.listeners = [];
       try { this.saveState(); } catch (e) {}
+    }
+
+    syncAllStudentLevels() {
+      if (!this.state || !Array.isArray(this.state.students)) return [];
+      const updated = this.state.students.map(student => {
+        const txTotal = this.getStudentTotalXP(student.id);
+        if (txTotal > 0 || (this.state.xpTransactions && this.state.xpTransactions.some(t => t.studentId === student.id))) {
+          student.xp = txTotal;
+        }
+        evaluateMonsterStage(student);
+        const profile = this.getMonsterProfile(student.id);
+        if (profile) {
+          profile.highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, student.level);
+          if (student.level >= 3) profile.isHatched = true;
+        }
+        return student;
+      });
+      this.saveState();
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+        }
+      } catch (e) {}
+      if (typeof renderStudentRoster === 'function') {
+        renderStudentRoster();
+      } else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') {
+        window.renderStudentRoster();
+      }
+      return updated;
     }
 
     loadState() {
@@ -9999,18 +10247,11 @@
                 if (!tx.timestamp) tx.timestamp = new Date(tx.date || Date.now()).toISOString();
               });
             }
-            // Apply standardized stage for İpek
+            // Auto-sync all student levels and progression stages
             if (Array.isArray(merged.students)) {
-              const ipek = merged.students.find(s => {
-                const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
-                return name.includes("ipek") || name.includes("i̇pek");
+              merged.students.forEach(s => {
+                evaluateMonsterStage(s);
               });
-              if (ipek) {
-                ipek.level = 2;
-                ipek.stageName = "Level 2 - Cracking Egg";
-                ipek.avatar = "cracked-egg.png";
-                ipek.crackProgress = 100;
-              }
             }
 
             return merged;
@@ -10026,6 +10267,9 @@
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+          if (this.state && Array.isArray(this.state.students)) {
+            localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+          }
         }
       } catch (e) {
         console.warn('MasterSchoolStore: Failed to save state to localStorage', e);
@@ -10121,6 +10365,7 @@
       if (classId) list = list.filter(s => s.classId === classId);
       list.forEach(s => {
         if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+        evaluateMonsterStage(s);
         if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       });
       return list;
@@ -10370,6 +10615,12 @@
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
       if (s) {
         s.level = newLevel;
+        evaluateMonsterStage(s);
+        try {
+          if (typeof localStorage !== 'undefined' && this.state.students) {
+            localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+          }
+        } catch (e) {}
       }
 
       let evolutionEvent = null;
@@ -15532,11 +15783,13 @@
 
   MasterSchoolStore.prototype.evaluateMonsterStage = evaluateMonsterStage;
   MasterSchoolStore.prototype.updateStudentEvolution = updateStudentEvolution;
+  MasterSchoolStore.prototype.syncAllStudentLevels = syncAllStudentLevels;
 
   // Export singleton instance
   const schoolStore = new MasterSchoolStore();
   schoolStore.evaluateMonsterStage = evaluateMonsterStage;
   schoolStore.updateStudentEvolution = updateStudentEvolution;
+  schoolStore.syncAllStudentLevels = syncAllStudentLevels;
   schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
   schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
   schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
@@ -15545,10 +15798,12 @@
 
   root.evaluateMonsterStage = evaluateMonsterStage;
   root.updateStudentEvolution = updateStudentEvolution;
+  root.syncAllStudentLevels = syncAllStudentLevels;
 
   if (typeof window !== 'undefined') {
     window.evaluateMonsterStage = evaluateMonsterStage;
     window.updateStudentEvolution = updateStudentEvolution;
+    window.syncAllStudentLevels = syncAllStudentLevels;
     window.SchoolStore = MasterSchoolStore;
     window.schoolStore = schoolStore;
     window.store = schoolStore;
@@ -15557,13 +15812,20 @@
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
 
+    // Run immediate synchronization across active database/localStorage
+    try {
+      syncAllStudentLevels();
+    } catch (e) {
+      console.warn('[SchoolStore] Auto-sync student levels on startup:', e);
+    }
+
     // Initialize continuous background cloud sync & cross-device auto-sync
     if (window.SchoolCloudSync) {
       window.SchoolCloudSync.setupAutoSync(schoolStore);
     }
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, evaluateMonsterStage, updateStudentEvolution, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
+    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, evaluateMonsterStage, updateStudentEvolution, syncAllStudentLevels, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
   }
 
 })(typeof window !== 'undefined' ? window : global);
