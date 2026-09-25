@@ -3641,7 +3641,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const today = new Date().toISOString().split('T')[0];
     const attRecords = store.getAttendanceRecords(cls.id);
     const todayAttCount = attRecords.filter(r => r.date === today).length;
-    const attStatusText = todayAttCount > 0 ? 'Completed today (' + todayAttCount + ' logged)' : 'Roll call needed today';
+    const isAttCompleted = todayAttCount > 0;
 
     return '' +
       '<div class="dashboard-hero-grid">' +
@@ -3651,31 +3651,43 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
           '</h3>' +
           '<div class="hero-tiles-grid">' +
-            '<div class="hero-tile-card">' +
+            // Rich Preview Tile with Visual Depth for Next Lesson
+            '<div class="hero-tile-card next-lesson-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Next Lesson</div>' +
+                '<div class="hero-tile-tag"><span>🚀</span> Next Lesson</div>' +
                 '<div class="hero-tile-heading">Fire Station Adventure</div>' +
-                '<div class="hero-tile-sub">A1+ • Emergency & Jobs Vocabulary</div>' +
+                '<div class="hero-tile-sub">A1+ • Emergency &amp; Jobs Vocabulary</div>' +
               '</div>' +
-              '<a href="firefighter/index.html" class="btn-3d btn-3d-primary" style="padding:6px 14px; font-size:0.78rem; text-decoration:none; display:inline-flex; width:fit-content; border-radius:9px;">▶ Start Lesson</a>' +
+              '<a href="firefighter/index.html" class="btn-launch-lesson">' +
+                '<span>▶</span> <span>Start Lesson</span>' +
+              '</a>' +
             '</div>' +
 
-            '<div class="hero-tile-card">' +
+            // Interactive Quick-Action Roll Call Card with Status Chips
+            '<div class="hero-tile-card roll-call-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Active Assignment</div>' +
+                '<div class="hero-tile-tag"><span>📋</span> Roll Call &amp; Attendance</div>' +
+                '<div class="hero-tile-heading">Daily Roll Call</div>' +
+                '<div class="hero-tile-sub">Roster verification for ' + students.length + ' enrolled learners</div>' +
+                (isAttCompleted ? 
+                  '<span class="roll-call-chip chip-completed">✓ Live attendance (' + todayAttCount + ' Logged)</span>' : 
+                  '<span class="roll-call-chip chip-pending">⏱️ Roll call needed today</span>'
+                ) +
+              '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">' +
+                '📋 ' + (isAttCompleted ? 'Edit Roll Call' : 'Open Roll Call') +
+              '</button>' +
+            '</div>' +
+
+            // Active Assignment Card
+            '<div class="hero-tile-card assignment-tile">' +
+              '<div>' +
+                '<div class="hero-tile-tag"><span>📝</span> Active Assignment</div>' +
                 '<div class="hero-tile-heading">My Town Prepositions</div>' +
                 '<div class="hero-tile-sub">' + students.length + ' Learners Assigned · Due Friday</div>' +
+                '<span class="roll-call-chip chip-pending" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;">⏳ In Progress</span>' +
               '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">View Submissions</button>' +
-            '</div>' +
-
-            '<div class="hero-tile-card">' +
-              '<div>' +
-                '<div class="hero-tile-tag">Attendance Status</div>' +
-                '<div class="hero-tile-heading">' + attStatusText + '</div>' +
-                '<div class="hero-tile-sub">Daily Roll Call &amp; Verification</div>' +
-              '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openFastAttendanceModal()" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">📋 Open Roll Call</button>' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">View Submissions</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -3686,17 +3698,34 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>⚠️</span> <span>Needs Attention</span>' +
           '</h3>' +
           '<div class="needs-attention-list">' +
-            '<div class="needs-attention-item needs-ruby">' +
-              '<div class="needs-icon-badge">🗣️</div>' +
-              '<div><strong>Speaking Practice:</strong> 2 learners need targeted pronunciation focus</div>' +
+            // Speaking Practice: Ruby/Red icon badge with action link
+            '<div class="needs-attention-card alert-ruby">' +
+              '<div class="needs-status-badge badge-ruby">🗣️ Speaking Focus</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Targeted Pronunciation</div>' +
+                '<div class="needs-desc">2 learners need targeted pronunciation focus on phonics pairs.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-ruby" onclick="openClass(\'' + cls.id + '\', \'progress\'); return false;">Practice ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-amber">' +
-              '<div class="needs-icon-badge">✍️</div>' +
-              '<div><strong>Homework Review:</strong> 1 workbook submission ready for feedback</div>' +
+
+            // Homework Review: Amber icon badge
+            '<div class="needs-attention-card alert-amber">' +
+              '<div class="needs-status-badge badge-amber">📝 1 Awaiting Review</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Workbook Submission</div>' +
+                '<div class="needs-desc">1 workbook submission ready for feedback and grading.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-amber" onclick="openClass(\'' + cls.id + '\', \'assignments\'); return false;">Review ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-cyan">' +
-              '<div class="needs-icon-badge">🎯</div>' +
-              '<div><strong>Assessment Ahead:</strong> Prepositions quiz scheduled for Thursday</div>' +
+
+            // Scheduled Quiz: Violet icon badge
+            '<div class="needs-attention-card alert-violet">' +
+              '<div class="needs-status-badge badge-violet">🎯 Quiz Upcoming</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Prepositions Diagnostic</div>' +
+                '<div class="needs-desc">Assessment quiz scheduled for Thursday morning.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-violet" onclick="openQuickAssessmentModal(); return false;">Prepare ➔</a>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -8078,26 +8107,48 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
-      '<div class="kpi-grid" style="margin-bottom:24px;">' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Enrolled Learners</span><div class="kpi-icon-wrap icon-blue">👥</div></div>' +
-          '<span class="kpi-val">' + students.length + '</span>' +
-          '<span class="kpi-badge-sub badge-blue">' + cls.name + '</span>' +
+      // High-Impact Stats Bar (Unified Elevated Container, zero thin 1px individual card borders)
+      '<div class="dashboard-stats-hud-container" style="margin-bottom:24px;">' +
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Enrolled Learners</span>' +
+            '<div class="stats-hud-icon icon-blue">👥</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + students.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-blue">👥 ' + cls.name + ' Active</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Attendance Rate</span><div class="kpi-icon-wrap icon-emerald">✓</div></div>' +
-          '<span class="kpi-val">' + attRate + '%</span>' +
-          '<span class="kpi-badge-sub badge-emerald">Live Attendance</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Attendance Rate</span>' +
+            '<div class="stats-hud-icon icon-emerald">✓</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + attRate + '%</div>' +
+          '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Active Assignments</span><div class="kpi-icon-wrap icon-amber">📝</div></div>' +
-          '<span class="kpi-val">' + assignments.length + '</span>' +
-          '<span class="kpi-badge-sub badge-amber">' + (assignments.length === 1 ? '1 Pending' : assignments.length + ' Active') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Active Assignments</span>' +
+            '<div class="stats-hud-icon icon-amber">📝</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + assignments.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-amber">Pending completion</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Target CEFR</span><div class="kpi-icon-wrap icon-purple">🎯</div></div>' +
-          '<span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span>' +
-          '<span class="kpi-badge-sub badge-purple">' + (cls.academicYear || '2026–2027') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Proficiency Target</span>' +
+            '<div class="stats-hud-icon icon-indigo">🎯</div>' +
+          '</div>' +
+          '<div class="stats-hud-number" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A2') + ' Level</div>' +
+          '<div class="stats-hud-micro-badge badge-indigo">CEFR Target</div>' +
         '</div>' +
       '</div>' +
 
