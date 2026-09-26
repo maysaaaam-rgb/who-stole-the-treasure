@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Baamboozle Arena: STEM Showdown Team Battle Worksheet | Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>⚡</text></svg>">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.4;
+      padding: 16px;
+    }
+    .print-bar {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .print-btn {
+      background: #f59e0b;
+      color: #000000;
+      border: none;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn:hover { background: #d97706; }
+    .back-btn {
+      background: #334155;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+    .page {
+      background: #ffffff;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 28px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .badge {
+      background: #f59e0b;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .info-line {
+      border-bottom: 1px dotted #94a3b8;
+      display: inline-block;
+      width: 65%;
+      height: 1.1rem;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 16px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid #f59e0b;
+      padding-left: 10px;
+    }
+    .formula-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+      color: #92400e;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .quiz-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+    .quiz-num {
+      font-weight: 800;
+      color: #f59e0b;
+      margin-right: 6px;
+    }
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.88rem;
+    }
+    .score-table th, .score-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .score-table th {
+      background: #0f172a;
+      color: white;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .print-bar { display: none !important; }
+      .page { border: none; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-bar">
+    <div style="font-weight: 800; font-size: 1.1rem;">⚡ Baamboozle Arena: STEM Showdown Team Worksheet</div>
+    <div style="display: flex; gap: 12px;">
+      <a href="index.html" class="back-btn">⬅ Back to Arena</a>
+      <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet (A4)</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="sheet-header">
+      <div>
+        <h1 style="font-size: 1.35rem; font-weight: 900; color: #0f172a;">⚡ STEM Showdown: Baamboozle Arena</h1>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">Track 2: Applied STEM &amp; Creative Engineering | Grade 3–4 (CEFR A1–A2)</p>
+      </div>
+      <div>
+        <span class="badge">Team Quest</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div><strong>Student Name:</strong> <span class="info-line"></span></div>
+      <div><strong>Team Name:</strong> <span class="info-line"></span></div>
+      <div><strong>Date:</strong> <span class="info-line"></span></div>
+    </div>
+
+    <div class="formula-box">
+      <strong>📐 Master Formula:</strong> The <em>[item]</em> was invented in <em>[year]</em> by <em>[inventor]</em> to solve <em>[problem]</em>.
+    </div>
+
+    <div class="section-title">1. STEM Inventions Match-Up &amp; Formula Practice</div>
+    <p style="font-size:0.85rem; color:#475569; margin-bottom:10px;">Match each invention to its purpose statement using the master formula:</p>
+    
+    <div class="grid-2">
+      <div class="quiz-card">
+        <div><span class="quiz-num">#1</span> <strong>Telephone (1876)</strong></div>
+        <p style="font-size:0.82rem; color:#64748b; margin:6px 0;">Alexander Graham Bell</p>
+        <p style="font-size:0.82rem;">Formula: The telephone was invented to _______________________________________.</p>
+      </div>
+      <div class="quiz-card">
+        <div><span class="quiz-num">#2</span> <strong>Light Bulb (1879)</strong></div>
+        <p style="font-size:0.82rem; color:#64748b; margin:6px 0;">Thomas Edison</p>
+        <p style="font-size:0.82rem;">Formula: The light bulb was invented to ________________________________________.</p>
+      </div>
+      <div class="quiz-card">
+        <div><span class="quiz-num">#3</span> <strong>Airplane (1903)</strong></div>
+        <p style="font-size:0.82rem; color:#64748b; margin:6px 0;">The Wright Brothers</p>
+        <p style="font-size:0.82rem;">Formula: The airplane was invented to __________________________________________.</p>
+      </div>
+      <div class="quiz-card">
+        <div><span class="quiz-num">#4</span> <strong>Computer Code (1843)</strong></div>
+        <p style="font-size:0.82rem; color:#64748b; margin:6px 0;">Ada Lovelace</p>
+        <p style="font-size:0.82rem;">Formula: Code was invented to _________________________________________________.</p>
+      </div>
+    </div>
+
+    <div class="section-title">2. Team Problem &amp; Invention Blueprint</div>
+    <p style="font-size:0.85rem; color:#475569; margin-bottom:10px;">Invent a solution to an everyday school challenge with your team:</p>
+    <div style="border:1px solid #cbd5e1; border-radius:8px; padding:14px; background:#fff;">
+      <p style="font-size:0.85rem; margin-bottom:8px;"><strong>Problem:</strong> Students drop pencils or forget books.</p>
+      <p style="font-size:0.85rem; margin-bottom:8px;"><strong>Our Team Invention Name:</strong> _________________________________________________</p>
+      <p style="font-size:0.85rem; margin-bottom:8px;"><strong>How it works:</strong> It was designed by us to _________________________________________</p>
+      <div style="height:70px; border:1px dashed #94a3b8; border-radius:6px; margin-top:8px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:0.82rem;">
+        [ Sketch Quick Blueprint Here ]
+      </div>
+    </div>
+
+    <div class="section-title">3. Arena Battle Scorecard</div>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Question / Challenge</th>
+          <th>Points Earned</th>
+          <th>Teacher Signature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Round 1: Flash Phonics</td>
+          <td>Magic 'e' &amp; STEM Vocabulary</td>
+          <td>+ 25 XP</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Round 2: Problem Solving</td>
+          <td>Formula Construction</td>
+          <td>+ 50 XP</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Round 3: Final Showdown</td>
+          <td>Invention Defense</td>
+          <td>+ 75 XP</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

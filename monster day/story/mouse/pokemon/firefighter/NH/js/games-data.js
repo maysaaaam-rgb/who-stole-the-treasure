@@ -1,272 +1,160 @@
 /**
- * ENGLISH ADVENTURE ACADEMY — STANDARDIZED EDUCATIONAL RESOURCE REGISTRY
- * Authoritative Single Source of Truth for all 41 classroom games, stories, CLIL modules, and textbooks.
- * 
- * Standardized into 4 Core Categories:
- * - "CLIL & Science"
- * - "Engineering & Inventions"
- * - "Story & Literature"
- * - "Phonics & Language Quests"
- * 
- * Every lesson entry strictly exposes the 5 functional pillars:
- * 1. learningObjectives (Target Outcomes)
- * 2. vocabulary { core: string[], supporting: string[] }
- * 3. grammar { focusPattern: string, formula: string, formulas: string[] }
- * 4. topics: string[], clilTheme: string, clilDomain: string
- * 5. category, categoryGroup, level, cefrLevel, durationText, xp
+ * ENGLISH ADVENTURE ACADEMY — STANDARDIZED 4-TRACK EDUCATIONAL RESOURCE REGISTRY
+ * Authoritative registry consolidated into 4 sequential curricular learning tracks.
  */
+
+const CURRICULUM_TRACKS = [
+  {
+    "id": "track-1",
+    "key": "space",
+    "label": "🚀 Earth & Space",
+    "title": "Track 1: 🚀 Earth, Space & Natural Science",
+    "subtitle": "Planetary astronomy, environmental biology, and prehistoric dinosaur adaptation.",
+    "count": 3
+  },
+  {
+    "id": "track-2",
+    "key": "stem",
+    "label": "🛠️ STEM & Inventions",
+    "title": "Track 2: 🛠️ Applied STEM & Creative Engineering",
+    "subtitle": "Famous inventors, clean energy Eco-Rover build labs, and team battle arena.",
+    "count": 3
+  },
+  {
+    "id": "track-3",
+    "key": "language",
+    "label": "🗣️ Language & Quests",
+    "title": "Track 3: 🗣️ Language Mechanics & Communication Quests",
+    "subtitle": "Spatial prepositions physics catapult, acoustic phonics lab, and imperative meme rules.",
+    "count": 3
+  },
+  {
+    "id": "track-4",
+    "key": "literature",
+    "label": "📖 Literature & Diagnostic",
+    "title": "Track 4: 📖 Literature, Storytelling & Diagnostic Vaults",
+    "subtitle": "Alice in Wonderland sequential quest and full 8-task diagnostic assessment matrix.",
+    "count": 2
+  },
+  {
+    "id": "all",
+    "key": "all",
+    "label": "🌟 All Modules",
+    "title": "Complete 4-Track Learning Library",
+    "subtitle": "All 11 sequential active modules across Earth & Space, STEM, Language, and Literature.",
+    "count": 11
+  }
+];
 
 const GAMES_REGISTRY = [
   {
-    "id": "wonderland-quiz-briefing",
-    "aliases": [
-      "quiz-briefing",
-      "wonderland-briefing",
-      "master-quest-briefing",
-      "unit-1-quiz",
-      "pre-quiz-hud"
-    ],
-    "title": "🍄 Unit 1 Master Quest: Briefing & Timer HUD",
-    "description": "Smartboard mission briefing, teleprompter rules, 25-minute timer with Web Audio cues, interactive 4-vault quiz with answer key, student check-in, and Wonderland Character Draft prize ledger.",
-    "type": "tool",
-    "category": "Classroom Tools",
-    "categoryGroup": "Classroom Management & Timers",
-    "categoryLabel": "⏱️ Briefing & Timer",
-    "level": "Grade 4",
-    "duration": 25,
-    "durationText": "25 min",
-    "xp": 120,
-    "route": "quiz-briefing/index.html",
-    "url": "quiz-briefing/index.html",
-    "path": "quiz-briefing/index.html",
-    "thumbnailIcon": "🍄",
-    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
-    "status": "ready"
-  },
-  {
-    "id": "quiz-g3-u1-after-school-inventor",
-    "aliases": [
-      "inventor-quiz",
-      "after-school-inventor",
-      "grade3-unit1-quiz",
-      "inventor-briefing",
-      "clara-doodle-quiz"
-    ],
-    "title": "🛠️ Unit 1 Master Quest: The After-School Inventor",
-    "subtitle": "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
-    "description": "Smartboard mission briefing, 4-step inventor timeline, famous inventors console (Da Vinci, Edison, Karl Benz), biomimicry clues, and Young Inventor blueprint grading ledger.",
-    "type": "tool",
-    "category": "Classroom Tools",
-    "categoryGroup": "Classroom Management & Timers",
-    "categoryLabel": "⏱️ Briefing & Timer",
-    "level": "Grade 3",
-    "duration": 25,
-    "durationText": "25 min",
-    "xp": 120,
-    "route": "quiz-briefing/index.html#g3",
-    "url": "quiz-briefing/index.html#g3",
-    "path": "quiz-briefing/index.html",
-    "thumbnailIcon": "🛠️",
-    "gradient": "linear-gradient(135deg, #060911 0%, #0f2744 50%, #38bdf8 100%)",
-    "status": "ready"
-  },
-  {
-    "id": "sound-detective",
-    "aliases": [
-      "sound",
-      "household-sound",
-      "household-mystery",
-      "sound-detective-arcade",
-      "sound-arcade",
-      "what-is-that-sound"
-    ],
-    "title": "🎧 Sound Detective: Household Sound Arcade",
-    "description": "Fun 4-Stage Auditory Listening & Sound Arcade Game (CEFR A1+ | 250 XP). Practice auditory recognition across 12 household objects and 8 sound verbs, speed-slap reflexes with 6-second timers, crack the sonic safe distinguishing 'It's a...' vs. 'They're...', and broadcast live from the Foley DJ Studio with karaoke teleprompter.",
-    "type": "game",
-    "category": "Listening & Speaking",
-    "categoryGroup": "Phonics & Language Quests",
-    "categoryLabel": "🎧 Listening & Speaking Arcade",
-    "level": "A1+",
-    "cefrLevel": "A1+",
-    "age": "Ages 7–10",
-    "ageGroup": "7–10",
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
-    "xp": 250,
-    "learningObjectives": [
-      "Identify 12 common household objects from blind synthesized sound cues.",
-      "Match and conjugate 8 sound action verbs: tick, ring, drip, click, whistle, knock, clink, shuffle.",
-      "Differentiate singular ('It's a [object]') and plural ('They're [cards/dice]') structures in the Sonic Safe Cracker.",
-      "Broadcast a structured 3-sentence presentation using the live karaoke teleprompter and 4-channel soundboard."
-    ],
-    "languageFocus": "Inquiring: 'What's that sound?' / Singular: 'It's a [object]. It [sound verb]s!' / Plural: 'They're [cards / dice]. They [sound verb]!'",
-    "topics": [
-      "Household Objects",
-      "Sound Verbs",
-      "Singular vs Plural",
-      "Auditory Discrimination",
-      "Teleprompter Speaking"
-    ],
-    "vocabulary": {
-      "core": ["clock", "bell", "tap", "light switch", "kettle", "door", "computer", "cards", "dice", "cup", "spoon", "backpack", "tick", "ring", "drip", "click", "whistle", "knock", "clink", "shuffle"],
-      "supporting": ["sound", "listen", "singular", "plural", "broadcast", "effects", "safe", "tumbler"]
-    },
-    "grammar": {
-      "focusPattern": "Inquiring & Identification: What's that sound? / It's a [object]. It [verbs]! / They're [objects]. They [verb]!",
-      "formula": "What's that sound? / It's a [singular noun]. It [verb]s! / They're [plural noun]. They [verb]!",
-      "formulas": [
-        "What's that sound?",
-        "It's a clock. It ticks!",
-        "They're cards. They shuffle!",
-        "When the kettle moves, it goes whistle!"
-      ]
-    },
-    "path": "sound-detective/index.html",
-    "url": "sound-detective/index.html",
-    "route": "sound-detective/index.html",
-    "worksheetRoute": "sound-detective/worksheet.html",
-    "featured": true,
-    "icon": "🎧",
-    "thumbnailIcon": "🎧",
-    "gradient": "linear-gradient(135deg, #070b14 0%, #0f172a 50%, #0284c7 100%)",
-    "status": "ready"
-  },
-  {
-    "id": "wildlife-detective",
-    "aliases": [
-      "wildlife",
-      "detective",
-      "animal-adaptations",
-      "conservation",
-      "ranger"
-    ],
-    "title": "🐾 Wildlife Detective: TikTok vs. Nature",
-    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 150 XP). Investigate the wild habitat requirements of exotic animals (Axolotl, Bearded Dragon, Ball Python), analyze viral trends like the bathtub capybara vs. silicone nightlight, and broadcast the live Ranger Dispatch: 'Keep it wild! Buy the toy lamp!'.",
+    "id": "nasa-mission",
+    "title": "🚀 NASA Mission: Find a New Planet",
+    "description": "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
     "type": "game",
     "category": "CLIL & Science",
-    "categoryGroup": "Ecology & Wildlife",
-    "categoryLabel": "🐾 Wildlife Conservation & Science Literacy",
-    "level": "A1+ / A2",
-    "cefrLevel": "A1+",
-    "age": "Ages 8–11",
-    "ageGroup": "8–11",
-    "grade": "Grade 4",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 35,
-    "durationText": "35 min",
-    "estimatedMinutes": 35,
-    "xp": 150,
-    "skills": [
-      "Animal Structural & Behavioral Adaptations",
-      "Wildlife Conservation & Habitat Protection",
-      "Critical Social Media & Viral Clickbait Literacy",
-      "Oral Field Dispatch Teleprompter Recitation"
-    ],
-    "topic": "Animal Adaptations, Endangered Species Conservation & Media Literacy",
-    "topics": [
-      "Wildlife Conservation",
-      "Animal Adaptations",
-      "Media Literacy",
-      "Social Media Trends"
-    ],
-    "learningObjectives": [
-      "Differentiate wild animals from domestic pets based on physiological needs.",
-      "Formulate requirement and prohibition sentences using 'needs' and 'cannot live in'.",
-      "Deliver a structured 3-sentence conservation broadcast using the karaoke teleprompter."
-    ],
-    "vocabulary": {
-      "core": ["wetland", "herd", "chew", "teeth", "webbed feet", "snorkel face", "lamp", "expert", "zookeeper", "wild", "pet"],
-      "supporting": ["habitat", "protect", "apartment", "swimming", "adaptations"]
-    },
-    "grammar": {
-      "focusPattern": "It needs [noun] / It cannot [verb] / Keep it wild!",
-      "formula": "The [animal] needs [requirement]. / Keep it wild! Buy the [item]!",
-      "formulas": [
-        "The axolotl needs cold, clean water.",
-        "A capybara cannot live in a bedroom because it needs a wetland.",
-        "Keep wild animals in nature and buy the toy lamp!"
-      ]
-    },
-    "path": "wildlife-detective/index.html",
-    "url": "wildlife-detective/index.html",
-    "route": "wildlife-detective/index.html",
-    "worksheetRoute": "wildlife-detective/worksheet.html",
-    "icon": "🐾",
-    "thumbnailIcon": "🐾",
-    "gradient": "linear-gradient(135deg, #060d0a 0%, #0f241a 50%, #10b981 100%)",
-    "status": "ready"
-  },
-  {
-    "id": "cat-vs-dog",
-    "aliases": [
-      "preposition-catapult",
-      "catapult",
-      "cat-dog",
-      "dog-vs-cat"
-    ],
-    "title": "🐱 Cat vs. Dog: Preposition Catapult",
-    "description": "Real-time 60FPS parabolic physics catapult clash (CEFR A1 | 130 XP). Launch fish bones over the tall wooden fence, calculate wind vectors, and solve preposition linguistic gates to unlock tactical Double Shot, Super Power, and Grammar Medic power-ups!",
-    "type": "game",
-    "category": "Grammar & Communication",
-    "categoryGroup": "Grammar & Speaking Quests",
-    "categoryLabel": "🐱 Arcade Physics & Prepositions",
+    "categoryLabel": "🚀 CLIL & Space Exploration",
     "level": "A1",
     "cefrLevel": "A1",
-    "age": "Ages 7–10",
-    "ageGroup": "7–10",
-    "grade": "Grade 2–4",
+    "age": "Ages 6–9",
+    "ageGroup": "6-9",
+    "grade": "Grade 3–4",
     "grades": [
-      "Grade 2",
       "Grade 3",
       "Grade 4"
     ],
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
-    "xp": 130,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 150,
     "skills": [
-      "Prepositions of Place (over, into, behind, under, on top of)",
-      "Directional Prepositions & Movement (across, through)",
-      "Trajectory & Wind Vector Physics",
-      "Oral Teleprompter Victory Recitation"
+      "CLIL Science & Astronomy",
+      "Phonics (Magic 'e')",
+      "Speaking & Presentation",
+      "Descriptive Adjectives",
+      "Survival Vocabulary",
+      "Engineering & Problem Solving"
     ],
-    "topic": "Prepositions of Place & Movement, Trajectory Physics & Turn-Based Strategy",
+    "topic": "Planetary Science, Survival Needs & Engineering Inventions",
     "topics": [
-      "Prepositions of Place",
-      "Action Verbs",
-      "Trajectory Physics"
+      "Planetary Astronomy",
+      "Space Exploration",
+      "Environmental Science"
+    ],
+    "languageFocus": "It is [cold / rocky / red]. People need [water / oxygen] to live. The problem is [no water]. It can [melt / filter] AND [clean].",
+    "activityMode": "Whole Class Smart Board Interactive / Individual Space Cadet Mode",
+    "interactionType": "Phonics Booster Canister, Radar Surface Scanner, Airlock Cargo Sorter, Snap-Together Machine Builder, Peer Upgrade Bay, Live Teleprompter",
+    "difficulty": "Grade 3–4 A1 / A1+",
+    "tags": [
+      "space",
+      "nasa",
+      "clil",
+      "science",
+      "phonics",
+      "magic-e",
+      "survival",
+      "inventions",
+      "speaking",
+      "grade-3",
+      "grade-4"
     ],
     "learningObjectives": [
-      "Identify and apply spatial prepositions (over, into, on top of, behind).",
-      "Calculate projectile trajectory angles and force against dynamic wind meters.",
-      "Express spatial actions orally using 'The cat threw the projectile OVER the fence'."
+      "Identify planetary characteristics, atmospheres, and biosignatures in English",
+      "Use comparative and superlative adjectives to evaluate exoplanet viability",
+      "Analyze scientific data strips (temperature, water, oxygen) to justify space mission decisions",
+      "Formulate complete scientific mission reports and expedition logs"
     ],
+    "teacherInstructions": "Project on Smart Board. Guide students through the 6 sequential space stages. Use the built-in Teacher HUD to view curriculum targets and print student mission logbooks & diplomas.",
+    "studentInstructions": "Join NASA as a Planetary Cadet! Fuel your rocket, scan an alien world, sort survival gear, build a crisis-solving rover, and broadcast your discovery to Earth!",
+    "route": "nasa-mission/index.html",
+    "worksheet": "nasa-mission/worksheet.html",
+    "worksheetRoute": "nasa-mission/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🚀",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"nasaGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#090d16\"/>\n          <stop offset=\"50%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"100%\" stop-color=\"#0369a1\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#nasaGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#0ea5e9\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">🚀</text>\n    </svg>",
+    "categoryGroup": "Space Exploration",
     "vocabulary": {
-      "core": ["over", "into", "on top of", "behind", "throw", "hit", "fence", "yard"],
-      "supporting": ["wind", "angle", "power", "catapult", "trajectory"]
-    },
-    "grammar": {
-      "focusPattern": "Prepositions of Place: over / into / on top of / behind",
-      "formula": "[Noun] + [Verb] + [Preposition] + [Noun Phrase]",
-      "formulas": [
-        "The cat throws the fish over the fence.",
-        "The bone lands into the dog's bowl.",
-        "The cat sits on top of the trash bin."
+      "core": [
+        "planet",
+        "gravity",
+        "atmosphere",
+        "orbit",
+        "solar system",
+        "oxygen"
+      ],
+      "supporting": [
+        "exoplanet",
+        "spacecraft",
+        "habitable",
+        "telescope",
+        "radiation"
+      ],
+      "phonics": [
+        "/pl/ in planet",
+        "/sp/ in space"
       ]
     },
-    "path": "cat-vs-dog/index.html",
-    "url": "cat-vs-dog/index.html",
-    "route": "cat-vs-dog/index.html",
-    "worksheetRoute": "cat-vs-dog/worksheet.html",
-    "icon": "🐱",
-    "thumbnailIcon": "🐱",
-    "gradient": "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #0284c7 100%)",
-    "status": "ready"
+    "grammar": {
+      "focusPattern": "Planet X is [comparative] than Earth because...",
+      "formula": "Planet [X] is colder than Earth, so explorers need [oxygen/heat] to survive.",
+      "formulas": [
+        "Subject + is + Comparative Adjective + than + Object",
+        "It has + [Quantity] + of + [Element], so humans can/cannot survive"
+      ]
+    },
+    "clilDomain": "Astrophysics & Exoplanet Habitability",
+    "clilTheme": "Astrophysics & Exoplanet Habitability",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackOrder": 1,
+    "formula": "It is [cold / rocky]. People need [water] to live.",
+    "status": "active",
+    "worksheetUrl": "nasa-mission/worksheet.html",
+    "url": "nasa-mission/index.html"
   },
   {
     "id": "dino-arena",
@@ -276,13 +164,13 @@ const GAMES_REGISTRY = [
       "paleo-clash",
       "dino-battle"
     ],
-    "title": "🦖 Dino Clash: The Ultimate Cretaceous Showdown",
+    "title": "🦕 Dino Arena: Cretaceous Adaptations",
     "description": "Complete 6-stage commercial-grade EdTech CLIL master lesson (CEFR A1+–A2 | 200 XP). 1. Mystery Silhouette & Roar Guessing Hook, 2. CLIL Diet Sorter (Carnivore vs. Herbivore), 3. Comparative Adjective Balance Gym, 4. 1v1 Dino Top Trumps Battle Arena, 5. Spoken Teleprompter Broadcast Studio, 6. Rapid Exit Checkpoint & Printable Field Passport.",
     "type": "game",
     "category": "CLIL & Science",
     "categoryLabel": "🦖 Paleontology & Top Trumps",
-    "level": "A1+ / A2",
-    "cefrLevel": "A1–A2",
+    "level": "A1+",
+    "cefrLevel": "A1+",
     "age": "Ages 7–11",
     "ageGroup": "7–11",
     "grade": "Grade 3–5",
@@ -340,7 +228,7 @@ const GAMES_REGISTRY = [
     "route": "dino-arena/index.html",
     "worksheetRoute": "dino-arena/worksheet.html",
     "featured": true,
-    "thumbnailIcon": "🦖",
+    "thumbnailIcon": "🦕",
     "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
     "teacherGuide": true,
     "supportsAssignment": true,
@@ -380,7 +268,878 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Paleontology & Animal Biology",
-    "clilTheme": "Prehistoric Fauna & Physical Adaptations"
+    "clilTheme": "Prehistoric Fauna & Physical Adaptations",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackOrder": 2,
+    "formula": "[Dino A] is [bigger / faster] than [Dino B].",
+    "status": "active",
+    "worksheetUrl": "dino-arena/worksheet.html",
+    "url": "dino-arena/index.html"
+  },
+  {
+    "id": "wildlife-detective",
+    "aliases": [
+      "wildlife",
+      "detective",
+      "animal-adaptations",
+      "conservation",
+      "ranger"
+    ],
+    "title": "🐾 Wildlife Detective: TikTok vs. Nature",
+    "description": "Interactive 3-Phase wildlife CLIL mission (CEFR A1+ | 150 XP). Investigate the wild habitat requirements of exotic animals (Axolotl, Bearded Dragon, Ball Python), analyze viral trends like the bathtub capybara vs. silicone nightlight, and broadcast the live Ranger Dispatch: 'Keep it wild! Buy the toy lamp!'.",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryGroup": "Ecology & Wildlife",
+    "categoryLabel": "🐾 Wildlife Conservation & Science Literacy",
+    "level": "A2",
+    "cefrLevel": "A2",
+    "age": "Ages 8–11",
+    "ageGroup": "8–11",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 150,
+    "skills": [
+      "Animal Structural & Behavioral Adaptations",
+      "Wildlife Conservation & Habitat Protection",
+      "Critical Social Media & Viral Clickbait Literacy",
+      "Oral Field Dispatch Teleprompter Recitation"
+    ],
+    "topic": "Animal Adaptations, Endangered Species Conservation & Media Literacy",
+    "topics": [
+      "Wildlife Conservation",
+      "Animal Adaptations",
+      "Media Literacy",
+      "Social Media Trends"
+    ],
+    "learningObjectives": [
+      "Differentiate wild animals from domestic pets based on physiological needs.",
+      "Formulate requirement and prohibition sentences using 'needs' and 'cannot live in'.",
+      "Deliver a structured 3-sentence conservation broadcast using the karaoke teleprompter."
+    ],
+    "vocabulary": {
+      "core": [
+        "wetland",
+        "herd",
+        "chew",
+        "teeth",
+        "webbed feet",
+        "snorkel face",
+        "lamp",
+        "expert",
+        "zookeeper",
+        "wild",
+        "pet"
+      ],
+      "supporting": [
+        "habitat",
+        "protect",
+        "apartment",
+        "swimming",
+        "adaptations"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "It needs [noun] / It cannot [verb] / Keep it wild!",
+      "formula": "The [animal] needs [requirement]. / Keep it wild! Buy the [item]!",
+      "formulas": [
+        "The axolotl needs cold, clean water.",
+        "A capybara cannot live in a bedroom because it needs a wetland.",
+        "Keep wild animals in nature and buy the toy lamp!"
+      ]
+    },
+    "path": "wildlife-detective/index.html",
+    "url": "wildlife-detective/index.html",
+    "route": "wildlife-detective/index.html",
+    "worksheetRoute": "wildlife-detective/worksheet.html",
+    "icon": "🐾",
+    "thumbnailIcon": "🦫",
+    "gradient": "linear-gradient(135deg, #060d0a 0%, #0f241a 50%, #10b981 100%)",
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackOrder": 3,
+    "formula": "The [animal] needs [habitat]. Keep it wild!",
+    "worksheetUrl": "wildlife-detective/worksheet.html"
+  },
+  {
+    "id": "young-inventor",
+    "title": "🛠️ Young Inventor: Innovation Workshop",
+    "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",
+    "type": "game",
+    "category": "Engineering & Inventions",
+    "categoryLabel": "💡 CLIL & STEM Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–11",
+    "ageGroup": "8-11",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 120,
+    "skills": [
+      "Speaking",
+      "CLIL",
+      "Grammar",
+      "Creative Thinking",
+      "Vocabulary"
+    ],
+    "topic": "The Small Inventor & STEM Design",
+    "topics": [
+      "Invention Cycle",
+      "Design Blueprints",
+      "Prototyping & Testing"
+    ],
+    "languageFocus": "Modals of ability CAN / CAN'T + verb (It can fly, It can't swim), HAS / HAVE (It has two wheels), IS / ARE, sequencing (First, Then, Finally), problem/solution (The problem is..., The solution is...)",
+    "activityMode": "Whole Class Smart Board Interactive / Team Inventor Challenge",
+    "interactionType": "Touch Drawing Canvas, Modular Assembly Pod, Stress Test Chamber, Ability Selector, 5-Minute Pitch Timer, Audience Detective Scoring",
+    "difficulty": "Grade 4 Scaffolded A1+",
+    "tags": [
+      "inventor",
+      "small-inventor",
+      "young-inventor",
+      "stem",
+      "clil",
+      "can-cant",
+      "grade-4",
+      "presentation",
+      "expo",
+      "biomimicry",
+      "good-ideas-book"
+    ],
+    "learningObjectives": [
+      "Trace the 5-step invention lifecycle: Problem -> Idea -> Blueprint -> Prototype -> Improvement",
+      "Formulate purpose statements using to + verb (e.g. He invented the telephone to talk to distant people)",
+      "Evaluate engineering trade-offs when testing and improving prototypes",
+      "Deliver an oral presentation detailing an original classroom invention"
+    ],
+    "teacherInstructions": "Project on Smart Board. Guide young inventors through 10 interactive missions: problem detection, biomimicry inspiration, canvas blueprinting, modular assembly, ability verification, chamber testing, upgrades, and the Capstone Expo pitch.",
+    "studentInstructions": "Join the Young Inventor Academy! Discover problems, invent high-tech gadgets, test them in the lab, upgrade your prototype, and present your invention at the Grand Expo!",
+    "route": "young-inventor/index.html",
+    "worksheet": "young-inventor/worksheet.html",
+    "worksheetRoute": "young-inventor/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"yiThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#083344\"/><stop offset=\"50%\" stop-color=\"#0e7490\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#yiThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.75\" stroke=\"#06b6d4\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#06b6d4\" opacity=\"0.25\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">🚀</text><rect x=\"16\" y=\"92\" width=\"168\" height=\"22\" rx=\"11\" fill=\"#06b6d4\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"9\" fill=\"#0f172a\" text-anchor=\"middle\" letter-spacing=\"0.5\">YOUNG INVENTOR ACADEMY</text></svg>",
+    "categoryGroup": "Young Inventor Academy",
+    "vocabulary": {
+      "core": [
+        "invent",
+        "plan",
+        "build",
+        "test",
+        "improve",
+        "problem",
+        "solution"
+      ],
+      "supporting": [
+        "blueprint",
+        "measure",
+        "device",
+        "material",
+        "present"
+      ],
+      "phonics": [
+        "/bl/ in blueprint",
+        "/pl/ in plan"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Inventors plan before they [verb]",
+      "formula": "Real inventors plan blueprints before they build and test their inventions.",
+      "formulas": [
+        "People invented [Item] to + Base Verb",
+        "First we plan, then we build, next we test, finally we improve"
+      ]
+    },
+    "clilDomain": "Engineering Design Loop (Plan, Build, Test, Improve)",
+    "clilTheme": "Engineering Design Loop (Plan, Build, Test, Improve)",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "trackOrder": 1,
+    "formula": "The [tool] helps to [verb] the [noun].",
+    "thumbnailIcon": "🛠️",
+    "status": "active",
+    "worksheetUrl": "young-inventor/worksheet.html",
+    "url": "young-inventor/index.html"
+  },
+  {
+    "id": "eco-engineers",
+    "aliases": [
+      "adventure-engine"
+    ],
+    "title": "⚡ Eco-Engineers: Clean Energy Rover",
+    "description": "Commercial-grade cyber-glassmorphic interactive learning module. Power the quantum core, align solar, kinetic, radar, and shield subsystems, solve speed hazard relays, and broadcast live on the glowing teleprompter!",
+    "type": "game",
+    "category": "Engineering & Inventions",
+    "categoryLabel": "⚡ CLIL & Clean Energy",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–12",
+    "ageGroup": "8-12",
+    "grade": "Grade 3–5",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": [
+      "CLIL Clean Energy",
+      "Engineering Design Cycle",
+      "Oral Debrief & Presentation",
+      "Functional Modals (uses [Energy] to [Verb])"
+    ],
+    "topic": "Clean Energy & Eco-Rover Engineering",
+    "topics": [
+      "Robotics & Automation",
+      "Renewable Energy",
+      "Algorithmic Thinking"
+    ],
+    "languageFocus": "The [Subsystem] uses [Energy] to [Verb]. Teamwork powers adventure!",
+    "activityMode": "Interactive Cyber-Glassmorphism Lab / Smart Board Challenge",
+    "interactionType": "Persistent Holographic Rover SVG, Subsystem Slotting, Speed Hazard Relay, Glowing Karaoke Teleprompter, Printable A4 Diploma",
+    "difficulty": "Scaffolded A1+ / A2",
+    "tags": [
+      "adventure-engine",
+      "eco-rover",
+      "clean-energy",
+      "clil",
+      "stem",
+      "teleprompter",
+      "engineering",
+      "speaking"
+    ],
+    "learningObjectives": [
+      "Program navigation commands and route algorithms for an autonomous planetary eco-rover",
+      "Apply environmental science concepts: solar charging, battery storage, and terrain mapping",
+      "Use directional prepositions and sequencing adverbs in step-by-step robotic instructions",
+      "Diagnose rover hardware faults and engineer iterative repair scripts"
+    ],
+    "teacherInstructions": "Launch on Smart Board or individual student tablets. Guide students through Subsystem Alignment, the 3-round Hazard Speed Relay, and the Live Studio Teleprompter Speech.",
+    "studentInstructions": "Power the quantum core of the Eco-Rover! Slot the energy subsystems, survive the dust storms and thermal chasms, and broadcast live to Earth!",
+    "route": "eco-engineers/index.html",
+    "worksheet": "adventure-engine/worksheet.html",
+    "worksheetRoute": "eco-engineers/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⚡",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c1a30 50%, #0284c7 100%)",
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"advEngGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#0c1a30\"/>\n          <stop offset=\"100%\" stop-color=\"#0284c7\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#advEngGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"42\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#0284c7\" opacity=\"0.8\"/>\n      <text x=\"100\" y=\"78\" font-size=\"26\" text-anchor=\"middle\">⚡</text>\n      <rect x=\"18\" y=\"106\" width=\"164\" height=\"20\" rx=\"10\" fill=\"#0284c7\"/>\n      <text x=\"100\" y=\"120\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"8.5\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">ADVENTURE ENGINE ⚡</text>\n    </svg>",
+    "categoryGroup": "Eco-Rover Robotics",
+    "vocabulary": {
+      "core": [
+        "rover",
+        "battery",
+        "solar panel",
+        "sensor",
+        "terrain",
+        "command"
+      ],
+      "supporting": [
+        "autonomous",
+        "chassis",
+        "efficiency",
+        "navigate",
+        "obstacle"
+      ],
+      "phonics": [
+        "/r/ in rover",
+        "/s/ in sensor"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The rover needs to [action] in order to [purpose]",
+      "formula": "Drive forward [X] meters and turn [direction] in order to recharge the solar battery.",
+      "formulas": [
+        "Imperative: Turn [Direction] + Drive [Distance] meters",
+        "In order to + Base Verb, the rover must + Base Verb"
+      ]
+    },
+    "clilDomain": "Renewable Energy & Robotic Navigation",
+    "clilTheme": "Renewable Energy & Robotic Navigation",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "trackOrder": 2,
+    "formula": "We use [Tool A] AND [Tool B] to [verb].",
+    "status": "active",
+    "worksheetUrl": "eco-engineers/worksheet.html",
+    "url": "eco-engineers/index.html"
+  },
+  {
+    "id": "baamboozle",
+    "aliases": [
+      "academy-bamboozle",
+      "bamboozle"
+    ],
+    "title": "⚡ Baamboozle Arena: STEM Showdown",
+    "description": "High-energy classroom team showdown with mystery cards, problem-solving questions, and sudden game-changing power-ups (Swap, Steal, and Double Points)!",
+    "type": "game",
+    "category": "Engineering & Inventions",
+    "categoryLabel": "⚡ Team Quiz Show",
+    "level": "A1–A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 7–12",
+    "ageGroup": "7-12",
+    "grade": "Grade 3–5",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 15,
+    "durationText": "15 min",
+    "estimatedMinutes": 15,
+    "xp": 100,
+    "skills": [
+      "Speaking",
+      "Quick Recall",
+      "Team Collaboration"
+    ],
+    "topic": "Inventions, Tools & Problem Solving",
+    "topics": [
+      "Inventors & Inventions",
+      "Classroom Game Show",
+      "Team Communication"
+    ],
+    "languageFocus": "Why did people invent...? People invented... to [verb].",
+    "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
+    "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
+    "difficulty": "All Levels (A1–A2+)",
+    "tags": [
+      "baamboozle",
+      "bamboozle",
+      "game-show",
+      "quiz",
+      "team-battle",
+      "inventions",
+      "speaking",
+      "review"
+    ],
+    "learningObjectives": [
+      "Review and master primary science and invention vocabulary in high-energy team tournament format",
+      "Formulate fast affirmative and interrogative responses under time pressure",
+      "Distinguish between problems, tools, and technological solutions",
+      "Collaborate with peers using strategic gameplay and respectful sportsmanship"
+    ],
+    "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
+    "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
+    "route": "baamboozle/index.html",
+    "featured": true,
+    "thumbnailIcon": "🎮",
+    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"baamboozleGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"50%\" stop-color=\"#312e81\"/>\n          <stop offset=\"100%\" stop-color=\"#4338ca\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#baamboozleGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">⚡</text>\n    </svg>",
+    "categoryGroup": "Invention Game Show",
+    "vocabulary": {
+      "core": [
+        "inventor",
+        "invention",
+        "machine",
+        "blueprint",
+        "experiment",
+        "solution"
+      ],
+      "supporting": [
+        "gadget",
+        "teamwork",
+        "score",
+        "power-up",
+        "challenge"
+      ],
+      "phonics": [
+        "/v/ in inventor",
+        "/bl/ in blueprint"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Who invented the [item]? / What does it do?",
+      "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
+      "formulas": [
+        "Subject + was invented in [Year] by [Inventor]",
+        "It is used to + Base Verb"
+      ]
+    },
+    "clilDomain": "History of Technology & Team Problem Solving",
+    "clilTheme": "History of Technology & Team Problem Solving",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "trackOrder": 3,
+    "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
+    "worksheetRoute": "baamboozle/worksheet.html",
+    "status": "active",
+    "worksheetUrl": "baamboozle/worksheet.html",
+    "url": "baamboozle/index.html"
+  },
+  {
+    "id": "cat-vs-dog",
+    "aliases": [
+      "preposition-catapult",
+      "catapult",
+      "cat-dog",
+      "dog-vs-cat"
+    ],
+    "title": "🐱 Cat vs. Dog: Preposition Catapult",
+    "description": "Real-time 60FPS parabolic physics catapult clash (CEFR A1 | 130 XP). Launch fish bones over the tall wooden fence, calculate wind vectors, and solve preposition linguistic gates to unlock tactical Double Shot, Super Power, and Grammar Medic power-ups!",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Grammar & Speaking Quests",
+    "categoryLabel": "🐱 Arcade Physics & Prepositions",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 7–10",
+    "ageGroup": "7–10",
+    "grade": "Grade 2–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 130,
+    "skills": [
+      "Prepositions of Place (over, into, behind, under, on top of)",
+      "Directional Prepositions & Movement (across, through)",
+      "Trajectory & Wind Vector Physics",
+      "Oral Teleprompter Victory Recitation"
+    ],
+    "topic": "Prepositions of Place & Movement, Trajectory Physics & Turn-Based Strategy",
+    "topics": [
+      "Prepositions of Place",
+      "Action Verbs",
+      "Trajectory Physics"
+    ],
+    "learningObjectives": [
+      "Identify and apply spatial prepositions (over, into, on top of, behind).",
+      "Calculate projectile trajectory angles and force against dynamic wind meters.",
+      "Express spatial actions orally using 'The cat threw the projectile OVER the fence'."
+    ],
+    "vocabulary": {
+      "core": [
+        "over",
+        "into",
+        "on top of",
+        "behind",
+        "throw",
+        "hit",
+        "fence",
+        "yard"
+      ],
+      "supporting": [
+        "wind",
+        "angle",
+        "power",
+        "catapult",
+        "trajectory"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Prepositions of Place: over / into / on top of / behind",
+      "formula": "[Noun] + [Verb] + [Preposition] + [Noun Phrase]",
+      "formulas": [
+        "The cat throws the fish over the fence.",
+        "The bone lands into the dog's bowl.",
+        "The cat sits on top of the trash bin."
+      ]
+    },
+    "path": "cat-vs-dog/index.html",
+    "url": "cat-vs-dog/index.html",
+    "route": "cat-vs-dog/index.html",
+    "worksheetRoute": "cat-vs-dog/worksheet.html",
+    "icon": "🐱",
+    "thumbnailIcon": "🐱",
+    "gradient": "linear-gradient(135deg, #070b14 0%, #1e1b4b 50%, #0284c7 100%)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 1,
+    "formula": "The [animal] throws [item] [over / under / behind] the [target].",
+    "worksheetUrl": "cat-vs-dog/worksheet.html"
+  },
+  {
+    "id": "sound-detective",
+    "aliases": [
+      "sound",
+      "household-sound",
+      "household-mystery",
+      "sound-detective-arcade",
+      "sound-arcade",
+      "what-is-that-sound"
+    ],
+    "title": "🎧 Sound Detective: Acoustic Lab",
+    "description": "Fun 4-Stage Auditory Listening & Sound Arcade Game (CEFR A1+ | 250 XP). Practice auditory recognition across 12 household objects and 8 sound verbs, speed-slap reflexes with 6-second timers, crack the sonic safe distinguishing 'It's a...' vs. 'They're...', and broadcast live from the Foley DJ Studio with karaoke teleprompter.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Phonics & Language Quests",
+    "categoryLabel": "🎧 Listening & Speaking Arcade",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–10",
+    "ageGroup": "7–10",
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 250,
+    "learningObjectives": [
+      "Identify 12 common household objects from blind synthesized sound cues.",
+      "Match and conjugate 8 sound action verbs: tick, ring, drip, click, whistle, knock, clink, shuffle.",
+      "Differentiate singular ('It's a [object]') and plural ('They're [cards/dice]') structures in the Sonic Safe Cracker.",
+      "Broadcast a structured 3-sentence presentation using the live karaoke teleprompter and 4-channel soundboard."
+    ],
+    "languageFocus": "Inquiring: 'What's that sound?' / Singular: 'It's a [object]. It [sound verb]s!' / Plural: 'They're [cards / dice]. They [sound verb]!'",
+    "topics": [
+      "Household Objects",
+      "Sound Verbs",
+      "Singular vs Plural",
+      "Auditory Discrimination",
+      "Teleprompter Speaking"
+    ],
+    "vocabulary": {
+      "core": [
+        "clock",
+        "bell",
+        "tap",
+        "light switch",
+        "kettle",
+        "door",
+        "computer",
+        "cards",
+        "dice",
+        "cup",
+        "spoon",
+        "backpack",
+        "tick",
+        "ring",
+        "drip",
+        "click",
+        "whistle",
+        "knock",
+        "clink",
+        "shuffle"
+      ],
+      "supporting": [
+        "sound",
+        "listen",
+        "singular",
+        "plural",
+        "broadcast",
+        "effects",
+        "safe",
+        "tumbler"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Inquiring & Identification: What's that sound? / It's a [object]. It [verbs]! / They're [objects]. They [verb]!",
+      "formula": "What's that sound? / It's a [singular noun]. It [verb]s! / They're [plural noun]. They [verb]!",
+      "formulas": [
+        "What's that sound?",
+        "It's a clock. It ticks!",
+        "They're cards. They shuffle!",
+        "When the kettle moves, it goes whistle!"
+      ]
+    },
+    "path": "sound-detective/index.html",
+    "url": "sound-detective/index.html",
+    "route": "sound-detective/index.html",
+    "worksheetRoute": "sound-detective/worksheet.html",
+    "featured": true,
+    "icon": "🎧",
+    "thumbnailIcon": "🎧",
+    "gradient": "linear-gradient(135deg, #070b14 0%, #0f172a 50%, #0284c7 100%)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 2,
+    "formula": "Listen! It sounds like a [noun]. It makes a [adjective] sound.",
+    "worksheetUrl": "sound-detective/worksheet.html"
+  },
+  {
+    "id": "meme-rules",
+    "aliases": [
+      "meme-imperatives",
+      "classroom-memes",
+      "meme-workbench"
+    ],
+    "title": "⭐ Meme Rules: Imperatives in Action",
+    "description": "Tactical 3-phase interactive CLIL lab. Scan 25 iconic meme reactions, sort rules into Green Light (Base Verb) and Red Light (Don't + Verb) dropzones, and deliver a live teleprompter speech!",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Grammar & Communication",
+    "cefrLevel": "A1+",
+    "level": "A1+",
+    "ageGroup": "8–12",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5",
+      "Grade 6"
+    ],
+    "xp": 150,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "type": "game",
+    "topics": [
+      "Classroom Rules",
+      "Imperatives",
+      "Social Communication"
+    ],
+    "learningObjectives": [
+      "Construct positive imperatives using Base Verb + Object.",
+      "Construct negative imperatives using Don't + Base Verb.",
+      "Deliver classroom behavior rules orally using a 3-part teleprompter."
+    ],
+    "teacherInstructions": "Use the Green/Red light relay for tactile sorting practice, then have students present their favorite meme rule using the teleprompter studio.",
+    "route": "meme-rules/index.html",
+    "worksheet": "meme-rules/worksheet.html",
+    "worksheetRoute": "meme-rules/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⭐",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
+    "tags": [
+      "memes",
+      "imperatives",
+      "grammar",
+      "rules",
+      "speaking",
+      "clil"
+    ],
+    "vocabulary": {
+      "core": [
+        "raise",
+        "speak",
+        "listen",
+        "whisper",
+        "share",
+        "wait"
+      ],
+      "supporting": [
+        "hallway",
+        "supplies",
+        "patiently",
+        "carefully"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Base Verb + Object / Don't + Base Verb",
+      "formula": "Base Verb + Object / Don't + Base Verb",
+      "formulas": [
+        "Raise your hand before answering!",
+        "Don't shout across the room!",
+        "Whisper when working in pairs!"
+      ]
+    },
+    "clilDomain": "Media Literacy & Social-Emotional Learning",
+    "clilTheme": "Classroom Community & Digital Communication",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 3,
+    "formula": "[Base Verb]! / Don't [Base Verb]!",
+    "status": "active",
+    "worksheetUrl": "meme-rules/worksheet.html",
+    "url": "meme-rules/index.html"
+  },
+  {
+    "id": "alice-quest",
+    "title": "🫖 Alice Quest: Mad Tea Party Storyboard",
+    "description": "Differentiated reading and speaking challenge deck. Students choose their level (1 to 3) to earn up to 200 XP for vocabulary, creative storytelling, character acting, and full spoken summaries!",
+    "type": "presentation",
+    "category": "Story & Literature",
+    "categoryLabel": "📖 Literature & Speaking",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–12",
+    "ageGroup": "8-12",
+    "grade": "Grade 3–5",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "xp": 200,
+    "skills": [
+      "Differentiated Reading Comprehension",
+      "Creative Writing & Alternate Endings",
+      "Public Speaking & Spoken Summaries",
+      "Drama & Character Portrayal"
+    ],
+    "topic": "Alice in Wonderland Differentiated Quests",
+    "languageFocus": "My favorite character is... because... / At first Alice was... but later she became...",
+    "route": "alice-quest/index.html",
+    "worksheet": "alice-quest/worksheet.html",
+    "worksheetRoute": "alice-quest/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🫖",
+    "gradient": "linear-gradient(135deg, #070b14 0%, #312e81 50%, #c084fc 100%)",
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"aliceQuestThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#070b14\"/>\n            <stop offset=\"50%\" stop-color=\"#312e81\"/>\n            <stop offset=\"100%\" stop-color=\"#c084fc\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#aliceQuestThumbBg)\"/>\n        <rect x=\"15\" y=\"15\" width=\"170\" height=\"110\" rx=\"12\" fill=\"rgba(15,23,42,0.8)\" stroke=\"#c084fc\" stroke-width=\"2\" stroke-dasharray=\"5,3\"/>\n        <circle cx=\"65\" cy=\"52\" r=\"22\" fill=\"#c084fc\" opacity=\"0.25\"/>\n        <text x=\"65\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🐇</text>\n        <circle cx=\"135\" cy=\"52\" r=\"22\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n        <text x=\"135\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">👑</text>\n        <rect x=\"25\" y=\"90\" width=\"150\" height=\"22\" rx=\"11\" fill=\"#c084fc\"/>\n        <text x=\"100\" y=\"105\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"9\" fill=\"#070b14\" text-anchor=\"middle\" letter-spacing=\"0.5\">ALICE XP QUEST ⚡</text>\n      </svg>",
+    "categoryGroup": "Alice in Wonderland",
+    "learningObjectives": [
+      "Progress through 4 graded tiers of Wonderland literary comprehension challenges (Bronze to Legend)",
+      "Demonstrate mastery of character analysis, narrative recall, and quote identification",
+      "Engage in gamified classroom roster grading with live XP rewards and tier badges",
+      "Defend literary interpretations using evidence from the original Lewis Carroll text"
+    ],
+    "vocabulary": {
+      "core": [
+        "quest",
+        "riddle",
+        "tier",
+        "legend",
+        "nonsense",
+        "crown"
+      ],
+      "supporting": [
+        "wonderland",
+        "monarch",
+        "croquet",
+        "cheshire",
+        "whimsical"
+      ],
+      "phonics": [
+        "/kw/ in quest",
+        "/r/ in riddle"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Why did [Character] say [Quote]?",
+      "formula": "Why did the Queen of Hearts demand [action]? Because [character motive].",
+      "formulas": [
+        "Wh- Questions: Why + did + Subject + Verb + ...?",
+        "Cause & Effect: [Character] acted this way because + Clause"
+      ]
+    },
+    "topics": [
+      "Literature Quests",
+      "Roster Grading & Assessment",
+      "Alice in Wonderland"
+    ],
+    "clilDomain": "Literary Analysis & Gamified Roster Grading",
+    "clilTheme": "Literary Analysis & Gamified Roster Grading",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Storytelling & Diagnostic Vaults",
+    "trackOrder": 1,
+    "formula": "First [Event A], then [Event B], finally [Event C].",
+    "status": "active",
+    "worksheetUrl": "alice-quest/worksheet.html",
+    "url": "alice-quest/index.html"
+  },
+  {
+    "id": "unit-1-diagnostic",
+    "title": "📋 Unit 1 Diagnostic: 8-Task Audit Vault",
+    "description": "Standardized curricular module in 📖 Literature, Storytelling & Diagnostic Vaults.",
+    "learningObjectives": [
+      "Demonstrate proficiency in target formula: 8-Task Diagnostic & Proficiency Matrix",
+      "Participate in classroom team tasks and digital checkpoint activities"
+    ],
+    "vocabulary": {
+      "core": [
+        "lesson",
+        "mission",
+        "practice",
+        "target"
+      ]
+    },
+    "grammar": {
+      "formula": "8-Task Diagnostic & Proficiency Matrix",
+      "focusPattern": "8-Task Diagnostic & Proficiency Matrix"
+    },
+    "xp": 120,
+    "duration": 35,
+    "durationText": "35 min",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Storytelling & Diagnostic Vaults",
+    "trackOrder": 2,
+    "cefrLevel": "A1–A2",
+    "level": "A1–A2",
+    "formula": "8-Task Diagnostic & Proficiency Matrix",
+    "route": "unit-1-diagnostic/index.html",
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
+    "thumbnailIcon": "📋",
+    "category": "Story & Literature",
+    "status": "active",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html",
+    "url": "unit-1-diagnostic/index.html"
+  },
+  {
+    "id": "wonderland-quiz-briefing",
+    "aliases": [
+      "quiz-briefing",
+      "wonderland-briefing",
+      "master-quest-briefing",
+      "unit-1-quiz",
+      "pre-quiz-hud"
+    ],
+    "title": "🍄 Unit 1 Master Quest: Briefing & Timer HUD",
+    "description": "Smartboard mission briefing, teleprompter rules, 25-minute timer with Web Audio cues, interactive 4-vault quiz with answer key, student check-in, and Wonderland Character Draft prize ledger.",
+    "type": "tool",
+    "category": "Classroom Tools",
+    "categoryGroup": "Classroom Management & Timers",
+    "categoryLabel": "⏱️ Briefing & Timer",
+    "level": "Grade 4",
+    "duration": 25,
+    "durationText": "25 min",
+    "xp": 120,
+    "route": "quiz-briefing/index.html",
+    "url": "quiz-briefing/index.html",
+    "path": "quiz-briefing/index.html",
+    "thumbnailIcon": "🍄",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "status": "deprecated"
+  },
+  {
+    "id": "quiz-g3-u1-after-school-inventor",
+    "aliases": [
+      "inventor-quiz",
+      "after-school-inventor",
+      "grade3-unit1-quiz",
+      "inventor-briefing",
+      "clara-doodle-quiz"
+    ],
+    "title": "🛠️ Unit 1 Master Quest: The After-School Inventor",
+    "subtitle": "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+    "description": "Smartboard mission briefing, 4-step inventor timeline, famous inventors console (Da Vinci, Edison, Karl Benz), biomimicry clues, and Young Inventor blueprint grading ledger.",
+    "type": "tool",
+    "category": "Classroom Tools",
+    "categoryGroup": "Classroom Management & Timers",
+    "categoryLabel": "⏱️ Briefing & Timer",
+    "level": "Grade 3",
+    "duration": 25,
+    "durationText": "25 min",
+    "xp": 120,
+    "route": "quiz-briefing/index.html#g3",
+    "url": "quiz-briefing/index.html#g3",
+    "path": "quiz-briefing/index.html",
+    "thumbnailIcon": "🛠️",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0f2744 50%, #38bdf8 100%)",
+    "status": "deprecated"
   },
   {
     "id": "solar-system",
@@ -492,7 +1251,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Astronomy & Earth Science",
-    "clilTheme": "Planetary Systems & Celestial Bodies"
+    "clilTheme": "Planetary Systems & Celestial Bodies",
+    "status": "deprecated"
   },
   {
     "id": "dino-dig",
@@ -606,7 +1366,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Paleontology & Earth History",
-    "clilTheme": "Prehistoric Life & Fossil Evidence"
+    "clilTheme": "Prehistoric Life & Fossil Evidence",
+    "status": "deprecated"
   },
   {
     "id": "good-ideas-lab",
@@ -716,208 +1477,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Engineering Design Process & Biomimicry",
-    "clilTheme": "Engineering Design Process & Biomimicry"
-  },
-  {
-    "id": "academy-bamboozle",
-    "aliases": [
-      "bamboozle",
-      "baamboozle"
-    ],
-    "title": "⚡ Baamboozle Arena: Young Inventors",
-    "description": "High-energy classroom team showdown with mystery cards, problem-solving questions, and sudden game-changing power-ups (Swap, Steal, and Double Points)!",
-    "type": "game",
-    "category": "Engineering & Inventions",
-    "categoryLabel": "⚡ Team Quiz Show",
-    "level": "All Levels (A1–A2+)",
-    "cefrLevel": "A1–A2+",
-    "age": "Ages 7–12",
-    "ageGroup": "7-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 15,
-    "durationText": "15 min",
-    "estimatedMinutes": 15,
-    "xp": 100,
-    "skills": [
-      "Speaking",
-      "Quick Recall",
-      "Team Collaboration"
-    ],
-    "topic": "Inventions, Tools & Problem Solving",
-    "topics": [
-      "Inventors & Inventions",
-      "Classroom Game Show",
-      "Team Communication"
-    ],
-    "languageFocus": "Why did people invent...? People invented... to [verb].",
-    "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
-    "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
-    "difficulty": "All Levels (A1–A2+)",
-    "tags": [
-      "baamboozle",
-      "bamboozle",
-      "game-show",
-      "quiz",
-      "team-battle",
-      "inventions",
-      "speaking",
-      "review"
-    ],
-    "learningObjectives": [
-      "Review and master primary science and invention vocabulary in high-energy team tournament format",
-      "Formulate fast affirmative and interrogative responses under time pressure",
-      "Distinguish between problems, tools, and technological solutions",
-      "Collaborate with peers using strategic gameplay and respectful sportsmanship"
-    ],
-    "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
-    "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
-    "route": "baamboozle/index.html",
-    "featured": true,
-    "thumbnailIcon": "⚡",
-    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"baamboozleGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"50%\" stop-color=\"#312e81\"/>\n          <stop offset=\"100%\" stop-color=\"#4338ca\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#baamboozleGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">⚡</text>\n    </svg>",
-    "categoryGroup": "Invention Game Show",
-    "vocabulary": {
-      "core": [
-        "inventor",
-        "invention",
-        "machine",
-        "blueprint",
-        "experiment",
-        "solution"
-      ],
-      "supporting": [
-        "gadget",
-        "teamwork",
-        "score",
-        "power-up",
-        "challenge"
-      ],
-      "phonics": [
-        "/v/ in inventor",
-        "/bl/ in blueprint"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Who invented the [item]? / What does it do?",
-      "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
-      "formulas": [
-        "Subject + was invented in [Year] by [Inventor]",
-        "It is used to + Base Verb"
-      ]
-    },
-    "clilDomain": "History of Technology & Team Problem Solving",
-    "clilTheme": "History of Technology & Team Problem Solving"
-  },
-  {
-    "id": "nasa-mission",
-    "title": "🚀 NASA Mission: Find a New Planet",
-    "description": "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
-    "type": "game",
-    "category": "CLIL & Science",
-    "categoryLabel": "🚀 CLIL & Space Exploration",
-    "level": "A1 / A1+",
-    "cefrLevel": "A1+",
-    "age": "Ages 6–9",
-    "ageGroup": "6-9",
-    "grade": "Grade 3–4",
-    "grades": [
-      "Grade 3",
-      "Grade 4"
-    ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
-    "xp": 150,
-    "skills": [
-      "CLIL Science & Astronomy",
-      "Phonics (Magic 'e')",
-      "Speaking & Presentation",
-      "Descriptive Adjectives",
-      "Survival Vocabulary",
-      "Engineering & Problem Solving"
-    ],
-    "topic": "Planetary Science, Survival Needs & Engineering Inventions",
-    "topics": [
-      "Planetary Astronomy",
-      "Space Exploration",
-      "Environmental Science"
-    ],
-    "languageFocus": "It is [cold / rocky / red]. People need [water / oxygen] to live. The problem is [no water]. It can [melt / filter] AND [clean].",
-    "activityMode": "Whole Class Smart Board Interactive / Individual Space Cadet Mode",
-    "interactionType": "Phonics Booster Canister, Radar Surface Scanner, Airlock Cargo Sorter, Snap-Together Machine Builder, Peer Upgrade Bay, Live Teleprompter",
-    "difficulty": "Grade 3–4 A1 / A1+",
-    "tags": [
-      "space",
-      "nasa",
-      "clil",
-      "science",
-      "phonics",
-      "magic-e",
-      "survival",
-      "inventions",
-      "speaking",
-      "grade-3",
-      "grade-4"
-    ],
-    "learningObjectives": [
-      "Identify planetary characteristics, atmospheres, and biosignatures in English",
-      "Use comparative and superlative adjectives to evaluate exoplanet viability",
-      "Analyze scientific data strips (temperature, water, oxygen) to justify space mission decisions",
-      "Formulate complete scientific mission reports and expedition logs"
-    ],
-    "teacherInstructions": "Project on Smart Board. Guide students through the 6 sequential space stages. Use the built-in Teacher HUD to view curriculum targets and print student mission logbooks & diplomas.",
-    "studentInstructions": "Join NASA as a Planetary Cadet! Fuel your rocket, scan an alien world, sort survival gear, build a crisis-solving rover, and broadcast your discovery to Earth!",
-    "route": "nasa-mission/index.html",
-    "worksheet": "nasa-mission/worksheet.html",
-    "worksheetRoute": "nasa-mission/worksheet.html",
-    "featured": true,
-    "thumbnailIcon": "🚀",
-    "gradient": "linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0369a1 100%)",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"nasaGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#090d16\"/>\n          <stop offset=\"50%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"100%\" stop-color=\"#0369a1\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#nasaGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#0ea5e9\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">🚀</text>\n    </svg>",
-    "categoryGroup": "Space Exploration",
-    "vocabulary": {
-      "core": [
-        "planet",
-        "gravity",
-        "atmosphere",
-        "orbit",
-        "solar system",
-        "oxygen"
-      ],
-      "supporting": [
-        "exoplanet",
-        "spacecraft",
-        "habitable",
-        "telescope",
-        "radiation"
-      ],
-      "phonics": [
-        "/pl/ in planet",
-        "/sp/ in space"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Planet X is [comparative] than Earth because...",
-      "formula": "Planet [X] is colder than Earth, so explorers need [oxygen/heat] to survive.",
-      "formulas": [
-        "Subject + is + Comparative Adjective + than + Object",
-        "It has + [Quantity] + of + [Element], so humans can/cannot survive"
-      ]
-    },
-    "clilDomain": "Astrophysics & Exoplanet Habitability",
-    "clilTheme": "Astrophysics & Exoplanet Habitability"
+    "clilTheme": "Engineering Design Process & Biomimicry",
+    "status": "deprecated"
   },
   {
     "id": "brain-hackers",
@@ -1014,7 +1575,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Cognitive Neuroscience & Human Anatomy",
-    "clilTheme": "Cognitive Neuroscience & Human Anatomy"
+    "clilTheme": "Cognitive Neuroscience & Human Anatomy",
+    "status": "deprecated"
   },
   {
     "id": "brain-quit",
@@ -1110,7 +1672,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Brain Metabolism & Active Reading",
-    "clilTheme": "Brain Metabolism & Active Reading"
+    "clilTheme": "Brain Metabolism & Active Reading",
+    "status": "deprecated"
   },
   {
     "id": "brain-explorers",
@@ -1207,109 +1770,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Cognitive Linguistics & Neuroplasticity",
-    "clilTheme": "Cognitive Linguistics & Neuroplasticity"
-  },
-  {
-    "id": "adventure-engine",
-    "aliases": [
-      "adventure-academy-engine",
-      "eco-rover"
-    ],
-    "title": "⚡ Adventure Academy Engine: Eco-Rover Expedition",
-    "description": "Commercial-grade cyber-glassmorphic interactive learning module. Power the quantum core, align solar, kinetic, radar, and shield subsystems, solve speed hazard relays, and broadcast live on the glowing teleprompter!",
-    "type": "game",
-    "category": "Engineering & Inventions",
-    "categoryLabel": "⚡ CLIL & Clean Energy",
-    "level": "A1+ / A2",
-    "cefrLevel": "A1+",
-    "age": "Ages 8–12",
-    "ageGroup": "8-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
-    "xp": 150,
-    "skills": [
-      "CLIL Clean Energy",
-      "Engineering Design Cycle",
-      "Oral Debrief & Presentation",
-      "Functional Modals (uses [Energy] to [Verb])"
-    ],
-    "topic": "Clean Energy & Eco-Rover Engineering",
-    "topics": [
-      "Robotics & Automation",
-      "Renewable Energy",
-      "Algorithmic Thinking"
-    ],
-    "languageFocus": "The [Subsystem] uses [Energy] to [Verb]. Teamwork powers adventure!",
-    "activityMode": "Interactive Cyber-Glassmorphism Lab / Smart Board Challenge",
-    "interactionType": "Persistent Holographic Rover SVG, Subsystem Slotting, Speed Hazard Relay, Glowing Karaoke Teleprompter, Printable A4 Diploma",
-    "difficulty": "Scaffolded A1+ / A2",
-    "tags": [
-      "adventure-engine",
-      "eco-rover",
-      "clean-energy",
-      "clil",
-      "stem",
-      "teleprompter",
-      "engineering",
-      "speaking"
-    ],
-    "learningObjectives": [
-      "Program navigation commands and route algorithms for an autonomous planetary eco-rover",
-      "Apply environmental science concepts: solar charging, battery storage, and terrain mapping",
-      "Use directional prepositions and sequencing adverbs in step-by-step robotic instructions",
-      "Diagnose rover hardware faults and engineer iterative repair scripts"
-    ],
-    "teacherInstructions": "Launch on Smart Board or individual student tablets. Guide students through Subsystem Alignment, the 3-round Hazard Speed Relay, and the Live Studio Teleprompter Speech.",
-    "studentInstructions": "Power the quantum core of the Eco-Rover! Slot the energy subsystems, survive the dust storms and thermal chasms, and broadcast live to Earth!",
-    "route": "adventure-engine/index.html",
-    "worksheet": "adventure-engine/worksheet.html",
-    "worksheetRoute": "adventure-engine/worksheet.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailIcon": "⚡",
-    "gradient": "linear-gradient(135deg, #060911 0%, #0c1a30 50%, #0284c7 100%)",
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"advEngGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#0c1a30\"/>\n          <stop offset=\"100%\" stop-color=\"#0284c7\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#advEngGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"42\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#0284c7\" opacity=\"0.8\"/>\n      <text x=\"100\" y=\"78\" font-size=\"26\" text-anchor=\"middle\">⚡</text>\n      <rect x=\"18\" y=\"106\" width=\"164\" height=\"20\" rx=\"10\" fill=\"#0284c7\"/>\n      <text x=\"100\" y=\"120\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"8.5\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">ADVENTURE ENGINE ⚡</text>\n    </svg>",
-    "categoryGroup": "Eco-Rover Robotics",
-    "vocabulary": {
-      "core": [
-        "rover",
-        "battery",
-        "solar panel",
-        "sensor",
-        "terrain",
-        "command"
-      ],
-      "supporting": [
-        "autonomous",
-        "chassis",
-        "efficiency",
-        "navigate",
-        "obstacle"
-      ],
-      "phonics": [
-        "/r/ in rover",
-        "/s/ in sensor"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "The rover needs to [action] in order to [purpose]",
-      "formula": "Drive forward [X] meters and turn [direction] in order to recharge the solar battery.",
-      "formulas": [
-        "Imperative: Turn [Direction] + Drive [Distance] meters",
-        "In order to + Base Verb, the rover must + Base Verb"
-      ]
-    },
-    "clilDomain": "Renewable Energy & Robotic Navigation",
-    "clilTheme": "Renewable Energy & Robotic Navigation"
+    "clilTheme": "Cognitive Linguistics & Neuroplasticity",
+    "status": "deprecated"
   },
   {
     "id": "freeze-game",
@@ -1412,7 +1874,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Muscle Kinetic Energy vs Cerebral Metabolism",
-    "clilTheme": "Muscle Kinetic Energy vs Cerebral Metabolism"
+    "clilTheme": "Muscle Kinetic Energy vs Cerebral Metabolism",
+    "status": "deprecated"
   },
   {
     "id": "inventor-forge",
@@ -1498,106 +1961,8 @@ const GAMES_REGISTRY = [
       "Timed Oral Pitching"
     ],
     "clilDomain": "Mechanical Prototyping & Pitching",
-    "clilTheme": "Mechanical Prototyping & Pitching"
-  },
-  {
-    "id": "young-inventor",
-    "title": "Young Inventor Academy: From Problem → Idea → Invention → Improvement → Presentation",
-    "description": "Comprehensive 10-mission interactive STEM & invention adventure for Grade 4 (CEFR A1+) based on My Good Ideas Book (pp. 18–21). Students detect real classroom problems, explore biomimicry clues, draw blueprint sketches on touch canvas, assemble modular components, formulate CAN/CAN'T sentences, stress-test in testing chamber, upgrade prototypes, and deliver 5-minute capstone Expo presentations.",
-    "type": "game",
-    "category": "Engineering & Inventions",
-    "categoryLabel": "💡 CLIL & STEM Games",
-    "level": "A1+",
-    "cefrLevel": "A1+",
-    "age": "Ages 8–11",
-    "ageGroup": "8-11",
-    "grade": "Grade 4",
-    "grades": [
-      "Grade 4"
-    ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
-    "xp": 120,
-    "skills": [
-      "Speaking",
-      "CLIL",
-      "Grammar",
-      "Creative Thinking",
-      "Vocabulary"
-    ],
-    "topic": "The Small Inventor & STEM Design",
-    "topics": [
-      "Invention Cycle",
-      "Design Blueprints",
-      "Prototyping & Testing"
-    ],
-    "languageFocus": "Modals of ability CAN / CAN'T + verb (It can fly, It can't swim), HAS / HAVE (It has two wheels), IS / ARE, sequencing (First, Then, Finally), problem/solution (The problem is..., The solution is...)",
-    "activityMode": "Whole Class Smart Board Interactive / Team Inventor Challenge",
-    "interactionType": "Touch Drawing Canvas, Modular Assembly Pod, Stress Test Chamber, Ability Selector, 5-Minute Pitch Timer, Audience Detective Scoring",
-    "difficulty": "Grade 4 Scaffolded A1+",
-    "tags": [
-      "inventor",
-      "small-inventor",
-      "young-inventor",
-      "stem",
-      "clil",
-      "can-cant",
-      "grade-4",
-      "presentation",
-      "expo",
-      "biomimicry",
-      "good-ideas-book"
-    ],
-    "learningObjectives": [
-      "Trace the 5-step invention lifecycle: Problem -> Idea -> Blueprint -> Prototype -> Improvement",
-      "Formulate purpose statements using to + verb (e.g. He invented the telephone to talk to distant people)",
-      "Evaluate engineering trade-offs when testing and improving prototypes",
-      "Deliver an oral presentation detailing an original classroom invention"
-    ],
-    "teacherInstructions": "Project on Smart Board. Guide young inventors through 10 interactive missions: problem detection, biomimicry inspiration, canvas blueprinting, modular assembly, ability verification, chamber testing, upgrades, and the Capstone Expo pitch.",
-    "studentInstructions": "Join the Young Inventor Academy! Discover problems, invent high-tech gadgets, test them in the lab, upgrade your prototype, and present your invention at the Grand Expo!",
-    "route": "young-inventor/index.html",
-    "worksheet": "young-inventor/worksheet.html",
-    "worksheetRoute": "young-inventor/worksheet.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"yiThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#083344\"/><stop offset=\"50%\" stop-color=\"#0e7490\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"200\" height=\"140\" fill=\"url(#yiThumbBg)\"/><rect x=\"12\" y=\"12\" width=\"176\" height=\"116\" rx=\"12\" fill=\"#0f172a\" opacity=\"0.75\" stroke=\"#06b6d4\" stroke-width=\"2.5\" stroke-dasharray=\"6,4\"/><circle cx=\"100\" cy=\"55\" r=\"28\" fill=\"#06b6d4\" opacity=\"0.25\"/><text x=\"100\" y=\"66\" font-size=\"34\" text-anchor=\"middle\">🚀</text><rect x=\"16\" y=\"92\" width=\"168\" height=\"22\" rx=\"11\" fill=\"#06b6d4\"/><text x=\"100\" y=\"107\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"9\" fill=\"#0f172a\" text-anchor=\"middle\" letter-spacing=\"0.5\">YOUNG INVENTOR ACADEMY</text></svg>",
-    "categoryGroup": "Young Inventor Academy",
-    "vocabulary": {
-      "core": [
-        "invent",
-        "plan",
-        "build",
-        "test",
-        "improve",
-        "problem",
-        "solution"
-      ],
-      "supporting": [
-        "blueprint",
-        "measure",
-        "device",
-        "material",
-        "present"
-      ],
-      "phonics": [
-        "/bl/ in blueprint",
-        "/pl/ in plan"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Inventors plan before they [verb]",
-      "formula": "Real inventors plan blueprints before they build and test their inventions.",
-      "formulas": [
-        "People invented [Item] to + Base Verb",
-        "First we plan, then we build, next we test, finally we improve"
-      ]
-    },
-    "clilDomain": "Engineering Design Loop (Plan, Build, Test, Improve)",
-    "clilTheme": "Engineering Design Loop (Plan, Build, Test, Improve)"
+    "clilTheme": "Mechanical Prototyping & Pitching",
+    "status": "deprecated"
   },
   {
     "id": "wonderland-lesson3",
@@ -1694,7 +2059,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Dramatic Interpretation & Theatre Arts",
-    "clilTheme": "Dramatic Interpretation & Theatre Arts"
+    "clilTheme": "Dramatic Interpretation & Theatre Arts",
+    "status": "deprecated"
   },
   {
     "id": "wonderland-lesson2",
@@ -1791,7 +2157,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Narrative Chronology & Past Simple",
-    "clilTheme": "Narrative Chronology & Past Simple"
+    "clilTheme": "Narrative Chronology & Past Simple",
+    "status": "deprecated"
   },
   {
     "id": "wonderland-lesson1",
@@ -1888,7 +2255,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Literary World Building & Character Archetypes",
-    "clilTheme": "Literary World Building & Character Archetypes"
+    "clilTheme": "Literary World Building & Character Archetypes",
+    "status": "deprecated"
   },
   {
     "id": "story-engine-alice",
@@ -1990,7 +2358,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Interactive Fiction & Branching Decisions",
-    "clilTheme": "Interactive Fiction & Branching Decisions"
+    "clilTheme": "Interactive Fiction & Branching Decisions",
+    "status": "deprecated"
   },
   {
     "id": "story-engine-forest",
@@ -2087,7 +2456,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Temperate Forest Ecosystems & Wilderness Decisions",
-    "clilTheme": "Temperate Forest Ecosystems & Wilderness Decisions"
+    "clilTheme": "Temperate Forest Ecosystems & Wilderness Decisions",
+    "status": "deprecated"
   },
   {
     "id": "simon-says-classroom",
@@ -2189,7 +2559,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Kinesiology & Auditory Processing",
-    "clilTheme": "Kinesiology & Auditory Processing"
+    "clilTheme": "Kinesiology & Auditory Processing",
+    "status": "deprecated"
   },
   {
     "id": "yesterday-detectives",
@@ -2288,7 +2659,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Forensic Timelines & Interrogative Grammar",
-    "clilTheme": "Forensic Timelines & Interrogative Grammar"
+    "clilTheme": "Forensic Timelines & Interrogative Grammar",
+    "status": "deprecated"
   },
   {
     "id": "inventor-lab",
@@ -2387,7 +2759,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Traits of Innovators & Growth Mindset",
-    "clilTheme": "Traits of Innovators & Growth Mindset"
+    "clilTheme": "Traits of Innovators & Growth Mindset",
+    "status": "deprecated"
   },
   {
     "id": "clara-inventor",
@@ -2487,87 +2860,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Household Engineering & Practical Inventions",
-    "clilTheme": "Household Engineering & Practical Inventions"
-  },
-  {
-    "id": "alice-quest",
-    "title": "📖 Alice in Wonderland: XP Challenges",
-    "description": "Differentiated reading and speaking challenge deck. Students choose their level (1 to 3) to earn up to 200 XP for vocabulary, creative storytelling, character acting, and full spoken summaries!",
-    "type": "presentation",
-    "category": "Story & Literature",
-    "categoryLabel": "📖 Literature & Speaking",
-    "level": "A1 / A2 / B1",
-    "cefrLevel": "A1–B1",
-    "age": "Ages 8–12",
-    "ageGroup": "8-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 45,
-    "durationText": "45 min",
-    "estimatedMinutes": 45,
-    "xp": 200,
-    "skills": [
-      "Differentiated Reading Comprehension",
-      "Creative Writing & Alternate Endings",
-      "Public Speaking & Spoken Summaries",
-      "Drama & Character Portrayal"
-    ],
-    "topic": "Alice in Wonderland Differentiated Quests",
-    "languageFocus": "My favorite character is... because... / At first Alice was... but later she became...",
-    "route": "alice-quest/index.html",
-    "worksheet": "alice-quest/worksheet.html",
-    "worksheetRoute": "alice-quest/worksheet.html",
-    "featured": true,
-    "thumbnailIcon": "📖",
-    "gradient": "linear-gradient(135deg, #070b14 0%, #312e81 50%, #c084fc 100%)",
-    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"aliceQuestThumbBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#070b14\"/>\n            <stop offset=\"50%\" stop-color=\"#312e81\"/>\n            <stop offset=\"100%\" stop-color=\"#c084fc\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#aliceQuestThumbBg)\"/>\n        <rect x=\"15\" y=\"15\" width=\"170\" height=\"110\" rx=\"12\" fill=\"rgba(15,23,42,0.8)\" stroke=\"#c084fc\" stroke-width=\"2\" stroke-dasharray=\"5,3\"/>\n        <circle cx=\"65\" cy=\"52\" r=\"22\" fill=\"#c084fc\" opacity=\"0.25\"/>\n        <text x=\"65\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🐇</text>\n        <circle cx=\"135\" cy=\"52\" r=\"22\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n        <text x=\"135\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">👑</text>\n        <rect x=\"25\" y=\"90\" width=\"150\" height=\"22\" rx=\"11\" fill=\"#c084fc\"/>\n        <text x=\"100\" y=\"105\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"9\" fill=\"#070b14\" text-anchor=\"middle\" letter-spacing=\"0.5\">ALICE XP QUEST ⚡</text>\n      </svg>",
-    "categoryGroup": "Alice in Wonderland",
-    "learningObjectives": [
-      "Progress through 4 graded tiers of Wonderland literary comprehension challenges (Bronze to Legend)",
-      "Demonstrate mastery of character analysis, narrative recall, and quote identification",
-      "Engage in gamified classroom roster grading with live XP rewards and tier badges",
-      "Defend literary interpretations using evidence from the original Lewis Carroll text"
-    ],
-    "vocabulary": {
-      "core": [
-        "quest",
-        "riddle",
-        "tier",
-        "legend",
-        "nonsense",
-        "crown"
-      ],
-      "supporting": [
-        "wonderland",
-        "monarch",
-        "croquet",
-        "cheshire",
-        "whimsical"
-      ],
-      "phonics": [
-        "/kw/ in quest",
-        "/r/ in riddle"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Why did [Character] say [Quote]?",
-      "formula": "Why did the Queen of Hearts demand [action]? Because [character motive].",
-      "formulas": [
-        "Wh- Questions: Why + did + Subject + Verb + ...?",
-        "Cause & Effect: [Character] acted this way because + Clause"
-      ]
-    },
-    "topics": [
-      "Literature Quests",
-      "Roster Grading & Assessment",
-      "Alice in Wonderland"
-    ],
-    "clilDomain": "Literary Analysis & Gamified Roster Grading",
-    "clilTheme": "Literary Analysis & Gamified Roster Grading"
+    "clilTheme": "Household Engineering & Practical Inventions",
+    "status": "deprecated"
   },
   {
     "id": "robots",
@@ -2663,7 +2957,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Automated Machines & Artificial Intelligence",
-    "clilTheme": "Automated Machines & Artificial Intelligence"
+    "clilTheme": "Automated Machines & Artificial Intelligence",
+    "status": "deprecated"
   },
   {
     "id": "feelings",
@@ -2757,7 +3052,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Emotional Intelligence & Empathy",
-    "clilTheme": "Emotional Intelligence & Empathy"
+    "clilTheme": "Emotional Intelligence & Empathy",
+    "status": "deprecated"
   },
   {
     "id": "firefighter",
@@ -2851,7 +3147,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Fire Safety & Municipal Emergency Services",
-    "clilTheme": "Fire Safety & Municipal Emergency Services"
+    "clilTheme": "Fire Safety & Municipal Emergency Services",
+    "status": "deprecated"
   },
   {
     "id": "camp-mystery",
@@ -2947,7 +3244,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Outdoor Wilderness & Clue Deduction",
-    "clilTheme": "Outdoor Wilderness & Clue Deduction"
+    "clilTheme": "Outdoor Wilderness & Clue Deduction",
+    "status": "deprecated"
   },
   {
     "id": "phonics-adventure",
@@ -3046,7 +3344,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Phonological Decoding & Minimal Pairs",
-    "clilTheme": "Phonological Decoding & Minimal Pairs"
+    "clilTheme": "Phonological Decoding & Minimal Pairs",
+    "status": "deprecated"
   },
   {
     "id": "monster-day",
@@ -3147,7 +3446,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Anatomy Description & Attribute Formulas",
-    "clilTheme": "Anatomy Description & Attribute Formulas"
+    "clilTheme": "Anatomy Description & Attribute Formulas",
+    "status": "deprecated"
   },
   {
     "id": "restaurant",
@@ -3244,7 +3544,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Hospitality Transactions & Social Etiquette",
-    "clilTheme": "Hospitality Transactions & Social Etiquette"
+    "clilTheme": "Hospitality Transactions & Social Etiquette",
+    "status": "deprecated"
   },
   {
     "id": "neighbourhood",
@@ -3338,7 +3639,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Spatial Navigation & Civic Landmarks",
-    "clilTheme": "Spatial Navigation & Civic Landmarks"
+    "clilTheme": "Spatial Navigation & Civic Landmarks",
+    "status": "deprecated"
   },
   {
     "id": "advice",
@@ -3433,7 +3735,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Functional Ethics & Helpful Recommendations",
-    "clilTheme": "Functional Ethics & Helpful Recommendations"
+    "clilTheme": "Functional Ethics & Helpful Recommendations",
+    "status": "deprecated"
   },
   {
     "id": "predictions",
@@ -3529,7 +3832,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Futurism & Speculative Technology",
-    "clilTheme": "Futurism & Speculative Technology"
+    "clilTheme": "Futurism & Speculative Technology",
+    "status": "deprecated"
   },
   {
     "id": "city-mouse",
@@ -3624,7 +3928,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Fable Analysis & Environmental Comparison",
-    "clilTheme": "Fable Analysis & Environmental Comparison"
+    "clilTheme": "Fable Analysis & Environmental Comparison",
+    "status": "deprecated"
   },
   {
     "id": "story",
@@ -3719,7 +4024,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Heroic Quests & Allegorical Character Virtues",
-    "clilTheme": "Heroic Quests & Allegorical Character Virtues"
+    "clilTheme": "Heroic Quests & Allegorical Character Virtues",
+    "status": "deprecated"
   },
   {
     "id": "detective-prep",
@@ -3809,7 +4115,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Observational Deduction & Rapid Inquiries",
-    "clilTheme": "Observational Deduction & Rapid Inquiries"
+    "clilTheme": "Observational Deduction & Rapid Inquiries",
+    "status": "deprecated"
   },
   {
     "id": "treasure",
@@ -3904,7 +4211,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Cartography & Maritime Navigation",
-    "clilTheme": "Cartography & Maritime Navigation"
+    "clilTheme": "Cartography & Maritime Navigation",
+    "status": "deprecated"
   },
   {
     "id": "room-rescue",
@@ -3998,7 +4306,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Domestic Living & Spatial Organization",
-    "clilTheme": "Domestic Living & Spatial Organization"
+    "clilTheme": "Domestic Living & Spatial Organization",
+    "status": "deprecated"
   },
   {
     "id": "clil-lab",
@@ -4090,7 +4399,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Forensic Evidence & Chromatography",
-    "clilTheme": "Forensic Evidence & Chromatography"
+    "clilTheme": "Forensic Evidence & Chromatography",
+    "status": "deprecated"
   },
   {
     "id": "expedition",
@@ -4183,7 +4493,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Extreme Polar Climates & Survival Gear",
-    "clilTheme": "Extreme Polar Climates & Survival Gear"
+    "clilTheme": "Extreme Polar Climates & Survival Gear",
+    "status": "deprecated"
   },
   {
     "id": "pokemon",
@@ -4278,7 +4589,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Comparative Mathematics & Game Theory",
-    "clilTheme": "Comparative Mathematics & Game Theory"
+    "clilTheme": "Comparative Mathematics & Game Theory",
+    "status": "deprecated"
   },
   {
     "id": "jungle",
@@ -4373,7 +4685,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Tropical Biodiversity & Rainforest Strata",
-    "clilTheme": "Tropical Biodiversity & Rainforest Strata"
+    "clilTheme": "Tropical Biodiversity & Rainforest Strata",
+    "status": "deprecated"
   },
   {
     "id": "res-global-readings-2",
@@ -4470,7 +4783,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Macmillan Primary Literacy Syllabus (Level 2)",
-    "clilTheme": "Macmillan Primary Literacy Syllabus (Level 2)"
+    "clilTheme": "Macmillan Primary Literacy Syllabus (Level 2)",
+    "status": "deprecated"
   },
   {
     "id": "res-global-readings-3",
@@ -4566,7 +4880,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Macmillan Primary Literacy Syllabus (Level 3)",
-    "clilTheme": "Macmillan Primary Literacy Syllabus (Level 3)"
+    "clilTheme": "Macmillan Primary Literacy Syllabus (Level 3)",
+    "status": "deprecated"
   },
   {
     "id": "alice-homework",
@@ -4579,14 +4894,26 @@ const GAMES_REGISTRY = [
     "age": "Ages 7–10",
     "ageGroup": "7-10",
     "grade": "Grade 3",
-    "grades": ["Grade 3", "Grade 4"],
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
     "duration": 25,
     "durationText": "25 min",
     "estimatedMinutes": 25,
     "xp": 120,
-    "skills": ["Speaking", "Reading", "Story Sequencing", "Oral Recaps"],
+    "skills": [
+      "Speaking",
+      "Reading",
+      "Story Sequencing",
+      "Oral Recaps"
+    ],
     "topic": "Wonderland Scenes, Character Dialogue & Past Simple",
-    "topics": ["Classic English Literature", "Theatre Recaps", "Homework Presentation"],
+    "topics": [
+      "Classic English Literature",
+      "Theatre Recaps",
+      "Homework Presentation"
+    ],
     "languageFocus": "First, Alice [fell/saw]. Then she [drank/met] the [character].",
     "learningObjectives": [
       "Review and present 6 Wonderland scenes and story sequences",
@@ -4604,10 +4931,28 @@ const GAMES_REGISTRY = [
     "featured": false,
     "thumbnailIcon": "🐇",
     "gradient": "linear-gradient(135deg, #2e1065 0%, #4c1d95 50%, #7c3aed 100%)",
-    "tags": ["alice", "homework", "past-simple", "literature", "theatre"],
+    "tags": [
+      "alice",
+      "homework",
+      "past-simple",
+      "literature",
+      "theatre"
+    ],
     "vocabulary": {
-      "core": ["rabbit", "potion", "caterpillar", "tea party", "croquet"],
-      "supporting": ["curious", "adventurer", "shrink", "grow", "pocket watch"]
+      "core": [
+        "rabbit",
+        "potion",
+        "caterpillar",
+        "tea party",
+        "croquet"
+      ],
+      "supporting": [
+        "curious",
+        "adventurer",
+        "shrink",
+        "grow",
+        "pocket watch"
+      ]
     },
     "grammar": {
       "focusPattern": "Past Simple Narrative (Alice was... / Alice drank...)",
@@ -4619,7 +4964,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Classic Children's Literature",
-    "clilTheme": "Narrative Sequencing & Performance Recaps"
+    "clilTheme": "Narrative Sequencing & Performance Recaps",
+    "status": "deprecated"
   },
   {
     "id": "bamboozle",
@@ -4632,14 +4978,27 @@ const GAMES_REGISTRY = [
     "age": "Ages 7–12",
     "ageGroup": "7-12",
     "grade": "Grade 3–5",
-    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
     "duration": 30,
     "durationText": "30 min",
     "estimatedMinutes": 30,
     "xp": 150,
-    "skills": ["Speaking", "Listening", "Vocabulary Recall", "Team Collaboration"],
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary Recall",
+      "Team Collaboration"
+    ],
     "topic": "Invention Trivia, Science Facts & Rapid Problem Solving",
-    "topics": ["Team Trivia", "Inventions", "Engineering Quiz"],
+    "topics": [
+      "Team Trivia",
+      "Inventions",
+      "Engineering Quiz"
+    ],
     "languageFocus": "We choose Card [number]. We believe the answer is [answer] because [reason].",
     "learningObjectives": [
       "Answer fast-paced team quiz questions across science and historical inventors",
@@ -4657,10 +5016,28 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "⚡",
     "gradient": "linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%)",
-    "tags": ["bamboozle", "quiz", "game-show", "speaking", "teamwork"],
+    "tags": [
+      "bamboozle",
+      "quiz",
+      "game-show",
+      "speaking",
+      "teamwork"
+    ],
     "vocabulary": {
-      "core": ["points", "swap", "team", "challenge", "power-up"],
-      "supporting": ["bonus", "double", "steal", "mystery", "congratulations"]
+      "core": [
+        "points",
+        "swap",
+        "team",
+        "challenge",
+        "power-up"
+      ],
+      "supporting": [
+        "bonus",
+        "double",
+        "steal",
+        "mystery",
+        "congratulations"
+      ]
     },
     "grammar": {
       "focusPattern": "Wh- Questions & Modal Answers (Can we swap? / It is...)",
@@ -4672,7 +5049,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Interactive EdTech Game Mechanics",
-    "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval"
+    "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval",
+    "status": "deprecated"
   },
   {
     "id": "monster-lab",
@@ -4685,14 +5063,27 @@ const GAMES_REGISTRY = [
     "age": "Ages 6–10",
     "ageGroup": "6-10",
     "grade": "Grade 2–4",
-    "grades": ["Grade 2", "Grade 3", "Grade 4"],
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
     "duration": 30,
     "durationText": "30 min",
     "estimatedMinutes": 30,
     "xp": 130,
-    "skills": ["Speaking", "Vocabulary", "Physical Descriptions", "Classification"],
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Physical Descriptions",
+      "Classification"
+    ],
     "topic": "Creature Anatomy, Body Parts & Sensory Adjectives",
-    "topics": ["Biology & Anatomy", "Creature Design", "Physical Descriptions"],
+    "topics": [
+      "Biology & Anatomy",
+      "Creature Design",
+      "Physical Descriptions"
+    ],
     "languageFocus": "My monster has [number] [body part] and can [action].",
     "learningObjectives": [
       "Construct alien creatures using body part and sensory adjectives",
@@ -4710,10 +5101,28 @@ const GAMES_REGISTRY = [
     "featured": false,
     "thumbnailIcon": "🧪",
     "gradient": "linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%)",
-    "tags": ["monsters", "anatomy", "has-got", "biology", "adjectives"],
+    "tags": [
+      "monsters",
+      "anatomy",
+      "has-got",
+      "biology",
+      "adjectives"
+    ],
     "vocabulary": {
-      "core": ["horns", "tentacles", "claws", "fur", "wings"],
-      "supporting": ["spiky", "slimy", "fluffy", "gigantic", "scales"]
+      "core": [
+        "horns",
+        "tentacles",
+        "claws",
+        "fur",
+        "wings"
+      ],
+      "supporting": [
+        "spiky",
+        "slimy",
+        "fluffy",
+        "gigantic",
+        "scales"
+      ]
     },
     "grammar": {
       "focusPattern": "Has / Has Got for Physical Anatomy",
@@ -4725,7 +5134,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Comparative Animal Biology",
-    "clilTheme": "Adaptations & Anatomical Morphology"
+    "clilTheme": "Adaptations & Anatomical Morphology",
+    "status": "deprecated"
   },
   {
     "id": "monster-studio",
@@ -4738,14 +5148,27 @@ const GAMES_REGISTRY = [
     "age": "Ages 6–10",
     "ageGroup": "6-10",
     "grade": "Grade 2–4",
-    "grades": ["Grade 2", "Grade 3", "Grade 4"],
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
     "duration": 25,
     "durationText": "25 min",
     "estimatedMinutes": 25,
     "xp": 120,
-    "skills": ["Speaking", "Vocabulary", "Present Continuous", "Color Adjectives"],
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Present Continuous",
+      "Color Adjectives"
+    ],
     "topic": "Clothing Items, Accessories & Character Styling",
-    "topics": ["Fashion & Clothing", "Character Customization", "Present Continuous"],
+    "topics": [
+      "Fashion & Clothing",
+      "Character Customization",
+      "Present Continuous"
+    ],
     "languageFocus": "My monster is wearing a [color] [clothing item] to protect against [weather].",
     "learningObjectives": [
       "Customize student monster companions with accessories and outfits",
@@ -4763,10 +5186,28 @@ const GAMES_REGISTRY = [
     "featured": false,
     "thumbnailIcon": "🎨",
     "gradient": "linear-gradient(135deg, #581c87 0%, #7e22ce 50%, #a855f7 100%)",
-    "tags": ["monster", "customizer", "clothes", "present-continuous", "colors"],
+    "tags": [
+      "monster",
+      "customizer",
+      "clothes",
+      "present-continuous",
+      "colors"
+    ],
     "vocabulary": {
-      "core": ["hat", "glasses", "cape", "boots", "scarf"],
-      "supporting": ["wearing", "colorful", "stylish", "accessory", "jacket"]
+      "core": [
+        "hat",
+        "glasses",
+        "cape",
+        "boots",
+        "scarf"
+      ],
+      "supporting": [
+        "wearing",
+        "colorful",
+        "stylish",
+        "accessory",
+        "jacket"
+      ]
     },
     "grammar": {
       "focusPattern": "Present Continuous with Clothes (He is wearing...)",
@@ -4778,7 +5219,8 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Visual Design & Self-Expression",
-    "clilTheme": "Seasonal Dress & Character Identity"
+    "clilTheme": "Seasonal Dress & Character Identity",
+    "status": "deprecated"
   },
   {
     "id": "wizard-of-oz",
@@ -4791,14 +5233,27 @@ const GAMES_REGISTRY = [
     "age": "Ages 7–11",
     "ageGroup": "7-11",
     "grade": "Grade 3–5",
-    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
     "duration": 40,
     "durationText": "40 min",
     "estimatedMinutes": 40,
     "xp": 160,
-    "skills": ["Reading", "Speaking", "Dialogue Roleplay", "Character Needs"],
+    "skills": [
+      "Reading",
+      "Speaking",
+      "Dialogue Roleplay",
+      "Character Needs"
+    ],
     "topic": "Classic American Literature, Character Goals & Desires",
-    "topics": ["Classic American Literature", "Character Motivations", "Story Sequencing"],
+    "topics": [
+      "Classic American Literature",
+      "Character Motivations",
+      "Story Sequencing"
+    ],
     "languageFocus": "I don't have [noun], but I want to [verb] because [reason].",
     "learningObjectives": [
       "Follow Dorothy along the Yellow Brick Road across 5 story scenes",
@@ -4816,10 +5271,28 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🌪️",
     "gradient": "linear-gradient(135deg, #14532d 0%, #15803d 50%, #eab308 100%)",
-    "tags": ["oz", "literature", "theatre", "wants-to", "roleplay"],
+    "tags": [
+      "oz",
+      "literature",
+      "theatre",
+      "wants-to",
+      "roleplay"
+    ],
     "vocabulary": {
-      "core": ["tornado", "brick road", "scarecrow", "courage", "heart"],
-      "supporting": ["emerald", "slippers", "journey", "wizard", "cunning"]
+      "core": [
+        "tornado",
+        "brick road",
+        "scarecrow",
+        "courage",
+        "heart"
+      ],
+      "supporting": [
+        "emerald",
+        "slippers",
+        "journey",
+        "wizard",
+        "cunning"
+      ]
     },
     "grammar": {
       "focusPattern": "Need / Want to + Verb (The Scarecrow wants to have a brain)",
@@ -4831,11 +5304,16 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Children's Literature & Theatre",
-    "clilTheme": "Narrative Journey & Character Values"
+    "clilTheme": "Narrative Journey & Character Values",
+    "status": "deprecated"
   },
   {
     "id": "space-cadet",
-    "aliases": ["space-cadet-mission", "cadet-mission", "space-mission-homework"],
+    "aliases": [
+      "space-cadet-mission",
+      "cadet-mission",
+      "space-mission-homework"
+    ],
     "title": "🚀 Space Cadet Mission: Blueprint & Report Card",
     "description": "Design your space vehicle on the interactive blueprint canvas, select mission technology, build mission sentences, and present your Show & Tell report card!",
     "category": "CLIL & Science",
@@ -4843,13 +5321,21 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A2",
     "level": "A2",
     "grade": "Grade 4",
-    "grades": ["Grade 3", "Grade 4", "Grade 5"],
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
     "xp": 200,
     "duration": 30,
     "durationText": "30 mins",
     "estimatedMinutes": 30,
     "type": "game",
-    "topics": ["Space Exploration", "Spacecraft Engineering", "Scientific Reporting"],
+    "topics": [
+      "Space Exploration",
+      "Spacecraft Engineering",
+      "Scientific Reporting"
+    ],
     "learningObjectives": [
       "Formulate mission goals using 'My mission is to + Verb' and 'It will + Verb'",
       "Identify aerospace engineering parts (thrusters, solar sails, telescope, lander legs)",
@@ -4865,10 +5351,29 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🚀",
     "gradient": "linear-gradient(135deg, #0b132b 0%, #0f172a 45%, #0369a1 85%, #0284c7 100%)",
-    "tags": ["space", "cadet", "blueprint", "science", "clil", "homework"],
+    "tags": [
+      "space",
+      "cadet",
+      "blueprint",
+      "science",
+      "clil",
+      "homework"
+    ],
     "vocabulary": {
-      "core": ["rocket", "thrusters", "solar sails", "telescope", "rover"],
-      "supporting": ["probe", "cryosleep", "shielding", "lander legs", "habitat pod"]
+      "core": [
+        "rocket",
+        "thrusters",
+        "solar sails",
+        "telescope",
+        "rover"
+      ],
+      "supporting": [
+        "probe",
+        "cryosleep",
+        "shielding",
+        "lander legs",
+        "habitat pod"
+      ]
     },
     "grammar": {
       "focusPattern": "Purpose and Future Action (My mission is to + Verb / It will + Verb)",
@@ -4880,61 +5385,16 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Planetary Science & Aerospace Engineering",
-    "clilTheme": "Exoplanet Exploration & Mission Design"
-  },
-  {
-    "id": "meme-rules",
-    "aliases": ["meme-imperatives", "classroom-memes", "meme-workbench"],
-    "title": "🎭 Classroom Meme Rules: Imperatives in Action",
-    "description": "Tactical 3-phase interactive CLIL lab. Scan 25 iconic meme reactions, sort rules into Green Light (Base Verb) and Red Light (Don't + Verb) dropzones, and deliver a live teleprompter speech!",
-    "category": "Grammar & Speaking Quests",
-    "categoryGroup": "Grammar & Communication",
-    "cefrLevel": "A1–A2",
-    "level": "A1 / A2",
-    "ageGroup": "8–12",
-    "grade": "Grade 4",
-    "grades": ["Grade 3", "Grade 4", "Grade 5", "Grade 6"],
-    "xp": 150,
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
-    "type": "game",
-    "topics": ["Classroom Rules", "Imperatives", "Social Communication"],
-    "learningObjectives": [
-      "Construct positive imperatives using Base Verb + Object.",
-      "Construct negative imperatives using Don't + Base Verb.",
-      "Deliver classroom behavior rules orally using a 3-part teleprompter."
-    ],
-    "teacherInstructions": "Use the Green/Red light relay for tactile sorting practice, then have students present their favorite meme rule using the teleprompter studio.",
-    "route": "meme-rules/index.html",
-    "worksheet": "meme-rules/worksheet.html",
-    "worksheetRoute": "meme-rules/worksheet.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailIcon": "🎭",
-    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
-    "tags": ["memes", "imperatives", "grammar", "rules", "speaking", "clil"],
-    "vocabulary": {
-      "core": ["raise", "speak", "listen", "whisper", "share", "wait"],
-      "supporting": ["hallway", "supplies", "patiently", "carefully"]
-    },
-    "grammar": {
-      "focusPattern": "Base Verb + Object / Don't + Base Verb",
-      "formula": "Base Verb + Object / Don't + Base Verb",
-      "formulas": [
-        "Raise your hand before answering!",
-        "Don't shout across the room!",
-        "Whisper when working in pairs!"
-      ]
-    },
-    "clilDomain": "Media Literacy & Social-Emotional Learning",
-    "clilTheme": "Classroom Community & Digital Communication"
+    "clilTheme": "Exoplanet Exploration & Mission Design",
+    "status": "deprecated"
   },
   {
     "id": "smart-farm",
-    "aliases": ["farm-inventor", "smart-farm-mission", "farm-robot"],
+    "aliases": [
+      "farm-inventor",
+      "smart-farm-mission",
+      "farm-robot"
+    ],
     "title": "🌾 The Smart Farm: Young Inventors Mission",
     "description": "AAA-style children's adventure game. Save the animals after a farm-wide system failure: connect pipes for the thirsty cow, balance temperatures in the smart coop, program a delivery robot, and assemble an original farm invention!",
     "category": "Inventions & Engineering",
@@ -4943,13 +5403,23 @@ const GAMES_REGISTRY = [
     "level": "A1 / A1+",
     "ageGroup": "7–10",
     "grade": "Grade 3",
-    "grades": ["Grade 2", "Grade 3", "Grade 4", "Grade 5"],
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
     "xp": 200,
     "duration": 45,
     "durationText": "45 min",
     "estimatedMinutes": 45,
     "type": "game",
-    "topics": ["Smart Agriculture", "Robotics & Coding", "Invention & Design", "Animal Care"],
+    "topics": [
+      "Smart Agriculture",
+      "Robotics & Coding",
+      "Invention & Design",
+      "Animal Care"
+    ],
     "learningObjectives": [
       "Identify farm animals and basic biological needs (water, warmth, food)",
       "Formulate imperative purpose statements (It gives water, It keeps animals warm)",
@@ -4966,10 +5436,31 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🌾",
     "gradient": "linear-gradient(135deg, #064e3b 0%, #065f46 50%, #0284c7 100%)",
-    "tags": ["farm", "animals", "robot", "engineering", "clil", "inventions"],
+    "tags": [
+      "farm",
+      "animals",
+      "robot",
+      "engineering",
+      "clil",
+      "inventions"
+    ],
     "vocabulary": {
-      "core": ["cow", "chicken", "water", "warm", "cold", "carry"],
-      "supporting": ["heater", "pipes", "robot", "invention", "solar", "wind"]
+      "core": [
+        "cow",
+        "chicken",
+        "water",
+        "warm",
+        "cold",
+        "carry"
+      ],
+      "supporting": [
+        "heater",
+        "pipes",
+        "robot",
+        "invention",
+        "solar",
+        "wind"
+      ]
     },
     "grammar": {
       "focusPattern": "Subject + Verb + Object (Needs & Purpose Statements)",
@@ -4982,17 +5473,19 @@ const GAMES_REGISTRY = [
       ]
     },
     "clilDomain": "Agro-Technology & Ecological Engineering",
-    "clilTheme": "Automated Farm Systems & Animal Welfare"
+    "clilTheme": "Automated Farm Systems & Animal Welfare",
+    "status": "deprecated"
   }
 ];
 
-// Standardized exports
 const GAMES_DATA = GAMES_REGISTRY;
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
+  window.CURRICULUM_TRACKS = CURRICULUM_TRACKS;
   window.GAMES_REGISTRY = GAMES_REGISTRY;
   window.GAMES_DATA = GAMES_DATA;
 }
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { GAMES_REGISTRY, GAMES_DATA };
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { CURRICULUM_TRACKS, GAMES_REGISTRY, GAMES_DATA };
 }

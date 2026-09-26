@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📖 Unit 1 Diagnostic Vault &amp; Grader | Adventure Academy</title>
+  <link rel="stylesheet" href="../css/school-platform.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #090d16;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .diag-nav {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .diag-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #38bdf8;
+    }
+    .diag-container {
+      max-width: 1020px;
+      margin: 24px auto;
+      padding: 0 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .hud-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .vault-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 800px) {
+      .vault-grid { grid-template-columns: 1fr; }
+    }
+    .vault-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .vault-box.bronze { border-top: 4px solid #d97706; }
+    .vault-box.silver { border-top: 4px solid #94a3b8; }
+    .vault-box.gold { border-top: 4px solid #f59e0b; }
+    .vault-box.diamond { border-top: 4px solid #38bdf8; }
+    .vault-hdr {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .task-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .task-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #f1f5f9;
+    }
+    .task-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    .xp-btn-group {
+      display: flex;
+      gap: 4px;
+    }
+    .xp-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .xp-btn.active {
+      background: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    }
+    .total-badge {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #f59e0b;
+      background: #0f172a;
+      padding: 6px 16px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+    .btn-action-3d {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #0f172a;
+      background: #38bdf8;
+      border: none;
+      border-bottom: 4px solid #0284c7;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .btn-action-3d:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="diag-nav">
+    <div class="diag-title">
+      <span>📖</span>
+      <span>Unit 1 Diagnostic Vault &amp; Grader</span>
+      <span style="font-size:0.75rem; background:#0284c7; color:#fff; padding:2px 8px; border-radius:12px;">CEFR A1–A2</span>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <a href="../index.html" class="btn-action-3d" style="text-decoration:none; display:inline-block; font-size:0.82rem; padding:8px 16px; background:#475569; border-bottom-color:#1e293b; color:#fff;">
+        🏠 Hub Library
+      </a>
+      <button type="button" class="btn-action-3d" onclick="saveDiagnosticResult()">
+        ✓ Save Diagnostic Grader
+      </button>
+    </div>
+  </nav>
+
+  <div class="diag-container">
+    <div class="hud-card">
+      <div>
+        <h2 style="margin:0 0 4px 0; font-size:1.3rem; font-weight:900;">Student Proficiency &amp; 8-Task Audit</h2>
+        <p style="margin:0; font-size:0.85rem; color:#94a3b8;">Interactive scoring matrix matching Unit 1 Reading, Skimming &amp; Inventions CLIL outcomes.</p>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:0.85rem; font-weight:700; color:#cbd5e1;">TOTAL EARNED:</span>
+        <div class="total-badge" id="total-score-badge">120 / 120 XP</div>
+      </div>
+    </div>
+
+    <div class="vault-grid">
+      <!-- VAULT 1: BRONZE -->
+      <div class="vault-box bronze">
+        <div class="vault-hdr">
+          <span style="color:#d97706;">🥉 VAULT 1: BRONZE</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max: 30 XP</span>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 1: Skim &amp; Scan Radar</div>
+            <div class="task-sub">Icons to Text Match</div>
+          </div>
+          <div class="xp-btn-group" data-task="t1">
+            <button class="xp-btn active" onclick="setScore('t1', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t1', 5, this)">5 XP</button>
+            <button class="xp-btn" onclick="setScore('t1', 0, this)">0</button>
+          </div>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 2: SEL Emotion Scanner</div>
+            <div class="task-sub">4 Facial Emotions</div>
+          </div>
+          <div class="xp-btn-group" data-task="t2">
+            <button class="xp-btn active" onclick="setScore('t2', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t2', 5, this)">5 XP</button>
+            <button class="xp-btn" onclick="setScore('t2', 0, this)">0</button>
+          </div>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 3: Phonics Lock</div>
+            <div class="task-sub">Final -er / Initial cl-</div>
+          </div>
+          <div class="xp-btn-group" data-task="t3">
+            <button class="xp-btn active" onclick="setScore('t3', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t3', 5, this)">5 XP</button>
+            <button class="xp-btn" onclick="setScore('t3', 0, this)">0</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VAULT 2: SILVER -->
+      <div class="vault-box silver">
+        <div class="vault-hdr">
+          <span style="color:#cbd5e1;">🥈 VAULT 2: SILVER</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max: 40 XP</span>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 4: Vocabulary Vault</div>
+            <div class="task-sub">6 Key Communication Items</div>
+          </div>
+          <div class="xp-btn-group" data-task="t4">
+            <button class="xp-btn active" onclick="setScore('t4', 20, this)">20 XP</button>
+            <button class="xp-btn" onclick="setScore('t4', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t4', 0, this)">0</button>
+          </div>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 5: Anatomy &amp; Match Console</div>
+            <div class="task-sub">4 Lobes / Inventors + Check</div>
+          </div>
+          <div class="xp-btn-group" data-task="t5">
+            <button class="xp-btn active" onclick="setScore('t5', 20, this)">20 XP</button>
+            <button class="xp-btn" onclick="setScore('t5', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t5', 0, this)">0</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VAULT 3: GOLD -->
+      <div class="vault-box gold">
+        <div class="vault-hdr">
+          <span style="color:#f59e0b;">🥇 VAULT 3: GOLD</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max: 30 XP</span>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 6: Dual Crate / Biomimicry</div>
+            <div class="task-sub">Fiction vs Facts / Nature Clues</div>
+          </div>
+          <div class="xp-btn-group" data-task="t6">
+            <button class="xp-btn active" onclick="setScore('t6', 15, this)">15 XP</button>
+            <button class="xp-btn" onclick="setScore('t6', 8, this)">8 XP</button>
+            <button class="xp-btn" onclick="setScore('t6', 0, this)">0</button>
+          </div>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 7: Cause &amp; Effect Lab</div>
+            <div class="task-sub">Problem &amp; Solution Match</div>
+          </div>
+          <div class="xp-btn-group" data-task="t7">
+            <button class="xp-btn active" onclick="setScore('t7', 15, this)">15 XP</button>
+            <button class="xp-btn" onclick="setScore('t7', 8, this)">8 XP</button>
+            <button class="xp-btn" onclick="setScore('t7', 0, this)">0</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VAULT 4: DIAMOND BOSS -->
+      <div class="vault-box diamond">
+        <div class="vault-hdr">
+          <span style="color:#38bdf8;">💎 VAULT 4: DIAMOND BOSS</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max: 30 XP</span>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title">Task 8: Blueprint Canvas</div>
+            <div class="task-sub">Drawing &amp; Written Reflection</div>
+          </div>
+          <div class="xp-btn-group" data-task="t8_base">
+            <button class="xp-btn active" onclick="setScore('t8_base', 10, this)">10 XP</button>
+            <button class="xp-btn" onclick="setScore('t8_base', 5, this)">5 XP</button>
+            <button class="xp-btn" onclick="setScore('t8_base', 0, this)">0</button>
+          </div>
+        </div>
+        <div class="task-card">
+          <div>
+            <div class="task-title" style="color:#f59e0b;">⭐ Secret Boss Bonus</div>
+            <div class="task-sub">2+ Labeled Parts &amp; High Creativity</div>
+          </div>
+          <div class="xp-btn-group" data-task="t8_bonus">
+            <button class="xp-btn active" onclick="setScore('t8_bonus', 20, this)">+20 XP</button>
+            <button class="xp-btn" onclick="setScore('t8_bonus', 10, this)">+10 XP</button>
+            <button class="xp-btn" onclick="setScore('t8_bonus', 0, this)">0</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const scores = {
+      t1: 10,
+      t2: 10,
+      t3: 10,
+      t4: 20,
+      t5: 20,
+      t6: 15,
+      t7: 15,
+      t8_base: 10,
+      t8_bonus: 20
+    };
+
+    function setScore(task, val, btn) {
+      scores[task] = val;
+      const group = btn.parentElement;
+      group.querySelectorAll('.xp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      recalcTotal();
+    }
+
+    function recalcTotal() {
+      let total = 0;
+      for (const k in scores) total += scores[k];
+      const badge = document.getElementById('total-score-badge');
+      if (badge) badge.innerText = total + ' / 120 XP';
+    }
+
+    function saveDiagnosticResult() {
+      alert('Diagnostic report recorded! Earned: ' + document.getElementById('total-score-badge').innerText);
+    }
+  </script>
+</body>
+</html>

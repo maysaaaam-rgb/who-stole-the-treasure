@@ -4832,6 +4832,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   function renderResourceCard(item) {
+    if (window.LibraryController && typeof window.LibraryController.renderResourceCard === 'function') {
+      return window.LibraryController.renderResourceCard(item);
+    }
     const objective = (item.learningObjectives && item.learningObjectives[0]) || item.description || "Core communicative practice";
     const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) || item.languageFocus || "Sentence Structure";
     const words = (item.vocabulary && item.vocabulary.core) 
@@ -4971,6 +4974,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderLibraryView(container) {
+    if (window.LibraryController && typeof window.LibraryController.render === 'function') {
+      window.LibraryController.render(container);
+      return;
+    }
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
     const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
@@ -5555,6 +5562,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   function updateLibraryGrid() {
+    if (document.getElementById('curriculum-library-root') && window.LibraryController) {
+      window.LibraryController.updateView();
+      return;
+    }
     const grid = document.getElementById('library-resource-grid');
     if (!grid) {
       renderCurrentView();
