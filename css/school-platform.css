@@ -7958,4 +7958,64 @@ body.classroom-mode-active .classroom-students-grid {
   filter: drop-shadow(0 8px 16px rgba(139, 92, 246, 0.38));
 }
 
+/* =========================================================================
+   STUDENT XP AUDIT LEDGER & TIMELINE FEED
+   ========================================================================= */
+.filter-pill {
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+.filter-pill:hover {
+  background: #334155;
+  color: #f8fafc;
+  transform: translateY(-1px);
+}
+.filter-pill.active {
+  background: #f59e0b;
+  color: #0f172a;
+  border-color: #f59e0b;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.xp-timeline-list {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0f172a;
+}
+.xp-timeline-list::-webkit-scrollbar {
+  width: 6px;
+}
+.xp-timeline-list::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.xp-timeline-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 10px 16px;
+  transition: all 0.18s ease;
+}
+.xp-timeline-card:hover {
+  background: #243248;
+  border-color: #475569;
+  transform: translateX(2px);
+}
+.xp-timeline-card.is-voided {
+  opacity: 0.45;
+  background: #141e2e;
+  border-style: dashed;
+}
+
 
