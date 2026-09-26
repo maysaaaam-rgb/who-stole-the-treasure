@@ -10559,7 +10559,14 @@
     getStudentXPHistory(studentId) {
       const s = this.getStudent(studentId);
       if (s && Array.isArray(s.xpHistory) && s.xpHistory.length > 0) {
-        return s.xpHistory.slice().reverse();
+        const first = s.xpHistory[0];
+        const last = s.xpHistory[s.xpHistory.length - 1];
+        const firstTime = new Date(first.timestamp || first.date || 0).getTime();
+        const lastTime = new Date(last.timestamp || last.date || 0).getTime();
+        if (firstTime < lastTime) {
+          s.xpHistory.reverse();
+        }
+        return s.xpHistory.slice();
       }
       return this.getStudentXPTransactions(studentId, true);
     }
@@ -10646,15 +10653,18 @@
         s.totalXP = newTotalXP;
         tx.balanceAfter = s.xp;
         if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
+        const now = new Date();
         const ledgerItem = {
           id: tx.id,
           amount: points,
           type: resolvedType,
           reason: tx.reason,
+          date: now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+          time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           timestamp: tx.timestamp,
           balanceAfter: s.xp
         };
-        s.xpHistory.push(ledgerItem);
+        s.xpHistory.unshift(ledgerItem);
       }
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
@@ -10749,8 +10759,24 @@
       };
     }
 
-    awardXP(studentId, amount, reason, teacher, options) {
-      return this.giveXP(studentId, amount, reason, teacher, options);
+    getStudentById(studentId) {
+      return this.getStudent(studentId);
+    }
+
+    awardXP(arg1, amountArg, typeArg, reasonArg) {
+      let studentId, amount, type, reason;
+      if (typeof arg1 === 'object' && arg1 !== null) {
+        studentId = arg1.studentId;
+        amount = arg1.amount;
+        type = arg1.type || "participation";
+        reason = arg1.reason || "Classroom Activity";
+      } else {
+        studentId = arg1;
+        amount = amountArg;
+        type = typeArg || "participation";
+        reason = reasonArg || "Classroom Activity";
+      }
+      return this.giveXP(studentId, amount, reason, 'Teacher', { type });
     }
 
     awardStudentXP(studentId, amount, reason, options = {}) {

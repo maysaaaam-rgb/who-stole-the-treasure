@@ -2296,7 +2296,7 @@
     if (feed && studentId) {
       feed.innerHTML = window.renderLedgerTimelineFeed(studentId, type);
     }
-    const container = document.getElementById('student-xp-history-tab') || document.getElementById('xp-history-modal') || document.getElementById('modal-student-profile');
+    const container = document.getElementById('student-xp-history-tab') || document.getElementById('xp-history-modal') || document.getElementById('student-profile-modal') || document.getElementById('modal-student-profile');
     if (container) {
       const pills = container.querySelectorAll('.filter-pill');
       pills.forEach(p => {
@@ -2328,7 +2328,9 @@
 
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
-  // =========================================================================
+  window.openStudentProfile = function(studentIdOrNumber, activeTab = 'overview') {
+    return window.openStudentDetail(studentIdOrNumber, activeTab);
+  };
   window.openStudentDetail = function(studentIdOrNumber, activeTab = 'overview') {
     const student = store.getStudent(studentIdOrNumber);
     if (!student) return;
@@ -2336,7 +2338,7 @@
     currentProfileStudentId = studentId;
     window.currentProfileStudentId = studentId;
     studentProfileActiveTab = activeTab;
-    const modal = document.getElementById('modal-student-profile');
+    const modal = document.getElementById('student-profile-modal') || document.getElementById('modal-student-profile');
     if (!modal) return;
 
     const totalXP = store.getStudentTotalXP(studentId);
