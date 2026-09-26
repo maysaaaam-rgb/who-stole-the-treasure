@@ -11549,6 +11549,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '<th style="padding:8px 10px;">Date &amp; Time</th>' +
                 '<th style="padding:8px 10px;">Type / Skill</th>' +
                 '<th style="padding:8px 10px; text-align:right;">Amount</th>' +
+                '<th style="padding:8px 10px; text-align:right;">Balance After</th>' +
                 '<th style="padding:8px 10px;">Reason</th>' +
                 '<th style="padding:8px 10px;">Teacher</th>' +
                 '<th style="padding:8px 10px; text-align:center;">Action</th>' +
@@ -11556,16 +11557,19 @@ window.switchClassroomSubTab = function(subTab) {
             '</thead>' +
             '<tbody>' +
               txs.map(tx => {
-                const isVoided = !!tx.isVoided;
+                const isVoided = !!tx.isVoided || tx.status === 'voided';
                 const isPos = tx.amount >= 0;
                 const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+                const typeStr = (tx.type || tx.category || 'participation');
+                const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : '—';
                 return '' +
                   '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isVoided ? '0.5; text-decoration:line-through;' : '1') + ';">' +
                     '<td style="padding:8px 10px; white-space:nowrap; color:var(--text-muted);">' + dateStr + '</td>' +
-                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + (tx.category || 'xp') + '</td>' +
+                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + typeStr + '</td>' +
                     '<td style="padding:8px 10px; text-align:right; font-weight:800; color:' + (isVoided ? 'var(--text-muted)' : (isPos ? '#059669' : '#dc2626')) + ';">' +
                       (isPos ? '+' : '') + tx.amount + ' XP' +
                     '</td>' +
+                    '<td style="padding:8px 10px; text-align:right; font-weight:700; color:var(--text-main);">' + balanceStr + '</td>' +
                     '<td style="padding:8px 10px; max-width:200px;">' + (tx.reason || 'XP transaction') + '</td>' +
                     '<td style="padding:8px 10px; color:var(--text-muted);">' + (tx.teacher || tx.source || 'Teacher') + '</td>' +
                     '<td style="padding:8px 10px; text-align:center;">' +

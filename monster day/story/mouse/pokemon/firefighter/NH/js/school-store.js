@@ -2116,10 +2116,25 @@
     return SPECIES_ARCHETYPES[code % SPECIES_ARCHETYPES.length];
   }
 
+  function resolveLedgerType(type, category, source, reason) {
+    const validTypes = ['homework', 'quiz', 'participation', 'badge', 'behavior'];
+    if (type && validTypes.includes(String(type).toLowerCase())) {
+      return String(type).toLowerCase();
+    }
+    const text = `${category || ''} ${source || ''} ${reason || ''}`.toLowerCase();
+    if (text.includes('homework') || text.includes('assignment') || text.includes('worksheet')) return 'homework';
+    if (text.includes('quiz') || text.includes('test') || text.includes('assessment') || text.includes('exam')) return 'quiz';
+    if (text.includes('badge') || text.includes('award') || text.includes('ceremony') || text.includes('trophy')) return 'badge';
+    if (text.includes('behavior') || text.includes('needs_work') || text.includes('correction') || text.includes('focus') || text.includes('rule')) return 'behavior';
+    return 'participation';
+  }
+
   function evaluateMonsterStage(student) {
     if (!student) return student;
     const rawXP = (student.xp !== undefined && student.xp !== null) ? student.xp : 0;
     const stage = getStageFromXP(rawXP);
+
+    if (!Array.isArray(student.xpHistory)) student.xpHistory = [];
 
     student.level = stage.level;
     student.levelName = stage.levelName;
@@ -9931,6 +9946,38 @@
                 // Canonical link: student.monsterProfile is the single source of truth
                 st.monsterProfile = merged.monsterProfiles[st.id];
 
+                // Authoritative student.xpHistory ledger initialization & sync
+                if (!Array.isArray(st.xpHistory) || st.xpHistory.length === 0) {
+                  const studentTxs = (merged.xpTransactions || []).filter(tx => tx.studentId === st.id || tx.studentId === st.studentIdNumber);
+                  if (studentTxs.length > 0) {
+                    let running = 0;
+                    st.xpHistory = studentTxs.map(tx => {
+                      const amt = Number(tx.amount) || 0;
+                      if (tx.status !== 'voided') running += amt;
+                      return {
+                        id: tx.id || ('tx_' + Date.now()),
+                        amount: amt,
+                        type: tx.type || resolveLedgerType(tx.type, tx.category, tx.source, tx.reason),
+                        reason: tx.reason || 'Classroom XP Award',
+                        timestamp: tx.timestamp || new Date().toISOString(),
+                        balanceAfter: tx.balanceAfter !== undefined ? tx.balanceAfter : Math.max(0, running),
+                        status: tx.status || 'active'
+                      };
+                    });
+                  } else if ((Number(st.xp) || 0) > 0) {
+                    st.xpHistory = [{
+                      id: 'tx_' + Date.now() + '_' + (st.id || 'init'),
+                      amount: Number(st.xp) || 0,
+                      type: 'participation',
+                      reason: 'Initial Adventure XP Baseline',
+                      timestamp: new Date().toISOString(),
+                      balanceAfter: Number(st.xp) || 0
+                    }];
+                  } else {
+                    st.xpHistory = [];
+                  }
+                }
+
                 // Deprecate old legacy avatar field
                 delete st.avatar;
               });
@@ -10505,8 +10552,16 @@
         .reverse();
     }
 
-    getStudentXPTransactions(studentId, includeVoided = false) {
+    getStudentXPTransactions(studentId, includeVoided = true) {
       return this.getXPTransactions(studentId, includeVoided);
+    }
+
+    getStudentXPHistory(studentId) {
+      const s = this.getStudent(studentId);
+      if (s && Array.isArray(s.xpHistory) && s.xpHistory.length > 0) {
+        return s.xpHistory.slice().reverse();
+      }
+      return this.getStudentXPTransactions(studentId, true);
     }
 
     getAllXPTransactions(studentId) {
@@ -10526,19 +10581,22 @@
       const points = numAmount;
       const xpVal = numAmount;
       const category = options.category || (points < 0 ? 'needs_work' : 'positive');
+      const resolvedType = resolveLedgerType(options.type, category, source, reason);
+      const txId = options.id || ('tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4));
       const tx = {
-        id: 'xp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        id: txId,
         studentId,
         skillId: options.skillId || null,
         amount: points,
         points: points,
         xpAmount: points,
         xp: xpVal,
+        type: resolvedType,
         reason: reason || (points >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
         category,
         icon: options.icon || (points > 0 ? '⭐' : '💭'),
         date: options.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        timestamp: new Date().toISOString(),
+        timestamp: options.timestamp || new Date().toISOString(),
         teacherId: options.teacherId || options.createdBy || 'Teacher',
         createdBy: options.createdBy || options.teacherId || source || 'Teacher',
         source: options.source || source || 'teacher_feedback',
@@ -10586,6 +10644,17 @@
       if (s) {
         s.xp = newTotalXP;
         s.totalXP = newTotalXP;
+        tx.balanceAfter = s.xp;
+        if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
+        const ledgerItem = {
+          id: tx.id,
+          amount: points,
+          type: resolvedType,
+          reason: tx.reason,
+          timestamp: tx.timestamp,
+          balanceAfter: s.xp
+        };
+        s.xpHistory.push(ledgerItem);
       }
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
@@ -10682,6 +10751,14 @@
 
     awardXP(studentId, amount, reason, teacher, options) {
       return this.giveXP(studentId, amount, reason, teacher, options);
+    }
+
+    awardStudentXP(studentId, amount, reason, options = {}) {
+      if (typeof reason === 'object' && !options) {
+        options = reason;
+        reason = options.reason || 'Classroom Award';
+      }
+      return this.giveXP(studentId, amount, reason, 'Teacher', options);
     }
 
     giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
@@ -10805,8 +10882,26 @@
       const tx = this.state.xpTransactions.find(t => t.id === txId);
       if (!tx) return false;
       tx.status = 'voided';
+      tx.isVoided = true;
       tx.voidReason = voidReason;
       tx.voidedAt = new Date().toISOString();
+
+      const s = this.getStudent(tx.studentId);
+      if (s) {
+        if (Array.isArray(s.xpHistory)) {
+          const hEntry = s.xpHistory.find(e => e.id === txId);
+          if (hEntry) {
+            hEntry.status = 'voided';
+            hEntry.isVoided = true;
+            hEntry.voidReason = voidReason;
+            hEntry.voidedAt = tx.voidedAt;
+          }
+        }
+        s.xp = Math.max(0, (Number(s.xp) || 0) - (Number(tx.amount) || 0));
+        s.totalXP = s.xp;
+        evaluateMonsterStage(s);
+      }
+
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
       return true;
@@ -10817,8 +10912,26 @@
       const tx = this.state.xpTransactions.find(t => t.id === txId);
       if (!tx) return false;
       tx.status = 'active';
+      tx.isVoided = false;
       delete tx.voidReason;
       delete tx.voidedAt;
+
+      const s = this.getStudent(tx.studentId);
+      if (s) {
+        if (Array.isArray(s.xpHistory)) {
+          const hEntry = s.xpHistory.find(e => e.id === txId);
+          if (hEntry) {
+            hEntry.status = 'active';
+            hEntry.isVoided = false;
+            delete hEntry.voidReason;
+            delete hEntry.voidedAt;
+          }
+        }
+        s.xp = Math.max(0, (Number(s.xp) || 0) + (Number(tx.amount) || 0));
+        s.totalXP = s.xp;
+        evaluateMonsterStage(s);
+      }
+
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
       return true;
