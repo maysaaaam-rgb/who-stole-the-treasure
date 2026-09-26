@@ -4973,6 +4973,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return html;
   }
 
+  window.renderLibraryView = renderLibraryView;
   function renderLibraryView(container) {
     if (window.LibraryController && typeof window.LibraryController.render === 'function') {
       window.LibraryController.render(container);

@@ -1,6 +1,6 @@
 /**
  * ENGLISH ADVENTURE ACADEMY — LESSON LIBRARY ARCHITECTURE (V3.0)
- * 4-Track Curriculum Navigation, Strict 3-Element Card System & Secondary Metadata Drawer.
+ * 4-Track Curriculum Navigation, Strict 3-Element Card System, All 50+ Lessons Catalog & Metadata Drawer.
  */
 
 (function(window) {
@@ -26,22 +26,61 @@
       });
     }
 
-    getTracks() {
-      if (window.CURRICULUM_TRACKS && Array.isArray(window.CURRICULUM_TRACKS)) {
-        return window.CURRICULUM_TRACKS;
-      }
-      return [
-        { id: 'track-1', label: '🚀 Earth & Space', title: 'Track 1: 🚀 Earth, Space & Natural Science', subtitle: 'Planetary astronomy, environmental biology, and prehistoric dinosaur adaptation.', count: 3 },
-        { id: 'track-2', label: '🛠️ STEM & Inventions', title: 'Track 2: 🛠️ Applied STEM & Creative Engineering', subtitle: 'Famous inventors, clean energy Eco-Rover build labs, and team battle arena.', count: 3 },
-        { id: 'track-3', label: '🗣️ Language & Quests', title: 'Track 3: 🗣️ Language Mechanics & Communication Quests', subtitle: 'Spatial prepositions physics catapult, acoustic phonics lab, and imperative meme rules.', count: 3 },
-        { id: 'track-4', label: '📖 Literature & Diagnostic', title: 'Track 4: 📖 Literature, Storytelling & Diagnostic Vaults', subtitle: 'Alice in Wonderland sequential quest and full 8-task diagnostic assessment matrix.', count: 2 },
-        { id: 'all', label: '🌟 All Modules', title: 'Complete 4-Track Learning Library', subtitle: 'All 11 sequential active modules across Earth & Space, STEM, Language, and Literature.', count: 11 }
-      ];
-    }
-
     getAllActiveModules() {
       const registry = window.GAMES_REGISTRY || window.GAMES_DATA || [];
-      return registry.filter(item => item && item.status !== 'deprecated');
+      return registry.filter(item => item && item.status !== 'archived');
+    }
+
+    getTracks() {
+      const allModules = this.getAllActiveModules();
+      const t1 = allModules.filter(m => m.trackId === 'track-1').length;
+      const t2 = allModules.filter(m => m.trackId === 'track-2').length;
+      const t3 = allModules.filter(m => m.trackId === 'track-3').length;
+      const t4 = allModules.filter(m => m.trackId === 'track-4').length;
+      const total = allModules.length;
+
+      return [
+        {
+          id: 'track-1',
+          key: 'space',
+          label: '🚀 Science & Space',
+          title: 'Track 1: 🚀 Science & Space Exploration',
+          subtitle: 'Planetary astronomy, earth systems, environmental science, and animal adaptations.',
+          count: t1
+        },
+        {
+          id: 'track-2',
+          key: 'stem',
+          label: '🛠️ STEM & Inventions',
+          title: 'Track 2: 🛠️ Applied STEM & Creative Engineering',
+          subtitle: 'Famous inventors, clean energy Eco-Rover build labs, robotics, and team showdowns.',
+          count: t2
+        },
+        {
+          id: 'track-3',
+          key: 'language',
+          label: '🗣️ Language & Quests',
+          title: 'Track 3: 🗣️ Language Mechanics & Communication Quests',
+          subtitle: 'Preposition physics catapults, acoustic phonics labs, imperative meme rules, and roleplay.',
+          count: t3
+        },
+        {
+          id: 'track-4',
+          key: 'literature',
+          label: '📖 Literature & Tests',
+          title: 'Track 4: 📖 Literature, Story Quests & Diagnostic Tests',
+          subtitle: 'Classic storyboards (Alice in Wonderland, Wizard of Oz), timed reading quests, and diagnostic vaults.',
+          count: t4
+        },
+        {
+          id: 'all',
+          key: 'all',
+          label: `🌟 All Lessons (${total >= 50 ? '50+' : total})`,
+          title: 'Complete Learning Library (All Lessons)',
+          subtitle: `All ${total} interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.`,
+          count: total
+        }
+      ];
     }
 
     getFilteredModules() {
@@ -99,9 +138,11 @@
       this.updateView();
 
       // Reset scroll position to top of library view
-      const target = document.getElementById('curriculum-library-root');
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (typeof document !== 'undefined') {
+        const target = document.getElementById('curriculum-library-root') || document.getElementById('curriculum-section');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     }
 
@@ -133,16 +174,28 @@
       const targetUrl = routeUrl || (window.GAMES_REGISTRY && window.GAMES_REGISTRY.find(g => g.id === id)?.route);
       
       setTimeout(() => {
-        if (targetUrl) {
-          window.location.href = targetUrl;
-        } else if (typeof window.launchGame === 'function') {
+        if (typeof window.launchGame === 'function') {
           window.launchGame(id);
+          return;
+        }
+        if (targetUrl) {
+          if (targetUrl.startsWith('javascript:')) {
+            try {
+              eval(targetUrl.replace('javascript:', ''));
+            } catch (e) {
+              console.error(e);
+            }
+          } else {
+            window.location.href = targetUrl;
+          }
+        } else {
+          window.location.href = id + '/index.html';
         }
       }, 120);
     }
 
     openDrawer(id) {
-      const all = window.GAMES_REGISTRY || window.GAMES_DATA || [];
+      const all = this.getAllActiveModules();
       const item = all.find(g => g.id === id);
       if (!item) return;
 
@@ -241,7 +294,7 @@
             </div>
             <div class="meta-box">
               <span class="meta-label">XP Award</span>
-              <span class="meta-val xp-val">⭐ +${item.xp || 150} XP</span>
+              <span class="meta-val xp-val">⭐ +${item.xp || 120} XP</span>
             </div>
             <div class="meta-box">
               <span class="meta-label">Grade / Age</span>
@@ -297,18 +350,22 @@
 
     /**
      * Strict 3-Element Rule Card Renderer:
-     * 1. Header Area: High-contrast topic icon, module title, CEFR level badge.
+     * 1. Header Area: High-contrast topic icon, clean module title, CEFR level badge + XP pill.
      * 2. Formula Pill: Single clean grammar formula chip.
      * 3. Action Footers: Exactly two primary touch targets ([▶ Launch Game] 3D button + [📄 Worksheet]) + subtle [ℹ️ Details] trigger.
      */
     renderResourceCard(item) {
       if (!item) return '';
 
-      const formula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || 'Target sentence pattern';
+      const rawFormula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || item.languageFocus || 'Subject + Verb + Object communicative pattern';
+      const formula = rawFormula.length > 95 ? rawFormula.substring(0, 92) + '...' : rawFormula;
       const launchRoute = item.route || item.url || (item.id + '/index.html');
       const wsRoute = item.worksheetUrl || item.worksheetRoute || (item.id + '/worksheet.html');
       const icon = item.thumbnailIcon || (item.isWorksheet ? '📄' : '🎮');
       const cefr = item.cefrLevel || item.level || 'A1';
+
+      // Clean title so leading icon isn't duplicated
+      const cleanTitle = (item.title || 'Curriculum Module').trim();
 
       return `
         <article class="resource-card-v3" data-id="${item.id}" data-track="${item.trackId || ''}">
@@ -317,7 +374,7 @@
             <div class="card-title-group">
               <span class="card-topic-icon" aria-hidden="true">${icon}</span>
               <div class="card-title-wrap">
-                <h3 class="card-title-text" onclick="window.LibraryController.openDrawer('${item.id}')" title="${item.title}">${item.title}</h3>
+                <h3 class="card-title-text" onclick="window.LibraryController.openDrawer('${item.id}')" title="${cleanTitle}">${cleanTitle}</h3>
                 <span class="card-track-tag">${item.trackTitle || item.category || 'Sequential Track'}</span>
               </div>
             </div>
@@ -385,7 +442,7 @@
           <div class="banner-content">
             <div class="banner-title-row">
               <h2 class="banner-track-title">${currentTrack.title}</h2>
-              <span class="banner-badge">${currentTrack.count} Core Active Modules</span>
+              <span class="banner-badge">${currentTrack.count} Accessible Lessons</span>
             </div>
             <p class="banner-track-subtitle">${currentTrack.subtitle}</p>
           </div>
@@ -394,7 +451,8 @@
     }
 
     renderCardsGrid() {
-      const gridContainer = document.getElementById('curriculum-cards-container');
+      if (typeof document === 'undefined') return;
+      const gridContainer = document.getElementById('curriculum-cards-container') || document.getElementById('modules-gallery');
       if (!gridContainer) return;
 
       const items = this.getFilteredModules();
@@ -403,8 +461,8 @@
         gridContainer.innerHTML = `
           <div class="curriculum-empty-state">
             <div style="font-size:3rem; margin-bottom:12px;">🔍</div>
-            <h3>No modules found</h3>
-            <p>No active curricular modules match the search "${this.searchQuery}".</p>
+            <h3>No lessons found</h3>
+            <p>No active curricular lessons match the search "${this.searchQuery}".</p>
             <button type="button" class="btn-worksheet-3d" onclick="window.LibraryController.clearSearch()" style="margin-top:14px;">Clear Search</button>
           </div>
         `;
@@ -415,17 +473,23 @@
     }
 
     updateView() {
-      // 1. Update tabs active state
-      const tabBtns = document.querySelectorAll('.track-tab-btn');
-      const tracks = this.getTracks();
-      tabBtns.forEach((btn, index) => {
-        const track = tracks[index];
-        if (track) {
-          const isActive = track.id === this.activeTrackId;
-          btn.classList.toggle('is-active', isActive);
-          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        }
-      });
+      if (typeof document === 'undefined') return;
+      // 1. Update tabs HTML or active state
+      const tabsWrap = document.querySelector('.curriculum-tabs-sticky-wrapper');
+      if (tabsWrap) {
+        tabsWrap.innerHTML = this.renderTabsBar();
+      } else {
+        const tabBtns = document.querySelectorAll('.track-tab-btn');
+        const tracks = this.getTracks();
+        tabBtns.forEach((btn, index) => {
+          const track = tracks[index];
+          if (track) {
+            const isActive = track.id === this.activeTrackId;
+            btn.classList.toggle('is-active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          }
+        });
+      }
 
       // 2. Update track banner
       const bannerContainer = document.getElementById('curriculum-track-banner-wrap');
@@ -449,9 +513,9 @@
             <div class="header-left">
               <div class="header-title-row">
                 <h1 class="curriculum-headline">Curriculum Learning Library</h1>
-                <span class="curriculum-status-pill">✓ Standardized 4-Track System</span>
+                <span class="curriculum-status-pill">✓ Standardized 4-Track System (${this.getAllActiveModules().length}+ Lessons)</span>
               </div>
-              <p class="curriculum-subheadline">Sequential CLIL, STEM, Language &amp; Literature modules aligned with Grade 3–4 CEFR standards.</p>
+              <p class="curriculum-subheadline">Comprehensive CLIL, STEM, Language &amp; Literature modules aligned with Grade 3–4 CEFR standards.</p>
             </div>
             <div class="header-right">
               <div class="curriculum-search-box">
@@ -459,7 +523,7 @@
                 <input type="text" 
                   id="curriculum-search-input" 
                   class="curriculum-search-input" 
-                  placeholder="Filter active modules, formulas, vocabulary..." 
+                  placeholder="Filter 50+ lessons, formulas, vocabulary..." 
                   value="${this.searchQuery}" 
                   oninput="window.LibraryController.handleSearch(this.value)" />
                 <button type="button" 
@@ -482,7 +546,7 @@
             ${this.renderTrackBanner()}
           </div>
 
-          <!-- Simplified 3-Element Card Grid -->
+          <!-- Simplified 3-Column Card Grid -->
           <main class="curriculum-cards-container" id="curriculum-cards-container">
             <!-- Injected via renderCardsGrid -->
           </main>
@@ -502,6 +566,14 @@
   // Global helper delegating to controller's renderResourceCard
   window.renderResourceCard = function(item) {
     return controller.renderResourceCard(item);
+  };
+
+  // Global helper to render library
+  window.renderLibrary = function(container) {
+    const target = container || document.getElementById('curriculum-library-root') || document.getElementById('app-view-container') || document.getElementById('app-main-content');
+    if (target) {
+      controller.render(target);
+    }
   };
 
   // Safe launcher delegator

@@ -8258,6 +8258,12 @@ body.classroom-mode-active .classroom-students-grid {
   margin-bottom: 40px;
 }
 
+@media (min-width: 1140px) {
+  .curriculum-cards-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 /* 5. Simplified 3-Element Card System */
 .resource-card-v3 {
   background: #0f172a;

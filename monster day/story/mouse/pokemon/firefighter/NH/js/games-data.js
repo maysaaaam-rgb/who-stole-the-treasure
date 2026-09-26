@@ -1,48 +1,48 @@
 /**
  * ENGLISH ADVENTURE ACADEMY — STANDARDIZED 4-TRACK EDUCATIONAL RESOURCE REGISTRY
- * Authoritative registry consolidated into 4 sequential curricular learning tracks.
+ * Authoritative registry containing all 58 curriculum learning modules across 4 sequential tracks.
  */
 
 const CURRICULUM_TRACKS = [
   {
     "id": "track-1",
     "key": "space",
-    "label": "🚀 Earth & Space",
-    "title": "Track 1: 🚀 Earth, Space & Natural Science",
-    "subtitle": "Planetary astronomy, environmental biology, and prehistoric dinosaur adaptation.",
-    "count": 3
+    "label": "🚀 Science & Space",
+    "title": "Track 1: 🚀 Science & Space Exploration",
+    "subtitle": "Planetary astronomy, earth systems, environmental science, and animal adaptations.",
+    "count": 17
   },
   {
     "id": "track-2",
     "key": "stem",
     "label": "🛠️ STEM & Inventions",
     "title": "Track 2: 🛠️ Applied STEM & Creative Engineering",
-    "subtitle": "Famous inventors, clean energy Eco-Rover build labs, and team battle arena.",
-    "count": 3
+    "subtitle": "Famous inventors, clean energy Eco-Rover build labs, robotics, and team showdowns.",
+    "count": 12
   },
   {
     "id": "track-3",
     "key": "language",
     "label": "🗣️ Language & Quests",
     "title": "Track 3: 🗣️ Language Mechanics & Communication Quests",
-    "subtitle": "Spatial prepositions physics catapult, acoustic phonics lab, and imperative meme rules.",
-    "count": 3
+    "subtitle": "Preposition physics catapults, acoustic phonics labs, imperative meme rules, and roleplay.",
+    "count": 15
   },
   {
     "id": "track-4",
     "key": "literature",
-    "label": "📖 Literature & Diagnostic",
-    "title": "Track 4: 📖 Literature, Storytelling & Diagnostic Vaults",
-    "subtitle": "Alice in Wonderland sequential quest and full 8-task diagnostic assessment matrix.",
-    "count": 2
+    "label": "📖 Literature & Tests",
+    "title": "Track 4: 📖 Literature, Story Quests & Diagnostic Tests",
+    "subtitle": "Classic storyboards (Alice in Wonderland, Wizard of Oz), timed reading quests, and diagnostic vaults.",
+    "count": 14
   },
   {
     "id": "all",
     "key": "all",
-    "label": "🌟 All Modules",
-    "title": "Complete 4-Track Learning Library",
-    "subtitle": "All 11 sequential active modules across Earth & Space, STEM, Language, and Literature.",
-    "count": 11
+    "label": "🌟 All Lessons (58+)",
+    "title": "Complete Learning Library (All Lessons)",
+    "subtitle": "All 58 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 58
   }
 ];
 
@@ -149,9 +149,9 @@ const GAMES_REGISTRY = [
     "clilDomain": "Astrophysics & Exoplanet Habitability",
     "clilTheme": "Astrophysics & Exoplanet Habitability",
     "trackId": "track-1",
-    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackTitle": "🚀 Science & Space Exploration",
     "trackOrder": 1,
-    "formula": "It is [cold / rocky]. People need [water] to live.",
+    "formula": "Planet [X] is colder than Earth, so explorers need [oxygen/heat] to survive.",
     "status": "active",
     "worksheetUrl": "nasa-mission/worksheet.html",
     "url": "nasa-mission/index.html"
@@ -270,9 +270,9 @@ const GAMES_REGISTRY = [
     "clilDomain": "Paleontology & Animal Biology",
     "clilTheme": "Prehistoric Fauna & Physical Adaptations",
     "trackId": "track-1",
-    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackTitle": "🚀 Science & Space Exploration",
     "trackOrder": 2,
-    "formula": "[Dino A] is [bigger / faster] than [Dino B].",
+    "formula": "[Dino A] is [bigger / faster / heavier] than [Dino B] / It has [feature] to [action]",
     "status": "active",
     "worksheetUrl": "dino-arena/worksheet.html",
     "url": "dino-arena/index.html"
@@ -364,9 +364,9 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060d0a 0%, #0f241a 50%, #10b981 100%)",
     "status": "active",
     "trackId": "track-1",
-    "trackTitle": "🚀 Earth, Space & Natural Science",
+    "trackTitle": "🚀 Science & Space Exploration",
     "trackOrder": 3,
-    "formula": "The [animal] needs [habitat]. Keep it wild!",
+    "formula": "The [animal] needs [requirement]. / Keep it wild! Buy the [item]!",
     "worksheetUrl": "wildlife-detective/worksheet.html"
   },
   {
@@ -470,7 +470,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-2",
     "trackTitle": "🛠️ Applied STEM & Creative Engineering",
     "trackOrder": 1,
-    "formula": "The [tool] helps to [verb] the [noun].",
+    "formula": "Real inventors plan blueprints before they build and test their inventions.",
     "thumbnailIcon": "🛠️",
     "status": "active",
     "worksheetUrl": "young-inventor/worksheet.html",
@@ -579,7 +579,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-2",
     "trackTitle": "🛠️ Applied STEM & Creative Engineering",
     "trackOrder": 2,
-    "formula": "We use [Tool A] AND [Tool B] to [verb].",
+    "formula": "Drive forward [X] meters and turn [direction] in order to recharge the solar battery.",
     "status": "active",
     "worksheetUrl": "eco-engineers/worksheet.html",
     "url": "eco-engineers/index.html"
@@ -775,7 +775,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 1,
-    "formula": "The [animal] throws [item] [over / under / behind] the [target].",
+    "formula": "[Noun] + [Verb] + [Preposition] + [Noun Phrase]",
     "worksheetUrl": "cat-vs-dog/worksheet.html"
   },
   {
@@ -872,7 +872,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 2,
-    "formula": "Listen! It sounds like a [noun]. It makes a [adjective] sound.",
+    "formula": "What's that sound? / It's a [singular noun]. It [verb]s! / They're [plural noun]. They [verb]!",
     "worksheetUrl": "sound-detective/worksheet.html"
   },
   {
@@ -959,7 +959,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "trackOrder": 3,
-    "formula": "[Base Verb]! / Don't [Base Verb]!",
+    "formula": "Base Verb + Object / Don't + Base Verb",
     "status": "active",
     "worksheetUrl": "meme-rules/worksheet.html",
     "url": "meme-rules/index.html"
@@ -1044,9 +1044,9 @@ const GAMES_REGISTRY = [
     "clilDomain": "Literary Analysis & Gamified Roster Grading",
     "clilTheme": "Literary Analysis & Gamified Roster Grading",
     "trackId": "track-4",
-    "trackTitle": "📖 Literature, Storytelling & Diagnostic Vaults",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
     "trackOrder": 1,
-    "formula": "First [Event A], then [Event B], finally [Event C].",
+    "formula": "Why did the Queen of Hearts demand [action]? Because [character motive].",
     "status": "active",
     "worksheetUrl": "alice-quest/worksheet.html",
     "url": "alice-quest/index.html"
@@ -1075,7 +1075,7 @@ const GAMES_REGISTRY = [
     "duration": 35,
     "durationText": "35 min",
     "trackId": "track-4",
-    "trackTitle": "📖 Literature, Storytelling & Diagnostic Vaults",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
     "trackOrder": 2,
     "cefrLevel": "A1–A2",
     "level": "A1–A2",
@@ -1112,7 +1112,13 @@ const GAMES_REGISTRY = [
     "path": "quiz-briefing/index.html",
     "thumbnailIcon": "🍄",
     "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "Unit 1 Master Quest & Timer Challenge Matrix",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html",
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
+    "cefrLevel": "Grade 4"
   },
   {
     "id": "quiz-g3-u1-after-school-inventor",
@@ -1139,7 +1145,13 @@ const GAMES_REGISTRY = [
     "path": "quiz-briefing/index.html",
     "thumbnailIcon": "🛠️",
     "gradient": "linear-gradient(135deg, #060911 0%, #0f2744 50%, #38bdf8 100%)",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "The [invention] was created by Clara to solve [problem].",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html",
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
+    "cefrLevel": "Grade 3"
   },
   {
     "id": "solar-system",
@@ -1252,7 +1264,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Astronomy & Earth Science",
     "clilTheme": "Planetary Systems & Celestial Bodies",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "Planet A is [bigger / colder / farther] than Planet B. Planet A is more [massive / dense] than Planet B.",
+    "url": "solar-system/index.html",
+    "worksheetUrl": "solar-system/worksheet.html"
   },
   {
     "id": "dino-dig",
@@ -1367,7 +1384,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Paleontology & Earth History",
     "clilTheme": "Prehistoric Life & Fossil Evidence",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "Regular: Base + -ed (discover ➔ discovered). Irregular: Vowel / Form Change (dig ➔ dug, find ➔ found).",
+    "url": "dino-dig/index.html",
+    "worksheetUrl": "dino-dig/worksheet.html",
+    "worksheetRoute": "dino-dig/worksheet.html"
   },
   {
     "id": "good-ideas-lab",
@@ -1478,7 +1501,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Engineering Design Process & Biomimicry",
     "clilTheme": "Engineering Design Process & Biomimicry",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "People need [solution] when they have a [problem]. Karl Benz improved the motorcar by adding [gear].",
+    "url": "good-ideas-lab/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html",
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "brain-hackers",
@@ -1576,7 +1605,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Cognitive Neuroscience & Human Anatomy",
     "clilTheme": "Cognitive Neuroscience & Human Anatomy",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🧠",
+    "formula": "The [frontal lobe] helps us to [plan and calculate] when we solve puzzles.",
+    "url": "brain-hackers/index.html",
+    "worksheetUrl": "brain-hackers/worksheets.html"
   },
   {
     "id": "brain-quit",
@@ -1673,7 +1708,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Brain Metabolism & Active Reading",
     "clilTheme": "Brain Metabolism & Active Reading",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🧠",
+    "formula": "If the brain does not get [glucose/sleep], it cannot focus or learn.",
+    "url": "brain/index.html",
+    "worksheetUrl": "brain/worksheets.html"
   },
   {
     "id": "brain-explorers",
@@ -1771,7 +1812,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Cognitive Linguistics & Neuroplasticity",
     "clilTheme": "Cognitive Linguistics & Neuroplasticity",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "First the visual cortex sees [letters], then the brain decodes [sounds].",
+    "url": "brain-explorers/index.html",
+    "worksheetUrl": "brain-explorers/worksheet.html"
   },
   {
     "id": "freeze-game",
@@ -1875,7 +1921,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Muscle Kinetic Energy vs Cerebral Metabolism",
     "clilTheme": "Muscle Kinetic Energy vs Cerebral Metabolism",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "While the body is frozen at 0% muscle energy, the brain uses 20% of resting fuel.",
+    "url": "freeze-game/index.html",
+    "worksheetUrl": "freeze-game/worksheet.html"
   },
   {
     "id": "inventor-forge",
@@ -1962,7 +2013,12 @@ const GAMES_REGISTRY = [
     ],
     "clilDomain": "Mechanical Prototyping & Pitching",
     "clilTheme": "Mechanical Prototyping & Pitching",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "People invented [item] to [verb]. My invention solves [problem] by [gerund].",
+    "url": "inventor-forge/index.html",
+    "worksheetUrl": "inventor-forge/worksheet.html"
   },
   {
     "id": "wonderland-lesson3",
@@ -2060,7 +2116,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Dramatic Interpretation & Theatre Arts",
     "clilTheme": "Dramatic Interpretation & Theatre Arts",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🎭",
+    "formula": "I am [character] and I am holding [prop] on the royal stage!",
+    "url": "wonderland-story/index.html",
+    "worksheetUrl": "wonderland-story/worksheet.html"
   },
   {
     "id": "wonderland-lesson2",
@@ -2158,7 +2220,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Narrative Chronology & Past Simple",
     "clilTheme": "Narrative Chronology & Past Simple",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "⏰",
+    "formula": "Alice fell down the rabbit hole, drank the potion, and shrank to 10 inches.",
+    "url": "wonderland-time-machine/index.html",
+    "worksheetUrl": "wonderland-time-machine/worksheet.html"
   },
   {
     "id": "wonderland-lesson1",
@@ -2256,7 +2324,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Literary World Building & Character Archetypes",
     "clilTheme": "Literary World Building & Character Archetypes",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🐇",
+    "formula": "The White Rabbit is carrying a pocket watch because he is late for the Queen.",
+    "url": "wonderland/index.html",
+    "worksheetUrl": "wonderland/worksheet.html"
   },
   {
     "id": "story-engine-alice",
@@ -2321,7 +2395,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Explore Wonderland as Alice! Follow the White Rabbit, solve magical puzzles, and talk with friends along the path!",
     "route": "story-engine/index.html?story=alice",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -2359,7 +2433,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Interactive Fiction & Branching Decisions",
     "clilTheme": "Interactive Fiction & Branching Decisions",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🫖",
+    "formula": "If Alice chooses the left door, she will meet the Cheshire Cat in the forest.",
+    "url": "story-engine/index.html?story=alice",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "story-engine-forest",
@@ -2420,7 +2500,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Use arrow keys or tap to explore the forest! Talk to the Ranger, find the hidden Golden Key, and unlock the Ancient Gate!",
     "route": "story-engine/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "featured": true,
@@ -2457,7 +2537,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Temperate Forest Ecosystems & Wilderness Decisions",
     "clilTheme": "Temperate Forest Ecosystems & Wilderness Decisions",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🌲",
+    "formula": "As the ranger walked into the clearing, they observed a deer drinking at the stream.",
+    "url": "story-engine/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "simon-says-classroom",
@@ -2521,7 +2607,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Listen carefully! Only do the action if Simon says! If you move without Simon says, you are out!",
     "route": "#simon-says",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -2560,7 +2646,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Kinesiology & Auditory Processing",
     "clilTheme": "Kinesiology & Auditory Processing",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👑",
+    "formula": "Simon says: Touch your [body part] and jump [number] times!",
+    "url": "#simon-says",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "yesterday-detectives",
@@ -2660,7 +2752,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Forensic Timelines & Interrogative Grammar",
     "clilTheme": "Forensic Timelines & Interrogative Grammar",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕵️",
+    "formula": "Where were you yesterday at [time]? I was in the library inspecting clues.",
+    "url": "detectives/index.html",
+    "worksheetUrl": "detectives/worksheet.html"
   },
   {
     "id": "inventor-lab",
@@ -2760,7 +2858,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Traits of Innovators & Growth Mindset",
     "clilTheme": "Traits of Innovators & Growth Mindset",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "thumbnailIcon": "⚙️",
+    "formula": "To be an inventor, you must be curious, observe problems, and never give up.",
+    "url": "inventor-lab/index.html",
+    "worksheetUrl": "inventor-lab/worksheet.html"
   },
   {
     "id": "clara-inventor",
@@ -2861,7 +2965,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Household Engineering & Practical Inventions",
     "clilTheme": "Household Engineering & Practical Inventions",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "thumbnailIcon": "💡",
+    "formula": "When Clara has an idea, she makes a sketch and tests it in her workshop.",
+    "url": "clara-inventor/index.html",
+    "worksheetUrl": "clara-inventor/worksheet.html"
   },
   {
     "id": "robots",
@@ -2958,7 +3068,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Automated Machines & Artificial Intelligence",
     "clilTheme": "Automated Machines & Artificial Intelligence",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "thumbnailIcon": "🤖",
+    "formula": "This robot can clean floors and navigate rooms, but it cannot feel emotions.",
+    "url": "robots/index.html",
+    "worksheetUrl": "robots/worksheet.html"
   },
   {
     "id": "feelings",
@@ -3053,7 +3169,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Emotional Intelligence & Empathy",
     "clilTheme": "Emotional Intelligence & Empathy",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "😊",
+    "formula": "How would you feel if [situation]? I would feel [adjective] because [reason].",
+    "url": "feelings/index.html",
+    "worksheetUrl": "feelings/worksheet.html"
   },
   {
     "id": "firefighter",
@@ -3148,7 +3270,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Fire Safety & Municipal Emergency Services",
     "clilTheme": "Fire Safety & Municipal Emergency Services",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🚒",
+    "formula": "Firefighters use high-pressure hoses and ladders to rescue citizens from fires.",
+    "url": "firefighter/index.html",
+    "worksheetUrl": "firefighter/worksheet.html"
   },
   {
     "id": "camp-mystery",
@@ -3207,7 +3335,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Look for clues in the dark forest, sequence the story events, and solve the mystery of the campsite visitor!",
     "route": "camp-mystery/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -3245,7 +3373,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Outdoor Wilderness & Clue Deduction",
     "clilTheme": "Outdoor Wilderness & Clue Deduction",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "⛺",
+    "formula": "While the campers were sleeping in their tents, someone took the golden compass.",
+    "url": "camp-mystery/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "phonics-adventure",
@@ -3303,7 +3437,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Listen carefully to the target sounds, spot the correct blends, and unlock the escape room chest!",
     "route": "phonics/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -3345,7 +3479,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Phonological Decoding & Minimal Pairs",
     "clilTheme": "Phonological Decoding & Minimal Pairs",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔤",
+    "formula": "The blend [st/pl/fl] combines with [ar/ane/ag] to decode the word [star/plane/flag].",
+    "url": "phonics/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "monster-day",
@@ -3405,7 +3545,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Choose body, eyes, horns, colors, and accessories to build your custom monster, then describe what it has got!",
     "route": "monster-day/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -3447,7 +3587,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Anatomy Description & Attribute Formulas",
     "clilTheme": "Anatomy Description & Attribute Formulas",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👾",
+    "formula": "My monster has got [three] [sharp] [purple horns] and [two big wings].",
+    "url": "monster-day/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "restaurant",
@@ -3545,7 +3691,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Hospitality Transactions & Social Etiquette",
     "clilTheme": "Hospitality Transactions & Social Etiquette",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🍕",
+    "formula": "Could I please order [food item]? I would like [drink], thank you.",
+    "url": "restaurant/index.html",
+    "worksheetUrl": "restaurant/worksheets.html"
   },
   {
     "id": "neighbourhood",
@@ -3601,7 +3753,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Navigate the neighbourhood map, find the community buildings, and describe where they are located!",
     "route": "neighbourhood/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -3640,7 +3792,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Spatial Navigation & Civic Landmarks",
     "clilTheme": "Spatial Navigation & Civic Landmarks",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🏘️",
+    "formula": "The library is between the bakery and the park. Turn left at the corner.",
+    "url": "neighbourhood/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "advice",
@@ -3736,7 +3894,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Functional Ethics & Helpful Recommendations",
     "clilTheme": "Functional Ethics & Helpful Recommendations",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💡",
+    "formula": "If your alarm clock breaks, you should invent a musical pillow!",
+    "url": "advice/index.html",
+    "worksheetUrl": "advice/worksheets.html"
   },
   {
     "id": "predictions",
@@ -3833,7 +3997,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Futurism & Speculative Technology",
     "clilTheme": "Futurism & Speculative Technology",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔮",
+    "formula": "In 2050, children will travel in flying solar cars and robots will assist teachers.",
+    "url": "predictions/index.html",
+    "worksheetUrl": "predictions/worksheets.html"
   },
   {
     "id": "city-mouse",
@@ -3929,7 +4099,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Fable Analysis & Environmental Comparison",
     "clilTheme": "Fable Analysis & Environmental Comparison",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🐭",
+    "formula": "The city has more delicious food than the country, but the country is safer.",
+    "url": "city-mouse/index.html",
+    "worksheetUrl": "city-mouse/worksheet.html"
   },
   {
     "id": "story",
@@ -3986,7 +4162,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Step into the story, choose your character role, and follow the Yellow Brick Road to meet the Wizard!",
     "route": "story/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4025,7 +4201,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Heroic Quests & Allegorical Character Virtues",
     "clilTheme": "Heroic Quests & Allegorical Character Virtues",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "📖",
+    "formula": "The Scarecrow travels to the Emerald City in order to ask the Wizard for a brain.",
+    "url": "story/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "detective-prep",
@@ -4078,7 +4260,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Answer the quick detective questions and earn your junior investigator badge!",
     "route": "treasure/index.html#prep-intro",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4116,7 +4298,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Observational Deduction & Rapid Inquiries",
     "clilTheme": "Observational Deduction & Rapid Inquiries",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔍",
+    "formula": "Who left these muddy footprints? What clue did they drop near the door?",
+    "url": "treasure/index.html#prep-intro",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "treasure",
@@ -4172,7 +4360,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Question the suspects, check their alibis, and identify who stole the royal treasure!",
     "route": "treasure/index.html#intro",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4212,7 +4400,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Cartography & Maritime Navigation",
     "clilTheme": "Cartography & Maritime Navigation",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "💎",
+    "formula": "Walk twenty paces North from the skull rock and dig where X marks the spot.",
+    "url": "treasure/index.html#intro",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "room-rescue",
@@ -4266,7 +4460,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Listen to the clues and put all the messy furniture in the right spots!",
     "route": "treasure/index.html#room-rescue",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4307,7 +4501,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Domestic Living & Spatial Organization",
     "clilTheme": "Domestic Living & Spatial Organization",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚪",
+    "formula": "Put the textbooks on the desk and place the sneakers inside the wardrobe.",
+    "url": "treasure/index.html#room-rescue",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "clil-lab",
@@ -4362,7 +4562,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Put on your lab coat, analyze the evidence under the microscope, and find the forensic match!",
     "route": "treasure/index.html#clil-lab",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4400,7 +4600,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Forensic Evidence & Chromatography",
     "clilTheme": "Forensic Evidence & Chromatography",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🔬",
+    "formula": "The chemical chromatography test proved that the ink sample matched the ransom note.",
+    "url": "treasure/index.html#clil-lab",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "expedition",
@@ -4455,7 +4661,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Pack your expedition backpack, use your compass, and lead your team across the extreme biomes!",
     "route": "treasure/index.html#expedition",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4494,7 +4700,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Extreme Polar Climates & Survival Gear",
     "clilTheme": "Extreme Polar Climates & Survival Gear",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🧭",
+    "formula": "Arctic explorers must wear insulated thermal parkas because the blizzard is freezing.",
+    "url": "treasure/index.html#expedition",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "pokemon",
@@ -4551,7 +4763,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Pick your Pokémon companion, answer grammar questions correctly, and battle to become the champion!",
     "route": "pokemon/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4590,7 +4802,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Comparative Mathematics & Game Theory",
     "clilTheme": "Comparative Mathematics & Game Theory",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "⚡",
+    "formula": "Pikachu is faster than Blastoise, but Charizard has the strongest Fire attack.",
+    "url": "pokemon/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "jungle",
@@ -4647,7 +4865,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Climb through the jungle trees, listen to animal calls, and identify where each creature lives!",
     "route": "jungle/index.html",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4686,7 +4904,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Tropical Biodiversity & Rainforest Strata",
     "clilTheme": "Tropical Biodiversity & Rainforest Strata",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "🌴",
+    "formula": "Toucan birds inhabit the canopy layer because they eat tropical fruits and seeds.",
+    "url": "jungle/index.html",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "res-global-readings-2",
@@ -4743,7 +4967,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Turn the pages, read about real-life inventors and celebrations, and solve the reading comprehension challenges!",
     "route": "javascript:openTextbookViewer(1, 'book-global-readings-2')",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4784,7 +5008,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Macmillan Primary Literacy Syllabus (Level 2)",
     "clilTheme": "Macmillan Primary Literacy Syllabus (Level 2)",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "📚",
+    "formula": "Students apply Phonics reviews, Infinitive of Purpose, and CLIL inquiry units.",
+    "url": "javascript:openTextbookViewer(1, 'book-global-readings-2')",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "res-global-readings-3",
@@ -4841,7 +5071,7 @@ const GAMES_REGISTRY = [
     "studentInstructions": "Explore advanced stories, discover how your brain learns new languages, and answer the reading comprehension challenges!",
     "route": "javascript:openTextbookViewer(1, 'book-global-readings-3')",
     "worksheet": null,
-    "worksheetRoute": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
     "supportsAssignment": true,
     "supportsProgress": true,
@@ -4881,7 +5111,13 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Macmillan Primary Literacy Syllabus (Level 3)",
     "clilTheme": "Macmillan Primary Literacy Syllabus (Level 3)",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "thumbnailIcon": "📚",
+    "formula": "Students synthesize non-fiction text structures, neuroscience passages, and debates.",
+    "url": "javascript:openTextbookViewer(1, 'book-global-readings-3')",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
     "id": "alice-homework",
@@ -4965,7 +5201,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Classic Children's Literature",
     "clilTheme": "Narrative Sequencing & Performance Recaps",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "First, Alice [fell/saw]. Then she [drank/met] the [character].",
+    "url": "alice-homework/index.html",
+    "worksheetUrl": "alice-homework-quest/index.html"
   },
   {
     "id": "bamboozle",
@@ -5050,7 +5291,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Interactive EdTech Game Mechanics",
     "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
+    "url": "bamboozle/index.html",
+    "worksheetUrl": "bamboozle/index.html"
   },
   {
     "id": "monster-lab",
@@ -5135,7 +5381,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Comparative Animal Biology",
     "clilTheme": "Adaptations & Anatomical Morphology",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "My monster has [number] [body part] and can [action].",
+    "url": "monster-lab/index.html",
+    "worksheetUrl": "monster-lab/index.html"
   },
   {
     "id": "monster-studio",
@@ -5220,7 +5471,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Visual Design & Self-Expression",
     "clilTheme": "Seasonal Dress & Character Identity",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "formula": "My monster is wearing a [color] [clothing item] to protect against [weather].",
+    "url": "monster-studio/index.html",
+    "worksheetUrl": "monster-studio/index.html"
   },
   {
     "id": "wizard-of-oz",
@@ -5305,7 +5561,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Children's Literature & Theatre",
     "clilTheme": "Narrative Journey & Character Values",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "I don't have [noun], but I want to [verb] because [reason].",
+    "url": "wizard-of-oz/index.html",
+    "worksheetUrl": "wizard-of-oz/worksheet.html"
   },
   {
     "id": "space-cadet",
@@ -5386,7 +5647,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Planetary Science & Aerospace Engineering",
     "clilTheme": "Exoplanet Exploration & Mission Design",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "My mission is to [verb] so it will [action].",
+    "url": "space-cadet/index.html",
+    "worksheetUrl": "space-cadet/index.html"
   },
   {
     "id": "smart-farm",
@@ -5474,7 +5740,12 @@ const GAMES_REGISTRY = [
     },
     "clilDomain": "Agro-Technology & Ecological Engineering",
     "clilTheme": "Automated Farm Systems & Animal Welfare",
-    "status": "deprecated"
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "The [Animal] needs [Noun] / It [Verbs] [Noun] to the [Animal]!",
+    "url": "smart-farm/index.html",
+    "worksheetUrl": "smart-farm/worksheet.html"
   }
 ];
 
