@@ -253,15 +253,17 @@ body {
 #hud-dock {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   width: 100%;
   background: rgba(6, 9, 17, 0.92);
-  backdrop-filter: blur(14px);
-  border-bottom: 2px solid rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
   padding: 10px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -545,17 +547,21 @@ body {
 }
 
 /* =========================================================================
-   STAGE VIEWPORT & HERO BANNER
+   STAGE VIEWPORT & HERO BANNER (NEVER COVERED BY THE HUD)
    ========================================================================= */
+.arcade-stage-container,
+#stage-viewport,
 .main-stage-viewport {
-  max-width: 1240px;
+  padding-top: 24px;
+  padding-bottom: 40px;
+  max-width: 1200px;
   width: 94%;
-  margin: 16px auto 40px auto;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
-  position: relative;
-  z-index: 1;
 }
 
 .stage-view {
