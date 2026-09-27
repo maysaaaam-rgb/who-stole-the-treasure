@@ -18,26 +18,40 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
   * **10% Vivid Game Accents**: Cyan `#38bdf8`, Amber `#f59e0b`, Emerald `#10b981`, Coral `#f43f5e`, Electric Violet `#a855f7`.
 - **TACTILE 3D PUSH-BUTTONS**: Every interactive button must have a 5px solid darker bottom border lip (`border-bottom: 5px solid ...`) and a 4px physical travel on `:active` with spring bounce physics (`--spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275)`).
 
-### 1.2 Visuals & Art Direction
-- **65% FULL-BLEED ARTWORK RULE**: The top 65% of every game card must feature full-bleed visual art; the bottom 35% is a dark glassmorphic caption tray.
-- **ISOMETRIC GROUNDING**: Never float sprites on flat backgrounds. Ground them on 3D isometric reflection pedestals (`radial-gradient` discs) with continuous `idleBob` breathing physics (`@keyframes idleBob 3s ease-in-out infinite` or `@keyframes monsterFloat 3s ease-in-out infinite`).
-- **NO FLAT BLOBS**: Forbid crude procedural SVG circles pretending to be characters. Use clean raster sprites (`.webp`/`.png`) or multi-layered vectors with `feDropShadow` rim-lighting and proper anatomical silhouette contours.
+### 1.2 Absolute Ban on Procedural Character Artwork (No SVG Characters)
+- **NEVER attempt to draw mascots, dinosaurs, monsters, fantasy creatures, or characters using hand-coded SVG paths (`<path d="...">`, `<circle>`, `<ellipse>`)**.
+- **NEVER generate geometric clip-art or flat vector blobs to represent subjects**.
+- **MANDATORY ASSET REQUIREMENT**:
+  * All interactive subjects must link directly to real transparent raster assets (`.webp` or `.png`) organized strictly within the standardized asset hierarchy:
+    ```text
+    assets/
+    └── packs/
+        ├── characters/     <-- Transparent 3D PNG/WebP character models
+        ├── items/          <-- 3D tool, badge, and equipment renders
+        └── backgrounds/    <-- 16:9 volumetric ambient backdrops
+    ```
+  * Every card must follow the **65% Full-Bleed Artwork Rule**: the top 65% of the card is a high-resolution media viewport; the bottom 35% is a dark glassmorphic caption tray.
+  * Sprites must be grounded on 3D isometric reflection pedestals (`radial-gradient` discs) featuring active `@keyframes idleBob` floating physics.
 
-### 1.3 Audio & Speech (Zero External MP3s)
-- **Pure Web Audio API Synthesis**: Dual-oscillator musical chords with ADSR exponential decay ramps.
-- **Harmonic Chords**: Ascending C-major arpeggios ($C_5 \to E_5 \to G_5 \to C_6$ at 90ms offsets) for XP/Victory; warm low-register descending sine tones ($260\text{ Hz} \to 180\text{ Hz}$) for soft-fails (never harsh buzzers, red penalty screens, or punitive alarms).
-- **TTS Narration**: Calibrate `window.speechSynthesis` to `rate: 0.88`, `pitch: 1.05`, and `lang: "en-US"` with word-boundary event tracking for karaoke speech highlighting.
-- **Autoplay Guard**: `AudioContext` and TTS must initialize ONLY upon first user gesture (`click`, `touchstart`, or hotkey).
+### 1.3 Audio Synthesis Laws (No Raw Oscillator Beeps)
+- **NEVER write single-frequency raw square-wave or saw-tooth beeps**.
+- Every sound effect in `js/audio.js` must be synthesized as a polyphonic musical chord using dual-oscillator ADSR curves:
+  * **Correct/XP**: Ascending C-Major pentatonic chord ($C_5 \to E_5 \to G_5 \to C_6$) with exponential decay ramps.
+  * **Soft-Fail**: Warm descending two-tone sine chime ($246.94\text{ Hz} \to 220\text{ Hz}$) accompanied by an encouraging voice clue. No buzzers or red penalty screens.
+  * **Card Flip**: Low-pass filtered noise burst simulating a physical card snap.
+- **TTS Narration**: Calibrate `window.speechSynthesis` strictly to: `rate: 0.88`, `pitch: 1.05`, and `lang: "en-US"`.
+- **Autoplay Guard**: `AudioContext` and `SpeechSynthesis` must initialize ONLY upon first user gesture (`click`, `touchstart`, or hotkey).
 
-### 1.4 4-Pillar Pedagogical Engine
-- **1 Target Grammar Formula & 1 CLIL Real-World Topic per Lesson**: Clear, singular linguistic focus paired with authentic science, history, nature, or engineering inquiry.
-- **3-Sentence Speaking Ceiling**: Oral production must be constrained to a 3-part teleprompter template (e.g. Greeting/Identity $\to$ Observation/Fact $\to$ Action/Conclusion).
-- **3-Phase Arc**:
-  * **Phase 1: Discovery Hotspots** (Explore environment, click to inspect, listen to vocabulary).
-  * **Phase 2: Tactile Workbench** (Drag/drop, match, classify, build sentence with tactile 3D tiles).
-  * **Phase 3: Live Karaoke Teleprompter** (Timed oral production, speech synthesis read-along, visual feedback).
-- **Soft-Fail Architecture**: Incorrect choices trigger an elastic wobble (`translateX(-4px)` to `translateX(4px)`) and a spoken clue with zero point deductions.
-- **Zero-Bug State**: Guard against `undefined`, `null`, or `NaN` in all dynamic text slots, scoreboards, and badges.
+### 1.4 Reactive State & Gameplay Engine (Arcade Standard)
+- **60-30-10 Cyber-Glassmorphism**: 60% obsidian void (`#060911`), 30% structural glass (`rgba(15, 23, 42, 0.8)` with `backdrop-filter: blur(14px)`), 10% vivid game accents (Cyan `#38bdf8`, Amber `#f59e0b`, Emerald `#10b981`).
+- **Tactile 3D Buttons**: All interactive buttons must have a 5px darker bottom border depth lip (`box-shadow: 0 6px 0 var(--border-dark)` or `border-bottom: 5px solid ...`) that physically depresses 4px on `:active` with spring bounce physics.
+- **Reactive State Architecture**: Centralized `playerSession` tracking energy (20% $\to$ 100%), stage progression, and platform XP routing via `AdventureAcademy.awardXP()` / `schoolStore`.
+- **4-Pillar Pedagogical Engine**:
+  * 1 Target Grammar Formula & 1 CLIL Real-World Topic per Lesson.
+  * 3-Sentence Speaking Ceiling (Scaffolded introduction $\to$ Formula 1 $\to$ Formula 2).
+  * 3-Phase Arc: Phase 1 Discovery Radar $\to$ Phase 2 Tactile Workbench $\to$ Phase 3 Live Karaoke Teleprompter.
+  * Soft-Fail Architecture: Errors trigger an elastic wobble (`translateX(-4px)`) and a supportive audio hint with zero point deductions.
+  * Zero-Bug State: Guard against `undefined`, `null`, or `NaN` in all dynamic text slots, scoreboards, and badges.
 
 ### 1.5 Directory & Registry Deliverables
 For any module `[module-slug]`, write directly to disk:
