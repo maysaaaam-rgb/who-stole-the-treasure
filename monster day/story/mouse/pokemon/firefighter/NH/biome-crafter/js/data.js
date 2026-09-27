@@ -192,6 +192,9 @@
     crafting3x3Recipes: [
       {
         id: "door-3x3",
+        stepNumber: 1,
+        icon: "🚪",
+        badge: "Step 1 of 3: Wooden Door",
         name: "Secure Wooden Door",
         targetFormula: "We need a door to block monsters!",
         ingredientsLabel: "6 Wood Planks",
@@ -202,10 +205,16 @@
         ],
         defenseBoost: 30,
         resultImg: "assets/items/torch_door.jpg",
+        previewAnimation: "floating-door",
+        miniGuide: "Fill column 1 and column 2 with 6 wood planks. Leave column 3 empty.",
+        stampText: "CRAFTED: WOODEN DOOR! ⭐",
         desc: "Essential entrance barricade. Keep creepers outside!"
       },
       {
         id: "torch-3x3",
+        stepNumber: 2,
+        icon: "🕯️",
+        badge: "Step 2 of 3: 4x Torches",
         name: "4x Bright Torches",
         targetFormula: "We use torches to light the dark!",
         ingredientsLabel: "1 Coal + 1 Stick",
@@ -216,10 +225,16 @@
         ],
         defenseBoost: 25,
         resultImg: "assets/items/torch_door.jpg",
+        previewAnimation: "flaming-torch",
+        miniGuide: "Place 1 Coal in the top-center, and 1 Stick in the middle-center.",
+        stampText: "CRAFTED: 4x TORCHES! ⭐",
         desc: "High illumination stops hostile nocturnal mob spawns."
       },
       {
         id: "sword-3x3",
+        stepNumber: 3,
+        icon: "⚔️",
+        badge: "Step 3 of 3: Iron Sword",
         name: "Sharp Iron Sword",
         targetFormula: "We need a sword to protect the base!",
         ingredientsLabel: "2 Iron Ingots + 1 Stick",
@@ -230,6 +245,9 @@
         ],
         defenseBoost: 20,
         resultImg: "assets/items/tools_weapons.jpg",
+        previewAnimation: "shimmering-sword",
+        miniGuide: "Place 2 Iron Ingots vertically down the center, with 1 Stick at the bottom.",
+        stampText: "CRAFTED: IRON SWORD! ⭐",
         desc: "Heavy defensive weapon for close combat against creepers."
       }
     ],
