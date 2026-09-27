@@ -1,7 +1,7 @@
 /**
- * TWIN GATES: THE MAGIC DOOR ADVENTURE (A1 MASTER ARC)
- * Reactive State Controller & 5-Chamber Colossal Gate Engine
- * Primary ESL / CEFR A1 | 35-Minute Interactive Arcade Loop • Total XP: 150
+ * TWIN GATES: ESCAPE THE SKY CASTLE
+ * Reactive State Controller & 3-Layer Narrative Engine
+ * Primary ESL / CEFR A1 | 35–40 Minute Narrative Loop • Total XP: 150
  */
 
 (function(root) {
@@ -11,24 +11,24 @@
   // REACTIVE PLAYER SESSION STATE
   // =========================================================================
   const playerSession = {
-    currentChamber: 1,
-    chosenBranch: 'ice', // 'ice' or 'fire'
-    selectedTool: null,   // 'torch' or 'shield'
+    currentScene: 1,
+    scene1Lit: false,
+    scene2Fed: false,
+    scene3BridgeSolved: false,
+    scene4Unlocked: false,
+    stoneStepIndex: 0,
     inventory: {
-      torch: false,
-      shield: false,
-      berry: false,
-      key: false
+      torch: true,
+      bread: true,
+      key: true
     },
     xp: 0,
-    chamber1Solved: false,
-    chamber2Solved: false,
-    chamber3Solved: false,
-    chamber4Solved: false,
-    rockStepIndex: 0,
     isOpeningDoor: false,
     isKaraokeRunning: false
   };
+
+  // Sequence for Scene 3: 0 (Blue) -> 1 (Yellow) -> 2 (Green)
+  const STONE_SEQUENCE = [0, 1, 2];
 
   // =========================================================================
   // CONFETTI CELEBRATION ENGINE
@@ -53,11 +53,11 @@
       this.canvas.height = window.innerHeight;
     },
 
-    burst(count = 100) {
+    burst(count = 110) {
       if (!this.canvas || !this.ctx) this.init();
       if (!this.canvas || !this.ctx) return;
 
-      const colors = ['#38bdf8', '#f59e0b', '#10b981', '#fbbf24', '#f43f5e', '#a855f7', '#ffffff'];
+      const colors = ['#f59e0b', '#38bdf8', '#10b981', '#fbbf24', '#f43f5e', '#a855f7', '#ffffff'];
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: this.canvas.width / 2 + (Math.random() * 260 - 130),
@@ -132,27 +132,23 @@
     const xpEl = document.getElementById('hudXP');
     if (xpEl) xpEl.textContent = `⭐ +${playerSession.xp} XP`;
 
-    // Chamber tracker dots
-    const chamberText = document.getElementById('hudChamberText');
-    if (chamberText) chamberText.textContent = `Chamber ${playerSession.currentChamber} of 5`;
+    const sceneText = document.getElementById('hudSceneText');
+    if (sceneText) sceneText.textContent = `Scene ${playerSession.currentScene} of 5`;
 
     for (let i = 1; i <= 5; i++) {
-      const dot = document.getElementById(`dot${i}`);
+      const dot = document.getElementById(`sDot${i}`);
       if (dot) {
-        dot.classList.toggle('is-passed', i < playerSession.currentChamber);
-        dot.classList.toggle('is-active', i === playerSession.currentChamber);
+        dot.classList.toggle('is-passed', i < playerSession.currentScene);
+        dot.classList.toggle('is-active', i === playerSession.currentScene);
       }
     }
 
-    // Inventory Slots
     const slotTorch = document.getElementById('slotTorch');
-    const slotShield = document.getElementById('slotShield');
-    const slotBerry = document.getElementById('slotBerry');
+    const slotBread = document.getElementById('slotBread');
     const slotKey = document.getElementById('slotKey');
 
     if (slotTorch) slotTorch.classList.toggle('is-filled', !!playerSession.inventory.torch);
-    if (slotShield) slotShield.classList.toggle('is-filled', !!playerSession.inventory.shield);
-    if (slotBerry) slotBerry.classList.toggle('is-filled', !!playerSession.inventory.berry);
+    if (slotBread) slotBread.classList.toggle('is-filled', !!playerSession.inventory.bread);
     if (slotKey) slotKey.classList.toggle('is-filled', !!playerSession.inventory.key);
   }
 
@@ -162,411 +158,252 @@
     const btn = document.getElementById('btnMuteToggle');
     if (btn) {
       btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
-      btn.style.borderColor = isMuted ? '#ef4444' : '#38bdf8';
+      btn.style.borderColor = isMuted ? '#ef4444' : '#f59e0b';
     }
   }
 
   // =========================================================================
-  // CHAMBER 1: TOOL SELECTION & DOOR INTERACTION
+  // SCENE 1: THE DARK CELLAR
   // =========================================================================
-  function playEntranceClue(type) {
-    if (!root.TwinGatesAudio) return;
-    const prompter = document.getElementById('karaokeTextChamber1');
+  function handleLightTorch() {
+    if (playerSession.scene1Lit) return;
+    playerSession.scene1Lit = true;
+    addXP(30);
 
-    if (type === 'wind') {
-      root.TwinGatesAudio.playIceWind();
-      if (prompter) prompter.textContent = '❄️ "It is cold ice behind the left door!"';
-      root.TwinGatesAudio.speak("It is cold ice behind the left door!");
-    } else if (type === 'fire') {
-      root.TwinGatesAudio.playFireCrack();
-      if (prompter) prompter.textContent = '🔥 "It is hot fire behind the right door!"';
-      root.TwinGatesAudio.speak("It is hot fire behind the right door!");
+    const mask = document.getElementById('darkCellarMask');
+    if (mask) mask.classList.add('is-lit');
+
+    const sconce = document.getElementById('wallSconce');
+    if (sconce) sconce.classList.add('is-lit');
+
+    const btn = document.getElementById('btnLightTorch');
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      btn.innerHTML = '<span>✓ Room Illuminated!</span>';
     }
+
+    const promptText = document.getElementById('scene1PromptText');
+    if (promptText) {
+      promptText.innerHTML = '✨ <span style="color:#fbbf24;">The cellar is bright and warm!</span> Open a colossal door!';
+    }
+
+    root.TwinGatesAudio.playTorchLight();
+    setTimeout(() => root.TwinGatesAudio.playXP(), 250);
+
+    // Reveal Colossal Doors with active rumble
+    const arena = document.getElementById('scene1DoorsArena');
+    if (arena) arena.style.display = 'flex';
+
+    root.TwinGatesAudio.speak("The room is bright and warm! Open the left ice door or right wood door!");
   }
 
-  function selectTool(tool) {
-    playerSession.selectedTool = tool;
-    const btnTorch = document.getElementById('toolBtnTorch');
-    const btnShield = document.getElementById('toolBtnShield');
-
-    if (tool === 'torch') {
-      playerSession.inventory.torch = true;
-      if (btnTorch) btnTorch.classList.add('is-selected');
-      if (btnShield) btnShield.classList.remove('is-selected');
-      root.TwinGatesAudio.playSnap();
-      root.TwinGatesAudio.speak("Fire torch selected! Torch melts cold ice.");
-    } else if (tool === 'shield') {
-      playerSession.inventory.shield = true;
-      if (btnShield) btnShield.classList.add('is-selected');
-      if (btnTorch) btnTorch.classList.remove('is-selected');
-      root.TwinGatesAudio.playSnap();
-      root.TwinGatesAudio.speak("Fire shield selected! Shield blocks hot fire.");
-    }
-    updateHUD();
-  }
-
-  function chooseDoor(doorSide, chamberNum) {
+  // =========================================================================
+  // DOOR SELECTION & SCENE ROUTING
+  // =========================================================================
+  function chooseDoor(doorSide, sceneNum) {
     if (playerSession.isOpeningDoor) return;
 
-    if (chamberNum === 1) {
-      // Validate tool
-      if (!playerSession.selectedTool) {
-        root.TwinGatesAudio.playSoftFail();
-        root.TwinGatesAudio.speak("Pick a tool first! Choose Torch or Shield.");
-        return;
-      }
-
-      if (doorSide === 'left' && playerSession.selectedTool !== 'torch') {
-        root.TwinGatesAudio.playSoftFail();
-        root.TwinGatesAudio.speak("It is cold ice! I need a torch to melt the ice.");
-        return;
-      }
-
-      if (doorSide === 'right' && playerSession.selectedTool !== 'shield') {
-        root.TwinGatesAudio.playSoftFail();
-        root.TwinGatesAudio.speak("It is hot fire! I need a shield to block the fire.");
-        return;
-      }
-
-      // Success opening door
-      playerSession.isOpeningDoor = true;
-      playerSession.chamber1Solved = true;
-      playerSession.chosenBranch = doorSide === 'left' ? 'ice' : 'fire';
-      addXP(30);
-
-      const card = doorSide === 'left' ? document.getElementById('gateCard1Left') : document.getElementById('gateCard1Right');
-      if (card) card.classList.add('opened');
-
-      root.TwinGatesAudio.playDoorCreak();
-      setTimeout(() => root.TwinGatesAudio.playXP(), 220);
-
-      setTimeout(() => {
-        transitionToChamber(2);
-        playerSession.isOpeningDoor = false;
-      }, 800);
-
-    } else if (chamberNum === 2) {
-      // Chamber 2 dynamic door choice
-      playerSession.isOpeningDoor = true;
-      const card = document.getElementById(`gateCard2_${doorSide}`);
-      if (card) card.classList.add('opened');
-
-      root.TwinGatesAudio.playDoorCreak();
-      setTimeout(() => root.TwinGatesAudio.playXP(), 220);
-
-      setTimeout(() => {
-        transitionToChamber(3);
-        playerSession.isOpeningDoor = false;
-      }, 800);
-
-    } else if (chamberNum === 3) {
-      // Chamber 3 dynamic door choice
-      playerSession.isOpeningDoor = true;
-      const card = document.getElementById(`gateCard3_${doorSide}`);
-      if (card) card.classList.add('opened');
-
-      root.TwinGatesAudio.playDoorCreak();
-      setTimeout(() => root.TwinGatesAudio.playXP(), 220);
-
-      setTimeout(() => {
-        transitionToChamber(4);
-        playerSession.isOpeningDoor = false;
-      }, 800);
+    if (sceneNum === 1 && !playerSession.scene1Lit) {
+      root.TwinGatesAudio.playSoftFail();
+      root.TwinGatesAudio.speak("It is too dark! Light the wall sconce first.");
+      return;
     }
+
+    if (sceneNum === 2 && !playerSession.scene2Fed) {
+      root.TwinGatesAudio.playSoftFail();
+      root.TwinGatesAudio.speak("The beast is hungry! Feed the beast warm bread.");
+      return;
+    }
+
+    if (sceneNum === 3 && !playerSession.scene3BridgeSolved) {
+      root.TwinGatesAudio.playSoftFail();
+      root.TwinGatesAudio.speak("The bridge is broken! Step on the stones in order.");
+      return;
+    }
+
+    playerSession.isOpeningDoor = true;
+
+    // Open door animation
+    const card = document.getElementById(`s${sceneNum}Door${doorSide === 'left' ? 'Left' : 'Right'}`);
+    if (card) card.classList.add('opened');
+
+    root.TwinGatesAudio.playDoorCreak();
+    setTimeout(() => root.TwinGatesAudio.playXP(), 220);
+
+    setTimeout(() => {
+      transitionToScene(sceneNum + 1);
+      playerSession.isOpeningDoor = false;
+    }, 850);
   }
 
-  // =========================================================================
-  // CHAMBER ROUTING
-  // =========================================================================
-  function transitionToChamber(nextChamberNum) {
-    playerSession.currentChamber = nextChamberNum;
+  function transitionToScene(nextSceneNum) {
+    playerSession.currentScene = nextSceneNum;
 
     for (let i = 1; i <= 5; i++) {
-      const view = document.getElementById(`chamberPhase${i}`);
+      const view = document.getElementById(`scenePhase${i}`);
       if (view) {
-        view.classList.toggle('is-visible', i === nextChamberNum);
+        view.classList.toggle('is-visible', i === nextSceneNum);
       }
     }
 
     updateHUD();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if (nextChamberNum === 2) {
-      setupChamber2();
-    } else if (nextChamberNum === 3) {
-      setupChamber3();
-    } else if (nextChamberNum === 4) {
-      setupChamber4();
-    } else if (nextChamberNum === 5) {
-      setupChamber5();
+    if (nextSceneNum === 2) {
+      setupScene2();
+    } else if (nextSceneNum === 3) {
+      setupScene3();
+    } else if (nextSceneNum === 4) {
+      setupScene4();
+    } else if (nextSceneNum === 5) {
+      setupScene5();
     }
   }
 
-  // =========================================================================
-  // CHAMBER 2: CREATURE CAVE (YETI OR BABY DRAGON)
-  // =========================================================================
-  function setupChamber2() {
-    const isIce = playerSession.chosenBranch === 'ice';
-    const titleEl = document.getElementById('chamber2Title');
-    const descEl = document.getElementById('chamber2Desc');
-    const prompterEl = document.getElementById('karaokeTextChamber2');
-    const imgEl = document.getElementById('chamber2CreatureImg');
-    const nameEl = document.getElementById('chamber2CreatureName');
-    const formulaEl = document.getElementById('chamber2Formula');
-    const pedestal = document.getElementById('chamber2Pedestal');
-
-    if (isIce) {
-      if (titleEl) titleEl.innerHTML = '<span>🐾</span> Chamber 2: The Yeti Cave';
-      if (descEl) descEl.textContent = 'A fluffy Yeti is here! Give the yeti a sweet berry (+30 XP)!';
-      if (prompterEl) prompterEl.textContent = '"A fluffy Yeti is here! Give the yeti a sweet berry."';
-      if (imgEl) imgEl.src = 'assets/yeti_companion.webp';
-      if (nameEl) nameEl.textContent = 'Fluffy Yeti';
-      if (formulaEl) formulaEl.textContent = '"I need a berry to feed the yeti."';
-      if (pedestal) pedestal.style.setProperty('--gate-glow', '#38bdf8');
-      root.TwinGatesAudio.speak("A fluffy Yeti is here! Give the yeti a sweet berry.");
-    } else {
-      if (titleEl) titleEl.innerHTML = '<span>🐉</span> Chamber 2: The Dragon Lair';
-      if (descEl) descEl.textContent = 'A cute Baby Dragon is here! Give the dragon a sweet berry (+30 XP)!';
-      if (prompterEl) prompterEl.textContent = '"A cute Baby Dragon is here! Give the dragon a sweet berry."';
-      if (imgEl) imgEl.src = 'assets/baby_dragon.webp';
-      if (nameEl) nameEl.textContent = 'Baby Fire Dragon';
-      if (formulaEl) formulaEl.textContent = '"I need a berry to feed the dragon."';
-      if (pedestal) pedestal.style.setProperty('--gate-glow', '#f59e0b');
-      root.TwinGatesAudio.speak("A cute Baby Dragon is here! Give the dragon a sweet berry.");
-    }
+  function jumpToScene(targetSceneNum) {
+    transitionToScene(targetSceneNum);
   }
 
-  function handleGiveBerry() {
-    if (playerSession.chamber2Solved) return;
-    playerSession.chamber2Solved = true;
-    playerSession.inventory.berry = true;
+  // =========================================================================
+  // SCENE 2: THE BEAST DEN
+  // =========================================================================
+  function setupScene2() {
+    root.TwinGatesAudio.playBeastSnore();
+    root.TwinGatesAudio.speak("The beast is hungry! Give the beast warm bread!");
+  }
+
+  function handleFeedBeast() {
+    if (playerSession.scene2Fed) return;
+    playerSession.scene2Fed = true;
     addXP(30);
 
     root.TwinGatesAudio.playSnap();
-    setTimeout(() => root.TwinGatesAudio.playXP(), 180);
+    setTimeout(() => root.TwinGatesAudio.playBeastSnore(), 180);
+    setTimeout(() => root.TwinGatesAudio.playXP(), 350);
 
-    const sealBox = document.getElementById('chamber2Seal');
+    const sealBox = document.getElementById('scene2Seal');
     if (sealBox) {
-      sealBox.innerHTML = '<span class="rubber-stamp-seal">❤️ Friend Made!</span>';
+      sealBox.innerHTML = '<span class="rubber-stamp-seal">❤️ Beast Fed!</span>';
     }
 
-    const btn = document.getElementById('btnGiveBerry');
+    const btn = document.getElementById('btnFeedBeast');
     if (btn) {
       btn.disabled = true;
       btn.style.opacity = '0.6';
-      btn.innerHTML = '<span>✓ Magic Berry Given!</span>';
+      btn.innerHTML = '<span>✓ Beast Happy &amp; Asleep!</span>';
     }
 
-    renderChamber2Doors();
-    root.TwinGatesAudio.speak("The creature is happy! Choose the stone gate or cloud gate to go forward.");
-  }
+    const promptText = document.getElementById('scene2PromptText');
+    if (promptText) {
+      promptText.innerHTML = '💤 <span style="color:#10b981;">The furry beast is sleeping peacefully!</span> Choose your door!';
+    }
 
-  function renderChamber2Doors() {
-    const arena = document.getElementById('chamber2DoorsArena');
-    if (!arena) return;
+    // Reveal Colossal Doors
+    const arena = document.getElementById('scene2DoorsArena');
+    if (arena) arena.style.display = 'flex';
 
-    arena.innerHTML = `
-      <!-- Left Door: Stone Gate -->
-      <div class="gate-card-wrapper left-gate" id="gateCard2_left" onclick="chooseDoor('left', 2)" style="--gate-glow:#10b981;">
-        <div class="gate-clue-badge" style="--gate-glow:#10b981;">
-          <span class="badge-icon">🪨</span>
-          <span class="badge-text" style="color:#10b981;">ROCK</span>
-        </div>
-        <div class="gate-door-leaf">
-          <div class="gate-media-viewport">
-            <img src="assets/gate_stone_giant.webp" alt="Stone Gate" class="gate-render-img">
-            <div class="pedestal-disc" style="--gate-glow:#10b981;"></div>
-          </div>
-          <div class="gate-caption-tray">
-            <div>
-              <div class="gate-title" style="color:#10b981;">Stone Arch</div>
-              <div class="gate-cue">Strong rocks ahead!</div>
-            </div>
-            <button type="button" class="btn-3d btn-emerald" style="width:100%; padding:10px; font-size:0.9rem;">
-              <span>🚪 Open Stone Gate</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Door: Cloud Gate -->
-      <div class="gate-card-wrapper right-gate" id="gateCard2_right" onclick="chooseDoor('right', 2)" style="--gate-glow:#38bdf8;">
-        <div class="gate-clue-badge" style="--gate-glow:#38bdf8;">
-          <span class="badge-icon">☁️</span>
-          <span class="badge-text" style="color:#38bdf8;">CLOUD</span>
-        </div>
-        <div class="gate-door-leaf">
-          <div class="gate-media-viewport">
-            <img src="assets/gate_ice_giant.webp" alt="Cloud Gate" class="gate-render-img">
-            <div class="pedestal-disc" style="--gate-glow:#38bdf8;"></div>
-          </div>
-          <div class="gate-caption-tray">
-            <div>
-              <div class="gate-title" style="color:#38bdf8;">Cloud Arch</div>
-              <div class="gate-cue">Soft white clouds ahead!</div>
-            </div>
-            <button type="button" class="btn-3d btn-cyan" style="width:100%; padding:10px; font-size:0.9rem;">
-              <span>🚪 Open Cloud Gate</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
+    root.TwinGatesAudio.speak("The beast is happy and falls asleep! Choose the rock arch or cloud arch!");
   }
 
   // =========================================================================
-  // CHAMBER 3: STEPPING BRIDGE
+  // SCENE 3: THE COLLAPSING STEPPING STONES
   // =========================================================================
-  function setupChamber3() {
-    playerSession.rockStepIndex = 0;
+  function setupScene3() {
+    playerSession.stoneStepIndex = 0;
     for (let i = 0; i < 3; i++) {
-      const tile = document.getElementById(`rockTile${i}`);
-      if (tile) tile.classList.remove('is-stepped');
+      const stone = document.getElementById(`stone${i}`);
+      if (stone) stone.classList.remove('is-stepped');
     }
     const feedback = document.getElementById('bridgeFeedback');
     if (feedback) feedback.textContent = '';
 
-    root.TwinGatesAudio.speak("The bridge is broken! Tap the rock tiles in order: 1, 2, 3!");
+    root.TwinGatesAudio.speak("The bridge is broken! Step on Blue, then Yellow, then Green!");
   }
 
-  function handleRockStep(index) {
-    if (playerSession.chamber3Solved) return;
+  function handleStoneStep(index) {
+    if (playerSession.scene3BridgeSolved) return;
 
-    if (index === playerSession.rockStepIndex) {
-      // Correct step
-      const tile = document.getElementById(`rockTile${index}`);
-      if (tile) tile.classList.add('is-stepped');
+    if (index === playerSession.stoneStepIndex) {
+      const stone = document.getElementById(`stone${index}`);
+      if (stone) stone.classList.add('is-stepped');
       root.TwinGatesAudio.playSnap();
 
-      playerSession.rockStepIndex++;
+      playerSession.stoneStepIndex++;
 
-      if (playerSession.rockStepIndex === 3) {
-        // Bridge complete
-        playerSession.chamber3Solved = true;
+      if (playerSession.stoneStepIndex === 3) {
+        playerSession.scene3BridgeSolved = true;
         addXP(30);
         root.TwinGatesAudio.playXP();
 
         const feedback = document.getElementById('bridgeFeedback');
         if (feedback) {
-          feedback.innerHTML = '🌉 <span style="color:#34d399;">Bridge is safe!</span> The rock path is complete!';
+          feedback.innerHTML = '🌉 <span style="color:#34d399;">Bridge Formed!</span> You crossed the abyss safely!';
         }
 
-        renderChamber3Doors();
-        root.TwinGatesAudio.speak("The rock bridge is safe! Choose the next colossal door!");
+        const seal = document.getElementById('scene3Seal');
+        if (seal) seal.innerHTML = '<span class="rubber-stamp-seal">🌉 Bridge Safe!</span>';
+
+        const arena = document.getElementById('scene3DoorsArena');
+        if (arena) arena.style.display = 'flex';
+
+        root.TwinGatesAudio.speak("You crossed the abyss bridge safely! Choose the sky path or tower path!");
       }
     } else {
-      // Soft-fail: reset
       root.TwinGatesAudio.playSoftFail();
-      playerSession.rockStepIndex = 0;
+      playerSession.stoneStepIndex = 0;
       for (let i = 0; i < 3; i++) {
-        const tile = document.getElementById(`rockTile${i}`);
-        if (tile) tile.classList.remove('is-stepped');
+        const stone = document.getElementById(`stone${i}`);
+        if (stone) stone.classList.remove('is-stepped');
       }
 
       const feedback = document.getElementById('bridgeFeedback');
       if (feedback) {
-        feedback.innerHTML = '⚠️ <span style="color:#f87171;">Oops!</span> Tap the rocks in order: Step 1, then Step 2, then Step 3!';
+        feedback.innerHTML = '⚠️ <span style="color:#f87171;">The stone cracked!</span> Step in order: 1. Blue ➔ 2. Yellow ➔ 3. Green!';
       }
-      root.TwinGatesAudio.speak("Tap the rocks in order: 1, then 2, then 3!");
+      root.TwinGatesAudio.speak("Step in order: Blue, then Yellow, then Green!");
     }
   }
 
-  function renderChamber3Doors() {
-    const arena = document.getElementById('chamber3DoorsArena');
-    if (!arena) return;
-
-    arena.innerHTML = `
-      <!-- Left Door: Rock Gate -->
-      <div class="gate-card-wrapper left-gate" id="gateCard3_left" onclick="chooseDoor('left', 3)" style="--gate-glow:#10b981;">
-        <div class="gate-clue-badge" style="--gate-glow:#10b981;">
-          <span class="badge-icon">🪨</span>
-          <span class="badge-text" style="color:#10b981;">ROCKS</span>
-        </div>
-        <div class="gate-door-leaf">
-          <div class="gate-media-viewport">
-            <img src="assets/gate_stone_giant.webp" alt="Rock Gate" class="gate-render-img">
-            <div class="pedestal-disc" style="--gate-glow:#10b981;"></div>
-          </div>
-          <div class="gate-caption-tray">
-            <div>
-              <div class="gate-title" style="color:#10b981;">Safe Rock Gate</div>
-              <div class="gate-cue">Leads to the Golden Gate!</div>
-            </div>
-            <button type="button" class="btn-3d btn-emerald" style="width:100%; padding:10px; font-size:0.9rem;">
-              <span>🚪 Open Rock Gate</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Door: Cloud Gate -->
-      <div class="gate-card-wrapper right-gate" id="gateCard3_right" onclick="chooseDoor('right', 3)" style="--gate-glow:#38bdf8;">
-        <div class="gate-clue-badge" style="--gate-glow:#38bdf8;">
-          <span class="badge-icon">☁️</span>
-          <span class="badge-text" style="color:#38bdf8;">CLOUDS</span>
-        </div>
-        <div class="gate-door-leaf">
-          <div class="gate-media-viewport">
-            <img src="assets/gate_ice_giant.webp" alt="Cloud Gate" class="gate-render-img">
-            <div class="pedestal-disc" style="--gate-glow:#38bdf8;"></div>
-          </div>
-          <div class="gate-caption-tray">
-            <div>
-              <div class="gate-title" style="color:#38bdf8;">Cloud Gate</div>
-              <div class="gate-cue">Leads to the Golden Gate!</div>
-            </div>
-            <button type="button" class="btn-3d btn-cyan" style="width:100%; padding:10px; font-size:0.9rem;">
-              <span>🚪 Open Cloud Gate</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   // =========================================================================
-  // CHAMBER 4: THE GOLDEN GATE (THE FINAL LOCK)
+  // SCENE 4: THE GRAND SKY GATE
   // =========================================================================
-  function setupChamber4() {
-    playerSession.inventory.key = true;
-    updateHUD();
-    root.TwinGatesAudio.speak("The giant golden door is locked! Find the big gold key!");
+  function setupScene4() {
+    root.TwinGatesAudio.speak("The giant golden gate is locked! Put the Golden Key into the lock!");
   }
 
   function handleUnlockKey() {
-    if (playerSession.chamber4Solved) return;
-    playerSession.chamber4Solved = true;
+    if (playerSession.scene4Unlocked) return;
+    playerSession.scene4Unlocked = true;
     addXP(30);
 
     root.TwinGatesAudio.playSnap();
     setTimeout(() => root.TwinGatesAudio.playDoorCreak(), 200);
     setTimeout(() => root.TwinGatesAudio.playXP(), 400);
 
-    const sealBox = document.getElementById('keyholeSeal');
-    if (sealBox) {
-      sealBox.innerHTML = '<span class="rubber-stamp-seal">🗝️ Gate Unlocked!</span>';
-    }
+    const sealBox = document.getElementById('scene4Seal');
+    if (sealBox) sealBox.innerHTML = '<span class="rubber-stamp-seal">🗝️ Gate Unlocked!</span>';
 
-    const btn = document.getElementById('btnUnlockKey');
+    const btn = document.getElementById('btnUnlockSkyGate');
     if (btn) {
       btn.disabled = true;
       btn.style.opacity = '0.6';
       btn.innerHTML = '<span>✓ Golden Gate Unlocked!</span>';
     }
 
-    root.TwinGatesAudio.speak("The golden gate is unlocked! Welcome to the treasure vault!");
+    root.TwinGatesAudio.speak("The Golden Gate is unlocked! Step out onto the airship launchpad!");
 
     setTimeout(() => {
-      transitionToChamber(5);
+      transitionToScene(5);
     }, 900);
   }
 
   // =========================================================================
-  // CHAMBER 5: TREASURE VAULT & LIVE TELEPROMPTER
+  // SCENE 5: AIRSHIP ESCAPE & TELEPROMPTER STUDIO
   // =========================================================================
-  function setupChamber5() {
+  function setupScene5() {
     root.TwinGatesAudio.speak(
-      "You found the magic treasure chest! Speak into the microphone to claim your badge!"
+      "We reached the Golden Airship! Speak into the microphone to launch!"
     );
   }
 
@@ -575,9 +412,9 @@
     playerSession.isKaraokeRunning = true;
 
     const lines = [
-      { id: 'teleLine1', text: "We opened the giant magic door!" },
-      { id: 'teleLine2', text: "We saw the friendly creature in the cave." },
-      { id: 'teleLine3', text: "We unlocked the golden gate and found the treasure!" }
+      { id: 'teleLine1', text: "We entered the Sky Castle and lit the dark room!" },
+      { id: 'teleLine2', text: "We fed the friendly beast and crossed the magic bridge." },
+      { id: 'teleLine3', text: "We unlocked the Golden Gate and escaped on the airship!" }
     ];
 
     let lineIndex = 0;
@@ -628,10 +465,10 @@
     playNextLine();
   }
 
-  function finishCitadelQuest() {
+  function finishSkyCastleQuest() {
     addXP(30); // 120 + 30 = 150 Total XP
     root.TwinGatesAudio.playVictoryFanfare();
-    ConfettiEngine.burst(130);
+    ConfettiEngine.burst(140);
 
     setTimeout(() => {
       const modal = document.getElementById('completionModal');
@@ -644,17 +481,16 @@
     if (modal) modal.classList.remove('is-open');
   }
 
-  function replayChamberNarration(chamberNum) {
+  function replaySceneNarration(sceneNum) {
     if (!root.TwinGatesAudio) return;
-    if (chamberNum === 1) {
-      root.TwinGatesAudio.speak("Look! Two giant magic doors! Is it cold ice or hot fire?");
-    } else if (chamberNum === 2) {
-      const isIce = playerSession.chosenBranch === 'ice';
-      root.TwinGatesAudio.speak(isIce ? "A fluffy Yeti is here! Give the yeti a sweet berry." : "A cute Baby Dragon is here! Give the dragon a sweet berry.");
-    } else if (chamberNum === 3) {
-      root.TwinGatesAudio.speak("The bridge is broken! Tap the rock tiles in order: 1, 2, 3!");
-    } else if (chamberNum === 4) {
-      root.TwinGatesAudio.speak("The giant golden door is locked! Find the big gold key!");
+    if (sceneNum === 1) {
+      root.TwinGatesAudio.speak("The Sky Castle is shaking! It is too dark! Use the torch to light the room!");
+    } else if (sceneNum === 2) {
+      root.TwinGatesAudio.speak("The beast is hungry! Give the beast warm bread!");
+    } else if (sceneNum === 3) {
+      root.TwinGatesAudio.speak("The bridge is broken! Step on Blue, then Yellow, then Green!");
+    } else if (sceneNum === 4) {
+      root.TwinGatesAudio.speak("The giant golden gate is locked! Put the Golden Key into the lock!");
     }
   }
 
@@ -669,17 +505,17 @@
   window.addEventListener('DOMContentLoaded', initApp);
 
   // Expose global controller API
-  root.playEntranceClue = playEntranceClue;
-  root.selectTool = selectTool;
-  root.chooseDoor = chooseDoor;
-  root.handleGiveBerry = handleGiveBerry;
-  root.handleRockStep = handleRockStep;
+  root.handleLightTorch = handleLightTorch;
+  root.handleFeedBeast = handleFeedBeast;
+  root.handleStoneStep = handleStoneStep;
   root.handleUnlockKey = handleUnlockKey;
+  root.chooseDoor = chooseDoor;
+  root.jumpToScene = jumpToScene;
   root.startFinalKaraokeBroadcast = startFinalKaraokeBroadcast;
-  root.finishCitadelQuest = finishCitadelQuest;
+  root.finishSkyCastleQuest = finishSkyCastleQuest;
   root.closeCompletionModal = closeCompletionModal;
-  root.replayChamberNarration = replayChamberNarration;
+  root.replaySceneNarration = replaySceneNarration;
   root.toggleMuteAudio = toggleMuteAudio;
-  root.twinGatesSession = playerSession;
+  root.playerSession = playerSession;
 
 })(typeof window !== 'undefined' ? window : global);

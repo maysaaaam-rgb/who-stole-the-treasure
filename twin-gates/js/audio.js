@@ -1,7 +1,7 @@
 /**
- * TWIN GATES: THE MAGIC DOOR ADVENTURE (A1 MASTER ARC)
- * Studio Harmonic Web Audio API Synthesizer & Calibrated Speech Narration
- * Zero external MP3 dependencies • Pure procedural dual-oscillator ADSR audio
+ * TWIN GATES: ESCAPE THE SKY CASTLE
+ * Studio Harmonic Web Audio API Synthesizer & Speech Engine
+ * Zero external MP3 dependencies • Polyphonic procedural audio
  */
 
 (function(root) {
@@ -45,7 +45,75 @@
       return this.isMuted;
     }
 
-    // 1. Heavy Wooden/Stone Door Friction Sweep (160 Hz -> 80 Hz)
+    // 1. Torch Light: Soft whoosh sweep with crackling fire noise
+    playTorchLight() {
+      if (this.isMuted) return;
+      this.initContext();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+
+      // Soft whoosh
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(320, now + 0.3);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.6);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.3, now + 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.7);
+
+      // Crackling fire pops
+      [0.08, 0.18, 0.28, 0.4, 0.55].forEach(delay => {
+        const popOsc = this.ctx.createOscillator();
+        const popGain = this.ctx.createGain();
+        popOsc.type = 'triangle';
+        popOsc.frequency.setValueAtTime(1100 + Math.random() * 400, now + delay);
+        popOsc.frequency.exponentialRampToValueAtTime(200, now + delay + 0.04);
+
+        popGain.gain.setValueAtTime(0.2, now + delay);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.05);
+
+        popOsc.connect(popGain);
+        popGain.connect(this.ctx.destination);
+        popOsc.start(now + delay);
+        popOsc.stop(now + delay + 0.06);
+      });
+    }
+
+    // 2. Beast Snore: Low modulated sine vibration (80 Hz -> 60 Hz)
+    playBeastSnore() {
+      if (this.isMuted) return;
+      this.initContext();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(80, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.8);
+      osc.frequency.exponentialRampToValueAtTime(75, now + 1.4);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.35);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.45);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 1.5);
+    }
+
+    // 3. Heavy Stone/Wood Friction Door Creak (160 Hz -> 80 Hz)
     playDoorCreak() {
       if (this.isMuted) return;
       this.initContext();
@@ -61,8 +129,8 @@
       osc.frequency.exponentialRampToValueAtTime(80, now + 0.65);
 
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(500, now);
-      filter.frequency.exponentialRampToValueAtTime(200, now + 0.65);
+      filter.frequency.setValueAtTime(480, now);
+      filter.frequency.exponentialRampToValueAtTime(180, now + 0.65);
 
       gain.gain.setValueAtTime(0.01, now);
       gain.gain.linearRampToValueAtTime(0.38, now + 0.12);
@@ -76,72 +144,7 @@
       osc.stop(now + 0.72);
     }
 
-    // 2. Ice Wind Breeze (Modulated soft white-noise bandpass sweep)
-    playIceWind() {
-      if (this.isMuted) return;
-      this.initContext();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      const duration = 1.3;
-      const bufferSize = Math.floor(this.ctx.sampleRate * duration);
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-
-      const noise = this.ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(550, now);
-      filter.frequency.exponentialRampToValueAtTime(1250, now + 0.6);
-      filter.frequency.exponentialRampToValueAtTime(700, now + duration);
-      filter.Q.setValueAtTime(3.2, now);
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.01, now);
-      gain.gain.linearRampToValueAtTime(0.32, now + 0.35);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      noise.start(now);
-      noise.stop(now + duration);
-    }
-
-    // 3. Fire Crackle (Rapid bubbling & popping pulses)
-    playFireCrack() {
-      if (this.isMuted) return;
-      this.initContext();
-      if (!this.ctx) return;
-
-      const now = this.ctx.currentTime;
-      const pops = [0, 0.07, 0.15, 0.24, 0.35, 0.48];
-
-      pops.forEach(delay => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(1100 + Math.random() * 500, now + delay);
-        osc.frequency.exponentialRampToValueAtTime(180, now + delay + 0.04);
-
-        gain.gain.setValueAtTime(0.28, now + delay);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.05);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now + delay);
-        osc.stop(now + delay + 0.06);
-      });
-    }
-
-    // 4. Filtered Mechanical Snap / Key Unlock (1200 Hz -> 280 Hz)
+    // 4. Mechanical Snap / Key Unlock (1200 Hz -> 280 Hz)
     playSnap() {
       if (this.isMuted) return;
       this.initContext();
@@ -165,7 +168,7 @@
       osc.stop(now + 0.11);
     }
 
-    // 5. Ascending Dual-Tone Chord Chime (B5 987.77 Hz -> E6 1318.51 Hz)
+    // 5. Dual-Tone XP Chime (B5 987.77 Hz -> E6 1318.51 Hz)
     playXP() {
       if (this.isMuted) return;
       this.initContext();
@@ -191,7 +194,7 @@
       });
     }
 
-    // 6. Warm Descending Chime for Soft-Fail (246.94 Hz -> 220 Hz)
+    // 6. Warm Descending Sine Soft-Fail (246.94 Hz -> 220 Hz)
     playSoftFail() {
       if (this.isMuted) return;
       this.initContext();
@@ -217,7 +220,7 @@
       });
     }
 
-    // 7. Rising 4-Note Major Arpeggio with Octave Sparkle
+    // 7. Rising 4-Note Major Victory Fanfare
     playVictoryFanfare() {
       if (this.isMuted) return;
       this.initContext();
