@@ -1,7 +1,7 @@
 /**
- * NINJA TRIALS: HARMONIC AUDIO & CALIBRATED SPEECH ENGINE
+ * NINJA TRIALS: STUDIO HARMONIC AUDIO & CALIBRATED SPEECH ENGINE
  * Zero-dependency Web Audio API synthesizer + calibrated Web Speech TTS
- * Dual-oscillator ADSR musical curves • Referee whistle synthesizer • Natural TTS voices
+ * Dual-oscillator ADSR musical curves • Temple Gong • Referee Whistle • Sound Mimic FX
  */
 
 (function(root) {
@@ -164,7 +164,6 @@
       const now = this.ctx.currentTime;
       const duration = 0.55;
 
-      // Two high resonant frequencies typical of sports pea whistles (2450 Hz & 2880 Hz)
       const f1 = 2450;
       const f2 = 2880;
 
@@ -206,9 +205,48 @@
     }
 
     /**
-     * playTick(): Crisp digital stopwatch tick transient
+     * playGong(): Deep resonant 110 Hz acoustic strike with long exponential decay
      */
-    playTick() {
+    playGong() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const duration = 3.2;
+
+      // Deep fundamental + partial overtones (110Hz, 164Hz, 275Hz, 440Hz)
+      const partials = [
+        { f: 110.0, gain: 0.35 },
+        { f: 164.8, gain: 0.22 },
+        { f: 275.0, gain: 0.15 },
+        { f: 440.0, gain: 0.08 }
+      ];
+
+      partials.forEach(p => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(p.f, now);
+        osc.frequency.exponentialRampToValueAtTime(p.f * 0.98, now + duration);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(p.gain, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      });
+    }
+
+    /**
+     * playTimerTick(): Crisp wooden transient clock ticks
+     */
+    playTimerTick() {
       if (this.isMuted) return;
       this.init();
       if (!this.ctx) return;
@@ -255,6 +293,119 @@
 
       osc.start(now);
       osc.stop(now + 0.2);
+    }
+
+    /**
+     * playTigerRoar(): Low-frequency resonant roar synthesis
+     */
+    playTigerRoar() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const duration = 1.4;
+
+      const osc = this.ctx.createOscillator();
+      const lfo = this.ctx.createOscillator();
+      const lfoGain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + duration);
+
+      // Low frequency rumble modulation
+      lfo.frequency.setValueAtTime(14, now);
+      lfoGain.gain.setValueAtTime(30, now);
+      lfo.connect(osc.frequency);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, now);
+      filter.frequency.linearRampToValueAtTime(300, now + duration);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      lfo.start(now);
+      osc.start(now);
+
+      lfo.stop(now + duration);
+      osc.stop(now + duration);
+    }
+
+    /**
+     * playViperHiss(): Continuous narrow high-frequency /s/ exhale
+     */
+    playViperHiss() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const duration = 1.8;
+
+      // Procedural white noise burst through highpass filter
+      const bufferSize = this.ctx.sampleRate * duration;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(4500, now);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.2, now + 0.15);
+      gain.gain.setValueAtTime(0.2, now + duration - 0.4);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      noise.start(now);
+      noise.stop(now + duration);
+    }
+
+    /**
+     * playKiai(): Sharp explosive martial-arts shout snap ("EI-YA!")
+     */
+    playKiai() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const duration = 0.35;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(220, now + duration);
+
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + duration);
     }
 
     /**
