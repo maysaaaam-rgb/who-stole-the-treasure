@@ -1315,13 +1315,13 @@ const GAMES_REGISTRY = [
       "can-you-do-it",
       "ninja-challenges"
     ],
-    "title": "🥋 Ninja Trials: Can You Do It? (Hard Mode)",
-    "description": "Kinesthetic action & motor coordination arcade module. Scan 5 martial disciplines, execute active physical challenges on a digital stopwatch with whistle freeze cues, and deliver a live 3-sentence oral graduation debrief!",
+    "title": "🥋 Ninja Trials: Body, Brain & Sonic Challenges (Hard Mode)",
+    "description": "7-Stage kinesthetic action, decibel stealth & sonic mimicry arcade module. Scan 7 disciplines, execute active physical challenges on a digital stopwatch with whistle freeze cues, master multi-action memory chains, test vocal decibels & waveforms on an oscilloscope, race 15s tongue twister sprints, and deliver a live oral teleprompter showcase!",
     "category": "Language & Quests",
     "categoryGroup": "Communication & Kinesthetic Action",
     "cefrLevel": "A1–A1+",
     "level": "A1+",
-    "ageGroup": "7–10",
+    "ageGroup": "7–11",
     "grade": "Grade 3–4",
     "grades": [
       "Grade 2",
@@ -1329,21 +1329,25 @@ const GAMES_REGISTRY = [
       "Grade 4",
       "Grade 5"
     ],
-    "xp": 150,
-    "duration": 45,
-    "durationText": "45 min",
-    "estimatedMinutes": 45,
+    "xp": 200,
+    "duration": 70,
+    "durationText": "70 min (2 Lessons)",
+    "estimatedMinutes": 70,
     "type": "game",
     "topics": [
       "Kinesthetic Action",
       "Ability Formulas",
-      "Motor Memory & Coordination"
+      "Motor Memory & Coordination",
+      "Sonic Mimicry & Decibel Control",
+      "Phonics Tongue Twister Sprints"
     ],
     "learningObjectives": [
-      "Ask and answer questions about physical ability using 'Can you [Verb]?' -> 'Yes, I can! / No, I can't.'",
+      "Ask and answer questions about physical and sonic ability using 'Can you [Verb]?' -> 'Yes, I can! / No, I can't.'",
       "Express declarative physical confidence with 'I can [Verb] and [Verb]!'",
       "Structure multi-step action sequences using 'First..., then..., finally...!'",
-      "Demonstrate safe classroom proprioception, balance holds, and whistle freeze stops."
+      "Demonstrate safe classroom proprioception, balance holds, and whistle freeze stops.",
+      "Explore vocal dynamics through decibel whisper control (<= 30 dB), battle cry surges (100 dB), and live oscilloscope waveforms.",
+      "Articulate phonics speed sprints (/s/, /f/, /k/) under a 15-second countdown timer."
     ],
     "teacherInstructions": "Clear space around student desks. Use the digital stopwatch timer for balance holds and sprints, practice instant statue freezes with the referee whistle, and debrief on the teleprompter stage.",
     "route": "ninja-trials/index.html",

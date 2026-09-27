@@ -1,6 +1,6 @@
 /**
- * NINJA TRIALS: CAN YOU DO IT? (HARD MODE)
- * Commercial EdTech Arcade Styling & Cyber-Glassmorphism
+ * NINJA TRIALS: BODY, BRAIN & SONIC CHALLENGES (HARD MODE)
+ * 7-Stage High-Craft Arcade Styling & Cyber-Glassmorphism
  * Zero external runtime dependencies • Duolingo/Blooket tactile mechanics
  */
 
@@ -34,6 +34,10 @@
   --accent-purple: #a855f7;
   --accent-purple-dark: #7e22ce;
   --accent-purple-glow: rgba(168, 85, 247, 0.45);
+
+  --accent-pink: #ec4899;
+  --accent-pink-dark: #be185d;
+  --accent-pink-glow: rgba(236, 72, 153, 0.45);
 
   /* Physics Springs */
   --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -192,7 +196,7 @@ body {
   box-shadow: none;
 }
 
-/* Crimson Soft-Fail / Pause Button */
+/* Crimson Soft-Fail / Reset Button */
 .btn-game-crimson,
 .btn-3d.btn-crimson {
   background: #dc2626;
@@ -215,6 +219,32 @@ body {
   box-shadow: none;
 }
 
+/* Purple & Pink Buttons */
+.btn-game-purple,
+.btn-3d.btn-purple {
+  background: var(--accent-purple);
+  border-bottom: 5px solid var(--accent-purple-dark);
+  color: #ffffff;
+  box-shadow: 0 6px 16px var(--accent-purple-glow);
+  padding: 12px 24px;
+  font-size: 1.05rem;
+}
+
+.btn-game-purple:hover,
+.btn-3d.btn-purple:hover {
+  background: #7e22ce;
+}
+
+.btn-game-pink,
+.btn-3d.btn-pink {
+  background: var(--accent-pink);
+  border-bottom: 5px solid var(--accent-pink-dark);
+  color: #ffffff;
+  box-shadow: 0 6px 16px var(--accent-pink-glow);
+  padding: 12px 24px;
+  font-size: 1.05rem;
+}
+
 /* =========================================================================
    TOP ARCADE TACTICAL HUD (STICKY, NEVER OVERLAPS)
    ========================================================================= */
@@ -225,23 +255,23 @@ body {
   background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(16px);
   border-bottom: 3px solid #334155;
-  padding: 12px 24px;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
 .hud-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .hud-logo-icon {
-  font-size: 2.2rem;
+  font-size: 2rem;
   filter: drop-shadow(0 0 14px #f59e0b);
   animation: floatMascot 3s ease-in-out infinite;
 }
@@ -252,33 +282,33 @@ body {
 }
 
 .hud-title-wrap h1 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 900;
   letter-spacing: -0.01em;
   color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .hud-tag {
   background: #b45309;
   color: #ffffff;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 900;
-  padding: 3px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border: 1px solid #f59e0b;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
 }
 
-/* 3D Phase Stepper Tabs */
+/* 7-Stage Phase Stepper Tabs */
 .phase-stepper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .step-tab {
@@ -286,15 +316,15 @@ body {
   border: 2px solid #334155;
   border-bottom: 4px solid #0f172a;
   color: #94a3b8;
-  padding: 8px 16px;
-  border-radius: 14px;
-  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.82rem;
   font-weight: 900;
   cursor: pointer;
   transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   user-select: none;
 }
 
@@ -304,7 +334,7 @@ body {
 }
 
 .step-tab:active {
-  transform: translateY(3px);
+  transform: translateY(2px);
   border-bottom-width: 1px;
 }
 
@@ -322,14 +352,14 @@ body {
 }
 
 .step-badge {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 900;
 }
 
@@ -337,7 +367,7 @@ body {
 .hud-stats {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -346,14 +376,13 @@ body {
   border: 2px solid #f97316;
   border-bottom: 3px solid #991b1b;
   color: #ffffff;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 900;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+  gap: 4px;
 }
 
 .xp-pill {
@@ -361,13 +390,13 @@ body {
   border: 2px solid #fde047;
   border-bottom: 4px solid #b45309;
   color: #0f172a;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 900;
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45);
   transition: transform 0.15s ease;
 }
@@ -384,16 +413,16 @@ body {
 .energy-meter-wrap {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #1e293b;
   border: 2px solid #334155;
-  padding: 6px 12px;
-  border-radius: 14px;
+  padding: 5px 10px;
+  border-radius: 12px;
 }
 
 .meter-track {
-  width: 85px;
-  height: 12px;
+  width: 75px;
+  height: 10px;
   background: #0f172a;
   border-radius: 999px;
   overflow: hidden;
@@ -413,10 +442,10 @@ body {
   background: #1e293b;
   border: 2px solid #334155;
   border-bottom: 3px solid #0f172a;
-  border-radius: 12px;
+  border-radius: 10px;
   color: #cbd5e1;
-  font-size: 1rem;
-  padding: 6px 10px;
+  font-size: 0.9rem;
+  padding: 5px 8px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -425,11 +454,6 @@ body {
   color: #fff;
   border-color: #f59e0b;
   transform: translateY(-2px);
-}
-
-.hud-btn-icon:active {
-  transform: translateY(2px);
-  border-bottom-width: 1px;
 }
 
 /* =========================================================================
@@ -504,7 +528,7 @@ body {
 .main-stage-viewport {
   max-width: 1240px;
   width: 94%;
-  margin: 20px auto 40px auto;
+  margin: 16px auto 40px auto;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -515,7 +539,7 @@ body {
 .stage-view {
   display: none;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   animation: fadeInStage 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -533,7 +557,7 @@ body {
   border: 3px solid #334155;
   border-bottom: 6px solid #1e293b;
   border-radius: 24px;
-  padding: 22px 28px;
+  padding: 20px 26px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -543,7 +567,7 @@ body {
 }
 
 .stage-hero-left h2 {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #ffffff;
   display: flex;
@@ -552,13 +576,12 @@ body {
 }
 
 .stage-hero-left p {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #cbd5e1;
-  margin-top: 6px;
+  margin-top: 4px;
   line-height: 1.45;
 }
 
-/* Safety banner alert */
 .safety-pill-banner {
   background: rgba(239, 68, 68, 0.16);
   border: 1.5px solid #ef4444;
@@ -572,7 +595,7 @@ body {
 }
 
 /* =========================================================================
-   PHASE 1: HOLOGRAPHIC DOJO SCANNER (DISCOVERY & 3D FLIP)
+   STAGE 1: HOLOGRAPHIC DOJO SCANNER (3D FLIPPING TRADING CARDS)
    ========================================================================= */
 .scanner-grid {
   display: grid;
@@ -675,12 +698,12 @@ body {
 }
 
 /* =========================================================================
-   PHASE 2: KINETIC REACTION ARENA (STOPWATCH & TRIAL EXECUTION)
+   STAGE 2 & 3: KINETIC ARENA & BRAIN+BODY COMBOS
    ========================================================================= */
 .kinetic-arena-layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
+  grid-template-columns: 310px 1fr;
+  gap: 22px;
 }
 
 @media (max-width: 900px) {
@@ -694,10 +717,10 @@ body {
   border: 3px solid #334155;
   border-bottom: 6px solid #1e293b;
   border-radius: 24px;
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .category-rail-btn {
@@ -728,7 +751,6 @@ body {
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
 }
 
-/* Center Kinetic Stage */
 .kinetic-main-stage {
   background: linear-gradient(135deg, #1e293b, #0f172a);
   border: 3.5px solid #f59e0b;
@@ -746,7 +768,7 @@ body {
 
 .trial-hero-stage {
   width: 100%;
-  height: 200px;
+  height: 190px;
   position: relative;
   display: flex;
   align-items: center;
@@ -755,7 +777,6 @@ body {
   border-bottom: 2px solid rgba(245, 158, 11, 0.25);
 }
 
-/* Digital Stopwatch Display */
 .stopwatch-container {
   display: flex;
   align-items: center;
@@ -816,7 +837,7 @@ body {
   margin-bottom: 18px;
 }
 
-/* Animated Rubber Stamp Slam (-12° tilt) */
+/* Rubber Stamp Slam (-12° tilt) */
 @keyframes stampSlam {
   0% {
     opacity: 0;
@@ -857,7 +878,6 @@ body {
   white-space: nowrap;
 }
 
-/* Whistle Freeze Alert Overlay */
 .whistle-freeze-alert {
   position: absolute;
   top: 20px;
@@ -878,7 +898,6 @@ body {
   to { transform: scale(1.05); }
 }
 
-/* Soft-Fail Elastic Wobble Animation */
 @keyframes elasticWobble {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-8px) rotate(-1.5deg); }
@@ -890,7 +909,6 @@ body {
   border-color: #ef4444 !important;
 }
 
-/* Floating Comic XP Burst */
 .floating-xp-burst {
   position: absolute;
   top: 25%;
@@ -916,7 +934,190 @@ body {
 }
 
 /* =========================================================================
-   PHASE 3: GRANDMASTER TELEPROMPTER STUDIO (ORAL SHOWCASE & PODIUM)
+   STAGE 4: SOUND MIMIC ECHO CHAMBER (OSCILLOSCOPE WAVEFORM)
+   ========================================================================= */
+.sonic-echo-arena {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 3.5px solid #06b6d4;
+  border-bottom: 8px solid #0891b2;
+  border-radius: 28px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+}
+
+.oscilloscope-box {
+  width: 100%;
+  max-width: 760px;
+  height: 140px;
+  background: #060911;
+  border: 3px solid #0891b2;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(6, 182, 212, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oscilloscope-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.sonic-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.sonic-card {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-bottom: 5px solid #1e293b;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.sonic-card:hover {
+  border-color: #06b6d4;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+}
+
+.sonic-card.is-active {
+  border-color: #06b6d4;
+  border-bottom-color: #0891b2;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.15) 0%, #0f172a 100%);
+}
+
+/* =========================================================================
+   STAGE 5: DECIBEL STEALTH RADAR (WHISPER VS BATTLE CRY)
+   ========================================================================= */
+.stealth-radar-arena {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 3.5px solid #ec4899;
+  border-bottom: 8px solid #be185d;
+  border-radius: 28px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.decibel-gauge-wrap {
+  width: 100%;
+  max-width: 680px;
+  background: #060911;
+  border: 3px solid #be185d;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: inset 0 0 30px rgba(236, 72, 153, 0.3);
+}
+
+.decibel-readout-box {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 3.6rem;
+  font-weight: 900;
+  color: #ec4899;
+  text-shadow: 0 0 25px #ec4899;
+}
+
+.decibel-scale-bar {
+  width: 100%;
+  height: 28px;
+  background: #0f172a;
+  border-radius: 999px;
+  border: 2px solid #334155;
+  overflow: hidden;
+  position: relative;
+}
+
+.decibel-fill-bar {
+  height: 100%;
+  width: 25%;
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 60%, #ef4444 100%);
+  border-radius: 999px;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+}
+
+.decibel-zones-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+/* =========================================================================
+   STAGE 6: RAPID TONGUE TWISTER SPEED RUN
+   ========================================================================= */
+.twister-arena-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 3.5px solid #a855f7;
+  border-bottom: 8px solid #7e22ce;
+  border-radius: 28px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.twister-big-phrase {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.45;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2.5px solid #a855f7;
+  border-radius: 20px;
+  padding: 22px 28px;
+  max-width: 850px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.twister-progress-track {
+  width: 100%;
+  max-width: 600px;
+  height: 14px;
+  background: #0f172a;
+  border-radius: 999px;
+  border: 2px solid #334155;
+  overflow: hidden;
+}
+
+.twister-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #a855f7, #ec4899);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
+/* =========================================================================
+   STAGE 7: GRANDMASTER TELEPROMPTER STUDIO
    ========================================================================= */
 .teleprompter-studio-container {
   display: grid;
@@ -935,10 +1136,10 @@ body {
   border: 3px solid #334155;
   border-bottom: 6px solid #1e293b;
   border-radius: 24px;
-  padding: 22px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .teleprompter-choice-card {
@@ -949,7 +1150,7 @@ body {
   padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -966,7 +1167,6 @@ body {
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
 }
 
-/* Broadcast Monitor Frame */
 .teleprompter-right-screen {
   background: #060911;
   border: 3.5px solid #d97706;

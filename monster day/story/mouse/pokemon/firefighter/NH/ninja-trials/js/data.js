@@ -1,7 +1,7 @@
 /**
- * NINJA TRIALS: CAN YOU DO IT? (HARD MODE)
- * Comprehensive Curriculum & Challenge Matrix
- * CEFR A1–A1+ | Grade 3–4 Physical CLIL (Ages 7–10)
+ * NINJA TRIALS: BODY, BRAIN & SONIC CHALLENGES (HARD MODE)
+ * Comprehensive 7-Stage Curriculum & Challenge Bank
+ * CEFR A1–A1+ | Grade 3–4 Physical & Sonic CLIL (Ages 7–11) • 70 min (2-Lesson)
  */
 
 (function(root) {
@@ -10,16 +10,27 @@
   const NINJA_TRIALS_DATA = {
     meta: {
       id: "ninja-trials",
-      title: "🥋 Ninja Trials: Can You Do It? (Hard Mode)",
-      subtitle: "Kinesthetic Action, Ability Formulas & Safe Classroom Motor Challenges",
+      title: "🥋 Ninja Trials: Body, Brain & Sonic Challenges (Hard Mode)",
+      subtitle: "Kinesthetic Action, Decibel Stealth, Sound Mimicry & Tongue Twister Sprints",
       category: "Language & Quests",
-      track: "Track 3: Communication & Kinesthetic Action",
+      track: "Track 3: Language & Kinesthetic Quests",
       grade: "Grade 3–4",
       level: "CEFR A1–A1+",
-      duration: "45–60 mins",
-      totalXP: 150,
-      safetyDirective: "Strict classroom ergonomics: no backflips, handstands, splits, or cartwheels. Focus on balance, proprioception, speed, and motor memory."
+      duration: "70 min (2 Lessons)",
+      totalStages: 7,
+      totalXP: 200,
+      safetyDirective: "Strict classroom ergonomics: no backflips, handstands, splits, or cartwheels. Focus on balance, proprioception, speed, volume control, and motor memory."
     },
+
+    stages: [
+      { id: 1, name: "Dojo Scanner", title: "Stage 1: Holographic Dojo Scanner", icon: "🔍", badge: "Explorer Badge", xp: 20 },
+      { id: 2, name: "Kinetic Arena", title: "Stage 2: Kinetic Reaction Arena", icon: "⏱️", badge: "Reaction Badge", xp: 35 },
+      { id: 3, name: "Brain + Body", title: "Stage 3: Brain + Body Combinations", icon: "🧠🔥", badge: "Synergy Badge", xp: 35 },
+      { id: 4, name: "Sound Mimic", title: "Stage 4: Sound Mimic Echo Chamber", icon: "🔊", badge: "Echo Badge", xp: 30 },
+      { id: 5, name: "Stealth Radar", title: "Stage 5: Decibel Stealth Radar", icon: "🤫", badge: "Stealth Badge", xp: 25 },
+      { id: 6, name: "Tongue Twisters", title: "Stage 6: Rapid Tongue Twister Speed Run", icon: "⚡", badge: "Speed Badge", xp: 25 },
+      { id: 7, name: "Grandmaster", title: "Stage 7: Grandmaster Teleprompter Studio", icon: "🎙️", badge: "Grandmaster Belt", xp: 30 }
+    ],
 
     categories: [
       {
@@ -33,7 +44,7 @@
         mascotName: "Kira the Acrobat",
         mascotRole: "Balance & Proprioception Master",
         mascotImg: "assets/characters/gymnastics_ninja.jpg",
-        description: "Master posture, unilateral balance, and controlled jumps with zero wobble.",
+        description: "Master posture, unilateral balance holds, and controlled landings with zero wobble.",
         sentenceFrame: "I can balance on one leg for 15 seconds and touch my toes with straight knees!"
       },
       {
@@ -53,7 +64,7 @@
       {
         id: "athletics",
         num: 3,
-        title: "Athletic Challenges",
+        title: "Athletic Power",
         icon: "🏃",
         belt: "Crimson Belt",
         accent: "#ef4444",
@@ -61,7 +72,7 @@
         mascotName: "Ren the Fire Sprinter",
         mascotRole: "Endurance & Speed Specialist",
         mascotImg: "assets/characters/athletic_ninja.jpg",
-        description: "Power through squats, high knees, and explosive jumping relays.",
+        description: "Power through squats, high knees, and explosive jumping circuits.",
         sentenceFrame: "I can do 10 squats and run in place for 20 seconds!"
       },
       {
@@ -83,7 +94,7 @@
         num: 5,
         title: "Brain + Body Combinations",
         icon: "🧠🔥",
-        belt: "Grandmaster Gold Belt",
+        belt: "Gold Belt",
         accent: "#f59e0b",
         accentGlow: "rgba(245, 158, 11, 0.45)",
         mascotName: "Sensei Tanuki",
@@ -91,12 +102,40 @@
         mascotImg: "assets/characters/sensei_ninja.jpg",
         description: "Super Hard dual-tasking: sequence multi-step motor actions with oral declarations.",
         sentenceFrame: "I can jump, clap twice, balance on one leg, and say: 'I can do it!'"
+      },
+      {
+        id: "sound_mimic",
+        num: 6,
+        title: "Sound Mimic Echo Chamber",
+        icon: "🔊",
+        belt: "Sonic Resonance Belt",
+        accent: "#06b6d4",
+        accentGlow: "rgba(6, 182, 212, 0.45)",
+        mascotName: "Master Kaze",
+        mascotRole: "Acoustic Resonance & Kiai Master",
+        mascotImg: "assets/characters/sensei_ninja.jpg",
+        description: "Explore vocal pitch, resonance, animal mimicry, and explosive kiai shouts.",
+        sentenceFrame: "I can make a loud tiger roar and a quiet viper hiss!"
+      },
+      {
+        id: "stealth_twisters",
+        num: 7,
+        title: "Decibel Stealth & Twisters",
+        icon: "🤫",
+        belt: "Grandmaster Dragon Belt",
+        accent: "#ec4899",
+        accentGlow: "rgba(236, 72, 153, 0.45)",
+        mascotName: "Shinobi Scribe",
+        mascotRole: "Stealth Volume & Phonics Grandmaster",
+        mascotImg: "assets/characters/martial_ninja.jpg",
+        description: "Master whisper thresholds (<=30 dB), battle cry surges (100 dB), and lightning phonics twisters.",
+        sentenceFrame: "Six swift shinobi spin and stop! I can speak fast and clear!"
       }
     ],
 
-    // Complete 33 Challenges Matrix
+    // Complete Challenge Matrix (38 drills across all 7 categories)
     challenges: [
-      // --- CATEGORY 1: GYMNASTICS & BALANCE ---
+      // ==================== CATEGORY 1: GYMNASTICS & BALANCE ====================
       {
         id: "gym-1",
         categoryId: "gymnastics",
@@ -242,7 +281,7 @@
         safetyTip: "Use only soft, safe classroom items."
       },
 
-      // --- CATEGORY 2: BALLET & DANCE ---
+      // ==================== CATEGORY 2: BALLET & DANCE ====================
       {
         id: "dance-1",
         categoryId: "dance",
@@ -352,7 +391,7 @@
         safetyTip: "Focus on rhythm and memory."
       },
 
-      // --- CATEGORY 3: ATHLETIC CHALLENGES ---
+      // ==================== CATEGORY 3: ATHLETIC POWER ====================
       {
         id: "ath-1",
         categoryId: "athletics",
@@ -462,7 +501,7 @@
         safetyTip: "Bend at your knees, not your lower back."
       },
 
-      // --- CATEGORY 4: NINJA & COORDINATION ---
+      // ==================== CATEGORY 4: NINJA & COORDINATION ====================
       {
         id: "nin-1",
         categoryId: "ninja",
@@ -554,7 +593,7 @@
         safetyTip: "Low, safe kicks only. Maintain 3 feet clearance."
       },
 
-      // --- CATEGORY 5: BRAIN + BODY COMBINATIONS (SUPER HARD) ---
+      // ==================== CATEGORY 5: BRAIN + BODY COMBINATIONS (SUPER HARD) ====================
       {
         id: "combo-1",
         categoryId: "brain_body",
@@ -698,54 +737,219 @@
         responseNo: "No, I can't yet!",
         xp: 25,
         safetyTip: "Solemn graduation focus and martial discipline."
+      },
+
+      // ==================== CATEGORY 6: 🔊 SOUND MIMIC ECHO CHAMBER ====================
+      {
+        id: "sound-1",
+        categoryId: "sound_mimic",
+        num: 34,
+        title: "Tiger Roar (Acoustic Resonance)",
+        question: "Can you make a resonant Tiger Roar with a claw strike?",
+        instruction: "Step forward into a cat stance. Drop your voice into chest resonance (low pitch), sweep claw hands across, and roar: 'ROAARRR!'",
+        type: "sound_mimic",
+        soundType: "roar",
+        manner: "low-frequency resonant roar + claw strike",
+        verbs: ["roar", "strike"],
+        speechPrompt: "Can you make a resonant tiger roar with a claw strike?",
+        responseYes: "Yes! ROAARRR! I can roar like a tiger!",
+        responseNo: "No, I can't yet!",
+        xp: 20,
+        safetyTip: "Use vocal cords gently with diaphragmatic breath."
+      },
+      {
+        id: "sound-2",
+        categoryId: "sound_mimic",
+        num: 35,
+        title: "Viper Hiss (Sustained /s/ Exhale)",
+        question: "Can you balance on one leg and sustain a Viper Hiss for 8 seconds?",
+        instruction: "Stand on one leg in a serpent pose. Inhale deeply and release a narrow, continuous, razor-sharp /s-s-s-s/ hiss for 8 seconds!",
+        type: "sound_mimic",
+        soundType: "hiss",
+        timerSeconds: 8,
+        manner: "continuous /s/ hiss on one leg",
+        verbs: ["hiss", "balance"],
+        speechPrompt: "Can you balance on one leg and hiss like a viper?",
+        responseYes: "Yes! Ssssss! I can hiss like a viper!",
+        responseNo: "No, I can't yet!",
+        xp: 20,
+        safetyTip: "Exhale smoothly without running out of air abruptly."
+      },
+      {
+        id: "sound-3",
+        categoryId: "sound_mimic",
+        num: 36,
+        title: "Lightning Kiai (Martial Snap Shout)",
+        question: "Can you throw a punch and shout a sharp 'EI-YA!' kiai?",
+        instruction: "Horse stance! Chamber your fist at your ribs. Punch straight out with explosive speed and snap an authentic ninja kiai: 'EI-YA!'",
+        type: "sound_mimic",
+        soundType: "kiai",
+        manner: "sharp punch + 'EI-YA!' kiai shout",
+        verbs: ["punch", "shout"],
+        speechPrompt: "Can you throw a punch and shout a sharp EI-YA kiai?",
+        responseYes: "EI-YA! Yes, I can shout the kiai!",
+        responseNo: "No, I can't yet!",
+        xp: 20,
+        safetyTip: "Short, sharp vocal burst from the belly."
+      },
+
+      // ==================== CATEGORY 7: 🤫 DECIBEL STEALTH & TONGUE TWISTERS ====================
+      {
+        id: "stealth-1",
+        categoryId: "stealth_twisters",
+        num: 37,
+        title: "Stealth Whisper Threshold (<= 30 dB)",
+        question: "Can you walk across the room whispering under 30 decibels?",
+        instruction: "Creep on tiptoes across the floor. Whisper softly: 'I can move silently, I am a shadow ninja.' Keep your volume needle in the Green Stealth Zone!",
+        type: "decibel_stealth",
+        decibelTarget: 30,
+        manner: "under 30 decibels on tiptoes",
+        verbs: ["whisper", "creep"],
+        speechPrompt: "Can you whisper under 30 decibels on tiptoes?",
+        responseYes: "Shhh... yes, I can move under thirty decibels!",
+        responseNo: "No, I was too loud!",
+        xp: 20,
+        safetyTip: "Watch where you step while looking down."
+      },
+      {
+        id: "stealth-2",
+        categoryId: "stealth_twisters",
+        num: 38,
+        title: "Ninja Battle Cry Surge (100 dB Surge)",
+        question: "Can you take a power stance and surge the meter with 'I CAN DO IT!'?",
+        instruction: "Drop into a wide warrior stance. On the count of 3, shout together with your class: 'I CAN DO IT!' to surge the decibel meter to 100%!",
+        type: "decibel_surge",
+        decibelTarget: 95,
+        manner: "full class power surge",
+        verbs: ["shout", "surge"],
+        speechPrompt: "Can you shout 'I CAN DO IT!' and surge the meter?",
+        responseYes: "I CAN DO IT! 100% Power!",
+        responseNo: "No, need more energy!",
+        xp: 20,
+        safetyTip: "Stand firmly with feet shoulder-width apart."
+      },
+      {
+        id: "twister-1",
+        categoryId: "stealth_twisters",
+        num: 39,
+        title: "Phonics Twister 1: Swift Shinobi (/s/ & /st/)",
+        question: "Can you say: 'Six swift shinobi spin and stop!' 3 times fast?",
+        instruction: "Speed tongue twister! Place your tongue behind your top teeth. Repeat 3 times without stumbling: 'Six swift shinobi spin and stop!'",
+        type: "tongue_twister",
+        phonicsSound: "/s/ and /st/",
+        phrase: "Six swift shinobi spin and stop!",
+        timerSeconds: 15,
+        manner: "3 times in 15 seconds",
+        verbs: ["spin", "stop"],
+        speechPrompt: "Can you say: 'Six swift shinobi spin and stop' three times fast?",
+        responseYes: "Six swift shinobi spin and stop! Yes, I can!",
+        responseNo: "No, my tongue got twisted!",
+        xp: 20,
+        safetyTip: "Clear articulation is better than rushed mumbling."
+      },
+      {
+        id: "twister-2",
+        categoryId: "stealth_twisters",
+        num: 40,
+        title: "Phonics Twister 2: Fierce Foxes (/f/ on 1 Foot)",
+        question: "Can you balance on 1 foot and say: 'Five fierce foxes freeze on frozen feet!'?",
+        instruction: "Stand on your left foot in a flamingo pose. Say clearly: 'Five fierce foxes freeze on frozen feet!' without wobbling down!",
+        type: "tongue_twister",
+        phonicsSound: "/f/ and /fr/",
+        phrase: "Five fierce foxes freeze on frozen feet!",
+        timerSeconds: 15,
+        manner: "on one foot",
+        verbs: ["freeze", "balance"],
+        speechPrompt: "Can you balance on one foot and say: 'Five fierce foxes freeze on frozen feet'?",
+        responseYes: "Five fierce foxes freeze on frozen feet! Yes, I can!",
+        responseNo: "No, I lost my balance!",
+        xp: 20,
+        safetyTip: "Focus eyes on a single dot in front of you."
+      },
+      {
+        id: "twister-3",
+        categoryId: "stealth_twisters",
+        num: 41,
+        title: "Phonics Twister 3: Quick Kick (/k/ & /p/ Snap)",
+        question: "Can you do: 'Quick kick, click clap, stick and snap!' with actions?",
+        instruction: "Perform with physical actions: Low kick ('Quick kick'), Click fingers ('click'), Clap hands ('clap'), Freeze statue ('stick'), Snap fingers ('and snap!')!",
+        type: "tongue_twister",
+        phonicsSound: "/k/ and /p/",
+        phrase: "Quick kick, click clap, stick and snap!",
+        timerSeconds: 15,
+        manner: "with matching physical actions",
+        verbs: ["kick", "clap", "snap"],
+        speechPrompt: "Can you do: 'Quick kick, click clap, stick and snap' with actions?",
+        responseYes: "Quick kick, click clap, stick and snap! Mastered!",
+        responseNo: "No, need another try!",
+        xp: 20,
+        safetyTip: "Gentle low kick only."
       }
     ],
 
-    // Oral Teleprompter Graduation Showcase Templates (3-Sentence Ceiling)
+    // Oral Teleprompter Graduation Showcase Templates (3-Sentence Production Ceiling)
     teleprompterTemplates: [
       {
         id: "tp-gymnastics",
-        title: "Gymnastics & Balance Graduation",
+        title: "Gymnastics & Balance Showcase",
         category: "gymnastics",
         mascotImg: "assets/characters/gymnastics_ninja.jpg",
-        line1: "Welcome to the Ninja Academy! Today I completed the kinetic balance trials.",
+        line1: "Welcome to Adventure Academy! Today I completed the kinetic balance trials.",
         line2: "I can balance on one leg for 15 seconds and touch my toes with straight knees!",
         line3: "Challenge complete — I can do it!"
       },
       {
         id: "tp-dance",
-        title: "Ballet & Dance Graduation",
+        title: "Ballet & Dance Showcase",
         category: "dance",
         mascotImg: "assets/characters/dance_ninja.jpg",
-        line1: "Welcome to the Ninja Academy! Today I completed the grace and rhythm trials.",
+        line1: "Welcome to Adventure Academy! Today I completed the grace and rhythm trials.",
         line2: "I can walk on my tiptoes and freeze in a graceful ballet pose!",
         line3: "Challenge complete — I can do it!"
       },
       {
         id: "tp-athletics",
-        title: "Athletics & Endurance Graduation",
+        title: "Athletic Power Showcase",
         category: "athletics",
         mascotImg: "assets/characters/athletic_ninja.jpg",
-        line1: "Welcome to the Ninja Academy! Today I completed the high-speed sprint trials.",
+        line1: "Welcome to Adventure Academy! Today I completed the high-speed sprint trials.",
         line2: "I can do 10 squats and run in place for 20 seconds!",
         line3: "Challenge complete — I can do it!"
       },
       {
         id: "tp-ninja",
-        title: "Shinobi Coordination Graduation",
+        title: "Shinobi Coordination Showcase",
         category: "ninja",
         mascotImg: "assets/characters/martial_ninja.jpg",
-        line1: "Welcome to the Ninja Academy! Today I completed the stealth ninja trials.",
+        line1: "Welcome to Adventure Academy! Today I completed the stealth ninja trials.",
         line2: "I can move silently like a shadow and freeze when I hear the whistle!",
         line3: "Challenge complete — I can do it!"
       },
       {
-        id: "tp-grandmaster",
-        title: "Grandmaster Brain + Body Graduation",
+        id: "tp-brain-body",
+        title: "Brain + Body Synergy Showcase",
         category: "brain_body",
         mascotImg: "assets/characters/sensei_ninja.jpg",
-        line1: "Welcome to the Ninja Academy! Today I mastered the ultimate mind and body trials.",
-        line2: "First I jumped, then I clapped, and finally I froze like a master!",
+        line1: "Welcome to Adventure Academy! Today I mastered the multi-action memory chains.",
+        line2: "First I jumped, then I clapped twice, and finally I froze like a master!",
+        line3: "Challenge complete — I can do it!"
+      },
+      {
+        id: "tp-sonic",
+        title: "Sound Mimic & Kiai Showcase",
+        category: "sound_mimic",
+        mascotImg: "assets/characters/sensei_ninja.jpg",
+        line1: "Welcome to Adventure Academy! Today I mastered the acoustic echo chamber.",
+        line2: "I can roar like a tiger, hiss like a viper, and shout a sharp kiai!",
+        line3: "Challenge complete — I can do it!"
+      },
+      {
+        id: "tp-stealth-twisters",
+        title: "Decibel Stealth & Speed Twister Showcase",
+        category: "stealth_twisters",
+        mascotImg: "assets/characters/martial_ninja.jpg",
+        line1: "Welcome to Adventure Academy! Today I mastered stealth volume and speed twisters.",
+        line2: "Six swift shinobi spin and stop — I can whisper quietly and shout with power!",
         line3: "Challenge complete — I can do it!"
       }
     ]
