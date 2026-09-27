@@ -200,25 +200,23 @@
 
     DATA.monsters.forEach((monster, idx) => {
       const cardWrap = document.createElement('div');
-      cardWrap.className = 'monster-card-wrap';
+      cardWrap.className = 'monster-card-wrap radar-card specimen-card';
       cardWrap.dataset.id = monster.id;
 
       const ultimateStage = monster.stages.find(s => s.stageId === 'ultimate') || monster.stages[0];
 
       cardWrap.innerHTML = `
-        <div class="monster-card-inner">
+        <div class="monster-card-inner card-inner">
           <!-- FRONT FACE (65/35 Full-Bleed Rule) -->
           <div class="card-face card-front" style="border-color: ${monster.borderColor};">
-            <div class="card-art-hero">
-              <div class="card-badge-top" style="background: ${monster.elementBg}; color: ${monster.accentColor};">
-                <span>${monster.elementBadge}</span>
-              </div>
-              <div class="card-xp-tag">+10 XP</div>
-              <!-- Transparent 3D Character Model -->
-              <div class="monster-sprite-container">
-                <img src="${ultimateStage.imageSrc}" alt="${monster.name}" class="monster-raster-img" onerror="this.onerror=null; this.src=this.src.replace('.webp','.png');" loading="eager" />
-              </div>
-              <div class="pedestal-disk" style="background: radial-gradient(ellipse at center, ${monster.accentColor}70 0%, ${monster.accentColor}20 45%, transparent 70%);"></div>
+            <div class="card-badge-top" style="background: ${monster.elementBg}; color: ${monster.accentColor};">
+              <span>${monster.elementBadge}</span>
+            </div>
+            <div class="card-xp-tag">+10 XP</div>
+            <!-- Transparent 3D Character Model -->
+            <div class="card-hero-stage card-art-hero">
+              <img src="${monster.imageSrc || ultimateStage.imageSrc}" alt="${monster.name}" class="hero-3d-sprite monster-raster-img" onerror="this.onerror=null; this.src=this.src.replace('.webp','.png');" loading="eager" />
+              <div class="isometric-pedestal pedestal-disk" style="background: radial-gradient(ellipse at center, ${monster.accentColor}70 0%, ${monster.accentColor}20 45%, transparent 70%);"></div>
             </div>
             <div class="card-caption-tray">
               <div class="card-monster-name">
