@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📄 Crafter's Field Manual &amp; Recipe Blueprint • Adventure Academy (A1–A1+)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>⛏️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.35;
+      padding: 16px;
+    }
+
+    /* Print Navigation Bar */
+    .print-nav-bar {
+      max-width: 800px;
+      margin: 0 auto 16px auto;
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover {
+      background: #d97706;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #fff;
+    }
+
+    /* A4 Sheet Container */
+    .a4-sheet {
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+      break-after: page;
+    }
+
+    /* Header */
+    .ws-header {
+      border-bottom: 2.5px solid #d97706;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ws-title-wrap h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #b45309;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ws-title-wrap p {
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .ws-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 0.78rem;
+    }
+
+    .meta-item strong {
+      color: #334155;
+    }
+
+    /* Section Styling */
+    .ws-section {
+      margin-bottom: 12px;
+    }
+
+    .ws-section-title {
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 4px solid #f59e0b;
+      padding-left: 8px;
+    }
+
+    /* Biome Table */
+    .biome-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin-bottom: 10px;
+    }
+
+    .biome-table th,
+    .biome-table td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 8px;
+      text-align: left;
+    }
+
+    .biome-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 900;
+    }
+
+    .biome-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .box-cell {
+      text-align: center;
+      width: 70px;
+    }
+
+    /* Blueprint Grids Row */
+    .blueprints-grid-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .blueprint-card {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f8fafc;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-3x3 {
+      display: grid;
+      grid-template-columns: repeat(3, 26px);
+      grid-template-rows: repeat(3, 26px);
+      gap: 2px;
+      background: #334155;
+      padding: 4px;
+      border-radius: 6px;
+    }
+
+    .mini-slot {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    /* Purpose Sentence Frame Box */
+    .combo-frame-box {
+      border: 2px dashed #d97706;
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #fffbeb;
+      margin-bottom: 10px;
+    }
+
+    .combo-sentence-line {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #78350f;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      line-height: 1.8;
+    }
+
+    .write-slot {
+      border-bottom: 1.5px solid #b45309;
+      display: inline-block;
+      min-width: 90px;
+      height: 18px;
+      margin: 0 4px;
+    }
+
+    /* Seal Row */
+    .seal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1.5px dashed #cbd5e1;
+      padding-top: 8px;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .print-nav-bar {
+        display: none;
+      }
+      .a4-sheet {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Print Bar -->
+  <div class="print-nav-bar">
+    <div style="font-weight:900; font-size:0.95rem; display:flex; align-items:center; gap:8px;">
+      <span>⛏️</span> <span>Printable Crafter's Field Manual &amp; Recipe Blueprint</span>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button type="button" class="btn-action" onclick="window.print()">
+        <span>🖨️</span> <span>Print Manual (A4)</span>
+      </button>
+      <a href="index.html" class="btn-action btn-secondary">
+        <span>← Back to Game</span>
+      </a>
+    </div>
+  </div>
+
+  <main class="a4-sheet">
+
+    <!-- Header -->
+    <header class="ws-header">
+      <div class="ws-title-wrap">
+        <h1><span>⛏️</span> Biome Crafter: Field Manual &amp; Recipe Blueprint</h1>
+        <p>Materials, Infinitives of Purpose &amp; Voxel Base Defense • CEFR A1–A1+ • 70 Min</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:#b45309; color:#fff; font-size:0.75rem; font-weight:900; padding:4px 10px; border-radius:999px;">
+          Master Arc • 200 XP
+        </span>
+      </div>
+    </header>
+
+    <!-- Student Metadata -->
+    <div class="ws-meta-grid">
+      <div class="meta-item"><strong>Crafter:</strong> __________________</div>
+      <div class="meta-item"><strong>Base Biome:</strong> __________________</div>
+      <div class="meta-item"><strong>Class:</strong> __________________</div>
+      <div class="meta-item"><strong>Defense Tier:</strong> ⭐ Master Fortified</div>
+    </div>
+
+    <!-- Part 1: Biome Resource Matrix -->
+    <section class="ws-section">
+      <h2 class="ws-section-title"><span>🧭</span> Part 1: Biome Resource &amp; Purpose Matrix</h2>
+      <table class="biome-table">
+        <thead>
+          <tr>
+            <th>Biome &amp; Key Mascot</th>
+            <th>Primary Resource</th>
+            <th>Linguistic Target Sentence</th>
+            <th class="box-cell">Mastered</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🌲 Oak Forest</strong> (Steve)</td>
+            <td>Oak Tree Logs &rarr; Wood Planks</td>
+            <td><em>We chop oak trees to collect wood for our shelter.</em></td>
+            <td class="box-cell">□</td>
+          </tr>
+          <tr>
+            <td><strong>🪨 Rocky Cavern</strong> (Miner)</td>
+            <td>Cobblestone &amp; Coal Mineral</td>
+            <td><em>We mine rocks to collect stone and dark coal.</em></td>
+            <td class="box-cell">□</td>
+          </tr>
+          <tr>
+            <td><strong>🌋 Deep Ravine</strong> (Iron Golem)</td>
+            <td>Raw Iron Ore Veins</td>
+            <td><em>We smelt raw iron ore to make sharp iron swords.</em></td>
+            <td class="box-cell">□</td>
+          </tr>
+          <tr>
+            <td><strong>🌾 Dark Plains</strong> (Creeper)</td>
+            <td>Flat Bedrock Foundation</td>
+            <td><em>When the sun sets, we must build a shelter to survive!</em></td>
+            <td class="box-cell">□</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Part 2: 3x3 Tactile Recipe Blueprints -->
+    <section class="ws-section">
+      <h2 class="ws-section-title"><span>🧱</span> Part 2: 3x3 Crafting Recipe Blueprints</h2>
+      <div class="blueprints-grid-row">
+        
+        <!-- Blueprint 1: Door -->
+        <div class="blueprint-card">
+          <strong style="font-size:0.8rem; color:#b45309;">Secure Wooden Door</strong>
+          <div class="mini-3x3">
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot" style="background:#fed7aa;">W</div>
+            <div class="mini-slot"></div>
+          </div>
+          <div style="font-size:0.68rem; color:#475569;">6x Wood Planks (W)</div>
+          <div style="font-size:0.68rem; font-weight:700; color:#10b981;">To block monsters!</div>
+        </div>
+
+        <!-- Blueprint 2: Torches -->
+        <div class="blueprint-card">
+          <strong style="font-size:0.8rem; color:#b45309;">4x Glowing Torches</strong>
+          <div class="mini-3x3">
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#64748b; color:#fff;">C</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#fef08a;">S</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+          </div>
+          <div style="font-size:0.68rem; color:#475569;">1x Coal (C) + 1x Stick (S)</div>
+          <div style="font-size:0.68rem; font-weight:700; color:#10b981;">To light the dark!</div>
+        </div>
+
+        <!-- Blueprint 3: Iron Sword -->
+        <div class="blueprint-card">
+          <strong style="font-size:0.8rem; color:#b45309;">Sharp Iron Sword</strong>
+          <div class="mini-3x3">
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#e2e8f0;">I</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#e2e8f0;">I</div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot"></div>
+            <div class="mini-slot" style="background:#fef08a;">S</div>
+            <div class="mini-slot"></div>
+          </div>
+          <div style="font-size:0.68rem; color:#475569;">2x Iron (I) + 1x Stick (S)</div>
+          <div style="font-size:0.68rem; font-weight:700; color:#10b981;">To protect the base!</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Part 3: Purpose & Quantity Formula Practice -->
+    <section class="ws-section">
+      <h2 class="ws-section-title"><span>✍️</span> Part 3: Grammar Formulas &amp; Teleprompter Debrief</h2>
+      <div class="combo-frame-box">
+        <div class="combo-sentence-line">
+          <strong>Formula 1:</strong> I need <span class="write-slot"></span> <span class="write-slot"></span> to make a <span class="write-slot"></span>.
+        </div>
+        <div class="combo-sentence-line" style="margin-top:4px;">
+          <strong>Formula 2:</strong> We use <span class="write-slot"></span> to <span class="write-slot"></span> the dark shelter.
+        </div>
+        <div class="combo-sentence-line" style="margin-top:4px;">
+          <strong>Formula 3:</strong> When the sun sets, we must <span class="write-slot"></span> to survive!
+        </div>
+        <div style="font-size:0.72rem; color:#92400e; margin-top:4px;">
+          <em>Word Bank: wood • stone • iron • coal • stick • torches • door • sword • chop • mine • craft • light • block • protect</em>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign-off Seal & Signatures -->
+    <footer class="seal-row">
+      <div>
+        <strong>Peer Crafter Signature:</strong> _____________________________
+      </div>
+      <div style="text-align:center;">
+        <span style="border:2px solid #b45309; padding:3px 10px; border-radius:6px; font-weight:900; color:#b45309;">
+          OFFICIAL GUILD SEAL ⛏️
+        </span>
+      </div>
+      <div style="text-align:right;">
+        <strong>Instructor Signature:</strong> _____________________________
+      </div>
+    </footer>
+
+  </main>
+
+</body>
+</html>
