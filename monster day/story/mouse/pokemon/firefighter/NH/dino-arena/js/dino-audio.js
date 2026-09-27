@@ -1,7 +1,7 @@
 /**
- * DINO ARENA: TOP TRUMPS PALEONTOLOGY CLASH — AUDIO ENGINE
+ * DINO ARENA: CRETACEOUS ADAPTATIONS & CLASH — AUDIO ENGINE
  * Zero-Dependency Harmonic Web Audio API Synthesizers & Calibrated SpeechSynthesis
- * Zero external audio files or remote dependencies.
+ * Natural Voice Modeling • Dual-Oscillator ADSR curves • Zero harsh buzzers
  */
 (function(root) {
   'use strict';
@@ -12,13 +12,15 @@
       this.isMuted = false;
       this.currentUtterance = null;
       this.hasInteracted = false;
+      this.voice = null;
+      this.initVoiceSelector();
     }
 
     /**
      * Autoplay Guard: Initialize or resume AudioContext strictly on user gesture
      */
     initCtx() {
-      if (!this.ctx) {
+      if (!this.ctx && typeof window !== 'undefined') {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (AudioContextClass) {
           this.ctx = new AudioContextClass();
@@ -30,6 +32,10 @@
       this.hasInteracted = true;
     }
 
+    init() {
+      this.initCtx();
+    }
+
     toggleMute() {
       this.isMuted = !this.isMuted;
       if (this.isMuted) {
@@ -38,8 +44,24 @@
       return this.isMuted;
     }
 
+    initVoiceSelector() {
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        this.voice = voices.find(v => 
+          v.lang.startsWith('en') && 
+          (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny') || v.name.includes('Ava'))
+        ) || voices.find(v => v.lang.startsWith('en')) || null;
+      };
+
+      loadVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
     /**
-     * playCardSnap(): Clean mechanical click (1200 Hz -> 300 Hz) for card draws and flips
+     * playCardSnap(): Clean mechanical click (1200 Hz -> 280 Hz) for card draws and flips
      */
     playCardSnap() {
       if (this.isMuted) return;
@@ -48,24 +70,30 @@
 
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
+      const filter = this.ctx.createBiquadFilter();
       const gain = this.ctx.createGain();
 
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(1200, now);
-      osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+      osc.frequency.exponentialRampToValueAtTime(280, now + 0.05);
 
-      gain.gain.setValueAtTime(0.22, now);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1800, now);
+      filter.frequency.linearRampToValueAtTime(400, now + 0.05);
+
+      gain.gain.setValueAtTime(0.24, now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
 
-      osc.connect(gain);
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(this.ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.07);
+      osc.stop(now + 0.06);
     }
 
     /**
-     * playClashImpact(): Heavy low-pass thud (150 Hz -> 50 Hz) with subtle white-noise crunch for collision
+     * playClashImpact(): Heavy clash impact with low thud and noise burst
      */
     playClashImpact() {
       if (this.isMuted) return;
@@ -74,15 +102,14 @@
 
       const now = this.ctx.currentTime;
 
-      // 1. Low Thud Oscillator
       const osc = this.ctx.createOscillator();
       const oscGain = this.ctx.createGain();
 
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(150, now);
-      osc.frequency.exponentialRampToValueAtTime(45, now + 0.22);
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(42, now + 0.22);
 
-      oscGain.gain.setValueAtTime(0.4, now);
+      oscGain.gain.setValueAtTime(0.42, now);
       oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
 
       osc.connect(oscGain);
@@ -91,9 +118,8 @@
       osc.start(now);
       osc.stop(now + 0.25);
 
-      // 2. White-Noise Crunch Burst
       try {
-        const bufferSize = this.ctx.sampleRate * 0.08;
+        const bufferSize = Math.floor(this.ctx.sampleRate * 0.08);
         const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const data = buffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
@@ -103,63 +129,28 @@
         const noise = this.ctx.createBufferSource();
         noise.buffer = buffer;
 
-        const filter = this.ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(600, now);
-        filter.frequency.exponentialRampToValueAtTime(100, now + 0.08);
+        const noiseFilter = this.ctx.createBiquadFilter();
+        noiseFilter.type = 'bandpass';
+        noiseFilter.frequency.setValueAtTime(800, now);
+        noiseFilter.Q.value = 1.8;
 
         const noiseGain = this.ctx.createGain();
-        noiseGain.gain.setValueAtTime(0.18, now);
+        noiseGain.gain.setValueAtTime(0.2, now);
         noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
-        noise.connect(filter);
-        filter.connect(noiseGain);
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
         noiseGain.connect(this.ctx.destination);
 
         noise.start(now);
-        noise.stop(now + 0.09);
-      } catch (e) {
-        // Fallback gracefully
-      }
+        noise.stop(now + 0.08);
+      } catch(e) {}
     }
 
     /**
-     * playXP(): Ascending dual-oscillator arpeggio (B5 987.77 Hz to E6 1318.51 Hz)
+     * playStampSlam(): Rubber stamp impact with low thud and spring friction
      */
-    playXP(multiplier = 1) {
-      if (this.isMuted) return;
-      this.initCtx();
-      if (!this.ctx) return;
-
-      const pitchScale = Math.pow(1.04, Math.min(multiplier - 1, 6));
-      const notes = [987.77 * pitchScale, 1174.66 * pitchScale, 1318.51 * pitchScale];
-
-      notes.forEach((freq, idx) => {
-        const noteTime = this.ctx.currentTime + (idx * 0.065);
-        [freq, freq * 1.5].forEach((hFreq, hIdx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-
-          osc.type = hIdx === 0 ? 'sine' : 'triangle';
-          osc.frequency.setValueAtTime(hFreq, noteTime);
-
-          const peak = hIdx === 0 ? 0.2 : 0.08;
-          gain.gain.setValueAtTime(peak, noteTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.3);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(noteTime);
-          osc.stop(noteTime + 0.32);
-        });
-      });
-    }
-
-    /**
-     * playSoftFail(): Warm descending sine drop (246.94 Hz -> 220 Hz)
-     */
-    playSoftFail() {
+    playStampSlam() {
       if (this.isMuted) return;
       this.initCtx();
       if (!this.ctx) return;
@@ -169,78 +160,129 @@
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(246.94, now); // B3
-      osc.frequency.setValueAtTime(220.00, now + 0.12); // A3
-      osc.frequency.exponentialRampToValueAtTime(180.00, now + 0.32);
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(40, now + 0.18);
 
-      gain.gain.setValueAtTime(0.22, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+      gain.gain.setValueAtTime(0.45, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.36);
+      osc.stop(now + 0.2);
     }
 
     /**
-     * playVictory(): Majestic 4-note major fanfare (C5, E5, G5, C6)
+     * playXPChime(): Dual-tone ascending harmonic interval (B5 987.77 Hz -> E6 1318.51 Hz)
      */
-    playVictory() {
+    playXPChime() {
       if (this.isMuted) return;
       this.initCtx();
       if (!this.ctx) return;
 
-      const notes = [523.25, 659.25, 783.99, 1046.50];
-      notes.forEach((freq, i) => {
-        setTimeout(() => {
-          if (this.isMuted) return;
-          this.initCtx();
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+      const now = this.ctx.currentTime;
+      const notes = [
+        { f: 987.77, delay: 0 },
+        { f: 1318.51, delay: 0.08 }
+      ];
 
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now);
+      notes.forEach(note => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
 
-          gain.gain.setValueAtTime(0.25, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(note.f, now + note.delay);
 
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
+        gain.gain.setValueAtTime(0.22, now + note.delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + note.delay + 0.35);
 
-          osc.start(now);
-          osc.stop(now + 0.5);
-        }, i * 110);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + note.delay);
+        osc.stop(now + note.delay + 0.35);
       });
+    }
 
-      // Final sustained harmonic resonance
-      setTimeout(() => {
-        if (this.isMuted) return;
-        this.initCtx();
-        const now = this.ctx.currentTime;
-        [523.25, 659.25, 1046.50].forEach(f => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, now);
-
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start(now);
-          osc.stop(now + 1.0);
-        });
-      }, 480);
+    playXP() {
+      this.playXPChime();
     }
 
     /**
-     * playRoar(): Fearsome synthesized prehistoric dinosaur roar
-     * Uses FM modulation and resonant bandpass noise sweeps
+     * playSoftFail(): Warm descending minor third (246.94 Hz -> 220 Hz, zero harsh buzzers)
+     */
+    playSoftFail() {
+      if (this.isMuted) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const chords = [
+        { f: 246.94, delay: 0 },
+        { f: 220.00, delay: 0.1 }
+      ];
+
+      chords.forEach(c => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(c.f, now + c.delay);
+        osc.frequency.exponentialRampToValueAtTime(c.f * 0.9, now + c.delay + 0.22);
+
+        gain.gain.setValueAtTime(0.18, now + c.delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + c.delay + 0.22);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + c.delay);
+        osc.stop(now + c.delay + 0.22);
+      });
+    }
+
+    /**
+     * playVictoryFanfare(): 4-note ascending major arpeggio with octave sparkle
+     */
+    playVictoryFanfare() {
+      if (this.isMuted) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const now = this.ctx.currentTime + idx * 0.11;
+        const osc = this.ctx.createOscillator();
+        const overtone = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        overtone.type = 'sine';
+        overtone.frequency.setValueAtTime(freq * 2, now);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        overtone.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        overtone.start(now);
+        osc.stop(now + 0.35);
+        overtone.stop(now + 0.35);
+      });
+    }
+
+    playFanfare() {
+      this.playVictoryFanfare();
+    }
+
+    /**
+     * playRoar(): Deep synthesized prehistoric dinosaur roar
      */
     playRoar() {
       if (this.isMuted) return;
@@ -249,7 +291,6 @@
 
       const now = this.ctx.currentTime;
 
-      // 1. Guttural sub-bass sweep
       const osc = this.ctx.createOscillator();
       const oscGain = this.ctx.createGain();
       osc.type = 'sawtooth';
@@ -259,7 +300,6 @@
       oscGain.gain.setValueAtTime(0.35, now);
       oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
 
-      // Lowpass filter for deep beast resonance
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(450, now);
@@ -271,57 +311,28 @@
 
       osc.start(now);
       osc.stop(now + 0.68);
-
-      // 2. Modulated breath/roar crunch noise
-      try {
-        const bufferSize = this.ctx.sampleRate * 0.45;
-        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * 0.8;
-        }
-
-        const noise = this.ctx.createBufferSource();
-        noise.buffer = buffer;
-
-        const noiseFilter = this.ctx.createBiquadFilter();
-        noiseFilter.type = 'bandpass';
-        noiseFilter.Q.value = 2.5;
-        noiseFilter.frequency.setValueAtTime(800, now);
-        noiseFilter.frequency.exponentialRampToValueAtTime(220, now + 0.45);
-
-        const noiseGain = this.ctx.createGain();
-        noiseGain.gain.setValueAtTime(0.25, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-        noise.connect(noiseFilter);
-        noiseFilter.connect(noiseGain);
-        noiseGain.connect(this.ctx.destination);
-
-        noise.start(now);
-        noise.stop(now + 0.46);
-      } catch (e) {}
     }
 
     /**
-     * playFootsteps(): Heavy prehistoric ground stomps
+     * playFootstep(): Heavy prehistoric ground footsteps
      */
-    playFootsteps() {
+    playFootstep() {
       if (this.isMuted) return;
       this.initCtx();
       if (!this.ctx) return;
 
-      [0, 0.28].forEach((offset) => {
+      const steps = [0, 0.28];
+      steps.forEach(offset => {
         const t = this.ctx.currentTime + offset;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(95, t);
-        osc.frequency.exponentialRampToValueAtTime(35, t + 0.16);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(90, t);
+        osc.frequency.exponentialRampToValueAtTime(32, t + 0.18);
 
-        gain.gain.setValueAtTime(0.32, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        gain.gain.setValueAtTime(0.4, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.19);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -362,8 +373,8 @@
      * rate: 0.88, pitch: 1.05, lang: "en-US"
      */
     speak(text, onBoundary = null, onEnd = null) {
-      if (this.isMuted || !('speechSynthesis' in window)) {
-        if (onEnd) setTimeout(onEnd, 1200);
+      if (typeof window === 'undefined' || this.isMuted || !('speechSynthesis' in window)) {
+        if (typeof onEnd === 'function') setTimeout(onEnd, 1200);
         return;
       }
 
@@ -374,14 +385,15 @@
       utterance.pitch = 1.05;
       utterance.lang = 'en-US';
 
-      // Pick high quality English voice
-      const voices = window.speechSynthesis.getVoices();
-      const naturalVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('David')));
-      if (naturalVoice) {
-        utterance.voice = naturalVoice;
+      if (this.voice) {
+        utterance.voice = this.voice;
+      } else {
+        const voices = window.speechSynthesis.getVoices();
+        const naturalVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny')));
+        if (naturalVoice) utterance.voice = naturalVoice;
       }
 
-      if (onBoundary) {
+      if (typeof onBoundary === 'function') {
         utterance.onboundary = (event) => {
           if (event.name === 'word') {
             onBoundary(event.charIndex, event.charLength || 0);
@@ -391,12 +403,12 @@
 
       utterance.onend = () => {
         this.currentUtterance = null;
-        if (onEnd) onEnd();
+        if (typeof onEnd === 'function') onEnd();
       };
 
       utterance.onerror = () => {
         this.currentUtterance = null;
-        if (onEnd) onEnd();
+        if (typeof onEnd === 'function') onEnd();
       };
 
       this.currentUtterance = utterance;
@@ -404,12 +416,21 @@
     }
 
     stopSpeech() {
-      if ('speechSynthesis' in window) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
       this.currentUtterance = null;
     }
   }
 
-  root.DinoArenaAudio = new DinoArenaAudio();
+  const dinoArenaAudio = new DinoArenaAudio();
+  root.DinoArenaAudio = dinoArenaAudio;
+  if (typeof window !== 'undefined') {
+    window.dinoAudio = dinoArenaAudio;
+    window.SoundAudio = dinoArenaAudio;
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DinoArenaAudio;
+  }
 })(typeof window !== 'undefined' ? window : global);

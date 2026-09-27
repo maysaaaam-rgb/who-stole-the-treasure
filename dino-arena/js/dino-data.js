@@ -1,8 +1,7 @@
 /**
- * DINO ARENA: TOP TRUMPS PALEONTOLOGY CLASH — SELF-CONTAINED CURRICULUM & VECTOR ASSET DATA
- * Primary ESL / CLIL CEFR A1+-A2 | Comparative Adjectives & Adaptations
- * 100% Zero external image dependencies. Multi-layered anatomical SVG artwork with ambient aura.
- * Full 6-Stage Interactive Arcade Lesson.
+ * DINO ARENA: CRETACEOUS ADAPTATIONS & CLASH — CURRICULUM & SPECIMEN DATA
+ * Primary ESL / CLIL CEFR A1+–A2 | 70-Minute 2-Lesson 6-Stage Arcade Module
+ * Zero procedural SVG characters. 100% Transparent 3D raster assets over glowing isometric pedestals.
  */
 (function(root) {
   'use strict';
@@ -11,6 +10,7 @@
     {
       id: "trex",
       name: "Tyrannosaurus Rex",
+      badge: "🥩 Apex Predator",
       period: "Late Cretaceous",
       diet: "Carnivore",
       dietIcon: "🥩",
@@ -21,37 +21,16 @@
       speedKmh: 27,
       armorRating: 3,
       weapon: "Bone-Crushing Jaws",
-      weaponDesc: "Huge 20cm teeth that can crush bones!",
+      weaponDesc: "Huge 20cm serrated teeth with bone-crushing jaws!",
       teeth: "20cm serrated dagger teeth",
       clue: "I am the 8,000 kg apex predator with 20cm serrated teeth!",
       dietFact: "T-Rex is a carnivore because it has 20cm sharp teeth to hunt prey.",
-      fallbackIcon: "🦖",
-      imagePath: "assets/trex.png",
+      asset: "assets/trex.webp",
+      fallbackAsset: "assets/trex.png",
       glowColor: "#ef4444",
       glowRgb: "239, 68, 68",
       pedestalColor: "#ef4444",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="trex-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#ef4444" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="188" rx="110" ry="18" fill="url(#trex-aura)" />
-          <ellipse cx="160" cy="188" rx="80" ry="9" fill="rgba(239, 68, 68, 0.3)" />
-          <g fill="#f87171" stroke="#7f1d1d" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 35 142 Q 90 115 145 110 Q 95 140 35 142 Z" fill="#dc2626"/>
-            <path d="M 125 110 C 150 90 200 85 220 95 C 235 105 240 135 210 150 C 175 160 140 155 125 110 Z"/>
-            <path d="M 140 125 C 160 125 170 150 160 175 L 145 188 L 180 188 L 165 170 C 178 145 155 125 140 125 Z" fill="#b91c1c"/>
-            <path d="M 215 128 L 230 136 L 226 142 L 212 134 Z" fill="#fca5a5"/>
-            <path d="M 210 95 C 225 70 275 65 300 80 C 305 95 285 105 250 108 L 295 118 C 285 130 250 128 230 118 Z"/>
-            <circle cx="265" cy="85" r="4.5" fill="#fef08a" stroke="#000" stroke-width="1.5"/>
-            <polygon points="255,108 260,115 265,108" fill="#ffffff" stroke="none"/>
-            <polygon points="268,108 273,116 278,108" fill="#ffffff" stroke="none"/>
-            <polygon points="280,108 285,115 290,108" fill="#ffffff" stroke="none"/>
-          </g>
-        </svg>`,
+      accentColor: "#ef4444",
       hotspots: [
         { label: "Diet", text: "Carnivore: Apex hunter with keen binocular vision.", phrase: "T-Rex is a carnivore and eats meat!" },
         { label: "Weapon", text: "Bone-Crushing Jaws with 20cm serrated teeth.", phrase: "T-Rex has twenty-centimeter sharp teeth to crush bones!" },
@@ -62,6 +41,7 @@
     {
       id: "raptor",
       name: "Velociraptor",
+      badge: "⚡ Swift Striker",
       period: "Late Cretaceous",
       diet: "Carnivore",
       dietIcon: "🥩",
@@ -72,45 +52,27 @@
       speedKmh: 60,
       armorRating: 1,
       weapon: "Sickle Claws",
-      weaponDesc: "Curved foot claws designed for swift jumping attacks!",
+      weaponDesc: "Curved 9cm foot claws designed for swift jumping attacks!",
       teeth: "Sharp backward-curving teeth & sickle claws",
       clue: "I am a swift 60 km/h runner hunting with curved foot claws!",
       dietFact: "Velociraptor is a carnivore because it hunts meat with sharp sickle claws.",
-      fallbackIcon: "🦅",
-      imagePath: "assets/raptor.png",
+      asset: "assets/raptor.webp",
+      fallbackAsset: "assets/raptor.png",
       glowColor: "#f97316",
       glowRgb: "249, 115, 22",
       pedestalColor: "#f97316",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="raptor-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#f97316" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="188" rx="105" ry="18" fill="url(#raptor-aura)" />
-          <ellipse cx="160" cy="188" rx="75" ry="9" fill="rgba(249, 115, 22, 0.3)" />
-          <g fill="#fb923c" stroke="#9a3412" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 25 98 Q 110 115 155 125 Q 105 132 25 98 Z" fill="#ea580c"/>
-            <path d="M 150 120 C 170 105 205 105 220 120 C 215 140 185 148 150 120 Z"/>
-            <path d="M 210 112 C 225 90 250 75 280 80 C 295 85 298 95 272 102 L 290 108 C 280 118 250 116 230 118 Z"/>
-            <circle cx="270" cy="86" r="3.5" fill="#fef08a" stroke="#000" stroke-width="1.2"/>
-            <path d="M 210 125 L 230 142 L 218 146 L 198 132 Z" fill="#fed7aa"/>
-            <path d="M 170 130 C 185 135 192 160 180 185 L 165 188 L 198 188 L 192 170 Z" fill="#ea580c"/>
-            <path d="M 190 174 Q 202 164 194 158 Q 186 168 190 174 Z" fill="#ffffff" stroke="#9a3412" stroke-width="1.8"/>
-          </g>
-        </svg>`,
+      accentColor: "#f97316",
       hotspots: [
         { label: "Diet", text: "Carnivore: Agile pack hunter targeting small prey.", phrase: "Velociraptor is a swift carnivore!" },
         { label: "Weapon", text: "Retractable sickle claw on each hind foot.", phrase: "Velociraptor has sharp sickle claws for jumping attacks!" },
         { label: "Speed", text: "Sprint speed of 60 km/h.", phrase: "Velociraptor runs at sixty kilometers per hour!" },
-        { label: "Armor", text: "Light agile feathers rating 1 out of 10.", phrase: "Velociraptor relies on speed instead of heavy armor!" }
+        { label: "Armor", text: "Light agile body rating 1 out of 10.", phrase: "Velociraptor relies on speed instead of heavy armor!" }
       ]
     },
     {
       id: "triceratops",
       name: "Triceratops",
+      badge: "🛡️ Triple Horn Shield",
       period: "Late Cretaceous",
       diet: "Herbivore",
       dietIcon: "🌿",
@@ -125,35 +87,12 @@
       teeth: "Beak & scissor-like grinding tooth batteries",
       clue: "I have a massive skull shield and 3 solid ivory horns!",
       dietFact: "Triceratops is a herbivore because it shears tough palm fronds with grinding teeth.",
-      fallbackIcon: "🦏",
-      imagePath: "assets/triceratops.png",
+      asset: "assets/triceratops.webp",
+      fallbackAsset: "assets/triceratops.png",
       glowColor: "#10b981",
       glowRgb: "16, 185, 129",
       pedestalColor: "#10b981",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="tri-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#10b981" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="188" rx="110" ry="18" fill="url(#tri-aura)" />
-          <ellipse cx="160" cy="188" rx="80" ry="9" fill="rgba(16, 185, 129, 0.3)" />
-          <g fill="#34d399" stroke="#065f46" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 45 145 Q 85 130 115 120 Q 90 145 45 145 Z" fill="#059669"/>
-            <path d="M 105 115 C 135 90 195 90 220 115 C 225 150 195 165 120 160 Z"/>
-            <rect x="110" y="145" width="22" height="42" rx="6" fill="#059669"/>
-            <rect x="145" y="148" width="20" height="40" rx="6" fill="#047857"/>
-            <rect x="185" y="145" width="22" height="42" rx="6" fill="#059669"/>
-            <rect x="210" y="148" width="20" height="40" rx="6" fill="#047857"/>
-            <path d="M 210 90 C 205 58 245 52 250 85 C 260 110 230 130 210 90 Z" fill="#10b981"/>
-            <path d="M 225 95 C 245 95 272 115 262 135 C 240 145 225 125 225 95 Z"/>
-            <polygon points="230,85 280,55 244,90" fill="#ffffff" stroke="#065f46" stroke-width="2"/>
-            <polygon points="242,90 286,65 250,96" fill="#ffffff" stroke="#065f46" stroke-width="2"/>
-            <polygon points="260,118 288,115 264,125" fill="#ffffff" stroke="#065f46" stroke-width="1.8"/>
-          </g>
-        </svg>`,
+      accentColor: "#10b981",
       hotspots: [
         { label: "Diet", text: "Herbivore: Grazes on tough palms and cycad roots.", phrase: "Triceratops is a peaceful herbivore!" },
         { label: "Weapon", text: "Three solid facial horns up to 1 meter long.", phrase: "Triceratops has three hard horns to fight predators!" },
@@ -164,6 +103,7 @@
     {
       id: "brachiosaurus",
       name: "Brachiosaurus",
+      badge: "🦒 Colossal Titan",
       period: "Late Jurassic",
       diet: "Herbivore",
       dietIcon: "🌿",
@@ -174,37 +114,16 @@
       speedKmh: 15,
       armorRating: 4,
       weapon: "Colossal Stomp",
-      weaponDesc: "Gigantic height and tree-trunk legs reaching tallest trees!",
+      weaponDesc: "Gigantic height and tree-trunk legs reaching the tallest trees!",
       teeth: "Peg-like chisel teeth for stripping tall trees",
-      clue: "I weigh 40,000 kg and can browse leaves 15 meters high!",
+      clue: "I weigh 40,000 kg and can browse leaves 13 meters high!",
       dietFact: "Brachiosaurus is a herbivore because it reaches tall treetops to eat leaves.",
-      fallbackIcon: "🦒",
-      imagePath: "assets/brachiosaurus.png",
+      asset: "assets/brachiosaurus.webp",
+      fallbackAsset: "assets/brachiosaurus.png",
       glowColor: "#06b6d4",
       glowRgb: "6, 182, 212",
       pedestalColor: "#06b6d4",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="brach-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="190" rx="115" ry="18" fill="url(#brach-aura)" />
-          <ellipse cx="160" cy="190" rx="85" ry="10" fill="rgba(6, 182, 212, 0.3)" />
-          <g fill="#38bdf8" stroke="#075985" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 35 150 Q 88 135 120 125 Q 85 152 35 150 Z" fill="#0284c7"/>
-            <path d="M 115 120 C 140 110 185 105 205 125 C 200 155 170 165 120 155 Z"/>
-            <rect x="120" y="142" width="22" height="46" rx="6" fill="#0284c7"/>
-            <rect x="145" y="144" width="20" height="44" rx="6" fill="#0369a1"/>
-            <rect x="175" y="138" width="22" height="50" rx="6" fill="#0284c7"/>
-            <rect x="195" y="140" width="20" height="48" rx="6" fill="#0369a1"/>
-            <path d="M 185 115 C 190 68 215 32 238 28 C 258 28 252 45 230 65 C 215 85 210 115 205 125 Z"/>
-            <ellipse cx="245" cy="32" rx="12" ry="7" fill="#38bdf8"/>
-            <circle cx="248" cy="30" r="2.2" fill="#0f172a"/>
-          </g>
-        </svg>`,
+      accentColor: "#06b6d4",
       hotspots: [
         { label: "Diet", text: "Herbivore: Consumes 400 kg of treetop leaves daily.", phrase: "Brachiosaurus eats leafy treetops all day!" },
         { label: "Weapon", text: "Massive stomping feet and towering height.", phrase: "Brachiosaurus uses colossal size to deter carnivores!" },
@@ -215,6 +134,7 @@
     {
       id: "ankylosaurus",
       name: "Ankylosaurus",
+      badge: "🛡️ Living Battle Tank",
       period: "Late Cretaceous",
       diet: "Herbivore",
       dietIcon: "🌿",
@@ -225,40 +145,16 @@
       speedKmh: 10,
       armorRating: 10,
       weapon: "Heavy Tail Club",
-      weaponDesc: "Thick bone armor plates and a heavy stone tail club!",
+      weaponDesc: "Thick fused bone armor plates and a heavy stone tail club!",
       teeth: "Small leaf-shaped teeth for crushing low ferns",
       clue: "I am a living battle tank with bone plates and a heavy tail club!",
       dietFact: "Ankylosaurus is a herbivore because it feeds on low forest ferns and shrub roots.",
-      fallbackIcon: "🛡️",
-      imagePath: "assets/ankylosaurus.png",
+      asset: "assets/ankylosaurus.webp",
+      fallbackAsset: "assets/ankylosaurus.png",
       glowColor: "#eab308",
       glowRgb: "234, 179, 8",
       pedestalColor: "#eab308",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="ank-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#eab308" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#eab308" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="188" rx="105" ry="18" fill="url(#ank-aura)" />
-          <ellipse cx="160" cy="188" rx="78" ry="9" fill="rgba(234, 179, 8, 0.3)" />
-          <g fill="#facc15" stroke="#713f12" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 60 145 L 115 135 L 115 145 Z" fill="#ca8a04"/>
-            <ellipse cx="55" cy="144" rx="16" ry="11" fill="#fef08a" stroke="#713f12" stroke-width="2.5"/>
-            <path d="M 110 142 C 120 105 210 105 235 142 C 220 160 130 160 110 142 Z"/>
-            <rect x="120" y="150" width="22" height="36" rx="6" fill="#ca8a04"/>
-            <rect x="150" y="152" width="20" height="34" rx="6" fill="#a16207"/>
-            <rect x="185" y="150" width="22" height="36" rx="6" fill="#ca8a04"/>
-            <rect x="210" y="152" width="20" height="34" rx="6" fill="#a16207"/>
-            <polygon points="135,108 145,94 155,108" fill="#ffffff" stroke="#713f12" stroke-width="2"/>
-            <polygon points="165,105 175,90 185,105" fill="#ffffff" stroke="#713f12" stroke-width="2"/>
-            <polygon points="195,108 205,94 215,108" fill="#ffffff" stroke="#713f12" stroke-width="2"/>
-            <path d="M 230 132 C 245 125 268 130 262 148 C 240 155 230 145 230 132 Z"/>
-            <polygon points="238,126 252,118 245,132" fill="#ffffff" stroke="#713f12" stroke-width="1.8"/>
-          </g>
-        </svg>`,
+      accentColor: "#eab308",
       hotspots: [
         { label: "Diet", text: "Herbivore: Low-browser feeding on ferns and roots.", phrase: "Ankylosaurus feeds on low ferns and shrubs!" },
         { label: "Weapon", text: "Massive solid bone club on its tail.", phrase: "Ankylosaurus has a heavy tail club to shatter enemy bones!" },
@@ -269,6 +165,7 @@
     {
       id: "stegosaurus",
       name: "Stegosaurus",
+      badge: "🐊 Spiked Guardian",
       period: "Late Jurassic",
       diet: "Herbivore",
       dietIcon: "🌿",
@@ -279,43 +176,16 @@
       speedKmh: 18,
       armorRating: 7,
       weapon: "Spiked Thagomizer",
-      weaponDesc: "Four sharp tail spikes and dorsal plates along its spine!",
+      weaponDesc: "Four sharp tail spikes and 17 dorsal plates along its spine!",
       teeth: "Small triangular teeth for grinding soft plants",
       clue: "I have vertical kite plates along my spine and 4 sharp tail spikes!",
       dietFact: "Stegosaurus is a herbivore because it eats soft ground mosses and low shrubs.",
-      fallbackIcon: "🐊",
-      imagePath: "assets/stegosaurus.png",
+      asset: "assets/stegosaurus.webp",
+      fallbackAsset: "assets/stegosaurus.png",
       glowColor: "#22c55e",
       glowRgb: "34, 197, 94",
       pedestalColor: "#10b981",
-      svgArtwork: `
-        <svg viewBox="0 0 320 220" class="dino-vector-art" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="steg-aura" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#10b981" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="160" cy="188" rx="105" ry="18" fill="url(#steg-aura)" />
-          <ellipse cx="160" cy="188" rx="78" ry="9" fill="rgba(16, 185, 129, 0.3)" />
-          <g fill="#4ade80" stroke="#14532d" stroke-width="2.5" stroke-linejoin="round">
-            <path d="M 45 135 Q 90 135 120 132 Q 90 145 45 135 Z" fill="#16a34a"/>
-            <line x1="52" y1="135" x2="35" y2="118" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-            <line x1="58" y1="135" x2="44" y2="112" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-            <line x1="55" y1="137" x2="38" y2="152" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-            <line x1="62" y1="138" x2="48" y2="158" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M 115 130 C 130 95 195 95 220 130 C 210 155 135 158 115 130 Z"/>
-            <rect x="120" y="145" width="20" height="40" rx="6" fill="#16a34a"/>
-            <rect x="145" y="148" width="18" height="37" rx="6" fill="#15803d"/>
-            <rect x="185" y="145" width="20" height="40" rx="6" fill="#16a34a"/>
-            <rect x="205" y="148" width="18" height="37" rx="6" fill="#15803d"/>
-            <polygon points="125,108 135,70 145,105" fill="#facc15" stroke="#713f12" stroke-width="2.2"/>
-            <polygon points="150,98 162,60 174,96" fill="#facc15" stroke="#713f12" stroke-width="2.2"/>
-            <polygon points="178,100 190,64 202,98" fill="#facc15" stroke="#713f12" stroke-width="2.2"/>
-            <polygon points="205,110 216,80 225,112" fill="#facc15" stroke="#713f12" stroke-width="2.2"/>
-            <path d="M 220 130 C 235 135 258 145 252 155 C 235 158 220 148 220 130 Z"/>
-          </g>
-        </svg>`,
+      accentColor: "#10b981",
       hotspots: [
         { label: "Diet", text: "Herbivore: Grazes on ground ferns, mosses, and horsetails.", phrase: "Stegosaurus eats low Jurassic ferns!" },
         { label: "Weapon", text: "Four 60-centimeter tail spikes called the Thagomizer.", phrase: "Stegosaurus swings four sharp tail spikes!" },
@@ -325,12 +195,7 @@
     }
   ];
 
-  // Set svg alias for backward compatibility
-  DINO_DATA.forEach(d => {
-    d.svg = d.svgArtwork;
-  });
-
-  // Stage 1: Mystery Silhouette & Roar Guessing Game
+  // Stage 1: Mystery Silhouette & Roar Chamber
   const MYSTERY_ROUNDS = [
     {
       id: "mystery-1",
@@ -363,7 +228,7 @@
       clues: [
         { icon: "🥩", label: "Diet", text: "Fast Pack-Hunting Carnivore" },
         { icon: "⚡", label: "Speed", text: "Lightning fast: 60 km/h sprint" },
-        { icon: "🦅", label: "Weapon", text: "Feathered body & sharp sickle foot claws" }
+        { icon: "🦅", label: "Weapon", text: "Agile body & curved sickle foot claws" }
       ],
       options: ["raptor", "triceratops", "stegosaurus", "brachiosaurus"],
       soundHint: "Rapid, agile claw clicks tap against the rocky ground..."
@@ -390,7 +255,7 @@
         { icon: "🔨", label: "Weapon", text: "Massive solid-bone club on its tail" }
       ],
       options: ["ankylosaurus", "raptor", "trex", "triceratops"],
-      soundHint: "A heavy metallic-sounding armored scrape in the underbrush..."
+      soundHint: "A heavy armored scrape echoes in the underbrush..."
     },
     {
       id: "mystery-6",
@@ -406,7 +271,7 @@
     }
   ];
 
-  // Stage 3: The Comparative Adjective Balance Gym
+  // Stage 4: Comparative Balance Scale Gym
   const GRAMMAR_GYM_ROUNDS = [
     {
       id: "gym-1",
@@ -470,7 +335,7 @@
     }
   ];
 
-  // Stage 4: Dino Clash 1v1 Battle Rounds
+  // Stage 5: 1v1 Cretaceous Showdown Battle Rounds
   const BATTLE_ROUNDS = [
     {
       id: "clash-1",
@@ -562,7 +427,7 @@
     }
   ];
 
-  // Stage 5: Teleprompter Broadcast Templates (One per dinosaur)
+  // Stage 6: Teleprompter Archetypes (One per dinosaur)
   const TELEPROMPTER_ARCHETYPES = [
     {
       dinoId: "trex",
@@ -608,7 +473,7 @@
     }
   ];
 
-  // Stage 6: Exit Ticket Rapid Diagnostic Quiz
+  // Stage 7: Exit Diagnostic Rapid Checkpoint
   const EXIT_QUIZ_QUESTIONS = [
     {
       id: "quiz-1",
@@ -645,7 +510,7 @@
     }
   ];
 
-  root.DINO_ARENA_DATA = {
+  const DINO_ARENA_DATA = {
     dinosaurs: DINO_DATA,
     mysteryRounds: MYSTERY_ROUNDS,
     grammarGymRounds: GRAMMAR_GYM_ROUNDS,
@@ -653,4 +518,10 @@
     teleprompter: TELEPROMPTER_ARCHETYPES,
     exitQuiz: EXIT_QUIZ_QUESTIONS
   };
+
+  root.DINO_ARENA_DATA = DINO_ARENA_DATA;
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DINO_ARENA_DATA;
+  }
 })(typeof window !== 'undefined' ? window : global);

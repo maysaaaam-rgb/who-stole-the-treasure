@@ -164,8 +164,8 @@ const GAMES_REGISTRY = [
       "paleo-clash",
       "dino-battle"
     ],
-    "title": "🦕 Dino Arena: Cretaceous Adaptations",
-    "description": "Complete 6-stage commercial-grade EdTech CLIL master lesson (CEFR A1+–A2 | 200 XP). 1. Mystery Silhouette & Roar Guessing Hook, 2. CLIL Diet Sorter (Carnivore vs. Herbivore), 3. Comparative Adjective Balance Gym, 4. 1v1 Dino Top Trumps Battle Arena, 5. Spoken Teleprompter Broadcast Studio, 6. Rapid Exit Checkpoint & Printable Field Passport.",
+    "title": "🦖 Dino Arena: Cretaceous Adaptations & Clash",
+    "description": "Commercial 70-Minute (2-Lesson) 7-Stage CLIL arcade module (Grade 3–4 | CEFR A1+–A2 | 200 XP). Lesson 1 (Prehistoric Anatomy & Comparison): 1. Mystery Silhouette & Roar Chamber, 2. 3D Hologram Anatomy Scanner, 3. Diet Airlock Sorter, 4. Comparative Balance Scale Gym; Lesson 2 (Arena Clash & Field Report): 5. 1v1 Cretaceous Showdown Arena, 6. Paleontologist Teleprompter Studio, 7. Exit Diagnostic & Printable Field Passport.",
     "type": "game",
     "category": "CLIL & Science",
     "categoryLabel": "🦖 Paleontology & Top Trumps",
@@ -173,15 +173,14 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 7–11",
     "ageGroup": "7–11",
-    "grade": "Grade 3–5",
+    "grade": "Grade 3–4",
     "grades": [
       "Grade 3",
-      "Grade 4",
-      "Grade 5"
+      "Grade 4"
     ],
-    "duration": 60,
-    "durationText": "60 min",
-    "estimatedMinutes": 60,
+    "duration": 70,
+    "durationText": "70 min (2 Lessons)",
+    "estimatedMinutes": 70,
     "xp": 200,
     "skills": [
       "Silhouette & Prehistoric Roar Deduction",
