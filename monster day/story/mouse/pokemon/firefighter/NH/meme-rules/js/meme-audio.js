@@ -1,324 +1,289 @@
 /**
- * Adventure Academy - Zero-Dependency Harmonic Web Audio Engine & TTS
- * Synthesizes all sounds locally using browser AudioContext
+ * MEME RULES ARENA: HARMONIC AUDIO & CALIBRATED SPEECH ENGINE
+ * Zero-dependency Web Audio API synthesizer + calibrated Web Speech TTS
+ * Dual-oscillator ADSR musical curves • Natural/Google voice prioritization
  */
 
-class MemeAudioEngine {
-  constructor() {
-    this.ctx = null;
-    this.sfxEnabled = true;
-    this.voiceEnabled = true;
-    this.isInitialized = false;
-    this.currentUtterance = null;
+(function(root) {
+  'use strict';
 
-    // Attach eager unlock on first pointer or key action
-    this.bindUnlockHandlers();
-  }
+  class MemeAudioEngine {
+    constructor() {
+      this.ctx = null;
+      this.voice = null;
+      this.isMuted = false;
+      this.currentUtterance = null;
+      this.initVoiceSelector();
+    }
 
-  bindUnlockHandlers() {
-    const unlock = () => {
-      this.init();
-      ['pointerdown', 'keydown', 'touchstart', 'click'].forEach(evt => {
-        window.removeEventListener(evt, unlock);
-      });
-    };
-    ['pointerdown', 'keydown', 'touchstart', 'click'].forEach(evt => {
-      window.addEventListener(evt, unlock, { once: true });
-    });
-  }
-
-  init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
+    init() {
+      if (!this.ctx && typeof window !== 'undefined') {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+        }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
       }
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
+
+    initCtx() {
+      this.init();
     }
-    this.isInitialized = true;
-  }
 
-  toggleSfx() {
-    this.sfxEnabled = !this.sfxEnabled;
-    return this.sfxEnabled;
-  }
-
-  toggleVoice() {
-    this.voiceEnabled = !this.voiceEnabled;
-    if (!this.voiceEnabled && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      if (this.isMuted) {
+        this.stopSpeech();
+      }
+      return this.isMuted;
     }
-    return this.voiceEnabled;
-  }
 
-  /**
-   * Mechanical triangle-wave click (1200 Hz -> 300 Hz) for card docking
-   */
-  playSnap() {
-    if (!this.sfxEnabled) return;
-    this.init();
-    if (!this.ctx) return;
+    initVoiceSelector() {
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        this.voice = voices.find(v => 
+          v.lang.startsWith('en') && 
+          (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny') || v.name.includes('Ava'))
+        ) || voices.find(v => v.lang.startsWith('en')) || null;
+      };
 
-    try {
+      loadVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
+    /**
+     * playSnap(): Filtered tactile noise transient (1200 Hz -> 280 Hz) for card snapping
+     */
+    playSnap() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
+      const filter = this.ctx.createBiquadFilter();
       const gain = this.ctx.createGain();
 
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(1200, now);
-      osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
-
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.05);
-    } catch (e) {
-      console.warn('Audio playSnap error', e);
-    }
-  }
-
-  /**
-   * Physical rubber stamp impact thud
-   */
-  playStamp() {
-    if (!this.sfxEnabled) return;
-    this.init();
-    if (!this.ctx) return;
-
-    try {
-      const now = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      const filter = this.ctx.createBiquadFilter();
-
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(140, now);
-      osc.frequency.exponentialRampToValueAtTime(35, now + 0.12);
+      osc.frequency.exponentialRampToValueAtTime(280, now + 0.05);
 
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(450, now);
-      filter.frequency.exponentialRampToValueAtTime(100, now + 0.12);
+      filter.frequency.setValueAtTime(1800, now);
+      filter.frequency.linearRampToValueAtTime(400, now + 0.05);
 
-      gain.gain.setValueAtTime(0.4, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      gain.gain.setValueAtTime(0.24, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(this.ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.12);
-    } catch (e) {
-      console.warn('Audio playStamp error', e);
+      osc.stop(now + 0.06);
     }
-  }
 
-  /**
-   * Ascending chime arpeggio (B5 987.77 Hz to E6 1318.51 Hz)
-   */
-  playXP() {
-    if (!this.sfxEnabled) return;
-    this.init();
-    if (!this.ctx) return;
+    playCardSnap() {
+      this.playSnap();
+    }
 
-    try {
-      const notes = [
-        { freq: 987.77, delay: 0 },       // B5
-        { freq: 1108.73, delay: 0.07 },    // C#6
-        { freq: 1244.51, delay: 0.14 },    // D#6
-        { freq: 1318.51, delay: 0.21 }     // E6
-      ];
+    /**
+     * playXP(): Ascending dual-frequency chord chime (B5 987.77 Hz -> E6 1318.51 Hz)
+     */
+    playXP() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
 
       const now = this.ctx.currentTime;
+      const notes = [
+        { f: 987.77, delay: 0 },
+        { f: 1318.51, delay: 0.08 }
+      ];
 
       notes.forEach(note => {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(note.freq, now + note.delay);
+        osc.frequency.setValueAtTime(note.f, now + note.delay);
 
-        // Bell envelope
-        gain.gain.setValueAtTime(0.001, now + note.delay);
-        gain.gain.linearRampToValueAtTime(0.22, now + note.delay + 0.02);
+        gain.gain.setValueAtTime(0.22, now + note.delay);
         gain.gain.exponentialRampToValueAtTime(0.001, now + note.delay + 0.35);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(now + note.delay);
-        osc.stop(now + note.delay + 0.36);
+        osc.stop(now + note.delay + 0.35);
       });
-    } catch (e) {
-      console.warn('Audio playXP error', e);
     }
-  }
 
-  /**
-   * Warm, descending two-tone sine bounce (246.94 Hz -> 220 Hz) with zero penalty feel
-   */
-  playSoftFail() {
-    if (!this.sfxEnabled) return;
-    this.init();
-    if (!this.ctx) return;
+    playCorrectChime() {
+      this.playXP();
+    }
 
-    try {
+    /**
+     * playSoftFail(): Warm descending sine chime (246.94 Hz -> 220 Hz) with zero point deduction
+     */
+    playSoftFail() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
       const now = this.ctx.currentTime;
-      const notes = [
-        { freq: 246.94, start: now, dur: 0.14 },         // B3
-        { freq: 220.00, start: now + 0.13, dur: 0.22 }   // A3
+      const chords = [
+        { f: 246.94, delay: 0 },
+        { f: 220.00, delay: 0.1 }
       ];
 
-      notes.forEach(n => {
+      chords.forEach(c => {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(n.freq, n.start);
+        osc.frequency.setValueAtTime(c.f, now + c.delay);
+        osc.frequency.exponentialRampToValueAtTime(c.f * 0.9, now + c.delay + 0.22);
 
-        gain.gain.setValueAtTime(0.18, n.start);
-        gain.gain.exponentialRampToValueAtTime(0.001, n.start + n.dur);
+        gain.gain.setValueAtTime(0.18, now + c.delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + c.delay + 0.22);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
 
-        osc.start(n.start);
-        osc.stop(n.start + n.dur);
+        osc.start(now + c.delay);
+        osc.stop(now + c.delay + 0.22);
       });
-    } catch (e) {
-      console.warn('Audio playSoftFail error', e);
     }
-  }
 
-  /**
-   * 4-note major arpeggio fanfare (C5, E5, G5, C6) for stage completion
-   */
-  playFanfare() {
-    if (!this.sfxEnabled) return;
-    this.init();
-    if (!this.ctx) return;
-
-    try {
-      const notes = [
-        { freq: 523.25, time: 0, dur: 0.18 },    // C5
-        { freq: 659.25, time: 0.15, dur: 0.18 }, // E5
-        { freq: 783.99, time: 0.30, dur: 0.22 }, // G5
-        { freq: 1046.50, time: 0.45, dur: 0.85 } // C6 (long triumphant ring)
-      ];
+    /**
+     * playStampSlam(): Animated rubber stamp slam thud impact
+     */
+    playStampSlam() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
 
       const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
 
-      notes.forEach((n, idx) => {
-        // Main fundamental oscillator
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.18);
+
+      gain.gain.setValueAtTime(0.38, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.2);
+    }
+
+    /**
+     * playFanfare(): Rising 4-note major arpeggio (C5 -> E5 -> G5 -> C6) with octave sparkle
+     */
+    playFanfare() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const now = this.ctx.currentTime + idx * 0.11;
         const osc = this.ctx.createOscillator();
+        const overtone = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = idx === 3 ? 'triangle' : 'sine';
-        osc.frequency.setValueAtTime(n.freq, now + n.time);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
 
-        gain.gain.setValueAtTime(0.001, now + n.time);
-        gain.gain.linearRampToValueAtTime(0.25, now + n.time + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + n.time + n.dur);
+        overtone.type = 'sine';
+        overtone.frequency.setValueAtTime(freq * 2, now);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
         osc.connect(gain);
+        overtone.connect(gain);
         gain.connect(this.ctx.destination);
 
-        osc.start(now + n.time);
-        osc.stop(now + n.time + n.dur);
-
-        // Add sparkling shimmer harmonic on the final high note
-        if (idx === 3) {
-          const harmonic = this.ctx.createOscillator();
-          const harmGain = this.ctx.createGain();
-          harmonic.type = 'sine';
-          harmonic.frequency.setValueAtTime(n.freq * 2, now + n.time); // C7 octave
-
-          harmGain.gain.setValueAtTime(0.001, now + n.time);
-          harmGain.gain.linearRampToValueAtTime(0.08, now + n.time + 0.05);
-          harmGain.gain.exponentialRampToValueAtTime(0.001, now + n.time + n.dur);
-
-          harmonic.connect(harmGain);
-          harmGain.connect(this.ctx.destination);
-
-          harmonic.start(now + n.time);
-          harmonic.stop(now + n.time + n.dur);
-        }
+        osc.start(now);
+        overtone.start(now);
+        osc.stop(now + 0.35);
+        overtone.stop(now + 0.35);
       });
-    } catch (e) {
-      console.warn('Audio playFanfare error', e);
-    }
-  }
-
-  /**
-   * Calibrated window.speechSynthesis voice output
-   * rate: 0.88, pitch: 1.05, lang: "en-US"
-   */
-  speak(text, onBoundary = null, onEnd = null) {
-    if (!this.voiceEnabled || !window.speechSynthesis) {
-      if (onEnd) setTimeout(onEnd, 1200);
-      return;
     }
 
-    try {
-      window.speechSynthesis.cancel();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.88;
-      utterance.pitch = 1.05;
-
-      // Select natural English voice if available
-      const voices = window.speechSynthesis.getVoices();
-      if (voices && voices.length > 0) {
-        const preferredVoice = voices.find(v => 
-          (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Jenny')) && 
-          v.lang.startsWith('en')
-        ) || voices.find(v => v.lang.startsWith('en'));
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
+    /**
+     * speak(): Calibrated SpeechSynthesis (rate: 0.88, pitch: 1.05, lang: "en-US")
+     */
+    speak(text, onBoundary = null, onEnd = null) {
+      if (typeof window === 'undefined' || this.isMuted || !('speechSynthesis' in window)) {
+        if (typeof onEnd === 'function') setTimeout(onEnd, 1000);
+        return;
       }
 
-      if (onBoundary) {
-        utterance.onboundary = (event) => {
-          if (event.name === 'word') {
-            onBoundary(event.charIndex, event.charLength || 5);
+      this.stopSpeech();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.88;
+      utterance.pitch = 1.05;
+      utterance.lang = 'en-US';
+
+      if (this.voice) {
+        utterance.voice = this.voice;
+      }
+
+      if (typeof onBoundary === 'function') {
+        utterance.onboundary = (e) => {
+          if (e.name === 'word') {
+            onBoundary(e.charIndex, e.charLength || 0);
           }
         };
       }
 
       utterance.onend = () => {
         this.currentUtterance = null;
-        if (onEnd) onEnd();
+        if (typeof onEnd === 'function') onEnd();
       };
 
-      utterance.onerror = (err) => {
-        console.warn('TTS utterance error', err);
+      utterance.onerror = () => {
         this.currentUtterance = null;
-        if (onEnd) onEnd();
+        if (typeof onEnd === 'function') onEnd();
       };
 
       this.currentUtterance = utterance;
       window.speechSynthesis.speak(utterance);
-    } catch (err) {
-      console.warn('SpeechSynthesis failed', err);
-      if (onEnd) setTimeout(onEnd, 1000);
+    }
+
+    speakText(text, onBoundary = null, onEnd = null) {
+      this.speak(text, onBoundary, onEnd);
+    }
+
+    stopSpeech() {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      this.currentUtterance = null;
     }
   }
 
-  stopSpeech() {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    this.currentUtterance = null;
+  const memeAudioInstance = new MemeAudioEngine();
+  root.MemeAudio = memeAudioInstance;
+  if (typeof window !== 'undefined') {
+    window.memeAudio = memeAudioInstance;
+    window.SoundAudio = memeAudioInstance;
   }
-}
 
-// Global instance
-window.memeAudio = new MemeAudioEngine();
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = MemeAudioEngine;
+  }
+})(typeof window !== 'undefined' ? window : global);
