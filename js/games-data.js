@@ -1309,6 +1309,113 @@ const GAMES_REGISTRY = [
     "url": "meme-rules/index.html"
   },
   {
+    "id": "biome-crafter",
+    "aliases": [
+      "minecraft-survival",
+      "night-survival",
+      "voxel-crafter",
+      "biome-survival"
+    ],
+    "title": "⛏️ Biome Crafter: The Night Survival (70-Min Master Arc)",
+    "description": "8-Stage interactive voxel survival & CLIL science arcade module. Explore 4 biomes, harvest timber and cobblestone in the mining airlock, craft tier-upgraded pickaxes, sort emergency supplies during sunset, assemble a 3x3 tactical shelter forge, repel midnight creepers, and broadcast a 3-sentence teleprompter report!",
+    "category": "CLIL & Science",
+    "categoryGroup": "Earth, Space & Natural Science",
+    "cefrLevel": "A1–A1+",
+    "level": "A1+",
+    "ageGroup": "7–11",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "xp": 200,
+    "duration": 70,
+    "durationText": "70 min (2 Lessons)",
+    "estimatedMinutes": 70,
+    "type": "game",
+    "topics": [
+      "Earth Science & Biomes",
+      "Materials & Tools",
+      "Infinitives of Purpose",
+      "Nocturnal Animal Adaptations",
+      "3x3 Tactical Crafting"
+    ],
+    "learningObjectives": [
+      "Express quantities and materials using: 'I need [number] [material] to make a [tool/item].'",
+      "Formulate infinitives of purpose: 'We use [item] to [verb] the [object].'",
+      "Recognize environmental survival conditions: 'When the sun sets, we must build a shelter to survive!'",
+      "Classify survival gear vs. luxury items under timed sunset pressure.",
+      "Execute modular recipe patterns on an interactive 3x3 crafting grid."
+    ],
+    "teacherInstructions": "Run through 8 sequential stages across 2 35-minute lessons: Lesson 1 (Biome Scanner, Mining Airlock, Tool Smithing, Sunset Drill), Lesson 2 (3x3 Shelter Forge, Creeper Defense, Teleprompter Studio, Diagnostic Checkpoint & Field Manual).",
+    "route": "biome-crafter/index.html",
+    "worksheet": "biome-crafter/worksheet.html",
+    "worksheetRoute": "biome-crafter/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "⛏️",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #10b981 100%)",
+    "tags": [
+      "biome",
+      "minecraft",
+      "voxel",
+      "crafting",
+      "materials",
+      "clil",
+      "science",
+      "survival",
+      "night"
+    ],
+    "vocabulary": {
+      "core": [
+        "wood",
+        "stone",
+        "iron",
+        "coal",
+        "stick",
+        "torch",
+        "door",
+        "pickaxe",
+        "sword",
+        "shelter"
+      ],
+      "supporting": [
+        "chop",
+        "mine",
+        "craft",
+        "light",
+        "block",
+        "protect",
+        "survive",
+        "workbench",
+        "bedrock",
+        "sunset"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "I need [number] [material] to make / We use [item] to [verb]",
+      "formula": "I need [number] [material] to make a [item]. / We use [item] to [verb].",
+      "formulas": [
+        "I need 3 wood to make a door.",
+        "We use torches to light the shelter.",
+        "When the sun sets, we must build a shelter to survive!"
+      ]
+    },
+    "clilDomain": "Earth Science, Materials & Environmental Engineering",
+    "clilTheme": "Ecosystem Resources & Structural Defense",
+    "trackId": "track-1",
+    "trackTitle": "🌍 Earth, Space & Natural Science",
+    "trackOrder": 5,
+    "formula": "I need [materials] to make / We use [item] to [verb]",
+    "status": "active",
+    "worksheetUrl": "biome-crafter/worksheet.html",
+    "url": "biome-crafter/index.html"
+  },
+  {
     "id": "ninja-trials",
     "aliases": [
       "ninja-academy",
