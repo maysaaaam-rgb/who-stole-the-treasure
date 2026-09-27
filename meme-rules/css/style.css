@@ -1,46 +1,43 @@
 /**
- * ADVENTURE ACADEMY: MEME RULES — EDTECH ARCADE EDITION
- * Visual fidelity, bouncy physics & tactile styling inspired by Duolingo, Blooket & Kahoot
- * Zero external runtime dependencies.
+ * MEME RULES ARENA: THE CLASSROOM IMPERATIVES CLASH
+ * Commercial EdTech Arcade Styling & Cyber-Glassmorphism
+ * Zero external runtime dependencies • Duolingo/Blooket tactile mechanics
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap');
 
 :root {
-  /* Vibrant Arcade Palette */
-  --bg-deep: #060911;
+  /* 60-30-10 Cyber-Glassmorphism Palette */
+  --bg-obsidian: #060911;
   --bg-surface: #0f172a;
-  --bg-card: #1e293b;
-  --bg-card-border: #334155;
-  --bg-card-bevel: #0f172a;
+  --bg-panel: rgba(15, 23, 42, 0.88);
+  --border-glass: rgba(56, 189, 248, 0.18);
+  --border-dark: #090d16;
 
-  /* 3D Button Tokens (Duolingo & Blooket physics) */
-  --btn-do-bg: #10b981;
-  --btn-do-border: #047857;
-  --btn-do-glow: rgba(16, 185, 129, 0.4);
+  /* 10% Active Accents */
+  --accent-do: #10b981;
+  --accent-do-dark: #047857;
+  --accent-do-glow: rgba(16, 185, 129, 0.45);
 
-  --btn-dont-bg: #ef4444;
-  --btn-dont-border: #b91c1c;
-  --btn-dont-glow: rgba(239, 68, 68, 0.4);
+  --accent-dont: #ef4444;
+  --accent-dont-dark: #b91c1c;
+  --accent-dont-glow: rgba(239, 68, 68, 0.45);
 
-  --btn-blue-bg: #3b82f6;
-  --btn-blue-border: #1d4ed8;
-  --btn-blue-glow: rgba(59, 130, 246, 0.4);
-
-  --btn-gold-bg: #f59e0b;
-  --btn-gold-border: #b45309;
-  --btn-gold-glow: rgba(245, 158, 11, 0.45);
-
-  --btn-purple-bg: #8b5cf6;
-  --btn-purple-border: #6d28d9;
-  --btn-purple-glow: rgba(139, 92, 246, 0.4);
-
-  /* Accents */
-  --accent-cyan: #06b6d4;
-  --accent-emerald: #10b981;
   --accent-amber: #f59e0b;
-  --accent-coral: #f43f5e;
-  --accent-purple: #a855f7;
+  --accent-amber-dark: #b45309;
+  --accent-amber-glow: rgba(245, 158, 11, 0.45);
+
+  --accent-cyan: #38bdf8;
+  --accent-cyan-dark: #0284c7;
+  --accent-cyan-glow: rgba(56, 189, 248, 0.4);
+
+  --accent-purple: #8b5cf6;
+  --accent-purple-dark: #6d28d9;
+  --accent-purple-glow: rgba(139, 92, 246, 0.4);
+
+  /* Physics Springs */
+  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Typography */
   --font-game: 'Fredoka', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -55,11 +52,11 @@
 }
 
 body {
-  background: var(--bg-deep);
+  background: var(--bg-obsidian);
   background-image: 
-    radial-gradient(circle at 50% 10%, #1e1b4b 0%, transparent 60%),
-    radial-gradient(circle at 10% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 70%, rgba(239, 68, 68, 0.08) 0%, transparent 40%);
+    radial-gradient(circle at 50% 12%, #0c1a30 0%, #060911 100%),
+    radial-gradient(circle at 12% 40%, rgba(16, 185, 129, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 88% 70%, rgba(239, 68, 68, 0.07) 0%, transparent 45%);
   color: #ffffff;
   min-height: 100vh;
   display: flex;
@@ -68,7 +65,21 @@ body {
   position: relative;
 }
 
-/* Confetti Canvas Overlay */
+/* =========================================================================
+   AMBIENT VIDEO BACKDROP & CONFETTI CANVAS
+   ========================================================================= */
+.ambient-video-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
+  filter: saturate(1.25) contrast(1.1);
+}
+
 .confetti-canvas {
   position: fixed;
   inset: 0;
@@ -79,169 +90,164 @@ body {
 }
 
 /* =========================================================================
-   3D TACTILE PUSH-BUTTONS (Duolingo & Blooket tactile mechanics)
+   TACTILE 3D PUSH-BUTTONS (.btn-3d & .btn-game-*)
    ========================================================================= */
-.btn-game-do {
-  background: var(--btn-do-bg);
-  border: none;
-  border-bottom: 5px solid var(--btn-do-border);
-  border-radius: 16px;
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 1.15rem;
-  padding: 14px 28px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+.btn-3d {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-shadow: 0 6px 16px var(--btn-do-glow);
+  font-weight: 900;
+  border-radius: 16px;
+  border: none;
+  border-bottom: 5px solid var(--border-dark);
+  cursor: pointer;
   user-select: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s var(--spring-snap), border-bottom-width 0.12s var(--spring-snap), box-shadow 0.12s ease;
+  text-decoration: none;
+  line-height: 1;
 }
 
-.btn-game-do:hover {
+.btn-3d:hover {
+  transform: translateY(-2px);
+}
+
+.btn-3d:active,
+.btn-3d.is-pressed {
+  transform: translateY(4px);
+  border-bottom-width: 1px;
+}
+
+/* Green Light DO Button */
+.btn-game-do,
+.btn-3d.btn-do {
+  background: var(--accent-do);
+  border-bottom: 5px solid var(--accent-do-dark);
+  color: #ffffff;
+  box-shadow: 0 6px 18px var(--accent-do-glow);
+  padding: 14px 28px;
+  font-size: 1.15rem;
+}
+
+.btn-game-do:hover,
+.btn-3d.btn-do:hover {
   background: #059669;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--btn-do-glow);
+  box-shadow: 0 8px 24px var(--accent-do-glow);
 }
 
-.btn-game-do:active {
+.btn-game-do:active,
+.btn-3d.btn-do:active {
   transform: translateY(4px);
   border-bottom-width: 1px;
   box-shadow: none;
 }
 
-.btn-game-dont {
-  background: var(--btn-dont-bg);
-  border: none;
-  border-bottom: 5px solid var(--btn-dont-border);
-  border-radius: 16px;
+/* Red Light DON'T Button */
+.btn-game-dont,
+.btn-3d.btn-dont {
+  background: var(--accent-dont);
+  border-bottom: 5px solid var(--accent-dont-dark);
   color: #ffffff;
-  font-weight: 900;
-  font-size: 1.15rem;
+  box-shadow: 0 6px 18px var(--accent-dont-glow);
   padding: 14px 28px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 6px 16px var(--btn-dont-glow);
-  user-select: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  font-size: 1.15rem;
 }
 
-.btn-game-dont:hover {
+.btn-game-dont:hover,
+.btn-3d.btn-dont:hover {
   background: #dc2626;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--btn-dont-glow);
+  box-shadow: 0 8px 24px var(--accent-dont-glow);
 }
 
-.btn-game-dont:active {
+.btn-game-dont:active,
+.btn-3d.btn-dont:active {
   transform: translateY(4px);
   border-bottom-width: 1px;
   box-shadow: none;
 }
 
-.btn-game-action {
-  background: var(--btn-blue-bg);
-  border: none;
-  border-bottom: 5px solid var(--btn-blue-border);
-  border-radius: 16px;
+/* Action Cyan Button */
+.btn-game-action,
+.btn-3d.btn-action {
+  background: var(--accent-cyan-dark);
+  border-bottom: 5px solid #0369a1;
   color: #ffffff;
-  font-weight: 900;
-  font-size: 1.05rem;
+  box-shadow: 0 6px 16px var(--accent-cyan-glow);
   padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 6px 16px var(--btn-blue-glow);
-  user-select: none;
-  text-decoration: none;
+  font-size: 1.05rem;
 }
 
-.btn-game-action:hover {
-  background: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--btn-blue-glow);
+.btn-game-action:hover,
+.btn-3d.btn-action:hover {
+  background: #0284c7;
+  box-shadow: 0 8px 22px var(--accent-cyan-glow);
 }
 
-.btn-game-action:active {
+.btn-game-action:active,
+.btn-3d.btn-action:active {
   transform: translateY(4px);
   border-bottom-width: 1px;
   box-shadow: none;
 }
 
-.btn-game-gold {
-  background: var(--btn-gold-bg);
-  border: none;
-  border-bottom: 5px solid var(--btn-gold-border);
-  border-radius: 16px;
+/* Gold / XP Button */
+.btn-game-gold,
+.btn-3d.btn-gold {
+  background: var(--accent-amber);
+  border-bottom: 5px solid var(--accent-amber-dark);
   color: #0f172a;
-  font-weight: 900;
-  font-size: 1.05rem;
+  box-shadow: 0 6px 16px var(--accent-amber-glow);
   padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 6px 16px var(--btn-gold-glow);
-  user-select: none;
-  text-decoration: none;
+  font-size: 1.05rem;
 }
 
-.btn-game-gold:hover {
+.btn-game-gold:hover,
+.btn-3d.btn-gold:hover {
   background: #d97706;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--btn-gold-glow);
-}
-
-.btn-game-gold:active {
-  transform: translateY(4px);
-  border-bottom-width: 1px;
-  box-shadow: none;
-}
-
-.btn-game-purple {
-  background: var(--btn-purple-bg);
-  border: none;
-  border-bottom: 5px solid var(--btn-purple-border);
-  border-radius: 16px;
   color: #ffffff;
-  font-weight: 900;
-  font-size: 1.05rem;
-  padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 6px 16px var(--btn-purple-glow);
-  user-select: none;
-  text-decoration: none;
+  box-shadow: 0 8px 22px var(--accent-amber-glow);
 }
 
-.btn-game-purple:hover {
-  background: #7c3aed;
-  transform: translateY(-2px);
-}
-
-.btn-game-purple:active {
+.btn-game-gold:active,
+.btn-3d.btn-gold:active {
   transform: translateY(4px);
   border-bottom-width: 1px;
   box-shadow: none;
+}
+
+/* Purple Button */
+.btn-game-purple,
+.btn-3d.btn-purple {
+  background: var(--accent-purple);
+  border-bottom: 5px solid var(--accent-purple-dark);
+  color: #ffffff;
+  box-shadow: 0 6px 16px var(--accent-purple-glow);
+  padding: 12px 24px;
+  font-size: 1.05rem;
+}
+
+.btn-game-purple:hover,
+.btn-3d.btn-purple:hover {
+  background: #7c3aed;
+}
+
+.btn-game-purple:active,
+.btn-3d.btn-purple:active {
+  transform: translateY(4px);
+  border-bottom-width: 1px;
+  box-shadow: none;
+}
+
+/* Keyboard active highlight */
+.btn-active-key {
+  transform: translateY(4px) !important;
+  border-bottom-width: 1px !important;
+  filter: brightness(1.2);
 }
 
 /* =========================================================================
-   TOP ARCADE HUD
+   TOP ARCADE TACTICAL HUD (STICKY, NEVER OVERLAPS)
    ========================================================================= */
 .cyber-hud {
   position: sticky;
@@ -320,6 +326,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  user-select: none;
 }
 
 .step-tab:hover {
@@ -361,7 +368,7 @@ body {
 .hud-stats {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -378,12 +385,6 @@ body {
   align-items: center;
   gap: 6px;
   box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
-  animation: pulseFire 2s infinite ease-in-out;
-}
-
-@keyframes pulseFire {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
 }
 
 .xp-pill {
@@ -403,12 +404,12 @@ body {
 }
 
 .xp-pill.bounce {
-  animation: coinBounce 0.4s ease;
+  animation: coinBounce 0.4s var(--spring-bounce);
 }
 
 @keyframes coinBounce {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.22); }
+  50% { transform: scale(1.24); }
 }
 
 .energy-meter-wrap {
@@ -422,7 +423,7 @@ body {
 }
 
 .meter-track {
-  width: 90px;
+  width: 85px;
   height: 12px;
   background: #0f172a;
   border-radius: 999px;
@@ -439,6 +440,108 @@ body {
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
 }
 
+/* Sound toggle button */
+.hud-btn-icon {
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-bottom: 3px solid #0f172a;
+  border-radius: 12px;
+  color: #cbd5e1;
+  font-size: 1rem;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hud-btn-icon:hover {
+  color: #fff;
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+}
+
+.hud-btn-icon:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+/* =========================================================================
+   65% FULL-BLEED ARTWORK RULE & ISOMETRIC REFLECTION PEDESTAL
+   ========================================================================= */
+.card-hero-stage {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: radial-gradient(circle at 50% 35%, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-bottom: 2px solid rgba(56, 189, 248, 0.15);
+}
+
+.isometric-pedestal,
+.pedestal-disk,
+.pedestal-disc {
+  position: absolute;
+  bottom: 12px;
+  width: 130px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.45) 0%, rgba(56, 189, 248, 0.12) 50%, transparent 75%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+  transform: rotateX(60deg);
+  animation: pedestalPulse 3s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pedestal-green {
+  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.5) 0%, rgba(16, 185, 129, 0.15) 50%, transparent 75%);
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+}
+
+.pedestal-red {
+  background: radial-gradient(ellipse at center, rgba(239, 68, 68, 0.5) 0%, rgba(239, 68, 68, 0.15) 50%, transparent 75%);
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.45);
+}
+
+@keyframes pedestalPulse {
+  0% { transform: rotateX(60deg) scale(0.92); opacity: 0.7; }
+  100% { transform: rotateX(60deg) scale(1.08); opacity: 1; }
+}
+
+.hero-character-sprite,
+.meme-hero-svg,
+.hero-model {
+  position: relative;
+  z-index: 2;
+  width: 130px;
+  height: 130px;
+  animation: idleBob 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.65));
+}
+
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.card-caption-tray {
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border-radius: 0 0 20px 20px;
+}
+
 /* =========================================================================
    STAGE VIEWPORT & HERO BANNER
    ========================================================================= */
@@ -449,6 +552,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
 .stage-view {
@@ -498,64 +603,82 @@ body {
 }
 
 /* =========================================================================
-   PHASE 1: MEME REACTION SCANNER (Arcade Collectible Cards)
+   PHASE 1: HOLOGRAPHIC MEME SCANNER (3D FLIPPING TRADING CARDS)
    ========================================================================= */
 .scanner-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
 }
 
-.scanner-card {
+.scanner-card-wrap {
+  perspective: 1000px;
+  min-height: 420px;
+}
+
+.scanner-card-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s var(--spring-bounce);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.scanner-card-wrap.is-flipped .scanner-card-flipper {
+  transform: rotateY(180deg);
+}
+
+.card-face-front,
+.card-face-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 24px;
   background: #0f172a;
   border: 3px solid #334155;
   border-bottom: 6px solid #1e293b;
-  border-radius: 24px;
-  padding: 18px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scanner-card-wrap:hover .card-face-front {
+  border-color: #38bdf8;
+  box-shadow: 0 16px 36px rgba(56, 189, 248, 0.35);
+}
+
+.card-face-back {
+  transform: rotateY(180deg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
-  min-height: 380px;
-  justify-content: space-between;
 }
 
-.scanner-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: #38bdf8;
-  box-shadow: 0 16px 36px rgba(56, 189, 248, 0.3);
-}
-
-.scanner-card.is-scanned {
+.card-face-back.is-do {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.16) 0%, #0f172a 100%);
   border-color: #10b981;
   border-bottom-color: #047857;
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, #0f172a 100%);
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
 }
 
-.meme-avatar-box {
-  width: 120px;
-  height: 120px;
-  margin: 6px auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.scanner-card:hover .meme-avatar-box {
-  transform: scale(1.06);
+.card-face-back.is-dont {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.16) 0%, #0f172a 100%);
+  border-color: #ef4444;
+  border-bottom-color: #b91c1c;
 }
 
 .scanner-card-title {
-  font-size: 1.12rem;
+  font-size: 1.15rem;
   font-weight: 900;
   color: #ffffff;
-  margin: 8px 0 4px 0;
 }
 
 .scanner-mood-tag {
@@ -566,7 +689,6 @@ body {
   border: 1px solid #facc15;
   padding: 3px 10px;
   border-radius: 8px;
-  margin-bottom: 8px;
 }
 
 .scanner-verb-pill {
@@ -577,54 +699,56 @@ body {
   font-weight: 900;
   padding: 4px 12px;
   border-radius: 12px;
-  margin-bottom: 8px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
 }
 
-.scanner-sentence {
-  font-size: 0.86rem;
-  color: #e2e8f0;
-  line-height: 1.4;
-  margin-bottom: 12px;
-  background: rgba(30, 41, 59, 0.6);
-  border-radius: 12px;
-  padding: 8px 12px;
-  position: relative;
-  font-weight: 600;
-}
-
-.scanner-badge-status {
-  font-size: 0.82rem;
+.rule-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
   font-weight: 900;
-  padding: 8px 14px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rule-badge-pill.do {
+  background: rgba(16, 185, 129, 0.25);
+  border: 2px solid #10b981;
+  color: #34d399;
+}
+
+.rule-badge-pill.dont {
+  background: rgba(239, 68, 68, 0.25);
+  border: 2px solid #ef4444;
+  color: #f87171;
+}
+
+.scanner-revealed-rule {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.4;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.8);
   border-radius: 14px;
   width: 100%;
+}
+
+.scanner-tap-hint {
+  font-size: 0.82rem;
+  color: #94a3b8;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  transition: all 0.2s ease;
-}
-
-.scanner-badge-status.locked {
-  background: #1e293b;
-  color: #94a3b8;
-  border: 1px solid #334155;
-  border-bottom: 3px solid #0f172a;
-}
-
-.scanner-badge-status.collected {
-  background: #10b981;
-  color: #ffffff;
-  border-bottom: 3px solid #047857;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 /* =========================================================================
-   PHASE 2: GREEN LIGHT / RED LIGHT RELAY SHOWDOWN ARENA
+   PHASE 2: TACTICAL SORTING & CRISIS ARENA
    ========================================================================= */
 .relay-showdown-grid {
   display: grid;
@@ -652,7 +776,6 @@ body {
   }
 }
 
-/* Center Stage: Active Showdown Card */
 .relay-center-arena {
   display: flex;
   flex-direction: column;
@@ -664,7 +787,7 @@ body {
   border: 3.5px solid #38bdf8;
   border-bottom: 8px solid #0284c7;
   border-radius: 28px;
-  padding: 28px 24px;
+  padding: 0 0 24px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -674,23 +797,34 @@ body {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: grab;
   user-select: none;
+  overflow: hidden;
 }
 
 .showdown-active-card:active {
   cursor: grabbing;
 }
 
-.showdown-avatar-box {
-  width: 140px;
-  height: 140px;
-  margin-bottom: 12px;
+.showdown-active-card .card-hero-stage {
+  height: 220px;
 }
 
 .showdown-card-title {
   font-size: 1.35rem;
   font-weight: 900;
   color: #ffffff;
-  margin-bottom: 6px;
+  margin: 12px 0 4px 0;
+}
+
+.showdown-scenario-banner {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  color: #7dd3fc;
+  font-weight: 700;
+  margin: 0 20px 10px 20px;
+  width: calc(100% - 40px);
 }
 
 .showdown-verb-tag {
@@ -702,7 +836,7 @@ body {
   font-weight: 900;
   padding: 4px 14px;
   border-radius: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -712,36 +846,84 @@ body {
   background: #0f172a;
   border: 2px solid #475569;
   border-radius: 18px;
-  padding: 16px 20px;
+  padding: 14px 20px;
   font-size: 1.15rem;
   font-weight: 800;
   color: #ffffff;
   line-height: 1.45;
-  margin-bottom: 20px;
-  width: 100%;
+  margin: 0 20px 18px 20px;
+  width: calc(100% - 40px);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
-/* 3D Action Push-Buttons for the Active Showdown Card */
 .relay-action-buttons-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  width: 100%;
+  width: calc(100% - 40px);
+  margin: 0 20px;
 }
 
 .keyboard-shortcut-hint {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #94a3b8;
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 }
 
-/* Flanking Stadiums (Dropzones) */
+/* Rubber Stamp Slam (-12° tilt) */
+@keyframes stampSlam {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.6) rotate(22deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.95) rotate(-14deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(-11deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-12deg);
+  }
+}
+
+.rubber-stamp {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  padding: 12px 28px;
+  border: 6px solid #10b981;
+  border-radius: 18px;
+  background: rgba(16, 185, 129, 0.25);
+  backdrop-filter: blur(8px);
+  color: #10b981;
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.7), inset 0 0 15px rgba(16, 185, 129, 0.4);
+  animation: stampSlam 0.45s var(--spring-snap) forwards;
+  z-index: 50;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.rubber-stamp.stamp-dont {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.7), inset 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Flanking Stadium Airlocks (Dropzones) */
 .dropzone-lane {
   background: #0f172a;
   border-radius: 24px;
@@ -821,7 +1003,6 @@ body {
   padding-right: 4px;
 }
 
-/* Sorted Achievement Badge Inside Stadium */
 .sorted-trophy-badge {
   background: #1e293b;
   border: 2px solid #334155;
@@ -830,7 +1011,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  animation: popBadge 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: popBadge 0.3s var(--spring-bounce) forwards;
 }
 
 @keyframes popBadge {
@@ -838,11 +1019,11 @@ body {
   to { transform: scale(1); opacity: 1; }
 }
 
-/* Soft-Fail Elastic Wobble Animation */
+/* Soft-Fail Elastic Card Wobble */
 @keyframes elasticWobble {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-10px) rotate(-1.5deg); }
-  40%, 80% { transform: translateX(10px) rotate(1.5deg); }
+  20%, 60% { transform: translateX(-8px) rotate(-1.5deg); }
+  40%, 80% { transform: translateX(8px) rotate(1.5deg); }
 }
 
 .wobble-fail {
@@ -850,10 +1031,10 @@ body {
   border-color: #ef4444 !important;
 }
 
-/* Floating Comic +15 XP Score Burst */
+/* Floating Comic +20 XP Score Burst */
 .floating-xp-burst {
   position: absolute;
-  top: 20%;
+  top: 25%;
   left: 50%;
   transform: translate(-50%, 0);
   background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -876,11 +1057,11 @@ body {
 }
 
 /* =========================================================================
-   PHASE 3: TELEPROMPTER STUDIO (Broadcast Cyber Console)
+   PHASE 3: LIVE TELEPROMPTER STUDIO (ORAL SHOWCASE & PODIUM)
    ========================================================================= */
 .teleprompter-studio-container {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 340px 1fr;
   gap: 24px;
 }
 
@@ -937,7 +1118,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), inset 0 0 50px rgba(0, 0, 0, 0.85);
-  min-height: 460px;
+  min-height: 480px;
   position: relative;
 }
 
@@ -976,15 +1157,24 @@ body {
   to { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px #ef4444; }
 }
 
+.teleprompter-stage-podium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 170px;
+  margin: 10px 0;
+}
+
 .teleprompter-script-box {
-  padding: 24px 10px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .teleprompter-line {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 800;
   line-height: 1.6;
   color: #64748b;
@@ -1052,7 +1242,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  animation: zoomDiploma 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: zoomDiploma 0.4s var(--spring-bounce) forwards;
 }
 
 @keyframes zoomDiploma {
