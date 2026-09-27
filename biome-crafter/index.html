@@ -238,51 +238,56 @@
       </div>
 
       <div class="crafting-forge-layout">
-        <!-- Left: Recipe Selector List -->
+        <!-- Left: Visual Blueprint Preview Card & Mini Schematic -->
         <div class="forge-left-recipes" id="forgeRecipesList">
-          <!-- Injected dynamically by js/app.js -->
+          <!-- Injected dynamically by js/app.js: 3D preview card + mini schematic grid -->
         </div>
 
-        <!-- Center: 3x3 Crafting Grid & Tactical Stage -->
+        <!-- Center: 3x3 Crafting Grid & Tactile Voxel Inventory Stage -->
         <div class="forge-center-stage">
           
           <!-- Base Defense Meter -->
-          <div style="width:100%; max-width:440px; display:flex; flex-direction:column; gap:6px;">
-            <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:900;">
+          <div style="width:100%; max-width:480px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.92rem; font-weight:900;">
               <span style="color:#94a3b8;">Base Fortification Level:</span>
               <span style="color:#10b981;" id="baseDefenseNumber">25%</span>
             </div>
-            <div class="daylight-track" style="width:100%; height:14px;">
+            <div class="daylight-track" style="width:100%; height:16px;">
               <div class="daylight-fill" id="baseDefenseFill" style="width:25%; background:#10b981;"></div>
             </div>
           </div>
 
           <!-- Active Recipe Goal -->
           <div style="text-align:center;">
-            <h3 style="font-size:1.35rem; font-weight:900; color:#fef08a;" id="activeCraftGoalTitle">
+            <h3 style="font-size:1.45rem; font-weight:900; color:#fef08a;" id="activeCraftGoalTitle">
               Secure Wooden Door
             </h3>
-            <p style="font-size:0.95rem; color:#cbd5e1; margin-top:2px;" id="activeCraftGoalFormula">
+            <p style="font-size:1rem; color:#cbd5e1; margin-top:4px;" id="activeCraftGoalFormula">
               "We need a door to block monsters!"
             </p>
           </div>
 
-          <!-- 3x3 Grid Matrix -->
-          <div class="grid-3x3-container" id="grid3x3Container">
-            <!-- 9 Sockets rendered dynamically -->
+          <!-- 3x3 Grid Matrix with Ghost Hints -->
+          <div class="grid-3x3-container crafting-grid" id="grid3x3Container">
+            <!-- 9 Sockets with translucent ghost icons rendered dynamically -->
           </div>
 
-          <!-- Ingredient Palette Chips -->
-          <div class="crafting-palette-row" id="paletteChipsRow">
-            <!-- Chips for wood, stone, iron, coal, stick -->
+          <!-- Tactile Voxel Inventory Tray (Chunky 48px 3D Buttons) -->
+          <div style="width:100%; text-align:center;">
+            <div style="font-size:0.85rem; font-weight:900; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">
+              🎒 Voxel Material Inventory (Tap material, then tap slot)
+            </div>
+            <div class="crafting-palette-row inventory-tray" id="paletteChipsRow">
+              <!-- Chunky buttons for wood, stone, iron, coal, stick rendered dynamically -->
+            </div>
           </div>
 
-          <!-- Controls: Clear / Craft -->
-          <div style="display:flex; gap:14px; width:100%; max-width:440px; justify-content:center;">
+          <!-- Controls: Clear / Forge Item -->
+          <div style="display:flex; gap:14px; width:100%; max-width:480px; justify-content:center;">
             <button type="button" class="btn-3d btn-game-slate" onclick="clear3x3Grid()" style="flex:1;">
               <span>↺</span> <span>Clear Grid</span>
             </button>
-            <button type="button" class="btn-3d btn-game-torch" onclick="verify3x3Craft()" style="flex:1.5; font-size:1.1rem;">
+            <button type="button" class="btn-3d btn-game-torch" id="btnForgeItem" onclick="verify3x3Craft()" style="flex:1.5; font-size:1.15rem; min-height:54px;">
               <span>🔨</span> <span>Forge Item!</span>
             </button>
           </div>
@@ -303,7 +308,7 @@
       <div class="stage-hero-banner">
         <div class="stage-hero-left">
           <h2><span>👾</span> Stage 6: The Midnight Creeper Defense</h2>
-          <p>Midnight has fallen! Creepers lurk in the shadows. Tap torches to illuminate unlit windows, bolt doors, and deploy your Iron Golem to protect your base (+25 XP)!</p>
+          <p>Midnight has fallen! Creepers lurk in the shadows outside your shelter. Tap dark windows to mount torches, bolt the heavy wooden door, and deploy the Iron Golem defender (+25 XP)!</p>
         </div>
         <div>
           <button type="button" class="btn-3d btn-game-torch" onclick="switchStage(7)">
@@ -312,30 +317,106 @@
         </div>
       </div>
 
-      <div class="creeper-defense-arena">
+      <div class="creeper-defense-arena" id="defenseArena">
         <!-- Threat Alert Box -->
-        <div class="defense-alert-box">
+        <div class="defense-alert-box" id="defenseAlertBox">
           <div style="font-size:1.35rem; font-weight:900; color:#f87171;" id="defenseAlertTitle">
-            ⚠️ Dark Shadow at West Window!
+            ⚠️ Alert 1 of 3: Dark Shadow at West Window!
           </div>
-          <p style="font-size:0.95rem; color:#cbd5e1; margin-top:4px;" id="defenseAlertDesc">
-            Creeper sneaking in unlit blindspot. Use torches to illuminate the window!
+          <p style="font-size:1rem; color:#f1f5f9; margin-top:6px;" id="defenseAlertDesc">
+            The window is dark! Tap to place a torch and illuminate the shelter!
           </p>
         </div>
 
-        <!-- 3D Creeper Mob Mascot on Bedrock Pedestal -->
-        <div class="hero-character-box" style="height:200px;">
-          <img src="assets/characters/creeper_mob.jpg" alt="Nocturnal Creeper" class="hero-character-sprite" style="max-height:180px;">
-          <div class="pedestal-disc" style="background: radial-gradient(ellipse at center, rgba(239,68,68,0.45) 0%, transparent 72%);"></div>
+        <!-- The Visual Shelter Scene (Cross-Section Minecraft Base) -->
+        <div class="shelter-visual-scene" id="shelterVisualScene">
+          <!-- Timber Roof Beam -->
+          <div class="shelter-roof-beam">
+            <span class="beam-bracket">🪵</span>
+            <span class="beam-title">🛡️ OAK &amp; COBBLESTONE FORTIFIED BASE</span>
+            <span class="beam-bracket">🪵</span>
+          </div>
+
+          <!-- Main Shelter Interior Cross-Section -->
+          <div class="shelter-interior-cross">
+            <!-- Left Wall Bay: Window 1 + Torch Sconce 1 -->
+            <div class="shelter-wall-bay left-bay">
+              <div class="torch-wall-mount" id="wallMountLeft" onclick="handleDefenseTrigger('torch')" title="West Wall Torch Sconce">
+                <span class="torch-emoji" id="torchEmojiLeft">🕯️</span>
+              </div>
+
+              <div class="shelter-window-slot has-alert" id="shelterWindow1" onclick="handleDefenseTrigger('torch')" title="West Window">
+                <div class="window-pane-frame">
+                  <div class="window-exterior-sky" id="window1Exterior">
+                    <!-- Red glowing creeper eyes peeking outside -->
+                    <div class="creeper-eyes" id="creeperEyes1">👀</div>
+                    <div class="window-torch-overlay" id="window1TorchGlow"></div>
+                  </div>
+                </div>
+                <span class="window-badge" id="window1Badge">West Window (Dark)</span>
+              </div>
+            </div>
+
+            <!-- Center Doorway Bay: Entrance + Wooden Door -->
+            <div class="shelter-center-bay">
+              <div class="shelter-door-slot has-alert" id="shelterDoorway" onclick="handleDefenseTrigger('lock')" title="Main Shelter Entrance">
+                <div class="door-frame-timber">
+                  <div class="door-leaf-panel open" id="doorLeaf">
+                    <span class="door-lock-icon" id="doorLockIcon">🔓</span>
+                  </div>
+                  <!-- Outside entrance mob silhouette -->
+                  <div class="door-exterior-mob" id="doorExteriorMob">
+                    <img src="assets/characters/creeper_mob.jpg" alt="Lurking Creeper" class="door-creeper-sprite">
+                  </div>
+                </div>
+                <span class="window-badge" id="doorBadge">Main Entrance (Unbolted)</span>
+              </div>
+            </div>
+
+            <!-- Right Wall Bay: Window 2 + Torch Sconce 2 -->
+            <div class="shelter-wall-bay right-bay">
+              <div class="torch-wall-mount" id="wallMountRight" onclick="handleDefenseTrigger('golem')" title="East Wall Torch Sconce">
+                <span class="torch-emoji" id="torchEmojiRight">🕯️</span>
+              </div>
+
+              <div class="shelter-window-slot" id="shelterWindow2" onclick="handleDefenseTrigger('golem')" title="East Window">
+                <div class="window-pane-frame">
+                  <div class="window-exterior-sky" id="window2Exterior">
+                    <!-- Swirling shadow / creeper pack -->
+                    <div class="creeper-eyes" id="creeperEyes2">👀</div>
+                    <div class="golem-smash-overlay" id="golemSmashOverlay" style="display:none;">
+                      <img src="assets/characters/iron_golem.jpg" alt="Iron Golem Defender" class="golem-defender-sprite">
+                    </div>
+                  </div>
+                </div>
+                <span class="window-badge" id="window2Badge">East Window (Perimeter)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floorboards Deck -->
+          <div class="shelter-floor-deck"></div>
         </div>
 
-        <!-- Action Defense Buttons Row -->
-        <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;" id="defenseActionsRow">
-          <!-- Populated dynamically by js/app.js -->
+        <!-- Tactical Defense Command Dock & Action Buttons -->
+        <div class="defense-command-dock">
+          <div class="defense-action-wrapper" id="defenseActionsRow">
+            <!-- Populated dynamically by js/app.js -->
+          </div>
+          <!-- Success Feedback Log -->
+          <div id="defenseSuccessLog" class="defense-success-log"></div>
         </div>
 
-        <!-- Success Log -->
-        <div id="defenseSuccessLog" style="font-size:1rem; font-weight:800; color:#34d399; min-height:24px;"></div>
+        <!-- Victory Banner Callout -->
+        <div id="defenseVictoryNotice" class="defense-victory-callout" style="display:none;">
+          <div class="victory-header">
+            <h3>🎉 SHELTER FULLY DEFENDED! ALL CREEPERS REPELLED!</h3>
+            <p>You crafted defensive equipment, illuminated unlit windows with torches, bolted the heavy oak door, and deployed the Iron Golem defender! (+25 XP awarded)</p>
+          </div>
+          <button type="button" class="btn-3d btn-game-emerald" onclick="switchStage(7)" style="font-size:1.15rem; padding:16px 36px;">
+            <span>🎙️ Advance to Teleprompter Studio →</span>
+          </button>
+        </div>
       </div>
     </section>
 

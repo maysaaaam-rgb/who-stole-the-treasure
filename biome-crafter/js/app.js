@@ -53,6 +53,11 @@
     // Stage 6: Creeper Defense
     defenseStepIndex: 0,
     completedDefenseIds: new Set(),
+    defenseState: {
+      window1: false,
+      door: false,
+      window2: false
+    },
 
     // Stage 7: Teleprompter Studio
     activeTeleprompterTemplate: null,
@@ -708,7 +713,7 @@
   }
 
   // =========================================================================
-  // STAGE 5: 3x3 TACTILE SHELTER FORGE
+  // STAGE 5: 3x3 TACTILE SHELTER FORGE (VISUAL BLUEPRINT & GHOST GRID)
   // =========================================================================
   function renderStage5Forge() {
     renderForgeRecipeList();
@@ -719,31 +724,97 @@
   function renderForgeRecipeList() {
     const list = document.getElementById('forgeRecipesList');
     const data = root.BIOME_CRAFTER_DATA;
-    if (!list || !data) return;
+    if (!list || !data || !data.crafting3x3Recipes) return;
 
-    list.innerHTML = data.crafting3x3Recipes.map((r, idx) => {
-      const isSelected = (idx === playerSession.activeRecipeIndex);
-      const isCrafted = playerSession.crafted3x3Ids.has(r.id);
+    const recipes = data.crafting3x3Recipes;
+    const active = recipes[playerSession.activeRecipeIndex] || recipes[0];
+    const isCrafted = playerSession.crafted3x3Ids.has(active.id);
 
-      return `
-        <button type="button" class="teleprompter-choice-card ${isSelected ? 'is-selected' : ''}" onclick="select3x3Recipe(${idx})" style="border-left: 4px solid var(--accent-torch);">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:1.05rem; font-weight:900; color:#ffffff;">${r.name}</span>
-            ${isCrafted ? '<span style="font-size:0.75rem; color:#10b981; font-weight:900;">✓ BUILT</span>' : ''}
+    // Stepper pills
+    const stepperHtml = `
+      <div class="recipe-steps-stepper">
+        ${recipes.map((r, idx) => {
+          const isActive = (idx === playerSession.activeRecipeIndex);
+          const done = playerSession.crafted3x3Ids.has(r.id);
+          return `
+            <button type="button" class="recipe-step-pill ${isActive ? 'is-active' : ''} ${done ? 'is-crafted' : ''}" onclick="select3x3Recipe(${idx})">
+              <span>${r.icon || '🔨'}</span>
+              <span>${done ? '✓ ' : ''}Step 0${idx + 1}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    // 65% / 35% Visual Blueprint Card
+    const previewCardHtml = `
+      <div class="blueprint-preview-card">
+        <!-- 65% Media Viewport with high-depth item rendering & floating/flaming animation -->
+        <div class="blueprint-hero-stage">
+          <span class="hud-tag" style="position:absolute; top:12px; left:12px; background:rgba(15,23,42,0.85); border-color:#f59e0b; color:#fef08a; z-index:3;">
+            ${active.badge || `Step ${playerSession.activeRecipeIndex + 1} of 3`}
+          </span>
+
+          <img src="${active.resultImg}" alt="${active.name}" class="blueprint-item-sprite ${active.previewAnimation || 'floating-door'}" loading="lazy">
+          <div class="pedestal-disc" style="background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.45) 0%, transparent 72%);"></div>
+        </div>
+
+        <!-- 35% Caption Tray with target formulas -->
+        <div class="blueprint-info-tray">
+          <div>
+            <div style="font-size:1.15rem; font-weight:900; color:#ffffff;">${active.name}</div>
+            <div style="font-size:0.82rem; font-weight:800; color:#f59e0b; margin-top:2px;">
+              Required: ${active.ingredientsLabel}
+            </div>
           </div>
-          <div style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
-            ${r.ingredientsLabel}
+          <div style="font-size:0.78rem; color:#94a3b8; font-style:italic;">
+            "${active.targetFormula}"
           </div>
-        </button>
-      `;
-    }).join('');
+        </div>
+      </div>
+    `;
 
-    const active = data.crafting3x3Recipes[playerSession.activeRecipeIndex];
-    if (active) {
-      const title = document.getElementById('activeCraftGoalTitle');
-      const formula = document.getElementById('activeCraftGoalFormula');
-      if (title) title.textContent = active.name;
-      if (formula) formula.textContent = `"${active.targetFormula}"`;
+    // Mini Blueprint Schematic Diagram
+    const miniBlueprintHtml = `
+      <div class="mini-blueprint-box">
+        <div class="mini-blueprint-header">
+          <span>📐</span> <span>Mini Recipe Blueprint:</span>
+        </div>
+        <div class="mini-blueprint-grid">
+          ${active.pattern.map((row) => {
+            return row.map((cell) => {
+              if (cell === 'wood') return `<div class="mini-blueprint-cell has-item">🪵</div>`;
+              if (cell === 'stone') return `<div class="mini-blueprint-cell has-item">🪨</div>`;
+              if (cell === 'iron') return `<div class="mini-blueprint-cell has-item">⚙️</div>`;
+              if (cell === 'coal') return `<div class="mini-blueprint-cell has-item">⚫</div>`;
+              if (cell === 'stick') return `<div class="mini-blueprint-cell has-item">🥢</div>`;
+              return `<div class="mini-blueprint-cell is-empty">·</div>`;
+            }).join('');
+          }).join('')}
+        </div>
+        <div style="font-size:0.75rem; color:#94a3b8; text-align:center;">
+          ${active.miniGuide || 'Place materials to match this pattern.'}
+        </div>
+      </div>
+    `;
+
+    list.innerHTML = stepperHtml + previewCardHtml + miniBlueprintHtml;
+
+    // Update active goal text in center stage
+    const title = document.getElementById('activeCraftGoalTitle');
+    const formula = document.getElementById('activeCraftGoalFormula');
+    if (title) title.textContent = active.name;
+    if (formula) formula.textContent = `"${active.targetFormula}"`;
+
+    // Check stamp
+    const seal = document.getElementById('forgeStampSeal');
+    if (seal) {
+      if (isCrafted) {
+        seal.textContent = active.stampText || `${active.name.toUpperCase()} CRAFTED! ⭐`;
+        seal.classList.add('is-stamped');
+      } else {
+        seal.classList.remove('is-stamped');
+      }
     }
   }
 
@@ -756,83 +827,60 @@
 
   function renderGrid3x3() {
     const container = document.getElementById('grid3x3Container');
-    if (!container) return;
+    const data = root.BIOME_CRAFTER_DATA;
+    if (!container || !data) return;
 
+    const recipe = data.crafting3x3Recipes[playerSession.activeRecipeIndex];
     let html = '';
+
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 3; c++) {
         const item = playerSession.grid3x3[r][c];
-        let icon = '';
-        if (item === 'wood') icon = '🪵';
-        else if (item === 'stone') icon = '🪨';
-        else if (item === 'iron') icon = '⛓️';
-        else if (item === 'coal') icon = '⚫';
-        else if (item === 'stick') icon = '🥢';
+        const ghostReq = (recipe && recipe.pattern && recipe.pattern[r]) ? recipe.pattern[r][c] : '';
 
-        html += `
-          <div class="crafting-slot" onclick="handleSocketClick(${r}, ${c})">
-            ${icon}
-          </div>
-        `;
+        if (item) {
+          let icon = '🪵';
+          if (item === 'stone') icon = '🪨';
+          else if (item === 'iron') icon = '⚙️';
+          else if (item === 'coal') icon = '⚫';
+          else if (item === 'stick') icon = '🥢';
+
+          html += `
+            <div class="crafting-slot" onclick="handleSocketClick(${r}, ${c})" title="Click to remove ${item}">
+              <span class="placed-voxel-icon">${icon}</span>
+            </div>
+          `;
+        } else if (ghostReq) {
+          // Render translucent ghost icon inside the slot
+          let ghostIcon = '🪵';
+          if (ghostReq === 'stone') ghostIcon = '🪨';
+          else if (ghostReq === 'iron') ghostIcon = '⚙️';
+          else if (ghostReq === 'coal') ghostIcon = '⚫';
+          else if (ghostReq === 'stick') ghostIcon = '🥢';
+
+          html += `
+            <div class="crafting-slot has-ghost" onclick="handleSocketClick(${r}, ${c})" title="Tap to place ${ghostReq}">
+              <span class="ghost-icon">${ghostIcon}</span>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="crafting-slot" onclick="handleSocketClick(${r}, ${c})">
+            </div>
+          `;
+        }
       }
     }
+
     container.innerHTML = html;
+    check3x3Match();
   }
 
-  function renderPaletteChips() {
-    const row = document.getElementById('paletteChipsRow');
-    if (!row) return;
-
-    const items = [
-      { id: 'wood', label: 'Wood Planks', icon: '🪵' },
-      { id: 'stone', label: 'Cobblestone', icon: '🪨' },
-      { id: 'iron', label: 'Iron Ingot', icon: '⛓️' },
-      { id: 'coal', label: 'Coal Lump', icon: '⚫' },
-      { id: 'stick', label: 'Wooden Stick', icon: '🥢' }
-    ];
-
-    row.innerHTML = items.map(it => {
-      const isActive = (it.id === playerSession.selectedPaletteItem);
-      return `
-        <button type="button" class="palette-item-chip ${isActive ? 'is-active' : ''}" onclick="selectPaletteItem('${it.id}')">
-          <span>${it.icon}</span> <span>${it.label}</span>
-        </button>
-      `;
-    }).join('');
-  }
-
-  function selectPaletteItem(itemId) {
-    playerSession.selectedPaletteItem = itemId;
-    renderPaletteChips();
-    if (root.BiomeAudio) root.BiomeAudio.playSnap();
-  }
-
-  function handleSocketClick(r, c) {
-    if (playerSession.grid3x3[r][c] === playerSession.selectedPaletteItem) {
-      playerSession.grid3x3[r][c] = '';
-    } else {
-      playerSession.grid3x3[r][c] = playerSession.selectedPaletteItem;
-    }
-
-    if (root.BiomeAudio) root.BiomeAudio.playSnap();
-    renderGrid3x3();
-  }
-
-  function clear3x3Grid() {
-    playerSession.grid3x3 = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', '']
-    ];
-    renderGrid3x3();
-  }
-
-  function verify3x3Craft() {
+  function check3x3Match() {
     const data = root.BIOME_CRAFTER_DATA;
-    if (!data) return;
-
+    if (!data) return false;
     const recipe = data.crafting3x3Recipes[playerSession.activeRecipeIndex];
-    if (!recipe) return;
+    if (!recipe) return false;
 
     let isMatch = true;
     for (let r = 0; r < 3; r++) {
@@ -845,10 +893,97 @@
       if (!isMatch) break;
     }
 
+    const forgeBtn = document.getElementById('btnForgeItem');
+    if (forgeBtn) {
+      if (isMatch) {
+        forgeBtn.classList.add('is-ready');
+        forgeBtn.innerHTML = '<span>✨ READY! 🔨 FORGE ITEM! ✨</span>';
+      } else {
+        forgeBtn.classList.remove('is-ready');
+        forgeBtn.innerHTML = '<span>🔨</span> <span>Forge Item!</span>';
+      }
+    }
+    return isMatch;
+  }
+
+  function handleSocketClick(r, c) {
+    const data = root.BIOME_CRAFTER_DATA;
+    const recipe = data ? data.crafting3x3Recipes[playerSession.activeRecipeIndex] : null;
+    const currentItem = playerSession.grid3x3[r][c];
+
+    if (currentItem) {
+      playerSession.grid3x3[r][c] = '';
+      if (root.BiomeAudio) root.BiomeAudio.playSnap();
+    } else {
+      const ghostReq = (recipe && recipe.pattern && recipe.pattern[r]) ? recipe.pattern[r][c] : '';
+      if (ghostReq && (!playerSession.selectedPaletteItem || playerSession.selectedPaletteItem === ghostReq)) {
+        playerSession.grid3x3[r][c] = ghostReq;
+      } else if (playerSession.selectedPaletteItem) {
+        playerSession.grid3x3[r][c] = playerSession.selectedPaletteItem;
+      } else if (ghostReq) {
+        playerSession.grid3x3[r][c] = ghostReq;
+      }
+
+      if (root.BiomeAudio) root.BiomeAudio.playWoodChop();
+    }
+
+    renderGrid3x3();
+  }
+
+  function renderPaletteChips() {
+    const row = document.getElementById('paletteChipsRow');
+    if (!row) return;
+
+    const items = [
+      { id: 'wood', label: 'Wood Planks', icon: '🪵', qty: 'x6' },
+      { id: 'stone', label: 'Cobblestone', icon: '🪨', qty: 'x4' },
+      { id: 'iron', label: 'Iron Ingots', icon: '⚙️', qty: 'x2' },
+      { id: 'coal', label: 'Coal', icon: '⬛', qty: 'x2' },
+      { id: 'stick', label: 'Sticks', icon: '🥢', qty: 'x2' }
+    ];
+
+    row.innerHTML = items.map(it => {
+      const isSelected = (it.id === playerSession.selectedPaletteItem);
+      return `
+        <button type="button" class="inventory-btn ${isSelected ? 'is-selected' : ''}" onclick="selectPaletteItem('${it.id}')">
+          <div class="item-box-48">${it.icon}</div>
+          <div class="item-label-group">
+            <span class="item-name">${it.label}</span>
+            <span class="item-qty-badge">${it.qty}</span>
+          </div>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function selectPaletteItem(itemId) {
+    playerSession.selectedPaletteItem = itemId;
+    renderPaletteChips();
+    if (root.BiomeAudio) root.BiomeAudio.playSnap();
+  }
+
+  function clear3x3Grid() {
+    playerSession.grid3x3 = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    const seal = document.getElementById('forgeStampSeal');
+    if (seal) seal.classList.remove('is-stamped');
+    renderGrid3x3();
+  }
+
+  function verify3x3Craft() {
+    const data = root.BIOME_CRAFTER_DATA;
+    if (!data) return;
+
+    const recipe = data.crafting3x3Recipes[playerSession.activeRecipeIndex];
+    if (!recipe) return;
+
+    const isMatch = check3x3Match();
     const seal = document.getElementById('forgeStampSeal');
 
     if (isMatch) {
-      // Craft success
       if (root.BiomeAudio) {
         root.BiomeAudio.playHammerSlam();
       }
@@ -857,77 +992,225 @@
         playerSession.crafted3x3Ids.add(recipe.id);
         playerSession.baseDefenseLevel = Math.min(100, playerSession.baseDefenseLevel + recipe.defenseBoost);
         addXP(15);
-        ConfettiEngine.burst(45);
+        ConfettiEngine.burst(55);
       }
 
-      if (seal) seal.classList.add('is-stamped');
+      if (seal) {
+        seal.textContent = recipe.stampText || `${recipe.name.toUpperCase()} CRAFTED! ⭐`;
+        seal.classList.add('is-stamped');
+      }
 
-      // Update Base Defense HUD
+      // Update Base Defense HUD and stage meter
       const defNum = document.getElementById('baseDefenseNumber');
       const defFill = document.getElementById('baseDefenseFill');
       if (defNum) defNum.textContent = `${playerSession.baseDefenseLevel}%`;
       if (defFill) defFill.style.width = `${playerSession.baseDefenseLevel}%`;
 
       renderForgeRecipeList();
+
+      // If next recipe exists, auto-advance after 1.4s
+      if (playerSession.activeRecipeIndex < data.crafting3x3Recipes.length - 1) {
+        setTimeout(() => {
+          playerSession.activeRecipeIndex++;
+          clear3x3Grid();
+          renderForgeRecipeList();
+        }, 1400);
+      }
     } else {
       // Soft-fail
       if (root.BiomeAudio) root.BiomeAudio.playSoftFail();
+      const grid = document.getElementById('grid3x3Container');
+      if (grid) {
+        grid.classList.remove('wobble-fail');
+        void grid.offsetWidth;
+        grid.classList.add('wobble-fail');
+      }
       if (seal) seal.classList.remove('is-stamped');
     }
   }
 
   // =========================================================================
-  // STAGE 6: THE MIDNIGHT CREEPER DEFENSE
+  // STAGE 6: THE MIDNIGHT CREEPER DEFENSE (INTERACTIVE SHELTER SCENE)
   // =========================================================================
   function renderStage6Defense() {
-    const data = root.BIOME_CRAFTER_DATA;
-    const actionsRow = document.getElementById('defenseActionsRow');
-    if (!data || !actionsRow) return;
+    if (!playerSession.defenseState) {
+      playerSession.defenseState = {
+        window1: false,
+        door: false,
+        window2: false
+      };
+    }
 
-    const currentDirective = data.defenseDirectives[playerSession.defenseStepIndex] || data.defenseDirectives[0];
-
+    const state = playerSession.defenseState;
     const titleEl = document.getElementById('defenseAlertTitle');
     const descEl = document.getElementById('defenseAlertDesc');
-    if (titleEl) titleEl.textContent = currentDirective.alert;
-    if (descEl) descEl.textContent = currentDirective.threat;
+    const actionsRow = document.getElementById('defenseActionsRow');
+    const victoryCallout = document.getElementById('defenseVictoryNotice');
 
-    actionsRow.innerHTML = `
-      <button type="button" class="btn-3d btn-game-torch" onclick="executeDefenseAction('${currentDirective.id}')" style="font-size:1.15rem; padding:16px 32px;">
-        <span>${currentDirective.actionBtn}</span>
-      </button>
-    `;
+    // Visual elements
+    const win1 = document.getElementById('shelterWindow1');
+    const win1Glow = document.getElementById('window1TorchGlow');
+    const win1Badge = document.getElementById('window1Badge');
+    const wallMountLeft = document.getElementById('wallMountLeft');
+
+    const door = document.getElementById('shelterDoorway');
+    const doorLeaf = document.getElementById('doorLeaf');
+    const doorLockIcon = document.getElementById('doorLockIcon');
+    const doorBadge = document.getElementById('doorBadge');
+    const doorMob = document.getElementById('doorExteriorMob');
+
+    const win2 = document.getElementById('shelterWindow2');
+    const win2Badge = document.getElementById('window2Badge');
+    const golemOverlay = document.getElementById('golemSmashOverlay');
+
+    // Sync Window 1 Visuals
+    if (state.window1) {
+      if (win1) { win1.classList.remove('has-alert'); win1.classList.add('is-lit'); }
+      if (win1Glow) win1Glow.style.display = 'block';
+      if (win1Badge) win1Badge.textContent = 'West Window: Lit 🕯️';
+      if (wallMountLeft) wallMountLeft.classList.add('is-lit');
+    } else {
+      if (win1) { win1.classList.add('has-alert'); win1.classList.remove('is-lit'); }
+      if (win1Glow) win1Glow.style.display = 'none';
+      if (win1Badge) win1Badge.textContent = 'West Window (Dark)';
+    }
+
+    // Sync Door Visuals
+    if (state.door) {
+      if (door) { door.classList.remove('has-alert'); door.classList.add('is-locked'); }
+      if (doorLeaf) { doorLeaf.classList.remove('open'); doorLeaf.classList.add('shut'); }
+      if (doorLockIcon) doorLockIcon.textContent = '🔒';
+      if (doorBadge) doorBadge.textContent = 'Main Door: Bolted 🔒';
+      if (doorMob) doorMob.style.display = 'none';
+    } else {
+      if (door) { door.classList.remove('is-locked'); }
+      if (doorLeaf) { doorLeaf.classList.add('open'); doorLeaf.classList.remove('shut'); }
+      if (doorLockIcon) doorLockIcon.textContent = '🔓';
+      if (doorBadge) doorBadge.textContent = 'Main Entrance (Unbolted)';
+      if (doorMob) doorMob.style.display = 'flex';
+      if (state.window1 && !state.door) {
+        if (door) door.classList.add('has-alert');
+      }
+    }
+
+    // Sync Window 2 Visuals
+    if (state.window2) {
+      if (win2) { win2.classList.remove('has-alert'); win2.classList.add('is-lit'); }
+      if (win2Badge) win2Badge.textContent = 'East Perimeter: Secured 🤖';
+      if (golemOverlay) golemOverlay.style.display = 'flex';
+    } else {
+      if (win2) { win2.classList.remove('is-lit'); }
+      if (win2Badge) win2Badge.textContent = 'East Window (Perimeter)';
+      if (golemOverlay) golemOverlay.style.display = 'none';
+      if (state.door && !state.window2) {
+        if (win2) win2.classList.add('has-alert');
+      }
+    }
+
+    // Determine Active Step & Action Button
+    if (!state.window1) {
+      if (titleEl) titleEl.textContent = '⚠️ Alert 1 of 3: Dark Shadow at West Window!';
+      if (descEl) descEl.textContent = 'The window is dark! Tap window to place a torch and illuminate the shelter!';
+      if (actionsRow) {
+        actionsRow.innerHTML = `
+          <button type="button" class="btn-3d btn-game-torch" onclick="handleDefenseTrigger('torch')" style="font-size:1.15rem; padding:16px 36px;">
+            <span>🔥 Place Torch on West Window!</span>
+          </button>
+        `;
+      }
+      if (victoryCallout) victoryCallout.style.display = 'none';
+    } else if (!state.door) {
+      if (titleEl) titleEl.textContent = '⚠️ Alert 2 of 3: Footsteps Outside! Creeper Approaching!';
+      if (descEl) descEl.textContent = 'A creeper is at the door! Tap entrance to shut and bolt the heavy oak door!';
+      if (actionsRow) {
+        actionsRow.innerHTML = `
+          <button type="button" class="btn-3d btn-game-torch" onclick="handleDefenseTrigger('lock')" style="font-size:1.15rem; padding:16px 36px;">
+            <span>🔒 Shut &amp; Bolt Wooden Door!</span>
+          </button>
+        `;
+      }
+      if (victoryCallout) victoryCallout.style.display = 'none';
+    } else if (!state.window2) {
+      if (titleEl) titleEl.textContent = '⚠️ Alert 3 of 3: Perimeter Breach at East Window!';
+      if (descEl) descEl.textContent = 'A mob of creepers has gathered outside! Tap to deploy the Iron Golem defender!';
+      if (actionsRow) {
+        actionsRow.innerHTML = `
+          <button type="button" class="btn-3d btn-game-emerald" onclick="handleDefenseTrigger('golem')" style="font-size:1.15rem; padding:16px 36px;">
+            <span>🤖 Deploy Iron Golem Defender!</span>
+          </button>
+        `;
+      }
+      if (victoryCallout) victoryCallout.style.display = 'none';
+    } else {
+      // All 3 Completed!
+      if (titleEl) titleEl.textContent = '🎉 PERIMETER FULLY DEFENDED! ALL CREEPERS REPELLED!';
+      if (descEl) descEl.textContent = 'Your oak and cobblestone shelter is completely fortified. You survived the midnight siege!';
+      if (actionsRow) actionsRow.innerHTML = '';
+      if (victoryCallout) victoryCallout.style.display = 'flex';
+    }
+  }
+
+  function handleDefenseTrigger(actionType) {
+    if (!playerSession.defenseState) {
+      playerSession.defenseState = { window1: false, door: false, window2: false };
+    }
+    const state = playerSession.defenseState;
+    const log = document.getElementById('defenseSuccessLog');
+
+    if (actionType === 'torch' && !state.window1) {
+      state.window1 = true;
+      if (root.BiomeAudio) {
+        root.BiomeAudio.playWoodChop();
+        root.BiomeAudio.playTorchSizzle();
+      }
+      ConfettiEngine.burst(30);
+      addXP(10);
+      if (log) log.textContent = '✓ West window illuminated with bright torch! The creeper fled into the dark woods!';
+      renderStage6Defense();
+
+      // Sound cue for next threat
+      setTimeout(() => {
+        if (!state.door && root.BiomeAudio) root.BiomeAudio.playCreeperHiss();
+      }, 1100);
+    } else if (actionType === 'lock' && !state.door) {
+      state.door = true;
+      if (root.BiomeAudio) {
+        root.BiomeAudio.playDoorThud();
+        root.BiomeAudio.playSnap();
+      }
+      ConfettiEngine.burst(35);
+      addXP(10);
+      if (log) log.textContent = '✓ Heavy wooden door slammed shut and bolted! Monsters cannot enter!';
+      renderStage6Defense();
+
+      setTimeout(() => {
+        if (!state.window2 && root.BiomeAudio) root.BiomeAudio.playCreeperHiss();
+      }, 1100);
+    } else if (actionType === 'golem' && !state.window2) {
+      state.window2 = true;
+      if (root.BiomeAudio) {
+        root.BiomeAudio.playHammerSlam();
+        root.BiomeAudio.playVictoryFanfare();
+      }
+      ConfettiEngine.burst(65);
+      addXP(15);
+      playerSession.baseDefenseLevel = 100;
+
+      // Update HUD & Meter
+      const defNum = document.getElementById('baseDefenseNumber');
+      const defFill = document.getElementById('baseDefenseFill');
+      if (defNum) defNum.textContent = '100%';
+      if (defFill) defFill.style.width = '100%';
+
+      if (log) log.textContent = '✓ Iron Golem deployed! All perimeter creepers smashed and defeated!';
+      renderStage6Defense();
+    }
   }
 
   function executeDefenseAction(directiveId) {
-    const data = root.BIOME_CRAFTER_DATA;
-    if (!data) return;
-
-    const directive = data.defenseDirectives.find(d => d.id === directiveId);
-    if (!directive) return;
-
-    if (root.BiomeAudio) {
-      root.BiomeAudio.playCreeperHiss();
-      root.BiomeAudio.playSnap();
-    }
-
-    const log = document.getElementById('defenseSuccessLog');
-    if (log) log.textContent = `✓ ${directive.reactionSuccess}`;
-
-    if (!playerSession.completedDefenseIds.has(directiveId)) {
-      playerSession.completedDefenseIds.add(directiveId);
-      addXP(10);
-      ConfettiEngine.burst(35);
-    }
-
-    if (playerSession.defenseStepIndex < data.defenseDirectives.length - 1) {
-      playerSession.defenseStepIndex++;
-      setTimeout(() => {
-        renderStage6Defense();
-      }, 1000);
-    } else {
-      if (log) log.textContent = '🎉 PERIMETER FULLY DEFENDED! ALL CREEPERS REPELLED!';
-      if (root.BiomeAudio) root.BiomeAudio.playVictoryFanfare();
-    }
+    if (!playerSession.defenseState.window1) handleDefenseTrigger('torch');
+    else if (!playerSession.defenseState.door) handleDefenseTrigger('lock');
+    else if (!playerSession.defenseState.window2) handleDefenseTrigger('golem');
   }
 
   // =========================================================================
@@ -1147,6 +1430,7 @@
   root.verify3x3Craft = verify3x3Craft;
 
   root.executeDefenseAction = executeDefenseAction;
+  root.handleDefenseTrigger = handleDefenseTrigger;
 
   root.selectTeleprompterTemplate = selectTeleprompterTemplate;
   root.readTeleprompterAloud = readTeleprompterAloud;
