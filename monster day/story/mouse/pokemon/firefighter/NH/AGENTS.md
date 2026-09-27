@@ -1,30 +1,75 @@
-# AGENTS.md — AI Agent Guidelines & Architecture Manual
+# AGENTS.md — AI Agent Guidelines & Core Craft Invariants (Zero Compromise)
 > **English Adventure Academy** (`who-stole-the-treasure`)  
 > Local Root: `c:\Users\maysa\Desktop\DV\`  
 > Target Mirror: `monster day/story/mouse/pokemon/firefighter/NH/`  
 > Git Branches: `main` & `gh-pages`
 
-This document defines the mandatory operating protocols, architectural rules, visual tokens, audio engines, and code lifecycle requirements for all autonomous and pair-programming AI coding agents working in this repository.
+You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary ESL/CLIL Curriculum Specialist**. Whenever generating, editing, or wiring any lesson, module, or game in this repository, strictly enforce these operational standards and core craft invariants with zero compromise.
 
 ---
 
-## 1. Core Operating Protocols & Rules of Engagement
+## 🏛️ 1. Core Craft Invariants (Zero Compromise)
 
-### 1.1 The Workspace Mirroring Law (MANDATORY)
+### 1.1 Anti-Admin Dashboard Mandate
+- **STRICTLY FORBIDDEN**: Flat SaaS forms, 1px table borders, metadata lists, administrative queues, and tiny 32px–48px icon badges.
+- **60-30-10 CYBER-GLASSMORPHISM**:
+  * **60% Obsidian Void Base**: `#060911` with subtle dark radial gradients (`radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%)`).
+  * **30% Structural Glass Panels**: `rgba(15, 23, 42, 0.8)` with `backdrop-filter: blur(14px)` and layered soft drop shadows (`box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2)`).
+  * **10% Vivid Game Accents**: Cyan `#38bdf8`, Amber `#f59e0b`, Emerald `#10b981`, Coral `#f43f5e`, Electric Violet `#a855f7`.
+- **TACTILE 3D PUSH-BUTTONS**: Every interactive button must have a 5px solid darker bottom border lip (`border-bottom: 5px solid ...`) and a 4px physical travel on `:active` with spring bounce physics (`--spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275)`).
+
+### 1.2 Visuals & Art Direction
+- **65% FULL-BLEED ARTWORK RULE**: The top 65% of every game card must feature full-bleed visual art; the bottom 35% is a dark glassmorphic caption tray.
+- **ISOMETRIC GROUNDING**: Never float sprites on flat backgrounds. Ground them on 3D isometric reflection pedestals (`radial-gradient` discs) with continuous `idleBob` breathing physics (`@keyframes idleBob 3s ease-in-out infinite` or `@keyframes monsterFloat 3s ease-in-out infinite`).
+- **NO FLAT BLOBS**: Forbid crude procedural SVG circles pretending to be characters. Use clean raster sprites (`.webp`/`.png`) or multi-layered vectors with `feDropShadow` rim-lighting and proper anatomical silhouette contours.
+
+### 1.3 Audio & Speech (Zero External MP3s)
+- **Pure Web Audio API Synthesis**: Dual-oscillator musical chords with ADSR exponential decay ramps.
+- **Harmonic Chords**: Ascending C-major arpeggios ($C_5 \to E_5 \to G_5 \to C_6$ at 90ms offsets) for XP/Victory; warm low-register descending sine tones ($260\text{ Hz} \to 180\text{ Hz}$) for soft-fails (never harsh buzzers, red penalty screens, or punitive alarms).
+- **TTS Narration**: Calibrate `window.speechSynthesis` to `rate: 0.88`, `pitch: 1.05`, and `lang: "en-US"` with word-boundary event tracking for karaoke speech highlighting.
+- **Autoplay Guard**: `AudioContext` and TTS must initialize ONLY upon first user gesture (`click`, `touchstart`, or hotkey).
+
+### 1.4 4-Pillar Pedagogical Engine
+- **1 Target Grammar Formula & 1 CLIL Real-World Topic per Lesson**: Clear, singular linguistic focus paired with authentic science, history, nature, or engineering inquiry.
+- **3-Sentence Speaking Ceiling**: Oral production must be constrained to a 3-part teleprompter template (e.g. Greeting/Identity $\to$ Observation/Fact $\to$ Action/Conclusion).
+- **3-Phase Arc**:
+  * **Phase 1: Discovery Hotspots** (Explore environment, click to inspect, listen to vocabulary).
+  * **Phase 2: Tactile Workbench** (Drag/drop, match, classify, build sentence with tactile 3D tiles).
+  * **Phase 3: Live Karaoke Teleprompter** (Timed oral production, speech synthesis read-along, visual feedback).
+- **Soft-Fail Architecture**: Incorrect choices trigger an elastic wobble (`translateX(-4px)` to `translateX(4px)`) and a spoken clue with zero point deductions.
+- **Zero-Bug State**: Guard against `undefined`, `null`, or `NaN` in all dynamic text slots, scoreboards, and badges.
+
+### 1.5 Directory & Registry Deliverables
+For any module `[module-slug]`, write directly to disk:
+1. Complete self-contained module folder:
+   - `[module-slug]/index.html` (Standalone playable student game / lesson)
+   - `[module-slug]/worksheet.html` (Printable companion worksheet)
+   - `[module-slug]/css/style.css` (Game-specific styling conforming to tokens)
+   - `[module-slug]/js/data.js` (Curriculum vocabulary, dialogue, question banks)
+   - `[module-slug]/js/audio.js` (Procedural Web Audio sound effects engine)
+   - `[module-slug]/js/app.js` (Interactive gameplay loop and DOM controller)
+2. Append full metadata entry into `GAMES_DATA` in `js/games-data.js`.
+3. Add deep-link pathname routing to `404.html`.
+
+---
+
+## 2. Core Operating Protocols & Rules of Engagement
+
+### 2.1 The Workspace Mirroring Law (MANDATORY)
 Whenever you modify, add, or delete any source file in the root project, **you must immediately mirror the exact change to the secondary workspace directory**:
 ```powershell
 Copy-Item -Path "<root-relative-path>" -Destination "monster day\story\mouse\pokemon\firefighter\NH\<root-relative-path>" -Force
 ```
 *Never mark a task complete without confirming that both paths are 100% in sync.*
 
-### 1.2 Syntax Verification Before Commit
+### 2.2 Syntax Verification Before Commit
 Never commit unverified code. Always run static syntax checks via Node.js on all touched JavaScript files in both directories:
 ```powershell
 node --check "js/<filename>.js"
 node --check "monster day/story/mouse/pokemon/firefighter/NH/js/<filename>.js"
 ```
 
-### 1.3 Git Commit & Dual-Branch Push Workflow
+### 2.3 Git Commit & Dual-Branch Push Workflow
 All production changes must be pushed to **both** `main` and `gh-pages`:
 ```powershell
 git add -A
@@ -36,75 +81,10 @@ git push origin gh-pages
 git checkout main
 ```
 
-### 1.4 Zero Heavy Runtime Dependencies
+### 2.4 Zero Heavy Runtime Dependencies
 - **Stack**: Pure Vanilla ES6+ JavaScript, Semantic HTML5, CSS3 with Custom Properties.
 - **No Build Bloat**: Do NOT introduce React, Vue, Webpack, Vite, npm runtime packages, or external runtime CDNs.
 - **Offline Reliability**: The platform runs directly inside classroom browsers, offline networks, and interactive projector smartboards. Procedural synthesis (Web Audio API, SVG generation) and local assets are always favored over remote endpoints.
-
----
-
-## 2. Visual & UX Design Tokens (EdTech Commercial Standards)
-
-All UI elements must look tactile, playful, and cohesive—comparable to modern commercial EdTech applications (Duolingo, Blooket, Prodigy).
-
-### 2.1 Color & Surface Hierarchy
-- **Base Canvas**: Clean slate `#f8fafc`.
-- **Card Surfaces**: Solid white `#ffffff` elevated by soft, layered drop shadows:
-  ```css
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
-  ```
-- **Banned**: 1px generic gray borders enclosing every box, dense data spreadsheets, and flat administrative enterprise styling.
-
-### 2.2 Tactile 3D Push-Down Buttons (`.btn-3d`)
-Buttons are physical objects with depth and spring physics:
-```css
-:root {
-  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.btn-3d {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 18px;
-  font-weight: 800;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.08s var(--spring-snap), border-bottom-width 0.08s ease, filter 0.12s ease;
-  transform: translateY(0);
-}
-
-.btn-3d-primary {
-  background: #2563eb;
-  color: #ffffff;
-  border-bottom: 4px solid #1d4ed8;
-}
-
-.btn-3d-success {
-  background: #10b981;
-  color: #ffffff;
-  border-bottom: 4px solid #047857;
-}
-
-.btn-3d:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-}
-
-.btn-3d:active {
-  transform: translateY(2px);
-  border-bottom-width: 1px;
-}
-```
-
-### 2.3 Card Golden Ratio (60 / 40 Split)
-Student companion cards and challenge tiles dedicate:
-- **Upper ~60%**: Full-bleed hero character canvas, isometric reflection dais, or animated puppet.
-- **Lower ~40%**: High-contrast rounded info plate with student identity, CEFR badge, streak count, progress bar, and dominant 3D action button (`⚡ +10 XP`).
 
 ---
 
