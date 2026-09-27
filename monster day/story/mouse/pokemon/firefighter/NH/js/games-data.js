@@ -1523,6 +1523,114 @@ const GAMES_REGISTRY = [
     "url": "twin-gates/index.html"
   },
   {
+    "id": "wind-and-sun",
+    "aliases": [
+      "wind-sun",
+      "the-wind-and-the-sun",
+      "jacket-contest",
+      "weather-powers"
+    ],
+    "title": "☀️ The Wind and the Sun: Weather Powers & The Jacket Contest",
+    "description": "Interactive 4-stage fable cinema and arcade module. Watch the Aesop fable with auto-pausing video checkpoints, manipulate wind and sun sliders to observe reactive weather physics, test rapid sorting reflexes in the 20-second Jacket Reaction Race, and deliver oral karaoke teleprompter graduation!",
+    "category": "Language & Quests",
+    "categoryGroup": "Communication & Literature",
+    "cefrLevel": "A1–A1+",
+    "level": "A1+",
+    "ageGroup": "7–11",
+    "grade": "Grade 2–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
+    "xp": 150,
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "type": "game",
+    "topics": [
+      "Aesop's Fable & Video Checkpoints",
+      "Weather Powers & Wind vs Sun Physics",
+      "Cause & Action: Jacket Reaction Race",
+      "Comparative Language & Speaking Ceiling",
+      "Live Karaoke Teleprompter Graduation"
+    ],
+    "learningObjectives": [
+      "Compare elemental strength: 'I can [blow / shine]! I am [stronger / hotter] than you!'",
+      "Express cause and action: 'It is cold and windy, so he [zips up] his jacket.'",
+      "Express warmth and contrast: 'The sun shines gently, so he [takes off] his jacket.'",
+      "Reflect on moral resolution: 'Gentle warmth is stronger than cold force — kindness wins!'"
+    ],
+    "teacherInstructions": "Launch Stage 1 for full-screen YouTube fable cinema with auto-pausing checkpoints at 00:55, 01:24, and 02:36. Transition to Stage 2 Weather Powers Lab for slider-based wind/sun physics. Move to Stage 3 for the 20-second Jacket Reaction Race drill, and graduate in Stage 4 Fable Teleprompter Studio with word-by-word karaoke highlight.",
+    "route": "wind-and-sun/index.html",
+    "worksheet": "wind-and-sun/worksheet.html",
+    "worksheetRoute": "wind-and-sun/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "☀️",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0284c7 50%, #f59e0b 100%)",
+    "tags": [
+      "fable",
+      "aesop",
+      "weather",
+      "wind",
+      "sun",
+      "jacket",
+      "youtube",
+      "cinema",
+      "karaoke",
+      "teleprompter",
+      "science"
+    ],
+    "vocabulary": {
+      "core": [
+        "wind",
+        "sun",
+        "jacket",
+        "blow",
+        "shine",
+        "cold",
+        "warm",
+        "zip up",
+        "take off",
+        "stronger"
+      ],
+      "supporting": [
+        "hood",
+        "snow",
+        "storm",
+        "gale",
+        "breeze",
+        "traveler",
+        "kindness",
+        "force",
+        "contest",
+        "heat"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "I am [stronger/hotter] than you / It is [cold/warm], so he [zips up/takes off] his jacket",
+      "formula": "I am [comparative] than you / It is [weather], so [subject] [verb] [object]",
+      "formulas": [
+        "I can blow! I am stronger than you!",
+        "It is cold and windy, so he zips up his jacket.",
+        "The sun shines gently, so he takes off his jacket.",
+        "Gentle warmth is stronger than cold force — kindness wins!"
+      ]
+    },
+    "clilDomain": "Literature & Earth/Weather Science",
+    "clilTheme": "Aesop's Fables, Weather Dynamics & Moral Reasoning",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 5,
+    "formula": "I am [stronger/hotter] than you / It is [weather], so he [zips up/takes off]",
+    "status": "active",
+    "worksheetUrl": "wind-and-sun/worksheet.html",
+    "url": "wind-and-sun/index.html"
+  },
+  {
     "id": "ninja-trials",
     "aliases": [
       "ninja-academy",

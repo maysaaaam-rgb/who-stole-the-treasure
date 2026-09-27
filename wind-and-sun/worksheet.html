@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worksheet: The Wind and the Sun | Adventure Academy</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      line-height: 1.4;
+      padding: 0;
+    }
+
+    .worksheet-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    /* Header */
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+    }
+
+    .title-block h1 {
+      font-size: 1.4rem;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .title-block p {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .student-fields {
+      display: flex;
+      gap: 15px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .field-line {
+      display: inline-block;
+      width: 120px;
+      border-bottom: 1.5px solid #0f172a;
+      margin-left: 4px;
+    }
+
+    /* Section Styling */
+    .section-title {
+      font-size: 1rem;
+      color: #0f172a;
+      font-weight: 800;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border-left: 4px solid #0284c7;
+      margin: 12px 0 8px 0;
+    }
+
+    /* 4-Panel Comic Strip */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .comic-panel {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      height: 135px;
+      position: relative;
+    }
+
+    .panel-num {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel-draw-box {
+      flex: 1;
+      border: 1px dashed #cbd5e1;
+      border-radius: 6px;
+      margin: 2px 0 6px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .panel-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-left: 26px;
+    }
+
+    .panel-caption {
+      font-size: 0.75rem;
+      color: #475569;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    /* Activity 1: Vocabulary & Matching */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .vocab-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+    }
+
+    .vocab-word {
+      font-weight: 700;
+      color: #0369a1;
+    }
+
+    /* Activity 2: Grammar Fill-in-the-Blank */
+    .fill-list {
+      list-style: none;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .fill-item {
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .blank {
+      display: inline-block;
+      width: 140px;
+      border-bottom: 1.5px solid #0284c7;
+      margin: 0 4px;
+      text-align: center;
+      color: #0369a1;
+      font-weight: 700;
+    }
+
+    /* Certificate Footer */
+    .certificate-footer {
+      border: 2px dashed #f59e0b;
+      background: #fffbeb;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .cert-text h3 {
+      font-size: 0.95rem;
+      color: #b45309;
+      font-weight: 800;
+    }
+
+    .cert-text p {
+      font-size: 0.78rem;
+      color: #78350f;
+    }
+
+    .cert-stamps {
+      text-align: right;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #b45309;
+    }
+
+    /* Print Controls */
+    .no-print {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      background: #0f172a;
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: #ffffff;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .print-btn {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .print-btn:hover {
+      background: #0369a1;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="worksheet-container">
+    <!-- Screen-only Print Bar -->
+    <div class="no-print">
+      <span>📄 <b>Printable Companion Worksheet</b>: The Wind and the Sun (CEFR A1)</span>
+      <button class="print-btn" onclick="window.print()">🖨️ Print / Save to PDF</button>
+    </div>
+
+    <!-- Header -->
+    <header class="sheet-header">
+      <div class="title-block">
+        <h1>☀️ The Wind and the Sun: Weather & Moral Log</h1>
+        <p>Aesop's Fable • Grade 2–4 • CEFR A1–A1+ • Language & Science Track</p>
+      </div>
+      <div class="student-fields">
+        <div>Name: <span class="field-line"></span></div>
+        <div>Date: <span class="field-line"></span></div>
+      </div>
+    </header>
+
+    <!-- Part 1: 4-Panel Comic Strip -->
+    <div class="section-title">1. Draw & Complete the 4-Panel Fable Comic</div>
+    <div class="comic-grid">
+      <div class="comic-panel">
+        <div class="panel-num">1</div>
+        <div class="panel-title">The Great Bet</div>
+        <div class="panel-draw-box">[ Draw: Wind and Sun ]</div>
+        <div class="panel-caption">"I am stronger than you! I can blow!"</div>
+      </div>
+
+      <div class="comic-panel">
+        <div class="panel-num">2</div>
+        <div class="panel-title">The Howling Wind</div>
+        <div class="panel-draw-box">[ Draw: Cold clouds & jacket ]</div>
+        <div class="panel-caption">"It is cold, so he zips up his jacket."</div>
+      </div>
+
+      <div class="comic-panel">
+        <div class="panel-num">3</div>
+        <div class="panel-title">The Gentle Sunshine</div>
+        <div class="panel-draw-box">[ Draw: Warm bright rays ]</div>
+        <div class="panel-caption">"It is warm, so he unzips his jacket."</div>
+      </div>
+
+      <div class="comic-panel">
+        <div class="panel-num">4</div>
+        <div class="panel-title">Kindness Wins!</div>
+        <div class="panel-draw-box">[ Draw: Happy traveler under tree ]</div>
+        <div class="panel-caption">"Gentle warmth is stronger than cold force!"</div>
+      </div>
+    </div>
+
+    <!-- Part 2: Vocabulary Word Bank -->
+    <div class="section-title">2. Weather Word Bank (Read and Connect)</div>
+    <div class="vocab-grid">
+      <div class="vocab-box">
+        <span class="vocab-word">🌬️ Wind</span>
+        <span>blows cold air</span>
+      </div>
+      <div class="vocab-box">
+        <span class="vocab-word">☀️ Sun</span>
+        <span>shines warm light</span>
+      </div>
+      <div class="vocab-box">
+        <span class="vocab-word">🧥 Jacket</span>
+        <span>keeps traveler warm</span>
+      </div>
+      <div class="vocab-box">
+        <span class="vocab-word">❄️ Freeze</span>
+        <span>zip up tightly</span>
+      </div>
+      <div class="vocab-box">
+        <span class="vocab-word">🍃 Breeze</span>
+        <span>gentle soft wind</span>
+      </div>
+      <div class="vocab-box">
+        <span class="vocab-word">🌡️ Warmth</span>
+        <span>take off jacket</span>
+      </div>
+    </div>
+
+    <!-- Part 3: Comparative & Cause Sentences -->
+    <div class="section-title">3. Fill in the Correct Words</div>
+    <ul class="fill-list">
+      <li class="fill-item">
+        1. The Wind says: "I can blow hard! I am <span class="blank"></span> than you!" <i>(stronger / hotter)</i>
+      </li>
+      <li class="fill-item">
+        2. The air is freezing cold, so the traveler <span class="blank"></span> his jacket. <i>(zips up / takes off)</i>
+      </li>
+      <li class="fill-item">
+        3. The Sun shines gently, so the traveler <span class="blank"></span> his jacket. <i>(zips up / takes off)</i>
+      </li>
+      <li class="fill-item">
+        4. The moral is: Gentle <span class="blank"></span> is stronger than cold force. <i>(warmth / snow)</i>
+      </li>
+    </ul>
+
+    <!-- Certificate Stamp Footer -->
+    <footer class="certificate-footer">
+      <div class="cert-text">
+        <h3>🏅 Academy Fable Explorer Certificate</h3>
+        <p>Successfully explored weather science, vocabulary, and Aesop's moral lesson.</p>
+      </div>
+      <div class="cert-stamps">
+        <div>⭐ +150 XP Earned</div>
+        <div>Teacher Signature: ___________________</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
