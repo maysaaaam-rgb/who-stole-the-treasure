@@ -70,12 +70,16 @@
       </div>
 
       <!-- Backpack Inventory Counters -->
-      <div class="inventory-pill" title="Inventory: Wood | Stone | Iron">
+      <div class="inventory-pill" title="Backpack: Wood | Stone | Iron | Coal | Sticks">
         <span>🪵 <strong id="invWood">0</strong></span>
         <span style="color:#64748b;">|</span>
         <span>🪨 <strong id="invStone">0</strong></span>
         <span style="color:#64748b;">|</span>
-        <span>⛓️ <strong id="invIron">0</strong></span>
+        <span>⚙️ <strong id="invIron">0</strong></span>
+        <span style="color:#64748b;">|</span>
+        <span>⬛ <strong id="invCoal">0</strong></span>
+        <span style="color:#64748b;">|</span>
+        <span>🥢 <strong id="invSticks">0</strong></span>
       </div>
 
       <!-- XP Pill -->
@@ -158,13 +162,13 @@
     </section>
 
     <!-- ===================================================================
-         STAGE 3: THE TOOL SMITHING BENCH (Recipe Assembly)
+         STAGE 3: THE 2x2 STARTER SMITHING BENCH (Recipe Assembly)
          =================================================================== -->
     <section class="stage-view" id="stagePhase3">
       <div class="stage-hero-banner">
         <div class="stage-hero-left">
-          <h2><span>🔨</span> Stage 3: The Tool Smithing Bench</h2>
-          <p>Combine your harvested sticks, wood, and cobblestone to craft Tier 1 and Tier 2 pickaxes. Practice: <em>"I need [number] [material] to make a [tool]."</em> (+25 XP)!</p>
+          <h2><span>🔨</span> Stage 3: The 2x2 Starter Smithing Bench</h2>
+          <p>Practice starter crafting on a 2x2 workbench grid! Follow the ghost blueprint to craft Sticks, then assemble a Starter Wooden Pickaxe (+25 XP)!</p>
         </div>
         <div>
           <button type="button" class="btn-3d btn-game-torch" onclick="switchStage(4)">
@@ -173,8 +177,59 @@
         </div>
       </div>
 
-      <div class="smithing-arena-grid" id="smithingGridContainer">
-        <!-- Rendered dynamically by js/app.js -->
+      <div class="crafting-forge-layout">
+        <!-- Left: Step Indicator & 3D Preview Card + Mini Schematic -->
+        <div class="forge-left-recipes" id="smithing2x2RecipeList">
+          <!-- Injected dynamically by js/app.js -->
+        </div>
+
+        <!-- Center: 2x2 Crafting Grid & Tactile Inventory Tray -->
+        <div class="forge-center-stage">
+          <!-- Recipe Stepper Pills -->
+          <div class="smithing-stepper-row" id="smithing2x2Stepper">
+            <!-- Stepper buttons -->
+          </div>
+
+          <!-- Active Recipe Goal & Linguistic Banner -->
+          <div class="forge-recipe-banner">
+            <span style="font-size:0.8rem; font-weight:900; color:#38bdf8; text-transform:uppercase;">
+              Linguistic Formula:
+            </span>
+            <div style="font-size:1.05rem; font-weight:800; color:#fef08a; margin-top:2px;" id="smithing2x2Formula">
+              "I need 2 Wood Planks to craft 4 Sticks."
+            </div>
+            <div style="font-size:0.82rem; color:#94a3b8; margin-top:2px;" id="smithing2x2Ingredients">
+              Required: 2 Wood Planks
+            </div>
+          </div>
+
+          <!-- 2x2 Interactive Workbench Grid -->
+          <div class="smithing-2x2-frame">
+            <div class="crafting-grid smithing-2x2-grid" id="grid2x2Sockets">
+              <!-- 4 sockets: 0, 1, 2, 3 with ghost previews -->
+            </div>
+
+            <!-- Animated Rubber Stamp Seal -->
+            <div class="forge-stamp-seal" id="smithingStampSeal" style="display:none;">
+              <span id="smithingStampSealText">CRAFTED: 4x STICKS! ⭐</span>
+            </div>
+          </div>
+
+          <!-- Tactile Inventory Palette -->
+          <div class="inventory-tray" id="smithing2x2InventoryTray">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Forge Action Controls -->
+          <div style="display:flex; gap:12px; width:100%; max-width:400px; justify-content:center;">
+            <button type="button" class="btn-3d btn-game-secondary" onclick="clear2x2Grid()" style="padding:10px 18px;">
+              <span>↺ Clear</span>
+            </button>
+            <button type="button" class="btn-3d btn-game-torch" id="btnForge2x2Item" onclick="verify2x2Craft()" style="flex:1; padding:12px 24px; font-size:1.05rem;">
+              <span>🔨 Craft Starter Tool!</span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -187,7 +242,11 @@
           <h2><span>🌅</span> Stage 4: Sunset Emergency Drill</h2>
           <p>The sun is sinking rapidly! Sort incoming items into <strong>"SURVIVAL GEAR"</strong> vs. <strong>"LUXURY BLOCKS"</strong> before nightfall strikes (+25 XP)!</p>
         </div>
-        <div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <!-- 20-Second Active Countdown Badge -->
+          <div class="sunset-countdown-badge" id="sunsetCountdownBadge">
+            ⏳ Sunset: <span id="sunsetCountdownNum" style="color:#ef4444; font-weight:900;">20</span>s
+          </div>
           <button type="button" class="btn-3d btn-game-torch" onclick="switchStage(5)">
             Next: 3x3 Shelter Forge →
           </button>
@@ -197,26 +256,40 @@
       <div class="sunset-sorting-arena">
         <!-- Conveyor Card -->
         <div class="sunset-conveyor-card" id="conveyorCard">
-          <div style="font-size:0.8rem; font-weight:900; color:#38bdf8; text-transform:uppercase;">
-            Conveyor Item 0<span id="conveyorItemNum">1</span> / 12
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div style="font-size:0.8rem; font-weight:900; color:#38bdf8; text-transform:uppercase;">
+              Conveyor Item 0<span id="conveyorItemNum">1</span> / 12
+            </div>
+            <div style="font-size:0.8rem; font-weight:800; color:#10b981;" id="sunsetScoreText">
+              Accuracy: 0 / 12
+            </div>
           </div>
-          <div style="font-size:3.5rem;" id="conveyorItemIcon">🔥</div>
+          <div style="font-size:3.8rem; margin:10px 0;" id="conveyorItemIcon">🕯️</div>
           <h3 style="font-size:1.45rem; font-weight:900; color:#ffffff;" id="conveyorItemName">Glowing Torches</h3>
           <p style="font-size:0.92rem; color:#cbd5e1;" id="conveyorItemReason">Lights the dark to stop monster spawns</p>
         </div>
 
         <!-- Sorting Target Bins -->
         <div class="sorting-bins-row">
-          <div class="sorting-bin bin-survival" onclick="handleSortChoice('survival')">
-            <div style="font-size:2rem;">🛡️</div>
+          <div class="sorting-bin bin-survival" id="binSurvival" onclick="handleSortChoice('survival')">
+            <div style="font-size:2.4rem;">🛡️</div>
             <h4 style="font-size:1.25rem; font-weight:900; color:#10b981; margin:6px 0;">SURVIVAL GEAR</h4>
             <p style="font-size:0.85rem; color:#94a3b8;">Essential tools, torches &amp; shelter doors</p>
           </div>
-          <div class="sorting-bin bin-luxury" onclick="handleSortChoice('luxury')">
-            <div style="font-size:2rem;">🏆</div>
+          <div class="sorting-bin bin-luxury" id="binLuxury" onclick="handleSortChoice('luxury')">
+            <div style="font-size:2.4rem;">🏆</div>
             <h4 style="font-size:1.25rem; font-weight:900; color:#f59e0b; margin:6px 0;">LUXURY BLOCKS</h4>
             <p style="font-size:0.85rem; color:#94a3b8;">Decorations &amp; trophies (keep outside)</p>
           </div>
+        </div>
+
+        <!-- Completion Callout -->
+        <div id="sunsetSuccessNotice" style="display:none; width:100%; max-width:680px; background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(4,120,87,0.35)); border:3px solid #10b981; border-bottom:6px solid #047857; border-radius:20px; padding:18px 24px; text-align:center; box-shadow:0 0 30px rgba(16,185,129,0.4); margin-top:16px;">
+          <h4 style="font-size:1.25rem; font-weight:900; color:#a7f3d0;">🎉 Sunset Drill Complete! All Survival Gear Packed!</h4>
+          <p style="font-size:0.92rem; color:#ecfdf5; margin:6px 0 14px 0;">You successfully secured all survival gear before nightfall (+25 XP awarded)!</p>
+          <button type="button" class="btn-3d btn-game-emerald" onclick="switchStage(5)" style="padding:12px 28px; font-size:1.05rem;">
+            <span>🧱 Advance to 3x3 Shelter Forge →</span>
+          </button>
         </div>
       </div>
     </section>
