@@ -1309,6 +1309,102 @@ const GAMES_REGISTRY = [
     "url": "meme-rules/index.html"
   },
   {
+    "id": "ninja-trials",
+    "aliases": [
+      "ninja-academy",
+      "can-you-do-it",
+      "ninja-challenges"
+    ],
+    "title": "🥋 Ninja Trials: Can You Do It? (Hard Mode)",
+    "description": "Kinesthetic action & motor coordination arcade module. Scan 5 martial disciplines, execute active physical challenges on a digital stopwatch with whistle freeze cues, and deliver a live 3-sentence oral graduation debrief!",
+    "category": "Language & Quests",
+    "categoryGroup": "Communication & Kinesthetic Action",
+    "cefrLevel": "A1–A1+",
+    "level": "A1+",
+    "ageGroup": "7–10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "xp": 150,
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "type": "game",
+    "topics": [
+      "Kinesthetic Action",
+      "Ability Formulas",
+      "Motor Memory & Coordination"
+    ],
+    "learningObjectives": [
+      "Ask and answer questions about physical ability using 'Can you [Verb]?' -> 'Yes, I can! / No, I can't.'",
+      "Express declarative physical confidence with 'I can [Verb] and [Verb]!'",
+      "Structure multi-step action sequences using 'First..., then..., finally...!'",
+      "Demonstrate safe classroom proprioception, balance holds, and whistle freeze stops."
+    ],
+    "teacherInstructions": "Clear space around student desks. Use the digital stopwatch timer for balance holds and sprints, practice instant statue freezes with the referee whistle, and debrief on the teleprompter stage.",
+    "route": "ninja-trials/index.html",
+    "worksheet": "ninja-trials/worksheet.html",
+    "worksheetRoute": "ninja-trials/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🥋",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "tags": [
+      "ninja",
+      "ability",
+      "can-you",
+      "physical",
+      "clil",
+      "kinesthetic",
+      "speaking"
+    ],
+    "vocabulary": {
+      "core": [
+        "balance",
+        "jump",
+        "squat",
+        "turn",
+        "freeze",
+        "clap",
+        "run",
+        "punch",
+        "kick"
+      ],
+      "supporting": [
+        "seconds",
+        "tiptoes",
+        "silently",
+        "whistle",
+        "statue",
+        "straight"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Can you + Verb / I can + Verb",
+      "formula": "Can you [Verb + Manner]? -> Yes, I can! / No, I can't.",
+      "formulas": [
+        "Can you balance on one leg for 15 seconds?",
+        "Yes, I can balance on one leg!",
+        "First jump, then clap, finally freeze!"
+      ]
+    },
+    "clilDomain": "Physical Education & Motor Skill Development",
+    "clilTheme": "Proprioception, Coordination & Physical Literacy",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 4,
+    "formula": "Can you [Verb]? / I can [Verb]!",
+    "status": "active",
+    "worksheetUrl": "ninja-trials/worksheet.html",
+    "url": "ninja-trials/index.html"
+  },
+  {
     "id": "alice-quest",
     "title": "🫖 Alice Quest: Mad Tea Party Storyboard",
     "description": "Differentiated reading and speaking challenge deck. Students choose their level (1 to 3) to earn up to 200 XP for vocabulary, creative storytelling, character acting, and full spoken summaries!",
