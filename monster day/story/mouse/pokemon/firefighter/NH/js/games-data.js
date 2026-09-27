@@ -10,7 +10,7 @@ const CURRICULUM_TRACKS = [
     "label": "🚀 Science & Space",
     "title": "Track 1: 🚀 Science & Space Exploration",
     "subtitle": "Planetary astronomy, earth systems, environmental science, and animal adaptations.",
-    "count": 19
+    "count": 20
   },
   {
     "id": "track-2",
@@ -41,8 +41,8 @@ const CURRICULUM_TRACKS = [
     "key": "all",
     "label": "🌟 All Lessons (60+)",
     "title": "Complete Learning Library (All Lessons)",
-    "subtitle": "All 61 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
-    "count": 61
+    "subtitle": "All 62 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 62
   }
 ];
 
@@ -392,6 +392,123 @@ const GAMES_REGISTRY = [
     "status": "active",
     "worksheetUrl": "dino-expedition/worksheet.html",
     "url": "dino-expedition/index.html"
+  },
+  {
+    "id": "monster-evolution",
+    "aliases": [
+      "monster-evolution",
+      "creature-evolution",
+      "evolution-lab",
+      "elemental-monsters"
+    ],
+    "title": "🐉 Monster Evolution: Elemental Growth Cycles",
+    "description": "5-Layer EdTech CLIL & ESL arcade module (Grade 3–4 | CEFR A1+ | 180 XP). Phase 1: Specimen Growth Scanner with 3D flip cards inspecting Baby, Growing, and Ultimate elemental stages; Phase 2: Evolution Chamber Workbench with interactive socket docking, comparative stat bars, energy reactor, and rubber stamp slam (STAMP: EVOLVED!); Phase 3: Teleprompter Studio with real-time word-by-word karaoke highlighting and printable A4 Evolution Dossier.",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryLabel": "🐉 Elemental Biology & Life Cycles",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–11",
+    "ageGroup": "8–11",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 180,
+    "skills": [
+      "3D Elemental Specimen Reconnaissance",
+      "Life Cycle Progression Stems (Baby to Ultimate)",
+      "Physical Purpose Formulas (has wings to fly / has armor to protect)",
+      "Evolution Chamber Socket Docking & Rubber Stamp Verification",
+      "3-Sentence Oral Teleprompter Broadcast"
+    ],
+    "topic": "Elemental Biology, Growth Stages & Physical Purpose",
+    "topics": [
+      "Life Cycles",
+      "Evolution",
+      "Physical Adaptations",
+      "Elemental Habitats",
+      "Animals & Biology"
+    ],
+    "languageFocus": "Growth Cycle: The [creature] grows from a [baby] into an [ultimate] [titan]. Physical Purpose: It has [feature] to [action verb].",
+    "activityMode": "3-Phase Interactive CLIL Evolution Lab & Teleprompter Studio",
+    "interactionType": "3D Perspective Flip Cards, Socket Docking Target, Growth Energy Reactor, Rubber Stamp Impact, Live Word-by-Word Karaoke Teleprompter, A4 Printable Field Dossier",
+    "difficulty": "Grade 3–4 (A1+)",
+    "tags": [
+      "monster-evolution",
+      "creature-evolution",
+      "life-cycles",
+      "adaptations",
+      "clil",
+      "science",
+      "biology",
+      "speech-teleprompter",
+      "audio-synthesis"
+    ],
+    "learningObjectives": [
+      "Identify the three growth stages of elemental creatures (Baby, Growing, Ultimate).",
+      "Formulate life cycle sentences: 'The creature grows from a baby into an ultimate titan.'",
+      "Express physical purpose: 'It has wings/armor/fins to fly/protect/swim.'",
+      "Broadcast a 3-sentence live field debrief in the teleprompter studio."
+    ],
+    "teacherInstructions": "Lead cadets through the 3-phase arc: 1. Growth Scanner (flip 3D cards to examine stats and life stages from hatchling to ultimate), 2. Evolution Workbench (dock comparative and purpose traits to charge energy to 100% and slam the stamp), 3. Live Teleprompter (deliver 3-sentence broadcast with audio accompaniment and print the A4 Evolution Dossier).",
+    "studentInstructions": "Welcome to the Evolution Lab! Scan 5 elemental species, dock target adaptations in the chamber to trigger evolution, and broadcast your research debrief to earn your Senior Evolutionist Diploma!",
+    "route": "monster-evolution/index.html",
+    "worksheetRoute": "monster-evolution/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🐉",
+    "gradient": "linear-gradient(135deg, #060911 0%, #3b0764 50%, #a855f7 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"monsterEvolThumbGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#3b0764\"/>\n          <stop offset=\"100%\" stop-color=\"#a855f7\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#monsterEvolThumbGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"42\" fill=\"rgba(168, 85, 247, 0.2)\" stroke=\"#a855f7\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n      <text x=\"100\" y=\"82\" font-size=\"48\" text-anchor=\"middle\">🐉</text>\n    </svg>",
+    "categoryGroup": "Science & Paleontology",
+    "vocabulary": {
+      "core": [
+        "evolve",
+        "baby",
+        "growing",
+        "ultimate",
+        "wings",
+        "horns",
+        "fins",
+        "armor"
+      ],
+      "supporting": [
+        "hatchling",
+        "crest",
+        "protect",
+        "harness",
+        "charge"
+      ],
+      "phonics": [
+        "/v/ in evolve",
+        "/w/ in wings",
+        "/kw/ in aqua"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The [creature] grows into a [titan] / It has [feature] to [action]",
+      "formula": "The [creature] grows from a [baby] into a [titan] / It has [feature] to [action]",
+      "formulas": [
+        "The Emberwing grows from a baby into an ultimate titan.",
+        "It has fiery wings to fly above magma peaks.",
+        "It has tough bark armor to protect forest life."
+      ]
+    },
+    "clilDomain": "Elemental Biology & Life Cycles",
+    "clilTheme": "Growth Stages & Physical Purpose",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "trackOrder": 4,
+    "formula": "The [creature] grows from a [baby] into a [titan] / It has [feature] to [action]",
+    "status": "active",
+    "worksheetUrl": "monster-evolution/worksheet.html",
+    "url": "monster-evolution/index.html"
   },
   {
     "id": "wildlife-detective",
